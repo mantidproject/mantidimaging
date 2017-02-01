@@ -73,9 +73,8 @@ def pre_processing(config, sample, flat, dark):
 
     sample, flat, dark = rotate_stack.execute(
         sample, config.pre.rotation, flat, dark, cores=cores, chunksize=chunksize, h=h)
-    if debug and save_preproc and config.pre.rotation is not None:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "1rotated", "_rotated")
+    h.save_debug(sample, config, flat, dark, "1rotated",
+                 debug, save_preproc, config.pre.rotation)
 
     # the air region coordinates must be within the ROI if this is selected
     if config.pre.crop_before_normalise:
@@ -87,59 +86,56 @@ def pre_processing(config, sample, flat, dark):
         dark = crop_coords.execute_image(
             dark, config.pre.region_of_interest, h)
 
-        if debug and save_preproc:
-            _debug_save_out_data(sample, config, flat, dark,
-                                 "2cropped", "_cropped")
+        h.save_debug(sample, config, flat, dark, "2cropped",
+                     config.pre.crop_before_normalise)
 
     # removes background using images taken when exposed to fully open beam
     # and no beam
     sample = normalise_by_flat_dark.execute(
         sample, flat, dark, config.pre.clip_min, config.pre.clip_max, cores=cores, chunksize=chunksize, h=h)
-    if debug and save_preproc and flat is not None and dark is not None:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "3norm_by_flat_dark", "_normalised_by_flat_dark")
+    h.save_debug(sample, config, flat, dark,
+                 "3norm_by_flat_dark", debug, save_preproc, flat, dark)
 
     # removes the contrast difference between the stack of images
-    sample = normalise_by_air_region.execute(sample, config.pre.normalise_air_region, config.pre.region_of_interest,
-                                             config.pre.crop_before_normalise, cores=cores, chunksize=chunksize, h=h)
-    if debug and save_preproc and config.pre.normalise_air_region is not None:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "4norm_by_air", "_normalised_by_air")
+    air = config.pre.normalise_air_region
+    roi = config.pre.region_of_interest
+    crop = config.pre.crop_before_normalise
+
+    sample = normalise_by_air_region.execute(
+        sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
+    h.save_debug(sample, config, flat, dark, "4norm_by_air",
+                 debug, save_preproc, air, roi, crop)
 
     if not config.pre.crop_before_normalise:
         # in this case we don't care about cropping the flat and dark
         sample = crop_coords.execute_volume(
             sample, config.pre.region_of_interest, h)
 
-        if debug and save_preproc:
-            _debug_save_out_data(sample, config, flat, dark,
-                                 "5cropped", "_cropped")
+        h.save_debug(sample, config, flat, dark, "5cropped",
+                     debug, save_preproc, crop)
 
     sample = outliers.execute(
         sample, config.pre.outliers_threshold, config.pre.outliers_mode, h)
-    if debug and save_preproc and config.pre.outliers_threshold:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "6outliers", "_outliers")
+    h.save_debug(sample, config, flat, dark, "6outliers",
+                 debug, save_preproc, config.pre.outliers_threshold)
+
     # mcp_corrections
     # data = mcp_corrections.execute(data, config)
 
     sample = rebin.execute(sample, config.pre.rebin,
                            config.pre.rebin_mode, cores=cores, chunksize=chunksize, h=h)
-    if debug and save_preproc and config.pre.rebin is not None:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "7scaled", "_scaled")
+    h.save_debug(sample, config, flat, dark, "7scaled",
+                 debug, save_preproc, config.pre.rebin)
 
     sample = median_filter.execute(
         sample, config.pre.median_size, config.pre.median_mode, cores=cores, chunksize=chunksize, h=h)
-    if debug and save_preproc and config.pre.median_size is not None:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "8median_filtered", "_median_filtered")
+    h.save_debug(sample, config, flat, dark, "8median_filtered",
+                 debug, save_preproc, config.pre.median_size)
 
     sample = gaussian.execute(sample, config.pre.gaussian_size, config.pre.gaussian_mode,
                               config.pre.gaussian_order, cores=cores, chunksize=chunksize, h=h)
-    if debug and save_preproc and config.pre.gaussian_size is not None:
-        _debug_save_out_data(sample, config, flat, dark,
-                             "9gaussian", "_gaussian")
+    h.save_debug(sample, config, flat, dark, "9gaussian",
+                 debug, save_preproc, config.pre.gaussian_size)
 
     return sample
 
