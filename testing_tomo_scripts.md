@@ -18,7 +18,7 @@
 - [load single images](#load-single-images-3)
 - [load single images](#load-single-images-4)
 
-<!-- /TOC --> 
+<!-- /TOC -->
 
 # Utility
 ## Merge pre-processing images into a stack. This will not apply any filters as pre-processing, it will just pack all of the images into a stack
@@ -113,7 +113,7 @@ For Copy/Paste to terminal:
 - ### Better results/Air Region if run wihout `--crop-before-normalise`
 
 ```python
-> python main.py  --tool=tomopy --algorithm=gridrec --num-iter=5 --input-path=~/Documents/img/000888/data_full --input-path-flat=~/Documents/img/000888/flat --input-path-dark=~/Documents/img/000888/dark -R 41 0 233 228 --output=~/Documents/img/000888/processed/temp/1 --pre-median-size=3 --cor=104.000000 --rotation=1 --max-angle=360.000000 -A 360 111 388 144 -R 41 0 233 228 -data-as-stack 
+> python main.py  --tool=tomopy --algorithm=gridrec --num-iter=5 --input-path=~/Documents/img/000888/data_full --input-path-flat=~/Documents/img/000888/flat --input-path-dark=~/Documents/img/000888/dark --output=~/Documents/img/000888/processed/temp/1 --pre-median-size=3 --cor=104.000000 --rotation=1 --max-angle=360.000000 -A 360 111 388 144 -R 41 0 233 228 -data-as-stack 
 
 ---
 
@@ -503,9 +503,9 @@ bsub -I python /work/imat/imat_recon/scripts/main.py
 
 ## TIFF > FITS
 ### Single > Single, c4
-`python main.py -i ~/win_img/777cannon/data/ -o ~/temp/c4 -s --convert --in-format tiff`
+`python main.py -i ~/win_img/777cannon/data/ -o ~/temp/c4 -s --convert --in-format tif`
 ### Single > Stack, c4s
-`python main.py -i ~/win_img/777cannon/data/ -o ~/temp/c4 -s --convert --data-as-stack --in-format tiff`
+`python main.py -i ~/win_img/777cannon/data/ -o ~/temp/c4s -s --convert --data-as-stack --in-format tif`
 ### Stack > Single, c42
 `TODO currently we cannot save out TIFF files`
 ### Stack > Stack, c4s2
@@ -543,10 +543,10 @@ bsub -I python /work/imat/imat_recon/scripts/main.py
 
 ## NXS > FITS
 ### Stack > Single, p5
-`python main.py -i ~/temp/c6s_new/pre_processed/ --only-preproc -o ~/temp/p4/ --in-format nxs --pre-median-size 3 -s`
+`python main.py -i ~/temp/c2s2/pre_processed/ --only-preproc -o ~/temp/p4/ --in-format nxs --pre-median-size 3 -s`
 
 ### Stack > Stack, p5s
-`python main.py -i ~/temp/c6s_new/pre_processed/ --only-preproc -o ~/temp/p4/ --in-format nxs --pre-median-size 3 -s --data-as-stack`
+`python main.py -i ~/temp/c2s2/pre_processed/ --only-preproc -o ~/temp/p4/ --in-format nxs --pre-median-size 3 -s --data-as-stack`
 
 ## FITS > NXS
 ### Single > Stack, p6s

@@ -32,7 +32,8 @@ def execute(config, cmd_line):
     # import early to check if tool is available
     tool = load_tool(config, h)
 
-    sample, flat, dark = load_data(config, h)
+    from recon.data import loader
+    sample, flat, dark = loader.load_data(config, h)
 
     sample = pre_processing(config, sample, flat, dark)
 
@@ -215,27 +216,3 @@ def load_tool(config, h):
 
     h.pstop("Tool loaded.")
     return tool
-
-
-def load_data(config, h):
-    from recon.data import loader
-
-    h.pstart("Loading data...")
-    input_path = config.func.input_path
-    input_path_flat = config.func.input_path_flat
-    input_path_dark = config.func.input_path_dark
-    img_format = config.func.in_format
-    data_dtype = config.func.data_dtype
-    cores = config.func.cores
-    chunksize = config.func.chunksize
-    parallel_load = config.func.parallel_load
-
-    sample, flat, dark = loader.load(input_path, input_path_flat, input_path_dark,
-                                     img_format, data_dtype, cores, chunksize, parallel_load, h)
-
-    h.pstop("Data loaded. Shape of raw data: {0}, dtype: {1}.".format(
-        sample.shape, sample.dtype))
-
-    h.check_data_stack(sample)
-
-    return sample, flat, dark

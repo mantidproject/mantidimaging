@@ -318,12 +318,13 @@ class Helper(object):
     def save_debug(self, sample, config, flat, dark, path_append, *args):
         # if any of the arguments are none
         for a in args:
-            if a is None:
+            if a is None or a is False:
                 return
 
         from recon.data.saver import Saver
 
         saver = Saver(config)
+        saver._img_format = 'fits'  # force fits files
         saver.save_single_image(sample, subdir=path_append, image_name='sample')
 
         saver._data_as_stack = True  # force data as stack to save out single images
