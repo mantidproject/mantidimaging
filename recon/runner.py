@@ -62,7 +62,7 @@ def pre_processing(config, sample, flat, dark):
     if config.func.reuse_preproc is True:
         h.tomo_print_warning(
             "Pre-processing steps have been skipped, because --reuse-preproc flag has been passed.")
-        return sample
+        return sample, flat, dark
 
     from recon.filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
         mcp_corrections, rebin, median_filter, gaussian
