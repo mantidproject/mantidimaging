@@ -33,20 +33,38 @@
     - [--crop-before-normalise](#--crop-before-normalise)
 - [Testing the Big Data](#testing-the-big-data)
 - [SCARF Chamber Tomo Find COR](#scarf-chamber-tomo-find-cor)
+- [Cannon ROI and AIR](#cannon-roi-and-air)
 - [Type Conversion](#type-conversion)
-    - [FITS to FITS](#fits-to-fits)
-    - [FITS to NXS, this requires also dark and flat images](#fits-to-nxs-this-requires-also-dark-and-flat-images)
-    - [NXS to FITS](#nxs-to-fits)
-    - [FITS to TIFF](#fits-to-tiff)
-    - [TIFF to FITS](#tiff-to-fits)
-    - [TIFF to NXS](#tiff-to-nxs)
-    - [NXS to TIFF](#nxs-to-tiff)
-- [Pre-processing Data Flow with Dark/Flat and Median size 3](#pre-processing-data-flow-with-darkflat-and-median-size-3)
-    - [FITS](#fits)
-    - [NXS to FITS](#nxs-to-fits-1)
-    - [FITS to NXS](#fits-to-nxs)
-    - [TIFF to FITS](#tiff-to-fits-1)
-    - [TIFF to NXS](#tiff-to-nxs-1)
+    - [FITS - FITS](#fits---fits)
+    - [FITS - stack FITS](#fits---stack-fits)
+    - [FITS - TIFF](#fits---tiff)
+    - [FITS - stack TIFF](#fits---stack-tiff)
+    - [FITS - nxs](#fits---nxs)
+    - [repeat same, but with stack of FITS from ~/temp/fs/pre_processed](#repeat-same-but-with-stack-of-fits-from-tempfspre_processed)
+    - [stack FITS - FITS](#stack-fits---fits)
+    - [stack FITS - stack FITS](#stack-fits---stack-fits)
+    - [stack FITS - TIFF](#stack-fits---tiff)
+    - [stack FITS - stack TIFF](#stack-fits---stack-tiff)
+    - [stack FITS - nxs](#stack-fits---nxs)
+    - [TIFF to everything else](#tiff-to-everything-else)
+    - [TIFF - FITS](#tiff---fits)
+    - [TIFF - stack FITS](#tiff---stack-fits)
+    - [TIFF - TIFF](#tiff---tiff)
+    - [TIFF - stack TIFF](#tiff---stack-tiff)
+    - [need to convert flat and dark also](#need-to-convert-flat-and-dark-also)
+    - [stack TIFF - nxs](#stack-tiff---nxs)
+    - [now stack of tiffs to everything else](#now-stack-of-tiffs-to-everything-else)
+    - [stack TIFF - FITS](#stack-tiff---fits)
+    - [stack TIFF - stack FITS](#stack-tiff---stack-fits)
+    - [stack TIFF - TIFF](#stack-tiff---tiff)
+    - [stack TIFF - stack TIFF](#stack-tiff---stack-tiff)
+    - [stack TIFF - nxs](#stack-tiff---nxs-1)
+    - [now for the last, unpack the nxs to everything else](#now-for-the-last-unpack-the-nxs-to-everything-else)
+    - [nxs - FITS](#nxs---fits)
+    - [nxs - stack FITS](#nxs---stack-fits)
+    - [nxs - TIFF](#nxs---tiff)
+    - [nxs - stack TIFF](#nxs---stack-tiff)
+    - [nxs - nxs](#nxs---nxs)
 
 <!-- /TOC -->
 
@@ -509,93 +527,82 @@ bsub -I python /work/imat/imat_recon/scripts/main.py
 
 >python main.py -i /media/matt/Windows/Documents/mantid_workspaces/imaging/chamber/temp/1000/pre_processed -o /media/matt/Windows/Documents/mantid_workspaces/imaging/chamber/processed/temp/1000_processed -g '[384.0, 0.0, 1550.0, 1932.0]' -f
 
+# Cannon ROI and AIR
+```
 777cannon ROI: 175 6 836 928 
 Air Region: 734 386 791 440 
 -R 175 6 836 928 -A 734 386 791 440 
+```
 # Type Conversion
 
-## FITS to FITS
-- ## Stack to Single, c1
-> python main.py -i ~/win_img/larmor/data/ -o ~/temp/c1 -s --convert
-- ## Single to Stack, c1s
-> python main.py -i ~/win_img/larmor/data/ -o ~/temp/c1s -s --convert --data-as-stack
+## FITS - FITS
+> python main.py -i ~/win_img/larmor/data/ -o ~/temp/f -s --convert
+## FITS - stack FITS
+> python main.py -i ~/win_img/larmor/data/ -o ~/temp/fs -s --convert --data-as-stack
 
-## FITS to NXS, this requires also dark and flat images
-- ## Single to Stack, c2s
-> python main.py -i ~/win_img/larmor/data/ -o ~/temp/c2s -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --convert --out-format nxs --data-as-stack
-- ## Stack to Stack, c2s2
-> python main.py -i ~/temp/c1s/pre_processed/ -o ~/temp/c2s2 -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --convert --out-format nxs --data-as-stack
+## FITS - TIFF
+> python main.py -i ~/win_img/larmor/data/ -o ~/temp/t -s --convert --out-format tif
+## FITS - stack TIFF
+> python main.py -i ~/win_img/larmor/data/ -o ~/temp/ts -s --convert --data-as-stack --out-format tif
 
-## NXS to FITS
-- ## Stack to Single, c3
-> python main.py -i ~/temp/c2s/pre_processed/ -o ~/temp/c3 -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --convert --in-format nxs
-- ## Stack to Stack, c3s
-> python main.py -i ~/temp/c2s/pre_processed/ -o ~/temp/c3s -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --convert --in-format nxs --data-as-stack
+## FITS - nxs
+> python main.py -i ~/win_img/larmor/data/ -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -o ~/temp/nxs -s --convert --data-as-stack --out-format nxs
 
-## FITS to TIFF
-- ## Single to Single, c4
-> python main.py -i ~/temp/c1/pre_processed/ -o ~/temp/c4 -s --convert --out-format tiff 
-- ## Single to Stack, c4s
-> python main.py -i ~/temp/c1/pre_processed/ -o ~/temp/c4s -s --convert --out-format tiff --data-as-stack
-- ## Stack to Single, c42
-> python main.py -i ~/temp/c1s/pre_processed/ -o ~/temp/c42 -s --convert --out-format tiff
-- ## Stack to Stack, c4s2
-> python main.py -i ~/temp/c1s/pre_processed/ -o ~/temp/c4s2 -s --convert --out-format tiff --data-as-stack
+## repeat same, but with stack of FITS from ~/temp/fs/pre_processed
+## stack FITS - FITS
+> python main.py -i ~/temp/fs/pre_processed -o ~/temp/f1 -s --convert
+## stack FITS - stack FITS
+> python main.py -i ~/temp/fs/pre_processed -o ~/temp/fs1 -s --convert --data-as-stack
 
-## TIFF to FITS
-- ## Single to Single, c5
-> python main.py -i ~/temp/c4/pre_processed/ -o ~/temp/c5 -s --convert --in-format tif
-- ## Single to Stack, c5s
-> python main.py -i ~/temp/c4/pre_processed/ -o ~/temp/c5s -s --convert --data-as-stack --in-format tif
-- ## Stack to Single, c52
-> python main.py -i ~/temp/c4s/pre_processed/ -o ~/temp/c52 -s --convert --in-format tif
-- ## Stack to Stack, c5s2
-> python main.py -i ~/temp/c4/pre_processed/ -o ~/temp/c5s2 -s --convert --in-format tif
+## stack FITS - TIFF
+> python main.py -i ~/temp/fs/pre_processed -o ~/temp/t1 -s --convert --out-format tif
+## stack FITS - stack TIFF
+> python main.py -i ~/temp/fs/pre_processed -o ~/temp/ts1 -s --convert --data-as-stack --out-format tif
 
+## stack FITS - nxs
+> python main.py -i ~/temp/fs/pre_processed -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -o ~/temp/nxs1 -s --convert --data-as-stack --out-format nxs
 
-## TIFF to NXS
-- ## Single to Stack, c6s
-> python main.py -i ~/temp/c4/pre_processed/ -D ~/win_img/larmor/dark -F ~/win_img/larmor/flat -o ~/temp/c6s -s --convert --in-format tiff --out-format nxs --data-as-stack
-- ## Stack to Stack
-> python main.py -i ~/temp/c5s/pre_processed/ -D ~/win_img/larmor/dark -F ~/win_img/larmor/flat -o ~/temp/c6s2 -s --convert --in-format tiff --out-format nxs --data-as-stack
+## TIFF to everything else
+## TIFF - FITS
+> python main.py -i ~/temp/t1/pre_processed -o ~/temp/f2 -s --convert --in-format tiff
+## TIFF - stack FITS
+> python main.py -i ~/temp/t1/pre_processed -o ~/temp/fs2 -s --convert --data-as-stack --in-format tiff
 
-## NXS to TIFF
-- ## Stack to Single, c7
-> python main.py -i ~/temp/c5s/pre_processed/ -o ~/temp/c7 -s --convert --in-format nxs --out-format tiff
+## TIFF - TIFF
+> python main.py -i ~/temp/t1/pre_processed -o ~/temp/t2 -s --convert --out-format tiff --in-format tiff
+## TIFF - stack TIFF
+> python main.py -i ~/temp/t1/pre_processed -o ~/temp/ts2 -s --convert --data-as-stack --out-format tiff --in-format tiff
 
-- ## Stack to Stack, c7s
-> python main.py -i ~/temp/c5s/pre_processed/ -o ~/temp/c7s -s --convert --in-format nxs --out-format tiff --data-as-stack
+## need to convert flat and dark also
+> python main.py -i ~/win_img/larmor/dark/ -o ~/temp/tiff_dark -s --convert --out-format tiff
+> python main.py -i ~/win_img/larmor/flat/ -o ~/temp/tiff_flat -s --convert --out-format tiff
+## stack TIFF - nxs
+> python main.py -i ~/temp/t1/pre_processed -D ~/temp/tiff_dark/pre_processed -F ~/temp/tiff_flat/pre_processed -o ~/temp/nxs2 -s --convert --data-as-stack --out-format nxs --in-format tiff
 
-# Pre-processing Data Flow with Dark/Flat and Median size 3
-## FITS
-- ## Single to Single, p1
-> python main.py -i ~/win_img/larmor/data/ -o ~/temp/p1 -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --pre-median-size 3 --only-preproc
-- ## Single to Stack, p2
-> python main.py -i ~/win_img/larmor/data/ -o ~/temp/p2 -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --pre-median-size 3 --only-preproc --data-as-stack
-- ## Stack to Single, p3
-> python main.py -i ~/temp/c1/pre_processed/ -o ~/temp/p3 -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --pre-median-size 3 --only-preproc
-- ## Stack to Stack, p4
-> python main.py -i ~/temp/c1/pre_processed/ -o ~/temp/p4 -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --pre-median-size 3 --only-preproc --data-as-stack
+## now stack of tiffs to everything else
+## stack TIFF - FITS
+> python main.py -i ~/temp/ts1/pre_processed -o ~/temp/f3 -s --convert --in-format tiff
+## stack TIFF - stack FITS
+> python main.py -i ~/temp/ts1/pre_processed -o ~/temp/fs3 -s --convert --data-as-stack --in-format tiff
 
-## NXS to FITS
-- ## Stack to Single, p5
-> python main.py -i ~/temp/c2s2/pre_processed/ --only-preproc -o ~/temp/p4/ --in-format nxs --pre-median-size 3 -s
+## stack TIFF - TIFF
+> python main.py -i ~/temp/ts1/pre_processed -o ~/temp/t3 -s --convert --out-format tiff --in-format tiff
+## stack TIFF - stack TIFF
+> python main.py -i ~/temp/ts1/pre_processed -o ~/temp/ts3 -s --convert --data-as-stack --out-format tiff --in-format tiff
 
-- ## Stack to Stack, p5s
-> python main.py -i ~/temp/c2s2/pre_processed/ --only-preproc -o ~/temp/p4/ --in-format nxs --pre-median-size 3 -s --data-as-stack
+## stack TIFF - nxs
+> python main.py -i ~/temp/ts1/pre_processed -D ~/temp/tiff_dark/pre_processed -F ~/temp/tiff_flat/pre_processed -o ~/temp/nxs3 -s --convert --data-as-stack --out-format nxs --in-format tiff
 
-## FITS to NXS
-- ## Single to Stack, p6s
-> python main.py -i ~/win_img/larmor/data/ -o ~/temp/c2s -D ~/win_img/larmor/dark/ -F ~/win_img/larmor/flat/ -s --only-preproc --out-format nxs --data-as-stack --pre-median-size 3
+## now for the last, unpack the nxs to everything else
+## nxs - FITS
+> python main.py -i ~/temp/nxs3/pre_processed -o ~/temp/f4 -s --convert --in-format nxs
+## nxs - stack FITS
+> python main.py -i ~/temp/nxs3/pre_processed -o ~/temp/f4s -s --convert --in-format nxs --data-as-stack
 
-## TIFF to FITS
-- ## Single to Single, p7
-> python main.py -i ~/win_img/777cannon/data/ -o ~/temp/p7 -D ~/win_img/777cannon/dark_cannon/ -F ~/win_img/777cannon/flat_cannon/ -s --only-preproc --in-format tif --pre-median-size 3
+## nxs - TIFF
+> python main.py -i ~/temp/nxs3/pre_processed -o ~/temp/f4 -s --convert --in-format nxs --out-format tiff
+## nxs - stack TIFF
+> python main.py -i ~/temp/nxs3/pre_processed -o ~/temp/f4s -s --convert --in-format nxs --data-as-stack --out-format tiff
 
-- ## Single to Stack, p7s
-> python main.py -i ~/win_img/777cannon/data/ -o ~/temp/p7s -D ~/win_img/777cannon/dark_cannon/ -F ~/win_img/777cannon/flat_cannon/ -s --only-preproc --in-format tif --pre-median-size 3 --data-as-stack
-
-## TIFF to NXS
-- ## Single to Stack
-- ## Stack to Stack
-
+## nxs - nxs
+> python main.py -i ~/temp/nxs3/pre_processed -D ~/temp/tiff_dark/pre_processed -F ~/temp/tiff_flat/pre_processed -o ~/temp/nxs4 -s --convert --data-as-stack --out-format nxs --in-format nxs
