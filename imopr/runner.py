@@ -20,7 +20,7 @@ def execute(config):
 
     # sample = loader.nxsread('/home/matt/temp/larmor_nxs/out_preproc_image_stack.nxs')
     from recon.runner import pre_processing
-    sample = pre_processing(config, sample, flat, dark)
+    sample, flat, dark = pre_processing(config, sample, flat, dark)
     return action(sample, flat, dark, config, indices)
 
 
@@ -31,7 +31,7 @@ def get_function(string):
     if string == "sino":
         from imopr import sinogram
         return sinogram.execute
-    if string == "show":
+    if string == "show" or string == "vis":
         from imopr import visualiser
         return visualiser.execute
     if string == "cor":

@@ -15,11 +15,17 @@ def execute(sample, flat, dark, config, indices):
     sample = make_sinogram(sample)
 
     i1 = indices[0]
-    i2 = indices[1]
+    try:
+        i2 = indices[1]
+    except IndexError:
+        i2 = i1+1
 
-    print("recon on:", i1, "-", i2, "cor:", config.func.cor)
-    cor = tool.find_center(tomo=sample, theta=proj_angles, sinogram_order=True, ind=i1)
-    print(cor)
+    print("recon on:", i1, "cor:", config.func.cor)
+    initial_guess = config.func.cor if config.func.cor is not None else None
+
+    for i in range(i1, i2):
+        cor = tool.find_center(tomo=sample, theta=proj_angles, sinogram_order=True, ind=i, init=initial_guess)
+        print(cor)
 
     # stop python from exiting
     import matplotlib.pyplot as plt

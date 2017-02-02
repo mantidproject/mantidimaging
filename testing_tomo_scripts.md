@@ -510,6 +510,8 @@ bsub -I python /work/imat/imat_recon/scripts/main.py
 >python main.py -i /media/matt/Windows/Documents/mantid_workspaces/imaging/chamber/temp/1000/pre_processed -o /media/matt/Windows/Documents/mantid_workspaces/imaging/chamber/processed/temp/1000_processed -g '[384.0, 0.0, 1550.0, 1932.0]' -f
 
 777cannon ROI: 175 6 836 928 
+Air Region: 734 386 791 440 
+-R 175 6 836 928 -A 734 386 791 440 
 # Type Conversion
 
 ## FITS to FITS

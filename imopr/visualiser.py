@@ -4,11 +4,16 @@ from matplotlib.widgets import Slider
 
 
 def execute(sample, flat, dark, config, indices):
-    show_image(sample[indices[0]])
+    if len(indices) <= 1:
+        show_image(sample[indices[0]])
+    else:
+        i1 = indices[0]
+        i2 = indices[1]
+        show_3d(sample[i1:i2])
     plt.show()
 
 
-def show_3d(cube, axis=2, cmap='Greys_r', block=False, **kwargs):
+def show_3d(cube, axis=0, cmap='Greys_r', block=False, **kwargs):
     """
     Display a 3d ndarray with a slider to move along the third dimension.
 
