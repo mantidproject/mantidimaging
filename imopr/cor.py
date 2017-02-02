@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
+from imopr.sinogram import make_sinogram
 import numpy as np
 
 
 def execute(sample, flat, dark, config, indices):
-
     from recon.tools import tool_importer
     tool = tool_importer.do_importing(config.func.tool)
 
@@ -12,18 +12,14 @@ def execute(sample, flat, dark, config, indices):
     proj_angles = np.radians(proj_angles)
 
     from imopr.sinogram import make_sinogram
-    # sample = make_sinogram(sample)
+    sample = make_sinogram(sample)
 
     i1 = indices[0]
     i2 = indices[1]
 
     print("recon on:", i1, "-", i2, "cor:", config.func.cor)
-    print(sample.shape)
-    sample = tool.run_reconstruct(sample[:, :, :], config, config.helper, proj_angles=proj_angles, sinogram_order=True)
-
-    print("recon shape", sample.shape)
-    from imopr.visualiser import show_3d
-    show_3d(sample, 0)
+    cor = tool.find_center(tomo=sample, theta=proj_angles, sinogram_order=True, ind=i1)
+    print(cor)
 
     # stop python from exiting
     import matplotlib.pyplot as plt

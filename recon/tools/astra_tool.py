@@ -52,7 +52,7 @@ class AstraTool(AbstractTool):
         print("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
         return astra
 
-    def run_reconstruct(self, data, config, h):
+    def run_reconstruct(self, data, config, h, proj_angles=None, **kwargs):
         import numpy as np
         from recon.helper import Helper
 
@@ -60,12 +60,11 @@ class AstraTool(AbstractTool):
 
         h.check_data_stack(data)
 
-        num_proj = data.shape[0]
-        inc = float(config.func.max_angle) / num_proj
-
-        proj_angles = np.arange(0, num_proj * inc, inc)
-
-        proj_angles = np.radians(proj_angles)
+        if proj_angles is None:
+            num_proj = data.shape[0]
+            inc = float(config.func.max_angle) / num_proj
+            proj_angles = np.arange(0, num_proj * inc, inc)
+            proj_angles = np.radians(proj_angles)
 
         alg = config.func.algorithm.upper()  # get upper case
         cor = config.func.cor

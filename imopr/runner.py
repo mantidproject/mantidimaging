@@ -18,18 +18,22 @@ def execute(config):
     from recon.data import loader
     sample, flat, dark = loader.load_data(config, h)
 
+    # sample = loader.nxsread('/home/matt/temp/larmor_nxs/out_preproc_image_stack.nxs')
     from recon.runner import pre_processing
     sample = pre_processing(config, sample, flat, dark)
     return action(sample, flat, dark, config, indices)
 
 
-def get_function(str):
-    if str == "recon":
+def get_function(string):
+    if string == "recon":
         from imopr import recon
         return recon.execute
-    if str == "sino":
+    if string == "sino":
         from imopr import sinogram
         return sinogram.execute
-    if str == "show":
+    if string == "show":
         from imopr import visualiser
         return visualiser.execute
+    if string == "cor":
+        from imopr import cor
+        return cor.execute
