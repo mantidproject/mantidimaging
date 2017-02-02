@@ -555,9 +555,9 @@ Air Region: 734 386 791 440
 
 ## TIFF to NXS
 - ## Single to Stack, c6s
-> python main.py -i ~/temp/c5/pre_processed/ -o ~/temp/c6s -s --convert --in-format tif --out-format nxs --data-as-stack
+> python main.py -i ~/temp/c4/pre_processed/ -D ~/win_img/larmor/dark -F ~/win_img/larmor/flat -o ~/temp/c6s -s --convert --in-format tiff --out-format nxs --data-as-stack
 - ## Stack to Stack
-> python main.py -i ~/temp/c5s/pre_processed/ -o ~/temp/c6s2 -s --convert --in-format tif --out-format nxs --data-as-stack
+> python main.py -i ~/temp/c5s/pre_processed/ -D ~/win_img/larmor/dark -F ~/win_img/larmor/flat -o ~/temp/c6s2 -s --convert --in-format tiff --out-format nxs --data-as-stack
 
 ## NXS to TIFF
 - ## Stack to Single, c7
