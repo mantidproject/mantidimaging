@@ -105,7 +105,7 @@ class AstraTool(AbstractTool):
             }
 
             recon = self._tomopy.recon(tomo=data, theta=proj_angles,
-                                       center=cor, ncores=cores, algorithm=self._tomopy.astra, options=options)
+                                       center=cor, ncores=cores, algorithm=self._tomopy.astra, options=options, **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".

@@ -75,11 +75,9 @@ def _execute_par(data, norm_flat_img=None, norm_dark_img=None, clip_min=0, clip_
     f = ptsm.create_partial(_apply_normalise_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d,
                             clip_min=clip_min, clip_max=clip_max)
 
-    Helper.debug_print_memory_usage_linux("Before execution")
-
     data, norm_divide = ptsm.execute(
         data, norm_divide, f, cores, chunksize, "Norm by Flat/Dark", h=h)
-    Helper.debug_print_memory_usage_linux("after execution")
+
     h.pstop(
         "Finished PARALLEL normalization by flat/dark images, pixel data type: {0}.".format(data.dtype))
 

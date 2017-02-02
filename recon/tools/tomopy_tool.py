@@ -61,8 +61,7 @@ class TomoPyTool(AbstractTool):
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
-        # run the iterative algorithms
-        if iterative_algorithm:
+        if iterative_algorithm:  # run the iterative algorithms
             h.pstart(
                 "Starting iterative method with TomoPy. Center of Rotation: {0}, Algorithm: {1}, "
                 "number of iterations: {2}...".format(cor, alg, num_iter))
@@ -75,7 +74,7 @@ class TomoPyTool(AbstractTool):
                 "Starting non-iterative reconstruction algorithm with TomoPy. "
                 "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
             recon = self._tomopy.recon(
-                tomo=data, theta=proj_angles, center=cor, ncore=cores, algorithm=alg, **kwargs)
+                tomo=data[:], theta=proj_angles, center=cor, ncore=cores, algorithm=alg, **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".

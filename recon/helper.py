@@ -316,6 +316,7 @@ class Helper(object):
         self._readme = readme
 
     def save_debug(self, sample, config, flat, dark, path_append, *args):
+        return
         # if any of the arguments are none
         for a in args:
             if a is None or a is False:

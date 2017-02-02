@@ -12,14 +12,14 @@ def execute(sample, flat, dark, config, indices):
     proj_angles = np.radians(proj_angles)
 
     from imopr.sinogram import make_sinogram
-    # sample = make_sinogram(sample)
+    sample = make_sinogram(sample)
 
     i1 = indices[0]
     i2 = indices[1]
 
     print("recon on:", i1, "-", i2, "cor:", config.func.cor)
     print(sample.shape)
-    sample = tool.run_reconstruct(sample[:, :, :], config, config.helper, proj_angles=proj_angles, sinogram_order=True)
+    sample = tool.run_reconstruct(sample[i1:i2, :, :], config, config.helper, sinogram_order=True, proj_angles=proj_angles)
 
     print("recon shape", sample.shape)
     from imopr.visualiser import show_3d

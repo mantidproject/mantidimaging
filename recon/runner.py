@@ -35,7 +35,7 @@ def execute(config, cmd_line):
     from recon.data import loader
     sample, flat, dark = loader.load_data(config, h)
 
-    sample = pre_processing(config, sample, flat, dark)
+    sample, flat, dark = pre_processing(config, sample, flat, dark)
 
     # Save pre-proc images, print inside
     saver.save_preproc_images(sample, flat, dark)
@@ -112,6 +112,11 @@ def pre_processing(config, sample, flat, dark):
         sample = crop_coords.execute_volume(
             sample, config.pre.region_of_interest, h)
 
+        flat = crop_coords.execute_image(
+            flat, config.pre.region_of_interest, h)
+        dark = crop_coords.execute_image(
+            dark, config.pre.region_of_interest, h)
+
         h.save_debug(sample, config, flat, dark, "5cropped",
                      debug, save_preproc, crop)
 
@@ -138,7 +143,7 @@ def pre_processing(config, sample, flat, dark):
     h.save_debug(sample, config, flat, dark, "9gaussian",
                  debug, save_preproc, config.pre.gaussian_size)
 
-    return sample
+    return sample, flat, dark
 
 
 def _debug_save_out_data(data, config, flat=None, dark=None, out_path_append='', image_append=''):
