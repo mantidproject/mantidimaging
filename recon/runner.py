@@ -82,10 +82,13 @@ def pre_processing(config, sample, flat, dark):
         sample = crop_coords.execute_volume(
             sample, config.pre.region_of_interest, h)
 
-        flat = crop_coords.execute_image(
-            flat, config.pre.region_of_interest, h)
-        dark = crop_coords.execute_image(
-            dark, config.pre.region_of_interest, h)
+        if flat is not None:
+            flat = crop_coords.execute_image(
+                flat, config.pre.region_of_interest, h)
+
+        if dark is not None:
+            dark = crop_coords.execute_image(
+                dark, config.pre.region_of_interest, h)
 
         h.save_debug(sample, config, flat, dark, "2cropped",
                      config.pre.crop_before_normalise)
@@ -111,11 +114,6 @@ def pre_processing(config, sample, flat, dark):
         # in this case we don't care about cropping the flat and dark
         sample = crop_coords.execute_volume(
             sample, config.pre.region_of_interest, h)
-
-        flat = crop_coords.execute_image(
-            flat, config.pre.region_of_interest, h)
-        dark = crop_coords.execute_image(
-            dark, config.pre.region_of_interest, h)
 
         h.save_debug(sample, config, flat, dark, "5cropped",
                      debug, save_preproc, crop)

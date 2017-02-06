@@ -70,8 +70,8 @@ class FunctionalConfig(object):
         self.chunksize = None
         self.parallel_load = False
         self.sinogram = None
-        self.indices=None
-        self.imopr=None
+        self.indices = None
+        self.imopr = None
 
     def __str__(self):
         return "Input dir: {0}\n".format(str(self.input_path)) \
@@ -438,5 +438,9 @@ class FunctionalConfig(object):
                 except IndexError:
                     self.indices.append(self.indices[0] + 1)
             except IndexError:
-                raise ValueError("If passing --indices you must specify indices!")
+                raise ValueError(
+                    "If passing --indices you must specify indices!")
 
+        if self.cor is None and not self.find_cor and not self.only_preproc:
+            raise ValueError(
+                "If running a reconstruction a Center of Rotation MUST be provided")
