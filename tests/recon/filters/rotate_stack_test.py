@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class RotateStackTest(unittest.TestCase):
@@ -26,26 +27,38 @@ class RotateStackTest(unittest.TestCase):
         return np.random.rand(10, 10, 10), np.full((10, 10), 0.9), np.full((10, 10), 0.1)
 
     def test_not_executed(self):
-        sample, flat, dark = self.generate_images()
-        from copy import deepcopy
-        control = deepcopy(sample)
+        images, control = th.gen_img_shared_array_and_copy()
+        flat = th.gen_img_shared_array()[0]
+        dark = th.gen_img_shared_array()[0]
 
         # empty params
-        result = self.alg.execute(sample, None, self.h)[0]
+        result = self.alg.execute(images, None, self.h)[0]
         npt.assert_equal(result, control)
 
-    def test_executed(self):
+    def test_executed_par(self):
         self.do_execute(self.h)
 
-    def test_executed_no_helper(self):
+    def test_executed_no_helper_par(self):
         self.do_execute(None)
 
+    def test_executed_seq(self):
+        th.switch_mp_off()
+        self.do_execute(self.h)
+        th.switch_mp_on()
+
+    def test_executed_no_helper_seq(self):
+        th.switch_mp_off()
+        self.do_execute(None)
+        th.switch_mp_on()
+
     def do_execute(self, helper):
-        sample, flat, dark = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
+        flat = th.gen_img_shared_array()[0]
+        dark = th.gen_img_shared_array()[0]
 
         rotation = 1  # once clockwise
-        sample[:, 0, 0] = 42  # set all images at 0,0 to 42
-        result = self.alg.execute(sample, rotation, h=helper)[0]
+        images[:, 0, 0] = 42  # set all images at 0,0 to 42
+        result = self.alg.execute(images, rotation, h=helper)[0]
         h = result.shape[1]
         w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)
