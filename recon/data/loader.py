@@ -121,7 +121,7 @@ def nxsread(filename):
     import h5py
     nexus = h5py.File(filename, 'r')
     data = nexus["entry1/tomo_entry/instrument/detector/data"]
-    return data[:]
+    return data
 
 
 def imread(filename):
@@ -232,7 +232,8 @@ def do_stack_load_seq(data, new_data, img_shape, name, h):
 
 def do_stack_load_par(data, new_data, cores, chunksize, name, h):
     from parallel import two_shared_mem as ptsm
-    f = ptsm.create_partial(parallel_move_data, fwd_function=ptsm.inplace_fwd_func)
+    f = ptsm.create_partial(
+        parallel_move_data, fwd_function=ptsm.inplace_fwd_func)
     ptsm.execute(new_data, data, f, cores, chunksize, name, h=h)
     return data
 
