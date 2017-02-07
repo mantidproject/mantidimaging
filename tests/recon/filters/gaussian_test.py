@@ -1,9 +1,14 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class GaussianTest(unittest.TestCase):
+    """
+    Surprisingly sequential Gaussian seems to outperform parallel Gaussian on very small data.
+    This does not scale and parallel execution is always faster on any reasonably sized data (e.g. 143,512,512)
+    """
 
     def __init__(self, *args, **kwargs):
         super(GaussianTest, self).__init__(*args, **kwargs)
@@ -19,16 +24,9 @@ class GaussianTest(unittest.TestCase):
 
         self.h = Helper(r)
 
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.random.rand(10, 10, 10)
-
     def test_not_executed(self):
-        images = self.generate_images()
-        from copy import deepcopy
-        control = deepcopy(images)
+        images, control = th.gen_img_shared_array_and_copy()
+
         err_msg = "TEST NOT EXECUTED :: Running gaussian with size {0}, mode {1} and order {2} changed the data!"
 
         size = None
@@ -38,27 +36,49 @@ class GaussianTest(unittest.TestCase):
         npt.assert_equal(
             result, control, err_msg=err_msg.format(size, mode, order))
 
-    def test_executed(self):
-        images = self.generate_images()
-        from copy import deepcopy
-        control = deepcopy(images)
+    def test_executed_parallel(self):
+        images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
         mode = 'reflect'
         order = 1
         result = self.alg.execute(images, size, mode, order, h=self.h)
-        npt.assert_raises(AssertionError, npt.assert_equal, result, control)
+        th.assert_not_equals(images, control)
 
-    def test_executed_no_helper(self):
-        images = self.generate_images()
-        from copy import deepcopy
-        control = deepcopy(images)
+    def test_executed_no_helper_parallel(self):
+        images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
         mode = 'reflect'
         order = 1
         result = self.alg.execute(images, size, mode, order)
-        npt.assert_raises(AssertionError, npt.assert_equal, result, control)
+        th.assert_not_equals(images, control)
+
+    def test_executed_seq(self):
+        images, control = th.gen_img_shared_array_and_copy()
+
+        size = 3
+        mode = 'reflect'
+        order = 1
+
+        th.switch_mp_off()
+        result = self.alg.execute(images, size, mode, order, h=self.h)
+        th.switch_mp_on()
+
+        th.assert_not_equals(images, control)
+
+    def test_executed_no_helper_seq(self):
+        images, control = th.gen_img_shared_array_and_copy()
+
+        size = 3
+        mode = 'reflect'
+        order = 1
+
+        th.switch_mp_off()
+        result = self.alg.execute(images, size, mode, order)
+        th.switch_mp_on()
+
+        th.assert_not_equals(images, control)
 
 
 if __name__ == '__main__':

@@ -63,6 +63,7 @@ def _execute_seq(data, size, mode, h=None):
     h.pstop(
         "Finished median filter, with pixel data type: {0}, filter size/width: {1}.".
         format(data.dtype, size))
+    return data
 
 
 def _execute_par(data, size, mode, cores=8, chunksize=None, h=None):

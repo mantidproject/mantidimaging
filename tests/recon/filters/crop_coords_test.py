@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class CropCoordsTest(unittest.TestCase):
@@ -32,10 +33,8 @@ class CropCoordsTest(unittest.TestCase):
             - Region of Interest is out of bounds anywhere
         """
         # images that will be put through testing
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
 
-        # control images
-        control = self.generate_images()
         err_msg = "TEST NOT EXECUTED :: Running crop coords with Region of Interest {0} changed the data!"
 
         # left > right or top > bottom should not change the data
@@ -62,22 +61,22 @@ class CropCoordsTest(unittest.TestCase):
             - valid Region of Interest is provided
         """
         # images that will be put through testing
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
 
         # control images
-        control = self.generate_images()
-
         roi = [5, 5, 5, 15]
         result = self.alg.execute_volume(images, roi, self.h)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
         # reset data
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
+
         roi = [5, 5, 15, 15]
         result = self.alg.execute_volume(images, roi, self.h)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
+
         roi = [1, 1, 5, 5]
         result = self.alg.execute_volume(images, roi, self.h)
         expected_shape = (10, 4, 4)
@@ -90,10 +89,9 @@ class CropCoordsTest(unittest.TestCase):
             - Region of Interest is out of bounds anywhere
         """
         # images that will be put through testing
-        image = self.generate_images()[0]
-
-        # control image
-        control = self.generate_images()[0]
+        images, control = th.gen_img_shared_array_and_copy()
+        image = images[0]
+        control = control[0]
         err_msg = "TEST NOT EXECUTED :: Running crop coords with Region of Interest {0} changed the data!"
 
         # left > right or top > bottom should not change the data
@@ -115,11 +113,11 @@ class CropCoordsTest(unittest.TestCase):
         npt.assert_equal(result, control, err_msg=err_msg.format(roi))
 
     def test_executed_image(self):
-                # image that will be put through testing
-        image = self.generate_images()[0]
+        # image that will be put through testing
+        images, control = th.gen_img_shared_array_and_copy()
+        image = images[0]
+        control = control[0]
 
-        # control image
-        control = self.generate_images()[0]
         err_msg = "TEST EXECUTED :: Running crop coords with Region of Interest {0} didn't change the data!"
 
         roi = [5, 5, 5, 15]
@@ -127,17 +125,16 @@ class CropCoordsTest(unittest.TestCase):
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
         # reset data
-        image = self.generate_images()[0]
+        image = th.gen_img_shared_array()[0]
         roi = [5, 5, 15, 15]
         result = self.alg.execute_image(image, roi, self.h)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
     def test_executed_image_no_helper(self):
-                # image that will be put through testing
-        image = self.generate_images()[0]
-
-        # control image
-        control = self.generate_images()[0]
+        # image that will be put through testing
+        images, control = th.gen_img_shared_array_and_copy()
+        image = images[0]
+        control = control[0]
         err_msg = "TEST EXECUTED :: Running crop coords with Region of Interest {0} didn't change the data!"
 
         roi = [5, 5, 5, 15]
@@ -145,7 +142,7 @@ class CropCoordsTest(unittest.TestCase):
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
         # reset data
-        image = self.generate_images()[0]
+        images, control = th.gen_img_shared_array_and_copy()
         roi = [5, 5, 15, 15]
         result = self.alg.execute_image(image, roi)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)

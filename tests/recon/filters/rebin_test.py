@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class RebinTest(unittest.TestCase):
@@ -19,55 +20,56 @@ class RebinTest(unittest.TestCase):
 
         self.h = Helper(r)
 
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.random.rand(10, 10, 10)
-
     def test_not_executed(self):
-        sample = self.generate_images()
-        from copy import deepcopy
-        control = deepcopy(sample)
-        err_msg = "TEST NOT EXECUTED :: Running rebin with size {0}, mode {1} and order {2} changed the data!"
+        images, control = th.gen_img_shared_array_and_copy()
 
         # bad params
         rebin = None
         mode = 'nearest'
-        result = self.alg.execute(sample, rebin, mode, self.h)
+        result = self.alg.execute(images, rebin, mode, h=self.h)
         npt.assert_equal(result, control)
 
         rebin = -1
-        result = self.alg.execute(sample, rebin, mode, self.h)
+        result = self.alg.execute(images, rebin, mode, h=self.h)
         npt.assert_equal(result, control)
 
         rebin = 0
-        result = self.alg.execute(sample, rebin, mode, self.h)
+        result = self.alg.execute(images, rebin, mode, h=self.h)
         npt.assert_equal(result, control)
 
         rebin = -0
-        result = self.alg.execute(sample, rebin, mode, self.h)
+        result = self.alg.execute(images, rebin, mode, h=self.h)
         npt.assert_equal(result, control)
 
-    def test_executed(self):
+    def test_executed_par(self):
         self.do_execute(self.h)
 
-    def test_executed_no_helper(self):
+    def test_executed_no_helper_par(self):
         self.do_execute(None)
 
+    def test_executed_seq(self):
+        th.switch_mp_off()
+        self.do_execute(self.h)
+        th.switch_mp_on()
+
+    def test_executed_no_helper_seq(self):
+        th.switch_mp_off()
+        self.do_execute(None)
+        th.switch_mp_on()
+
     def do_execute(self, helper):
-        sample = self.generate_images()
+        images = th.gen_img_numpy_rand()
 
         rebin = 2.  # twice the size
-        expected_shape = int(sample.shape[1] * rebin)
+        expected_shape = int(images.shape[1] * rebin)
         mode = 'nearest'
-        result = self.alg.execute(sample, rebin, mode, helper)
+        result = self.alg.execute(images, rebin, mode, h=helper)
         npt.assert_equal(result.shape[1], expected_shape)
         npt.assert_equal(result.shape[2], expected_shape)
 
         rebin = 5.  # five times the size
-        expected_shape = int(sample.shape[1] * rebin)
-        result = self.alg.execute(sample, rebin, mode, helper)
+        expected_shape = int(images.shape[1] * rebin)
+        result = self.alg.execute(images, rebin, mode, h=helper)
         npt.assert_equal(result.shape[1], expected_shape)
         npt.assert_equal(result.shape[2], expected_shape)
 

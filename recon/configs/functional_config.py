@@ -69,33 +69,40 @@ class FunctionalConfig(object):
         # how to spread the image load per worker
         self.chunksize = None
         self.parallel_load = False
-        self.sinogram = None
-        self.indices = None
         self.imopr = None
 
     def __str__(self):
-        return "Input dir: {0}\n".format(str(self.input_path)) \
-               + "Flat dir: {0}\n".format(str(self.input_path_flat)) \
-               + "Dark dir: {0}\n".format(str(self.input_path_dark)) \
-               + "In image format: {0}\n".format(str(self.in_format)) \
-               + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
-               + "Pre processing images as stack: {0}\n".format(str(self.data_as_stack)) \
-               + "Output dir: {0}\n".format(str(self.output_path)) \
+        return "Input directory: {0}\n".format(str(self.input_path)) \
+               + "Flat directory: {0}\n".format(str(self.input_path_flat)) \
+               + "Dark directory: {0}\n".format(str(self.input_path_dark)) \
+               + "Input image format: {0}\n".format(str(self.in_format)) \
+               + "Output directory: {0}\n".format(str(self.output_path)) \
                + "Output image format: {0}\n".format(str(self.out_format)) \
                + "Output slices file name prefix: {0}\n".format(str(self.out_slices_prefix)) \
                + "Output horizontal slices file name prefix: {0}\n".format(str(self.out_horiz_slices_prefix)) \
                + "Output horizontal slices subdir: {0}\n".format(str(self.out_horiz_slices_subdir)) \
-               + "Debug: {0}\n".format(str(self.debug)) \
-               + "Debug port: {0}\n".format(str(self.debug_port)) \
-               + "Data dtype: {0}\n".format(str(self.data_dtype)) \
-               + "Argument COR: {0}\n".format(str(self.cor)) \
+               + "Save horizontal slices: {0}\n".format(str(self.save_horiz_slices)) \
+               + "Save preprocessed images: {0}\n".format(str(self.save_preproc)) \
+               + "Do only preprocessing and exit: {0}\n".format(str(self.only_preproc)) \
+               + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
+               + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
+               + "Save images as file stacks: {0}\n".format(str(self.data_as_stack)) \
+               + "Do a conver run, implies --only-preproc and --reuse-preproc: {0}\n".format(str(self.convert)) \
+               + "Data type: {0}\n".format(str(self.data_dtype)) \
+               + "Provided center of rotation: {0}\n".format(str(self.cor)) \
                + "Find COR Run: {0}\n".format(str(self.find_cor)) \
                + "Verbosity: {0}\n".format(str(self.verbosity)) \
+               + "Overwrite files in output directory: {0}\n".format(str(self.overwrite_all)) \
+               + "Debug: {0}\n".format(str(self.debug)) \
+               + "Debug port: {0}\n".format(str(self.debug_port)) \
                + "Tool: {0}\n".format(str(self.tool)) \
                + "Algorithm: {0}\n".format(str(self.algorithm)) \
                + "Number of iterations: {0}\n".format(str(self.num_iter)) \
                + "Maximum angle: {0}\n".format(str(self.max_angle)) \
-               + "Cores: {0}\n".format(str(self.cores))
+               + "Cores: {0}\n".format(str(self.cores)) \
+               + "Chunk per worker: {0}\n".format(str(self.chunksize)) \
+               + "Load data in parallel: {0}\n".format(str(self.parallel_load)) \
+               + "Image operator mode: {0}\n".format(str(self.imopr))
 
     def setup_parser(self, parser):
         """
@@ -273,21 +280,6 @@ class FunctionalConfig(object):
             help='Shortcut to activate --reuse-preproc and --only-preproc.')
 
         grp_func.add_argument(
-            "--sinogram",
-            required=False,
-            action='store_true',
-            default=self.sinogram,
-            help='Shortcut to activate --reuse-preproc and --only-preproc.')
-
-        grp_func.add_argument(
-            "--indices",
-            nargs='*',
-            required=False,
-            type=str,
-            default=self.indices,
-            help='Select specific image indices.')
-
-        grp_func.add_argument(
             "--imopr",
             nargs='*',
             required=False,
@@ -417,8 +409,6 @@ class FunctionalConfig(object):
         self.chunksize = args.chunksize
         self.parallel_load = args.parallel_load
         self.convert = args.convert
-        self.sinogram = args.sinogram
-        self.indices = args.indices
         self.imopr = args.imopr
 
         # THIS MUST BE THE LAST THING THIS FUNCTION DOES
@@ -429,17 +419,6 @@ class FunctionalConfig(object):
         if self.convert is True:
             self.reuse_preproc = True
             self.only_preproc = True
-
-        if self.indices is not None:
-            try:
-                self.indices[0] = int(self.indices[0])
-                try:
-                    self.indices[1] = int(self.indices[1])
-                except IndexError:
-                    self.indices.append(self.indices[0] + 1)
-            except IndexError:
-                raise ValueError(
-                    "If passing --indices you must specify indices!")
 
         if self.cor is None and not self.find_cor and not self.only_preproc:
             raise ValueError(

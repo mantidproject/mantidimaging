@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class CutOffTest(unittest.TestCase):
@@ -26,55 +27,61 @@ class CutOffTest(unittest.TestCase):
         return np.full((10, 10, 10), 1., dtype=np.float32)
 
     def test_not_executed(self):
-        images = self.generate_images()
-        control = self.generate_images()
-        err_msg = "TEST NOT EXECUTED :: Running cut off with level {0} changed the data!"
+        images, control = th.gen_img_shared_array_and_copy()
 
-        outliers_level = None
-        result = self.alg.execute(images, outliers_level, self.h)
-        npt.assert_equal(
-            result, control, err_msg=err_msg.format(outliers_level))
+        # invalid thresholds
+        threshold = None
+        mode = 'both'
+        result = self.alg.execute(images, threshold, mode, self.h)
+        npt.assert_equal(result, control)
 
-        outliers_level = 0
-        result = self.alg.execute(images, outliers_level, self.h)
-        npt.assert_equal(
-            result, control, err_msg=err_msg.format(outliers_level))
+        threshold = 0
+        result = self.alg.execute(images, threshold, mode, self.h)
+        npt.assert_equal(result, control)
 
-        outliers_level = -0.1
-        result = self.alg.execute(images, outliers_level, self.h)
-        npt.assert_equal(
-            result, control, err_msg=err_msg.format(outliers_level))
+        threshold = -0.1
+        result = self.alg.execute(images, threshold, mode, self.h)
+        npt.assert_equal(result, control)
+
+        # no mode
+        threshold = 0.1
+        mode = None
+        result = self.alg.execute(images, threshold, mode, self.h)
+        npt.assert_equal(result, control)
 
     def test_executed(self):
-        images = self.generate_images()
-        control = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
+
         control[3, :, :] = 0.1
 
         images[3, :, :] = 0.1
-        outliers_level = 0.4
-        result = self.alg.execute(images, outliers_level, self.h)
+        threshold = 0.4
+        mode = 'both'
+
+        result = self.alg.execute(images, threshold, mode, self.h)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
         images = self.generate_images()
         images[3, :, :] = 0.1
-        outliers_level = 0.001
-        result = self.alg.execute(images, outliers_level, self.h)
+        threshold = 0.001
+        result = self.alg.execute(images, threshold, mode, self.h)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
     def test_executed_no_helper(self):
-        images = self.generate_images()
-        control = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
+
         control[3, :, :] = 0.1
 
         images[3, :, :] = 0.1
-        outliers_level = 0.4
-        result = self.alg.execute(images, outliers_level)
+        threshold = 0.4
+        mode = 'both'
+        result = self.alg.execute(images, threshold, mode)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
         images = self.generate_images()
         images[3, :, :] = 0.1
-        outliers_level = 0.001
-        result = self.alg.execute(images, outliers_level)
+        threshold = 0.001
+        result = self.alg.execute(images, threshold, mode)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
 

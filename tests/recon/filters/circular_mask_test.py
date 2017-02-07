@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class CircularMaskTest(unittest.TestCase):
@@ -31,38 +32,29 @@ class CircularMaskTest(unittest.TestCase):
             - no ratio is provided
             - 0 < ratio < 1 is false
         """
-        # images that will be put through testing
-        images = self.generate_images()
-
-        # control images
-        control = self.generate_images()
-        err_msg = "TEST NOT EXECUTED :: Running circular mask with ratio {0} changed the data!"
+        images, control = th.gen_img_shared_array_and_copy()
 
         ratio = 0
         result = self.alg.execute(images, ratio, self.h)
-        npt.assert_equal(result, control, err_msg=err_msg.format(ratio))
+        npt.assert_equal(result, control)
 
         ratio = 1
         result = self.alg.execute(images, ratio, self.h)
-        npt.assert_equal(result, control, err_msg=err_msg.format(ratio))
+        npt.assert_equal(result, control)
 
         ratio = -1
         result = self.alg.execute(images, ratio, self.h)
-        npt.assert_equal(result, control, err_msg=err_msg.format(ratio))
+        npt.assert_equal(result, control)
 
         ratio = None
         result = self.alg.execute(images, ratio, self.h)
-        npt.assert_equal(result, control, err_msg=err_msg.format(ratio))
+        npt.assert_equal(result, control)
 
     def test_executed(self):
         """
         Check that the filter changed the data.
         """
-        # images that will be put through testing
-        images = self.generate_images()
-
-        # control images
-        control = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
 
         ratio = 0.001
         result = self.alg.execute(images, ratio, self.h)
@@ -80,11 +72,7 @@ class CircularMaskTest(unittest.TestCase):
         """
         Check that the filter changed the data.
         """
-        # images that will be put through testing
-        images = self.generate_images()
-
-        # control images
-        control = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
 
         ratio = 0.001
         result = self.alg.execute(images, ratio)

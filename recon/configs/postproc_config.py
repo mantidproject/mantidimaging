@@ -24,11 +24,13 @@ class PostProcConfig(object):
 
     def __str__(self):
         return "Circular mask: {0}\n".format(self.circular_mask) \
-            + "Cut-off on reconstructed volume: {0}\n".format(self.outliers_threshold) \
+            + "Outliers threshold on reconstructed volume: {0}\n".format(self.outliers_threshold) \
+            + "Outliers mode on reconstructed volume: {0}\n".format(self.outliers_mode) \
             + "Gaussian filter size: {0}\n".format(self.gaussian_size) \
             + "Gaussian filter mode: {0}\n".format(self.gaussian_mode) \
+            + "Gaussian filter order: {0}\n".format(self.gaussian_order) \
             + "Median filter size:: {0}\n".format(self.median_size) \
-            + "Median filter mode: {0}\n".format(self.median_mode)
+            + "Median filter mode: {0}".format(self.median_mode)
 
     def setup_parser(self, parser):
         """

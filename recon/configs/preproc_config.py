@@ -53,15 +53,22 @@ class PreProcConfig(object):
     def __str__(self):
         return "Region of interest (crop coordinates): {0}\n".format(self.region_of_interest) \
                + "Normalise by air region: {0}\n".format(self.normalise_air_region) \
-               + "Cut-off on normalised images: {0}\n".format(self.outliers_threshold) \
-               + "Corrections for MCP detector: {0}\n".format(self.mcp_corrections) \
-               + "rebin down factor for images: {0}\n".format(self.rebin) \
-               + "Median filter width: {0}\n".format(self.median_size) \
-               + "Rotation: {0}\n".format(self.rotation) \
-               + "Line projection (line integral/log re-rebin): {0}\n".format(self.line_projection) \
+               + "Crop before normalise: {0}\n".format(self.crop_before_normalise) \
+               + "Median filter kernel size: {0}\n".format(self.median_size) \
+               + "Median filter edges mode: {0}\n".format(self.median_mode) \
+               + "Gaussian filter kernel size: {0}\n".format(self.gaussian_size) \
+               + "Gaussian filter edges mode: {0}\n".format(self.gaussian_mode) \
+               + "Gaussian filter order: {0}\n".format(self.gaussian_order) \
                + "Sinogram stripes removal: {0}\n".format(self.stripe_removal_method) \
+               + "Rotation: {0}\n".format(self.rotation) \
                + "Clip min value: {0}\n".format(self.clip_min) \
-               + "Clip max value: {0}\n".format(self.clip_max)
+               + "Clip max value: {0}\n".format(self.clip_max) \
+               + "Outliers threshold: {0}\n".format(self.outliers_threshold) \
+               + "Outliers mode: {0}\n".format(self.outliers_mode) \
+               + "Corrections for MCP detector: {0}\n".format(self.mcp_corrections) \
+               + "Rebin down factor for images: {0}\n".format(self.rebin) \
+               + "Rebin mode: {0}\n".format(self.rebin_mode) \
+               + "Line projection (line integral/log re-rebin): {0}".format(self.line_projection)
 
     def setup_parser(self, parser):
         """

@@ -1,8 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 from recon.helper import Helper
 
-__module__ = 'gaussian_p'
-
 
 def execute(data, size, mode, order, cores=8, chunksize=None, h=None):
     h = Helper.empty_init() if h is None else h

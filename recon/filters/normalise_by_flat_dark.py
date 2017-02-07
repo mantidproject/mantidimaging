@@ -18,7 +18,7 @@ def execute(data, norm_flat_img=None, norm_dark_img=None, clip_min=0, clip_max=1
     h.check_data_stack(data)
 
     if norm_flat_img is not None and norm_dark_img is not None and isinstance(norm_flat_img, np.ndarray):
-        if 2 != len(norm_flat_img.shape):
+        if 2 != len(norm_flat_img.shape) or 2 != len(norm_dark_img.shape):
             raise ValueError(
                 "Incorrect shape of the flat image ({0}) which should match the "
                 "shape of the sample images ({1})".format(
