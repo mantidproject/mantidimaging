@@ -4,10 +4,10 @@ import numpy.testing as npt
 from tests.recon import test_helper as th
 
 
-class CutOffTest(unittest.TestCase):
+class OutliersTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
-        super(CutOffTest, self).__init__(*args, **kwargs)
+        super(OutliersTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
         from recon.configs.recon_config import ReconstructionConfig
@@ -19,12 +19,6 @@ class CutOffTest(unittest.TestCase):
         self.alg = outliers
 
         self.h = Helper(r)
-
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.full((10, 10, 10), 1., dtype=np.float32)
 
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -61,7 +55,7 @@ class CutOffTest(unittest.TestCase):
         result = self.alg.execute(images, threshold, mode, self.h)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
         images[3, :, :] = 0.1
         threshold = 0.001
         result = self.alg.execute(images, threshold, mode, self.h)
@@ -78,7 +72,7 @@ class CutOffTest(unittest.TestCase):
         result = self.alg.execute(images, threshold, mode)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
         images[3, :, :] = 0.1
         threshold = 0.001
         result = self.alg.execute(images, threshold, mode)

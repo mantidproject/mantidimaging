@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
+import numpy.testing as npt
 
 
 class ConfigsTest(unittest.TestCase):
@@ -21,6 +22,18 @@ class ConfigsTest(unittest.TestCase):
         from recon.configs.functional_config import FunctionalConfig
         fc = FunctionalConfig()
         self._compare_dict_to_str(fc.__dict__, str(fc))
+
+        # running without --input-path
+        fc.input_path = '23'
+        npt.assert_raises(ValueError, fc.update, fc)
+        # running --save-preproc without output path
+        fc.save_preproc = True
+        fc.output_path = None
+        npt.assert_raises(ValueError, fc.update, fc)
+        # remove the output path raise
+        fc.output_path = 'some/dir'
+        # running recon without COR
+        npt.assert_raises(ValueError, fc.update, fc)
 
     def _compare_dict_to_str(self, class_dict, class_str):
         dictlen = len(class_dict)

@@ -420,6 +420,14 @@ class FunctionalConfig(object):
             self.reuse_preproc = True
             self.only_preproc = True
 
+        if not self.input_path:
+            raise ValueError(
+                "Cannot run a reconstruction without setting the input path")
+
+        if self.save_preproc and not self.output_path:
+            raise ValueError(
+                "Save preproc images was specified with -s/--save-preproc, but no output directory was given!")
+
         if self.cor is None and not self.find_cor and not self.only_preproc:
             raise ValueError(
                 "If running a reconstruction a Center of Rotation MUST be provided")

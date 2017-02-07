@@ -20,12 +20,6 @@ class CircularMaskTest(unittest.TestCase):
 
         self.h = Helper(r)
 
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.full((10, 10, 10), 1., dtype=np.float32)
-
     def test_not_executed(self):
         """
         Check that the filter is not executed when:
@@ -62,7 +56,7 @@ class CircularMaskTest(unittest.TestCase):
             AssertionError, npt.assert_array_equal, result, control)
 
         # reset the input images
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
         ratio = 0.994
         result = self.alg.execute(images, ratio, self.h)
         npt.assert_raises(
@@ -80,7 +74,7 @@ class CircularMaskTest(unittest.TestCase):
             AssertionError, npt.assert_array_equal, result, control)
 
         # reset the input images
-        images = self.generate_images()
+        images, control = th.gen_img_shared_array_and_copy()
         ratio = 0.994
         result = self.alg.execute(images, ratio)
         npt.assert_raises(

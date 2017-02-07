@@ -20,12 +20,6 @@ class CropCoordsTest(unittest.TestCase):
 
         self.h = Helper(r)
 
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.full((10, 10, 10), 1., dtype=np.float32)
-
     def test_not_executed_volume(self):
         """
         Check that the filter is not executed when:

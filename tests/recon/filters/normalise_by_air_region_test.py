@@ -20,12 +20,6 @@ class NormaliseByAirRegionTest(unittest.TestCase):
 
         h = self.h = Helper(r)
 
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.random.rand(10, 10, 10)
-
     def test_not_executed_no_crop_before_norm(self):
         # Duplicated code because 'nose.main()' failed to run it properly
         crop = False
@@ -118,7 +112,7 @@ class NormaliseByAirRegionTest(unittest.TestCase):
         roi = [1, 1, 8, 8]
         air = [3, 3, 4, 4]
         crop = True
-        result = self.alg.execute(images, air, roi, crop, cores=1, h=helper)
+        result = self.alg.execute(images, air, roi, crop, h=helper)
         th.assert_not_equals(result, control)
 
         images, control = th.gen_img_shared_array_and_copy()
@@ -126,7 +120,7 @@ class NormaliseByAirRegionTest(unittest.TestCase):
         roi = [1, 1, 8, 8]
         air = [3, 3, 4, 4]
         crop = False
-        result = self.alg.execute(images, air, roi, crop,  cores=1, h=helper)
+        result = self.alg.execute(images, air, roi, crop,  h=helper)
         th.assert_not_equals(result, control)
 
 

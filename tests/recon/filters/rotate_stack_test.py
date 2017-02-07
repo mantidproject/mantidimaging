@@ -20,12 +20,6 @@ class RotateStackTest(unittest.TestCase):
 
         self.h = Helper(r)
 
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.random.rand(10, 10, 10), np.full((10, 10), 0.9), np.full((10, 10), 0.1)
-
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]

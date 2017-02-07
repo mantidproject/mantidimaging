@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
+from tests.recon import test_helper as th
 
 
 class TestClass(unittest.TestCase):
@@ -15,12 +16,6 @@ class TestClass(unittest.TestCase):
         from recon.helper import Helper
 
         self.h = Helper(r)
-
-    @staticmethod
-    def generate_images():
-        import numpy as np
-        # generate 10 images with dimensions 10x10, all values 1. float32
-        return np.full((10, 10, 10), 1., dtype=np.float32)
 
     def test_sample(self):
         pass

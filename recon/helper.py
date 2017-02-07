@@ -59,17 +59,7 @@ class Helper(object):
                                                          "ReconstructionConfig using Helper.empty_init()"
 
     def check_config_integrity(self, config):
-        if not config or not isinstance(config, ReconstructionConfig):
-            raise ValueError(
-                "The provided config is not of the correct type ReconstructionConfig!")
-
-        if not config.func.input_path:
-            raise ValueError(
-                "Cannot run a reconstruction without setting the input path")
-
-        if config.func.save_preproc and not config.func.output_path:
-            raise ValueError(
-                "Save preproc images was specified with -s/--save-preproc, but no output directory was given!")
+        check_config_class(config)
 
         if not config.func.output_path:
             self.tomo_print_warning(
@@ -124,7 +114,7 @@ class Helper(object):
             self.tomo_print_note("Multiprocessing not available.")
         else:
             self.tomo_print_note(
-                "Running reconstruction on {0} cores.".format(self._config.func.cores))
+                "Running process on {0} cores.".format(self._config.func.cores))
 
     def get_memory_usage_linux(self):
         try:
@@ -190,9 +180,10 @@ class Helper(object):
 
         # will be printed if the message verbosity is lower or equal
         # i.e. level 1,2,3 messages will not be printed on level 0 verbosity
+        if self._readme is not None:
+            self._readme.append(message)
+
         if verbosity <= self._verbosity:
-            if self._readme is not None:
-                self._readme.append(message)
             print(message)
 
     def tomo_print_note(self, message, verbosity=2):
@@ -212,13 +203,13 @@ class Helper(object):
         :param verbosity: See tomo_print(...)
         """
 
-        import time
-
-        print_string = message
-
-        # will be printed on levels 2 and 3
-        if self._verbosity >= 2 and not self._timer_running:
+        if not self._timer_running:
             self._timer_running = True
+
+        import time
+        print_string = message
+        # will be printed on levels 2 and 3
+        if self._verbosity >= 2:
             self._timer_start = time.time()
 
         # will be printed on level 3 only
@@ -235,11 +226,12 @@ class Helper(object):
         :param verbosity: See tomo_print(...)
         """
 
+        if not self._timer_running:
+            raise ValueError("helper.pstart(...) was not called previously!")
+
         import time
-
         print_string = ""
-
-        if self._verbosity >= 2 and self._timer_running:
+        if self._verbosity >= 2:
             self._timer_running = False
             timer_string = str(time.time() - self._timer_start)
             print_string += (message + " Elapsed time: " +
@@ -326,7 +318,8 @@ class Helper(object):
 
         saver = Saver(config)
         saver._img_format = 'fits'  # force fits files
-        saver.save_single_image(sample, subdir=path_append, image_name='sample')
+        saver.save_single_image(
+            sample, subdir=path_append, image_name='sample')
 
         saver._data_as_stack = True  # force data as stack to save out single images
         if flat is not None:
