@@ -27,7 +27,6 @@ def _run_tests(args):
     import os
     test_path = os.path.expandvars(os.path.expanduser(test_path))
 
-    print('running in', test_path, type(test_path))
     try:
         nose.run(defaultTest=test_path, argv=[test_path])
     except ImportError:

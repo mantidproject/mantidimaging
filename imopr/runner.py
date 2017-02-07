@@ -15,14 +15,15 @@ def execute(config):
     config.helper = h
     h.check_config_integrity(config)
 
-    # from recon.data import loader
+    from recon.data import loader
     # sample, flat, dark = loader.load_data(config, h)
 
-    sample, flat, dark = loader.nxsread(
-        'smb://files.scarf.rl.ac.uk/work/imat/RB1640003_nxs/out_preproc_image_stack.nxs')
+    nxsdata = loader.nxsread(
+        '/run/user/1000/gvfs/smb-share:server=files.scarf.rl.ac.uk,share=work/imat/RB1640003_nxs/pre_processed/out_preproc_image_stack.nxs')
+    h.tomo_print("Data shape {0}".format(nxsdata.shape))
     # from recon.runner import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)
-    return action(sample, flat, dark, config, indices)
+    return action(nxsdata, None, None, config, indices)
 
 
 def get_function(string):
