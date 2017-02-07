@@ -59,7 +59,7 @@ class Helper(object):
                                                          "ReconstructionConfig using Helper.empty_init()"
 
     def check_config_integrity(self, config):
-        check_config_class(config)
+        self.check_config_class(config)
 
         if not config.func.output_path:
             self.tomo_print_warning(
