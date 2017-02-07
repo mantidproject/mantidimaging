@@ -428,6 +428,6 @@ class FunctionalConfig(object):
             raise ValueError(
                 "Save preproc images was specified with -s/--save-preproc, but no output directory was given!")
 
-        if self.cor is None and not self.find_cor and not self.only_preproc:
+        if self.cor is None and not self.find_cor and not self.only_preproc and not self.imopr:
             raise ValueError(
                 "If running a reconstruction a Center of Rotation MUST be provided")

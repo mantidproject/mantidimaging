@@ -15,12 +15,13 @@ def execute(config):
     config.helper = h
     h.check_config_integrity(config)
 
-    from recon.data import loader
-    sample, flat, dark = loader.load_data(config, h)
+    # from recon.data import loader
+    # sample, flat, dark = loader.load_data(config, h)
 
-    # sample = loader.nxsread('/home/matt/temp/larmor_nxs/out_preproc_image_stack.nxs')
-    from recon.runner import pre_processing
-    sample, flat, dark = pre_processing(config, sample, flat, dark)
+    sample, flat, dark = loader.nxsread(
+        'smb://files.scarf.rl.ac.uk/work/imat/RB1640003_nxs/out_preproc_image_stack.nxs')
+    # from recon.runner import pre_processing
+    # sample, flat, dark = pre_processing(config, sample, flat, dark)
     return action(sample, flat, dark, config, indices)
 
 
