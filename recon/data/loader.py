@@ -161,14 +161,14 @@ def import_skimage_io():
     return skio
 
 
-def get_file_names(path, img_format):
+def get_file_names(path, img_format, prefix=''):
     import os
     import glob
 
     path = os.path.expanduser(path)
 
     files_match = glob.glob(os.path.join(
-        path, "{0}*.{1}".format('', img_format)))
+        path, "{0}*.{1}".format(prefix, img_format)))
 
     if len(files_match) <= 0:
         raise RuntimeError("Could not find any image files in {0} with extension: {1}".
