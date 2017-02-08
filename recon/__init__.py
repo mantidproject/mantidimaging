@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
 #
@@ -19,9 +21,3 @@
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
-
-try:
-    from helper import Helper
-except ImportError as exc:
-    raise ImportError(
-        "Failed to import Helper class." + str(exc))
