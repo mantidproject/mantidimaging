@@ -3,6 +3,8 @@ import numpy as np
 
 
 def execute(sample, flat, dark, config, indices):
+    from imopr import helper
+    helper.print_start("Running IMOPR with action RECON")
 
     from recon.tools import tool_importer
     tool = tool_importer.do_importing(config.func.tool)
@@ -14,14 +16,11 @@ def execute(sample, flat, dark, config, indices):
     from imopr.sinogram import make_sinogram
     sample = make_sinogram(sample)
 
-    i1 = indices[0]
-    i2 = indices[1]
+    i1, i2 = helper.handle_indices(indices)
 
-    print("recon on:", i1, "-", i2, "cor:", config.func.cor)
-    print(sample.shape)
-    sample = tool.run_reconstruct(sample[i1:i2, :, :], config, config.helper, sinogram_order=True, proj_angles=proj_angles)
+    sample = tool.run_reconstruct(
+        sample[i1:i2, :, :], config, config.helper, sinogram_order=True, proj_angles=proj_angles)
 
-    print("recon shape", sample.shape)
     from imopr.visualiser import show_3d
     show_3d(sample, 0)
 

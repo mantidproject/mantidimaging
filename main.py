@@ -63,16 +63,16 @@ def main():
 
     if config.func.find_cor:
         # run find_center stuff
-        import recon.find_cor
-        res = recon.find_cor.execute(config)
+        from recon import find_cor
+        res = find_cor.execute(config)
     elif config.func.imopr:
-        import imopr.runner
-        res = imopr.runner.execute(config)
+        from imopr import runner
+        res = runner.execute(config)
     else:
         # run recon stuff
-        import recon.runner
+        from recon import runner
         cmd_line = " ".join(sys.argv)
-        res = recon.runner.execute(config, cmd_line)
+        res = runner.execute(config, cmd_line)
 
     return res
 

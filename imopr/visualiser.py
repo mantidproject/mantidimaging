@@ -4,11 +4,13 @@ from matplotlib.widgets import Slider
 
 
 def execute(sample, flat, dark, config, indices):
+    from imopr import helper
+    helper.print_start("Running IMOPR with action SINOGRAM")
     if len(indices) <= 1:
         show_image(sample[indices[0]])
     else:
-        i1 = indices[0]
-        i2 = indices[1]
+        i1, i2 = helper.handle_indices(indices)
+
         show_3d(sample[i1:i2])
     plt.show()
 

@@ -23,6 +23,10 @@ class TomoPyTool(AbstractTool):
         # just forward to tomopy
         return self._tomopy.find_center(**kwargs)
 
+    def find_center_vo(self, **kwargs):
+        # just forward to tomopy
+        return self._tomopy.find_center_vo(**kwargs)
+
     def circ_mask(self, **kwargs):
         # just forward to tomopy
         return self._tomopy.circ_mask(**kwargs)

@@ -5,8 +5,11 @@ import numpy as np
 
 
 def execute(sample, flat, dark, config, indices):
-    i1 = indices[0]
-    i2 = indices[1]
+    from imopr import helper
+    helper.print_start("Running IMOPR with action SINOGRAM")
+
+    i1, i2 = helper.handle_indices(indices)
+
     show_3d(sample[i1:i2], 0)
 
     sample = make_sinogram(sample)
@@ -23,4 +26,3 @@ def execute(sample, flat, dark, config, indices):
 def make_sinogram(sample):
     sample = np.swapaxes(sample, 0, 1)
     return sample
-

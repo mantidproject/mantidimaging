@@ -4,6 +4,9 @@ import numpy as np
 
 
 def execute(sample, flat, dark, config, indices):
+    from imopr import helper
+    helper.print_start("Running IMOPR with action COR")
+
     from recon.tools import tool_importer
     tool = tool_importer.do_importing(config.func.tool)
 
@@ -14,17 +17,13 @@ def execute(sample, flat, dark, config, indices):
     from imopr.sinogram import make_sinogram
     sample = make_sinogram(sample)
 
-    i1 = indices[0]
-    try:
-        i2 = indices[1]
-    except IndexError:
-        i2 = i1+1
+    i1, i2 = helper.handle_indices(indices)
 
-    print("recon on:", i1, "cor:", config.func.cor)
     initial_guess = config.func.cor if config.func.cor is not None else None
 
     for i in range(i1, i2):
-        cor = tool.find_center(tomo=sample, theta=proj_angles, sinogram_order=True, ind=i, init=initial_guess)
+        cor = tool.find_center(
+            tomo=sample, theta=proj_angles, sinogram_order=True, ind=i, init=initial_guess)
         print(cor)
 
     # stop python from exiting
