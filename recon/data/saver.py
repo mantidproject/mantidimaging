@@ -24,9 +24,10 @@ def write_nxs(data, filename, flat=None, dark=None, projection_angles=None, over
     dark = np.atleast_3d(dark).reshape(1, data.shape[1], data.shape[2])
 
     # new shape to account for appending flat and dark images
-    correct_shape = (data.shape[0]+2, data.shape[1], data.shape[2])
+    correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
 
-    dset = nxs.create_dataset("entry1/tomo_entry/instrument/detector/data", correct_shape)
+    dset = nxs.create_dataset(
+        "entry1/tomo_entry/instrument/detector/data", correct_shape)
     dset[:data.shape[0]] = data[:]
     dset[-2] = flat[:]
     dset[-1] = dark[:]
@@ -41,6 +42,14 @@ def write_img(data, filename, overwrite=False):
     from recon.data.loader import import_skimage_io
     skio = import_skimage_io()
     skio.imsave(filename, data)
+
+
+def create_image_name(custom_idx, idx, name_prefix, zfill_len, name_postfix, extension):
+    if custom_idx is None:
+        name = name_prefix + str(idx).zfill(zfill_len) + name_postfix + extension
+    else:
+        name = name_prefix + custom_idx + name_postfix + extension
+    return name
 
 
 class Saver(object):
@@ -91,35 +100,44 @@ class Saver(object):
 
     def save_single_image(self, data,
                           subdir=None,
-                          image_name='saved_image',
-                          image_index=0):
+                          name='saved_image', custom_index=None, zfill_len=0, name_postfix='', use_preproc_folder=True):
         """
         Save (pre-processed) images from a data array to image files.
         :param subdir :: additional output directory, currently used for debugging
         :param data :: data volume with pre-processed images
-        :param image_name: image name to be appended
-        :param image_index: image index to be appended
+        :param name: image name to be appended
+        :param custom_index: parameter number that will be appended to the image filename3
+        :param zfill_len: When saving multiple images, how much zeros to put after the name and before the index number.
+                          E.g. saving out an image with zfill_len = 6: saved_image000001,...saved_image000201 and so on
+                          E.g. saving out an image with zfill_len = 3: saved_image001,...saved_image201 and so on
+        :param name_postfix: String to be appended after the zero fill. This is not recommended and might confuse
+                              imaging programs (including this script) as to the order of the images, and they could
+                              end up not loading all of the images.
         """
 
         if self._output_path is None:
-            self._h.tomo_print_note("Not saving a single image, because no output path is specified.")
+            self._h.tomo_print_note(
+                "Not saving a single image, because no output path is specified.")
             return
 
         # using the config's output dir
-        preproc_dir = os.path.join(self._output_path, self._preproc_dir)
+        if use_preproc_folder:
+            output_dir = os.path.join(self._output_path, self._preproc_dir)
+        else:
+            output_dir = self._output_path
 
         if subdir is not None:
             # using the provided subdir
-            preproc_dir = os.path.join(preproc_dir, subdir)
-            preproc_dir = os.path.abspath(preproc_dir)
+            output_dir = os.path.join(output_dir, subdir)
+            output_dir = os.path.abspath(output_dir)
 
         self._h.pstart(
-            "Saving single image {0} dtype: {1}".format(preproc_dir, data.dtype))
+            "Saving single image {0} dtype: {1}".format(output_dir, data.dtype))
 
-        self.make_dirs_if_needed(preproc_dir)
+        self.make_dirs_if_needed(output_dir)
 
-        self._save_image_data(
-            data, preproc_dir, image_name + str(image_index).zfill(6))
+        self._save_image_data(data, output_dir, name,
+                              zfill_len=zfill_len, name_postfix=name_postfix, custom_idx=custom_index)
 
         self._h.pstop("Finished saving single image.")
 
@@ -128,11 +146,11 @@ class Saver(object):
         Save output reconstructed volume in different forms.
 
         :param data :: reconstructed data volume. A sequence of images will be saved from this
-        :param config :: configuration of the reconstruction, including output paths and formats
         slices saved by default. Useful for testing some tools
         """
         if self._output_path is None:
-            self._h.tomo_print_note("Not saving reconstruction output, because no output path is specified.")
+            self._h.tomo_print_note(
+                "Not saving reconstruction output, because no output path is specified.")
             return
 
         out_recon_dir = os.path.join(self._output_path, 'reconstructed')
@@ -152,7 +170,7 @@ class Saver(object):
                 "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
             import numpy as np
-            # save out the horizontal slices by flippding the axes
+            # save out the horizontal slices by flipping the axes
             self._save_image_data(
                 np.swapaxes(data, 0, 1), out_horiz_dir, self._out_horiz_slices_prefix)
 
@@ -167,7 +185,6 @@ class Saver(object):
         :param data: The pre-processed data that will be saved
         :param flat: The averaged flat image
         :param dark: The averaged dark image
-        :param config :: The full reconstruction config
         """
 
         if self._save_preproc and self._output_path is not None:
@@ -181,7 +198,7 @@ class Saver(object):
 
             self._h.pstop("Saving pre-processed images finished.")
 
-    def _save_image_data(self, data, output_dir, name_prefix, flat=None, dark=None):
+    def _save_image_data(self, data, output_dir, name_prefix, flat=None, dark=None, custom_idx=None, zfill_len=6, name_postfix=''):
         """
         Save reconstructed volume (3d) into a series of slices along the Z axis (outermost numpy dimension)
         :param data :: data as images/slices stores in numpy array
@@ -193,41 +210,41 @@ class Saver(object):
 
         self.make_dirs_if_needed(output_dir)
         if not self._data_as_stack:
-            self._save_out_individual_files(data, output_dir, name_prefix)
+            self._save_out_individual_files(data, output_dir, name_prefix,
+                                            custom_idx=custom_idx, zfill_len=zfill_len, name_postfix=name_postfix)
         else:
             self._save_out_stack(data, output_dir, name_prefix, flat, dark)
 
-    def _save_out_individual_files(self, data, output_dir, name_prefix):
-
-        if self._img_format in ['fits', 'fit', 'nxs']:
+    def _save_out_individual_files(self, data, output_dir, name_prefix, custom_idx=None, zfill_len=6, name_postfix=''):
+        if self._img_format in ['tif', 'tiff']:
+            extension = '.tiff'
+        else:
             if self._img_format in ['nxs']:
                 self._h.tomo_print_error(
                     "Cannot save out individual NXS files. Saving out FITS instead.")
-            elif self._img_format in ['tif', 'tiff']:
-                self._h.tomo_print_error(
-                    "Cannot save out tiff files yet. Saving out FITS instead.")
+            extension = '.fits'
 
-            for idx in range(0, data.shape[0]):
-                write_fits(data[idx, :, :], os.path.join(
-                    output_dir, name_prefix + str(idx).zfill(6) + '.fits'), self._overwrite_all)
-        elif self._img_format in ['tif', 'tiff']:
-            for idx in range(0, data.shape[0]):
-                write_img(data[idx, :, :], os.path.join(
-                    output_dir, name_prefix + str(idx).zfill(6) + '.tiff'), self._overwrite_all)
+        for idx in range(0, data.shape[0]):
+            name = create_image_name(custom_idx, idx, name_prefix, zfill_len, name_postfix, extension)
+            write_img(data[idx, :, :], os.path.join(output_dir, name), self._overwrite_all)
 
-    def _save_out_stack(self, data, output_dir, name_prefix, flat=None, dark=None, projection_angles=None):
+    def _save_out_stack(self, data, output_dir, name_prefix, flat=None, dark=None, projection_angles=None,
+                        name_postfix='_stack'):
         """
         Save out a stack depending on format.
-        :param data:
-        :param output_dir:
-        :param name_prefix:
-        :param flat:
-        :param dark:
+        :param data :: data as images/slices stores in numpy array
+        :param output_dir :: where to save the files
+        :param name_prefix :: prefix for the names of the images - an index is appended to this prefix
+        :param flat: The averaged flat image
+        :param dark: The averaged dark image
         :param projection_angles:
+        :param name_postfix: String to be appended after the zero fill. This is not recommended and might confuse
+                              imaging programs (including this script) as to the order of the images, and they could
+                              end up not loading all of the images.
         :return:
         """
 
-        filename = os.path.join(output_dir, name_prefix + "_stack".zfill(6))
+        filename = os.path.join(output_dir, name_prefix + name_postfix)
 
         if self._img_format in ['fits', 'fit']:
             write_fits(data, filename + '.fits', self._overwrite_all)
@@ -236,7 +253,7 @@ class Saver(object):
             write_nxs(data, filename + '.nxs',
                       flat, dark, projection_angles, self._overwrite_all)
         else:
-            write_img(data, filename+'.tiff', self._overwrite_all)
+            write_img(data, filename + '.tiff', self._overwrite_all)
 
     def make_dirs_if_needed(self, dirname=None):
         """

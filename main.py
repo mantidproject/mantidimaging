@@ -68,6 +68,9 @@ def main():
     elif config.func.imopr:
         from imopr import runner
         res = runner.execute(config)
+    elif config.func.aggregate:
+        from aggregate import runner
+        res = runner.execute(config)
     else:
         # run recon stuff
         from recon import runner

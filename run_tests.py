@@ -4,6 +4,8 @@ _avail_modules = {
     'filters': 'tests/recon/filters/',
     'configs': 'tests/recon/configs_test.py',
     'config': 'tests/recon/configs_test.py',
+    'data': 'tests/recon/data_test.py',
+    'helper': 'tests/recon/helper_test.py',
     'all': 'tests'
 }
 

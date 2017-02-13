@@ -39,3 +39,12 @@ def get_function(string):
     if string == "cor":
         from imopr import cor
         return cor.execute
+    if string == "corvo":
+        from imopr import corvo
+        return corvo.execute
+    if string == "corpc":
+        from imopr import corpc
+        return corpc.execute
+    if string == "corwrite":
+        from imopr import corwrite
+        return corwrite.execute

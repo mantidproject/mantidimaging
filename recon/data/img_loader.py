@@ -9,15 +9,15 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 """
 
 
-def execute(load_func, input_path, input_path_flat, input_path_dark, img_format, data_dtype, cores, chunksize,
+def execute(load_func, input_file_names, input_path_flat, input_path_dark, img_format, data_dtype, cores, chunksize,
             parallel_load, h):
     h = Helper.empty_init() if h is None else h
 
-    return _do_img_load(load_func, input_path, input_path_flat, input_path_dark, img_format, data_dtype, cores,
+    return _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark, img_format, data_dtype, cores,
                         chunksize, parallel_load, h)
 
 
-def _do_img_load(load_func, input_path, input_path_flat, input_path_dark, img_format,
+def _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark, img_format,
                  data_dtype, cores, chunksize, parallel_load, h):
     """
     Reads a stack of images into memory, assuming dark and flat images
@@ -35,7 +35,7 @@ def _do_img_load(load_func, input_path, input_path_flat, input_path_dark, img_fo
         '>f4' - float32
 
     :param load_func :: function to be used to load the files
-    :param input_path :: path to sample images. Can be a file or directory
+    :param input_file_names :: path to sample images. Can be a file or directory
     :param input_path_flat :: (optional) path to open beam / flat image(s). Can be a file or directory
     :param input_path_dark :: (optional) path to dark field image(s). Can be a file or directory
     :param img_format :: file extension (typically 'tiff', 'tif', 'fits', or 'fit' (not including the dot)
@@ -48,15 +48,13 @@ def _do_img_load(load_func, input_path, input_path_flat, input_path_dark, img_fo
                average of dark images(2D)
     """
 
-    sample_file_names = get_file_names(input_path, img_format)
-
     # Assumed that all images have the same size and properties as the first.
-    first_sample_img = load_func(sample_file_names[0])
+    first_sample_img = load_func(input_file_names[0])
 
     # get the shape of all images
     img_shape = first_sample_img.shape
 
-    sample_data = _load_sample_data(load_func, sample_file_names, img_shape, data_dtype, cores, chunksize,
+    sample_data = _load_sample_data(load_func, input_file_names, img_shape, data_dtype, cores, chunksize,
                                     parallel_load, h)
 
     # this removes the image number dimension, if we loaded a stack of images
@@ -71,14 +69,14 @@ def _do_img_load(load_func, input_path, input_path_flat, input_path_dark, img_fo
     return sample_data, flat_avg, dark_avg
 
 
-def _load_sample_data(load_func, sample_file_names, img_shape, data_dtype, cores=8, chunksize=None, parallel_load=False,
+def _load_sample_data(load_func, input_file_names, img_shape, data_dtype, cores=8, chunksize=None, parallel_load=False,
                       h=None):
     # determine what the loaded data was
     if len(img_shape) == 2:  # the loaded file was a single image
-        sample_data = _load_files(load_func, sample_file_names, img_shape, data_dtype, "Sample", cores, chunksize,
+        sample_data = _load_files(load_func, input_file_names, img_shape, data_dtype, "Sample", cores, chunksize,
                                   parallel_load, h)
     elif len(img_shape) == 3:  # the loaded file was a stack of fits images
-        sample_data = load_stack(load_func, sample_file_names[0], data_dtype, "Sample", cores, chunksize,
+        sample_data = load_stack(load_func, input_file_names[0], data_dtype, "Sample", cores, chunksize,
                                  parallel_load, h)
     else:
         raise ValueError("Data loaded has invalid shape: {0}", img_shape)

@@ -70,6 +70,9 @@ class FunctionalConfig(object):
         self.chunksize = None
         self.parallel_load = False
         self.imopr = None
+        self.aggregate = None
+        self.aggregate_angles = None
+        self.aggregate_single_folder_output = None
 
     def __str__(self):
         return "Input directory: {0}\n".format(str(self.input_path)) \
@@ -231,13 +234,6 @@ class FunctionalConfig(object):
             help="Provide a pre-calculated centre of rotation.")
 
         grp_func.add_argument(
-            "-f",
-            "--find-cor",
-            action='store_true',
-            required=False,
-            help="Find the center of rotation (in pixels). Rotation around y axis is assumed")
-
-        grp_func.add_argument(
             "-v",
             "--verbosity",
             type=int,
@@ -257,35 +253,70 @@ class FunctionalConfig(object):
             help="Overwrite all conflicting files found in the output directory."
         )
 
-        grp_func.add_argument(
-            "-d",
-            "--debug",
-            required=False,
+        grp_run_modes = parser.add_argument_group('Run Modes')
+
+        grp_run_modes.add_argument(
+            "-f",
+            "--find-cor",
             action='store_true',
-            help='Run debug to specified port, if no port is specified, it will default to 59003')
-
-        grp_func.add_argument(
-            "-p",
-            "--debug-port",
             required=False,
-            type=int,
-            default=self.debug_port,
-            help='Port on which a debugger is listening.')
+            help="Find the center of rotation (in pixels). Rotation around y axis is assumed")
 
-        grp_func.add_argument(
+        grp_run_modes.add_argument(
             "--convert",
             required=False,
             action='store_true',
             default=self.convert,
             help='Shortcut to activate --reuse-preproc and --only-preproc.')
 
-        grp_func.add_argument(
+        grp_run_modes.add_argument(
             "--imopr",
             nargs='*',
             required=False,
             type=str,
             default=self.imopr,
-            help='Image operator TODO docs.')
+            help='Image operator TODO docs.')  # TODO
+
+        grp_run_modes.add_argument(
+            "--aggregate",
+            nargs='*',
+            required=False,
+            type=str,
+            default=self.aggregate,
+            help='Aggregate image energy levels. The expected input is --aggregate <start> <end> <method:{sum, avg}>... to select indices.\n\
+                  There must always be an even lenght of indices: --aggregate 0 100 101 201 300 400 sum')
+
+        grp_run_modes.add_argument(
+            "--aggregate-angles",
+            nargs='*',
+            required=False,
+            type=str,
+            default=self.aggregate_angles,
+            help='Select which angles to be aggregated with --aggregate.\n\
+                  This is to help running the same algorithm on multiple nodes, while avoiding the integration of mpi4py.\n\
+                  Sample command: --aggregate-angles 0 10, will select only angles 0 - 10 inclusive.')
+
+        grp_run_modes.add_argument(
+            "--aggregate-single-folder-output",
+            action='store_true',
+            required=False,
+            default=self.aggregate_single_folder_output,
+            help='The output will be images with increasing number in a single folder.')
+
+        grp_run_modes.add_argument(
+            "-d",
+            "--debug",
+            required=False,
+            action='store_true',
+            help='Run debug to specified port, if no port is specified, it will default to 59003')
+
+        grp_run_modes.add_argument(
+            "-p",
+            "--debug-port",
+            required=False,
+            type=int,
+            default=self.debug_port,
+            help='Port on which a debugger is listening.')
 
         grp_recon = parser.add_argument_group('Reconstruction options')
 
@@ -410,6 +441,9 @@ class FunctionalConfig(object):
         self.parallel_load = args.parallel_load
         self.convert = args.convert
         self.imopr = args.imopr
+        self.aggregate = args.aggregate
+        self.aggregate_angles = args.aggregate_angles
+        self.aggregate_single_folder_output = args.aggregate_single_folder_output
 
         # THIS MUST BE THE LAST THING THIS FUNCTION DOES
         self.handle_special_arguments()
@@ -428,6 +462,10 @@ class FunctionalConfig(object):
             raise ValueError(
                 "Save preproc images was specified with -s/--save-preproc, but no output directory was given!")
 
-        if self.cor is None and not self.find_cor and not self.only_preproc and not self.imopr:
+        if self.cor is None \
+                and not self.find_cor \
+                and not self.only_preproc \
+                and not self.imopr \
+                and not self.aggregate:
             raise ValueError(
                 "If running a reconstruction a Center of Rotation MUST be provided")

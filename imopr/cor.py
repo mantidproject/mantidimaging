@@ -26,8 +26,4 @@ def execute(sample, flat, dark, config, indices):
             tomo=sample, theta=proj_angles, sinogram_order=True, ind=i, init=initial_guess)
         print(cor)
 
-    # stop python from exiting
-    import matplotlib.pyplot as plt
-    plt.show()
-
     return sample

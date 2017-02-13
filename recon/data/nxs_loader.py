@@ -4,18 +4,18 @@ from recon.helper import Helper
 from recon.data.loader import get_file_names, nxsread, parallel_move_data, do_stack_load_par, do_stack_load_seq, load_stack
 
 
-def execute(input_path, img_format, data_dtype, cores, chunksize, parallel_load, h):
+def execute(input_data_file, img_format, data_dtype, cores, chunksize, parallel_load, h):
     h = Helper.empty_init() if h is None else h
 
-    return _do_nxs_load(input_path, img_format, data_dtype, cores, chunksize, parallel_load, h)
+    return _do_nxs_load(input_data_file, img_format, data_dtype, cores, chunksize, parallel_load, h)
 
 
-def _do_nxs_load(input_path, img_format, data_dtype, cores, chunksize, parallel_load, h):
+def _do_nxs_load(input_data_file, img_format, data_dtype, cores, chunksize, parallel_load, h):
     """
     Do loading from NEXUS .nxs file, this requires special handling of the data, because flat and dark images are
     appended to the array.
 
-    :param input_path: Path for the input data folder
+    :param input_data_file: Path for the input data folder
     :param img_format: format for the input images
     :param data_dtype: Default:np.float32, data type for the input images
     :param cores: Default:1, cores to be used if parallel_load is True
@@ -25,9 +25,9 @@ def _do_nxs_load(input_path, img_format, data_dtype, cores, chunksize, parallel_
     :param h: Optional helper class. If not provided an empty one will be initialised.
     :returns :: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
     """
-    data_file = get_file_names(input_path, img_format)
 
-    data = load_stack(nxsread, data_file[0], data_dtype, "NXS Load", cores, chunksize, parallel_load, h)
+    data = load_stack(nxsread, input_data_file, data_dtype,
+                      "NXS Load", cores, chunksize, parallel_load, h)
 
     return data[:-2, :, :], data[-2, :, :], data[-1, :, :]
 
@@ -57,6 +57,7 @@ def _do_stack_move_seq(data, new_data, img_shape, name, h):
 def _do_stack_move_par(data, new_data, cores, chunksize, name, h):
     # this runs faster on SCARF
     from parallel import two_shared_mem as ptsm
-    f = ptsm.create_partial(parallel_move_data, fwd_function=ptsm.inplace_fwd_func)
+    f = ptsm.create_partial(
+        parallel_move_data, fwd_function=ptsm.inplace_fwd_func)
     ptsm.execute(new_data, data, f, cores, chunksize, name, h=h)
     return data

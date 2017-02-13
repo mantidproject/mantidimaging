@@ -45,7 +45,7 @@ class Helper(object):
         self._progress_bar = None
 
         # sneaky copy of the config
-        self._config = config
+        self.config = config
 
         self._readme = None
 
@@ -114,7 +114,7 @@ class Helper(object):
             self.tomo_print_note("Multiprocessing not available.")
         else:
             self.tomo_print_note(
-                "Running process on {0} cores.".format(self._config.func.cores))
+                "Running process on {0} cores.".format(self.config.func.cores))
 
     def get_memory_usage_linux(self):
         try:
@@ -319,13 +319,13 @@ class Helper(object):
         saver = Saver(config)
         saver._img_format = 'fits'  # force fits files
         saver.save_single_image(
-            sample, subdir=path_append, image_name='sample')
+            sample, subdir=path_append, name='sample')
 
         saver._data_as_stack = True  # force data as stack to save out single images
         if flat is not None:
             saver.save_single_image(
-                flat, subdir=path_append, image_name='flat')
+                flat, subdir=path_append, name='flat')
 
         if dark is not None:
             saver.save_single_image(
-                dark, subdir=path_append, image_name='dark')
+                dark, subdir=path_append, name='dark')

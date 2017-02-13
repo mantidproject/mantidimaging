@@ -61,7 +61,7 @@ def load_data(config, h):
 
 
 def load(input_path=None, input_path_flat=None, input_path_dark=None,
-         img_format='fits', data_dtype=np.float32, cores=8, chunksize=None, parallel_load=False, h=None):
+         img_format=None, data_dtype=np.float32, cores=8, chunksize=None, parallel_load=False, h=None, file_names=None):
     """
     Loads a stack, including sample, white and dark images.
 
@@ -80,18 +80,26 @@ def load(input_path=None, input_path_flat=None, input_path_dark=None,
     """
 
     h = Helper.empty_init() if h is None else h
+    if img_format is None:
+        # assume only images in directory, inb4 loading text files
+        img_format = '*'
+
+    if file_names is None:
+        input_file_names = get_file_names(input_path, img_format)
+    else:
+        input_file_names = file_names
 
     if img_format in ['fits', 'fit']:
         from recon.data import img_loader
-        sample, flat, dark = img_loader.execute(fitsread, input_path, input_path_flat, input_path_dark, img_format,
+        sample, flat, dark = img_loader.execute(fitsread, input_file_names, input_path_flat, input_path_dark, img_format,
                                                 data_dtype, cores, chunksize, parallel_load, h)
     elif img_format in ['nxs']:
         from recon.data import nxs_loader
         sample, flat, dark = nxs_loader.execute(
-            input_path, img_format, data_dtype, cores, chunksize, parallel_load, h)
+            input_file_names[0], img_format, data_dtype, cores, chunksize, parallel_load, h)
     else:
         from recon.data import img_loader
-        sample, flat, dark = img_loader.execute(imread, input_path, input_path_flat, input_path_dark, img_format,
+        sample, flat, dark = img_loader.execute(imread, input_file_names, input_path_flat, input_path_dark, img_format,
                                                 data_dtype,
                                                 cores, chunksize, parallel_load, h)
 
@@ -165,7 +173,7 @@ def get_file_names(path, img_format, prefix=''):
     import os
     import glob
 
-    path = os.path.expanduser(path)
+    path = os.path.abspath(os.path.expanduser(path))
 
     files_match = glob.glob(os.path.join(
         path, "{0}*.{1}".format(prefix, img_format)))
@@ -179,6 +187,24 @@ def get_file_names(path, img_format, prefix=''):
     files_match.sort(key=_alphanum_key_split)
 
     return files_match
+
+
+def get_folder_names(path, prefix=''):
+    import os
+    import glob
+
+    path = os.path.abspath(os.path.expanduser(path))
+
+    folders = next(os.walk(path))[1]
+
+    if len(folders) <= 0:
+        raise RuntimeError("Could not find any folders in {0}".format(path))
+
+    # this is a necessary step, otherwise the file order is not guaranteed to be sequential and we could get randomly
+    # ordered stack of images which would produce nonsense
+    folders.sort(key=_alphanum_key_split)
+
+    return folders
 
 
 def _alphanum_key_split(path_str):

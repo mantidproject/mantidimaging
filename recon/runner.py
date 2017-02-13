@@ -158,15 +158,15 @@ def _debug_save_out_data(data, config, flat=None, dark=None, out_path_append='',
     saver = Saver(config)
 
     saver.save_single_image(
-        data, subdir=out_path_append, image_name='sample' + image_append)
+        data, subdir=out_path_append, name='sample' + image_append)
 
     if flat is not None:
         saver.save_single_image(
-            flat, subdir=out_path_append, image_name='flat' + image_append)
+            flat, subdir=out_path_append, name='flat' + image_append)
 
     if dark is not None:
         saver.save_single_image(
-            dark, subdir=out_path_append, image_name='dark' + image_append)
+            dark, subdir=out_path_append, name='dark' + image_append)
 
 
 def post_processing(recon_data, config):

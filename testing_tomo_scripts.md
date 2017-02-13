@@ -527,6 +527,10 @@ bsub -I python /work/imat/imat_recon/scripts/main.py
 
 >python main.py -i /media/matt/Windows/Documents/mantid_workspaces/imaging/chamber/temp/1000/pre_processed -o /media/matt/Windows/Documents/mantid_workspaces/imaging/chamber/processed/temp/1000_processed -g '[384.0, 0.0, 1550.0, 1932.0]' -f
 
+# LARMOR ROI and AIR
+```
+-A 360 111 388 144 -R 41 0 233 228
+```
 # Cannon ROI and AIR
 ```
 777cannon ROI: 175 6 836 928 
