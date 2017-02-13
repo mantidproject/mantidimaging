@@ -16,13 +16,15 @@ def execute(config):
     h.check_config_integrity(config)
 
     from recon.data import loader
-    sample, flat, dark = loader.load_data(config, h)
+    # sample, flat, dark = loader.load_data(config, h)
 
-    # sample = loader.nxsread(config.func.input_path)[:]
+    # the [:] is necessary to get the actual data and not just the nxs header
+    sample = loader.nxsread(config.func.input_path)[:]
     h.tomo_print("Data shape {0}".format(sample.shape))
     flat, dark = None, None
-    from recon.runner import pre_processing
-    sample, flat, dark = pre_processing(config, sample, flat, dark)
+
+    # from recon.runner import pre_processing
+    # sample, flat, dark = pre_processing(config, sample, flat, dark)
     return action(sample, None, None, config, indices)
 
 

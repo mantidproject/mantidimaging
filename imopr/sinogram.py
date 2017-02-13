@@ -5,6 +5,9 @@ import numpy as np
 
 
 def execute(sample, flat, dark, config, indices):
+    import pydevd
+    pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+
     from imopr import helper
     helper.print_start("Running IMOPR with action SINOGRAM")
 
@@ -13,8 +16,8 @@ def execute(sample, flat, dark, config, indices):
     show_3d(sample[i1:i2], 0)
 
     sample = make_sinogram(sample)
-
-    show_3d(sample[i1:i2], 0)
+    print(sample.shape)
+    show_3d(sample, 0)
 
     # stop python from exiting
     import matplotlib.pyplot as plt
@@ -24,5 +27,4 @@ def execute(sample, flat, dark, config, indices):
 
 
 def make_sinogram(sample):
-    sample = np.swapaxes(sample, 0, 1)
-    return sample
+    return np.swapaxes(sample, 0, 1)

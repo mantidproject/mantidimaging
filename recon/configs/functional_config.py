@@ -105,7 +105,10 @@ class FunctionalConfig(object):
                + "Cores: {0}\n".format(str(self.cores)) \
                + "Chunk per worker: {0}\n".format(str(self.chunksize)) \
                + "Load data in parallel: {0}\n".format(str(self.parallel_load)) \
-               + "Image operator mode: {0}\n".format(str(self.imopr))
+               + "Image operator mode: {0}\n".format(str(self.imopr)) \
+               + "Aggregate mode: {0}\n".format(str(self.imopr)) \
+               + "Aggregate angles: {0}\n".format(str(self.imopr)) \
+               + "Aggregate single folder output: {0}\n".format(str(self.imopr))
 
     def setup_parser(self, parser):
         """
@@ -115,7 +118,12 @@ class FunctionalConfig(object):
         grp_func = parser.add_argument_group('Functionality options')
 
         grp_func.add_argument(
-            "-i", "--input-path", required=True, type=str, help="Input directory", default=self.input_path)
+            "-i",
+            "--input-path",
+            required=True,
+            type=str,
+            help="Input directory",
+            default=self.input_path)
 
         grp_func.add_argument(
             "-F",
@@ -148,7 +156,8 @@ class FunctionalConfig(object):
             required=False,
             default=self.output_path,
             type=str,
-            help="Where to write the output slice images (reconstructed volume).")
+            help="Where to write the output slice images (reconstructed volume)."
+        )
 
         from recon.data.saver import Saver
         grp_func.add_argument(
@@ -197,7 +206,8 @@ class FunctionalConfig(object):
             "--reuse-preproc",
             required=False,
             action='store_true',
-            help="The images loaded have already been pre-processed. All pre-processing steps will be skipped.")
+            help="The images loaded have already been pre-processed. All pre-processing steps will be skipped."
+        )
 
         grp_func.add_argument(
             "--save-horiz-slices",
@@ -210,7 +220,8 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.preproc_subdir,
-            help="The subdirectory for the pre-processed images.\nDefault output-path/pre_processed/.")
+            help="The subdirectory for the pre-processed images.\nDefault output-path/pre_processed/."
+        )
 
         grp_func.add_argument(
             "--data-as-stack",
@@ -223,7 +234,8 @@ class FunctionalConfig(object):
             required=False,
             default='float32',
             type=str,
-            help="The data type in which the data will be processed.\nSupported: float32, float64")
+            help="The data type in which the data will be processed.\nSupported: float32, float64"
+        )
 
         grp_func.add_argument(
             "-c",
@@ -239,9 +251,9 @@ class FunctionalConfig(object):
             type=int,
             default=self.verbosity,
             help="0 - Silent, no text output at all, except results (not recommended)\n"
-                 "1 - Low verbosity, will output text on step name\n"
-                 "2 - Normal verbosity, will output step name and execution time\n"
-                 "3 - High verbosity, will output step name, execution time and memory usage before and after each step\n"
+            "1 - Low verbosity, will output text on step name\n"
+            "2 - Normal verbosity, will output step name and execution time\n"
+            "3 - High verbosity, will output step name, execution time and memory usage before and after each step\n"
             "Default: 2 - Normal verbosity.")
 
         grp_func.add_argument(
@@ -260,7 +272,8 @@ class FunctionalConfig(object):
             "--find-cor",
             action='store_true',
             required=False,
-            help="Find the center of rotation (in pixels). Rotation around y axis is assumed")
+            help="Find the center of rotation (in pixels). Rotation around y axis is assumed"
+        )
 
         grp_run_modes.add_argument(
             "--convert",
@@ -284,7 +297,8 @@ class FunctionalConfig(object):
             type=str,
             default=self.aggregate,
             help='Aggregate image energy levels. The expected input is --aggregate <start> <end> <method:{sum, avg}>... to select indices.\n\
-                  There must always be an even lenght of indices: --aggregate 0 100 101 201 300 400 sum')
+                  There must always be an even lenght of indices: --aggregate 0 100 101 201 300 400 sum'
+        )
 
         grp_run_modes.add_argument(
             "--aggregate-angles",
@@ -294,21 +308,24 @@ class FunctionalConfig(object):
             default=self.aggregate_angles,
             help='Select which angles to be aggregated with --aggregate.\n\
                   This is to help running the same algorithm on multiple nodes, while avoiding the integration of mpi4py.\n\
-                  Sample command: --aggregate-angles 0 10, will select only angles 0 - 10 inclusive.')
+                  Sample command: --aggregate-angles 0 10, will select only angles 0 - 10 inclusive.'
+        )
 
         grp_run_modes.add_argument(
             "--aggregate-single-folder-output",
             action='store_true',
             required=False,
             default=self.aggregate_single_folder_output,
-            help='The output will be images with increasing number in a single folder.')
+            help='The output will be images with increasing number in a single folder.'
+        )
 
         grp_run_modes.add_argument(
             "-d",
             "--debug",
             required=False,
             action='store_true',
-            help='Run debug to specified port, if no port is specified, it will default to 59003')
+            help='Run debug to specified port, if no port is specified, it will default to 59003'
+        )
 
         grp_run_modes.add_argument(
             "-p",
@@ -328,7 +345,8 @@ class FunctionalConfig(object):
             type=str,
             default=self.tool,
             choices=supported_tools,
-            help="Tomographic reconstruction tool to use.\nAvailable: {0}".format(supported_tools))
+            help="Tomographic reconstruction tool to use.\nAvailable: {0}".
+            format(supported_tools))
 
         from recon.tools.tomopy_tool import TomoPyTool
         from recon.tools.astra_tool import AstraTool
@@ -341,9 +359,8 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.algorithm,
-            help="Reconstruction algorithm (tool dependent).\nAvailable:\nTomoPy: {0}\nAstra:{1}".format(
-                tomo_algs, astra_algs)
-        )
+            help="Reconstruction algorithm (tool dependent).\nAvailable:\nTomoPy: {0}\nAstra:{1}".
+            format(tomo_algs, astra_algs))
 
         grp_recon.add_argument(
             "-n",
@@ -352,14 +369,15 @@ class FunctionalConfig(object):
             type=int,
             default=self.num_iter,
             help="Number of iterations(only valid for iterative methods: {'art', 'bart', 'mlem', 'osem', "
-                 "'ospml_hybrid', 'ospml_quad', pml_hybrid', 'pml_quad', 'sirt'}.")
+            "'ospml_hybrid', 'ospml_quad', pml_hybrid', 'pml_quad', 'sirt'}.")
 
         grp_recon.add_argument(
             "--max-angle",
             required=False,
             type=float,
             default=self.max_angle,
-            help="Maximum angle of the last projection.\nAssuming first angle=0, and uniform angle increment for every projection")
+            help="Maximum angle of the last projection.\nAssuming first angle=0, and uniform angle increment for every projection"
+        )
 
         grp_recon.add_argument(
             "--cores",
@@ -460,7 +478,8 @@ class FunctionalConfig(object):
 
         if self.save_preproc and not self.output_path:
             raise ValueError(
-                "Save preproc images was specified with -s/--save-preproc, but no output directory was given!")
+                "Save preproc images was specified with -s/--save-preproc, but no output directory was given!"
+            )
 
         if self.cor is None \
                 and not self.find_cor \
@@ -468,4 +487,5 @@ class FunctionalConfig(object):
                 and not self.imopr \
                 and not self.aggregate:
             raise ValueError(
-                "If running a reconstruction a Center of Rotation MUST be provided")
+                "If running a reconstruction a Center of Rotation MUST be provided"
+            )

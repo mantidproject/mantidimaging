@@ -15,11 +15,16 @@ def execute(sample, flat, dark, config, indices):
 
     from imopr.sinogram import make_sinogram
     sample = make_sinogram(sample)
+    from imopr.visualiser import show_3d
 
     i1, i2 = helper.handle_indices(indices)
 
     sample = tool.run_reconstruct(
-        sample[i1:i2, :, :], config, config.helper, sinogram_order=True, proj_angles=proj_angles)
+        sample[i1:i2, :, :],
+        config,
+        config.helper,
+        sinogram_order=True,
+        proj_angles=proj_angles)
 
     from imopr.visualiser import show_3d
     show_3d(sample, 0)
