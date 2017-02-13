@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class CircularMaskTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(CircularMaskTest, self).__init__(*args, **kwargs)
 
@@ -21,11 +20,9 @@ class CircularMaskTest(unittest.TestCase):
         self.h = Helper(r)
 
     def test_not_executed(self):
-        """
-        Check that the filter is not executed when:
-            - no ratio is provided
-            - 0 < ratio < 1 is false
-        """
+        # Check that the filter is not executed when:
+        #     - no ratio is provided
+        #     - 0 < ratio < 1 is false
         images, control = th.gen_img_shared_array_and_copy()
 
         ratio = 0
@@ -45,40 +42,34 @@ class CircularMaskTest(unittest.TestCase):
         npt.assert_equal(result, control)
 
     def test_executed(self):
-        """
-        Check that the filter changed the data.
-        """
         images, control = th.gen_img_shared_array_and_copy()
 
         ratio = 0.001
         result = self.alg.execute(images, ratio, self.h)
-        npt.assert_raises(
-            AssertionError, npt.assert_array_equal, result, control)
+        npt.assert_raises(AssertionError, npt.assert_array_equal, result,
+                          control)
 
         # reset the input images
         images, control = th.gen_img_shared_array_and_copy()
         ratio = 0.994
         result = self.alg.execute(images, ratio, self.h)
-        npt.assert_raises(
-            AssertionError, npt.assert_array_equal, result, control)
+        npt.assert_raises(AssertionError, npt.assert_array_equal, result,
+                          control)
 
     def test_executed_no_helper(self):
-        """
-        Check that the filter changed the data.
-        """
         images, control = th.gen_img_shared_array_and_copy()
 
         ratio = 0.001
         result = self.alg.execute(images, ratio)
-        npt.assert_raises(
-            AssertionError, npt.assert_array_equal, result, control)
+        npt.assert_raises(AssertionError, npt.assert_array_equal, result,
+                          control)
 
         # reset the input images
         images, control = th.gen_img_shared_array_and_copy()
         ratio = 0.994
         result = self.alg.execute(images, ratio)
-        npt.assert_raises(
-            AssertionError, npt.assert_array_equal, result, control)
+        npt.assert_raises(AssertionError, npt.assert_array_equal, result,
+                          control)
 
 
 if __name__ == '__main__':

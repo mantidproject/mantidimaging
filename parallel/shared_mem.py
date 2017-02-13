@@ -58,7 +58,8 @@ def fwd_func(func, i, **kwargs):
 def create_partial(func, fwd_function=fwd_func, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the parallel execution of imap.
-
+    If you seem to be getting nans, check if the correct fwd_function is set!
+    
     :param func: Function that will be executed
     :param fwd_function: The function will be forwarded through function. It must be one of:
             - shared_parallel.fwd_func: if the function returns a value
@@ -70,7 +71,13 @@ def create_partial(func, fwd_function=fwd_func, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(data=None, partial_func=None, cores=8, chunksize=None, name="Progress", h=None, show_timer=True):
+def execute(data=None,
+            partial_func=None,
+            cores=8,
+            chunksize=None,
+            name="Progress",
+            h=None,
+            show_timer=True):
     """
     Executes a function in parallel with shared memory between the processes.
     The array must have been created using parallel.create_shared_array(shape, dtype).
@@ -121,11 +128,12 @@ def execute(data=None, partial_func=None, cores=8, chunksize=None, name="Progres
     pool = Pool(cores)
     img_num = shared_data.shape[0]
     if show_timer:
-        h.prog_init(img_num, name + " " + str(cores) +
-                    "c " + str(chunksize) + "chs")
+        h.prog_init(img_num,
+                    name + " " + str(cores) + "c " + str(chunksize) + "chs")
 
     indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
+    for _ in enumerate(
+            pool.imap(partial_func, indices_list, chunksize=chunksize)):
         h.prog_update()
 
     pool.close()
