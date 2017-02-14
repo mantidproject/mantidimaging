@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
-from tests.recon import test_helper as th
+from tests import test_helper as th
 
 
 def return_from_func(first_shared, add_arg):

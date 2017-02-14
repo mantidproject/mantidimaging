@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
-from tests.recon import test_helper as th
+from tests import test_helper as th
 
 
 class NormaliseByFlatDarkTest(unittest.TestCase):
@@ -87,10 +87,11 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         flat[:] = 26.
         dark = th.gen_img_shared_array()[0]
         dark[:] = 6.
+        import numpy as np
         expected = np.full(sample.shape, 42.)
 
         # we dont want anything to be cropped out
-        res = self.alg.execute(sample, flat, dark, 0, 1000, h=helper)
+        res = self.alg.execute(sample, flat, dark, 0, 1000, h=self.h)
 
 
 if __name__ == '__main__':

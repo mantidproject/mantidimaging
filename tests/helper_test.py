@@ -1,11 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
-from tests.recon import test_helper as th
+from tests import test_helper as th
 
 
 class HelperTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(HelperTest, self).__init__(*args, **kwargs)
 
@@ -26,6 +25,7 @@ class HelperTest(unittest.TestCase):
 
     def test_pstop_raises_if_no_pstart(self):
         npt.assert_raises(ValueError, self.h.pstop, "dwad")
+
 
 if __name__ == '__main__':
     unittest.main()

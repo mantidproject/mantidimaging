@@ -1,11 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
-from tests.recon import test_helper as th
+from tests import test_helper as th
 
 
 class TestClass(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(TestClass, self).__init__(*args, **kwargs)
 
@@ -19,6 +18,7 @@ class TestClass(unittest.TestCase):
 
     def test_sample(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()
