@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.helper import Helper
+from helper import Helper
 import numpy as np
 """
 
@@ -40,9 +40,9 @@ def execute(data=None,
 
     The difference between parallel.exlcusive_mem and parallel.shared_mem/two_shared_mem is that the latter uses a shared memory array between
     the processes, to avoid copy-on-read/write the data to each process' virtual memory space.
-    
+
     This also means that this class potentially uses MUCH more memory.
-    
+
     Exclusive memory needs to be used when the input array has a different shape from the input array.
     However they can only have different shapes in the X and Y dimensions. The number of images (Z) must remain the same.
 

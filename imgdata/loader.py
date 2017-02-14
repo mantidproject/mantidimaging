@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.helper import Helper
+from helper import Helper
 
 import numpy as np
 
@@ -50,7 +50,8 @@ def load_data(config, h):
     parallel_load = config.func.parallel_load
 
     sample, flat, dark = load(input_path, input_path_flat, input_path_dark,
-                              img_format, data_dtype, cores, chunksize, parallel_load, h)
+                              img_format, data_dtype, cores, chunksize,
+                              parallel_load, h)
 
     h.pstop("Data loaded. Shape of raw data: {0}, dtype: {1}.".format(
         sample.shape, sample.dtype))
@@ -60,8 +61,16 @@ def load_data(config, h):
     return sample, flat, dark
 
 
-def load(input_path=None, input_path_flat=None, input_path_dark=None,
-         img_format=None, data_dtype=np.float32, cores=8, chunksize=None, parallel_load=False, h=None, file_names=None):
+def load(input_path=None,
+         input_path_flat=None,
+         input_path_dark=None,
+         img_format=None,
+         data_dtype=np.float32,
+         cores=8,
+         chunksize=None,
+         parallel_load=False,
+         h=None,
+         file_names=None):
     """
     Loads a stack, including sample, white and dark images.
 
@@ -90,18 +99,20 @@ def load(input_path=None, input_path_flat=None, input_path_dark=None,
         input_file_names = file_names
 
     if img_format in ['fits', 'fit']:
-        from recon.data import img_loader
-        sample, flat, dark = img_loader.execute(fitsread, input_file_names, input_path_flat, input_path_dark, img_format,
-                                                data_dtype, cores, chunksize, parallel_load, h)
+        from imgdata import img_loader
+        sample, flat, dark = img_loader.execute(
+            fitsread, input_file_names, input_path_flat, input_path_dark,
+            img_format, data_dtype, cores, chunksize, parallel_load, h)
     elif img_format in ['nxs']:
-        from recon.data import nxs_loader
-        sample, flat, dark = nxs_loader.execute(
-            input_file_names[0], img_format, data_dtype, cores, chunksize, parallel_load, h)
+        from imgdata import nxs_loader
+        sample, flat, dark = nxs_loader.execute(input_file_names[0],
+                                                img_format, data_dtype, cores,
+                                                chunksize, parallel_load, h)
     else:
-        from recon.data import img_loader
-        sample, flat, dark = img_loader.execute(imread, input_file_names, input_path_flat, input_path_dark, img_format,
-                                                data_dtype,
-                                                cores, chunksize, parallel_load, h)
+        from imgdata import img_loader
+        sample, flat, dark = img_loader.execute(
+            imread, input_file_names, input_path_flat, input_path_dark,
+            img_format, data_dtype, cores, chunksize, parallel_load, h)
 
     Helper.check_data_stack(sample)
 
@@ -119,7 +130,8 @@ def fitsread(filename):
     image = pyfits.open(filename)
     if len(image) < 1:
         raise RuntimeError(
-            "Could not load at least one FITS image/table file from: {0}".format(filename))
+            "Could not load at least one FITS image/table file from: {0}".
+            format(filename))
 
     # get the image data
     return image[0].data
@@ -150,7 +162,8 @@ def import_pyfits():
             import astropy.io.fits as pyfits
         except ImportError:
             raise ImportError(
-                "Cannot find the package 'pyfits' which is required to read/write FITS image files")
+                "Cannot find the package 'pyfits' which is required to read/write FITS image files"
+            )
 
     return pyfits
 
@@ -163,9 +176,10 @@ def import_skimage_io():
         from skimage import io as skio
         skio.use_plugin('tifffile')  # TODO if broken use freeimage
     except ImportError as exc:
-        raise ImportError("Could not find the package skimage, its subpackage "
-                          "io and the pluging freeimage which are required to support "
-                          "several image formats. Error details: {0}".format(exc))
+        raise ImportError(
+            "Could not find the package skimage, its subpackage "
+            "io and the pluging freeimage which are required to support "
+            "several image formats. Error details: {0}".format(exc))
     return skio
 
 
@@ -175,12 +189,13 @@ def get_file_names(path, img_format, prefix=''):
 
     path = os.path.abspath(os.path.expanduser(path))
 
-    files_match = glob.glob(os.path.join(
-        path, "{0}*.{1}".format(prefix, img_format)))
+    files_match = glob.glob(
+        os.path.join(path, "{0}*.{1}".format(prefix, img_format)))
 
     if len(files_match) <= 0:
-        raise RuntimeError("Could not find any image files in {0} with extension: {1}".
-                           format(path, img_format))
+        raise RuntimeError(
+            "Could not find any image files in {0} with extension: {1}".format(
+                path, img_format))
 
     # this is a necessary step, otherwise the file order is not guaranteed to be sequential and we could get randomly
     # ordered stack of images which would produce nonsense
@@ -224,7 +239,10 @@ def _alphanum_key_split(path_str):
     """
     import re
     alpha_num_split_re = re.compile('([0-9]+)')
-    return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
+    return [
+        int(c) if c.isdigit() else c
+        for c in alpha_num_split_re.split(path_str)
+    ]
 
 
 def parallel_move_data(input_data, output_data):
@@ -264,7 +282,14 @@ def do_stack_load_par(data, new_data, cores, chunksize, name, h):
     return data
 
 
-def load_stack(load_func, file_name, dtype, name, cores=8, chunksize=None, parallel_load=False, h=None):
+def load_stack(load_func,
+               file_name,
+               dtype,
+               name,
+               cores=8,
+               chunksize=None,
+               parallel_load=False,
+               h=None):
     """
     Load a single image file that is expected to be a stack of images.
 

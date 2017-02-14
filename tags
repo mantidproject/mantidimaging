@@ -121,7 +121,7 @@ _remove_sino_stripes_rings_wf	recon/filters/remove_sino_stripes_rings_wf.py	/^de
 _rotate_image	recon/filters/rotate_stack.py	/^def _rotate_image(data, rotation=None):$/;"	kind:function	line:11
 _rotate_image_inplace	recon/filters/rotate_stack.py	/^def _rotate_image_inplace(data, rotation=None):$/;"	kind:function	line:6
 _run_tests	run_tests.py	/^def _run_tests(args):$/;"	kind:function	line:13
-_save_image_data	recon/data/saver.py	/^    def _save_image_data(self, data, output_dir, name_prefix, flat=None, dark=None, custom_idx=None, zfill_len=6, name_postfix=''):$/;"	kind:member	line:201
+save	recon/data/saver.py	/^    def save(self, data, output_dir, name_prefix, flat=None, dark=None, custom_idx=None, zfill_len=6, name_postfix=''):$/;"	kind:member	line:201
 _save_out_individual_files	recon/data/saver.py	/^    def _save_out_individual_files(self, data, output_dir, name_prefix, custom_idx=None, zfill_len=6, name_postfix=''):$/;"	kind:member	line:218
 _save_out_stack	recon/data/saver.py	/^    def _save_out_stack(self, data, output_dir, name_prefix, flat=None, dark=None, projection_angles=None,$/;"	kind:member	line:231
 abstract_tool.py	recon/tools/abstract_tool.py	1;"	kind:file	line:1

@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 import numpy as np
 import multiprocessing
 
-from recon.helper import Helper
+from helper import Helper
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place

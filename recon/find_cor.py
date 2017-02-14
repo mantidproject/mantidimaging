@@ -3,7 +3,7 @@ import numpy as np
 
 
 def execute(config):
-    from recon.helper import Helper
+    from helper import Helper
     h = Helper(config)
     h.check_config_integrity(config)
 
@@ -13,28 +13,35 @@ def execute(config):
     from recon.runner import load_tool
     tool = load_tool(config, h)
 
-    from recon.data import loader
+    from imgdata import loader
     sample, flat, dark = loader.load_data(config, h)  # and onwards we go!
 
     # -----------------------------------------------------------------------------
 
     # import all used filters
-    from recon.filters import rotate_stack, crop_coords
+    from filters import rotate_stack, crop_coords
     cores = config.func.cores
     chunksize = config.func.chunksize
 
     sample, flat, dark = rotate_stack.execute(
-        sample, config.pre.rotation, flat, dark, cores=cores, chunksize=chunksize, h=h)
+        sample,
+        config.pre.rotation,
+        flat,
+        dark,
+        cores=cores,
+        chunksize=chunksize,
+        h=h)
 
-    sample = crop_coords.execute_volume(
-        sample, config.pre.region_of_interest, h)
+    sample = crop_coords.execute_volume(sample, config.pre.region_of_interest,
+                                        h)
 
     num_projections = sample.shape[0]
     projection_angle_increment = float(config.func.max_angle) / num_projections
 
     h.tomo_print_note("Calculating projection angles", 3)
-    projection_angles = np.arange(
-        0, num_projections * projection_angle_increment, projection_angle_increment)
+    projection_angles = np.arange(0,
+                                  num_projections * projection_angle_increment,
+                                  projection_angle_increment)
 
     # For tomopy
     h.tomo_print_note("Calculating radians for TomoPy", 3)
@@ -67,8 +74,8 @@ def execute(config):
     # selected
     pixels_from_left_side = left_crop_pos if left_crop_pos - image_width <= 1 else 0
 
-    h.pstart(
-        "Starting COR calculation on {0} projections.".format(checked_projections))
+    h.pstart("Starting COR calculation on {0} projections.".format(
+        checked_projections))
 
     calculated_cors = []
     h.prog_init(len(slice_indices), "Center of Rotation", unit='calculations')
@@ -84,17 +91,20 @@ def execute(config):
     h.pstop("Finished COR calculation.")
 
     average_cor_relative_to_crop = sum(calculated_cors) / len(calculated_cors)
-    average_cor_relative_to_full_image = sum(
-        calculated_cors) / len(calculated_cors) + pixels_from_left_side
+    average_cor_relative_to_full_image = sum(calculated_cors) / len(
+        calculated_cors) + pixels_from_left_side
 
     # we add the pixels cut off from the left, to reflect the full image in
     # Mantid
-    h.tomo_print_note("Printing average COR in relation to image crop {0}: {1}".format(
-        config.pre.region_of_interest, round(average_cor_relative_to_crop)))
+    h.tomo_print_note(
+        "Printing average COR in relation to image crop {0}: {1}".format(
+            config.pre.region_of_interest, round(
+                average_cor_relative_to_crop)))
 
     # new line for GUI to be able to read
-    h.tomo_print_note("Printing average COR in relation to non-cropped image: \n{0}".format(
-        round(average_cor_relative_to_full_image)))
+    h.tomo_print_note(
+        "Printing average COR in relation to non-cropped image: \n{0}".format(
+            round(average_cor_relative_to_full_image)))
 
     return round(average_cor_relative_to_full_image)
 
@@ -104,5 +114,6 @@ def print_proper_message(cor, h, pixels_from_left_side, slice_idx):
     if v <= 2:
         h.tomo_print_same_line('.')
     else:
-        h.tomo_print_note("COR for slice {0} .. REL to CROP {1} .. REL to FULL {2}"
-                          .format(slice_idx, cor, (cor + pixels_from_left_side)), 3)
+        h.tomo_print_note(
+            "COR for slice {0} .. REL to CROP {1} .. REL to FULL {2}"
+            .format(slice_idx, cor, (cor + pixels_from_left_side)), 3)

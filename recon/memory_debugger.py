@@ -6,7 +6,7 @@ import numpy.testing as npt
 import unittest
 
 from recon.configs.recon_config import ReconstructionConfig
-from recon.helper import Helper
+from helper import Helper
 
 
 class ParallelTest(unittest.TestCase):

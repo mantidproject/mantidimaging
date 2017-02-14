@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.helper import Helper
+from helper import Helper
 
 """
 REBIN does not use shared_memory, because it has to resize the array!

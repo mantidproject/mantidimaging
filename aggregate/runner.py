@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.data.loader import get_folder_names, get_file_names
+from imgdata.loader import get_folder_names, get_file_names
 
 
 def execute(config):
-    from recon.helper import Helper
+    from helper import Helper
     h = Helper(config)
     input_path = config.func.input_path
     img_format = config.func.in_format
@@ -23,19 +23,19 @@ def execute(config):
     if len(energy_levels) == 0:
         energies_label = ''
     else:
-        energies_label = str(
-            selected_indices[0]) + '_' + str(selected_indices[len(selected_indices) - 1])
+        energies_label = str(selected_indices[0]) + '_' + str(
+            selected_indices[len(selected_indices) - 1])
 
     # get the angle folders
     selected_angles = config.func.aggregate_angles
-    angle_folders, selected_angles = get_angle_folders(
-        input_path, img_format, selected_angles)
+    angle_folders, selected_angles = get_angle_folders(input_path, img_format,
+                                                       selected_angles)
     h.tomo_print_note('Applying aggregating method {0} on angles: {1}'.format(
         agg_method, angle_folders))
 
-    # generate tuples of (folder_index, folder_name)
-    angle_image_paths = get_image_files_paths(
-        input_path, angle_folders, img_format, selected_indices)
+    # generate the file names in each angle folder
+    angle_image_paths = get_image_files_paths(input_path, angle_folders,
+                                              img_format, selected_indices)
 
     # create an enumerator for the angle folders
     if selected_angles:
@@ -44,15 +44,16 @@ def execute(config):
     else:
         angle_image_paths = enumerate(angle_image_paths)
 
-    do_aggregating(angle_image_paths, img_format, agg_method,
-                   energies_label, single_folder, h)
+    do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
+                   single_folder, h)
 
 
-def do_aggregating(angle_image_paths, img_format, agg_method, energies_label, single_folder, h):
+def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
+                   single_folder, h):
     import os
     import numpy as np
-    from recon.data import loader, saver
-    s = saver.Saver(h.config)
+    from imgdata import loader, saver
+    s = saver.Saver(h.config, h)
     parallel_load = h.config.func.parallel_load
     s.make_dirs_if_needed()
 
@@ -61,7 +62,9 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label, si
         h.pstart("Loading data for angle {0} from path {1}".format(
             angle, os.path.dirname(image_paths[0])))
         images = loader.load(
-            file_names=image_paths, img_format=img_format, parallel_load=parallel_load)[0]
+            file_names=image_paths,
+            img_format=img_format,
+            parallel_load=parallel_load)[0]
         # sum or average them
         if 'sum' == agg_method:
             acc = images.sum(axis=0, dtype=np.float32)
@@ -81,8 +84,13 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label, si
             subdir = ''
             custom_index = str(angle)
 
-        s.save_single_image(acc.reshape(1, acc.shape[0], acc.shape[1]), subdir=subdir, name=name,
-                            name_postfix=name_postfix, use_preproc_folder=False, custom_index=custom_index)
+        s.save_single_image(
+            acc.reshape(1, acc.shape[0], acc.shape[1]),
+            subdir=subdir,
+            name=name,
+            name_postfix=name_postfix,
+            use_preproc_folder=False,
+            custom_index=custom_index)
 
 
 def do_sanity_checks(output_path, agg_method, commands):
@@ -92,16 +100,19 @@ def do_sanity_checks(output_path, agg_method, commands):
 
     if agg_method not in ['sum', 'avg']:
         raise ValueError(
-            "Invalid method provided for --aggregate, the allowed methods are: {sum, avg}")
+            "Invalid method provided for --aggregate, the allowed methods are: {sum, avg}"
+        )
 
     # the length of energy levels must be an even number
     if len(commands) % 2 != 0:
         raise ValueError(
             "The length of energy levels must be an even number, the submission format is \
-            --aggregate <start> <end> <method:{sum, avg}>...: --aggregate 1 100 101 200 201 300 sum")
+            --aggregate <start> <end> <method:{sum, avg}>...: --aggregate 1 100 101 200 201 300 sum"
+        )
 
 
-def get_image_files_paths(input_path, angle_folders, img_format, selected_indices):
+def get_image_files_paths(input_path, angle_folders, img_format,
+                          selected_indices):
     import os
     angle_image_paths = []
     for folder in angle_folders:
@@ -130,7 +141,8 @@ def get_indices_for_energy_levels(energy_levels):
 
     # flatten the list
     selected_indices = [
-        indices for sublist in selected_indices for indices in sublist]
+        indices for sublist in selected_indices for indices in sublist
+    ]
     return selected_indices
 
 

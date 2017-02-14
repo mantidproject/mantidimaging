@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
-from recon.helper import Helper
+from helper import Helper
 
 
 def execute(data, circular_mask_ratio, h=None):

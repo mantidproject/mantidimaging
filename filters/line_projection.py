@@ -24,7 +24,7 @@ def execute(imgs_angles, config):
 
     Returns :: projected data volume (image stack)
     """
-    from recon.helper import Helper
+    from helper import Helper
     h = Helper(config)
 
     h.check_data_stack(imgs_angles)

@@ -20,7 +20,7 @@ class SharedMemTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
         self.h = Helper(r)
 

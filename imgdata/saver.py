@@ -55,7 +55,7 @@ def create_image_name(custom_idx, idx, name_prefix, zfill_len, name_postfix,
         name = name_prefix + str(idx).zfill(
             zfill_len) + name_postfix + extension
     else:
-        name = name_prefix + custom_idx + name_postfix + extension
+        name = name_prefix + str(custom_idx) + name_postfix + extension
     return name
 
 
@@ -81,7 +81,7 @@ class Saver(object):
         return supported_formats()
 
     def __init__(self, config, h=None):
-        from recon.helper import Helper
+        from helper import Helper
         self._h = Helper(config) if h is None else h
 
         self._output_path = config.func.output_path
@@ -114,7 +114,9 @@ class Saver(object):
                           name_postfix='',
                           use_preproc_folder=True):
         """
-        Save (pre-processed) images from a data array to image files.
+        Save a single image to a single image file.
+        THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
+        
         :param subdir :: additional output directory, currently used for debugging
         :param data :: data volume with pre-processed images
         :param name: image name to be appended
@@ -147,9 +149,7 @@ class Saver(object):
         self._h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
                                                                    data.dtype))
 
-        self.make_dirs_if_needed(output_dir)
-
-        self._save_image_data(
+        self.save(
             data,
             output_dir,
             name,
@@ -161,7 +161,14 @@ class Saver(object):
 
     def save_recon_output(self, data):
         """
-        Save output reconstructed volume in different forms.
+        Specialised method to save out the reconstructed data 
+        depending on the configuration options.
+
+        This will save out the data in a subdirectory /reconstructed/.
+        If --save-horiz-slices is specified, the axis will be flipped and 
+        the result will be saved out in /reconstructed/horiz.
+        ^ This means that the data usage will double as numpy.swapaxes WILL COPY the data!
+        However this is not usually a problem as the reconstructed data is small.
 
         :param data :: reconstructed data volume. A sequence of images will be saved from this
         slices saved by default. Useful for testing some tools
@@ -178,7 +185,7 @@ class Saver(object):
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
-        self._save_image_data(data, out_recon_dir, self._out_slices_prefix)
+        self.save(data, out_recon_dir, self._out_slices_prefix)
 
         # Sideways slices:
         if self._save_horiz_slices:
@@ -191,7 +198,7 @@ class Saver(object):
 
             import numpy as np
             # save out the horizontal slices by flipping the axes
-            self._save_image_data(
+            self.save(
                 np.swapaxes(data, 0, 1), out_horiz_dir,
                 self._out_horiz_slices_prefix)
 
@@ -201,7 +208,9 @@ class Saver(object):
 
     def save_preproc_images(self, data, flat=None, dark=None):
         """
-        Save (pre-processed) images from a data array to image files.
+        Specialised save function to save out the pre-processed images.
+        
+        This will save the images out in a subdir /pre-processed/.
 
         :param data: The pre-processed data that will be saved
         :param flat: The averaged flat image
@@ -215,20 +224,19 @@ class Saver(object):
                 "Saving all pre-processed images into {0} dtype: {1}".format(
                     preproc_dir, data.dtype))
 
-            self._save_image_data(data, preproc_dir, 'out_preproc_image', flat,
-                                  dark)
+            self.save(data, preproc_dir, 'out_preproc_image', flat, dark)
 
             self._h.pstop("Saving pre-processed images finished.")
 
-    def _save_image_data(self,
-                         data,
-                         output_dir,
-                         name_prefix,
-                         flat=None,
-                         dark=None,
-                         custom_idx=None,
-                         zfill_len=6,
-                         name_postfix=''):
+    def save(self,
+             data,
+             output_dir,
+             name_prefix,
+             flat=None,
+             dark=None,
+             custom_idx=None,
+             zfill_len=6,
+             name_postfix=''):
         """
         Save reconstructed volume (3d) into a series of slices along the Z axis (outermost numpy dimension)
         :param data :: data as images/slices stores in numpy array

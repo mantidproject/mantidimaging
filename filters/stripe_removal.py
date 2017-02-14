@@ -1,6 +1,6 @@
 # Remove stripes in sinograms / ring artefacts in reconstructed volume
 def execute(data, config):
-    from recon.helper import Helper
+    from helper import Helper
     h = Helper(config)
 
     if config.stripe_removal_method:

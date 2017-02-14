@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class RotateStackTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(RotateStackTest, self).__init__(*args, **kwargs)
 
@@ -13,9 +12,9 @@ class RotateStackTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import rotate_stack
+        from filters import rotate_stack
         self.alg = rotate_stack
 
         self.h = Helper(r)
@@ -56,6 +55,7 @@ class RotateStackTest(unittest.TestCase):
         h = result.shape[1]
         w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)
+
 
 if __name__ == '__main__':
     unittest.main()

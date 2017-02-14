@@ -12,9 +12,9 @@ class CropCoordsTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import crop_coords
+        from filters import crop_coords
         self.alg = crop_coords
 
         self.h = Helper(r)

@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.helper import Helper
+from helper import Helper
 
 
 def execute(data, outliers_threshold, outliers_mode, h=None):

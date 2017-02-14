@@ -33,6 +33,7 @@
     - [--crop-before-normalise](#--crop-before-normalise)
 - [Testing the Big Data](#testing-the-big-data)
 - [SCARF Chamber Tomo Find COR](#scarf-chamber-tomo-find-cor)
+- [LARMOR ROI and AIR](#larmor-roi-and-air)
 - [Cannon ROI and AIR](#cannon-roi-and-air)
 - [Type Conversion](#type-conversion)
     - [FITS - FITS](#fits---fits)
@@ -65,6 +66,8 @@
     - [nxs - TIFF](#nxs---tiff)
     - [nxs - stack TIFF](#nxs---stack-tiff)
     - [nxs - nxs](#nxs---nxs)
+- [Testing --aggregate mode](#testing---aggregate-mode)
+- [Testing --convert mode](#testing---convert-mode)
 
 <!-- /TOC -->
 
@@ -239,10 +242,10 @@ pyfits.open('/media/matt/Windows/Documents/mantid_workspaces/imaging/RB000888_te
 
 ## Test loading single images and image stack
 ```python
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 
 """ load single images """
 sample = loader.load_stack('~/Documents/img/000888/data_full', argument_data_dtype=np.float32)[0] 
@@ -268,10 +271,10 @@ sample = loader.load_stack('/media/matt/Windows/Documents/mantid_workspaces/imag
 
 # Plot Circular Mask
 ```python
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 
 """ load single images """
 sample = loader.load_stack('~/Documents/img/000888/data_full', argument_data_dtype=np.float32)[0]
@@ -279,15 +282,15 @@ rsample = rotate_stack._rotate_stack(sample, 3)
 csample = rsample[:, 0:228,41:233]
 import tomopy 
 plt.imshow(tomopy.circ_mask(csample, axis=0, ratio=0.98)[0], cmap='Greys_r'); plt.show()
-from recon.filters import circular_mask
+from filters import circular_mask
 plt.imshow(circular_mask.execute_custom(csample, 0.98)[0], cmap='Greys_r'); plt.show()
 ```
 
 # Normalise by background comparison
 ```python
-from recon.data import loader
-from recon.filters import normalise_by_flat_dark
-from recon.filters import rotate_stack as rs
+from imgdata import loader
+from filters import normalise_by_flat_dark
+from filters import rotate_stack as rs
 import numpy as np
 import matplotlib.pyplot as plt
 import tomopy
@@ -320,10 +323,10 @@ plt.imshow(np.concatenate((sample[0], tsample[0]), axis=1), cmap='Greys_r'); plt
 - angles: projection angles in radians
 
 ```python
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 
 """ load single images """
 sample = loader.load_stack('~/Documents/img/000888/data_full', argument_data_dtype=np.float32)[0]
@@ -362,10 +365,10 @@ python main.py
 
 # SciPy ndimage zoom
 ```python
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 import scipy.ndimage as sn
 
 """ load single images """
@@ -386,10 +389,10 @@ plt.imshow(boop[0], cmap='Greys_r'); plt.show()
 
 # SciPy misc imresize
 ```python
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 import scipy.misc as sm
 """ load single images """
 sample = loader.load_stack('~/Documents/img/000888/data_full', argument_data_dtype=np.float32)[0]
@@ -411,13 +414,13 @@ plt.imshow(boop[0], cmap='Greys_r'); plt.show()
 # SciPy timeit misc.imresize vs ndimage.zoom
 
 ```python
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 import scipy.misc as sm
 import scipy.ndimage as sn
-from recon.helper import Helper
+from helper import Helper
 
 sample = loader.load_stack("~/Documents/img/000888/data_full")[0]
 
@@ -444,13 +447,13 @@ timeit.timeit(stmt='zoom(sample)', setup='from __main__ import sample, loader, z
 ## Bigger data test
 ```python
 
-from recon.data import loader
+from imgdata import loader
 import numpy as np
 import matplotlib.pyplot as plt
-from recon.filters import rotate_stack
+from filters import rotate_stack
 import scipy.misc as sm
 import scipy.ndimage as sn
-from recon.helper import Helper
+from helper import Helper
 
 sample = loader.load_stack("~/Documents/img/000888/data_full")[0]
 sample = np.concatenate(sample, sample)
@@ -476,7 +479,7 @@ timeit.timeit(stmt='zoom(sample)', setup='from __main__ import sample, loader, z
 
 # `Helper` class initialisation test
 ```python
-python -c "from recon.helper import Helper; g=[]; h=Helper(); h=Helper(g)"
+python -c "from helper import Helper; g=[]; h=Helper(); h=Helper(g)"
 ```
 
 # Tomo Test runs with as most args as possible
@@ -610,3 +613,28 @@ Air Region: 734 386 791 440
 
 ## nxs - nxs
 > python main.py -i ~/temp/nxs3/pre_processed -D ~/temp/tiff_dark/pre_processed -F ~/temp/tiff_flat/pre_processed -o ~/temp/nxs4 -s --convert --data-as-stack --out-format nxs --in-format nxs
+
+# Testing --aggregate mode
+```python
+# output in separate folders
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_1_100/ --in-format fits --aggregate 1 100 avg -w
+# aggregate 1 100 in single folder with  --aggregate-single-folder-output
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_1_100_single/ --in-format fits --aggregate 1 100 avg -w --aggregate-single-folder-output
+# aggregate ALL indices from ALL angles
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_all/ --in-format fits --aggregate avg -w
+# aggregate ALL indices from ALL angles and output in a single folder
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_all_single/ --in-format fits --aggregate avg -w --aggregate-single-folder-output
+# aggregate ALL indices from angles 0 - 4
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_angles_0_4/ --in-format fits --aggregate avg -w --aggregate-angles 0 4
+# aggregate ALL indices from angles 0 - 4 and output in a single folder 
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_angles_0_4_single/ --in-format fits --aggregate avg -w --aggregate-single-folder-output --aggregate-angles 0 4
+# aggregate 1 100 indices from angles 0 - 4
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_angles_0_4_1_100/ --in-format fits --aggregate 1 100 avg -w --aggregate-angles 0 4
+# aggregate 1 100 indices from angles 0 - 4 and output in a single folder 
+python main.py -i ~/win_img/full_larmor/data/ -o ~/temp/aggregate_angles_0_4_1_100_single/ --in-format fits --aggregate 1 100 avg -w --aggregate-single-folder-output --aggregate-angles 0 4
+
+```
+# Testing --convert mode
+```python
+python main.py -i ~/win_img/larmor/data/ --convert -o ~/temp/convert_test -w --convert-prefix test --out-format nxs
+```

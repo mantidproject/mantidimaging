@@ -12,9 +12,9 @@ class CircularMaskTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import circular_mask
+        from filters import circular_mask
         self.alg = circular_mask
 
         self.h = Helper(r)

@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class DataTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(DataTest, self).__init__(*args, **kwargs)
 
@@ -13,23 +12,27 @@ class DataTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         self.r = ReconstructionConfig.empty_init()
         self.r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
         self.h = Helper(self.r)
 
     def create_saver(self):
-        from recon.data.saver import Saver
+        from imgdata.saver import Saver
         return Saver(self.r)
 
-    def assert_files_exist(self, base_name, file_format, stack=True, num_images=1):
+    def assert_files_exist(self,
+                           base_name,
+                           file_format,
+                           stack=True,
+                           num_images=1):
         import os
 
         if not stack:
             # generate a list of filenames with 000000 numbers appended
             filenames = []
             for i in range(num_images):
-                filenames.append(base_name + '00000' +
-                                 str(i) + '.' + file_format)
+                filenames.append(base_name + '00000' + str(i) + '.' +
+                                 file_format)
 
             for f in filenames:
                 self.assertTrue(os.path.isfile(f))
@@ -43,9 +46,8 @@ class DataTest(unittest.TestCase):
         import os
         import shutil
         with tempfile.NamedTemporaryFile() as f:
-            from recon.data.loader import get_file_names
-            full_path = os.path.join(
-                os.path.dirname(f.name), prefix)
+            from imgdata.loader import get_file_names
+            full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
 
     def tearDown(self):
@@ -104,18 +106,23 @@ class DataTest(unittest.TestCase):
 
             preproc_output_path = saver._output_path + '/pre_processed/'
 
-            from recon.data import loader
+            from imgdata import loader
             # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
-                preproc_output_path, None, None, saver._img_format, parallel_load=parallel, h=self.h)
+                preproc_output_path,
+                None,
+                None,
+                saver._img_format,
+                parallel_load=parallel,
+                h=self.h)
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
             th.assert_equals(dark_loaded, dark)
 
-            self.assert_files_exist(
-                preproc_output_path + 'out_preproc_image',
-                saver._img_format, saver._data_as_stack, images.shape[0])
+            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+                                    saver._img_format, saver._data_as_stack,
+                                    images.shape[0])
 
     def test_save_nxs_par(self):
         self.do_preproc_nxs(parallel=True)
@@ -143,18 +150,23 @@ class DataTest(unittest.TestCase):
 
             preproc_output_path = saver._output_path + '/pre_processed/'
 
-            from recon.data import loader
+            from imgdata import loader
             # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
-                preproc_output_path, None, None, saver._img_format, parallel_load=parallel, h=self.h)
+                preproc_output_path,
+                None,
+                None,
+                saver._img_format,
+                parallel_load=parallel,
+                h=self.h)
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
             th.assert_equals(dark_loaded, dark)
 
-            self.assert_files_exist(
-                preproc_output_path + 'out_preproc_image',
-                saver._img_format, saver._data_as_stack, images.shape[0])
+            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+                                    saver._img_format, saver._data_as_stack,
+                                    images.shape[0])
 
     def test_do_recon_fits(self):
         self.do_recon(img_format='fits', stack=True, horiz_slices=False)
@@ -186,9 +198,9 @@ class DataTest(unittest.TestCase):
 
             recon_output_path = saver._output_path + '/reconstructed/'
 
-            self.assert_files_exist(
-                recon_output_path + 'recon_slice',
-                saver._img_format, saver._data_as_stack, images.shape[0])
+            self.assert_files_exist(recon_output_path + 'recon_slice',
+                                    saver._img_format, saver._data_as_stack,
+                                    images.shape[0])
 
             if horiz_slices:
                 self.assert_files_exist(

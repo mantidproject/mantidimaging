@@ -41,7 +41,6 @@ class FunctionalConfig(object):
         self.reuse_preproc = False
         self.preproc_subdir = 'pre_processed'
         self.data_as_stack = False
-        self.convert = False
 
         import numpy as np
 
@@ -73,6 +72,8 @@ class FunctionalConfig(object):
         self.aggregate = None
         self.aggregate_angles = None
         self.aggregate_single_folder_output = None
+        self.convert = False
+        self.convert_prefix = 'converted_images'
 
     def __str__(self):
         return "Input directory: {0}\n".format(str(self.input_path)) \
@@ -90,7 +91,6 @@ class FunctionalConfig(object):
                + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
                + "Save images as file stacks: {0}\n".format(str(self.data_as_stack)) \
-               + "Do a conver run, implies --only-preproc and --reuse-preproc: {0}\n".format(str(self.convert)) \
                + "Data type: {0}\n".format(str(self.data_dtype)) \
                + "Provided center of rotation: {0}\n".format(str(self.cor)) \
                + "Find COR Run: {0}\n".format(str(self.find_cor)) \
@@ -108,7 +108,9 @@ class FunctionalConfig(object):
                + "Image operator mode: {0}\n".format(str(self.imopr)) \
                + "Aggregate mode: {0}\n".format(str(self.imopr)) \
                + "Aggregate angles: {0}\n".format(str(self.imopr)) \
-               + "Aggregate single folder output: {0}\n".format(str(self.imopr))
+               + "Aggregate single folder output: {0}\n".format(str(self.imopr)) \
+               + "Convert images mode: {0}\n".format(str(self.convert)) \
+               + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix))
 
     def setup_parser(self, parser):
         """
@@ -141,7 +143,7 @@ class FunctionalConfig(object):
             type=str,
             help="Input directory for flat images")
 
-        from recon.data import loader
+        from imgdata import loader
         grp_func.add_argument(
             "--in-format",
             required=False,
@@ -159,7 +161,7 @@ class FunctionalConfig(object):
             help="Where to write the output slice images (reconstructed volume)."
         )
 
-        from recon.data.saver import Saver
+        from imgdata.saver import Saver
         grp_func.add_argument(
             "--out-format",
             required=False,
@@ -280,7 +282,14 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.convert,
-            help='Shortcut to activate --reuse-preproc and --only-preproc.')
+            help='Convert images to a different format.')
+
+        grp_run_modes.add_argument(
+            "--convert-prefix",
+            required=False,
+            type=str,
+            default=self.convert_prefix,
+            help='Convert images to a different format.')
 
         grp_run_modes.add_argument(
             "--imopr",
@@ -458,6 +467,7 @@ class FunctionalConfig(object):
         self.chunksize = args.chunksize
         self.parallel_load = args.parallel_load
         self.convert = args.convert
+        self.convert_prefix = args.convert_prefix
         self.imopr = args.imopr
         self.aggregate = args.aggregate
         self.aggregate_angles = args.aggregate_angles
@@ -467,25 +477,23 @@ class FunctionalConfig(object):
         self.handle_special_arguments()
 
     def handle_special_arguments(self):
-        # --convert is special case that substitutes --reuse-preproc and --only-preproc
-        if self.convert is True:
-            self.reuse_preproc = True
-            self.only_preproc = True
-
         if not self.input_path:
             raise ValueError(
                 "Cannot run a reconstruction without setting the input path")
 
-        if self.save_preproc and not self.output_path:
+        if (self.save_preproc or self.convert or
+                self.aggregate) and not self.output_path:
             raise ValueError(
-                "Save preproc images was specified with -s/--save-preproc, but no output directory was given!"
-            )
+                "An option was specified that requires an output directory, but no output directory was given!\n\
+                The options that require output directory are:\n\
+                -s/--save-preproc, --convert, --aggregate")
 
         if self.cor is None \
                 and not self.find_cor \
                 and not self.only_preproc \
                 and not self.imopr \
-                and not self.aggregate:
+                and not self.aggregate\
+                and not self.convert:
             raise ValueError(
                 "If running a reconstruction a Center of Rotation MUST be provided"
             )

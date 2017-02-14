@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, print_function, division)
-from recon.helper import Helper
+from helper import Helper
 
 
 def import_scipy_ndimage():

@@ -1,6 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 import sys
-
 """
 Class for commonly used functions across the modules
 
@@ -89,10 +88,9 @@ class Helper(object):
             # Windows doesn't seem to have resource package, so this will
             # silently fail
             import resource as res
-            print(" >> Memory usage",
-                  res.getrusage(res.RUSAGE_SELF).ru_maxrss, "KB, ",
-                  int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) /
-                  1024, "MB", message)
+            print(" >> Memory usage", res.getrusage(res.RUSAGE_SELF).ru_maxrss,
+                  "KB, ", int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024,
+                  "MB", message)
         except ImportError:
             res = None
             pass
@@ -124,12 +122,12 @@ class Helper(object):
 
             memory_in_kbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss)
 
-            memory_in_mbs = int(res.getrusage(
-                res.RUSAGE_SELF).ru_maxrss) / 1024
+            memory_in_mbs = int(
+                res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024
 
             # handle caching
-            memory_string = " {0} KB, {1} MB".format(
-                memory_in_kbs, memory_in_mbs)
+            memory_string = " {0} KB, {1} MB".format(memory_in_kbs,
+                                                     memory_in_mbs)
 
             if self._cache_last_memory is None:
                 self._cache_last_memory = memory_in_kbs
@@ -214,7 +212,8 @@ class Helper(object):
 
         # will be printed on level 3 only
         if self._verbosity >= 3:
-            print_string += " Memory usage before execution: " + self.get_memory_usage_linux()
+            print_string += " Memory usage before execution: " + self.get_memory_usage_linux(
+            )
 
         self.tomo_print(self._timer_print_prefix + print_string, verbosity)
 
@@ -234,11 +233,12 @@ class Helper(object):
         if self._verbosity >= 2:
             self._timer_running = False
             timer_string = str(time.time() - self._timer_start)
-            print_string += (message + " Elapsed time: " +
-                             timer_string + " sec.")
+            print_string += (
+                message + " Elapsed time: " + timer_string + " sec.")
 
         if self._verbosity >= 3:
-            print_string += " Memory usage after execution: " + self.get_memory_usage_linux()
+            print_string += " Memory usage after execution: " + self.get_memory_usage_linux(
+            )
 
         self.tomo_print(self._timer_print_prefix + print_string, verbosity)
 
@@ -277,7 +277,8 @@ class Helper(object):
                 from tqdm import tqdm
                 if self._progress_bar is not None:
                     raise ValueError(
-                        "Timer was not closed previously. Please do prog_close()!")
+                        "Timer was not closed previously. Please do prog_close()!"
+                    )
                 self._progress_bar = tqdm(
                     total=total, desc=desc, ascii=ascii, unit=unit)
             except ImportError:
@@ -314,18 +315,15 @@ class Helper(object):
             if a is None or a is False:
                 return
 
-        from recon.data.saver import Saver
+        from imgdata.saver import Saver
 
         saver = Saver(config)
         saver._img_format = 'fits'  # force fits files
-        saver.save_single_image(
-            sample, subdir=path_append, name='sample')
+        saver.save_single_image(sample, subdir=path_append, name='sample')
 
         saver._data_as_stack = True  # force data as stack to save out single images
         if flat is not None:
-            saver.save_single_image(
-                flat, subdir=path_append, name='flat')
+            saver.save_single_image(flat, subdir=path_append, name='flat')
 
         if dark is not None:
-            saver.save_single_image(
-                dark, subdir=path_append, name='dark')
+            saver.save_single_image(dark, subdir=path_append, name='dark')

@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class MedianTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(MedianTest, self).__init__(*args, **kwargs)
 
@@ -13,9 +12,9 @@ class MedianTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import median_filter
+        from filters import median_filter
         self.alg = median_filter
 
         self.h = Helper(r)

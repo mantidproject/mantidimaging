@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class RebinTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
@@ -13,9 +12,9 @@ class RebinTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import rebin
+        from filters import rebin
         self.alg = rebin
 
         self.h = Helper(r)
@@ -72,6 +71,7 @@ class RebinTest(unittest.TestCase):
         result = self.alg.execute(images, rebin, mode, h=helper)
         npt.assert_equal(result.shape[1], expected_shape)
         npt.assert_equal(result.shape[2], expected_shape)
+
 
 if __name__ == '__main__':
     unittest.main()

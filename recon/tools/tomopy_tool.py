@@ -47,7 +47,7 @@ class TomoPyTool(AbstractTool):
 
     def run_reconstruct(self, data, config, h, proj_angles=None, **kwargs):
         import numpy as np
-        from recon.helper import Helper
+        from helper import Helper
         h = Helper.empty_init() if h is None else h
 
         h.check_data_stack(data)

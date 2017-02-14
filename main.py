@@ -21,7 +21,6 @@ from __future__ import (absolute_import, division, print_function)
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
-
 """
 Do a tomographic reconstruction, including:
 - Pre-processing of input raw images,
@@ -58,8 +57,11 @@ def main():
     if config.func.debug:
         if config.func.debug_port is not None:
             import pydevd
-            pydevd.settrace('localhost', port=config.func.debug_port,
-                            stdoutToServer=True, stderrToServer=True)
+            pydevd.settrace(
+                'localhost',
+                port=config.func.debug_port,
+                stdoutToServer=True,
+                stderrToServer=True)
 
     if config.func.find_cor:
         # run find_center stuff
@@ -71,6 +73,9 @@ def main():
     elif config.func.aggregate:
         from aggregate import runner
         res = runner.execute(config)
+    elif config.func.convert:
+        from convert import runner
+        res = runner.execute(config)
     else:
         # run recon stuff
         from recon import runner
@@ -78,6 +83,7 @@ def main():
         res = runner.execute(config, cmd_line)
 
     return res
+
 
 if __name__ == '__main__':
     main()

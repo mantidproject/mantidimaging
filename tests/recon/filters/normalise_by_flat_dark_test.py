@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class NormaliseByFlatDarkTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(NormaliseByFlatDarkTest, self).__init__(*args, **kwargs)
 
@@ -13,9 +12,9 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import normalise_by_flat_dark
+        from filters import normalise_by_flat_dark
         self.alg = normalise_by_flat_dark
 
         self.h = Helper(r)
@@ -38,11 +37,11 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         th.assert_equals(images, control)
 
         # bad flat
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, flat[0], dark, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, flat[0], dark, h=self.h)
         # bad dark
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, flat, dark[0], h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, flat, dark[0], h=self.h)
 
     def test_executed_par(self):
         self.do_execute(self.h)
@@ -79,6 +78,20 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         control = np.zeros(1000).reshape(10, 10, 10)
         result = self.alg.execute(images, flat, dark, 0, 0, h=helper)
         npt.assert_equal(result, control)
+
+    def test_real_result(self):
+        # the operation is (sample - dark) / (flat - dark)
+        sample = th.gen_img_shared_array()
+        sample[:] = 846.
+        flat = th.gen_img_shared_array()[0]
+        flat[:] = 26.
+        dark = th.gen_img_shared_array()[0]
+        dark[:] = 6.
+        expected = np.full(sample.shape, 42.)
+
+        # we dont want anything to be cropped out
+        res = self.alg.execute(sample, flat, dark, 0, 1000, h=helper)
+
 
 if __name__ == '__main__':
     unittest.main()

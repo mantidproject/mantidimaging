@@ -5,7 +5,6 @@ from tests.recon import test_helper as th
 
 
 class NormaliseByAirRegionTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(NormaliseByAirRegionTest, self).__init__(*args, **kwargs)
 
@@ -13,9 +12,9 @@ class NormaliseByAirRegionTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import normalise_by_air_region
+        from filters import normalise_by_air_region
         self.alg = normalise_by_air_region
 
         h = self.h = Helper(r)
@@ -36,22 +35,22 @@ class NormaliseByAirRegionTest(unittest.TestCase):
         # invalid air region type
         air = '[1,1,1,1]'
         roi = [1, 1, 8, 8]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
         # invalid roi region type
         roi = '[1,2,3,4]'
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
         # invalid data shape
         import numpy as np
         images = np.arange(100).reshape(10, 10)
         roi = [1, 1, 8, 8]
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
     def test_not_executed_with_crop_before_norm(self):
         # Duplicated code because 'nose.main()' failed to run it properly
@@ -67,28 +66,28 @@ class NormaliseByAirRegionTest(unittest.TestCase):
         # invalid air region type
         air = '[1,1,1,1]'
         roi = [1, 1, 8, 8]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
         # invalid air region coords
         air = [13, 13, 13, 31]
         roi = [1, 1, 8, 8]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
         # invalid roi region type
         roi = '[1,2,3,4]'
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
         # invalid data type
         import numpy as np
         images = np.arange(100).reshape(10, 10)
         roi = [1, 1, 8, 8]
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, self.alg.execute,
-                          images, air, roi, crop, h=self.h)
+        npt.assert_raises(
+            ValueError, self.alg.execute, images, air, roi, crop, h=self.h)
 
     def test_executed_par(self):
         self.do_execute(self.h)
@@ -120,7 +119,7 @@ class NormaliseByAirRegionTest(unittest.TestCase):
         roi = [1, 1, 8, 8]
         air = [3, 3, 4, 4]
         crop = False
-        result = self.alg.execute(images, air, roi, crop,  h=helper)
+        result = self.alg.execute(images, air, roi, crop, h=helper)
         th.assert_not_equals(result, control)
 
 

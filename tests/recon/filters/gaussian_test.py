@@ -17,9 +17,9 @@ class GaussianTest(unittest.TestCase):
         from recon.configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
-        from recon.helper import Helper
+        from helper import Helper
 
-        from recon.filters import gaussian
+        from filters import gaussian
         self.alg = gaussian
 
         self.h = Helper(r)
