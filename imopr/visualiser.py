@@ -1,11 +1,11 @@
 from __future__ import (absolute_import, division, print_function)
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
 
 
 def execute(sample, flat, dark, config, indices):
     from imopr import helper
     helper.print_start("Running IMOPR with action VISUALISE/SHOW")
+    import matplotlib.pyplot as plt
+
     if len(indices) <= 1:
         show_image(sample[indices[0]])
     else:
@@ -23,6 +23,8 @@ def show_3d(cube, axis=0, cmap='Greys_r', block=False, **kwargs):
 
     Source: http://nbarbey.github.io/2011/07/08/matplotlib-slider.html
     """
+    from matplotlib.widgets import Slider
+    import matplotlib.pyplot as plt
 
     # check dim
     if not cube.ndim == 3:
@@ -66,5 +68,38 @@ def show_3d(cube, axis=0, cmap='Greys_r', block=False, **kwargs):
 
 
 def show_image(image, cmap='Greys_r', block=False):
+    import matplotlib.pyplot as plt
     plt.imshow(image, cmap=cmap)
     plt.show(block)
+
+
+def stop_python_exit():
+    import matplotlib.pyplot as plt
+    plt.show()
+
+
+class Annotate(object):
+    def __init__(self, fig):
+        from matplotlib.patches import Rectangle
+        self.fig = fig
+        self.rect = Rectangle((0, 0), 1, 1)
+        self.x0 = None
+        self.y0 = None
+        self.x1 = None
+        self.y1 = None
+        self.fig.canvas.mpl_connect('button_press_event', self.on_press)
+        self.fig.canvas.mpl_connect('button_release_event', self.on_release)
+
+    def on_press(self, event):
+        print('press')
+        self.x0 = event.xdata
+        self.y0 = event.ydata
+
+    def on_release(self, event):
+        print('release')
+        self.x1 = event.xdata
+        self.y1 = event.ydata
+        self.rect.set_width(self.x1 - self.x0)
+        self.rect.set_height(self.y1 - self.y0)
+        self.rect.set_xy((self.x0, self.y0))
+        self.fig.canvas.draw()

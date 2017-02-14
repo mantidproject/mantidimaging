@@ -174,7 +174,8 @@ def import_skimage_io():
     """
     try:
         from skimage import io as skio
-        skio.use_plugin('tifffile')  # TODO if broken use freeimage
+        # tifffile works better on local, but not available on scarf
+        skio.use_plugin('freeimage')
     except ImportError as exc:
         raise ImportError(
             "Could not find the package skimage, its subpackage "

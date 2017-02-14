@@ -15,7 +15,6 @@ def execute(sample, flat, dark, config, indices):
 
     from imopr.sinogram import make_sinogram
     sample = make_sinogram(sample)
-    from imopr.visualiser import show_3d
 
     i1, i2 = helper.handle_indices(indices)
 
@@ -27,10 +26,6 @@ def execute(sample, flat, dark, config, indices):
         proj_angles=proj_angles)
 
     from imopr.visualiser import show_3d
-    show_3d(sample, 0)
-
-    # stop python from exiting
-    import matplotlib.pyplot as plt
-    plt.show()
+    show_3d(sample, 0, block=True)
 
     return sample

@@ -1,12 +1,12 @@
 import nose
-from tests.recon import test_helper as th
+from tests import test_helper as th
 _avail_modules = {
-    'filters': 'tests/recon/filters/',
+    'filters': 'tests/filters_test/',
     'configs': 'tests/recon/configs_test.py',
     'config': 'tests/recon/configs_test.py',
-    'data': 'tests/recon/data_test.py',
-    'helper': 'tests/recon/helper_test.py',
-    'parallel': 'tests/parallel/',
+    'data': 'tests/data_test.py',
+    'helper': 'tests/helper_test.py',
+    'parallel': 'tests/parallel_test/',
     'all': 'tests/'
 }
 

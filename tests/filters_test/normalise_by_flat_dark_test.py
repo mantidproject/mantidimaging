@@ -80,6 +80,11 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         npt.assert_equal(result, control)
 
     def test_real_result(self):
+        th.switch_mp_off()
+        self.do_execute(None)
+        th.switch_mp_on()
+
+    def do_real_result(self, helper):
         # the operation is (sample - dark) / (flat - dark)
         sample = th.gen_img_shared_array()
         sample[:] = 846.
@@ -92,6 +97,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
 
         # we dont want anything to be cropped out
         res = self.alg.execute(sample, flat, dark, 0, 1000, h=self.h)
+        th.assert_equals(res, expected)
 
 
 if __name__ == '__main__':

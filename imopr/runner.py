@@ -17,15 +17,15 @@ def execute(config):
 
     from imgdata import loader
     sample, flat, dark = loader.load_data(config, h)
-
     # the [:] is necessary to get the actual data and not just the nxs header
     # sample = loader.nxsread(config.func.input_path)[:]
+
     h.tomo_print("Data shape {0}".format(sample.shape))
     flat, dark = None, None
 
     # from recon.runner import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)
-    return action(sample, None, None, config, indices)
+    return action(sample, flat, dark, config, indices)
 
 
 def get_function(string):

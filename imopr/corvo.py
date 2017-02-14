@@ -22,13 +22,18 @@ def execute(sample, flat, dark, config, indices):
 
     initial_guess = config.func.cor if config.func.cor is not None else None
 
-    for i in range(i1, i2):
-        cor = tool.find_center_vo(
-            tomo=sample, ind=None, smin=-40, smax=40, srad=10, step=1, ratio=2.0, drop=20)
-        print(cor)
-
-    # stop python from exiting
-    import matplotlib.pyplot as plt
-    plt.show()
+    # This works on sinograms by default. 
+    # Thankfully it's not said anywhere, but the code gets the sinogram
+    # in tomopy.rotation.py find_center_vo(...)
+    cor = tool.find_center_vo(
+        tomo=sample,
+        ind=i1,
+        smin=243,
+        smax=294,
+        srad=20,
+        step=1,
+        ratio=1.0,
+        drop=0)
+    print(cor)
 
     return sample

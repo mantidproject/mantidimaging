@@ -267,17 +267,19 @@ class Saver(object):
                                    name_postfix=''):
         if self._img_format in ['tif', 'tiff']:
             extension = '.tiff'
+            write_func = write_img
         else:
             if self._img_format in ['nxs']:
                 self._h.tomo_print_error(
                     "Cannot save out individual NXS files. Saving out FITS instead."
                 )
             extension = '.fits'
+            write_func = write_fits
 
         for idx in range(0, data.shape[0]):
             name = create_image_name(custom_idx, idx, name_prefix, zfill_len,
                                      name_postfix, extension)
-            write_img(data[idx, :, :],
+            write_func(data[idx, :, :],
                       os.path.join(output_dir, name), self._overwrite_all)
 
     def _save_out_stack(self,
