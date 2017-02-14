@@ -280,7 +280,7 @@ class Saver(object):
             name = create_image_name(custom_idx, idx, name_prefix, zfill_len,
                                      name_postfix, extension)
             write_func(data[idx, :, :],
-                      os.path.join(output_dir, name), self._overwrite_all)
+                       os.path.join(output_dir, name), self._overwrite_all)
 
     def _save_out_stack(self,
                         data,
@@ -334,5 +334,5 @@ class Saver(object):
             os.makedirs(path)
         elif os.listdir(path) and not self._overwrite_all:
             raise RuntimeError(
-                "The output directory is NOT empty! This can be overridden with -w/--overwrite-all"
-            )
+                "The output directory is NOT empty:{0}\n. This can be overridden with -w/--overwrite-all.".
+                format(path))

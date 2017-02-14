@@ -107,7 +107,7 @@ def do_sanity_checks(output_path, agg_method, commands):
     if len(commands) % 2 != 0:
         raise ValueError(
             "The length of energy levels must be an even number, the submission format is \
-            --aggregate <start> <end> <method:{sum, avg}>...: --aggregate 1 100 101 200 201 300 sum"
+            --aggregate <start> <end>... <method:{sum, avg}>: --aggregate 1 100 101 200 201 300 sum"
         )
 
 
