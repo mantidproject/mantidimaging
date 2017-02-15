@@ -58,13 +58,13 @@ def switch_mp_off():
     But it's a unit test so it's fine.
     """
     from parallel import utility as pu
-    # backup function
+    # backup function so we can restore it
     global backup_mp_avail
     backup_mp_avail = pu.multiprocessing_available
 
     def simple_return_false():
         return False
-    # do bad things
+    # do bad things, swap out the function to one that returns false
     pu.multiprocessing_available = simple_return_false
 
 
@@ -74,4 +74,5 @@ def switch_mp_on():
     But it's a unit test so it's fine.
     """
     from parallel import utility as pu
+    # restore the original backed up function from switch_mp_off
     pu.multiprocessing_available = backup_mp_avail

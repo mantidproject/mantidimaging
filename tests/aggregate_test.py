@@ -122,7 +122,7 @@ class AggregateTest(unittest.TestCase):
                 saver.save(images, angle_path, 'out_angle', flat, dark)
 
             # aggregate them
-            from aggregate import runner
+            from aggregate import aggregate
             conf = self.h.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (aggregate_angles is 5 so we subtract 1)
@@ -134,7 +134,7 @@ class AggregateTest(unittest.TestCase):
             conf.func.output_path = aggregate_output_path
             conf.func.overwrite_all = True
             conf.func.convert_prefix = 'aggregated'
-            runner.execute(conf)
+            aggregate.execute(conf)
 
             # load them back
             # compare data to original
@@ -196,7 +196,7 @@ class AggregateTest(unittest.TestCase):
                 saver.save(images, angle_paths[i], 'out_angle', flat, dark)
 
             # aggregate them
-            from aggregate import runner
+            from aggregate import aggregate
             conf = self.h.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (starts from 0 so -1)
@@ -208,7 +208,7 @@ class AggregateTest(unittest.TestCase):
             conf.func.output_path = aggregate_output_path
             conf.func.overwrite_all = True
             conf.func.convert_prefix = 'aggregated'
-            runner.execute(conf)
+            aggregate.execute(conf)
 
             # load them back
             # compare data to original

@@ -5,6 +5,7 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 AbstractTool	recon/tools/abstract_tool.py	/^class AbstractTool:$/;"	kind:class	line:4
+AggregateTest	tests/aggregate_test.py	/^class AggregateTest(unittest.TestCase):$/;"	kind:class	line:7
 Annotate	imopr/visualiser.py	/^class Annotate(object):$/;"	kind:class	line:81
 AstraTool	recon/tools/astra_tool.py	/^class AstraTool(AbstractTool):$/;"	kind:class	line:5
 CircularMaskTest	tests/filters_test/circular_mask_test.py	/^class CircularMaskTest(unittest.TestCase):$/;"	kind:class	line:7
@@ -53,7 +54,8 @@ __init__	recon/custom_timer.py	/^    def __init__(self, total, prefix=''):$/;"	k
 __init__	recon/tools/abstract_tool.py	/^    def __init__(self):$/;"	kind:member	line:10
 __init__	recon/tools/astra_tool.py	/^    def __init__(self):$/;"	kind:member	line:15
 __init__	recon/tools/tomopy_tool.py	/^    def __init__(self):$/;"	kind:member	line:12
-__init__	tests/convert_test.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:8
+__init__	tests/aggregate_test.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:8
+__init__	tests/convert_test.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:13
 __init__	tests/filters_test/circular_mask_test.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:8
 __init__	tests/filters_test/crop_coords_test.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:8
 __init__	tests/filters_test/gaussian_test.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:13
@@ -90,6 +92,7 @@ _alphanum_key_split	imgdata/loader.py	/^def _alphanum_key_split(path_str):$/;"	k
 _apply_normalise	filters/normalise_by_flat_dark.py	/^def _apply_normalise(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):$/;"	kind:function	line:11
 _apply_normalise_inplace	filters/normalise_by_flat_dark.py	/^def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):$/;"	kind:function	line:6
 _avail_modules	run_tests.py	/^_avail_modules = {$/;"	kind:variable	line:3
+_available_operators	imopr/opr.py	/^_available_operators = {$/;"	kind:variable	line:2
 _calc_air_sum	filters/normalise_by_air_region.py	/^def _calc_air_sum(data,$/;"	kind:function	line:35
 _calc_mask	filters/circular_mask.py	/^def _calc_mask(ydim, xdim, ratio):$/;"	kind:function	line:48
 _check_air_region_in_bounds	filters/normalise_by_air_region.py	/^def _check_air_region_in_bounds(air_bottom, air_left, air_right, air_top,$/;"	kind:function	line:200
@@ -144,7 +147,8 @@ apply_filter	filters/adjust_range.py	/^def apply_filter(tool, preproc_data, cfg)
 args	pyreader/fits_to_nexus.py	/^	args = parser.parse_args()$/;"	kind:variable	line:52
 args	pyreader/tif_to_nexus.py	/^	args = parser.parse_args()$/;"	kind:variable	line:52
 assert_equals	tests/test_helper.py	/^def assert_equals(thing1, thing2):$/;"	kind:function	line:31
-assert_files_exist	tests/convert_test.py	/^    def assert_files_exist(self,$/;"	kind:member	line:53
+assert_files_exist	tests/aggregate_test.py	/^    def assert_files_exist(self,$/;"	kind:member	line:65
+assert_files_exist	tests/convert_test.py	/^    def assert_files_exist(self,$/;"	kind:member	line:58
 assert_files_exist	tests/imgdata_test.py	/^    def assert_files_exist(self,$/;"	kind:member	line:23
 assert_not_equals	tests/test_helper.py	/^def assert_not_equals(thing1, thing2):$/;"	kind:function	line:35
 astra_reconstruct	recon/tools/astra_tool.py	/^    def astra_reconstruct(self, data, config):$/;"	kind:member	line:116
@@ -174,7 +178,8 @@ create_image_name	imgdata/saver.py	/^def create_image_name(custom_idx, idx, name
 create_partial	parallel/exclusive_mem.py	/^def create_partial(func, **kwargs):$/;"	kind:function	line:9
 create_partial	parallel/shared_mem.py	/^def create_partial(func, fwd_function=fwd_func, **kwargs):$/;"	kind:function	line:58
 create_partial	parallel/two_shared_mem.py	/^def create_partial(func, fwd_function=inplace_fwd_func, **kwargs):$/;"	kind:function	line:123
-create_saver	tests/convert_test.py	/^    def create_saver(self):$/;"	kind:member	line:19
+create_saver	tests/aggregate_test.py	/^    def create_saver(self):$/;"	kind:member	line:19
+create_saver	tests/convert_test.py	/^    def create_saver(self):$/;"	kind:member	line:24
 create_saver	tests/imgdata_test.py	/^    def create_saver(self):$/;"	kind:member	line:19
 create_shared_array	parallel/utility.py	/^def create_shared_array(shape, dtype=np.float32):$/;"	kind:function	line:7
 crop_coords.py	filters/crop_coords.py	1;"	kind:file	line:1
@@ -185,11 +190,15 @@ data	other/python_multithreading_attempts.py	/^data = np.full((30, 1000, 1000), 
 debug	tests/test_helper.py	/^def debug(switch=True):$/;"	kind:function	line:48
 debug_print_memory_usage_linux	helper.py	/^    def debug_print_memory_usage_linux(message=""):$/;"	kind:member	line:86
 deepcopy	tests/test_helper.py	/^def deepcopy(source):$/;"	kind:function	line:39
-delete_files	tests/convert_test.py	/^    def delete_files(self, prefix=''):$/;"	kind:member	line:23
+delete_files	tests/aggregate_test.py	/^    def delete_files(self, prefix=''):$/;"	kind:member	line:23
+delete_files	tests/convert_test.py	/^    def delete_files(self, prefix=''):$/;"	kind:member	line:28
 delete_files	tests/imgdata_test.py	/^    def delete_files(self, prefix=''):$/;"	kind:member	line:44
+do_aggregate_not_single_folder	tests/aggregate_test.py	/^    def do_aggregate_not_single_folder(self,$/;"	kind:member	line:164
+do_aggregate_single_folder	tests/aggregate_test.py	/^    def do_aggregate_single_folder(self,$/;"	kind:member	line:91
 do_aggregating	aggregate/runner.py	/^def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,$/;"	kind:function	line:51
-do_convert	tests/convert_test.py	/^    def do_convert(self, img_format, convert_format, stack, parallel=False):$/;"	kind:member	line:88
-do_convert_nxs	tests/convert_test.py	/^    def do_convert_nxs(self, img_format, convert_format, stack, parallel=False):$/;"	kind:member	line:141
+do_convert	tests/convert_test.py	/^    def do_convert(self, img_format, convert_format, stack, parallel=False):$/;"	kind:member	line:105
+do_convert_from_nxs	tests/convert_test.py	/^    def do_convert_from_nxs(self, img_format, convert_format, stack):$/;"	kind:member	line:239
+do_convert_to_nxs	tests/convert_test.py	/^    def do_convert_to_nxs(self, img_format, convert_format, stack):$/;"	kind:member	line:167
 do_execute	tests/filters_test/normalise_by_air_region_test.py	/^    def do_execute(self, helper):$/;"	kind:member	line:108
 do_execute	tests/filters_test/normalise_by_flat_dark_test.py	/^    def do_execute(self, helper):$/;"	kind:member	line:62
 do_execute	tests/filters_test/rebin_test.py	/^    def do_execute(self, helper):$/;"	kind:member	line:59
@@ -260,6 +269,7 @@ gen_img_shared_array	tests/test_helper.py	/^def gen_img_shared_array(shape=(10, 
 gen_img_shared_array_and_copy	tests/test_helper.py	/^def gen_img_shared_array_and_copy(shape=(10, 10, 10)):$/;"	kind:function	line:13
 generate_indices	parallel/utility.py	/^def generate_indices(num_images):$/;"	kind:function	line:37
 get_angle_folders	aggregate/runner.py	/^def get_angle_folders(input_path, img_format, selected_angles):$/;"	kind:function	line:149
+get_available_operations	imopr/opr.py	/^def get_available_operations():$/;"	kind:function	line:13
 get_data_average	imgdata/img_loader.py	/^def get_data_average(data):$/;"	kind:function	line:192
 get_file_names	imgdata/loader.py	/^def get_file_names(path, img_format, prefix=''):$/;"	kind:function	line:187
 get_folder_names	imgdata/loader.py	/^def get_folder_names(path, prefix=''):$/;"	kind:function	line:208
@@ -319,6 +329,7 @@ nxs_loader.py	imgdata/nxs_loader.py	1;"	kind:file	line:1
 nxsread	imgdata/loader.py	/^def nxsread(filename):$/;"	kind:function	line:140
 on_press	imopr/visualiser.py	/^    def on_press(self, event):$/;"	kind:member	line:93
 on_release	imopr/visualiser.py	/^    def on_release(self, event):$/;"	kind:member	line:98
+opr.py	imopr/opr.py	1;"	kind:file	line:1
 outliers.py	filters/outliers.py	1;"	kind:file	line:1
 outliers_test.py	tests/filters_test/outliers_test.py	1;"	kind:file	line:1
 parallel_move_data	imgdata/loader.py	/^def parallel_move_data(input_data, output_data):$/;"	kind:function	line:249
@@ -397,14 +408,23 @@ supported_formats	imgdata/loader.py	/^def supported_formats():$/;"	kind:function
 supported_formats	imgdata/saver.py	/^    def supported_formats():$/;"	kind:member	line:78
 switch_mp_off	tests/test_helper.py	/^def switch_mp_off():$/;"	kind:function	line:55
 switch_mp_on	tests/test_helper.py	/^def switch_mp_on():$/;"	kind:function	line:71
-tearDown	tests/convert_test.py	/^    def tearDown(self):$/;"	kind:member	line:32
+tearDown	tests/aggregate_test.py	/^    def tearDown(self):$/;"	kind:member	line:32
+tearDown	tests/convert_test.py	/^    def tearDown(self):$/;"	kind:member	line:37
 tearDown	tests/imgdata_test.py	/^    def tearDown(self):$/;"	kind:member	line:53
-test_convert_fits_fits_nostack	tests/convert_test.py	/^    def test_convert_fits_fits_nostack(self):$/;"	kind:member	line:73
-test_convert_fits_fits_stack	tests/convert_test.py	/^    def test_convert_fits_fits_stack(self):$/;"	kind:member	line:76
-test_convert_fits_nxs_stack	tests/convert_test.py	/^    def test_convert_fits_nxs_stack(self):$/;"	kind:member	line:138
-test_convert_fits_tiff_nostack	tests/convert_test.py	/^    def test_convert_fits_tiff_nostack(self):$/;"	kind:member	line:79
-test_convert_fits_tiff_stack	tests/convert_test.py	/^    def test_convert_fits_tiff_stack(self):$/;"	kind:member	line:82
-test_convert_fits_tiff_stack	tests/convert_test.py	/^    def test_convert_fits_tiff_stack(self):$/;"	kind:member	line:85
+test_aggregate_not_single_folder_avg	tests/aggregate_test.py	/^    def test_aggregate_not_single_folder_avg(self):$/;"	kind:member	line:161
+test_aggregate_not_single_folder_sum	tests/aggregate_test.py	/^    def test_aggregate_not_single_folder_sum(self):$/;"	kind:member	line:158
+test_aggregate_single_folder_avg	tests/aggregate_test.py	/^    def test_aggregate_single_folder_avg(self):$/;"	kind:member	line:88
+test_aggregate_single_folder_sum	tests/aggregate_test.py	/^    def test_aggregate_single_folder_sum(self):$/;"	kind:member	line:85
+test_convert_fits_fits_nostack	tests/convert_test.py	/^    def test_convert_fits_fits_nostack(self):$/;"	kind:member	line:77
+test_convert_fits_fits_stack	tests/convert_test.py	/^    def test_convert_fits_fits_stack(self):$/;"	kind:member	line:84
+test_convert_fits_nxs_stack	tests/convert_test.py	/^    def test_convert_fits_nxs_stack(self):$/;"	kind:member	line:157
+test_convert_fits_tiff_nostack	tests/convert_test.py	/^    def test_convert_fits_tiff_nostack(self):$/;"	kind:member	line:91
+test_convert_fits_tiff_stack	tests/convert_test.py	/^    def test_convert_fits_tiff_stack(self):$/;"	kind:member	line:98
+test_convert_nxs_fits_nostack	tests/convert_test.py	/^    def test_convert_nxs_fits_nostack(self):$/;"	kind:member	line:231
+test_convert_nxs_fits_stack	tests/convert_test.py	/^    def test_convert_nxs_fits_stack(self):$/;"	kind:member	line:223
+test_convert_nxs_tiff_nostack	tests/convert_test.py	/^    def test_convert_nxs_tiff_nostack(self):$/;"	kind:member	line:235
+test_convert_nxs_tiff_stack	tests/convert_test.py	/^    def test_convert_nxs_tiff_stack(self):$/;"	kind:member	line:227
+test_convert_tiff_nxs_stack	tests/convert_test.py	/^    def test_convert_tiff_nxs_stack(self):$/;"	kind:member	line:162
 test_do_recon_fits	tests/imgdata_test.py	/^    def test_do_recon_fits(self):$/;"	kind:member	line:171
 test_do_recon_fits_horiz	tests/imgdata_test.py	/^    def test_do_recon_fits_horiz(self):$/;"	kind:member	line:177
 test_do_recon_tiff	tests/imgdata_test.py	/^    def test_do_recon_tiff(self):$/;"	kind:member	line:174

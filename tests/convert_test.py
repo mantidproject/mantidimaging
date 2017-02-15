@@ -123,7 +123,7 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from convert import runner
+            from convert import convert
             conf = self.h.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -132,7 +132,7 @@ class ConvertTest(unittest.TestCase):
             conf.func.out_format = convert_format
             conf.func.data_as_stack = stack
             conf.func.convert_prefix = 'converted'
-            runner.execute(conf)
+            convert.execute(conf)
 
             # load them back
             # compare data to original
@@ -187,7 +187,7 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from convert import runner
+            from convert import convert
             conf = self.h.config
             conf.func.input_path = preproc_output_path
             conf.func.input_path_flat = preproc_output_path + '/flat'
@@ -198,7 +198,7 @@ class ConvertTest(unittest.TestCase):
             conf.func.out_format = convert_format
             conf.func.data_as_stack = stack
             conf.func.convert_prefix = 'converted'
-            runner.execute(conf)
+            convert.execute(conf)
 
             # load them back
             # compare data to original
@@ -258,7 +258,7 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from convert import runner
+            from convert import convert
             conf = self.h.config
             conf.func.input_path = preproc_output_path
             conf.func.input_path_flat = preproc_output_path
@@ -269,7 +269,7 @@ class ConvertTest(unittest.TestCase):
             conf.func.out_format = convert_format
             conf.func.data_as_stack = stack
             conf.func.convert_prefix = 'converted'
-            runner.execute(conf)
+            convert.execute(conf)
             # load them back
             # compare data to original
             from imgdata import loader

@@ -32,21 +32,25 @@ def get_function(string):
     if string == "recon":
         from imopr import recon
         return recon.execute
-    if string == "sino":
+    elif string == "sino":
         from imopr import sinogram
         return sinogram.execute
-    if string == "show" or string == "vis":
+    elif string == "show" or string == "vis":
         from imopr import visualiser
         return visualiser.execute
-    if string == "cor":
+    elif string == "cor":
         from imopr import cor
         return cor.execute
-    if string == "corvo":
+    elif string == "corvo":
         from imopr import corvo
         return corvo.execute
-    if string == "corpc":
+    elif string == "corpc":
         from imopr import corpc
         return corpc.execute
-    if string == "corwrite":
+    elif string == "corwrite":
         from imopr import corwrite
         return corwrite.execute
+    else:
+        from imopr import opr
+        if string in ops.get_available_operators():
+            return opr.execute
