@@ -1,6 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-from imopr.sinogram import make_sinogram
-import numpy as np
 
 
 def print_start(action_name):

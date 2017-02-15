@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
 
 
 def execute(config):
-    commands = config.func.imopr
+    # use [:] to get a copy of the list
+    commands = config.func.imopr[:]
 
     action = get_function(commands.pop())
 
@@ -52,5 +52,13 @@ def get_function(string):
         return corwrite.execute
     else:
         from imopr import opr
-        if string in ops.get_available_operators():
+
+        # this version I like more, but it requires more work in opr.py
+        # to extract the function as it cannot simply be used for a key
+        # if True in [
+        #         True if string in operator else False
+        #         for operator in opr.get_available_operators()
+        # ]:
+        # the reasonable version
+        if string in opr.get_available_operators():
             return opr.execute
