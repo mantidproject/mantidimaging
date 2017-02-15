@@ -1,10 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 
+import numpy as np
 
 
 def create_shared_array(shape, dtype=np.float32):
     import multiprocessing
-    import numpy as np
     import ctypes
 
     ctype = ctypes.c_float  # default to numpy float32 / C type float
@@ -39,6 +39,11 @@ def get_cores():
     return multiprocessing.cpu_count()
 
 def generate_indices(num_images):
+    """
+    Generate indices for each image.
+    :param num_images:
+    :return:
+    """
     return range(num_images)
 
 
