@@ -9,7 +9,7 @@ verbosity: Default 2, existing levels:
     2 - Normal verbosity, will output each step and execution time
     3 - High verbosity, will output the step name, execution time and memory usage before and after each step
 """
-from recon.configs.recon_config import ReconstructionConfig
+from configs.recon_config import ReconstructionConfig
 
 
 class Helper(object):

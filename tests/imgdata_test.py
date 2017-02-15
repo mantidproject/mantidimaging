@@ -9,7 +9,7 @@ class DataTest(unittest.TestCase):
         super(DataTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from recon.configs.recon_config import ReconstructionConfig
+        from configs.recon_config import ReconstructionConfig
         self.r = ReconstructionConfig.empty_init()
         self.r.func.verbosity = 0
         from helper import Helper

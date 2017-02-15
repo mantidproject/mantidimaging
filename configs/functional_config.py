@@ -53,10 +53,10 @@ class FunctionalConfig(object):
 
         self.overwrite_all = False
 
-        # Reconstruction options
         self.debug = True
         self.debug_port = None
 
+        # Reconstruction options
         self.tool = 'tomopy'
         self.algorithm = 'gridrec'
         self.num_iter = 5
@@ -68,10 +68,16 @@ class FunctionalConfig(object):
         # how to spread the image load per worker
         self.chunksize = None
         self.parallel_load = False
+
+        # imopr
         self.imopr = None
+
+        # aggregate
         self.aggregate = None
         self.aggregate_angles = None
         self.aggregate_single_folder_output = None
+
+        # convert
         self.convert = False
         self.convert_prefix = 'converted_images'
 

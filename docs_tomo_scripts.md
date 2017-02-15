@@ -294,7 +294,7 @@ from filters import rotate_stack as rs
 import numpy as np
 import matplotlib.pyplot as plt
 import tomopy
-from recon.configs.recon_config import ReconstructionConfig
+from configs.recon_config import ReconstructionConfig
 
 config = ReconstructionConfig.emtpy_init()
 

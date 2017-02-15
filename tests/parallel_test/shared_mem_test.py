@@ -17,7 +17,7 @@ class SharedMemTest(unittest.TestCase):
         super(SharedMemTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from recon.configs.recon_config import ReconstructionConfig
+        from configs.recon_config import ReconstructionConfig
         r = ReconstructionConfig.empty_init()
         r.func.verbosity = 0
         from helper import Helper

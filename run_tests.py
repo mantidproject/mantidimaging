@@ -2,8 +2,8 @@ import nose
 from tests import test_helper as th
 _avail_modules = {
     'filters': 'tests/filters_test/',
-    'configs': 'tests/recon/configs_test.py',
-    'config': 'tests/recon/configs_test.py',
+    'configs': 'tests/configs_test.py',
+    'config': 'tests/configs_test.py',
     'data': 'tests/data_test.py',
     'helper': 'tests/helper_test.py',
     'parallel': 'tests/parallel_test/',

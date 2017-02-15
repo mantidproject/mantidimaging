@@ -13,6 +13,8 @@ def execute(config):
 
     from imgdata import loader
     sample, flat, dark = loader.load_data(config, h)
+    
+    # save out in the main output directory, no subdirectories
     s.save(
         sample,
         output_dir,
