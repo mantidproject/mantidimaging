@@ -41,15 +41,29 @@ class TomoPyTool(AbstractTool):
 
         return tomopy
 
-    def run_reconstruct(self, data, config, h, proj_angles=None, **kwargs):
+    def run_reconstruct(self, sample, config, h=None, proj_angles=None,
+                        **kwargs):
+        """
+        Run a reconstruction with TomoPy, using the CPU algorithms they provide.
+
+        Information for each reconstruction method is available at
+        http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
+
+        :param sample: The sample image data as a 3D numpy.ndarray
+        :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
+        :param h: Helper class, if not provided will be initialised with empty constructor
+        :param proj_angles: The projection angle for each slice
+        :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
+        :return: The reconstructed volume
+        """
         import numpy as np
         from helper import Helper
-        h = Helper.empty_init() if h is None else h
-
-        h.check_data_stack(data)
+        h = Helper(config) if h is None else h
+        h.check_config_integrity(config)
+        h.check_data_stack(sample)
 
         if proj_angles is None:
-            num_proj = data.shape[0]
+            num_proj = sample.shape[0]
             inc = float(config.func.max_angle) / num_proj
             proj_angles = np.arange(0, num_proj * inc, inc)
             proj_angles = np.radians(proj_angles)
@@ -67,7 +81,7 @@ class TomoPyTool(AbstractTool):
                 "number of iterations: {2}...".format(cor, alg, num_iter))
 
             recon = self._tomopy.recon(
-                tomo=data,
+                tomo=sample,
                 theta=proj_angles,
                 center=cor,
                 algorithm=alg,
@@ -80,7 +94,7 @@ class TomoPyTool(AbstractTool):
                 "Starting non-iterative reconstruction algorithm with TomoPy. "
                 "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
             recon = self._tomopy.recon(
-                tomo=data[:],
+                tomo=sample[:],
                 theta=proj_angles,
                 center=cor,
                 ncore=cores,

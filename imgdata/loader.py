@@ -84,7 +84,7 @@ def load(input_path=None,
     :param chunksize: chunk of work per worker
     :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
             This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :param h: Optional helper class. If not provided an empty one will be initialised.
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :returns :: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
     """
 
@@ -266,7 +266,7 @@ def do_stack_load_seq(data, new_data, img_shape, name, h):
     :param new_data:
     :param img_shape:
     :param name:
-    :param h:
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :return: the loaded data
     """
     h.prog_init(img_shape[0], name)
@@ -307,7 +307,7 @@ def load_stack(load_func,
     :param cores:
     :param chunksize:
     :param parallel_load:
-    :param h:
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :return:
     """
     # create shared array

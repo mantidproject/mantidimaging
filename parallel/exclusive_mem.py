@@ -57,7 +57,7 @@ def execute(data=None,
     :param cores: number of cores that the processing will use
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
-    :param h: the helper class
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :param output_data: the output array in which the results will be stored
     :return:
     """

@@ -25,7 +25,7 @@ def _do_nxs_load(input_data_file, img_format, data_dtype, cores, chunksize,
     :param chunksize: chunk of work per worker
     :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
             This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :param h: Optional helper class. If not provided an empty one will be initialised.
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :returns :: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
     """
 
@@ -45,7 +45,7 @@ def _do_stack_move_seq(data, new_data, img_shape, name, h):
     :param file_name: the name of the stack file
     :param img_shape:
     :param name:
-    :param h:
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :return:
     """
     # this will open the file but not read all of it in

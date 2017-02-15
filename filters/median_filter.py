@@ -40,7 +40,7 @@ def _execute_seq(data, size, mode, h=None):
     """
     Sequential version of the Median Filter using scipy.ndimage
 
-    :param data: The data that will be processed with this filter
+    :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the median filter kernel
     :param mode: Mode for the borders of the median filter. Options available in script -h command
     :param h: Helper class, if not provided will be initialised with empty constructor
@@ -69,7 +69,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):
     """
     Parallel version of the Median Filter using scipy.ndimage
 
-    :param data: The data that will be processed with this filter
+    :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the median filter kernel
     :param mode: Mode for the borders of the median filter. Options available in script -h command
     :param h: Helper class, if not provided will be initialised with empty constructor

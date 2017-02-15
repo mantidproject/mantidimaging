@@ -17,14 +17,16 @@ def _crop_coords_sanity_checks(coords, data_image, expected_data_shape=3):
     if not isinstance(coords, list) or 4 != len(coords):
         raise ValueError(
             "Error in crop (region of interest) parameter (expecting a list with four integers) "
-            "[left, top, right, bottom]. Got: {0} with {1}".format(coords, type(coords)))
+            "[left, top, right, bottom]. Got: {0} with {1}".format(
+                coords, type(coords)))
 
     elif not all(isinstance(crd, int) for crd in coords):
         raise ValueError(
             "Cannot use non-integer coordinates to crop images. Got "
             "these coordinates: {0}".format(coords))
 
-    elif not isinstance(data_image, np.ndarray) or expected_data_shape != len(data_image.shape):
+    elif not isinstance(data_image, np.ndarray) or expected_data_shape != len(
+            data_image.shape):
         raise ValueError(
             "Wrong data volume when trying to crop: {0}".format(data_image))
 
@@ -42,17 +44,19 @@ def execute_image(data, region_of_interest, h=None):
     h = Helper.empty_init() if h is None else h
 
     if region_of_interest:
-        h.pstart(
-            "Starting image cropping with coordinates: {0}. ...".format(region_of_interest))
+        h.pstart("Starting image cropping with coordinates: {0}. ...".format(
+            region_of_interest))
 
         data = _crop_image(data, region_of_interest)
 
-        h.pstop("Finished image cropping with pixel data type: {0}, resulting shape: {1}.".format(data.dtype,
-                                                                                                  data.shape))
+        h.pstop(
+            "Finished image cropping with pixel data type: {0}, resulting shape: {1}.".
+            format(data.dtype, data.shape))
 
     else:
         h.tomo_print_note(
-            "NOT applying cropping to region of interest on single image, because no --region-of-interest coordinates were given.")
+            "NOT applying cropping to region of interest on single image, because no --region-of-interest coordinates were given."
+        )
 
     return data
 
@@ -94,17 +98,19 @@ def execute_volume(data, crop_coords, h=None):
 
     # list with left, top, right, bottom
     if crop_coords:
-        h.pstart(
-            "Starting image cropping with coordinates: {0}. ...".format(crop_coords))
+        h.pstart("Starting image cropping with coordinates: {0}. ...".format(
+            crop_coords))
 
         data = _crop_volume(data, crop_coords)
 
-        h.pstop("Finished image cropping with pixel data type: {0}, resulting shape: {1}.".format(data.dtype,
-                                                                                                  data.shape))
+        h.pstop(
+            "Finished image cropping with pixel data type: {0}, resulting shape: {1}.".
+            format(data.dtype, data.shape))
 
     else:
         h.tomo_print_note(
-            "NOT applying cropping to region of interest on data volume, because no --region-of-interest coordinates were given.")
+            "NOT applying cropping to region of interest on data volume, because no --region-of-interest coordinates were given."
+        )
 
     h.check_data_stack(data)
 

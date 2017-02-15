@@ -23,7 +23,7 @@ def execute(data, size, mode, order, cores=None, chunksize=None, h=None):
 def _execute_seq(data, size, mode, order, h=None):
     """
 
-    :param data: The data that will be processed with this filter
+    :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the filter kernel
     :param mode: Mode for the borders of the filter. Options available in script -h command
     :param order: An order of 0 corresponds to convolution with a Gaussian kernel.
@@ -59,7 +59,7 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None, h=None):
     """
     Parallel version of the gaussian filter.
 
-    :param data: The data that will be processed with this filter
+    :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the filter kernel
     :param mode: Mode for the borders of the filter. Options available in script -h command
     :param order: An order of 0 corresponds to convolution with a Gaussian kernel.

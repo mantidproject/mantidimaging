@@ -110,7 +110,7 @@ def execute(data=None,
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
     :param show_timer: if False no timer will be shown
-    :param h: the helper class
+    :param h: Helper class, if not provided will be initialised with empty constructor
     :return:
     """
     h = Helper.empty_init() if h is None else h

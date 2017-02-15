@@ -42,7 +42,7 @@ def _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark,
     :param data_dtype: the type in which the data will be loaded, could be float16, float32, float64, uint16
     :param cores: Cores to be used for parallel loading
     :param chunksize: Chunk of work that each worker will receive
-    :param h: instance of the helper class
+    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :return :: 3 numpy arrays: input data volume (3D), average of flatt images (2D),
                average of dark images(2D)

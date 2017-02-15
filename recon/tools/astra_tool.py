@@ -60,11 +60,31 @@ class AstraTool(AbstractTool):
         print("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
         return astra
 
-    def run_reconstruct(self, data, config, h, proj_angles=None, **kwargs):
+    def run_reconstruct(self, data, config, h=None, proj_angles=None, **kwargs):
+        """
+        Run a reconstruction with TomoPy's ASTRA integration, using the CPU and GPU algorithms they provide.
+        TODO This reconstruction function does NOT fully support the full range of options that are available for
+         each algorithm in Astra.
+
+        Information about how to use Astra through TomoPy is available at:
+        http://tomopy.readthedocs.io/en/latest/ipynb/astra.html
+
+        More information about the ASTRA Reconstruction parameters is available at:
+        http://www.astra-toolbox.com/docs/proj2d.html
+        http://www.astra-toolbox.com/docs/algs/index.html
+
+        :param sample: The sample image data as a 3D numpy.ndarray
+        :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
+        :param h: Helper class, if not provided will be initialised with empty constructor
+        :param proj_angles: The projection angle for each slice
+        :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
+        :return: The reconstructed volume
+        """
         import numpy as np
         from helper import Helper
 
-        h = Helper.empty_init() if h is None else h
+        h = Helper(config) if h is None else h
+        h.check_config_integrity(config)
 
         h.check_data_stack(data)
 
