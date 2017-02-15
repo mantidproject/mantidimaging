@@ -21,17 +21,10 @@ class TomoPyTool(AbstractTool):
         AbstractTool.__init__(self)
         self._tomopy = self.import_self()
 
-    def find_center(self, **kwargs):
-        # just forward to tomopy
-        return self._tomopy.find_center(**kwargs)
-
-    def find_center_vo(self, **kwargs):
-        # just forward to tomopy
-        return self._tomopy.find_center_vo(**kwargs)
-
-    def circ_mask(self, **kwargs):
-        # just forward to tomopy
-        return self._tomopy.circ_mask(**kwargs)
+        # pretend we have the functions
+        self.find_center = self._tomopy.find_center
+        self.find_center_vo = self._tomopy.find_center_vo
+        self.circ_mask = self._tomopy.circ_mask
 
     def import_self(self):
         try:
