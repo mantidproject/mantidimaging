@@ -18,10 +18,6 @@ class CustomTimer(object):
     def update(self, iterations):
         self._iter += iterations
 
-        # this can cause random crashes on SCARF
-        # rows, columns = os.popen('stty size', 'r').read().split()
-        # give a default length
-
         filled_len = int(
             round(self._bar_len * self._iter / float(self._total)))
 

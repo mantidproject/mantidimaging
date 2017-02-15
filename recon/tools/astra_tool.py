@@ -83,12 +83,12 @@ class AstraTool(AbstractTool):
         iterative_algorithm = False if alg[0:alg.find(
             '_')] in ['FBP', 'FB', 'BP'] else True
 
-        # TODO needs to be in config
         # are we using a CUDA algorithm
         proj_type = 'cuda' if alg[alg.find('_') + 1:] == 'CUDA' else 'linear'
 
         # run the iterative algorithms
         if iterative_algorithm:
+            # TODO at a future point we'll need to support forwarding more options to ASTRA
             options = {'proj_type': proj_type, 'method': alg}
 
             h.pstart(
