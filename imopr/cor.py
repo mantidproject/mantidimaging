@@ -7,8 +7,9 @@ def execute(sample, flat, dark, config, indices):
     from imopr import helper
     helper.print_start("Running IMOPR with action COR")
 
-    from recon.tools import tool_importer
-    tool = tool_importer.do_importing(config.func.tool)
+    from recon.tools import importer
+    tool = importer.timed_import(config.func.tool)
+
     print("Calculating projection angles..")
     inc = float(config.func.max_angle) / sample.shape[0]
     proj_angles = np.arange(0, sample.shape[0] * inc, inc)

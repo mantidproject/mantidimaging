@@ -9,8 +9,20 @@ class AstraTool(AbstractTool):
 
     @staticmethod
     def tool_supported_methods():
-        return ['FP', 'FP_CUDA', 'BP', 'BP_CUDA', 'FBP',
-                'FBP_CUDA', 'SIRT', 'SIRT_CUDA', 'SART', 'SART_CUDA', 'CGLS', 'CGLS_CUDA']
+        return [
+            'FP', 'FP_CUDA', 'BP', 'BP_CUDA', 'FBP', 'FBP_CUDA', 'SIRT',
+            'SIRT_CUDA', 'SART', 'SART_CUDA', 'CGLS', 'CGLS_CUDA'
+        ]
+
+    @staticmethod
+    def check_algorithm_compatibility(algorithm):
+        # get full caps, because all the names in ASTRA are in FULL CAPS
+        ALGORITHM = algorithm.upper()
+
+        if ALGORITHM not in AstraTool.tool_supported_methods():
+            raise ValueError(
+                "The selected algorithm {0} is not supported by Astra.".format(
+                    ALGORITHM))
 
     def __init__(self):
         AbstractTool.__init__(self)
@@ -25,29 +37,25 @@ class AstraTool(AbstractTool):
         t = TomoPyTool()
         return t.import_self()
 
-    def check_algorithm_compatibility(self, config):
-        algorithm = config.func.algorithm.upper()  # get full caps
-
-        if algorithm not in AstraTool.tool_supported_methods():
-            raise ValueError(
-                "The selected algorithm {0} is not supported by Astra.".format(algorithm))
-
     @staticmethod
     def _import_astra():
         try:
             import astra
         except ImportError as exc:
-            raise ImportError("Cannot find and import the astra toolbox package: {0}".
-                              format(exc))
+            raise ImportError(
+                "Cannot find and import the astra toolbox package: {0}".format(
+                    exc))
 
         min_astra_version = 1.8
         astra_version = astra.__version__
-        if isinstance(astra_version, float) and astra_version >= min_astra_version:
+        if isinstance(astra_version,
+                      float) and astra_version >= min_astra_version:
             print("Imported astra successfully. Version: {0}".format(
                 astra_version))
         else:
             raise RuntimeError(
-                "Could not find the required version of astra. Found version: {0}".format(astra_version))
+                "Could not find the required version of astra. Found version: {0}".
+                format(astra_version))
 
         print("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
         return astra
@@ -72,8 +80,8 @@ class AstraTool(AbstractTool):
         cores = config.func.cores
 
         # remove xxx_CUDA from the string with the [0:find..]
-        iterative_algorithm = False if alg[
-            0:alg.find('_')] in ['FBP', 'FB', 'BP'] else True
+        iterative_algorithm = False if alg[0:alg.find(
+            '_')] in ['FBP', 'FB', 'BP'] else True
 
         # TODO needs to be in config
         # are we using a CUDA algorithm
@@ -81,17 +89,19 @@ class AstraTool(AbstractTool):
 
         # run the iterative algorithms
         if iterative_algorithm:
-            options = {
-                'proj_type': proj_type,
-                'method': alg
-            }
+            options = {'proj_type': proj_type, 'method': alg}
 
             h.pstart(
                 "Starting iterative method with Astra. Center of Rotation: {0}, Algorithm: {1}, "
                 "number of iterations: {2}...".format(cor, alg, num_iter))
 
-            recon = self._tomopy.recon(tomo=data, theta=proj_angles,
-                                       center=cor, ncores=cores, algorithm=self._tomopy.astra, options=options)
+            recon = self._tomopy.recon(
+                tomo=data,
+                theta=proj_angles,
+                center=cor,
+                ncores=cores,
+                algorithm=self._tomopy.astra,
+                options=options)
 
         else:  # run the non-iterative algorithms
 
@@ -99,13 +109,16 @@ class AstraTool(AbstractTool):
                 "Starting non-iterative reconstruction algorithm with Astra. "
                 "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
 
-            options = {
-                'proj_type': proj_type,
-                'method': alg
-            }
+            options = {'proj_type': proj_type, 'method': alg}
 
-            recon = self._tomopy.recon(tomo=data, theta=proj_angles,
-                                       center=cor, ncores=cores, algorithm=self._tomopy.astra, options=options, **kwargs)
+            recon = self._tomopy.recon(
+                tomo=data,
+                theta=proj_angles,
+                center=cor,
+                ncores=cores,
+                algorithm=self._tomopy.astra,
+                options=options,
+                **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
@@ -123,16 +136,16 @@ class AstraTool(AbstractTool):
         phigh = 0
 
         # minval = np.amin(sinograms)
-        sinograms = np.pad(sinograms, ((0, 0), (0, 0), (plow, phigh)),
-                           mode='reflect')
+        sinograms = np.pad(
+            sinograms, ((0, 0), (0, 0), (plow, phigh)), mode='reflect')
 
         proj_geom = astra.create_proj_geom('parallel3d', .0, 1.0,
-                                           data.shape[1],
-                                           sinograms.shape[2], proj_angles)
+                                           data.shape[1], sinograms.shape[2],
+                                           proj_angles)
         sinogram_id = astra.data3d.create('-sino', proj_geom, sinograms)
 
-        vol_geom = astra.create_vol_geom(
-            data.shape[1], sinograms.shape[2], data.shape[1])
+        vol_geom = astra.create_vol_geom(data.shape[1], sinograms.shape[2],
+                                         data.shape[1])
         recon_id = astra.data3d.create('-vol', vol_geom)
         alg_cfg = astra.astra_dict(alg_cfg.algorithm)
         alg_cfg['ReconstructionDataId'] = recon_id

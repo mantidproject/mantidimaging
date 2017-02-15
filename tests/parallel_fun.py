@@ -1,6 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-import ctypes
-import multiprocessing
 import numpy as np
 import numpy.testing as npt
 import unittest
@@ -10,6 +8,10 @@ from helper import Helper
 
 
 class ParallelTest(unittest.TestCase):
+    """
+    Test class. This was used as an initial testing playground to test shared memory versus exclusive memory.
+    Shared memory performed much better. Sadly I don't have the times.
+    """
     def test_shared_performance(self, runs=10, cores='8', chunksize='8'):
         import timeit
         print(

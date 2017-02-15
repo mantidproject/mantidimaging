@@ -16,14 +16,15 @@ class AbstractTool:
         raise NotImplementedError(
             "This is an abstract class. Use a derived class' implementation")
 
+    @staticmethod
+    def check_algorithm_compatibility(algorithm):
+        raise NotImplementedError(
+            "This is an abstract class. Use a derived class' implementation")
+
     def run_reconstruct(self, data, config, h, proj_angles=None, **kwargs):
         raise NotImplementedError(
             "This is an abstract class. Use a derived class' implementation")
 
     def import_self(self):
-        raise NotImplementedError(
-            "This is an abstract class. Use a derived class' implementation")
-
-    def check_algorithm_compatibility(self, config):
         raise NotImplementedError(
             "This is an abstract class. Use a derived class' implementation")

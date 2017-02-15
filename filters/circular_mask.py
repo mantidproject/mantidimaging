@@ -7,8 +7,8 @@ def execute(data, circular_mask_ratio, h=None):
     h = Helper.empty_init() if h is None else h
 
     if circular_mask_ratio and 0 < circular_mask_ratio < 1:
-        from recon.tools import tool_importer
-        tomopy = tool_importer.do_importing('tomopy')
+        from recon.tools import importer
+        tomopy = importer.do_importing('tomopy')
 
         h.pstart("Starting circular mask...")
         tomopy.circ_mask(arr=data, axis=0, ratio=circular_mask_ratio, val=0.)

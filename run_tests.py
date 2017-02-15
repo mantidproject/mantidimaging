@@ -7,6 +7,7 @@ _avail_modules = {
     'data': 'tests/data_test.py',
     'helper': 'tests/helper_test.py',
     'parallel': 'tests/parallel_test/',
+    'tools': 'tests/recon/tools/',
     'all': 'tests/'
 }
 

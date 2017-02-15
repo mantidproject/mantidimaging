@@ -10,8 +10,8 @@ def execute(config):
     # -----------------------------------------------------------------------------
 
     # tomopy is the only supported tool for now
-    from recon.runner import load_tool
-    tool = load_tool(config, h)
+    from recon.tools import importer
+    tool = importer.timed_import(config, h)
 
     from imgdata import loader
     sample, flat, dark = loader.load_data(config, h)  # and onwards we go!

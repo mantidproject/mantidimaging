@@ -3,21 +3,23 @@ from recon.tools.abstract_tool import AbstractTool
 
 
 class TomoPyTool(AbstractTool):
-
     @staticmethod
     def tool_supported_methods():
-        return ['art', 'bart', 'fbp', 'gridrec', 'mlem',
-                'osem', 'ospml_hybrid', 'ospml_quad', 'pml_hybrid', 'pml_quad', 'sirt']
+        return [
+            'art', 'bart', 'fbp', 'gridrec', 'mlem', 'osem', 'ospml_hybrid',
+            'ospml_quad', 'pml_hybrid', 'pml_quad', 'sirt'
+        ]
+
+    @staticmethod
+    def check_algorithm_compatibility(algorithm):
+        if algorithm not in TomoPyTool.tool_supported_methods():
+            raise ValueError(
+                "The selected algorithm {0} is not supported by TomoPy.".
+                format(algorithm))
 
     def __init__(self):
         AbstractTool.__init__(self)
         self._tomopy = self.import_self()
-
-    def check_algorithm_compatibility(self, config):
-        algorithm = config.func.algorithm
-        if algorithm not in TomoPyTool.tool_supported_methods():
-            raise ValueError(
-                "The selected algorithm {0} is not supported by TomoPy.".format(algorithm))
 
     def find_center(self, **kwargs):
         # just forward to tomopy
@@ -40,8 +42,9 @@ class TomoPyTool(AbstractTool):
             import tomopy.io
 
         except ImportError as exc:
-            raise ImportError("Could not import the tomopy package and its subpackages. Details: {0}".
-                              format(exc))
+            raise ImportError(
+                "Could not import the tomopy package and its subpackages. Details: {0}".
+                format(exc))
 
         return tomopy
 
@@ -70,15 +73,26 @@ class TomoPyTool(AbstractTool):
                 "Starting iterative method with TomoPy. Center of Rotation: {0}, Algorithm: {1}, "
                 "number of iterations: {2}...".format(cor, alg, num_iter))
 
-            recon = self._tomopy.recon(tomo=data, theta=proj_angles, center=cor,
-                                       algorithm=alg, num_iter=num_iter, ncore=cores, **kwargs)
+            recon = self._tomopy.recon(
+                tomo=data,
+                theta=proj_angles,
+                center=cor,
+                algorithm=alg,
+                num_iter=num_iter,
+                ncore=cores,
+                **kwargs)
 
         else:  # run the non-iterative algorithms
             h.pstart(
                 "Starting non-iterative reconstruction algorithm with TomoPy. "
                 "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
             recon = self._tomopy.recon(
-                tomo=data[:], theta=proj_angles, center=cor, ncore=cores, algorithm=alg, **kwargs)
+                tomo=data[:],
+                theta=proj_angles,
+                center=cor,
+                ncore=cores,
+                algorithm=alg,
+                **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".

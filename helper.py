@@ -105,6 +105,9 @@ class Helper(object):
                 "Falling back to ASCII progress bar.")
 
     def run_import_checks(self):
+        """
+        Run the import checks to notify the user which features are available in the execution.
+        """
         from parallel import utility as pu
         self.progress_available()
 
@@ -205,7 +208,7 @@ class Helper(object):
             self._timer_running = True
 
         import time
-        print_string = message
+        print_string = str(message)
         # will be printed on levels 2 and 3
         if self._verbosity >= 2:
             self._timer_start = time.time()
@@ -234,7 +237,7 @@ class Helper(object):
             self._timer_running = False
             timer_string = str(time.time() - self._timer_start)
             print_string += (
-                message + " Elapsed time: " + timer_string + " sec.")
+                str(message) + " Elapsed time: " + timer_string + " sec.")
 
         if self._verbosity >= 3:
             print_string += " Memory usage after execution: " + self.get_memory_usage_linux(
