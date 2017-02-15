@@ -22,7 +22,7 @@ def create_partial(func, **kwargs):
 
 def execute(data=None,
             partial_func=None,
-            cores=8,
+            cores=None,
             chunksize=None,
             name="Progress",
             h=None,

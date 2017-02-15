@@ -1,13 +1,12 @@
 from __future__ import (absolute_import, division, print_function)
 from helper import Helper
-
 """
 REBIN does not use shared_memory, because it has to resize the array!
 However the information that needs to be copied is 0s, so it should not be expensive to do so!
 """
 
 
-def execute(data, rebin_param, mode, cores=8, chunksize=None, h=None):
+def execute(data, rebin_param, mode, cores=None, chunksize=None, h=None):
     h = Helper.empty_init() if h is None else h
     h.check_data_stack(data)
 
@@ -24,7 +23,7 @@ def execute(data, rebin_param, mode, cores=8, chunksize=None, h=None):
     return data
 
 
-def _execute_par(data, rebin_param, mode, cores=8, chunksize=None, h=None):
+def _execute_par(data, rebin_param, mode, cores=None, chunksize=None, h=None):
     import scipy.misc
     from parallel import exclusive_mem as pem
 
@@ -58,8 +57,8 @@ def _execute_seq(data, rebin_param, mode, h=None):
 
     h.prog_close()
 
-    h.pstop("Finished image resizing. New shape: {0}".format(
-        resized_data.shape))
+    h.pstop(
+        "Finished image resizing. New shape: {0}".format(resized_data.shape))
 
     return resized_data
 

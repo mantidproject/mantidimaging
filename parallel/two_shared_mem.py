@@ -139,7 +139,7 @@ def create_partial(func, fwd_function=inplace_fwd_func, **kwargs):
 def execute(data=None,
             second_data=None,
             partial_func=None,
-            cores=8,
+            cores=None,
             chunksize=None,
             name="Progress",
             h=None,
@@ -182,6 +182,9 @@ def execute(data=None,
     h = Helper.empty_init() if h is None else h
 
     from parallel import utility as pu
+    if cores is None:
+        cores = pu.get_cores()
+
     if chunksize is None:
         chunksize = pu.calculate_chunksize(cores)
 

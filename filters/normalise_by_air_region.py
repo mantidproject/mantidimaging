@@ -8,7 +8,7 @@ def execute(data,
             air_region,
             region_of_interest,
             crop_before_normalise,
-            cores=8,
+            cores=None,
             chunksize=None,
             h=None):
     h = Helper.empty_init() if h is None else h
@@ -49,7 +49,7 @@ def _execute_par(data,
                  air_region,
                  region_of_interest,
                  crop_before_normalise,
-                 cores=8,
+                 cores=None,
                  chunksize=None,
                  h=None):
     """

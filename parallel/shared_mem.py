@@ -73,7 +73,7 @@ def create_partial(func, fwd_function=fwd_func, **kwargs):
 
 def execute(data=None,
             partial_func=None,
-            cores=8,
+            cores=None,
             chunksize=None,
             name="Progress",
             h=None,

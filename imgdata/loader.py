@@ -66,7 +66,7 @@ def load(input_path=None,
          input_path_dark=None,
          img_format=None,
          data_dtype=np.float32,
-         cores=8,
+         cores=None,
          chunksize=None,
          parallel_load=False,
          h=None,
@@ -175,7 +175,9 @@ def import_skimage_io():
     try:
         from skimage import io as skio
         # tifffile works better on local, but not available on scarf
-        skio.use_plugin('freeimage')
+        # no plugin will use the default python imaging library (PIL)
+        # This behaviour might need to be changed when switching to python 3
+        # skio.use_plugin('freeimage')
     except ImportError as exc:
         raise ImportError(
             "Could not find the package skimage, its subpackage "
@@ -287,7 +289,7 @@ def load_stack(load_func,
                file_name,
                dtype,
                name,
-               cores=8,
+               cores=None,
                chunksize=None,
                parallel_load=False,
                h=None):

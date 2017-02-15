@@ -112,12 +112,12 @@ _do_nxs_load	imgdata/nxs_loader.py	/^def _do_nxs_load(input_data_file, img_forma
 _do_stack_move_par	imgdata/nxs_loader.py	/^def _do_stack_move_par(data, new_data, cores, chunksize, name, h):$/;"	kind:function	line:60
 _do_stack_move_seq	imgdata/nxs_loader.py	/^def _do_stack_move_seq(data, new_data, img_shape, name, h):$/;"	kind:function	line:38
 _execute_custom	filters/rebin.py	/^def _execute_custom(data, config):$/;"	kind:function	line:81
-_execute_par	filters/gaussian.py	/^def _execute_par(data, size, mode, order, cores=8, chunksize=None, h=None):$/;"	kind:function	line:58
-_execute_par	filters/median_filter.py	/^def _execute_par(data, size, mode, cores=8, chunksize=None, h=None):$/;"	kind:function	line:69
+_execute_par	filters/gaussian.py	/^def _execute_par(data, size, mode, order, cores=None, chunksize=None, h=None):$/;"	kind:function	line:58
+_execute_par	filters/median_filter.py	/^def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:69
 _execute_par	filters/normalise_by_air_region.py	/^def _execute_par(data,$/;"	kind:function	line:48
-_execute_par	filters/normalise_by_flat_dark.py	/^def _execute_par(data, norm_flat_img=None, norm_dark_img=None, clip_min=0, clip_max=1.5, cores=8, chunksize=None, h=None):$/;"	kind:function	line:44
-_execute_par	filters/rebin.py	/^def _execute_par(data, rebin_param, mode, cores=8, chunksize=None, h=None):$/;"	kind:function	line:27
-_execute_par	filters/rotate_stack.py	/^def _execute_par(data, rotation, cores=8, chunksize=None, h=None):$/;"	kind:function	line:91
+_execute_par	filters/normalise_by_flat_dark.py	/^def _execute_par(data, norm_flat_img=None, norm_dark_img=None, clip_min=0, clip_max=1.5, cores=None, chunksize=None, h=None):$/;"	kind:function	line:44
+_execute_par	filters/rebin.py	/^def _execute_par(data, rebin_param, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:27
+_execute_par	filters/rotate_stack.py	/^def _execute_par(data, rotation, cores=None, chunksize=None, h=None):$/;"	kind:function	line:91
 _execute_seq	filters/gaussian.py	/^def _execute_seq(data, size, mode, order, h=None):$/;"	kind:function	line:23
 _execute_seq	filters/median_filter.py	/^def _execute_seq(data, size, mode, h=None):$/;"	kind:function	line:39
 _execute_seq	filters/normalise_by_air_region.py	/^def _execute_seq(data,$/;"	kind:function	line:115
@@ -221,16 +221,16 @@ execute	convert/runner.py	/^def execute(config):$/;"	kind:function	line:5
 execute	filters/circular_mask.py	/^def execute(data, circular_mask_ratio, h=None):$/;"	kind:function	line:6
 execute	filters/crop_coords.py	/^def execute(sample, region_of_interest, flat, dark, h=None):$/;"	kind:function	line:6
 execute	filters/cut_off.py	/^def execute(data, cut_off_level, h=None):$/;"	kind:function	line:5
-execute	filters/gaussian.py	/^def execute(data, size, mode, order, cores=8, chunksize=None, h=None):$/;"	kind:function	line:5
+execute	filters/gaussian.py	/^def execute(data, size, mode, order, cores=None, chunksize=None, h=None):$/;"	kind:function	line:5
 execute	filters/line_projection.py	/^def execute(imgs_angles, config):$/;"	kind:function	line:4
 execute	filters/mcp_corrections.py	/^def execute(data,config):$/;"	kind:function	line:1
-execute	filters/median_filter.py	/^def execute(data, size, mode, cores=8, chunksize=None, h=None):$/;"	kind:function	line:21
+execute	filters/median_filter.py	/^def execute(data, size, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:21
 execute	filters/normalise_by_air_region.py	/^def execute(data,$/;"	kind:function	line:7
-execute	filters/normalise_by_flat_dark.py	/^def execute(data, norm_flat_img=None, norm_dark_img=None, clip_min=0, clip_max=1.5, cores=8, chunksize=None, h=None):$/;"	kind:function	line:16
+execute	filters/normalise_by_flat_dark.py	/^def execute(data, norm_flat_img=None, norm_dark_img=None, clip_min=0, clip_max=1.5, cores=None, chunksize=None, h=None):$/;"	kind:function	line:16
 execute	filters/outliers.py	/^def execute(data, outliers_threshold, outliers_mode, h=None):$/;"	kind:function	line:5
-execute	filters/rebin.py	/^def execute(data, rebin_param, mode, cores=8, chunksize=None, h=None):$/;"	kind:function	line:10
+execute	filters/rebin.py	/^def execute(data, rebin_param, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:10
 execute	filters/remove_stripes_ring_artifacts.py	/^def execute(data_vol, method='wavelet-fourier'):$/;"	kind:function	line:1
-execute	filters/rotate_stack.py	/^def execute(data, rotation, flat=None, dark=None, cores=8, chunksize=None, h=None):$/;"	kind:function	line:16
+execute	filters/rotate_stack.py	/^def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None, h=None):$/;"	kind:function	line:16
 execute	filters/stripe_removal.py	/^def execute(data, config):$/;"	kind:function	line:2
 execute	imgdata/img_loader.py	/^def execute(load_func, input_file_names, input_path_flat, input_path_dark,$/;"	kind:function	line:11
 execute	imgdata/nxs_loader.py	/^def execute(input_data_file, img_format, data_dtype, cores, chunksize,$/;"	kind:function	line:7

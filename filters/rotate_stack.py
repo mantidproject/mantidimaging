@@ -13,7 +13,13 @@ def _rotate_image(data, rotation=None):
     return np.rot90(data[:, :], rotation)
 
 
-def execute(data, rotation, flat=None, dark=None, cores=8, chunksize=None, h=None):
+def execute(data,
+            rotation,
+            flat=None,
+            dark=None,
+            cores=None,
+            chunksize=None,
+            h=None):
     """
     Rotates a stack (sample, flat and dark images).
 
@@ -49,7 +55,8 @@ def execute(data, rotation, flat=None, dark=None, cores=8, chunksize=None, h=Non
             dark = _rotate_image(dark, clockwise_rotations)
     else:
         h.tomo_print_note(
-            "NOT rotating the input images, because no valid -r/--rotation was specified.")
+            "NOT rotating the input images, because no valid -r/--rotation was specified."
+        )
 
     h.check_data_stack(data)
     return data, flat, dark
@@ -82,13 +89,14 @@ def _execute_seq(data, rotation, h=None):
 
     h.prog_close()
 
-    h.pstop("Finished rotation step ({0} degrees clockwise), with pixel data type: {1}."
-            .format(rotation * 90, data.dtype))
+    h.pstop(
+        "Finished rotation step ({0} degrees clockwise), with pixel data type: {1}."
+        .format(rotation * 90, data.dtype))
 
     return data
 
 
-def _execute_par(data, rotation, cores=8, chunksize=None, h=None):
+def _execute_par(data, rotation, cores=None, chunksize=None, h=None):
 
     h.pstart(
         "Starting PARALLEL rotation step ({0} degrees clockwise), with pixel data type: {1}...".
@@ -96,13 +104,16 @@ def _execute_par(data, rotation, cores=8, chunksize=None, h=None):
 
     from parallel import shared_mem as psm
 
-    f = psm.create_partial(_rotate_image_inplace,
-                           fwd_function=psm.inplace_fwd_func, rotation=rotation)
+    f = psm.create_partial(
+        _rotate_image_inplace,
+        fwd_function=psm.inplace_fwd_func,
+        rotation=rotation)
 
-    data = psm.execute(data, f, cores=cores,
-                       chunksize=chunksize, name="Rotation", h=h)
+    data = psm.execute(
+        data, f, cores=cores, chunksize=chunksize, name="Rotation", h=h)
 
-    h.pstop("Finished PARALLEL rotation step ({0} degrees clockwise), with pixel data type: {1}."
-            .format(rotation * 90, data.dtype))
+    h.pstop(
+        "Finished PARALLEL rotation step ({0} degrees clockwise), with pixel data type: {1}."
+        .format(rotation * 90, data.dtype))
 
     return data

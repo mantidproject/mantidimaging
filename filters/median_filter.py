@@ -18,7 +18,7 @@ def import_scipy_ndimage():
     return scipy_ndimage
 
 
-def execute(data, size, mode, cores=8, chunksize=None, h=None):
+def execute(data, size, mode, cores=None, chunksize=None, h=None):
     h = Helper.empty_init() if h is None else h
     h.check_data_stack(data)
 
@@ -55,8 +55,7 @@ def _execute_seq(data, size, mode, h=None):
 
     h.prog_init(data.shape[0], "Median filter")
     for idx in range(0, data.shape[0]):
-        data[idx] = scipy_ndimage.median_filter(
-            data[idx], size, mode=mode)
+        data[idx] = scipy_ndimage.median_filter(data[idx], size, mode=mode)
         h.prog_update()
     h.prog_close()
 
@@ -66,7 +65,7 @@ def _execute_seq(data, size, mode, h=None):
     return data
 
 
-def _execute_par(data, size, mode, cores=8, chunksize=None, h=None):
+def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):
     """
     Parallel version of the Median Filter using scipy.ndimage
 
@@ -82,18 +81,24 @@ def _execute_par(data, size, mode, cores=8, chunksize=None, h=None):
     scipy_ndimage = import_scipy_ndimage()
 
     from parallel import shared_mem as psm
-    f = psm.create_partial(scipy_ndimage.median_filter, fwd_function=psm.fwd_func,
-                           size=size, mode=mode)
+    f = psm.create_partial(
+        scipy_ndimage.median_filter,
+        fwd_function=psm.fwd_func,
+        size=size,
+        mode=mode)
 
-    h.pstart("Starting PARALLEL median filter, with pixel data type: {0}, filter size/width: {1}.".
-             format(data.dtype, size))
+    h.pstart(
+        "Starting PARALLEL median filter, with pixel data type: {0}, filter size/width: {1}.".
+        format(data.dtype, size))
 
     data = psm.execute(data, f, cores, chunksize, "Median Filter", h)
 
-    h.pstop("Finished PARALLEL median filter, with pixel data type: {0}, filter size/width: {1}.".
-            format(data.dtype, size))
+    h.pstop(
+        "Finished PARALLEL median filter, with pixel data type: {0}, filter size/width: {1}.".
+        format(data.dtype, size))
 
     return data
+
 
 # timeit.timeit(stmt='zoom(sample)', setup='from __main__ import sample, loader, zoom; import numpy as np; gc.enable()', number=100)
 

@@ -1,10 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 
-import multiprocessing
-import numpy as np
 
 
 def create_shared_array(shape, dtype=np.float32):
+    import multiprocessing
+    import numpy as np
     import ctypes
 
     ctype = ctypes.c_float  # default to numpy float32 / C type float
@@ -33,9 +33,13 @@ def multiprocessing_available():
     except ImportError:
         return False
 
+def get_cores():
+    import multiprocessing
+    # get max cores on the system as default
+    return multiprocessing.cpu_count()
 
 def generate_indices(num_images):
-    return xrange(num_images)
+    return range(num_images)
 
 
 def calculate_chunksize(cores):
