@@ -38,7 +38,17 @@ def supported_formats():
     return avail_list
 
 
-def load_data(config, h):
+def load_data(config, h=None):
+    """
+    Load data by reading the provided configuration file.
+
+    :param config: The full reconstruction config
+
+    :param h:
+    :return:
+    """
+    h = Helper(config) if h is None else h
+
     h.pstart("Loading data...")
     input_path = config.func.input_path
     input_path_flat = config.func.input_path_flat
