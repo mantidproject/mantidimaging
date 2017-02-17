@@ -98,13 +98,13 @@ def execute_volume(data, crop_coords, h=None):
 
     # list with left, top, right, bottom
     if crop_coords:
-        h.pstart("Starting image cropping with coordinates: {0}. ...".format(
-            crop_coords))
+        h.pstart("Starting data volume cropping with coordinates: {0}. ...".
+                 format(crop_coords))
 
         data = _crop_volume(data, crop_coords)
 
         h.pstop(
-            "Finished image cropping with pixel data type: {0}, resulting shape: {1}.".
+            "Finished data volume cropping with pixel data type: {0}, resulting shape: {1}.".
             format(data.dtype, data.shape))
 
     else:
