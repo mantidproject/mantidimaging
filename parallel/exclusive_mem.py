@@ -55,6 +55,9 @@ def execute(data=None,
     :return: The processed output data
     """
     h = Helper.empty_init() if h is None else h
+    from parallel import utility as pu
+    if cores is None:
+        cores = pu.get_cores()
 
     from parallel import utility as pu
     if chunksize is None:

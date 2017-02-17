@@ -169,6 +169,8 @@ def execute(data=None,
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
     :param h: Helper class, if not provided will be initialised with empty constructor
+        :param show_timer: if False no timer will be shown
+
     :return:
     """
     h = Helper.empty_init() if h is None else h
@@ -207,8 +209,8 @@ def execute(data=None,
 
     # remove the global references and allow the GC to remove then
     temp_data_ref = shared_data[:]
-    shared_data=None
+    shared_data = None
     temp_data_2_ref = second_shared_data[:]
-    second_shared_data=None
+    second_shared_data = None
 
     return temp_data_ref, temp_data_2_ref

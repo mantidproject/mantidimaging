@@ -124,6 +124,8 @@ def execute(data=None,
     """
     h = Helper.empty_init() if h is None else h
     from parallel import utility as pu
+    if cores is None:
+        cores = pu.get_cores()
 
     if chunksize is None:
         chunksize = pu.calculate_chunksize(cores)
