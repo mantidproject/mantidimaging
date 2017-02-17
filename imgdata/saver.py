@@ -16,8 +16,17 @@ def write_nxs(data,
               dark=None,
               projection_angles=None,
               overwrite=False):
-    # Adapted code from Nagella, Srikanth (STFC,RAL,SC)
-    # <srikanth.nagella@stfc.ac.uk>
+    """
+    Write a h5 NXS file.
+
+    :param data: the sample data that will be saved
+    :param filename: The full path of the output file, plus the name.
+    :param flat: An averaged flat image MUST BE PROVIDED
+    :param dark: An averaged flat image MUST BE PROVIDED
+    :param projection_angles: Pre-calculated projection angles for the stack.
+    :param overwrite: Overwrite an existing file.
+    """
+
     assert flat is not None and dark is not None, \
         "When saving out NEXUS file, Flat and Dark images must be provided with -F and -D."
 
@@ -25,8 +34,8 @@ def write_nxs(data,
     import h5py
     nxs = h5py.File(filename, 'w')
 
-    flat = np.atleast_3d(flat).reshape(1, data.shape[1], data.shape[2])
-    dark = np.atleast_3d(dark).reshape(1, data.shape[1], data.shape[2])
+    flat = flat.reshape(1, data.shape[1], data.shape[2])
+    dark = dark.reshape(1, data.shape[1], data.shape[2])
 
     # new shape to account for appending flat and dark images
     correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
