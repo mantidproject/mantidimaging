@@ -63,11 +63,7 @@ def main():
                 stdoutToServer=True,
                 stderrToServer=True)
 
-    if config.func.find_cor:
-        # run find_center stuff
-        from recon import find_cor
-        res = find_cor.execute(config)
-    elif config.func.imopr:
+    if config.func.imopr:
         from imopr import imopr
         res = imopr.execute(config)
     elif config.func.aggregate:
