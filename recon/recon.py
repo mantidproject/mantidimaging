@@ -70,7 +70,7 @@ def pre_processing(config, sample, flat, dark, h=None):
     :param sample: The sample image data as a 3D numpy.ndarray
     :param flat: The flat averaged image data as a 2D numpy.array
     :param dark: The dark averaged image data as a 2D numpy.array
-    :param h: Helper class, if not provided will be initialised with empty constructor
+    :param h: Helper class, if not provided will be initialised with the config
 
     """
     h = Helper(config) if h is None else h
@@ -181,8 +181,8 @@ def post_processing(config, recon_data, h=None):
     Does the post-processing steps specified in the configuration file.
 
     :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-    :param recon_data: The sample image data as a 3D numpy.ndarray
-    :param h: Helper class, if not provided will be initialised with empty constructor
+    :param recon_data: The reconstructed image data as a 3D numpy.ndarray
+    :param h: Helper class, if not provided will be initialised with the config
     :return: The reconstructed data.
     """
     from filters import circular_mask, gaussian, median_filter, outliers

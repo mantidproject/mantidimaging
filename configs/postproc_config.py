@@ -56,12 +56,12 @@ class PostProcConfig(object):
             help="Outliers threshold for reconstructed volume.\n"
             "Pixels below and/or above (depending on mode) this threshold will be clipped.")
 
-        outliers_mode = ['dark', 'bright', 'both']
+        from filters.outliers import modes as outliers_modes
         grp_post.add_argument(
             "--post-outliers-mode",
             required=False,
             type=str,
-            choices=outliers_mode,
+            choices=outliers_modes(),
             help="Which pixels to clip, only dark ones, bright ones or both.")
 
         grp_post.add_argument(
@@ -72,13 +72,13 @@ class PostProcConfig(object):
             help="Apply median filter (2d) on reconstructed volume with the given window size.(post processing)"
         )
 
-        median_modes = ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
+        from filters.median_filter import modes as median_modes
         grp_post.add_argument(
             "--post-median-mode",
             type=str,
             required=False,
             default=self.median_mode,
-            choices=median_modes,
+            choices=median_modes(),
             help="Default: %(default)s\n"
                  "Mode of median filter which determines how the array borders are handled.(post processing)"
         )
@@ -91,12 +91,13 @@ class PostProcConfig(object):
             help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
         )
 
+        from filters.gaussian import modes as gaussian_modes
         grp_post.add_argument(
             "--post-gaussian-mode",
             type=str,
             required=False,
             default=self.gaussian_mode,
-            choices=median_modes,
+            choices=gaussian_modes(),
             help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(post processing).")
 
         grp_post.add_argument(
