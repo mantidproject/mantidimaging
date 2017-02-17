@@ -77,7 +77,7 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None, h=None):
 
     f = psm.create_partial(
         scipy_ndimage.gaussian_filter,
-        fwd_function=psm.fwd_func,
+        fwd_func=psm.return_fwd_func,
         sigma=size,
         mode=mode,
         order=order)

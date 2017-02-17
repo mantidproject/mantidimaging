@@ -83,7 +83,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):
     from parallel import shared_mem as psm
     f = psm.create_partial(
         scipy_ndimage.median_filter,
-        fwd_function=psm.fwd_func,
+        fwd_func=psm.return_fwd_func,
         size=size,
         mode=mode)
 

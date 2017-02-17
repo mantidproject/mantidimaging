@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.tools.abstract_tool import AbstractTool
 
 
 class AstraTool(AbstractTool):
@@ -25,6 +24,7 @@ class AstraTool(AbstractTool):
                     ALGORITHM))
 
     def __init__(self):
+        from recon.tools.abstract_tool import AbstractTool
         AbstractTool.__init__(self)
 
         # we import tomopy so that we can use Astra through TomoPy's

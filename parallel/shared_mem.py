@@ -1,7 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
-import multiprocessing
-
 from helper import Helper
 
 # this global is necessary for the child processes to access the original
@@ -11,21 +8,25 @@ shared_data = None
 
 def inplace_fwd_func(func, i, **kwargs):
     """
-    Use if the parameter function does NOT have a return statement, and will overwrite the data in place.
+    Use if the parameter function will do the following:
+        - Perform an operation on the input data
+        - DOES NOT have a return statement
+        - The data is NOT RESIZED
+        - The data will be changed INPLACE inside the function being forwarded (the parameter function)
 
     You HAVE to be careful when using this, for example the func:
     def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a local variable that is discarded.
+    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a LOCAL VARIABLE that is discarded.
 
     The proper way to write this function is:
     def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data[:] = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    Notice the data[:], what this does is refer to the ACTUAL parameter, and then changes it's contents, as [:] gives
+    Notice the data[:], what this does is REFER to the ACTUAL parameter, and then changes it's contents, as [:] gives
     a reference back to the inner contents.
 
     :param func: Function that will be executed
@@ -36,10 +37,13 @@ def inplace_fwd_func(func, i, **kwargs):
     func(shared_data[i], **kwargs)
 
 
-def fwd_func(func, i, **kwargs):
+def return_fwd_func(func, i, **kwargs):
     """
-    Use if the parameter function will perform an operation on the input data, DOES have a return statement,
-    and will store it back in the same container.
+    Use if the parameter function will do the following:
+        - Perform an operation on the input data
+        - DOES have a return statement
+        - The data is NOT RESIZED
+        - The output will be stored in the same container as the input container
 
     If a function seems to give back unexpected Nones or nans, then it might not be returning anything,
     and is doing all the calculations and overwriting in place. In that case use fwd_func_inplace
@@ -55,20 +59,20 @@ def fwd_func(func, i, **kwargs):
     shared_data[i] = func(shared_data[i], **kwargs)
 
 
-def create_partial(func, fwd_function=fwd_func, **kwargs):
+def create_partial(func, fwd_func=return_fwd_func, **kwargs):
     """
-    Create a partial using functools.partial, to forward the kwargs to the parallel execution of imap.
-    If you seem to be getting nans, check if the correct fwd_function is set!
+    Create a partial using functools.partial, to forward the kwargs to the parallel execution.
+    If you seem to be getting NANs, check if the correct fwd_function is set!
     
     :param func: Function that will be executed
-    :param fwd_function: The function will be forwarded through function. It must be one of:
-            - shared_parallel.fwd_func: if the function returns a value
-            - shared_parallel.inplace_fwd_func: if the function will overwrite the data in place
+    :param fwd_func: The function will be forwarded through function. It must be one of:
+            - shared_mem.fwd_func: if the function returns a value
+            - shared_mem.inplace_fwd_func: if the function will overwrite the data in place
     :param kwargs: kwargs to forward to the function func that will be executed
     :return:
     """
     from functools import partial
-    return partial(fwd_function, func, **kwargs)
+    return partial(fwd_func, func, **kwargs)
 
 
 def execute(data=None,
@@ -80,7 +84,12 @@ def execute(data=None,
             show_timer=True):
     """
     Executes a function in parallel with shared memory between the processes.
-    The array must have been created using parallel.create_shared_array(shape, dtype).
+    The array MUST HAVE BEEN created using parallel.utility.create_shared_array(shape, dtype).
+
+    If the input array IS NOT a shared array, the data will NOT BE CHANGED!
+    The reason for that is that the processes don't work on the data, but on a copy.
+    When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK TO REPLACE THE ORIGINAL
+    as is done in parallel.exclusive_mem, it is merely discarded.
 
     - imap_unordered gives the images back in random order!
     - map and map_async cannot replace the data in place and end up
@@ -109,8 +118,8 @@ def execute(data=None,
     :param cores: number of cores that the processing will use
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
-    :param show_timer: if False no timer will be shown
     :param h: Helper class, if not provided will be initialised with empty constructor
+    :param show_timer: if False no timer will be shown
     :return:
     """
     h = Helper.empty_init() if h is None else h

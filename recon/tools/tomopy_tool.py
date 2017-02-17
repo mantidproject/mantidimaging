@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.tools.abstract_tool import AbstractTool
 
 
 class TomoPyTool(AbstractTool):
@@ -18,6 +17,7 @@ class TomoPyTool(AbstractTool):
                 format(algorithm))
 
     def __init__(self):
+        from recon.tools.abstract_tool import AbstractTool
         AbstractTool.__init__(self)
         self._tomopy = self.import_self()
 

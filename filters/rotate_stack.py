@@ -106,7 +106,7 @@ def _execute_par(data, rotation, cores=None, chunksize=None, h=None):
 
     f = psm.create_partial(
         _rotate_image_inplace,
-        fwd_function=psm.inplace_fwd_func,
+        fwd_func=psm.inplace_fwd_func,
         rotation=rotation)
 
     data = psm.execute(

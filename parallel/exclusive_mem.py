@@ -1,9 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 from helper import Helper
-import numpy as np
-"""
-
-"""
 
 
 def create_partial(func, **kwargs):
@@ -11,6 +7,7 @@ def create_partial(func, **kwargs):
     Create a partial using functools.partial, to forward the kwargs to the parallel execution of imap.
 
     This version does not have a forwarding function, because one is not necessary.
+    The data is copied regardless of it being forwarded or not.
 
     :param func: Function that will be executed
     :param kwargs: kwargs to forward to the function func that will be executed
@@ -38,13 +35,7 @@ def execute(data=None,
     doubling the memory. They do not improve speed performance either
     - imap seems to be the best choice
 
-    The difference between parallel.exlcusive_mem and parallel.shared_mem/two_shared_mem is that the latter uses a shared memory array between
-    the processes, to avoid copy-on-read/write the data to each process' virtual memory space.
-
-    This also means that this class potentially uses MUCH more memory.
-
-    Exclusive memory needs to be used when the input array has a different shape from the input array.
-    However they can only have different shapes in the X and Y dimensions. The number of images (Z) must remain the same.
+    This also means that this class potentially uses MUCH more memory, and performs a lot slower.
 
     If you get a similar error:
         output_data[i] = res_data[:]
@@ -59,7 +50,9 @@ def execute(data=None,
     :param name: the string that will be appended in front of the progress bar
     :param h: Helper class, if not provided will be initialised with empty constructor
     :param output_data: the output array in which the results will be stored
-    :return:
+    :param show_timer: Whether to show the loading bar or be completely silent
+
+    :return: The processed output data
     """
     h = Helper.empty_init() if h is None else h
 
