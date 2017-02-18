@@ -62,9 +62,9 @@ def create_image_name(custom_idx, idx, name_prefix, zfill_len, name_postfix,
                       extension):
     if custom_idx is None:
         name = name_prefix + str(idx).zfill(
-            zfill_len) + name_postfix + extension
+            zfill_len) + name_postfix + "." + extension
     else:
-        name = name_prefix + str(custom_idx) + name_postfix + extension
+        name = name_prefix + str(custom_idx) + name_postfix + "." + extension
     return name
 
 
@@ -102,6 +102,11 @@ class Saver(object):
 
         self._overwrite_all = config.func.overwrite_all
         self._data_as_stack = config.func.data_as_stack
+
+        if self._img_format == 'nxs' and not self._data_as_stack:
+            raise ValueError(
+                "Cannot save out individual NXS files! Please provide --data-as-stack."
+            )
 
         self._preproc_dir = config.func.preproc_subdir
         self._save_preproc = config.func.save_preproc
@@ -274,20 +279,16 @@ class Saver(object):
                                    custom_idx=None,
                                    zfill_len=6,
                                    name_postfix=''):
-        if self._img_format in ['tif', 'tiff']:
-            extension = '.tiff'
-            write_func = write_img
-        else:
-            if self._img_format in ['nxs']:
-                self._h.tomo_print_error(
-                    "Cannot save out individual NXS files. Saving out FITS instead."
-                )
-            extension = '.fits'
+        if self._img_format in ['fit', 'fits']:
             write_func = write_fits
+        else:
+            # pass all other formats to skimage
+            write_func = write_img
 
         for idx in range(0, data.shape[0]):
             name = create_image_name(custom_idx, idx, name_prefix, zfill_len,
-                                     name_postfix, extension)
+                                     name_postfix, self._img_format)
+            print(name)
             write_func(data[idx, :, :],
                        os.path.join(output_dir, name), self._overwrite_all)
 

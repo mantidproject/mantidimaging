@@ -1,6 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
 #
@@ -23,15 +22,13 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-
 import nose
-
 
 _avail_modules = {
     'filters': 'tests/filters_test/',
     'configs': 'tests/configs_test.py',
     'config': 'tests/configs_test.py',
-    'data': 'tests/data_test.py',
+    'data': 'tests/imgdata_test.py',
     'helper': 'tests/helper_test.py',
     'parallel': 'tests/parallel_test/',
     'tools': 'tests/recon/tools/',
