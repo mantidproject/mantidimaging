@@ -159,7 +159,7 @@ def get_indices_for_energy_levels(energy_levels):
 def get_angle_folders(input_path, img_format, selected_angles):
     from imgdata.loader import get_folder_names
     # get all the angles folders
-    angle_folders = get_folder_names(input_path, img_format)
+    angle_folders = get_folder_names(input_path)
 
     # if --aggregate-angles <id1> <id2> specifies anything,
     # exclude all other angle folders
