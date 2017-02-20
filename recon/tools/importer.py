@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
 
-def timed_import(config, h):
+def timed_import(config, h=None):
     """
     Wraps the importing function in a timer.
     This function should not be used from the filters as it will add a lot of clutter to the stdout.
