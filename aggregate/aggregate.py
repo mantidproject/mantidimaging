@@ -44,7 +44,6 @@ def execute(config):
     # generate the file names in each angle folder
     angle_image_paths = get_image_files_paths(input_path, angle_folders,
                                               img_format, selected_indices)
-
     # create an enumerator for the angle folders
     if selected_angles:
         angle_image_paths = enumerate(

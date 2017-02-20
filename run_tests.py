@@ -26,8 +26,9 @@ import nose
 
 _avail_modules = {
     'filters': 'tests/filters_test/',
+    'aggregate': 'tests/aggregate_test.py',
+    'convert': 'tests/convert_test.py',
     'configs': 'tests/configs_test.py',
-    'config': 'tests/configs_test.py',
     'data': 'tests/imgdata_test.py',
     'helper': 'tests/helper_test.py',
     'parallel': 'tests/parallel_test/',
