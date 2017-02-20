@@ -79,7 +79,7 @@ def _load_sample_data(load_func,
                       chunksize=None,
                       parallel_load=False,
                       h=None):
-    from imgdata.loader import get_file_names, load_stack
+    from imgdata.loader import load_stack
 
     # determine what the loaded data was
     if len(img_shape) == 2:  # the loaded file was a single image
@@ -106,6 +106,7 @@ def _load_and_avg_data(load_func,
                        parallel_load=False,
                        h=None):
     if file_path is not None:
+        from imgdata.loader import get_file_names
         file_names = get_file_names(file_path, img_format)
 
         data = _load_files(load_func, file_names, img_shape, data_dtype,

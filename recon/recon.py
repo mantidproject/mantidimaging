@@ -190,7 +190,7 @@ def post_processing(config, recon_data, h=None):
     h = Helper(config) if h is None else h
 
     recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
-                                       h)
+                                       config.post.circular_mask_val, h)
 
     recon_data = outliers.execute(recon_data, config.post.outliers_threshold,
                                   config.post.outliers_mode, h)
