@@ -7,8 +7,6 @@ class FunctionalConfig(object):
         """
         Builds a default post-processing configuration with a sensible choice of parameters
 
-        find_cor: Currently a boolean, TODO will be an int so that we can use different methods
-
         verbosity: Default 2, existing levels:
             0 - Silent, no output at all (not recommended)
             1 - Low verbosity, will output each step that is being performed
@@ -287,13 +285,15 @@ class FunctionalConfig(object):
             default=self.convert_prefix,
             help='Convert images to a different format.')
 
+        from imopr import imopr
         grp_run_modes.add_argument(
             "--imopr",
             nargs='*',
             required=False,
             type=str,
             default=self.imopr,
-            help='Image operator TODO docs.')  # TODO
+            help='Image operator currently supports the following operators: '
+            + str(imopr.get_available_operators()))
 
         grp_run_modes.add_argument(
             "--aggregate",
@@ -301,8 +301,8 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.aggregate,
-            help='Aggregate image energy levels. The expected input is '
-                 '--aggregate <start> <end> <method:{sum, avg}>... to select indices.\n\
+            help='Aggregate the selected image energy levels. The expected input is '
+            '--aggregate <start> <end> <method:{sum, avg}>... to select indices.\n\
                   There must always be an even lenght of indices: --aggregate 0 100 101 201 300 400 sum'
         )
 
@@ -313,8 +313,8 @@ class FunctionalConfig(object):
             type=str,
             default=self.aggregate_angles,
             help="Select which angles to be aggregated with --aggregate.\n"
-                  "This can be used to spread out the load on multiple nodes.\n"
-                  "Sample command: --aggregate-angles 0 10, will select only angles 0 - 10 inclusive."
+            "This can be used to spread out the load on multiple nodes.\n"
+            "Sample command: --aggregate-angles 0 10, will select only angles 0 - 10 inclusive."
         )
 
         grp_run_modes.add_argument(
@@ -383,7 +383,7 @@ class FunctionalConfig(object):
             type=float,
             default=self.max_angle,
             help="Maximum angle of the last projection.\n"
-                 "Assuming first angle=0, and uniform angle increment for every projection"
+            "Assuming first angle=0, and uniform angle increment for every projection"
         )
 
         grp_recon.add_argument(

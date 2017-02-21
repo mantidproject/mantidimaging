@@ -1,6 +1,14 @@
 from __future__ import (absolute_import, division, print_function)
 
 
+def get_available_operators():
+    return [
+        'recon', 'sino', 'show', 'vis', 'cor', 'corvo', 'corpc', 'corwrite',
+        'sum', '+', 'subtract', 'sub', '-', 'divide', 'div', '/', 'multiply',
+        'mul', '*', 'mean', 'avg', 'x'
+    ]
+
+
 def execute(config):
     """
     Execute the image operator. This allows performing operations on single images, or specified images slices.
