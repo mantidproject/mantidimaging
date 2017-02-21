@@ -36,6 +36,7 @@ class FunctionalConfig(object):
 
         self.save_preproc = True
         self.only_preproc = False
+        self.only_postproc = False
         self.reuse_preproc = False
         self.preproc_subdir = 'pre_processed'
         self.data_as_stack = False
@@ -214,6 +215,13 @@ class FunctionalConfig(object):
         )
 
         grp_func.add_argument(
+            "--only-postproc",
+            required=False,
+            action='store_true',
+            help="The images have already been reconstructed. All pre-processing and reconstruciton steps will be skipped."
+        )
+
+        grp_func.add_argument(
             "--save-horiz-slices",
             required=False,
             action='store_true',
@@ -247,7 +255,9 @@ class FunctionalConfig(object):
             required=False,
             type=float,
             default=self.cor,
-            help="Provide a pre-calculated centre of rotation.")
+            help="Provide a pre-calculated centre of rotation.\n"
+                 "IF A CROP IS PROVIDED WITH -R THE LEFT (X0) ARGUMENT WILL BE SUBTRACTED FROM THE CENTER OF ROTATION, "
+                 "to compensate for the crop! If no crop is provided, the COR will not be changed!")
 
         grp_func.add_argument(
             "-v",
@@ -429,6 +439,7 @@ class FunctionalConfig(object):
         self.save_preproc = args.save_preproc
         self.only_preproc = args.only_preproc
         self.reuse_preproc = args.reuse_preproc
+        self.only_postproc = args.only_postproc
         self.preproc_subdir = args.preproc_subdir
         self.data_as_stack = args.data_as_stack
 
@@ -468,27 +479,3 @@ class FunctionalConfig(object):
         self.aggregate = args.aggregate
         self.aggregate_angles = args.aggregate_angles
         self.aggregate_single_folder_output = args.aggregate_single_folder_output
-
-        # THIS MUST BE THE LAST THING THIS FUNCTION DOES
-        self.handle_special_arguments()
-
-    def handle_special_arguments(self):
-        if not self.input_path:
-            raise ValueError(
-                "Cannot run a reconstruction without setting the input path")
-
-        if (self.save_preproc or self.convert or
-                self.aggregate) and not self.output_path:
-            raise ValueError(
-                "An option was specified that requires an output directory, but no output directory was given!\n\
-                The options that require output directory are:\n\
-                -s/--save-preproc, --convert, --aggregate")
-
-        if self.cor is None \
-                and not self.only_preproc \
-                and not self.imopr \
-                and not self.aggregate\
-                and not self.convert:
-            raise ValueError(
-                "If running a reconstruction a Center of Rotation MUST be provided"
-            )

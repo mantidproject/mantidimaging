@@ -20,11 +20,21 @@ class TomoPyTool(AbstractTool):
     def __init__(self):
         AbstractTool.__init__(self)
         self._tomopy = self.import_self()
+        import tomopy.prep
+        import tomopy.recon
+        import tomopy.misc
+        import tomopy.io
+        import tomopy.sim
 
         # pretend we have the functions
         self.find_center = self._tomopy.find_center
         self.find_center_vo = self._tomopy.find_center_vo
         self.circ_mask = self._tomopy.circ_mask
+        self.misc = tomopy.misc
+        self.prep = tomopy.prep
+        self.recon = tomopy.recon
+        self.sim = tomopy.sim
+        self.io = tomopy.io
 
     def import_self(self):
         try:
@@ -41,7 +51,11 @@ class TomoPyTool(AbstractTool):
 
         return tomopy
 
-    def run_reconstruct(self, sample, config, h=None, proj_angles=None,
+    def run_reconstruct(self,
+                        sample,
+                        config,
+                        h=None,
+                        proj_angles=None,
                         **kwargs):
         """
         Run a reconstruction with TomoPy, using the CPU algorithms they provide.

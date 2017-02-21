@@ -29,6 +29,35 @@ class ReconstructionConfig(object):
         self.pre = preproc_config
         self.post = postproc_config
 
+        # THIS MUST BE THE LAST THING THIS FUNCTION DOES
+        self.handle_special_arguments()
+
+    def handle_special_arguments(self):
+        if not self.func.input_path:
+            raise ValueError(
+                "Cannot run a reconstruction without setting the input path")
+
+        if (self.func.save_preproc or self.func.convert or
+                self.func.aggregate) and not self.func.output_path:
+            raise ValueError(
+                "An option was specified that requires an output directory, but no output directory was given!\n\
+                The options that require output directory are:\n\
+                -s/--save-preproc, --convert, --aggregate")
+
+        if self.func.cor is None \
+                and not self.func.only_preproc \
+                and not self.func.imopr \
+                and not self.func.aggregate\
+                and not self.func.convert\
+                and not self.func.only_postproc:
+            raise ValueError(
+                "If running a reconstruction a Center of Rotation MUST be provided"
+            )
+        if self.func.cor and self.pre.region_of_interest:
+            # the COR is going to be related to the full image
+            # as we are going to be cropping it, we subtract the crop
+            self.func.cor -= self.pre.region_of_interest[0]
+
     def __str__(self):
         return str(self.func) + str(self.pre) + str(self.post)
 

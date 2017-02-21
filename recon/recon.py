@@ -51,15 +51,18 @@ def execute(config, cmd_line):
 
     # ----------------------------------------------------------------
     # Reconstruction, output has different shape
-    recon = tool.run_reconstruct(sample, config, h)
+    if not config.func.only_postproc:
+        sample = tool.run_reconstruct(sample, config, h)
+    else:
+        h.tomo_print_note("Only post-processing run, skipping reconstruction.")
 
-    recon = post_processing(config, recon)
+    sample = post_processing(config, sample)
 
     # Save output from the reconstruction
-    saver.save_recon_output(recon)
+    saver.save_recon_output(sample)
     h.total_execution_timer()
     readme.end()
-    return recon
+    return sample
 
 
 def pre_processing(config, sample, flat, dark, h=None):
@@ -75,9 +78,9 @@ def pre_processing(config, sample, flat, dark, h=None):
     """
     h = Helper(config) if h is None else h
 
-    if config.func.reuse_preproc is True:
+    if config.func.reuse_preproc or config.func.only_postproc:
         h.tomo_print_warning(
-            "Pre-processing steps have been skipped, because --reuse-preproc flag has been passed."
+            "Pre-processing steps have been skipped, because --reuse-preproc or --only-postproc flag has been passed."
         )
         return sample, flat, dark
 
@@ -185,15 +188,16 @@ def post_processing(config, recon_data, h=None):
     :param h: Helper class, if not provided will be initialised with the config
     :return: The reconstructed data.
     """
-    from filters import circular_mask, gaussian, median_filter, outliers
+    from filters import circular_mask, gaussian, median_filter, outliers, ring_removal
 
     h = Helper(config) if h is None else h
 
-    recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
-                                       config.post.circular_mask_val, h)
 
     recon_data = outliers.execute(recon_data, config.post.outliers_threshold,
                                   config.post.outliers_mode, h)
+    recon_data = ring_removal.execute(recon_data, config.post.ring_removal, config.func.cores, config.func.chunksize, h)
+    recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
+                                       config.post.circular_mask_val, config.func.cores, h)
 
     recon_data = gaussian.execute(recon_data, config.post.gaussian_size,
                                   config.post.gaussian_mode,

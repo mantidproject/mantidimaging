@@ -288,7 +288,6 @@ class Saver(object):
         for idx in range(0, data.shape[0]):
             name = create_image_name(custom_idx, idx, name_prefix, zfill_len,
                                      name_postfix, self._img_format)
-            print(name)
             write_func(data[idx, :, :],
                        os.path.join(output_dir, name), self._overwrite_all)
 

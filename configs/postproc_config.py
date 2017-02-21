@@ -23,6 +23,8 @@ class PostProcConfig(object):
         """
         self.median_mode = 'reflect'
 
+        self.ring_removal = False
+
     def __str__(self):
         return "Circular mask: {0}\n".format(self.circular_mask) \
             + "Circular mask value: {0}\n".format(self.circular_mask_val) \
@@ -121,6 +123,9 @@ class PostProcConfig(object):
             "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
             "Higher order derivatives are not implemented.")
 
+        grp_post.add_argument(
+            "--ring-removal", required=False, action='store_true', help='TODO')
+
         return parser
 
     def update(self, args):
@@ -136,3 +141,4 @@ class PostProcConfig(object):
 
         self.median_size = args.post_median_size
         self.median_mode = args.post_median_mode
+        self.ring_removal = args.ring_removal
