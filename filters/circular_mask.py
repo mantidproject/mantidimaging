@@ -3,7 +3,7 @@ import numpy as np
 from helper import Helper
 
 
-def execute(data, circular_mask_ratio, circular_mask_value=0., h=None):
+def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None, h=None):
     """
     Execute the Circular Mask filter.
 
@@ -29,7 +29,7 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., h=None):
             axis=0,
             ratio=circular_mask_ratio,
             val=circular_mask_value)
-        h.pstart("Finished applying circular mask.")
+        h.pstop("Finished applying circular mask.")
     else:
         h.tomo_print_note(
             "Not applying circular mask, no --circular-mask was specified.")
