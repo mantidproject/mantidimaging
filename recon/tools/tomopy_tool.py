@@ -87,6 +87,13 @@ class TomoPyTool(AbstractTool):
         num_iter = config.func.num_iter
         cores = config.func.cores
 
+        # Generating a COR for each slice created a better reconstruction
+        # this approach works, however it needs to be made flexible. 
+        # That's on the TODO list
+        # cors = np.array([570]*1966)
+        # cors[1300:1600] = 565
+        # cors[1600:1966] = 560
+
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
         if iterative_algorithm:  # run the iterative algorithms

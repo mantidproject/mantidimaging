@@ -14,7 +14,7 @@ def execute(sample, flat, dark, config, indices):
 
     if not len(indices) > 1 or len(indices) != 4:
         raise ValueError(
-            "You need to provide input in the format <index_for_recon> <cors_list>[start, end, step]: 31 1 10 1 corwrite"
+            "You need to provide input in the format <index_for_recon> <cors_list[start, end, step]>: 31 1 10 1 corwrite"
         )
 
     from recon.tools import importer

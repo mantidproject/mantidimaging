@@ -17,12 +17,12 @@ class ReconstructionConfig(object):
 
         if not isinstance(preproc_config, PreProcConfig):
             raise ValueError(
-                "Functional config is invalid type. The script might be corrupted."
+                "Preproc config is invalid type. The script might be corrupted."
             )
 
         if not isinstance(postproc_config, PostProcConfig):
             raise ValueError(
-                "Functional config is invalid type. The script might be corrupted."
+                "Postproc config is invalid type. The script might be corrupted."
             )
 
         self.func = functional_config
@@ -71,5 +71,10 @@ class ReconstructionConfig(object):
         then constructing it manually. 
         This method does that for you!
         """
-        return ReconstructionConfig(FunctionalConfig(),
+        # workaround to all the checks we've done
+        func = FunctionalConfig()
+        func.input_path='~/temp/'
+        func.imopr='something'
+
+        return ReconstructionConfig(func,
                                     PreProcConfig(), PostProcConfig())

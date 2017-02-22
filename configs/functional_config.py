@@ -34,7 +34,7 @@ class FunctionalConfig(object):
         self.out_horiz_slices_subdir = 'horiz_slices'
         self.save_horiz_slices = False
 
-        self.save_preproc = True
+        self.save_preproc = False
         self.only_preproc = False
         self.only_postproc = False
         self.reuse_preproc = False

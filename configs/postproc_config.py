@@ -24,6 +24,13 @@ class PostProcConfig(object):
         self.median_mode = 'reflect'
 
         self.ring_removal = False
+        self.ring_removal_center_x = False
+        self.ring_removal_center_y = False
+        self.ring_removal_thresh = False
+        self.ring_removal_thresh_max = False
+        self.ring_removal_thresh_min = False
+        self.ring_removal_theta_min = False
+        self.ring_removal_rwidth = False
 
     def __str__(self):
         return "Circular mask: {0}\n".format(self.circular_mask) \
@@ -125,6 +132,26 @@ class PostProcConfig(object):
 
         grp_post.add_argument(
             "--ring-removal", required=False, action='store_true', help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-x", type=int, required=False, help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-y", type=int, required=False, help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-thresh", type=float, required=False, help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-thresh-max",
+            type=float,
+            required=False,
+            help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-thresh-min",
+            type=float,
+            required=False,
+            help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-theta-min", type=int, required=False, help='TODO')
+        grp_post.add_argument(
+            "--ring-removal-rwidth", type=int, required=False, help='TODO')
 
         return parser
 
@@ -141,4 +168,12 @@ class PostProcConfig(object):
 
         self.median_size = args.post_median_size
         self.median_mode = args.post_median_mode
+
         self.ring_removal = args.ring_removal
+        self.ring_removal_center_x = args.ring_removal_x
+        self.ring_removal_center_y = args.ring_removal_y
+        self.ring_removal_thresh = args.ring_removal_thresh
+        self.ring_removal_thresh_max = args.ring_removal_thresh_max
+        self.ring_removal_thresh_min = args.ring_removal_thresh_min
+        self.ring_removal_theta_min = args.ring_removal_theta_min
+        self.ring_removal_rwidth = args.ring_removal_rwidth

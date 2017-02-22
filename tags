@@ -86,10 +86,10 @@ __init__.py	parallel/__init__.py	1;"	kind:file	line:1
 __init__.py	recon/__init__.py	1;"	kind:file	line:1
 __init__.py	recon/tools/__init__.py	1;"	kind:file	line:1
 __init__.py	tests/__init__.py	1;"	kind:file	line:1
-__str__	configs/functional_config.py	/^    def __str__(self):$/;"	kind:member	line:83
-__str__	configs/postproc_config.py	/^    def __str__(self):$/;"	kind:member	line:26
+__str__	configs/functional_config.py	/^    def __str__(self):$/;"	kind:member	line:82
+__str__	configs/postproc_config.py	/^    def __str__(self):$/;"	kind:member	line:28
 __str__	configs/preproc_config.py	/^    def __str__(self):$/;"	kind:member	line:53
-__str__	configs/recon_config.py	/^    def __str__(self):$/;"	kind:member	line:32
+__str__	configs/recon_config.py	/^    def __str__(self):$/;"	kind:member	line:61
 _alphanum_key_split	imgdata/loader.py	/^def _alphanum_key_split(path_str):$/;"	kind:function	line:247
 _apply_normalise	filters/normalise_by_flat_dark.py	/^def _apply_normalise(data,$/;"	kind:function	line:10
 _apply_normalise_inplace	filters/normalise_by_flat_dark.py	/^def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):$/;"	kind:function	line:6
@@ -137,7 +137,7 @@ _rotate_image	filters/rotate_stack.py	/^def _rotate_image(data, rotation=None):$
 _rotate_image_inplace	filters/rotate_stack.py	/^def _rotate_image_inplace(data, rotation=None):$/;"	kind:function	line:6
 _run_tests	run_tests.py	/^def _run_tests(args):$/;"	kind:function	line:38
 _save_out_individual_files	imgdata/saver.py	/^    def _save_out_individual_files(self,$/;"	kind:member	line:275
-_save_out_stack	imgdata/saver.py	/^    def _save_out_stack(self,$/;"	kind:member	line:295
+_save_out_stack	imgdata/saver.py	/^    def _save_out_stack(self,$/;"	kind:member	line:294
 abstract_tool.py	recon/tools/abstract_tool.py	1;"	kind:file	line:1
 add_inplace	tests/shared_mem_test.py	/^def add_inplace(first_shared, add_arg=3):$/;"	kind:function	line:7
 add_inplace	tests/two_shared_mem_test.py	/^def add_inplace(first_shared, second_shared, add_arg):$/;"	kind:function	line:7
@@ -214,14 +214,14 @@ do_recon	tests/imgdata_test.py	/^    def do_recon(self, img_format, stack, horiz
 do_sanity_checks	aggregate/aggregate.py	/^def do_sanity_checks(output_path, agg_method, commands):$/;"	kind:function	line:103
 do_stack_load_par	imgdata/loader.py	/^def do_stack_load_par(data, new_data, cores, chunksize, name, h):$/;"	kind:function	line:299
 do_stack_load_seq	imgdata/loader.py	/^def do_stack_load_seq(data, new_data, img_shape, name, h):$/;"	kind:function	line:279
-empty_init	configs/recon_config.py	/^    def empty_init():$/;"	kind:member	line:36
+empty_init	configs/recon_config.py	/^    def empty_init():$/;"	kind:member	line:65
 empty_init	helper.py	/^    def empty_init():$/;"	kind:member	line:68
 end	imgdata/readme.py	/^    def end(self):$/;"	kind:member	line:86
 exclusive_mem.py	parallel/exclusive_mem.py	1;"	kind:file	line:1
 exclusive_mem_test.py	tests/exclusive_mem_test.py	1;"	kind:file	line:1
 execute	aggregate/aggregate.py	/^def execute(config):$/;"	kind:function	line:4
 execute	convert/convert.py	/^def execute(config):$/;"	kind:function	line:5
-execute	filters/circular_mask.py	/^def execute(data, circular_mask_ratio, circular_mask_value=0., h=None):$/;"	kind:function	line:6
+execute	filters/circular_mask.py	/^def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None, h=None):$/;"	kind:function	line:6
 execute	filters/crop_coords.py	/^def execute(sample, region_of_interest, flat, dark, h=None):$/;"	kind:function	line:6
 execute	filters/cut_off.py	/^def execute(data, cut_off_level, h=None):$/;"	kind:function	line:5
 execute	filters/gaussian.py	/^def execute(data, size, mode, order, cores=None, chunksize=None, h=None):$/;"	kind:function	line:8
@@ -232,7 +232,7 @@ execute	filters/normalise_by_air_region.py	/^def execute(data,$/;"	kind:function
 execute	filters/normalise_by_flat_dark.py	/^def execute(data,$/;"	kind:function	line:19
 execute	filters/outliers.py	/^def execute(data, outliers_threshold, outliers_mode, h=None):$/;"	kind:function	line:7
 execute	filters/rebin.py	/^def execute(data, rebin_param, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:7
-execute	filters/remove_stripes_ring_artifacts.py	/^def execute(data_vol, method='wavelet-fourier'):$/;"	kind:function	line:1
+execute	filters/ring_removal.py	/^def execute(data, method=False, cores=None, chunksize=None,$/;"	kind:function	line:1
 execute	filters/rotate_stack.py	/^def execute(data,$/;"	kind:function	line:16
 execute	filters/stripe_removal.py	/^def execute(data, config):$/;"	kind:function	line:2
 execute	imgdata/img_loader.py	/^def execute(load_func, input_file_names, input_path_flat, input_path_dark,$/;"	kind:function	line:10
@@ -241,7 +241,7 @@ execute	imopr/cor.py	/^def execute(sample, flat, dark, config, indices):$/;"	kin
 execute	imopr/corpc.py	/^def execute(sample, flat, dark, config, indices):$/;"	kind:function	line:6
 execute	imopr/corvo.py	/^def execute(sample, flat, dark, config, indices):$/;"	kind:function	line:6
 execute	imopr/corwrite.py	/^def execute(sample, flat, dark, config, indices):$/;"	kind:function	line:6
-execute	imopr/imopr.py	/^def execute(config):$/;"	kind:function	line:4
+execute	imopr/imopr.py	/^def execute(config):$/;"	kind:function	line:12
 execute	imopr/opr.py	/^def execute(sample, flat, dark, config, indices):$/;"	kind:function	line:34
 execute	imopr/recon.py	/^def execute(sample, flat, dark, config, indices):$/;"	kind:function	line:5
 execute	imopr/sinogram.py	/^def execute(sample, flat, dark, config, indices):$/;"	kind:function	line:6
@@ -268,12 +268,13 @@ gen_img_shared_array	tests/test_helper.py	/^def gen_img_shared_array(shape=(10, 
 gen_img_shared_array_and_copy	tests/test_helper.py	/^def gen_img_shared_array_and_copy(shape=(10, 10, 10)):$/;"	kind:function	line:13
 generate_indices	parallel/utility.py	/^def generate_indices(num_images):$/;"	kind:function	line:41
 get_angle_folders	aggregate/aggregate.py	/^def get_angle_folders(input_path, img_format, selected_angles):$/;"	kind:function	line:158
+get_available_operators	imopr/imopr.py	/^def get_available_operators():$/;"	kind:function	line:4
 get_available_operators	imopr/opr.py	/^def get_available_operators():$/;"	kind:function	line:30
 get_cores	parallel/utility.py	/^def get_cores():$/;"	kind:function	line:36
 get_data_average	imgdata/img_loader.py	/^def get_data_average(data):$/;"	kind:function	line:194
 get_file_names	imgdata/loader.py	/^def get_file_names(path, img_format, prefix=''):$/;"	kind:function	line:197
 get_folder_names	imgdata/loader.py	/^def get_folder_names(path):$/;"	kind:function	line:225
-get_function	imopr/imopr.py	/^def get_function(string):$/;"	kind:function	line:57
+get_function	imopr/imopr.py	/^def get_function(string):$/;"	kind:function	line:65
 get_image_files_paths	aggregate/aggregate.py	/^def get_image_files_paths(input_path, angle_folders, img_format,$/;"	kind:function	line:121
 get_indices_for_energy_levels	aggregate/aggregate.py	/^def get_indices_for_energy_levels(energy_levels):$/;"	kind:function	line:145
 get_memory_usage_linux	helper.py	/^    def get_memory_usage_linux(self):$/;"	kind:member	line:120
@@ -282,7 +283,7 @@ get_verbosity	helper.py	/^    def get_verbosity(self):$/;"	kind:member	line:51
 gimme_helper	tests/test_helper.py	/^def gimme_helper():$/;"	kind:function	line:44
 grab_full_config	tomo_argparser.py	/^def grab_full_config():$/;"	kind:function	line:26
 handle_indices	imopr/helper.py	/^def handle_indices(indices):$/;"	kind:function	line:12
-handle_special_arguments	configs/functional_config.py	/^    def handle_special_arguments(self):$/;"	kind:member	line:475
+handle_special_arguments	configs/recon_config.py	/^    def handle_special_arguments(self):$/;"	kind:member	line:35
 has_files	pyreader/reader.py	/^def has_files(input_dir, suffix):$/;"	kind:function	line:40
 helper.py	helper.py	1;"	kind:file	line:1
 helper.py	imopr/helper.py	1;"	kind:file	line:1
@@ -294,7 +295,7 @@ import_pyfits	imgdata/loader.py	/^def import_pyfits():$/;"	kind:function	line:16
 import_scipy_ndimage	filters/median_filter.py	/^def import_scipy_ndimage():$/;"	kind:function	line:104
 import_self	recon/tools/abstract_tool.py	/^    def import_self(self):$/;"	kind:member	line:28
 import_self	recon/tools/astra_tool.py	/^    def import_self(self):$/;"	kind:member	line:34
-import_self	recon/tools/tomopy_tool.py	/^    def import_self(self):$/;"	kind:member	line:29
+import_self	recon/tools/tomopy_tool.py	/^    def import_self(self):$/;"	kind:member	line:39
 import_skimage_io	imgdata/loader.py	/^def import_skimage_io():$/;"	kind:function	line:179
 importer.py	recon/tools/importer.py	1;"	kind:file	line:1
 importer_test.py	tests/importer_test.py	1;"	kind:file	line:1
@@ -313,7 +314,7 @@ loader.py	imgdata/loader.py	1;"	kind:file	line:1
 main	main.py	/^def main():$/;"	kind:function	line:34
 main	other/python_multithreading_attempts.py	/^def main():$/;"	kind:function	line:85
 main.py	main.py	1;"	kind:file	line:1
-make_dirs_if_needed	imgdata/saver.py	/^    def make_dirs_if_needed(self, dirname=None):$/;"	kind:member	line:328
+make_dirs_if_needed	imgdata/saver.py	/^    def make_dirs_if_needed(self, dirname=None):$/;"	kind:member	line:327
 make_sinogram	imopr/sinogram.py	/^def make_sinogram(sample):$/;"	kind:function	line:22
 mcp_corrections.py	filters/mcp_corrections.py	1;"	kind:file	line:1
 mcp_corrections_test.py	tests/mcp_corrections_test.py	1;"	kind:file	line:1
@@ -341,9 +342,9 @@ parallel_fun.py	tests/parallel_fun.py	1;"	kind:file	line:1
 parallel_move_data	imgdata/loader.py	/^def parallel_move_data(input_data, output_data):$/;"	kind:function	line:270
 parser	pyreader/fits_to_nexus.py	/^	parser = argparse.ArgumentParser()$/;"	kind:variable	line:46
 parser	pyreader/tif_to_nexus.py	/^	parser = argparse.ArgumentParser()$/;"	kind:variable	line:46
-post_processing	recon/recon.py	/^def post_processing(config, recon_data, h=None):$/;"	kind:function	line:179
+post_processing	recon/recon.py	/^def post_processing(config, recon_data, h=None):$/;"	kind:function	line:182
 postproc_config.py	configs/postproc_config.py	1;"	kind:file	line:1
-pre_processing	recon/recon.py	/^def pre_processing(config, sample, flat, dark, h=None):$/;"	kind:function	line:65
+pre_processing	recon/recon.py	/^def pre_processing(config, sample, flat, dark, h=None):$/;"	kind:function	line:68
 preproc_config.py	configs/preproc_config.py	1;"	kind:file	line:1
 print_start	imopr/helper.py	/^def print_start(action_name):$/;"	kind:function	line:7
 prog_close	helper.py	/^    def prog_close(self):$/;"	kind:member	line:301
@@ -364,7 +365,6 @@ recon_config.py	configs/recon_config.py	1;"	kind:file	line:1
 remove_sino_stripes_rings_wf	filters/remove_sino_stripes_rings_wf.py	/^def remove_sino_stripes_rings_wf(data_vol, wv_levels=None):$/;"	kind:function	line:4
 remove_sino_stripes_rings_wf.py	filters/remove_sino_stripes_rings_wf.py	1;"	kind:file	line:1
 remove_sino_stripes_rings_wf_test.py	tests/remove_sino_stripes_rings_wf_test.py	1;"	kind:file	line:1
-remove_stripes_ring_artifacts.py	filters/remove_stripes_ring_artifacts.py	1;"	kind:file	line:1
 remove_stripes_ring_artifacts_test.py	tests/remove_stripes_ring_artifacts_test.py	1;"	kind:file	line:1
 return_from_func	tests/exclusive_mem_test.py	/^def return_from_func(first_shared, add_arg):$/;"	kind:function	line:7
 return_from_func	tests/shared_mem_test.py	/^def return_from_func(first_shared, add_arg):$/;"	kind:function	line:11
@@ -372,6 +372,7 @@ return_from_func	tests/two_shared_mem_test.py	/^def return_from_func(first_share
 return_from_func_but_data_changed_inside	tests/parallel_fun.py	/^def return_from_func_but_data_changed_inside(func_data, size=3):$/;"	kind:function	line:210
 return_from_func_no_data_change_inside	tests/parallel_fun.py	/^def return_from_func_no_data_change_inside(func_data, size=3):$/;"	kind:function	line:215
 return_fwd_func	parallel/shared_mem.py	/^def return_fwd_func(func, i, **kwargs):$/;"	kind:function	line:40
+ring_removal.py	filters/ring_removal.py	1;"	kind:file	line:1
 rotate_stack.py	filters/rotate_stack.py	1;"	kind:file	line:1
 rotate_stack_test.py	tests/rotate_stack_test.py	1;"	kind:file	line:1
 run	other/python_multithreading_attempts.py	/^def run(cores, data, f, *args, **kwargs):$/;"	kind:function	line:46
@@ -380,7 +381,7 @@ run_parallel	other/python_multithreading_attempts.py	/^def run_parallel(cores, d
 run_parallel_apply	other/python_multithreading_attempts.py	/^def run_parallel_apply(cores, data, f, *args, **kwargs):$/;"	kind:function	line:74
 run_reconstruct	recon/tools/abstract_tool.py	/^    def run_reconstruct(self, data, config, h=None, proj_angles=None, **kwargs):$/;"	kind:member	line:24
 run_reconstruct	recon/tools/astra_tool.py	/^    def run_reconstruct(self, data, config, h=None, proj_angles=None, **kwargs):$/;"	kind:member	line:63
-run_reconstruct	recon/tools/tomopy_tool.py	/^    def run_reconstruct(self, sample, config, h=None, proj_angles=None,$/;"	kind:member	line:44
+run_reconstruct	recon/tools/tomopy_tool.py	/^    def run_reconstruct(self,$/;"	kind:member	line:54
 run_tests.py	run_tests.py	1;"	kind:file	line:1
 sample.py	tests/sample.py	1;"	kind:file	line:1
 save	imgdata/saver.py	/^    def save(self,$/;"	kind:member	line:245
@@ -391,8 +392,8 @@ save_single_image	imgdata/saver.py	/^    def save_single_image(self,$/;"	kind:me
 saver.py	imgdata/saver.py	1;"	kind:file	line:1
 second_shared_data	parallel/two_shared_mem.py	/^second_shared_data = None$/;"	kind:variable	line:7
 set_readme	helper.py	/^    def set_readme(self, readme):$/;"	kind:member	line:311
-setup_parser	configs/functional_config.py	/^    def setup_parser(self, parser):$/;"	kind:member	line:119
-setup_parser	configs/postproc_config.py	/^    def setup_parser(self, parser):$/;"	kind:member	line:37
+setup_parser	configs/functional_config.py	/^    def setup_parser(self, parser):$/;"	kind:member	line:118
+setup_parser	configs/postproc_config.py	/^    def setup_parser(self, parser):$/;"	kind:member	line:39
 setup_parser	configs/preproc_config.py	/^    def setup_parser(self, parser):$/;"	kind:member	line:73
 shared_data	parallel/shared_mem.py	/^shared_data = None$/;"	kind:variable	line:6
 shared_data	parallel/two_shared_mem.py	/^shared_data = None$/;"	kind:variable	line:6
@@ -544,8 +545,8 @@ total_string	imgdata/readme.py	/^total_string = ""$/;"	kind:variable	line:4
 translate_coords_onto_cropped_picture	filters/normalise_by_air_region.py	/^def translate_coords_onto_cropped_picture(crop_coords, air_region,$/;"	kind:function	line:171
 two_shared_mem.py	parallel/two_shared_mem.py	1;"	kind:file	line:1
 two_shared_mem_test.py	tests/two_shared_mem_test.py	1;"	kind:file	line:1
-update	configs/functional_config.py	/^    def update(self, args):$/;"	kind:member	line:412
-update	configs/postproc_config.py	/^    def update(self, args):$/;"	kind:member	line:126
+update	configs/functional_config.py	/^    def update(self, args):$/;"	kind:member	line:422
+update	configs/postproc_config.py	/^    def update(self, args):$/;"	kind:member	line:131
 update	configs/preproc_config.py	/^    def update(self, args):$/;"	kind:member	line:235
 update	custom_timer.py	/^    def update(self, iterations):$/;"	kind:member	line:40
 update	imopr/visualiser.py	/^    def update(self, val):$/;"	kind:member	line:109
