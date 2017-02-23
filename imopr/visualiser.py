@@ -37,8 +37,7 @@ class StackVisualiser(object):
         self.plt = plt
         self.fig = plt.figure()
         # self.image_axis = plt.subplot(111)
-        self.image_axis = self.fig.add_axes(
-            [0.125, 0.25, 0.75, 0.735])
+        self.image_axis = self.fig.add_axes([0.125, 0.25, 0.75, 0.735])
         # self.fig.subplots_adjust(left=0.20, bottom=0.20)
 
         # select first image
@@ -104,7 +103,6 @@ class StackVisualiser(object):
 
         self.previous_region = self.image_axis.text(1, 1, region)
         self.fig.canvas.draw()
-
 
     def update(self, val):
         ind = int(self.slider.val)
