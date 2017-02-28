@@ -89,7 +89,6 @@ def pre_processing(config, sample, flat, dark, h=None):
 
     cores = config.func.cores
     chunksize = config.func.chunksize
-
     sample, flat, dark = rotate_stack.execute(
         sample,
         config.pre.rotation,
@@ -111,6 +110,7 @@ def pre_processing(config, sample, flat, dark, h=None):
         if dark is not None:
             dark = crop_coords.execute_image(dark,
                                              config.pre.region_of_interest, h)
+
 
     # removes background using images taken when exposed to fully open beam
     # and no beam
