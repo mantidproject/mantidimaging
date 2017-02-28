@@ -64,12 +64,20 @@ def execute(config, cmd_line):
     readme.end()
     return sample
 
+
 import numpy as np
+
+
 def _scale_inplace(data, scale):
     np.multiply(data, scale, out=data[:])
 
 
-def _calc_avg(data, roi_sums, roi_left=None, roi_top=None, roi_right=None, roi_bottom=None):
+def _calc_avg(data,
+              roi_sums,
+              roi_left=None,
+              roi_top=None,
+              roi_right=None,
+              roi_bottom=None):
     return data[roi_top:roi_bottom, roi_left:roi_right].mean()
 
 
@@ -106,6 +114,8 @@ def pre_processing(config, sample, flat, dark, h=None):
         chunksize=chunksize,
         h=h)
 
+    tomopy = importer.timed_import(config, h)
+
     from parallel import utility as pu
     img_num = sample.shape[0]
     scale_factors = pu.create_shared_array((img_num, 1, 1))
@@ -124,11 +134,19 @@ def pre_processing(config, sample, flat, dark, h=None):
         roi_right=roi[2],
         roi_bottom=roi[3])
 
-    sample, scale_factors = ptsm.execute(sample, scale_factors, calc_sums_partial, cores,
-                                  chunksize, "Calculating scale factor sums", h=h)
+    sample, scale_factors = ptsm.execute(
+        sample,
+        scale_factors,
+        calc_sums_partial,
+        cores,
+        chunksize,
+        "Calculating scale factor sums",
+        h=h)
 
     # removes background using images taken when exposed to fully open beam
     # and no beam
+
+    print("Sample pixel before normalise", sample[14, 42, 42])
     sample = normalise_by_flat_dark.execute(
         sample,
         flat,
@@ -140,35 +158,44 @@ def pre_processing(config, sample, flat, dark, h=None):
         chunksize=chunksize,
         h=h)
 
+    print("Sample pixel after normalise", sample[14, 42, 42])
+
+    # scale up the data
+    scale_up_partial = ptsm.create_partial(
+        _scale_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d)
+
+    # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
+    sample, scale_factors = ptsm.execute(
+        sample, [scale_factors.mean()],
+        scale_up_partial,
+        cores,
+        chunksize,
+        "Applying scale factor",
+        h=h)
+    print("Sample pixel after scale", sample[14, 42, 42])
 
     # removes the contrast difference between the stack of images
     air = config.pre.normalise_air_region
     crop = config.pre.crop_before_normalise
 
-    sample = normalise_by_air_region.execute(
-        sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
+    sample = tomopy.prep.normalize.normalize_roi(sample, air, ncore=cores)
+    # sample = normalise_by_air_region.execute(
+    #     sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
 
-    # scale up the data
-    scale_up_partial = ptsm.create_partial(
-        _scale_inplace,
-        fwd_function=ptsm.inplace_fwd_func_second_2d)
-
-    # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
-    sample, scale_factors = ptsm.execute(sample, [scale_factors.mean()], scale_up_partial, cores,
-                                  chunksize, "Applying scale factor", h=h)
+    print("Sample pixel after roi normalise", sample[14, 42, 42])
 
     # if not config.pre.crop_before_normalise:
-        # in this case we don't care about cropping the flat and dark
-    sample = crop_coords.execute_volume(sample,
-                                        config.pre.region_of_interest, h)
+    # in this case we don't care about cropping the flat and dark
+    sample = crop_coords.execute_volume(sample, config.pre.region_of_interest,
+                                        h)
 
     if flat is not None:
-        flat = crop_coords.execute_image(flat,
-                                         config.pre.region_of_interest, h)
+        flat = crop_coords.execute_image(flat, config.pre.region_of_interest,
+                                         h)
 
     if dark is not None:
-        dark = crop_coords.execute_image(dark,
-                                         config.pre.region_of_interest, h)
+        dark = crop_coords.execute_image(dark, config.pre.region_of_interest,
+                                         h)
 
     sample = outliers.execute(sample, config.pre.outliers_threshold,
                               config.pre.outliers_mode, h)
