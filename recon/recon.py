@@ -173,6 +173,7 @@ def pre_processing(config, sample, flat, dark, h=None):
         chunksize,
         "Applying scale factor",
         h=h)
+
     print("Sample pixel after scale", sample[14, 42, 42])
 
     # removes the contrast difference between the stack of images

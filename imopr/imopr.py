@@ -57,8 +57,8 @@ def execute(config):
     h.tomo_print("Data shape {0}".format(sample.shape))
     flat, dark = None, None
 
-    from recon.recon import pre_processing
-    sample, flat, dark = pre_processing(config, sample, flat, dark)
+    # from recon.recon import pre_processing
+    # sample, flat, dark = pre_processing(config, sample, flat, dark)
     return action(sample, flat, dark, config, indices)
 
 
