@@ -32,8 +32,13 @@ def execute(data,
     return data
 
 
-def _calc_sum(data, roi_sums, roi_left=None, roi_top=None, roi_right=None, roi_bottom=None):
-    return data[roi_top:roi_bottom, roi_left:roi_right].sum()
+def _calc_sum(data,
+              roi_sums,
+              roi_left=None,
+              roi_top=None,
+              roi_right=None,
+              roi_bottom=None):
+    return data[roi_top:roi_bottom, roi_left:roi_right].mean()
 
 
 def _divide_by_air_sum(data=None, air_sums=None):

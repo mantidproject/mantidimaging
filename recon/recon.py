@@ -179,12 +179,8 @@ def pre_processing(config, sample, flat, dark, h=None):
     air = config.pre.normalise_air_region
     crop = config.pre.crop_before_normalise
 
-    # roi: list of int, optional
-    # [top-left, top-right, bottom-left, bottom-right] pixel coordinates.
-
-    sample = tomopy.prep.normalize.normalize_roi(sample, air, ncore=cores)
-    # sample = normalise_by_air_region.execute(
-    #     sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
+    sample = normalise_by_air_region.execute(
+        sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
 
     print("Sample pixel after roi normalise", sample[14, 42, 42])
 
