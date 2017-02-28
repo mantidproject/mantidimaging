@@ -107,13 +107,13 @@ __str__	configs/postproc_config.py	/^    def __str__(self):$/;"	kind:member	line
 __str__	configs/preproc_config.py	/^    def __str__(self):$/;"	kind:member	line:53
 __str__	configs/recon_config.py	/^    def __str__(self):$/;"	kind:member	line:61
 _alphanum_key_split	imgdata/loader.py	/^def _alphanum_key_split(path_str):$/;"	kind:function	line:247
-_apply_normalise	filters/normalise_by_flat_dark.py	/^def _apply_normalise(data,$/;"	kind:function	line:10
-_apply_normalise_inplace	filters/normalise_by_flat_dark.py	/^def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):$/;"	kind:function	line:6
+_apply_normalise	filters/normalise_by_flat_dark.py	/^def _apply_normalise(data,$/;"	kind:function	line:13
+_apply_normalise_inplace	filters/normalise_by_flat_dark.py	/^def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):$/;"	kind:function	line:9
 _avail_modules	run_tests.py	/^_avail_modules = {$/;"	kind:variable	line:27
 _available_operators	imopr/opr.py	/^_available_operators = {$/;"	kind:variable	line:11
-_calc_air_sum	filters/normalise_by_air_region.py	/^def _calc_air_sum(data,$/;"	kind:function	line:35
 _calc_mask	filters/circular_mask.py	/^def _calc_mask(ydim, xdim, ratio):$/;"	kind:function	line:65
-_check_air_region_in_bounds	filters/normalise_by_air_region.py	/^def _check_air_region_in_bounds(air_bottom, air_left, air_right, air_top,$/;"	kind:function	line:200
+_calc_sum	filters/normalise_by_air_region.py	/^def _calc_sum(data,$/;"	kind:function	line:35
+_check_air_region_in_bounds	filters/normalise_by_air_region.py	/^def _check_air_region_in_bounds(air_bottom, air_left, air_right, air_top,$/;"	kind:function	line:201
 _compare_dict_to_str	tests/configs_test.py	/^    def _compare_dict_to_str(self, class_dict, class_str):$/;"	kind:member	line:38
 _create_reshaped_array	filters/rebin.py	/^def _create_reshaped_array(old_shape, rebin_param):$/;"	kind:function	line:84
 _create_test_helper	tests/parallel_fun.py	/^def _create_test_helper():$/;"	kind:function	line:189
@@ -122,8 +122,8 @@ _crop_coords_sanity_checks	filters/crop_coords.py	/^def _crop_coords_sanity_chec
 _crop_image	filters/crop_coords.py	/^def _crop_image(data_image, coords):$/;"	kind:function	line:75
 _crop_volume	filters/crop_coords.py	/^def _crop_volume(data_vol, coords):$/;"	kind:function	line:131
 _divide_by_air_sum	filters/normalise_by_air_region.py	/^def _divide_by_air_sum(data=None, air_sums=None):$/;"	kind:function	line:44
-_do_files_load_par	imgdata/img_loader.py	/^def _do_files_load_par(data, load_func, files, cores, chunksize, name, h):$/;"	kind:function	line:141
-_do_files_load_seq	imgdata/img_loader.py	/^def _do_files_load_seq(data, load_func, files, img_shape, name, h):$/;"	kind:function	line:118
+_do_files_load_par	imgdata/img_loader.py	/^def _do_files_load_par(data, load_func, files, cores, chunksize, name, h):$/;"	kind:function	line:145
+_do_files_load_seq	imgdata/img_loader.py	/^def _do_files_load_seq(data, load_func, files, img_shape, name, h):$/;"	kind:function	line:122
 _do_img_load	imgdata/img_loader.py	/^def _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark,$/;"	kind:function	line:19
 _do_nxs_load	imgdata/nxs_loader.py	/^def _do_nxs_load(input_data_file, img_format, data_dtype, cores, chunksize,$/;"	kind:function	line:14
 _do_special	imopr/opr.py	/^def _do_special(d1, d2, operation=None):$/;"	kind:function	line:7
@@ -133,27 +133,28 @@ _execute_custom	filters/rebin.py	/^def _execute_custom(data, config):$/;"	kind:f
 _execute_par	filters/gaussian.py	/^def _execute_par(data, size, mode, order, cores=None, chunksize=None, h=None):$/;"	kind:function	line:72
 _execute_par	filters/median_filter.py	/^def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:69
 _execute_par	filters/normalise_by_air_region.py	/^def _execute_par(data,$/;"	kind:function	line:48
-_execute_par	filters/normalise_by_flat_dark.py	/^def _execute_par(data,$/;"	kind:function	line:55
+_execute_par	filters/normalise_by_flat_dark.py	/^def _execute_par(data,$/;"	kind:function	line:58
 _execute_par	filters/rebin.py	/^def _execute_par(data, rebin_param, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:44
 _execute_par	filters/rotate_stack.py	/^def _execute_par(data, rotation, cores=None, chunksize=None, h=None):$/;"	kind:function	line:99
 _execute_seq	filters/gaussian.py	/^def _execute_seq(data, size, mode, order, h=None):$/;"	kind:function	line:45
 _execute_seq	filters/median_filter.py	/^def _execute_seq(data, size, mode, h=None):$/;"	kind:function	line:40
-_execute_seq	filters/normalise_by_air_region.py	/^def _execute_seq(data,$/;"	kind:function	line:115
-_execute_seq	filters/normalise_by_flat_dark.py	/^def _execute_seq(data,$/;"	kind:function	line:110
+_execute_seq	filters/normalise_by_air_region.py	/^def _execute_seq(data,$/;"	kind:function	line:116
+_execute_seq	filters/normalise_by_flat_dark.py	/^def _execute_seq(data,$/;"	kind:function	line:152
 _execute_seq	filters/rebin.py	/^def _execute_seq(data, rebin_param, mode, h=None):$/;"	kind:function	line:63
 _execute_seq	filters/rotate_stack.py	/^def _execute_seq(data, rotation, h=None):$/;"	kind:function	line:65
 _ft_horizontal_bands	filters/remove_sino_stripes_rings_wf.py	/^def _ft_horizontal_bands(c_V, wv_levels, sigma):$/;"	kind:function	line:105
 _import_astra	recon/tools/astra_tool.py	/^    def _import_astra():$/;"	kind:member	line:41
-_load_and_avg_data	imgdata/img_loader.py	/^def _load_and_avg_data(load_func,$/;"	kind:function	line:98
-_load_files	imgdata/img_loader.py	/^def _load_files(load_func,$/;"	kind:function	line:149
-_load_sample_data	imgdata/img_loader.py	/^def _load_sample_data(load_func,$/;"	kind:function	line:74
-_par_inplace_load_fwd_func	imgdata/img_loader.py	/^def _par_inplace_load_fwd_func(data, filename, load_func=None):$/;"	kind:function	line:137
+_load_and_avg_data	imgdata/img_loader.py	/^def _load_and_avg_data(load_func,$/;"	kind:function	line:102
+_load_files	imgdata/img_loader.py	/^def _load_files(load_func,$/;"	kind:function	line:153
+_load_sample_data	imgdata/img_loader.py	/^def _load_sample_data(load_func,$/;"	kind:function	line:78
+_par_inplace_load_fwd_func	imgdata/img_loader.py	/^def _par_inplace_load_fwd_func(data, filename, load_func=None):$/;"	kind:function	line:141
 _remove_sino_stripes_rings_wf	filters/remove_sino_stripes_rings_wf.py	/^def _remove_sino_stripes_rings_wf(data_vol, wv_levels, wavelet_name='db5', sigma=2, pad=True):$/;"	kind:function	line:59
 _rotate_image	filters/rotate_stack.py	/^def _rotate_image(data, rotation=None):$/;"	kind:function	line:11
 _rotate_image_inplace	filters/rotate_stack.py	/^def _rotate_image_inplace(data, rotation=None):$/;"	kind:function	line:6
 _run_tests	run_tests.py	/^def _run_tests(args):$/;"	kind:function	line:38
 _save_out_individual_files	imgdata/saver.py	/^    def _save_out_individual_files(self,$/;"	kind:member	line:275
 _save_out_stack	imgdata/saver.py	/^    def _save_out_stack(self,$/;"	kind:member	line:294
+_scale_inplace	filters/normalise_by_flat_dark.py	/^def _scale_inplace(data, scale):$/;"	kind:function	line:5
 about	matplotlib_pyqt.py	/^    def about(self):$/;"	kind:member	line:114
 abstract_tool.py	recon/tools/abstract_tool.py	1;"	kind:file	line:1
 add_inplace	tests/shared_mem_test.py	/^def add_inplace(first_shared, add_arg=3):$/;"	kind:function	line:7
@@ -255,7 +256,7 @@ execute	filters/line_projection.py	/^def execute(imgs_angles, config):$/;"	kind:
 execute	filters/mcp_corrections.py	/^def execute(data,config):$/;"	kind:function	line:1
 execute	filters/median_filter.py	/^def execute(data, size, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:7
 execute	filters/normalise_by_air_region.py	/^def execute(data,$/;"	kind:function	line:7
-execute	filters/normalise_by_flat_dark.py	/^def execute(data,$/;"	kind:function	line:19
+execute	filters/normalise_by_flat_dark.py	/^def execute(data,$/;"	kind:function	line:22
 execute	filters/outliers.py	/^def execute(data, outliers_threshold, outliers_mode, h=None):$/;"	kind:function	line:7
 execute	filters/rebin.py	/^def execute(data, rebin_param, mode, cores=None, chunksize=None, h=None):$/;"	kind:function	line:7
 execute	filters/ring_removal.py	/^def execute(data,$/;"	kind:function	line:4
@@ -298,7 +299,7 @@ get_angle_folders	aggregate/aggregate.py	/^def get_angle_folders(input_path, img
 get_available_operators	imopr/imopr.py	/^def get_available_operators():$/;"	kind:function	line:4
 get_available_operators	imopr/opr.py	/^def get_available_operators():$/;"	kind:function	line:30
 get_cores	parallel/utility.py	/^def get_cores():$/;"	kind:function	line:36
-get_data_average	imgdata/img_loader.py	/^def get_data_average(data):$/;"	kind:function	line:194
+get_data_average	imgdata/img_loader.py	/^def get_data_average(data):$/;"	kind:function	line:198
 get_file_names	imgdata/loader.py	/^def get_file_names(path, img_format, prefix=''):$/;"	kind:function	line:197
 get_folder_names	imgdata/loader.py	/^def get_folder_names(path):$/;"	kind:function	line:225
 get_function	imopr/imopr.py	/^def get_function(string):$/;"	kind:function	line:65
@@ -591,7 +592,7 @@ tool_supported_methods	recon/tools/astra_tool.py	/^    def tool_supported_method
 tool_supported_methods	recon/tools/tomopy_tool.py	/^    def tool_supported_methods():$/;"	kind:member	line:7
 total_execution_timer	helper.py	/^    def total_execution_timer(self, message="Total execution time was "):$/;"	kind:member	line:248
 total_string	imgdata/readme.py	/^total_string = ""$/;"	kind:variable	line:4
-translate_coords_onto_cropped_picture	filters/normalise_by_air_region.py	/^def translate_coords_onto_cropped_picture(crop_coords, air_region,$/;"	kind:function	line:171
+translate_coords_onto_cropped_picture	filters/normalise_by_air_region.py	/^def translate_coords_onto_cropped_picture(crop_coords, air_region,$/;"	kind:function	line:172
 two_shared_mem.py	parallel/two_shared_mem.py	1;"	kind:file	line:1
 two_shared_mem_test.py	tests/two_shared_mem_test.py	1;"	kind:file	line:1
 update	configs/functional_config.py	/^    def update(self, args):$/;"	kind:member	line:422
