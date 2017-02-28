@@ -185,7 +185,7 @@ def import_skimage_io():
         # tifffile works better on local, but not available on scarf
         # no plugin will use the default python imaging library (PIL)
         # This behaviour might need to be changed when switching to python 3
-        # skio.use_plugin('freeimage')
+        skio.use_plugin('tifffile')
     except ImportError as exc:
         raise ImportError(
             "Could not find the package skimage, its subpackage "
