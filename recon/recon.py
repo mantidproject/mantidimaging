@@ -153,6 +153,7 @@ def pre_processing(config, sample, flat, dark, h=None):
         _scale_inplace,
         fwd_function=ptsm.inplace_fwd_func_second_2d)
 
+    # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
     sample, scale_factors = ptsm.execute(sample, [scale_factors.mean()], scale_up_partial, cores,
                                   chunksize, "Applying scale factor", h=h)
 
