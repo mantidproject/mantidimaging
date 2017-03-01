@@ -147,7 +147,6 @@ def pre_processing(config, sample, flat, dark, h=None):
     # removes background using images taken when exposed to fully open beam
     # and no beam
 
-    print("Sample pixel before normalise", sample[14, 42, 42])
     sample = normalise_by_flat_dark.execute(
         sample,
         flat,
@@ -159,7 +158,12 @@ def pre_processing(config, sample, flat, dark, h=None):
         chunksize=chunksize,
         h=h)
 
-    print("Sample pixel after normalise", sample[14, 42, 42])
+    # removes the contrast difference between the stack of images
+    air = config.pre.normalise_air_region
+    crop = config.pre.crop_before_normalise
+
+    sample = normalise_by_air_region.execute(
+        sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
 
     # scale up the data
     scale_up_partial = ptsm.create_partial(
@@ -173,17 +177,6 @@ def pre_processing(config, sample, flat, dark, h=None):
         chunksize,
         "Applying scale factor",
         h=h)
-
-    print("Sample pixel after scale", sample[14, 42, 42])
-
-    # removes the contrast difference between the stack of images
-    air = config.pre.normalise_air_region
-    crop = config.pre.crop_before_normalise
-
-    sample = normalise_by_air_region.execute(
-        sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
-
-    print("Sample pixel after roi normalise", sample[14, 42, 42])
 
     # if not config.pre.crop_before_normalise:
     # in this case we don't care about cropping the flat and dark

@@ -97,8 +97,8 @@ class TomoPyTool(AbstractTool):
         slice_id = [222., 422., 822., 1222., 1622., 1822.]
         # yp in numpy's interp
         slice_cor = [542., 542., 540., 540., 537., 536.]
-
-        cors = np.interp(list(range(num_proj)), slice_id, slice_cor)
+        # calculate as many CORs as there are sinograms (i.e. shape of Y)
+        cors = np.interp(list(range(sample.shape[1])), slice_id, slice_cor)
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
