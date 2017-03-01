@@ -1,0 +1,35 @@
+diff --git a/imgdata/loader.py b/imgdata/loader.py
+index ce5adf1..c1d3d1f 100644
+--- a/imgdata/loader.py
++++ b/imgdata/loader.py
+@@ -185,7 +185,8 @@ def import_skimage_io():
+         # tifffile works better on local, but not available on scarf
+         # no plugin will use the default python imaging library (PIL)
+         # This behaviour might need to be changed when switching to python 3
+-        skio.use_plugin('tifffile')
++        # skio.use_plugin('tifffile')
++	skio.use_plugin('freeimage')
+     except ImportError as exc:
+         raise ImportError(
+             "Could not find the package skimage, its subpackage "
+diff --git a/scarf_change_tiff_plugin_patch b/scarf_change_tiff_plugin_patch
+deleted file mode 100644
+index fbd6ffa..0000000
+--- a/scarf_change_tiff_plugin_patch
++++ /dev/null
+@@ -1,14 +0,0 @@
+-diff --git imgdata/loader.py imgdata/loader.py
+-index ce5adf1..68a7709 100644
+---- imgdata/loader.py
+-+++ imgdata/loader.py
+-@@ -185,7 +185,8 @@ def import_skimage_io():
+-         # tifffile works better on local, but not available on scarf
+-         # no plugin will use the default python imaging library (PIL)
+-         # This behaviour might need to be changed when switching to python 3
+--        skio.use_plugin('tifffile')
+-+        # skio.use_plugin('tifffile')
+-+        skio.use_plugin('freeimage')
+-     except ImportError as exc:
+-         raise ImportError(
+-             "Could not find the package skimage, its subpackage "
+
