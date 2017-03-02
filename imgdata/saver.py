@@ -58,16 +58,6 @@ def write_img(data, filename, overwrite=False):
     skio.imsave(filename, data)
 
 
-def create_image_name(custom_idx, idx, name_prefix, zfill_len, name_postfix,
-                      extension):
-    if custom_idx is None:
-        name = name_prefix + str(idx).zfill(
-            zfill_len) + name_postfix + "." + extension
-    else:
-        name = name_prefix + str(custom_idx) + name_postfix + "." + extension
-    return name
-
-
 class Saver(object):
     """
     This class doesn't have any try: ... except: ... because when called
@@ -99,14 +89,8 @@ class Saver(object):
                 os.path.expanduser(self._output_path))
 
         self._img_format = config.func.out_format
-
         self._overwrite_all = config.func.overwrite_all
-        self._data_as_stack = config.func.data_as_stack
-
-        if self._img_format == 'nxs' and not self._data_as_stack:
-            raise ValueError(
-                "Cannot save out individual NXS files! Please provide --data-as-stack."
-            )
+        self._radiograms = config.func.radiograms
 
         self._preproc_dir = config.func.preproc_subdir
         self._save_preproc = config.func.save_preproc
@@ -126,7 +110,8 @@ class Saver(object):
                           custom_index=None,
                           zfill_len=0,
                           name_postfix='',
-                          use_preproc_folder=True):
+                          use_preproc_folder=True,
+                          radiograms=True):
         """
         Save a single image to a single image file.
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
@@ -167,11 +152,35 @@ class Saver(object):
             data,
             output_dir,
             name,
+            radiograms,
             zfill_len=zfill_len,
             name_postfix=name_postfix,
             custom_idx=custom_index)
 
         self._h.pstop("Finished saving single image.")
+
+    def save_preproc_images(self, data, flat=None, dark=None):
+        """
+        Specialised save function to save out the pre-processed images.
+        
+        This will save the images out in a subdir /pre-processed/.
+
+        :param data: The pre-processed data that will be saved
+        :param flat: The averaged flat image
+        :param dark: The averaged dark image
+        """
+
+        if self._save_preproc and self._output_path is not None:
+            preproc_dir = os.path.join(self._output_path, self._preproc_dir)
+
+            self._h.pstart(
+                "Saving all pre-processed images into {0} dtype: {1}".format(
+                    preproc_dir, data.dtype))
+
+            self.save(data, preproc_dir, 'out_preproc_image', self._radiograms,
+                      flat, dark)
+
+            self._h.pstop("Saving pre-processed images finished.")
 
     def save_recon_output(self, data):
         """
@@ -199,7 +208,9 @@ class Saver(object):
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
-        self.save(data, out_recon_dir, self._out_slices_prefix)
+        # we want to save out the slices without swapping any axes!
+        radiograms = True
+        self.save(data, out_recon_dir, self._out_slices_prefix, radiograms)
 
         # Sideways slices:
         if self._save_horiz_slices:
@@ -212,117 +223,68 @@ class Saver(object):
 
             import numpy as np
             # save out the horizontal slices by flipping the axes
-            self.save(
-                np.swapaxes(data, 0, 1), out_horiz_dir,
-                self._out_horiz_slices_prefix)
+            self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
+                      not radiograms)
 
         self._h.pstop(
             "Finished saving slices of the reconstructed volume in: {0}".
             format(out_recon_dir))
 
-    def save_preproc_images(self, data, flat=None, dark=None):
-        """
-        Specialised save function to save out the pre-processed images.
-        
-        This will save the images out in a subdir /pre-processed/.
-
-        :param data: The pre-processed data that will be saved
-        :param flat: The averaged flat image
-        :param dark: The averaged dark image
-        """
-
-        if self._save_preproc and self._output_path is not None:
-            preproc_dir = os.path.join(self._output_path, self._preproc_dir)
-
-            self._h.pstart(
-                "Saving all pre-processed images into {0} dtype: {1}".format(
-                    preproc_dir, data.dtype))
-
-            self.save(data, preproc_dir, 'out_preproc_image', flat, dark)
-
-            self._h.pstop("Saving pre-processed images finished.")
-
     def save(self,
              data,
              output_dir,
              name_prefix,
+             radiograms,
              flat=None,
              dark=None,
              custom_idx=None,
              zfill_len=6,
              name_postfix=''):
         """
-        Save reconstructed volume (3d) into a series of slices along the Z axis (outermost numpy dimension)
-        :param data :: data as images/slices stores in numpy array
-        :param output_dir :: where to save the files
-        :param name_prefix :: prefix for the names of the images - an index is appended to this prefix
+        Save iamge volume (3d) into a series of slices along the Z axis.
+        The Z axis in the script is the ndarray.shape[0].
+
+        :param data: data as images/slices stores in numpy array
+        :param output_dir: where to save the files
+        :param name_prefix: prefix for the names of the images - an index is appended to this prefix
         :param overwrite_all: Overwrite any existing images with conflicting names
 
         """
 
         self.make_dirs_if_needed(output_dir)
-        if not self._data_as_stack:
-            self._save_out_individual_files(
+        import numpy as np
+        self._h.debug_print_memory_usage_linux("Before making sinograms")
+        if not radiograms:
+            data = np.swapaxes(data, 0, 1)
+
+        self._h.debug_print_memory_usage_linux("After making sinograms")
+
+        if self._img_format in ['nxs']:
+            filename = os.path.join(output_dir, name_prefix + name_postfix)
+
+            write_nxs(
                 data,
-                output_dir,
-                name_prefix,
-                custom_idx=custom_idx,
-                zfill_len=zfill_len,
-                name_postfix=name_postfix)
+                filename + '.nxs',
+                flat,
+                dark,
+                overwrite=self._overwrite_all)
+
         else:
-            self._save_out_stack(data, output_dir, name_prefix, flat, dark)
+            if self._img_format in ['fit', 'fits']:
+                write_func = write_fits
+            else:
+                # pass all other formats to skimage
+                write_func = write_img
 
-    def _save_out_individual_files(self,
-                                   data,
-                                   output_dir,
-                                   name_prefix,
-                                   custom_idx=None,
-                                   zfill_len=6,
-                                   name_postfix=''):
-        if self._img_format in ['fit', 'fits']:
-            write_func = write_fits
-        else:
-            # pass all other formats to skimage
-            write_func = write_img
+            for idx in range(0, data.shape[0]):
+                # use the custom index if one is provided
+                index = custom_idx if custom_idx is not None else str(
+                    idx).zfill(zfill_len)
+                # create the file name, and use the format as extension
+                name = name_prefix + index + name_postfix + "." + self._img_format
 
-        for idx in range(0, data.shape[0]):
-            name = create_image_name(custom_idx, idx, name_prefix, zfill_len,
-                                     name_postfix, self._img_format)
-            write_func(data[idx, :, :],
-                       os.path.join(output_dir, name), self._overwrite_all)
-
-    def _save_out_stack(self,
-                        data,
-                        output_dir,
-                        name_prefix,
-                        flat=None,
-                        dark=None,
-                        projection_angles=None,
-                        name_postfix='_stack'):
-        """
-        Save out a stack depending on format.
-        :param data :: data as images/slices stores in numpy array
-        :param output_dir :: where to save the files
-        :param name_prefix :: prefix for the names of the images - an index is appended to this prefix
-        :param flat: The averaged flat image
-        :param dark: The averaged dark image
-        :param projection_angles:
-        :param name_postfix: String to be appended after the zero fill. This is not recommended and might confuse
-                              imaging programs (including this script) as to the order of the images, and they could
-                              end up not loading all of the images.
-        :return:
-        """
-
-        filename = os.path.join(output_dir, name_prefix + name_postfix)
-
-        if self._img_format in ['fits', 'fit']:
-            write_fits(data, filename + '.fits', self._overwrite_all)
-
-        elif self._img_format in ['nxs']:
-            write_nxs(data, filename + '.nxs', flat, dark, projection_angles,
-                      self._overwrite_all)
-        else:
-            write_img(data, filename + '.tiff', self._overwrite_all)
+                write_func(data[idx, :, :],
+                           os.path.join(output_dir, name), self._overwrite_all)
 
     def make_dirs_if_needed(self, dirname=None):
         """

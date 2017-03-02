@@ -90,7 +90,7 @@ class TomoPyTool(AbstractTool):
         # Generating a COR for each slice created a better reconstruction
         # this approach works, however it needs to be made flexible.
         # That's on the TODO list
-        print("Using pre-set CORs for chadwick tomo")
+        print("!!! Using pre-set CORs for chadwick tomo")
 
         import numpy as np
         # xp in numpy's interp
@@ -120,6 +120,7 @@ class TomoPyTool(AbstractTool):
             center=cors,
             ncore=cores,
             algorithm=alg,
+            sinogram_order=True,
             **kwargs)
 
         h.pstop(

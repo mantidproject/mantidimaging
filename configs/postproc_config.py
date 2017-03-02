@@ -41,7 +41,15 @@ class PostProcConfig(object):
             + "Gaussian filter mode: {0}\n".format(self.gaussian_mode) \
             + "Gaussian filter order: {0}\n".format(self.gaussian_order) \
             + "Median filter size:: {0}\n".format(self.median_size) \
-            + "Median filter mode: {0}".format(self.median_mode)
+            + "Median filter mode: {0}\n".format(self.median_mode) \
+            + "Ring removal : {0}\n".format(self.ring_removal) \
+            + "Ring removal center x: {0}\n".format(self.ring_removal_center_x) \
+            + "Ring removal center y: {0}\n".format(self.ring_removal_center_y) \
+            + "Ring removal thresh: {0}\n".format(self.ring_removal_thresh) \
+            + "Ring removal thresh max: {0}\n".format(self.ring_removal_thresh_max) \
+            + "Ring removal thresh min: {0}\n".format(self.ring_removal_thresh_min) \
+            + "Ring removal theta min: {0}\n".format(self.ring_removal_theta_min) \
+            + "Ring removal rwidth: {0}".format(self.ring_removal_rwidth)
 
     def setup_parser(self, parser):
         """

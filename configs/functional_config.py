@@ -34,12 +34,13 @@ class FunctionalConfig(object):
         self.out_horiz_slices_subdir = 'horiz_slices'
         self.save_horiz_slices = False
 
+        # Processing options
         self.save_preproc = False
         self.only_preproc = False
         self.only_postproc = False
         self.reuse_preproc = False
         self.preproc_subdir = 'pre_processed'
-        self.data_as_stack = False
+        self.radiograms = False
 
         import numpy as np
 
@@ -91,10 +92,11 @@ class FunctionalConfig(object):
                + "Output horizontal slices subdir: {0}\n".format(str(self.out_horiz_slices_subdir)) \
                + "Save horizontal slices: {0}\n".format(str(self.save_horiz_slices)) \
                + "Save preprocessed images: {0}\n".format(str(self.save_preproc)) \
-               + "Do only preprocessing and exit: {0}\n".format(str(self.only_preproc)) \
+               + "Do only pre processing and exit: {0}\n".format(str(self.only_preproc)) \
+               + "Do only post processing and exit: {0}\n".format(str(self.only_postproc)) \
                + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
-               + "Save images as file stacks: {0}\n".format(str(self.data_as_stack)) \
+               + "Radiograms: {0}\n".format(str(self.radiograms)) \
                + "Data type: {0}\n".format(str(self.data_dtype)) \
                + "Provided center of rotation: {0}\n".format(str(self.cor)) \
                + "Verbosity: {0}\n".format(str(self.verbosity)) \
@@ -236,10 +238,14 @@ class FunctionalConfig(object):
         )
 
         grp_func.add_argument(
-            "--data-as-stack",
+            "--radiograms",
             required=False,
             action='store_true',
-            help="Save out all images as a single file image stack.")
+            default=self.radiograms,
+            help="NOT RECOMMENDED: This means an additional conversion will be done inside Tomopy, which will double the memory usage temporarily."
+            "\nPre-processed images will be saved as radiograms if --save-preproc is specified."
+            "\nIf --reuse-preproc is specified, then the images that will be loaded will be expected to be radiograms."
+        )
 
         grp_func.add_argument(
             "--data-dtype",
@@ -256,8 +262,9 @@ class FunctionalConfig(object):
             type=float,
             default=self.cor,
             help="Provide a pre-calculated centre of rotation.\n"
-                 "IF A CROP IS PROVIDED WITH -R THE LEFT (X0) ARGUMENT WILL BE SUBTRACTED FROM THE CENTER OF ROTATION, "
-                 "to compensate for the crop! If no crop is provided, the COR will not be changed!")
+            "IF A CROP IS PROVIDED WITH -R THE LEFT (X0) ARGUMENT WILL BE SUBTRACTED FROM THE CENTER OF ROTATION, "
+            "to compensate for the crop! If no crop is provided, the COR will not be changed!"
+        )
 
         grp_func.add_argument(
             "-v",
@@ -441,7 +448,7 @@ class FunctionalConfig(object):
         self.reuse_preproc = args.reuse_preproc
         self.only_postproc = args.only_postproc
         self.preproc_subdir = args.preproc_subdir
-        self.data_as_stack = args.data_as_stack
+        self.radiograms = args.radiograms
 
         import numpy as np
 
