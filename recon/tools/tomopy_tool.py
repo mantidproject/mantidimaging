@@ -100,6 +100,8 @@ class TomoPyTool(AbstractTool):
         # calculate as many CORs as there are sinograms (i.e. shape of Y)
         cors = np.interp(list(range(sample.shape[1])), slice_id, slice_cor)
 
+        assert sample.shape[1] == len(cors)
+
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
         if iterative_algorithm:  # run the iterative algorithms
