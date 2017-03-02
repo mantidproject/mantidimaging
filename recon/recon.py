@@ -101,7 +101,7 @@ def pre_processing(config, sample, flat, dark, h=None):
         return sample, flat, dark
 
     from filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
-        rebin, median_filter, gaussian
+        rebin, median_filter, gaussian, cut_off
 
     cores = config.func.cores
     chunksize = config.func.chunksize
@@ -192,7 +192,9 @@ def pre_processing(config, sample, flat, dark, h=None):
                                          h)
 
     sample = outliers.execute(sample, config.pre.outliers_threshold,
-                              config.pre.outliers_mode, h)
+                              config.pre.outliers_radius, cores, h)
+
+    sample = cut_off.execute(sample, config.pre.cut_off, h)
 
     # mcp_corrections, they have to be included as well
     # data = mcp_corrections.execute(data, config)
@@ -238,27 +240,27 @@ def post_processing(config, recon_data, h=None):
 
     h = Helper(config) if h is None else h
 
+    cores = config.func.cores
+
     recon_data = outliers.execute(recon_data, config.post.outliers_threshold,
-                                  config.post.outliers_mode, h)
+                                  config.post.outliers_radius, cores, h)
     recon_data = ring_removal.execute(
         recon_data, config.post.ring_removal,
         config.post.ring_removal_center_x, config.post.ring_removal_center_y,
         config.post.ring_removal_thresh, config.post.ring_removal_thresh_max,
         config.post.ring_removal_thresh_min,
         config.post.ring_removal_theta_min, config.post.ring_removal_rwidth,
-        config.func.cores, config.func.chunksize, h)
+        cores, config.func.chunksize, h)
 
     recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
-                                       config.post.circular_mask_val,
-                                       config.func.cores, h)
+                                       config.post.circular_mask_val, cores, h)
 
-    recon_data = gaussian.execute(recon_data, config.post.gaussian_size,
-                                  config.post.gaussian_mode,
-                                  config.post.gaussian_order,
-                                  config.func.cores, config.func.chunksize, h)
+    recon_data = gaussian.execute(
+        recon_data, config.post.gaussian_size, config.post.gaussian_mode,
+        config.post.gaussian_order, cores, config.func.chunksize, h)
 
-    recon_data = median_filter.execute(
-        recon_data, config.post.median_size, config.post.median_mode,
-        config.func.cores, config.func.chunksize, h)
+    recon_data = median_filter.execute(recon_data, config.post.median_size,
+                                       config.post.median_mode, cores,
+                                       config.func.chunksize, h)
 
     return recon_data

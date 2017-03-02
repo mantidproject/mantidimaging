@@ -230,6 +230,7 @@ class FunctionalConfig(object):
             help="Save out the horizontal reconstructed files.")
 
         grp_func.add_argument(
+            "-p",
             "--preproc-subdir",
             required=False,
             type=str,
@@ -343,7 +344,6 @@ class FunctionalConfig(object):
         )
 
         grp_run_modes.add_argument(
-            "-d",
             "--debug",
             required=False,
             action='store_true',
@@ -351,7 +351,6 @@ class FunctionalConfig(object):
         )
 
         grp_run_modes.add_argument(
-            "-p",
             "--debug-port",
             required=False,
             type=int,

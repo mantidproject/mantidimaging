@@ -10,7 +10,7 @@ class PostProcConfig(object):
         self.circular_mask = None
         self.circular_mask_val = None
         self.outliers_threshold = None
-        self.outliers_mode = None
+        self.outliers_radius = None
         self.gaussian_size = None
         self.gaussian_mode = 'reflect'
         self.gaussian_order = 0
@@ -36,7 +36,7 @@ class PostProcConfig(object):
         return "Circular mask: {0}\n".format(self.circular_mask) \
             + "Circular mask value: {0}\n".format(self.circular_mask_val) \
             + "Outliers threshold on reconstructed volume: {0}\n".format(self.outliers_threshold) \
-            + "Outliers mode on reconstructed volume: {0}\n".format(self.outliers_mode) \
+            + "Outliers mode on reconstructed volume: {0}\n".format(self.outliers_radius) \
             + "Gaussian filter size: {0}\n".format(self.gaussian_size) \
             + "Gaussian filter mode: {0}\n".format(self.gaussian_mode) \
             + "Gaussian filter order: {0}\n".format(self.gaussian_order) \
@@ -83,13 +83,12 @@ class PostProcConfig(object):
             "Pixels below and/or above (depending on mode) this threshold will be clipped."
         )
 
-        from filters.outliers import modes as outliers_modes
+        from filters.outliers import modes as outliers_radiuss
         grp_post.add_argument(
-            "--post-outliers-mode",
+            "--post-outliers-radius",
             required=False,
-            type=str,
-            choices=outliers_modes(),
-            help="Which pixels to clip, only dark ones, bright ones or both.")
+            type=int,
+            help="Radius for the median filter to determine the outlier.")
 
         grp_post.add_argument(
             "--post-median-size",
@@ -168,7 +167,7 @@ class PostProcConfig(object):
         self.circular_mask_val = args.circular_mask_val
 
         self.outliers_threshold = args.post_outliers
-        self.outliers_mode = args.post_outliers_mode
+        self.outliers_radius = args.post_outliers_radius
 
         self.gaussian_size = args.post_gaussian_size
         self.gaussian_mode = args.post_gaussian_mode
