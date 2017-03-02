@@ -8,8 +8,7 @@ index ce5adf1..c1d3d1f 100644
          # This behaviour might need to be changed when switching to python 3
 -        skio.use_plugin('tifffile')
 +        # skio.use_plugin('tifffile')
-+       skio.use_plugin('freeimage')
++        skio.use_plugin('freeimage')
      except ImportError as exc:
          raise ImportError(
              "Could not find the package skimage, its subpackage "
-
