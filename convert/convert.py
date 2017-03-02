@@ -18,12 +18,6 @@ def execute(config):
 
     from imgdata import loader
     sample, flat, dark = loader.load_data(config, h)
-    
-    # save out in the main output directory, no subdirectories
-    s.save(
-        sample,
-        output_dir,
-        config.func.convert_prefix,
-        flat,
-        dark,
-        zfill_len=0)
+
+    # save out in the main output directory
+    s.save(sample, output_dir, config.func.convert_prefix, config.func.radiograms, zfill_len=0)

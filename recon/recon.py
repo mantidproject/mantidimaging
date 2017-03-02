@@ -43,7 +43,7 @@ def execute(config, cmd_line):
     sample, flat, dark = pre_processing(config, sample, flat, dark)
 
     # Save pre-proc images, print inside
-    saver.save_preproc_images(sample, flat, dark)
+    saver.save_preproc_images(sample)
     if config.func.only_preproc is True:
         h.tomo_print_note("Only pre-processing run, exiting.")
         readme.end()

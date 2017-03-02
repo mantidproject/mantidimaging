@@ -21,9 +21,17 @@ def gen_img_shared_array(shape=(10, 10, 10)):
     # generate 10 images with dimensions 10x10, all values 1. float32
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
+    d[:] = n[:]
 
-    for i in range(shape[0]):
-        d[i] = n[i]
+    return d
+
+
+def gen_img_shared_array_with_val(val=1., shape=(10, 10, 10)):
+    from parallel import utility as pu
+    # generate 10 images with dimensions 10x10, all values 1. float32
+    d = pu.create_shared_array(shape)
+    n = np.full(shape, val)
+    d[:] = n[:]
 
     return d
 

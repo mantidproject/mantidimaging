@@ -48,7 +48,6 @@ class ConfigsTest(unittest.TestCase):
         npt.assert_raises(ValueError, RC, fc, preproc, postproc)
         fc.cor = 42
         # this shouldn't raise anything, if it does the test will crash
-        raise ValueError("Edawd")
         rc = RC(fc, preproc, postproc)
 
     def _compare_dict_to_str(self, class_dict, class_str):

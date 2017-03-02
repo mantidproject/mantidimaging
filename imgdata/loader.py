@@ -101,9 +101,12 @@ def load(input_path=None,
             fitsread, input_file_names, input_path_flat, input_path_dark,
             img_format, dtype, cores, chunksize, parallel_load, h)
     elif img_format in ['nxs']:
-        sample, flat, dark = load_stack(nxsread, input_data_file, data_dtype,
+        # pass only the first filename as we only expect a stack
+        input_file = input_file_names[0]
+        sample = load_stack(nxsread, input_file, dtype,
                                         "NXS Load", cores, chunksize,
                                         parallel_load, h)
+        flat = dark = None
     else:
         from imgdata import img_loader
         sample, flat, dark = img_loader.execute(

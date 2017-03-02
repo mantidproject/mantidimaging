@@ -2,6 +2,14 @@ from __future__ import (absolute_import, division, print_function)
 import os
 
 
+def write_fits(data, filename, overwrite=False):
+    from imgdata.loader import import_pyfits
+    fits = import_pyfits()
+    hdu = fits.PrimaryHDU(data)
+    hdulist = fits.HDUList([hdu])
+    hdulist.writeto(filename, clobber=overwrite)
+
+
 def write_img(data, filename, overwrite=False):
     from imgdata.loader import import_skimage_io
     skio = import_skimage_io()
@@ -24,15 +32,12 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
     import h5py
     nxs = h5py.File(filename, 'w')
 
-    flat = flat.reshape(1, data.shape[1], data.shape[2])
-    dark = dark.reshape(1, data.shape[1], data.shape[2])
-
     # appending flat and dark images is disabled for now
     # new shape to account for appending flat and dark images
     # correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
 
     dset = nxs.create_dataset("entry1/tomo_entry/instrument/detector/data",
-                              correct_shape)
+                              data.shape)
     dset[:data.shape[0]] = data[:]
     # dset[-2] = flat[:]
     # dset[-1] = dark[:]
@@ -144,7 +149,7 @@ class Saver(object):
 
         self._h.pstop("Finished saving single image.")
 
-    def save_preproc_images(self, data, flat=None, dark=None):
+    def save_preproc_images(self, data):
         """
         Specialised save function to save out the pre-processed images.
         
@@ -162,8 +167,7 @@ class Saver(object):
                 "Saving all pre-processed images into {0} dtype: {1}".format(
                     preproc_dir, data.dtype))
 
-            self.save(data, preproc_dir, 'out_preproc_image', self._radiograms,
-                      flat, dark)
+            self.save(data, preproc_dir, 'out_preproc_image', self._radiograms)
 
             self._h.pstop("Saving pre-processed images finished.")
 
@@ -220,8 +224,6 @@ class Saver(object):
              output_dir,
              name_prefix,
              radiograms,
-             flat=None,
-             dark=None,
              custom_idx=None,
              zfill_len=6,
              name_postfix=''):
@@ -237,6 +239,7 @@ class Saver(object):
         """
 
         self.make_dirs_if_needed(output_dir)
+
         import numpy as np
         self._h.debug_print_memory_usage_linux("Before making sinograms")
         if not radiograms:
@@ -251,6 +254,12 @@ class Saver(object):
 
         else:
 
+            if self._img_format in ['fit', 'fits']:
+                write_func = write_fits
+            else:
+                # pass all other formats to skimage
+                write_func = write_img
+
             for idx in range(0, data.shape[0]):
                 # use the custom index if one is provided
                 index = custom_idx if custom_idx is not None else str(
@@ -258,8 +267,8 @@ class Saver(object):
                 # create the file name, and use the format as extension
                 name = name_prefix + index + name_postfix + "." + self._img_format
 
-                write_img(data[idx, :, :],
-                          os.path.join(output_dir, name), self._overwrite_all)
+                write_func(data[idx, :, :],
+                           os.path.join(output_dir, name), self._overwrite_all)
 
     def make_dirs_if_needed(self, dirname=None):
         """

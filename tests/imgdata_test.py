@@ -78,7 +78,7 @@ class DataTest(unittest.TestCase):
         self.do_preproc('tiff', parallel=False)
 
     def do_preproc(self, img_format, parallel=False):
-        images = th.gen_img_shared_array()
+        images = th.gen_img_shared_array_with_val(42.)
         flat = None
         dark = None
         saver = self.create_saver()
@@ -91,7 +91,7 @@ class DataTest(unittest.TestCase):
             saver._radiograms = True
             data_as_stack = False
 
-            saver.save_preproc_images(images, flat, dark)
+            saver.save_preproc_images(images)
 
             preproc_output_path = saver._output_path + '/pre_processed/'
 
@@ -120,12 +120,12 @@ class DataTest(unittest.TestCase):
         self.do_preproc_nxs(parallel=False)
 
     def do_preproc_nxs(self, img_format='nxs', parallel=False):
-        images = th.gen_img_shared_array()
+        images = th.gen_img_shared_array_with_val(42.)
         # this is different from do_preproc as we need to
         # save out flat and dark images, and they will be loaded
         # back in
-        flat = th.gen_img_shared_array()[0]
-        dark = th.gen_img_shared_array()[0]
+        flat = None
+        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -136,7 +136,7 @@ class DataTest(unittest.TestCase):
             saver._radiograms = True
             data_as_stack = True
 
-            saver.save_preproc_images(images, flat, dark)
+            saver.save_preproc_images(images)
 
             preproc_output_path = saver._output_path + '/pre_processed/'
 

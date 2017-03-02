@@ -118,7 +118,7 @@ class AggregateTest(unittest.TestCase):
                 saver._data_as_stack = stack
                 saver._overwrite_all = True
                 # do the actual saving out, directories will be created here
-                saver.save(images, angle_path, 'out_angle', flat, dark)
+                saver.save(images, angle_path, 'out_angle', True)
 
             # aggregate them
             from aggregate import aggregate
@@ -192,7 +192,8 @@ class AggregateTest(unittest.TestCase):
                 saver._data_as_stack = stack
                 saver._overwrite_all = True
                 # do the actual saving out, directories will be created here
-                saver.save(images, angle_paths[i], 'out_angle', flat, dark)
+                saver.save(
+                    images, angle_paths[i], 'out_angle', radiograms=True)
 
             # aggregate them
             from aggregate import aggregate
