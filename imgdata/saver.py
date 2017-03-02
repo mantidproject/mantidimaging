@@ -2,20 +2,13 @@ from __future__ import (absolute_import, division, print_function)
 import os
 
 
-def write_fits(data, filename, overwrite=False):
-    from imgdata.loader import import_pyfits
-    fits = import_pyfits()
-    hdu = fits.PrimaryHDU(data)
-    hdulist = fits.HDUList([hdu])
-    hdulist.writeto(filename, clobber=overwrite)
+def write_img(data, filename, overwrite=False):
+    from imgdata.loader import import_skimage_io
+    skio = import_skimage_io()
+    skio.imsave(filename, data)
 
 
-def write_nxs(data,
-              filename,
-              flat=None,
-              dark=None,
-              projection_angles=None,
-              overwrite=False):
+def write_nxs(data, filename, projection_angles=None, overwrite=False):
     """
     Write a h5 NXS file.
 
@@ -27,9 +20,6 @@ def write_nxs(data,
     :param overwrite: Overwrite an existing file.
     """
 
-    assert flat is not None and dark is not None, \
-        "When saving out NEXUS file, Flat and Dark images must be provided with -F and -D."
-
     import numpy as np
     import h5py
     nxs = h5py.File(filename, 'w')
@@ -37,25 +27,20 @@ def write_nxs(data,
     flat = flat.reshape(1, data.shape[1], data.shape[2])
     dark = dark.reshape(1, data.shape[1], data.shape[2])
 
+    # appending flat and dark images is disabled for now
     # new shape to account for appending flat and dark images
-    correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
+    # correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
 
     dset = nxs.create_dataset("entry1/tomo_entry/instrument/detector/data",
                               correct_shape)
     dset[:data.shape[0]] = data[:]
-    dset[-2] = flat[:]
-    dset[-1] = dark[:]
+    # dset[-2] = flat[:]
+    # dset[-1] = dark[:]
 
     if projection_angles is not None:
         rangle = nxs.create_dataset(
             "entry1/tomo_entry/sample/rotation_angle", data=projection_angles)
         rangle[...] = projection_angles
-
-
-def write_img(data, filename, overwrite=False):
-    from imgdata.loader import import_skimage_io
-    skio = import_skimage_io()
-    skio.imsave(filename, data)
 
 
 class Saver(object):
@@ -262,19 +247,9 @@ class Saver(object):
         if self._img_format in ['nxs']:
             filename = os.path.join(output_dir, name_prefix + name_postfix)
 
-            write_nxs(
-                data,
-                filename + '.nxs',
-                flat,
-                dark,
-                overwrite=self._overwrite_all)
+            write_nxs(data, filename + '.nxs', overwrite=self._overwrite_all)
 
         else:
-            if self._img_format in ['fit', 'fits']:
-                write_func = write_fits
-            else:
-                # pass all other formats to skimage
-                write_func = write_img
 
             for idx in range(0, data.shape[0]):
                 # use the custom index if one is provided
@@ -283,8 +258,8 @@ class Saver(object):
                 # create the file name, and use the format as extension
                 name = name_prefix + index + name_postfix + "." + self._img_format
 
-                write_func(data[idx, :, :],
-                           os.path.join(output_dir, name), self._overwrite_all)
+                write_img(data[idx, :, :],
+                          os.path.join(output_dir, name), self._overwrite_all)
 
     def make_dirs_if_needed(self, dirname=None):
         """
