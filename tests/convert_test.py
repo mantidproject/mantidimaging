@@ -81,25 +81,11 @@ class ConvertTest(unittest.TestCase):
             stack=False,
             parallel=False)
 
-    def test_convert_fits_fits_stack(self):
-        self.do_convert(
-            img_format='fits',
-            convert_format='fits',
-            stack=True,
-            parallel=False)
-
     def test_convert_fits_tiff_nostack(self):
         self.do_convert(
             img_format='fits',
             convert_format='tiff',
             stack=False,
-            parallel=False)
-
-    def test_convert_fits_tiff_stack(self):
-        self.do_convert(
-            img_format='fits',
-            convert_format='tiff',
-            stack=True,
             parallel=False)
 
     def do_convert(self, img_format, convert_format, stack, parallel=False):

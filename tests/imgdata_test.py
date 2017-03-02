@@ -71,23 +71,11 @@ class DataTest(unittest.TestCase):
     def test_preproc_fits_seq(self):
         self.do_preproc('fits', stack=False, parallel=False)
 
-    def test_preproc_fits_stack_par(self):
-        self.do_preproc('fits', stack=True, parallel=True)
-
-    def test_preproc_fits_stack_seq(self):
-        self.do_preproc('fits', stack=True, parallel=False)
-
     def test_preproc_tiff_par(self):
         self.do_preproc('tiff', stack=False, parallel=True)
 
     def test_preproc_tiff_seq(self):
         self.do_preproc('tiff', stack=False, parallel=False)
-
-    def test_preproc_tiff_stack_par(self):
-        self.do_preproc('tiff', stack=True, parallel=True)
-
-    def test_preproc_tiff_stack_seq(self):
-        self.do_preproc('tiff', stack=True, parallel=False)
 
     def do_preproc(self, img_format, stack, parallel=False):
         images = th.gen_img_shared_array()
