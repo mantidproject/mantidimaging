@@ -3,7 +3,11 @@ import numpy as np
 from helper import Helper
 
 
-def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None, h=None):
+def execute(data,
+            circular_mask_ratio,
+            circular_mask_value=0.,
+            cores=None,
+            h=None):
     """
     Execute the Circular Mask filter.
 
@@ -37,7 +41,7 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None, h=Non
     return data
 
 
-def execute_custom(data_vol, ratio=1.0, mask_out_val=0.0, h=None):
+def execute_custom(data_vol, ratio=1.0, mask_out_val=0.0):
     """
     Applies a circular mask on a 3D volume. The mask is applied along the z axis (first
     dimension of the numpy shape)
