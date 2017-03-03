@@ -77,7 +77,7 @@ class TomoPyTool(AbstractTool):
         h.check_data_stack(sample)
 
         if proj_angles is None:
-            num_proj = sample.shape[0]
+            num_proj = sample.shape[1]
             inc = float(config.func.max_angle) / num_proj
             proj_angles = np.arange(0, num_proj * inc, inc)
             proj_angles = np.radians(proj_angles)
@@ -98,9 +98,9 @@ class TomoPyTool(AbstractTool):
         # yp in numpy's interp
         slice_cor = [542., 542., 540., 540., 537., 536.]
         # calculate as many CORs as there are sinograms (i.e. shape of Y)
-        cors = np.interp(list(range(sample.shape[1])), slice_id, slice_cor)
+        cors = np.interp(list(range(sample.shape[0])), slice_id, slice_cor)
 
-        assert sample.shape[1] == len(cors)
+        assert sample.shape[0] == len(cors)
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
