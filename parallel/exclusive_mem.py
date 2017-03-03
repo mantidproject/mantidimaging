@@ -67,7 +67,7 @@ def execute(data=None,
     # crop, etc
     if output_data is None:
         # get data reference to original with [:]
-        output_data = data[:]
+        output_data = data
 
     from multiprocessing import Pool
 
