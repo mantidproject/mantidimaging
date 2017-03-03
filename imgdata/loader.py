@@ -103,9 +103,8 @@ def load(input_path=None,
     elif img_format in ['nxs']:
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
-        sample = load_stack(nxsread, input_file, dtype,
-                                        "NXS Load", cores, chunksize,
-                                        parallel_load, h)
+        sample = load_stack(nxsread, input_file, dtype, "NXS Load", cores,
+                            chunksize, parallel_load, h)
         flat = dark = None
     else:
         from imgdata import img_loader
@@ -322,5 +321,8 @@ def load_stack(load_func,
     new_data = load_func(file_name)
     img_shape = new_data.shape
     data = pu.create_shared_array(img_shape, dtype=dtype)
-    data[:] = new_data[:]
-    return data
+
+    if parallel_load:
+        return do_stack_load_par(data, new_data, cores, chunksize, name, h)
+    else:
+        return do_stack_load_seq(data, new_data, img_shape, name, h)

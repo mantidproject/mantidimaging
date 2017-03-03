@@ -241,11 +241,9 @@ class Saver(object):
         self.make_dirs_if_needed(output_dir)
 
         import numpy as np
-        self._h.debug_print_memory_usage_linux("Before making sinograms")
+
         if not radiograms:
             data = np.swapaxes(data, 0, 1)
-
-        self._h.debug_print_memory_usage_linux("After making sinograms")
 
         if self._img_format in ['nxs']:
             filename = os.path.join(output_dir, name_prefix + name_postfix)
