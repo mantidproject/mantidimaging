@@ -111,7 +111,6 @@ def _load_and_avg_data(load_func,
 
         data = _load_files(load_func, file_names, img_shape, data_dtype,
                            prog_prefix, cores, chunksize, parallel_load, h)
-
         return get_data_average(data)
 
 

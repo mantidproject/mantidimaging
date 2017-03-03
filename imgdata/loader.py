@@ -6,19 +6,6 @@ import numpy as np
 
 def supported_formats():
     try:
-        import pyfits
-        fits_available = True
-    except ImportError:
-        # In Anaconda python, the pyfits package is in a different place, and this is what you frequently
-        # find on windows.
-        try:
-            import astropy.io.fits as pyfits
-            fits_available = True
-
-        except ImportError:
-            fits_available = False
-
-    try:
         import h5py
         h5nxs_available = True
     except ImportError:
@@ -31,9 +18,8 @@ def supported_formats():
         skio_available = False
 
     avail_list = \
-        (['fits', 'fit'] if fits_available else []) + \
         (['nxs'] if h5nxs_available else []) + \
-        (['tif', 'tiff', 'png', 'jpg'] if skio_available else [])
+        (['fits', 'fit', 'tif', 'tiff', 'png', 'jpg'] if skio_available else [])
 
     return avail_list
 
@@ -115,10 +101,11 @@ def load(input_path=None,
             fitsread, input_file_names, input_path_flat, input_path_dark,
             img_format, dtype, cores, chunksize, parallel_load, h)
     elif img_format in ['nxs']:
-        from imgdata import nxs_loader
-        sample, flat, dark = nxs_loader.execute(input_file_names[0],
-                                                img_format, dtype, cores,
-                                                chunksize, parallel_load, h)
+        # pass only the first filename as we only expect a stack
+        input_file = input_file_names[0]
+        sample = load_stack(nxsread, input_file, dtype, "NXS Load", cores,
+                            chunksize, parallel_load, h)
+        flat = dark = None
     else:
         from imgdata import img_loader
         sample, flat, dark = img_loader.execute(
@@ -185,7 +172,7 @@ def import_skimage_io():
         # tifffile works better on local, but not available on scarf
         # no plugin will use the default python imaging library (PIL)
         # This behaviour might need to be changed when switching to python 3
-        # skio.use_plugin('freeimage')
+        skio.use_plugin('tifffile')
     except ImportError as exc:
         raise ImportError(
             "Could not find the package skimage, its subpackage "
@@ -334,6 +321,7 @@ def load_stack(load_func,
     new_data = load_func(file_name)
     img_shape = new_data.shape
     data = pu.create_shared_array(img_shape, dtype=dtype)
+
     if parallel_load:
         return do_stack_load_par(data, new_data, cores, chunksize, name, h)
     else:

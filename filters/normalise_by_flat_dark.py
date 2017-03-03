@@ -3,6 +3,7 @@ from helper import Helper
 import numpy as np
 
 
+
 def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):
     data[:] = np.clip(np.true_divide(data, norm_divide), clip_min, clip_max)
 
@@ -20,7 +21,8 @@ def execute(data,
             norm_flat_img=None,
             norm_dark_img=None,
             clip_min=0,
-            clip_max=1.5,
+            clip_max=3,
+            roi=None,
             cores=None,
             chunksize=None,
             h=None):
@@ -38,10 +40,10 @@ def execute(data,
         from parallel import utility as pu
         if pu.multiprocessing_available():
             _execute_par(data, norm_flat_img, norm_dark_img, clip_min,
-                         clip_max, cores, chunksize, h)
+                         clip_max, roi, cores, chunksize, h)
         else:
             _execute_seq(data, norm_flat_img, norm_dark_img, clip_min,
-                         clip_max, h)
+                         clip_max, roi, h)
 
     else:
         h.tomo_print_note(
@@ -56,7 +58,8 @@ def _execute_par(data,
                  norm_flat_img=None,
                  norm_dark_img=None,
                  clip_min=0,
-                 clip_max=1.5,
+                 clip_max=5,
+                 roi=None,
                  cores=None,
                  chunksize=None,
                  h=None):
@@ -84,13 +87,18 @@ def _execute_par(data,
     from parallel import utility as pu
     norm_divide = pu.create_shared_array((1, data.shape[1], data.shape[2]))
     norm_divide[:] = norm_divide.reshape(data.shape[1], data.shape[2])
+
+    # subtract dark from flat and copy into shared array
     norm_divide[:] = np.subtract(norm_flat_img, norm_dark_img)
+
     # prevent divide-by-zero issues
     norm_divide[norm_divide == 0] = 1e-6
 
+    # subtract the dark from all images
     np.subtract(data[:], norm_dark_img, out=data[:])
 
     from parallel import two_shared_mem as ptsm
+
     f = ptsm.create_partial(
         _apply_normalise_inplace,
         fwd_function=ptsm.inplace_fwd_func_second_2d,
@@ -112,6 +120,7 @@ def _execute_seq(data,
                  norm_dark_img=None,
                  clip_min=0,
                  clip_max=1.5,
+                 roi=None,
                  h=None):
     """
     Normalise by flat and dark images
@@ -126,6 +135,10 @@ def _execute_seq(data,
 
     :returns :: filtered data (stack of images)
     """
+
+    if roi:
+        raise NotImplementedError("The sequential execution with ROI for scaling is not implemented")
+
     import numpy as np
 
     h.pstart(

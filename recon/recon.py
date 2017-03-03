@@ -43,7 +43,7 @@ def execute(config, cmd_line):
     sample, flat, dark = pre_processing(config, sample, flat, dark)
 
     # Save pre-proc images, print inside
-    saver.save_preproc_images(sample, flat, dark)
+    saver.save_preproc_images(sample)
     if config.func.only_preproc is True:
         h.tomo_print_note("Only pre-processing run, exiting.")
         readme.end()
@@ -63,6 +63,22 @@ def execute(config, cmd_line):
     h.total_execution_timer()
     readme.end()
     return sample
+
+
+import numpy as np
+
+
+def _scale_inplace(data, scale):
+    np.multiply(data, scale, out=data[:])
+
+
+def _calc_avg(data,
+              roi_sums,
+              roi_left=None,
+              roi_top=None,
+              roi_right=None,
+              roi_bottom=None):
+    return data[roi_top:roi_bottom, roi_left:roi_right].mean()
 
 
 def pre_processing(config, sample, flat, dark, h=None):
@@ -85,7 +101,7 @@ def pre_processing(config, sample, flat, dark, h=None):
         return sample, flat, dark
 
     from filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
-        rebin, median_filter, gaussian
+        rebin, median_filter, gaussian, cut_off
 
     cores = config.func.cores
     chunksize = config.func.chunksize
@@ -98,55 +114,87 @@ def pre_processing(config, sample, flat, dark, h=None):
         chunksize=chunksize,
         h=h)
 
-    # the air region coordinates must be within the ROI if this is selected
-    if config.pre.crop_before_normalise:
-        sample = crop_coords.execute_volume(sample,
-                                            config.pre.region_of_interest, h)
+    from recon.tools import importer
+    tomopy = importer.timed_import(config, h)
 
-        if flat is not None:
-            flat = crop_coords.execute_image(flat,
-                                             config.pre.region_of_interest, h)
+    from parallel import utility as pu
+    img_num = sample.shape[0]
+    scale_factors = pu.create_shared_array((img_num, 1, 1))
 
-        if dark is not None:
-            dark = crop_coords.execute_image(dark,
-                                             config.pre.region_of_interest, h)
+    # turn into a 1D array, from the 3D that is returned
+    scale_factors = scale_factors.reshape(img_num)
 
+    # calculate the scale factor from original image
+    from parallel import two_shared_mem as ptsm
+    roi = config.pre.region_of_interest
+    calc_sums_partial = ptsm.create_partial(
+        _calc_avg,
+        fwd_function=ptsm.fwd_func_return_to_second,
+        roi_left=roi[0],
+        roi_top=roi[1],
+        roi_right=roi[2],
+        roi_bottom=roi[3])
+
+    sample, scale_factors = ptsm.execute(
+        sample,
+        scale_factors,
+        calc_sums_partial,
+        cores,
+        chunksize,
+        "Calculating scale factor sums",
+        h=h)
 
     # removes background using images taken when exposed to fully open beam
     # and no beam
+
     sample = normalise_by_flat_dark.execute(
         sample,
         flat,
         dark,
         config.pre.clip_min,
         config.pre.clip_max,
+        roi,
         cores=cores,
         chunksize=chunksize,
         h=h)
 
     # removes the contrast difference between the stack of images
     air = config.pre.normalise_air_region
-    roi = config.pre.region_of_interest
     crop = config.pre.crop_before_normalise
 
     sample = normalise_by_air_region.execute(
         sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
 
-    if not config.pre.crop_before_normalise:
-        # in this case we don't care about cropping the flat and dark
-        sample = crop_coords.execute_volume(sample,
-                                            config.pre.region_of_interest, h)
+    # scale up the data
+    scale_up_partial = ptsm.create_partial(
+        _scale_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d)
 
-        if flat is not None:
-            flat = crop_coords.execute_image(flat,
-                                             config.pre.region_of_interest, h)
+    # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
+    sample, scale_factors = ptsm.execute(
+        sample, [scale_factors.mean()],
+        scale_up_partial,
+        cores,
+        chunksize,
+        "Applying scale factor",
+        h=h)
 
-        if dark is not None:
-            dark = crop_coords.execute_image(dark,
-                                             config.pre.region_of_interest, h)
+    # if not config.pre.crop_before_normalise:
+    # in this case we don't care about cropping the flat and dark
+    sample = crop_coords.execute_volume(sample, config.pre.region_of_interest,
+                                        h)
+
+    if flat is not None:
+        flat = crop_coords.execute_image(flat, config.pre.region_of_interest,
+                                         h)
+
+    if dark is not None:
+        dark = crop_coords.execute_image(dark, config.pre.region_of_interest,
+                                         h)
 
     sample = outliers.execute(sample, config.pre.outliers_threshold,
-                              config.pre.outliers_mode, h)
+                              config.pre.outliers_radius, cores, h)
+
+    sample = cut_off.execute(sample, config.pre.cut_off, h)
 
     # mcp_corrections, they have to be included as well
     # data = mcp_corrections.execute(data, config)
@@ -192,27 +240,27 @@ def post_processing(config, recon_data, h=None):
 
     h = Helper(config) if h is None else h
 
+    cores = config.func.cores
+
     recon_data = outliers.execute(recon_data, config.post.outliers_threshold,
-                                  config.post.outliers_mode, h)
+                                  config.post.outliers_radius, cores, h)
     recon_data = ring_removal.execute(
         recon_data, config.post.ring_removal,
         config.post.ring_removal_center_x, config.post.ring_removal_center_y,
         config.post.ring_removal_thresh, config.post.ring_removal_thresh_max,
         config.post.ring_removal_thresh_min,
         config.post.ring_removal_theta_min, config.post.ring_removal_rwidth,
-        config.func.cores, config.func.chunksize, h)
+        cores, config.func.chunksize, h)
 
     recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
-                                       config.post.circular_mask_val,
-                                       config.func.cores, h)
+                                       config.post.circular_mask_val, cores, h)
 
-    recon_data = gaussian.execute(recon_data, config.post.gaussian_size,
-                                  config.post.gaussian_mode,
-                                  config.post.gaussian_order,
-                                  config.func.cores, config.func.chunksize, h)
+    recon_data = gaussian.execute(
+        recon_data, config.post.gaussian_size, config.post.gaussian_mode,
+        config.post.gaussian_order, cores, config.func.chunksize, h)
 
-    recon_data = median_filter.execute(
-        recon_data, config.post.median_size, config.post.median_mode,
-        config.func.cores, config.func.chunksize, h)
+    recon_data = median_filter.execute(recon_data, config.post.median_size,
+                                       config.post.median_mode, cores,
+                                       config.func.chunksize, h)
 
     return recon_data

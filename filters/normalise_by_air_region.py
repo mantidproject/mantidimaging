@@ -32,13 +32,13 @@ def execute(data,
     return data
 
 
-def _calc_air_sum(data,
-                  air_sums,
-                  air_right=None,
-                  air_top=None,
-                  air_left=None,
-                  air_bottom=None):
-    return data[air_top:air_bottom, air_left:air_right].sum()
+def _calc_sum(data,
+              roi_sums,
+              roi_left=None,
+              roi_top=None,
+              roi_right=None,
+              roi_bottom=None):
+    return data[roi_top:roi_bottom, roi_left:roi_right].mean()
 
 
 def _divide_by_air_sum(data=None, air_sums=None):
@@ -74,23 +74,24 @@ def _execute_par(data,
         region_of_interest, air_region, crop_before_normalise)
 
     h.pstart("Starting normalization by air region...")
-    img_num = data.shape[0]
 
     # initialise same number of air sums
     from parallel import two_shared_mem as ptsm
     from parallel import utility as pu
 
+    img_num = data.shape[0]
     air_sums = pu.create_shared_array((img_num, 1, 1))
-    # turn into a 1D array, from 3D that is returned
+
+    # turn into a 1D array, from the 3D that is returned
     air_sums = air_sums.reshape(img_num)
 
     calc_sums_partial = ptsm.create_partial(
-        _calc_air_sum,
+        _calc_sum,
         fwd_function=ptsm.fwd_func_return_to_second,
-        air_right=air_right,
-        air_top=air_top,
-        air_left=air_left,
-        air_bottom=air_bottom)
+        roi_left=air_left,
+        roi_top=air_top,
+        roi_right=air_right,
+        roi_bottom=air_bottom)
 
     data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores,
                                   chunksize, "Calculating air sums", h)

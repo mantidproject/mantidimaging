@@ -6,12 +6,15 @@ def execute(sample, flat, dark, config, indices):
     helper.print_start("Running IMOPR with action VISUALISE/SHOW")
     import matplotlib.pyplot as plt
 
-    if len(indices) <= 1:
+    if len(indices) == 0:
+        show_3d(sample[:])
+    elif len(indices) == 1:
         show_image(sample[indices[0]])
     else:
         i1, i2 = helper.handle_indices(indices)
 
         show_3d(sample[i1:i2])
+    import matplotlib.pyplot as plt
     plt.show()
 
 

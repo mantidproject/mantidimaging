@@ -8,15 +8,16 @@ def execute(sample, flat, dark, config, indices):
     from imopr.visualiser import show_3d
     helper.print_start("Running IMOPR with action SINOGRAM")
 
-    i1, i2 = helper.handle_indices(indices)
-    sample = make_sinogram(sample)
-    show_3d(sample[i1:i2], 0)
+    if len(indices) == 0:
+        show_3d(sample[:], axis=1)
+    elif len(indices) == 1:
+        show_image(sample[:, indices[0], :])
+    else:
+        i1, i2 = helper.handle_indices(indices)
 
-    # stop python from exiting
+        show_3d(sample[i1:i2], axis=1)
     import matplotlib.pyplot as plt
     plt.show()
-
-    return sample
 
 
 def make_sinogram(sample):

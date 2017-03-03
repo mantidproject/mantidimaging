@@ -77,7 +77,7 @@ class TomoPyTool(AbstractTool):
         h.check_data_stack(sample)
 
         if proj_angles is None:
-            num_proj = sample.shape[0]
+            num_proj = sample.shape[1]
             inc = float(config.func.max_angle) / num_proj
             proj_angles = np.arange(0, num_proj * inc, inc)
             proj_angles = np.radians(proj_angles)
@@ -90,10 +90,17 @@ class TomoPyTool(AbstractTool):
         # Generating a COR for each slice created a better reconstruction
         # this approach works, however it needs to be made flexible.
         # That's on the TODO list
-        # print("Using pre-set CORs for chadwick tomo")
-        # cors = np.array([570] * 1966)
-        # cors[1300:1600] = 565
-        # cors[1600:1966] = 560
+        print("!!! Using pre-set CORs for chadwick tomo")
+
+        import numpy as np
+        # xp in numpy's interp
+        slice_id = [222., 422., 822., 1222., 1622., 1822.]
+        # yp in numpy's interp
+        slice_cor = [542., 542., 540., 540., 537., 536.]
+        # calculate as many CORs as there are sinograms (i.e. shape of Y)
+        cors = np.interp(list(range(sample.shape[0])), slice_id, slice_cor)
+
+        assert sample.shape[0] == len(cors)
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
@@ -101,27 +108,20 @@ class TomoPyTool(AbstractTool):
             h.pstart(
                 "Starting iterative method with TomoPy. Center of Rotation: {0}, Algorithm: {1}, "
                 "number of iterations: {2}...".format(cor, alg, num_iter))
-
-            recon = self._tomopy.recon(
-                tomo=sample,
-                theta=proj_angles,
-                center=cor,
-                algorithm=alg,
-                num_iter=num_iter,
-                ncore=cores,
-                **kwargs)
-
+            kwargs = dict(kwargs, num_iter=num_iter)
         else:  # run the non-iterative algorithms
             h.pstart(
                 "Starting non-iterative reconstruction algorithm with TomoPy. "
                 "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
-            recon = self._tomopy.recon(
-                tomo=sample[:],
-                theta=proj_angles,
-                center=cor,
-                ncore=cores,
-                algorithm=alg,
-                **kwargs)
+
+        recon = self._tomopy.recon(
+            tomo=sample[:],
+            theta=proj_angles,
+            center=cors,
+            ncore=cores,
+            algorithm=alg,
+            sinogram_order=True,
+            **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".

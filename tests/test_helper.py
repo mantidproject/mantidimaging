@@ -21,9 +21,17 @@ def gen_img_shared_array(shape=(10, 10, 10)):
     # generate 10 images with dimensions 10x10, all values 1. float32
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
+    d[:] = n[:]
 
-    for i in range(shape[0]):
-        d[i] = n[i]
+    return d
+
+
+def gen_img_shared_array_with_val(val=1., shape=(10, 10, 10)):
+    from parallel import utility as pu
+    # generate 10 images with dimensions 10x10, all values 1. float32
+    d = pu.create_shared_array(shape)
+    n = np.full(shape, val)
+    d[:] = n[:]
 
     return d
 
@@ -48,8 +56,16 @@ def gimme_helper():
 def debug(switch=True):
     if switch:
         import pydevd
-        pydevd.settrace('localhost', port=59003,
-                        stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace(
+            'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+
+
+def vsdebug():
+    import ptvsd
+    ptvsd.enable_attach("my_secret", address=('0.0.0.0', 59003))
+    print("Waiting for remote debugger at localhost:59003")
+    #Enable the below line of code only if you want the application to wait untill the debugger has attached to it
+    ptvsd.wait_for_attach()
 
 
 def switch_mp_off():
@@ -64,6 +80,7 @@ def switch_mp_off():
 
     def simple_return_false():
         return False
+
     # do bad things, swap out the function to one that returns false
     pu.multiprocessing_available = simple_return_false
 

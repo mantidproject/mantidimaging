@@ -38,12 +38,13 @@ class PreProcConfig(object):
         self.clip_min = 0.0
         self.clip_max = 1.5
 
+        self.cut_off = None
         # list with coordinates of the region for normalisation / "air" / not
         # blocked by any object
         # self.normalise_proton_charge = False
 
         self.outliers_threshold = None
-        self.outliers_mode = None
+        self.outliers_radius = None
         self.mcp_corrections = True
         self.rebin = None
         self.rebin_mode = 'bilinear'
@@ -63,8 +64,9 @@ class PreProcConfig(object):
                + "Rotation: {0}\n".format(self.rotation) \
                + "Clip min value: {0}\n".format(self.clip_min) \
                + "Clip max value: {0}\n".format(self.clip_max) \
+               + "Cut off level: {0}\n".format(self.cut_off) \
                + "Outliers threshold: {0}\n".format(self.outliers_threshold) \
-               + "Outliers mode: {0}\n".format(self.outliers_mode) \
+               + "Outliers mode: {0}\n".format(self.outliers_radius) \
                + "Corrections for MCP detector: {0}\n".format(self.mcp_corrections) \
                + "Rebin down factor for images: {0}\n".format(self.rebin) \
                + "Rebin mode: {0}\n".format(self.rebin_mode) \
@@ -86,8 +88,8 @@ class PreProcConfig(object):
             required=False,
             type=str,
             help="Crop original images using these coordinates, after rotating the images.\n"
-                 "If not given, the whole images are used.\n"
-                 "Example: --region-of-interest='[150,234,23,22]'.")
+            "If not given, the whole images are used.\n"
+            "Example: --region-of-interest='[150,234,23,22]'.")
 
         grp_pre.add_argument(
             "-A",
@@ -96,24 +98,23 @@ class PreProcConfig(object):
             nargs='*',
             type=str,
             help="Air region /region for normalisation.\n"
-                 "For best results it should avoid being blocked by any object.\n"
-                 "Example: --air-region='[150,234,23,22]'")
+            "For best results it should avoid being blocked by any object.\n"
+            "Example: --air-region='[150,234,23,22]'")
 
         grp_pre.add_argument(
             "--crop-before-normalise",
             required=False,
             action='store_true',
             help="Crop before doing any normalisations on the images.\n"
-                 "This improves performance and reduces memory usage, as"
-                 "the algorithms will work on smaller data.")
+            "This improves performance and reduces memory usage, as"
+            "the algorithms will work on smaller data.")
 
         grp_pre.add_argument(
             "--pre-median-size",
             type=int,
             required=False,
             default=self.median_size,
-            help="Size / width of the median filter(pre - processing)."
-        )
+            help="Size / width of the median filter(pre - processing).")
 
         from filters.median_filter import modes as median_modes
         grp_pre.add_argument(
@@ -123,8 +124,7 @@ class PreProcConfig(object):
             default=self.median_mode,
             choices=median_modes(),
             help="Default: %(default)s\n"
-                 "Mode of median filter which determines how the array borders are handled."
-
+            "Mode of median filter which determines how the array borders are handled."
         )
 
         grp_pre.add_argument(
@@ -140,8 +140,8 @@ class PreProcConfig(object):
             required=False,
             type=int,
             help="Rotate images by 90 degrees a number of times.\n"
-                 "The rotation is clockwise unless a negative number is given which indicates "
-                 "rotation counterclockwise.")
+            "The rotation is clockwise unless a negative number is given which indicates "
+            "rotation counterclockwise.")
 
         grp_pre.add_argument(
             "--clip-min",
@@ -162,28 +162,32 @@ class PreProcConfig(object):
         )
 
         grp_pre.add_argument(
+            "--cut-off",
+            required=False,
+            type=float,
+            default=self.cut_off,
+            help="Default: %(default)s\n"
+            "Cut off values above threshold relative to the max pixels.")
+
+        grp_pre.add_argument(
             "--pre-outliers",
             required=False,
             type=float,
-            help="Outliers threshold for pre-processed images.\n"
-                 "Pixels below this threshold with respect to maximum intensity in the stack "
-                 "will be set to the minimum value.")
+            help="Crop bright pixels.")
 
-        from filters.outliers import modes as outliers_modes
+        from filters.outliers import modes as outliers_radiuss
         grp_pre.add_argument(
-            "--pre-outliers-mode",
+            "--pre-outliers-radius",
             required=False,
-            type=str,
-            choices=outliers_modes(),
-            help="Which pixels to clip, only dark ones, bright ones or both.")
+            type=int,
+            help="Radius for the median filter to determine the outlier.")
 
         grp_pre.add_argument(
             "--rebin",
             required=False,
             type=float,
             help="Rebin factor by which the images will be rebinned. This could be any positive float number.\n"
-            "If not specified no scaling will be done."
-        )
+            "If not specified no scaling will be done.")
 
         from filters.rebin import modes as rebin_modes
         grp_pre.add_argument(
@@ -201,7 +205,8 @@ class PreProcConfig(object):
             "--mcp-corrections",
             required=False,
             action='store_true',
-            help="Perform corrections specific to images taken with the MCP detector.")
+            help="Perform corrections specific to images taken with the MCP detector."
+        )
 
         grp_pre.add_argument(
             "--pre-gaussian-size",
@@ -218,7 +223,8 @@ class PreProcConfig(object):
             required=False,
             default=self.gaussian_mode,
             choices=gaussian_modes(),
-            help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing).")
+            help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing)."
+        )
 
         grp_pre.add_argument(
             "--pre-gaussian-order",
@@ -238,10 +244,12 @@ class PreProcConfig(object):
             if len(args.region_of_interest) < 4:
                 raise ValueError(
                     "Not enough arguments provided for the Region of Interest! Expecting 4, but found {0}: {1}"
-                    .format(len(args.region_of_interest), args.region_of_interest))
+                    .format(
+                        len(args.region_of_interest), args.region_of_interest))
 
-            self.region_of_interest = [int(val)
-                                       for val in args.region_of_interest]
+            self.region_of_interest = [
+                int(val) for val in args.region_of_interest
+            ]
 
         if args.air_region:
             if len(args.air_region) < 4:
@@ -266,8 +274,10 @@ class PreProcConfig(object):
         self.clip_min = args.clip_min
         self.clip_max = args.clip_max
 
+        self.cut_off = args.cut_off
+
         self.outliers_threshold = args.pre_outliers
-        self.outliers_mode = args.pre_outliers_mode
+        self.outliers_radius = args.pre_outliers_radius
         self.mcp_corrections = args.mcp_corrections
         self.rebin = args.rebin
         self.rebin_mode = args.rebin_mode

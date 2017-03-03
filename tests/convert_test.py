@@ -71,7 +71,7 @@ class ConvertTest(unittest.TestCase):
                 self.assertTrue(os.path.isfile(f))
 
         else:
-            filename = base_name + '_stack.' + file_format
+            filename = base_name + '.' + file_format
             self.assertTrue(os.path.isfile(filename))
 
     def test_convert_fits_fits_nostack(self):
@@ -81,25 +81,11 @@ class ConvertTest(unittest.TestCase):
             stack=False,
             parallel=False)
 
-    def test_convert_fits_fits_stack(self):
-        self.do_convert(
-            img_format='fits',
-            convert_format='fits',
-            stack=True,
-            parallel=False)
-
     def test_convert_fits_tiff_nostack(self):
         self.do_convert(
             img_format='fits',
             convert_format='tiff',
             stack=False,
-            parallel=False)
-
-    def test_convert_fits_tiff_stack(self):
-        self.do_convert(
-            img_format='fits',
-            convert_format='tiff',
-            stack=True,
             parallel=False)
 
     def do_convert(self, img_format, convert_format, stack, parallel=False):
@@ -114,11 +100,12 @@ class ConvertTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
+            saver._save_preproc = True
             saver._data_as_stack = stack
             saver._overwrite_all = True
 
             # save them out
-            saver.save_preproc_images(images, flat, dark)
+            saver.save_preproc_images(images)
 
             preproc_output_path = saver._output_path + '/pre_processed'
 
@@ -169,8 +156,8 @@ class ConvertTest(unittest.TestCase):
         # create some images
         parallel = False
         images = th.gen_img_shared_array()
-        flat = th.gen_img_shared_array()[0]
-        dark = th.gen_img_shared_array()[0]
+        flat = None
+        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -178,20 +165,17 @@ class ConvertTest(unittest.TestCase):
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
             saver._data_as_stack = stack
+            saver._save_preproc = True
             saver._overwrite_all = True
 
             # save them out
-            saver.save_preproc_images(images, flat, dark)
-            saver.save_single_image(flat, 'flat')
-            saver.save_single_image(dark, 'dark')
+            saver.save_preproc_images(images)
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
             from convert import convert
             conf = self.h.config
             conf.func.input_path = preproc_output_path
-            conf.func.input_path_flat = preproc_output_path + '/flat'
-            conf.func.input_path_dark = preproc_output_path + '/dark'
             conf.func.in_format = saver._img_format
             converted_output_path = saver._output_path + '/converted'
             conf.func.output_path = converted_output_path
@@ -220,14 +204,6 @@ class ConvertTest(unittest.TestCase):
                                     convert_format, saver._data_as_stack,
                                     images.shape[0])
 
-    def test_convert_nxs_fits_stack(self):
-        self.do_convert_from_nxs(
-            img_format='nxs', convert_format='fits', stack=True)
-
-    def test_convert_nxs_tiff_stack(self):
-        self.do_convert_from_nxs(
-            img_format='nxs', convert_format='tiff', stack=True)
-
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
             img_format='nxs', convert_format='fits', stack=False)
@@ -241,8 +217,8 @@ class ConvertTest(unittest.TestCase):
         # create some images
         parallel = False
         images = th.gen_img_shared_array()
-        flat = th.gen_img_shared_array()[0]
-        dark = th.gen_img_shared_array()[0]
+        flat = None
+        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -251,18 +227,17 @@ class ConvertTest(unittest.TestCase):
             saver._img_format = img_format
             # force saving out as STACK because we're saving NXS files
             saver._data_as_stack = True
+            saver._save_preproc = True
             saver._overwrite_all = True
 
             # save them out
-            saver.save_preproc_images(images, flat, dark)
+            saver.save_preproc_images(images)
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
             from convert import convert
             conf = self.h.config
             conf.func.input_path = preproc_output_path
-            conf.func.input_path_flat = preproc_output_path
-            conf.func.input_path_dark = preproc_output_path
             conf.func.in_format = saver._img_format
             converted_output_path = saver._output_path + '/converted'
             conf.func.output_path = converted_output_path
