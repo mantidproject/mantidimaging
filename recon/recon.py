@@ -251,16 +251,15 @@ def post_processing(config, recon_data, h=None):
         config.post.ring_removal_thresh_min,
         config.post.ring_removal_theta_min, config.post.ring_removal_rwidth,
         cores, config.func.chunksize, h)
-
-    recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
-                                       config.post.circular_mask_val, cores, h)
+    recon_data = median_filter.execute(recon_data, config.post.median_size,
+                                       config.post.median_mode, cores,
+                                       config.func.chunksize, h)
 
     recon_data = gaussian.execute(
         recon_data, config.post.gaussian_size, config.post.gaussian_mode,
         config.post.gaussian_order, cores, config.func.chunksize, h)
 
-    recon_data = median_filter.execute(recon_data, config.post.median_size,
-                                       config.post.median_mode, cores,
-                                       config.func.chunksize, h)
+    recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
+                                       config.post.circular_mask_val, cores, h)
 
     return recon_data
