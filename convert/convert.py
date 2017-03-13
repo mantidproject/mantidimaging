@@ -11,13 +11,20 @@ def execute(config):
     from helper import Helper
     h = Helper(config)
     output_dir = config.func.output_path
+    image_out_format = config.func.out_format
     from imgdata.saver import Saver
     s = Saver(config, h)
     # fail early if invalid directory
-    s.make_dirs_if_needed()
+    s.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     from imgdata import loader
     sample, flat, dark = loader.load_data(config, h)
 
     # save out in the main output directory
-    s.save(sample, output_dir, config.func.convert_prefix, config.func.radiograms, zfill_len=0)
+    s.save(
+        sample,
+        output_dir,
+        config.func.convert_prefix,
+        config.func.radiograms,
+        image_out_format,
+        zfill_len=0)

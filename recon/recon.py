@@ -26,7 +26,7 @@ def execute(config, cmd_line):
     from imgdata.saver import Saver
     saver = Saver(config, h)
     # create directory, or throw if not empty and no --overwrite-all
-    saver.make_dirs_if_needed()
+    saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
 
     from imgdata.readme import Readme
     readme = Readme(config, saver, h)

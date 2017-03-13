@@ -19,7 +19,7 @@ def execute(data, outliers_threshold, outliers_radius, cores=None, h=None):
     """
     h = Helper.empty_init() if h is None else h
 
-    if outliers_threshold and outliers_threshold > 0.0 and outliers_radius is not None:
+    if outliers_threshold and outliers_radius and outliers_threshold > 0 and outliers_radius > 0:
         import numpy as np
         h.pstart("Applying outliers with threshold: {0} and radius {1}".format(
             outliers_threshold, outliers_radius))
@@ -34,7 +34,7 @@ def execute(data, outliers_threshold, outliers_radius, cores=None, h=None):
             data.dtype))
     else:
         h.tomo_print_note(
-            "NOT applying outliers, because no --pre-outliers, --pre-outliers-mode, --post-outliers or "
-            "--post-outliers-mode was specified.")
+            "NOT applying outliers, because no outliers parameters were specified."
+        )
 
     return data

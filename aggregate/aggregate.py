@@ -62,7 +62,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
     from imgdata import loader, saver
     s = saver.Saver(h.config, h)
     parallel_load = h.config.func.parallel_load
-    s.make_dirs_if_needed()
+    s.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     for angle, image_paths in angle_image_paths:
         # load all the images from angle, [0] to discard flat and dark

@@ -21,60 +21,51 @@ class OutliersTest(unittest.TestCase):
 
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
-
         # invalid thresholds
         threshold = None
-        mode = 'both'
-        result = self.alg.execute(images, threshold, mode, self.h)
+        radius = 8
+        result = self.alg.execute(images, threshold, radius, cores=1, h=self.h)
         npt.assert_equal(result, control)
 
         threshold = 0
-        result = self.alg.execute(images, threshold, mode, self.h)
+        result = self.alg.execute(images, threshold, radius, cores=1, h=self.h)
         npt.assert_equal(result, control)
 
-        threshold = -0.1
-        result = self.alg.execute(images, threshold, mode, self.h)
+        threshold = -42
+        result = self.alg.execute(images, threshold, radius, cores=1, h=self.h)
         npt.assert_equal(result, control)
 
-        # no mode
-        threshold = 0.1
-        mode = None
-        result = self.alg.execute(images, threshold, mode, self.h)
+        # no radius
+        threshold = 42
+        radius = 8
+        result = self.alg.execute(images, threshold, radius, cores=1, h=self.h)
         npt.assert_equal(result, control)
 
     def test_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        control[3, :, :] = 0.1
+        threshold = 0.1
+        radius = 8
 
-        images[3, :, :] = 0.1
-        threshold = 0.4
-        mode = 'both'
-
-        result = self.alg.execute(images, threshold, mode, self.h)
-        npt.assert_raises(AssertionError, npt.assert_equal, result, control)
+        result = self.alg.execute(images, threshold, radius, cores=1, h=self.h)
+        th.assert_not_equals(result, control)
 
         images, control = th.gen_img_shared_array_and_copy()
-        images[3, :, :] = 0.1
-        threshold = 0.001
-        result = self.alg.execute(images, threshold, mode, self.h)
-        npt.assert_raises(AssertionError, npt.assert_equal, result, control)
+        threshold = 0.1
+        result = self.alg.execute(images, threshold, radius, cores=1, h=self.h)
+        th.assert_not_equals(result, control)
 
     def test_executed_no_helper(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        control[3, :, :] = 0.1
-
-        images[3, :, :] = 0.1
-        threshold = 0.4
-        mode = 'both'
-        result = self.alg.execute(images, threshold, mode)
+        threshold = 0.1
+        radius = 8
+        result = self.alg.execute(images, threshold, radius, cores=1)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
         images, control = th.gen_img_shared_array_and_copy()
-        images[3, :, :] = 0.1
-        threshold = 0.001
-        result = self.alg.execute(images, threshold, mode)
+        threshold = 0.1
+        result = self.alg.execute(images, threshold, radius, cores=1)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
 
