@@ -94,11 +94,16 @@ class TomoPyTool(AbstractTool):
         # That's on the TODO list
         print("!!! Using pre-set CORs for chadwick tomo")
 
+        # for Chadwick Insert
+        # slice_id = [222., 422., 822., 1222., 1622., 1822.]
+        # slice_cor = [542., 542., 540., 540., 537., 536.]
+
         import numpy as np
         # xp in numpy's interp
-        slice_id = [222., 422., 822., 1222., 1622., 1822.]
+        slice_id = [170, 334, 350, 511, 682, 900]
         # yp in numpy's interp
-        slice_cor = [542., 542., 540., 540., 537., 536.]
+        slice_cor = [511.5, 511.5, 512., 512., 512., 512.]
+
         # calculate as many CORs as there are sinograms (i.e. shape of Y)
         cors = np.interp(list(range(sample.shape[0])), slice_id, slice_cor)
 
