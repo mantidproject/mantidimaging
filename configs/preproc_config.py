@@ -49,6 +49,7 @@ class PreProcConfig(object):
         self.rebin = None
         self.rebin_mode = 'bilinear'
 
+        self.minus_log = False
         self.line_projection = True  # TODO unused
 
     def __str__(self):
@@ -236,6 +237,14 @@ class PreProcConfig(object):
             "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
             "Higher order derivatives are not implemented.")
 
+        grp_pre.add_argument(
+            "-log",
+            "--pre-minus-log",
+            required=False,
+            action='store_true',
+            default=self.minus_log,
+            help="Default: %(default)d\nCalculate the -log of the sample data.")
+
         return parser
 
     def update(self, args):
@@ -281,5 +290,7 @@ class PreProcConfig(object):
         self.mcp_corrections = args.mcp_corrections
         self.rebin = args.rebin
         self.rebin_mode = args.rebin_mode
+
+        self.minus_log = args.pre_minus_log
 
         # self.line_projection = args.line_projection

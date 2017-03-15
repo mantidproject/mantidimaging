@@ -25,10 +25,10 @@ class FunctionalConfig(object):
         self.input_path = None
         self.input_path_flat = None
         self.input_path_dark = None
-        self.in_format = 'fits'
+        self.in_format = 'tiff'
 
         self.output_path = None
-        self.out_format = 'fits'
+        self.out_format = 'tiff'
         self.out_slices_prefix = 'recon_slice'
         self.out_horiz_slices_prefix = 'recon_horiz'
         self.out_horiz_slices_subdir = 'horiz_slices'
@@ -152,7 +152,7 @@ class FunctionalConfig(object):
         grp_func.add_argument(
             "--in-format",
             required=False,
-            default='fits',
+            default=self.out_format,
             type=str,
             choices=loader.supported_formats(),
             help="Format/file extension expected for the input images.")
@@ -170,7 +170,7 @@ class FunctionalConfig(object):
         grp_func.add_argument(
             "--out-format",
             required=False,
-            default='fits',
+            default=self.out_format,
             type=str,
             choices=Saver.supported_formats(),
             help="Format/file extension expected for the input images.")

@@ -30,6 +30,8 @@ class TomoPyTool(AbstractTool):
         self.find_center = self._tomopy.find_center
         self.find_center_vo = self._tomopy.find_center_vo
         self.circ_mask = self._tomopy.circ_mask
+
+        # make all tomopy methods available
         self.misc = tomopy.misc
         self.prep = tomopy.prep
         self.recon = tomopy.recon
@@ -61,7 +63,7 @@ class TomoPyTool(AbstractTool):
         Run a reconstruction with TomoPy, using the CPU algorithms they provide.
 
         Information for each reconstruction method is available at
-        http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
+            http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
 
         :param sample: The sample image data as a 3D numpy.ndarray
         :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
@@ -114,8 +116,10 @@ class TomoPyTool(AbstractTool):
                 "Starting non-iterative reconstruction algorithm with TomoPy. "
                 "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
 
+        # This is here to test the -log pre processed data
+        # return sample
         recon = self._tomopy.recon(
-            tomo=sample[:],
+            tomo=sample,
             theta=proj_angles,
             center=cors,
             ncore=cores,

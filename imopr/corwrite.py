@@ -20,12 +20,9 @@ def execute(sample, flat, dark, config, indices):
     from recon.tools import importer
     tool = importer.timed_import(config)
 
-    inc = float(config.func.max_angle) / sample.shape[0]
-    proj_angles = np.arange(0, sample.shape[0] * inc, inc)
+    inc = float(config.func.max_angle) / sample.shape[1]
+    proj_angles = np.arange(0, sample.shape[1] * inc, inc)
     proj_angles = np.radians(proj_angles)
-
-    from imopr.sinogram import make_sinogram
-    sample = make_sinogram(sample)
 
     initial_guess = config.func.cor if config.func.cor is not None else None
 

@@ -1,0 +1,18 @@
+# This was run on a nxs stack WITHOUT parallel load
+# As we can see the memory usage WAS NOT doubled!
+
+matt@matt-OptiPlex-7010:~/Documents/imgpy(save_preproc_images_as_singrams)$ python main.py -i ~/win_img/RB1640003_pp_outl_cut/cut_off_05/ --in-format nxs --only-preproc --reuse-preproc
+ > Note: Running process on 8 cores.
+ >> WARNING: No output path specified, no output will be produced!
+ ---Importing tool tomopy Memory usage before execution:  80604 KB, 78.71484375 MB
+ ---Tool loaded. Elapsed time: 0.937172889709 sec. Memory usage after execution:  114084 KB, 111.41015625 MB. Memory change: 32.6953125 MB
+ ---Loading data... Memory usage before execution:  114084 KB, 111.41015625 MB
+ >> Memory usage 114084 KB,  111.41015625 MB Before any loading
+ >> Memory usage 115180 KB,  112.48046875 MB After opening nxs file
+ >> Memory usage 13003336 KB,  12698.5703125 MB After creating shared array
+NXS Load: 100%|██████████████████████████████████████████████| 1964/1964 [01:19<00:00, 24.68images/s]
+ >> Memory usage 13010248 KB,  12705.3203125 MB After sequential load
+ ---Data loaded. Shape of raw data: (1964, 1570, 1070), dtype: float32. Elapsed time: 82.6301400661 sec. Memory usage after execution:  13010248 KB, 12705.3203125 MB. Memory change: 12593.9101562 MB
+ >> WARNING: Pre-processing steps have been skipped, because --reuse-preproc or --only-postproc flag has been passed.
+ > Note: Only pre-processing run, exiting.
+

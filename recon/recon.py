@@ -101,7 +101,7 @@ def pre_processing(config, sample, flat, dark, h=None):
         return sample, flat, dark
 
     from filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
-        rebin, median_filter, gaussian, cut_off
+        rebin, median_filter, gaussian, cut_off, minus_log
 
     cores = config.func.cores
     chunksize = config.func.chunksize
@@ -130,10 +130,10 @@ def pre_processing(config, sample, flat, dark, h=None):
     calc_sums_partial = ptsm.create_partial(
         _calc_avg,
         fwd_function=ptsm.fwd_func_return_to_second,
-        roi_left=roi[0],
-        roi_top=roi[1],
-        roi_right=roi[2],
-        roi_bottom=roi[3])
+        roi_left=roi[0] if roi else 0,
+        roi_top=roi[1] if roi else 0,
+        roi_right=roi[2] if roi else sample[0].shape[1] - 1,
+        roi_bottom=roi[3] if roi else sample[0].shape[0] - 1)
 
     sample, scale_factors = ptsm.execute(
         sample,
@@ -193,6 +193,8 @@ def pre_processing(config, sample, flat, dark, h=None):
 
     sample = outliers.execute(sample, config.pre.outliers_threshold,
                               config.pre.outliers_radius, cores, h)
+
+    sample = minus_log.execute(sample, config.pre.minus_log, h)
 
     sample = cut_off.execute(sample, config.pre.cut_off, h)
 

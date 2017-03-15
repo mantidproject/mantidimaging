@@ -14,9 +14,11 @@ def execute(data,
     h = Helper.empty_init() if h is None else h
     h.check_data_stack(data)
 
-    if air_region is not None and region_of_interest is not None:
+    if air_region is not None:
         _crop_coords_sanity_checks(air_region, data)
-        _crop_coords_sanity_checks(region_of_interest, data)
+        if region_of_interest is not None:
+            _crop_coords_sanity_checks(region_of_interest, data)
+
         from parallel import utility as pu
         if pu.multiprocessing_available():
             data = _execute_par(data, air_region, region_of_interest,

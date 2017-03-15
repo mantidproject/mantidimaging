@@ -36,15 +36,14 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
     # new shape to account for appending flat and dark images
     # correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
 
-    dset = nxs.create_dataset("entry1/tomo_entry/instrument/detector/data",
-                              data.shape)
+    dset = nxs.create_dataset("tomography/sample_data", data.shape)
     dset[:data.shape[0]] = data[:]
     # dset[-2] = flat[:]
     # dset[-1] = dark[:]
 
     if projection_angles is not None:
         rangle = nxs.create_dataset(
-            "entry1/tomo_entry/sample/rotation_angle", data=projection_angles)
+            "tomography/rotation_angle", data=projection_angles)
         rangle[...] = projection_angles
 
 
@@ -243,6 +242,8 @@ class Saver(object):
         :param overwrite_all: Overwrite any existing images with conflicting names
 
         """
+        from helper import Helper
+        h = Helper.empty_init()
 
         Saver.make_dirs_if_needed(output_dir, overwrite_all)
 
@@ -261,6 +262,7 @@ class Saver(object):
                 # pass all other formats to skimage
                 write_func = write_img
 
+            h.prog_init(data.shape[0], "Saving " + img_format + " images")
             for idx in range(0, data.shape[0]):
                 # use the custom index if one is provided
                 index = custom_idx if custom_idx is not None else str(
@@ -270,6 +272,8 @@ class Saver(object):
 
                 write_func(data[idx, :, :],
                            os.path.join(output_dir, name), overwrite_all)
+                h.prog_update()
+            h.prog_close()
 
     @staticmethod
     def make_dirs_if_needed(dirname=None, overwrite_all=False):

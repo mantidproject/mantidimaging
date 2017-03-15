@@ -138,7 +138,7 @@ def fitsread(filename):
 def nxsread(filename):
     import h5py
     nexus = h5py.File(filename, 'r')
-    data = nexus["entry1/tomo_entry/instrument/detector/data"]
+    data = nexus["tomography/sample_data"]
     return data
 
 
