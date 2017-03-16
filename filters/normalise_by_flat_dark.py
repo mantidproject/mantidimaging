@@ -1,7 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
 import numpy as np
-
+import helper as h
 
 
 def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):
@@ -24,9 +23,7 @@ def execute(data,
             clip_max=3,
             roi=None,
             cores=None,
-            chunksize=None,
-            h=None):
-    h = Helper.empty_init() if h is None else h
+            chunksize=None):
     h.check_data_stack(data)
 
     if norm_flat_img is not None and norm_dark_img is not None and isinstance(
@@ -40,12 +37,14 @@ def execute(data,
         from parallel import utility as pu
         if pu.multiprocessing_available():
             _execute_par(data, norm_flat_img, norm_dark_img, clip_min,
-                         clip_max, roi, cores, chunksize, h)
+                         clip_max, roi, cores, chunksize)
         else:
             _execute_seq(data, norm_flat_img, norm_dark_img, clip_min,
-                         clip_max, roi, h)
+                         clip_max, roi)
 
     else:
+        # I think this might be the only "filter not applied" message that 
+        #  is useful, so I've left it here for now
         h.tomo_print_note(
             "Cannot apply normalization by flat/dark images because no valid flat and dark images have been "
             "provided with -F/--input-path-flat and -D/--input-path-dark.")
@@ -61,8 +60,7 @@ def _execute_par(data,
                  clip_max=5,
                  roi=None,
                  cores=None,
-                 chunksize=None,
-                 h=None):
+                 chunksize=None):
     """
     Normalise by flat and dark images
 
@@ -73,13 +71,10 @@ def _execute_par(data,
     :param clip_max: Pixel values found above this value will be clipped to equal this value
     :param cores:
     :param chunksize:
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
 
     :returns :: filtered data (stack of images)
     """
     import numpy as np
-
     h.pstart(
         "Starting PARALLEL normalization by flat/dark images, pixel data type: {0}...".
         format(data.dtype))
@@ -105,8 +100,8 @@ def _execute_par(data,
         clip_min=clip_min,
         clip_max=clip_max)
 
-    data, norm_divide = ptsm.execute(
-        data, norm_divide, f, cores, chunksize, "Norm by Flat/Dark", h=h)
+    data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize,
+                                     "Norm by Flat/Dark")
 
     h.pstop(
         "Finished PARALLEL normalization by flat/dark images, pixel data type: {0}.".
@@ -120,8 +115,7 @@ def _execute_seq(data,
                  norm_dark_img=None,
                  clip_min=0,
                  clip_max=1.5,
-                 roi=None,
-                 h=None):
+                 roi=None):
     """
     Normalise by flat and dark images
 
@@ -130,17 +124,15 @@ def _execute_seq(data,
     :param norm_dark_img :: dark image to use in normalization
     :param clip_min: Pixel values found below this value will be clipped to equal this value
     :param clip_max: Pixel values found above this value will be clipped to equal this value
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
 
     :returns :: filtered data (stack of images)
     """
 
     if roi:
-        raise NotImplementedError("The sequential execution with ROI for scaling is not implemented")
+        raise NotImplementedError(
+            "The sequential execution with ROI for scaling is not implemented")
 
     import numpy as np
-
     h.pstart(
         "Starting normalization by flat/dark images, pixel data type: {0}...".
         format(data.dtype))

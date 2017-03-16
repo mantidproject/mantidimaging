@@ -10,14 +10,11 @@ class RotateStackTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
         from filters import rotate_stack
         self.alg = rotate_stack
-
-        self.h = Helper(r)
 
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -25,33 +22,25 @@ class RotateStackTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # empty params
-        result = self.alg.execute(images, None, self.h)[0]
+        result = self.alg.execute(images, None)[0]
         npt.assert_equal(result, control)
 
     def test_executed_par(self):
-        self.do_execute(self.h)
-
-    def test_executed_no_helper_par(self):
-        self.do_execute(None)
+        self.do_execute()
 
     def test_executed_seq(self):
         th.switch_mp_off()
-        self.do_execute(self.h)
+        self.do_execute()
         th.switch_mp_on()
 
-    def test_executed_no_helper_seq(self):
-        th.switch_mp_off()
-        self.do_execute(None)
-        th.switch_mp_on()
-
-    def do_execute(self, helper):
+    def do_execute(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 
         rotation = 1  # once clockwise
         images[:, 0, 0] = 42  # set all images at 0,0 to 42
-        result = self.alg.execute(images, rotation, h=helper)[0]
+        result = self.alg.execute(images, rotation)[0]
         h = result.shape[1]
         w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)

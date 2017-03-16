@@ -50,7 +50,7 @@ class PreProcConfig(object):
         self.rebin_mode = 'bilinear'
 
         self.minus_log = False
-        self.line_projection = True  # TODO unused
+        # self.line_projection = True  # TODO unused
 
     def __str__(self):
         return "Region of interest (crop coordinates): {0}\n".format(self.region_of_interest) \
@@ -71,7 +71,7 @@ class PreProcConfig(object):
                + "Corrections for MCP detector: {0}\n".format(self.mcp_corrections) \
                + "Rebin down factor for images: {0}\n".format(self.rebin) \
                + "Rebin mode: {0}\n".format(self.rebin_mode) \
-               + "Line projection (line integral/log re-rebin): {0}".format(self.line_projection)
+               + "Minus log on images: {0}".format(self.minus_log)
 
     def setup_parser(self, parser):
         """
@@ -248,7 +248,10 @@ class PreProcConfig(object):
         return parser
 
     def update(self, args):
-
+        """
+        SPECIAL CASES ARE HANDLED IN:
+        recon_config.ReconstructionConfig.handle_special_arguments
+        """
         if args.region_of_interest:
             if len(args.region_of_interest) < 4:
                 raise ValueError(

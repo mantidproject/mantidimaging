@@ -1,11 +1,12 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
+import helper as h
+
 
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def execute(data, size, mode, order, cores=None, chunksize=None, h=None):
+def execute(data, size, mode, order, cores=None, chunksize=None):
     """
     Execute the Gaussian filter.
 
@@ -17,32 +18,26 @@ def execute(data, size, mode, order, cores=None, chunksize=None, h=None):
                   An order of 1, 2, or 3 corresponds to convolution with the first, second or third
                   derivatives of a Gaussian. Higher order derivatives are not implemented
 
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
     :return: the data after being processed with the filter
 
     Full reference:
     https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html
 
     """
-    h = Helper.empty_init() if h is None else h
     h.check_data_stack(data)
 
     if size and size > 1:
         from parallel import utility as pu
         if pu.multiprocessing_available():
-            data = _execute_par(data, size, mode, order, cores, chunksize, h)
+            data = _execute_par(data, size, mode, order, cores, chunksize)
         else:
-            data = _execute_seq(data, size, mode, order, h)
-
-    else:
-        h.tomo_print_note("NOT applying gaussian filter.")
+            data = _execute_seq(data, size, mode, order)
 
     h.check_data_stack(data)
     return data
 
 
-def _execute_seq(data, size, mode, order, h=None):
+def _execute_seq(data, size, mode, order):
     """
     Sequential CPU version of the Gaussian filter
     """
@@ -69,7 +64,7 @@ def _execute_seq(data, size, mode, order, h=None):
     return data
 
 
-def _execute_par(data, size, mode, order, cores=None, chunksize=None, h=None):
+def _execute_par(data, size, mode, order, cores=None, chunksize=None):
     """
     Parallel CPU version of the Gaussian filter
     """
@@ -89,7 +84,7 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None, h=None):
     h.pstart(
         "Starting PARALLEL gaussian filter, with pixel data type: {0}, filter size/width: {1}.".
         format(data.dtype, size))
-    data = psm.execute(data, f, cores, chunksize, "Gaussian", h)
+    data = psm.execute(data, f, cores, chunksize, "Gaussian")
 
     h.pstop(
         "Finished  gaussian filter, with pixel data type: {0}, filter size/width: {1}.".

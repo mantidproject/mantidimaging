@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import os
+import helper as h
 
 
 def write_fits(data, filename, overwrite=False):
@@ -68,9 +69,7 @@ class Saver(object):
         from imgdata.loader import supported_formats
         return supported_formats()
 
-    def __init__(self, config, h=None):
-        from helper import Helper
-        self._h = Helper(config) if h is None else h
+    def __init__(self, config):
 
         self._output_path = config.func.output_path
         if self._output_path is not None:
@@ -118,7 +117,7 @@ class Saver(object):
         """
 
         if self._output_path is None:
-            self._h.tomo_print_note(
+            h.tomo_print_note(
                 "Not saving a single image, because no output path is specified."
             )
             return
@@ -134,8 +133,8 @@ class Saver(object):
             output_dir = os.path.join(output_dir, subdir)
             output_dir = os.path.abspath(output_dir)
 
-        self._h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
-                                                                   data.dtype))
+        h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
+                                                             data.dtype))
 
         self.save(
             data,
@@ -148,7 +147,7 @@ class Saver(object):
             name_postfix=name_postfix,
             custom_idx=custom_index)
 
-        self._h.pstop("Finished saving single image.")
+        h.pstop("Finished saving single image.")
 
     def save_preproc_images(self, data):
         """
@@ -164,14 +163,13 @@ class Saver(object):
         if self._save_preproc and self._output_path is not None:
             preproc_dir = os.path.join(self._output_path, self._preproc_dir)
 
-            self._h.pstart(
-                "Saving all pre-processed images into {0} dtype: {1}".format(
-                    preproc_dir, data.dtype))
+            h.pstart("Saving all pre-processed images into {0} dtype: {1}".
+                     format(preproc_dir, data.dtype))
 
             self.save(data, preproc_dir, 'out_preproc_image', self._radiograms,
                       self._img_format, self._overwrite_all)
 
-            self._h.pstop("Saving pre-processed images finished.")
+            h.pstop("Saving pre-processed images finished.")
 
     def save_recon_output(self, data):
         """
@@ -188,14 +186,14 @@ class Saver(object):
         slices saved by default. Useful for testing some tools
         """
         if self._output_path is None:
-            self._h.tomo_print_note(
+            h.tomo_print_warning(
                 "Not saving reconstruction output, because no output path is specified."
             )
             return
 
         out_recon_dir = os.path.join(self._output_path, 'reconstructed')
 
-        self._h.pstart(
+        h.pstart(
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
@@ -210,7 +208,7 @@ class Saver(object):
             out_horiz_dir = os.path.join(out_recon_dir,
                                          self._out_horiz_slices_subdir)
 
-            self._h.tomo_print_note(
+            h.tomo_print_note(
                 "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
             import numpy as np
@@ -218,9 +216,8 @@ class Saver(object):
             self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
                       not radiograms, self._img_format, self._overwrite_all)
 
-        self._h.pstop(
-            "Finished saving slices of the reconstructed volume in: {0}".
-            format(out_recon_dir))
+        h.pstop("Finished saving slices of the reconstructed volume in: {0}".
+                format(out_recon_dir))
 
     @staticmethod
     def save(data,
@@ -242,8 +239,6 @@ class Saver(object):
         :param overwrite_all: Overwrite any existing images with conflicting names
 
         """
-        from helper import Helper
-        h = Helper.empty_init()
 
         Saver.make_dirs_if_needed(output_dir, overwrite_all)
 

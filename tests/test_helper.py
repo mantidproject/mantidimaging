@@ -1,4 +1,3 @@
-from helper import Helper
 import numpy as np
 import numpy.testing as npt
 
@@ -47,10 +46,6 @@ def assert_not_equals(thing1, thing2):
 def deepcopy(source):
     from copy import deepcopy
     return deepcopy(source)
-
-
-def gimme_helper():
-    return Helper.empty_init()
 
 
 def debug(switch=True):

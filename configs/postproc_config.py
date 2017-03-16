@@ -8,7 +8,7 @@ class PostProcConfig(object):
         Builds a default post-processing configuration with a sensible choice of parameters
         """
         self.circular_mask = None
-        self.circular_mask_val = None
+        self.circular_mask_val = 0.0
         self.outliers_threshold = None
         self.outliers_radius = None
         self.gaussian_size = None
@@ -163,6 +163,10 @@ class PostProcConfig(object):
         return parser
 
     def update(self, args):
+        """
+        SPECIAL CASES ARE HANDLED IN:
+        recon_config.ReconstructionConfig.handle_special_arguments
+        """
         self.circular_mask = args.circular_mask
         self.circular_mask_val = args.circular_mask_val
 

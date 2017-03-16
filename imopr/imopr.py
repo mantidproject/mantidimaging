@@ -44,13 +44,11 @@ def execute(config):
     # the rest is a list of indices
     indices = [int(c) for c in commands]
 
-    from helper import Helper
-    h = Helper(config)
-    config.helper = h
+    import helper as h
     h.check_config_integrity(config)
 
     from imgdata import loader
-    sample, flat, dark = loader.load_data(config, h)
+    sample, flat, dark = loader.load_data(config)
     # the [:] is necessary to get the actual data and not just the nxs header
     # sample = loader.nxsread(config.func.input_path)[:]
 

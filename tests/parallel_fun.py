@@ -4,7 +4,6 @@ import numpy.testing as npt
 import unittest
 
 from configs.recon_config import ReconstructionConfig
-from helper import Helper
 
 
 class ParallelTest(unittest.TestCase):
@@ -12,12 +11,13 @@ class ParallelTest(unittest.TestCase):
     Test class. This was used as an initial testing playground to test shared memory versus exclusive memory.
     Shared memory performed much better. Sadly I don't have the times.
     """
+
     def test_shared_performance(self, runs=10, cores='8', chunksize='8'):
         import timeit
         print(
             "shared_perf:",
             timeit.timeit(
-                stmt='sp.execute(data,f,h=h,cores=' + cores + ',chunksize=' +
+                stmt='sp.execute(data,f,cores=' + cores + ',chunksize=' +
                 chunksize + ',show_timer=False)',
                 setup='from recon.memory_debugger import inplace_in_func, '
                 '_create_testing_array, _create_test_helper;'
@@ -33,7 +33,7 @@ class ParallelTest(unittest.TestCase):
         print(
             "not shared_perf:",
             timeit.timeit(
-                stmt='p.execute(data,f,h=h,cores=' + cores + ',chunksize=' +
+                stmt='p.execute(data,f,cores=' + cores + ',chunksize=' +
                 chunksize + ',show_timer=False)',
                 setup='from recon.memory_debugger import return_from_func_but_data_changed_inside, '
                 '_create_testing_array, _create_test_helper; '
@@ -64,7 +64,7 @@ class ParallelTest(unittest.TestCase):
         f = sp.create_partial(
             inplace_in_func, fwd_function=sp.fwd_func, size=42)
 
-        data = sp.execute(data, f, h=h, show_timer=False)
+        data = sp.execute(data, f, show_timer=False)
         npt.assert_equal(data, control)
 
     def test_fwd_func_processing_not_inplace(self):
@@ -87,7 +87,7 @@ class ParallelTest(unittest.TestCase):
             fwd_function=sp.fwd_func,
             size=42)
 
-        data = sp.execute(data, f, h=h, show_timer=False)
+        data = sp.execute(data, f, show_timer=False)
 
         npt.assert_equal(data, control)
 
@@ -111,7 +111,7 @@ class ParallelTest(unittest.TestCase):
             fwd_function=sp.fwd_func,
             size=42)
 
-        data = sp.execute(data, f, h=h, show_timer=False)
+        data = sp.execute(data, f, show_timer=False)
 
         npt.assert_raises(AssertionError, npt.assert_equal, data, control)
 
@@ -132,7 +132,7 @@ class ParallelTest(unittest.TestCase):
         f = sp.create_partial(
             inplace_in_func, fwd_function=sp.inplace_fwd_func, size=42)
 
-        data = sp.execute(data, f, show_timer=False, h=h)
+        data = sp.execute(data, f, show_timer=False)
         npt.assert_raises(AssertionError, npt.assert_equal, data, control)
 
     def test_inplace_fwd_func_processing_not_inplace(self):
@@ -155,7 +155,7 @@ class ParallelTest(unittest.TestCase):
             fwd_function=sp.inplace_fwd_func,
             size=42)
 
-        data = sp.execute(data, f, show_timer=False, h=h)
+        data = sp.execute(data, f, show_timer=False)
 
         npt.assert_equal(data, control)
 
@@ -181,7 +181,7 @@ class ParallelTest(unittest.TestCase):
             fwd_function=sp.inplace_fwd_func,
             size=42)
 
-        data = sp.execute(data, f, show_timer=False, h=h)
+        data = sp.execute(data, f, show_timer=False)
 
         npt.assert_raises(AssertionError, npt.assert_equal, data, control)
 

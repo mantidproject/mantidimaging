@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
 
+import helper as h
 import numpy as np
 
 
@@ -24,17 +24,15 @@ def supported_formats():
     return avail_list
 
 
-def load_data(config, h=None):
+def load_data(config):
     """
     Load data by reading the provided configuration file for paths.
     This is intended to be used internally within the scripts.
 
     :param config: The full reconstruction config
-    :param h: Helper class, if not provided will be initialised with the config
 
     :return: the loaded data as a tuple (sample, flat, dark)
     """
-    h = Helper(config) if h is None else h
 
     h.pstart("Loading data...")
     input_path = config.func.input_path
@@ -48,7 +46,7 @@ def load_data(config, h=None):
 
     sample, flat, dark = load(input_path, input_path_flat, input_path_dark,
                               img_format, data_dtype, cores, chunksize,
-                              parallel_load, h)
+                              parallel_load)
 
     h.pstop("Data loaded. Shape of raw data: {0}, dtype: {1}.".format(
         sample.shape, sample.dtype))
@@ -66,7 +64,6 @@ def load(input_path=None,
          cores=None,
          chunksize=None,
          parallel_load=False,
-         h=None,
          file_names=None):
     """
     Loads a stack, including sample, white and dark images.
@@ -81,11 +78,9 @@ def load(input_path=None,
     :param chunksize: chunk of work per worker
     :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
             This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :param h: Helper class, if not provided will be initialised with empty constructor
     :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
     """
 
-    h = Helper.empty_init() if h is None else h
     if img_format is None:
         # assume only images in directory, inb4 loading text files
         img_format = '*'
@@ -99,20 +94,20 @@ def load(input_path=None,
         from imgdata import img_loader
         sample, flat, dark = img_loader.execute(
             fitsread, input_file_names, input_path_flat, input_path_dark,
-            img_format, dtype, cores, chunksize, parallel_load, h)
+            img_format, dtype, cores, chunksize, parallel_load)
     elif img_format in ['nxs']:
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
         sample = load_stack(nxsread, input_file, dtype, "NXS Load", cores,
-                            chunksize, parallel_load, h)
+                            chunksize, parallel_load)
         flat = dark = None
     else:
         from imgdata import img_loader
         sample, flat, dark = img_loader.execute(
             imread, input_file_names, input_path_flat, input_path_dark,
-            img_format, dtype, cores, chunksize, parallel_load, h)
+            img_format, dtype, cores, chunksize, parallel_load)
 
-    Helper.check_data_stack(sample)
+    h.check_data_stack(sample)
 
     return sample, flat, dark
 
@@ -263,7 +258,7 @@ def parallel_move_data(input_data, output_data):
     output_data[:] = input_data[:]
 
 
-def do_stack_load_seq(data, new_data, img_shape, name, h):
+def do_stack_load_seq(data, new_data, img_shape, name):
     """
     Sequential version of loading the data.
     This performs faster locally, but parallel performs faster on SCARF
@@ -272,7 +267,6 @@ def do_stack_load_seq(data, new_data, img_shape, name, h):
     :param new_data:
     :param img_shape:
     :param name:
-    :param h: Helper class, if not provided will be initialised with empty constructor
     :return: the loaded data
     """
     h.prog_init(img_shape[0], name)
@@ -283,11 +277,11 @@ def do_stack_load_seq(data, new_data, img_shape, name, h):
     return data
 
 
-def do_stack_load_par(data, new_data, cores, chunksize, name, h):
+def do_stack_load_par(data, new_data, cores, chunksize, name):
     from parallel import two_shared_mem as ptsm
     f = ptsm.create_partial(
         parallel_move_data, fwd_function=ptsm.inplace_fwd_func)
-    ptsm.execute(new_data, data, f, cores, chunksize, name, h=h)
+    ptsm.execute(new_data, data, f, cores, chunksize, name)
     return data
 
 
@@ -297,8 +291,7 @@ def load_stack(load_func,
                name,
                cores=None,
                chunksize=None,
-               parallel_load=False,
-               h=None):
+               parallel_load=False):
     """
     Load a single image FILE that is expected to be a stack of images.
 
@@ -313,7 +306,6 @@ def load_stack(load_func,
     :param chunksize: chunk of work per worker
     :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
             This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :param h: Helper class, if not provided will be initialised with empty constructor
     :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
     """
     # create shared array
@@ -323,6 +315,6 @@ def load_stack(load_func,
     data = pu.create_shared_array(img_shape, dtype=dtype)
 
     if parallel_load:
-        return do_stack_load_par(data, new_data, cores, chunksize, name, h)
+        return do_stack_load_par(data, new_data, cores, chunksize, name)
     else:
-        return do_stack_load_seq(data, new_data, img_shape, name, h)
+        return do_stack_load_seq(data, new_data, img_shape, name)

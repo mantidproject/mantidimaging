@@ -10,11 +10,10 @@ class HelperTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
-
-        self.h = Helper(r)
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
+        import helper as h
+        self.h = h
 
     def test_readme_caching(self):
         readme = []

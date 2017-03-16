@@ -44,7 +44,7 @@ class ReconstructionConfig(object):
                 The options that require output directory are:\n\
                 -s/--save-preproc, --convert, --aggregate")
 
-        if self.func.cor is None \
+        if self.func.cors is None \
                 and not self.func.only_preproc \
                 and not self.func.imopr \
                 and not self.func.aggregate\
@@ -53,10 +53,19 @@ class ReconstructionConfig(object):
             raise ValueError(
                 "If running a reconstruction a Center of Rotation MUST be provided"
             )
-        if self.func.cor and self.pre.region_of_interest:
+
+        # if the reconstruction is ran on already cropped images, then no ROI should be provided
+        if self.func.cors and self.pre.region_of_interest:
             # the COR is going to be related to the full image
             # as we are going to be cropping it, we subtract the crop
-            self.func.cor -= self.pre.region_of_interest[0]
+            left = self.pre.region_of_interest[0]
+
+            # subtract from all the cors
+            self.func.cors = map(lambda cor: cor - left, self.func.cors)
+
+        # if we're doing only postprocessing then we should skip pre-processing
+        if self.func.only_postproc:
+            self.func.reuse_preproc = True
 
     def __str__(self):
         return str(self.func) + str(self.pre) + str(self.post)
@@ -73,8 +82,7 @@ class ReconstructionConfig(object):
         """
         # workaround to all the checks we've done
         func = FunctionalConfig()
-        func.input_path='~/temp/'
-        func.imopr='something'
+        func.input_path = '~/temp/'
+        func.imopr = 'something'
 
-        return ReconstructionConfig(func,
-                                    PreProcConfig(), PostProcConfig())
+        return ReconstructionConfig(func, PreProcConfig(), PostProcConfig())

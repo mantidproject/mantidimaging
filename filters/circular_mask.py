@@ -1,27 +1,21 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
-from helper import Helper
+import helper as h
 
 
-def execute(data,
-            circular_mask_ratio,
-            circular_mask_value=0.,
-            cores=None,
-            h=None):
+def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     """
     Execute the Circular Mask filter.
 
     :param data: The sample image data as a 3D numpy.ndarray
     :param circular_mask_ratio: The ratio to the full image. The ratio must be 0 < ratio < 1
     :param circular_mask_value: The value that all pixels in the mask will be set to.
-    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :return: the data after being processed with the filter
 
     Full Reference:
     http://tomopy.readthedocs.io/en/latest/api/tomopy.misc.corr.html?highlight=circular%20mask
     """
-    h = Helper.empty_init() if h is None else h
 
     if circular_mask_ratio and 0 < circular_mask_ratio < 1:
         from recon.tools import importer
@@ -34,9 +28,6 @@ def execute(data,
             ratio=circular_mask_ratio,
             val=circular_mask_value)
         h.pstop("Finished applying circular mask.")
-    else:
-        h.tomo_print_note(
-            "Not applying circular mask, no --circular-mask was specified.")
 
     return data
 

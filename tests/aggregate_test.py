@@ -10,15 +10,12 @@ class AggregateTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
-
-        self.h = Helper(r)
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
     def create_saver(self):
         from imgdata.saver import Saver
-        return Saver(self.h.config)
+        return Saver(self.config)
 
     def delete_files(self, prefix=''):
         import tempfile
@@ -81,11 +78,17 @@ class AggregateTest(unittest.TestCase):
             filename = base_name + '_stack.' + file_format
             self.assertTrue(os.path.isfile(filename))
 
-    def test_aggregate_single_folder_sum(self):
+    def test_aggregate_single_folder_sum_fits(self):
         self.do_aggregate_single_folder('fits', 'fits', 'sum')
 
-    def test_aggregate_single_folder_avg(self):
+    def test_aggregate_single_folder_sum_tiff(self):
+        self.do_aggregate_single_folder('tiff', 'tiff', 'sum')
+
+    def test_aggregate_single_folder_avg_fits(self):
         self.do_aggregate_single_folder('fits', 'fits', 'avg')
+
+    def test_aggregate_single_folder_avg_tiff(self):
+        self.do_aggregate_single_folder('tiff', 'tiff', 'avg')
 
     def do_aggregate_single_folder(self,
                                    img_format,
@@ -123,13 +126,14 @@ class AggregateTest(unittest.TestCase):
 
             # aggregate them
             from aggregate import aggregate
-            conf = self.h.config
+            conf = self.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (aggregate_angles is 5 so we subtract 1)
             conf.func.aggregate_angles = ['0', str(aggregate_angles - 1)]
             conf.func.aggregate_single_folder_output = True
             conf.func.input_path = aggregate_path
             conf.func.in_format = saver._img_format
+            conf.func.out_format = convert_format
             aggregate_output_path = os.path.dirname(f.name) + '/aggregated'
             conf.func.output_path = aggregate_output_path
             conf.func.overwrite_all = True
@@ -145,8 +149,7 @@ class AggregateTest(unittest.TestCase):
                 None,
                 None,
                 saver._img_format,
-                parallel_load=parallel,
-                h=self.h)
+                parallel_load=parallel)
 
             for i in sample:
                 th.assert_equals(i, expected)
@@ -155,11 +158,17 @@ class AggregateTest(unittest.TestCase):
                 aggregate_output_path + '/out_' + mode + '_0_10_',
                 saver._img_format, saver._data_as_stack, aggregate_angles)
 
-    def test_aggregate_not_single_folder_sum(self):
+    def test_aggregate_not_single_folder_sum_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'sum')
 
-    def test_aggregate_not_single_folder_avg(self):
+    def test_aggregate_not_single_folder_sum_tiff(self):
+        self.do_aggregate_not_single_folder('tiff', 'tiff', 'sum')
+
+    def test_aggregate_not_single_folder_avg_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'avg')
+
+    def test_aggregate_not_single_folder_avg_tiff(self):
+        self.do_aggregate_not_single_folder('tiff', 'tiff', 'avg')
 
     def do_aggregate_not_single_folder(self,
                                        img_format,
@@ -200,13 +209,14 @@ class AggregateTest(unittest.TestCase):
 
             # aggregate them
             from aggregate import aggregate
-            conf = self.h.config
+            conf = self.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (starts from 0 so -1)
             conf.func.aggregate_angles = ['0', str(aggregate_angles - 1)]
             conf.func.aggregate_single_folder_output = False
             conf.func.input_path = aggregate_path
             conf.func.in_format = saver._img_format
+            conf.func.out_format = convert_format
             aggregate_output_path = os.path.dirname(f.name) + '/aggregated'
             conf.func.output_path = aggregate_output_path
             conf.func.overwrite_all = True
@@ -226,8 +236,7 @@ class AggregateTest(unittest.TestCase):
                     None,
                     None,
                     saver._img_format,
-                    parallel_load=parallel,
-                    h=self.h)
+                    parallel_load=parallel)
 
                 for i in sample:
                     th.assert_equals(i, expected)

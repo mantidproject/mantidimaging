@@ -10,15 +10,12 @@ class DataTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        self.r = ReconstructionConfig.empty_init()
-        self.r.func.verbosity = 0
-        from helper import Helper
-
-        self.h = Helper(self.r)
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
     def create_saver(self):
         from imgdata.saver import Saver
-        return Saver(self.r)
+        return Saver(self.config)
 
     def assert_files_exist(self,
                            base_name,
@@ -102,8 +99,7 @@ class DataTest(unittest.TestCase):
                 None,
                 None,
                 saver._img_format,
-                parallel_load=parallel,
-                h=self.h)
+                parallel_load=parallel)
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
@@ -113,13 +109,14 @@ class DataTest(unittest.TestCase):
                                     saver._img_format, data_as_stack,
                                     images.shape[0])
 
+    def test_save_nxs_seq(self):
+        self.do_preproc_nxs(parallel=False)
+    
     def test_save_nxs_par(self):
         self.do_preproc_nxs(parallel=True)
 
-    def test_save_nxs_seq(self):
-        self.do_preproc_nxs(parallel=False)
 
-    def do_preproc_nxs(self, img_format='nxs', parallel=False):
+    def do_preproc_nxs(self, save_out_img_format='nxs', parallel=False):
         images = th.gen_img_shared_array_with_val(42.)
         # this is different from do_preproc as we need to
         # save out flat and dark images, and they will be loaded
@@ -132,7 +129,7 @@ class DataTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._save_preproc = True
-            saver._img_format = img_format
+            saver._img_format = save_out_img_format
             saver._radiograms = True
             data_as_stack = True
 
@@ -140,15 +137,18 @@ class DataTest(unittest.TestCase):
 
             preproc_output_path = saver._output_path + '/pre_processed/'
 
+            # sooooooooo this is a race condition versus the saving from the saver
+            # sometimes, it seems, the 8 threads try to load the data too fast,
+            # and the data loaded is corrupted
+            
+            # this does not load any flats or darks as they were not saved out
             from imgdata import loader
-            # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 preproc_output_path,
                 None,
                 None,
                 saver._img_format,
-                parallel_load=parallel,
-                h=self.h)
+                parallel_load=parallel)
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)

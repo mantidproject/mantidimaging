@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
+import helper as h
 
 
 def create_partial(func, **kwargs):
@@ -22,7 +22,6 @@ def execute(data=None,
             cores=None,
             chunksize=None,
             name="Progress",
-            h=None,
             output_data=None,
             show_timer=True):
     """
@@ -48,13 +47,11 @@ def execute(data=None,
     :param cores: number of cores that the processing will use
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
-    :param h: Helper class, if not provided will be initialised with empty constructor
     :param output_data: the output array in which the results will be stored
     :param show_timer: Whether to show the loading bar or be completely silent
 
     :return: The processed output data
     """
-    h = Helper.empty_init() if h is None else h
     from parallel import utility as pu
     if cores is None:
         cores = pu.get_cores()

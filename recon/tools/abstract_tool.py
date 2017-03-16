@@ -21,7 +21,7 @@ class AbstractTool:
         raise NotImplementedError(
             "This is an abstract class. Use a derived class' implementation")
 
-    def run_reconstruct(self, data, config, h=None, proj_angles=None, **kwargs):
+    def run_reconstruct(self, data, config, proj_angles=None, **kwargs):
         raise NotImplementedError(
             "This is an abstract class. Use a derived class' implementation")
 

@@ -1,18 +1,17 @@
 from __future__ import (absolute_import, division, print_function)
 
 
-def timed_import(config, h=None):
+def timed_import(config):
     """
     Wraps the importing function in a timer.
     This function should not be used from the filters as it will add a lot of clutter to the stdout.
 
     :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :return: the imported tool
     """
-    from helper import Helper
-    h = Helper(config) if h is None else h
+
+    import helper as h
     h.pstart("Importing tool " + config.func.tool)
     tool = do_importing(config.func.tool, config.func.algorithm)
     h.pstop("Tool loaded.")
