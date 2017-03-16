@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
-from helper import Helper
+import helper as h
 
 
-def execute(sample, region_of_interest, flat, dark, h=None):
+def execute(sample, region_of_interest, flat, dark):
     """
     Execute the Circular Mask filter.
 
@@ -11,16 +11,15 @@ def execute(sample, region_of_interest, flat, dark, h=None):
     :param region_of_interest: The region of interest that will be cropped
     :param flat: The average flat image to be cropped
     :param dark: The average dark image to be cropped
-    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :return: the data after being processed with the filter
     """
     if sample is not None and flat is None and dark is not None:
-        return execute_volume(sample, region_of_interest, h), None, None
+        return execute_volume(sample, region_of_interest), None, None
     else:
-        return execute_volume(sample, region_of_interest, h), \
-               execute_image(flat, region_of_interest, h), \
-               execute_image(dark, region_of_interest, h)
+        return execute_volume(sample, region_of_interest), \
+               execute_image(flat, region_of_interest), \
+               execute_image(dark, region_of_interest)
 
 
 def _crop_coords_sanity_checks(coords, data_image, expected_data_shape=3):
@@ -42,17 +41,15 @@ def _crop_coords_sanity_checks(coords, data_image, expected_data_shape=3):
             "Wrong data volume when trying to crop: {0}".format(data_image))
 
 
-def execute_image(data, region_of_interest, h=None):
+def execute_image(data, region_of_interest):
     """
 
     :param data :: image as a 2d numpy array
     :param region_of_interest: coordinates which will be cropped and returned for further processing
-    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :returns :: cropped data (stack of images)
 
     """
-    h = Helper.empty_init() if h is None else h
 
     if region_of_interest:
         h.pstart("Starting image cropping with coordinates: {0}. ...".format(
@@ -63,11 +60,6 @@ def execute_image(data, region_of_interest, h=None):
         h.pstop(
             "Finished image cropping with pixel data type: {0}, resulting shape: {1}.".
             format(data.dtype, data.shape))
-
-    else:
-        h.tomo_print_note(
-            "NOT applying cropping to region of interest on single image, because no --region-of-interest coordinates were given."
-        )
 
     return data
 
@@ -95,16 +87,16 @@ def _crop_image(data_image, coords):
         return data_image[top:bottom, left:right]
 
 
-def execute_volume(data, crop_coords, h=None):
+def execute_volume(data, crop_coords):
     """
     Crop stack of images to a region (region of interest or similar), image by image
 
     :param data :: stack of images as a 3d numpy array
     :param crop_coords: coordinates which will be cropped and returned for further processing
-    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :returns :: cropped data (stack of images)
     """
+
     h.check_data_stack(data)
 
     # list with left, top, right, bottom
@@ -117,11 +109,6 @@ def execute_volume(data, crop_coords, h=None):
         h.pstop(
             "Finished data volume cropping with pixel data type: {0}, resulting shape: {1}.".
             format(data.dtype, data.shape))
-
-    else:
-        h.tomo_print_note(
-            "NOT applying cropping to region of interest on data volume, because no --region-of-interest coordinates were given."
-        )
 
     h.check_data_stack(data)
 

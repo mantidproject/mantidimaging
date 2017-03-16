@@ -10,14 +10,11 @@ class MedianTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
         from filters import median_filter
         self.alg = median_filter
-
-        self.h = Helper(r)
 
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -26,16 +23,8 @@ class MedianTest(unittest.TestCase):
 
         size = None
         mode = None
-        result = self.alg.execute(images, size, mode, h=self.h)
+        result = self.alg.execute(images, size, mode)
         npt.assert_equal(result, control)
-
-    def test_executed_parallel(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-        result = self.alg.execute(images, size, mode, h=self.h)
-        th.assert_not_equals(images, control)
 
     def test_executed_no_helper_parallel(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -43,16 +32,6 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
         result = self.alg.execute(images, size, mode)
-        th.assert_not_equals(images, control)
-
-    def test_executed_seq(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-        th.switch_mp_off()
-        result = self.alg.execute(images, size, mode, h=self.h)
-        th.switch_mp_on()
         th.assert_not_equals(images, control)
 
     def test_executed_no_helper_seq(self):

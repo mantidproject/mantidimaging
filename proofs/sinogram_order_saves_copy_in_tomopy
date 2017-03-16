@@ -1,0 +1,25 @@
+# The loaded pre-processed image in this run are SINOGRAMS!
+# We can see that the memory was NOT doubles when the reconstruction began!
+# This means that this method works and is preferred from now onwards!
+matt@matt-OptiPlex-7010:~/Documents/imgpy(save_preproc_images_as_singrams)$ python main.py -i ~/win_img/RB1640003_pp_outl_cut/cut_off_05/ -o ~/temp/chadwick_lower_noise --out-format tiff -c 591 --in-format nxs --reuse-preproc --parallel-load -w
+ > Note: Running process on 8 cores.
+ ---Importing tool tomopy Memory usage before execution:  80176 KB, 78.296875 MB
+ ---Tool loaded. Elapsed time: 1.79938697815 sec. Memory usage after execution:  113352 KB, 110.6953125 MB. Memory change: 32.3984375 MB
+ ---Loading data... Memory usage before execution:  113352 KB, 110.6953125 MB
+NXS Load 8c 1chs: 100%|██████████████████████████████████████| 1964/1964 [05:52<00:00,  5.57images/s]
+ ---Data loaded. Shape of raw data: (1964, 1570, 1070), dtype: float32. Elapsed time: 669.590193033 sec. Memory usage after execution:  25094084 KB, 24505.9414062 MB. Memory change: 24395.2460938 MB
+ >> WARNING: Pre-processing steps have been skipped, because --reuse-preproc or --only-postproc flag has been passed.
+!!! Using pre-set CORs for chadwick tomo
+ ---Starting non-iterative reconstruction algorithm with TomoPy. Center of Rotation: 591, Algorithm: gridrec... Memory usage before execution:  25094084 KB, 24505.9414062 MB
+ ---Reconstructed 3D volume. Shape: (1964, 1070, 1070), and pixel data type: float32. Elapsed time: 85.6186468601 sec. Memory usage after execution:  25094084 KB, 24505.9414062 MB. Memory change: 0.0 MB
+ > Note: NOT applying outliers, because no --pre-outliers, --pre-outliers-mode, --post-outliers or --post-outliers-mode was specified.
+ > Note: Not running ring removal.
+ > Note: Not applying circular mask, no --circular-mask was specified.
+ > Note: NOT applying gaussian filter.
+ > Note: NOT applying noise filter / median.
+ ---Starting saving slices of the reconstructed volume in: /home/matt/temp/chadwick_lower_noise/reconstructed... Memory usage before execution:  25094084 KB, 24505.9414062 MB
+ >> Memory usage 25094084 KB,  24505.9414062 MB Before making sinograms
+ >> Memory usage 25094084 KB,  24505.9414062 MB After making sinograms
+ ---Finished saving slices of the reconstructed volume in: /home/matt/temp/chadwick_lower_noise/reconstructed Elapsed time: 88.2426798344 sec. Memory usage after execution:  25094084 KB, 24505.9414062 MB. Memory change: 0.0 MB
+Total execution time was 846.621798992 sec
+

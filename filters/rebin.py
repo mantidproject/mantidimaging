@@ -1,10 +1,12 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
+import helper as h
+
 
 def modes():
     return ['nearest', 'lanczos', 'bilinear', 'bicubic', 'cubic']
 
-def execute(data, rebin_param, mode, cores=None, chunksize=None, h=None):
+
+def execute(data, rebin_param, mode, cores=None, chunksize=None):
     """
     Execute the Rebin/imresize filter.
 
@@ -16,54 +18,47 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None, h=None):
 
     :param mode: Interpolation to use for re-sizing ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
 
-
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
     :return: the data after being processed with the filter
 
     Full reference:
     https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.misc.imresize.html
 
     """
-    h = Helper.empty_init() if h is None else h
     h.check_data_stack(data)
 
     if rebin_param and 0 < rebin_param:
         from parallel import utility as pu
         if pu.multiprocessing_available():
-            data = _execute_par(data, rebin_param, mode, cores, chunksize, h)
+            data = _execute_par(data, rebin_param, mode, cores, chunksize)
         else:
-            data = _execute_seq(data, rebin_param, mode, h)
-    else:
-        h.tomo_print_note("Not applying any rebin_paramning.")
+            data = _execute_seq(data, rebin_param, mode)
 
     h.check_data_stack(data)
     return data
 
 
-def _execute_par(data, rebin_param, mode, cores=None, chunksize=None, h=None):
+def _execute_par(data, rebin_param, mode, cores=None, chunksize=None):
     import scipy.misc
     from parallel import exclusive_mem as pem
 
     resized_data = _create_reshaped_array(data.shape, rebin_param)
 
-    h.pstart("Starting PARALLEL image resizing.")
+    h.pstart("Starting PARALLEL image rebinning.")
 
     f = pem.create_partial(scipy.misc.imresize, size=rebin_param, interp=mode)
 
     resized_data = pem.execute(
-        data, f, cores, chunksize, "Rebinning", h, output_data=resized_data)
+        data, f, cores, chunksize, "Rebinning", output_data=resized_data)
 
-    h.pstop("Finished PARALLEL image resizing. New shape: {0}".format(
+    h.pstop("Finished PARALLEL image rebinning. New shape: {0}".format(
         resized_data.shape))
 
     return resized_data
 
 
-def _execute_seq(data, rebin_param, mode, h=None):
+def _execute_seq(data, rebin_param, mode):
     import scipy.misc
-
-    h.pstart("Starting image resizing.")
+    h.pstart("Starting image rebinning.")
     resized_data = _create_reshaped_array(data.shape, rebin_param)
     num_images = resized_data.shape[0]
     h.prog_init(num_images, "Rebinning")
@@ -71,12 +66,12 @@ def _execute_seq(data, rebin_param, mode, h=None):
         resized_data[idx] = scipy.misc.imresize(
             data[idx], rebin_param, interp=mode)
 
-        h.prog_update(1)
+        h.prog_update()
 
     h.prog_close()
 
     h.pstop(
-        "Finished image resizing. New shape: {0}".format(resized_data.shape))
+        "Finished image rebinning. New shape: {0}".format(resized_data.shape))
 
     return resized_data
 

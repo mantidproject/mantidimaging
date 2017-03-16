@@ -1,4 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
+import helper as h
 
 
 def execute(data,
@@ -11,8 +12,7 @@ def execute(data,
             theta_min=30,
             rwidth=30,
             cores=None,
-            chunksize=None,
-            h=None):
+            chunksize=None):
     """
     Removal of ring artifacts in reconstructed volume.
 
@@ -25,8 +25,7 @@ def execute(data,
     ring artifacts after reconstruction and the effect of these on post-processing tasks
     such as segmentation of the reconstructed 3d data volume.
     """
-    from helper import Helper
-    h = Helper.empty_init() if h is None else h
+
     if run_ring_removal:
         h.check_data_stack(data)
 
@@ -47,7 +46,5 @@ def execute(data,
             ncore=cores,
             nchunk=chunksize)
         h.pstop("Finished ring removal...")
-    else:
-        h.tomo_print_note("Not running ring removal.")
 
     return data

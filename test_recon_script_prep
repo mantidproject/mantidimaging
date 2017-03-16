@@ -1,6 +1,6 @@
 from configs import recon_config
 c = recon_config.ReconstructionConfig.empty_init()
-from helper import Helper 
+ 
 c.helper=Helper(c)
 c.func.in_format = 'tiff'
 c.func.out_format = 'tiff'

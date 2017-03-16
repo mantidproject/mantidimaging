@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 from recon.tools.abstract_tool import AbstractTool
+import helper as h
 
 
 class AstraTool(AbstractTool):
@@ -60,7 +61,7 @@ class AstraTool(AbstractTool):
         print("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
         return astra
 
-    def run_reconstruct(self, data, config, h=None, proj_angles=None, **kwargs):
+    def run_reconstruct(self, data, config, proj_angles=None, **kwargs):
         """
         Run a reconstruction with TomoPy's ASTRA integration, using the CPU and GPU algorithms they provide.
         TODO This reconstruction function does NOT fully support the full range of options that are available for
@@ -75,15 +76,12 @@ class AstraTool(AbstractTool):
 
         :param sample: The sample image data as a 3D numpy.ndarray
         :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-        :param h: Helper class, if not provided will be initialised with empty constructor
         :param proj_angles: The projection angle for each slice
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
         :return: The reconstructed volume
         """
         import numpy as np
-        from helper import Helper
 
-        h = Helper(config) if h is None else h
         h.check_config_integrity(config)
 
         h.check_data_stack(data)

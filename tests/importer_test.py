@@ -8,18 +8,15 @@ class ImporterTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
-
-        self.h = Helper(r)
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
     # that's the only supported tool right now, Astra is used through TomoPy
     def test_tomopy(self):
         from recon.tools.tomopy_tool import TomoPyTool
         from recon.tools import importer
-        self.h.config.func.tool = 'tomopy'
-        tool = importer.timed_import(self.h.config, self.h)
+        self.config.func.tool = 'tomopy'
+        tool = importer.timed_import(self.config)
         assert isinstance(tool, TomoPyTool)
 
         tool = importer.do_importing('tomopy')
@@ -28,9 +25,9 @@ class ImporterTest(unittest.TestCase):
     def test_tomopy_astra(self):
         from recon.tools.astra_tool import AstraTool
         from recon.tools import importer
-        self.h.config.func.tool = 'astra'
-        self.h.config.func.algorithm = 'fbp'
-        tool = importer.timed_import(self.h.config, self.h)
+        self.config.func.tool = 'astra'
+        self.config.func.algorithm = 'fbp'
+        tool = importer.timed_import(self.config)
         assert isinstance(tool, AstraTool)
 
         tool = importer.do_importing('astra')
@@ -39,19 +36,19 @@ class ImporterTest(unittest.TestCase):
     def test_tomopy_astra_not_supported_alg(self):
         # not supported algorithm
         from recon.tools import importer
-        self.h.config.func.tool = 'astra'
-        self.h.config.func.algorithm = 'gridrec'
-        self.assertRaises(ValueError, importer.timed_import, self.h.config, self.h)
+        self.config.func.tool = 'astra'
+        self.config.func.algorithm = 'gridrec'
+        self.assertRaises(ValueError, importer.timed_import, self.config)
 
     def test_not_supported_tool(self):
         # not supported tool
         from recon.tools import importer
-        self.h.config.func.tool = 'boop'
-        self.assertRaises(ValueError, importer.timed_import, self.h.config, self.h)
+        self.config.func.tool = 'boop'
+        self.assertRaises(ValueError, importer.timed_import, self.config)
 
         # invalid tool parameter
-        self.h.config.func.tool = 42
-        self.assertRaises(TypeError, importer.timed_import, self.h.config, self.h)
+        self.config.func.tool = 42
+        self.assertRaises(TypeError, importer.timed_import, self.config)
 
 
 if __name__ == '__main__':

@@ -3,10 +3,10 @@ from __future__ import (absolute_import, division, print_function)
 # This way ALL separate instances of a Readme will write to the same output!
 total_string = ""
 
+
 class Readme(object):
-    def __init__(self, config, saver, h):
+    def __init__(self, config, saver):
         import os
-        h.check_config_class(config)
         self._readme_file_name = config.func.readme_file_name
         self._output_path = None
         self._readme_fullpath = None
@@ -14,8 +14,8 @@ class Readme(object):
         self._output_path = saver.get_output_path()
         self._readme_fullpath = None
         if self._output_path is not None:
-            self._readme_fullpath = os.path.join(
-                self._output_path, self._readme_file_name)
+            self._readme_fullpath = os.path.join(self._output_path,
+                                                 self._readme_file_name)
 
     def append(self, string):
         """

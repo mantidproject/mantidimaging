@@ -12,12 +12,14 @@ class ConfigsTest(unittest.TestCase):
     def test_preproc(self):
         from configs.preproc_config import PreProcConfig
         preproc = PreProcConfig()
-        self._compare_dict_to_str(preproc.__dict__, str(preproc))
+        self._compare_dict_to_str(preproc.__dict__,
+                                  str(preproc), "Pre-processing config")
 
     def test_postproc(self):
         from configs.postproc_config import PostProcConfig
         postproc = PostProcConfig()
-        self._compare_dict_to_str(postproc.__dict__, str(postproc))
+        self._compare_dict_to_str(postproc.__dict__,
+                                  str(postproc), "Post-processing config")
 
     def test_functional(self):
         from configs.functional_config import FunctionalConfig
@@ -27,7 +29,7 @@ class ConfigsTest(unittest.TestCase):
         postproc = PostProcConfig()
         preproc = PreProcConfig()
         fc = FunctionalConfig()
-        self._compare_dict_to_str(fc.__dict__, str(fc))
+        self._compare_dict_to_str(fc.__dict__, str(fc), "Functional config")
 
         from configs.recon_config import ReconstructionConfig as RC
         # running without --input-path
@@ -46,17 +48,17 @@ class ConfigsTest(unittest.TestCase):
         fc.output_path = 'some/dir'
         # running recon without COR
         npt.assert_raises(ValueError, RC, fc, preproc, postproc)
-        fc.cor = 42
+        fc.cors = [42]
         # this shouldn't raise anything, if it does the test will crash
         rc = RC(fc, preproc, postproc)
 
-    def _compare_dict_to_str(self, class_dict, class_str):
+    def _compare_dict_to_str(self, class_dict, class_str, this_config):
         dictlen = len(class_dict)
         strlen = len(class_str.split('\n'))
         self.assertEquals(
             dictlen, strlen,
-            "Different size of __dict__({0}) and __str__({1}). Some of the attributes are not documented!".
-            format(dictlen, strlen))
+            "Different size of __dict__({0}) and __str__({1}). Some of the attributes in the "
+            + this_config + " are not documented!".format(dictlen, strlen))
 
 
 if __name__ == '__main__':

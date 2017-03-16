@@ -15,15 +15,12 @@ class ConvertTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
-
-        self.h = Helper(r)
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
     def create_saver(self):
         from imgdata.saver import Saver
-        return Saver(self.h.config)
+        return Saver(self.config)
 
     def delete_files(self, prefix=''):
         import tempfile
@@ -111,7 +108,7 @@ class ConvertTest(unittest.TestCase):
 
             # convert them
             from convert import convert
-            conf = self.h.config
+            conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
             converted_output_path = saver._output_path + '/converted'
@@ -130,8 +127,7 @@ class ConvertTest(unittest.TestCase):
                 None,
                 None,
                 convert_format,
-                parallel_load=parallel,
-                h=self.h)
+                parallel_load=parallel)
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
@@ -174,7 +170,7 @@ class ConvertTest(unittest.TestCase):
 
             # convert them
             from convert import convert
-            conf = self.h.config
+            conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
             converted_output_path = saver._output_path + '/converted'
@@ -193,8 +189,7 @@ class ConvertTest(unittest.TestCase):
                 None,
                 None,
                 convert_format,
-                parallel_load=parallel,
-                h=self.h)
+                parallel_load=parallel)
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
@@ -236,7 +231,7 @@ class ConvertTest(unittest.TestCase):
 
             # convert them
             from convert import convert
-            conf = self.h.config
+            conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
             converted_output_path = saver._output_path + '/converted'
@@ -254,8 +249,7 @@ class ConvertTest(unittest.TestCase):
                 None,
                 None,
                 convert_format,
-                parallel_load=parallel,
-                h=self.h)
+                parallel_load=parallel)
 
             th.assert_equals(sample, images)
             # None because when loading images the flat and dark are not considered

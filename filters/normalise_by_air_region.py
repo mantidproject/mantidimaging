@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
 from filters.crop_coords import _crop_coords_sanity_checks
 import numpy as np
+import helper as h
 
 
 def execute(data,
@@ -9,24 +9,21 @@ def execute(data,
             region_of_interest,
             crop_before_normalise,
             cores=None,
-            chunksize=None,
-            h=None):
-    h = Helper.empty_init() if h is None else h
+            chunksize=None):
     h.check_data_stack(data)
 
-    if air_region is not None and region_of_interest is not None:
+    if air_region is not None:
         _crop_coords_sanity_checks(air_region, data)
-        _crop_coords_sanity_checks(region_of_interest, data)
+        if region_of_interest is not None:
+            _crop_coords_sanity_checks(region_of_interest, data)
+
         from parallel import utility as pu
         if pu.multiprocessing_available():
             data = _execute_par(data, air_region, region_of_interest,
-                                crop_before_normalise, cores, chunksize, h)
+                                crop_before_normalise, cores, chunksize)
         else:
             data = _execute_seq(data, air_region, region_of_interest,
-                                crop_before_normalise, h)
-
-    else:
-        h.tomo_print_note("NOT applying normalisation by Air Region.")
+                                crop_before_normalise)
 
     h.check_data_stack(data)
     return data
@@ -38,6 +35,8 @@ def _calc_sum(data,
               roi_top=None,
               roi_right=None,
               roi_bottom=None):
+    # here we can use sum or mean, but mean makes the values with a nice int16 range
+    # while sum makes them in a low range of 0-1.5
     return data[roi_top:roi_bottom, roi_left:roi_right].mean()
 
 
@@ -50,8 +49,7 @@ def _execute_par(data,
                  region_of_interest,
                  crop_before_normalise,
                  cores=None,
-                 chunksize=None,
-                 h=None):
+                 chunksize=None):
     """
     normalise by beam intensity. This is not directly about proton
     charg - not using the proton charge field as usually found in
@@ -64,8 +62,6 @@ def _execute_par(data,
     :param crop_before_normalise: A switch to signify that the image has been cropped.
             This means the Air Region coordinates will have to be translated onto the cropped image
     :param air_region: The air region from which sums will be calculated and all images will be normalised
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
 
     :returns :: filtered data (stack of images)
 
@@ -94,13 +90,13 @@ def _execute_par(data,
         roi_bottom=air_bottom)
 
     data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores,
-                                  chunksize, "Calculating air sums", h)
+                                  chunksize, "Calculating air sums")
 
     air_sums_partial = ptsm.create_partial(
         _divide_by_air_sum, fwd_function=ptsm.inplace_fwd_func)
 
     data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores,
-                                  chunksize, "Norm by Air Sums", h)
+                                  chunksize, "Norm by Air Sums")
 
     avg = np.average(air_sums)
     max_avg = np.max(air_sums) / avg
@@ -113,11 +109,7 @@ def _execute_par(data,
     return data
 
 
-def _execute_seq(data,
-                 air_region,
-                 region_of_interest,
-                 crop_before_normalise,
-                 h=None):
+def _execute_seq(data, air_region, region_of_interest, crop_before_normalise):
     """
     Normalise by beam intensity. This is not directly about proton
     charge - not using the proton charge field as usually found in
@@ -129,8 +121,6 @@ def _execute_seq(data,
     :param crop_before_normalise: A switch to signify that the image has been cropped.
             This means the Air Region coordinates will have to be translated onto the cropped image
     :param air_region: The air region from which sums will be calculated and all images will be normalised
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
 
     :returns :: filtered data (stack of images)
 
@@ -146,7 +136,7 @@ def _execute_seq(data,
     for idx in range(0, data.shape[0]):
         air_data_sum = data[idx, air_top:air_bottom, air_left:air_right].sum()
         air_sums.append(air_data_sum)
-        h.prog_update(1)
+        h.prog_update()
 
     h.prog_close()
 
@@ -154,7 +144,7 @@ def _execute_seq(data,
     air_sums = np.true_divide(air_sums, np.amax(air_sums))
     for idx in range(0, data.shape[0]):
         data[idx, :, :] = np.true_divide(data[idx, :, :], air_sums[idx])
-        h.prog_update(1)
+        h.prog_update()
 
     h.prog_close()
 

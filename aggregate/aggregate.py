@@ -1,4 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
+import helper as h
 
 
 def execute(config):
@@ -11,8 +12,6 @@ def execute(config):
 
     :param config: The full reconstruction config
     """
-    from helper import Helper
-    h = Helper(config)
     input_path = config.func.input_path
     img_format = config.func.in_format
     output_path = config.func.output_path
@@ -52,17 +51,17 @@ def execute(config):
         angle_image_paths = enumerate(angle_image_paths)
 
     do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
-                   single_folder, h)
+                   single_folder, config)
 
 
 def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
-                   single_folder, h):
+                   single_folder, config):
     import os
     import numpy as np
     from imgdata import loader, saver
-    s = saver.Saver(h.config, h)
-    parallel_load = h.config.func.parallel_load
-    s.make_dirs_if_needed()
+    s = saver.Saver(config)
+    parallel_load = config.func.parallel_load
+    s.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     for angle, image_paths in angle_image_paths:
         # load all the images from angle, [0] to discard flat and dark

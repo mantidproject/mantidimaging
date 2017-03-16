@@ -29,6 +29,7 @@ _avail_modules = {
     'convert': 'tests/convert_test.py',
     'configs': 'tests/configs_test.py',
     'data': 'tests/imgdata_test.py',
+    'imgdata': 'tests/imgdata_test.py',
     'helper': 'tests/helper_test.py',
     'tools': 'tests/importer_test.py/',
     'all': 'tests/'
@@ -39,7 +40,7 @@ def _run_tests(args):
     try:
         args = args[1]
 
-        if args in ['-h', '--help']:
+        if args in ['-h', '--help', '-?']:
             # just go inside the except block
             raise IndexError
 
@@ -63,7 +64,7 @@ def _run_tests(args):
 
     try:
         # for verbose run add [test_path, "-vv", "--collect-only"]
-        nose.run(defaultTest=test_path, argv=[test_path])
+        return nose.run(defaultTest=test_path, argv=[test_path])
     except ImportError:
         print('Module/test not found, try passing the path to the test \
         (e.g. tests/recon/configs_test.py) or one of the available modules: {0}'

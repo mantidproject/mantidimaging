@@ -1,0 +1,1 @@
+python main.py -i ~/temp/chadwick_pp/pre_processed -o ~/temp/chadwick_recon --out-format tiff -c 591 -a gridrec --in-format tif --parallel-load --reuse-preproc

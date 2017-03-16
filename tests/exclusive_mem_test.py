@@ -14,11 +14,8 @@ class ExclusiveMemTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
-
-        self.h = Helper(r)
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
     def test_exec(self):
         # create data as shared array

@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
+import helper as h
 
 
 def execute(config, cmd_line):
@@ -17,28 +17,29 @@ def execute(config, cmd_line):
     :param cmd_line: The full command line text if running from the CLI.
     """
 
-    h = Helper(config)
-    config.helper = h
+    from imgdata.saver import Saver
+    saver = Saver(config)
+
+    h.initialise(config, saver)
     h.total_execution_timer()
-    h.run_import_checks()
+    h.run_import_checks(config)
     h.check_config_integrity(config)
 
-    from imgdata.saver import Saver
-    saver = Saver(config, h)
     # create directory, or throw if not empty and no --overwrite-all
-    saver.make_dirs_if_needed()
+    # we get the output path from the saver, as that expands variables and gets absolute path
+    saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
 
-    from imgdata.readme import Readme
-    readme = Readme(config, saver, h)
+    from readme import Readme
+    readme = Readme(config, saver)
     readme.begin(cmd_line, config)
     h.set_readme(readme)
 
     # import early to check if tool is available
     from recon.tools import importer
-    tool = importer.timed_import(config, h)
+    tool = importer.timed_import(config)
 
     from imgdata import loader
-    sample, flat, dark = loader.load_data(config, h)
+    sample, flat, dark = loader.load_data(config)
 
     sample, flat, dark = pre_processing(config, sample, flat, dark)
 
@@ -52,7 +53,7 @@ def execute(config, cmd_line):
     # ----------------------------------------------------------------
     # Reconstruction, output has different shape
     if not config.func.only_postproc:
-        sample = tool.run_reconstruct(sample, config, h)
+        sample = tool.run_reconstruct(sample, config)
     else:
         h.tomo_print_note("Only post-processing run, skipping reconstruction.")
 
@@ -65,23 +66,7 @@ def execute(config, cmd_line):
     return sample
 
 
-import numpy as np
-
-
-def _scale_inplace(data, scale):
-    np.multiply(data, scale, out=data[:])
-
-
-def _calc_avg(data,
-              roi_sums,
-              roi_left=None,
-              roi_top=None,
-              roi_right=None,
-              roi_bottom=None):
-    return data[roi_top:roi_bottom, roi_left:roi_right].mean()
-
-
-def pre_processing(config, sample, flat, dark, h=None):
+def pre_processing(config, sample, flat, dark):
     """
     Does the pre-processing steps specified in the configuration file.
 
@@ -89,63 +74,30 @@ def pre_processing(config, sample, flat, dark, h=None):
     :param sample: The sample image data as a 3D numpy.ndarray
     :param flat: The flat averaged image data as a 2D numpy.array
     :param dark: The dark averaged image data as a 2D numpy.array
-    :param h: Helper class, if not provided will be initialised with the config
 
     """
-    h = Helper(config) if h is None else h
 
-    if config.func.reuse_preproc or config.func.only_postproc:
+    if config.func.reuse_preproc:
         h.tomo_print_warning(
             "Pre-processing steps have been skipped, because --reuse-preproc or --only-postproc flag has been passed."
         )
         return sample, flat, dark
 
     from filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
-        rebin, median_filter, gaussian, cut_off
+        rebin, median_filter, gaussian, cut_off, minus_log, value_scaling
 
     cores = config.func.cores
     chunksize = config.func.chunksize
+    roi = config.pre.region_of_interest
     sample, flat, dark = rotate_stack.execute(
         sample,
         config.pre.rotation,
         flat,
         dark,
         cores=cores,
-        chunksize=chunksize,
-        h=h)
+        chunksize=chunksize)
 
-    from recon.tools import importer
-    tomopy = importer.timed_import(config, h)
-
-    from parallel import utility as pu
-    img_num = sample.shape[0]
-    scale_factors = pu.create_shared_array((img_num, 1, 1))
-
-    # turn into a 1D array, from the 3D that is returned
-    scale_factors = scale_factors.reshape(img_num)
-
-    # calculate the scale factor from original image
-    from parallel import two_shared_mem as ptsm
-    roi = config.pre.region_of_interest
-    calc_sums_partial = ptsm.create_partial(
-        _calc_avg,
-        fwd_function=ptsm.fwd_func_return_to_second,
-        roi_left=roi[0],
-        roi_top=roi[1],
-        roi_right=roi[2],
-        roi_bottom=roi[3])
-
-    sample, scale_factors = ptsm.execute(
-        sample,
-        scale_factors,
-        calc_sums_partial,
-        cores,
-        chunksize,
-        "Calculating scale factor sums",
-        h=h)
-
-    # removes background using images taken when exposed to fully open beam
-    # and no beam
+    scale_factors = value_scaling.create_factors(sample, roi, cores, chunksize)
 
     sample = normalise_by_flat_dark.execute(
         sample,
@@ -155,65 +107,45 @@ def pre_processing(config, sample, flat, dark, h=None):
         config.pre.clip_max,
         roi,
         cores=cores,
-        chunksize=chunksize,
-        h=h)
+        chunksize=chunksize)
 
     # removes the contrast difference between the stack of images
     air = config.pre.normalise_air_region
     crop = config.pre.crop_before_normalise
 
     sample = normalise_by_air_region.execute(
-        sample, air, roi, crop, cores=cores, chunksize=chunksize, h=h)
+        sample, air, roi, crop, cores=cores, chunksize=chunksize)
 
-    # scale up the data
-    scale_up_partial = ptsm.create_partial(
-        _scale_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d)
+    # scale up the data to a nice int16 range while keeping the effects
+    # from the flat/dark and air normalisations
+    sample = value_scaling.apply_factor(sample, scale_factors, cores,
+                                        chunksize)
 
-    # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
-    sample, scale_factors = ptsm.execute(
-        sample, [scale_factors.mean()],
-        scale_up_partial,
-        cores,
-        chunksize,
-        "Applying scale factor",
-        h=h)
-
-    # if not config.pre.crop_before_normalise:
-    # in this case we don't care about cropping the flat and dark
-    sample = crop_coords.execute_volume(sample, config.pre.region_of_interest,
-                                        h)
-
+    sample = crop_coords.execute_volume(sample, roi)
     if flat is not None:
-        flat = crop_coords.execute_image(flat, config.pre.region_of_interest,
-                                         h)
+        flat = crop_coords.execute_image(flat, roi)
 
     if dark is not None:
-        dark = crop_coords.execute_image(dark, config.pre.region_of_interest,
-                                         h)
+        dark = crop_coords.execute_image(dark, roi)
 
     sample = outliers.execute(sample, config.pre.outliers_threshold,
-                              config.pre.outliers_radius, cores, h)
-
-    sample = cut_off.execute(sample, config.pre.cut_off, h)
+                              config.pre.outliers_radius, cores)
 
     # mcp_corrections, they have to be included as well
     # data = mcp_corrections.execute(data, config)
-
     sample = rebin.execute(
         sample,
         config.pre.rebin,
         config.pre.rebin_mode,
         cores=cores,
-        chunksize=chunksize,
-        h=h)
+        chunksize=chunksize)
 
     sample = median_filter.execute(
         sample,
         config.pre.median_size,
         config.pre.median_mode,
         cores=cores,
-        chunksize=chunksize,
-        h=h)
+        chunksize=chunksize)
 
     sample = gaussian.execute(
         sample,
@@ -221,46 +153,46 @@ def pre_processing(config, sample, flat, dark, h=None):
         config.pre.gaussian_mode,
         config.pre.gaussian_order,
         cores=cores,
-        chunksize=chunksize,
-        h=h)
+        chunksize=chunksize)
+
+    sample = minus_log.execute(sample, config.pre.minus_log)
+
+    sample = cut_off.execute(sample, config.pre.cut_off)
 
     return sample, flat, dark
 
 
-def post_processing(config, recon_data, h=None):
+def post_processing(config, recon_data):
     """
     Does the post-processing steps specified in the configuration file.
 
     :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
     :param recon_data: The reconstructed image data as a 3D numpy.ndarray
-    :param h: Helper class, if not provided will be initialised with the config
     :return: The reconstructed data.
     """
     from filters import circular_mask, gaussian, median_filter, outliers, ring_removal
 
-    h = Helper(config) if h is None else h
-
     cores = config.func.cores
 
     recon_data = outliers.execute(recon_data, config.post.outliers_threshold,
-                                  config.post.outliers_radius, cores, h)
+                                  config.post.outliers_radius, cores)
     recon_data = ring_removal.execute(
         recon_data, config.post.ring_removal,
         config.post.ring_removal_center_x, config.post.ring_removal_center_y,
         config.post.ring_removal_thresh, config.post.ring_removal_thresh_max,
         config.post.ring_removal_thresh_min,
         config.post.ring_removal_theta_min, config.post.ring_removal_rwidth,
-        cores, config.func.chunksize, h)
-
-    recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
-                                       config.post.circular_mask_val, cores, h)
-
-    recon_data = gaussian.execute(
-        recon_data, config.post.gaussian_size, config.post.gaussian_mode,
-        config.post.gaussian_order, cores, config.func.chunksize, h)
+        cores, config.func.chunksize)
 
     recon_data = median_filter.execute(recon_data, config.post.median_size,
                                        config.post.median_mode, cores,
-                                       config.func.chunksize, h)
+                                       config.func.chunksize)
+
+    recon_data = gaussian.execute(
+        recon_data, config.post.gaussian_size, config.post.gaussian_mode,
+        config.post.gaussian_order, cores, config.func.chunksize)
+
+    recon_data = circular_mask.execute(recon_data, config.post.circular_mask,
+                                       config.post.circular_mask_val, cores)
 
     return recon_data

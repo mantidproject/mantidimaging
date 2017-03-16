@@ -25,10 +25,10 @@ class FunctionalConfig(object):
         self.input_path = None
         self.input_path_flat = None
         self.input_path_dark = None
-        self.in_format = 'fits'
+        self.in_format = 'tiff'
 
         self.output_path = None
-        self.out_format = 'fits'
+        self.out_format = 'tiff'
         self.out_slices_prefix = 'recon_slice'
         self.out_horiz_slices_prefix = 'recon_horiz'
         self.out_horiz_slices_subdir = 'horiz_slices'
@@ -46,7 +46,8 @@ class FunctionalConfig(object):
 
         self.data_dtype = np.float32
 
-        self.cor = None
+        self.cors = None
+        self.cor_slices = [0]
 
         self.verbosity = 3
 
@@ -98,7 +99,8 @@ class FunctionalConfig(object):
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
                + "Radiograms: {0}\n".format(str(self.radiograms)) \
                + "Data type: {0}\n".format(str(self.data_dtype)) \
-               + "Provided center of rotation: {0}\n".format(str(self.cor)) \
+               + "Provided center of rotation: {0}\n".format(str(self.cors)) \
+               + "Slice IDs for CORs: {0}\n".format(str(self.cor_slices)) \
                + "Verbosity: {0}\n".format(str(self.verbosity)) \
                + "Overwrite files in output directory: {0}\n".format(str(self.overwrite_all)) \
                + "Debug: {0}\n".format(str(self.debug)) \
@@ -111,9 +113,9 @@ class FunctionalConfig(object):
                + "Chunk per worker: {0}\n".format(str(self.chunksize)) \
                + "Load data in parallel: {0}\n".format(str(self.parallel_load)) \
                + "Image operator mode: {0}\n".format(str(self.imopr)) \
-               + "Aggregate mode: {0}\n".format(str(self.imopr)) \
-               + "Aggregate angles: {0}\n".format(str(self.imopr)) \
-               + "Aggregate single folder output: {0}\n".format(str(self.imopr)) \
+               + "Aggregate mode: {0}\n".format(str(self.aggregate)) \
+               + "Aggregate angles: {0}\n".format(str(self.aggregate_angles)) \
+               + "Aggregate single folder output: {0}\n".format(str(self.aggregate_single_folder_output)) \
                + "Convert images mode: {0}\n".format(str(self.convert)) \
                + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix))
 
@@ -152,7 +154,7 @@ class FunctionalConfig(object):
         grp_func.add_argument(
             "--in-format",
             required=False,
-            default='fits',
+            default=self.out_format,
             type=str,
             choices=loader.supported_formats(),
             help="Format/file extension expected for the input images.")
@@ -170,7 +172,7 @@ class FunctionalConfig(object):
         grp_func.add_argument(
             "--out-format",
             required=False,
-            default='fits',
+            default=self.out_format,
             type=str,
             choices=Saver.supported_formats(),
             help="Format/file extension expected for the input images.")
@@ -258,13 +260,24 @@ class FunctionalConfig(object):
 
         grp_func.add_argument(
             "-c",
-            "--cor",
+            "--cors",
             required=False,
-            type=float,
-            default=self.cor,
-            help="Provide a pre-calculated centre of rotation.\n"
-            "IF A CROP IS PROVIDED WITH -R THE LEFT (X0) ARGUMENT WILL BE SUBTRACTED FROM THE CENTER OF ROTATION, "
-            "to compensate for the crop! If no crop is provided, the COR will not be changed!"
+            nargs='*',
+            type=str,  # this is string but will be later converted to floats in self.update()
+            default=self.cors,
+            help="Provide the CORs for the selected slices with --cor-slices.\n"
+            "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
+            "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
+        )
+        grp_func.add_argument(
+            "--cor-slices",
+            required=False,
+            nargs='*',
+            type=str,  # this is string but will be later converted to ints in self.update()
+            default=self.cor_slices,
+            help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
+            "The number of slices passed here MUST be the same as the number of CORs provided.\n"
+            "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
         )
 
         grp_func.add_argument(
@@ -301,7 +314,7 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.convert_prefix,
-            help='Convert images to a different format.')
+            help='Prefix for saved out files from conversion.')
 
         from imopr import imopr
         grp_run_modes.add_argument(
@@ -421,14 +434,18 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.parallel_load,
-            help="How to spread the load on each worker.")
+            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
+        )
 
         return parser
 
     def update(self, args):
         """
         Should be called after the parser has had a chance to
-        parse the real arguments from the user
+        parse the real arguments from the user.
+
+        SPECIAL CASES ARE HANDLED IN:
+        recon_config.ReconstructionConfig.handle_special_arguments
         """
         self.input_path = args.input_path
         self.input_path_flat = args.input_path_flat
@@ -465,8 +482,10 @@ class FunctionalConfig(object):
         self.debug = args.debug
         self.debug_port = args.debug_port
 
-        if args.cor:
-            self.cor = int(args.cor)
+        if args.cors:
+            self.cors = [float(cor) for cor in args.cors]
+        if args.cor_slices:
+            self.cor_slices = [int(slice_id) for slice_id in args.cor_slices]
 
         self.verbosity = args.verbosity
         self.overwrite_all = args.overwrite_all

@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
+import helper as h
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
@@ -80,7 +80,6 @@ def execute(data=None,
             cores=None,
             chunksize=None,
             name="Progress",
-            h=None,
             show_timer=True):
     """
     Executes a function in parallel with shared memory between the processes.
@@ -118,11 +117,9 @@ def execute(data=None,
     :param cores: number of cores that the processing will use
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
-    :param h: Helper class, if not provided will be initialised with empty constructor
     :param show_timer: if False no timer will be shown
     :return:
     """
-    h = Helper.empty_init() if h is None else h
     from parallel import utility as pu
     if cores is None:
         cores = pu.get_cores()

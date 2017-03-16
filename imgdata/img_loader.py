@@ -1,23 +1,14 @@
 from __future__ import (absolute_import, division, print_function)
-from helper import Helper
 
 import numpy as np
+import helper as h
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, data_dtype, cores, chunksize, parallel_load, h):
-    h = Helper.empty_init() if h is None else h
-
-    return _do_img_load(load_func, input_file_names, input_path_flat,
-                        input_path_dark, img_format, data_dtype, cores,
-                        chunksize, parallel_load, h)
-
-
-def _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark,
-                 img_format, data_dtype, cores, chunksize, parallel_load, h):
+            img_format, data_dtype, cores, chunksize, parallel_load):
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -41,7 +32,6 @@ def _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark,
     :param data_dtype: the type in which the data will be loaded, could be float16, float32, float64, uint16
     :param cores: Cores to be used for parallel loading
     :param chunksize: Chunk of work that each worker will receive
-    :param h: Helper class, if not provided will be initialised with empty constructor
 
     :return :: 3 numpy arrays: input data volume (3D), average of flatt images (2D),
                average of dark images(2D)
@@ -55,18 +45,18 @@ def _do_img_load(load_func, input_file_names, input_path_flat, input_path_dark,
 
     sample_data = _load_sample_data(load_func, input_file_names, img_shape,
                                     data_dtype, cores, chunksize,
-                                    parallel_load, h)
+                                    parallel_load)
 
     # this removes the image number dimension, if we loaded a stack of images
     img_shape = img_shape[1:] if len(img_shape) > 2 else img_shape
 
     flat_avg = _load_and_avg_data(load_func, input_path_flat, img_shape,
                                   img_format, data_dtype, "Flat", cores,
-                                  chunksize, parallel_load, h)
+                                  chunksize, parallel_load)
 
     dark_avg = _load_and_avg_data(load_func, input_path_dark, img_shape,
                                   img_format, data_dtype, "Dark", cores,
-                                  chunksize, parallel_load, h)
+                                  chunksize, parallel_load)
 
     return sample_data, flat_avg, dark_avg
 
@@ -77,18 +67,17 @@ def _load_sample_data(load_func,
                       data_dtype,
                       cores=None,
                       chunksize=None,
-                      parallel_load=False,
-                      h=None):
+                      parallel_load=False):
     from imgdata.loader import load_stack
 
     # determine what the loaded data was
     if len(img_shape) == 2:  # the loaded file was a single image
         sample_data = _load_files(load_func, input_file_names, img_shape,
                                   data_dtype, "Sample", cores, chunksize,
-                                  parallel_load, h)
+                                  parallel_load)
     elif len(img_shape) == 3:  # the loaded file was a stack of fits images
         sample_data = load_stack(load_func, input_file_names[0], data_dtype,
-                                 "Sample", cores, chunksize, parallel_load, h)
+                                 "Sample", cores, chunksize, parallel_load)
     else:
         raise ValueError("Data loaded has invalid shape: {0}", img_shape)
 
@@ -103,23 +92,22 @@ def _load_and_avg_data(load_func,
                        prog_prefix=None,
                        cores=None,
                        chunksize=None,
-                       parallel_load=False,
-                       h=None):
+                       parallel_load=False):
     if file_path is not None:
         from imgdata.loader import get_file_names
         file_names = get_file_names(file_path, img_format)
 
         data = _load_files(load_func, file_names, img_shape, data_dtype,
-                           prog_prefix, cores, chunksize, parallel_load, h)
+                           prog_prefix, cores, chunksize, parallel_load)
         return get_data_average(data)
 
 
-def _do_files_load_seq(data, load_func, files, img_shape, name, h):
+def _do_files_load_seq(data, load_func, files, img_shape, name):
     h.prog_init(len(files), desc=name)
     for idx, in_file in enumerate(files):
         try:
             data[idx, :, :] = load_func(in_file)[:]
-            h.prog_update(1)
+            h.prog_update()
         except ValueError as exc:
             raise ValueError(
                 "An image has different width and/or height dimensions! All images must have the same dimensions. "
@@ -137,11 +125,11 @@ def _par_inplace_load_fwd_func(data, filename, load_func=None):
     data[:] = load_func(filename)
 
 
-def _do_files_load_par(data, load_func, files, cores, chunksize, name, h):
+def _do_files_load_par(data, load_func, files, cores, chunksize, name):
     from parallel import two_shared_mem as ptsm
     f = ptsm.create_partial(
         _par_inplace_load_fwd_func, ptsm.inplace_fwd_func, load_func=load_func)
-    ptsm.execute(data, files, f, cores, chunksize, name, h)
+    ptsm.execute(data, files, f, cores, chunksize, name)
     return data
 
 
@@ -152,8 +140,7 @@ def _load_files(load_func,
                 name=None,
                 cores=None,
                 chunksize=None,
-                parallel_load=False,
-                h=None):
+                parallel_load=False):
     """
     Reads image files in a row into a 3d numpy array. Useful when reading all the sample
     images, or all the flat or dark images.
@@ -175,8 +162,6 @@ def _load_files(load_func,
     the sizes given in the input img_shape
     """
 
-    h = Helper.empty_init() if h is None else h
-
     # Zeroing here to make sure that we can allocate the memory.
     # If it's not possible better crash here than later.
     from parallel import utility as pu
@@ -185,9 +170,9 @@ def _load_files(load_func,
 
     if parallel_load:
         return _do_files_load_par(data, load_func, files, cores, chunksize,
-                                  name, h)
+                                  name)
     else:
-        return _do_files_load_seq(data, load_func, files, img_shape, name, h)
+        return _do_files_load_seq(data, load_func, files, img_shape, name)
 
 
 def get_data_average(data):

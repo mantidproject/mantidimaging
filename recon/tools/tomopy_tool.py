@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 from recon.tools.abstract_tool import AbstractTool
+import helper as h
 
 
 class TomoPyTool(AbstractTool):
@@ -30,6 +31,8 @@ class TomoPyTool(AbstractTool):
         self.find_center = self._tomopy.find_center
         self.find_center_vo = self._tomopy.find_center_vo
         self.circ_mask = self._tomopy.circ_mask
+
+        # make all tomopy methods available
         self.misc = tomopy.misc
         self.prep = tomopy.prep
         self.recon = tomopy.recon
@@ -51,28 +54,20 @@ class TomoPyTool(AbstractTool):
 
         return tomopy
 
-    def run_reconstruct(self,
-                        sample,
-                        config,
-                        h=None,
-                        proj_angles=None,
-                        **kwargs):
+    def run_reconstruct(self, sample, config, proj_angles=None, **kwargs):
         """
         Run a reconstruction with TomoPy, using the CPU algorithms they provide.
 
         Information for each reconstruction method is available at
-        http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
+            http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
 
         :param sample: The sample image data as a 3D numpy.ndarray
         :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-        :param h: Helper class, if not provided will be initialised with empty constructor
         :param proj_angles: The projection angle for each slice
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
         :return: The reconstructed volume
         """
         import numpy as np
-        from helper import Helper
-        h = Helper(config) if h is None else h
         h.check_config_integrity(config)
         h.check_data_stack(sample)
 
@@ -83,39 +78,32 @@ class TomoPyTool(AbstractTool):
             proj_angles = np.radians(proj_angles)
 
         alg = config.func.algorithm
-        cor = config.func.cor
         num_iter = config.func.num_iter
         cores = config.func.cores
 
-        # Generating a COR for each slice created a better reconstruction
-        # this approach works, however it needs to be made flexible.
-        # That's on the TODO list
-        print("!!! Using pre-set CORs for chadwick tomo")
-
-        import numpy as np
-        # xp in numpy's interp
-        slice_id = [222., 422., 822., 1222., 1622., 1822.]
-        # yp in numpy's interp
-        slice_cor = [542., 542., 540., 540., 537., 536.]
         # calculate as many CORs as there are sinograms (i.e. shape of Y)
-        cors = np.interp(list(range(sample.shape[0])), slice_id, slice_cor)
-
-        assert sample.shape[0] == len(cors)
+        cors = np.interp(
+            list(range(sample.shape[0])), config.func.cor_slices,
+            config.func.cors)
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
         if iterative_algorithm:  # run the iterative algorithms
             h.pstart(
-                "Starting iterative method with TomoPy. Center of Rotation: {0}, Algorithm: {1}, "
-                "number of iterations: {2}...".format(cor, alg, num_iter))
+                "Starting iterative method with TomoPy. Mean Center of Rotation: {0}, Algorithm: {1}, "
+                "number of iterations: {2}...".format(
+                    np.mean(cors), alg, num_iter))
             kwargs = dict(kwargs, num_iter=num_iter)
         else:  # run the non-iterative algorithms
             h.pstart(
                 "Starting non-iterative reconstruction algorithm with TomoPy. "
-                "Center of Rotation: {0}, Algorithm: {1}...".format(cor, alg))
+                "Mean Center of Rotation: {0}, Algorithm: {1}...".format(
+                    np.mean(cors), alg))
 
+        # This is here to test the -log pre processed data
+        # return sample
         recon = self._tomopy.recon(
-            tomo=sample[:],
+            tomo=sample,
             theta=proj_angles,
             center=cors,
             ncore=cores,
@@ -127,4 +115,4 @@ class TomoPyTool(AbstractTool):
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
             format(recon.shape, recon.dtype))
 
-        return recon
+        return np.clip(recon, -1, 1)

@@ -1,10 +1,13 @@
 from __future__ import (absolute_import, print_function, division)
-from helper import Helper
+
+import helper as h
+
 
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
-def execute(data, size, mode, cores=None, chunksize=None, h=None):
+
+def execute(data, size, mode, cores=None, chunksize=None):
     """
     Execute the Median filter.
 
@@ -12,43 +15,35 @@ def execute(data, size, mode, cores=None, chunksize=None, h=None):
     :param size: The size of the kernel
     :param mode: The mode with which to handle the edges
 
-    :param h: Helper class, if not provided will be initialised with empty constructor
-
     :return: the data after being processed with the filter
 
     Full reference:
     https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html
 
     """
-    h = Helper.empty_init() if h is None else h
     h.check_data_stack(data)
 
     if size and size > 1:
         from parallel import utility as pu
         if pu.multiprocessing_available():
-            data = _execute_par(data, size, mode, cores, chunksize, h)
+            data = _execute_par(data, size, mode, cores, chunksize)
         else:
-            data = _execute_seq(data, size, mode, h)
-
-    else:
-        h.tomo_print_note("NOT applying noise filter / median.")
+            data = _execute_seq(data, size, mode)
 
     h.check_data_stack(data)
     return data
 
 
-def _execute_seq(data, size, mode, h=None):
+def _execute_seq(data, size, mode):
     """
     Sequential version of the Median Filter using scipy.ndimage
 
     :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the median filter kernel
-    :param mode: Mode for the borders of the median filter. Options available in script -h command
-    :param h: Helper class, if not provided will be initialised with empty constructor
+    :param mode: Mode for the borders of the median filter.
 
     :return: Returns the processed data
     """
-    h = Helper.empty_init() if h is None else h
     scipy_ndimage = import_scipy_ndimage()
     h.pstart(
         "Starting median filter, with pixel data type: {0}, filter size/width: {1}.".
@@ -66,19 +61,17 @@ def _execute_seq(data, size, mode, h=None):
     return data
 
 
-def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):
+def _execute_par(data, size, mode, cores=None, chunksize=None):
     """
     Parallel version of the Median Filter using scipy.ndimage
 
     :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the median filter kernel
-    :param mode: Mode for the borders of the median filter. Options available in script -h command
-    :param h: Helper class, if not provided will be initialised with empty constructor
+    :param mode: Mode for the borders of the median filter.
 
     :return: Returns the processed data
     """
 
-    h = Helper.empty_init() if h is None else h
     scipy_ndimage = import_scipy_ndimage()
 
     from parallel import shared_mem as psm
@@ -92,7 +85,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, h=None):
         "Starting PARALLEL median filter, with pixel data type: {0}, filter size/width: {1}.".
         format(data.dtype, size))
 
-    data = psm.execute(data, f, cores, chunksize, "Median Filter", h)
+    data = psm.execute(data, f, cores, chunksize, "Median Filter")
 
     h.pstop(
         "Finished PARALLEL median filter, with pixel data type: {0}, filter size/width: {1}.".

@@ -49,7 +49,8 @@ class PreProcConfig(object):
         self.rebin = None
         self.rebin_mode = 'bilinear'
 
-        self.line_projection = True  # TODO unused
+        self.minus_log = False
+        # self.line_projection = True  # TODO unused
 
     def __str__(self):
         return "Region of interest (crop coordinates): {0}\n".format(self.region_of_interest) \
@@ -70,7 +71,7 @@ class PreProcConfig(object):
                + "Corrections for MCP detector: {0}\n".format(self.mcp_corrections) \
                + "Rebin down factor for images: {0}\n".format(self.rebin) \
                + "Rebin mode: {0}\n".format(self.rebin_mode) \
-               + "Line projection (line integral/log re-rebin): {0}".format(self.line_projection)
+               + "Minus log on images: {0}".format(self.minus_log)
 
     def setup_parser(self, parser):
         """
@@ -100,14 +101,6 @@ class PreProcConfig(object):
             help="Air region /region for normalisation.\n"
             "For best results it should avoid being blocked by any object.\n"
             "Example: --air-region='[150,234,23,22]'")
-
-        grp_pre.add_argument(
-            "--crop-before-normalise",
-            required=False,
-            action='store_true',
-            help="Crop before doing any normalisations on the images.\n"
-            "This improves performance and reduces memory usage, as"
-            "the algorithms will work on smaller data.")
 
         grp_pre.add_argument(
             "--pre-median-size",
@@ -236,10 +229,21 @@ class PreProcConfig(object):
             "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
             "Higher order derivatives are not implemented.")
 
+        grp_pre.add_argument(
+            "-log",
+            "--pre-minus-log",
+            required=False,
+            action='store_true',
+            default=self.minus_log,
+            help="Default: %(default)d\nCalculate the -log of the sample data.")
+
         return parser
 
     def update(self, args):
-
+        """
+        SPECIAL CASES ARE HANDLED IN:
+        recon_config.ReconstructionConfig.handle_special_arguments
+        """
         if args.region_of_interest:
             if len(args.region_of_interest) < 4:
                 raise ValueError(
@@ -281,5 +285,7 @@ class PreProcConfig(object):
         self.mcp_corrections = args.mcp_corrections
         self.rebin = args.rebin
         self.rebin_mode = args.rebin_mode
+
+        self.minus_log = args.pre_minus_log
 
         # self.line_projection = args.line_projection

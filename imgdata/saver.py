@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import os
+import helper as h
 
 
 def write_fits(data, filename, overwrite=False):
@@ -36,15 +37,14 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
     # new shape to account for appending flat and dark images
     # correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
 
-    dset = nxs.create_dataset("entry1/tomo_entry/instrument/detector/data",
-                              data.shape)
+    dset = nxs.create_dataset("tomography/sample_data", data.shape)
     dset[:data.shape[0]] = data[:]
     # dset[-2] = flat[:]
     # dset[-1] = dark[:]
 
     if projection_angles is not None:
         rangle = nxs.create_dataset(
-            "entry1/tomo_entry/sample/rotation_angle", data=projection_angles)
+            "tomography/rotation_angle", data=projection_angles)
         rangle[...] = projection_angles
 
 
@@ -69,9 +69,7 @@ class Saver(object):
         from imgdata.loader import supported_formats
         return supported_formats()
 
-    def __init__(self, config, h=None):
-        from helper import Helper
-        self._h = Helper(config) if h is None else h
+    def __init__(self, config):
 
         self._output_path = config.func.output_path
         if self._output_path is not None:
@@ -119,7 +117,7 @@ class Saver(object):
         """
 
         if self._output_path is None:
-            self._h.tomo_print_note(
+            h.tomo_print_note(
                 "Not saving a single image, because no output path is specified."
             )
             return
@@ -135,19 +133,21 @@ class Saver(object):
             output_dir = os.path.join(output_dir, subdir)
             output_dir = os.path.abspath(output_dir)
 
-        self._h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
-                                                                   data.dtype))
+        h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
+                                                             data.dtype))
 
         self.save(
             data,
             output_dir,
             name,
             radiograms,
+            img_format=self._img_format,
+            overwrite_all=self._overwrite_all,
             zfill_len=zfill_len,
             name_postfix=name_postfix,
             custom_idx=custom_index)
 
-        self._h.pstop("Finished saving single image.")
+        h.pstop("Finished saving single image.")
 
     def save_preproc_images(self, data):
         """
@@ -163,13 +163,13 @@ class Saver(object):
         if self._save_preproc and self._output_path is not None:
             preproc_dir = os.path.join(self._output_path, self._preproc_dir)
 
-            self._h.pstart(
-                "Saving all pre-processed images into {0} dtype: {1}".format(
-                    preproc_dir, data.dtype))
+            h.pstart("Saving all pre-processed images into {0} dtype: {1}".
+                     format(preproc_dir, data.dtype))
 
-            self.save(data, preproc_dir, 'out_preproc_image', self._radiograms)
+            self.save(data, preproc_dir, 'out_preproc_image', self._radiograms,
+                      self._img_format, self._overwrite_all)
 
-            self._h.pstop("Saving pre-processed images finished.")
+            h.pstop("Saving pre-processed images finished.")
 
     def save_recon_output(self, data):
         """
@@ -186,20 +186,21 @@ class Saver(object):
         slices saved by default. Useful for testing some tools
         """
         if self._output_path is None:
-            self._h.tomo_print_note(
+            h.tomo_print_warning(
                 "Not saving reconstruction output, because no output path is specified."
             )
             return
 
         out_recon_dir = os.path.join(self._output_path, 'reconstructed')
 
-        self._h.pstart(
+        h.pstart(
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
         # we want to save out the slices without swapping any axes!
         radiograms = True
-        self.save(data, out_recon_dir, self._out_slices_prefix, radiograms)
+        self.save(data, out_recon_dir, self._out_slices_prefix, radiograms,
+                  self._img_format, self._overwrite_all)
 
         # Sideways slices:
         if self._save_horiz_slices:
@@ -207,28 +208,29 @@ class Saver(object):
             out_horiz_dir = os.path.join(out_recon_dir,
                                          self._out_horiz_slices_subdir)
 
-            self._h.tomo_print_note(
+            h.tomo_print_note(
                 "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
             import numpy as np
             # save out the horizontal slices by flipping the axes
             self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                      not radiograms)
+                      not radiograms, self._img_format, self._overwrite_all)
 
-        self._h.pstop(
-            "Finished saving slices of the reconstructed volume in: {0}".
-            format(out_recon_dir))
+        h.pstop("Finished saving slices of the reconstructed volume in: {0}".
+                format(out_recon_dir))
 
-    def save(self,
-             data,
+    @staticmethod
+    def save(data,
              output_dir,
              name_prefix,
              radiograms,
+             img_format='tiff',
+             overwrite_all=False,
              custom_idx=None,
              zfill_len=6,
              name_postfix=''):
         """
-        Save iamge volume (3d) into a series of slices along the Z axis.
+        Save image volume (3d) into a series of slices along the Z axis.
         The Z axis in the script is the ndarray.shape[0].
 
         :param data: data as images/slices stores in numpy array
@@ -238,54 +240,49 @@ class Saver(object):
 
         """
 
-        self.make_dirs_if_needed(output_dir)
+        Saver.make_dirs_if_needed(output_dir, overwrite_all)
 
         import numpy as np
 
         if not radiograms:
             data = np.swapaxes(data, 0, 1)
 
-        if self._img_format in ['nxs']:
+        if img_format in ['nxs']:
             filename = os.path.join(output_dir, name_prefix + name_postfix)
-
-            write_nxs(data, filename + '.nxs', overwrite=self._overwrite_all)
-
+            write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
         else:
-
-            if self._img_format in ['fit', 'fits']:
+            if img_format in ['fit', 'fits']:
                 write_func = write_fits
             else:
                 # pass all other formats to skimage
                 write_func = write_img
 
+            h.prog_init(data.shape[0], "Saving " + img_format + " images")
             for idx in range(0, data.shape[0]):
                 # use the custom index if one is provided
                 index = custom_idx if custom_idx is not None else str(
                     idx).zfill(zfill_len)
                 # create the file name, and use the format as extension
-                name = name_prefix + index + name_postfix + "." + self._img_format
+                name = name_prefix + index + name_postfix + "." + img_format
 
                 write_func(data[idx, :, :],
-                           os.path.join(output_dir, name), self._overwrite_all)
+                           os.path.join(output_dir, name), overwrite_all)
+                h.prog_update()
+            h.prog_close()
 
-    def make_dirs_if_needed(self, dirname=None):
+    @staticmethod
+    def make_dirs_if_needed(dirname=None, overwrite_all=False):
         """
         Makes sure that the directory needed (for example to save a file)
         exists, otherwise creates it.
 
         :param dirname :: (output) directory to check
         """
-        if dirname is None:
-            path = self._output_path
-            if path is None:
-                return
-
-        else:
-            path = os.path.abspath(os.path.expanduser(dirname))
+        path = os.path.abspath(os.path.expanduser(dirname))
 
         if not os.path.exists(path):
             os.makedirs(path)
-        elif os.listdir(path) and not self._overwrite_all:
+        elif os.listdir(path) and not overwrite_all:
             raise RuntimeError(
                 "The output directory is NOT empty:{0}\n. This can be overridden with -w/--overwrite-all.".
                 format(path))

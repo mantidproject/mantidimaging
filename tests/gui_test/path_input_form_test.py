@@ -11,11 +11,9 @@ class PathInputFormTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
-        self.h = Helper(r)
         from gui import path_input_form
         self.form = path_input_form.PathInputForm(test=True)
 

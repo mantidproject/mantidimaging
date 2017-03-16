@@ -15,14 +15,11 @@ class GaussianTest(unittest.TestCase):
 
         # force silent outputs
         from configs.recon_config import ReconstructionConfig
-        r = ReconstructionConfig.empty_init()
-        r.func.verbosity = 0
-        from helper import Helper
+        self.config = ReconstructionConfig.empty_init()
+        self.config.func.verbosity = 0
 
         from filters import gaussian
         self.alg = gaussian
-
-        self.h = Helper(r)
 
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -32,7 +29,7 @@ class GaussianTest(unittest.TestCase):
         size = None
         mode = None
         order = None
-        result = self.alg.execute(images, size, mode, order, h=self.h)
+        result = self.alg.execute(images, size, mode, order)
         npt.assert_equal(
             result, control, err_msg=err_msg.format(size, mode, order))
 
@@ -42,7 +39,7 @@ class GaussianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
         order = 1
-        result = self.alg.execute(images, size, mode, order, h=self.h)
+        result = self.alg.execute(images, size, mode, order)
         th.assert_not_equals(images, control)
 
     def test_executed_no_helper_parallel(self):
@@ -52,19 +49,6 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
         result = self.alg.execute(images, size, mode, order)
-        th.assert_not_equals(images, control)
-
-    def test_executed_seq(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-        order = 1
-
-        th.switch_mp_off()
-        result = self.alg.execute(images, size, mode, order, h=self.h)
-        th.switch_mp_on()
-
         th.assert_not_equals(images, control)
 
     def test_executed_no_helper_seq(self):
