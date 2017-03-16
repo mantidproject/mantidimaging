@@ -138,27 +138,27 @@ class PostProcConfig(object):
             "Higher order derivatives are not implemented.")
 
         grp_post.add_argument(
-            "--ring-removal", required=False, action='store_true', help='TODO')
+            "--ring-removal", required=False, action='store_true', help='Perform Ring Removal on the post processed data.')
         grp_post.add_argument(
-            "--ring-removal-x", type=int, required=False, help='TODO')
+            "--ring-removal-x", type=int, required=False, help='Abscissa location of center of rotation')
         grp_post.add_argument(
-            "--ring-removal-y", type=int, required=False, help='TODO')
+            "--ring-removal-y", type=int, required=False, help='Ordinate location of center of rotation')
         grp_post.add_argument(
-            "--ring-removal-thresh", type=float, required=False, help='TODO')
+            "--ring-removal-thresh", type=float, required=False, help='Maximum value of an offset due to a ring artifact')
         grp_post.add_argument(
             "--ring-removal-thresh-max",
             type=float,
             required=False,
-            help='TODO')
+            help='Max value for portion of image to filter')
         grp_post.add_argument(
             "--ring-removal-thresh-min",
             type=float,
             required=False,
-            help='TODO')
+            help='Min value for portion of image to filter')
         grp_post.add_argument(
-            "--ring-removal-theta-min", type=int, required=False, help='TODO')
+            "--ring-removal-theta-min", type=int, required=False, help='Minimum angle in degrees (int) to be considered ring artifact')
         grp_post.add_argument(
-            "--ring-removal-rwidth", type=int, required=False, help='TODO')
+            "--ring-removal-rwidth", type=int, required=False, help='Maximum width of the rings to be filtered in pixels')
 
         return parser
 

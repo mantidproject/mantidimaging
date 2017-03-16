@@ -103,14 +103,6 @@ class PreProcConfig(object):
             "Example: --air-region='[150,234,23,22]'")
 
         grp_pre.add_argument(
-            "--crop-before-normalise",
-            required=False,
-            action='store_true',
-            help="Crop before doing any normalisations on the images.\n"
-            "This improves performance and reduces memory usage, as"
-            "the algorithms will work on smaller data.")
-
-        grp_pre.add_argument(
             "--pre-median-size",
             type=int,
             required=False,
