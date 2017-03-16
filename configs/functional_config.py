@@ -314,7 +314,7 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.convert_prefix,
-            help='Convert images to a different format.')
+            help='Prefix for saved out files from conversion.')
 
         from imopr import imopr
         grp_run_modes.add_argument(
@@ -434,7 +434,8 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.parallel_load,
-            help="How to spread the load on each worker.")
+            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
+        )
 
         return parser
 

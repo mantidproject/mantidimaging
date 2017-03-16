@@ -66,11 +66,41 @@ The subdirectory can be specified using the `-p` or `--preproc-subdir` flags, an
 # Reconstruction
 ## Preparing center of rotation
 ### Usage of --imopr ... cor
+Initial guesses for COR should be done via `--imopr <slice_id> cor` functionality.
+
+`python main.py -i ~/some/folders/pre_processed -o /tmp/imgpy/ --imopr 340 cor`
+This script will run the standard tomopy find_center on the 340th slice. This should only be used as an initial COR guess.
 ### Usage of --imopr ... corwrite
+The accurate calculation of the COR requires finding the COR on a few different slices. Preferably from different areas of the sample, e.g. on 6 slices, equidistant from each other.
+
+This can be done using the `--imopr <slice_id> <cor_start> <cor_end> <cor_step> corwrite` functionality. 
+
+This will reconstruct slice id with the CORs in range `[cor_start, cor_end)`, with a step of `cor_step`. This allows to see the difference each COR makes to the reconstructed slice.
+
+This function **requires** an output path!
+
+`python main.py -i ~/some/folders/pre_processed -o /tmp/imgpy/ --imopr 340 140 160 1 corwrite`
+This script will reconstruct slice 340 with CORs from [140, 160) with step 1, and write the reconstructed images with each COR in the provided output directory.
+
 ## Specifying centers of rotation for reconstruction
-## Running _only_ a reconstruction
-## Running a reconstruction
+After we have around 6 slices and their respective CORs, we can run the reconstruction with this script:
+
+`python main.py -i ~/some/folders/pre_processed -o /tmp/recon/ --cor-slices 0 125 250 375 500 --cors 340.3 341.4 341.5 342.6 342.7 --reuse-preproc`
+
+The `--reuse-preproc` allows us to skip the pre-processing step and just run the reconstruction.
+
+The `--cor-slices 0 125 250 375 500 --cors 340.3 341.4 341.5 342.6 342.7` specifies the following:
+- Slice 0 has COR 340.3
+- Slice 125 has COR 341.4
+- Slice 250 has COR 341.5
+- Slice 375 has COR 342.6
+- Slice 500 has COR 342.7
+
+The rest of the CORs for the sample will be interpolated using this data. If the COR is not accurate enough, provide more CORs around the are that is inaccurate. This method has not been extensively tested, but it has so far produced good results that serve as a tilt correction.
+
 <!-- ^ add -o -->
 # Post-processing
 ## Running _only_ post-processing
-## Selecting filters
+`python main.py -i ~/some/folders/reconstructed -o /tmp/post_proc/ --only-postproc`
+
+The `--only-postproc` flag allows to load in reconstructed data and just apply available post-processing filters to the data.
