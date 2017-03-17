@@ -28,7 +28,7 @@ class PreProcConfig(object):
         self.gaussian_mode = 'reflect'
         self.gaussian_order = 0
 
-        self.stripe_removal_method = 'wavelet-fourier'
+        self.stripe_removal = self._avaiblable_stripe_removal_methods[0]
 
         # Rotation 90 degrees clockwise (positive) or counterclockwise (negative)
         # Example: -1 => (-90 degrees == 90 degrees counterclockwise)
@@ -61,7 +61,7 @@ class PreProcConfig(object):
                + "Gaussian filter kernel size: {0}\n".format(self.gaussian_size) \
                + "Gaussian filter edges mode: {0}\n".format(self.gaussian_mode) \
                + "Gaussian filter order: {0}\n".format(self.gaussian_order) \
-               + "Sinogram stripes removal: {0}\n".format(self.stripe_removal_method) \
+               + "Sinogram stripes removal: {0}\n".format(self.stripe_removal) \
                + "Rotation: {0}\n".format(self.rotation) \
                + "Clip min value: {0}\n".format(self.clip_min) \
                + "Clip max value: {0}\n".format(self.clip_max) \
@@ -109,13 +109,13 @@ class PreProcConfig(object):
             default=self.median_size,
             help="Size / width of the median filter(pre - processing).")
 
-        from filters.median_filter import modes as median_modes
+        from filters import median_filter
         grp_pre.add_argument(
             "--pre-median-mode",
             type=str,
             required=False,
             default=self.median_mode,
-            choices=median_modes(),
+            choices=median_filter.modes(),
             help="Default: %(default)s\n"
             "Mode of median filter which determines how the array borders are handled."
         )
@@ -168,7 +168,6 @@ class PreProcConfig(object):
             type=float,
             help="Crop bright pixels.")
 
-        from filters.outliers import modes as outliers_radiuss
         grp_pre.add_argument(
             "--pre-outliers-radius",
             required=False,
@@ -182,13 +181,13 @@ class PreProcConfig(object):
             help="Rebin factor by which the images will be rebinned. This could be any positive float number.\n"
             "If not specified no scaling will be done.")
 
-        from filters.rebin import modes as rebin_modes
+        from filters import rebin
         grp_pre.add_argument(
             "--rebin-mode",
             required=False,
             type=str,
             default=self.rebin_mode,
-            choices=rebin_modes(),
+            choices=rebin.modes(),
             help="Default: %(default)s\n"
             "Specify which interpolation mode will be used for the scaling of the image."
         )
@@ -209,13 +208,13 @@ class PreProcConfig(object):
             help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
         )
 
-        from filters.gaussian import modes as gaussian_modes
+        from filters import gaussian
         grp_pre.add_argument(
             "--pre-gaussian-mode",
             type=str,
             required=False,
             default=self.gaussian_mode,
-            choices=gaussian_modes(),
+            choices=gaussian.modes(),
             help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing)."
         )
 
@@ -229,6 +228,15 @@ class PreProcConfig(object):
             "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
             "Higher order derivatives are not implemented.")
 
+        from filters import stripe_removal
+        grp_pre.add_argument(
+            "--pre-stripe-removal",
+            type=str,
+            required=False,
+            default=self.gaussian_mode,
+            choices=stripe_removal.methods(),
+            help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing)."
+        )
         grp_pre.add_argument(
             "-log",
             "--pre-minus-log",

@@ -83,7 +83,6 @@ class PostProcConfig(object):
             "Pixels below and/or above (depending on mode) this threshold will be clipped."
         )
 
-        from filters.outliers import modes as outliers_radiuss
         grp_post.add_argument(
             "--post-outliers-radius",
             required=False,
@@ -98,13 +97,13 @@ class PostProcConfig(object):
             help="Apply median filter (2d) on reconstructed volume with the given window size.(post processing)"
         )
 
-        from filters.median_filter import modes as median_modes
+        from filters import median_filter
         grp_post.add_argument(
             "--post-median-mode",
             type=str,
             required=False,
             default=self.median_mode,
-            choices=median_modes(),
+            choices=median_filter.modes(),
             help="Default: %(default)s\n"
             "Mode of median filter which determines how the array borders are handled.(post processing)"
         )
@@ -117,13 +116,13 @@ class PostProcConfig(object):
             help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
         )
 
-        from filters.gaussian import modes as gaussian_modes
+        from filters import gaussian
         grp_post.add_argument(
             "--post-gaussian-mode",
             type=str,
             required=False,
             default=self.gaussian_mode,
-            choices=gaussian_modes(),
+            choices=gaussian.modes(),
             help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(post processing)."
         )
 
@@ -138,27 +137,53 @@ class PostProcConfig(object):
             "Higher order derivatives are not implemented.")
 
         grp_post.add_argument(
-            "--ring-removal", required=False, action='store_true', help='Perform Ring Removal on the post processed data.')
+            "--ring-removal",
+            required=False,
+            action='store_true',
+            help='Perform Ring Removal on the post processed data.')
+
         grp_post.add_argument(
-            "--ring-removal-x", type=int, required=False, help='Abscissa location of center of rotation')
+            "--ring-removal-x",
+            type=int,
+            required=False,
+            help='Abscissa location of center of rotation')
+
         grp_post.add_argument(
-            "--ring-removal-y", type=int, required=False, help='Ordinate location of center of rotation')
+            "--ring-removal-y",
+            type=int,
+            required=False,
+            help='Ordinate location of center of rotation')
+
         grp_post.add_argument(
-            "--ring-removal-thresh", type=float, required=False, help='Maximum value of an offset due to a ring artifact')
+            "--ring-removal-thresh",
+            type=float,
+            required=False,
+            help='Maximum value of an offset due to a ring artifact')
+
         grp_post.add_argument(
             "--ring-removal-thresh-max",
             type=float,
             required=False,
             help='Max value for portion of image to filter')
+
         grp_post.add_argument(
             "--ring-removal-thresh-min",
             type=float,
             required=False,
             help='Min value for portion of image to filter')
+
         grp_post.add_argument(
-            "--ring-removal-theta-min", type=int, required=False, help='Minimum angle in degrees (int) to be considered ring artifact')
+            "--ring-removal-theta-min",
+            type=int,
+            required=False,
+            help='Minimum angle in degrees (int) to be considered ring artifact'
+        )
+
         grp_post.add_argument(
-            "--ring-removal-rwidth", type=int, required=False, help='Maximum width of the rings to be filtered in pixels')
+            "--ring-removal-rwidth",
+            type=int,
+            required=False,
+            help='Maximum width of the rings to be filtered in pixels')
 
         return parser
 

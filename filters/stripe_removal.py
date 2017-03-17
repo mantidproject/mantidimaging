@@ -3,6 +3,12 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
+def methods():
+    return [
+        'wf', 'wavelet-fourier', 'ti', 'titarenko', 'sf', 'smoothing-filter'
+    ]
+
+
 def execute(data, config):
     if config.stripe_removal_method:
         from recon.tools import importer
