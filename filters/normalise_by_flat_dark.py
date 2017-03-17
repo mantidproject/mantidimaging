@@ -3,6 +3,17 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    # this doesn't have anything to add, 
+    # the options are added in the funcitonal config, 
+    # which should be moved to here TODO
+    pass
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):
     data[:] = np.clip(np.true_divide(data, norm_divide), clip_min, clip_max)
 

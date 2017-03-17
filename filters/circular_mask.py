@@ -3,6 +3,28 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "--circular-mask",
+        required=False,
+        type=float,
+        default=self.circular_mask,
+        help="Radius of the circular mask to apply on the reconstructed volume.\n"
+        "It is given in [0,1] relative to the size of the smaller dimension/edge "
+        "of the slices.\nEmpty or zero implies no masking.")
+
+    parser.add_argument(
+        "--circular-mask-val",
+        required=False,
+        type=float,
+        default=self.circular_mask_val,
+        help="The value that the pixels in the mask will be set to.")
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     """
     Execute the Circular Mask filter.

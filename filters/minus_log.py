@@ -2,6 +2,20 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "-log",
+        "--pre-minus-log",
+        required=False,
+        action='store_true',
+        default=False,
+        help="Default: %(default)d\nCalculate the -log of the sample data.")
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(data, minus_log):
     if minus_log:
         # import early to check if tomopy is available

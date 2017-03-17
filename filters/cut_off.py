@@ -1,6 +1,20 @@
 from __future__ import (absolute_import, division, print_function)
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "--cut-off",
+        required=False,
+        type=float,
+        default=self.cut_off,
+        help="Default: %(default)s\n"
+        "Cut off values above threshold relative to the max pixels.")
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(data, threshold):
     """
     Execute the Cut off filter.

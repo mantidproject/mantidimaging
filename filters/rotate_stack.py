@@ -3,6 +3,21 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    grp_pre.add_argument(
+        "-r",
+        "--rotation",
+        required=False,
+        type=int,
+        help="Rotate images by 90 degrees a number of times.\n"
+        "The rotation is clockwise unless a negative number is given which indicates "
+        "rotation counterclockwise.")
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def _rotate_image_inplace(data, rotation=None):
     # rot90 rotates counterclockwise; config.pre.rotation rotates clockwise
     data[:, :] = np.rot90(data[:, :], rotation)

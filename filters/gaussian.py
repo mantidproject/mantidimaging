@@ -2,6 +2,69 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
+def cli_register(parser):
+    default_size = None
+    default_order = 0
+    parser.add_argument(
+        "--pre-gaussian-size",
+        required=False,
+        type=float,
+        default=default_size,
+        help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
+    )
+
+    parser.add_argument(
+        "--pre-gaussian-mode",
+        type=str,
+        required=False,
+        default=modes()[0],
+        choices=modes(),
+        help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing)."
+    )
+
+    parser.add_argument(
+        "--pre-gaussian-order",
+        required=False,
+        type=int,
+        default=default_order,
+        help="Default: %(default)d\nThe order of the filter along each axis is given as a sequence of integers, \n"
+        "or as a single number. An order of 0 corresponds to convolution with a Gaussian kernel.\n"
+        "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
+        "Higher order derivatives are not implemented.")
+
+    # post-processing params
+    parser.add_argument(
+        "--post-gaussian-size",
+        required=False,
+        type=float,
+        default=default_size,
+        help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
+    )
+
+    parser.add_argument(
+        "--post-gaussian-mode",
+        type=str,
+        required=False,
+        default=modes()[0],
+        choices=modes(),
+        help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(post processing)."
+    )
+
+    parser.add_argument(
+        "--post-gaussian-order",
+        required=False,
+        type=int,
+        default=default_order,
+        help="Default: %(default)d\nThe order of the filter along each axis is given as a sequence of integers, \n"
+        "or as a single number. An order of 0 corresponds to convolution with a Gaussian kernel.\n"
+        "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
+        "Higher order derivatives are not implemented.")
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 

@@ -4,6 +4,22 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "-A",
+        "--air-region",
+        required=False,
+        nargs='*',
+        type=str,
+        help="Air region /region for normalisation.\n"
+        "For best results it should avoid being blocked by any object.\n"
+        "Example: --air-region='[150,234,23,22]'")
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(data,
             air_region,
             region_of_interest,
