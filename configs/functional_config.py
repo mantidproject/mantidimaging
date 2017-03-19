@@ -259,28 +259,6 @@ class FunctionalConfig(object):
         )
 
         grp_func.add_argument(
-            "-c",
-            "--cors",
-            required=False,
-            nargs='*',
-            type=str,  # this is string but will be later converted to floats in self.update()
-            default=self.cors,
-            help="Provide the CORs for the selected slices with --cor-slices.\n"
-            "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
-            "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
-        )
-        grp_func.add_argument(
-            "--cor-slices",
-            required=False,
-            nargs='*',
-            type=str,  # this is string but will be later converted to ints in self.update()
-            default=self.cor_slices,
-            help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
-            "The number of slices passed here MUST be the same as the number of CORs provided.\n"
-            "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
-        )
-
-        grp_func.add_argument(
             "-v",
             "--verbosity",
             type=int,
@@ -298,6 +276,27 @@ class FunctionalConfig(object):
             action='store_true',
             default=self.overwrite_all,
             help="Overwrite all conflicting files found in the output directory."
+        )
+        grp_func.add_argument(
+            "--cores",
+            required=False,
+            type=int,
+            default=self.cores,
+            help="Number of CPU cores that will be used for reconstruction.")
+
+        grp_func.add_argument(
+            "--chunksize",
+            required=False,
+            type=int,
+            default=self.chunksize,
+            help="How to spread the load on each worker.")
+
+        grp_func.add_argument(
+            "--parallel-load",
+            required=False,
+            action='store_true',
+            default=self.parallel_load,
+            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
         )
 
         grp_run_modes = parser.add_argument_group('Run Modes')
@@ -416,25 +415,25 @@ class FunctionalConfig(object):
         )
 
         grp_recon.add_argument(
-            "--cores",
+            "-c",
+            "--cors",
             required=False,
-            type=int,
-            default=self.cores,
-            help="Number of CPU cores that will be used for reconstruction.")
-
+            nargs='*',
+            type=str,  # this is string but will be later converted to floats in self.update()
+            default=self.cors,
+            help="Provide the CORs for the selected slices with --cor-slices.\n"
+            "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
+            "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
+        )
         grp_recon.add_argument(
-            "--chunksize",
+            "--cor-slices",
             required=False,
-            type=int,
-            default=self.chunksize,
-            help="How to spread the load on each worker.")
-
-        grp_recon.add_argument(
-            "--parallel-load",
-            required=False,
-            action='store_true',
-            default=self.parallel_load,
-            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
+            nargs='*',
+            type=str,  # this is string but will be later converted to ints in self.update()
+            default=self.cor_slices,
+            help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
+            "The number of slices passed here MUST be the same as the number of CORs provided.\n"
+            "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
         )
 
         return parser

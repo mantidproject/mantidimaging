@@ -13,6 +13,8 @@ def cli_register(parser):
         choices=methods(),
         help="Default: %(default)s\nStripe removal method and parameters.")
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")

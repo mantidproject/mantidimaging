@@ -14,6 +14,8 @@ def cli_register(parser):
         "If not given, the whole images are used.\n"
         "Example: --region-of-interest='[150,234,23,22]'.")
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")

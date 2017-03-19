@@ -50,6 +50,7 @@ def cli_register(parser):
         type=int,
         required=False,
         help='Maximum width of the rings to be filtered in pixels')
+    return parser
 
 
 def gui_register(par):

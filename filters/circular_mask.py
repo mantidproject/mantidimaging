@@ -8,7 +8,7 @@ def cli_register(parser):
         "--circular-mask",
         required=False,
         type=float,
-        default=self.circular_mask,
+        default=None,
         help="Radius of the circular mask to apply on the reconstructed volume.\n"
         "It is given in [0,1] relative to the size of the smaller dimension/edge "
         "of the slices.\nEmpty or zero implies no masking.")
@@ -17,8 +17,10 @@ def cli_register(parser):
         "--circular-mask-val",
         required=False,
         type=float,
-        default=self.circular_mask_val,
+        default=0.0,
         help="The value that the pixels in the mask will be set to.")
+
+    return parser
 
 
 def gui_register(par):

@@ -7,7 +7,7 @@ def cli_register(parser):
     # this doesn't have anything to add, 
     # the options are added in the funcitonal config, 
     # which should be moved to here TODO
-    pass
+    return parser
 
 
 def gui_register(par):

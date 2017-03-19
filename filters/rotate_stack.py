@@ -4,7 +4,7 @@ import helper as h
 
 
 def cli_register(parser):
-    grp_pre.add_argument(
+    parser.add_argument(
         "-r",
         "--rotation",
         required=False,
@@ -12,6 +12,8 @@ def cli_register(parser):
         help="Rotate images by 90 degrees a number of times.\n"
         "The rotation is clockwise unless a negative number is given which indicates "
         "rotation counterclockwise.")
+
+    return parser
 
 
 def gui_register(par):

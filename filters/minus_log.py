@@ -11,6 +11,8 @@ def cli_register(parser):
         default=False,
         help="Default: %(default)d\nCalculate the -log of the sample data.")
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")

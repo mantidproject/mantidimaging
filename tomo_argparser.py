@@ -41,11 +41,10 @@ def grab_full_config():
     functional_args = FunctionalConfig()
     parser = functional_args.setup_parser(parser)
 
-    pre_args = PreProcConfig()
-    parser = pre_args.setup_parser(parser)
-
-    post_args = PostProcConfig()
-    parser = post_args.setup_parser(parser)
+    # setup args for the filters
+    from filters import cli_registrator
+    grp_filters = parser.add_argument_group("Filter options")
+    cli_registrator.register_into(grp_filters)
 
     # parse the real arguments
     args = parser.parse_args()

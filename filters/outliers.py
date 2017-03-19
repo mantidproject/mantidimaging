@@ -29,6 +29,8 @@ def cli_register(parser):
         type=int,
         help="Radius for the median filter to determine the outlier.")
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")

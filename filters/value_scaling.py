@@ -2,6 +2,15 @@ from __future__ import (absolute_import, division, print_function)
 import numpy as np
 
 
+def cli_register(parser):
+    # this in an internal filter, doesn't have any external commands
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def _calc_avg(data,
               roi_sums,
               roi_top=None,

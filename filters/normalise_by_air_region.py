@@ -15,6 +15,8 @@ def cli_register(parser):
         "For best results it should avoid being blocked by any object.\n"
         "Example: --air-region='[150,234,23,22]'")
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")

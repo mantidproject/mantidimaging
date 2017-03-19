@@ -6,9 +6,11 @@ def cli_register(parser):
         "--cut-off",
         required=False,
         type=float,
-        default=self.cut_off,
+        default=None,
         help="Default: %(default)s\n"
         "Cut off values above threshold relative to the max pixels.")
+
+    return parser
 
 
 def gui_register(par):

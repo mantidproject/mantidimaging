@@ -60,6 +60,8 @@ def cli_register(parser):
         "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
         "Higher order derivatives are not implemented.")
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")

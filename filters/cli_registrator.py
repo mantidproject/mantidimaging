@@ -51,3 +51,5 @@ def register_into(parser):
 
     for m in MODULES:
         m.cli_register(parser)
+
+    return parser

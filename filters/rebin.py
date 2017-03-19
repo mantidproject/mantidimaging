@@ -20,6 +20,8 @@ def cli_register(parser):
         "Specify which interpolation mode will be used for the scaling of the image."
     )
 
+    return parser
+
 
 def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")
