@@ -79,11 +79,14 @@ def _wf(data, params, cores, chunksize):
         nchunk=chunksize)
     params = dict(map(lambda p: p.split('='), params))
 
-    kwargs['level'] = int(params.get('level')) if params.get('level') else None
+    kwargs['level'] = int(
+        params.get('level')) if params.get('level') else kwargs['level']
     kwargs['wname'] = str(
-        params.get('wname')) if params.get('wname') else 'db5'
-    kwargs['sigma'] = int(params.get('sigma')) if params.get('sigma') else 2
-    kwargs['pad'] = bool(params.get('pad')) if params.get('pad') else True
+        params.get('wname')) if params.get('wname') else kwargs['wname']
+    kwargs['sigma'] = int(
+        params.get('sigma')) if params.get('sigma') else kwargs['sigma']
+    kwargs['pad'] = bool(
+        params.get('pad')) if params.get('pad') else kwargs['pad']
 
     return tomopy.prep.stripe.remove_stripe_fw(data, **kwargs)
     # TODO find where this is from? iprep?
@@ -92,8 +95,25 @@ def _wf(data, params, cores, chunksize):
 
 
 def _ti(data, params, cores, chunksize):
-    data = tomopy.prep.stripe.remove_stripe_fw(data)
+    from recon.tools import importer
+    tomopy = importer.do_importing('tomopy')
+    kwargs = dict(nblock=0, alpha=1.5, ncore=cores, nchunk=chunksize)
+    params = dict(map(lambda p: p.split('='), params))
+
+    kwargs['nblock'] = int(
+        params.get('nblock')) if params.get('nblock') else kwargs['nblock']
+    kwargs['alpha'] = float(
+        params.get('alpha')) if params.get('alpha') else kwargs['alpha']
+
+    return tomopy.prep.stripe.remove_stripe_ti(data, **kwargs)
 
 
 def _sf(data, params, cores, chunksize):
-    data = tomopy.prep.stripe.remove_stripe_sf(data)
+    from recon.tools import importer
+    tomopy = importer.do_importing('tomopy')
+    kwargs = dict(size=5, ncore=cores, nchunk=chunksize)
+    params = dict(map(lambda p: p.split('='), params))
+
+    kwargs['size'] = int(
+        params.get('size')) if params.get('size') else kwargs['size']
+    return tomopy.prep.stripe.remove_stripe_sf(data, **kwargs)
