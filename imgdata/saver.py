@@ -78,7 +78,7 @@ class Saver(object):
 
         self._img_format = config.func.out_format
         self._overwrite_all = config.func.overwrite_all
-        self._radiograms = config.func.radiograms
+        self._swap_axes = config.func.swap_axes
 
         self._preproc_dir = config.func.preproc_subdir
         self._save_preproc = config.func.save_preproc
@@ -99,7 +99,7 @@ class Saver(object):
                           zfill_len=0,
                           name_postfix='',
                           use_preproc_folder=True,
-                          radiograms=True):
+                          swap_axes=True):
         """
         Save a single image to a single image file.
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
@@ -140,7 +140,7 @@ class Saver(object):
             data,
             output_dir,
             name,
-            radiograms,
+            swap_axes,
             img_format=self._img_format,
             overwrite_all=self._overwrite_all,
             zfill_len=zfill_len,
@@ -166,7 +166,7 @@ class Saver(object):
             h.pstart("Saving all pre-processed images into {0} dtype: {1}".
                      format(preproc_dir, data.dtype))
 
-            self.save(data, preproc_dir, 'out_preproc_image', self._radiograms,
+            self.save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
                       self._img_format, self._overwrite_all)
 
             h.pstop("Saving pre-processed images finished.")
@@ -198,8 +198,8 @@ class Saver(object):
             format(out_recon_dir))
 
         # we want to save out the slices without swapping any axes!
-        radiograms = True
-        self.save(data, out_recon_dir, self._out_slices_prefix, radiograms,
+        swap_axes = True
+        self.save(data, out_recon_dir, self._out_slices_prefix, swap_axes,
                   self._img_format, self._overwrite_all)
 
         # Sideways slices:
@@ -214,7 +214,7 @@ class Saver(object):
             import numpy as np
             # save out the horizontal slices by flipping the axes
             self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                      not radiograms, self._img_format, self._overwrite_all)
+                      not swap_axes, self._img_format, self._overwrite_all)
 
         h.pstop("Finished saving slices of the reconstructed volume in: {0}".
                 format(out_recon_dir))
@@ -223,7 +223,7 @@ class Saver(object):
     def save(data,
              output_dir,
              name_prefix,
-             radiograms,
+             swap_axes,
              img_format='tiff',
              overwrite_all=False,
              custom_idx=None,
@@ -244,7 +244,7 @@ class Saver(object):
 
         import numpy as np
 
-        if not radiograms:
+        if swap_axes:
             data = np.swapaxes(data, 0, 1)
 
         if img_format in ['nxs']:
@@ -278,6 +278,9 @@ class Saver(object):
 
         :param dirname :: (output) directory to check
         """
+        if dirname is None:
+            return
+
         path = os.path.abspath(os.path.expanduser(dirname))
 
         if not os.path.exists(path):

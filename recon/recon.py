@@ -84,76 +84,56 @@ def pre_processing(config, sample, flat, dark):
         return sample, flat, dark
 
     from filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
-        rebin, median_filter, gaussian, cut_off, minus_log, value_scaling
+        rebin, median_filter, gaussian, cut_off, minus_log, value_scaling, stripe_removal
 
     cores = config.func.cores
     chunksize = config.func.chunksize
     roi = config.pre.region_of_interest
-    sample, flat, dark = rotate_stack.execute(
-        sample,
-        config.pre.rotation,
-        flat,
-        dark,
-        cores=cores,
-        chunksize=chunksize)
+    sample, flat, dark = rotate_stack.execute(sample, config.pre.rotation,
+                                              flat, dark, cores, chunksize)
 
-    scale_factors = value_scaling.create_factors(sample, roi, cores, chunksize)
+    air = config.pre.normalise_air_region
+    if (flat is not None and dark is not None) or air is not None:
+        scale_factors = value_scaling.create_factors(sample, roi, cores,
+                                                     chunksize)
 
     sample = normalise_by_flat_dark.execute(
-        sample,
-        flat,
-        dark,
-        config.pre.clip_min,
-        config.pre.clip_max,
-        roi,
-        cores=cores,
-        chunksize=chunksize)
+        sample, flat, dark, config.pre.clip_min, config.pre.clip_max, roi,
+        cores, chunksize)
 
     # removes the contrast difference between the stack of images
-    air = config.pre.normalise_air_region
-    crop = config.pre.crop_before_normalise
+    crop = None
+    # crop = config.pre.crop_before_normalise # disabled for now
 
-    sample = normalise_by_air_region.execute(
-        sample, air, roi, crop, cores=cores, chunksize=chunksize)
+    sample = normalise_by_air_region.execute(sample, air, roi, crop, cores,
+                                             chunksize)
 
     # scale up the data to a nice int16 range while keeping the effects
     # from the flat/dark and air normalisations
-    sample = value_scaling.apply_factor(sample, scale_factors, cores,
-                                        chunksize)
+    if (flat is not None and dark is not None) or air is not None:
+        sample = value_scaling.apply_factor(sample, scale_factors, cores,
+                                            chunksize)
 
     sample = crop_coords.execute_volume(sample, roi)
-    if flat is not None:
-        flat = crop_coords.execute_image(flat, roi)
+    flat = crop_coords.execute_image(flat, roi) if flat is not None else flat
+    dark = crop_coords.execute_image(dark, roi) if dark is not None else dark
 
-    if dark is not None:
-        dark = crop_coords.execute_image(dark, roi)
+    sample = rebin.execute(sample, config.pre.rebin, config.pre.rebin_mode,
+                           cores, chunksize)
+
+    sample = stripe_removal.execute(
+        sample, config.pre.stripe_removal_wf, config.pre.stripe_removal_ti,
+        config.pre.stripe_removal_sf, cores, chunksize)
 
     sample = outliers.execute(sample, config.pre.outliers_threshold,
                               config.pre.outliers_radius, cores)
 
-    # mcp_corrections, they have to be included as well
-    # data = mcp_corrections.execute(data, config)
-    sample = rebin.execute(
-        sample,
-        config.pre.rebin,
-        config.pre.rebin_mode,
-        cores=cores,
-        chunksize=chunksize)
+    sample = median_filter.execute(sample, config.pre.median_size,
+                                   config.pre.median_mode, cores, chunksize)
 
-    sample = median_filter.execute(
-        sample,
-        config.pre.median_size,
-        config.pre.median_mode,
-        cores=cores,
-        chunksize=chunksize)
-
-    sample = gaussian.execute(
-        sample,
-        config.pre.gaussian_size,
-        config.pre.gaussian_mode,
-        config.pre.gaussian_order,
-        cores=cores,
-        chunksize=chunksize)
+    sample = gaussian.execute(sample, config.pre.gaussian_size,
+                              config.pre.gaussian_mode,
+                              config.pre.gaussian_order, cores, chunksize)
 
     sample = minus_log.execute(sample, config.pre.minus_log)
 

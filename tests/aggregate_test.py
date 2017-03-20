@@ -204,7 +204,7 @@ class AggregateTest(unittest.TestCase):
                     images,
                     angle_paths[i],
                     'out_angle',
-                    radiograms=True,
+                    swap_axes=True,
                     img_format=saver._img_format)
 
             # aggregate them

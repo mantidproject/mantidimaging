@@ -24,6 +24,6 @@ def execute(config):
         sample,
         output_dir,
         config.func.convert_prefix,
-        config.func.radiograms,
+        config.func.swap_axes,
         image_out_format,
         zfill_len=0)

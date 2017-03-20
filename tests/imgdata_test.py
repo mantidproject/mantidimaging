@@ -85,7 +85,7 @@ class DataTest(unittest.TestCase):
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
             saver._save_preproc = True
-            saver._radiograms = True
+            saver._swap_axes = True
             data_as_stack = False
 
             saver.save_preproc_images(images)
@@ -111,10 +111,9 @@ class DataTest(unittest.TestCase):
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
-    
+
     def test_save_nxs_par(self):
         self.do_preproc_nxs(parallel=True)
-
 
     def do_preproc_nxs(self, save_out_img_format='nxs', parallel=False):
         images = th.gen_img_shared_array_with_val(42.)
@@ -130,7 +129,7 @@ class DataTest(unittest.TestCase):
             saver._output_path = os.path.dirname(f.name)
             saver._save_preproc = True
             saver._img_format = save_out_img_format
-            saver._radiograms = True
+            saver._swap_axes = True
             data_as_stack = True
 
             saver.save_preproc_images(images)
@@ -140,7 +139,7 @@ class DataTest(unittest.TestCase):
             # sooooooooo this is a race condition versus the saving from the saver
             # sometimes, it seems, the 8 threads try to load the data too fast,
             # and the data loaded is corrupted
-            
+
             # this does not load any flats or darks as they were not saved out
             from imgdata import loader
             sample, flat_loaded, dark_loaded = loader.load(
@@ -180,7 +179,7 @@ class DataTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
-            saver._radiograms = True
+            saver._swap_axes = True
             saver._save_horiz_slices = horiz_slices
             data_as_stack = False
 
