@@ -82,6 +82,9 @@ class TomoPyTool(AbstractTool):
         cores = config.func.cores
 
         # calculate as many CORs as there are sinograms (i.e. shape of Y)
+        h.tomo_print(
+            "Generating CORs for data with shape {0}".format(sample.shape))
+
         cors = np.interp(
             list(range(sample.shape[0])), config.func.cor_slices,
             config.func.cors)
@@ -100,8 +103,6 @@ class TomoPyTool(AbstractTool):
                 "Mean Center of Rotation: {0}, Algorithm: {1}...".format(
                     np.mean(cors), alg))
 
-        # This is here to test the -log pre processed data
-        # return sample
         recon = self._tomopy.recon(
             tomo=sample,
             theta=proj_angles,

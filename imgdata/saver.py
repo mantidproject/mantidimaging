@@ -197,9 +197,7 @@ class Saver(object):
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
-        # we want to save out the slices without swapping any axes!
-        swap_axes = True
-        self.save(data, out_recon_dir, self._out_slices_prefix, swap_axes,
+        self.save(data, out_recon_dir, self._out_slices_prefix, self._swap_axes,
                   self._img_format, self._overwrite_all)
 
         # Sideways slices:
