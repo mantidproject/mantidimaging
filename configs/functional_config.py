@@ -81,6 +81,9 @@ class FunctionalConfig(object):
         self.convert = False
         self.convert_prefix = 'converted_images'
 
+        # start the GUI
+        self.gui = False
+
     def __str__(self):
         return "Input directory: {0}\n".format(str(self.input_path)) \
                + "Flat directory: {0}\n".format(str(self.input_path_flat)) \
@@ -117,7 +120,8 @@ class FunctionalConfig(object):
                + "Aggregate angles: {0}\n".format(str(self.aggregate_angles)) \
                + "Aggregate single folder output: {0}\n".format(str(self.aggregate_single_folder_output)) \
                + "Convert images mode: {0}\n".format(str(self.convert)) \
-               + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix))
+               + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix)) \
+               + "Running the GUI: {0}\n".format(str(self.gui))
 
     def setup_parser(self, parser):
         """
@@ -369,6 +373,13 @@ class FunctionalConfig(object):
             default=self.debug_port,
             help='Port on which a debugger is listening.')
 
+        grp_run_modes.add_argument(
+            "--gui",
+            required=False,
+            action='store_true',
+            default=self.gui,
+            help='Start up the GUI.')
+
         grp_recon = parser.add_argument_group('Reconstruction options')
 
         supported_tools = ['tomopy', 'astra']
@@ -503,3 +514,4 @@ class FunctionalConfig(object):
         self.aggregate = args.aggregate
         self.aggregate_angles = args.aggregate_angles
         self.aggregate_single_folder_output = args.aggregate_single_folder_output
+        self.gui = args.gui
