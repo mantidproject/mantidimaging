@@ -75,7 +75,7 @@ class MyDynamicMplCanvas(MyMplCanvas):
         self.draw()
 
 
-class ApplicationWindow(QtGui.QMainWindow):
+class ImgpyMainWindowView(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -124,7 +124,7 @@ modified versions may be distributed without limitation.""")
 
 qApp = QtGui.QApplication(sys.argv)
 
-aw = ApplicationWindow()
+aw = ImgpyMainWindowView()
 aw.setWindowTitle("%s" % progname)
 aw.show()
 sys.exit(qApp.exec_())

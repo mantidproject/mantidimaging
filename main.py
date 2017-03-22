@@ -50,8 +50,8 @@ def main():
 
     if config.func.gui:
         # this has the highest priority
-        from gui import main_window
-        main_window.execute(config)
+        from gui import gui
+        gui.execute(config)
     elif config.func.imopr:
         from imopr import imopr
         res = imopr.execute(config)
