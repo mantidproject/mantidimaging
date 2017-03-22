@@ -85,7 +85,7 @@ class DataTest(unittest.TestCase):
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
             saver._save_preproc = True
-            saver._swap_axes = True
+            saver._swap_axes = False
             data_as_stack = False
 
             saver.save_preproc_images(images)
@@ -125,23 +125,23 @@ class DataTest(unittest.TestCase):
         saver = self.create_saver()
         import tempfile
         import os
+
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._save_preproc = True
             saver._img_format = save_out_img_format
-            saver._swap_axes = True
+            saver._swap_axes = False
             data_as_stack = True
 
             saver.save_preproc_images(images)
 
             preproc_output_path = saver._output_path + '/pre_processed/'
 
-            # sooooooooo this is a race condition versus the saving from the saver
-            # sometimes, it seems, the 8 threads try to load the data too fast,
-            # and the data loaded is corrupted
-
             # this does not load any flats or darks as they were not saved out
             from imgdata import loader
+            # this is a race condition versus the saving from the saver
+            # when load is executed in parallel, the 8 threads try to 
+            # load the data too fast, and the data loaded is corrupted
             sample, flat_loaded, dark_loaded = loader.load(
                 preproc_output_path,
                 None,
@@ -179,7 +179,7 @@ class DataTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
-            saver._swap_axes = True
+            saver._swap_axes = False
             saver._save_horiz_slices = horiz_slices
             data_as_stack = False
 
@@ -194,7 +194,7 @@ class DataTest(unittest.TestCase):
             if horiz_slices:
                 self.assert_files_exist(
                     recon_output_path + 'horiz_slices/recon_horiz',
-                    saver._img_format, data_as_stack, images.shape[0])
+                    saver._img_format, data_as_stack, images.shape[1])
 
 
 if __name__ == '__main__':

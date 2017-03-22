@@ -102,12 +102,9 @@ class AggregateTest(unittest.TestCase):
             expected = images.sum(axis=0, dtype=np.float32)
         else:
             expected = images.mean(axis=0, dtype=np.float32)
-
         aggregate_angles = 7
         stack = False
         parallel = False
-        flat = None
-        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -119,10 +116,12 @@ class AggregateTest(unittest.TestCase):
                 saver._output_path = angle_path
                 saver._img_format = img_format
                 saver._data_as_stack = stack
-                saver._overwrite_all = True
                 # do the actual saving out, directories will be created here
-                saver.save(images, angle_path, 'out_angle', True,
-                           saver._img_format)
+                saver.save(
+                    images,
+                    angle_path,
+                    'out_angle',
+                    img_format=saver._img_format)
 
             # aggregate them
             from aggregate import aggregate
@@ -136,7 +135,7 @@ class AggregateTest(unittest.TestCase):
             conf.func.out_format = convert_format
             aggregate_output_path = os.path.dirname(f.name) + '/aggregated'
             conf.func.output_path = aggregate_output_path
-            conf.func.overwrite_all = True
+            conf.func.overwrite_all = True  #because we need to write in the same folder
             conf.func.convert_prefix = 'aggregated'
             aggregate.execute(conf)
 
@@ -204,7 +203,7 @@ class AggregateTest(unittest.TestCase):
                     images,
                     angle_paths[i],
                     'out_angle',
-                    swap_axes=True,
+                    swap_axes=False,
                     img_format=saver._img_format)
 
             # aggregate them

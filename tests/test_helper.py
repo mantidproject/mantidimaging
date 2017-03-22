@@ -2,22 +2,25 @@ import numpy as np
 import numpy.testing as npt
 
 backup_mp_avail = None
+g_shape = (10, 8, 10)
+
+
+def gimme_shape():
+    return g_shape
 
 
 def gen_img_numpy_rand():
-    # generate 10 images with dimensions 10x10, all values 1. float32
-    return np.random.rand(10, 10, 10)
+    return np.random.rand(*g_shape)
 
 
-def gen_img_shared_array_and_copy(shape=(10, 10, 10)):
+def gen_img_shared_array_and_copy(shape=g_shape):
     arr = gen_img_shared_array(shape)
     copy = deepcopy(arr)
     return arr, copy
 
 
-def gen_img_shared_array(shape=(10, 10, 10)):
+def gen_img_shared_array(shape=g_shape):
     from parallel import utility as pu
-    # generate 10 images with dimensions 10x10, all values 1. float32
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     d[:] = n[:]
@@ -25,9 +28,8 @@ def gen_img_shared_array(shape=(10, 10, 10)):
     return d
 
 
-def gen_img_shared_array_with_val(val=1., shape=(10, 10, 10)):
+def gen_img_shared_array_with_val(val=1., shape=g_shape):
     from parallel import utility as pu
-    # generate 10 images with dimensions 10x10, all values 1. float32
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
     d[:] = n[:]
