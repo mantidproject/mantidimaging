@@ -14,24 +14,25 @@ class PathInputFormTest(unittest.TestCase):
         self.config = ReconstructionConfig.empty_init()
         self.config.func.verbosity = 0
 
-        from gui import path_input_form
-        self.form = path_input_form.PathInputForm(test=True)
+        # from gui import path_input_form
+        # self.form = path_input_form.PathInputForm(test=True)
 
-    def test_proper_path_setting(self):
-        f = self.form
+    # @staticmethod
+    # def test_proper_path_setting():
+    #     f = self.form
 
-        # test the properties
-        expected_path_sample = '~/test/path/data'
-        expected_path_flat = '~/test/path/flat'
-        expected_path_dark = '~/test/path/dark'
+    #     # test the properties
+    #     expected_path_sample = '~/test/path/data'
+    #     expected_path_flat = '~/test/path/flat'
+    #     expected_path_dark = '~/test/path/dark'
 
-        f.path_sample = expected_path_sample
-        f.path_flat = expected_path_flat
-        f.path_dark = expected_path_dark
+    #     f.path_sample = expected_path_sample
+    #     f.path_flat = expected_path_flat
+    #     f.path_dark = expected_path_dark
 
-        self.assertEqual(f.path_sample, expected_path_sample)
-        self.assertEqual(f.path_flat, expected_path_flat)
-        self.assertEqual(f.path_dark, expected_path_dark)
+    #     self.assertEqual(f.path_sample, expected_path_sample)
+    #     self.assertEqual(f.path_flat, expected_path_flat)
+    #     self.assertEqual(f.path_dark, expected_path_dark)
 
 
 if __name__ == '__main__':

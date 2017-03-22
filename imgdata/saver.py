@@ -91,15 +91,8 @@ class Saver(object):
     def get_output_path(self):
         return self._output_path
 
-    def save_single_image(self,
-                          data,
-                          subdir=None,
-                          name='saved_image',
-                          custom_index=None,
-                          zfill_len=0,
-                          name_postfix='',
-                          use_preproc_folder=True,
-                          swap_axes=True):
+    def save_single_image(self, data, subdir=None, name='saved_image', swap_axes=False, custom_index=None, zfill_len=0,
+                          name_postfix='', use_preproc_folder=True):
         """
         Save a single image to a single image file.
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
@@ -212,7 +205,7 @@ class Saver(object):
             import numpy as np
             # save out the horizontal slices by flipping the axes
             self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                      not swap_axes, self._img_format, self._overwrite_all)
+                      not self._swap_axes, self._img_format, self._overwrite_all)
 
         h.pstop("Finished saving slices of the reconstructed volume in: {0}".
                 format(out_recon_dir))
@@ -221,7 +214,7 @@ class Saver(object):
     def save(data,
              output_dir,
              name_prefix,
-             swap_axes,
+             swap_axes=False,
              img_format='tiff',
              overwrite_all=False,
              custom_idx=None,
