@@ -19,11 +19,6 @@ class TwoSharedMemTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TwoSharedMemTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
     def test_fwd_func_inplace(self):
         # create data as shared array
         img = th.gen_img_shared_array()

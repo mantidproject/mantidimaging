@@ -8,11 +8,6 @@ class RebinTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
         from filters import rebin
         self.alg = rebin
 

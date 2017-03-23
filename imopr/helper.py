@@ -11,6 +11,7 @@ def print_start(action_name):
 
 def handle_indices(indices):
     i1 = indices[0]
+
     try:
         i2 = indices[1]
     except IndexError:

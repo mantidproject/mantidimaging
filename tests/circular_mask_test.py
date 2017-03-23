@@ -8,11 +8,6 @@ class CircularMaskTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(CircularMaskTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
         from filters import circular_mask
         self.alg = circular_mask
 

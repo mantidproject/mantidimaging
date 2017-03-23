@@ -8,10 +8,6 @@ class HelperTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(HelperTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
         import helper as h
         self.h = h
 

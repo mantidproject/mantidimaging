@@ -50,7 +50,8 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
             arr=data,
             axis=0,
             ratio=circular_mask_ratio,
-            val=circular_mask_value)
+            val=circular_mask_value,
+            ncore=cores)
         h.pstop("Finished applying circular mask.")
 
     return data

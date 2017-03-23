@@ -93,7 +93,7 @@ class AstraTool(AbstractTool):
             proj_angles = np.radians(proj_angles)
 
         alg = config.func.algorithm.upper()  # get upper case
-        cor = config.func.cor
+        cor = config.func.cors
         num_iter = config.func.num_iter
         cores = config.func.cores
 

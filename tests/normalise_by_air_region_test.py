@@ -8,11 +8,6 @@ class NormaliseByAirRegionTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(NormaliseByAirRegionTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
         from filters import normalise_by_air_region
         self.alg = normalise_by_air_region
 

@@ -102,9 +102,6 @@ def pre_processing(config, sample, flat, dark):
         cores, chunksize)
 
     # removes the contrast difference between the stack of images
-    crop = None
-    # crop = config.pre.crop_before_normalise # disabled for now
-
     sample = normalise_by_air_region.execute(sample, air, roi, crop, cores,
                                              chunksize)
 
@@ -150,6 +147,12 @@ def post_processing(config, recon_data):
     :param recon_data: The reconstructed image data as a 3D numpy.ndarray
     :return: The reconstructed data.
     """
+    if config.func.no_postproc:
+        h.tomo_print_warning(
+            "Post-processing steps have been skipped, because --no-postproc flag has been passed."
+        )
+        return recon_data
+
     from filters import circular_mask, gaussian, median_filter, outliers, ring_removal
 
     cores = config.func.cores

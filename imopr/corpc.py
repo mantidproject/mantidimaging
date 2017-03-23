@@ -20,7 +20,7 @@ def execute(sample, flat, dark, config, indices):
 
     i1, i2 = helper.handle_indices(indices)
 
-    initial_guess = config.func.cor if config.func.cor is not None else None
+    initial_guess = config.func.cors if config.func.cors is not None else None
 
     cor = tool._tomopy.find_center_pc(sample[i1], sample[i2])
     print(cor)
