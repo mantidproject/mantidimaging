@@ -44,14 +44,14 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     if circular_mask_ratio and 0 < circular_mask_ratio < 1:
         from recon.tools import importer
         tomopy = importer.do_importing('tomopy')
-
         h.pstart("Starting circular mask...")
+        # for some reason this doesn't like the ncore param, 
+        # even though it's in the official tomopy docs
         tomopy.circ_mask(
             arr=data,
             axis=0,
             ratio=circular_mask_ratio,
-            val=circular_mask_value,
-            ncore=cores)
+            val=circular_mask_value)
         h.pstop("Finished applying circular mask.")
 
     return data
