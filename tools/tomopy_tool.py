@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.tools.abstract_tool import AbstractTool
+from tools.abstract_tool import AbstractTool
 import helper as h
 
 

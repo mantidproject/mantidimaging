@@ -13,8 +13,8 @@ class ImporterTest(unittest.TestCase):
 
     # that's the only supported tool right now, Astra is used through TomoPy
     def test_tomopy(self):
-        from recon.tools.tomopy_tool import TomoPyTool
-        from recon.tools import importer
+        from tools.tomopy_tool import TomoPyTool
+        from tools import importer
         self.config.func.tool = 'tomopy'
         tool = importer.timed_import(self.config)
         assert isinstance(tool, TomoPyTool)
@@ -23,8 +23,8 @@ class ImporterTest(unittest.TestCase):
         assert isinstance(tool, TomoPyTool)
 
     def test_tomopy_astra(self):
-        from recon.tools.astra_tool import AstraTool
-        from recon.tools import importer
+        from tools.astra_tool import AstraTool
+        from tools import importer
         self.config.func.tool = 'astra'
         self.config.func.algorithm = 'fbp'
         tool = importer.timed_import(self.config)
@@ -35,14 +35,14 @@ class ImporterTest(unittest.TestCase):
 
     def test_tomopy_astra_not_supported_alg(self):
         # not supported algorithm
-        from recon.tools import importer
+        from tools import importer
         self.config.func.tool = 'astra'
         self.config.func.algorithm = 'gridrec'
         self.assertRaises(ValueError, importer.timed_import, self.config)
 
     def test_not_supported_tool(self):
         # not supported tool
-        from recon.tools import importer
+        from tools import importer
         self.config.func.tool = 'boop'
         self.assertRaises(ValueError, importer.timed_import, self.config)
 

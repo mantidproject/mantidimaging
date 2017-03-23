@@ -68,7 +68,7 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None):
 
 
 def _wf(data, params, cores, chunksize):
-    from recon.tools import importer
+    from tools import importer
     tomopy = importer.do_importing('tomopy')
     kwargs = dict(
         level=None,
@@ -95,7 +95,7 @@ def _wf(data, params, cores, chunksize):
 
 
 def _ti(data, params, cores, chunksize):
-    from recon.tools import importer
+    from tools import importer
     tomopy = importer.do_importing('tomopy')
     kwargs = dict(nblock=0, alpha=1.5, ncore=cores, nchunk=chunksize)
     params = dict(map(lambda p: p.split('='), params))
@@ -109,7 +109,7 @@ def _ti(data, params, cores, chunksize):
 
 
 def _sf(data, params, cores, chunksize):
-    from recon.tools import importer
+    from tools import importer
     tomopy = importer.do_importing('tomopy')
     kwargs = dict(size=5, ncore=cores, nchunk=chunksize)
     params = dict(map(lambda p: p.split('='), params))

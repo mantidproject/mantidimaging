@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-from recon.tools.abstract_tool import AbstractTool
+from tools.abstract_tool import AbstractTool
 import helper as h
 
 
@@ -34,7 +34,7 @@ class AstraTool(AbstractTool):
 
     def import_self(self):
         # use Astra through TomoPy
-        from recon.tools.tomopy_tool import TomoPyTool
+        from tools.tomopy_tool import TomoPyTool
         t = TomoPyTool()
         return t.import_self()
 

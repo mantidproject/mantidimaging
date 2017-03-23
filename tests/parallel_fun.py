@@ -19,9 +19,9 @@ class ParallelTest(unittest.TestCase):
             timeit.timeit(
                 stmt='sp.execute(data,f,cores=' + cores + ',chunksize=' +
                 chunksize + ',show_timer=False)',
-                setup='from recon.memory_debugger import inplace_in_func, '
+                setup='from memory_debugger import inplace_in_func, '
                 '_create_testing_array, _create_test_helper;'
-                'from recon.parallel import shared_parallel as sp;'
+                'from parallel import shared_parallel as sp;'
                 'data = _create_testing_array();'
                 'h = _create_test_helper();'
                 'f = sp.create_partial(inplace_in_func, fwd_function=sp.fwd_func, size=42);',
@@ -35,9 +35,9 @@ class ParallelTest(unittest.TestCase):
             timeit.timeit(
                 stmt='p.execute(data,f,cores=' + cores + ',chunksize=' +
                 chunksize + ',show_timer=False)',
-                setup='from recon.memory_debugger import return_from_func_but_data_changed_inside, '
+                setup='from memory_debugger import return_from_func_but_data_changed_inside, '
                 '_create_testing_array, _create_test_helper; '
-                'from recon.parallel import parallel as p;'
+                'from parallel import parallel as p;'
                 'import numpy as np;'
                 'data = np.full((5,10,10), 1.);'
                 'h = _create_test_helper();'
@@ -52,7 +52,7 @@ class ParallelTest(unittest.TestCase):
 
         Expected: The data should be all nans
         """
-        from recon.parallel import shared_parallel as sp
+        from parallel import shared_parallel as sp
         data = _create_testing_array()
 
         from copy import deepcopy
@@ -73,7 +73,7 @@ class ParallelTest(unittest.TestCase):
 
         Expected: The data should be correctly changed
         """
-        from recon.parallel import shared_parallel as sp
+        from parallel import shared_parallel as sp
         data = _create_testing_array()
 
         from copy import deepcopy
@@ -97,7 +97,7 @@ class ParallelTest(unittest.TestCase):
 
         Expected: The data should be correctly changed
         """
-        from recon.parallel import shared_parallel as sp
+        from parallel import shared_parallel as sp
         data = _create_testing_array()
 
         from copy import deepcopy
@@ -121,7 +121,7 @@ class ParallelTest(unittest.TestCase):
 
         Expected: The data should be correctly changed
         """
-        from recon.parallel import shared_parallel as sp
+        from parallel import shared_parallel as sp
         data = _create_testing_array()
 
         from copy import deepcopy
@@ -142,7 +142,7 @@ class ParallelTest(unittest.TestCase):
         Expected: The data should not be changed
         """
 
-        from recon.parallel import shared_parallel as sp
+        from parallel import shared_parallel as sp
         data = _create_testing_array()
 
         h = _create_test_helper()
@@ -166,7 +166,7 @@ class ParallelTest(unittest.TestCase):
         Expected: The data should not be changed
         """
 
-        from recon.parallel import shared_parallel as sp
+        from parallel import shared_parallel as sp
         data = _create_testing_array()
 
         h = _create_test_helper()
@@ -193,7 +193,7 @@ def _create_test_helper():
 
 
 def _create_testing_array():
-    from recon.parallel import shared_parallel as sp
+    from parallel import shared_parallel as sp
 
     data = sp.create_shared_array((5, 10, 10))
     for z in range(data.shape[0]):
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     # h = Helper(c)
 
     # data = _create_test_shared_array(test_shape)
-    # from recon.parallel import shared_parallel as sp
+    # from parallel import shared_parallel as sp
     #
     # f = sp.create_partial(
     #     set_to_inplace, fwd_function=sp.inplace_fwd_func, size=42)
@@ -249,7 +249,7 @@ if __name__ == '__main__':
     # reset data
     # data = np.zeros(test_shape)
 
-    from recon.parallel import parallel as p
+    from parallel import parallel as p
 
     # new function with return forwarding
     # f = p.create_partial(set_to_return, size=42)

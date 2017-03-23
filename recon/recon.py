@@ -35,7 +35,7 @@ def execute(config, cmd_line):
     h.set_readme(readme)
 
     # import early to check if tool is available
-    from recon.tools import importer
+    from tools import importer
     tool = importer.timed_import(config)
 
     from imgdata import loader

@@ -21,7 +21,7 @@ def gui_register(par):
 def execute(data, minus_log):
     if minus_log:
         # import early to check if tomopy is available
-        from recon.tools import importer
+        from tools import importer
         tomopy = importer.do_importing('tomopy')
         h.pstart("Calculating -log on the sample data.")
         # this check prevents division by 0 errors from the minus_log

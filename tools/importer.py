@@ -32,12 +32,12 @@ def do_importing(tool, alg='fbp'):
             "The name of a reconstruction tool is required as a string. Got: {0}".
             format(tool))
     if 'tomopy' == tool:
-        from recon.tools.tomopy_tool import TomoPyTool
+        from tools.tomopy_tool import TomoPyTool
         TomoPyTool.check_algorithm_compatibility(alg)
         imported_tool = TomoPyTool()
 
     elif 'astra' == tool:
-        from recon.tools.astra_tool import AstraTool
+        from tools.astra_tool import AstraTool
         AstraTool.check_algorithm_compatibility(alg)
         imported_tool = AstraTool()
     else:

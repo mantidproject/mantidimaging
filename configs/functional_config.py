@@ -393,8 +393,8 @@ class FunctionalConfig(object):
             help="Tomographic reconstruction tool to use.\nAvailable: {0}".
             format(supported_tools))
 
-        from recon.tools.tomopy_tool import TomoPyTool
-        from recon.tools.astra_tool import AstraTool
+        from tools.tomopy_tool import TomoPyTool
+        from tools.astra_tool import AstraTool
 
         tomo_algs = TomoPyTool.tool_supported_methods()
         astra_algs = AstraTool.tool_supported_methods()

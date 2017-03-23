@@ -84,7 +84,7 @@ def execute(data,
     if run_ring_removal:
         h.check_data_stack(data)
 
-        from recon.tools import importer
+        from tools import importer
         # tomopy = importer.do_importing('tomopy')
         h.pstart("Starting ring removal...")
         import tomopy.misc.corr

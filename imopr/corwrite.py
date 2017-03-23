@@ -17,7 +17,7 @@ def execute(sample, flat, dark, config, indices):
             "You need to provide input in the format <index_for_recon> <cors_list[start, end, step]>: 31 1 10 1 corwrite"
         )
 
-    from recon.tools import importer
+    from tools import importer
     tool = importer.timed_import(config)
 
     inc = float(config.func.max_angle) / sample.shape[1]
