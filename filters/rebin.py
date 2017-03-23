@@ -2,6 +2,31 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "--rebin",
+        required=False,
+        type=float,
+        help="Rebin factor by which the images will be rebinned. This could be any positive float number.\n"
+        "If not specified no scaling will be done.")
+
+    parser.add_argument(
+        "--rebin-mode",
+        required=False,
+        type=str,
+        default=modes()[0],
+        choices=modes(),
+        help="Default: %(default)s\n"
+        "Specify which interpolation mode will be used for the scaling of the image."
+    )
+
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def modes():
     return ['nearest', 'lanczos', 'bilinear', 'bicubic', 'cubic']
 

@@ -21,3 +21,35 @@ from __future__ import (absolute_import, division, print_function)
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
+
+
+def register_into(parser):
+    """
+    This function will import all the filters, and then call cli_register(parser) on them.
+    """
+
+    from . import circular_mask
+    from . import crop_coords
+    from . import cut_off
+    from . import gaussian
+    from . import median_filter
+    from . import minus_log
+    from . import normalise_by_air_region
+    from . import normalise_by_flat_dark
+    from . import outliers
+    from . import rebin
+    from . import rotate_stack
+    from . import ring_removal
+    from . import stripe_removal
+    from . import value_scaling
+
+    MODULES = [
+        circular_mask, crop_coords, cut_off, gaussian, median_filter,
+        minus_log, normalise_by_air_region, normalise_by_flat_dark, outliers,
+        rebin, rotate_stack, ring_removal, stripe_removal, value_scaling
+    ]
+
+    for m in MODULES:
+        m.cli_register(parser)
+
+    return parser

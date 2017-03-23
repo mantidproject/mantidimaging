@@ -3,6 +3,24 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "-R",
+        "--region-of-interest",
+        nargs='*',
+        required=False,
+        type=str,
+        help="Crop original images using these coordinates, after rotating the images.\n"
+        "If not given, the whole images are used.\n"
+        "Example: --region-of-interest='[150,234,23,22]'.")
+
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(sample, region_of_interest, flat, dark):
     """
     Execute the Circular Mask filter.

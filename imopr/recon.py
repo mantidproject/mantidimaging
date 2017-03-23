@@ -6,7 +6,7 @@ def execute(sample, flat, dark, config, indices):
     from imopr import helper
     helper.print_start("Running IMOPR with action RECON")
 
-    from recon.tools import importer
+    from tools import importer
     tool = importer.timed_import(config)
 
     inc = float(config.func.max_angle) / sample.shape[0]

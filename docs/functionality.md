@@ -51,9 +51,9 @@
                         The subdirectory for the pre-processed images.
                         Default output-path/pre_processed/.
 ## Save out pre-processing images as Radiograms.
-  --radiograms          NOT RECOMMENDED: This means an additional conversion will be done inside Tomopy, which will double the memory usage temporarily.
-                        Pre-processed images will be saved as radiograms if --save-preproc is specified.
-                        If --reuse-preproc is specified, then the images that will be loaded will be expected to be radiograms.
+  --swap_axes          NOT RECOMMENDED: This means an additional conversion will be done inside Tomopy, which will double the memory usage temporarily.
+                        Pre-processed images will be saved as swap_axes if --save-preproc is specified.
+                        If --reuse-preproc is specified, then the images that will be loaded will be expected to be swap_axes.
 ## Data type
   --data-dtype DATA_DTYPE
                         The data type in which the data will be processed.

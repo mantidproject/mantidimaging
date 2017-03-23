@@ -49,7 +49,8 @@ class ReconstructionConfig(object):
                 and not self.func.imopr \
                 and not self.func.aggregate\
                 and not self.func.convert\
-                and not self.func.only_postproc:
+                and not self.func.only_postproc\
+                and not self.func.gui:
             raise ValueError(
                 "If running a reconstruction a Center of Rotation MUST be provided"
             )

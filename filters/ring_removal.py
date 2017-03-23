@@ -2,6 +2,61 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "--ring-removal",
+        required=False,
+        action='store_true',
+        help='Perform Ring Removal on the post processed data.')
+
+    parser.add_argument(
+        "--ring-removal-x",
+        type=int,
+        required=False,
+        help='Abscissa location of center of rotation')
+
+    parser.add_argument(
+        "--ring-removal-y",
+        type=int,
+        required=False,
+        help='Ordinate location of center of rotation')
+
+    parser.add_argument(
+        "--ring-removal-thresh",
+        type=float,
+        required=False,
+        help='Maximum value of an offset due to a ring artifact')
+
+    parser.add_argument(
+        "--ring-removal-thresh-max",
+        type=float,
+        required=False,
+        help='Max value for portion of image to filter')
+
+    parser.add_argument(
+        "--ring-removal-thresh-min",
+        type=float,
+        required=False,
+        help='Min value for portion of image to filter')
+
+    parser.add_argument(
+        "--ring-removal-theta-min",
+        type=int,
+        required=False,
+        help='Minimum angle in degrees (int) to be considered ring artifact')
+
+    parser.add_argument(
+        "--ring-removal-rwidth",
+        type=int,
+        required=False,
+        help='Maximum width of the rings to be filtered in pixels')
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(data,
             run_ring_removal=False,
             center_x=None,
@@ -29,7 +84,7 @@ def execute(data,
     if run_ring_removal:
         h.check_data_stack(data)
 
-        from recon.tools import importer
+        from tools import importer
         # tomopy = importer.do_importing('tomopy')
         h.pstart("Starting ring removal...")
         import tomopy.misc.corr

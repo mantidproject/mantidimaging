@@ -90,13 +90,8 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
             subdir = ''
             custom_index = str(angle)
 
-        s.save_single_image(
-            acc.reshape(1, acc.shape[0], acc.shape[1]),
-            subdir=subdir,
-            name=name,
-            name_postfix=name_postfix,
-            use_preproc_folder=False,
-            custom_index=custom_index)
+        s.save_single_image(acc.reshape(1, acc.shape[0], acc.shape[1]), subdir=subdir, name=name,
+                            custom_index=custom_index, name_postfix=name_postfix, use_preproc_folder=False)
 
 
 def do_sanity_checks(output_path, agg_method, commands):

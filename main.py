@@ -22,6 +22,7 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
+
 def check_version_info():
     import sys
     python_version = sys.version_info
@@ -47,7 +48,11 @@ def main():
                 stdoutToServer=True,
                 stderrToServer=True)
 
-    if config.func.imopr:
+    if config.func.gui:
+        # this has the highest priority
+        from gui import gui
+        gui.execute(config)
+    elif config.func.imopr:
         from imopr import imopr
         res = imopr.execute(config)
     elif config.func.aggregate:

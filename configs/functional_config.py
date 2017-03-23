@@ -40,7 +40,7 @@ class FunctionalConfig(object):
         self.only_postproc = False
         self.reuse_preproc = False
         self.preproc_subdir = 'pre_processed'
-        self.radiograms = False
+        self.swap_axes = False
 
         import numpy as np
 
@@ -81,6 +81,9 @@ class FunctionalConfig(object):
         self.convert = False
         self.convert_prefix = 'converted_images'
 
+        # start the GUI
+        self.gui = False
+
     def __str__(self):
         return "Input directory: {0}\n".format(str(self.input_path)) \
                + "Flat directory: {0}\n".format(str(self.input_path_flat)) \
@@ -97,7 +100,7 @@ class FunctionalConfig(object):
                + "Do only post processing and exit: {0}\n".format(str(self.only_postproc)) \
                + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
-               + "Radiograms: {0}\n".format(str(self.radiograms)) \
+               + "Radiograms: {0}\n".format(str(self.swap_axes)) \
                + "Data type: {0}\n".format(str(self.data_dtype)) \
                + "Provided center of rotation: {0}\n".format(str(self.cors)) \
                + "Slice IDs for CORs: {0}\n".format(str(self.cor_slices)) \
@@ -117,7 +120,8 @@ class FunctionalConfig(object):
                + "Aggregate angles: {0}\n".format(str(self.aggregate_angles)) \
                + "Aggregate single folder output: {0}\n".format(str(self.aggregate_single_folder_output)) \
                + "Convert images mode: {0}\n".format(str(self.convert)) \
-               + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix))
+               + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix)) \
+               + "Running the GUI: {0}\n".format(str(self.gui))
 
     def setup_parser(self, parser):
         """
@@ -241,13 +245,13 @@ class FunctionalConfig(object):
         )
 
         grp_func.add_argument(
-            "--radiograms",
+            "--swap-axes",
             required=False,
             action='store_true',
-            default=self.radiograms,
+            default=self.swap_axes,
             help="NOT RECOMMENDED: This means an additional conversion will be done inside Tomopy, which will double the memory usage temporarily."
-            "\nPre-processed images will be saved as radiograms if --save-preproc is specified."
-            "\nIf --reuse-preproc is specified, then the images that will be loaded will be expected to be radiograms."
+            "\nPre-processed images will be saved as swap_axes if --save-preproc is specified."
+            "\nIf --reuse-preproc is specified, then the images that will be loaded will be expected to be swap_axes."
         )
 
         grp_func.add_argument(
@@ -256,28 +260,6 @@ class FunctionalConfig(object):
             default='float32',
             type=str,
             help="The data type in which the data will be processed.\nSupported: float32, float64"
-        )
-
-        grp_func.add_argument(
-            "-c",
-            "--cors",
-            required=False,
-            nargs='*',
-            type=str,  # this is string but will be later converted to floats in self.update()
-            default=self.cors,
-            help="Provide the CORs for the selected slices with --cor-slices.\n"
-            "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
-            "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
-        )
-        grp_func.add_argument(
-            "--cor-slices",
-            required=False,
-            nargs='*',
-            type=str,  # this is string but will be later converted to ints in self.update()
-            default=self.cor_slices,
-            help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
-            "The number of slices passed here MUST be the same as the number of CORs provided.\n"
-            "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
         )
 
         grp_func.add_argument(
@@ -298,6 +280,27 @@ class FunctionalConfig(object):
             action='store_true',
             default=self.overwrite_all,
             help="Overwrite all conflicting files found in the output directory."
+        )
+        grp_func.add_argument(
+            "--cores",
+            required=False,
+            type=int,
+            default=self.cores,
+            help="Number of CPU cores that will be used for reconstruction.")
+
+        grp_func.add_argument(
+            "--chunksize",
+            required=False,
+            type=int,
+            default=self.chunksize,
+            help="How to spread the load on each worker.")
+
+        grp_func.add_argument(
+            "--parallel-load",
+            required=False,
+            action='store_true',
+            default=self.parallel_load,
+            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
         )
 
         grp_run_modes = parser.add_argument_group('Run Modes')
@@ -370,6 +373,13 @@ class FunctionalConfig(object):
             default=self.debug_port,
             help='Port on which a debugger is listening.')
 
+        grp_run_modes.add_argument(
+            "--gui",
+            required=False,
+            action='store_true',
+            default=self.gui,
+            help='Start up the GUI.')
+
         grp_recon = parser.add_argument_group('Reconstruction options')
 
         supported_tools = ['tomopy', 'astra']
@@ -383,8 +393,8 @@ class FunctionalConfig(object):
             help="Tomographic reconstruction tool to use.\nAvailable: {0}".
             format(supported_tools))
 
-        from recon.tools.tomopy_tool import TomoPyTool
-        from recon.tools.astra_tool import AstraTool
+        from tools.tomopy_tool import TomoPyTool
+        from tools.astra_tool import AstraTool
 
         tomo_algs = TomoPyTool.tool_supported_methods()
         astra_algs = AstraTool.tool_supported_methods()
@@ -416,25 +426,25 @@ class FunctionalConfig(object):
         )
 
         grp_recon.add_argument(
-            "--cores",
+            "-c",
+            "--cors",
             required=False,
-            type=int,
-            default=self.cores,
-            help="Number of CPU cores that will be used for reconstruction.")
-
+            nargs='*',
+            type=str,  # this is string but will be later converted to floats in self.update()
+            default=self.cors,
+            help="Provide the CORs for the selected slices with --cor-slices.\n"
+            "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
+            "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
+        )
         grp_recon.add_argument(
-            "--chunksize",
+            "--cor-slices",
             required=False,
-            type=int,
-            default=self.chunksize,
-            help="How to spread the load on each worker.")
-
-        grp_recon.add_argument(
-            "--parallel-load",
-            required=False,
-            action='store_true',
-            default=self.parallel_load,
-            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
+            nargs='*',
+            type=str,  # this is string but will be later converted to ints in self.update()
+            default=self.cor_slices,
+            help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
+            "The number of slices passed here MUST be the same as the number of CORs provided.\n"
+            "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
         )
 
         return parser
@@ -464,7 +474,7 @@ class FunctionalConfig(object):
         self.reuse_preproc = args.reuse_preproc
         self.only_postproc = args.only_postproc
         self.preproc_subdir = args.preproc_subdir
-        self.radiograms = args.radiograms
+        self.swap_axes = args.swap_axes
 
         import numpy as np
 
@@ -504,3 +514,4 @@ class FunctionalConfig(object):
         self.aggregate = args.aggregate
         self.aggregate_angles = args.aggregate_angles
         self.aggregate_single_folder_output = args.aggregate_single_folder_output
+        self.gui = args.gui

@@ -8,16 +8,12 @@ class RotateStackTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(RotateStackTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
         from filters import rotate_stack
         self.alg = rotate_stack
 
     def test_not_executed(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        # only works on square images
+        images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 
@@ -34,7 +30,8 @@ class RotateStackTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        # only works on square images
+        images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 

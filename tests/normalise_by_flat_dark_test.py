@@ -8,11 +8,6 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(NormaliseByFlatDarkTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
         from filters import normalise_by_flat_dark
         self.alg = normalise_by_flat_dark
 
@@ -47,7 +42,8 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        shape = th.gimme_shape()
+        images, control = th.gen_img_shared_array_and_copy(shape)
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 
@@ -58,11 +54,11 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         result = self.alg.execute(images, flat, dark, 0, 1.5)
         th.assert_not_equals(images, control)
 
-        control = np.full((10, 10, 10), 442.)
+        control = np.full(shape, 442.)
         result = self.alg.execute(images, flat, dark, 442., 442)
         npt.assert_equal(result, control)
 
-        control = np.zeros(1000).reshape(10, 10, 10)
+        control = np.full(shape, 0.)
         result = self.alg.execute(images, flat, dark, 0, 0)
         npt.assert_equal(result, control)
 

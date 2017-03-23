@@ -3,6 +3,30 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "--circular-mask",
+        required=False,
+        type=float,
+        default=None,
+        help="Radius of the circular mask to apply on the reconstructed volume.\n"
+        "It is given in [0,1] relative to the size of the smaller dimension/edge "
+        "of the slices.\nEmpty or zero implies no masking.")
+
+    parser.add_argument(
+        "--circular-mask-val",
+        required=False,
+        type=float,
+        default=0.0,
+        help="The value that the pixels in the mask will be set to.")
+
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     """
     Execute the Circular Mask filter.
@@ -18,10 +42,11 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     """
 
     if circular_mask_ratio and 0 < circular_mask_ratio < 1:
-        from recon.tools import importer
+        from tools import importer
         tomopy = importer.do_importing('tomopy')
-
         h.pstart("Starting circular mask...")
+        # for some reason this doesn't like the ncore param, 
+        # even though it's in the official tomopy docs
         tomopy.circ_mask(
             arr=data,
             axis=0,

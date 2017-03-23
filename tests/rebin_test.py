@@ -8,11 +8,6 @@ class RebinTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
-        # force silent outputs
-        from configs.recon_config import ReconstructionConfig
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
-
         from filters import rebin
         self.alg = rebin
 
@@ -46,20 +41,23 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute(self):
-        images = th.gen_img_numpy_rand()
+        images = th.gen_img_shared_array()
 
         rebin = 2.  # twice the size
-        expected_shape = int(images.shape[1] * rebin)
+        expected_x = int(images.shape[1] * rebin)
+        expected_y = int(images.shape[2] * rebin)
         mode = 'nearest'
         result = self.alg.execute(images, rebin, mode)
-        npt.assert_equal(result.shape[1], expected_shape)
-        npt.assert_equal(result.shape[2], expected_shape)
+        npt.assert_equal(result.shape[1], expected_x)
+        npt.assert_equal(result.shape[2], expected_y)
 
         rebin = 5.  # five times the size
-        expected_shape = int(images.shape[1] * rebin)
+        expected_x = int(images.shape[1] * rebin)
+        expected_y = int(images.shape[2] * rebin)
+
         result = self.alg.execute(images, rebin, mode)
-        npt.assert_equal(result.shape[1], expected_shape)
-        npt.assert_equal(result.shape[2], expected_shape)
+        npt.assert_equal(result.shape[1], expected_x)
+        npt.assert_equal(result.shape[2], expected_y)
 
 
 if __name__ == '__main__':

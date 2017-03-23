@@ -3,6 +3,49 @@ from __future__ import (absolute_import, print_function, division)
 import helper as h
 
 
+def cli_register(parser):
+    default_size = None
+    size_help = "Apply median filter (2d) on reconstructed volume with the given kernel size."
+    mode_help = "Default: %(default)s\n"\
+        "Mode of median filter which determines how the array borders are handled."
+
+    parser.add_argument(
+        "--pre-median-size",
+        type=int,
+        required=False,
+        default=default_size,
+        help=size_help)
+
+    parser.add_argument(
+        "--pre-median-mode",
+        type=str,
+        required=False,
+        default=modes()[0],
+        choices=modes(),
+        help=mode_help)
+
+    parser.add_argument(
+        "--post-median-size",
+        required=False,
+        type=float,
+        default=default_size,
+        help=size_help)
+
+    parser.add_argument(
+        "--post-median-mode",
+        type=str,
+        required=False,
+        default=modes()[0],
+        choices=modes(),
+        help=mode_help)
+
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 

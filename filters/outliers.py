@@ -2,6 +2,40 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
+def cli_register(parser):
+    parser.add_argument(
+        "--pre-outliers",
+        required=False,
+        type=float,
+        help="Crop bright pixels.")
+
+    parser.add_argument(
+        "--pre-outliers-radius",
+        required=False,
+        type=int,
+        help="Radius for the median filter to determine the outlier.")
+
+    parser.add_argument(
+        "--post-outliers",
+        required=False,
+        type=float,
+        help="Outliers threshold for reconstructed volume.\n"
+        "Pixels below and/or above (depending on mode) this threshold will be clipped."
+    )
+
+    parser.add_argument(
+        "--post-outliers-radius",
+        required=False,
+        type=int,
+        help="Radius for the median filter to determine the outlier.")
+
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def modes():
     return ['dark', 'bright', 'both']
 
@@ -22,7 +56,7 @@ def execute(data, outliers_threshold, outliers_radius, cores=None):
         h.pstart("Applying outliers with threshold: {0} and radius {1}".format(
             outliers_threshold, outliers_radius))
 
-        from recon.tools import importer
+        from tools import importer
         tomopy = importer.do_importing('tomopy')
 
         data[:] = tomopy.misc.corr.remove_outlier(

@@ -17,14 +17,16 @@ def execute(sample, flat, dark, config, indices):
             "You need to provide input in the format <index_for_recon> <cors_list[start, end, step]>: 31 1 10 1 corwrite"
         )
 
-    from recon.tools import importer
+    from tools import importer
     tool = importer.timed_import(config)
 
     inc = float(config.func.max_angle) / sample.shape[1]
     proj_angles = np.arange(0, sample.shape[1] * inc, inc)
     proj_angles = np.radians(proj_angles)
 
-    initial_guess = config.func.cor if config.func.cor is not None else None
+    initial_guess = config.func.cors if config.func.cors is not None else None
+
+    print("Starting writing CORs in", config.func.output_path)
 
     tool._tomopy.write_center(
         tomo=sample,
@@ -34,4 +36,5 @@ def execute(sample, flat, dark, config, indices):
         sinogram_order=True,
         cen_range=indices[1:])
 
+    print("Finished writing CORs in", config.func.output_path)
     return sample

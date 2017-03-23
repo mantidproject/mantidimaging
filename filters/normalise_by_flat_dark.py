@@ -3,6 +3,17 @@ import numpy as np
 import helper as h
 
 
+def cli_register(parser):
+    # this doesn't have anything to add, 
+    # the options are added in the funcitonal config, 
+    # which should be moved to here TODO
+    return parser
+
+
+def gui_register(par):
+    raise NotImplementedError("GUI doesn't exist yet")
+
+
 def _apply_normalise_inplace(data, norm_divide, clip_min=None, clip_max=None):
     data[:] = np.clip(np.true_divide(data, norm_divide), clip_min, clip_max)
 
@@ -46,7 +57,7 @@ def execute(data,
         # I think this might be the only "filter not applied" message that 
         #  is useful, so I've left it here for now
         h.tomo_print_note(
-            "Cannot apply normalization by flat/dark images because no valid flat and dark images have been "
+            "Not applying normalization by flat/dark images because no valid flat and dark images have been "
             "provided with -F/--input-path-flat and -D/--input-path-dark.")
 
     h.check_data_stack(data)

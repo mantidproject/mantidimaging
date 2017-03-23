@@ -15,7 +15,6 @@ class PreProcConfig(object):
         # all coords outside the ROI will be cropped
         self.region_of_interest = None
         self.normalise_air_region = None
-        self.crop_before_normalise = None
         self.median_size = None
         """
         :param median_mode: Default: 'reflect', {'reflect', 'constant', 'nearest', 'mirror', 'wrap'}, optional
@@ -28,7 +27,9 @@ class PreProcConfig(object):
         self.gaussian_mode = 'reflect'
         self.gaussian_order = 0
 
-        self.stripe_removal_method = 'wavelet-fourier'
+        self.stripe_removal_wf = None
+        self.stripe_removal_ti = None
+        self.stripe_removal_sf = None
 
         # Rotation 90 degrees clockwise (positive) or counterclockwise (negative)
         # Example: -1 => (-90 degrees == 90 degrees counterclockwise)
@@ -55,13 +56,14 @@ class PreProcConfig(object):
     def __str__(self):
         return "Region of interest (crop coordinates): {0}\n".format(self.region_of_interest) \
                + "Normalise by air region: {0}\n".format(self.normalise_air_region) \
-               + "Crop before normalise: {0}\n".format(self.crop_before_normalise) \
                + "Median filter kernel size: {0}\n".format(self.median_size) \
                + "Median filter edges mode: {0}\n".format(self.median_mode) \
                + "Gaussian filter kernel size: {0}\n".format(self.gaussian_size) \
                + "Gaussian filter edges mode: {0}\n".format(self.gaussian_mode) \
                + "Gaussian filter order: {0}\n".format(self.gaussian_order) \
-               + "Sinogram stripes removal: {0}\n".format(self.stripe_removal_method) \
+               + "Sinogram stripe removal using wavelett-fourier: {0}\n".format(self.stripe_removal_wf) \
+               + "Sinogram stripe removal using Titarenko approach: {0}\n".format(self.stripe_removal_ti) \
+               + "Sinogram stripe removal using smoothing-filter: {0}\n".format(self.stripe_removal_sf) \
                + "Rotation: {0}\n".format(self.rotation) \
                + "Clip min value: {0}\n".format(self.clip_min) \
                + "Clip max value: {0}\n".format(self.clip_max) \
@@ -83,60 +85,6 @@ class PreProcConfig(object):
             'Pre-processing of input raw images/projections')
 
         grp_pre.add_argument(
-            "-R",
-            "--region-of-interest",
-            nargs='*',
-            required=False,
-            type=str,
-            help="Crop original images using these coordinates, after rotating the images.\n"
-            "If not given, the whole images are used.\n"
-            "Example: --region-of-interest='[150,234,23,22]'.")
-
-        grp_pre.add_argument(
-            "-A",
-            "--air-region",
-            required=False,
-            nargs='*',
-            type=str,
-            help="Air region /region for normalisation.\n"
-            "For best results it should avoid being blocked by any object.\n"
-            "Example: --air-region='[150,234,23,22]'")
-
-        grp_pre.add_argument(
-            "--pre-median-size",
-            type=int,
-            required=False,
-            default=self.median_size,
-            help="Size / width of the median filter(pre - processing).")
-
-        from filters.median_filter import modes as median_modes
-        grp_pre.add_argument(
-            "--pre-median-mode",
-            type=str,
-            required=False,
-            default=self.median_mode,
-            choices=median_modes(),
-            help="Default: %(default)s\n"
-            "Mode of median filter which determines how the array borders are handled."
-        )
-
-        grp_pre.add_argument(
-            "--remove-stripes",
-            default='wf',
-            required=False,
-            type=str,
-            help="Methods supported: 'wf' (Wavelet-Fourier).")
-
-        grp_pre.add_argument(
-            "-r",
-            "--rotation",
-            required=False,
-            type=int,
-            help="Rotate images by 90 degrees a number of times.\n"
-            "The rotation is clockwise unless a negative number is given which indicates "
-            "rotation counterclockwise.")
-
-        grp_pre.add_argument(
             "--clip-min",
             required=False,
             type=float,
@@ -153,89 +101,6 @@ class PreProcConfig(object):
             help="Default: %(default)s\n"
             "Clip values after normalisations to remove out of bounds pixel values."
         )
-
-        grp_pre.add_argument(
-            "--cut-off",
-            required=False,
-            type=float,
-            default=self.cut_off,
-            help="Default: %(default)s\n"
-            "Cut off values above threshold relative to the max pixels.")
-
-        grp_pre.add_argument(
-            "--pre-outliers",
-            required=False,
-            type=float,
-            help="Crop bright pixels.")
-
-        from filters.outliers import modes as outliers_radiuss
-        grp_pre.add_argument(
-            "--pre-outliers-radius",
-            required=False,
-            type=int,
-            help="Radius for the median filter to determine the outlier.")
-
-        grp_pre.add_argument(
-            "--rebin",
-            required=False,
-            type=float,
-            help="Rebin factor by which the images will be rebinned. This could be any positive float number.\n"
-            "If not specified no scaling will be done.")
-
-        from filters.rebin import modes as rebin_modes
-        grp_pre.add_argument(
-            "--rebin-mode",
-            required=False,
-            type=str,
-            default=self.rebin_mode,
-            choices=rebin_modes(),
-            help="Default: %(default)s\n"
-            "Specify which interpolation mode will be used for the scaling of the image."
-        )
-
-        grp_pre.add_argument(
-            "-m",
-            "--mcp-corrections",
-            required=False,
-            action='store_true',
-            help="Perform corrections specific to images taken with the MCP detector."
-        )
-
-        grp_pre.add_argument(
-            "--pre-gaussian-size",
-            required=False,
-            type=float,
-            default=self.gaussian_size,
-            help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
-        )
-
-        from filters.gaussian import modes as gaussian_modes
-        grp_pre.add_argument(
-            "--pre-gaussian-mode",
-            type=str,
-            required=False,
-            default=self.gaussian_mode,
-            choices=gaussian_modes(),
-            help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing)."
-        )
-
-        grp_pre.add_argument(
-            "--pre-gaussian-order",
-            required=False,
-            type=int,
-            default=self.gaussian_order,
-            help="Default: %(default)d\nThe order of the filter along each axis is given as a sequence of integers, \n"
-            "or as a single number. An order of 0 corresponds to convolution with a Gaussian kernel.\n"
-            "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
-            "Higher order derivatives are not implemented.")
-
-        grp_pre.add_argument(
-            "-log",
-            "--pre-minus-log",
-            required=False,
-            action='store_true',
-            default=self.minus_log,
-            help="Default: %(default)d\nCalculate the -log of the sample data.")
 
         return parser
 
@@ -263,7 +128,6 @@ class PreProcConfig(object):
 
             self.normalise_air_region = [int(val) for val in args.air_region]
 
-        self.crop_before_normalise = args.crop_before_normalise
         self.median_size = args.pre_median_size
         self.median_mode = args.pre_median_mode
 
@@ -271,7 +135,9 @@ class PreProcConfig(object):
         self.gaussian_mode = args.pre_gaussian_mode
         self.gaussian_order = args.pre_gaussian_order
 
-        self.stripe_removal_method = args.remove_stripes
+        self.stripe_removal_wf = args.pre_stripe_removal_wf
+        self.stripe_removal_ti = args.pre_stripe_removal_ti
+        self.stripe_removal_sf = args.pre_stripe_removal_sf
 
         self.rotation = args.rotation
 
@@ -282,7 +148,7 @@ class PreProcConfig(object):
 
         self.outliers_threshold = args.pre_outliers
         self.outliers_radius = args.pre_outliers_radius
-        self.mcp_corrections = args.mcp_corrections
+        # self.mcp_corrections = args.mcp_corrections
         self.rebin = args.rebin
         self.rebin_mode = args.rebin_mode
 
