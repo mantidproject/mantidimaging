@@ -25,6 +25,10 @@ def execute(config, cmd_line):
     h.run_import_checks(config)
     h.check_config_integrity(config)
 
+    # import early to check if tool is available
+    from tools import importer
+    tool = importer.timed_import(config)
+
     # create directory, or throw if not empty and no --overwrite-all
     # we get the output path from the saver, as that expands variables and gets absolute path
     saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
@@ -33,10 +37,6 @@ def execute(config, cmd_line):
     readme = Readme(config, saver)
     readme.begin(cmd_line, config)
     h.set_readme(readme)
-
-    # import early to check if tool is available
-    from tools import importer
-    tool = importer.timed_import(config)
 
     from imgdata import loader
     sample, flat, dark = loader.load_data(config)
@@ -102,7 +102,7 @@ def pre_processing(config, sample, flat, dark):
         cores, chunksize)
 
     # removes the contrast difference between the stack of images
-    sample = normalise_by_air_region.execute(sample, air, roi, crop, cores,
+    sample = normalise_by_air_region.execute(sample, air, roi, None, cores,
                                              chunksize)
 
     # scale up the data to a nice int16 range while keeping the effects
