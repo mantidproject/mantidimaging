@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from __future__ import (absolute_import, division, print_function)
 
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD

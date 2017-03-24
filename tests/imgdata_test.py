@@ -147,6 +147,7 @@ class DataTest(unittest.TestCase):
                 None,
                 None,
                 saver._img_format,
+                cores=1,  # hard coded 1 core to avoid race condition
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)

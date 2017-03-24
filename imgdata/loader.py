@@ -3,6 +3,35 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 import numpy as np
 
+def fitsread(filename):
+    """
+    Read one image and return it as a 2d numpy array
+
+    :param filename :: name of the image file, can be relative or absolute path
+    :param img_format: format of the image ('fits')
+    """
+    pyfits = import_pyfits()
+    image = pyfits.open(filename)
+    if len(image) < 1:
+        raise RuntimeError(
+            "Could not load at least one FITS image/table file from: {0}".
+            format(filename))
+
+    # get the image data
+    return image[0].data
+
+
+def nxsread(filename):
+    import h5py
+    nexus = h5py.File(filename, 'r')
+    data = nexus["tomography/sample_data"]
+    return data
+
+
+def imread(filename):
+    skio = import_skimage_io()
+    return skio.imread(filename)
+
 
 def supported_formats():
     try:
@@ -74,8 +103,8 @@ def load(input_path=None,
     :param input_path_dark: Optional: Path for the input Dark images folder
     :param img_format: Default:'fits', format for the input images
     :param dtype: Default:np.float32, data type for the input images
-    :param cores: Default:1, cores to be used if parallel_load is True
-    :param chunksize: chunk of work per worker
+    :param cores: Default:None (max available), cores to be used if parallel_load is True
+    :param chunksize: Default:None (auto calculated), chunk of work per worker
     :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
             This could be faster depending on the IO system. For local HDD runs the recommended setting is False
     :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
@@ -96,9 +125,10 @@ def load(input_path=None,
             fitsread, input_file_names, input_path_flat, input_path_dark,
             img_format, dtype, cores, chunksize, parallel_load)
     elif img_format in ['nxs']:
+        from imgdata import stack_loader
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
-        sample = load_stack(nxsread, input_file, dtype, "NXS Load", cores,
+        sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load", cores,
                             chunksize, parallel_load)
         flat = dark = None
     else:
@@ -110,36 +140,6 @@ def load(input_path=None,
     h.check_data_stack(sample)
 
     return sample, flat, dark
-
-
-def fitsread(filename):
-    """
-    Read one image and return it as a 2d numpy array
-
-    :param filename :: name of the image file, can be relative or absolute path
-    :param img_format: format of the image ('fits')
-    """
-    pyfits = import_pyfits()
-    image = pyfits.open(filename)
-    if len(image) < 1:
-        raise RuntimeError(
-            "Could not load at least one FITS image/table file from: {0}".
-            format(filename))
-
-    # get the image data
-    return image[0].data
-
-
-def nxsread(filename):
-    import h5py
-    nexus = h5py.File(filename, 'r')
-    data = nexus["tomography/sample_data"]
-    return data
-
-
-def imread(filename):
-    skio = import_skimage_io()
-    return skio.imread(filename)
 
 
 def import_pyfits():
@@ -249,72 +249,4 @@ def _alphanum_key_split(path_str):
     ]
 
 
-def parallel_move_data(input_data, output_data):
-    """
-    Forwarded function for parallel loading of data
-    :param input_data: shared_data
-    :param output_data: second_shared_data
-    """
-    output_data[:] = input_data[:]
 
-
-def do_stack_load_seq(data, new_data, img_shape, name):
-    """
-    Sequential version of loading the data.
-    This performs faster locally, but parallel performs faster on SCARF
-
-    :param data: shared array of data
-    :param new_data:
-    :param img_shape:
-    :param name:
-    :return: the loaded data
-    """
-    h.prog_init(img_shape[0], name)
-    for i in range(img_shape[0]):
-        data[i] = new_data[i]
-        h.prog_update()
-    h.prog_close()
-    return data
-
-
-def do_stack_load_par(data, new_data, cores, chunksize, name):
-    from parallel import two_shared_mem as ptsm
-    f = ptsm.create_partial(
-        parallel_move_data, fwd_function=ptsm.inplace_fwd_func)
-    ptsm.execute(new_data, data, f, cores, chunksize, name)
-    return data
-
-
-def load_stack(load_func,
-               file_name,
-               dtype,
-               name,
-               cores=None,
-               chunksize=None,
-               parallel_load=False):
-    """
-    Load a single image FILE that is expected to be a stack of images.
-
-    Parallel execution can be slower depending on the storage system.
-
-    ! On HDD I've found it's about 50% SLOWER, thus not recommended!
-
-    :param file_name :: list of image file paths given as strings
-    :param load_func :: file name extension if fixed (to set the expected image format)
-    :param dtype :: data type for the output numpy array
-    :param cores: Default:1, cores to be used if parallel_load is True
-    :param chunksize: chunk of work per worker
-    :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
-            This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
-    """
-    # create shared array
-    from parallel import utility as pu
-    new_data = load_func(file_name)
-    img_shape = new_data.shape
-    data = pu.create_shared_array(img_shape, dtype=dtype)
-
-    if parallel_load:
-        return do_stack_load_par(data, new_data, cores, chunksize, name)
-    else:
-        return do_stack_load_seq(data, new_data, img_shape, name)
