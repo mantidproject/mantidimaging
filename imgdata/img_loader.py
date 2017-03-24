@@ -68,15 +68,15 @@ def _load_sample_data(load_func,
                       cores=None,
                       chunksize=None,
                       parallel_load=False):
-    from imgdata.loader import load_stack
-
+    
     # determine what the loaded data was
     if len(img_shape) == 2:  # the loaded file was a single image
         sample_data = _load_files(load_func, input_file_names, img_shape,
                                   data_dtype, "Sample", cores, chunksize,
                                   parallel_load)
     elif len(img_shape) == 3:  # the loaded file was a stack of fits images
-        sample_data = load_stack(load_func, input_file_names[0], data_dtype,
+        from imgdata import stack_loader
+        sample_data = stack_loader.execute(load_func, input_file_names[0], data_dtype,
                                  "Sample", cores, chunksize, parallel_load)
     else:
         raise ValueError("Data loaded has invalid shape: {0}", img_shape)

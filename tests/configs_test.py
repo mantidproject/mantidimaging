@@ -55,10 +55,14 @@ class ConfigsTest(unittest.TestCase):
     def _compare_dict_to_str(self, class_dict, class_str, this_config):
         dictlen = len(class_dict)
         strlen = len(class_str.split('\n'))
+
+        # to be printed if error, we need to evaluate this first because for some reason
+        # it's not evaluated in the assert, so we just print {0} and {1} instead of replacing 
+        # them with the correct values
         self.assertEquals(
             dictlen, strlen,
-            "Different size of __dict__({0}) and __str__({1}). Some of the attributes in the "
-            + this_config + " are not documented!".format(dictlen, strlen))
+            "Different size of __dict__({0}) and __str__({1}). Some of the attributes in the {2} are not documented!".
+            format(dictlen, strlen, this_config))
 
 
 if __name__ == '__main__':
