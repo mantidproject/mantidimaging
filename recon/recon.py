@@ -157,6 +157,7 @@ def post_processing(config, recon_data):
 
     recon_data = outliers.execute(recon_data, config.post.outliers_threshold,
                                   config.post.outliers_radius, cores)
+
     recon_data = ring_removal.execute(
         recon_data, config.post.ring_removal,
         config.post.ring_removal_center_x, config.post.ring_removal_center_y,

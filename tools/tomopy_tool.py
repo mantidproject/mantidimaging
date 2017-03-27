@@ -116,4 +116,4 @@ class TomoPyTool(AbstractTool):
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
             format(recon.shape, recon.dtype))
 
-        return np.clip(recon, -1, 1)
+        return recon

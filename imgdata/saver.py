@@ -248,15 +248,13 @@ class Saver(object):
             data = np.swapaxes(data, 0, 1)
 
         if indices is not None:
-            start=indices[0]
-            end=indices[1]
+            start_index=indices[0]
         else:
-            start=0
-            end=data.shape[0]
+            start_index=0
 
         if img_format in ['nxs']:
             filename = os.path.join(output_dir, name_prefix + name_postfix)
-            write_nxs(data[start:end], filename + '.nxs', overwrite=overwrite_all)
+            write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
         else:
             if img_format in ['fit', 'fits']:
                 write_func = write_fits
@@ -264,11 +262,13 @@ class Saver(object):
                 # pass all other formats to skimage
                 write_func = write_img
 
-            h.prog_init(end-start, "Saving " + img_format + " images")
-            for idx in range(start, end):
+            h.prog_init(data.shape[0], "Saving " + img_format + " images")
+            # loop through images in data array
+            for idx in range(data.shape[0]):
                 # use the custom index if one is provided
                 index = custom_idx if custom_idx is not None else str(
-                    idx).zfill(zfill_len)
+                    start_index).zfill(zfill_len)
+                start_index += 1
                 # create the file name, and use the format as extension
                 name = name_prefix + index + name_postfix + "." + img_format
 
