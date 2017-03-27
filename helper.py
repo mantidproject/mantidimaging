@@ -8,7 +8,6 @@ verbosity: Default 2, existing levels:
     2 - Normal verbosity, will output each step and execution time
     3 - High verbosity, will output the step name, execution time and memory usage before and after each step
 """
-from configs.recon_config import ReconstructionConfig
 
 # do we want to wrap this in a global class? 
 # so that helper will just store the funcitonality, but helper_data will store the actual data?
@@ -33,6 +32,7 @@ _readme = None
 
 
 def check_config_class(config):
+    from configs.recon_config import ReconstructionConfig
     assert isinstance(
         config, ReconstructionConfig
     ), "The provided config is not of type ReconstructionConfig and cannot be used!"
@@ -85,6 +85,7 @@ def debug_print_memory_usage_linux(message=""):
 def progress_available():
     try:
         from tqdm import tqdm
+        return tqdm
     except ImportError:
         tomo_print_note("Progress bar library TQDM not available. "
                         "To install locally please use pip install tqdm. "

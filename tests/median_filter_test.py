@@ -14,8 +14,6 @@ class MedianTest(unittest.TestCase):
     def test_not_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        err_msg = "TEST NOT EXECUTED :: Running median_filter with size {0}, mode {1} and order {2} changed the data!"
-
         size = None
         mode = None
         result = self.alg.execute(images, size, mode)
@@ -27,7 +25,7 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
         result = self.alg.execute(images, size, mode)
-        th.assert_not_equals(images, control)
+        th.assert_not_equals(result, control)
 
     def test_executed_no_helper_seq(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -37,7 +35,7 @@ class MedianTest(unittest.TestCase):
         th.switch_mp_off()
         result = self.alg.execute(images, size, mode)
         th.switch_mp_on()
-        th.assert_not_equals(images, control)
+        th.assert_not_equals(result, control)
 
 
 if __name__ == '__main__':

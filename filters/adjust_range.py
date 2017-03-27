@@ -5,7 +5,10 @@ from __future__ import (absolute_import, division, print_function)
 
 
 def apply_filter(tool, preproc_data, cfg):
-    if False:
-        self.tomo_print_timed_start("Starting adjust range...")
-        preproc_data = tomopy.misc.corr.adjust_range(preproc_data)
-        self.tomo_print_timed_stop("Finished adjusting range.")
+    raise NotImplementedError(
+        "This filter is not implemented and should not be used")
+
+    # if False:
+    #     self.tomo_print_timed_start("Starting adjust range...")
+    #     preproc_data = tomopy.misc.corr.adjust_range(preproc_data)
+    #     self.tomo_print_timed_stop("Finished adjusting range.")

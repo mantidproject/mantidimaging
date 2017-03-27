@@ -18,8 +18,8 @@ def create_shared_array(shape, dtype=np.float32):
         ctype = ctypes.c_double
         dtype = np.float64
 
-    shared_array_base = multiprocessing.Array(
-        ctype, shape[0] * shape[1] * shape[2])
+    shared_array_base = multiprocessing.Array(ctype,
+                                              shape[0] * shape[1] * shape[2])
 
     # create a numpy array from shared array
     data = np.frombuffer(shared_array_base.get_obj(), dtype=dtype)
@@ -28,15 +28,19 @@ def create_shared_array(shape, dtype=np.float32):
 
 def multiprocessing_available():
     try:
-        import multiprocessing
+        # ignore error about unused import
+        import multiprocessing  # noqa: F401
         return True
     except ImportError:
         return False
 
+
 def get_cores():
     import multiprocessing
     # get max cores on the system as default
+
     return multiprocessing.cpu_count()
+
 
 def generate_indices(num_images):
     """
