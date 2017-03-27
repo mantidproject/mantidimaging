@@ -52,6 +52,22 @@ def supported_formats():
 
     return avail_list
 
+def read_in_shape(config):
+    input_path = config.func.input_path
+    input_path_flat = config.func.input_path_flat
+    input_path_dark = config.func.input_path_dark
+    img_format = config.func.in_format
+    data_dtype = config.func.data_dtype
+    cores = config.func.cores
+    chunksize = config.func.chunksize
+    parallel_load = config.func.parallel_load   
+
+    input_file_names = get_file_names(input_path, img_format)
+    sample, flat, dark = load(input_path, input_path_flat, input_path_dark,
+                              img_format, data_dtype, cores, chunksize,
+                              parallel_load,indices=[0,1])
+    return (len(input_file_names),) + sample.shape[1:]
+    
 
 def load_data(config):
     """
@@ -72,10 +88,11 @@ def load_data(config):
     cores = config.func.cores
     chunksize = config.func.chunksize
     parallel_load = config.func.parallel_load
+    indices = config.func.indices
 
     sample, flat, dark = load(input_path, input_path_flat, input_path_dark,
                               img_format, data_dtype, cores, chunksize,
-                              parallel_load)
+                              parallel_load,indices=indices)
 
     h.pstop("Data loaded. Shape of raw data: {0}, dtype: {1}.".format(
         sample.shape, sample.dtype))
@@ -93,7 +110,8 @@ def load(input_path=None,
          cores=None,
          chunksize=None,
          parallel_load=False,
-         file_names=None):
+         file_names=None,
+         indices=None):
     """
     Loads a stack, including sample, white and dark images.
 
@@ -119,23 +137,23 @@ def load(input_path=None,
     else:
         input_file_names = file_names
 
-    if img_format in ['fits', 'fit']:
-        from imgdata import img_loader
-        sample, flat, dark = img_loader.execute(
-            fitsread, input_file_names, input_path_flat, input_path_dark,
-            img_format, dtype, cores, chunksize, parallel_load)
-    elif img_format in ['nxs']:
+    if img_format in ['nxs']:
         from imgdata import stack_loader
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
         sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load", cores,
-                            chunksize, parallel_load)
+                            chunksize, parallel_load, indices)
         flat = dark = None
     else:
+        if img_format in ['fits', 'fit']:
+            load_func=fitsread
+        elif img_format in ['tiff', 'tif']:
+            load_func=imread
+        
         from imgdata import img_loader
         sample, flat, dark = img_loader.execute(
-            imread, input_file_names, input_path_flat, input_path_dark,
-            img_format, dtype, cores, chunksize, parallel_load)
+            load_func, input_file_names, input_path_flat, input_path_dark,
+            img_format, dtype, cores, chunksize, parallel_load, indices)
 
     h.check_data_stack(sample)
 

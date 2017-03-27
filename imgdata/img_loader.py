@@ -8,7 +8,7 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, data_dtype, cores, chunksize, parallel_load):
+            img_format, data_dtype, cores, chunksize, parallel_load, indices):
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -24,14 +24,16 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
         '>f2' - float16
         '>f4' - float32
 
-    :param load_func :: function to be used to load the files
-    :param input_file_names :: path to sample images. Can be a file or directory
-    :param input_path_flat :: (optional) path to open beam / flat image(s). Can be a file or directory
-    :param input_path_dark :: (optional) path to dark field image(s). Can be a file or directory
-    :param img_format :: file extension (typically 'tiff', 'tif', 'fits', or 'fit' (not including the dot)
+    :param load_func: function to be used to load the files
+    :param input_file_names: path to sample images. Can be a file or directory
+    :param input_path_flat: (optional) path to open beam / flat image(s). Can be a file or directory
+    :param input_path_dark: (optional) path to dark field image(s). Can be a file or directory
+    :param img_format: file extension (typically 'tiff', 'tif', 'fits', or 'fit' (not including the dot)
     :param data_dtype: the type in which the data will be loaded, could be float16, float32, float64, uint16
     :param cores: Cores to be used for parallel loading
     :param chunksize: Chunk of work that each worker will receive
+    :param parallel_load: Do the loading with parallel processes. 
+    :param indices: Which files will be loaded
 
     :return :: 3 numpy arrays: input data volume (3D), average of flatt images (2D),
                average of dark images(2D)
@@ -39,16 +41,17 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
     # Assumed that all images have the same size and properties as the first.
     first_sample_img = load_func(input_file_names[0])
+    
+    if indices is not None and len(indices) == 2:
+        input_file_names = input_file_names[indices[0]:indices[1]]
 
     # get the shape of all images
     img_shape = first_sample_img.shape
-
-    sample_data = _load_sample_data(load_func, input_file_names, img_shape,
-                                    data_dtype, cores, chunksize,
-                                    parallel_load)
-
+    
+    # we load the flat and dark first, because if they fail we don't want to
+    # fail after we've loaded a big stack into memory
     # this removes the image number dimension, if we loaded a stack of images
-    img_shape = img_shape[1:] if len(img_shape) > 2 else img_shape
+    shape_2d = img_shape[1:] if len(img_shape) > 2 else img_shape
 
     flat_avg = _load_and_avg_data(load_func, input_path_flat, img_shape,
                                   img_format, data_dtype, "Flat", cores,
@@ -57,6 +60,11 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     dark_avg = _load_and_avg_data(load_func, input_path_dark, img_shape,
                                   img_format, data_dtype, "Dark", cores,
                                   chunksize, parallel_load)
+
+    sample_data = _load_sample_data(load_func, input_file_names, img_shape,
+                                    data_dtype, cores, chunksize,
+                                    parallel_load)
+
 
     return sample_data, flat_avg, dark_avg
 

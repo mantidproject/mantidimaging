@@ -49,23 +49,35 @@ def main():
                 stdoutToServer=True,
                 stderrToServer=True)
 
+    thingy_to_execute = None
     if config.func.gui:
         # this has the highest priority
         from gui import gui
-        gui.execute(config)
+        thingy_to_execute = gui.execute
     elif config.func.imopr:
         from imopr import imopr
-        res = imopr.execute(config)
+        thingy_to_execute = imopr.execute
     elif config.func.aggregate:
         from aggregate import aggregate
-        res = aggregate.execute(config)
+        thingy_to_execute = aggregate.execute
     elif config.func.convert:
         from convert import convert
-        res = convert.execute(config)
+        thingy_to_execute = convert.execute
     else:
         from recon import recon
         cmd_line = " ".join(sys.argv)
-        res = recon.execute(config, cmd_line)
+        # dynamically attach the parameter used in recon
+        config.cmd_line = cmd_line
+        thingy_to_execute = recon.execute
+
+    import helper as h
+    h.total_execution_timer()
+    if not config.func.split:
+        res = thingy_to_execute(config)
+    else:
+        from algorithms import execution_splitter
+        res = execution_splitter.execute(config, thingy_to_execute)
+    h.total_execution_timer()
 
     return res
 

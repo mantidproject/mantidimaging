@@ -79,6 +79,7 @@ class Saver(object):
         self._img_format = config.func.out_format
         self._overwrite_all = config.func.overwrite_all
         self._swap_axes = config.func.swap_axes
+        self._indices = config.func.indices
 
         self._preproc_dir = config.func.preproc_subdir
         self._save_preproc = config.func.save_preproc
@@ -138,7 +139,8 @@ class Saver(object):
             overwrite_all=self._overwrite_all,
             zfill_len=zfill_len,
             name_postfix=name_postfix,
-            custom_idx=custom_index)
+            custom_idx=custom_index,
+            indices=self._indices)
 
         h.pstop("Finished saving single image.")
 
@@ -160,7 +162,7 @@ class Saver(object):
                      format(preproc_dir, data.dtype))
 
             self.save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
-                      self._img_format, self._overwrite_all)
+                      self._img_format, self._overwrite_all, indices=self._indices)
 
             h.pstop("Saving pre-processed images finished.")
 
@@ -191,11 +193,10 @@ class Saver(object):
             format(out_recon_dir))
 
         self.save(data, out_recon_dir, self._out_slices_prefix, self._swap_axes,
-                  self._img_format, self._overwrite_all)
+                  self._img_format, self._overwrite_all, indices=self._indices)
 
         # Sideways slices:
         if self._save_horiz_slices:
-            # try np swapaxis and save that !
             out_horiz_dir = os.path.join(out_recon_dir,
                                          self._out_horiz_slices_subdir)
 
@@ -219,7 +220,8 @@ class Saver(object):
              overwrite_all=False,
              custom_idx=None,
              zfill_len=6,
-             name_postfix=''):
+             name_postfix='',
+             indices=None):
         """
         Save image volume (3d) into a series of slices along the Z axis.
         The Z axis in the script is the ndarray.shape[0].
@@ -227,7 +229,14 @@ class Saver(object):
         :param data: data as images/slices stores in numpy array
         :param output_dir: where to save the files
         :param name_prefix: prefix for the names of the images - an index is appended to this prefix
+        :param swap_axes: the 0 and 1 axis of the images will be swapped if this flag is specified
+        :param img_format: the file format of the saved out images
         :param overwrite_all: Overwrite any existing images with conflicting names
+        :param custom_idx: Custom index to be used for the file name, instead of increasing numbers
+        :param zfill_len: If custom_idx is not specified, the name will be padded with zeros
+        :param name_postfix: Postfix for the name after the index
+        :param indices: Specify the start and end range of the indices with which the files will be named. 
+                        Only works if custom_idx is not specified.
 
         """
 
@@ -238,9 +247,16 @@ class Saver(object):
         if swap_axes:
             data = np.swapaxes(data, 0, 1)
 
+        if indices is not None:
+            start=indices[0]
+            end=indices[1]
+        else:
+            start=0
+            end=data.shape[0]
+
         if img_format in ['nxs']:
             filename = os.path.join(output_dir, name_prefix + name_postfix)
-            write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
+            write_nxs(data[start:end], filename + '.nxs', overwrite=overwrite_all)
         else:
             if img_format in ['fit', 'fits']:
                 write_func = write_fits
@@ -248,8 +264,8 @@ class Saver(object):
                 # pass all other formats to skimage
                 write_func = write_img
 
-            h.prog_init(data.shape[0], "Saving " + img_format + " images")
-            for idx in range(0, data.shape[0]):
+            h.prog_init(end-start, "Saving " + img_format + " images")
+            for idx in range(start, end):
                 # use the custom index if one is provided
                 index = custom_idx if custom_idx is not None else str(
                     idx).zfill(zfill_len)

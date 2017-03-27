@@ -38,12 +38,13 @@ def do_stack_load_par(data, new_data, cores, chunksize, name):
 
 
 def execute(load_func,
-               file_name,
-               dtype,
-               name,
-               cores=None,
-               chunksize=None,
-               parallel_load=False):
+            file_name,
+            dtype,
+            name,
+            cores=None,
+            chunksize=None,
+            parallel_load=False,
+            indices=None):
     """
     Load a single image FILE that is expected to be a stack of images.
 
@@ -63,6 +64,10 @@ def execute(load_func,
     # create shared array
     from parallel import utility as pu
     new_data = load_func(file_name)
+
+    if indices is not None and len(indices) == 2:
+        new_data = new_data[indices[0]:indices[1]]
+
     img_shape = new_data.shape
     data = pu.create_shared_array(img_shape, dtype=dtype)
 

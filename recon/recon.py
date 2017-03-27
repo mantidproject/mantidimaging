@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 import helper as h
 
 
-def execute(config, cmd_line):
+def execute(config):
     """
     Run the whole reconstruction. The steps in the process are:
         - load the data
@@ -21,7 +21,6 @@ def execute(config, cmd_line):
     saver = Saver(config)
 
     h.initialise(config, saver)
-    h.total_execution_timer()
     h.run_import_checks(config)
     h.check_config_integrity(config)
 
@@ -35,7 +34,7 @@ def execute(config, cmd_line):
 
     from readme import Readme
     readme = Readme(config, saver)
-    readme.begin(cmd_line, config)
+    readme.begin(config.cmd_line, config)
     h.set_readme(readme)
 
     from imgdata import loader
@@ -61,7 +60,6 @@ def execute(config, cmd_line):
 
     # Save output from the reconstruction
     saver.save_recon_output(sample)
-    h.total_execution_timer()
     readme.end()
     return sample
 

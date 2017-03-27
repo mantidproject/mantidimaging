@@ -82,6 +82,12 @@ class FunctionalConfig(object):
         self.convert = False
         self.convert_prefix = 'converted_images'
 
+        # which indices of images to load
+        self.split = False
+        self.indices = None
+        self.max_memory = None
+        self.max_ratio = 1.
+
         # start the GUI
         self.gui = False
 
@@ -123,6 +129,7 @@ class FunctionalConfig(object):
                + "Aggregate single folder output: {0}\n".format(str(self.aggregate_single_folder_output)) \
                + "Convert images mode: {0}\n".format(str(self.convert)) \
                + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix)) \
+               + "Which images will be loaded: {0}\n".format(str(self.indices)) \
                + "Running the GUI: {0}\n".format(str(self.gui))
 
     def setup_parser(self, parser):
@@ -445,6 +452,7 @@ class FunctionalConfig(object):
             "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
             "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
         )
+
         grp_recon.add_argument(
             "--cor-slices",
             required=False,
@@ -454,6 +462,38 @@ class FunctionalConfig(object):
             help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
             "The number of slices passed here MUST be the same as the number of CORs provided.\n"
             "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
+        )
+
+        grp_recon.add_argument(
+            "--split",
+            required=False,
+            action='store_true',
+            default=self.split,
+            help='Split execution based on max memory and ratio of data size to max memory.'
+        )
+
+        grp_recon.add_argument(
+            "--indices",
+            required=False,
+            nargs='*',
+            type=str,  # this is string but will be later converted to ints in self.update()
+            default=self.indices,
+            help="Specify which indices you want to be loaded. If none is provided the whole stack will be loaded."
+        )
+
+        grp_recon.add_argument(
+            "--max-memory",
+            required=False,
+            type=int,  # this is string but will be later converted to ints in self.update()
+            default=self.max_memory,
+            help="Specify the maximum memory allowed to the reconstruction.")
+
+        grp_recon.add_argument(
+            "--max-ratio",
+            required=False,
+            type=float,  # this is string but will be later converted to ints in self.update()
+            default=self.max_ratio,
+            help="Specify the maximum ratio of necessary memory to maximum memory. This needs to be in range of 0 < ratio < 1"
         )
 
         return parser
@@ -524,4 +564,10 @@ class FunctionalConfig(object):
         self.aggregate = args.aggregate
         self.aggregate_angles = args.aggregate_angles
         self.aggregate_single_folder_output = args.aggregate_single_folder_output
+
+        self.split = args.split
+        self.indices = args.indices
+        self.max_memory = args.max_memory
+        self.max_ratio = args.max_ratio
+
         self.gui = args.gui

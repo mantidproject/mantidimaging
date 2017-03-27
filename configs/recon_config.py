@@ -64,6 +64,11 @@ class ReconstructionConfig(object):
             # subtract from all the cors
             self.func.cors = map(lambda cor: cor - left, self.func.cors)
 
+        if self.func.indices:
+            self.func.indices = map(lambda i: int(i), self.func.indices)
+            if len(self.func.indices) < 2:
+                self.func.indices = [0, self.func.indices[0]]
+
         # if we're doing only postprocessing then we should skip pre-processing
         if self.func.only_postproc:
             self.func.reuse_preproc = True

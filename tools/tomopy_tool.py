@@ -85,9 +85,9 @@ class TomoPyTool(AbstractTool):
         h.tomo_print(
             "Generating CORs for data with shape {0}".format(sample.shape))
 
-        cors = np.interp(
-            list(range(sample.shape[0])), config.func.cor_slices,
-            config.func.cors)
+        cors = config.func.cors
+
+        print(cors, "len", len(cors))
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
