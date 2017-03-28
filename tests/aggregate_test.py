@@ -1,6 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
-import numpy.testing as npt
 from tests import test_helper as th
 
 
@@ -124,7 +123,7 @@ class AggregateTest(unittest.TestCase):
                     img_format=saver._img_format)
 
             # aggregate them
-            from aggregate import aggregate
+            from core.aggregate import aggregate
             conf = self.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (aggregate_angles is 5 so we subtract 1)
@@ -207,7 +206,7 @@ class AggregateTest(unittest.TestCase):
                     img_format=saver._img_format)
 
             # aggregate them
-            from aggregate import aggregate
+            from core.aggregate import aggregate
             conf = self.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (starts from 0 so -1)
