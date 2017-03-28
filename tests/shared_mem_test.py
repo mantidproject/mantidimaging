@@ -26,7 +26,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[0, 4, 0] != img[0, 4, 0]
         assert expected[6, 0, 1] != img[6, 0, 1]
         # create partial
-        from parallel import shared_mem as psm
+        from core.parallel import shared_mem as psm
         f = psm.create_partial(
             add_inplace, fwd_func=psm.inplace_fwd_func, add_arg=add_arg)
         # execute parallel
@@ -45,7 +45,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[0, 4, 0] != img[0, 4, 0]
         assert expected[6, 0, 1] != img[6, 0, 1]
         # create partial
-        from parallel import shared_mem as psm
+        from core.parallel import shared_mem as psm
         f = psm.create_partial(
             return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
         # execute parallel
@@ -69,7 +69,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        from parallel import shared_mem as psm
+        from core.parallel import shared_mem as psm
         f = psm.create_partial(
             add_inplace, fwd_func=psm.inplace_fwd_func, add_arg=add_arg)
         # execute parallel
@@ -90,7 +90,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[0, 4, 0] != img[0, 4, 0]
         assert expected[6, 0, 1] != img[6, 0, 1]
         # create partial
-        from parallel import shared_mem as psm
+        from core.parallel import shared_mem as psm
         f = psm.create_partial(
             return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
         # execute parallel

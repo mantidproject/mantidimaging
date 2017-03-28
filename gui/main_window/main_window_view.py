@@ -14,7 +14,7 @@ class ImgpyMainWindowView(QMainWindow):
         self.presenter = ImgpyMainWindowPresenter(self, config)
 
         # load some sample data, currently provided from the GUI
-        from imgdata import loader
+        from core.imgdata import loader
         stack = loader.load_data(config)[0]
 
         from gui.stack_visualiser.stack_visualiser_view import ImgpyStackVisualiserView

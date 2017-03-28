@@ -8,7 +8,7 @@ class CropCoordsTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 
-        from filters import crop_coords
+        from core.filters import crop_coords
         self.alg = crop_coords
 
     def test_not_executed_volume(self):

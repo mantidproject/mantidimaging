@@ -24,10 +24,10 @@ from __future__ import (absolute_import, division, print_function)
 
 
 def grab_full_config():
-    from configs.functional_config import FunctionalConfig
-    from configs.postproc_config import PostProcConfig
-    from configs.preproc_config import PreProcConfig
-    from configs.recon_config import ReconstructionConfig
+    from core.configs.functional_config import FunctionalConfig
+    from core.configs.postproc_config import PostProcConfig
+    from core.configs.preproc_config import PreProcConfig
+    from core.configs.recon_config import ReconstructionConfig
 
     import argparse
     from argparse import RawTextHelpFormatter
@@ -45,7 +45,7 @@ def grab_full_config():
     parser = pre_args.setup_parser(parser)
 
     # setup args for the filters
-    from filters import cli_registrator
+    from core.filters import cli_registrator
     grp_filters = parser.add_argument_group("Filter options")
     cli_registrator.register_into(grp_filters)
 

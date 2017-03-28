@@ -8,7 +8,7 @@ class RebinTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
-        from filters import rebin
+        from core.filters import rebin
         self.alg = rebin
 
     def test_not_executed(self):

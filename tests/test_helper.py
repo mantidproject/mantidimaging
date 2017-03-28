@@ -20,7 +20,7 @@ def gen_img_shared_array_and_copy(shape=g_shape):
 
 
 def gen_img_shared_array(shape=g_shape):
-    from parallel import utility as pu
+    from core.parallel import utility as pu
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     d[:] = n[:]
@@ -29,7 +29,7 @@ def gen_img_shared_array(shape=g_shape):
 
 
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    from parallel import utility as pu
+    from core.parallel import utility as pu
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
     d[:] = n[:]
@@ -70,7 +70,7 @@ def switch_mp_off():
     This function does very bad things that should never be replicated.
     But it's a unit test so it's fine.
     """
-    from parallel import utility as pu
+    from core.parallel import utility as pu
     # backup function so we can restore it
     global backup_mp_avail
     backup_mp_avail = pu.multiprocessing_available
@@ -87,6 +87,6 @@ def switch_mp_on():
     This function does very bad things that should never be replicated.
     But it's a unit test so it's fine.
     """
-    from parallel import utility as pu
+    from core.parallel import utility as pu
     # restore the original backed up function from switch_mp_off
     pu.multiprocessing_available = backup_mp_avail

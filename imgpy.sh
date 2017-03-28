@@ -1,2 +1,2 @@
 #!/bin/sh
-python /home/matt/Documents/imgpy/main.py "$@"
+/home/matt/anaconda2/bin/python /home/matt/Documents/imgpy/main.py "$@"

@@ -8,7 +8,7 @@ class NormaliseByAirRegionTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(NormaliseByAirRegionTest, self).__init__(*args, **kwargs)
 
-        from filters import normalise_by_air_region
+        from core.filters import normalise_by_air_region
         self.alg = normalise_by_air_region
 
     def test_not_executed_no_crop_before_norm(self):

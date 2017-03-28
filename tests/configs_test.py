@@ -10,28 +10,28 @@ class ConfigsTest(unittest.TestCase):
     """
 
     def test_preproc(self):
-        from configs.preproc_config import PreProcConfig
+        from core.configs.preproc_config import PreProcConfig
         preproc = PreProcConfig()
         self._compare_dict_to_str(preproc.__dict__,
                                   str(preproc), "Pre-processing config")
 
     def test_postproc(self):
-        from configs.postproc_config import PostProcConfig
+        from core.configs.postproc_config import PostProcConfig
         postproc = PostProcConfig()
         self._compare_dict_to_str(postproc.__dict__,
                                   str(postproc), "Post-processing config")
 
     def test_functional(self):
-        from configs.functional_config import FunctionalConfig
-        from configs.postproc_config import PostProcConfig
-        from configs.preproc_config import PreProcConfig
+        from core.configs.functional_config import FunctionalConfig
+        from core.configs.postproc_config import PostProcConfig
+        from core.configs.preproc_config import PreProcConfig
 
         postproc = PostProcConfig()
         preproc = PreProcConfig()
         fc = FunctionalConfig()
         self._compare_dict_to_str(fc.__dict__, str(fc), "Functional config")
 
-        from configs.recon_config import ReconstructionConfig as RC
+        from core.configs.recon_config import ReconstructionConfig as RC
         # running without --input-path
         fc.input_path = None
 

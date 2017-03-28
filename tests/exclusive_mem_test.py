@@ -22,7 +22,7 @@ class ExclusiveMemTest(unittest.TestCase):
         assert expected[0, 4, 0] != img[0, 4, 0]
         assert expected[6, 0, 1] != img[6, 0, 1]
         # create partial
-        from parallel import exclusive_mem as esm
+        from core.parallel import exclusive_mem as esm
         f = esm.create_partial(return_from_func, add_arg=add_arg)
         # execute parallel
         img = esm.execute(img, f, name="Exclusive mem test")

@@ -9,12 +9,12 @@ class DataTest(unittest.TestCase):
         super(DataTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from configs.recon_config import ReconstructionConfig
+        from core.configs.recon_config import ReconstructionConfig
         self.config = ReconstructionConfig.empty_init()
         self.config.func.verbosity = 0
 
     def create_saver(self):
-        from imgdata.saver import Saver
+        from core.imgdata.saver import Saver
         return Saver(self.config)
 
     def assert_files_exist(self,
@@ -53,7 +53,7 @@ class DataTest(unittest.TestCase):
         import os
         import shutil
         with tempfile.NamedTemporaryFile() as f:
-            from imgdata.loader import get_file_names
+            from core.imgdata.loader import get_file_names
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
 
@@ -236,14 +236,26 @@ class DataTest(unittest.TestCase):
             saver._img_format = img_format
             saver._save_preproc = True
             saver._swap_axes = False
+            # this only affects enumeration
             saver._indices = saver_indices
             data_as_stack = False
 
+            # saver indices only affects the enumeration of the data
+            if saver_indices:
+                # crop the original images to make sure the tests is correct
+                images = images[saver_indices[0]:saver_indices[1]]
+
             saver.save_preproc_images(images)
 
+            # create the same path as the saved out preproc images
             preproc_output_path = saver._output_path + '/pre_processed/'
 
-            from imgdata import loader
+            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+                                    saver._img_format, data_as_stack,
+                                    images.shape[0], loader_indices or
+                                    saver_indices)
+
+            from core.imgdata import loader
             # this does not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 preproc_output_path,
@@ -254,15 +266,14 @@ class DataTest(unittest.TestCase):
                 parallel_load=parallel,
                 indices=loader_indices)
 
-            if loader_indices or saver_indices:
+            if loader_indices:
                 assert len(
                     sample
                 ) == expected_len, "The length of the loaded data does not match the expected length! Expected: {0}, Actual {1}".format(
                     expected_len, len(sample))
 
-                crop_indices = loader_indices if loader_indices is not None else saver_indices
                 # crop the original images to make sure the tests is correct
-                images = images[crop_indices[0]:crop_indices[1]]
+                images = images[loader_indices[0]:loader_indices[1]]
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
@@ -280,17 +291,9 @@ class DataTest(unittest.TestCase):
         self.do_preproc_nxs(
             parallel=False, loader_indices=[0, 4], expected_len=4)
 
-    def test_save_nxs_seq_saver_indices_0_4(self):
-        self.do_preproc_nxs(
-            parallel=False, saver_indices=[0, 4], expected_len=4)
-
     def test_save_nxs_seq_indices_5_9(self):
         self.do_preproc_nxs(
             parallel=False, loader_indices=[5, 9], expected_len=4)
-
-    def test_save_nxs_seq_saver_indices_5_9(self):
-        self.do_preproc_nxs(
-            parallel=False, saver_indices=[5, 9], expected_len=4)
 
     def test_save_nxs_par(self):
         self.do_preproc_nxs(parallel=True)
@@ -299,24 +302,19 @@ class DataTest(unittest.TestCase):
         self.do_preproc_nxs(
             parallel=False, loader_indices=[6, 7], expected_len=1)
 
-    def test_save_nxs_par_saver_indices_6_7(self):
-        self.do_preproc_nxs(
-            parallel=False, saver_indices=[6, 7], expected_len=1)
-
     def test_save_nxs_par_indices_3_4(self):
         self.do_preproc_nxs(
             parallel=False, loader_indices=[3, 4], expected_len=1)
-
-    def test_save_nxs_par_saver_indices_3_4(self):
-        self.do_preproc_nxs(
-            parallel=False, saver_indices=[3, 4], expected_len=1)
 
     def do_preproc_nxs(self,
                        save_out_img_format='nxs',
                        parallel=False,
                        loader_indices=None,
-                       expected_len=None,
-                       saver_indices=None):
+                       expected_len=None):
+        """
+        There are no tests with saver indices, because this only saves out one file,
+        and the saver indices are only used for enumeration, so it doesn't make sense to test it
+        """
         images = th.gen_img_shared_array_with_val(42.)
         # this is different from do_preproc as we need to
         # save out flat and dark images, and they will be loaded
@@ -332,15 +330,19 @@ class DataTest(unittest.TestCase):
             saver._save_preproc = True
             saver._img_format = save_out_img_format
             saver._swap_axes = False
-            saver._indices = saver_indices
             data_as_stack = True
 
             saver.save_preproc_images(images)
 
+            # create the same path as the saved out preproc images
             preproc_output_path = saver._output_path + '/pre_processed/'
 
+            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+                                    saver._img_format, data_as_stack,
+                                    images.shape[0])
+
             # this does not load any flats or darks as they were not saved out
-            from imgdata import loader
+            from core.imgdata import loader
             # this is a race condition versus the saving from the saver
             # when load is executed in parallel, the 8 threads try to 
             # load the data too fast, and the data loaded is corrupted
@@ -353,15 +355,14 @@ class DataTest(unittest.TestCase):
                 parallel_load=parallel,
                 indices=loader_indices)
 
-            if loader_indices or saver_indices:
+            if loader_indices:
                 assert len(
                     sample
                 ) == expected_len, "The length of the loaded data does not match the expected length! Expected: {0}, Actual {1}".format(
                     expected_len, len(sample))
 
-                crop_indices = loader_indices if loader_indices is not None else saver_indices
                 # crop the original images to make sure the tests is correct
-                images = images[crop_indices[0]:crop_indices[1]]
+                images = images[loader_indices[0]:loader_indices[1]]
 
             th.assert_equals(sample, images)
             th.assert_equals(flat_loaded, flat)
@@ -406,6 +407,7 @@ class DataTest(unittest.TestCase):
             saver._img_format = img_format
             saver._swap_axes = False
             saver._save_horiz_slices = horiz_slices
+            # this only affects enumeration
             saver._indices = saver_indices
             data_as_stack = False
 

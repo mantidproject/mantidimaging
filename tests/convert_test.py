@@ -14,12 +14,12 @@ class ConvertTest(unittest.TestCase):
         super(ConvertTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from configs.recon_config import ReconstructionConfig
+        from core.configs.recon_config import ReconstructionConfig
         self.config = ReconstructionConfig.empty_init()
         self.config.func.verbosity = 0
 
     def create_saver(self):
-        from imgdata.saver import Saver
+        from core.imgdata.saver import Saver
         return Saver(self.config)
 
     def delete_files(self, prefix=''):
@@ -27,7 +27,7 @@ class ConvertTest(unittest.TestCase):
         import os
         import shutil
         with tempfile.NamedTemporaryFile() as f:
-            from imgdata.loader import get_file_names
+            from core.imgdata.loader import get_file_names
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
 
@@ -107,7 +107,7 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from convert import convert
+            from core.convert import convert
             conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -120,7 +120,7 @@ class ConvertTest(unittest.TestCase):
 
             # load them back
             # compare data to original
-            from imgdata import loader
+            from core.imgdata import loader
             # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 converted_output_path,
@@ -169,7 +169,7 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from convert import convert
+            from core.convert import convert
             conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -182,7 +182,7 @@ class ConvertTest(unittest.TestCase):
 
             # load them back
             # compare data to original
-            from imgdata import loader
+            from core.imgdata import loader
             # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 converted_output_path,
@@ -230,7 +230,7 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from convert import convert
+            from core.convert import convert
             conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -242,7 +242,7 @@ class ConvertTest(unittest.TestCase):
             convert.execute(conf)
             # load them back
             # compare data to original
-            from imgdata import loader
+            from core.imgdata import loader
             # this does not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 converted_output_path,

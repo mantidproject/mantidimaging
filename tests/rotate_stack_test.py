@@ -8,7 +8,7 @@ class RotateStackTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(RotateStackTest, self).__init__(*args, **kwargs)
 
-        from filters import rotate_stack
+        from core.filters import rotate_stack
         self.alg = rotate_stack
 
     def test_not_executed(self):
@@ -34,6 +34,7 @@ class RotateStackTest(unittest.TestCase):
         rotation = 1  # once clockwise
         images[:, 0, 0] = 42  # set all images at 0,0 to 42
         result = self.alg.execute(images, rotation)[0]
+        w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)
 
 

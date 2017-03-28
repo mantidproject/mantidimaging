@@ -8,7 +8,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(NormaliseByFlatDarkTest, self).__init__(*args, **kwargs)
 
-        from filters import normalise_by_flat_dark
+        from core.filters import normalise_by_flat_dark
         self.alg = normalise_by_flat_dark
 
     def test_not_executed(self):

@@ -8,7 +8,7 @@ class StripeRemovalTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(StripeRemovalTest, self).__init__(*args, **kwargs)
 
-        from filters import stripe_removal
+        from core.filters import stripe_removal
         self.alg = stripe_removal
 
     def test_not_executed(self):

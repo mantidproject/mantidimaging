@@ -32,7 +32,7 @@ _readme = None
 
 
 def check_config_class(config):
-    from configs.recon_config import ReconstructionConfig
+    from core.configs.recon_config import ReconstructionConfig
     assert isinstance(
         config, ReconstructionConfig
     ), "The provided config is not of type ReconstructionConfig and cannot be used!"
@@ -96,7 +96,7 @@ def run_import_checks(config):
     """
     Run the import checks to notify the user which features are available in the execution.
     """
-    from parallel import utility as pu
+    from core.parallel import utility as pu
     progress_available()
 
     if not pu.multiprocessing_available():
@@ -325,7 +325,7 @@ def save_debug(sample, config, flat, dark, path_append, *args):
         if a is None or a is False:
             return
 
-    from imgdata.saver import Saver
+    from core.imgdata.saver import Saver
 
     saver = Saver(config)
     saver._img_format = 'fits'  # force fits files

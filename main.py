@@ -55,13 +55,13 @@ def main():
         from gui import gui
         thingy_to_execute = gui.execute
     elif config.func.imopr:
-        from imopr import imopr
+        from core.imopr import imopr
         thingy_to_execute = imopr.execute
     elif config.func.aggregate:
         from aggregate import aggregate
         thingy_to_execute = aggregate.execute
     elif config.func.convert:
-        from convert import convert
+        from core.convert import convert
         thingy_to_execute = convert.execute
     else:
         from recon import recon

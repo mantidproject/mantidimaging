@@ -8,7 +8,7 @@ class OutliersTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(OutliersTest, self).__init__(*args, **kwargs)
 
-        from filters import outliers
+        from core.filters import outliers
         self.alg = outliers
 
     def test_not_executed(self):

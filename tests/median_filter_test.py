@@ -8,7 +8,7 @@ class MedianTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(MedianTest, self).__init__(*args, **kwargs)
 
-        from filters import median_filter
+        from core.filters import median_filter
         self.alg = median_filter
 
     def test_not_executed(self):
