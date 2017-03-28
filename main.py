@@ -58,13 +58,13 @@ def main():
         from core.imopr import imopr
         thingy_to_execute = imopr.execute
     elif config.func.aggregate:
-        from aggregate import aggregate
+        from core.aggregate import aggregate
         thingy_to_execute = aggregate.execute
     elif config.func.convert:
         from core.convert import convert
         thingy_to_execute = convert.execute
     else:
-        from recon import recon
+        from core.recon import recon
         cmd_line = " ".join(sys.argv)
         # dynamically attach the parameter used in recon
         config.cmd_line = cmd_line

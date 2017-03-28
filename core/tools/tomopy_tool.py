@@ -110,7 +110,7 @@ class TomoPyTool(AbstractTool):
             ncore=cores,
             algorithm=alg,
             sinogram_order=True,
-            **kwargs)
+            filter_name='cosine' **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
