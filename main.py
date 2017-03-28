@@ -75,7 +75,7 @@ def main():
     if not config.func.split:
         res = thingy_to_execute(config)
     else:
-        from algorithms import execution_splitter
+        from core.algorithms import execution_splitter
         res = execution_splitter.execute(config, thingy_to_execute)
     h.total_execution_timer()
 

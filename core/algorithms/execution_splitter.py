@@ -6,7 +6,7 @@ def execute(config, executable):
     from core.imgdata import loader
 
     data_shape = loader.read_in_shape(config)
-    from algorithms.shape_splitter import ShapeSplitter
+    from core.algorithms.shape_splitter import ShapeSplitter
     shape_splitter = ShapeSplitter(data_shape, 0, config.func.data_dtype,
                                    config.func.max_memory,
                                    config.func.max_ratio)
@@ -18,7 +18,7 @@ def execute(config, executable):
         recon = True
         # if 0 this will just generate the same for everything
         slices = config.func.cor_slices if config.func.cor_slices is not None else 0
-        from algorithms import cor_interp
+        from core.algorithms import cor_interp
         centers_of_rotation = cor_interp.execute(data_shape[0], slices,
                                                  config.func.cors)
         print("generated cors:", centers_of_rotation)

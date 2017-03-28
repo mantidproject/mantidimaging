@@ -80,14 +80,7 @@ class TomoPyTool(AbstractTool):
         alg = config.func.algorithm
         num_iter = config.func.num_iter
         cores = config.func.cores
-
-        # calculate as many CORs as there are sinograms (i.e. shape of Y)
-        h.tomo_print(
-            "Generating CORs for data with shape {0}".format(sample.shape))
-
         cors = config.func.cors
-
-        print(cors, "len", len(cors))
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
@@ -110,7 +103,9 @@ class TomoPyTool(AbstractTool):
             ncore=cores,
             algorithm=alg,
             sinogram_order=True,
-            filter_name='cosine' **kwargs)
+            filter_name='parzen',
+            filter_par=[5.],
+            **kwargs)
 
         h.pstop(
             "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
