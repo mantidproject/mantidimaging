@@ -26,4 +26,5 @@ def execute(config):
         config.func.convert_prefix,
         config.func.swap_axes,
         image_out_format,
-        zfill_len=0)
+        zfill_len=0,
+        indices=config.func.indices)
