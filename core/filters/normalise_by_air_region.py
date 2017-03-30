@@ -11,9 +11,9 @@ def cli_register(parser):
         required=False,
         nargs='*',
         type=str,
-        help="Air region /region for normalisation.\n"
-        "For best results it should avoid being blocked by any object.\n"
-        "Example: --air-region='[150,234,23,22]'")
+        help="Air region /region for normalisation. The selection is a rectangle and expected order is - Left Top Right Bottom.\n"
+        "For best results the region selected should not be blocked by any object in the Tomography.\n"
+        "Example: --air-region= 150 234 23 22")
 
     return parser
 

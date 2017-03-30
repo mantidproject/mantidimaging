@@ -9,7 +9,7 @@ def cli_register(parser):
         required=False,
         action='store_true',
         default=False,
-        help="Default: %(default)d\nCalculate the -log of the sample data.")
+        help="Calculate the -log of the sample data.")
 
     return parser
 

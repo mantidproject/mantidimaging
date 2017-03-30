@@ -90,7 +90,7 @@ class PreProcConfig(object):
             type=float,
             default=self.clip_min,
             help="Default: %(default)s\n"
-            "Clip values after normalisations to remove out of bounds pixel values."
+            "Clip values below this after normalisations to remove out of bounds pixel values."
         )
 
         grp_pre.add_argument(
@@ -99,7 +99,7 @@ class PreProcConfig(object):
             type=float,
             default=self.clip_max,
             help="Default: %(default)s\n"
-            "Clip values after normalisations to remove out of bounds pixel values."
+            "Clip values above this after normalisations to remove out of bounds pixel values."
         )
 
         return parser

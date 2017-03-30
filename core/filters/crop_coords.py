@@ -10,9 +10,9 @@ def cli_register(parser):
         nargs='*',
         required=False,
         type=str,
-        help="Crop original images using these coordinates, after rotating the images.\n"
+        help="Crop original images using these coordinates. The selection is a rectangle and expected order is - Left Top Right Bottom.\n"
         "If not given, the whole images are used.\n"
-        "Example: --region-of-interest='[150,234,23,22]'.")
+        "Example: --region-of-interest 150 234 23 22.")
 
     return parser
 

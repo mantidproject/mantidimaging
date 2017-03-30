@@ -266,8 +266,7 @@ class FunctionalConfig(object):
             action='store_true',
             default=self.swap_axes,
             help="NOT RECOMMENDED: This means an additional conversion will be done inside Tomopy, which will double the memory usage temporarily."
-            "\nPre-processed images will be saved as swap_axes if --save-preproc is specified."
-            "\nIf --reuse-preproc is specified, then the images that will be loaded will be expected to be swap_axes."
+            "\nThe axis will be flipped on the pre-processing images before saving. This means if sinograms are passed, they will be turned into radiograms, and vice versa."
         )
 
         grp_func.add_argument(
@@ -275,7 +274,7 @@ class FunctionalConfig(object):
             required=False,
             default='float32',
             type=str,
-            help="The data type in which the data will be processed.\nSupported: float32, float64"
+            help="Default (and recommended): float32\nThe data type in which the data converted to after loading and processed. Supported: float32, float64"
         )
 
         grp_func.add_argument(
@@ -283,11 +282,12 @@ class FunctionalConfig(object):
             "--verbosity",
             type=int,
             default=self.verbosity,
-            help="0 - Silent, no text output at all, except results (not recommended)\n"
+            help="Default: 2 - Normal verbosity.\n"
+            "0 - Silent, no text output at all, except results (not recommended)\n"
             "1 - Low verbosity, will output text on step name\n"
-            "2 - Normal verbosity, will output step name and execution time\n"
+            "2 (recommended) - Normal verbosity, will output step name and execution time\n"
             "3 - High verbosity, will output step name, execution time and memory usage before and after each step\n"
-            "Default: 2 - Normal verbosity.")
+        )
 
         grp_func.add_argument(
             "-w",
@@ -295,7 +295,7 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.overwrite_all,
-            help="Overwrite all conflicting files found in the output directory."
+            help="NO WARNINGS WILL BE GIVEN BEFORE OVERWRITING FILES. USE WITH CAUTION!\nOverwrite all conflicting files found in the output directory."
         )
         grp_func.add_argument(
             "--cores",

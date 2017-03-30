@@ -204,7 +204,7 @@ def execute(data=None,
     pool.join()
     h.prog_close()
 
-    # remove the global references and allow the GC to remove then
+    # remove the global references to allow the GC to remove them
     temp_data_ref = shared_data
     del shared_data
     temp_data_2_ref = second_shared_data
