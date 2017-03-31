@@ -66,6 +66,7 @@ class FunctionalConfig(object):
         import multiprocessing
         # get max cores on the system as default
         self.cores = multiprocessing.cpu_count()
+
         # how to spread the image load per worker
         self.chunksize = None
         self.parallel_load = False
@@ -302,7 +303,8 @@ class FunctionalConfig(object):
             required=False,
             type=int,
             default=self.cores,
-            help="Number of CPU cores that will be used for reconstruction.")
+            help="Default: %(default)s (maximum available on the system). Number of CPU cores that will be used for reconstruction."
+        )
 
         grp_func.add_argument(
             "--chunksize",
@@ -326,7 +328,8 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.convert,
-            help='Convert images to a different format.')
+            help='Convert images to a different format. The output format will be the one specified with --out-format'
+        )
 
         grp_run_modes.add_argument(
             "--convert-prefix",
@@ -394,7 +397,7 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.gui,
-            help='Start up the GUI.')
+            help='Start the GUI.')
 
         grp_recon = parser.add_argument_group('Reconstruction options')
 
@@ -406,12 +409,11 @@ class FunctionalConfig(object):
             type=str,
             default=self.tool,
             choices=supported_tools,
-            help="Tomographic reconstruction tool to use.\nAvailable: {0}".
-            format(supported_tools))
+            help="Default: %(default)s\nTomographic reconstruction tool to use.\nTODO: Describe pros and cons of each tool (Astra GPU). Available: {0}".
+            format(", ".join(supported_tools)))
 
         from core.tools.tomopy_tool import TomoPyTool
         from core.tools.astra_tool import AstraTool
-
         tomo_algs = TomoPyTool.tool_supported_methods()
         astra_algs = AstraTool.tool_supported_methods()
         grp_recon.add_argument(
@@ -420,8 +422,8 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.algorithm,
-            help="Reconstruction algorithm (tool dependent).\nAvailable:\nTomoPy: {0}\nAstra:{1}".
-            format(tomo_algs, astra_algs))
+            help="Default: %(default)s\nReconstruction algorithm (tool dependent).\nAvailable:\nTomoPy: {0}\nAstra: {1}".
+            format(", ".join(tomo_algs), ", ".join(astra_algs)))
 
         grp_recon.add_argument(
             "-n",
@@ -429,8 +431,8 @@ class FunctionalConfig(object):
             required=False,
             type=int,
             default=self.num_iter,
-            help="Number of iterations(only valid for iterative methods: {'art', 'bart', 'mlem', 'osem', "
-            "'ospml_hybrid', 'ospml_quad', pml_hybrid', 'pml_quad', 'sirt'}.")
+            help="Number of iterations(only valid for iterative methods: art, bart, mlem, osem, "
+            "ospml_hybrid, ospml_quad, pml_hybrid, pml_quad, sirt).")
 
         grp_recon.add_argument(
             "--max-angle",

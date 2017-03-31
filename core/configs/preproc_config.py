@@ -108,6 +108,8 @@ class PreProcConfig(object):
         """
         SPECIAL CASES ARE HANDLED IN:
         recon_config.ReconstructionConfig.handle_special_arguments
+
+        Except the region of interest and air region cases
         """
         if args.region_of_interest:
             if len(args.region_of_interest) < 4:
@@ -123,7 +125,7 @@ class PreProcConfig(object):
         if args.air_region:
             if len(args.air_region) < 4:
                 raise ValueError(
-                    "Not enough arguments provided for the Region of Interest! Expecting 4, but found {0}: {1}"
+                    "Not enough arguments provided for the Air Region Normalisation! Expecting 4, but found {0}: {1}"
                     .format(len(args.air_region), args.air_region))
 
             self.normalise_air_region = [int(val) for val in args.air_region]
