@@ -1,5 +1,7 @@
+from __future__ import (absolute_import, division, print_function)
 import numpy as np
 import numpy.testing as npt
+from core.parallel import utility as pu
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)
@@ -20,7 +22,6 @@ def gen_img_shared_array_and_copy(shape=g_shape):
 
 
 def gen_img_shared_array(shape=g_shape):
-    from core.parallel import utility as pu
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     d[:] = n[:]
@@ -29,7 +30,6 @@ def gen_img_shared_array(shape=g_shape):
 
 
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    from core.parallel import utility as pu
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
     d[:] = n[:]
@@ -48,6 +48,13 @@ def assert_not_equals(thing1, thing2):
 def deepcopy(source):
     from copy import deepcopy
     return deepcopy(source)
+
+
+def shared_deepcopy(source):
+    d = pu.create_shared_array(source.shape)
+    from copy import deepcopy
+    d[:] = deepcopy(source)[:]
+    return d
 
 
 def debug(switch=True):
@@ -87,6 +94,5 @@ def switch_mp_on():
     This function does very bad things that should never be replicated.
     But it's a unit test so it's fine.
     """
-    from core.parallel import utility as pu
     # restore the original backed up function from switch_mp_off
     pu.multiprocessing_available = backup_mp_avail
