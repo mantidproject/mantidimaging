@@ -13,7 +13,7 @@ def cli_register(parser):
         type=str,
         help="Air region /region for normalisation. The selection is a rectangle and expected order is - Left Top Right Bottom.\n"
         "For best results the region selected should not be blocked by any object in the Tomography.\n"
-        "Example: --air-region= 150 234 23 22")
+        "Example: --air-region 150 234 23 22")
 
     return parser
 
@@ -31,10 +31,6 @@ def execute(data,
     h.check_data_stack(data)
 
     if air_region is not None:
-        _crop_coords_sanity_checks(air_region, data)
-        if region_of_interest is not None:
-            _crop_coords_sanity_checks(region_of_interest, data)
-
         from core.parallel import utility as pu
         if pu.multiprocessing_available():
             data = _execute_par(data, air_region, region_of_interest,

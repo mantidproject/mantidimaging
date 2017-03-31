@@ -10,7 +10,7 @@ verbosity: Default 2, existing levels:
 """
 
 # do we want to wrap this in a global class? 
-# so that helper will just store the funcitonality, but helper_data will store the actual data?
+# so that helper will just store the functionality, but helper_data will store the actual data?
 
 _whole_exec_timer = None
 _timer_running = False
@@ -55,15 +55,19 @@ def check_config_integrity(config):
             "No output path specified, no output will be produced!")
 
 
-def check_data_stack(data):
+def check_data_stack(data, expected_dims=3):
     import numpy
 
+    # the data must be a numpy array, otherwise most functionality won't work
     if not isinstance(data, numpy.ndarray):
         raise ValueError(
             "Invalid stack of images data. It is not a numpy array: {0}".
             format(data))
 
-    if 3 != len(data.shape):
+    # the scripts are designed to work with a 3 dimensional dataset
+    # in the case of 4 dimensional data, it's typically reduced to 3 dimensions 
+    # via the aggregate functionality
+    if expected_dims != len(data.shape):
         raise ValueError(
             "Invalid stack of images data. It does not have 3 dimensions. Shape: {0}".
             format(data.shape))
