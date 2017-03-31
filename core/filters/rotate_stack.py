@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
 import helper as h
+from core.parallel import shared_mem as psm
+from core.parallel import utility as pu
 
 
 def cli_register(parser):
@@ -52,7 +54,6 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
     if rotation:
         clockwise_rotations = 4 - rotation
 
-        from core.parallel import utility as pu
         if pu.multiprocessing_available():
             _execute_par(data, clockwise_rotations, cores, chunksize)
         else:
@@ -68,19 +69,6 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
 
 
 def _execute_seq(data, rotation):
-    """
-    Rotates a stack (sample, flat and dark images).
-    This function is usually used on the whole picture, which is a square.
-    If the picture is cropped first, the ROI coordinates
-    have to be adjusted separately to be pointing at the NON ROTATED image!
-
-    :param data: stack of sample images
-    :param rotation: The rotation to be performed
-    :param flat: flat images average
-    :param dark: dark images average
-
-    Returns: rotated images
-    """
     h.pstart(
         "Starting rotation step ({0} degrees clockwise), with pixel data type: {1}...".
         format(rotation * 90, data.dtype))
@@ -104,8 +92,6 @@ def _execute_par(data, rotation, cores=None, chunksize=None):
     h.pstart(
         "Starting PARALLEL rotation step ({0} degrees clockwise), with pixel data type: {1}...".
         format(rotation * 90, data.dtype))
-
-    from core.parallel import shared_mem as psm
 
     f = psm.create_partial(
         _rotate_image_inplace,
