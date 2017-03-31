@@ -1,7 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
-from core.filters.crop_coords import _crop_coords_sanity_checks
 import numpy as np
 import helper as h
+from core.parallel import two_shared_mem as ptsm
+from core.parallel import utility as pu
 
 
 def cli_register(parser):
@@ -22,73 +23,68 @@ def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")
 
 
-def execute(data,
-            air_region,
-            region_of_interest,
-            crop_before_normalise,
-            cores=None,
-            chunksize=None):
+def execute(data, air_region, cores=None, chunksize=None):
+    """
+    Normalise by beam intensity. This is not directly about proton
+    charge - not using the proton charge field as usually found in
+    experiment/nexus files. This uses an area of normalization, if
+    provided in the pre-processing configuration.
+    
+    This does NOT do any checks if the Air Region is out of bounds!
+    If the Air Region is out of bounds, the crop will fail at runtime.
+    If the Air Region is in bounds, but has overlapping coordinates 
+    the crop give back a 0 shape of the coordinates that were wrong.
+
+    :param data: stack of images as a 3d numpy array
+    :param air_region: The air region from which sums will be calculated and all images will be normalised. 
+                       The selection is a rectangle and expected order is - Left Top Right Bottom.
+    :param cores: The number of cores that will be used to process the data.
+    :param chunksize: The number of chunks that each worker will receive.
+
+    :returns: filtered data (stack of images)
+
+    Example command line:
+    python main.py -i /some/data -A 134 203 170 250
+    python main.py -i /some/data --air-region 134 203 170 250
+    """
     h.check_data_stack(data)
 
-    if air_region is not None:
-        from core.parallel import utility as pu
+    if air_region:
         if pu.multiprocessing_available():
-            data = _execute_par(data, air_region, region_of_interest,
-                                crop_before_normalise, cores, chunksize)
+            data = _execute_par(data, air_region, cores, chunksize)
         else:
-            data = _execute_seq(data, air_region, region_of_interest,
-                                crop_before_normalise)
+            data = _execute_seq(data, air_region)
 
     h.check_data_stack(data)
     return data
 
 
 def _calc_sum(data,
-              roi_sums,
-              roi_left=None,
-              roi_top=None,
-              roi_right=None,
-              roi_bottom=None):
-    # here we can use sum or mean, but mean makes the values with a nice int16 range
-    # while sum makes them in a low range of 0-1.5
-    return data[roi_top:roi_bottom, roi_left:roi_right].mean()
+              air_sums,
+              air_left=None,
+              air_top=None,
+              air_right=None,
+              air_bottom=None):
+    # here we can use ndarray.sum or ndarray.mean
+    # ndarray.mean makes the values with a nice int16 range 
+    # (0-65535, BUT NOT int16 TYPE! They remain floats!)
+    # while ndarray.sum makes them in a low range of 0-1.5.
+    # There are little differences in the results both visually and in the histograms
+    return data[air_top:air_bottom, air_left:air_right].mean()
 
 
 def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute_par(data,
-                 air_region,
-                 region_of_interest,
-                 crop_before_normalise,
-                 cores=None,
-                 chunksize=None):
-    """
-    normalise by beam intensity. This is not directly about proton
-    charg - not using the proton charge field as usually found in
-    experiment/nexus files. This uses an area of normalization, if
-    provided in the pre-processing configuration. TODO: much
-    of this method should be moved into filters.
-
-    :param data :: stack of images as a 3d numpy array
-    :param region_of_interest: Region of interest to ensure that the Air Region is in bounds
-    :param crop_before_normalise: A switch to signify that the image has been cropped.
-            This means the Air Region coordinates will have to be translated onto the cropped image
-    :param air_region: The air region from which sums will be calculated and all images will be normalised
-
-    :returns :: filtered data (stack of images)
-
-    """
-    air_right, air_top, air_left, air_bottom = translate_coords_onto_cropped_picture(
-        region_of_interest, air_region, crop_before_normalise)
-
+def _execute_par(data, air_region, cores=None, chunksize=None):
+    left = air_region[0]
+    top = air_region[1]
+    right = air_region[2]
+    bottom = air_region[3]
     h.pstart("Starting normalization by air region...")
 
     # initialise same number of air sums
-    from core.parallel import two_shared_mem as ptsm
-    from core.parallel import utility as pu
-
     img_num = data.shape[0]
     air_sums = pu.create_shared_array((img_num, 1, 1))
 
@@ -98,10 +94,10 @@ def _execute_par(data,
     calc_sums_partial = ptsm.create_partial(
         _calc_sum,
         fwd_function=ptsm.fwd_func_return_to_second,
-        roi_left=air_left,
-        roi_top=air_top,
-        roi_right=air_right,
-        roi_bottom=air_bottom)
+        air_left=left,
+        air_top=top,
+        air_right=right,
+        air_bottom=bottom)
 
     data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores,
                                   chunksize, "Calculating air sums")
@@ -123,32 +119,17 @@ def _execute_par(data,
     return data
 
 
-def _execute_seq(data, air_region, region_of_interest, crop_before_normalise):
-    """
-    Normalise by beam intensity. This is not directly about proton
-    charge - not using the proton charge field as usually found in
-    experiment/nexus files. This uses an area of normalization, if
-    provided in the pre-processing configuration.
-
-    :param data :: stack of images as a 3d numpy array
-    :param region_of_interest: Region of interest to ensure that the Air Region is in bounds
-    :param crop_before_normalise: A switch to signify that the image has been cropped.
-            This means the Air Region coordinates will have to be translated onto the cropped image
-    :param air_region: The air region from which sums will be calculated and all images will be normalised
-
-    :returns :: filtered data (stack of images)
-
-    """
-    import numpy as np
-
-    air_right, air_top, air_left, air_bottom = translate_coords_onto_cropped_picture(
-        region_of_interest, air_region, crop_before_normalise)
+def _execute_seq(data, air_region):
+    left = air_region[0]
+    top = air_region[1]
+    right = air_region[2]
+    bottom = air_region[3]
 
     h.pstart("Starting normalization by air region...")
     h.prog_init(data.shape[0], "Calculating air sums")
     air_sums = []
     for idx in range(0, data.shape[0]):
-        air_data_sum = data[idx, air_top:air_bottom, air_left:air_right].sum()
+        air_data_sum = data[idx, top:bottom, left:right].sum()
         air_sums.append(air_data_sum)
         h.prog_update()
 
@@ -171,43 +152,3 @@ def _execute_seq(data, air_region, region_of_interest, crop_before_normalise):
         format(avg, max_avg, min_avg))
 
     return data
-
-
-def translate_coords_onto_cropped_picture(crop_coords, air_region,
-                                          crop_before_normalise):
-    air_right = air_region[2]
-    air_top = air_region[1]
-    air_left = air_region[0]
-    air_bottom = air_region[3]
-
-    if not crop_before_normalise or crop_coords is None:
-        return air_right, air_top, air_left, air_bottom
-
-    crop_right = crop_coords[2]
-    crop_top = crop_coords[1]
-    crop_left = crop_coords[0]
-    crop_bottom = crop_coords[3]
-
-    _check_air_region_in_bounds(air_bottom, air_left, air_right, air_top,
-                                crop_bottom, crop_left, crop_right, crop_top)
-    # Translate the air region coordinates to the crop.
-    air_right -= crop_left
-    air_top -= crop_top
-    air_left -= crop_left
-    air_bottom -= crop_top
-
-    _check_air_region_in_bounds(air_bottom, air_left, air_right, air_top,
-                                crop_bottom, crop_left, crop_right, crop_top)
-
-    return air_right, air_top, air_left, air_bottom
-
-
-def _check_air_region_in_bounds(air_bottom, air_left, air_right, air_top,
-                                crop_bottom, crop_left, crop_right, crop_top):
-    # sanity check just in case
-    if air_top < crop_top or \
-            air_bottom > crop_bottom or \
-            air_left < crop_left or \
-            air_right > crop_right:
-        raise ValueError(
-            "Selected air region is outside of the cropped data range.")
