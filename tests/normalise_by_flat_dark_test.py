@@ -11,7 +11,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         from core.filters import normalise_by_flat_dark
         self.alg = normalise_by_flat_dark
 
-    def test_not_executed(self):
+    def test_not_executed_empty_params(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
@@ -20,53 +20,49 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         result = self.alg.execute(images)
         npt.assert_equal(result, control)
 
+    def test_not_executed_no_dark(self):
+        images, control = th.gen_img_shared_array_and_copy()
+        flat = th.gen_img_shared_array()[0]
+        dark = th.gen_img_shared_array()[0]
+
         # no dark
         self.alg.execute(images, flat[0])
         th.assert_equals(images, control)
+
+    def test_not_executed_no_flat(self):
+        images, control = th.gen_img_shared_array_and_copy()
+        flat = th.gen_img_shared_array()[0]
+        dark = th.gen_img_shared_array()[0]
+
         # no flat
         self.alg.execute(images, None, dark[0])
         th.assert_equals(images, control)
 
-        # bad flat
-        npt.assert_raises(ValueError, self.alg.execute, images, flat[0], dark)
-        # bad dark
-        npt.assert_raises(ValueError, self.alg.execute, images, flat, dark[0])
-
-    def test_executed_par(self):
-        self.do_execute()
-
-    def test_executed_seq(self):
-        th.switch_mp_off()
-        self.do_execute()
-        th.switch_mp_on()
-
-    def do_execute(self):
-        shape = th.gimme_shape()
-        images, control = th.gen_img_shared_array_and_copy(shape)
+    def test_not_executed_bad_flat(self):
+        images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 
-        import numpy as np
-        # making sure to not count on complete randomness
-        images[0, 0, 0] = 2.5
-        control[0, 0, 0] = 2.5
-        result = self.alg.execute(images, flat, dark, 0, 1.5)
-        th.assert_not_equals(images, control)
+        # bad flat
+        npt.assert_raises(ValueError, self.alg.execute, images, flat[0], dark)
 
-        control = np.full(shape, 442.)
-        result = self.alg.execute(images, flat, dark, 442., 442)
-        npt.assert_equal(result, control)
+    def test_not_executed_bad_dark(self):
+        images, control = th.gen_img_shared_array_and_copy()
+        flat = th.gen_img_shared_array()[0]
+        dark = th.gen_img_shared_array()[0]
 
-        control = np.full(shape, 0.)
-        result = self.alg.execute(images, flat, dark, 0, 0)
-        npt.assert_equal(result, control)
+        # bad dark
+        npt.assert_raises(ValueError, self.alg.execute, images, flat, dark[0])
+
+    def test_real_result_par(self):
+        self.do_real_result()
 
     def test_real_result(self):
         th.switch_mp_off()
-        self.do_execute()
+        self.do_real_result()
         th.switch_mp_on()
 
-    def do_real_result(self, helper):
+    def do_real_result(self):
         # the operation is (sample - dark) / (flat - dark)
         sample = th.gen_img_shared_array()
         sample[:] = 846.
@@ -78,7 +74,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         expected = np.full(sample.shape, 42.)
 
         # we dont want anything to be cropped out
-        res = self.alg.execute(sample, flat, dark, 0, 1000)
+        res = self.alg.execute(sample, flat, dark)
         th.assert_equals(res, expected)
 
 
