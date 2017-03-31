@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
+from core.parallel import utility as pu
+from core.parallel import two_shared_mem as ptsm
 
 
 def cli_register(parser):
@@ -20,13 +22,12 @@ def _calc_avg(data,
     return data[roi_top:roi_bottom, roi_left:roi_right].mean()
 
 
-def create_factors(data, roi, cores=None, chunksize=None):
+def create_factors(data, roi=None, cores=None, chunksize=None):
     """
     Calculate the scale factors as the mean of the ROI
     :param data: The data stack from which the scale factors will be calculated
     :return: The scale factor for each image.
     """
-    from core.parallel import utility as pu
     img_num = data.shape[0]
     scale_factors = pu.create_shared_array((img_num, 1, 1))
 
@@ -34,7 +35,6 @@ def create_factors(data, roi, cores=None, chunksize=None):
     scale_factors = scale_factors.reshape(img_num)
 
     # calculate the scale factor from original image
-    from core.parallel import two_shared_mem as ptsm
     calc_sums_partial = ptsm.create_partial(
         _calc_avg,
         fwd_function=ptsm.fwd_func_return_to_second,
@@ -61,7 +61,6 @@ def apply_factor(data, scale_factors, cores=None, chunksize=None):
     :param data: the data stack to which the scale factors will be applied.
     :param scale_factors: The scale factors to be applied
     """
-    from core.parallel import two_shared_mem as ptsm
     # scale up the data
     scale_up_partial = ptsm.create_partial(
         _scale_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d)
