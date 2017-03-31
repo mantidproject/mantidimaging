@@ -2,14 +2,12 @@ from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
 from tests import test_helper as th
+from core.filters import crop_coords
 
 
 class CropCoordsTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
-
-        from core.filters import crop_coords
-        self.alg = crop_coords
 
     def test_executed_with_flat_and_dark(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -17,7 +15,7 @@ class CropCoordsTest(unittest.TestCase):
         dark = th.shared_deepcopy(images)[0]
 
         roi = [1, 1, 5, 5]
-        r_sample, r_flat, r_dark = self.alg.execute(images, roi, flat, dark)
+        r_sample, r_flat, r_dark = crop_coords.execute(images, roi, flat, dark)
         expected_shape_sample = (10, 4, 4)
         expected_shape_flat_dark = (4, 4)
         npt.assert_equal(r_sample.shape, expected_shape_sample)
@@ -33,7 +31,7 @@ class CropCoordsTest(unittest.TestCase):
         dark = None
 
         roi = [1, 1, 5, 5]
-        r_sample, r_flat, r_dark = self.alg.execute(images, roi, flat, dark)
+        r_sample, r_flat, r_dark = crop_coords.execute(images, roi, flat, dark)
         expected_shape_sample = (10, 4, 4)
         npt.assert_equal(r_sample.shape, expected_shape_sample)
         npt.assert_equal(r_flat, None)
@@ -48,7 +46,7 @@ class CropCoordsTest(unittest.TestCase):
         dark = th.shared_deepcopy(images)[0]
 
         roi = [1, 1, 5, 5]
-        r_sample, r_flat, r_dark = self.alg.execute(images, roi, flat, dark)
+        r_sample, r_flat, r_dark = crop_coords.execute(images, roi, flat, dark)
         expected_shape_sample = (10, 4, 4)
         npt.assert_equal(r_sample.shape, expected_shape_sample)
         npt.assert_equal(r_flat, None)
@@ -61,7 +59,7 @@ class CropCoordsTest(unittest.TestCase):
 
         images, control = th.gen_img_shared_array_and_copy()
         roi = [1, 1, 5, 5]
-        result = self.alg.execute(images, roi)[0]
+        result = crop_coords.execute(images, roi)[0]
         expected_shape = (10, 4, 4)
         npt.assert_equal(result.shape, expected_shape)
 
@@ -73,7 +71,7 @@ class CropCoordsTest(unittest.TestCase):
 
         # not executed because no Sample is provided
         roi = [1, 2, 5, 1]
-        npt.assert_raises(AssertionError, self.alg.execute, None, roi)
+        npt.assert_raises(AssertionError, crop_coords.execute, None, roi)
 
     def test_not_executed_no_roi(self):
         # images that will be put through testing
@@ -83,7 +81,7 @@ class CropCoordsTest(unittest.TestCase):
 
         # not executed because no Region of interest is provided
         roi = None
-        result = self.alg.execute(image, roi)[0]
+        result = crop_coords.execute(image, roi)[0]
         npt.assert_equal(result, control)
 
 

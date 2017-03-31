@@ -2,14 +2,12 @@ from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
 from tests import test_helper as th
+from core.filters import normalise_by_flat_dark
 
 
 class NormaliseByFlatDarkTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(NormaliseByFlatDarkTest, self).__init__(*args, **kwargs)
-
-        from core.filters import normalise_by_flat_dark
-        self.alg = normalise_by_flat_dark
 
     def test_not_executed_empty_params(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -17,7 +15,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # empty params
-        result = self.alg.execute(images)
+        result = normalise_by_flat_dark.execute(images)
         npt.assert_equal(result, control)
 
     def test_not_executed_no_dark(self):
@@ -26,7 +24,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # no dark
-        self.alg.execute(images, flat[0])
+        normalise_by_flat_dark.execute(images, flat[0])
         th.assert_equals(images, control)
 
     def test_not_executed_no_flat(self):
@@ -35,7 +33,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # no flat
-        self.alg.execute(images, None, dark[0])
+        normalise_by_flat_dark.execute(images, None, dark[0])
         th.assert_equals(images, control)
 
     def test_not_executed_bad_flat(self):
@@ -44,7 +42,8 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad flat
-        npt.assert_raises(ValueError, self.alg.execute, images, flat[0], dark)
+        npt.assert_raises(ValueError, normalise_by_flat_dark.execute, images,
+                          flat[0], dark)
 
     def test_not_executed_bad_dark(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -52,7 +51,8 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad dark
-        npt.assert_raises(ValueError, self.alg.execute, images, flat, dark[0])
+        npt.assert_raises(ValueError, normalise_by_flat_dark.execute, images,
+                          flat, dark[0])
 
     def test_real_result_par(self):
         self.do_real_result()
@@ -74,7 +74,7 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         expected = np.full(sample.shape, 42.)
 
         # we dont want anything to be cropped out
-        res = self.alg.execute(sample, flat, dark)
+        res = normalise_by_flat_dark.execute(sample, flat, dark)
         th.assert_equals(res, expected)
 
 

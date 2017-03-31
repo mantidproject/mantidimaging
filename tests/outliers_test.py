@@ -2,35 +2,33 @@ from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
 from tests import test_helper as th
+from core.filters import outliers
 
 
 class OutliersTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(OutliersTest, self).__init__(*args, **kwargs)
 
-        from core.filters import outliers
-        self.alg = outliers
-
     def test_not_executed_no_threshold(self):
         images, control = th.gen_img_shared_array_and_copy()
         # invalid thresholds
         threshold = None
         radius = 8
-        result = self.alg.execute(images, threshold, radius, cores=1)
+        result = outliers.execute(images, threshold, radius, cores=1)
         npt.assert_equal(result, control)
 
     def test_not_executed_bad_threshold(self):
         images, control = th.gen_img_shared_array_and_copy()
         radius = 8
         threshold = 0
-        result = self.alg.execute(images, threshold, radius, cores=1)
+        result = outliers.execute(images, threshold, radius, cores=1)
         npt.assert_equal(result, control)
 
     def test_not_executed_bad_threshold2(self):
         images, control = th.gen_img_shared_array_and_copy()
         radius = 8
         threshold = -42
-        result = self.alg.execute(images, threshold, radius, cores=1)
+        result = outliers.execute(images, threshold, radius, cores=1)
         npt.assert_equal(result, control)
 
     def test_not_executed_no_radius(self):
@@ -38,14 +36,14 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 42
         radius = None
-        result = self.alg.execute(images, threshold, radius, cores=1)
+        result = outliers.execute(images, threshold, radius, cores=1)
         npt.assert_equal(result, control)
 
     def test_executed(self):
         images, control = th.gen_img_shared_array_and_copy()
         radius = 8
         threshold = 0.1
-        result = self.alg.execute(images, threshold, radius, cores=1)
+        result = outliers.execute(images, threshold, radius, cores=1)
         th.assert_not_equals(result, control)
 
     def test_executed_no_helper(self):
@@ -53,7 +51,7 @@ class OutliersTest(unittest.TestCase):
 
         threshold = 0.1
         radius = 8
-        result = self.alg.execute(images, threshold, radius, cores=1)
+        result = outliers.execute(images, threshold, radius, cores=1)
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
 

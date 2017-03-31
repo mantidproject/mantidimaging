@@ -17,7 +17,7 @@ def gen_img_numpy_rand():
 
 def gen_img_shared_array_and_copy(shape=g_shape):
     arr = gen_img_shared_array(shape)
-    copy = deepcopy(arr)
+    copy = shared_deepcopy(arr)
     return arr, copy
 
 
@@ -77,7 +77,6 @@ def switch_mp_off():
     This function does very bad things that should never be replicated.
     But it's a unit test so it's fine.
     """
-    from core.parallel import utility as pu
     # backup function so we can restore it
     global backup_mp_avail
     backup_mp_avail = pu.multiprocessing_available
