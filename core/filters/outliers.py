@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+from core.tools import importer
 
 
 def cli_register(parser):
@@ -7,7 +8,7 @@ def cli_register(parser):
         "--pre-outliers",
         required=False,
         type=float,
-        help="Crop bright pixels.")
+        help="Pixel difference above which to crop bright pixels.")
 
     parser.add_argument(
         "--pre-outliers-radius",
@@ -40,26 +41,30 @@ def modes():
     return ['dark', 'bright', 'both']
 
 
-def execute(data, outliers_threshold, outliers_radius, cores=None):
+def execute(data, pixel_difference, radius, cores=None):
     """
     Execute the Outliers filter.
 
     :param data: The sample image data as a 3D numpy.ndarray
-    :param outliers_threshold: The threshold related to the pixel value that will be clipped
-    :param outliers_radius: Which pixels will be clipped: dark, bright or both
+    :param pixel_difference: Pixel difference above which to crop bright pixels
+    :param radius: Which pixels will be clipped: dark, bright or both
+    :param cores: The number of cores that will be used to process the data.
 
     :return: the data after being processed with the filter
+
+    Example command line:
+    python main.py -i /some/data --pre-outliers 6 --pre-outliers-radius 4
+    python main.py -i /some/data --post-outliers 6 --post-outliers-radius 4
     """
 
-    if outliers_threshold and outliers_radius and outliers_threshold > 0 and outliers_radius > 0:
+    if pixel_difference and radius and pixel_difference > 0 and radius > 0:
         h.pstart("Applying outliers with threshold: {0} and radius {1}".format(
-            outliers_threshold, outliers_radius))
+            pixel_difference, radius))
 
-        from core.tools import importer
         tomopy = importer.do_importing('tomopy')
 
         data[:] = tomopy.misc.corr.remove_outlier(
-            data, outliers_threshold, outliers_radius, ncore=cores)
+            data, pixel_difference, radius, ncore=cores)
 
         h.pstop("Finished outliers step, with pixel data type: {0}.".format(
             data.dtype))
