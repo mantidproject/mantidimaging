@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+from core.tools import importer
 
 
 def cli_register(parser):
@@ -21,7 +22,6 @@ def gui_register(par):
 def execute(data, minus_log):
     if minus_log:
         # import early to check if tomopy is available
-        from core.tools import importer
         tomopy = importer.do_importing('tomopy')
         h.pstart("Calculating -log on the sample data.")
         # this check prevents division by 0 errors from the minus_log

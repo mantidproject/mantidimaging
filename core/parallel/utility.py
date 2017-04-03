@@ -30,16 +30,18 @@ def multiprocessing_available():
     try:
         # ignore error about unused import
         import multiprocessing  # noqa: F401
-        return True
+        return multiprocessing
     except ImportError:
         return False
 
 
 def get_cores():
-    import multiprocessing
+    mp = multiprocessing_available()
     # get max cores on the system as default
-
-    return multiprocessing.cpu_count()
+    if not mp:
+        return 1
+    else:
+        return mp.cpu_count()
 
 
 def generate_indices(num_images):

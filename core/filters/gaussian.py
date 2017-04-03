@@ -1,5 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+from core.parallel import utility as pu
+from core.parallel import shared_mem as psm
+import scipy.ndimage as scipy_ndimage
 
 
 def cli_register(parser):
@@ -76,23 +79,33 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
     Execute the Gaussian filter.
 
     :param data: The sample image data as a 3D numpy.ndarray
-    :param size: The size of the kernel
-    :param mode: The mode with which to handle the endges
+    :param size: Size of the kernel
+    :param mode: The mode with which to handle the endges. One of [reflect, constant, nearest, mirror, wrap].
     :param order: The order of the filter along each axis is given as a sequence of integers, or as a single number.
                   An order of 0 corresponds to convolution with a Gaussian kernel.
                   An order of 1, 2, or 3 corresponds to convolution with the first, second or third
                   derivatives of a Gaussian. Higher order derivatives are not implemented
+    :param cores: The number of cores that will be used to process the data.
+    :param chunksize: The number of chunks that each worker will receive.
 
     :return: the data after being processed with the filter
 
     Full reference:
     https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html
 
+    Example command line:
+    python main.py -i /some/data --pre-gaussian-size 3
+    python main.py -i /some/data --pre-gaussian-size 3 --pre-gaussian-mode 'nearest'
+    python main.py -i /some/data --pre-gaussian-size 3 --pre-gaussian-mode 'nearest' --pre-gaussian-order 1
+    
+    python main.py -i /some/data --post-gaussian-size 3
+    python main.py -i /some/data --post-gaussian-size 3 --post-gaussian-mode 'nearest'
+    python main.py -i /some/data --post-gaussian-size 3 --post-gaussian-mode 'nearest' --post-gaussian-order 1
+
     """
     h.check_data_stack(data)
 
     if size and size > 1:
-        from core.parallel import utility as pu
         if pu.multiprocessing_available():
             data = _execute_par(data, size, mode, order, cores, chunksize)
         else:
@@ -103,13 +116,7 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
 
 
 def _execute_seq(data, size, mode, order):
-    """
-    Sequential CPU version of the Gaussian filter
-    """
-
-    from core.filters.median_filter import import_scipy_ndimage
-
-    scipy_ndimage = import_scipy_ndimage()
+    # Sequential CPU version of the Gaussian filter
     h.pstart(
         "Starting  gaussian filter, with pixel data type: {0}, filter size/width: {1}.".
         format(data.dtype, size))
@@ -130,15 +137,8 @@ def _execute_seq(data, size, mode, order):
 
 
 def _execute_par(data, size, mode, order, cores=None, chunksize=None):
-    """
-    Parallel CPU version of the Gaussian filter
-    """
-    from core.filters.median_filter import import_scipy_ndimage
-
-    scipy_ndimage = import_scipy_ndimage()
-
-    from core.parallel import shared_mem as psm
-
+    # Parallel CPU version of the Gaussian filter
+    # create the partial function to forward the parameters
     f = psm.create_partial(
         scipy_ndimage.gaussian_filter,
         fwd_func=psm.return_fwd_func,

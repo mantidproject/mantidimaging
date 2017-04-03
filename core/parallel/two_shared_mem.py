@@ -1,5 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+from multiprocessing import Pool
+from core.parallel import utility as pu
+from functools import partial
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
@@ -119,7 +122,6 @@ def create_partial(func, fwd_function=inplace_fwd_func, **kwargs):
     :param kwargs: kwargs to forward to the function func that will be executed
     :return:
     """
-    from functools import partial
     return partial(fwd_function, func, **kwargs)
 
 
@@ -172,11 +174,10 @@ def execute(data=None,
     :return:
     """
 
-    from core.parallel import utility as pu
-    if cores is None:
+    if not cores:
         cores = pu.get_cores()
 
-    if chunksize is None:
+    if not chunksize:
         chunksize = pu.calculate_chunksize(cores)
 
     global shared_data
@@ -187,7 +188,6 @@ def execute(data=None,
     global second_shared_data
     second_shared_data = second_data
 
-    from multiprocessing import Pool
     pool = Pool(cores)
     img_num = data.shape[0]
 

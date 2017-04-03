@@ -95,13 +95,11 @@ def pre_processing(config, sample, flat, dark):
         scale_factors = value_scaling.create_factors(sample, roi, cores,
                                                      chunksize)
 
-    sample = normalise_by_flat_dark.execute(
-        sample, flat, dark, config.pre.clip_min, config.pre.clip_max, roi,
-        cores, chunksize)
+    sample = normalise_by_flat_dark.execute(sample, flat, dark, cores,
+                                            chunksize)
 
     # removes the contrast difference between the stack of images
-    sample = normalise_by_air_region.execute(sample, air, roi, None, cores,
-                                             chunksize)
+    sample = normalise_by_air_region.execute(sample, air, cores, chunksize)
 
     # scale up the data to a nice int16 range while keeping the effects
     # from the flat/dark and air normalisations
@@ -109,9 +107,11 @@ def pre_processing(config, sample, flat, dark):
         sample = value_scaling.apply_factor(sample, scale_factors, cores,
                                             chunksize)
 
-    sample = crop_coords.execute_volume(sample, roi)
-    flat = crop_coords.execute_image(flat, roi) if flat is not None else flat
-    dark = crop_coords.execute_image(dark, roi) if dark is not None else dark
+    if flat is not None and dark is not None:
+        sample, flat, dark = crop_coords.execute(sample, roi, flat, dark)
+    else:
+        sample, flat, dark = crop_coords.execute(
+            sample, roi)  # flat and dark will be None
 
     sample = rebin.execute(sample, config.pre.rebin, config.pre.rebin_mode,
                            cores, chunksize)

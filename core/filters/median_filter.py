@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, print_function, division)
-
 import helper as h
+import scipy.ndimage as scipy_ndimage
+from core.parallel import shared_mem as psm
+from core.parallel import utility as pu
 
 
 def cli_register(parser):
@@ -55,19 +57,27 @@ def execute(data, size, mode, cores=None, chunksize=None):
     Execute the Median filter.
 
     :param data: The sample image data as a 3D numpy.ndarray
-    :param size: The size of the kernel
-    :param mode: The mode with which to handle the edges
+    :param size: Size of the kernel
+    :param mode: The mode with which to handle the endges. One of [reflect, constant, nearest, mirror, wrap].
+    :param cores: The number of cores that will be used to process the data.
+    :param chunksize: The number of chunks that each worker will receive.
 
-    :return: the data after being processed with the filter
+    :return: Returns the processed data
 
     Full reference:
     https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html
 
+    python main.py -i /some/data --pre-median-size 3
+    python main.py -i /some/data --pre-median-size 3 --pre-median-mode 'nearest'
+    python main.py -i /some/data --pre-median-size 3 --pre-median-mode 'nearest'
+    
+    python main.py -i /some/data --post-median-size 3
+    python main.py -i /some/data --post-median-size 3 --post-median-mode 'nearest'
+    python main.py -i /some/data --post-median-size 3 --post-median-mode 'nearest'
     """
     h.check_data_stack(data)
 
     if size and size > 1:
-        from core.parallel import utility as pu
         if pu.multiprocessing_available():
             data = _execute_par(data, size, mode, cores, chunksize)
         else:
@@ -78,16 +88,6 @@ def execute(data, size, mode, cores=None, chunksize=None):
 
 
 def _execute_seq(data, size, mode):
-    """
-    Sequential version of the Median Filter using scipy.ndimage
-
-    :param data: The sample image data as a 3D numpy.ndarray
-    :param size: Size of the median filter kernel
-    :param mode: Mode for the borders of the median filter.
-
-    :return: Returns the processed data
-    """
-    scipy_ndimage = import_scipy_ndimage()
     h.pstart(
         "Starting median filter, with pixel data type: {0}, filter size/width: {1}.".
         format(data.dtype, size))
@@ -105,19 +105,7 @@ def _execute_seq(data, size, mode):
 
 
 def _execute_par(data, size, mode, cores=None, chunksize=None):
-    """
-    Parallel version of the Median Filter using scipy.ndimage
-
-    :param data: The sample image data as a 3D numpy.ndarray
-    :param size: Size of the median filter kernel
-    :param mode: Mode for the borders of the median filter.
-
-    :return: Returns the processed data
-    """
-
-    scipy_ndimage = import_scipy_ndimage()
-
-    from core.parallel import shared_mem as psm
+    # create the partial function to forward the parameters
     f = psm.create_partial(
         scipy_ndimage.median_filter,
         fwd_func=psm.return_fwd_func,
@@ -135,19 +123,3 @@ def _execute_par(data, size, mode, cores=None, chunksize=None):
         format(data.dtype, size))
 
     return data
-
-
-def import_scipy_ndimage():
-    """
-    Tries to import scipy so that the median filter can be applied
-    :return:
-    """
-
-    try:
-        import scipy.ndimage as scipy_ndimage
-    except ImportError:
-        raise ImportError(
-            "Could not find the subpackage scipy.ndimage, required for image pre-/post-processing"
-        )
-
-    return scipy_ndimage

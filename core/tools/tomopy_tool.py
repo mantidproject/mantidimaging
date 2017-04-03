@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 from core.tools.abstract_tool import AbstractTool
 import helper as h
+import numpy as np
 
 
 class TomoPyTool(AbstractTool):
@@ -67,10 +68,11 @@ class TomoPyTool(AbstractTool):
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
         :return: The reconstructed volume
         """
-        import numpy as np
         h.check_config_integrity(config)
         h.check_data_stack(sample)
 
+        # TODO change to not proj_angles if Python list, or leave as is if using numpy.array to store the projection angles
+        # TODO use tomopy's generation
         if proj_angles is None:
             num_proj = sample.shape[1]
             inc = float(config.func.max_angle) / num_proj
@@ -96,6 +98,8 @@ class TomoPyTool(AbstractTool):
                 "Mean Center of Rotation: {0}, Algorithm: {1}...".format(
                     np.mean(cors), alg))
 
+            # filter_name='parzen',
+            # filter_par=[5.],
         recon = self._tomopy.recon(
             tomo=sample,
             theta=proj_angles,
@@ -103,8 +107,6 @@ class TomoPyTool(AbstractTool):
             ncore=cores,
             algorithm=alg,
             sinogram_order=True,
-            filter_name='parzen',
-            filter_par=[5.],
             **kwargs)
 
         h.pstop(

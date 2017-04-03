@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+from core.parallel import utility as pu
+from multiprocessing import Pool
 
 
 def create_partial(func, **kwargs):
@@ -52,12 +54,10 @@ def execute(data=None,
 
     :return: The processed output data
     """
-    from core.parallel import utility as pu
-    if cores is None:
+    if not cores:
         cores = pu.get_cores()
 
-    from core.parallel import utility as pu
-    if chunksize is None:
+    if not chunksize:
         chunksize = pu.calculate_chunksize(cores)
 
     # handle the case of having a different output that input i.e. rebin,
@@ -65,8 +65,6 @@ def execute(data=None,
     if output_data is None:
         # get data reference to original with [:]
         output_data = data
-
-    from multiprocessing import Pool
 
     pool = Pool(cores)
     img_num = output_data.shape[0]

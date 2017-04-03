@@ -4,6 +4,8 @@ import helper as h
 
 def execute(imgs_angles, config):
     """
+    Line projection is not implemented in this version.
+
     Transform pixel values as $- ln (Is/I0)$, where $Is$ is the pixel (intensity) value and $I0$ is a
     reference value (pixel/intensity value for open beam, or maximum in the stack or the image).
 

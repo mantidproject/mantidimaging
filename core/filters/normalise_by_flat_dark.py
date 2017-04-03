@@ -69,7 +69,7 @@ def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
     norm_divide[:] = np.subtract(flat, dark)
 
     # prevent divide-by-zero issues, and negative pixels make no sense
-    norm_divide[norm_divide <= 0] = 1e-6
+    norm_divide[norm_divide == 0] = 1e-6
 
     # subtract the dark from all images, specify out to do in place, otherwise the data is copied
     np.subtract(data[:], dark, out=data[:])
@@ -80,6 +80,12 @@ def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
     data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize,
                                      "Norm by Flat/Dark")
 
+    h.tomo_print_note("Clipping nonsense values below -2 and above +2.")
+    # This clipping is actually important, if removed some images will have pixels 
+    # with big negative values -25626262 which throws off any contrast adjustments. 
+    # This will crop those negative pixels out, and set them to nearly zero (but not zero).
+    # The negative values will also get scaled back after this in the value_scaling which will increase their values futher!
+    np.clip(data, 1e-6, 3, data)
     h.pstop("Finished PARALLEL normalization by flat/dark images.")
 
     return data

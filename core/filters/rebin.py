@@ -62,7 +62,6 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None):
         else:
             data = _execute_seq(data, rebin_param, mode)
 
-    h.check_data_stack(data)
     return data
 
 

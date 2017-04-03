@@ -65,7 +65,6 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
                                     data_dtype, cores, chunksize,
                                     parallel_load)
 
-
     return sample_data, flat_avg, dark_avg
 
 

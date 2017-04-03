@@ -82,7 +82,7 @@
 
 Run Modes:
 ## Convert images from one file format to another
-  --convert             Convert images to a different format.
+  --convert             Convert images to a different format. The output format will be the one specified with --out-format
 
 ## Prefix for saved out files from conversion
   --convert-prefix CONVERT_PREFIX

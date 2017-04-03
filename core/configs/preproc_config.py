@@ -35,10 +35,6 @@ class PreProcConfig(object):
         # Example: -1 => (-90 degrees == 90 degrees counterclockwise)
         self.rotation = False
 
-        # clip normalisation values
-        self.clip_min = 0.0
-        self.clip_max = 1.5
-
         self.cut_off = None
         # list with coordinates of the region for normalisation / "air" / not
         # blocked by any object
@@ -65,8 +61,6 @@ class PreProcConfig(object):
                + "Sinogram stripe removal using Titarenko approach: {0}\n".format(self.stripe_removal_ti) \
                + "Sinogram stripe removal using smoothing-filter: {0}\n".format(self.stripe_removal_sf) \
                + "Rotation: {0}\n".format(self.rotation) \
-               + "Clip min value: {0}\n".format(self.clip_min) \
-               + "Clip max value: {0}\n".format(self.clip_max) \
                + "Cut off level: {0}\n".format(self.cut_off) \
                + "Outliers threshold: {0}\n".format(self.outliers_threshold) \
                + "Outliers mode: {0}\n".format(self.outliers_radius) \
@@ -80,27 +74,6 @@ class PreProcConfig(object):
         Setup the pre-processing arguments for the script
         :param parser: The parser which is set up
         """
-
-        grp_pre = parser.add_argument_group(
-            'Pre-processing of input raw images/projections')
-
-        grp_pre.add_argument(
-            "--clip-min",
-            required=False,
-            type=float,
-            default=self.clip_min,
-            help="Default: %(default)s\n"
-            "Clip values below this after normalisations to remove out of bounds pixel values."
-        )
-
-        grp_pre.add_argument(
-            "--clip-max",
-            required=False,
-            type=float,
-            default=self.clip_max,
-            help="Default: %(default)s\n"
-            "Clip values above this after normalisations to remove out of bounds pixel values."
-        )
 
         return parser
 
@@ -142,9 +115,6 @@ class PreProcConfig(object):
         self.stripe_removal_sf = args.pre_stripe_removal_sf
 
         self.rotation = args.rotation
-
-        self.clip_min = args.clip_min
-        self.clip_max = args.clip_max
 
         self.cut_off = args.cut_off
 

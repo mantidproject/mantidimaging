@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+import tomopy.misc.corr
 
 
 def cli_register(parser):
@@ -75,13 +76,13 @@ def execute(data,
                    Z different projections angles, and y and x the rows and columns of individual images.
 
     :param run_ring_removal: 'wf': Wavelet-Fourier based run_ring_removal
-    :param center_x: (float, optional) – abscissa location of center of rotation
-    :param center_y: (float, optional) – ordinate location of center of rotation
-    :param thresh: (float, optional) – maximum value of an offset due to a ring artifact
-    :param thresh_max: (float, optional) – max value for portion of image to filter
-    :param thresh_min: (float, optional) – min value for portion of image to filer
-    :param theta_min: (int, optional) – minimum angle in degrees (int) to be considered ring artifact
-    :param rwidth: (int, optional) – Maximum width of the rings to be filtered in pixels
+    :param center_x: (float, optional) abscissa location of center of rotation
+    :param center_y: (float, optional) ordinate location of center of rotation
+    :param thresh: (float, optional) maximum value of an offset due to a ring artifact
+    :param thresh_max: (float, optional) max value for portion of image to filter
+    :param thresh_min: (float, optional) min value for portion of image to filer
+    :param theta_min: (int, optional) minimum angle in degrees (int) to be considered ring artifact
+    :param rwidth: (int, optional) Maximum width of the rings to be filtered in pixels
     :returns: filtered data hopefully without stripes which should dramatically decrease
                 ring artifacts after reconstruction and the effect of these on post-processing tasks
                 such as segmentation of the reconstructed 3d data volume.
@@ -89,9 +90,7 @@ def execute(data,
 
     if run_ring_removal:
         h.check_data_stack(data)
-
         h.pstart("Starting ring removal...")
-        import tomopy.misc.corr
         data = tomopy.misc.corr.remove_ring(
             data,
             center_x=center_x,

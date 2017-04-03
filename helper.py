@@ -1,4 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
+import numpy as np
+import time
 """
 Class for commonly used functions across the modules
 
@@ -42,7 +44,7 @@ def initialise(config, saver=None):
     global _verbosity
     global _readme
     _verbosity = config.func.verbosity
-    if saver is not None:
+    if saver:
         from readme import Readme
         _readme = Readme(config, saver)
 
@@ -56,12 +58,11 @@ def check_config_integrity(config):
 
 
 def check_data_stack(data, expected_dims=3):
-    import numpy
 
-    # the data must be a numpy array, otherwise most functionality won't work
-    if not isinstance(data, numpy.ndarray):
+    # the data must be a np array, otherwise most functionality won't work
+    if not isinstance(data, np.ndarray):
         raise ValueError(
-            "Invalid stack of images data. It is not a numpy array: {0}".
+            "Invalid stack of images data. It is not a Numpy ndarray: {0}".
             format(data))
 
     # the scripts are designed to work with a 3 dimensional dataset
@@ -115,27 +116,26 @@ def get_memory_usage_linux():
         # Windows doesn't seem to have resource package, so this will
         # silently fail
         import resource as res
-
-        memory_in_kbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss)
-
-        memory_in_mbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024
-
-        # handle caching
-        memory_string = " {0} KB, {1} MB".format(memory_in_kbs, memory_in_mbs)
-
-        global _cache_last_memory
-        if _cache_last_memory is None:
-            _cache_last_memory = memory_in_kbs
-        else:
-            # get memory difference in Megabytes
-            delta_memory = (memory_in_kbs - _cache_last_memory) / 1024
-
-            # remove cached memory
-            _cache_last_memory = None
-            memory_string += ". Memory change: {0} MB".format(delta_memory)
-
     except ImportError:
-        memory_string = " <not available on Windows> "
+        return " <not available on Windows> "
+
+    memory_in_kbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss)
+
+    memory_in_mbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024
+
+    # handle caching
+    memory_string = " {0} KB, {1} MB".format(memory_in_kbs, memory_in_mbs)
+
+    global _cache_last_memory
+    if not _cache_last_memory:
+        _cache_last_memory = memory_in_kbs
+    else:
+        # get memory difference in Megabytes
+        delta_memory = (memory_in_kbs - _cache_last_memory) / 1024
+
+        # remove cached memory
+        _cache_last_memory = None
+        memory_string += ". Memory change: {0} MB".format(delta_memory)
 
     return memory_string
 
@@ -175,7 +175,7 @@ def tomo_print(message, verbosity=2):
 
     # will be printed if the message verbosity is lower or equal
     # i.e. level 1,2,3 messages will not be printed on level 0 verbosity
-    if _readme is not None:
+    if _readme:
         _readme.append(message)
 
     if verbosity <= _verbosity:
@@ -205,7 +205,6 @@ def pstart(message, verbosity=2):
     if not _timer_running:
         _timer_running = True
 
-    import time
     print_string = str(message)
     # will be printed on levels 2 and 3
     if _verbosity >= 2:
@@ -232,7 +231,6 @@ def pstop(message, verbosity=2):
     if not _timer_running:
         raise ValueError("helper.pstart(...) was not called previously!")
 
-    import time
     print_string = ""
     if _verbosity >= 2:
         _timer_running = False
@@ -253,7 +251,6 @@ def total_execution_timer(message="Total execution time was "):
     The first call to this will be in tomo_reconstruct.py and it will start it.abs
     The last call will be at the end of find_center or do_recon.
     """
-    import time
     global _whole_exec_timer
     global _readme
 
@@ -264,7 +261,7 @@ def total_execution_timer(message="Total execution time was "):
         # change from timer to string
         _whole_exec_timer = str(time.time() - _whole_exec_timer)
         message += _whole_exec_timer + " sec"
-        if _readme is not None:
+        if _readme:
             _readme.append(message)
         print(message)
 
@@ -284,7 +281,7 @@ def prog_init(total, desc="Progress", ascii=False, unit='images'):
     if _verbosity > 0:
         try:
             from tqdm import tqdm
-            if _progress_bar is not None:
+            if _progress_bar:
                 raise ValueError(
                     "Timer was not closed previously. Please do prog_close()!")
             _progress_bar = tqdm(
@@ -302,7 +299,7 @@ def prog_update(value=1):
     This function will print a simple ascii bar if tqdm is not present.
     """
     global _progress_bar
-    if _progress_bar is not None:
+    if _progress_bar:
         _progress_bar.update(value)
 
 
@@ -311,7 +308,7 @@ def prog_close():
     This function will do nothing if the tqdm library is not present.
     """
     global _progress_bar
-    if _progress_bar is not None:
+    if _progress_bar:
         _progress_bar.close()
 
     _progress_bar = None
@@ -320,24 +317,3 @@ def prog_close():
 def set_readme(readme):
     global _readme
     _readme = readme
-
-
-def save_debug(sample, config, flat, dark, path_append, *args):
-    return
-    # if any of the arguments are none
-    for a in args:
-        if a is None or a is False:
-            return
-
-    from core.imgdata.saver import Saver
-
-    saver = Saver(config)
-    saver._img_format = 'fits'  # force fits files
-    saver.save_single_image(sample, subdir=path_append, name='sample')
-
-    saver._data_as_stack = True  # force data as stack to save out single images
-    if flat is not None:
-        saver.save_single_image(flat, subdir=path_append, name='flat')
-
-    if dark is not None:
-        saver.save_single_image(dark, subdir=path_append, name='dark')

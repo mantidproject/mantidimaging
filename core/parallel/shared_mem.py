@@ -1,5 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 import helper as h
+from core.parallel import utility as pu
+from functools import partial
+from multiprocessing import Pool
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
@@ -71,7 +74,6 @@ def create_partial(func, fwd_func=return_fwd_func, **kwargs):
     :param kwargs: kwargs to forward to the function func that will be executed
     :return:
     """
-    from functools import partial
     return partial(fwd_func, func, **kwargs)
 
 
@@ -118,13 +120,11 @@ def execute(data=None,
     :param chunksize: chunk of work per process(worker)
     :param name: the string that will be appended in front of the progress bar
     :param show_timer: if False no timer will be shown
-    :return:
+    :return: reference to the input shared array
     """
-    from core.parallel import utility as pu
-    if cores is None:
+    if not cores:
         cores = pu.get_cores()
-
-    if chunksize is None:
+    if not chunksize:
         chunksize = pu.calculate_chunksize(cores)
 
     global shared_data
@@ -132,7 +132,6 @@ def execute(data=None,
     # if different shape it will get the reference to the new array
     shared_data = data
 
-    from multiprocessing import Pool
     pool = Pool(cores)
     img_num = shared_data.shape[0]
     if show_timer:

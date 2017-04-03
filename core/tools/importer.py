@@ -27,7 +27,7 @@ def do_importing(tool, alg='fbp'):
         If no algorithm is provided, the default is 'fbp', because it's supported by all tools.
     :return: the tool reference
     """
-    if not tool or not isinstance(tool, str):
+    if not isinstance(tool, str):
         raise ValueError(
             "The name of a reconstruction tool is required as a string. Got: {0}".
             format(tool))
