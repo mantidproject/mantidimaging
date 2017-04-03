@@ -3,6 +3,10 @@ from core.imopr.sinogram import make_sinogram
 import numpy as np
 
 
+def sanity_checks(config):
+    pass
+
+
 def execute(sample, flat, dark, config, indices):
     from core.imopr import helper
     helper.print_start("Running IMOPR with action COR")

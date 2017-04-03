@@ -4,6 +4,10 @@ from core.functools import partial
 import numpy as np
 
 
+def sanity_checks(config):
+    pass
+
+
 def _do_special(d1, d2, operation=None):
     return operation(np.asarray([d1, d2]), axis=0)
 

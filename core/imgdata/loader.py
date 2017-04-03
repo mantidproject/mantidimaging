@@ -54,8 +54,6 @@ def supported_formats():
 
 def read_in_shape(config):
     input_path = config.func.input_path
-    input_path_flat = config.func.input_path_flat
-    input_path_dark = config.func.input_path_dark
     img_format = config.func.in_format
     data_dtype = config.func.data_dtype
     cores = config.func.cores
@@ -63,7 +61,7 @@ def read_in_shape(config):
     parallel_load = config.func.parallel_load   
 
     input_file_names = get_file_names(input_path, img_format)
-    sample, flat, dark = load(input_path, input_path_flat, input_path_dark,
+    sample, flat, dark = load(input_path, None, None,
                               img_format, data_dtype, cores, chunksize,
                               parallel_load,indices=[0,1])
     return (len(input_file_names),) + sample.shape[1:]

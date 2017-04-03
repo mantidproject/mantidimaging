@@ -29,7 +29,8 @@ def execute(config):
     tool = importer.timed_import(config)
 
     # create directory, or throw if not empty and no --overwrite-all
-    # we get the output path from the saver, as that expands variables and gets absolute path
+    # we get the output path from the saver, because 
+    # that expands variables and gets the absolute path
     saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
 
     from readme import Readme
@@ -58,6 +59,8 @@ def execute(config):
 
     sample = post_processing(config, sample)
 
+    import numpy as np
+    np.clip(sample, 1e-9, 5, sample)
     # Save output from the reconstruction
     saver.save_recon_output(sample)
     readme.end()
@@ -130,8 +133,8 @@ def pre_processing(config, sample, flat, dark):
                               config.pre.gaussian_mode,
                               config.pre.gaussian_order, cores, chunksize)
 
+    # this should be last because the other filters do not expect to work in -log data
     sample = minus_log.execute(sample, config.pre.minus_log)
-
     sample = cut_off.execute(sample, config.pre.cut_off)
 
     return sample, flat, dark

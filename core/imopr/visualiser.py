@@ -1,6 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 
+def sanity_checks(config):
+    pass
+
+
 def execute(sample, flat, dark, config, indices):
     from core.imopr import helper
     helper.print_start("Running IMOPR with action VISUALISE/SHOW")

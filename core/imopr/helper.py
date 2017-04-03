@@ -9,12 +9,23 @@ def print_start(action_name):
           action_name + "\n*\n*********************************************")
 
 
-def handle_indices(indices):
-    i1 = indices[0]
-
-    try:
-        i2 = indices[1]
-    except IndexError:
-        i2 = i1 + 1
-
-    return i1, i2
+def handle_indices(indices, retstep=False):
+    args = len(indices)
+    if args == 1:
+        # return start, stop as start + 1
+        if not retstep:
+            return indices[0], indices[0] + 1
+        else:
+            return indices[0], indices[0] + 1, 1
+    elif args == 2:
+        # return start, stop
+        if not retstep:
+            return indices[0], indices[0] + 1
+        else:
+            return indices[0], indices[1]
+    elif args >= 3:
+        # return start, stop, step
+        if not retstep:
+            return indices[0], indices[1]
+        else:
+            return indices[0], indices[1], indices[2]
