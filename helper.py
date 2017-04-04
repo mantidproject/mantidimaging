@@ -184,10 +184,13 @@ def tomo_print(message, verbosity=2):
             THE MEMORY USAGE DOES NOT WORK ON WINDOWS.
             This will probably use more resources.
     """
-
     # will be printed if the message verbosity is lower or equal
     # i.e. level 1,2,3 messages will not be printed on level 0 verbosity
-    if _readme:
+    global _readme
+    # we need is not None, because at the start if _readme gets the len(_readme)
+    # which returns 0, because there is nothing appended to it yet, which evaluates to False,
+    # and nothing is ever appended to the readme!
+    if _readme is not None:
         _readme.append(message)
 
     if verbosity <= _verbosity:

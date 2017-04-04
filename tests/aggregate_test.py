@@ -1,5 +1,16 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import os
+import shutil
+import tempfile
 import unittest
+
+import numpy as np
+
+from core.aggregate import aggregate
+from core.configs.recon_config import ReconstructionConfig
+from core.imgdata import loader
+from core.imgdata.saver import Saver
 from tests import test_helper as th
 
 
@@ -8,18 +19,13 @@ class AggregateTest(unittest.TestCase):
         super(AggregateTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from core.configs.recon_config import ReconstructionConfig
         self.config = ReconstructionConfig.empty_init()
         self.config.func.verbosity = 0
 
     def create_saver(self):
-        from core.imgdata.saver import Saver
         return Saver(self.config)
 
     def delete_files(self, prefix=''):
-        import tempfile
-        import os
-        import shutil
         with tempfile.NamedTemporaryFile() as f:
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
@@ -62,7 +68,6 @@ class AggregateTest(unittest.TestCase):
                            file_format,
                            stack=True,
                            num_images=1):
-        import os
         if not stack:
             # generate a list of filenames with 000000 numbers appended
             filenames = []
@@ -94,7 +99,6 @@ class AggregateTest(unittest.TestCase):
                                    mode='sum'):
         # this just converts between the formats, but not NXS!
         # create some images
-        import numpy as np
         images = th.gen_img_shared_array()
         if 'sum' == mode:
             expected = images.sum(axis=0, dtype=np.float32)
@@ -104,8 +108,7 @@ class AggregateTest(unittest.TestCase):
         stack = False
         parallel = False
         saver = self.create_saver()
-        import tempfile
-        import os
+
         with tempfile.NamedTemporaryFile() as f:
             aggregate_path = os.path.dirname(f.name) + '/aggregate'
             # save out 5 'angles'
@@ -122,7 +125,6 @@ class AggregateTest(unittest.TestCase):
                     img_format=saver._img_format)
 
             # aggregate them
-            from core.aggregate import aggregate
             conf = self.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (aggregate_angles is 5 so we subtract 1)
@@ -139,7 +141,6 @@ class AggregateTest(unittest.TestCase):
 
             # load them back
             # compare data to original
-            from core.imgdata import loader
             # this does not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 aggregate_output_path,
@@ -173,7 +174,6 @@ class AggregateTest(unittest.TestCase):
                                        mode='sum'):
         # this just converts between the formats, but not NXS!
         # create some images
-        import numpy as np
         images = th.gen_img_shared_array()
         if 'sum' == mode:
             expected = images.sum(axis=0, dtype=np.float32)
@@ -183,8 +183,7 @@ class AggregateTest(unittest.TestCase):
         stack = False
         parallel = False
         saver = self.create_saver()
-        import tempfile
-        import os
+
         with tempfile.NamedTemporaryFile() as f:
             aggregate_path = os.path.dirname(f.name) + '/aggregate'
             # keep the angle paths for the load later
@@ -205,7 +204,6 @@ class AggregateTest(unittest.TestCase):
                     img_format=saver._img_format)
 
             # aggregate them
-            from core.aggregate import aggregate
             conf = self.config
             conf.func.aggregate = ['0', '10', mode]
             # select angles 0 - 4 (starts from 0 so -1)
@@ -222,7 +220,6 @@ class AggregateTest(unittest.TestCase):
 
             # load them back
             # compare data to original
-            from core.imgdata import loader
             # this does not load any flats or darks as they were not saved out
             for i in range(aggregate_angles):
                 angle_path = os.path.dirname(

@@ -95,3 +95,37 @@ def switch_mp_on():
     """
     # restore the original backed up function from switch_mp_off
     pu.multiprocessing_available = backup_mp_avail
+
+
+def assert_files_exist(cls, base_name, file_format, stack=True, num_images=1):
+    import os
+    import unittest
+    assert isinstance(
+        cls, unittest.TestCase
+    ), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
+
+    if not stack:
+        # generate a list of filenames with 000000 numbers appended
+        filenames = []
+        for i in range(num_images):
+            filenames.append(base_name + str(i) + '.' + file_format)
+
+        for f in filenames:
+            cls.assertTrue(os.path.isfile(f))
+
+    else:
+        filename = base_name + '.' + file_format
+        cls.assertTrue(os.path.isfile(filename))
+
+
+def delete_folder_from_temp(subdir=''):
+    """
+    Use with caution, this deletes things!
+    """
+    import shutil
+    import tempfile
+    import os
+    with tempfile.NamedTemporaryFile() as f:
+        full_path = os.path.join(os.path.dirname(f.name), subdir)
+        if os.path.isdir(full_path):
+            shutil.rmtree(full_path)

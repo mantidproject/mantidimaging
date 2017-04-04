@@ -1,5 +1,16 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import numpy as np
+
 import helper as h
+from core.filters import (
+    circular_mask, crop_coords, cut_off, gaussian, median_filter, minus_log,
+    normalise_by_air_region, normalise_by_flat_dark, outliers, rebin,
+    ring_removal, rotate_stack, stripe_removal, value_scaling)
+from core.imgdata import loader
+from core.imgdata.saver import Saver
+from core.tools import importer
+from readme import Readme
 
 
 def execute(config):
@@ -11,13 +22,14 @@ def execute(config):
         - do the reconstruction with the appropriate tool
         - save out reconstruction images
 
-    The configuration for pre_processing and reconstruction are read from the config parameter.
+    The configuration for pre_processing and reconstruction are read from 
+    the config parameter.
 
-    :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
+    :param config: A ReconstructionConfig with all the necessary parameters to
+                   run a reconstruction.
     :param cmd_line: The full command line text if running from the CLI.
     """
 
-    from core.imgdata.saver import Saver
     saver = Saver(config)
 
     h.initialise(config, saver)
@@ -25,7 +37,6 @@ def execute(config):
     h.check_config_integrity(config)
 
     # import early to check if tool is available
-    from core.tools import importer
     tool = importer.timed_import(config)
 
     # create directory, or throw if not empty and no --overwrite-all
@@ -33,12 +44,10 @@ def execute(config):
     # that expands variables and gets the absolute path
     saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
 
-    from readme import Readme
     readme = Readme(config, saver)
     readme.begin(config.cmd_line, config)
     h.set_readme(readme)
 
-    from core.imgdata import loader
     sample, flat, dark = loader.load_data(config)
 
     sample, flat, dark = pre_processing(config, sample, flat, dark)
@@ -50,8 +59,6 @@ def execute(config):
         readme.end()
         return sample
 
-    # ----------------------------------------------------------------
-    # Reconstruction, output has different shape
     if not config.func.only_postproc:
         sample = tool.run_reconstruct(sample, config)
     else:
@@ -59,33 +66,22 @@ def execute(config):
 
     sample = post_processing(config, sample)
 
-    import numpy as np
+    # TODO only for testing purposes
+    # this seems to crop out most of the noise from the reconstructions
+    # but it might crop out data too!
     np.clip(sample, 1e-9, 5, sample)
-    # Save output from the reconstruction
+
     saver.save_recon_output(sample)
     readme.end()
     return sample
 
 
 def pre_processing(config, sample, flat, dark):
-    """
-    Does the pre-processing steps specified in the configuration file.
-
-    :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-    :param sample: The sample image data as a 3D numpy.ndarray
-    :param flat: The flat averaged image data as a 2D numpy.array
-    :param dark: The dark averaged image data as a 2D numpy.array
-
-    """
-
     if config.func.reuse_preproc:
         h.tomo_print_warning(
-            "Pre-processing steps have been skipped, because --reuse-preproc or --only-postproc flag has been passed."
-        )
+            "Pre-processing steps have been skipped, "
+            "because --reuse-preproc or --only-postproc flag has been passed.")
         return sample, flat, dark
-
-    from core.filters import rotate_stack, crop_coords, normalise_by_flat_dark, normalise_by_air_region, outliers, \
-        rebin, median_filter, gaussian, cut_off, minus_log, value_scaling, stripe_removal
 
     cores = config.func.cores
     chunksize = config.func.chunksize
@@ -142,20 +138,11 @@ def pre_processing(config, sample, flat, dark):
 
 
 def post_processing(config, recon_data):
-    """
-    Does the post-processing steps specified in the configuration file.
-
-    :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-    :param recon_data: The reconstructed image data as a 3D numpy.ndarray
-    :return: The reconstructed data.
-    """
     if config.func.no_postproc:
         h.tomo_print_warning(
-            "Post-processing steps have been skipped, because --no-postproc flag has been passed."
-        )
+            "Post-processing steps have been skipped, because "
+            "--no-postproc flag has been passed.")
         return recon_data
-
-    from core.filters import circular_mask, gaussian, median_filter, outliers, ring_removal
 
     cores = config.func.cores
 

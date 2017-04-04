@@ -1,6 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import os
+import shutil
+import tempfile
 import unittest
-import numpy.testing as npt
+
+from core.convert import convert
+from core.imgdata import loader
 from tests import test_helper as th
 
 
@@ -23,11 +29,7 @@ class ConvertTest(unittest.TestCase):
         return Saver(self.config)
 
     def delete_files(self, prefix=''):
-        import tempfile
-        import os
-        import shutil
         with tempfile.NamedTemporaryFile() as f:
-            from core.imgdata.loader import get_file_names
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
 
@@ -57,7 +59,6 @@ class ConvertTest(unittest.TestCase):
                            file_format,
                            stack=True,
                            num_images=1):
-        import os
         if not stack:
             # generate a list of filenames with 000000 numbers appended
             filenames = []
@@ -92,8 +93,6 @@ class ConvertTest(unittest.TestCase):
         flat = None
         dark = None
         saver = self.create_saver()
-        import tempfile
-        import os
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
@@ -107,7 +106,6 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from core.convert import convert
             conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -120,7 +118,6 @@ class ConvertTest(unittest.TestCase):
 
             # load them back
             # compare data to original
-            from core.imgdata import loader
             # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 converted_output_path,
@@ -155,8 +152,6 @@ class ConvertTest(unittest.TestCase):
         flat = None
         dark = None
         saver = self.create_saver()
-        import tempfile
-        import os
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
@@ -169,7 +164,6 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from core.convert import convert
             conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -182,7 +176,6 @@ class ConvertTest(unittest.TestCase):
 
             # load them back
             # compare data to original
-            from core.imgdata import loader
             # this odes not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 converted_output_path,
@@ -215,8 +208,7 @@ class ConvertTest(unittest.TestCase):
         flat = None
         dark = None
         saver = self.create_saver()
-        import tempfile
-        import os
+
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
@@ -230,7 +222,6 @@ class ConvertTest(unittest.TestCase):
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
-            from core.convert import convert
             conf = self.config
             conf.func.input_path = preproc_output_path
             conf.func.in_format = saver._img_format
@@ -242,7 +233,7 @@ class ConvertTest(unittest.TestCase):
             convert.execute(conf)
             # load them back
             # compare data to original
-            from core.imgdata import loader
+
             # this does not load any flats or darks as they were not saved out
             sample, flat_loaded, dark_loaded = loader.load(
                 converted_output_path,
@@ -255,8 +246,8 @@ class ConvertTest(unittest.TestCase):
             # None because when loading images the flat and dark are not considered
             # The flat and dark are only returned from load if loading a nexus file, or the paths are provided,
             # and in this case we're not loading nexus, and there are no paths provided!
-            th.assert_equals(flat_loaded, None)
-            th.assert_equals(dark_loaded, None)
+            th.assert_equals(flat_loaded, flat)
+            th.assert_equals(dark_loaded, dark)
 
             self.assert_files_exist(converted_output_path + '/converted',
                                     convert_format, stack, images.shape[0])

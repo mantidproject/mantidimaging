@@ -1,21 +1,28 @@
 from __future__ import (absolute_import, division, print_function)
+import time
+import os
 
 # This way ALL separate instances of a Readme will write to the same output!
 total_string = ""
+time_start = None
 
 
 class Readme(object):
     def __init__(self, config, saver):
-        import os
         self._readme_file_name = config.func.readme_file_name
         self._output_path = None
-        self._readme_fullpath = None
-        self._total_string = ""
         self._output_path = saver.get_output_path()
+        self._total_lines = 0
         self._readme_fullpath = None
-        if self._output_path is not None:
+        if self._output_path:
             self._readme_fullpath = os.path.join(self._output_path,
                                                  self._readme_file_name)
+
+    def __len__(self):
+        return len(total_string)
+
+    def lines(self):
+        return self._total_lines
 
     def append(self, string):
         """
@@ -23,6 +30,7 @@ class Readme(object):
 
         :param string: string to be appended
         """
+        self._total_lines += 1
         global total_string
         total_string += string + '\n'
 
@@ -41,14 +49,17 @@ class Readme(object):
         if self._readme_fullpath is None:
             return
 
-        import time
-        tstart = time.time()
+        global time_start
+        # only change if not initialised. If this is not None then it's already
+        # been initialised by a Readme from another instance!
+        if not time_start:
+            time_start = time.time()
 
         # generate file with dos/windows line end for windows users convenience
         with open(self._readme_fullpath, 'w') as oreadme:
             file_hdr = (
                 'Tomographic reconstruction. Summary of inputs, settings and outputs.\n'
-                'Time now (run begin): ' + time.ctime(tstart) + '\n')
+                'Time now (run begin): ' + time.ctime(time_start) + '\n')
             oreadme.write(file_hdr)
 
             alg_hdr = ("\n"
@@ -101,3 +112,6 @@ class Readme(object):
 
         with open(self._readme_fullpath, 'a') as oreadme:
             oreadme.write(self._total_string)
+            if time_start is not None:
+                oreadme.write("Total execution time:" + str(time.time() -
+                                                            time_start))
