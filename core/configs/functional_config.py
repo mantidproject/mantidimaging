@@ -471,7 +471,7 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.split,
-            help='Split execution based on max memory and ratio of data size to max memory.'
+            help='Split execution based on --max-memory and ratio of data size to max memory.'
         )
 
         grp_recon.add_argument(
@@ -486,17 +486,18 @@ class FunctionalConfig(object):
         grp_recon.add_argument(
             "--max-memory",
             required=False,
-            type=int,  # this is string but will be later converted to ints in self.update()
+            type=int,
             default=self.max_memory,
-            help="Specify the maximum memory allowed to the reconstruction.")
+            help="Default: All memory avialable on the system. Works in MEGABYTES! Specify the maximum memory allowed to the reconstruction."
+        )
 
         grp_recon.add_argument(
             "--max-ratio",
             required=False,
-            type=float,  # this is string but will be later converted to ints in self.update()
+            type=float,
             default=self.max_ratio,
-            help="Specify the maximum ratio of necessary memory to maximum memory. This needs to be in range of 0 < ratio < 1"
-        )
+            help="Default: %(defauls)s. Specify the maximum allowed ratio of predicted memory / allowed memory. "
+            "This needs to be in range of 0 < ratio < 1")
 
         return parser
 

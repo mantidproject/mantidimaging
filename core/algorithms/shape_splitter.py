@@ -111,6 +111,11 @@ class ShapeSplitter(object):
 
         split, step = np.linspace(
             0, length, ratio, dtype=np.int32, retstep=True)
+
+        # build the new shape around the axis we're traversing
+        # if we're traversing along axis 0, with a shape (15,300,400)
+        # this will create the new shape (step, 300, 400). If we're
+        # traversing along axis 1, then it will be (15, step, 400)
         new_shape = self.shape[:self.axis] + (int(step),
                                               ) + self.shape[self.axis + 1:]
 

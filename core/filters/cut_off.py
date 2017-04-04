@@ -9,8 +9,9 @@ def cli_register(parser):
         required=False,
         type=float,
         default=None,
-        help="Cut off values above threshold relative to the max pixels. Example: --cut-off 0.95"
-    )
+        help="Cut off values above threshold relative to the max pixels. "
+        "The threshold must be in range 0 < threshold < 1. "
+        "Example: --cut-off 0.95")
 
     return parser
 
@@ -21,10 +22,12 @@ def gui_register(par):
 
 def execute(data, threshold):
     """
-    Execute the Cut off filter. Cut off values above threshold relative to the max pixels.
+    Execute the Cut off filter.
+    Cut off values above threshold relative to the max pixels.
 
     :param data: The sample image data as a 3D numpy.ndarray
-    :param threshold: The threshold related to the minimum pixel value that will be clipped
+    :param threshold: The threshold related to the minimum
+                      pixel value that will be clipped
 
     :return: the data after being processed with the filter
 

@@ -63,19 +63,38 @@ class NormaliseByFlatDarkTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_real_result(self):
+        # the calculation here was designed on purpose to have a value
+        # below the np.clip in normalise_by_flat_dark
         # the operation is (sample - dark) / (flat - dark)
         sample = th.gen_img_shared_array()
         sample[:] = 846.
         flat = th.gen_img_shared_array()[0]
-        flat[:] = 26.
+        flat[:] = 306.
         dark = th.gen_img_shared_array()[0]
         dark[:] = 6.
         import numpy as np
-        expected = np.full(sample.shape, 42.)
+        expected = np.full(sample.shape, 2.8)
 
         # we dont want anything to be cropped out
         res = normalise_by_flat_dark.execute(sample, flat, dark)
-        th.assert_equals(res, expected)
+        npt.assert_almost_equal(res, expected, 7)
+
+    def test_clip_works(self):
+        # the calculation here was designed on purpose to have a value
+        # ABOVE the np.clip in normalise_by_flat_dark
+        # the operation is (sample - dark) / (flat - dark)
+        sample = th.gen_img_shared_array()
+        sample[:] = 846.
+        flat = th.gen_img_shared_array()[0]
+        flat[:] = 42.
+        dark = th.gen_img_shared_array()[0]
+        dark[:] = 6.
+        import numpy as np
+        expected = np.full(sample.shape, 3.)
+
+        # we dont want anything to be cropped out
+        res = normalise_by_flat_dark.execute(sample, flat, dark)
+        npt.assert_equal(res, expected)
 
 
 if __name__ == '__main__':

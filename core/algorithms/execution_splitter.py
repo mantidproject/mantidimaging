@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-import helper as h
 
 
 def execute(config, executable):
@@ -31,6 +30,6 @@ def execute(config, executable):
         if recon:
             config.func.cors = centers_of_rotation[split[i]:split[i + 1]]
 
-        # executable(config)
+        executable(config)
 
     return split, step

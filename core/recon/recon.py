@@ -133,9 +133,10 @@ def pre_processing(config, sample, flat, dark):
                               config.pre.gaussian_mode,
                               config.pre.gaussian_order, cores, chunksize)
 
-    # this should be last because the other filters do not expect to work in -log data
-    sample = minus_log.execute(sample, config.pre.minus_log)
     sample = cut_off.execute(sample, config.pre.cut_off)
+    # this should be last because the other filters
+    # do not expect to work in -log data
+    sample = minus_log.execute(sample, config.pre.minus_log)
 
     return sample, flat, dark
 
