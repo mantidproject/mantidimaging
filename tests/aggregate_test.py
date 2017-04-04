@@ -21,7 +21,6 @@ class AggregateTest(unittest.TestCase):
         import os
         import shutil
         with tempfile.NamedTemporaryFile() as f:
-            from core.imgdata.loader import get_file_names
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
 

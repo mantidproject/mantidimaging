@@ -131,6 +131,9 @@ class FunctionalConfig(object):
                + "Convert images mode: {0}\n".format(str(self.convert)) \
                + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix)) \
                + "Which images will be loaded: {0}\n".format(str(self.indices)) \
+               + "Split the execution into separate runs: {0}\n".format(str(self.split)) \
+               + "Max memory for split execution: {0}\n".format(str(self.max_memory)) \
+               + "Max ratio to memory for split execution: {0}\n".format(str(self.max_ratio)) \
                + "Running the GUI: {0}\n".format(str(self.gui))
 
     def setup_parser(self, parser):

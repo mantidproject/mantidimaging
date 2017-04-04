@@ -111,7 +111,11 @@ def run_import_checks(config):
             "Running process on {0} cores.".format(config.func.cores))
 
 
-def get_memory_usage_linux():
+def get_memory_usage_linux(kb=False, mb=False):
+    """
+    :param kb: Return the value in Kilobytes
+    :param mb: Return the value in Megabytes
+    """
     try:
         # Windows doesn't seem to have resource package, so this will
         # silently fail
@@ -119,10 +123,18 @@ def get_memory_usage_linux():
     except ImportError:
         return " <not available on Windows> "
 
-    memory_in_kbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss)
+    tuple_to_return = tuple()  # start with empty tuple
+    if kb:
+        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss), )
 
-    memory_in_mbs = int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024
+    if mb:
+        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) /
+                            1024, )
+    return tuple_to_return
 
+
+def get_memory_usage_linux_str():
+    memory_in_kbs, memory_in_mbs = get_memory_usage_linux(kb=True, mb=True)
     # handle caching
     memory_string = " {0} KB, {1} MB".format(memory_in_kbs, memory_in_mbs)
 
@@ -213,7 +225,7 @@ def pstart(message, verbosity=2):
 
     # will be printed on level 3 only
     if _verbosity >= 3:
-        print_string += " Memory usage before execution: " + get_memory_usage_linux(
+        print_string += " Memory usage before execution: " + get_memory_usage_linux_str(
         )
 
     tomo_print(_timer_print_prefix + print_string, verbosity)
@@ -239,7 +251,7 @@ def pstop(message, verbosity=2):
             str(message) + " Elapsed time: " + timer_string + " sec.")
 
     if _verbosity >= 3:
-        print_string += " Memory usage after execution: " + get_memory_usage_linux(
+        print_string += " Memory usage after execution: " + get_memory_usage_linux_str(
         )
 
     tomo_print(_timer_print_prefix + print_string, verbosity)

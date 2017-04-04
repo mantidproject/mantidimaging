@@ -1,8 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import unittest
+
 import numpy.testing as npt
-from tests import test_helper as th
+
+import helper as h
 from core.filters import rebin
+from tests import test_helper as th
 
 
 class RebinTest(unittest.TestCase):
@@ -53,6 +57,24 @@ class RebinTest(unittest.TestCase):
         expected_x = int(images.shape[1] * val)
         expected_y = int(images.shape[2] * val)
         result = rebin.execute(images, val, mode)
+        npt.assert_equal(result.shape[1], expected_x)
+        npt.assert_equal(result.shape[2], expected_y)
+
+    def test_memory_change_acceptable(self):
+        """
+        This filter will increase the memory usage
+        as it has to allocate memory for the new resized shape
+        """
+        images = th.gen_img_shared_array()
+        mode = 'nearest'
+        # This about doubles the memory. Value found from running the test
+        val = 100.
+        expected_x = int(images.shape[1] * val)
+        expected_y = int(images.shape[2] * val)
+        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        result = rebin.execute(images, val, mode)
+        self.assertLess(
+            h.get_memory_usage_linux(kb=True)[0], cached_memory * 2)
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
 
