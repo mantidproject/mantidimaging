@@ -3,7 +3,6 @@ import time
 import os
 
 # This way ALL separate instances of a Readme will write to the same output!
-total_string = ""
 time_start = None
 
 
@@ -14,12 +13,13 @@ class Readme(object):
         self._output_path = saver.get_output_path()
         self._total_lines = 0
         self._readme_fullpath = None
+        self._total_string = ""
         if self._output_path:
             self._readme_fullpath = os.path.join(self._output_path,
                                                  self._readme_file_name)
 
     def __len__(self):
-        return len(total_string)
+        return len(self._total_string)
 
     def lines(self):
         return self._total_lines
@@ -31,8 +31,7 @@ class Readme(object):
         :param string: string to be appended
         """
         self._total_lines += 1
-        global total_string
-        total_string += string + '\n'
+        self._total_string += string + '\n'
 
     def begin(self, cmd_line, config):
         """
