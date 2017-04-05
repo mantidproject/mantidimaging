@@ -8,11 +8,13 @@ verbosity: Default 2, existing levels:
     0 - Silent, no output at all (not recommended)
     1 - Low verbosity, will output each step that is being performed
     2 - Normal verbosity, will output each step and execution time
-    3 - High verbosity, will output the step name, execution time and memory usage before and after each step
+    3 - High verbosity, will output the step name, execution time and memory
+        usage before and after each step
 """
 
-# do we want to wrap this in a global class? 
-# so that helper will just store the functionality, but helper_data will store the actual data?
+# do we want to wrap this in a global class?
+# so that helper will just store the functionality,
+# but helper_data will store the actual data?
 
 _whole_exec_timer = None
 _timer_running = False
@@ -27,7 +29,6 @@ _note_str = " > Note: "
 _warning_str = " >> WARNING: "
 _error_str = " >>> ERROR: "
 
-# for timer
 _progress_bar = None
 
 _readme = None

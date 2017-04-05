@@ -5,7 +5,6 @@ import unittest
 import numpy.testing as npt
 
 import helper as h
-import tests.test_helper as th
 from core.configs.recon_config import ReconstructionConfig
 
 
