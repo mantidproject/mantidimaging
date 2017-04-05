@@ -13,8 +13,8 @@ def cli_register(parser):
         required=False,
         type=float,
         default=default_size,
-        help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
-    )
+        help="Apply gaussian filter (2d) on reconstructed volume with the "
+        "given window size.")
 
     parser.add_argument(
         "--pre-gaussian-mode",
@@ -22,17 +22,20 @@ def cli_register(parser):
         required=False,
         default=modes()[0],
         choices=modes(),
-        help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(pre processing)."
-    )
+        help="Default: %(default)s\nMode of gaussian filter which determines "
+        "how the array borders are handled.(pre processing).")
 
     parser.add_argument(
         "--pre-gaussian-order",
         required=False,
         type=int,
         default=default_order,
-        help="Default: %(default)d\nThe order of the filter along each axis is given as a sequence of integers, \n"
-        "or as a single number. An order of 0 corresponds to convolution with a Gaussian kernel.\n"
-        "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
+        help="Default: %(default)d\nThe order of the filter along each axis "
+        "is given as a sequence of integers, \n"
+        "or as a single number. An order of 0 corresponds to "
+        "convolution with a Gaussian kernel.\n"
+        "An order of 1, 2, or 3 corresponds to convolution "
+        "with the first, second or third derivatives of a Gaussian.\n"
         "Higher order derivatives are not implemented.")
 
     # post-processing params
@@ -41,8 +44,8 @@ def cli_register(parser):
         required=False,
         type=float,
         default=default_size,
-        help="Apply gaussian filter (2d) on reconstructed volume with the given window size."
-    )
+        help="Apply gaussian filter (2d) on reconstructed volume with the "
+        "given window size.")
 
     parser.add_argument(
         "--post-gaussian-mode",
@@ -50,17 +53,20 @@ def cli_register(parser):
         required=False,
         default=modes()[0],
         choices=modes(),
-        help="Default: %(default)s\nMode of gaussian filter which determines how the array borders are handled.(post processing)."
-    )
+        help="Default: %(default)s\nMode of gaussian filter which determines "
+        "how the array borders are handled.(post processing).")
 
     parser.add_argument(
         "--post-gaussian-order",
         required=False,
         type=int,
         default=default_order,
-        help="Default: %(default)d\nThe order of the filter along each axis is given as a sequence of integers, \n"
-        "or as a single number. An order of 0 corresponds to convolution with a Gaussian kernel.\n"
-        "An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian.\n"
+        help="Default: %(default)d\nThe order of the filter along each axis is"
+        " given as a sequence of integers,\n"
+        "or as a single number. An order of 0 corresponds to convolution with "
+        "a Gaussian kernel.\n"
+        "An order of 1, 2, or 3 corresponds to convolution with the first, "
+        "second or third derivatives of a Gaussian.\n"
         "Higher order derivatives are not implemented.")
 
     return parser
@@ -80,11 +86,14 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
 
     :param data: The sample image data as a 3D numpy.ndarray
     :param size: Size of the kernel
-    :param mode: The mode with which to handle the endges. One of [reflect, constant, nearest, mirror, wrap].
-    :param order: The order of the filter along each axis is given as a sequence of integers, or as a single number.
+    :param mode: The mode with which to handle the endges.
+                 One of [reflect, constant, nearest, mirror, wrap].
+    :param order: The order of the filter along each axis is given as a
+                  sequence of integers, or as a single number.
                   An order of 0 corresponds to convolution with a Gaussian kernel.
-                  An order of 1, 2, or 3 corresponds to convolution with the first, second or third
-                  derivatives of a Gaussian. Higher order derivatives are not implemented
+                  An order of 1, 2, or 3 corresponds to convolution
+                  with the first, second or third derivatives of a Gaussian.
+                  Higher order derivatives are not implemented
     :param cores: The number of cores that will be used to process the data.
     :param chunksize: The number of chunks that each worker will receive.
 
@@ -95,12 +104,16 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
 
     Example command line:
     python main.py -i /some/data --pre-gaussian-size 3
-    python main.py -i /some/data --pre-gaussian-size 3 --pre-gaussian-mode 'nearest'
-    python main.py -i /some/data --pre-gaussian-size 3 --pre-gaussian-mode 'nearest' --pre-gaussian-order 1
-    
+    python main.py -i /some/data --pre-gaussian-size 3
+                   --pre-gaussian-mode 'nearest'
+    python main.py -i /some/data --pre-gaussian-size 3
+                   --pre-gaussian-mode 'nearest' --pre-gaussian-order 1
+
     python main.py -i /some/data --post-gaussian-size 3
-    python main.py -i /some/data --post-gaussian-size 3 --post-gaussian-mode 'nearest'
-    python main.py -i /some/data --post-gaussian-size 3 --post-gaussian-mode 'nearest' --post-gaussian-order 1
+    python main.py -i /some/data --post-gaussian-size 3
+                   --post-gaussian-mode 'nearest'
+    python main.py -i /some/data --post-gaussian-size 3
+                   --post-gaussian-mode 'nearest' --post-gaussian-order 1
 
     """
     h.check_data_stack(data)
@@ -117,9 +130,8 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
 
 def _execute_seq(data, size, mode, order):
     # Sequential CPU version of the Gaussian filter
-    h.pstart(
-        "Starting  gaussian filter, with pixel data type: {0}, filter size/width: {1}.".
-        format(data.dtype, size))
+    h.pstart("Starting  gaussian filter, with pixel data type: {0}, "
+             "filter size/width: {1}.".format(data.dtype, size))
 
     h.prog_init(data.shape[0], "Gaussian")
     for idx in range(0, data.shape[0]):
@@ -129,9 +141,8 @@ def _execute_seq(data, size, mode, order):
 
     h.prog_close()
 
-    h.pstop(
-        "Finished  gaussian filter, with pixel data type: {0}, filter size/width: {1}.".
-        format(data.dtype, size))
+    h.pstop("Finished  gaussian filter, with pixel data type: {0}, "
+            "filter size/width: {1}.".format(data.dtype, size))
 
     return data
 
@@ -146,13 +157,11 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None):
         mode=mode,
         order=order)
 
-    h.pstart(
-        "Starting PARALLEL gaussian filter, with pixel data type: {0}, filter size/width: {1}.".
-        format(data.dtype, size))
+    h.pstart("Starting PARALLEL gaussian filter, with pixel data type: {0}, "
+             "filter size/width: {1}.".format(data.dtype, size))
     data = psm.execute(data, f, cores, chunksize, "Gaussian")
 
-    h.pstop(
-        "Finished  gaussian filter, with pixel data type: {0}, filter size/width: {1}.".
-        format(data.dtype, size))
+    h.pstop("Finished  gaussian filter, with pixel data type: {0}, "
+            "filter size/width: {1}.".format(data.dtype, size))
 
     return data

@@ -18,7 +18,6 @@ def execute(sample, flat, dark, config, indices):
         i1, i2 = helper.handle_indices(indices)
 
         show_3d(sample[i1:i2])
-    import matplotlib.pyplot as plt
     plt.show()
 
 

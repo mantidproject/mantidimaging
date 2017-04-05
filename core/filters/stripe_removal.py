@@ -49,37 +49,49 @@ def methods():
 
 def execute(data, wf, ti, sf, cores=None, chunksize=None):
     """
-    Execute stripe removal filters. 
-    Multiple filters can be executed, if they are specified on the command line. 
-    The order for that execution will always be: wavelett-fourier, titarenko, smoothing-filter.
+    Execute stripe removal filters.
+    Multiple filters can be executed, if they are specified on the command line
+    The order for that execution will always be:
+        wavelett-fourier, titarenko, smoothing-filter.
 
-    :param data:
-    :param wf: Specify parameters for the wavelett-fourier filter. Acceptable keywords are:
-               level (default: None, int, optional) Number of discrete wavelet transform levels.
-               wname (default: 'db5', str, optional) Type of the wavelet filter. 'haar', 'db5', 'sym5', etc.
-               sigma (default: 2, float, optional) Damping parameter in Fourier space.
-               pad (default: True, bool, optional) If True, extend the size of the sinogram by padding with zeros.
+    :param data: Sample data which is to be processed. Expected in radiograms
+    :param wf: Specify parameters for the wavelett-fourier filter.
+               Acceptable keywords are:
+                    level (default: None, int, optional)
+                            Number of discrete wavelet transform levels.
+                    wname (default: 'db5', str, optional)
+                            Type of the wavelet filter. 'haar', 'db5', 'sym5'.
+                    sigma (default: 2, float, optional)
+                            Damping parameter in Fourier space.
+                    pad (default: True, bool, optional)
+                            If True, extend the size of the sinogram by
+                            padding with zeros.
 
-    :param ti: Specify parameters for the titarenko filter. Acceptable keywords are:
-               nblock (default:0, int, optional) Number of blocks.
-               alpha (default: 1.5, int, optional) Damping factor.
+    :param ti: Specify parameters for the titarenko filter.
+               Acceptable keywords are:
+                    nblock (default:0, int, optional) Number of blocks.
+                    alpha (default: 1.5, int, optional) Damping factor.
 
-    :param sf: Specify parameters for the smoothing-filter. Acceptable keywords are:
-               size (default: 5, int, optional) Size of the smoothing filter.
+    :param sf: Specify parameters for the smoothing-filter.
+               Acceptable keywords are:
+                    size (default: 5, int, optional)
+                        Size of the smoothing filter.
 
     Example command line:
-    python main.py -i /some/data --pre-stripe-removal-wf level=1 
+    python main.py -i /some/data --pre-stripe-removal-wf level=1
     python main.py -i /some/data --pre-stripe-removal-wf level=3 pad=False
-    python main.py -i /some/data --pre-stripe-removal-wf level=3 pad=False wname=db5
-    python main.py -i /some/data --pre-stripe-removal-wf level=3 pad=False wname=db5 sigma=2
-    
+    python main.py -i /some/data
+                    --pre-stripe-removal-wf level=3 pad=False wname=db5
+    python main.py -i /some/data
+                    --pre-stripe-removal-wf level=3 pad=False wname=db5 sigma=2
+
     python main.py -i /some/data --pre-stripe-removal-ti nblock=3
     python main.py -i /some/data --pre-stripe-removal-ti nblock=3 alpha=2
-    
+
     python main.py -i /some/data --pre-stripe-removal-sf size=3
     """
     # get the first one, the rest will be processed
-    msg = "Starting removal of stripes/ring artifacts using the method '{0}'..."
+    msg = "Starting removal of stripes/ring artifacts using method '{0}'..."
     if wf:
         h.pstart(msg.format('Wavelett-Fourier'))
         data = _wf(data, wf, cores, chunksize)

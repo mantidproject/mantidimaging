@@ -12,8 +12,8 @@ def cli_register(parser):
         required=False,
         type=int,
         help="Rotate images by 90 degrees a number of times.\n"
-        "The rotation is clockwise unless a negative number is given which indicates "
-        "rotation counterclockwise.")
+        "The rotation is clockwise unless a negative number is given "
+        "which indicates rotation counterclockwise.")
 
     return parser
 
@@ -70,7 +70,7 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
 
 def _execute_seq(data, rotation):
     h.pstart(
-        "Starting rotation step ({0} degrees clockwise), with pixel data type: {1}...".
+        "Starting rotation step ({0} degrees clockwise), data type: {1}...".
         format(rotation * 90, data.dtype))
 
     img_count = data.shape[0]
@@ -81,17 +81,15 @@ def _execute_seq(data, rotation):
 
     h.prog_close()
 
-    h.pstop(
-        "Finished rotation step ({0} degrees clockwise), with pixel data type: {1}."
-        .format(rotation * 90, data.dtype))
+    h.pstop("Finished rotation step ({0} degrees clockwise), data type: {1}."
+            .format(rotation * 90, data.dtype))
 
     return data
 
 
 def _execute_par(data, rotation, cores=None, chunksize=None):
-    h.pstart(
-        "Starting PARALLEL rotation step ({0} degrees clockwise), with pixel data type: {1}...".
-        format(rotation * 90, data.dtype))
+    h.pstart("Starting PARALLEL rotation step ({0} degrees clockwise), "
+             "data type: {1}...".format(rotation * 90, data.dtype))
 
     f = psm.create_partial(
         _rotate_image_inplace,
@@ -101,8 +99,7 @@ def _execute_par(data, rotation, cores=None, chunksize=None):
     data = psm.execute(
         data, f, cores=cores, chunksize=chunksize, name="Rotation")
 
-    h.pstop(
-        "Finished PARALLEL rotation step ({0} degrees clockwise), with pixel data type: {1}."
-        .format(rotation * 90, data.dtype))
+    h.pstop("Finished PARALLEL rotation step ({0} degrees clockwise), "
+            "data type: {1}.".format(rotation * 90, data.dtype))
 
     return data

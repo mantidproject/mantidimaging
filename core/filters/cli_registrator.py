@@ -4,7 +4,8 @@ import importlib
 
 def register_into(parser):
     """
-    This function will import all the filters, and then call cli_register(parser) on them.
+    This function will import all the filters, and then call
+    cli_register(parser) on them.
     """
     MODULES = [
         'circular_mask', 'crop_coords', 'cut_off', 'gaussian', 'median_filter',
@@ -15,7 +16,7 @@ def register_into(parser):
 
     for m in MODULES:
         # we specify the full absolute path and append the package name
-        # the code underneath does something like import core.filters.package_name
+        # the code underneath does import core.filters.package_name
         m = importlib.import_module('core.filters.' + m)
         m.cli_register(parser)
 

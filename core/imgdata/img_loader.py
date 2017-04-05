@@ -26,32 +26,33 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
     :param load_func: function to be used to load the files
     :param input_file_names: path to sample images. Can be a file or directory
-    :param input_path_flat: (optional) path to open beam / flat image(s). Can be a file or directory
-    :param input_path_dark: (optional) path to dark field image(s). Can be a file or directory
-    :param img_format: file extension (typically 'tiff', 'tif', 'fits', or 'fit' (not including the dot)
-    :param data_dtype: the type in which the data will be loaded, could be float16, float32, float64, uint16
+    :param input_path_flat: (optional) path to open beam / flat image(s).
+                            Can be a file or directory
+    :param input_path_dark: (optional) path to dark field image(s).
+                            Can be a file or directory
+    :param img_format: file extension (supported tiff, tif, fits, or fit)
+    :param data_dtype: Recommended: float32. The data type in which 
+                       the data will be convert to after loading
     :param cores: Cores to be used for parallel loading
     :param chunksize: Chunk of work that each worker will receive
-    :param parallel_load: Do the loading with parallel processes. 
+    :param parallel_load: Do the loading with parallel processes.
     :param indices: Which files will be loaded
 
-    :return :: 3 numpy arrays: input data volume (3D), average of flatt images (2D),
-               average of dark images(2D)
+    :return: sample, average flat image, average dark image
     """
 
     # Assumed that all images have the same size and properties as the first.
     first_sample_img = load_func(input_file_names[0])
-    
+
     if indices is not None and len(indices) == 2:
         input_file_names = input_file_names[indices[0]:indices[1]]
 
     # get the shape of all images
     img_shape = first_sample_img.shape
-    
+
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
     # this removes the image number dimension, if we loaded a stack of images
-    shape_2d = img_shape[1:] if len(img_shape) > 2 else img_shape
 
     flat_avg = _load_and_avg_data(load_func, input_path_flat, img_shape,
                                   img_format, data_dtype, "Flat", cores,
@@ -75,7 +76,6 @@ def _load_sample_data(load_func,
                       cores=None,
                       chunksize=None,
                       parallel_load=False):
-    
     # determine what the loaded data was
     if len(img_shape) == 2:  # the loaded file was a single image
         sample_data = _load_files(load_func, input_file_names, img_shape,
@@ -83,8 +83,9 @@ def _load_sample_data(load_func,
                                   parallel_load)
     elif len(img_shape) == 3:  # the loaded file was a stack of fits images
         from core.imgdata import stack_loader
-        sample_data = stack_loader.execute(load_func, input_file_names[0], data_dtype,
-                                 "Sample", cores, chunksize, parallel_load)
+        sample_data = stack_loader.execute(load_func, input_file_names[0],
+                                           data_dtype, "Sample", cores,
+                                           chunksize, parallel_load)
     else:
         raise ValueError("Data loaded has invalid shape: {0}", img_shape)
 
@@ -117,7 +118,8 @@ def _do_files_load_seq(data, load_func, files, img_shape, name):
             h.prog_update()
         except ValueError as exc:
             raise ValueError(
-                "An image has different width and/or height dimensions! All images must have the same dimensions. "
+                "An image has different width and/or height dimensions! "
+                "All images must have the same dimensions. "
                 "Expected dimensions: {0} Error message: {1}".format(img_shape,
                                                                      exc))
         except IOError as exc:
@@ -148,27 +150,6 @@ def _load_files(load_func,
                 cores=None,
                 chunksize=None,
                 parallel_load=False):
-    """
-    Reads image files in a row into a 3d numpy array. Useful when reading all the sample
-    images, or all the flat or dark images.
-
-    Tried an multiparallel version of this with Python 2.7 multithreading library.
-    Each type -> Pool, processes and threads, and none gave any improvement
-    over linear loading, it was usually up to 50% slower with MP loading.
-
-    The reason is that the loading is IO Bound, not CPU bound, thus
-    multiple threads or processes accessing the IO doesn't provide any benefit.
-
-    :param files :: list of image file paths given as strings
-    :param img_shape :: shape of every image, assumes they all have the same shape
-    :param load_func :: file name extension if fixed (to set the expected image format)
-    :param dtype :: data type for the output numpy array
-
-    Returns:: a 3d data volume with the size of the first (outermost) dimension equal
-    to the number of files, and the sizes of the second and third dimensions equal to
-    the sizes given in the input img_shape
-    """
-
     # Zeroing here to make sure that we can allocate the memory.
     # If it's not possible better crash here than later.
     from core.parallel import utility as pu

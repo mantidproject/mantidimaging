@@ -28,7 +28,7 @@ def execute(data, flat=None, dark=None, cores=None, chunksize=None):
     """
     Normalise by flat and dark images
 
-    :param data: image stack as a 3d numpy array
+    :param data: Sample data which is to be processed. Expected in radiograms
     :param flat: flat (open beam) image to use in normalization
     :param dark: dark image to use in normalization
     :param cores: The number of cores that will be used to process the data.
@@ -38,7 +38,8 @@ def execute(data, flat=None, dark=None, cores=None, chunksize=None):
 
     Example command line:
     python main.py -i /some/data -F /some/flat/images -D /some/dark/images
-    python main.py -i /some/data --input-path-flat /some/flat/images --input-path-flat /some/dark/images
+    python main.py -i /some/data --input-path-flat /some/flat/images 
+                   --input-path-flat /some/dark/images
     """
     h.check_data_stack(data)
 

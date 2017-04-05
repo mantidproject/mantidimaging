@@ -18,18 +18,6 @@ def write_img(data, filename, overwrite=False):
 
 
 def write_nxs(data, filename, projection_angles=None, overwrite=False):
-    """
-    Write a h5 NXS file.
-
-    :param data: the sample data that will be saved
-    :param filename: The full path of the output file, plus the name.
-    :param flat: An averaged flat image MUST BE PROVIDED
-    :param dark: An averaged flat image MUST BE PROVIDED
-    :param projection_angles: Pre-calculated projection angles for the stack.
-    :param overwrite: Overwrite an existing file.
-    """
-
-    import numpy as np
     import h5py
     nxs = h5py.File(filename, 'w')
 
@@ -39,6 +27,7 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
 
     dset = nxs.create_dataset("tomography/sample_data", data.shape)
     dset[:data.shape[0]] = data[:]
+    # left here if we decide to start appending the flat and dark images again
     # dset[-2] = flat[:]
     # dset[-1] = dark[:]
 
@@ -53,13 +42,13 @@ class Saver(object):
     This class doesn't have any try: ... except: ... because when called
     it's usually at an end point, where there would be no point in recovering.
 
-    However if the directory in which the output should be written out
-    does not exist, it will be created on the first call of make_dirs_if_needed.
-    And if the directory cannot be created/accessed/written to afterwards, it will fail on
-    writing out the Readme Summary beginning, which is early in the reconstruction,
-    before loading any data in, or even the tool.
+    However if the directory in which the output should be written out does
+    not exist, it will be created on the first call of make_dirs_if_needed.
+    And if the directory cannot be created/accessed/written to afterwards,
+    it will fail on writing out the Readme Summary beginning, which is
+    early in the reconstruction, before loading any data in, or even the tool.
 
-    That means this class should always fail early before any
+    This class should always fail early before any
     expensive operations have been attempted.
     """
 
@@ -92,27 +81,36 @@ class Saver(object):
     def get_output_path(self):
         return self._output_path
 
-    def save_single_image(self, data, subdir=None, name='saved_image', swap_axes=False, custom_index=None, zfill_len=0,
+    def save_single_image(self, data, subdir=None, name='saved_image',
+                          swap_axes=False, custom_index=None, zfill_len=0,
                           name_postfix='', use_preproc_folder=True):
         """
         Save a single image to a single image file.
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
-        
-        :param subdir :: additional output directory, currently used for debugging
-        :param data :: data volume with pre-processed images
-        :param name: image name to be appended
-        :param custom_index: parameter number that will be appended to the image filename3
-        :param zfill_len: When saving multiple images, how much zeros to put after the name and before the index number.
-                          E.g. saving out an image with zfill_len = 6: saved_image000001,...saved_image000201 and so on
-                          E.g. saving out an image with zfill_len = 3: saved_image001,...saved_image201 and so on
-        :param name_postfix: String to be appended after the zero fill. This is not recommended and might confuse
-                              imaging programs (including this script) as to the order of the images, and they could
-                              end up not loading all of the images.
+
+        :param subdir: Specify an additional subdirectory
+                       inside the output directory
+        :param data: Data volume with pre-processed images
+        :param name: Image name to be appended
+        :param custom_index: Index that will be appended at the end of the
+                             image filename
+        :param zfill_len: Prepend zeros to the output file names to have a
+                          constant file name length. Example:
+                          - saving out an image with zfill_len = 6:
+                              saved_image000001,...saved_image000201 and so on
+                          - saving out an image with zfill_len = 3:
+                              saved_image001,...saved_image201 and so on
+        :param name_postfix: String to be appended after the zero fill.
+                             This is not recommended and might confuse
+                             imaging programs (including this script) as to
+                             the order of the images, and they could
+                             end up not loading all of the images.
         """
 
         if self._output_path is None:
             h.tomo_print_note(
-                "Not saving a single image, because no output path is specified."
+                "Not saving a single image, "
+                "because no output path is specified."
             )
             return
 
@@ -147,12 +145,10 @@ class Saver(object):
     def save_preproc_images(self, data):
         """
         Specialised save function to save out the pre-processed images.
-        
+
         This will save the images out in a subdir /pre-processed/.
 
         :param data: The pre-processed data that will be saved
-        :param flat: The averaged flat image
-        :param dark: The averaged dark image
         """
 
         if self._save_preproc and self._output_path is not None:
@@ -162,27 +158,28 @@ class Saver(object):
                      format(preproc_dir, data.dtype))
 
             self.save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
-                      self._img_format, self._overwrite_all, indices=self._indices)
+                      self._img_format, self._overwrite_all,
+                      indices=self._indices)
 
             h.pstop("Saving pre-processed images finished.")
 
     def save_recon_output(self, data):
         """
-        Specialised method to save out the reconstructed data 
+        Specialised method to save out the reconstructed data
         depending on the configuration options.
 
         This will save out the data in a subdirectory /reconstructed/.
-        If --save-horiz-slices is specified, the axis will be flipped and 
+        If --save-horiz-slices is specified, the axis will be flipped and
         the result will be saved out in /reconstructed/horiz.
-        ^ This means that the data usage will double as numpy.swapaxes WILL COPY the data!
-        However this is not usually a problem as the reconstructed data is small.
+        ^ This means that the data usage will double as
+        numpy.swapaxes WILL COPY AND DOUBLE the data!
 
-        :param data :: reconstructed data volume. A sequence of images will be saved from this
-        slices saved by default. Useful for testing some tools
+        :param data: Reconstructed data volume that will be saved out.
         """
         if self._output_path is None:
             h.tomo_print_warning(
-                "Not saving reconstruction output, because no output path is specified."
+                "Not saving reconstruction output, "
+                "because no output path is specified."
             )
             return
 
@@ -192,8 +189,9 @@ class Saver(object):
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
-        self.save(data, out_recon_dir, self._out_slices_prefix, self._swap_axes,
-                  self._img_format, self._overwrite_all, indices=self._indices)
+        self.save(data, out_recon_dir, self._out_slices_prefix,
+                  self._swap_axes, self._img_format, self._overwrite_all,
+                  indices=self._indices)
 
         # Sideways slices:
         if self._save_horiz_slices:
@@ -203,10 +201,10 @@ class Saver(object):
             h.tomo_print_note(
                 "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
-            import numpy as np
             # save out the horizontal slices by flipping the axes
             self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                      not self._swap_axes, self._img_format, self._overwrite_all)
+                      not self._swap_axes, self._img_format,
+                      self._overwrite_all)
 
         h.pstop("Finished saving slices of the reconstructed volume in: {0}".
                 format(out_recon_dir))
@@ -226,18 +224,27 @@ class Saver(object):
         Save image volume (3d) into a series of slices along the Z axis.
         The Z axis in the script is the ndarray.shape[0].
 
-        :param data: data as images/slices stores in numpy array
-        :param output_dir: where to save the files
-        :param name_prefix: prefix for the names of the images - an index is appended to this prefix
-        :param swap_axes: the 0 and 1 axis of the images will be swapped if this flag is specified
-        :param img_format: the file format of the saved out images
-        :param overwrite_all: Overwrite any existing images with conflicting names
-        :param custom_idx: Custom index to be used for the file name, instead of increasing numbers
-        :param zfill_len: If custom_idx is not specified, the name will be padded with zeros
+        :param data: Data as images/slices stores in numpy array
+        :param output_dir: Output directory for the files
+        :param name_prefix: Prefix for the names of the images,
+                            appended before the image number
+        :param swap_axes: Swap the 0 and 1 axis of the images
+                          (convert from radiograms to sinograms on saving)
+        :param img_format: File format of the saved out images
+        :param overwrite_all: Overwrite existing images with conflicting names
+        :param custom_idx: Single index to be used for the file name,
+                           instead of incremental numbers
+        :param zfill_len: This option is ignored if custom_idx is specified!
+                          Prepend zeros to the output file names to have a
+                          constant file name length. Example:
+                          - saving out an image with zfill_len = 6:
+                              saved_image000001,...saved_image000201 and so on
+                          - saving out an image with zfill_len = 3:
+                              saved_image001,...saved_image201 and so on
         :param name_postfix: Postfix for the name after the index
-        :param indices: Specify the start and end range of the indices with which the files will be named. 
-                        Only works if custom_idx is not specified.
-
+        :param indices: Only works if custom_idx is not specified.
+                        Specify the start and end range of the indices
+                        which will be used for the file names.
         """
 
         Saver.make_dirs_if_needed(output_dir, overwrite_all)
@@ -248,9 +255,9 @@ class Saver(object):
             data = np.swapaxes(data, 0, 1)
 
         if indices is not None:
-            start_index=indices[0]
+            start_index = indices[0]
         else:
-            start_index=0
+            start_index = 0
 
         if img_format in ['nxs']:
             filename = os.path.join(output_dir, name_prefix + name_postfix)
@@ -294,5 +301,6 @@ class Saver(object):
             os.makedirs(path)
         elif os.listdir(path) and not overwrite_all:
             raise RuntimeError(
-                "The output directory is NOT empty:{0}\n. This can be overridden with -w/--overwrite-all.".
+                "The output directory is NOT empty:{0}\n. This can be "
+                "overridden with -w/--overwrite-all.".
                 format(path))

@@ -10,7 +10,8 @@ def cli_register(parser):
         "--rebin",
         required=False,
         type=float,
-        help="Rebin factor by which the images will be rebinned. This could be any positive float number.\n"
+        help="Rebin factor by which the images will be rebinned. "
+        "This could be any positive float number.\n"
         "If not specified no scaling will be done.")
 
     parser.add_argument(
@@ -20,8 +21,8 @@ def cli_register(parser):
         default=modes()[0],
         choices=modes(),
         help="Default: %(default)s\n"
-        "Specify which interpolation mode will be used for the scaling of the image."
-    )
+        "Specify which interpolation mode will be used for the scaling of the "
+        "image.")
 
     return parser
 
@@ -38,12 +39,13 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None):
     """
     Execute the Rebin/imresize filter.
 
-    :param data: The sample image data as a 3D numpy.ndarray
+    :param data: Sample data which is to be processed. Expected in radiograms
     :param rebin_param: int, float or tuple
                         int - Percentage of current size.
                         float - Fraction of current size.
                         tuple - Size of the output image.
-    :param mode: Interpolation to use for re-sizing ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
+    :param mode: Interpolation to use for re-sizing
+                 ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
     :param cores: The number of cores that will be used to process the data.
     :param chunksize: The number of chunks that each worker will receive.
 

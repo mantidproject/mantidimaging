@@ -12,8 +12,10 @@ def cli_register(parser):
         required=False,
         nargs='*',
         type=str,
-        help="Air region /region for normalisation. The selection is a rectangle and expected order is - Left Top Right Bottom.\n"
-        "For best results the region selected should not be blocked by any object in the Tomography.\n"
+        help="Air region /region for normalisation. The selection is a "
+        "rectangle and expected order is - Left Top Right Bottom.\n"
+        "For best results the region selected should not be blocked by "
+        "any object in the Tomography.\n"
         "Example: --air-region 150 234 23 22")
 
     return parser
@@ -29,15 +31,17 @@ def execute(data, air_region, cores=None, chunksize=None):
     charge - not using the proton charge field as usually found in
     experiment/nexus files. This uses an area of normalization, if
     provided in the pre-processing configuration.
-    
+
     This does NOT do any checks if the Air Region is out of bounds!
     If the Air Region is out of bounds, the crop will fail at runtime.
-    If the Air Region is in bounds, but has overlapping coordinates 
+    If the Air Region is in bounds, but has overlapping coordinates
     the crop give back a 0 shape of the coordinates that were wrong.
 
-    :param data: stack of images as a 3d numpy array
-    :param air_region: The air region from which sums will be calculated and all images will be normalised. 
-                       The selection is a rectangle and expected order is - Left Top Right Bottom.
+    :param data: Sample data which is to be processed. Expected in radiograms
+    :param air_region: The air region from which sums will be calculated and
+                       all images will be normalised.
+                       The selection is a rectangle and
+                       expected order is - Left Top Right Bottom.
     :param cores: The number of cores that will be used to process the data.
     :param chunksize: The number of chunks that each worker will receive.
 
@@ -66,10 +70,10 @@ def _calc_sum(data,
               air_right=None,
               air_bottom=None):
     # here we can use ndarray.sum or ndarray.mean
-    # ndarray.mean makes the values with a nice int16 range 
+    # ndarray.mean makes the values with a nice int16 range
     # (0-65535, BUT NOT int16 TYPE! They remain floats!)
     # while ndarray.sum makes them in a low range of 0-1.5.
-    # There are little differences in the results both visually and in the histograms
+    # There is no difference in the results
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
@@ -112,9 +116,9 @@ def _execute_par(data, air_region, cores=None, chunksize=None):
     max_avg = np.max(air_sums) / avg
     min_avg = np.min(air_sums) / avg
 
-    h.pstop(
-        "Finished normalization by air region. Average: {0}, max ratio: {1}, min ratio: {2}.".
-        format(avg, max_avg, min_avg))
+    h.pstop("Finished normalization by air region. "
+            "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
+                avg, max_avg, min_avg))
 
     return data
 
@@ -147,8 +151,8 @@ def _execute_seq(data, air_region):
     max_avg = np.max(air_sums) / avg
     min_avg = np.min(air_sums) / avg
 
-    h.pstop(
-        "Finished normalization by air region. Average: {0}, max ratio: {1}, min ratio: {2}.".
-        format(avg, max_avg, min_avg))
+    h.pstop("Finished normalization by air region. "
+            "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
+                avg, max_avg, min_avg))
 
     return data

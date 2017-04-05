@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-from core.imgdata.loader import get_folder_names, get_file_names
 
 
 def execute(config):

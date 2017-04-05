@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-
 """
 parallel.shared_mem: Runs a function in parallel.
                      Expects and uses a single 3D shared memory array between the processes.

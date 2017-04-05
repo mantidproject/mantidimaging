@@ -19,7 +19,12 @@ def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")
 
 
-def execute(data, minus_log):
+def execute(data, minus_log=True):
+    """
+    :param data: Sample data which is to be processed. Expected in radiograms
+    :param minus_log: Default True
+                      Specify whether to calculate minus log or just return.
+    """
     if minus_log:
         # import early to check if tomopy is available
         tomopy = importer.do_importing('tomopy')

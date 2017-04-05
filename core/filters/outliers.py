@@ -21,8 +21,8 @@ def cli_register(parser):
         required=False,
         type=float,
         help="Outliers threshold for reconstructed volume.\n"
-        "Pixels below and/or above (depending on mode) this threshold will be clipped."
-    )
+        "Pixels below and/or above (depending on mode) "
+        "this threshold will be clipped.")
 
     parser.add_argument(
         "--post-outliers-radius",

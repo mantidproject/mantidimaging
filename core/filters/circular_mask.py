@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
 import helper as h
 from core.tools import importer
 
@@ -10,8 +9,10 @@ def cli_register(parser):
         required=False,
         type=float,
         default=None,
-        help="Radius of the circular mask to apply on the reconstructed volume.\n"
-        "It is given in range [0,1) relative to the size of the smaller dimension/edge "
+        help="Radius of the circular mask to apply on the "
+        "reconstructed volume.\n"
+        "It is given in range [0,1) relative to the size of the "
+        "smaller dimension/edge "
         "of the slices.\nEmpty or zero implies no masking.")
 
     parser.add_argument(
@@ -19,8 +20,8 @@ def cli_register(parser):
         required=False,
         type=float,
         default=0.0,
-        help="Default: %(default)s. The value that the pixels in the mask will be set to."
-    )
+        help="Default: %(default)s. "
+        "The value that the pixels in the mask will be set to.")
 
     return parser
 
@@ -34,8 +35,11 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     Execute the Circular Mask filter.
 
     :param data: The sample image data as a 3D numpy.ndarray
-    :param circular_mask_ratio: The ratio to the full image. The ratio must be 0 < ratio < 1
-    :param circular_mask_value: Default 0. The value that all pixels in the mask will be set to.
+    :param circular_mask_ratio: The ratio to the full image.
+                                The ratio must be 0 < ratio < 1
+    :param circular_mask_value: Default 0.
+                                The value that all pixels in the mask
+                                will be set to.
 
     :return: the data after being processed with the filter
 
