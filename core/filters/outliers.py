@@ -1,4 +1,7 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import numpy as np
+
 import helper as h
 from core.tools import importer
 
@@ -70,3 +73,20 @@ def execute(data, pixel_difference, radius, cores=None):
             data.dtype))
 
     return data
+
+
+def e(data, threshold, radius, sign, cores=None):
+    assert isinstance(data, np.ndarray)
+    for image in data:  # do numpy.vectorize(data)
+        # print(image.shape)
+        # print(image[24, 24])
+        height = image.shape[0]
+        width = image.shape[1]
+        for i in xrange(width):
+            row = image[i]
+            # print(row.max())
+            max_pixel = row.max()
+            median_pixel = np.median(row)
+            row[row * sign + threshold > max_pixel] = median_pixel
+            # print(row)
+            # print(row.max())

@@ -1,7 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 
-import helper as h
 import numpy as np
+
+import helper as h
+
 
 def fitsread(filename):
     """
@@ -65,7 +67,7 @@ def read_in_shape(config):
                               img_format, data_dtype, cores, chunksize,
                               parallel_load,indices=[0,1])
     return (len(input_file_names),) + sample.shape[1:]
-    
+
 
 def load_data(config):
     """
@@ -139,15 +141,15 @@ def load(input_path=None,
         from core.imgdata import stack_loader
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
-        sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load", cores,
-                            chunksize, parallel_load, indices)
+        sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load",
+                                      cores, chunksize, parallel_load, indices)
         flat = dark = None
     else:
         if img_format in ['fits', 'fit']:
             load_func=fitsread
-        elif img_format in ['tiff', 'tif']:
+        else:
             load_func=imread
-        
+
         from core.imgdata import img_loader
         sample, flat, dark = img_loader.execute(
             load_func, input_file_names, input_path_flat, input_path_dark,
