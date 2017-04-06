@@ -499,7 +499,7 @@ class FunctionalConfig(object):
             required=False,
             type=float,
             default=self.max_ratio,
-            help="Default: %(defauls)s. Specify the maximum allowed ratio of predicted memory / allowed memory. "
+            help="Default: %(defaults)s. Specify the maximum allowed ratio of predicted memory / allowed memory. "
             "This needs to be in range of 0 < ratio < 1")
 
         return parser
