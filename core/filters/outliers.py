@@ -66,7 +66,7 @@ def execute(data, pixel_difference, radius, cores=None):
 
         tomopy = importer.do_importing('tomopy')
 
-        data[:] = tomopy.misc.corr.remove_outlier(
+        data = tomopy.misc.corr.remove_outlier(
             data, pixel_difference, radius, ncore=cores)
 
         h.pstop("Finished outliers step, with pixel data type: {0}.".format(
