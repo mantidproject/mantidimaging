@@ -5,6 +5,9 @@ import numpy as np
 import helper as h
 from core.tools import importer
 
+OUTLIERS_DARK = 'dark'
+OUTLIERS_BRIGHT = 'bright'
+
 
 def cli_register(parser):
     parser.add_argument(
@@ -41,10 +44,10 @@ def gui_register(par):
 
 
 def modes():
-    return ['dark', 'bright', 'both']
+    return [OUTLIERS_DARK, OUTLIERS_BRIGHT]
 
 
-def execute(data, pixel_difference, radius, cores=None):
+def execute(data, pixel_difference, radius, mode='bright', cores=None):
     """
     Execute the Outliers filter.
 
@@ -64,29 +67,20 @@ def execute(data, pixel_difference, radius, cores=None):
         h.pstart("Applying outliers with threshold: {0} and radius {1}".format(
             pixel_difference, radius))
 
+        # we flip the histogram horizontally,
+        # this makes the darkest pixels the brightest
+        if mode == OUTLIERS_DARK:
+            np.negative(data, out=data)
+
         tomopy = importer.do_importing('tomopy')
 
-        data = tomopy.misc.corr.remove_outlier(
-            data, pixel_difference, radius, ncore=cores)
+        data = tomopy.misc.corr.remove_outlier(data, pixel_difference, radius, ncore=cores)
+
+        # reverse the inversion
+        if mode == OUTLIERS_DARK:
+            np.negative(data, out=data)
 
         h.pstop("Finished outliers step, with pixel data type: {0}.".format(
             data.dtype))
 
     return data
-
-
-def e(data, threshold, radius, sign, cores=None):
-    assert isinstance(data, np.ndarray)
-    for image in data:  # do numpy.vectorize(data)
-        # print(image.shape)
-        # print(image[24, 24])
-        height = image.shape[0]
-        width = image.shape[1]
-        for i in xrange(width):
-            row = image[i]
-            # print(row.max())
-            max_pixel = row.max()
-            median_pixel = np.median(row)
-            row[row * sign + threshold > max_pixel] = median_pixel
-            # print(row)
-            # print(row.max())

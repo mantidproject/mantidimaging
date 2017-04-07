@@ -37,6 +37,103 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
         rangle[...] = projection_angles
 
 
+def save(data,
+         output_dir,
+         name_prefix='image',
+         swap_axes=False,
+         img_format='tiff',
+         overwrite_all=False,
+         custom_idx=None,
+         zfill_len=6,
+         name_postfix='',
+         indices=None):
+    """
+    Save image volume (3d) into a series of slices along the Z axis.
+    The Z axis in the script is the ndarray.shape[0].
+
+    :param data: Data as images/slices stores in numpy array
+    :param output_dir: Output directory for the files
+    :param name_prefix: Prefix for the names of the images,
+                        appended before the image number
+    :param swap_axes: Swap the 0 and 1 axis of the images
+                      (convert from radiograms to sinograms on saving)
+    :param img_format: File format of the saved out images
+    :param overwrite_all: Overwrite existing images with conflicting names
+    :param custom_idx: Single index to be used for the file name,
+                       instead of incremental numbers
+    :param zfill_len: This option is ignored if custom_idx is specified!
+                      Prepend zeros to the output file names to have a
+                      constant file name length. Example:
+                      - saving out an image with zfill_len = 6:
+                          saved_image000001,...saved_image000201 and so on
+                      - saving out an image with zfill_len = 3:
+                          saved_image001,...saved_image201 and so on
+    :param name_postfix: Postfix for the name after the index
+    :param indices: Only works if custom_idx is not specified.
+                    Specify the start and end range of the indices
+                    which will be used for the file names.
+    """
+    # expand the path for plugins that don't do it themselves
+    output_dir = os.path.abspath(os.path.expanduser(output_dir))
+    make_dirs_if_needed(output_dir, overwrite_all)
+
+    import numpy as np
+
+    if swap_axes:
+        data = np.swapaxes(data, 0, 1)
+
+    if indices is not None:
+        start_index = indices[0]
+    else:
+        start_index = 0
+
+    if img_format in ['nxs']:
+        filename = os.path.join(output_dir, name_prefix + name_postfix)
+        write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
+    else:
+        if img_format in ['fit', 'fits']:
+            write_func = write_fits
+        else:
+            # pass all other formats to skimage
+            write_func = write_img
+
+        h.prog_init(data.shape[0], "Saving " + img_format + " images")
+        # loop through images in data array
+        for idx in range(data.shape[0]):
+            # use the custom index if one is provided
+            index = custom_idx if custom_idx is not None else str(
+                start_index).zfill(zfill_len)
+            start_index += 1
+            # create the file name, and use the format as extension
+            name = name_prefix + index + name_postfix + "." + img_format
+
+            write_func(data[idx, :, :],
+                       os.path.join(output_dir, name), overwrite_all)
+            h.prog_update()
+        h.prog_close()
+
+
+def make_dirs_if_needed(dirname=None, overwrite_all=False):
+    """
+    Makes sure that the directory needed (for example to save a file)
+    exists, otherwise creates it.
+
+    :param dirname :: (output) directory to check
+    """
+    if dirname is None:
+        return
+
+    path = os.path.abspath(os.path.expanduser(dirname))
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+    elif os.listdir(path) and not overwrite_all:
+        raise RuntimeError(
+            "The output directory is NOT empty:{0}\n. This can be "
+            "overridden with -w/--overwrite-all.".
+            format(path))
+
+
 class Saver(object):
     """
     This class doesn't have any try: ... except: ... because when called
@@ -128,7 +225,7 @@ class Saver(object):
         h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
                                                              data.dtype))
 
-        self.save(
+        save(
             data,
             output_dir,
             name,
@@ -157,7 +254,7 @@ class Saver(object):
             h.pstart("Saving all pre-processed images into {0} dtype: {1}".
                      format(preproc_dir, data.dtype))
 
-            self.save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
+            save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
                       self._img_format, self._overwrite_all,
                       indices=self._indices)
 
@@ -189,7 +286,7 @@ class Saver(object):
             "Starting saving slices of the reconstructed volume in: {0}...".
             format(out_recon_dir))
 
-        self.save(data, out_recon_dir, self._out_slices_prefix,
+        save(data, out_recon_dir, self._out_slices_prefix,
                   self._swap_axes, self._img_format, self._overwrite_all,
                   indices=self._indices)
 
@@ -202,105 +299,9 @@ class Saver(object):
                 "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
             # save out the horizontal slices by flipping the axes
-            self.save(data, out_horiz_dir, self._out_horiz_slices_prefix,
+            save(data, out_horiz_dir, self._out_horiz_slices_prefix,
                       not self._swap_axes, self._img_format,
                       self._overwrite_all)
 
         h.pstop("Finished saving slices of the reconstructed volume in: {0}".
                 format(out_recon_dir))
-
-    @staticmethod
-    def save(data,
-             output_dir,
-             name_prefix,
-             swap_axes=False,
-             img_format='tiff',
-             overwrite_all=False,
-             custom_idx=None,
-             zfill_len=6,
-             name_postfix='',
-             indices=None):
-        """
-        Save image volume (3d) into a series of slices along the Z axis.
-        The Z axis in the script is the ndarray.shape[0].
-
-        :param data: Data as images/slices stores in numpy array
-        :param output_dir: Output directory for the files
-        :param name_prefix: Prefix for the names of the images,
-                            appended before the image number
-        :param swap_axes: Swap the 0 and 1 axis of the images
-                          (convert from radiograms to sinograms on saving)
-        :param img_format: File format of the saved out images
-        :param overwrite_all: Overwrite existing images with conflicting names
-        :param custom_idx: Single index to be used for the file name,
-                           instead of incremental numbers
-        :param zfill_len: This option is ignored if custom_idx is specified!
-                          Prepend zeros to the output file names to have a
-                          constant file name length. Example:
-                          - saving out an image with zfill_len = 6:
-                              saved_image000001,...saved_image000201 and so on
-                          - saving out an image with zfill_len = 3:
-                              saved_image001,...saved_image201 and so on
-        :param name_postfix: Postfix for the name after the index
-        :param indices: Only works if custom_idx is not specified.
-                        Specify the start and end range of the indices
-                        which will be used for the file names.
-        """
-
-        Saver.make_dirs_if_needed(output_dir, overwrite_all)
-
-        import numpy as np
-
-        if swap_axes:
-            data = np.swapaxes(data, 0, 1)
-
-        if indices is not None:
-            start_index = indices[0]
-        else:
-            start_index = 0
-
-        if img_format in ['nxs']:
-            filename = os.path.join(output_dir, name_prefix + name_postfix)
-            write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
-        else:
-            if img_format in ['fit', 'fits']:
-                write_func = write_fits
-            else:
-                # pass all other formats to skimage
-                write_func = write_img
-
-            h.prog_init(data.shape[0], "Saving " + img_format + " images")
-            # loop through images in data array
-            for idx in range(data.shape[0]):
-                # use the custom index if one is provided
-                index = custom_idx if custom_idx is not None else str(
-                    start_index).zfill(zfill_len)
-                start_index += 1
-                # create the file name, and use the format as extension
-                name = name_prefix + index + name_postfix + "." + img_format
-
-                write_func(data[idx, :, :],
-                           os.path.join(output_dir, name), overwrite_all)
-                h.prog_update()
-            h.prog_close()
-
-    @staticmethod
-    def make_dirs_if_needed(dirname=None, overwrite_all=False):
-        """
-        Makes sure that the directory needed (for example to save a file)
-        exists, otherwise creates it.
-
-        :param dirname :: (output) directory to check
-        """
-        if dirname is None:
-            return
-
-        path = os.path.abspath(os.path.expanduser(dirname))
-
-        if not os.path.exists(path):
-            os.makedirs(path)
-        elif os.listdir(path) and not overwrite_all:
-            raise RuntimeError(
-                "The output directory is NOT empty:{0}\n. This can be "
-                "overridden with -w/--overwrite-all.".
-                format(path))

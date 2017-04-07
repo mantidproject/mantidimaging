@@ -8,7 +8,7 @@ from core.filters import (
     normalise_by_air_region, normalise_by_flat_dark, outliers, rebin,
     ring_removal, rotate_stack, stripe_removal, value_scaling)
 from core.imgdata import loader
-from core.imgdata.saver import Saver
+from core.imgdata import saver
 from core.tools import importer
 from readme import Readme
 
@@ -30,9 +30,9 @@ def execute(config):
     :param cmd_line: The full command line text if running from the CLI.
     """
 
-    saver = Saver(config)
+    saver_class = saver.Saver(config)
 
-    h.initialise(config, saver)
+    h.initialise(config, saver_class)
     h.run_import_checks(config)
     h.check_config_integrity(config)
 
@@ -40,11 +40,12 @@ def execute(config):
     tool = importer.timed_import(config)
 
     # create directory, or throw if not empty and no --overwrite-all
-    # we get the output path from the saver, because 
+    # we get the output path from the saver, because
     # that expands variables and gets the absolute path
-    saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
+    saver.make_dirs_if_needed(saver_class.get_output_path(),
+                              saver_class._overwrite_all)
 
-    readme = Readme(config, saver)
+    readme = Readme(config, saver_class)
     readme.begin(config.cmd_line, config)
     h.set_readme(readme)
 
@@ -53,7 +54,7 @@ def execute(config):
     sample, flat, dark = pre_processing(config, sample, flat, dark)
 
     # Save pre-proc images, print inside
-    saver.save_preproc_images(sample)
+    saver_class.save_preproc_images(sample)
     if config.func.only_preproc is True:
         h.tomo_print_note("Only pre-processing run, exiting.")
         readme.end()
@@ -71,7 +72,7 @@ def execute(config):
     # but it might crop out data too!
     np.clip(sample, 1e-9, 5, sample)
 
-    saver.save_recon_output(sample)
+    saver_class.save_recon_output(sample)
     readme.end()
     return sample
 
