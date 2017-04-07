@@ -12,9 +12,14 @@ def execute(config):
     """
     Aggregates images.
 
-    Energy levels can be selected with --agregate 0 100, this selects energy levels from 0 to 100
-    Angles can be selected with --aggregate-angles 0 10, this selects angles 0 to 10
-    Output can be in a single folder --aggregate-single-folder-output, or in a separate folder for each angle
+    Energy levels can be selected with --agregate 0 100,
+    this selects energy levels from 0 to 100
+
+    Angles can be selected with --aggregate-angles 0 10,
+    this selects angles 0 to 10
+
+    Output can be in a single folder --aggregate-single-folder-output,
+    or in a separate folder for each angle
 
     :param config: The full reconstruction config
     """
@@ -108,17 +113,18 @@ def do_sanity_checks(output_path, agg_method, commands):
         raise ValueError(
             "The flag -o/--output-path MUST be passed for this IMOPR COR mode!")
 
-    if agg_method not in ['sum', 'avg']:
+    agg_methods = ['sum', 'avg']
+    if agg_method not in agg_methods:
         raise ValueError(
-            "Invalid method provided for --aggregate, the allowed methods are: {sum, avg}"
-        )
+            "Invalid method provided for --aggregate, the allowed methods are: "
+            + ", ".join(agg_methods))
 
     # the length of energy levels must be an even number
     if len(commands) % 2 != 0:
         raise ValueError(
             "The length of energy levels must be an even number, the submission format is \
-            --aggregate <start> <end>... <method:{sum, avg}>: --aggregate 1 100 101 200 201 300 sum"
-        )
+            --aggregate <start> <end>... <method:{sum, avg}>: "
+            "--aggregate 1 100 101 200 201 300 sum")
 
 
 def get_image_files_paths(input_path, angle_folders, img_format,

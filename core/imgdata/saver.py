@@ -175,6 +175,10 @@ class Saver(object):
         self._out_horiz_slices_subdir = config.func.out_horiz_slices_subdir
         self._save_horiz_slices = config.func.save_horiz_slices
 
+        # assign package functions for ease of access
+        self.save = save
+        self.make_dirs_if_needed = make_dirs_if_needed
+
     def get_output_path(self):
         return self._output_path
 
@@ -287,8 +291,8 @@ class Saver(object):
             format(out_recon_dir))
 
         save(data, out_recon_dir, self._out_slices_prefix,
-                  self._swap_axes, self._img_format, self._overwrite_all,
-                  indices=self._indices)
+             self._swap_axes, self._img_format, self._overwrite_all,
+             indices=self._indices)
 
         # Sideways slices:
         if self._save_horiz_slices:
@@ -300,8 +304,8 @@ class Saver(object):
 
             # save out the horizontal slices by flipping the axes
             save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                      not self._swap_axes, self._img_format,
-                      self._overwrite_all)
+                 not self._swap_axes, self._img_format,
+                 self._overwrite_all)
 
         h.pstop("Finished saving slices of the reconstructed volume in: {0}".
                 format(out_recon_dir))

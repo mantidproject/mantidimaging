@@ -135,7 +135,8 @@ class AggregateTest(unittest.TestCase):
             conf.func.out_format = convert_format
             aggregate_output_path = os.path.dirname(f.name) + '/aggregated'
             conf.func.output_path = aggregate_output_path
-            conf.func.overwrite_all = True  #because we need to write in the same folder
+            # because we need to write in the same folder
+            conf.func.overwrite_all = True
             conf.func.convert_prefix = 'aggregated'
             aggregate.execute(conf)
 

@@ -205,6 +205,8 @@ class ConvertTest(unittest.TestCase):
         # create some images
         parallel = False
         images = th.gen_img_shared_array()
+        # expected none, because NXS doesn't currently save
+        # out flat or dark image
         flat = None
         dark = None
         saver = self.create_saver()
@@ -243,9 +245,6 @@ class ConvertTest(unittest.TestCase):
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
-            # None because when loading images the flat and dark are not considered
-            # The flat and dark are only returned from load if loading a nexus file, or the paths are provided,
-            # and in this case we're not loading nexus, and there are no paths provided!
             th.assert_equals(flat_loaded, flat)
             th.assert_equals(dark_loaded, dark)
 

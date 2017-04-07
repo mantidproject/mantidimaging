@@ -1,19 +1,22 @@
 from __future__ import (absolute_import, division, print_function)
 import time
 import os
+from time import gmtime, strftime
 
 # This way ALL separate instances of a Readme will write to the same output!
-time_start = None
 
 
 class Readme(object):
     def __init__(self, config, saver):
-        self._readme_file_name = config.func.readme_file_name
+
+        self._readme_file_name = "readme_" + strftime("%d_%b_%Y_%H_%M_%S",
+                                                      gmtime()) + ".txt"
         self._output_path = None
         self._output_path = saver.get_output_path()
         self._total_lines = 0
         self._readme_fullpath = None
         self._total_string = ""
+        self._time_start = None
         if self._output_path:
             self._readme_fullpath = os.path.join(self._output_path,
                                                  self._readme_file_name)
@@ -35,30 +38,23 @@ class Readme(object):
 
     def begin(self, cmd_line, config):
         """
-        To write configuration, settings, etc. early on. As early as possible, before any failure
-        can happen.
+        Create the file and begin the readme.
 
-        :param cmd_line :: command line originally used to run this reconstruction, when running
-        from the command line
-        :param config :: the full reconstruction configuration so it can be dumped into the file
-
-        Returns :: time now (begin of run) in number of seconds since epoch (time() time)
+        :param cmd_line: command line used to run the reconstruction
+        :param config: the full reconstruction configuration
         """
 
         if self._readme_fullpath is None:
             return
 
-        global time_start
-        # only change if not initialised. If this is not None then it's already
-        # been initialised by a Readme from another instance!
-        if not time_start:
-            time_start = time.time()
+        if not self._time_start:
+            self._time_start = time.time()
 
         # generate file with dos/windows line end for windows users convenience
         with open(self._readme_fullpath, 'w') as oreadme:
             file_hdr = (
-                'Tomographic reconstruction. Summary of inputs, settings and outputs.\n'
-                'Time now (run begin): ' + time.ctime(time_start) + '\n')
+                'Time now (run begin): ' + time.ctime(self._time_start) + '\n')
+
             oreadme.write(file_hdr)
 
             alg_hdr = ("\n"
@@ -87,13 +83,14 @@ class Readme(object):
 
     def end(self):
         """
-        Write last part of report in the output readme/report file. This should be used whenever a
-        reconstruction runs correctly.
+        Write last part of report in the output readme/report file.
+        This should be used whenever a reconstruction runs correctly.
 
-        :param data_stages :: tuple with data in three stages (raw, pre-processed, reconstructed)
-        :param tstart :: time at the beginning of the job/reconstruction, when the first part of the
-        readme file was written
-        :param t_recon_elapsed :: reconstruction time
+        :param data_stages: tuple with data in three stages
+                            (raw, pre-processed, reconstructed)
+        :param tstart: time at the beginning of the job/reconstruction,
+                       when the first part of the readme file was written
+        :param t_recon_elapsed: reconstruction time
         """
 
         # append to a readme/report that should have been pre-filled with the
@@ -103,6 +100,6 @@ class Readme(object):
 
         with open(self._readme_fullpath, 'a') as oreadme:
             oreadme.write(self._total_string)
-            if time_start is not None:
+            if self._time_start is not None:
                 oreadme.write("Total execution time:" + str(time.time() -
-                                                            time_start))
+                                                            self._time_start))
