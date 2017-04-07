@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
+from core.imgdata import saver
+
 
 def execute(config):
     """
@@ -10,10 +12,9 @@ def execute(config):
 
     output_dir = config.func.output_path
     image_out_format = config.func.out_format
-    from core.imgdata.saver import Saver
-    s = Saver(config)
+    s = saver.Saver(config)
     # fail early if invalid directory
-    s.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
+    saver.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     from core.imgdata import loader
     sample, flat, dark = loader.load_data(config)

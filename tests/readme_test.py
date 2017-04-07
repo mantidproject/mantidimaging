@@ -1,14 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
+import os
+import tempfile
 import unittest
 
-import numpy.testing as npt
-import tempfile
-import os
-import helper as h
 import tests.test_helper as th
 from core.configs.recon_config import ReconstructionConfig
-from core.imgdata.saver import Saver
+from core.imgdata import saver
 from readme import Readme
 
 
@@ -16,7 +14,7 @@ class ReadmeTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(ReadmeTest, self).__init__(*args, **kwargs)
         self.config = ReconstructionConfig.empty_init()
-        self.saver = Saver(self.config)
+        self.saver = saver.Saver(self.config)
         self.readme_dir = "ReadmeTest"
 
     def setUp(self):
@@ -29,8 +27,8 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             self.config.func.output_path = os.path.join(
                 os.path.dirname(f.name), self.readme_dir)
-            self.saver = Saver(self.config)
-            self.saver.make_dirs_if_needed(self.saver.get_output_path())
+            self.saver = saver.Saver(self.config)
+            saver.make_dirs_if_needed(self.saver.get_output_path())
             readme = Readme(self.config, self.saver)
             readme.begin("made up command line", self.config)
 
@@ -44,7 +42,7 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             self.config.func.output_path = os.path.join(
                 os.path.dirname(f.name), self.readme_dir)
-            self.saver = Saver(self.config)
+            self.saver = saver.Saver(self.config)
             readme = Readme(self.config, self.saver)
             # assert that the file doesn't exist
             self.assertRaises(IOError, readme.begin, "made up command line",
@@ -54,7 +52,7 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             self.config.func.output_path = os.path.join(
                 os.path.dirname(f.name), self.readme_dir)
-            self.saver = Saver(self.config)
+            self.saver = saver.Saver(self.config)
             readme = Readme(self.config, self.saver)
 
             # assert that the file doesn't exist
@@ -64,8 +62,8 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             self.config.func.output_path = os.path.join(
                 os.path.dirname(f.name), self.readme_dir)
-            self.saver = Saver(self.config)
-            Readme.total_string = "" # this doesnt work, might have to add .erase method in readme
+            self.saver = saver.Saver(self.config)
+            Readme.total_string = ""  # this doesnt work, might have to add .erase method in readme
             readme = Readme(self.config, self.saver)
             test_str = "Test str"
             readme.append(test_str)
@@ -78,7 +76,7 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as f:
             self.config.func.output_path = os.path.join(
                 os.path.dirname(f.name), self.readme_dir)
-            self.saver = Saver(self.config)
+            self.saver = saver.Saver(self.config)
             readme = Readme(self.config, self.saver)
             Readme.total_string = ""
             test_str = "Test str"

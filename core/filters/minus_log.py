@@ -6,7 +6,7 @@ from core.tools import importer
 def cli_register(parser):
     parser.add_argument(
         "-log",
-        "--pre-minus-log",
+        "--minus-log",
         required=False,
         action='store_true',
         default=False,

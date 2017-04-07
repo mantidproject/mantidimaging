@@ -1,38 +1,44 @@
-from __future__ import (absolute_import, division, print_function)
-# Remove stripes in sinograms / ring artefacts in reconstructed volume
+from __future__ import absolute_import, division, print_function
+
 import helper as h
 from core.tools import importer
 
 
 def cli_register(parser):
     parser.add_argument(
-        "--pre-stripe-removal-wf",
+        "--stripe-removal-wf",
         nargs='*',
         required=False,
         type=str,
-        help="Stripe removal using wavelett-fourier method. Available parameters:\n\
-        level (default: None, int, optional) Number of discrete wavelet transform levels.\n\
-        wname (default: 'db5', str, optional) Type of the wavelet filter. 'haar', 'db5', 'sym5', etc.\n\
-        sigma (default: 2, float, optional) Damping parameter in Fourier space.\n\
-        pad (default: True, bool, optional) If True, extend the size of the sinogram by padding with zeros."
-    )
+        help="Stripe removal using wavelett-fourier method. "
+        "Available parameters:\n"
+        "level (default: None, int, optional) "
+        "Number of discrete wavelet transform levels.\n"
+        "wname (default: 'db5', str, optional) "
+        "Type of the wavelet filter. 'haar', 'db5', 'sym5', etc.\n"
+        "sigma (default: 2, float, optional) "
+        "Damping parameter in Fourier space.\n"
+        "pad (default: True, bool, optional) "
+        "If True, extend the size of the sinogram by padding with zeros.")
 
     parser.add_argument(
-        "--pre-stripe-removal-ti",
+        "--stripe-removal-ti",
         nargs='*',
         required=False,
         type=str,
-        help="Stripe removal using Titarenko's approach. Available parameters:\n\
-              nblock (default: 0, int, optional) Number of blocks.\n\
-              alpha (default: 1.5, float, optional) Damping factor.")
+        help="Stripe removal using Titarenko's approach. "
+        "Available parameters:\n"
+        "nblock (default: 0, int, optional) Number of blocks.\n"
+        "alpha (default: 1.5, float, optional) Damping factor.")
 
     parser.add_argument(
-        "--pre-stripe-removal-sf",
+        "--stripe-removal-sf",
         nargs='*',
         required=False,
         type=str,
-        help="Stripe removal using smoothing-filter method. Available parameters:\n\
-        size (default:5, int, optional) Size of the smoothing filter.")
+        help="Stripe removal using smoothing-filter method. "
+        "Available parameters:\n"
+        "size (default:5, int, optional) Size of the smoothing filter.")
 
     return parser
 
@@ -78,17 +84,17 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None):
                         Size of the smoothing filter.
 
     Example command line:
-    python main.py -i /some/data --pre-stripe-removal-wf level=1
-    python main.py -i /some/data --pre-stripe-removal-wf level=3 pad=False
+    python main.py -i /some/data --stripe-removal-wf level=1
+    python main.py -i /some/data --stripe-removal-wf level=3 pad=False
     python main.py -i /some/data
-                    --pre-stripe-removal-wf level=3 pad=False wname=db5
+                    --stripe-removal-wf level=3 pad=False wname=db5
     python main.py -i /some/data
-                    --pre-stripe-removal-wf level=3 pad=False wname=db5 sigma=2
+                    --stripe-removal-wf level=3 pad=False wname=db5 sigma=2
 
-    python main.py -i /some/data --pre-stripe-removal-ti nblock=3
-    python main.py -i /some/data --pre-stripe-removal-ti nblock=3 alpha=2
+    python main.py -i /some/data --stripe-removal-ti nblock=3
+    python main.py -i /some/data --stripe-removal-ti nblock=3 alpha=2
 
-    python main.py -i /some/data --pre-stripe-removal-sf size=3
+    python main.py -i /some/data --stripe-removal-sf size=3
     """
     # get the first one, the rest will be processed
     msg = "Starting removal of stripes/ring artifacts using method '{0}'..."

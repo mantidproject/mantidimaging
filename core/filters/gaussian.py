@@ -9,7 +9,7 @@ def cli_register(parser):
     default_size = None
     default_order = 0
     parser.add_argument(
-        "--pre-gaussian-size",
+        "--gaussian-size",
         required=False,
         type=float,
         default=default_size,
@@ -17,7 +17,7 @@ def cli_register(parser):
         "given window size.")
 
     parser.add_argument(
-        "--pre-gaussian-mode",
+        "--gaussian-mode",
         type=str,
         required=False,
         default=modes()[0],
@@ -26,7 +26,7 @@ def cli_register(parser):
         "how the array borders are handled.(pre processing).")
 
     parser.add_argument(
-        "--pre-gaussian-order",
+        "--gaussian-order",
         required=False,
         type=int,
         default=default_order,
@@ -36,37 +36,6 @@ def cli_register(parser):
         "convolution with a Gaussian kernel.\n"
         "An order of 1, 2, or 3 corresponds to convolution "
         "with the first, second or third derivatives of a Gaussian.\n"
-        "Higher order derivatives are not implemented.")
-
-    # post-processing params
-    parser.add_argument(
-        "--post-gaussian-size",
-        required=False,
-        type=float,
-        default=default_size,
-        help="Apply gaussian filter (2d) on reconstructed volume with the "
-        "given window size.")
-
-    parser.add_argument(
-        "--post-gaussian-mode",
-        type=str,
-        required=False,
-        default=modes()[0],
-        choices=modes(),
-        help="Default: %(default)s\nMode of gaussian filter which determines "
-        "how the array borders are handled.(post processing).")
-
-    parser.add_argument(
-        "--post-gaussian-order",
-        required=False,
-        type=int,
-        default=default_order,
-        help="Default: %(default)d\nThe order of the filter along each axis is"
-        " given as a sequence of integers,\n"
-        "or as a single number. An order of 0 corresponds to convolution with "
-        "a Gaussian kernel.\n"
-        "An order of 1, 2, or 3 corresponds to convolution with the first, "
-        "second or third derivatives of a Gaussian.\n"
         "Higher order derivatives are not implemented.")
 
     return parser
@@ -103,17 +72,11 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
     https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html
 
     Example command line:
-    python main.py -i /some/data --pre-gaussian-size 3
-    python main.py -i /some/data --pre-gaussian-size 3
-                   --pre-gaussian-mode 'nearest'
-    python main.py -i /some/data --pre-gaussian-size 3
-                   --pre-gaussian-mode 'nearest' --pre-gaussian-order 1
-
-    python main.py -i /some/data --post-gaussian-size 3
-    python main.py -i /some/data --post-gaussian-size 3
-                   --post-gaussian-mode 'nearest'
-    python main.py -i /some/data --post-gaussian-size 3
-                   --post-gaussian-mode 'nearest' --post-gaussian-order 1
+    python main.py -i /some/data --gaussian-size 3
+    python main.py -i /some/data --gaussian-size 3
+                   --gaussian-mode 'nearest'
+    python main.py -i /some/data --gaussian-size 3
+                   --gaussian-mode 'nearest' --gaussian-order 1
 
     """
     h.check_data_stack(data)

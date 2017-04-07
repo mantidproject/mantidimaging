@@ -23,12 +23,12 @@ def gui_register(par):
 
 
 def _rotate_image_inplace(data, rotation=None):
-    # rot90 rotates counterclockwise; config.pre.rotation rotates clockwise
+    # rot90 rotates counterclockwise; config.args.rotation rotates clockwise
     data[:, :] = np.rot90(data[:, :], rotation)
 
 
 def _rotate_image(data, rotation=None):
-    # rot90 rotates counterclockwise; config.pre.rotation rotates clockwise
+    # rot90 rotates counterclockwise; config.args.rotation rotates clockwise
     return np.rot90(data[:, :], rotation)
 
 

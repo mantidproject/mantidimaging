@@ -1,5 +1,11 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import os
+
+import numpy as np
+
 import helper as h
+from core.imgdata import loader, saver
 
 
 def execute(config):
@@ -56,12 +62,10 @@ def execute(config):
 
 def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
                    single_folder, config):
-    import os
-    import numpy as np
-    from core.imgdata import loader, saver
+
     s = saver.Saver(config)
     parallel_load = config.func.parallel_load
-    s.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
+    saver.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     for angle, image_paths in angle_image_paths:
         # load all the images from angle, [0] to discard flat and dark

@@ -14,29 +14,14 @@ def cli_register(parser):
          borders are handled."
 
     parser.add_argument(
-        "--pre-median-size",
+        "--median-size",
         type=int,
         required=False,
         default=default_size,
         help=size_help)
 
     parser.add_argument(
-        "--pre-median-mode",
-        type=str,
-        required=False,
-        default=modes()[0],
-        choices=modes(),
-        help=mode_help)
-
-    parser.add_argument(
-        "--post-median-size",
-        required=False,
-        type=float,
-        default=default_size,
-        help=size_help)
-
-    parser.add_argument(
-        "--post-median-mode",
+        "--median-mode",
         type=str,
         required=False,
         default=modes()[0],
@@ -70,17 +55,12 @@ def execute(data, size, mode, cores=None, chunksize=None):
     Full reference:
     https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html
 
-    python main.py -i /some/data --pre-median-size 3
-    python main.py -i /some/data --pre-median-size 3
-                   --pre-median-mode 'nearest'
-    python main.py -i /some/data --pre-median-size 3
-                   --pre-median-mode 'nearest'
+    python main.py -i /some/data --median-size 3
+    python main.py -i /some/data --median-size 3
+                   --median-mode 'nearest'
+    python main.py -i /some/data --median-size 3
+                   --median-mode 'nearest'
 
-    python main.py -i /some/data --post-median-size 3
-    python main.py -i /some/data --post-median-size 3
-                   --post-median-mode 'nearest'
-    python main.py -i /some/data --post-median-size 3
-                   --post-median-mode 'nearest'
     """
     h.check_data_stack(data)
 

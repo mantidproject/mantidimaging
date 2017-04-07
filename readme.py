@@ -71,18 +71,10 @@ class Readme(object):
 
             preproc_hdr = ("\n"
                            "--------------------------\n"
-                           "Pre-processing parameters\n"
+                           "Filter parameters\n"
                            "--------------------------\n")
             oreadme.write(preproc_hdr)
-            oreadme.write(str(config.pre))
-            oreadme.write("\n")
-
-            postproc_hdr = ("\n"
-                            "--------------------------\n"
-                            "Post-processing parameters\n"
-                            "--------------------------\n")
-            oreadme.write(postproc_hdr)
-            oreadme.write(str(config.post))
+            oreadme.write(str(config.args))
             oreadme.write("\n")
 
             cmd_hdr = ("\n"
