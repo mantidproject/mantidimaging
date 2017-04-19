@@ -1,5 +1,8 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 from enum import IntEnum
+
+from gui.main_window.mw_model import ImgpyMainWindowModel
 
 
 class Notification(IntEnum):
@@ -11,7 +14,6 @@ class ImgpyMainWindowPresenter(object):
         super(ImgpyMainWindowPresenter, self).__init__()
         self.view = view
         self.config = config
-        from gui.mw.mw_model import ImgpyMainWindowModel
         self.model = ImgpyMainWindowModel()
 
     def notify(self, signal):

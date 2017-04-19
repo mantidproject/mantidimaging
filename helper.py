@@ -71,8 +71,8 @@ def check_data_stack(data, expected_dims=3):
     # via the aggregate functionality
     if expected_dims != len(data.shape):
         raise ValueError(
-            "Invalid stack of images data. It does not have 3 dimensions. Shape: {0}".
-            format(data.shape))
+            "Invalid stack of images data. It does not have 3 dimensions. "
+            "Shape: {0}".format(data.shape))
 
 
 def debug_print_memory_usage_linux(message=""):

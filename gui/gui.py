@@ -8,7 +8,7 @@ def execute(config):
 
     # create the GUI event loop
     qApp = QApplication(sys.argv)
-    from gui.mw.mw_view import ImgpyMainWindowView
+    from gui.main_view.mw_view import ImgpyMainWindowView
     aw = ImgpyMainWindowView(config)
     aw.show()
 

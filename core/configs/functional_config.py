@@ -35,7 +35,7 @@ class FunctionalConfig(object):
         self.save_horiz_slices = False
 
         # Processing options
-        self.save_preproc = False
+        self.save_preproc = True
         self.only_preproc = False
         self.only_postproc = False
         self.no_postproc = False
@@ -182,7 +182,7 @@ class FunctionalConfig(object):
             required=False,
             default=self.output_path,
             type=str,
-            help="Where to write the output slice images (reconstructed volume)."
+            help="Where to write the output slice images (reconstructed volume)"
         )
 
         from core.imgdata.saver import Saver
@@ -232,22 +232,22 @@ class FunctionalConfig(object):
             "--reuse-preproc",
             required=False,
             action='store_true',
-            help="The images loaded have already been pre-processed. All pre-processing steps will be skipped."
-        )
+            help="The images loaded have already been pre-processed. "
+            "All pre-processing steps will be skipped.")
 
         grp_func.add_argument(
             "--only-postproc",
             required=False,
             action='store_true',
-            help="The images have already been reconstructed. All pre-processing and reconstruciton steps will be skipped."
-        )
+            help="The images have already been reconstructed. All "
+            "pre-processing and reconstruciton steps will be skipped.")
 
         grp_func.add_argument(
             "--no-postproc",
             required=False,
             action='store_true',
-            help="The images have already been reconstructed. Force skip all post-processing."
-        )
+            help="The images have already been reconstructed. "
+            "Force skip all post-processing.")
 
         grp_func.add_argument(
             "--save-horiz-slices",
@@ -261,25 +261,28 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.preproc_subdir,
-            help="The subdirectory for the pre-processed images.\nDefault output-path/pre_processed/."
-        )
+            help="The subdirectory for the pre-processed images.\n"
+            "Default output-path/pre_processed/.")
 
         grp_func.add_argument(
             "--swap-axes",
             required=False,
             action='store_true',
             default=self.swap_axes,
-            help="NOT RECOMMENDED: This means an additional conversion will be done inside Tomopy, which will double the memory usage temporarily."
-            "\nThe axis will be flipped on the pre-processing images before saving. This means if sinograms are passed, they will be turned into radiograms, and vice versa."
-        )
+            help="NOT RECOMMENDED: This means an additional conversion will "
+            "be done inside Tomopy, which will double the memory usage."
+            "\nThe axis will be flipped on the pre-processing images before "
+            "saving. This means if sinograms are passed, they will be turned "
+            "into radiograms, and vice versa.")
 
         grp_func.add_argument(
             "--data-dtype",
             required=False,
             default='float32',
             type=str,
-            help="Default (and recommended): float32\nThe data type in which the data converted to after loading and processed. Supported: float32, float64"
-        )
+            help="Default (and recommended): float32\nThe data type in which "
+            "the data converted to after loading and processed. "
+            "Supported: float32, float64")
 
         grp_func.add_argument(
             "-v",
@@ -287,11 +290,12 @@ class FunctionalConfig(object):
             type=int,
             default=self.verbosity,
             help="Default: 2 - Normal verbosity.\n"
-            "0 - Silent, no text output at all, except results (not recommended)\n"
+            "0 - Silent, no text output, except results (not recommended)\n"
             "1 - Low verbosity, will output text on step name\n"
-            "2 (recommended) - Normal verbosity, will output step name and execution time\n"
-            "3 - High verbosity, will output step name, execution time and memory usage before and after each step\n"
-        )
+            "2 (recommended) - Normal verbosity, will output step name "
+            "and execution time\n"
+            "3 - High verbosity, will output step name, execution time "
+            "and memory usage before and after each step\n")
 
         grp_func.add_argument(
             "-w",
@@ -299,15 +303,17 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.overwrite_all,
-            help="NO WARNINGS WILL BE GIVEN BEFORE OVERWRITING FILES. USE WITH CAUTION!\nOverwrite all conflicting files found in the output directory."
-        )
+            help="NO WARNINGS WILL BE GIVEN BEFORE OVERWRITING FILES. "
+            "USE WITH CAUTION!\nOverwrite all conflicting files "
+            "found in the output directory.")
+
         grp_func.add_argument(
             "--cores",
             required=False,
             type=int,
             default=self.cores,
-            help="Default: %(default)s (maximum available on the system). Number of CPU cores that will be used for reconstruction."
-        )
+            help="Default: %(default)s (maximum available on the system). "
+            "Number of CPU cores that will be used for reconstruction.")
 
         grp_func.add_argument(
             "--chunksize",
@@ -321,8 +327,8 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.parallel_load,
-            help="Load the data with multiple reader processes. This CAN MAKE THE LOADING slower on a single local Hard Disk Drive."
-        )
+            help="Load the data with multiple reader processes. "
+            "This CAN MAKE THE LOADING slower on a local Hard Disk Drive.")
 
         grp_run_modes = parser.add_argument_group('Run Modes')
 
@@ -331,36 +337,36 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.convert,
-            help='Convert images to a different format. The output format will be the one specified with --out-format'
-        )
+            help="Convert images to a different format. "
+            "The output format will be the one specified with --out-format")
 
         grp_run_modes.add_argument(
             "--convert-prefix",
             required=False,
             type=str,
             default=self.convert_prefix,
-            help='Prefix for saved out files from conversion.')
+            help="Prefix for saved out files from conversion.")
 
         from core.imopr import imopr
         grp_run_modes.add_argument(
             "--imopr",
-            nargs='*',
+            nargs="*",
             required=False,
             type=str,
             default=self.imopr,
-            help='Image operator currently supports the following operators: '
+            help="Image operator currently supports the following operators: "
             + str(imopr.get_available_operators()))
 
         grp_run_modes.add_argument(
             "--aggregate",
-            nargs='*',
+            nargs="*",
             required=False,
             type=str,
             default=self.aggregate,
-            help='Aggregate the selected image energy levels. The expected input is '
-            '--aggregate <start> <end> <method:{sum, avg}>... to select indices.\n\
-                  There must always be an even lenght of indices: --aggregate 0 100 101 201 300 400 sum'
-        )
+            help="Aggregate the selected image energy levels. The expected "
+            "input is --aggregate <start> <end> <method:{sum, avg}>..."
+            " to select indices.\nThere must always be an even length of "
+            "indices: --aggregate 0 100 101 201 300 400 sum")
 
         grp_run_modes.add_argument(
             "--aggregate-angles",
@@ -370,23 +376,23 @@ class FunctionalConfig(object):
             default=self.aggregate_angles,
             help="Select which angles to be aggregated with --aggregate.\n"
             "This can be used to spread out the load on multiple nodes.\n"
-            "Sample command: --aggregate-angles 0 10, will select only angles 0 - 10 inclusive."
-        )
+            "Sample command: --aggregate-angles 0 10, "
+            "will select only angles 0 - 10 inclusive.")
 
         grp_run_modes.add_argument(
             "--aggregate-single-folder-output",
-            action='store_true',
+            action="store_true",
             required=False,
             default=self.aggregate_single_folder_output,
-            help='The output will be images with increasing number in a single folder.'
-        )
+            help="The output will be images with increasing "
+            "number in a single folder.")
 
         grp_run_modes.add_argument(
             "--debug",
             required=False,
-            action='store_true',
-            help='Run debug to specified port, if no port is specified, it will default to 59003'
-        )
+            action="store_true",
+            help="Run debug to specified port, if no port is specified, "
+            "it will default to 59003")
 
         grp_run_modes.add_argument(
             "--debug-port",
@@ -412,8 +418,9 @@ class FunctionalConfig(object):
             type=str,
             default=self.tool,
             choices=supported_tools,
-            help="Default: %(default)s\nTomographic reconstruction tool to use.\nTODO: Describe pros and cons of each tool (Astra GPU). Available: {0}".
-            format(", ".join(supported_tools)))
+            help="Default: %(default)s\nTomographic reconstruction tool to use."
+            "\nTODO: Describe pros and cons of each tool (Astra GPU). "
+            "Available: {0}".format(", ".join(supported_tools)))
 
         from core.tools.tomopy_tool import TomoPyTool
         from core.tools.astra_tool import AstraTool
@@ -425,8 +432,9 @@ class FunctionalConfig(object):
             required=False,
             type=str,
             default=self.algorithm,
-            help="Default: %(default)s\nReconstruction algorithm (tool dependent).\nAvailable:\nTomoPy: {0}\nAstra: {1}".
-            format(", ".join(tomo_algs), ", ".join(astra_algs)))
+            help="Default: %(default)s\nReconstruction algorithm "
+            "(tool dependent).\nAvailable:\nTomoPy: {0}\nAstra: {1}".format(
+                ", ".join(tomo_algs), ", ".join(astra_algs)))
 
         grp_recon.add_argument(
             "-n",
@@ -434,8 +442,9 @@ class FunctionalConfig(object):
             required=False,
             type=int,
             default=self.num_iter,
-            help="Number of iterations(only valid for iterative methods: art, bart, mlem, osem, "
-            "ospml_hybrid, ospml_quad, pml_hybrid, pml_quad, sirt).")
+            help="Number of iterations (only valid for iterative methods: art, "
+            "bart, mlem, osem, ospml_hybrid, ospml_quad, pml_hybrid, "
+            "pml_quad, sirt).")
 
         grp_recon.add_argument(
             "--max-angle",
@@ -443,63 +452,69 @@ class FunctionalConfig(object):
             type=float,
             default=self.max_angle,
             help="Maximum angle of the last projection.\n"
-            "Assuming first angle=0, and uniform angle increment for every projection"
-        )
+            "Assuming first angle=0, and uniform angle increment "
+            "for every projection.")
 
         grp_recon.add_argument(
             "-c",
             "--cors",
             required=False,
             nargs='*',
-            type=str,  # this is string but will be later converted to floats in self.update()
+            type=str,  # will be converted to floats in self.update()
             default=self.cors,
             help="Provide the CORs for the selected slices with --cor-slices.\n"
-            "If no slices are provided a SINGLE COR is expected, that will be used for the whole stack.\n"
-            "If slices are provided, the number of CORs provided with this option MUST BE THE SAME as the slices."
-        )
+            "If no slices are provided a SINGLE COR is expected, "
+            "that will be used for the whole stack.\n"
+            "If slices are provided, the number of CORs provided "
+            "with this option MUST BE THE SAME as the slices.")
 
         grp_recon.add_argument(
             "--cor-slices",
             required=False,
             nargs='*',
-            type=str,  # this is string but will be later converted to ints in self.update()
+            type=str,  # will be converted to ints in self.update()
             default=self.cor_slices,
-            help="Specify the Slice IDs to which the centers of rotation from --cors correspond.\n"
-            "The number of slices passed here MUST be the same as the number of CORs provided.\n"
-            "The slice IDs MUST be ints. If no slice IDs are provided, then only 1 COR is expected and will be used for the whole stack."
-        )
+            help="Specify the Slice IDs to which the centers of rotation from "
+            "--cors correspond.\nThe number of slices passed here MUST be the "
+            "same as the number of CORs provided.\nThe slice IDs MUST be "
+            "ints. If no slice IDs are provided, then only 1 COR is "
+            "expected and will be used for the whole stack.")
 
         grp_recon.add_argument(
             "--split",
             required=False,
             action='store_true',
             default=self.split,
-            help='Split execution based on --max-memory and ratio of data size to max memory.'
-        )
+            help="Split execution based on --max-memory and ratio of data size "
+            "to max memory.")
 
         grp_recon.add_argument(
             "--indices",
             required=False,
             nargs='*',
-            type=str,  # this is string but will be later converted to ints in self.update()
+            type=str,  # will be converted to ints in self.update()
             default=self.indices,
-            help="Specify which indices you want to be loaded. If none is provided the whole stack will be loaded."
-        )
+            help="Specify indices you want to be loaded.\n"
+            "If not provided the whole stack will be loaded.\n"
+            "If a single indice is provided: --indices 15, it will load "
+            "indices in range [0, 15).")
 
         grp_recon.add_argument(
             "--max-memory",
             required=False,
             type=int,
             default=self.max_memory,
-            help="Default: All memory avialable on the system. Works in MEGABYTES! Specify the maximum memory allowed to the reconstruction."
-        )
+            help="Default: All memory avialable on the system. "
+            "Works in MEGABYTES! Specify the maximum memory allowed "
+            "to the reconstruction.")
 
         grp_recon.add_argument(
             "--max-ratio",
             required=False,
             type=float,
             default=self.max_ratio,
-            help="Default: %(defaults)s. Specify the maximum allowed ratio of predicted memory / allowed memory. "
+            help="Default: %(defaults)s. Specify the maximum allowed ratio of "
+            "predicted memory / allowed memory. "
             "This needs to be in range of 0 < ratio < 1")
 
         return parser

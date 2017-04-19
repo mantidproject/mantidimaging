@@ -4,11 +4,10 @@ import numpy as np
 
 import helper as h
 from core.filters import (
-    circular_mask, crop_coords, cut_off, gaussian, median_filter, minus_log,
-    normalise_by_air_region, normalise_by_flat_dark, outliers, rebin,
-    ring_removal, rotate_stack, stripe_removal, value_scaling)
-from core.imgdata import loader
-from core.imgdata import saver
+    circular_mask, crop_coords, cut_off, gaussian, mcp_corrections,
+    median_filter, minus_log, normalise_by_air_region, normalise_by_flat_dark,
+    outliers, rebin, ring_removal, rotate_stack, stripe_removal, value_scaling)
+from core.imgdata import loader, saver
 from core.tools import importer
 from readme import Readme
 
@@ -70,6 +69,10 @@ def execute(config):
     # TODO only for testing purposes
     # this seems to crop out most of the noise from the reconstructions
     # but it might crop out data too!
+    h.tomo_print_warning(
+        "CROPPING THE ARBITRARILY CHOSEN NUMBER 1e-9, IT SEEMS"
+        "TO REMOVE MOST OF THE NOISE, BUT IT MIGHT CROP OUT SOME DATA")
+
     np.clip(sample, 1e-9, 5, sample)
 
     saver_class.save_recon_output(sample)
@@ -87,10 +90,18 @@ def pre_processing(config, sample, flat, dark):
     cores = config.func.cores
     chunksize = config.func.chunksize
     roi = config.args.region_of_interest
+
+    # sample = mcp_corrections.execute(sample)
+    # if (flat is not None and dark is not None):
+    #     flat = mcp_corrections.execute(flat)
+    #     dark = mcp_corrections.execute(dark)
+
     sample, flat, dark = rotate_stack.execute(sample, config.args.rotation,
                                               flat, dark, cores, chunksize)
 
     air = config.args.air_region
+    # we scale up if either a background correction is performed
+    # or contrast normalisation (air region)
     if (flat is not None and dark is not None) or air is not None:
         scale_factors = value_scaling.create_factors(sample, roi, cores,
                                                      chunksize)

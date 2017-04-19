@@ -3,15 +3,16 @@ from __future__ import absolute_import, division, print_function
 import unittest
 
 import mock
-from mock import call
 
-from gui.mw import mw_presenter, mw_view_interface
 from core.configs.recon_config import ReconstructionConfig
+from gui.main_window import mw_presenter, mw_view
 
 
 class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
-        self.view = mock.create_autospec(mw_view_interface.ImgpyMainWindowView)
+        # spec_set forbids addings new parameters
+        self.view = mock.create_autospec(
+            mw_view.ImgpyMainWindowView, spec_set=True)
         self.config = ReconstructionConfig.empty_init()
         self.presenter = mw_presenter.ImgpyMainWindowPresenter(self.view,
                                                                self.config)
