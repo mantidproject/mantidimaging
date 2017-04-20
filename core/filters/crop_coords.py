@@ -22,7 +22,7 @@ def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")
 
 
-def execute(sample, region_of_interest, flat=None, dark=None):
+def execute(data, region_of_interest, flat=None, dark=None):
     """
     Execute the Crop Coordinates by Region of Interest filter.
     This does NOT do any checks if the Region of interest is out of bounds!
@@ -45,16 +45,14 @@ def execute(sample, region_of_interest, flat=None, dark=None):
     python main.py -i /some/data --region-of-interest 134 203 170 250
     """
 
-    assert isinstance(
-        sample, np.ndarray
-    ), "This filter only works with numpy ndarrays. The provided input array "
-    "doesn't match the np.ndarray type."
+    h.check_data_stack(data)
+    assert all(isinstance(region, int) for region in region_of_interest), "The air region coordinates are not integers!"
 
     # execute only for sample, if no flat and dark images are provided
-    if sample is not None and (flat is None or dark is None):
-        return _execute(sample, region_of_interest), None, None
-    else:  # crop all
-        return _execute(sample, region_of_interest), \
+    if data is not None and (flat is None or dark is None):
+        return _execute(data, region_of_interest), None, None
+    else:  # crop all and return as tuple
+        return _execute(data, region_of_interest), \
                _execute(flat, region_of_interest), \
                _execute(dark, region_of_interest)
 
