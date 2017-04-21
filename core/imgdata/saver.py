@@ -259,8 +259,7 @@ class Saver(object):
                      format(preproc_dir, data.dtype))
 
             save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
-                      self._img_format, self._overwrite_all,
-                      indices=self._indices)
+                 self._img_format, self._overwrite_all, indices=self._indices)
 
             h.pstop("Saving pre-processed images finished.")
 
