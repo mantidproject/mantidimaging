@@ -25,15 +25,19 @@ def fool_my_own_sanity_check(data):
 
 
 def execute(data, cores=None, chunksize=None):
+    print("Warning!: This only implement gap filling code. "
+          "NO CODE FOR SHIFTING THE CHIPS IS CURRENTLY IMPLEMENTED!")
     fool_my_own_sanity_check(data)
 
     # regions to mask, in order [left, top, right, bottom],
     # the order for the coordinates is also left, top, right, bottom
     # filter_width = 0 could use this for arbitrary filter value
-    left_chip_region = [1, 255, 255, 257]
-    top_chip_region = [255, 1, 257, 255]
-    right_chip_region = [257, 255, 511, 257]
-    bottom_chip_region = [255, 257, 257, 511]
+    x1 = 254
+    x2 = 258
+    left_chip_region = [1, x1, 255, x2]
+    right_chip_region = [257, x1, 511, x2]
+    top_chip_region = [x1, 1, x2, 255]
+    bottom_chip_region = [x1, 257, x2, 511]
 
     vertical_chip_regions = [top_chip_region, bottom_chip_region]
     horizontal_chip_regions = [left_chip_region, right_chip_region]
