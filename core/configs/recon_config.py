@@ -81,9 +81,7 @@ class ReconstructionConfig(object):
                     "Normalisation! Expecting 4, but found {0}: {1}"
                     .format(len(self.args.air_region), self.args.air_region))
 
-            self.args.normalise_air_region = [
-                int(val) for val in self.args.air_region
-            ]
+            self.args.air_region = [int(val) for val in self.args.air_region]
 
         if (self.func.save_preproc or self.func.convert or
                 self.func.aggregate) and not self.func.output_path:
