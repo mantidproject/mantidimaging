@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
+from core.algorithms import projection_angles
 
 
 def sanity_checks(config):
@@ -18,25 +18,28 @@ def sanity_checks(config):
             "<cors_step>: --imopr 100 400 50 5 50 5 corwrite")
 
 
-def execute(sample, flat, dark, config, indices):
+def execute(data, flat, dark, config, indices):
     """
-    :param sample:
-    :param flat:
-    :param dark:
-    :param config:
-    :param indices:
+    :param data: the data must be in SINOGRAMS! 
+    :param flat: unused, only added to conform to interface.
+    :param dark: unused, only added to conform to interface.
+    :param config: the full reconstruction config
+    :param indices: indices that will be processed in the function.
     """
     from core.imopr import helper
     helper.print_start(
-        "Running IMOPR with action COR using tomopy write_center")
+        "Running IMOPR with action COR using tomopy write_center. "
+        "This works ONLY with sinograms!")
 
     from core.tools import importer
     tool = importer.timed_import(config)
 
     print("Calculating projection angles..")
-    inc = float(config.func.max_angle) / sample.shape[0]
-    proj_angles = np.arange(0, sample.shape[0] * inc, inc)
-    proj_angles = np.radians(proj_angles)
+    # developer note: we are processing sinograms,
+    # but we need the number of radiograms
+    num_radiograms = data.shape[1]
+    proj_angles = projection_angles.generate(config.func.max_angle,
+                                             num_radiograms)
 
     print("Processing indices..")
     i1, i2, step = helper.handle_indices(indices, retstep=True)
@@ -46,7 +49,7 @@ def execute(sample, flat, dark, config, indices):
         print("Starting writing CORs for slice {0} in {1}".format(
             i, angle_output_path))
         tool._tomopy.write_center(
-            tomo=sample,
+            tomo=data,
             theta=proj_angles,
             dpath=angle_output_path,
             ind=i,
@@ -54,4 +57,4 @@ def execute(sample, flat, dark, config, indices):
             cen_range=indices[-3:])
 
     print("Finished writing CORs in", config.func.output_path)
-    return sample
+    return data

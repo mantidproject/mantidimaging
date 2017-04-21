@@ -1,9 +1,15 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
+
+from core.algorithms import projection_angles
 
 
 def sanity_checks(config):
-    pass
+    indices = config.func.indices
+    if len(indices) < 3:
+        raise ValueError(
+            "Indices must be provided! Please use the following format:\n "
+            "--imopr cor <start> <end> <step> with numbers:\n "
+            "--imopr cor 12 20 1, this will go from slice 12 to 20 with step 1")
 
 
 def execute(sample, flat, dark, config, indices):
@@ -14,9 +20,11 @@ def execute(sample, flat, dark, config, indices):
     tool = importer.timed_import(config)
 
     print("Calculating projection angles..")
-    inc = float(config.func.max_angle) / sample.shape[0]
-    proj_angles = np.arange(0, sample.shape[0] * inc, inc)
-    proj_angles = np.radians(proj_angles)
+    # developer note: we are processing sinograms,
+    # but we need the number of radiograms
+    num_radiograms = sample.shape[1]
+    proj_angles = projection_angles.generate(config.func.max_angle,
+                                             num_radiograms)
 
     print("Processing indices..")
     i1, i2, step = helper.handle_indices(indices, retstep=True)
