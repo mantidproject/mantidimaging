@@ -3,8 +3,6 @@ import time
 import os
 from time import gmtime, strftime
 
-# This way ALL separate instances of a Readme will write to the same output!
-
 
 class Readme(object):
     def __init__(self, config, saver):
