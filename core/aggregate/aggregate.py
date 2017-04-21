@@ -1,12 +1,12 @@
 from __future__ import absolute_import, division, print_function
+
 import os
 
 import numpy as np
 
 import helper as h
 from core.imgdata import loader, saver
-from core.imgdata.loader import get_file_names
-from core.imgdata.loader import get_folder_names
+from core.imgdata.loader import get_file_names, get_folder_names
 
 
 def execute(config):
