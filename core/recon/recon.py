@@ -7,9 +7,11 @@ from core.filters import (
     circular_mask, crop_coords, cut_off, gaussian, mcp_corrections,
     median_filter, minus_log, normalise_by_air_region, normalise_by_flat_dark,
     outliers, rebin, ring_removal, rotate_stack, stripe_removal, value_scaling)
+
+from core.algorithms import cor_interp
 from core.imgdata import loader, saver
 from core.tools import importer
-from readme import Readme
+from readme_creator import Readme
 
 
 def execute(config):
@@ -60,20 +62,17 @@ def execute(config):
         return sample
 
     if not config.func.only_postproc:
+        # interpolate the CORs
+        cor_slices = config.func.cor_slices
+        cors = config.func.cors
+        config.func.cors = cor_interp.execute(sample.shape[0], cor_slices,
+                                              cors)
+
         sample = tool.run_reconstruct(sample, config)
     else:
         h.tomo_print_note("Only post-processing run, skipping reconstruction.")
 
     sample = post_processing(config, sample)
-
-    # TODO only for testing purposes
-    # this seems to crop out most of the noise from the reconstructions
-    # but it might crop out data too!
-    h.tomo_print_warning(
-        "CROPPING THE ARBITRARILY CHOSEN NUMBER 1e-9, IT SEEMS"
-        "TO REMOVE MOST OF THE NOISE, BUT IT MIGHT CROP OUT SOME DATA")
-
-    np.clip(sample, 1e-9, 5, sample)
 
     saver_class.save_recon_output(sample)
     readme.end()
@@ -158,13 +157,14 @@ def post_processing(config, recon_data):
 
     cores = config.func.cores
 
-    recon_data = outliers.execute(recon_data, config.args.outliers_threshold,
-                                  config.args.outliers_radius, cores)
+    recon_data = outliers.execute(recon_data, config.args.outliers,
+                                  config.args.outliers_radius,
+                                  config.args.outliers_mode, cores)
 
     recon_data = ring_removal.execute(
-        recon_data, config.args.ring_removal,
-        config.args.ring_removal_center_x, config.args.ring_removal_center_y,
-        config.args.ring_removal_thresh, config.args.ring_removal_thresh_max,
+        recon_data, config.args.ring_removal, config.args.ring_removal_x,
+        config.args.ring_removal_y, config.args.ring_removal_thresh,
+        config.args.ring_removal_thresh_max,
         config.args.ring_removal_thresh_min,
         config.args.ring_removal_theta_min, config.args.ring_removal_rwidth,
         cores, config.func.chunksize)

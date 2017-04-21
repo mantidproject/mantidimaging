@@ -46,7 +46,7 @@ def initialise(config, saver=None):
     global _readme
     _verbosity = config.func.verbosity
     if saver:
-        from readme import Readme
+        from readme_creator import Readme
         _readme = Readme(config, saver)
 
 
