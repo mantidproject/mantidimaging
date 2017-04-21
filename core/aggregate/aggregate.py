@@ -79,7 +79,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
         images = loader.load(
             file_names=image_paths,
             img_format=img_format,
-            parallel_load=parallel_load)[0]
+            parallel_load=parallel_load)
         # sum or average them
         if 'sum' == agg_method:
             acc = images.sum(axis=0, dtype=np.float32)
