@@ -1,5 +1,7 @@
+from __future__ import (absolute_import, division, print_function)
 import numpy as np
 import numpy.testing as npt
+from core.parallel import utility as pu
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)
@@ -15,12 +17,11 @@ def gen_img_numpy_rand():
 
 def gen_img_shared_array_and_copy(shape=g_shape):
     arr = gen_img_shared_array(shape)
-    copy = deepcopy(arr)
+    copy = shared_deepcopy(arr)
     return arr, copy
 
 
 def gen_img_shared_array(shape=g_shape):
-    from parallel import utility as pu
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     d[:] = n[:]
@@ -29,7 +30,6 @@ def gen_img_shared_array(shape=g_shape):
 
 
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    from parallel import utility as pu
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
     d[:] = n[:]
@@ -48,6 +48,13 @@ def assert_not_equals(thing1, thing2):
 def deepcopy(source):
     from copy import deepcopy
     return deepcopy(source)
+
+
+def shared_deepcopy(source):
+    d = pu.create_shared_array(source.shape)
+    from copy import deepcopy
+    d[:] = deepcopy(source)[:]
+    return d
 
 
 def debug(switch=True):
@@ -70,7 +77,6 @@ def switch_mp_off():
     This function does very bad things that should never be replicated.
     But it's a unit test so it's fine.
     """
-    from parallel import utility as pu
     # backup function so we can restore it
     global backup_mp_avail
     backup_mp_avail = pu.multiprocessing_available
@@ -87,6 +93,39 @@ def switch_mp_on():
     This function does very bad things that should never be replicated.
     But it's a unit test so it's fine.
     """
-    from parallel import utility as pu
     # restore the original backed up function from switch_mp_off
     pu.multiprocessing_available = backup_mp_avail
+
+
+def assert_files_exist(cls, base_name, file_format, stack=True, num_images=1):
+    import os
+    import unittest
+    assert isinstance(
+        cls, unittest.TestCase
+    ), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
+
+    if not stack:
+        # generate a list of filenames with 000000 numbers appended
+        filenames = []
+        for i in range(num_images):
+            filenames.append(base_name + str(i) + '.' + file_format)
+
+        for f in filenames:
+            cls.assertTrue(os.path.isfile(f))
+
+    else:
+        filename = base_name + '.' + file_format
+        cls.assertTrue(os.path.isfile(filename))
+
+
+def delete_folder_from_temp(subdir=''):
+    """
+    Use with caution, this deletes things!
+    """
+    import shutil
+    import tempfile
+    import os
+    with tempfile.NamedTemporaryFile() as f:
+        full_path = os.path.join(os.path.dirname(f.name), subdir)
+        if os.path.isdir(full_path):
+            shutil.rmtree(full_path)
