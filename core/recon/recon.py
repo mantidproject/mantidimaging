@@ -108,7 +108,6 @@ def pre_processing(config, sample, flat, dark):
 
     sample = normalise_by_flat_dark.execute(sample, flat, dark, cores,
                                             chunksize)
-
     # removes the contrast difference between the stack of images
     sample = normalise_by_air_region.execute(sample, air, cores, chunksize)
 

@@ -62,26 +62,24 @@ class CropCoordsTest(unittest.TestCase):
         roi = [1, 1, 5, 5]
         result = crop_coords.execute(images, roi)[0]
         expected_shape = (10, 4, 4)
+
         npt.assert_equal(result.shape, expected_shape)
 
     def test_not_executed_no_sample(self):
         # images that will be put through testing
         images, control = th.gen_img_shared_array_and_copy()
-        control = control[0]
 
         # not executed because no Sample is provided
         roi = [1, 2, 5, 1]
-        npt.assert_raises(AssertionError, crop_coords.execute, None, roi)
+        npt.assert_raises(ValueError, crop_coords.execute, None, roi)
 
     def test_not_executed_no_roi(self):
         # images that will be put through testing
         images, control = th.gen_img_shared_array_and_copy()
-        image = images[0]
-        control = control[0]
 
         # not executed because no Region of interest is provided
         roi = None
-        result = crop_coords.execute(image, roi)[0]
+        result = crop_coords.execute(images, roi)[0]
         npt.assert_equal(result, control)
 
     def test_memory_change_acceptable(self):

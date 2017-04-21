@@ -53,9 +53,11 @@ def execute(data, air_region, cores=None, chunksize=None):
     """
     h.check_data_stack(data)
 
+    # just get data reference
     if air_region:
         # sanity check for the regions
-        assert all(isinstance(region, int) for region in air_region), "The air region coordinates are not integers!"
+        assert all(isinstance(region, int) for region in
+                   air_region), "The air region coordinates are not integers!"
         if pu.multiprocessing_available():
             data = _execute_par(data, air_region, cores, chunksize)
         else:

@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
 import helper as h
 
 
@@ -46,7 +45,6 @@ def execute(data, region_of_interest, flat=None, dark=None):
     """
 
     h.check_data_stack(data)
-    assert all(isinstance(region, int) for region in region_of_interest), "The air region coordinates are not integers!"
 
     # execute only for sample, if no flat and dark images are provided
     if data is not None and (flat is None or dark is None):
@@ -59,6 +57,9 @@ def execute(data, region_of_interest, flat=None, dark=None):
 
 def _execute(data, region_of_interest):
     if region_of_interest:
+        assert all(isinstance(region, int) for region in region_of_interest), \
+            "The region of interest coordinates are not integers!"
+
         h.pstart("Starting cropping with coordinates: {0}. ...".format(
             region_of_interest))
 
