@@ -48,6 +48,7 @@ class FunctionalConfig(object):
         self.data_dtype = np.float32
 
         self.cors = None
+        # single member list so that interpolation doesn't fail in cor_interp
         self.cor_slices = [0]
 
         self.verbosity = 3
