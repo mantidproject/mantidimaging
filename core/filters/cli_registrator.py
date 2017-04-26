@@ -9,7 +9,7 @@ def register_into(parser):
     """
     MODULES = [
         'circular_mask', 'crop_coords', 'cut_off', 'gaussian', 'median_filter',
-        'minus_log', 'normalise_by_air_region', 'normalise_by_flat_dark',
+        'minus_log', 'contrast_normalisation', 'background_correction',
         'outliers', 'rebin', 'rotate_stack', 'ring_removal', 'stripe_removal',
         'value_scaling'
     ]

@@ -5,7 +5,7 @@ import numpy as np
 import helper as h
 from core.filters import (
     circular_mask, crop_coords, cut_off, gaussian, mcp_corrections,
-    median_filter, minus_log, normalise_by_air_region, normalise_by_flat_dark,
+    median_filter, minus_log, contrast_normalisation, background_correction,
     outliers, rebin, ring_removal, rotate_stack, stripe_removal, value_scaling)
 
 from core.algorithms import cor_interp
@@ -105,10 +105,10 @@ def pre_processing(config, sample, flat, dark):
         scale_factors = value_scaling.create_factors(sample, roi, cores,
                                                      chunksize)
 
-    sample = normalise_by_flat_dark.execute(sample, flat, dark, cores,
-                                            chunksize)
+    sample = background_correction.execute(sample, flat, dark, cores,
+                                           chunksize)
     # removes the contrast difference between the stack of images
-    sample = normalise_by_air_region.execute(sample, air, cores, chunksize)
+    sample = contrast_normalisation.execute(sample, air, cores, chunksize)
 
     # scale up the data to a nice int16 range while keeping the effects
     # from the flat/dark and air normalisations
