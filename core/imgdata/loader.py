@@ -36,14 +36,15 @@ def imread(filename):
 
 
 def supported_formats():
+    # ignore errors for unused import (F401), we are only checking availability
     try:
-        import h5py
+        import h5py  # noqa: F401
         h5nxs_available = True
     except ImportError:
         h5nxs_available = False
 
     try:
-        from skimage import io as skio
+        from skimage import io as skio  # noqa: F401
         skio_available = True
     except ImportError:
         skio_available = False
@@ -54,18 +55,19 @@ def supported_formats():
 
     return avail_list
 
+
 def read_in_shape(config):
     input_path = config.func.input_path
     img_format = config.func.in_format
     data_dtype = config.func.data_dtype
     cores = config.func.cores
     chunksize = config.func.chunksize
-    parallel_load = config.func.parallel_load   
+    parallel_load = config.func.parallel_load
 
     input_file_names = get_file_names(input_path, img_format)
     sample, flat, dark = load(input_path, None, None,
                               img_format, data_dtype, cores, chunksize,
-                              parallel_load,indices=[0,1])
+                              parallel_load, indices=[0, 1])
     return (len(input_file_names),) + sample.shape[1:]
 
 
@@ -79,7 +81,6 @@ def load_data(config):
     :return: the loaded data as a tuple (sample, flat, dark)
     """
 
-    h.pstart("Loading data...")
     input_path = config.func.input_path
     input_path_flat = config.func.input_path_flat
     input_path_dark = config.func.input_path_dark
@@ -90,16 +91,9 @@ def load_data(config):
     parallel_load = config.func.parallel_load
     indices = config.func.indices
 
-    sample, flat, dark = load(input_path, input_path_flat, input_path_dark,
-                              img_format, data_dtype, cores, chunksize,
-                              parallel_load,indices=indices)
-
-    h.pstop("Data loaded. Shape of raw data: {0}, dtype: {1}.".format(
-        sample.shape, sample.dtype))
-
-    h.check_data_stack(sample)
-
-    return sample, flat, dark
+    return load(input_path, input_path_flat, input_path_dark,
+                img_format, data_dtype, cores, chunksize,
+                parallel_load, indices=indices)
 
 
 def load(input_path=None,
@@ -128,8 +122,10 @@ def load(input_path=None,
                           will be done in parallel.
                           This could be faster depending on the IO system.
                           For local runs (with HDD) recommended setting is False
-    :return: if flat and dark are loaded: a tuple with shape 3: (sample, flat, dark)
-             if no flat and dark: a single 3d numpy ndarray
+    :return: if flat and dark are loaded:
+                a tuple with shape 3: (sample, flat, dark)
+             if no flat and dark:
+                a single 3d numpy ndarray
     """
 
     if img_format is None:
@@ -223,8 +219,8 @@ def get_file_names(path, img_format, prefix=''):
             "Could not find any image files in {0} with extension: {1}".format(
                 path, img_format))
 
-    # this is a necessary step, otherwise the file order is not guaranteed to be sequential and we could get randomly
-    # ordered stack of images which would produce nonsense
+    # this is a necessary step, otherwise the file order is not guaranteed to be
+    # sequential and we get randomly ordered stack of names
     files_match.sort(key=_alphanum_key_split)
 
     return files_match
@@ -245,8 +241,8 @@ def get_folder_names(path):
     if len(folders) <= 0:
         raise RuntimeError("Could not find any folders in {0}".format(path))
 
-    # this is a necessary step, otherwise the file order is not guaranteed to be sequential and we could get randomly
-    # ordered stack of images which would produce nonsense
+    # this is a necessary step, otherwise the file order is not guaranteed to be
+    # sequential and we get randomly ordered stack of names
     folders.sort(key=_alphanum_key_split)
 
     return folders
@@ -273,6 +269,3 @@ def _alphanum_key_split(path_str):
         int(c) if c.isdigit() else c
         for c in alpha_num_split_re.split(path_str)
     ]
-
-
-

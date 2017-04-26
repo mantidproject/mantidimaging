@@ -90,8 +90,6 @@ class ConvertTest(unittest.TestCase):
         # this just converts between the formats, but not NXS!
         # create some images
         images = th.gen_img_shared_array()
-        flat = None
-        dark = None
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
@@ -119,7 +117,7 @@ class ConvertTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this odes not load any flats or darks as they were not saved out
-            sample, flat_loaded, dark_loaded = loader.load(
+            sample = loader.load(
                 converted_output_path,
                 None,
                 None,
@@ -127,8 +125,6 @@ class ConvertTest(unittest.TestCase):
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
-            th.assert_equals(flat_loaded, flat)
-            th.assert_equals(dark_loaded, dark)
 
             self.assert_files_exist(converted_output_path + '/converted',
                                     convert_format, saver._data_as_stack,
@@ -149,8 +145,6 @@ class ConvertTest(unittest.TestCase):
         # create some images
         parallel = False
         images = th.gen_img_shared_array()
-        flat = None
-        dark = None
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
@@ -177,7 +171,7 @@ class ConvertTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this odes not load any flats or darks as they were not saved out
-            sample, flat_loaded, dark_loaded = loader.load(
+            sample = loader.load(
                 converted_output_path,
                 None,
                 None,
@@ -185,8 +179,6 @@ class ConvertTest(unittest.TestCase):
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
-            th.assert_equals(flat_loaded, flat)
-            th.assert_equals(dark_loaded, dark)
 
             self.assert_files_exist(converted_output_path + '/converted',
                                     convert_format, saver._data_as_stack,
@@ -207,8 +199,6 @@ class ConvertTest(unittest.TestCase):
         images = th.gen_img_shared_array()
         # expected none, because NXS doesn't currently save
         # out flat or dark image
-        flat = None
-        dark = None
         saver = self.create_saver()
 
         with tempfile.NamedTemporaryFile() as f:
@@ -237,7 +227,7 @@ class ConvertTest(unittest.TestCase):
             # compare data to original
 
             # this does not load any flats or darks as they were not saved out
-            sample, flat_loaded, dark_loaded = loader.load(
+            sample = loader.load(
                 converted_output_path,
                 None,
                 None,
@@ -245,8 +235,6 @@ class ConvertTest(unittest.TestCase):
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
-            th.assert_equals(flat_loaded, flat)
-            th.assert_equals(dark_loaded, dark)
 
             self.assert_files_exist(converted_output_path + '/converted',
                                     convert_format, stack, images.shape[0])

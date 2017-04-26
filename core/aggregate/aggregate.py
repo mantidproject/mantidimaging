@@ -47,9 +47,14 @@ def execute(config):
 
     # get the range of energy levels, in pairs of 2, [start end]
     energy_levels = [int(c) for c in commands]
+
+    # this will drop the indices for energies that are not selected
     selected_indices = get_indices_for_energy_levels(energy_levels)
 
     # create the label that will be appended to the image file names
+    # it looks like:
+    # out_...<start_energy>_<end_energy>.<img_format>
+    # out_...0_10.<img_format>
     if len(energy_levels) == 0:
         energies_label = ''
     else:
@@ -66,7 +71,11 @@ def execute(config):
     # generate the file names in each angle folder
     angle_image_paths = get_image_files_paths(input_path, angle_folders,
                                               img_format, selected_indices)
-    # create an enumerator for the angle folders
+
+    # create an enumerator for easy looping over the image paths for each angle
+    # this will make tuples like: (angle_number, list_of_all_files)
+    # TODO check if this is necessary, because get_angle_folders should remove
+    # ALL angles except the selected one, so the start=.. would be unnecessary
     if selected_angles:
         angle_image_paths = enumerate(
             angle_image_paths, start=selected_angles[0])
@@ -86,19 +95,20 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
 
     for angle, image_paths in angle_image_paths:
         # load all the images from angle, [0] to discard flat and dark
-        h.pstart("Loading data for angle {0} from path {1}".format(
+        h.pstart("Aggregating data for angle {0} from path {1}".format(
             angle, os.path.dirname(image_paths[0])))
         images = loader.load(
             file_names=image_paths,
             img_format=img_format,
             parallel_load=parallel_load)
+
         # sum or average them
         if 'sum' == agg_method:
             acc = images.sum(axis=0, dtype=np.float32)
         else:
             acc = images.mean(axis=0, dtype=np.float32)
 
-        h.pstop("Finished loading.")
+        h.pstop("Finished aggregating.")
 
         if not single_folder:
             name = 'out_' + agg_method

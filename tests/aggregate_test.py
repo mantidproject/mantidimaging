@@ -143,7 +143,7 @@ class AggregateTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this does not load any flats or darks as they were not saved out
-            sample, flat_loaded, dark_loaded = loader.load(
+            sample = loader.load(
                 aggregate_output_path,
                 None,
                 None,
@@ -226,7 +226,7 @@ class AggregateTest(unittest.TestCase):
                 angle_path = os.path.dirname(
                     f.name) + '/aggregated/angle_' + mode + str(i)
 
-                sample, flat_loaded, dark_loaded = loader.load(
+                sample = loader.load(
                     angle_path,
                     None,
                     None,
@@ -236,13 +236,15 @@ class AggregateTest(unittest.TestCase):
                 for i in sample:
                     th.assert_equals(i, expected)
 
-                # we leave it as '0_1' here and leave the num_images parameter to one
-                # this means that an additional 0 will be appended, and will get
-                # the correct file name. This is a workaroud to not specify
-                # an additional if statement
-                self.assert_files_exist(angle_path + '/out_' + mode + '0_1',
-                                        saver._img_format,
-                                        saver._data_as_stack)
+                # we leave it as '0_1' here and leave the num_images parameter
+                # this means that an additional 0 will be appended to the
+                # filename: out_...0_10 and will get the correct file name.
+                # This is a cheat to avoid an additional if statement
+                self.assert_files_exist(
+                    angle_path + '/out_' + mode + '0_1',
+                    saver._img_format,
+                    saver._data_as_stack,
+                    num_images=1)
 
         #TODO aggregate ALL angles test
 
