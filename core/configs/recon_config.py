@@ -101,6 +101,14 @@ class ReconstructionConfig(object):
             raise ValueError("If running a reconstruction a Center of "
                              "Rotation MUST be provided")
 
+        if self.func.cors and self.func.cor_slices:
+            len_cors = len(self.func.cors)
+            len_cor_slices = len(self.func.cor_slices)
+            if len_cors != len_cor_slices:
+                raise ValueError(
+                    "Centers of Rotation (len {0}) doesn't match length of "
+                    "Slice Indices (len {1})!".format(len_cors,
+                                                      len_cor_slices))
         # if the reconstruction is ran on already cropped images, then no ROI
         # should be provided
         if self.func.cors and self.args.region_of_interest:

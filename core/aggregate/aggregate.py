@@ -6,17 +6,27 @@ import numpy as np
 
 import helper as h
 from core.imgdata import loader, saver
+from core.imgdata.loader import get_file_names, get_folder_names
 
 
 def execute(config):
     """
     Aggregates images.
 
-    Energy levels can be selected with --agregate 0 100,
-    this selects energy levels from 0 to 100
+    Energy levels can be selected with
+    --aggregate <start_energy> <end_energy> <sum/avg>,
+    --aggregate 0 100 sum, this selects energy levels from 0 to 100
+
+    Multiple energy ranges can also be accepted:
+    --aggregate 0 100 500 1000 1300 1700 3000 4000
+    This will aggregate ranges:
+    - 0 to 100
+    - 500 to 1000
+    - 1300 to 1700
+    - 3000 to 4000
 
     Angles can be selected with --aggregate-angles 0 10,
-    this selects angles 0 to 10
+    this selects angles 0 to 10.
 
     Output can be in a single folder --aggregate-single-folder-output,
     or in a separate folder for each angle
@@ -27,13 +37,15 @@ def execute(config):
     img_format = config.func.in_format
     output_path = config.func.output_path
     single_folder = config.func.aggregate_single_folder_output
+    # force overwrite_all or we will fail after the first angle has been saved!
+    config.func.overwrite_all = True
 
     # get the aggregation method {sum, avg}
     commands = config.func.aggregate
     agg_method = commands.pop()
     do_sanity_checks(output_path, agg_method, commands)
 
-    # get the range of energy levels, in pairs of 2, start end
+    # get the range of energy levels, in pairs of 2, [start end]
     energy_levels = [int(c) for c in commands]
     selected_indices = get_indices_for_energy_levels(energy_levels)
 
@@ -79,7 +91,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
         images = loader.load(
             file_names=image_paths,
             img_format=img_format,
-            parallel_load=parallel_load)[0]
+            parallel_load=parallel_load)
         # sum or average them
         if 'sum' == agg_method:
             acc = images.sum(axis=0, dtype=np.float32)
@@ -129,9 +141,6 @@ def do_sanity_checks(output_path, agg_method, commands):
 
 def get_image_files_paths(input_path, angle_folders, img_format,
                           selected_indices):
-    from core.imgdata.loader import get_file_names
-
-    import os
     angle_image_paths = []
     for folder in angle_folders:
         angle_fullpath = os.path.join(input_path, folder)
@@ -152,6 +161,10 @@ def get_image_files_paths(input_path, angle_folders, img_format,
 
 
 def get_indices_for_energy_levels(energy_levels):
+    """
+    This converts the indice range from --aggregate 0 100 300 400 500 600
+    to a list of indices [0, 100, 300, 400, 500, 600]
+    """
     # generate the ranges for the energy levels
     selected_indices = []
     for i in range(0, len(energy_levels), 2):
@@ -165,7 +178,6 @@ def get_indices_for_energy_levels(energy_levels):
 
 
 def get_angle_folders(input_path, img_format, selected_angles):
-    from core.imgdata.loader import get_folder_names
     # get all the angles folders
     angle_folders = get_folder_names(input_path)
 
@@ -180,9 +192,6 @@ def get_angle_folders(input_path, img_format, selected_angles):
             raise IndexError(
                 "The selected angles are not present in the input directory!")
     return angle_folders, selected_folders
-
-    # remove the files from the files list that are not in the range of index 1 -> index 2
-    # what's left is the images that we WANT to sum/average
 
 
 def expand_index_range(_list):

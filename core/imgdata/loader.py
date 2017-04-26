@@ -121,11 +121,15 @@ def load(input_path=None,
     :param input_path_dark: Optional: Path for the input Dark images folder
     :param img_format: Default:'fits', format for the input images
     :param dtype: Default:np.float32, data type for the input images
-    :param cores: Default:None (max available), cores to be used if parallel_load is True
+    :param cores: Default:None (max available), cores to be used if
+                  parallel_load is True
     :param chunksize: Default:None (auto calculated), chunk of work per worker
-    :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
-            This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
+    :param parallel_load: Default: False, if set to true the loading of the data
+                          will be done in parallel.
+                          This could be faster depending on the IO system.
+                          For local runs (with HDD) recommended setting is False
+    :return: if flat and dark are loaded: a tuple with shape 3: (sample, flat, dark)
+             if no flat and dark: a single 3d numpy ndarray
     """
 
     if img_format is None:
@@ -146,9 +150,9 @@ def load(input_path=None,
         flat = dark = None
     else:
         if img_format in ['fits', 'fit']:
-            load_func=fitsread
+            load_func = fitsread
         else:
-            load_func=imread
+            load_func = imread
 
         from core.imgdata import img_loader
         sample, flat, dark = img_loader.execute(
@@ -157,6 +161,10 @@ def load(input_path=None,
 
     h.check_data_stack(sample)
 
+    # don't return a tuple, just a single value
+    if flat is None and dark is None:
+        return sample
+
     return sample, flat, dark
 
 
@@ -164,14 +172,14 @@ def import_pyfits():
     try:
         import pyfits
     except ImportError:
-        # In Anaconda python, the pyfits package is in a different place, and this is what you frequently
-        # find on windows.
+        # In Anaconda python, the pyfits package is in a different place,
+        # and this is what you frequently find on windows.
         try:
             import astropy.io.fits as pyfits
         except ImportError:
             raise ImportError(
-                "Cannot find the package 'pyfits' which is required to read/write FITS image files"
-            )
+                "Cannot find the package 'pyfits' which is required to "
+                "read/write FITS image files")
 
     return pyfits
 

@@ -1,6 +1,7 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import unittest
-import numpy.testing as npt
+
 from tests import test_helper as th
 
 
@@ -53,7 +54,6 @@ class DataTest(unittest.TestCase):
         import os
         import shutil
         with tempfile.NamedTemporaryFile() as f:
-            from core.imgdata.loader import get_file_names
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
 
@@ -63,6 +63,18 @@ class DataTest(unittest.TestCase):
         """
         try:
             self.delete_files(prefix='pre_processed')
+        except OSError:
+            # no preprocessed images were saved
+            pass
+        try:
+            # delete files from test_load_sample_flat_and_dark
+            self.delete_files(prefix='imgdatatest_flat')
+        except OSError:
+            # no preprocessed images were saved
+            pass
+        try:
+            # delete files from test_load_sample_flat_and_dark
+            self.delete_files(prefix='imgdatatest_dark')
         except OSError:
             # no preprocessed images were saved
             pass
@@ -226,8 +238,6 @@ class DataTest(unittest.TestCase):
                    expected_len=None,
                    saver_indices=None):
         images = th.gen_img_shared_array_with_val(42.)
-        flat = None
-        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -257,7 +267,7 @@ class DataTest(unittest.TestCase):
 
             from core.imgdata import loader
             # this does not load any flats or darks as they were not saved out
-            sample, flat_loaded, dark_loaded = loader.load(
+            sample = loader.load(
                 preproc_output_path,
                 None,
                 None,
@@ -269,15 +279,14 @@ class DataTest(unittest.TestCase):
             if loader_indices:
                 assert len(
                     sample
-                ) == expected_len, "The length of the loaded data does not match the expected length! Expected: {0}, Actual {1}".format(
-                    expected_len, len(sample))
+                ) == expected_len, "The length of the loaded data does not "\
+                                   "match the expected length! Expected: {0}, "\
+                                   "Got {1}".format(expected_len, len(sample))
 
                 # crop the original images to make sure the tests is correct
                 images = images[loader_indices[0]:loader_indices[1]]
 
             th.assert_equals(sample, images)
-            th.assert_equals(flat_loaded, flat)
-            th.assert_equals(dark_loaded, dark)
 
             self.assert_files_exist(preproc_output_path + 'out_preproc_image',
                                     saver._img_format, data_as_stack,
@@ -312,15 +321,12 @@ class DataTest(unittest.TestCase):
                        loader_indices=None,
                        expected_len=None):
         """
-        There are no tests with saver indices, because this only saves out one file,
-        and the saver indices are only used for enumeration, so it doesn't make sense to test it
+        There are no tests with saver indices, because
+        this only saves out one file,
+        and the saver indices are only used for enumeration,
+        so it doesn't make sense to test it
         """
         images = th.gen_img_shared_array_with_val(42.)
-        # this is different from do_preproc as we need to
-        # save out flat and dark images, and they will be loaded
-        # back in
-        flat = None
-        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -344,9 +350,9 @@ class DataTest(unittest.TestCase):
             # this does not load any flats or darks as they were not saved out
             from core.imgdata import loader
             # this is a race condition versus the saving from the saver
-            # when load is executed in parallel, the 8 threads try to 
+            # when load is executed in parallel, the 8 threads try to
             # load the data too fast, and the data loaded is corrupted
-            sample, flat_loaded, dark_loaded = loader.load(
+            sample = loader.load(
                 preproc_output_path,
                 None,
                 None,
@@ -358,15 +364,14 @@ class DataTest(unittest.TestCase):
             if loader_indices:
                 assert len(
                     sample
-                ) == expected_len, "The length of the loaded data does not match the expected length! Expected: {0}, Actual {1}".format(
-                    expected_len, len(sample))
+                ) == expected_len, "The length of the loaded data does not "\
+                                   "match the expected length! Expected: {0}, "\
+                                   "Got {1}".format(expected_len, len(sample))
 
                 # crop the original images to make sure the tests is correct
                 images = images[loader_indices[0]:loader_indices[1]]
 
             th.assert_equals(sample, images)
-            th.assert_equals(flat_loaded, flat)
-            th.assert_equals(dark_loaded, dark)
 
             self.assert_files_exist(preproc_output_path + 'out_preproc_image',
                                     saver._img_format, data_as_stack,
@@ -397,8 +402,6 @@ class DataTest(unittest.TestCase):
         Note: saver_indices doesn't work with horiz_slices
         """
         images = th.gen_img_shared_array()
-        flat = None
-        dark = None
         saver = self.create_saver()
         import tempfile
         import os
@@ -424,6 +427,86 @@ class DataTest(unittest.TestCase):
                     recon_output_path + 'horiz_slices/recon_horiz',
                     saver._img_format, data_as_stack, images.shape[1],
                     saver_indices)
+
+    def test_load_sample_flat_and_dark(self,
+                                       img_format='tiff',
+                                       parallel=False,
+                                       loader_indices=None,
+                                       expected_len=None,
+                                       saver_indices=None):
+        images = th.gen_img_shared_array_with_val(42.)
+        flat = th.gen_img_shared_array_with_val(42.)
+        dark = th.gen_img_shared_array_with_val(42.)
+
+        flat[:] = 3
+        dark[:] = 3
+
+        saver = self.create_saver()
+        import tempfile
+        import os
+        with tempfile.NamedTemporaryFile() as f:
+            saver._output_path = os.path.dirname(f.name)
+            saver._img_format = img_format
+            saver._save_preproc = True
+            saver._swap_axes = False
+            # this only affects enumeration
+            saver._indices = saver_indices
+            data_as_stack = False
+
+            # saver indices only affects the enumeration of the data
+            if saver_indices:
+                # crop the original images to make sure the tests is correct
+                images = images[saver_indices[0]:saver_indices[1]]
+
+            saver.save_preproc_images(images)
+            saver._preproc_dir = "imgdatatest_flat"
+            saver.save_preproc_images(flat)
+            saver._preproc_dir = "imgdatatest_dark"
+            saver.save_preproc_images(dark)
+
+            # create the same path as the saved out preproc images
+            sample_output_path = saver._output_path + '/pre_processed/'
+            flat_output_path = saver._output_path + '/imgdatatest_flat/'
+            dark_output_path = saver._output_path + '/imgdatatest_dark/'
+
+            self.assert_files_exist(sample_output_path + 'out_preproc_image',
+                                    saver._img_format, data_as_stack,
+                                    images.shape[0], loader_indices or
+                                    saver_indices)
+
+            self.assert_files_exist(
+                flat_output_path + 'out_preproc_image', saver._img_format,
+                data_as_stack, flat.shape[0], loader_indices or saver_indices)
+
+            self.assert_files_exist(
+                dark_output_path + 'out_preproc_image', saver._img_format,
+                data_as_stack, dark.shape[0], loader_indices or saver_indices)
+
+            from core.imgdata import loader
+            sample, loaded_flat, loaded_dark = loader.load(
+                sample_output_path,
+                flat_output_path,
+                dark_output_path,
+                saver._img_format,
+                cores=1,
+                parallel_load=parallel,
+                indices=loader_indices)
+
+            if loader_indices:
+                assert len(
+                    sample
+                ) == expected_len, "The length of the loaded data doesn't "\
+                                "match the expected length: {0}, "\
+                                "Got: {1}".format(expected_len, len(sample))
+
+                # crop the original images to make sure the tests is correct
+                images = images[loader_indices[0]:loader_indices[1]]
+
+            th.assert_equals(sample, images)
+            # we only check the first image because they will be
+            # averaged out when loaded! The initial images are only 3s
+            th.assert_equals(loaded_flat, flat[0])
+            th.assert_equals(loaded_dark, dark[0])
 
 
 if __name__ == '__main__':

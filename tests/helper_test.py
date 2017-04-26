@@ -18,7 +18,7 @@ class HelperTest(unittest.TestCase):
         from core.imgdata.saver import Saver
         saver = Saver(config)
 
-        from readme import Readme
+        from readme_creator import Readme
         readme = Readme(config, saver)
         h.set_readme(readme)
         h.tomo_print("Testing verbosity at 0")

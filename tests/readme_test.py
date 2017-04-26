@@ -7,7 +7,7 @@ import unittest
 import tests.test_helper as th
 from core.configs.recon_config import ReconstructionConfig
 from core.imgdata import saver
-from readme import Readme
+from readme_creator import Readme
 
 
 class ReadmeTest(unittest.TestCase):
