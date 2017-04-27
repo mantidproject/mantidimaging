@@ -1,1 +1,0 @@
-imgpy -i ~/win_img/stomofish/med3/ -o ~/temp/split_fishy/ --reuse-preproc --cor-slices 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 --cors 965 965 965 964 964 964 964 963 962 962 962 961 961 961 960 959 959 958 958 -w --split --max-memory 28000
