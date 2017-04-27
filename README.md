@@ -1,6 +1,6 @@
 ## imgpy
 
-Supported operating systems: Ubuntu 16.04
+Tested and developed on Ubuntu 16.04. Windows support will be added in the future.
 
 To succesfully run this package you need [Anaconda Python 2.7](https://www.continuum.io/downloads) and [tomopy](https://anaconda.org/dgursoy/tomopy).
 
