@@ -145,9 +145,7 @@ class AggregateTest(unittest.TestCase):
             # this does not load any flats or darks as they were not saved out
             sample = loader.load(
                 aggregate_output_path,
-                None,
-                None,
-                saver._img_format,
+                img_format=saver._img_format,
                 parallel_load=parallel)
 
             for i in sample:
@@ -228,9 +226,7 @@ class AggregateTest(unittest.TestCase):
 
                 sample = loader.load(
                     angle_path,
-                    None,
-                    None,
-                    saver._img_format,
+                    img_format=saver._img_format,
                     parallel_load=parallel)
 
                 for i in sample:

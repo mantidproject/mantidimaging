@@ -269,9 +269,7 @@ class DataTest(unittest.TestCase):
             # this does not load any flats or darks as they were not saved out
             sample = loader.load(
                 preproc_output_path,
-                None,
-                None,
-                saver._img_format,
+                img_format=saver._img_format,
                 cores=1,
                 parallel_load=parallel,
                 indices=loader_indices)
@@ -354,9 +352,7 @@ class DataTest(unittest.TestCase):
             # load the data too fast, and the data loaded is corrupted
             sample = loader.load(
                 preproc_output_path,
-                None,
-                None,
-                saver._img_format,
+                img_format=saver._img_format,
                 cores=1,  # hard coded 1 core to avoid race condition
                 parallel_load=parallel,
                 indices=loader_indices)

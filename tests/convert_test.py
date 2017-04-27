@@ -119,9 +119,7 @@ class ConvertTest(unittest.TestCase):
             # this odes not load any flats or darks as they were not saved out
             sample = loader.load(
                 converted_output_path,
-                None,
-                None,
-                convert_format,
+                img_format=convert_format,
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
@@ -173,9 +171,7 @@ class ConvertTest(unittest.TestCase):
             # this odes not load any flats or darks as they were not saved out
             sample = loader.load(
                 converted_output_path,
-                None,
-                None,
-                convert_format,
+                img_format=convert_format,
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
@@ -229,9 +225,7 @@ class ConvertTest(unittest.TestCase):
             # this does not load any flats or darks as they were not saved out
             sample = loader.load(
                 converted_output_path,
-                None,
-                None,
-                convert_format,
+                img_format=convert_format,
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)

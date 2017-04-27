@@ -50,7 +50,13 @@ def execute(config):
     readme.begin(config.cmd_line, config)
     h.set_readme(readme)
 
-    sample, flat, dark = loader.load_data(config)
+    result = loader.load_data(config)
+    if isinstance(result, np.ndarray):
+        sample = result
+        flat = None
+        dark = None
+    else:
+        sample, flat, dark = result
 
     sample, flat, dark = pre_processing(config, sample, flat, dark)
 

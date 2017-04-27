@@ -42,7 +42,7 @@ def main():
         from core.convert import convert
         thingy_to_execute = convert.execute
     else:
-        from core.recon import recon
+        from core.configurations import recon
         cmd_line = " ".join(sys.argv)
         # dynamically attach the parameter used in recon
         config.cmd_line = cmd_line
