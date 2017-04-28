@@ -19,7 +19,7 @@ This mode gives you the ability to aggregate images with different energy levels
     │   ├── some_images_here_2.img_format
     │   ├── some_images_here_N.img_format
 ```
-[[https://github.com/DimitarTasev/imgpy/blob/master/docs/aggrgegate.png|alt=octocat]]
+[[https://github.com/DTasev/imgpy/blob/master/docs/aggregate.png|alt=aggregate_structure_dir]]
 
 ---
 
