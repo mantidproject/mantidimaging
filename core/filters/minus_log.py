@@ -9,7 +9,6 @@ def cli_register(parser):
         "--minus-log",
         required=False,
         action='store_true',
-        default=False,
         help="Calculate the -log of the sample data.")
 
     return parser
@@ -21,6 +20,9 @@ def gui_register(par):
 
 def execute(data, minus_log=True):
     """
+    This filter should be used on transmission images (background corrected images).
+    It converts the images from transmission to attenuation.
+
     :param data: Sample data which is to be processed. Expected in radiograms
     :param minus_log: Default True
                       Specify whether to calculate minus log or just return.
