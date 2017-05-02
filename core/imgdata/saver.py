@@ -1,5 +1,7 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import os
+
 import helper as h
 
 
@@ -82,11 +84,6 @@ def save(data,
     if swap_axes:
         data = np.swapaxes(data, 0, 1)
 
-    if indices is not None:
-        start_index = indices[0]
-    else:
-        start_index = 0
-
     if img_format in ['nxs']:
         filename = os.path.join(output_dir, name_prefix + name_postfix)
         write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
@@ -97,20 +94,31 @@ def save(data,
             # pass all other formats to skimage
             write_func = write_img
 
+        names = generate_names(name_prefix, indices, custom_idx, data.shape[0], zfill_len, name_postfix, img_format)
+
         h.prog_init(data.shape[0], "Saving " + img_format + " images")
         # loop through images in data array
         for idx in range(data.shape[0]):
-            # use the custom index if one is provided
-            index = custom_idx if custom_idx is not None else str(
-                start_index).zfill(zfill_len)
-            start_index += 1
-            # create the file name, and use the format as extension
-            name = name_prefix + index + name_postfix + "." + img_format
-
-            write_func(data[idx, :, :],
-                       os.path.join(output_dir, name), overwrite_all)
+            write_func(data[idx, :, :], os.path.join(output_dir, names[idx]), overwrite_all)
             h.prog_update()
         h.prog_close()
+
+
+def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name_postfix, img_format):
+    start_index = indices[0] if indices else 0
+    if custom_idx:
+        index = custom_idx
+        increment = 0
+    else:
+        index = start_index
+        increment = 1
+
+    names = []
+    for idx in range(num_images):
+        # create the file name, and use the format as extension
+        names.append(name_prefix + str(index).zfill(zfill_len) + name_postfix + "." + img_format)
+        index += increment
+    return names
 
 
 def make_dirs_if_needed(dirname=None, overwrite_all=False):
