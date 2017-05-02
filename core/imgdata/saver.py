@@ -1,13 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-<<<<<<< HEAD
 
-||||||| merged common ancestors
-=======
 import numpy as np
 
->>>>>>> Fixed aggregate test
 import helper as h
 
 
