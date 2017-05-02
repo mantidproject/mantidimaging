@@ -1,7 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+<<<<<<< HEAD
 
+||||||| merged common ancestors
+=======
+import numpy as np
+
+>>>>>>> Fixed aggregate test
 import helper as h
 
 
@@ -79,8 +85,6 @@ def save(data,
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
 
-    import numpy as np
-
     if swap_axes:
         data = np.swapaxes(data, 0, 1)
 
@@ -110,7 +114,7 @@ def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name
         index = custom_idx
         increment = 0
     else:
-        index = start_index
+        index = int(start_index)
         increment = 1
 
     names = []

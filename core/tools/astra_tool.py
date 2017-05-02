@@ -80,98 +80,32 @@ class AstraTool(AbstractTool):
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
         :return: The reconstructed volume
         """
-        import numpy as np
 
-        h.check_config_integrity(config)
+        import tomorec.tool_imports as tti
+        astra = tti.import_tomo_tool('astra')
 
-        h.check_data_stack(data)
+        plow = (data.shape[2] - cor * 2)
+        phigh = 0
 
-        if proj_angles is None:
-            num_proj = data.shape[0]
-            inc = float(config.func.max_angle) / num_proj
-            proj_angles = np.arange(0, num_proj * inc, inc)
-            proj_angles = np.radians(proj_angles)
+        proj_geom = astra.create_proj_geom('parallel3d', .0, 1.0,
+                                           data.shape[1], sinograms.shape[2],
+                                           proj_angles)
+        sinogram_id = astra.data3d.create('-sino', proj_geom, sinograms)
 
-        alg = config.func.algorithm.upper()  # get upper case
-        cor = config.func.cors
-        num_iter = config.func.num_iter
-        cores = config.func.cores
-        cors = config.func.cors
+        vol_geom = astra.create_vol_geom(data.shape[1], sinograms.shape[2],
+                                         data.shape[1])
+        recon_id = astra.data3d.create('-vol', vol_geom)
+        alg_cfg = astra.astra_dict(alg_cfg.algorithm)
+        alg_cfg['ReconstructionDataId'] = recon_id
+        alg_cfg['ProjectionDataId'] = sinogram_id
+        alg_id = astra.algorithm.create(alg_cfg)
 
-        # remove xxx_CUDA from the string with the [0:find..]
-        iterative_algorithm = False if alg[0:alg.find(
-            '_')] in ['FBP', 'FB', 'BP'] else True
+        number_of_iters = 100
+        astra.algorithm.run(alg_id, number_of_iters)
+        recon = astra.data3d.get(recon_id)
 
-        # are we using a CUDA algorithm
-        proj_type = 'cuda' if alg[alg.find('_') + 1:] == 'CUDA' else 'linear'
-
-        # TODO at a future point we'll need to support forwarding more options to ASTRA
-        # run the iterative algorithms
-        if iterative_algorithm:
-            h.pstart(
-                "Starting iterative method with Astra. Center of Rotation: {0}, Algorithm: {1}, "
-                "number of iterations: {2}...".format(cors, alg, num_iter))
-            # kwargs = dict(kwargs, num_iter=num_iter)
-            options = {
-                'proj_type': proj_type,
-                'method': alg,
-                'num_iter': num_iter
-            }
-
-        else:  # run the non-iterative algorithms
-            h.pstart(
-                "Starting non-iterative reconstruction algorithm with Astra. "
-                "Center of Rotation: {0}, Algorithm: {1}...".format(cors, alg))
-            options = {'proj_type': proj_type, 'method': alg}
-
-        recon = self._tomopy.recon(
-            tomo=data,
-            theta=proj_angles,
-            center=cors,
-            ncores=cores,
-            sinogram_order=True,
-            algorithm=self._tomopy.astra,
-            options=options,
-            **kwargs)
-
-        h.pstop(
-            "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
-            format(recon.shape, recon.dtype))
+        astra.algorithm.delete(alg_id)
+        astra.data3d.delete(recon_id)
+        astra.data3d.delete(sinogram_id)
 
         return recon
-
-        # def astra_reconstruct(self, data, config):
-        #     import tomorec.tool_imports as tti
-        #     astra = tti.import_tomo_tool('astra')
-        #
-        #     sinograms = np.swapaxes(data, 0, 1)
-        #
-        #     plow = (data.shape[2] - cor * 2)
-        #     phigh = 0
-        #
-        #     # minval = np.amin(sinograms)
-        #     sinograms = np.pad(
-        #         sinograms, ((0, 0), (0, 0), (plow, phigh)), mode='reflect')
-        #
-        #     proj_geom = astra.create_proj_geom('parallel3d', .0, 1.0,
-        #                                        data.shape[1], sinograms.shape[2],
-        #                                        proj_angles)
-        #     sinogram_id = astra.data3d.create('-sino', proj_geom, sinograms)
-        #
-        #     vol_geom = astra.create_vol_geom(data.shape[1], sinograms.shape[2],
-        #                                      data.shape[1])
-        #     recon_id = astra.data3d.create('-vol', vol_geom)
-        #     alg_cfg = astra.astra_dict(alg_cfg.algorithm)
-        #     alg_cfg['ReconstructionDataId'] = recon_id
-        #     alg_cfg['ProjectionDataId'] = sinogram_id
-        #     alg_id = astra.algorithm.create(alg_cfg)
-        #
-        #     number_of_iters = 100
-        #     astra.algorithm.run(alg_id, number_of_iters)
-        #     recon = astra.data3d.get(recon_id)
-        #
-        #     astra.algorithm.delete(alg_id)
-        #     astra.data3d.delete(recon_id)
-        #     astra.data3d.delete(sinogram_id)
-        #
-        #     return recon

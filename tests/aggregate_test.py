@@ -232,17 +232,15 @@ class AggregateTest(unittest.TestCase):
                 for i in sample:
                     th.assert_equals(i, expected)
 
-                # we leave it as '0_1' here and leave the num_images parameter
+                # we leave it as '00_1' here and leave the num_images parameter
                 # this means that an additional 0 will be appended to the
-                # filename: out_...0_10 and will get the correct file name.
+                # filename: out_...00_10 and will get the correct file name.
                 # This is a cheat to avoid an additional if statement
                 self.assert_files_exist(
-                    angle_path + '/out_' + mode + '0_1',
+                    angle_path + '/out_' + mode + '00_1',
                     saver._img_format,
                     saver._data_as_stack,
                     num_images=1)
-
-        #TODO aggregate ALL angles test
 
 
 if __name__ == '__main__':

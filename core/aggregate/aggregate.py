@@ -119,7 +119,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
             name = 'out_' + agg_method + '_' + energies_label + '_'
             name_postfix = ''
             subdir = ''
-            custom_index = str(angle)
+            custom_index = angle
 
         s.save_single_image(
             acc.reshape(1, acc.shape[0], acc.shape[1]),
