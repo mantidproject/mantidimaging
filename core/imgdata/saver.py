@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function
 import os
 
 import helper as h
-from core.parallel import two_shared_mem as ptsm
 
 
 def write_fits(data, filename, overwrite=False):
@@ -97,17 +96,12 @@ def save(data,
 
         names = generate_names(name_prefix, indices, custom_idx, data.shape[0], zfill_len, name_postfix, img_format)
 
-        sequential = True
-        if sequential:
-            h.prog_init(data.shape[0], "Saving " + img_format + " images")
-            # loop through images in data array
-            for idx in range(data.shape[0]):
-                write_func(data[idx, :, :], os.path.join(output_dir, names[idx]), overwrite_all)
-                h.prog_update()
-            h.prog_close()
-        else: # TODO test
-            f = ptsm.create_partial(write_func, ptsm.inplace_fwd_func, overwrite=overwrite_all)
-            ptsm.execute(data, names, f, 8, 1, "Saving "+img_format+" images")
+        h.prog_init(data.shape[0], "Saving " + img_format + " images")
+        # loop through images in data array
+        for idx in range(data.shape[0]):
+            write_func(data[idx, :, :], os.path.join(output_dir, names[idx]), overwrite_all)
+            h.prog_update()
+        h.prog_close()
 
 
 def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name_postfix, img_format):
@@ -118,8 +112,8 @@ def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name
     else:
         index = start_index
         increment = 1
-    names = []
 
+    names = []
     for idx in range(num_images):
         # create the file name, and use the format as extension
         names.append(name_prefix + str(index).zfill(zfill_len) + name_postfix + "." + img_format)
