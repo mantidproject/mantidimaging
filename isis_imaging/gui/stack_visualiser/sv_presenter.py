@@ -9,7 +9,7 @@ class ImgpyStackViewerPresenter(QWidget):
         self.data = data
         self.axis = axis
 
-        from gui.stack_visualiser.stack_visualiser_model import ImgpyStackVisualiserModel
+        from gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
         self.model = ImgpyStackVisualiserModel()
 
     def get_image(self, index, axis=None):

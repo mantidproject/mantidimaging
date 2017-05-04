@@ -1,14 +1,19 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.colorbar import ColorbarBase
-from PyQt4 import QtGui, uic, QtCore
-from PyQt4.QtCore import Qt
-from matplotlib.widgets import Slider
-from matplotlib.widgets import RectangleSelector
-from matplotlib.figure import Figure
 import numpy as np
+from matplotlib.backends.backend_qt4agg import \
+    FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import \
+    NavigationToolbar2QT as NavigationToolbar
+from matplotlib.colorbar import ColorbarBase
+from matplotlib.figure import Figure
+from matplotlib.widgets import RectangleSelector, Slider
+from PyQt4 import QtCore, QtGui, uic
+from PyQt4.QtCore import Qt
+
+from gui.stack_visualiser.sv_presenter import \
+    ImgpyStackViewerPresenter
+from gui.stack_visualiser.zoom_rectangle import FigureCanvasColouredRectangle
 
 
 class ImgpyStackVisualiserView(QtGui.QMainWindow):
@@ -19,14 +24,14 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
                  cmap='Greys_r',
                  block=False,
                  **kwargs):
-        # check dim
-        if not data.ndim == 3:
-            raise ValueError("data should be an ndarray with ndim == 3")
+
+        # enfornce not showing a single image
+        assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
+            data.ndim)
 
         super(ImgpyStackVisualiserView, self).__init__(parent, Qt.Window)
-        uic.loadUi('./gui/ui/stack.ui', self)
+        uic.loadUi('./isis_imaging/gui/ui/stack.ui', self)
 
-        from gui.stack_visualiser.stack_visualiser_presenter import ImgpyStackViewerPresenter
         # View doesn't take any ownership of the data!
         self.presenter = ImgpyStackViewerPresenter(self, data, axis)
 
@@ -37,7 +42,6 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         self.mplfig = Figure()
         self.image_axis = self.mplfig.add_subplot(111)
 
-        from gui.stack_visualiser.zoom_rectangle import FigureCanvasColouredRectangle
         self.canvas = FigureCanvasColouredRectangle(self.mplfig)
         self.canvas.rectanglecolor = Qt.yellow
         self.canvas.setParent(self)

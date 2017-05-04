@@ -1,14 +1,16 @@
-from __future__ import (absolute_import, division, print_function)
-from PyQt4 import uic, QtCore
+from __future__ import absolute_import, division, print_function
+
+import sys
+
 from PyQt4.QtGui import QApplication
+
+from gui.main_window.mw_view import ImgpyMainWindowView
 
 
 def execute(config):
-    import sys
 
     # create the GUI event loop
     qApp = QApplication(sys.argv)
-    from gui.main_view.mw_view import ImgpyMainWindowView
     aw = ImgpyMainWindowView(config)
     aw.show()
 
