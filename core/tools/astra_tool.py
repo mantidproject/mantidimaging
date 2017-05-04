@@ -86,18 +86,20 @@ class AstraTool(AbstractTool):
             proj_angles = projection_angles.generate(config.func.max_angle,
                                                      data.shape[1])
 
+        print(len(proj_angles))
+
         detector_spacing_x = 0.55
         detector_spacing_y = 0.55
 
-        assert (detector_spacing_x > 0) and (detector_spacing_y > 0), "These must be positive or Astra will crash"
-        proj_geom = self._astra.create_proj_geom(
+        assert (detector_spacing_x > 0) and (detector_spacing_y > 0), "Det spacing must be positive or Astra will crash"
+
+        projections_geometry = self._astra.create_proj_geom(
             'parallel3d', detector_spacing_x, detector_spacing_y, data.shape[0], data.shape[2], proj_angles)
 
-        # Configuration Error in ProjectionGeometry3D: m_fDetectorSpacingX should be positive.
+        print(projections_geometry)
 
-        # is this going to copy the data? presumably
-        sinogram_id = self._astra.data3d.create('-sino', proj_geom, data)
-
+        sinogram_id = self._astra.data3d.create('-sino', projections_geometry, data)
+        d = self._astra.data3d.get(sinogram_id)
         recon_volume_geometry = self._astra.create_vol_geom(data.shape)
         recon_id = self._astra.data3d.create('-vol', recon_volume_geometry)
 
@@ -118,3 +120,11 @@ class AstraTool(AbstractTool):
         self._astra.data3d.delete(sinogram_id)
 
         return recon
+
+    def algorithm_name_handling(self, alg):
+        # remove xxx_CUDA from the string with the [0:find..]
+        iterative_algorithm = False if alg[0:alg.find(
+            '_')] in ['FBP', 'FB', 'BP'] else True
+
+        # are we using a CUDA algorithm
+        proj_type = 'cuda' if alg[alg.find('_') + 1:] == 'CUDA' else 'linear'
