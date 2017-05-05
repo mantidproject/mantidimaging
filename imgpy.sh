@@ -1,3 +1,4 @@
+imgpy_dir=$PWD
 # set default to system python
 python_exec="/usr/bin/python"
 
