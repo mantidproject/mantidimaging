@@ -11,7 +11,7 @@ def register_into(parser):
         'circular_mask', 'crop_coords', 'cut_off', 'gaussian', 'median_filter',
         'minus_log', 'contrast_normalisation', 'background_correction',
         'outliers', 'rebin', 'rotate_stack', 'ring_removal', 'stripe_removal',
-        'value_scaling'
+        'value_scaling', 'clip_values'
     ]
 
     for m in MODULES:

@@ -3,12 +3,11 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 import helper as h
-from core.filters import (
-    circular_mask, crop_coords, cut_off, gaussian, mcp_corrections,
-    median_filter, minus_log, contrast_normalisation, background_correction,
-    outliers, rebin, ring_removal, rotate_stack, stripe_removal, value_scaling)
-
 from core.algorithms import cor_interp
+from core.filters import (
+    background_correction, circular_mask, clip_values, contrast_normalisation,
+    crop_coords, cut_off, gaussian, mcp_corrections, median_filter, minus_log,
+    outliers, rebin, ring_removal, rotate_stack, stripe_removal, value_scaling)
 from core.imgdata import loader, saver
 from core.tools import importer
 from readme_creator import Readme
@@ -62,7 +61,7 @@ def execute(config):
 
     # Save pre-proc images, print inside
     saver_class.save_preproc_images(sample)
-    if config.func.only_preproc is True:
+    if config.func.only_preproc:
         h.tomo_print_note("Only pre-processing run, exiting.")
         readme.end()
         return sample
@@ -185,5 +184,8 @@ def post_processing(config, recon_data):
 
     recon_data = circular_mask.execute(recon_data, config.args.circular_mask,
                                        config.args.circular_mask_val, cores)
+
+    recon_data = clip_values.execute(recon_data, config.args.clip_min,
+                                     config.args.clip_max)
 
     return recon_data
