@@ -102,7 +102,7 @@ def _execute_par(data, air_region, cores=None, chunksize=None):
 
     calc_sums_partial = ptsm.create_partial(
         _calc_sum,
-        fwd_function=ptsm.fwd_func_return_to_second,
+        fwd_function=ptsm.return_to_second,
         air_left=left,
         air_top=top,
         air_right=right,
@@ -112,7 +112,7 @@ def _execute_par(data, air_region, cores=None, chunksize=None):
                                   chunksize, "Calculating air sums")
 
     air_sums_partial = ptsm.create_partial(
-        _divide_by_air_sum, fwd_function=ptsm.inplace_fwd_func)
+        _divide_by_air_sum, fwd_function=ptsm.inplace)
 
     data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores,
                                   chunksize, "Norm by Air Sums")

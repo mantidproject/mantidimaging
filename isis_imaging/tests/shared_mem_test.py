@@ -32,7 +32,7 @@ class SharedMemTest(unittest.TestCase):
 
         # create partial
         f = psm.create_partial(
-            add_inplace, fwd_func=psm.inplace_fwd_func, add_arg=add_arg)
+            add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         # execute parallel
         img = psm.execute(img, f, name="Inplace test")
@@ -78,7 +78,7 @@ class SharedMemTest(unittest.TestCase):
 
         # create partial
         f = psm.create_partial(
-            add_inplace, fwd_func=psm.inplace_fwd_func, add_arg=add_arg)
+            add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         # execute parallel
         res = psm.execute(img, f, name="Fail Inplace test")
@@ -125,7 +125,7 @@ class SharedMemTest(unittest.TestCase):
 
         # create partial
         f = psm.create_partial(
-            add_inplace, fwd_func=psm.inplace_fwd_func, add_arg=add_arg)
+            add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         cached_memory = h.get_memory_usage_linux(kb=True)[0]
         # execute parallel

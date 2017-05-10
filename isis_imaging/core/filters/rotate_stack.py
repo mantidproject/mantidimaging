@@ -92,9 +92,7 @@ def _execute_par(data, rotation, cores=None, chunksize=None):
              "data type: {1}...".format(rotation * 90, data.dtype))
 
     f = psm.create_partial(
-        _rotate_image_inplace,
-        fwd_func=psm.inplace_fwd_func,
-        rotation=rotation)
+        _rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
 
     data = psm.execute(
         data, f, cores=cores, chunksize=chunksize, name="Rotation")

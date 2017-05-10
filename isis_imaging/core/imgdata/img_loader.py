@@ -1,7 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
+
 import helper as h
+from core.parallel import two_shared_mem as ptsm
+from core.parallel import utility as pu
+
+
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
@@ -135,9 +140,8 @@ def _par_inplace_load_fwd_func(data, filename, load_func=None):
 
 
 def _do_files_load_par(data, load_func, files, cores, chunksize, name):
-    from core.parallel import two_shared_mem as ptsm
     f = ptsm.create_partial(
-        _par_inplace_load_fwd_func, ptsm.inplace_fwd_func, load_func=load_func)
+        _par_inplace_load_fwd_func, ptsm.inplace, load_func=load_func)
     ptsm.execute(data, files, f, cores, chunksize, name)
     return data
 
@@ -152,7 +156,6 @@ def _load_files(load_func,
                 parallel_load=False):
     # Zeroing here to make sure that we can allocate the memory.
     # If it's not possible better crash here than later.
-    from core.parallel import utility as pu
     data = pu.create_shared_array(
         (len(files), img_shape[0], img_shape[1]), dtype=dtype)
 

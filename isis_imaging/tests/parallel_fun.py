@@ -117,9 +117,9 @@ class ParallelTest(unittest.TestCase):
 
         npt.assert_raises(AssertionError, npt.assert_equal, data, control)
 
-    def test_inplace_fwd_func_processing_inplace(self):
+    def test_inplace_processing_inplace(self):
         """
-        Test if using inplace_fwd_func with a function that changes the data inplace gives proper result
+        Test if using inplace with a function that changes the data inplace gives proper result
 
         Expected: The data should be correctly changed
         """
@@ -132,14 +132,14 @@ class ParallelTest(unittest.TestCase):
         h = _create_test_helper()
 
         f = sp.create_partial(
-            inplace_in_func, fwd_function=sp.inplace_fwd_func, size=42)
+            inplace_in_func, fwd_function=sp.inplace, size=42)
 
         data = sp.execute(data, f, show_timer=False)
         npt.assert_raises(AssertionError, npt.assert_equal, data, control)
 
-    def test_inplace_fwd_func_processing_not_inplace(self):
+    def test_inplace_processing_not_inplace(self):
         """
-        Test if inplace_fwd_func with a function that does return data
+        Test if inplace with a function that does return data
 
         Expected: The data should not be changed
         """
@@ -154,16 +154,16 @@ class ParallelTest(unittest.TestCase):
 
         f = sp.create_partial(
             return_from_func_no_data_change_inside,
-            fwd_function=sp.inplace_fwd_func,
+            fwd_function=sp.inplace,
             size=42)
 
         data = sp.execute(data, f, show_timer=False)
 
         npt.assert_equal(data, control)
 
-    def test_inplace_fwd_func_processing_not_inplace2(self):
+    def test_inplace_processing_not_inplace2(self):
         """
-        Test if inplace_fwd_func with a function that does return data
+        Test if inplace with a function that does return data
 
         Expected: The data should not be changed
         """
@@ -180,7 +180,7 @@ class ParallelTest(unittest.TestCase):
         # and since it's a shared array it will be changed on the check as well
         f = sp.create_partial(
             return_from_func_but_data_changed_inside,
-            fwd_function=sp.inplace_fwd_func,
+            fwd_function=sp.inplace,
             size=42)
 
         data = sp.execute(data, f, show_timer=False)
@@ -220,7 +220,7 @@ def return_from_func_no_data_change_inside(func_data, size=3):
 
 if __name__ == '__main__':
     unittest.main()
-    # test_inplace_fwd_func_processing_not_inplace()
+    # test_inplace_processing_not_inplace()
     # big shape tests individual process performance per image
     # test_shape = (50, 512, 512)
 
@@ -242,7 +242,7 @@ if __name__ == '__main__':
     # from core.parallel import shared_parallel as sp
     #
     # f = sp.create_partial(
-    #     set_to_inplace, fwd_function=sp.inplace_fwd_func, size=42)
+    #     set_to_inplace, fwd_function=sp.inplace, size=42)
     # for chunk in range(1, 10):
     #     print("chunksize", chunk)
     #

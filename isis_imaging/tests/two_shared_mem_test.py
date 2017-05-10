@@ -36,7 +36,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace_fwd_func, add_arg=5)
+            add_inplace, fwd_function=ptsm.inplace, add_arg=5)
 
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Inplace test")
@@ -61,9 +61,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            add_inplace,
-            fwd_function=ptsm.inplace_fwd_func_second_2d,
-            add_arg=5)
+            add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Second 2D test")
@@ -72,7 +70,7 @@ class TwoSharedMemTest(unittest.TestCase):
         th.assert_equals(img, expected)
         th.assert_equals(img2nd, orig_2nd[0])
 
-    def test_fwd_func_return_to_first(self):
+    def test_return_to_first(self):
         # create data as shared array
         img = th.gen_img_shared_array()
         img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
@@ -86,9 +84,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            return_from_func,
-            fwd_function=ptsm.fwd_func_return_to_first,
-            add_arg=5)
+            return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to first test")
@@ -97,7 +93,7 @@ class TwoSharedMemTest(unittest.TestCase):
         th.assert_equals(res1, expected)
         th.assert_equals(res2, orig_2nd)
 
-    def test_fwd_func_return_to_second(self):
+    def test_return_to_second(self):
         # create data as shared array
         img, orig_img = th.gen_img_shared_array_and_copy()
         img2nd = th.gen_img_shared_array()
@@ -111,9 +107,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            return_from_func,
-            fwd_function=ptsm.fwd_func_return_to_second,
-            add_arg=5)
+            return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to second test")
@@ -172,9 +166,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            add_inplace,
-            fwd_function=ptsm.inplace_fwd_func_second_2d,
-            add_arg=5)
+            add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Fail Second 2D test")
@@ -201,9 +193,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            return_from_func,
-            fwd_function=ptsm.fwd_func_return_to_first,
-            add_arg=5)
+            return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
         res1, res2 = ptsm.execute(
@@ -234,9 +224,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            return_from_func,
-            fwd_function=ptsm.fwd_func_return_to_second,
-            add_arg=5)
+            return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
         res1, res2 = ptsm.execute(
@@ -263,7 +251,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace_fwd_func, add_arg=5)
+            add_inplace, fwd_function=ptsm.inplace, add_arg=5)
 
         cached_memory = h.get_memory_usage_linux(kb=True)[0]
         # execute parallel
@@ -290,9 +278,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            add_inplace,
-            fwd_function=ptsm.inplace_fwd_func_second_2d,
-            add_arg=5)
+            add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
         cached_memory = h.get_memory_usage_linux(kb=True)[0]
@@ -303,7 +289,7 @@ class TwoSharedMemTest(unittest.TestCase):
         th.assert_equals(img, expected)
         th.assert_equals(img2nd, orig_2nd[0])
 
-    def test_memory_fwd_func_return_to_first(self):
+    def test_memory_return_to_first(self):
         # create data as shared array
         img = th.gen_img_shared_array()
         img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
@@ -317,9 +303,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            return_from_func,
-            fwd_function=ptsm.fwd_func_return_to_first,
-            add_arg=5)
+            return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
         cached_memory = h.get_memory_usage_linux(kb=True)[0]
@@ -330,7 +314,7 @@ class TwoSharedMemTest(unittest.TestCase):
         th.assert_equals(res1, expected)
         th.assert_equals(res2, orig_2nd)
 
-    def test_memory_fwd_func_return_to_second(self):
+    def test_memory_return_to_second(self):
         # create data as shared array
         img, orig_img = th.gen_img_shared_array_and_copy()
         img2nd = th.gen_img_shared_array()
@@ -344,9 +328,7 @@ class TwoSharedMemTest(unittest.TestCase):
 
         # create partial
         f = ptsm.create_partial(
-            return_from_func,
-            fwd_function=ptsm.fwd_func_return_to_second,
-            add_arg=5)
+            return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
         cached_memory = h.get_memory_usage_linux(kb=True)[0]

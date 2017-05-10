@@ -6,6 +6,10 @@ import helper as h
 from core.parallel import two_shared_mem as ptsm
 from core.parallel import utility as pu
 
+# The smallest and largest allowed pixel value
+MINIMUM_PIXEL_VALUE = 1e-9
+MAXIMUM_PIXEL_VALUE = 3
+
 
 def cli_register(parser):
     # this doesn't have anything to add,
@@ -19,11 +23,12 @@ def gui_register(par):
 
 
 def _apply_normalise_inplace(data, norm_divide):
-    data[:] = np.true_divide(data, norm_divide)
+    np.true_divide(data, norm_divide, out=data)
 
 
-def _apply_normalise(data, dark=None, norm_divide=None):
-    return np.true_divide(data - dark, norm_divide)
+def _subtract(data, dark=None):
+    # specify out to do in place, otherwise the data is copied
+    np.subtract(data, dark, out=data)
 
 
 def execute(data, flat=None, dark=None, cores=None, chunksize=None):
@@ -63,33 +68,48 @@ def execute(data, flat=None, dark=None, cores=None, chunksize=None):
 
 
 def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
+    """
+    A benchmark justifying the current implementation, performed on 500x2048x2048 images
+
+    #1 Separate runs
+    Subtract (sequential with np.subtract(data, dark, out=data)) - 13s
+    Divide (par) - 1.15s
+
+    #2 Separate parallel runs
+    Subtract (par) - 5.5s
+    Divide (par) - 1.15s
+
+    #3 Added subtract into _apply_normalise_inplace so that it is:
+                np.true_divide(np.subtract(data, dark, out=data), norm_divide, out=data)
+    Subtract then divide (par) - 55s
+    """
     h.pstart("Starting PARALLEL normalization by flat/dark images.")
 
     norm_divide = pu.create_shared_array((1, data.shape[1], data.shape[2]))
+    # remove a dimension, I found this to be the easiest way to do it
     norm_divide = norm_divide.reshape(data.shape[1], data.shape[2])
 
     # subtract dark from flat and copy into shared array with [:]
     norm_divide[:] = np.subtract(flat, dark)
 
     # prevent divide-by-zero issues, and negative pixels make no sense
-    norm_divide[norm_divide == 0] = 1e-9
+    norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
 
-    # subtract the dark from all images,
-    # specify out to do in place, otherwise the data is copied
-    np.subtract(data[:], dark, out=data[:])
+    # subtract the dark from all images
+    f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
+    data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark")
 
     f = ptsm.create_partial(
-        _apply_normalise_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d)
-
+        _apply_normalise_inplace, fwd_function=ptsm.inplace_second_2d)
     data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize,
                                      "Norm by Flat/Dark")
 
-    # This clipping is important, if removed some images will have pixels
+    # After scaling back the values some images will have pixels
     # with big negative values -25626262 which throws off contrast adjustments.
     # This will crop those negative pixels out, and set them to nearly zero
     # The negative values will also get scaled back after this in
     # value_scaling which will increase their values futher!
-    np.clip(data, 1e-9, 3, data)
+    np.clip(data, MINIMUM_PIXEL_VALUE, MAXIMUM_PIXEL_VALUE, out=data)
     h.pstop("Finished PARALLEL normalization by flat/dark images.")
 
     return data
@@ -101,7 +121,7 @@ def _execute_seq(data, flat=None, dark=None):
     norm_divide = np.subtract(flat, dark)
 
     # prevent divide-by-zero issues
-    norm_divide[norm_divide <= 0] = 1e-6
+    norm_divide[norm_divide <= 0] = MINIMUM_PIXEL_VALUE
 
     # this divide gives bad results
     h.prog_init(data.shape[0], "Norm by Flat/Dark")

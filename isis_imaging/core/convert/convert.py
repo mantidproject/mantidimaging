@@ -32,4 +32,5 @@ def execute(config):
         config.func.swap_axes,
         image_out_format,
         zfill_len=0,
-        indices=config.func.indices)
+        indices=config.func.indices,
+        overwrite_all=config.func.overwrite_all)

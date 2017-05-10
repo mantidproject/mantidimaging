@@ -9,7 +9,7 @@ from multiprocessing import Pool
 shared_data = None
 
 
-def inplace_fwd_func(func, i, **kwargs):
+def inplace(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
         - Perform an operation on the input data
@@ -52,7 +52,7 @@ def return_fwd_func(func, i, **kwargs):
     and is doing all the calculations and overwriting in place. In that case use fwd_func_inplace
     as a fwd_function parameter for create_partial, creating something like:
 
-    f = parallel.create_partial(func_to_be_executed, parallel.inplace_fwd_func, **kwargs)
+    f = parallel.create_partial(func_to_be_executed, parallel.inplace, **kwargs)
 
     :param func: Function that will be executed
     :param i: index from the shared_data on which to operate
@@ -70,7 +70,7 @@ def create_partial(func, fwd_func=return_fwd_func, **kwargs):
     :param func: Function that will be executed
     :param fwd_func: The function will be forwarded through function. It must be one of:
             - shared_mem.fwd_func: if the function returns a value
-            - shared_mem.inplace_fwd_func: if the function will overwrite the data in place
+            - shared_mem.inplace: if the function will overwrite the data in place
     :param kwargs: kwargs to forward to the function func that will be executed
     :return:
     """

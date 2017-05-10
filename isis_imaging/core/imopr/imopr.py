@@ -60,7 +60,7 @@ def execute(config):
     package.sanity_checks(config)
 
     from core.imgdata import loader
-    sample, flat, dark = loader.load_data(config)
+    sample = loader.load_data(config)
     # the [:] is necessary to get the actual data and not just the nxs header
     # sample = loader.nxsread(config.func.input_path)[:]
 

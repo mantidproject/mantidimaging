@@ -10,7 +10,7 @@ shared_data = None
 second_shared_data = None
 
 
-def inplace_fwd_func(func, i, **kwargs):
+def inplace(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
         - Perform an operation on the input data that is dependent on another container
@@ -41,7 +41,7 @@ def inplace_fwd_func(func, i, **kwargs):
     func(shared_data[i], second_shared_data[i], **kwargs)
 
 
-def inplace_fwd_func_second_2d(func, i, **kwargs):
+def inplace_second_2d(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
         - Perform an operation on the input data that is dependent on the same second parameter
@@ -75,7 +75,7 @@ def inplace_fwd_func_second_2d(func, i, **kwargs):
     func(shared_data[i], second_shared_data, **kwargs)
 
 
-def fwd_func_return_to_first(func, i, **kwargs):
+def return_to_first(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
         - Perform an operation on the input data that is dependent on another container
@@ -91,7 +91,7 @@ def fwd_func_return_to_first(func, i, **kwargs):
     shared_data[i] = func(shared_data[i], second_shared_data[i], **kwargs)
 
 
-def fwd_func_return_to_second(func, i, **kwargs):
+def return_to_second(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
         - Perform an operation on the input data that is dependent on another container
@@ -108,17 +108,17 @@ def fwd_func_return_to_second(func, i, **kwargs):
                                  **kwargs)
 
 
-def create_partial(func, fwd_function=inplace_fwd_func, **kwargs):
+def create_partial(func, fwd_function=inplace, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the parallel execution of imap.
     If you seem to be getting nans, check if the correct fwd_function is set!
 
     :param func: Function that will be executed
     :param fwd_function: The function will be forwarded through function. It must be one of:
-            - two_shared_mem.inplace_fwd_func: if the function replaces
-            - two_shared_mem.inplace_fwd_func_second_2d: if the function returns a value
-            - two_shared_mem.fwd_func_return_to_first: if the function returns a value
-            - two_shared_mem.fwd_func_return_to_second: if the function will overwrite the data in place
+            - two_shared_mem.inplace: if the function replaces
+            - two_shared_mem.inplace_second_2d: if the function returns a value
+            - two_shared_mem.return_to_first: if the function returns a value
+            - two_shared_mem.return_to_second: if the function will overwrite the data in place
     :param kwargs: kwargs to forward to the function func that will be executed
     :return:
     """

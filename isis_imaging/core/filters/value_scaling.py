@@ -37,7 +37,7 @@ def create_factors(data, roi=None, cores=None, chunksize=None):
     # calculate the scale factor from original image
     calc_sums_partial = ptsm.create_partial(
         _calc_avg,
-        fwd_function=ptsm.fwd_func_return_to_second,
+        fwd_function=ptsm.return_to_second,
         roi_left=roi[0] if roi else 0,
         roi_top=roi[1] if roi else 0,
         roi_right=roi[2] if roi else data[0].shape[1] - 1,
@@ -45,7 +45,7 @@ def create_factors(data, roi=None, cores=None, chunksize=None):
 
     data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial,
                                        cores, chunksize,
-                                       "Calculating scale factor sums")
+                                       "Calculating scale factor")
 
     return scale_factors
 
@@ -63,7 +63,7 @@ def apply_factor(data, scale_factors, cores=None, chunksize=None):
     """
     # scale up the data
     scale_up_partial = ptsm.create_partial(
-        _scale_inplace, fwd_function=ptsm.inplace_fwd_func_second_2d)
+        _scale_inplace, fwd_function=ptsm.inplace_second_2d)
 
     # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
     data, scale_factors = ptsm.execute(data, [scale_factors.mean()],

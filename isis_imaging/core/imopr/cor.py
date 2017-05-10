@@ -30,10 +30,12 @@ def execute(sample, flat, dark, config, indices):
     i1, i2, step = helper.handle_indices(indices, retstep=True)
     initial_guess = config.func.cors if config.func.cors is not None else None
 
+    # TODO this can be parallelised because it only does a single slice at a time
+    # single slice = single thread
     for i in range(i1, i2, step):
         print("Running COR for index", i, end=" ")
         cor = tool.find_center(
-            tomo=sample[:, :, :],
+            tomo=sample,
             theta=proj_angles,
             sinogram_order=True,
             ind=i,
