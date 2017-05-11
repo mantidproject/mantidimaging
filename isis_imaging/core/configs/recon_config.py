@@ -126,6 +126,7 @@ class ReconstructionConfig(object):
                 # start index 0, with step 1
                 self.func.indices = [0, self.func.indices[0], 1]
             elif len(self.func.indices) == 2:
+                # only add the step
                 self.func.indices = [
                     self.func.indices[0], self.func.indices[1], 1
                 ]
