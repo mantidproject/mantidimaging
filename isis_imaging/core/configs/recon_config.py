@@ -25,8 +25,7 @@ def grab_full_config():
     parser = functional_args.setup_parser(parser)
 
     # setup args for the filters
-    grp_filters = parser.add_argument_group("Filter options")
-    cli_registrator.register_into(grp_filters)
+    cli_registrator.register_into(parser)
 
     # parse the real arguments
     args = parser.parse_args()

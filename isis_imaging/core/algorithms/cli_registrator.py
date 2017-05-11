@@ -4,7 +4,7 @@ import os
 import warnings
 
 
-def register_into(parser):
+def register_into(parser, directory="core/filters"):
     """
     This function will import all the filters, and then call
     cli_register(parser) on them.
@@ -14,8 +14,14 @@ def register_into(parser):
 
     An alternative implementation for the lambda checks is in examples/cli_checks_performance.py
     The current implementation was found to be faster, and more readible
+
+    :param parser: the parser into which the modules will be registered
+    :param directory: The directory to be walked for python modules. 
+                      This parameter is currently being added to ease unit testing.
     """
-    all_files = os.walk("core/filters")
+    # if user provided files, don't walk anywhere, but run the rest
+
+    all_files = os.walk(directory)
 
     for root, dirs, files in all_files:
         # replace the / with . to match python package syntax
