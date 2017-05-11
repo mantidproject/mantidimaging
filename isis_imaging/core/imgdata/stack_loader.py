@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import helper as h
+from core.parallel import utility as pu
 
 
 def parallel_move_data(input_data, output_data):
@@ -64,11 +65,10 @@ def execute(load_func,
     :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
     """
     # create shared array
-    from core.parallel import utility as pu
     new_data = load_func(file_name)
 
-    if indices is not None and len(indices) == 2:
-        new_data = new_data[indices[0]:indices[1]]
+    if indices and len(indices) == 3:
+        new_data = new_data[indices[0]:indices[1]:indices[2]]
 
     img_shape = new_data.shape
     data = pu.create_shared_array(img_shape, dtype=dtype)

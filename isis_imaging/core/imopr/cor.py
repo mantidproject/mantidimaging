@@ -1,22 +1,18 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 from core.algorithms import projection_angles
+from core.imopr import helper
+from core.tools import importer
 
 
 def sanity_checks(config):
-    indices = config.func.indices
-    if len(indices) < 3:
-        raise ValueError(
-            "Indices must be provided! Please use the following format:\n "
-            "--imopr cor <start> <end> <step> with numbers:\n "
-            "--imopr cor 12 20 1, this will go from slice 12 to 20 with step 1")
+    pass
 
 
 def execute(sample, flat, dark, config, indices):
-    from core.imopr import helper
-    helper.print_start("Running IMOPR with action COR")
+    helper.print_start(
+        "Running IMOPR with action COR. This works ONLY with sinograms")
 
-    from core.tools import importer
     tool = importer.timed_import(config)
 
     print("Calculating projection angles..")
@@ -26,14 +22,12 @@ def execute(sample, flat, dark, config, indices):
     proj_angles = projection_angles.generate(config.func.max_angle,
                                              num_radiograms)
 
-    print("Processing indices..")
-    i1, i2, step = helper.handle_indices(indices, retstep=True)
     initial_guess = config.func.cors if config.func.cors is not None else None
 
-    # TODO this can be parallelised because it only does a single slice at a time
-    # single slice = single thread
-    for i in range(i1, i2, step):
-        print("Running COR for index", i, end=" ")
+    i1, i2, step = config.func.indices
+    for i, actual_slice_index in zip(
+            range(sample.shape[0]), range(i1, i2, step)):
+        print("Running COR for index", actual_slice_index, end=" ")
         cor = tool.find_center(
             tomo=sample,
             theta=proj_angles,

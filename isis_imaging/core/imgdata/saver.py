@@ -111,7 +111,7 @@ def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name
         increment = 0
     else:
         index = int(start_index)
-        increment = 1
+        increment = indices[2] if indices else 1
 
     names = []
     for idx in range(num_images):

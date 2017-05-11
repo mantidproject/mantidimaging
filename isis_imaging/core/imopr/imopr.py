@@ -1,4 +1,7 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import helper as h
+from core.imgdata import loader
 
 
 def get_available_operators():
@@ -13,19 +16,12 @@ def execute(config):
     """
     Execute the image operator. This allows performing operations on single images, or specified images slices.
 
-    Currently available modes:
-        - cor - get the COR for a slice or multiple slices using tomopy find_center. 
-            Usages:
-                 --imopr <end> cor  # only a single slice will be executed
-                 --imopr <start> <end> cor  # step will automatically be 1
-                 --imopr <start> <end> <step> cor
-        - corwrite - get the COR for a slice or multiple slices using. 
-                     Output path is MANDATORY. The reconstructed slices will be 
-                     written in subfolders with their index as name.
-            Usages:
-                 --imopr <end> cor  # only a single slice will be executed
-                 --imopr <start> <end> cor  # step will automatically be 1
-                 --imopr <start> <end> <step> cor
+    This mode respects --indices <start> <stop> <step>.
+    This means the operations will be performed only on the indices you have specified.
+
+    Currently available modes, more information in each module's file:
+        - cor - get the COR for a slice or multiple slices using tomopy find_center.
+        - corwrite - output a reconstructed image for different CORs for slices.
 
         TODO outdated:
         - recon - do a reconstruction on a single or multiple slices, --imopr 1 recon, --imopr 10 34 recon
@@ -47,54 +43,53 @@ def execute(config):
     :param config:
     :return:
     """
+    # import pydevd
+    # pydevd.settrace(
+    #     'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+
     # use [:] to get a copy of the list
     commands = config.func.imopr[:]
-    # strip the last command, it must be the name of the package
-    package = get_function(commands.pop())
+    # strip the last command, it must be the name of the module
+    module = get_function(commands.pop())
     # the rest is a list of indices
     indices = [int(c) for c in commands]
-    config.func.indices = indices
 
-    import helper as h
     h.check_config_integrity(config)
-    package.sanity_checks(config)
+    module.sanity_checks(config)
 
-    from core.imgdata import loader
     sample = loader.load_data(config)
-    # the [:] is necessary to get the actual data and not just the nxs header
-    # sample = loader.nxsread(config.func.input_path)[:]
 
     h.tomo_print("Data shape {0}".format(sample.shape))
     flat = dark = None
 
     # from core.recon.recon import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)
-    return package.execute(sample, flat, dark, config, indices)
+    return module.execute(sample, flat, dark, config, indices)
 
 
-def get_function(package_name):
-    if package_name == "recon":
+def get_function(module_name):
+    if module_name == "recon":
         from core.imopr import recon
         return recon
-    elif package_name == "sino":
+    elif module_name == "sino":
         from core.imopr import sinogram
         return sinogram
-    elif package_name == "show" or package_name == "vis":
+    elif module_name == "show" or module_name == "vis":
         from core.imopr import visualiser
         return visualiser
-    elif package_name == "cor":
+    elif module_name == "cor":
         from core.imopr import cor
         return cor
-    elif package_name == "corvo":
+    elif module_name == "corvo":
         from core.imopr import corvo
         return corvo
-    elif package_name == "corpc":
+    elif module_name == "corpc":
         from core.imopr import corpc
         return corpc
-    elif package_name == "corwrite":
+    elif module_name == "corwrite":
         from core.imopr import corwrite
         return corwrite
     else:
         from core.imopr import opr
-        if package_name in opr.get_available_operators():
+        if module_name in opr.get_available_operators():
             return opr

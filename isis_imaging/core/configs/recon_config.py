@@ -120,8 +120,15 @@ class ReconstructionConfig(object):
 
         if self.func.indices:
             self.func.indices = map(lambda i: int(i), self.func.indices)
+
+            # if a single value is passed, assume we want from 0 up to the passed value
             if len(self.func.indices) < 2:
-                self.func.indices = [0, self.func.indices[0]]
+                # start index 0, with step 1
+                self.func.indices = [0, self.func.indices[0], 1]
+            elif len(self.func.indices) == 2:
+                self.func.indices = [
+                    self.func.indices[0], self.func.indices[1], 1
+                ]
 
         # if we're doing only postprocessing then we should skip pre-processing
         if self.func.only_postproc:

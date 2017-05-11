@@ -139,7 +139,7 @@ class ConfigsTest(unittest.TestCase):
         fake_args = self.parser.parse_args(fake_args_list)
         self.func_config.update(fake_args)
         rc = ReconstructionConfig(self.func_config, fake_args)
-        self.assertEqual(rc.func.indices, [0, 42])
+        self.assertEqual(rc.func.indices, [0, 42, 1])
 
     def test_indices_range(self):
         fake_args_list = [
@@ -148,7 +148,16 @@ class ConfigsTest(unittest.TestCase):
         fake_args = self.parser.parse_args(fake_args_list)
         self.func_config.update(fake_args)
         rc = ReconstructionConfig(self.func_config, fake_args)
-        self.assertEqual(rc.func.indices, [10, 42])
+        self.assertEqual(rc.func.indices, [10, 42, 1])
+
+    def test_indices_step(self):
+        fake_args_list = [
+            '--input-path', '23', '--cors', '42', '--indices', '15', '33', '3'
+        ]
+        fake_args = self.parser.parse_args(fake_args_list)
+        self.func_config.update(fake_args)
+        rc = ReconstructionConfig(self.func_config, fake_args)
+        self.assertEqual(rc.func.indices, [15, 33, 3])
 
     def _compare_dict_to_str(self, class_dict, class_str, this_config):
         dictlen = len(class_dict)

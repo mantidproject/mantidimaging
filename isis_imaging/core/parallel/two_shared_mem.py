@@ -1,8 +1,10 @@
-from __future__ import (absolute_import, division, print_function)
-import helper as h
-from multiprocessing import Pool
-from core.parallel import utility as pu
+from __future__ import absolute_import, division, print_function
+
 from functools import partial
+from multiprocessing import Pool
+
+import helper as h
+from core.parallel import utility as pu
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place

@@ -32,8 +32,7 @@ class DataTest(unittest.TestCase):
 
             # this way we account for only selected indices in the filenames
             if indices:
-                start = indices[0]
-                end = indices[1]
+                start, end, step = indices
             else:
                 start = 0
                 end = num_images
@@ -89,35 +88,35 @@ class DataTest(unittest.TestCase):
 
     def test_preproc_fits_par_loader_indices_4_5(self):
         self.do_preproc(
-            'fits', parallel=True, loader_indices=[4, 5], expected_len=1)
+            'fits', parallel=True, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_fits_par_loader_indices_0_7(self):
         self.do_preproc(
-            'fits', parallel=True, loader_indices=[0, 7], expected_len=7)
+            'fits', parallel=True, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_fits_par_loader_indices_3_9(self):
         self.do_preproc(
-            'fits', parallel=True, loader_indices=[3, 9], expected_len=6)
+            'fits', parallel=True, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_fits_par_loader_indices_5_9(self):
         self.do_preproc(
-            'fits', parallel=True, loader_indices=[5, 9], expected_len=4)
+            'fits', parallel=True, loader_indices=[5, 9, 1], expected_len=4)
 
     def test_preproc_fits_par_saver_indices_0_5(self):
         self.do_preproc(
-            'fits', parallel=True, saver_indices=[0, 5], expected_len=5)
+            'fits', parallel=True, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_fits_par_saver_indices_0_2(self):
         self.do_preproc(
-            'fits', parallel=True, saver_indices=[0, 2], expected_len=2)
+            'fits', parallel=True, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_fits_par_saver_indices_3_10(self):
         self.do_preproc(
-            'fits', parallel=True, saver_indices=[3, 10], expected_len=7)
+            'fits', parallel=True, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_fits_par_saver_indices_7_10(self):
         self.do_preproc(
-            'fits', parallel=True, saver_indices=[7, 10], expected_len=3)
+            'fits', parallel=True, saver_indices=[7, 10, 1], expected_len=3)
 
     # fits sequential
     def test_preproc_fits_seq(self):
@@ -126,36 +125,36 @@ class DataTest(unittest.TestCase):
     # fits sequential loader indices
     def test_preproc_fits_seq_loader_indices_4_5(self):
         self.do_preproc(
-            'fits', parallel=False, loader_indices=[4, 5], expected_len=1)
+            'fits', parallel=False, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_fits_seq_loader_indices_0_7(self):
         self.do_preproc(
-            'fits', parallel=False, loader_indices=[0, 7], expected_len=7)
+            'fits', parallel=False, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_fits_seq_loader_indices_3_9(self):
         self.do_preproc(
-            'fits', parallel=False, loader_indices=[3, 9], expected_len=6)
+            'fits', parallel=False, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_fits_seq_loader_indices_5_9(self):
         self.do_preproc(
-            'fits', parallel=False, loader_indices=[5, 9], expected_len=4)
+            'fits', parallel=False, loader_indices=[5, 9, 1], expected_len=4)
 
     # fits sequential saver indices
     def test_preproc_fits_seq_saver_indices_0_5(self):
         self.do_preproc(
-            'fits', parallel=False, saver_indices=[0, 5], expected_len=5)
+            'fits', parallel=False, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_fits_seq_saver_indices_0_2(self):
         self.do_preproc(
-            'fits', parallel=False, saver_indices=[0, 2], expected_len=2)
+            'fits', parallel=False, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_fits_seq_saver_indices_3_10(self):
         self.do_preproc(
-            'fits', parallel=False, saver_indices=[3, 10], expected_len=7)
+            'fits', parallel=False, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_fits_seq_saver_indices_7_10(self):
         self.do_preproc(
-            'fits', parallel=False, saver_indices=[7, 10], expected_len=3)
+            'fits', parallel=False, saver_indices=[7, 10, 1], expected_len=3)
 
     # tiff tests
     def test_preproc_tiff_par(self):
@@ -163,35 +162,35 @@ class DataTest(unittest.TestCase):
 
     def test_preproc_tiff_par_loader_indices_4_5(self):
         self.do_preproc(
-            'tiff', parallel=True, loader_indices=[4, 5], expected_len=1)
+            'tiff', parallel=True, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_tiff_par_loader_indices_0_7(self):
         self.do_preproc(
-            'tiff', parallel=True, loader_indices=[0, 7], expected_len=7)
+            'tiff', parallel=True, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_tiff_par_loader_indices_3_9(self):
         self.do_preproc(
-            'tiff', parallel=True, loader_indices=[3, 9], expected_len=6)
+            'tiff', parallel=True, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_tiff_par_loader_indices_5_9(self):
         self.do_preproc(
-            'tiff', parallel=True, loader_indices=[5, 9], expected_len=4)
+            'tiff', parallel=True, loader_indices=[5, 9, 1], expected_len=4)
 
     def test_preproc_tiff_par_saver_indices_0_5(self):
         self.do_preproc(
-            'tiff', parallel=True, saver_indices=[0, 5], expected_len=5)
+            'tiff', parallel=True, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_tiff_par_saver_indices_0_2(self):
         self.do_preproc(
-            'tiff', parallel=True, saver_indices=[0, 2], expected_len=2)
+            'tiff', parallel=True, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_tiff_par_saver_indices_3_10(self):
         self.do_preproc(
-            'tiff', parallel=True, saver_indices=[3, 10], expected_len=7)
+            'tiff', parallel=True, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_tiff_par_saver_indices_7_10(self):
         self.do_preproc(
-            'tiff', parallel=True, saver_indices=[7, 10], expected_len=3)
+            'tiff', parallel=True, saver_indices=[7, 10, 1], expected_len=3)
 
     # tiff sequential
     def test_preproc_tiff_seq(self):
@@ -200,36 +199,36 @@ class DataTest(unittest.TestCase):
     # tiff sequential loader indices
     def test_preproc_tiff_seq_loader_indices_4_5(self):
         self.do_preproc(
-            'tiff', parallel=False, loader_indices=[4, 5], expected_len=1)
+            'tiff', parallel=False, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_tiff_seq_loader_indices_0_7(self):
         self.do_preproc(
-            'tiff', parallel=False, loader_indices=[0, 7], expected_len=7)
+            'tiff', parallel=False, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_tiff_seq_loader_indices_3_9(self):
         self.do_preproc(
-            'tiff', parallel=False, loader_indices=[3, 9], expected_len=6)
+            'tiff', parallel=False, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_tiff_seq_loader_indices_5_9(self):
         self.do_preproc(
-            'tiff', parallel=False, loader_indices=[5, 9], expected_len=4)
+            'tiff', parallel=False, loader_indices=[5, 9, 1], expected_len=4)
 
     # tiff sequential saver indices
     def test_preproc_tiff_seq_saver_indices_0_5(self):
         self.do_preproc(
-            'tiff', parallel=False, saver_indices=[0, 5], expected_len=5)
+            'tiff', parallel=False, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_tiff_seq_saver_indices_0_2(self):
         self.do_preproc(
-            'tiff', parallel=False, saver_indices=[0, 2], expected_len=2)
+            'tiff', parallel=False, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_tiff_seq_saver_indices_3_10(self):
         self.do_preproc(
-            'tiff', parallel=False, saver_indices=[3, 10], expected_len=7)
+            'tiff', parallel=False, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_tiff_seq_saver_indices_7_10(self):
         self.do_preproc(
-            'tiff', parallel=False, saver_indices=[7, 10], expected_len=3)
+            'tiff', parallel=False, saver_indices=[7, 10, 1], expected_len=3)
 
     def do_preproc(self,
                    img_format,
@@ -296,22 +295,22 @@ class DataTest(unittest.TestCase):
 
     def test_save_nxs_seq_indices_0_4(self):
         self.do_preproc_nxs(
-            parallel=False, loader_indices=[0, 4], expected_len=4)
+            parallel=False, loader_indices=[0, 4, 1], expected_len=4)
 
     def test_save_nxs_seq_indices_5_9(self):
         self.do_preproc_nxs(
-            parallel=False, loader_indices=[5, 9], expected_len=4)
+            parallel=False, loader_indices=[5, 9, 1], expected_len=4)
 
     def test_save_nxs_par(self):
         self.do_preproc_nxs(parallel=True)
 
     def test_save_nxs_par_indices_6_7(self):
         self.do_preproc_nxs(
-            parallel=False, loader_indices=[6, 7], expected_len=1)
+            parallel=False, loader_indices=[6, 7, 1], expected_len=1)
 
     def test_save_nxs_par_indices_3_4(self):
         self.do_preproc_nxs(
-            parallel=False, loader_indices=[3, 4], expected_len=1)
+            parallel=False, loader_indices=[3, 4, 1], expected_len=1)
 
     def do_preproc_nxs(self,
                        save_out_img_format='nxs',
@@ -387,11 +386,11 @@ class DataTest(unittest.TestCase):
 
     def test_do_recon_fits_indices_0_8(self):
         self.do_recon(
-            img_format='fits', horiz_slices=False, saver_indices=[0, 8])
+            img_format='fits', horiz_slices=False, saver_indices=[0, 8, 1])
 
     def test_do_recon_tiff_indices_0_4(self):
         self.do_recon(
-            img_format='tiff', horiz_slices=False, saver_indices=[0, 4])
+            img_format='tiff', horiz_slices=False, saver_indices=[0, 4, 1])
 
     def do_recon(self, img_format, horiz_slices=False, saver_indices=None):
         """

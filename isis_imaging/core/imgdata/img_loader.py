@@ -49,8 +49,8 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     # Assumed that all images have the same size and properties as the first.
     first_sample_img = load_func(input_file_names[0])
 
-    if indices is not None and len(indices) == 2:
-        input_file_names = input_file_names[indices[0]:indices[1]]
+    if indices and len(indices) == 3:
+        input_file_names = input_file_names[indices[0]:indices[1]:indices[2]]
 
     # get the shape of all images
     img_shape = first_sample_img.shape

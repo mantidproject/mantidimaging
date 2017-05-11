@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
-import pydevd
-pydevd.settrace(
-    'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
 
 import sys
 
