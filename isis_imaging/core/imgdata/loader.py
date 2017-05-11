@@ -1,4 +1,7 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import glob
+import os
 
 import numpy as np
 
@@ -206,8 +209,6 @@ def get_file_names(path, img_format, prefix=''):
     :param prefix: A specific prefix for the images
     :return: All the file names, sorted by ascending
     """
-    import os
-    import glob
 
     path = os.path.abspath(os.path.expanduser(path))
 
