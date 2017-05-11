@@ -1,9 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import unittest
-import helper as h
+
 import numpy.testing as npt
-from tests import test_helper as th
+
+import helper as h
 from core.filters import crop_coords
+from tests import test_helper as th
 
 
 class CropCoordsTest(unittest.TestCase):

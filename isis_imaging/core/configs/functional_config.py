@@ -1,3 +1,8 @@
+from __future__ import absolute_import, division, print_function
+
+import numpy as np
+
+
 class FunctionalConfig(object):
     """
     All pre-processing options required to run a tomographic reconstruction
@@ -548,18 +553,15 @@ class FunctionalConfig(object):
         self.preproc_subdir = args.preproc_subdir
         self.swap_axes = args.swap_axes
 
-        import numpy as np
-
-        if args.data_dtype == 'float32':
-            self.data_dtype = np.float32
-        elif args.data_dtype == 'float64':
-            self.data_dtype = np.float64
-
         # float16, uint16 data types produce exceptions
         # > float 16 - scipy median filter does not support it
         # > uint16 -  division is wrong, so all values become 0 and 1
         # could convert to float16, but then we'd have to go up to
         # float32 for the median filter anyway
+        if args.data_dtype == 'float32':
+            self.data_dtype = np.float32
+        elif args.data_dtype == 'float64':
+            self.data_dtype = np.float64
 
         self.debug = args.debug
         self.debug_port = args.debug_port

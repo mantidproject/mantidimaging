@@ -4,7 +4,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 from core.configs.functional_config import FunctionalConfig
-from core.filters import cli_registrator
+from core.algorithms import cli_registrator
 
 
 def grab_full_config():

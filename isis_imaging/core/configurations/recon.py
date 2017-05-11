@@ -6,8 +6,8 @@ import helper as h
 from core.algorithms import cor_interp
 from core.filters import (
     background_correction, circular_mask, clip_values, contrast_normalisation,
-    crop_coords, cut_off, gaussian, mcp_corrections, median_filter, minus_log,
-    outliers, rebin, ring_removal, rotate_stack, stripe_removal, value_scaling)
+    crop_coords, cut_off, gaussian, median_filter, minus_log, outliers, rebin,
+    ring_removal, rotate_stack, stripe_removal, value_scaling)
 from core.imgdata import loader, saver
 from core.tools import importer
 from readme_creator import Readme
