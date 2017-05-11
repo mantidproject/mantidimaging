@@ -24,6 +24,7 @@ def gen_img_shared_array_and_copy(shape=g_shape):
 def gen_img_shared_array(shape=g_shape):
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
+    # move the data in the shared array
     d[:] = n[:]
 
     return d
@@ -32,6 +33,7 @@ def gen_img_shared_array(shape=g_shape):
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
+    # move the data in the shared array
     d[:] = n[:]
 
     return d
