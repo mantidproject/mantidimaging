@@ -1,5 +1,12 @@
 #!/usr/bin/env python
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+import pydevd
+pydevd.settrace(
+    'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+
+import sys
+
+import helper as h
 from core.configs import recon_config
 
 
@@ -13,19 +20,17 @@ def check_version_info():
 
 
 def main():
-    import sys
     check_version_info()
 
     config = recon_config.grab_full_config()
 
-    if config.func.debug:
-        if config.func.debug_port is not None:
-            import pydevd
-            pydevd.settrace(
-                'localhost',
-                port=config.func.debug_port,
-                stdoutToServer=True,
-                stderrToServer=True)
+    if config.func.debug and config.func.debug_port:
+        import pydevd
+        pydevd.settrace(
+            'localhost',
+            port=config.func.debug_port,
+            stdoutToServer=True,
+            stderrToServer=True)
 
     thingy_to_execute = None
     if config.func.gui:
@@ -42,13 +47,12 @@ def main():
         from core.convert import convert
         thingy_to_execute = convert.execute
     else:
-        from core.configurations import recon
+        from core.configurations import default_flow_handler
         cmd_line = " ".join(sys.argv)
         # dynamically attach the parameter used in recon
         config.cmd_line = cmd_line
-        thingy_to_execute = recon.execute
+        thingy_to_execute = default_flow_handler.execute
 
-    import helper as h
     h.total_execution_timer()
     if not config.func.split:
         res = thingy_to_execute(config)
