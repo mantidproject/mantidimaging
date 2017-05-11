@@ -75,8 +75,8 @@ class AstraTool(AbstractTool):
         :return: The reconstructed volume
         """
 
-        import pydevd
-        pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+        # import pydevd
+        # pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
 
         # plow = (data.shape[2] - cor * 2)
         # phigh = 0
@@ -91,14 +91,18 @@ class AstraTool(AbstractTool):
         detector_spacing_x = 0.55
         detector_spacing_y = 0.55
 
-        assert (detector_spacing_x > 0) and (detector_spacing_y > 0), "Det spacing must be positive or Astra will crash"
+        assert (detector_spacing_x > 0) and (
+            detector_spacing_y > 0
+        ), "Det spacing must be positive or Astra will crash"
 
         projections_geometry = self._astra.create_proj_geom(
-            'parallel3d', detector_spacing_x, detector_spacing_y, data.shape[0], data.shape[2], proj_angles)
+            'parallel3d', detector_spacing_x, detector_spacing_y,
+            data.shape[0], data.shape[2], proj_angles)
 
         print(projections_geometry)
 
-        sinogram_id = self._astra.data3d.create('-sino', projections_geometry, data)
+        sinogram_id = self._astra.data3d.create('-sino', projections_geometry,
+                                                data)
         d = self._astra.data3d.get(sinogram_id)
         recon_volume_geometry = self._astra.create_vol_geom(data.shape)
         recon_id = self._astra.data3d.create('-vol', recon_volume_geometry)
