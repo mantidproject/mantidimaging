@@ -7,7 +7,7 @@ import numpy.testing as npt
 
 from core.configs.functional_config import FunctionalConfig
 from core.configs.recon_config import ReconstructionConfig
-from core.filters import cli_registrator
+from core.algorithms import cli_registrator
 
 
 class ConfigsTest(unittest.TestCase):
