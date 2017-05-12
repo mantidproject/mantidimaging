@@ -11,8 +11,8 @@ from matplotlib.widgets import RectangleSelector, Slider
 from PyQt4 import QtCore, QtGui, uic
 from PyQt4.QtCore import Qt
 
-from gui.stack_visualiser.sv_presenter import \
-    ImgpyStackViewerPresenter
+from core.algorithms import gui_compile_ui
+from gui.stack_visualiser.sv_presenter import ImgpyStackViewerPresenter
 from gui.stack_visualiser.zoom_rectangle import FigureCanvasColouredRectangle
 
 
@@ -29,8 +29,8 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
             data.ndim)
 
-        super(ImgpyStackVisualiserView, self).__init__(parent, Qt.Window)
-        uic.loadUi('./isis_imaging/gui/ui/stack.ui', self)
+        super(ImgpyStackVisualiserView, self).__init__(parent)
+        gui_compile_ui.execute('gui/ui/stack.ui', self)
 
         # View doesn't take any ownership of the data!
         self.presenter = ImgpyStackViewerPresenter(self, data, axis)
@@ -99,7 +99,6 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         If the name of this is changed to just update, 
         it causes an internal error with the matplotlib backend implementation!
         """
-        import time
         ind = int(self.slider.val)
 
         # TODO needs to be moved to a signal or something
@@ -120,7 +119,7 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
             self.rectangle.set_active(True)
 
     def initialiseSlider(self, slider_axis, length):
-        axcolor = 'lightgoldenrodyellow'
+        # axcolor = 'lightgoldenrodyellow'
 
         slider = Slider(
             slider_axis, 'Slices', 0, length, valinit=0, valfmt='%i')
@@ -128,5 +127,5 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         return slider
 
 
-def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):
-    s = ImgpyStackVisualiserView(data, axis, cmap, block)
+# def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):
+#     s = ImgpyStackVisualiserView(data, axis, cmap, block)

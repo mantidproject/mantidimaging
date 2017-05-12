@@ -2,23 +2,26 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-from PyQt4 import QtCore, QtGui, uic
+from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt as Qt_
 
+from core.algorithms import gui_compile_ui
 from core.imgdata import loader
 from gui.main_window.mw_presenter import ImgpyMainWindowPresenter
 from gui.stack_visualiser.sv_view import ImgpyStackVisualiserView
+from gui.main_window.load_dialog.load_dialog import MWLoadDialog
 
 
 class ImgpyMainWindowView(QtGui.QMainWindow):
     def __init__(self, config):
         super(ImgpyMainWindowView, self).__init__()
-        uic.loadUi('./isis_imaging/gui/ui/main_window.ui', self)
+        gui_compile_ui.execute('gui/ui/main_window.ui', self)
 
-        # easy connection of file menu
+        # connection of file menu TODO move to func
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionExit.triggered.connect(QtGui.qApp.quit)
-        # easy setting of shortcuts
+
+        # setting of shortcuts TODO move to func
         self.actionLoad.setShortcut('F2')
         self.actionExit.setShortcut('Ctrl+Q')
 
@@ -29,24 +32,15 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.presenter = ImgpyMainWindowPresenter(self, config)
 
     def show_load_dialogue(self):
-        self.load_dialogue = uic.loadUi('./isis_imaging/gui/ui/load.ui')
-
-        # open file path dialogue
-        self.load_dialogue.sample.clicked.connect(self.select_file)
-
-        # if accepted load the stack
-        self.load_dialogue.accepted.connect(self.load_stack)
+        self.load_dialogue = MWLoadDialog(self)
 
         # actually show the dialogue
         self.load_dialogue.show()
 
-    def select_file(self):
-        # simply open file dialogue
-        self.load_dialogue.samplePath.setText(
-            QtGui.QFileDialog.getOpenFileName())
-
     def load_stack(self):
-        load_path = str(self.load_dialogue.samplePath.text())
+        # TODO actually notify presenter that it was loaded
+        # then presenter will load it and set it in the model
+        load_path = str(self.load_dialogue.load_path())
         if not load_path:
             return
 

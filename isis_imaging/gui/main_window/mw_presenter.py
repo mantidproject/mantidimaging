@@ -17,6 +17,11 @@ class ImgpyMainWindowPresenter(object):
         self.model = ImgpyMainWindowModel()
 
     def notify(self, signal):
+        # do some magical error message reusal
+        # try:
+        # except any error:
+        # show error message from the CORE, no errors will be written here!
+
         if signal == Notification.MEDIAN_FILTER_CLICKED:
             self.update_view_value()
 
