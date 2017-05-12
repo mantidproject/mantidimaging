@@ -2,9 +2,10 @@ from __future__ import (absolute_import, division, print_function)
 import importlib
 import os
 import warnings
+import sys
 
 
-def register_into(parser, directory="core/filters"):
+def register_into(parser, directory=None, package = "core/filters"):
     """
     This function will import all the filters, and then call
     cli_register(parser) on them.
@@ -19,13 +20,15 @@ def register_into(parser, directory="core/filters"):
     :param directory: The directory to be walked for python modules. 
                       This parameter is currently being added to ease unit testing.
     """
-    # if user provided files, don't walk anywhere, but run the rest
+    # sys path 0 will give us the parent directory of the package, and we append the internal package location
+    if not directory:
+        directory = os.path.join(sys.path[0], package)
 
     all_files = os.walk(directory)
 
     for root, dirs, files in all_files:
         # replace the / with . to match python package syntax
-        package_dir = root.replace('/', '.')
+        package_dir = package.replace('/', '.')
 
         # specify the checks to remove specific files
         checks = [
