@@ -30,6 +30,11 @@ def gen_img_shared_array(shape=g_shape):
     return d
 
 
+def gen_empty_shared_array(shape=g_shape):
+    d = pu.create_shared_array(shape)
+    return d
+
+
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)

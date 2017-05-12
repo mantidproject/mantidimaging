@@ -121,15 +121,11 @@ def _execute_seq(data, flat=None, dark=None):
     norm_divide = np.subtract(flat, dark)
 
     # prevent divide-by-zero issues
-    norm_divide[norm_divide <= 0] = MINIMUM_PIXEL_VALUE
-
-    # this divide gives bad results
-    h.prog_init(data.shape[0], "Norm by Flat/Dark")
-    for idx in range(0, data.shape[0]):
-        data[idx, :, :] = np.true_divide(data[idx, :, :] - dark, norm_divide)
-        h.prog_update()
-
+    norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
+    np.subtract(data, dark, out=data)
+    np.true_divide(data, flat, out=data)
     h.prog_close()
+    np.clip(data, MINIMUM_PIXEL_VALUE, MAXIMUM_PIXEL_VALUE, out=data)
     h.pstop("Finished normalization by flat/dark images.")
 
     return data
