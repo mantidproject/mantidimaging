@@ -10,6 +10,7 @@ from core.imgdata import loader
 from gui.main_window.mw_presenter import ImgpyMainWindowPresenter
 from gui.stack_visualiser.sv_view import ImgpyStackVisualiserView
 from gui.main_window.load_dialog.load_dialog import MWLoadDialog
+from gui.main_window.save_dialog.save_dialog import MWSaveDialog
 
 
 class ImgpyMainWindowView(QtGui.QMainWindow):
@@ -18,11 +19,13 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
 
         # connection of file menu TODO move to func
-        self.actionLoad.triggered.connect(self.show_load_dialogue)
-        self.actionExit.triggered.connect(QtGui.qApp.quit)
-
-        # setting of shortcuts TODO move to func
         self.actionLoad.setShortcut('F2')
+        self.actionLoad.triggered.connect(self.show_load_dialogue)
+
+        self.actionSave.setShortcut('Ctrl+S')
+        self.actionLoad.triggered.connect(self.show_save_dialogue)
+        # setting of shortcuts TODO move to func
+        self.actionExit.triggered.connect(QtGui.qApp.quit)
         self.actionExit.setShortcut('Ctrl+Q')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -37,6 +40,7 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         # actually show the dialogue
         self.load_dialogue.show()
 
+<<<<<<< Updated upstream
     def load_stack(self):
         # TODO actually notify presenter that it was loaded
         # then presenter will load it and set it in the model
@@ -47,6 +51,19 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         # dirname removes the file name from the path
         stack = loader.load(os.path.dirname(load_path))
         self.add_stack_dock(stack)
+||||||| merged common ancestors
+    def execute_load_stack(self):
+        # TODO THIS DOES TOO MUCH, VIEW IS NOT SUPPOSED TO
+        self.presenter.notify(PresNotification.LOAD_STACK)
+=======
+    def show_save_dialogue(self):
+        self.save_dialogue = MWSaveDialog(self)
+        self.save_dialogue.show()
+
+    def execute_load_stack(self):
+        # TODO THIS DOES TOO MUCH, VIEW IS NOT SUPPOSED TO
+        self.presenter.notify(PresNotification.LOAD_STACK)
+>>>>>>> Stashed changes
 
     def add_stack_dock(self,
                        stack,

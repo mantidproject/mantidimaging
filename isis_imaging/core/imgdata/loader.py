@@ -201,6 +201,46 @@ def import_skimage_io():
     return skio
 
 
+<<<<<<< Updated upstream
+||||||| merged common ancestors
+def get_file_extension(file):
+    """
+    >>> get_file_extension("/home/user/file_path.test")
+    'test'
+    >>> get_file_extension("/home/user/file.path.test")
+    'test'
+    >>> get_file_extension("/home/")  # oh boy I can't wait for this to fail miserably on windows
+
+    # above is expecting a None which.. well doesn't show as anything so just an empty line with a comment explaining it
+    """
+    if os.path.isdir(file):
+        return None
+
+    # find the last dot in the file
+    just_after_dot_index = file.rfind('.') + 1
+    return file[just_after_dot_index:]
+
+
+=======
+def get_file_extension(file):
+    """
+    Return the extension of the parameter file. Uses string.rfind('.')
+    >>> get_file_extension("/home/user/file_path.test")
+    'test'
+    >>> get_file_extension("/home/user/file.path.test")
+    'test'
+    >>> get_file_extension("/home/")  # line below is empty, because python doesnt print None for a None
+
+    """
+    if os.path.isdir(file):
+        return None
+
+    # find the last dot in the file
+    just_after_dot_index = file.rfind('.') + 1
+    return file[just_after_dot_index:]
+
+
+>>>>>>> Stashed changes
 def get_file_names(path, img_format, prefix=''):
     """
     Get all file names in a directory with a specific format.

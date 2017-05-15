@@ -6,8 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< Updated upstream
     <width>389</width>
     <height>290</height>
+||||||| merged common ancestors
+    <width>372</width>
+    <height>280</height>
+=======
+    <width>372</width>
+    <height>251</height>
+>>>>>>> Stashed changes
    </rect>
   </property>
   <property name="windowTitle">
