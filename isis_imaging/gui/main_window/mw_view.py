@@ -1,13 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt as Qt_
 
 from core.algorithms import gui_compile_ui
-from core.imgdata import loader
 from gui.main_window.mw_presenter import ImgpyMainWindowPresenter
+from gui.main_window.mw_presenter import Notification as PresNotification
 from gui.stack_visualiser.sv_view import ImgpyStackVisualiserView
 from gui.main_window.load_dialog.load_dialog import MWLoadDialog
 
@@ -33,23 +31,11 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
-
-        # actually show the dialogue
         self.load_dialogue.show()
 
-    def executeLoadStack(self):
+    def execute_load_stack(self):
         # TODO THIS DOES TOO MUCH, VIEW IS NOT SUPPOSED TO
-
-        # then presenter will load it and set it in the model
-        sample_path = str(self.load_dialogue.sample_path())
-        if not sample_path:
-            return
-
-        # dirname removes the file name from the path
-        stack = loader.load(os.path.dirname(sample_path))
-        self.add_stack_dock(stack)
-        self.presenter.notify(
-            ImgpyMainWindowPresenter.Notification.STACK_LOADED)
+        self.presenter.notify(PresNotification.LOAD_STACK)
 
     def add_stack_dock(self,
                        stack,
@@ -63,5 +49,4 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.dock_widget.setFloating(floating)
 
     def median_filter_clicked(self):
-        self.presenter.notify(
-            ImgpyMainWindowPresenter.Notification.MEDIAN_FILTER_CLICKED)
+        self.presenter.notify(PresNotification.MEDIAN_FILTER_CLICKED)

@@ -25,7 +25,7 @@ class MWLoadDialog(QtGui.QDialog):
             lambda: self.select_file(self.darkPath))
 
         # if accepted load the stack
-        self.accepted.connect(parent.executeLoadStack)
+        self.accepted.connect(parent.execute_load_stack)
 
         self.img_extension = None
 
@@ -58,4 +58,25 @@ class MWLoadDialog(QtGui.QDialog):
         field.setText(QtGui.QFileDialog.getOpenFileName())
 
     def sample_path(self):
+        """
+        :return: The directory of the path as a Python string
+        """
         return os.path.dirname(str(self.samplePath.text()))
+
+    def flat_path(self):
+        """
+        :return: The directory of the path as a Python string
+        """
+        return os.path.dirname(str(self.flatPath.text()))
+
+    def dark_path(self):
+        """
+        :return: The directory of the path as a Python string
+        """
+        return os.path.dirname(str(self.darkPath.text()))
+
+    def parallel_load(self):
+        """
+        :return: True if load should be in parallel, else False
+        """
+        return self.parallelLoad.isChecked()

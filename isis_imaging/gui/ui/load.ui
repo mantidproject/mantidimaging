@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UiLoadDialog</class>
- <widget class="QDialog" name="UiLoadDialog">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>389</width>
-    <height>290</height>
+    <width>372</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Load</string>
+   <string>Dialog</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>240</y>
+     <x>20</x>
+     <y>200</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -32,8 +32,8 @@
   <widget class="QPushButton" name="sampleButton">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>60</y>
+     <x>260</x>
+     <y>20</y>
      <width>99</width>
      <height>27</height>
     </rect>
@@ -45,8 +45,8 @@
   <widget class="QLineEdit" name="samplePath">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>60</y>
+     <x>10</x>
+     <y>20</y>
      <width>231</width>
      <height>27</height>
     </rect>
@@ -55,8 +55,8 @@
   <widget class="QSpinBox" name="index_start">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>110</y>
+     <x>50</x>
+     <y>70</y>
      <width>61</width>
      <height>30</height>
     </rect>
@@ -68,8 +68,8 @@
   <widget class="QSpinBox" name="index_end">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>110</y>
+     <x>150</x>
+     <y>70</y>
      <width>61</width>
      <height>30</height>
     </rect>
@@ -84,8 +84,8 @@
   <widget class="QSpinBox" name="index_step">
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>110</y>
+     <x>250</x>
+     <y>70</y>
      <width>61</width>
      <height>30</height>
     </rect>
@@ -103,8 +103,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>90</y>
+     <x>60</x>
+     <y>50</y>
      <width>41</width>
      <height>20</height>
     </rect>
@@ -116,8 +116,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>90</y>
+     <x>170</x>
+     <y>50</y>
      <width>31</width>
      <height>20</height>
     </rect>
@@ -129,8 +129,8 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>90</y>
+     <x>260</x>
+     <y>50</y>
      <width>31</width>
      <height>20</height>
     </rect>
@@ -142,8 +142,8 @@
   <widget class="QLineEdit" name="flatPath">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>160</y>
+     <x>10</x>
+     <y>120</y>
      <width>231</width>
      <height>27</height>
     </rect>
@@ -152,8 +152,8 @@
   <widget class="QLineEdit" name="darkPath">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>200</y>
+     <x>10</x>
+     <y>160</y>
      <width>231</width>
      <height>27</height>
     </rect>
@@ -162,8 +162,8 @@
   <widget class="QPushButton" name="flatButton">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>160</y>
+     <x>260</x>
+     <y>120</y>
      <width>99</width>
      <height>27</height>
     </rect>
@@ -175,8 +175,8 @@
   <widget class="QPushButton" name="darkButton">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>200</y>
+     <x>260</x>
+     <y>160</y>
      <width>99</width>
      <height>27</height>
     </rect>
@@ -185,13 +185,26 @@
     <string>Dark</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="parallelLoad">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>200</y>
+     <width>121</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Parallel Load</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>UiLoadDialog</receiver>
+   <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -207,7 +220,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>UiLoadDialog</receiver>
+   <receiver>Dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
