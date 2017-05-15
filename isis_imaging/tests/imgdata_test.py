@@ -1,8 +1,14 @@
 from __future__ import absolute_import, division, print_function
 
 import unittest
+import tempfile
+import os
+import shutil
 
+from core.imgdata import loader
 from tests import test_helper as th
+from core.configs.recon_config import ReconstructionConfig
+from core.imgdata.saver import Saver
 
 
 class DataTest(unittest.TestCase):
@@ -10,12 +16,10 @@ class DataTest(unittest.TestCase):
         super(DataTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from core.configs.recon_config import ReconstructionConfig
         self.config = ReconstructionConfig.empty_init()
         self.config.func.verbosity = 0
 
     def create_saver(self):
-        from core.imgdata.saver import Saver
         return Saver(self.config)
 
     def assert_files_exist(self,
@@ -24,7 +28,6 @@ class DataTest(unittest.TestCase):
                            stack=True,
                            num_images=1,
                            indices=None):
-        import os
 
         if not stack:
             # generate a list of filenames with 000000 numbers appended
@@ -49,9 +52,6 @@ class DataTest(unittest.TestCase):
             self.assertTrue(os.path.isfile(filename))
 
     def delete_files(self, prefix=''):
-        import tempfile
-        import os
-        import shutil
         with tempfile.NamedTemporaryFile() as f:
             full_path = os.path.join(os.path.dirname(f.name), prefix)
             shutil.rmtree(full_path)
@@ -238,8 +238,6 @@ class DataTest(unittest.TestCase):
                    saver_indices=None):
         images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
-        import tempfile
-        import os
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
@@ -264,7 +262,6 @@ class DataTest(unittest.TestCase):
                                     images.shape[0], loader_indices or
                                     saver_indices)
 
-            from core.imgdata import loader
             # this does not load any flats or darks as they were not saved out
             sample = loader.load(
                 preproc_output_path,
@@ -325,8 +322,6 @@ class DataTest(unittest.TestCase):
         """
         images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
-        import tempfile
-        import os
 
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
@@ -344,8 +339,7 @@ class DataTest(unittest.TestCase):
                                     saver._img_format, data_as_stack,
                                     images.shape[0])
 
-            # this does not load any flats or darks as they were not saved out
-            from core.imgdata import loader
+            # this does not load any flats or darks as they were not saved out!
             # this is a race condition versus the saving from the saver
             # when load is executed in parallel, the 8 threads try to
             # load the data too fast, and the data loaded is corrupted
@@ -398,8 +392,6 @@ class DataTest(unittest.TestCase):
         """
         images = th.gen_img_shared_array()
         saver = self.create_saver()
-        import tempfile
-        import os
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
@@ -437,8 +429,6 @@ class DataTest(unittest.TestCase):
         dark[:] = 3
 
         saver = self.create_saver()
-        import tempfile
-        import os
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
             saver._img_format = img_format
@@ -477,7 +467,6 @@ class DataTest(unittest.TestCase):
                 dark_output_path + 'out_preproc_image', saver._img_format,
                 data_as_stack, dark.shape[0], loader_indices or saver_indices)
 
-            from core.imgdata import loader
             sample, loaded_flat, loaded_dark = loader.load(
                 sample_output_path,
                 flat_output_path,
@@ -502,6 +491,13 @@ class DataTest(unittest.TestCase):
             # averaged out when loaded! The initial images are only 3s
             th.assert_equals(loaded_flat, flat[0])
             th.assert_equals(loaded_dark, dark[0])
+
+    def test_raise_on_invalid_format(self):
+        self.assertRaises(
+            ValueError,
+            loader.load,
+            file_names=["/somefile"],
+            img_format='txt')
 
 
 if __name__ == '__main__':

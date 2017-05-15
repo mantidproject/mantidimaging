@@ -7,9 +7,9 @@ class Notification(IntEnum):
     RESET_VALUE_CLICKED = 2
 
 
-class ImgpyMainWindowPresenter(object):
+class ImgpyExamplePresenter(object):
     def __init__(self, view):
-        super(ImgpyMainWindowPresenter, self).__init__()
+        super(ImgpyExamplePresenter, self).__init__()
         self.view = view
         self.model = 'create_the_model_instance_here'
 

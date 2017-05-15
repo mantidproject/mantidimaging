@@ -156,8 +156,7 @@ class ReconstructionConfig(object):
         parser = functional_args.setup_parser(parser)
 
         # setup args for the filters
-        grp_filters = parser.add_argument_group("Filter options")
-        cli_registrator.register_into(grp_filters)
+        cli_registrator.register_into(parser)
 
         # pass in the mandatory arguments
         fake_args_list = ['--input-path', '/tmp/', '--cors', '42']

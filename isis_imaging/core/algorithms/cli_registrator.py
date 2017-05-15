@@ -5,7 +5,7 @@ import warnings
 import sys
 
 
-def register_into(parser, directory=None, package = "core/filters"):
+def register_into(parser, directory=None, package="core/filters"):
     """
     This function will import all the filters, and then call
     cli_register(parser) on them.
@@ -19,6 +19,7 @@ def register_into(parser, directory=None, package = "core/filters"):
     :param parser: the parser into which the modules will be registered
     :param directory: The directory to be walked for python modules. 
                       This parameter is currently being added to ease unit testing.
+    :param package: The internal package from which modules will be imported
     """
     # sys path 0 will give us the parent directory of the package, and we append the internal package location
     if not directory:
@@ -26,10 +27,10 @@ def register_into(parser, directory=None, package = "core/filters"):
 
     all_files = os.walk(directory)
 
-    for root, dirs, files in all_files:
-        # replace the / with . to match python package syntax
-        package_dir = package.replace('/', '.')
+    # replace the / with . to match python package syntax
+    package_dir = package.replace('/', '.')
 
+    for root, dirs, files in all_files:
         # specify the checks to remove specific files
         checks = [
             lambda x: '.py' in x,  # removes all files that DON'T have .py in the name

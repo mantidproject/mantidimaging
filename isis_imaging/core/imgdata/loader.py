@@ -131,14 +131,17 @@ def load(input_path=None,
                 a single 3d numpy ndarray
     """
 
-    if img_format is None:
+    if not img_format:
         # assume only images in directory, inb4 loading text files
         img_format = '*'
 
-    if file_names is None:
+    if not file_names:
         input_file_names = get_file_names(input_path, img_format)
     else:
         input_file_names = file_names
+
+    if img_format not in supported_formats():
+        raise ValueError("Image format " + img_format + " not supported!")
 
     if img_format in ['nxs']:
         from core.imgdata import stack_loader
@@ -199,6 +202,24 @@ def import_skimage_io():
             "io and the pluging freeimage which are required to support "
             "several image formats. Error details: {0}".format(exc))
     return skio
+
+
+def get_file_extension(file):
+    """
+    >>> get_file_extension("/home/user/file_path.test")
+    'test'
+    >>> get_file_extension("/home/user/file.path.test")
+    'test'
+    >>> get_file_extension("/home/")  # oh boy I can't wait for this to fail miserably on windows
+
+    # above is expecting a None which.. well doesn't show as anything so just an empty line with a comment explaining it
+    """
+    if os.path.isdir(file):
+        return None
+
+    # find the last dot in the file
+    just_after_dot_index = file.rfind('.') + 1
+    return file[just_after_dot_index:]
 
 
 def get_file_names(path, img_format, prefix=''):
@@ -270,3 +291,8 @@ def _alphanum_key_split(path_str):
         int(c) if c.isdigit() else c
         for c in alpha_num_split_re.split(path_str)
     ]
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

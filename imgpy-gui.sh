@@ -1,4 +1,4 @@
-imgpy_dir=$PWD
+imgpy_dir=/home/matt/Documents/imgpy
 # set default to system python
 python_exec="/usr/bin/python"
 
