@@ -47,6 +47,7 @@ class ImgpyMainWindowPresenter(object):
 
         if not self.model.sample_path:
             return
+
         stack = loader.load(
             self.model.sample_path,
             self.model.flat_path,

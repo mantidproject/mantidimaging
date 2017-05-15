@@ -1,7 +1,8 @@
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from __future__ import absolute_import, division, print_function
+
 import PyQt4.QtCore as QCore
 import PyQt4.QtGui as QGui
-import sys
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 
 
 class FigureCanvasColouredRectangle(FigureCanvasQTAgg):
@@ -22,7 +23,6 @@ class FigureCanvasColouredRectangle(FigureCanvasQTAgg):
                 stringBuffer = self.renderer._renderer.tostring_bgra()
             else:
                 stringBuffer = self.renderer._renderer.tostring_argb()
-            refcnt = sys.getrefcount(stringBuffer)
             qImage = QGui.QImage(stringBuffer, self.renderer.width,
                                  self.renderer.height,
                                  QGui.QImage.Format_ARGB32)
@@ -36,8 +36,7 @@ class FigureCanvasColouredRectangle(FigureCanvasQTAgg):
                 p.drawRect(x, y, w, h)
             p.end()
             del qImage
-            if refcnt != sys.getrefcount(stringBuffer):
-                _decref(stringBuffer)
+
         else:
             bbox = self.blitbox
             l, b, r, t = bbox.extents
