@@ -131,14 +131,17 @@ def load(input_path=None,
                 a single 3d numpy ndarray
     """
 
-    if img_format is None:
+    if not img_format:
         # assume only images in directory, inb4 loading text files
         img_format = '*'
 
-    if file_names is None:
+    if not file_names:
         input_file_names = get_file_names(input_path, img_format)
     else:
         input_file_names = file_names
+
+    if img_format not in supported_formats():
+        raise ValueError("Image format " + img_format + " not supported!")
 
     if img_format in ['nxs']:
         from core.imgdata import stack_loader
