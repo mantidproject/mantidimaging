@@ -36,27 +36,27 @@ class ImgpyMainWindowPresenter(object):
             raise  # re-raise for full stack trace
 
     def load_stack(self):
-        # then presenter will load it and set it in the model
-        sample_path = self.view.load_dialogue.sample_path()
         # save to model for future runs? or keep getting the value from the dialogue? less places to update
-        flat_path = self.view.load_dialogue.flat_path()
-        dark_path = self.view.load_dialogue.dark_path()
-        img_format = self.view.load_dialogue.img_extension
-        parallel_load = self.view.load_dialogue.parallel_load()
-        print("Img format", img_format)
+        # because we will HAVE to build a command line for remote submission, which will use the model?
+        self.model.sample_path = self.view.load_dialogue.sample_path()
+        self.model.flat_path = self.view.load_dialogue.flat_path()
+        self.model.dark_path = self.view.load_dialogue.dark_path()
+        self.model.img_format = self.view.load_dialogue.img_extension
+        self.model.parallel_load = self.view.load_dialogue.parallel_load()
+        self.model.indices = self.view.load_dialogue.indices()
 
-        if not sample_path:
+        if not self.model.sample_path:
             return
-
-        # dirname removes the file name from the path
         stack = loader.load(
-            sample_path,
-            flat_path,
-            dark_path,
-            img_format,
-            parallel_load=parallel_load)
+            self.model.sample_path,
+            self.model.flat_path,
+            self.model.dark_path,
+            self.model.img_format,
+            parallel_load=self.model.parallel_load,
+            indices=self.model.indices)
 
-        self.view.add_stack_dock(stack, title=os.path.basename(sample_path))
+        self.view.add_stack_dock(
+            stack, title=os.path.basename(self.model.sample_path))
 
     def show_error(self, error):
         print("Magic to be done here")

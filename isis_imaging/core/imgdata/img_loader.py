@@ -6,6 +6,7 @@ import helper as h
 from core.parallel import two_shared_mem as ptsm
 from core.parallel import utility as pu
 
+from core.imgdata.loader import get_file_names
 
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
@@ -106,8 +107,7 @@ def _load_and_avg_data(load_func,
                        cores=None,
                        chunksize=None,
                        parallel_load=False):
-    if file_path is not None:
-        from core.imgdata.loader import get_file_names
+    if file_path:
         file_names = get_file_names(file_path, img_format)
 
         data = _load_files(load_func, file_names, img_shape, data_dtype,

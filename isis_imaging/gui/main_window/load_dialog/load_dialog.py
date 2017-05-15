@@ -80,3 +80,7 @@ class MWLoadDialog(QtGui.QDialog):
         :return: True if load should be in parallel, else False
         """
         return self.parallelLoad.isChecked()
+
+    def indices(self):
+        return self.index_start.value(), self.index_end.value(
+        ), self.index_step.value()
