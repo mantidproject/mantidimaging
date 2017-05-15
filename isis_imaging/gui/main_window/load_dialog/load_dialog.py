@@ -4,7 +4,7 @@ from PyQt4 import QtGui
 
 from core.algorithms import gui_compile_ui
 
-from core.imgdata.loader import get_file_names
+from core.imgdata import loader
 
 import os
 
@@ -25,18 +25,28 @@ class MWLoadDialog(QtGui.QDialog):
             lambda: self.select_file(self.darkPath))
 
         # if accepted load the stack
-        self.accepted.connect(parent.load_stack)
+        self.accepted.connect(parent.executeLoadStack)
+
+        self.img_extension = None
 
     def update_indices(self, select_file_result):
         """
-        :param select_file_result: Will be None so discard
+        :param select_file_result: Will be None, because it contains the return of the nested function self.select_file
         """
-        str_path = str(self.samplePath)
-        dot_index = str_path.rfind('.')
-        file_extension = str_path[dot_index:]
-        print(file_extension)
-        get_file_names(self.load_path(), file_extension)
-        self.index_end = len(get_file_names)
+        path = str(self.samplePath.text())
+        self.img_extension = loader.get_file_extension(path)
+        image_files = loader.get_file_names(self.sample_path(),
+                                            self.img_extension)
+
+        # cap the end value FIRST, otherwise setValue might fail if the previous max val is smaller
+        self.index_end.setMaximum(len(image_files))
+        self.index_end.setValue(len(image_files))
+
+        # cap the start value to be end - 1
+        self.index_start.setMaximum(len(image_files) - 1)
+
+        # enforce the maximum step
+        self.index_step.setMaximum(len(image_files))
 
     def select_file(self, field):
         assert isinstance(
@@ -47,5 +57,5 @@ class MWLoadDialog(QtGui.QDialog):
         # open file dialogue and set the text if file is selected
         field.setText(QtGui.QFileDialog.getOpenFileName())
 
-    def load_path(self):
-        return os.path.basename(str(self.samplePath.text()))
+    def sample_path(self):
+        return os.path.dirname(str(self.samplePath.text()))

@@ -7,6 +7,7 @@ from gui.main_window.mw_model import ImgpyMainWindowModel
 
 class Notification(IntEnum):
     MEDIAN_FILTER_CLICKED = 1
+    STACK_LOADED = 2
 
 
 class ImgpyMainWindowPresenter(object):
