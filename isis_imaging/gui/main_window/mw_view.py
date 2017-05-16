@@ -8,6 +8,7 @@ from gui.main_window.mw_presenter import ImgpyMainWindowPresenter
 from gui.main_window.mw_presenter import Notification as PresNotification
 from gui.stack_visualiser.sv_view import ImgpyStackVisualiserView
 from gui.main_window.load_dialog.load_dialog import MWLoadDialog
+from gui.main_window.save_dialog.save_dialog import MWSaveDialog
 
 
 class ImgpyMainWindowView(QtGui.QMainWindow):
@@ -16,11 +17,13 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
 
         # connection of file menu TODO move to func
-        self.actionLoad.triggered.connect(self.show_load_dialogue)
-        self.actionExit.triggered.connect(QtGui.qApp.quit)
-
-        # setting of shortcuts TODO move to func
         self.actionLoad.setShortcut('F2')
+        self.actionLoad.triggered.connect(self.show_load_dialogue)
+
+        self.actionSave.setShortcut('Ctrl+S')
+        self.actionSave.triggered.connect(self.show_save_dialogue)
+        # setting of shortcuts TODO move to func
+        self.actionExit.triggered.connect(QtGui.qApp.quit)
         self.actionExit.setShortcut('Ctrl+Q')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -33,20 +36,38 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.load_dialogue = MWLoadDialog(self)
         self.load_dialogue.show()
 
-    def execute_load_stack(self):
-        # TODO THIS DOES TOO MUCH, VIEW IS NOT SUPPOSED TO
-        self.presenter.notify(PresNotification.LOAD_STACK)
+    def execute_save(self):
+        self.presenter.notify(PresNotification.SAVE)
 
-    def add_stack_dock(self,
-                       stack,
-                       title,
-                       position=Qt_.BottomDockWidgetArea,
-                       floating=False):
-        self.dock_widget = QtGui.QDockWidget(title, self)
-        self.addDockWidget(position, self.dock_widget)
-        self.stackvis = ImgpyStackVisualiserView(self, stack)
-        self.dock_widget.setWidget(self.stackvis)
-        self.dock_widget.setFloating(floating)
+    def execute_load(self):
+        self.presenter.notify(PresNotification.LOAD)
 
-    def median_filter_clicked(self):
-        self.presenter.notify(PresNotification.MEDIAN_FILTER_CLICKED)
+    def show_save_dialogue(self):
+        self.save_dialogue = MWSaveDialog(self, self.presenter.stack_list())
+        self.save_dialogue.show()
+
+    def create_stack_window(self,
+                            stack,
+                            title,
+                            position=Qt_.BottomDockWidgetArea,
+                            floating=False):
+        dock_widget = QtGui.QDockWidget(title, self)
+
+        self.addDockWidget(position, dock_widget)
+
+        # we can get the stack visualiser widget with dock_widget.widget
+        dock_widget.setWidget(
+            ImgpyStackVisualiserView(self, dock_widget, stack))
+
+        # proof of concept above
+        assert isinstance(
+            dock_widget.widget(), ImgpyStackVisualiserView
+        ), "Widget inside dock_widget is not an ImgpyStackVisualiserView!"
+
+        dock_widget.setFloating(floating)
+
+        return dock_widget
+
+    def remove_stack(self, obj):
+        print("Removing stack with uuid", obj.uuid)
+        self.presenter.remove_stack(obj.uuid)

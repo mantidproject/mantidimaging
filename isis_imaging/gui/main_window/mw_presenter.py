@@ -1,16 +1,18 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import uuid
 
 from enum import IntEnum
 
-from core.imgdata import loader
+from core.imgdata import loader, saver
 from gui.main_window.mw_model import ImgpyMainWindowModel
 
 
 class Notification(IntEnum):
     MEDIAN_FILTER_CLICKED = 1
-    LOAD_STACK = 2
+    LOAD = 2
+    SAVE = 3
 
 
 class ImgpyMainWindowPresenter(object):
@@ -19,45 +21,93 @@ class ImgpyMainWindowPresenter(object):
         self.view = view
         self.config = config
         self.model = ImgpyMainWindowModel()
+        # Move to model? It'll get sufficiently complicated I think
+        self.active_stacks = {}
 
     def notify(self, signal):
         # do some magical error message reusal
         # try:
         # except any error:
         # show error message from the CORE, no errors will be written here!
+        try:
 
-        try:  # this is very very bad, it completely fucks the stacks trace!
             if signal == Notification.MEDIAN_FILTER_CLICKED:
                 self.update_view_value()
-            elif signal == Notification.LOAD_STACK:
+            elif signal == Notification.LOAD:
                 self.load_stack()
+            elif signal == Notification.SAVE:
+                self.save()
+
         except Exception as e:
             self.show_error(e)
             raise  # re-raise for full stack trace
 
-    def load_stack(self):
-        # save to model for future runs? or keep getting the value from the dialogue? less places to update
-        # because we will HAVE to build a command line for remote submission, which will use the model?
-        self.model.sample_path = self.view.load_dialogue.sample_path()
-        self.model.flat_path = self.view.load_dialogue.flat_path()
-        self.model.dark_path = self.view.load_dialogue.dark_path()
-        self.model.img_format = self.view.load_dialogue.img_extension
-        self.model.parallel_load = self.view.load_dialogue.parallel_load()
-        self.model.indices = self.view.load_dialogue.indices()
+    def show_error(self, error):
+        print("Magic to be done here")
 
-        if not self.model.sample_path:
+    def stack_list(self):
+        stacks = []
+        for stack_uuid, val in self.active_stacks.iteritems():
+            # append the UUID and user friendly name
+            user_friendly_name = val[0]
+            stacks.append((stack_uuid, user_friendly_name))
+
+        # sort by user friendly name
+        return sorted(stacks, key=lambda x: x[1])
+
+    def remove_stack(self, uuid):
+        del self.active_stacks[uuid]
+
+    def load_stack(self):
+        sample_path = self.view.load_dialogue.sample_path()
+        flat_path = self.view.load_dialogue.flat_path()
+        dark_path = self.view.load_dialogue.dark_path()
+        image_format = self.view.load_dialogue.image_format
+        parallel_load = self.view.load_dialogue.parallel_load()
+        indices = self.view.load_dialogue.indices()
+
+        if not sample_path:
             return
 
         stack = loader.load(
-            self.model.sample_path,
-            self.model.flat_path,
-            self.model.dark_path,
-            self.model.img_format,
-            parallel_load=self.model.parallel_load,
-            indices=self.model.indices)
+            sample_path,
+            None,
+            None,
+            image_format,
+            parallel_load=parallel_load,
+            indices=indices)
 
-        self.view.add_stack_dock(
-            stack, title=os.path.basename(self.model.sample_path))
+        title = os.path.basename(sample_path)
+        dock_widget = self.view.create_stack_window(stack, title=title)
 
-    def show_error(self, error):
-        print("Magic to be done here")
+        # append this onto the widget, otherwise it will be a pain to retrieve the information
+        # from inside the stack visualiser class
+        stackvis = dock_widget.widget()
+
+        # add information to qdockwidget or the stack window?
+        # currently added to the qdockwidget
+        stackvis.sample_path = sample_path
+        stackvis.flat_path = flat_path
+        stackvis.dark_path = dark_path
+        stackvis.image_format = image_format
+        stackvis.parallel_load = parallel_load
+        stackvis.uuid = uuid.uuid1()
+
+        self.active_stacks[stackvis.uuid] = (title, dock_widget)
+        print("Active stacks", self.active_stacks)
+
+    def save(self, indices=None):
+        s_uuid = self.view.save_dialogue.selected_stack
+        output_dir = self.view.save_dialogue.save_path()
+        image_format = self.view.save_dialogue.image_format()
+        overwrite = self.view.save_dialogue.overwrite()
+        swap_axes = self.view.save_dialogue.swap_axes()
+
+        # rarely do you see code as ugly as this
+        self.active_stacks[s_uuid][1].widget().apply_to_data(
+            saver.save,
+            output_dir=output_dir,
+            swap_axes=swap_axes,
+            overwrite_all=overwrite,
+            img_format=image_format,
+            indices=indices)

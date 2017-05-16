@@ -4,9 +4,19 @@ from PyQt4 import QtGui
 
 from core.algorithms import gui_compile_ui
 
-from core.imgdata import loader
+from core.imgdata.loader import get_file_names, get_file_extension
 
 import os
+
+
+def select_file(field, caption):
+    assert isinstance(
+        field, QtGui.QLineEdit
+    ), "The passed object is of type {0}. This function only works with QLineEdit".format(
+        type(field))
+
+    # open file dialogue and set the text if file is selected
+    field.setText(QtGui.QFileDialog.getOpenFileName(caption=caption))
 
 
 class MWLoadDialog(QtGui.QDialog):
@@ -16,29 +26,27 @@ class MWLoadDialog(QtGui.QDialog):
 
         # open file path dialogue
         self.sampleButton.clicked.connect(
-            lambda: self.update_indices(self.select_file(self.samplePath)))
+            lambda: self.update_indices(select_file(self.samplePath, "Sample")))
 
         self.flatButton.clicked.connect(
-            lambda: self.select_file(self.flatPath))
+            lambda: select_file(self.flatPath, "Flat"))
 
         self.darkButton.clicked.connect(
-            lambda: self.select_file(self.darkPath))
+            lambda: select_file(self.darkPath, "Dark"))
 
         # if accepted load the stack
-        self.accepted.connect(parent.execute_load_stack)
-
-        self.img_extension = None
+        self.accepted.connect(parent.execute_load)
+        self.image_format = ''
 
     def update_indices(self, select_file_result):
         """
-        :param select_file_result: Will be None, because it contains the return of the nested function self.select_file
+        :param select_file_result: Will be None, because it contains the return of the nested function select_file
         """
-        path = str(self.samplePath.text())
-        self.img_extension = loader.get_file_extension(path)
-        image_files = loader.get_file_names(self.sample_path(),
-                                            self.img_extension)
+        self.image_format = get_file_extension(str(self.samplePath.text()))
+        image_files = get_file_names(self.sample_path(), self.image_format)
 
-        # cap the end value FIRST, otherwise setValue might fail if the previous max val is smaller
+        # cap the end value FIRST, otherwise setValue might fail if the
+        # previous max val is smaller
         self.index_end.setMaximum(len(image_files))
         self.index_end.setValue(len(image_files))
 
@@ -47,15 +55,10 @@ class MWLoadDialog(QtGui.QDialog):
 
         # enforce the maximum step
         self.index_step.setMaximum(len(image_files))
+        self.index_step.setValue(len(image_files) / 10)
 
-    def select_file(self, field):
-        assert isinstance(
-            field, QtGui.QLineEdit
-        ), "The passed object is of type {0}. This function only works with QLineEdit".format(
-            type(field))
-
-        # open file dialogue and set the text if file is selected
-        field.setText(QtGui.QFileDialog.getOpenFileName())
+    def load_path(self):
+        return os.path.basename(str(self.samplePath.text()))
 
     def sample_path(self):
         """
