@@ -26,8 +26,6 @@ class MWSaveDialog(QtGui.QDialog):
         self.browseButton.clicked.connect(
             lambda: select_directory(self.savePath, "Browse"))
 
-        self.saveSingle.clicked.connect(self.save_single)
-
         self.buttonBox.button(QtGui.QDialogButtonBox.SaveAll).clicked.connect(
             self.save_all)
 
@@ -44,14 +42,6 @@ class MWSaveDialog(QtGui.QDialog):
             self.stackNames.addItems(user_friendly_names)
 
         self.selected_stack = None
-
-    # def save_single(self):
-    #     print("Save single clicked")
-    #     # force close the dialogue, the other buttons do it automatically
-    #     self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
-    #     print("Selected stack was", self.selected_stack)
-    #     self.close()
-    #     self.parent().execute_single_save()
 
     def save_all(self):
         print("Save all clicked")
