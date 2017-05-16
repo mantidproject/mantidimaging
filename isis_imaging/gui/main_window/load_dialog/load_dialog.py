@@ -35,14 +35,25 @@ class MWLoadDialog(QtGui.QDialog):
 
         # if accepted load the stack
         self.accepted.connect(parent.execute_load)
+        self.image_format = ''
 
     def update_indices(self, select_file_result):
         """
         :param select_file_result: Will be None, because it contains the return of the nested function select_file
         """
-        file_extension = get_file_extension(str(self.samplePath.text()))
-        get_file_names(self.load_path(), file_extension)
-        self.index_end = len(get_file_names)
+        self.image_format = get_file_extension(str(self.samplePath.text()))
+        image_files = get_file_names(self.sample_path(), self.image_format)
+
+        # cap the end value FIRST, otherwise setValue might fail if the
+        # previous max val is smaller
+        self.index_end.setMaximum(len(image_files))
+        self.index_end.setValue(len(image_files))
+
+        # cap the start value to be end - 1
+        self.index_start.setMaximum(len(image_files) - 1)
+
+        # enforce the maximum step
+        self.index_step.setMaximum(len(image_files))
 
     def load_path(self):
         return os.path.basename(str(self.samplePath.text()))

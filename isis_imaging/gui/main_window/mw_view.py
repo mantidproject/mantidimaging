@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt as Qt_
 
@@ -13,7 +12,6 @@ from gui.main_window.save_dialog.save_dialog import MWSaveDialog
 
 
 class ImgpyMainWindowView(QtGui.QMainWindow):
-
     def __init__(self, config):
         super(ImgpyMainWindowView, self).__init__()
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
@@ -31,13 +29,11 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("imgpy")
 
-        # filter and algorithm communications will be filtered through this
+        # filter and algorithm communications will be funneled through this
         self.presenter = ImgpyMainWindowPresenter(self, config)
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
-
-        # actually show the dialogue
         self.load_dialogue.show()
 
     def execute_save(self):
@@ -47,19 +43,32 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.presenter.notify(PresNotification.LOAD)
 
     def show_save_dialogue(self):
-        self.save_dialogue = MWSaveDialog(self)
+        self.save_dialogue = MWSaveDialog(self, self.presenter.stack_list())
         self.save_dialogue.show()
 
-    def add_stack_dock(self,
-                       stack,
-                       position=Qt_.BottomDockWidgetArea,
-                       floating=False):
-        self.dock_widget = QtGui.QDockWidget("", self)
-        self.addDockWidget(position, self.dock_widget)
-        self.stackvis = ImgpyStackVisualiserView(self, stack)
-        self.dock_widget.setWidget(self.stackvis)
-        self.dock_widget.setFloating(floating)
+    def create_stack_window(self,
+                            stack,
+                            title,
+                            position=Qt_.BottomDockWidgetArea,
+                            floating=False):
+        dock_widget = QtGui.QDockWidget(title, self)
 
-    def median_filter_clicked(self):
-        self.presenter.notify(
-            ImgpyMainWindowPresenter.Notification.MEDIAN_FILTER_CLICKED)
+        self.addDockWidget(position, dock_widget)
+
+        # we can get the stack visualiser widget with dock_widget.widget
+        dock_widget.setWidget(
+            ImgpyStackVisualiserView(self, dock_widget, stack))
+
+        # proof of concept above
+        assert isinstance(
+            dock_widget.widget(), ImgpyStackVisualiserView
+        ), "Widget inside dock_widget is not an ImgpyStackVisualiserView!"
+
+        dock_widget.setFloating(floating)
+
+        return dock_widget
+
+    def remove_stack(self, obj):
+        print("Removing stack with uuid", obj.uuid)
+        self.presenter.remove_stack(obj.uuid)
+        obj.deleteLater()

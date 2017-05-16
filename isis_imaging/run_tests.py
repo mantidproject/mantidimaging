@@ -14,9 +14,11 @@ _avail_modules = {
 }
 
 
-def _run_tests(args):
+def _run_tests(full_args):
     try:
-        args = args[1]
+        # get only the test class name
+        args = full_args.pop(1)
+        rest_of_args = full_args[1:]
 
         if args in ['-h', '--help', '-?']:
             # just go inside the except block
@@ -39,9 +41,13 @@ def _run_tests(args):
 
     test_path = os.path.expandvars(os.path.expanduser(test_path))
 
+    # force the no path adjustment flag otherwise the path is changed and cli registrator doesn't import the filters
+    default_args = [args, "--no-path-adjustment"]
+    # forward any additional flags that were passed to nose
+    all_args = default_args+rest_of_args if rest_of_args else default_args
     try:
         # for verbose run add [test_path, "-vv", "--collect-only"]
-        return nose.run(defaultTest=test_path, argv=[test_path])
+        nose.run(defaultTest=test_path, argv=all_args)
     except ImportError:
         print('Module/test not found, try passing the path to the test \
         (e.g. tests/recon/configs_test.py) or one of the available modules: {0}'

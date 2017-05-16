@@ -19,6 +19,7 @@ from gui.stack_visualiser.zoom_rectangle import FigureCanvasColouredRectangle
 class ImgpyStackVisualiserView(QtGui.QMainWindow):
     def __init__(self,
                  parent,
+                 dock_parent,
                  data,
                  axis=0,
                  cmap='Greys_r',
@@ -31,6 +32,11 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
 
         super(ImgpyStackVisualiserView, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/stack.ui', self)
+
+        # black magic to swap out the closeEvent, but still keep the old one
+        self.dock_parent = dock_parent
+        self.dock_parent.oldCloseEvent = self.dock_parent.closeEvent
+        self.dock_parent.closeEvent = self.closeEvent
 
         # View doesn't take any ownership of the data!
         self.presenter = ImgpyStackViewerPresenter(self, data, axis)
@@ -72,6 +78,15 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         # define slider
         # add the axis for the slider
         # self.slider_axis = self.axes[1]
+
+    def closeEvent(self, event):
+        # setting floating to false tricks qt, because in the next call
+        # self.window() will refer to the main window!
+        # However if we do self.window() while setFloating is True
+        # the window() returns the QDockWidget, not the MainWindow that we want
+        self.parent().setFloating(False)
+        self.window().remove_stack(self)  # refers to MainWindow
+        self.parent().oldCloseEvent(event)
 
     def createRectangleSelector(self, axis, button=1):
         # drawtype is 'box' or 'line' or 'none'

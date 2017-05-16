@@ -22,7 +22,7 @@ def gui_register(par):
     raise NotImplementedError("GUI doesn't exist yet")
 
 
-def _apply_normalise_inplace(data, norm_divide):
+def _divide(data, norm_divide):
     np.true_divide(data, norm_divide, out=data)
 
 
@@ -31,13 +31,15 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def execute(data, flat=None, dark=None, cores=None, chunksize=None):
+def execute(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, cores=None, chunksize=None):
     """
     Normalise by flat and dark images
 
     :param data: Sample data which is to be processed. Expected in radiograms
     :param flat: flat (open beam) image to use in normalization
     :param dark: dark image to use in normalization
+    :param clip_min: After normalisation, clip any pixels under this value.
+    :param clip_max: After normalisation, clip any pixels over this value.
     :param cores: The number of cores that will be used to process the data.
     :param chunksize: The number of chunks that each worker will receive.
 
@@ -52,22 +54,22 @@ def execute(data, flat=None, dark=None, cores=None, chunksize=None):
 
     if flat is not None and dark is not None and isinstance(
             flat, np.ndarray) and isinstance(dark, np.ndarray):
-        if 2 != len(flat.shape) or 2 != len(dark.shape):
+        if 2 != flat.ndim or 2 != dark.ndim:
             raise ValueError(
                 "Incorrect shape of the flat image ({0}) or dark image ({1}) \
                 which should match the shape of the sample images ({2})"
                 .format(flat.shape, dark.shape, data[0].shape))
 
         if pu.multiprocessing_available():
-            _execute_par(data, flat, dark, cores, chunksize)
+            _execute_par(data, flat, dark, clip_min, clip_max, cores, chunksize)
         else:
-            _execute_seq(data, flat, dark)
+            _execute_seq(data, flat, dark, clip_min, clip_max)
 
     h.check_data_stack(data)
     return data
 
 
-def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
+def _execute_par(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, cores=None, chunksize=None):
     """
     A benchmark justifying the current implementation, performed on 500x2048x2048 images
 
@@ -79,7 +81,7 @@ def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
     Subtract (par) - 5.5s
     Divide (par) - 1.15s
 
-    #3 Added subtract into _apply_normalise_inplace so that it is:
+    #3 Added subtract into _divide so that it is:
                 np.true_divide(np.subtract(data, dark, out=data), norm_divide, out=data)
     Subtract then divide (par) - 55s
     """
@@ -99,8 +101,7 @@ def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
     f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
     data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark")
 
-    f = ptsm.create_partial(
-        _apply_normalise_inplace, fwd_function=ptsm.inplace_second_2d)
+    f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
     data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize,
                                      "Norm by Flat/Dark")
 
@@ -109,13 +110,13 @@ def _execute_par(data, flat=None, dark=None, cores=None, chunksize=None):
     # This will crop those negative pixels out, and set them to nearly zero
     # The negative values will also get scaled back after this in
     # value_scaling which will increase their values futher!
-    np.clip(data, MINIMUM_PIXEL_VALUE, MAXIMUM_PIXEL_VALUE, out=data)
+    np.clip(data, clip_min, clip_max, out=data)
     h.pstop("Finished PARALLEL normalization by flat/dark images.")
 
     return data
 
 
-def _execute_seq(data, flat=None, dark=None):
+def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE,):
     h.pstart("Starting normalization by flat/dark images.")
 
     norm_divide = np.subtract(flat, dark)
@@ -123,9 +124,10 @@ def _execute_seq(data, flat=None, dark=None):
     # prevent divide-by-zero issues
     norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
     np.subtract(data, dark, out=data)
+    np.subtract(flat, dark, out=flat)
     np.true_divide(data, flat, out=data)
     h.prog_close()
-    np.clip(data, MINIMUM_PIXEL_VALUE, MAXIMUM_PIXEL_VALUE, out=data)
+    np.clip(data, clip_min, clip_max, out=data)
     h.pstop("Finished normalization by flat/dark images.")
 
     return data
