@@ -5,6 +5,17 @@ import os
 from PyQt4 import QtGui
 
 from core.algorithms import gui_compile_ui
+from core.imgdata.loader import supported_formats
+
+
+def select_directory(field, caption):
+    assert isinstance(
+        field, QtGui.QLineEdit
+    ), "The passed object is of type {0}. This function only works with QLineEdit".format(
+        type(field))
+
+    # open file dialogue and set the text if file is selected
+    field.setText(QtGui.QFileDialog.getExistingDirectory(caption=caption))
 
 
 class MWSaveDialog(QtGui.QDialog):
@@ -13,42 +24,51 @@ class MWSaveDialog(QtGui.QDialog):
         gui_compile_ui.execute('gui/ui/save.ui', self)
 
         self.browseButton.clicked.connect(
-            lambda: self.select_directory(self.savePath))
+            lambda: select_directory(self.savePath, "Browse"))
 
         self.saveSingle.clicked.connect(self.save_single)
 
         self.buttonBox.button(QtGui.QDialogButtonBox.SaveAll).clicked.connect(
             self.save_all)
 
-        if stack_list:  # we will just show an empty drop down if no stacks
-            self.stackNames.addItems(zip(*stack_list)[1])
+        formats = supported_formats()
+        self.formats.addItems(formats)
 
-    def save_single(self):
-        print("Save single clicked")
-        # force the end indice to be start + 1
-        self.index_end.setValue(self.index_start.value() + 1)
-        # force close the dialogue, the other buttons do it automatically
-        self.close()
-        self.parent().execute_save()
+        # set the default to tiff
+        self.formats.setCurrentIndex(formats.index('tiff'))
+
+        if stack_list:  # we will just show an empty drop down if no stacks
+            self.stack_uuids, user_friendly_names = zip(*stack_list)
+            # the stacklist is created in the main windows presenter and has format
+            # [(uuid, title)...], doing zip(*stack_list) unzips the tuples into separate lists
+            self.stackNames.addItems(user_friendly_names)
+
+        self.selected_stack = None
+
+    # def save_single(self):
+    #     print("Save single clicked")
+    #     # force close the dialogue, the other buttons do it automatically
+    #     self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
+    #     print("Selected stack was", self.selected_stack)
+    #     self.close()
+    #     self.parent().execute_single_save()
 
     def save_all(self):
         print("Save all clicked")
-
-    def select_directory(self, field):
-        assert isinstance(
-            field, QtGui.QLineEdit
-        ), "The passed object is of type {0}. This function only works with QLineEdit".format(
-            type(field))
-
-        # open file dialogue and set the text if file is selected
-        field.setText(QtGui.QFileDialog.getExistingDirectory())
-
-    def indices(self):
-        return self.index_start.value(), self.index_end.value(
-        ), self.index_step.value()
+        self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
+        self.parent().execute_save()
 
     def save_path(self):
         """
             :return: The directory of the path as a Python string
         """
-        return os.path.dirname(str(self.savePath.text()))
+        return str(self.savePath.text())
+
+    def swap_axes(self):
+        return self.swapAxes.isChecked()
+
+    def overwrite(self):
+        return self.overwriteAll.isChecked()
+
+    def image_format(self):
+        return str(self.formats.currentText())

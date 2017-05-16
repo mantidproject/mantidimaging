@@ -79,6 +79,9 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         # add the axis for the slider
         # self.slider_axis = self.axes[1]
 
+    def apply_to_data(self, func, *args, **kwargs):
+        self.presenter.apply_to_data(func, *args, **kwargs)
+
     def closeEvent(self, event):
         # setting floating to false tricks qt, because in the next call
         # self.window() will refer to the main window!
@@ -86,7 +89,8 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         # the window() returns the QDockWidget, not the MainWindow that we want
         self.parent().setFloating(False)
         self.window().remove_stack(self)  # refers to MainWindow
-        self.parent().oldCloseEvent(event)
+        self.deleteLater()
+        self.parent().deleteLater()
 
     def createRectangleSelector(self, axis, button=1):
         # drawtype is 'box' or 'line' or 'none'

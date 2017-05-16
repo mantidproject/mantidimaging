@@ -1,5 +1,8 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 from PyQt4.QtGui import QWidget
+
+from gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
 
 
 class ImgpyStackViewerPresenter(QWidget):
@@ -9,7 +12,6 @@ class ImgpyStackViewerPresenter(QWidget):
         self.data = data
         self.axis = axis
 
-        from gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
         self.model = ImgpyStackVisualiserModel()
 
     def get_image(self, index, axis=None):
@@ -31,3 +33,6 @@ class ImgpyStackViewerPresenter(QWidget):
 
         self.hist_axis.cla()
         self.hist_axis.hist(image.flatten(), bins=256)
+
+    def apply_to_data(self, func, *args, **kwargs):
+        func(self.data, *args, **kwargs)

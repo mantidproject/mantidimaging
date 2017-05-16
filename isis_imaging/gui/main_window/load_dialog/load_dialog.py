@@ -9,29 +9,30 @@ from core.imgdata.loader import get_file_names, get_file_extension
 import os
 
 
-def select_file(field):
+def select_file(field, caption):
     assert isinstance(
         field, QtGui.QLineEdit
     ), "The passed object is of type {0}. This function only works with QLineEdit".format(
         type(field))
 
     # open file dialogue and set the text if file is selected
-    field.setText(QtGui.QFileDialog.getOpenFileName())
+    field.setText(QtGui.QFileDialog.getOpenFileName(caption=caption))
 
 
 class MWLoadDialog(QtGui.QDialog):
-
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/load.ui', self)
 
         # open file path dialogue
         self.sampleButton.clicked.connect(
-            lambda: self.update_indices(select_file(self.samplePath)))
+            lambda: self.update_indices(select_file(self.samplePath, "Sample")))
 
-        self.flatButton.clicked.connect(lambda: select_file(self.flatPath))
+        self.flatButton.clicked.connect(
+            lambda: select_file(self.flatPath, "Flat"))
 
-        self.darkButton.clicked.connect(lambda: select_file(self.darkPath))
+        self.darkButton.clicked.connect(
+            lambda: select_file(self.darkPath, "Dark"))
 
         # if accepted load the stack
         self.accepted.connect(parent.execute_load)
@@ -54,6 +55,7 @@ class MWLoadDialog(QtGui.QDialog):
 
         # enforce the maximum step
         self.index_step.setMaximum(len(image_files))
+        self.index_step.setValue(len(image_files) / 10)
 
     def load_path(self):
         return os.path.basename(str(self.samplePath.text()))

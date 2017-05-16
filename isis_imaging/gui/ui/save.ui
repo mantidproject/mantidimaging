@@ -62,19 +62,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="saveSingle">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>170</y>
-     <width>85</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Single</string>
-   </property>
-  </widget>
   <widget class="QComboBox" name="stackNames">
    <property name="geometry">
     <rect>
@@ -83,6 +70,35 @@
      <width>349</width>
      <height>30</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="swapAxes">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>120</y>
+     <width>96</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Swap Axes</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="overwriteAll">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>120</y>
+     <width>96</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Overwrite</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
