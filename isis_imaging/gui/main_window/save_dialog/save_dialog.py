@@ -44,7 +44,6 @@ class MWSaveDialog(QtGui.QDialog):
         self.selected_stack = None
 
     def save_all(self):
-        print("Save all clicked")
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
         self.parent().execute_save()
 
