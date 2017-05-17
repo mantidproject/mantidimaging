@@ -32,24 +32,61 @@ def _cli(parser, package_dir, modules):
 
 
 def _gui(qt_parent, package_dir, modules):
+    """
+    :param qt_parent: Register the algorithms into this parent
+    :param package_dir: The package from which to register all of the modules
+    :param modules: The list of modules inside the package
+    """
+    from PyQt4.QtGui import QMenu, QAction
+    from gui.main_window.mw_view import ImgpyMainWindowView
+    assert isinstance(qt_parent,
+                      QMenu), "The object passed is not of a supported type."
+
+    main_window = qt_parent.parent().parent()
+    assert isinstance(
+        main_window, ImgpyMainWindowView
+    ), "The object passed is in a different structure than expected!"
     # this should be menuFilters
     # add new section filters?
-    print("Me here", qt_parent)
-    from PyQt4.QtGui import QMenu
     group = QMenu(package_dir, qt_parent)
+    qt_parent.addMenu(group)
 
     # we specify the full absolute path and append the package name
     # the code underneath does import core.filters.package_name
     for module in modules:
+        # register _into_ the dialogue
         full_module = package_dir + '.' + module
         m = importlib.import_module(full_module)
 
-        # warn the user if one of the modules is missing the cli_register method
+        # warn the user if one of the modules is missing the register method
         try:
-            m.gui_register(group)
-        except AttributeError:
-            cli_register_warning = "The module " + full_module + " does NOT have a cli_register(parser) method!"
-            warnings.warn(cli_register_warning)
+            dialog = m.gui_register(None)
+            action = QAction(module, group)
+            # do we really really wanna do that? 
+            dialog._main_window_ref = main_window
+            # the captured_dialog=dialog in the lambda captures THE ORIGINAL reference to the dialog
+            # and when the user clicks the QAction in the QMenu the correct dialog is shown!
+            # If we do not capture, EVERY QAction will .show() only the last dialogue! For proof of this
+            # remove the capture, and set dialog=None after group.addAction,
+            # Qt will raise NoneObject doesnt have .show()
+            # TODO should probably refactor that into... uhh something?
+            # What the function needs to do is:
+            # - refresh the stack list
+            # - clear/add the items
+            # - show the dialogue
+            # ..............
+            # On close we need to
+            # - return uuid, and decorated function with params
+            action.triggered.connect(
+                lambda x, captured_dialog=dialog: [
+                    captured_dialog.stackNames.clear(),
+                    captured_dialog.stackNames.addItems(zip(*main_window.stack_list())[1]),
+                    captured_dialog.show()
+                    ])
+            group.addAction(action)
+        except AttributeError as err:
+            warnings.warn(str(err))
+
     return qt_parent
 
 
@@ -58,10 +95,14 @@ def register_into(obj, directory=None, package="core/filters", func=_cli):
     This function will build the path to the specified package, and then import all of the modules from it,
     and call cli_register if _cli is specified, or gui_register if _gui is specified.
 
-    :param obj: the obj into which the modules will be registered
+    :param obj: the obj into which the modules will be registered,
+                this is simply forwarded onto the actual functions that do the dynamic registering
     :param directory: The directory to be walked for python modules.
                       This parameter is currently being added to ease unit testing.
     :param package: The internal package from which modules will be imported
+    :param func: Two built in functions are provided, registrator._cli and registrator._gui, for registration into the
+                 command line interface (CLI) or the graphical user interface (GUI). A custom function can be passed
+                 if the behaviour needs to be extended or overriden
     """
     # sys path 0 will give us the parent directory of the package, and we append the internal package location
     if not directory:

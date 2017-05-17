@@ -1,5 +1,5 @@
 from __future__ import absolute_import, division, print_function
-import numpy as np
+
 import helper as h
 
 
@@ -13,8 +13,12 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(par):
-    raise NotImplementedError("GUI doesn't exist yet")
+def gui_register(dialog):
+    from core.algorithms import gui_compile_ui as gcu
+
+    if dialog is None:
+        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    return dialog
 
 
 def fool_my_own_sanity_check(data):

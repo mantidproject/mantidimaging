@@ -18,8 +18,12 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(par):
-    raise NotImplementedError("GUI doesn't exist yet")
+def gui_register(dialog):
+    from core.algorithms import gui_compile_ui as gcu
+
+    if dialog is None:
+        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    return dialog
 
 
 def _divide(data, norm_divide):
@@ -31,7 +35,13 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def execute(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, cores=None, chunksize=None):
+def execute(data,
+            flat=None,
+            dark=None,
+            clip_min=MINIMUM_PIXEL_VALUE,
+            clip_max=MAXIMUM_PIXEL_VALUE,
+            cores=None,
+            chunksize=None):
     """
     Normalise by flat and dark images
 
@@ -61,7 +71,8 @@ def execute(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=M
                 .format(flat.shape, dark.shape, data[0].shape))
 
         if pu.multiprocessing_available():
-            _execute_par(data, flat, dark, clip_min, clip_max, cores, chunksize)
+            _execute_par(data, flat, dark, clip_min, clip_max, cores,
+                         chunksize)
         else:
             _execute_seq(data, flat, dark, clip_min, clip_max)
 
@@ -69,7 +80,13 @@ def execute(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=M
     return data
 
 
-def _execute_par(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, cores=None, chunksize=None):
+def _execute_par(data,
+                 flat=None,
+                 dark=None,
+                 clip_min=MINIMUM_PIXEL_VALUE,
+                 clip_max=MAXIMUM_PIXEL_VALUE,
+                 cores=None,
+                 chunksize=None):
     """
     A benchmark justifying the current implementation, performed on 500x2048x2048 images
 
@@ -116,7 +133,12 @@ def _execute_par(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_
     return data
 
 
-def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE,):
+def _execute_seq(
+        data,
+        flat=None,
+        dark=None,
+        clip_min=MINIMUM_PIXEL_VALUE,
+        clip_max=MAXIMUM_PIXEL_VALUE, ):
     h.pstart("Starting normalization by flat/dark images.")
 
     norm_divide = np.subtract(flat, dark)

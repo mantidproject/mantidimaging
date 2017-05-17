@@ -1,6 +1,8 @@
-from __future__ import (absolute_import, division, print_function)
-import helper as h
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
+
+import helper as h
 
 
 def cli_register(parser):
@@ -23,8 +25,25 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(par):
-    raise NotImplementedError("GUI doesn't exist yet")
+def gui_register(dialog):
+    from core.algorithms import gui_compile_ui as gcu
+    from PyQt4 import QtGui
+    if dialog is None:
+        dialog = QtGui.QDialog()
+        gcu.execute("gui/ui/alg_dialog.ui", dialog)
+        dialog.setWindowTitle("Clip Values")
+
+    clip_min = QtGui.QLabel("Clip Min")
+    clip_max = QtGui.QLabel("Clip Max")
+    clip_min_field = QtGui.QDoubleSpinBox()
+    clip_max_field = QtGui.QDoubleSpinBox()
+
+    dialog.formLayout.addRow(clip_min, clip_min_field)
+    dialog.formLayout.addRow(clip_max, clip_max_field)
+
+    dialog.accepted.connect(lambda x: print("I hath been accepted"))
+
+    return dialog
 
 
 def execute(data, clip_min=None, clip_max=None):

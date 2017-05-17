@@ -43,8 +43,15 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.presenter.notify(PresNotification.LOAD)
 
     def show_save_dialogue(self):
-        self.save_dialogue = MWSaveDialog(self, self.presenter.stack_list())
+        self.save_dialogue = MWSaveDialog(self, self.stack_list())
         self.save_dialogue.show()
+
+    def stack_names(self):
+        # unpacks the tuple and only gives the correctly sorted human readable names
+        return zip(*self.presenter.stack_list())[1]
+
+    def stack_list(self):
+        return self.presenter.stack_list()
 
     def create_stack_window(self,
                             stack,
