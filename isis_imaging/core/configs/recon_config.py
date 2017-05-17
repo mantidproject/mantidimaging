@@ -4,7 +4,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 from core.configs.functional_config import FunctionalConfig
-from core.algorithms import cli_registrator
+from core.algorithms import registrator
 
 
 def grab_full_config():
@@ -25,7 +25,7 @@ def grab_full_config():
     parser = functional_args.setup_parser(parser)
 
     # setup args for the filters
-    cli_registrator.register_into(parser)
+    registrator.register_into(parser)
 
     # parse the real arguments
     args = parser.parse_args()
@@ -156,7 +156,7 @@ class ReconstructionConfig(object):
         parser = functional_args.setup_parser(parser)
 
         # setup args for the filters
-        cli_registrator.register_into(parser)
+        registrator.register_into(parser)
 
         # pass in the mandatory arguments
         fake_args_list = ['--input-path', '/tmp/', '--cors', '42']

@@ -74,7 +74,7 @@ The visualisation must allow for a rectangle ROI selection, that is persistent i
 ## Applying a filter
 Applying a filter will bring up a dialogue in which the user has to select on which stack to apply the filter via a dropdown menu, and fill in the required parameters the filter has.
 
-Any filters should be dynamically registered using a [cli_registrator](https://github.com/mantidproject/isis_imaging/blob/master/isis_imaging/core/algorithms/cli_registrator.py) style approach. This brings issues outlined in https://github.com/mantidproject/isis_imaging/issues/40, the most important of which how to not pull in (import) the PyQt library when NOT using the GUI, and thus not needing dynamic registering for the GUI.
+Any filters should be dynamically registered using a [registrator](https://github.com/mantidproject/isis_imaging/blob/master/isis_imaging/core/algorithms/registrator.py) style approach. This brings issues outlined in https://github.com/mantidproject/isis_imaging/issues/40, the most important of which how to not pull in (import) the PyQt library when NOT using the GUI, and thus not needing dynamic registering for the GUI.
 
 ## Undoing an operation
 Building the Undo operation may be complicated, but here are a few high level approaches:

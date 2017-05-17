@@ -34,7 +34,13 @@
     <addaction name="actionSave"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuFilters">
+    <property name="title">
+     <string>Filters</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuFilters"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLoad">

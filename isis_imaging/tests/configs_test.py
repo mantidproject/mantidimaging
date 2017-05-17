@@ -7,7 +7,7 @@ import numpy.testing as npt
 
 from core.configs.functional_config import FunctionalConfig
 from core.configs.recon_config import ReconstructionConfig
-from core.algorithms import cli_registrator
+from core.algorithms import registrator
 
 
 class ConfigsTest(unittest.TestCase):
@@ -16,7 +16,7 @@ class ConfigsTest(unittest.TestCase):
         self.func_config = FunctionalConfig()
         self.parser = self.func_config.setup_parser(self.parser)
         self.grp_filters = self.parser.add_argument_group("Filter options")
-        cli_registrator.register_into(self.grp_filters)
+        registrator.register_into(self.grp_filters)
 
     def test_functional_config_doctest(self):
         self._compare_dict_to_str(self.func_config.__dict__,
@@ -28,10 +28,10 @@ class ConfigsTest(unittest.TestCase):
         parser = self.func_config.setup_parser(parser)
 
         grp_filters = parser.add_argument_group("Filter options")
-        cli_registrator.register_into(grp_filters)
+        registrator.register_into(grp_filters)
 
         assert grp_filters is not None, "The parser object is None! \
-        It was lost somewhere in cli_registrator!"
+        It was lost somewhere in registrator!"
 
     def test_no_input_path_error(self):
         # the error is thrown from handle_special_arguments
