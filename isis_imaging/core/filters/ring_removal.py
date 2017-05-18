@@ -54,11 +54,71 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    from PyQt4 import QtGui
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Ring Removal")
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    label_x = QtGui.QLabel("Abcissa X")
+    x_field = QtGui.QSpinBox()
+    x_field.setMinimum(0)
+    x_field.setMaximum(1000000)
+
+    label_y = QtGui.QLabel("Ordinate Y")
+    y_field = QtGui.QSpinBox()
+    y_field.setMinimum(0)
+    y_field.setMaximum(1000000)
+
+    label_thresh = QtGui.QLabel("Threshold")
+    thresh = QtGui.QDoubleSpinBox()
+    thresh.setMinimum(-1000000)
+    thresh.setMaximum(1000000)
+
+    label_thresh_min = QtGui.QLabel("Threshold Min")
+    thresh_min = QtGui.QDoubleSpinBox()
+    thresh_min.setMinimum(-1000000)
+    thresh_min.setMaximum(1000000)
+
+    label_thresh_max = QtGui.QLabel("Threshold Max")
+    thresh_max = QtGui.QDoubleSpinBox()
+    thresh_max.setMinimum(-1000000)
+    thresh_max.setMaximum(1000000)
+
+    label_theta = QtGui.QLabel("Theta")
+    theta = QtGui.QSpinBox()
+    theta.setMinimum(-1000)
+    theta.setMaximum(1000)
+
+    label_rwidth = QtGui.QLabel("RWidth")
+    rwidth = QtGui.QSpinBox()
+    rwidth.setMinimum(-1000000)
+    rwidth.setMaximum(1000000)
+
+    dialog.formLayout.addRow(label_x, x_field)
+    dialog.formLayout.addRow(label_y, y_field)
+    dialog.formLayout.addRow(label_thresh, thresh)
+    dialog.formLayout.addRow(label_thresh_min, thresh_min)
+    dialog.formLayout.addRow(label_thresh_max, thresh_max)
+    dialog.formLayout.addRow(label_theta, theta)
+    dialog.formLayout.addRow(label_rwidth, rwidth)
+
+    def decorate_execute():
+        from functools import partial
+        return partial(
+            execute,
+            center_x=x_field,
+            center_y=y_field,
+            thresh=thresh,
+            thresh_max=thresh_max,
+            thresh_min=thresh_min,
+            theta_min=theta,
+            rwidth=rwidth)
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

@@ -44,6 +44,7 @@ def cli_register(parser):
 
 
 def gui_register(dialog):
+    # TODO will probably be best to separate into multiple algs
     from core.algorithms import gui_compile_ui as gcu
 
     if dialog is None:

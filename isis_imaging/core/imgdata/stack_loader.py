@@ -76,6 +76,6 @@ def execute(load_func,
     if parallel_load:
         return do_stack_load_par(data, new_data, cores, chunksize, name)
     else:
-        # we could just move with data[:] = new_data[:] but then we don't get 
+        # we could just move with data[:] = new_data[:] but then we don't get
         # loading bar information, and I doubt there's any performance gain
         return do_stack_load_seq(data, new_data, img_shape, name)

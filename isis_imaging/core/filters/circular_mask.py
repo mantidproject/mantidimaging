@@ -26,11 +26,38 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    from PyQt4 import QtGui
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Circular Mask")
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    label_radius = QtGui.QLabel("Radius")
+    radius_field = QtGui.QDoubleSpinBox()
+    radius_field.setMinimum(0)
+    radius_field.setMaximum(1)
+    radius_field.setValue(0.95)
+
+    label_value = QtGui.QLabel("Set to value")
+    value_field = QtGui.QDoubleSpinBox()
+    value_field.setMinimum(-100000)
+    value_field.setMaximum(100000)
+    value_field.setValue(0)
+
+    dialog.formLayout.addRow(label_radius, radius_field)
+    dialog.formLayout.addRow(label_value, value_field)
+
+    def decorate_execute():
+        from functools import partial
+        return partial(
+            execute,
+            circular_mask_ratio=radius_field.value(),
+            circular_mask_value=value_field.value())
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

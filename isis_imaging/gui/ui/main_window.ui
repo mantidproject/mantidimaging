@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background: url(/home/matt/Documents/imgpy/isis_imaging/gui/ui/code.jpg)</string>
+   <string notr="true">/* background: url(/home/matt/Documents/imgpy/isis_imaging/gui/ui/code.jpg)*/</string>
   </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">

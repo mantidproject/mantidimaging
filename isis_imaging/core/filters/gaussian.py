@@ -41,11 +41,39 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    from PyQt4 import QtGui
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Gaussian")
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    label_size = QtGui.QLabel("Kernel Size")
+    size_field = QtGui.QSpinBox()
+    size_field.setMinimum(0)
+    size_field.setMaximum(1000)
+    size_field.setValue(3)
+
+    order_field = QtGui.QSpinBox()
+    order_field.setMinimum(0)
+    order_field.setMaximum(3)
+    order_field.setValue(0)
+
+    label_mode = QtGui.QLabel("Mode")
+    mode_field = QtGui.QComboBox()
+    mode_field.addItems(modes())
+
+    dialog.formLayout.addRow(label_size, size_field)
+    dialog.formLayout.addRow(label_mode, mode_field)
+
+    def decorate_execute():
+        from functools import partial
+        return partial(
+            execute, size=size_field.value(), mode=mode_field.currentText())
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

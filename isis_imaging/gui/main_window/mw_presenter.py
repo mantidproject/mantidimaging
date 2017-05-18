@@ -56,6 +56,7 @@ class ImgpyMainWindowPresenter(object):
         return sorted(stacks, key=lambda x: x[1])
 
     def remove_stack(self, uuid):
+        # need to call active_stack.destroy()?
         del self.active_stacks[uuid]
 
     def load_stack(self):
@@ -111,3 +112,6 @@ class ImgpyMainWindowPresenter(object):
             overwrite_all=overwrite,
             img_format=image_format,
             indices=indices)
+
+    def do_badly(self, stack_uuid, func):
+        self.active_stacks[stack_uuid][1].widget().apply_to_data(func)

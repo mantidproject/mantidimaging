@@ -16,11 +16,28 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    from PyQt4 import QtGui
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Cut Off")
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    label_radius = QtGui.QLabel("Threshold")
+    radius_field = QtGui.QDoubleSpinBox()
+    radius_field.setMinimum(0)
+    radius_field.setMaximum(1)
+    radius_field.setValue(0.95)
+
+    dialog.formLayout.addRow(label_radius, radius_field)
+
+    def decorate_execute():
+        from functools import partial
+        return partial(execute, threshold=radius_field.value())
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

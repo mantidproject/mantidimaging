@@ -35,4 +35,19 @@ class ImgpyStackViewerPresenter(QWidget):
         self.hist_axis.hist(image.flatten(), bins=256)
 
     def apply_to_data(self, func, *args, **kwargs):
+        import pydevd
+        pydevd.settrace(
+            'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+        do_before = getattr(func, "do_before", None)
+        if hasattr(func, "do_before"):
+            delattr(func, "do_before")
+        do_after = getattr(func, "do_after", None)
+        if hasattr(func, "do_after"):
+            delattr(func, "do_after")
+
+        if do_before:
+            res_before = do_before(self.data)
         func(self.data, *args, **kwargs)
+        if do_after:
+            do_after(self.data, res_before)
+        self.view.update_current_image()

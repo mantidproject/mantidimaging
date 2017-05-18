@@ -39,13 +39,14 @@ def _gui(qt_parent, package_dir, modules):
     """
     from PyQt4.QtGui import QMenu, QAction
     from gui.main_window.mw_view import ImgpyMainWindowView
-    assert isinstance(qt_parent,
-                      QMenu), "The object passed is not of a supported type."
+    assert isinstance(
+        qt_parent,
+        QMenu), "The object passed is not of a QMenu, and is not supported."
 
     main_window = qt_parent.parent().parent()
     assert isinstance(
-        main_window, ImgpyMainWindowView
-    ), "The object passed is in a different structure than expected!"
+        main_window,
+        ImgpyMainWindowView), "This must be the ImgpyMainWindowView object!"
     # this should be menuFilters
     # add new section filters?
     group = QMenu(package_dir, qt_parent)
@@ -60,29 +61,16 @@ def _gui(qt_parent, package_dir, modules):
 
         # warn the user if one of the modules is missing the register method
         try:
-            dialog = m.gui_register(None)
+            dialog = m.gui_register(main_window)
             action = QAction(module, group)
-            # do we really really wanna do that? 
-            dialog._main_window_ref = main_window
             # the captured_dialog=dialog in the lambda captures THE ORIGINAL reference to the dialog
             # and when the user clicks the QAction in the QMenu the correct dialog is shown!
             # If we do not capture, EVERY QAction will .show() only the last dialogue! For proof of this
             # remove the capture, and set dialog=None after group.addAction,
             # Qt will raise NoneObject doesnt have .show()
-            # TODO should probably refactor that into... uhh something?
-            # What the function needs to do is:
-            # - refresh the stack list
-            # - clear/add the items
-            # - show the dialogue
-            # ..............
-            # On close we need to
-            # - return uuid, and decorated function with params
             action.triggered.connect(
-                lambda x, captured_dialog=dialog: [
-                    captured_dialog.stackNames.clear(),
-                    captured_dialog.stackNames.addItems(zip(*main_window.stack_list())[1]),
-                    captured_dialog.show()
-                    ])
+                lambda x, captured_dialog=dialog: captured_dialog.update_and_show()
+            )
             group.addAction(action)
         except AttributeError as err:
             warnings.warn(str(err))

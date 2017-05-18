@@ -14,11 +14,18 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Minus Log")
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    def decorate_execute():
+        return execute
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

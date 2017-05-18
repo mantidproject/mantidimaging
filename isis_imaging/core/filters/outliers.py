@@ -39,29 +39,58 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    from PyQt4 import QtGui
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Outliers")
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    label_diff = QtGui.QLabel("Difference")
+    diff_field = QtGui.QSpinBox()
+    diff_field.setMinimum(-1000000)
+    diff_field.setMaximum(1000000)
+    diff_field.setValue(1)
+
+    label_size = QtGui.QLabel("Size")
+    size_field = QtGui.QSpinBox()
+    size_field.setMinimum(0)
+    size_field.setMaximum(1000)
+    size_field.setValue(3)
+
+    label_mode = QtGui.QLabel("Mode")
+    mode_field = QtGui.QComboBox()
+    mode_field.addItems(modes())
+
+    dialog.formLayout.addRow(label_diff, diff_field)
+    dialog.formLayout.addRow(label_size, size_field)
+    dialog.formLayout.addRow(label_mode, mode_field)
+
+    def decorate_execute():
+        from functools import partial
+        return partial(
+            execute,
+            diff=diff_field.value(),
+            radius=size_field.value(),
+            mode=mode_field.currentText())
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 
 def modes():
-    return [OUTLIERS_DARK, OUTLIERS_BRIGHT]
+    return [OUTLIERS_BRIGHT, OUTLIERS_DARK]
 
 
-def execute(data,
-            value_difference,
-            radius=_default_radius,
-            mode=_default_mode,
+def execute(data, diff, radius=_default_radius, mode=_default_mode,
             cores=None):
     """
     Execute the Outliers filter. Requires tomopy to be available.
 
     :param data: The sample image data as a 3D numpy.ndarray
-    :param value_difference: Pixel value difference above which 
-                             to crop bright pixels
+    :param diff: Pixel value difference above which to crop bright pixels
     :param radius: Which pixels will be clipped: dark, bright or both
     :param cores: The number of cores that will be used to process the data.
 
@@ -72,9 +101,9 @@ def execute(data,
     python main.py -i /some/data --outliers 1 --outliers-radius 4
     """
 
-    if value_difference and radius and value_difference > 0 and radius > 0:
+    if diff and radius and diff > 0 and radius > 0:
         h.pstart("Applying outliers with threshold: {0} and radius {1}".format(
-            value_difference, radius))
+            diff, radius))
 
         # we flip the histogram horizontally,
         # this makes the darkest pixels the brightest
@@ -83,8 +112,7 @@ def execute(data,
 
         tomopy = importer.do_importing('tomopy')
 
-        data = tomopy.misc.corr.remove_outlier(
-            data, value_difference, radius, ncore=cores)
+        data = tomopy.misc.corr.remove_outlier(data, diff, radius, ncore=cores)
 
         # reverse the inversion
         if mode == OUTLIERS_DARK:

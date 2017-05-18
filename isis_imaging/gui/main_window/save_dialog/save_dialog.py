@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-
 from PyQt4 import QtGui
 
 from core.algorithms import gui_compile_ui
@@ -21,7 +19,7 @@ def select_directory(field, caption):
 class MWSaveDialog(QtGui.QDialog):
     def __init__(self, parent, stack_list):
         super(MWSaveDialog, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/save.ui', self)
+        gui_compile_ui.execute('gui/ui/save_dialog.ui', self)
 
         self.browseButton.clicked.connect(
             lambda: select_directory(self.savePath, "Browse"))

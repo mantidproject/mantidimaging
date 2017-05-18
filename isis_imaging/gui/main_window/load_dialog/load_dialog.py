@@ -22,7 +22,7 @@ def select_file(field, caption):
 class MWLoadDialog(QtGui.QDialog):
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/load.ui', self)
+        gui_compile_ui.execute('gui/ui/load_dialog.ui', self)
 
         # open file path dialogue
         self.sampleButton.clicked.connect(

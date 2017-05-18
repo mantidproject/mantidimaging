@@ -18,11 +18,51 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
+    from gui.main_window.load_dialog.load_dialog import select_file
+    from PyQt4 import QtGui
 
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Background Correction")
+
+    flatPath = QtGui.QLineEdit()
+    flatButton = QtGui.QPushButton("Flat")
+    flatButton.clicked.connect(lambda: select_file(flatPath, "Flat"))
+
+    darkPath = QtGui.QLineEdit()
+    darkButton = QtGui.QPushButton("Dark")
+    darkButton.clicked.connect(lambda: select_file(darkPath, "Dark"))
+
+    dialog.formLayout.addRow(flatPath, flatButton)
+    dialog.formLayout.addRow(darkPath, darkButton)
+
+    def decorate_execute():
+        from core.imgdata import loader
+        import os
+
+        flat_path = str(flatPath.text())
+        dark_path = str(darkPath.text())
+        flat_extension = loader.get_file_extension(flat_path)
+        dark_extension = loader.get_file_extension(dark_path)
+
+        flat_dir = os.path.dirname(flat_path)
+        dark_dir = os.path.dirname(dark_path)
+        flat = (loader.load(flat_dir, img_format=flat_extension)).mean(axis=0)
+        dark = (loader.load(dark_dir, img_format=dark_extension)).mean(axis=0)
+        from functools import partial
+        from core.filters import value_scaling
+        par = partial(execute, flat=flat, dark=dark)
+        # function to be applied before the execute function
+        par.do_before = value_scaling.create_factors
+        # function to be applied after the execute function
+        par.do_after = value_scaling.apply_factor
+        return par
+
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

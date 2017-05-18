@@ -131,10 +131,6 @@ def load(input_path=None,
                 a single 3d numpy ndarray
     """
 
-    if not img_format:
-        # assume only images in directory, inb4 loading text files
-        img_format = '*'
-
     if not file_names:
         input_file_names = get_file_names(input_path, img_format)
     else:

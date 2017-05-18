@@ -78,3 +78,6 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
     def remove_stack(self, obj):
         print("Removing stack with uuid", obj.uuid)
         self.presenter.remove_stack(obj.uuid)
+
+    def algorithm_accepted(self, stack_uuid, func):
+        self.presenter.do_badly(stack_uuid, func)

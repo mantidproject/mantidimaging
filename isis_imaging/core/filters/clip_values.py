@@ -25,24 +25,34 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def gui_register(main_window):
     from core.algorithms import gui_compile_ui as gcu
+    from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui
-    if dialog is None:
-        dialog = QtGui.QDialog()
-        gcu.execute("gui/ui/alg_dialog.ui", dialog)
-        dialog.setWindowTitle("Clip Values")
+    dialog = AlgorithmDialog(main_window)
+    gcu.execute("gui/ui/alg_dialog.ui", dialog)
+    dialog.setWindowTitle("Clip Values")
 
-    clip_min = QtGui.QLabel("Clip Min")
-    clip_max = QtGui.QLabel("Clip Max")
+    label_clip_min = QtGui.QLabel("Clip Min")
+    label_clip_max = QtGui.QLabel("Clip Max")
     clip_min_field = QtGui.QDoubleSpinBox()
+    clip_min_field.setDecimals(7)
+    clip_min_field.setMinimum(-1000000)
     clip_max_field = QtGui.QDoubleSpinBox()
+    clip_max_field.setDecimals(7)
+    clip_max_field.setMaximum(1000000)
 
-    dialog.formLayout.addRow(clip_min, clip_min_field)
-    dialog.formLayout.addRow(clip_max, clip_max_field)
+    dialog.formLayout.addRow(label_clip_min, clip_min_field)
+    dialog.formLayout.addRow(label_clip_max, clip_max_field)
 
-    dialog.accepted.connect(lambda x: print("I hath been accepted"))
+    def decorate_execute():
+        clip_min = clip_min_field.value()
+        clip_max = clip_max_field.value()
+        from functools import partial
+        return partial(execute, clip_min=clip_min, clip_max=clip_max)
 
+    # replace dialog function with this one
+    dialog.decorate_execute = decorate_execute
     return dialog
 
 

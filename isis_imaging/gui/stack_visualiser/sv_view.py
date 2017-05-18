@@ -109,21 +109,22 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         x1, y1 = erelease.xdata, erelease.ydata
         # different order here, than in how we handle it
         # this is because the unpacking for draw_rect is different
+        # this is because the unpacking for draw_rect is different
         self.previous_region = (x0, x1, y0, y1)
         region = "%i %i %i %i" % (x0, y0, x1, y1)
         print(region)
 
-    def update_image(self, val):
+    def update_current_image(self, val=None):
         """
-        If the name of this is changed to just update, 
+        If the name of this is changed to just update,
         it causes an internal error with the matplotlib backend implementation!
+
+        :param val: Not used, but cannot be removed because slider.on_changed passes in a param
+                    ^ I guess we can actually use the val instead?
         """
         ind = int(self.slider.val)
 
-        # TODO needs to be moved to a signal or something
         self.image.set_data(self.presenter.get_image(ind))
-        if self.previous_region:
-            self.rectangle.draw_shape(self.previous_region)
 
     def change_value_rangle(self, low, high):
         self.image.set_clim((low, high))
@@ -142,7 +143,9 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
 
         slider = Slider(
             slider_axis, 'Slices', 0, length, valinit=0, valfmt='%i')
-        slider.on_changed(self.update_image)
+
+        # Change to on_changed(lambda x: self.presenter.notify(Notification.IMAGE_CHANGED))?
+        slider.on_changed(self.update_current_image)
         return slider
 
 
