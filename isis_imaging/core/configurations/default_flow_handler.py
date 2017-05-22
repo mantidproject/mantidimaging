@@ -66,11 +66,13 @@ def execute(config):
         return sample
 
     if not config.func.only_postproc:
-        # interpolate the CORs
-        cor_slices = config.func.cor_slices
         cors = config.func.cors
-        config.func.cors = cor_interp.execute(sample.shape[0], cor_slices,
-                                              cors)
+        # if they're the same length then we have a COR for each slice!
+        if len(cors) != sample.shape[0]:
+            # interpolate the CORs
+            cor_slices = config.func.cor_slices
+            config.func.cors = cor_interp.execute(sample.shape[0], cor_slices,
+                                                  cors)
 
         sample = tool.run_reconstruct(sample, config)
     else:

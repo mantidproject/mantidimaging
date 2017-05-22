@@ -57,12 +57,12 @@ def execute(data, threshold):
     """
 
     if threshold and threshold > 0.0:
-        h.pstart("Applying cut-off with level: {0}".format(threshold))
         dmin = np.amin(data)
         dmax = np.amax(data)
+        h.pstart("Applying cut-off with level: {0}, min value {1}, max value {2}".format(threshold, dmin, dmax))
         rel_cut_off = dmin + threshold * (dmax - dmin)
 
-        data = np.minimum(data, rel_cut_off)
+        np.minimum(data, rel_cut_off, out=data)
 
         h.pstop("Finished cut-off step, with pixel data type: {0}.".format(
             data.dtype))

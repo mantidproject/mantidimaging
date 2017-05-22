@@ -603,5 +603,6 @@ class FunctionalConfig(object):
         self.indices = args.indices
         self.max_memory = args.max_memory
         self.max_ratio = args.max_ratio
+        self.no_recon = args.no_recon
 
         self.gui = args.gui
