@@ -34,8 +34,9 @@ def execute(config, sample, flat, dark):
         scale_factors = value_scaling.create_factors(sample, roi, cores,
                                                      chunksize)
 
-    sample = background_correction.execute(sample, flat, dark, cores,
-                                           chunksize)
+    sample = background_correction.execute(
+        sample, flat, dark, cores=cores, chunksize=chunksize)
+
     # removes the contrast difference between the stack of images
     sample = contrast_normalisation.execute(sample, air, cores, chunksize)
 

@@ -8,7 +8,8 @@ def execute(config, executable):
     from core.algorithms.shape_splitter import ShapeSplitter
     shape_splitter = ShapeSplitter(data_shape, 0, config.func.data_dtype,
                                    config.func.max_memory,
-                                   config.func.max_ratio)
+                                   config.func.max_ratio, config.func.no_recon)
+
     split, step = shape_splitter.execute()
 
     # if we are reconstructing
@@ -23,7 +24,6 @@ def execute(config, executable):
         print("generated cors:", centers_of_rotation)
 
     print(split, step)
-    print("executing the thing")
     for i in range(len(split) - 1):
         config.func.indices = [split[i], split[i + 1], 1]
         print("Running on indices:", config.func.indices)

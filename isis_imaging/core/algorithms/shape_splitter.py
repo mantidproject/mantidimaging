@@ -3,12 +3,19 @@ import numpy as np
 
 
 class ShapeSplitter(object):
-    def __init__(self, shape, axis, dtype, max_mem, max_ratio=1):
+    def __init__(self,
+                 shape,
+                 axis,
+                 dtype,
+                 max_mem,
+                 max_ratio=1,
+                 no_recon=False):
         self.shape = shape
         self.axis = axis
         self.dtype = dtype
         self.max_mem = max_mem
         self.max_ratio = max_ratio
+        self.no_recon = no_recon
 
     def single_size(self, shape=None, axis=None):
         """
@@ -83,7 +90,10 @@ class ShapeSplitter(object):
     def R(self, size, sinograms=True):
         # we are using sinograms, so the reconstructed shape will be exactly the same,
         # thus we double the size of the reconstruction
-        ratio = size * 2 / self.max_mem
+        if self.no_recon:
+            ratio = size / self.max_mem
+        else:
+            ratio = size * 2 / self.max_mem
         return ratio
 
     def execute(self):

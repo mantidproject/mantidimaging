@@ -94,6 +94,7 @@ class FunctionalConfig(object):
         self.indices = None
         self.max_memory = None
         self.max_ratio = 1.
+        self.no_recon = False
 
         # start the GUI
         self.gui = False
@@ -522,6 +523,15 @@ class FunctionalConfig(object):
             help="Default: %(default)s. Specify the maximum allowed ratio of "
             "predicted memory / allowed memory. "
             "This needs to be in range of 0 < ratio < 1")
+
+        grp_recon.add_argument(
+            "--no-recon",
+            required=False,
+            action='store_true',
+            default=self.no_recon,
+            help="Default: %(default)s. If specified, the size of the "
+            "reconstructed volume will not be taken into account. This can "
+            "be useful for --only-preproc runs.")
 
         return parser
 
