@@ -25,7 +25,7 @@ def execute(config, executable):
     print(split, step)
     print("executing the thing")
     for i in range(len(split) - 1):
-        config.func.indices = [split[i], split[i + 1]]
+        config.func.indices = [split[i], split[i + 1], 1]
         print("Running on indices:", config.func.indices)
         if recon:
             config.func.cors = centers_of_rotation[split[i]:split[i + 1]]
