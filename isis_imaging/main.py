@@ -18,7 +18,6 @@ def check_version_info():
 
 def main():
     check_version_info()
-
     config = recon_config.grab_full_config()
 
     if config.func.debug and config.func.debug_port:

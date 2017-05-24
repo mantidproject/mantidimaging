@@ -139,6 +139,9 @@ def load(input_path=None,
     if img_format not in supported_formats():
         raise ValueError("Image format " + img_format + " not supported!")
 
+    if indices and len(indices) < 3:
+        raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
+
     if img_format in ['nxs']:
         from core.imgdata import stack_loader
         # pass only the first filename as we only expect a stack

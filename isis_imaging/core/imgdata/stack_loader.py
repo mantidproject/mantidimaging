@@ -67,9 +67,7 @@ def execute(load_func,
     # create shared array
     new_data = load_func(file_name)
 
-    if indices and len(indices) < 3:
-        raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
-    else:
+    if indices:
         new_data = new_data[indices[0]:indices[1]:indices[2]]
 
     img_shape = new_data.shape
