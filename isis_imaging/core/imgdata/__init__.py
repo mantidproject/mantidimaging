@@ -22,4 +22,7 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-# from isis_imaging.core.imgdata import *  # noqa: F401, F403
+# hide all of the other modules
+__all__ = ['saver', 'loader']
+from . import saver  # noqa: F401, F403
+from . import loader  # noqa: F401, F403

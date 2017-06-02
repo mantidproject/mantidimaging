@@ -22,4 +22,17 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-# from isis_imaging.core.filters import *  # noqa: F401, F403
+from core.algorithms import registrator as r
+from core.algorithms.find_package import find_package
+
+# read in all of the available modules
+__all__ = r.all_modules(find_package(__file__))
+
+# append the wip folder
+__all__.append('wip')
+
+# delete the reference
+del r
+
+# actually do the imports
+from . import *  # noqa: F401, F403

@@ -1,6 +1,8 @@
-from __future__ import (absolute_import, print_function, division)
-import helper as h
+from __future__ import absolute_import, division, print_function
+
 import scipy.ndimage as scipy_ndimage
+
+import helper as h
 from core.parallel import shared_mem as psm
 from core.parallel import utility as pu
 

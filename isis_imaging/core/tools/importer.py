@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+import helper as h
 
 
 def timed_import(config):
@@ -11,7 +12,6 @@ def timed_import(config):
     :return: the imported tool
     """
 
-    import helper as h
     h.pstart("Importing tool " + config.func.tool)
     tool = do_importing(config.func.tool, config.func.algorithm)
     h.pstop("Tool loaded.")

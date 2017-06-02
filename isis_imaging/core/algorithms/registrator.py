@@ -78,7 +78,11 @@ def _gui(qt_parent, package_dir, modules):
     return qt_parent
 
 
-def register_into(obj, directory=None, package="core/filters", func=_cli):
+def register_into(obj,
+                  directory=None,
+                  package="core/filters",
+                  func=_cli,
+                  norecurse=False):
     """
     This function will build the path to the specified package, and then import all of the modules from it,
     and call cli_register if _cli is specified, or gui_register if _gui is specified.
@@ -119,7 +123,20 @@ def register_into(obj, directory=None, package="core/filters", func=_cli):
             files = filter(check, files)
 
         # trim the .py in the name to get only the filename
-        modules = map(lambda x: x[:-3], files)
+        modules = map(lambda f: f[:-3], files)
         obj = func(obj, package_dir, modules)
+        if norecurse:
+            return obj
 
     return obj
+
+
+def all_modules(package):
+    everything = []
+
+    def append_to_foreign_object(obj, package_dir, modules):
+        # simply ignore other params and append the modules
+        everything.append(modules)
+
+    register_into([], None, package, append_to_foreign_object, norecurse=True)
+    return [item for sublist in everything for item in sublist]

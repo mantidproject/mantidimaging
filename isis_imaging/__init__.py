@@ -25,4 +25,5 @@ from __future__ import (absolute_import, division, print_function)
 # import all the submodules of core, and they can be accessed directly via
 # isis_imaging.<module>, e.g. isis_imaging.filters.median_filter,
 # without going through isis_imaging.**core**.filters.median_filter
-from isis_imaging.core import *  # noqa: F401, F403
+
+from . import core  # noqa: F401, F403
