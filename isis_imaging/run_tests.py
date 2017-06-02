@@ -1,18 +1,31 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import os
+
 import nose
 
+TEST_CORE_DIR = 'tests/core_test/'
+TEST_FILTERS_DIR = 'tests/filters_test/'
+TEST_GUI_DIR = 'tests/gui_test/'
+TEST_ALGORITHMS_DIR = 'tests/algorithms_test/'
+
 _avail_modules = {
-    'aggregate': 'tests/core/aggregate_test.py',
-    'convert': 'tests/core/convert_test.py',
-    'configs': 'tests/core/configs_test.py',
-    'data': 'tests/core/imgdata_test.py',
-    'imgdata': 'tests/core/imgdata_test.py',
-    'helper': 'tests/core/helper_test.py',
-    'tools': 'tests/core/importer_test.py/',
-    'gui': 'tests/gui_test/',
-    'algorithms': 'tests/algorithms',
-    'all': ['tests/core', 'tests/gui_test/', 'tests/algorithms']
+    'aggregate': TEST_CORE_DIR + 'aggregate_test.py',
+    'convert': TEST_CORE_DIR + 'convert_test.py',
+    'configs': TEST_CORE_DIR + 'configs_test.py',
+    'data': TEST_CORE_DIR + 'imgdata_test.py',
+    'imgdata': TEST_CORE_DIR + 'imgdata_test.py',
+    'helper': TEST_CORE_DIR + 'helper_test.py',
+    'tools': TEST_CORE_DIR + 'importer_test.py',
+    'gui': TEST_GUI_DIR,
+    'algorithms': TEST_ALGORITHMS_DIR,
+    'filters': TEST_FILTERS_DIR,
+    'all': [
+        TEST_CORE_DIR,
+        TEST_FILTERS_DIR,
+        TEST_GUI_DIR,
+        TEST_ALGORITHMS_DIR
+    ]
 }
 
 
