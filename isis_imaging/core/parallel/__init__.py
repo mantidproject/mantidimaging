@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-"""
+__doc__ = """
 parallel.shared_mem: Runs a function in parallel.
                      Expects and uses a single 3D shared memory array between the processes.
 parallel.two_shared_mem: Runs a function in parallel.
@@ -31,3 +31,5 @@ parallel.exclusive_mem: Runs a function in parallel.
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
+
+from isis_imaging.core.parallel import *  # noqa: F401, F403
