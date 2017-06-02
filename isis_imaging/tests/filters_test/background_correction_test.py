@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from core.filters import background_correction
+from isis_imaging.core.filters import background_correction
 from tests import test_helper as th
 
 

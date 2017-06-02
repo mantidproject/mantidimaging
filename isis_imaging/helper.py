@@ -35,7 +35,7 @@ _readme = None
 
 
 def check_config_class(config):
-    from core.configs.recon_config import ReconstructionConfig
+    from isis_imaging.core.configs.recon_config import ReconstructionConfig
     assert isinstance(
         config, ReconstructionConfig
     ), "The provided config is not of type ReconstructionConfig and cannot be used!"
@@ -46,7 +46,7 @@ def initialise(config, saver=None):
     global _readme
     _verbosity = config.func.verbosity
     if saver:
-        from readme_creator import Readme
+        from isis_imaging.readme_creator import Readme
         _readme = Readme(config, saver)
 
 
@@ -102,7 +102,7 @@ def run_import_checks(config):
     """
     Run the import checks to notify the user which features are available in the execution.
     """
-    from core.parallel import utility as pu
+    from isis_imaging.core.parallel import utility as pu
     progress_available()
 
     if not pu.multiprocessing_available():

@@ -5,7 +5,7 @@ from isis_imaging.core.parallel import shared_mem as psm
 from isis_imaging.core.parallel import utility as pu
 
 
-def cli_register(parser):
+def _cli_register(parser):
     parser.add_argument(
         "-r",
         "--rotation",
@@ -18,7 +18,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def _gui_register(dialog):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
 
     if dialog is None:

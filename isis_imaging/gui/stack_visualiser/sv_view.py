@@ -11,7 +11,7 @@ from matplotlib.widgets import RectangleSelector, Slider
 from PyQt4 import QtCore, QtGui, uic
 from PyQt4.QtCore import Qt
 
-from core.algorithms import gui_compile_ui
+from isis_imaging.core.algorithms import gui_compile_ui
 from gui.stack_visualiser.sv_presenter import ImgpyStackViewerPresenter
 from gui.stack_visualiser.zoom_rectangle import FigureCanvasColouredRectangle
 

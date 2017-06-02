@@ -5,10 +5,10 @@ import tempfile
 import os
 import shutil
 
-from core.imgdata import loader
+from isis_imaging.core.imgdata import loader
 from tests import test_helper as th
-from core.configs.recon_config import ReconstructionConfig
-from core.imgdata.saver import Saver
+from isis_imaging.core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.imgdata.saver import Saver
 
 
 class DataTest(unittest.TestCase):

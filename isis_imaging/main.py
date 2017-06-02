@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-import helper as h
-from core.configs import recon_config
+from isis_imaging import helper as h
+from isis_imaging.core.configs import recon_config
 
 
 def check_version_info():
@@ -34,16 +34,16 @@ def main():
         from gui import gui
         thingy_to_execute = gui.execute
     elif config.func.imopr:
-        from core.imopr import imopr
+        from isis_imaging.core.imopr import imopr
         thingy_to_execute = imopr.execute
     elif config.func.aggregate:
-        from core.aggregate import aggregate
+        from isis_imaging.core.aggregate import aggregate
         thingy_to_execute = aggregate.execute
     elif config.func.convert:
-        from core.convert import convert
+        from isis_imaging.core.convert import convert
         thingy_to_execute = convert.execute
     else:
-        from core.configurations import default_flow_handler
+        from isis_imaging.core.configurations import default_flow_handler
         cmd_line = " ".join(sys.argv)
         # dynamically attach the parameter used in recon
         config.cmd_line = cmd_line
@@ -53,7 +53,7 @@ def main():
     if not config.func.split:
         res = thingy_to_execute(config)
     else:
-        from core.algorithms import execution_splitter
+        from isis_imaging.core.algorithms import execution_splitter
         res = execution_splitter.execute(config, thingy_to_execute)
     h.total_execution_timer()
 

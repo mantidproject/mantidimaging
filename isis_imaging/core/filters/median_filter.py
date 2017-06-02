@@ -6,8 +6,10 @@ from isis_imaging import helper as h
 from isis_imaging.core.parallel import shared_mem as psm
 from isis_imaging.core.parallel import utility as pu
 
+__all__ = ['execute', 'modes']
 
-def cli_register(parser):
+
+def _cli_register(parser):
     default_size = None
     size_help = "Apply median filter (2d) on \
                  reconstructed volume with the given kernel size."
@@ -33,7 +35,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(main_window):
+def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui

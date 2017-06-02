@@ -1,4 +1,4 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
@@ -26,4 +26,24 @@ from __future__ import (absolute_import, division, print_function)
 # isis_imaging.<module>, e.g. isis_imaging.filters.median_filter,
 # without going through isis_imaging.**core**.filters.median_filter
 
-from . import core  # noqa: F401, F403
+__all__ = [
+    'aggregate', 'algorithms', 'configs', 'configurations', 'convert',
+    'filters', 'imgdata', 'imopr', 'parallel', 'tools'
+]
+
+# modules part of public API
+from isis_imaging.core import aggregate
+from isis_imaging.core import algorithms
+from isis_imaging.core import configs
+from isis_imaging.core import configurations
+from isis_imaging.core import convert
+from isis_imaging.core import filters
+from isis_imaging.core import imgdata
+from isis_imaging.core import imopr
+from isis_imaging.core import parallel
+from isis_imaging.core import tools
+
+# delete 'core' even though we've never imported it!
+# this hides the core from being directly accessed with isis_imaging.core
+# however it messes up ipython's reload functionality and is not worth it
+# del core  # noqa: F821

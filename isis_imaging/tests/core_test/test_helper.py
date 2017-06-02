@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
 import numpy.testing as npt
-from core.parallel import utility as pu
+from isis_imaging.core.parallel import utility as pu
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)

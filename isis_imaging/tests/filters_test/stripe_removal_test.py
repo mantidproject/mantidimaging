@@ -4,8 +4,8 @@ import unittest
 
 import numpy.testing as npt
 
-import helper as h
-from core.filters import stripe_removal
+from isis_imaging import helper as h
+from isis_imaging.core.filters import stripe_removal
 from tests import test_helper as th
 
 

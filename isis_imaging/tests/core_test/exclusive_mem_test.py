@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import unittest
 
-import helper as h
-from core.parallel import exclusive_mem as esm
+from isis_imaging import helper as h
+from isis_imaging.core.parallel import exclusive_mem as esm
 from tests import test_helper as th
 
 

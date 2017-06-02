@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-from core.algorithms import registrator
+from isis_imaging.core.algorithms import registrator
 from PyQt4.QtGui import QApplication
 
 from gui.main_window.mw_view import ImgpyMainWindowView

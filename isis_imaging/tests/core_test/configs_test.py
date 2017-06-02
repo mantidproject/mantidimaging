@@ -5,13 +5,12 @@ import unittest
 
 import numpy.testing as npt
 
-from core.configs.functional_config import FunctionalConfig
-from core.configs.recon_config import ReconstructionConfig
-from core.algorithms import registrator
+from isis_imaging.core.configs.functional_config import FunctionalConfig
+from isis_imaging.core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.algorithms import registrator
 
 
 class ConfigsTest(unittest.TestCase):
-
     def setUp(self):
         self.parser = argparse.ArgumentParser()
         self.func_config = FunctionalConfig()
@@ -22,7 +21,7 @@ class ConfigsTest(unittest.TestCase):
         self._compare_dict_to_str(self.func_config.__dict__,
                                   str(self.func_config), FunctionalConfig)
 
-    def test_cli_registering(self):
+    def test__cli_registering(self):
         parser = argparse.ArgumentParser()
         self.func_config = FunctionalConfig()
         parser = self.func_config.setup_parser(parser)

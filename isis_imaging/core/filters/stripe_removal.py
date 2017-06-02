@@ -4,7 +4,7 @@ from isis_imaging import helper as h
 from isis_imaging.core.tools import importer
 
 
-def cli_register(parser):
+def _cli_register(parser):
     parser.add_argument(
         "--stripe-removal-wf",
         nargs='*',
@@ -43,7 +43,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def _gui_register(dialog):
     # TODO will probably be best to separate into multiple algs
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
 

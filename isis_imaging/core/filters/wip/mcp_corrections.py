@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 from isis_imaging import helper as h
 
 
-def cli_register(parser):
+def _cli_register(parser):
     parser.add_argument(
         "--mcp-corrections",
         required=False,
@@ -13,7 +13,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(dialog):
+def _gui_register(dialog):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
 
     if dialog is None:

@@ -11,14 +11,14 @@ MINIMUM_PIXEL_VALUE = 1e-9
 MAXIMUM_PIXEL_VALUE = 3
 
 
-def cli_register(parser):
+def _cli_register(parser):
     # this doesn't have anything to add,
     # the options are added in the funcitonal config,
     # which should be moved to here TODO
     return parser
 
 
-def gui_register(main_window):
+def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from gui.main_window.load_dialog.load_dialog import select_file
@@ -173,12 +173,11 @@ def _execute_par(data,
     return data
 
 
-def _execute_seq(
-        data,
-        flat=None,
-        dark=None,
-        clip_min=MINIMUM_PIXEL_VALUE,
-        clip_max=MAXIMUM_PIXEL_VALUE):
+def _execute_seq(data,
+                 flat=None,
+                 dark=None,
+                 clip_min=MINIMUM_PIXEL_VALUE,
+                 clip_max=MAXIMUM_PIXEL_VALUE):
     h.pstart("Starting normalization by flat/dark images.")
 
     norm_divide = np.subtract(flat, dark)

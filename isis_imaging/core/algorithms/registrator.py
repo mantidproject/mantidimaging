@@ -22,12 +22,12 @@ def _cli(parser, package_dir, modules):
         full_module = package_dir + '.' + module
         m = importlib.import_module(full_module)
 
-        # warn the user if one of the modules is missing the cli_register method
+        # warn the user if one of the modules is missing the _cli_register method
         try:
-            m.cli_register(group)
+            m._cli_register(group)
         except AttributeError:
-            cli_register_warning = "The module " + full_module + " does NOT have a cli_register(parser) method!"
-            warnings.warn(cli_register_warning)
+            _cli_register_warning = "The module " + full_module + " does NOT have a _cli_register(parser) method!"
+            warnings.warn(_cli_register_warning)
     return parser
 
 
@@ -61,7 +61,7 @@ def _gui(qt_parent, package_dir, modules):
 
         # warn the user if one of the modules is missing the register method
         try:
-            dialog = m.gui_register(main_window)
+            dialog = m._gui_register(main_window)
             action = QAction(module, group)
             # the captured_dialog=dialog in the lambda captures THE ORIGINAL reference to the dialog
             # and when the user clicks the QAction in the QMenu the correct dialog is shown!
@@ -85,7 +85,7 @@ def register_into(obj,
                   norecurse=False):
     """
     This function will build the path to the specified package, and then import all of the modules from it,
-    and call cli_register if _cli is specified, or gui_register if _gui is specified.
+    and call _cli_register if _cli is specified, or _gui_register if _gui is specified.
 
     :param obj: the obj into which the modules will be registered,
                 this is simply forwarded onto the actual functions that do the dynamic registering

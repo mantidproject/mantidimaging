@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 from tests import test_helper as th
-from core.filters import contrast_normalisation
+from isis_imaging.core.filters import contrast_normalisation
 
 
 class ContrastNormalisationTest(unittest.TestCase):

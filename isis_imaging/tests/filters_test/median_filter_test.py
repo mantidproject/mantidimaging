@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
-import helper as h
+from isis_imaging import helper as h
 from tests import test_helper as th
-from core.filters import median_filter
+from isis_imaging.core.filters import median_filter
 
 
 class MedianTest(unittest.TestCase):

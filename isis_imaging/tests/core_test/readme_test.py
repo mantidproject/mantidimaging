@@ -5,9 +5,9 @@ import tempfile
 import unittest
 
 import tests.test_helper as th
-from core.configs.recon_config import ReconstructionConfig
-from core.imgdata import saver
-from readme_creator import Readme
+from isis_imaging.core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.imgdata import saver
+from isis_imaging.readme_creator import Readme
 
 
 class ReadmeTest(unittest.TestCase):

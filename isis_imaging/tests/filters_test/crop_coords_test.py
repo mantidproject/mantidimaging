@@ -4,8 +4,8 @@ import unittest
 
 import numpy.testing as npt
 
-import helper as h
-from core.filters import crop_coords
+from isis_imaging import helper as h
+from isis_imaging.core.filters import crop_coords
 from tests import test_helper as th
 
 

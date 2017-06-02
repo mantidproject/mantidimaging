@@ -10,7 +10,7 @@ class ValueScalingTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(ValueScalingTest, self).__init__(*args, **kwargs)
 
-        from core.algorithms import value_scaling
+        from isis_imaging.core.algorithms import value_scaling
         self.alg = value_scaling
 
     def test_create_factors_no_roi(self):

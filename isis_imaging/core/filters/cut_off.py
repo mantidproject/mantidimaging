@@ -3,7 +3,7 @@ from isis_imaging import helper as h
 import numpy as np
 
 
-def cli_register(parser):
+def _cli_register(parser):
     parser.add_argument(
         "--cut-off",
         required=False,
@@ -16,7 +16,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(main_window):
+def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui
@@ -59,7 +59,9 @@ def execute(data, threshold):
     if threshold and threshold > 0.0:
         dmin = np.amin(data)
         dmax = np.amax(data)
-        h.pstart("Applying cut-off with level: {0}, min value {1}, max value {2}".format(threshold, dmin, dmax))
+        h.pstart(
+            "Applying cut-off with level: {0}, min value {1}, max value {2}".
+            format(threshold, dmin, dmax))
         rel_cut_off = dmin + threshold * (dmax - dmin)
 
         np.minimum(data, rel_cut_off, out=data)

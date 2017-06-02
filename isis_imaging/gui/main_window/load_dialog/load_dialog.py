@@ -2,9 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 from PyQt4 import QtGui
 
-from core.algorithms import gui_compile_ui
+from isis_imaging.core.algorithms import gui_compile_ui
 
-from core.imgdata.loader import get_file_names, get_file_extension
+from isis_imaging.core.imgdata.loader import get_file_names, get_file_extension
 
 import os
 

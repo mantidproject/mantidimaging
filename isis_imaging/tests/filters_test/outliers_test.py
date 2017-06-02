@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy.testing as npt
 from tests import test_helper as th
-from core.filters import outliers
+from isis_imaging.core.filters import outliers
 
 
 class OutliersTest(unittest.TestCase):

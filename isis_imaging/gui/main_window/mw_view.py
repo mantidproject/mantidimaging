@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt as Qt_
 
-from core.algorithms import gui_compile_ui
+from isis_imaging.core.algorithms import gui_compile_ui
 from gui.main_window.mw_presenter import ImgpyMainWindowPresenter
 from gui.main_window.mw_presenter import Notification as PresNotification
 from gui.stack_visualiser.sv_view import ImgpyStackVisualiserView

@@ -3,7 +3,7 @@ from isis_imaging import helper as h
 from isis_imaging.core.tools import importer
 
 
-def cli_register(parser):
+def _cli_register(parser):
     parser.add_argument(
         "--circular-mask",
         required=False,
@@ -26,7 +26,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(main_window):
+def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui

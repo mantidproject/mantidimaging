@@ -7,10 +7,10 @@ import unittest
 
 import numpy as np
 
-from core.aggregate import aggregate
-from core.configs.recon_config import ReconstructionConfig
-from core.imgdata import loader
-from core.imgdata.saver import Saver
+from isis_imaging.core.aggregate import aggregate
+from isis_imaging.core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.imgdata import loader
+from isis_imaging.core.imgdata.saver import Saver
 from tests import test_helper as th
 
 

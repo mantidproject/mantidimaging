@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-import helper as h
+from isis_imaging import helper as h
 from tests import test_helper as th
 
 
@@ -12,7 +12,7 @@ class RingRemovalTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(RingRemovalTest, self).__init__(*args, **kwargs)
 
-        from core.filters import ring_removal
+        from isis_imaging.core.filters import ring_removal
         self.alg = ring_removal
 
     def test_not_executed(self):

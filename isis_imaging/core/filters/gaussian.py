@@ -5,7 +5,7 @@ from isis_imaging.core.parallel import shared_mem as psm
 import scipy.ndimage as scipy_ndimage
 
 
-def cli_register(parser):
+def _cli_register(parser):
     default_size = None
     default_order = 0
     parser.add_argument(
@@ -41,7 +41,7 @@ def cli_register(parser):
     return parser
 
 
-def gui_register(main_window):
+def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui

@@ -4,8 +4,8 @@ import unittest
 
 import numpy.testing as npt
 
-import helper as h
-from core.configs.recon_config import ReconstructionConfig
+from isis_imaging import helper as h
+from isis_imaging.core.configs.recon_config import ReconstructionConfig
 
 
 class HelperTest(unittest.TestCase):
@@ -15,10 +15,10 @@ class HelperTest(unittest.TestCase):
     def test_readme_caching(self):
         config = ReconstructionConfig.empty_init()
 
-        from core.imgdata.saver import Saver
+        from isis_imaging.core.imgdata.saver import Saver
         saver = Saver(config)
 
-        from readme_creator import Readme
+        from isis_imaging.readme_creator import Readme
         readme = Readme(config, saver)
         h.set_readme(readme)
         h.tomo_print("Testing verbosity at 0")

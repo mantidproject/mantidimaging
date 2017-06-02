@@ -4,7 +4,7 @@ import unittest
 
 import mock
 
-from core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.configs.recon_config import ReconstructionConfig
 from gui.main_window import mw_presenter, mw_view
 
 
