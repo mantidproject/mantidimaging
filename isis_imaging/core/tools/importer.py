@@ -1,5 +1,5 @@
 from __future__ import absolute_import, division, print_function
-import helper as h
+from isis_imaging import helper as h
 
 
 def timed_import(config):
@@ -32,12 +32,12 @@ def do_importing(tool, alg='fbp'):
             "The name of a reconstruction tool is required as a string. Got: {0}".
             format(tool))
     if 'tomopy' == tool:
-        from core.tools.tomopy_tool import TomoPyTool
+        from isis_imaging.core.tools.tomopy_tool import TomoPyTool
         TomoPyTool.check_algorithm_compatibility(alg)
         imported_tool = TomoPyTool()
 
     elif 'astra' == tool:
-        from core.tools.astra_tool import AstraTool
+        from isis_imaging.core.tools.astra_tool import AstraTool
         AstraTool.check_algorithm_compatibility(alg)
         imported_tool = AstraTool()
     else:

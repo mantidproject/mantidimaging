@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-import helper as h
-from core.filters import (circular_mask, clip_values, gaussian, median_filter,
+from isis_imaging import helper as h
+from isis_imaging.core.filters import (circular_mask, clip_values, gaussian, median_filter,
                           outliers, ring_removal)
 
 

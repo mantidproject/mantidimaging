@@ -7,8 +7,8 @@ def sanity_checks(config):
 
 
 def execute(sample, flat, dark, config, indices):
-    from core.imopr import helper
-    from core.imopr.visualiser import show_3d
+    from isis_imaging.core.imopr import helper
+    from isis_imaging.core.imopr.visualiser import show_3d
     helper.print_start("Running IMOPR with action SINOGRAM")
 
     if len(indices) == 0:

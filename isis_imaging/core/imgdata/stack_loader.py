@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-import helper as h
-from core.parallel import utility as pu
+from isis_imaging import helper as h
+from isis_imaging.core.parallel import utility as pu
 
 
 def parallel_move_data(input_data, output_data):
@@ -33,7 +33,7 @@ def do_stack_load_seq(data, new_data, img_shape, name):
 
 
 def do_stack_load_par(data, new_data, cores, chunksize, name):
-    from core.parallel import two_shared_mem as ptsm
+    from isis_imaging.core.parallel import two_shared_mem as ptsm
     f = ptsm.create_partial(
         parallel_move_data, fwd_function=ptsm.inplace)
     ptsm.execute(new_data, data, f, cores, chunksize, name)

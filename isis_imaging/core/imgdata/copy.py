@@ -15,7 +15,7 @@ def deepcopy(data):
     # sanity check
     assert isinstance(data, np.ndarray)
 
-    from core.parallel import utility as pu
+    from isis_imaging.core.parallel import utility as pu
     new_array = pu.create_shared_array(data.shape)
     import copy
     # create a not shared deep copy

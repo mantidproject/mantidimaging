@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-from core.parallel import two_shared_mem as ptsm
-from core.parallel import utility as pu
+from isis_imaging.core.parallel import two_shared_mem as ptsm
+from isis_imaging.core.parallel import utility as pu
 
 
 def _calc_avg(data,

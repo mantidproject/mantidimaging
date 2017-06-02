@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-import helper as h
-from core.imgdata import loader
+from isis_imaging import helper as h
+from isis_imaging.core.imgdata import loader
 
 
 def get_available_operators():
@@ -62,34 +62,34 @@ def execute(config):
     h.tomo_print("Data shape {0}".format(sample.shape))
     flat = dark = None
 
-    # from core.recon.recon import pre_processing
+    # from isis_imaging.core.recon.recon import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)
     return module.execute(sample, flat, dark, config, indices)
 
 
 def get_function(module_name):
     if module_name == "recon":
-        from core.imopr import recon
+        from isis_imaging.core.imopr import recon
         return recon
     elif module_name == "sino":
-        from core.imopr import sinogram
+        from isis_imaging.core.imopr import sinogram
         return sinogram
     elif module_name == "show" or module_name == "vis":
-        from core.imopr import visualiser
+        from isis_imaging.core.imopr import visualiser
         return visualiser
     elif module_name == "cor":
-        from core.imopr import cor
+        from isis_imaging.core.imopr import cor
         return cor
     elif module_name == "corvo":
-        from core.imopr import corvo
+        from isis_imaging.core.imopr import corvo
         return corvo
     elif module_name == "corpc":
-        from core.imopr import corpc
+        from isis_imaging.core.imopr import corpc
         return corpc
     elif module_name == "corwrite":
-        from core.imopr import corwrite
+        from isis_imaging.core.imopr import corwrite
         return corwrite
     else:
-        from core.imopr import opr
+        from isis_imaging.core.imopr import opr
         if module_name in opr.get_available_operators():
             return opr

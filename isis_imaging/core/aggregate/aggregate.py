@@ -4,9 +4,9 @@ import os
 
 import numpy as np
 
-import helper as h
-from core.imgdata import loader, saver
-from core.imgdata.loader import get_file_names, get_folder_names
+from isis_imaging import helper as h
+from isis_imaging.core.imgdata import loader, saver
+from isis_imaging.core.imgdata.loader import get_file_names, get_folder_names
 
 
 def execute(config):

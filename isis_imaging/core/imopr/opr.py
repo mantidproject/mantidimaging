@@ -38,14 +38,14 @@ def get_available_operators():
 def execute(sample, flat, dark, config, indices):
     opr = config.func.imopr[-1]
 
-    from core.imopr import helper
+    from isis_imaging.core.imopr import helper
     helper.print_start("Running IMOPR with operation {0}".format(opr))
 
     i1, i2 = helper.handle_indices(indices)
 
     res = _available_operators[opr](sample[i1], sample[i2])
 
-    from core.imopr import visualiser as vis
+    from isis_imaging.core.imopr import visualiser as vis
     vis.show_image(res, block=True)
 
     return res

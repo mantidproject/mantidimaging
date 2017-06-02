@@ -6,7 +6,7 @@ def sanity_checks(config):
 
 
 def execute(sample, flat, dark, config, indices):
-    from core.imopr import helper
+    from isis_imaging.core.imopr import helper
     helper.print_start("Running IMOPR with action VISUALISE/SHOW")
     import matplotlib.pyplot as plt
 

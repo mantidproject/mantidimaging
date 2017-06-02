@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-from core.imopr import helper
-from core.tools import importer
+from isis_imaging.core.imopr import helper
+from isis_imaging.core.tools import importer
 
 
 def sanity_checks(config):

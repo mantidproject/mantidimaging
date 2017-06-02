@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
-import helper as h
-from core.tools import importer
+from isis_imaging import helper as h
+from isis_imaging.core.tools import importer
 
 
 def cli_register(parser):
@@ -27,7 +27,7 @@ def cli_register(parser):
 
 
 def gui_register(main_window):
-    from core.algorithms import gui_compile_ui as gcu
+    from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui
     dialog = AlgorithmDialog(main_window)

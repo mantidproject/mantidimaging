@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-import helper as h
-from core.tools import importer
+from isis_imaging import helper as h
+from isis_imaging.core.tools import importer
 
 
 def cli_register(parser):
@@ -45,7 +45,7 @@ def cli_register(parser):
 
 def gui_register(dialog):
     # TODO will probably be best to separate into multiple algs
-    from core.algorithms import gui_compile_ui as gcu
+    from isis_imaging.core.algorithms import gui_compile_ui as gcu
 
     if dialog is None:
         dialog = gcu.execute("gui/ui/alg_dialog.ui")

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-import helper as h
-from core.tools.abstract_tool import AbstractTool
+from isis_imaging import helper as h
+from isis_imaging.core.tools.abstract_tool import AbstractTool
 
 
 class AstraTool(AbstractTool):
@@ -81,7 +81,7 @@ class AstraTool(AbstractTool):
         # plow = (data.shape[2] - cor * 2)
         # phigh = 0
 
-        from core.algorithms import projection_angles
+        from isis_imaging.core.algorithms import projection_angles
         if proj_angles is None:
             proj_angles = projection_angles.generate(config.func.max_angle,
                                                      data.shape[1])

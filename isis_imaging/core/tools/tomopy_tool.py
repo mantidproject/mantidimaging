@@ -2,9 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-import helper as h
-from core.algorithms import projection_angles
-from core.tools.abstract_tool import AbstractTool
+from isis_imaging import helper as h
+from isis_imaging.core.algorithms import projection_angles
+from isis_imaging.core.tools.abstract_tool import AbstractTool
 
 
 class TomoPyTool(AbstractTool):
@@ -91,7 +91,7 @@ class TomoPyTool(AbstractTool):
         assert len(cors) == sample.shape[0],\
             "The provided number of CORs does not match the slice number! \
             A Center of rotation must be provided for each slice. Usually \
-            that is done via core.algorithms.cor_interp"
+            that is done via core.algorithms.cor_interpolate"
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 

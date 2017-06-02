@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
-from core.imgdata import saver
-from core.imgdata import loader
+from isis_imaging.core.imgdata import saver
+from isis_imaging.core.imgdata import loader
 
 
 def execute(config):

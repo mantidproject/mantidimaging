@@ -2,13 +2,13 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-import helper as h
-from core.algorithms import cor_interp
-from core.imgdata import loader, saver
-from core.tools import importer
-from readme_creator import Readme
+from isis_imaging import helper as h
+from isis_imaging.core.algorithms import cor_interpolate
+from isis_imaging.core.imgdata import loader, saver
+from isis_imaging.core.tools import importer
+from isis_imaging.readme_creator import Readme
 
-from core.configurations import default_preprocessing, default_postprocessing
+from isis_imaging.core.configurations import default_preprocessing, default_postprocessing
 
 
 def execute(config):
@@ -71,8 +71,8 @@ def execute(config):
         if len(cors) != sample.shape[0]:
             # interpolate the CORs
             cor_slices = config.func.cor_slices
-            config.func.cors = cor_interp.execute(sample.shape[0], cor_slices,
-                                                  cors)
+            config.func.cors = cor_interpolate.execute(sample.shape[0],
+                                                       cor_slices, cors)
 
         sample = tool.run_reconstruct(sample, config)
     else:

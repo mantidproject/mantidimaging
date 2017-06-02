@@ -1,5 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
-import helper as h
+from isis_imaging import helper as h
 
 
 def cli_register(parser):
@@ -18,7 +18,7 @@ def cli_register(parser):
 
 
 def gui_register(dialog):
-    from core.algorithms import gui_compile_ui as gcu
+    from isis_imaging.core.algorithms import gui_compile_ui as gcu
 
     if dialog is None:
         dialog = gcu.execute("gui/ui/alg_dialog.ui")

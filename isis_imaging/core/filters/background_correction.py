@@ -2,9 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-import helper as h
-from core.parallel import two_shared_mem as ptsm
-from core.parallel import utility as pu
+from isis_imaging import helper as h
+from isis_imaging.core.parallel import two_shared_mem as ptsm
+from isis_imaging.core.parallel import utility as pu
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
@@ -19,7 +19,7 @@ def cli_register(parser):
 
 
 def gui_register(main_window):
-    from core.algorithms import gui_compile_ui as gcu
+    from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from gui.main_window.load_dialog.load_dialog import select_file
     from PyQt4 import QtGui
@@ -40,7 +40,7 @@ def gui_register(main_window):
     dialog.formLayout.addRow(darkPath, darkButton)
 
     def decorate_execute():
-        from core.imgdata import loader
+        from isis_imaging.core.imgdata import loader
         import os
 
         flat_path = str(flatPath.text())
@@ -53,7 +53,7 @@ def gui_register(main_window):
         flat = (loader.load(flat_dir, img_format=flat_extension)).mean(axis=0)
         dark = (loader.load(dark_dir, img_format=dark_extension)).mean(axis=0)
         from functools import partial
-        from core.algorithms import value_scaling
+        from isis_imaging.core.algorithms import value_scaling
         par = partial(execute, flat=flat, dark=dark)
         # function to be applied before the execute function
         par.do_before = value_scaling.create_factors

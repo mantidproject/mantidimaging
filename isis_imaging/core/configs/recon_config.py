@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 import argparse
 from argparse import RawTextHelpFormatter
 
-from core.configs.functional_config import FunctionalConfig
-from core.algorithms import registrator
+from isis_imaging.core.configs.functional_config import FunctionalConfig
+from isis_imaging.core.algorithms import registrator
 
 
 def grab_full_config():

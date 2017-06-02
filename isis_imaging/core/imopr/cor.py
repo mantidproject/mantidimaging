@@ -1,8 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
-from core.algorithms import projection_angles
-from core.imopr import helper
-from core.tools import importer
+from isis_imaging.core.algorithms import projection_angles
+from isis_imaging.core.imopr import helper
+from isis_imaging.core.tools import importer
 
 
 def sanity_checks(config):

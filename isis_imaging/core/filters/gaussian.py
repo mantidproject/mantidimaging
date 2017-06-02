@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
-import helper as h
-from core.parallel import utility as pu
-from core.parallel import shared_mem as psm
+from isis_imaging import helper as h
+from isis_imaging.core.parallel import utility as pu
+from isis_imaging.core.parallel import shared_mem as psm
 import scipy.ndimage as scipy_ndimage
 
 
@@ -42,7 +42,7 @@ def cli_register(parser):
 
 
 def gui_register(main_window):
-    from core.algorithms import gui_compile_ui as gcu
+    from isis_imaging.core.algorithms import gui_compile_ui as gcu
     from gui.algorithm_dialog import AlgorithmDialog
     from PyQt4 import QtGui
     dialog = AlgorithmDialog(main_window)

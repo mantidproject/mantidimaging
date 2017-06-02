@@ -132,6 +132,7 @@ def register_into(obj,
 
 
 def all_modules(package):
+    # type: (str) -> [str]
     everything = []
 
     def append_to_foreign_object(obj, package_dir, modules):

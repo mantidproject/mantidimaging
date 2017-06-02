@@ -1,8 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
-from core.algorithms import cor_interp
-from core.algorithms.shape_splitter import ShapeSplitter
-from core.imgdata import loader
+from isis_imaging.core.algorithms import cor_interpolate
+from isis_imaging.core.algorithms.shape_splitter import ShapeSplitter
+from isis_imaging.core.imgdata import loader
 
 
 def execute(config, executable):
@@ -20,8 +20,8 @@ def execute(config, executable):
         recon = True
         # if 0 this will just generate the same for everything
         slices = config.func.cor_slices if config.func.cor_slices is not None else 0
-        centers_of_rotation = cor_interp.execute(data_shape[0], slices,
-                                                 config.func.cors)
+        centers_of_rotation = cor_interpolate.execute(data_shape[0], slices,
+                                                      config.func.cors)
         print("Generated cors:", centers_of_rotation)
 
     print(split, step)

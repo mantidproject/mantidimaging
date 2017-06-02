@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
-import helper as h
-from core.parallel import utility as pu
+from isis_imaging import helper as h
+from isis_imaging.core.parallel import utility as pu
 from functools import partial
 from multiprocessing import Pool
 

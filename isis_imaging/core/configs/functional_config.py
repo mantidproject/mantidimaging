@@ -53,7 +53,7 @@ class FunctionalConfig(object):
         self.data_dtype = np.float32
 
         self.cors = None
-        # single member list so that interpolation doesn't fail in cor_interp
+        # single member list so that interpolation doesn't fail in cor_interpolate
         self.cor_slices = [0]
 
         self.verbosity = 3
@@ -175,7 +175,7 @@ class FunctionalConfig(object):
             type=str,
             help="Input directory for flat images")
 
-        from core.imgdata import loader
+        from isis_imaging.core.imgdata import loader
         grp_func.add_argument(
             "--in-format",
             required=False,
@@ -193,7 +193,7 @@ class FunctionalConfig(object):
             help="Where to write the output slice images (reconstructed volume)"
         )
 
-        from core.imgdata.saver import Saver
+        from isis_imaging.core.imgdata.saver import Saver
         grp_func.add_argument(
             "--out-format",
             required=False,
@@ -355,7 +355,7 @@ class FunctionalConfig(object):
             default=self.convert_prefix,
             help="Prefix for saved out files from conversion.")
 
-        from core.imopr import imopr
+        from isis_imaging.core.imopr import imopr
         grp_run_modes.add_argument(
             "--imopr",
             nargs="*",
@@ -430,8 +430,8 @@ class FunctionalConfig(object):
             "\nTODO: Describe pros and cons of each tool (Astra GPU). "
             "Available: {0}".format(", ".join(supported_tools)))
 
-        from core.tools.tomopy_tool import TomoPyTool
-        from core.tools.astra_tool import AstraTool
+        from isis_imaging.core.tools.tomopy_tool import TomoPyTool
+        from isis_imaging.core.tools.astra_tool import AstraTool
         tomo_algs = TomoPyTool.tool_supported_methods()
         astra_algs = AstraTool.tool_supported_methods()
         grp_recon.add_argument(
