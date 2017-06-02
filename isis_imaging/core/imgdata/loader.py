@@ -74,7 +74,7 @@ def read_in_shape(config):
     return (len(input_file_names),) + sample.shape[1:]
 
 
-def load_data(config):
+def load_from_config(config):
     """
     Load data by reading the provided configuration file for paths.
     This is intended to be used internally within the scripts.
@@ -140,7 +140,8 @@ def load(input_path=None,
         raise ValueError("Image format " + img_format + " not supported!")
 
     if indices and len(indices) < 3:
-        raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
+        raise ValueError(
+            "Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if img_format in ['nxs']:
         from core.imgdata import stack_loader

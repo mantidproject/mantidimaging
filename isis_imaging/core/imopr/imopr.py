@@ -57,7 +57,7 @@ def execute(config):
     h.check_config_integrity(config)
     module.sanity_checks(config)
 
-    sample = loader.load_data(config)
+    sample = loader.load_from_config(config)
 
     h.tomo_print("Data shape {0}".format(sample.shape))
     flat = dark = None

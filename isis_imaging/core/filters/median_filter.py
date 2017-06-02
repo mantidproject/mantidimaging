@@ -66,7 +66,7 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def execute(data, size, mode, cores=None, chunksize=None):
+def execute(data, size, mode=modes()[0], cores=None, chunksize=None):
     """
     Execute the Median filter.
 

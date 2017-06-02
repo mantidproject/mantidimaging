@@ -47,7 +47,7 @@ def execute(config):
     readme.begin(config.cmd_line, config)
     h.set_readme(readme)
 
-    result = loader.load_data(config)
+    result = loader.load_from_config(config)
     if isinstance(result, np.ndarray):
         sample = result
         flat = None

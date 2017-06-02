@@ -141,6 +141,7 @@ class FunctionalConfig(object):
                + "Split the execution into separate runs: {0}\n".format(str(self.split)) \
                + "Max memory for split execution: {0}\n".format(str(self.max_memory)) \
                + "Max ratio to memory for split execution: {0}\n".format(str(self.max_ratio)) \
+               + "Do not account for reconstruction memory when splitting execution: {0}\n".format(str(self.no_recon)) \
                + "Running the GUI: {0}\n".format(str(self.gui))
 
     def setup_parser(self, parser):

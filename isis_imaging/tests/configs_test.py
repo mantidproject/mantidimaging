@@ -11,12 +11,12 @@ from core.algorithms import registrator
 
 
 class ConfigsTest(unittest.TestCase):
+
     def setUp(self):
         self.parser = argparse.ArgumentParser()
         self.func_config = FunctionalConfig()
         self.parser = self.func_config.setup_parser(self.parser)
-        self.grp_filters = self.parser.add_argument_group("Filter options")
-        registrator.register_into(self.grp_filters)
+        registrator.register_into(self.parser)
 
     def test_functional_config_doctest(self):
         self._compare_dict_to_str(self.func_config.__dict__,
@@ -27,10 +27,9 @@ class ConfigsTest(unittest.TestCase):
         self.func_config = FunctionalConfig()
         parser = self.func_config.setup_parser(parser)
 
-        grp_filters = parser.add_argument_group("Filter options")
-        registrator.register_into(grp_filters)
+        registrator.register_into(parser)
 
-        assert grp_filters is not None, "The parser object is None! \
+        assert parser is not None, "The parser object is None! \
         It was lost somewhere in registrator!"
 
     def test_no_input_path_error(self):
