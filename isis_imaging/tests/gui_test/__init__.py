@@ -21,3 +21,6 @@ from __future__ import (absolute_import, division, print_function)
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
+
+# Supress all import warnings, and import all test modules
+from .main_window_test import *  # noqa: F403, F401

@@ -1,20 +1,9 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
-from core.parallel import utility as pu
+
 from core.parallel import two_shared_mem as ptsm
-
-
-def cli_register(parser):
-    # this in an internal filter, doesn't have any external commands
-    return parser
-
-
-def gui_register(dialog):
-    from core.algorithms import gui_compile_ui as gcu
-
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
-    return dialog
+from core.parallel import utility as pu
 
 
 def _calc_avg(data,
@@ -69,7 +58,8 @@ def apply_factor(data, scale_factors, cores=None, chunksize=None):
     scale_up_partial = ptsm.create_partial(
         _scale_inplace, fwd_function=ptsm.inplace_second_2d)
 
-    # scale up all images by the mean sum of all of them, this will keep the contrast the same as from the region of interest
+    # scale up all images by the mean sum of all of them, this will keep the
+    # contrast the same as from the region of interest
     data, scale_factors = ptsm.execute(data, [scale_factors.mean()],
                                        scale_up_partial, cores, chunksize,
                                        "Applying scale factor")

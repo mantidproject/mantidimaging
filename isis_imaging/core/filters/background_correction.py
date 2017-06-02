@@ -53,7 +53,7 @@ def gui_register(main_window):
         flat = (loader.load(flat_dir, img_format=flat_extension)).mean(axis=0)
         dark = (loader.load(dark_dir, img_format=dark_extension)).mean(axis=0)
         from functools import partial
-        from core.filters import value_scaling
+        from core.algorithms import value_scaling
         par = partial(execute, flat=flat, dark=dark)
         # function to be applied before the execute function
         par.do_before = value_scaling.create_factors
@@ -178,7 +178,7 @@ def _execute_seq(
         flat=None,
         dark=None,
         clip_min=MINIMUM_PIXEL_VALUE,
-        clip_max=MAXIMUM_PIXEL_VALUE, ):
+        clip_max=MAXIMUM_PIXEL_VALUE):
     h.pstart("Starting normalization by flat/dark images.")
 
     norm_divide = np.subtract(flat, dark)

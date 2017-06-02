@@ -1,11 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
 import helper as h
-
+from core.algorithms import value_scaling
 from core.filters import (background_correction, contrast_normalisation,
                           crop_coords, cut_off, gaussian, median_filter,
                           minus_log, outliers, rebin, rotate_stack,
-                          stripe_removal, value_scaling)
+                          stripe_removal)
 
 
 def execute(config, sample, flat, dark):

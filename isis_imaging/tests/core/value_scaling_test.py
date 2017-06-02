@@ -6,10 +6,11 @@ from tests import test_helper as th
 
 
 class ValueScalingTest(unittest.TestCase):
+
     def __init__(self, *args, **kwargs):
         super(ValueScalingTest, self).__init__(*args, **kwargs)
 
-        from core.filters import value_scaling
+        from core.algorithms import value_scaling
         self.alg = value_scaling
 
     def test_create_factors_no_roi(self):
@@ -49,7 +50,8 @@ class ValueScalingTest(unittest.TestCase):
             for y in range(images.shape[1]):
                 images[z, y] = y * 10
 
-                # expected output will be a multiple of 60, after applying the factors
+                # expected output will be a multiple of 60, after applying the
+                # factors
                 control[z, y] = y * 60
 
         our_factors = np.array([6., 6., 6., 6., 6., 6., 6., 6., 6., 6.])
