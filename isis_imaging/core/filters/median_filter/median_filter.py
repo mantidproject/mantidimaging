@@ -6,8 +6,6 @@ from isis_imaging import helper as h
 from isis_imaging.core.parallel import shared_mem as psm
 from isis_imaging.core.parallel import utility as pu
 
-__all__ = ['execute', 'modes']
-
 
 def _cli_register(parser):
     default_size = None

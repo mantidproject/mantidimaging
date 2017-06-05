@@ -115,7 +115,7 @@ def register_into(obj,
             lambda x: '.py' in x,  # removes all files that DON'T have .py in the name
             lambda x: '.pyc' not in x,  # removes all files that DO have .pyc in the name
             lambda x: '__init__' not in x,  # removes all files that DO have __init__ in the name
-            lambda x: 'registrator.py' not in x  # removes all files that have this module's name in the name
+            lambda x: 'registrator.py' not in x  # removes all files that DO have this module's name
         ]
 
         # apply all of the above checks

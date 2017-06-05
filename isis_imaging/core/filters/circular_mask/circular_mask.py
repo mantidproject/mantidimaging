@@ -2,6 +2,8 @@ from __future__ import (absolute_import, division, print_function)
 from isis_imaging import helper as h
 from isis_imaging.core.tools import importer
 
+__all__ = ['execute', '_gui_register', '_cli_register']
+
 
 def _cli_register(parser):
     parser.add_argument(
