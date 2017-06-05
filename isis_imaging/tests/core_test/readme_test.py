@@ -4,10 +4,10 @@ import os
 import tempfile
 import unittest
 
-import tests.test_helper as th
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
 from isis_imaging.core.imgdata import saver
 from isis_imaging.readme_creator import Readme
+from isis_imaging.tests import test_helper as th
 
 
 class ReadmeTest(unittest.TestCase):

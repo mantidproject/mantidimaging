@@ -4,7 +4,7 @@ import unittest
 
 from isis_imaging import helper as h
 from isis_imaging.core.parallel import two_shared_mem as ptsm
-from tests import test_helper as th
+from isis_imaging.tests import test_helper as th
 
 
 def add_inplace(first_shared, second_shared, add_arg):

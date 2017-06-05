@@ -4,7 +4,7 @@ import unittest
 
 from isis_imaging import helper as h
 from isis_imaging.core.parallel import exclusive_mem as esm
-from tests import test_helper as th
+from isis_imaging.tests import test_helper as th
 
 
 def return_from_func(first_shared, add_arg):

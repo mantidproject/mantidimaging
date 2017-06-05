@@ -6,7 +6,7 @@ import numpy.testing as npt
 
 from isis_imaging import helper as h
 from isis_imaging.core.filters import rebin
-from tests import test_helper as th
+from isis_imaging.tests import test_helper as th
 
 
 class RebinTest(unittest.TestCase):

@@ -6,7 +6,7 @@ import numpy as np
 import numpy.testing as npt
 
 from isis_imaging.core.filters import background_correction
-from tests import test_helper as th
+from isis_imaging.tests import test_helper as th
 
 
 class BackgroundCorrectionTest(unittest.TestCase):

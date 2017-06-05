@@ -2,11 +2,10 @@ from __future__ import (absolute_import, division, print_function)
 import unittest
 import numpy as np
 import numpy.testing as npt
-from tests import test_helper as th
+from isis_imaging.tests import test_helper as th
 
 
 class ValueScalingTest(unittest.TestCase):
-
     def __init__(self, *args, **kwargs):
         super(ValueScalingTest, self).__init__(*args, **kwargs)
 

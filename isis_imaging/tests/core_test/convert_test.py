@@ -7,7 +7,7 @@ import unittest
 
 from isis_imaging.core.convert import convert
 from isis_imaging.core.imgdata import loader
-from tests import test_helper as th
+from isis_imaging.tests import test_helper as th
 
 
 class ConvertTest(unittest.TestCase):
