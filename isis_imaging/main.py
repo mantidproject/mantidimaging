@@ -8,7 +8,6 @@ from isis_imaging.core.configs import recon_config
 
 
 def check_version_info():
-    import sys
     python_version = sys.version_info
     if python_version < (2, 7, 0):
         raise RuntimeError(

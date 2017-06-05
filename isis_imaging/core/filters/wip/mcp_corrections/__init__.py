@@ -5,7 +5,7 @@ from isis_imaging.core.filters.wip.mcp_corrections.mcp_corrections import execut
 del absolute_import, division, print_function  # noqa:F821
 
 try:
-    del mcp_corrections
+    del mcp_corrections  # noqa:F821
 except NameError:
     # this happens if not calling from ipython
     pass
