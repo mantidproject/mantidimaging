@@ -101,9 +101,9 @@ Currently the scripts expect the folder structure to be:
     └── tests
 ```
 
-It is not expected to have many changes of this top level structure. Any changes to this top level structure will break `registrator` and `finder` from `core.algorithms`. They expect to have this structure in order to dynamically register
+It is not expected to have many changes of this top level structure. Any changes to this top level structure will break `registrator` and `finder` from `core.algorithms`. They expect to have this structure in order to dynamically register the files inside `filters` and `algorithms`.
 
-### iPython / Public API exposure
+Having the set structure also allows to expose a consistent Public API through the `__init__` files, making the suggestions in iPython only show what we have exposed to the Public API.
 
 ## Filters - General implementation structure
 - Have execute function that takes data as first parameter
