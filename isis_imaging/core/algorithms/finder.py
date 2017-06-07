@@ -4,36 +4,52 @@ import os
 import sys
 
 
-def get_package_name(module, core_package='core'):
+def get_location_and_package_name(module_file, root_package='isis_imaging'):
     """
     Find the internal ISIS_IMAGING package for the specified module
-    :param module: The module whose package we're looking for
-    :param core_package: The core package within which we're looking
+    :param module_file: The module whose package we're looking for
+    :param root_package: The top level package of isis_imaging
+    :returns (package_name, location,)
     """
-    s = os.path.dirname(os.path.realpath(module))
+    s = os.path.dirname(os.path.realpath(module_file))
+    root_package_position = s.find(root_package) + len(root_package)
+    internal_core_package = root_package_position + 1  # add +1 to remove the leading /
+    return s[internal_core_package:], s[:root_package_position]
+
+
+def get_location(module_file, root_package='isis_imaging'):
+    """
+    Find the internal ISIS_IMAGING package for the specified module
+    :param module_file: The module whose package we're looking for
+    :param root_package: The top level package of isis_imaging
+    """
+    s = os.path.dirname(os.path.realpath(module_file))
+    return s[:s.find(root_package)]
+
+
+def get_package_name(module_file, core_package='core'):
+    """
+    Find the internal ISIS_IMAGING package for the specified module
+    :param module_file: The module whose package we're looking for
+    :param core_package: The core package within which the module is expected to be
+    """
+    s = os.path.dirname(os.path.realpath(module_file))
     return s[s.find(core_package):]
 
 
-def all_modules(package="core/filters", directory=None):
+def all_modules(package, root_package='isis_imaging'):
     """
     This function will build the path to the specified package, and then import all of the modules from it,
     and call _cli_register if _cli is specified, or _gui_register if _gui is specified.
 
-    :param obj: the obj into which the modules will be registered,
-                this is simply forwarded onto the actual functions that do the dynamic registering
-    :param directory: The directory to be walked for python modules.
-                      This parameter is currently being added to ease unit testing.
     :param package: The internal package from which modules will be imported
-    :param func: Two built in functions are provided, registrator._cli and registrator._gui, for registration into the
-                 command line interface (CLI) or the graphical user interface (GUI). A custom function can be passed
-                 if the behaviour needs to be extended or overridden
+    :param root_package: The directory where the ISIS Imaging package is installed.
     """
     # sys path 0 will give us the parent directory of the package, and we
     # append the internal package location
-    if not directory:
-        directory = os.path.join(sys.path[0], package)
+    root_package = os.path.join(root_package, package)
 
-    all_files = os.walk(directory)
+    all_files = os.walk(root_package)
 
     # replace the / with . to match python package syntax
     for root, dirs, files in all_files:
@@ -56,9 +72,13 @@ def all_modules(package="core/filters", directory=None):
         return modules
 
 
-def all_packages(package, ignore=[]):
+def all_packages(package, root_package='isis_imaging', ignore=[]):
+    """
+    Finds all packages inside a package. This will only look for folder names. 
+    For individual modules use all_modules.
+    """
     # type: (str) -> [str]
-    directory = os.path.join(sys.path[0], package)
+    directory = os.path.join(root_package, package)
     all_files = os.walk(directory)
 
     for root, dirs, files in all_files:

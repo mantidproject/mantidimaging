@@ -22,13 +22,13 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from isis_imaging.core.algorithms.finder import get_package_name, all_modules
+from isis_imaging.core.algorithms.finder import get_location_and_package_name, all_modules
 
 # read in all of the available modules
-__all__ = all_modules(get_package_name(__file__))
+__all__ = all_modules(*get_location_and_package_name(__file__))
 
 # delete the reference
-del all_modules, get_package_name, absolute_import, division, print_function
+del all_modules, get_location_and_package_name, absolute_import, division, print_function
 
 # actually do the imports
 from . import *  # noqa: F401, F403
