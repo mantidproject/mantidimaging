@@ -81,8 +81,7 @@ def register_into(obj,
 
     :param obj: the obj into which the modules will be registered,
                 this is simply forwarded onto the actual functions that do the dynamic registering
-    :param directory: The directory to be walked for python modules.
-                      This parameter is currently being added to ease unit testing.
+    :param directory: The directory to be walked for python modules. If not provided sys.path[0] will be used.
     :param package: The internal package from which modules will be imported
     :param func: Two built in functions are provided, registrator._cli and registrator._gui, for registration into the
                  command line interface (CLI) or the graphical user interface (GUI). A custom function can be passed
