@@ -4,6 +4,7 @@
 - [User Requirements](#user-requirements)
 - [Development Requirements](#development-requirements)
 - [Terminology (add images?)](#terminology-add-images)
+- [Finalising name choice](#finalising-name-choice)
 - [Project setup](#project-setup)
     - [Continous Integration with Coverage](#continous-integration-with-coverage)
     - [Installation](#installation)
@@ -18,7 +19,7 @@
     - [File Structure](#file-structure)
     - [Filters - General implementation structure](#filters---general-implementation-structure)
 - [Implementation for ISIS_Imaging GUI](#implementation-for-isis_imaging-gui)
-    - [General structure](#general-structure)
+    - [General Structure](#general-structure)
     - [.ui Compiling](#ui-compiling)
     - [Loading](#loading)
     - [Handling multiple stacks in dialogues](#handling-multiple-stacks-in-dialogues)
@@ -33,6 +34,7 @@
     - [Undoing an operation](#undoing-an-operation)
     - [Process List](#process-list)
         - [Store image state as part of the History in the process list.](#store-image-state-as-part-of-the-history-in-the-process-list)
+        - [Exporting of Process List](#exporting-of-process-list)
     - [Processing a full volume](#processing-a-full-volume)
     - [Issues with Finding Center of Rotation and Reconstruction](#issues-with-finding-center-of-rotation-and-reconstruction)
         - [Automatic Center of Rotation (COR) with imopr cor](#automatic-center-of-rotation-cor-with-imopr-cor)
@@ -40,6 +42,7 @@
     - [Reconstruction](#reconstruction)
     - [Remote submission and MPI-like behaviour](#remote-submission-and-mpi-like-behaviour)
         - [Remote compute resource used at ISIS: SCARF](#remote-compute-resource-used-at-isis-scarf)
+        - [MPI-like behaviour](#mpi-like-behaviour)
 
 <!-- /TOC -->
 
@@ -94,6 +97,11 @@ Sinograms - same as volume of Projections, however the traversal is done on the 
 Slices - usually referred to the sinograms, after they've been run through a reconstruction algorithms which produced the reconstruction slices.
 
 Attenuation - the result from performing a `-ln(image)`, which can be written as `numpy.negative(numpy.log(image))`
+
+# Finalising name choice
+- MantidImaging
+- ISISImaging
+- Other suggestions?
 
 # Project setup
 ## Continous Integration with Coverage
@@ -184,10 +192,23 @@ Having this structure also allows to expose a consistent Public API through the 
 - Future extensions could be adding CUDA execution to some/all fitlers. This would ideally be handled as part of the checks for parallel inside the `execute` function, but if that is not possible or desirable, a new function might be added to the API specifically for CUDA execution.
 
 # Implementation for ISIS_Imaging GUI
-## General structure
-Main Window (parent)
 
-Image stacks are child objects to the Main Window. The stack handles it's own process list/history. Saving out saves out the images, and the history. Reloading then reads back the history.
+## General Structure
+Main Window (top level)
+- QMenu with options: File (load, save, quit), Filters (dynamically registered filters should appear here)
+- QDockWidget that will hold all of the image volume windows
+- Knows what stacks are alive and their unique IDs and references with which they can be accessed
+- Forwards any requests from filters' dialogues onwards to the target stack
+
+Stack Visualiser (Image Volume)
+- It is a child of the Main Window' QDockWidget
+- It contains reference to the data, and the ability to execute operations on it
+- It contains functions providing capability to filters to 'request' certain parameters, that would not be obtainable otherwise, like what region of interest is currently selected by the user, flat and dark images to be loaded and forwarded as arguments.
+- It stores and shows the Process List for the image volume that it is handling
+- It allows the user to initiate computation of histogram
+- It allows the user to initiate contrast adjustment
+- It visualises the images
+- On destruction removes itself from the parent, and the list of unique IDs. It also removes any references to the data so it can be GC by Python
 
 ## .ui Compiling
 Currently the `.ui` is compiled dynamically while running. It might be better if this is changed to the mslice approach where all of the `.ui` files are compiled during 'build' and `.uic` files are created.
@@ -210,6 +231,8 @@ The Loading will be done via a dialogue:
         - This can be avoided with a signal triggered by changing the Start spinbox, that changes the setMinimum of the Stop spinbox. (low priority)
 
 Initially, while browsing for a folder, the files will not be filtered out by file extension. This could be a potential improvement if it proves to be necessary or requested by users.
+
+After loading the paths should be cached inside the created image volume window, so that they can be accessed by the Process List or any filters that require the loading of flat/dakr images.
 
 ## Handling multiple stacks in dialogues
 It will be possible to have more than one stack loaded at a time. A unique ID will be generated for each new stack that is loaded. The ID is then stored with the folder name as a 'user friendly name', and a reference to the QObject containing the stack. The unique ID will be generated using python's `uuid` package.
@@ -282,7 +305,7 @@ Building the Undo operation may be overly complicated, a simpler solution is the
 
 
 ## Process List
-Every operation on an image volume should be saved in a `Process List`, which can then be saved out and re-used on another image volume. The process list should be a `queue`.
+Every operation on an image volume should be saved in a `Process List`, which can then be exported and re-used on another image volume. The process list should act like a `queue`.
 
 A problem that appears with that approach is that some images need more than one stack for an operation, e.g. background correction needs flat and dark images as well. Running a process list on a different stack will not know from where to read in the flat and dark images, they would need to be specified by the user. Possible solutions:
 - Ask for flat and dark paths in image loading dialogue and cache them for the loaded stack, then the process list can reuse them
@@ -294,6 +317,9 @@ A problem that appears with that approach is that some images need more than one
     - Pro: Can easily revert an image to any state (if we don't delete the newer states we can switch between them to see the difference)
     - Cons: Memory and might be convoluted to handle the history
     - Option to open the saved image in a new stack
+
+### Exporting of Process List
+This is something considered as part of the [remote submission](#remote-submission-and-mpi-like-behaviour) implementation. It will require implementing functions to export an exsiting process list to a format that later can be read back and construct a new Process List.
 
 ## Processing a full volume
 A process list should provide the option to be applied to the whole stack locally. Details for the implementation need to be considerend alondside the [Undoing an operation](#undoing-an-operation) implementation. 
@@ -333,8 +359,29 @@ The reconstruction works on sinograms and will be done via third party tools Tom
 Specific dialogues might have to be created for each tool, to handle the different parameters each one has.
 
 ## Remote submission and MPI-like behaviour
-The package needs to support submission to remote cluster. This section will be updated at a later point.
-TODO mpi-like behaviour
+The package needs to support submission to remote cluster. An example for a remote connection to scarf is contained [here](#remote-submission-and-mpi-like-behaviour). A remote submission will need to transfer information about what operations need to be performed and on which stack. This can be done in multiple ways:
+- As command line parameters in a config-like style (what is currently used)
+    - The idea for this is to append the command line flags for everything that will be executed by the remote process.
+    - Pros:
+        - Already implemented
+    - Cons: 
+        - Cannot change the order of operations without editing the source. However multiple pre-made configurations can be added.
+
+- Serialisation of process list (needs to be implemented):
+    - It will be implemented as an additional algorithm and command-line flag. The functionality will work on the Process List and export it in a parsable format.
+    - It will be possible to reuse the Process List by loading in the GUI or by passing the aforementioned command-line flag, which can receive either a file containing the exported contents or the whole string as part of the parameters.
+    - The export format of the Process List will most likely be JSON. A parser for JSON exists built-in to Python. NXS format could also be considered.
+    - It would be hard (and unnecessary) to keep maintaining the full CLI when an ordered and reusable approach is available through the Process List exporting. Instead it might be desirable to fullly adapt this change into the `core` scripts execution. The implications of this will be:
+        - Exposure of filters to the CLI will be removed. This means that all CLI parameters, that currently result in invoking a filter, will be removed. 
+        - Any filters can now be invoked by passing in an argument that either contains the JSON string with parameters (or a friendlier format for users), or passing in path to a file containing such parameters.
+        - The public API will not be changed, this means scripts can still import the package and use the functionality.
+    - Pros:
+        - Flexibility to order of operations and parameters.
+        - Transferring over the network will be easy.
+        - It can be saved out as a file and reused multiple times in both GUI and CLI.
+        - JSON format can be edited by hand, if a filter has to be changed, or a parameter, or the order in which they are applied.
+    - Cons:
+        - Both importing and exporting need to be implemented. This should be easier if we use an established format with an available parser (JSON).
 
 ### Remote compute resource used at ISIS: SCARF
 General information on the SCARF cluster, which uses the Platform LSF
@@ -349,3 +396,8 @@ The IMAT GUI utilizes a RESTFul web service provided by Platforms
 LSF's Platform Application Center, as described here:
 https://github.com/mantidproject/documents/tree/master/Design/Imaging_IMAT/SCARF_Platform_LSF/
 (with Python client scripts).
+
+### MPI-like behaviour
+Integration of MPI into the scripts was considered, but the cost of having to transfer the large data over the network is too high. 
+
+An alternative approach will be taken - since we can specify indices that can be loaded, the 'MPI' can simply be wrapped in a bash script that launches multiple reconstruction jobs, each one with different indices. The indices are also taken into account when saving out so that no files will be overwritten.
