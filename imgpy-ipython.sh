@@ -10,4 +10,4 @@ if [ -d "$anaconda_dir" ]; then
 	python_exec="$anaconda_dir/bin/ipython"
 fi
 
-$python_exec -i $imgpy_dir/isis_imaging/ipython.py "$@"
+PYTHONPATH="$imgpy_dir:$PYTHONPATH" $python_exec -i $imgpy_dir/isis_imaging/ipython.py "$@"

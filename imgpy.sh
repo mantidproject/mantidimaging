@@ -1,4 +1,5 @@
 imgpy_dir=$HOME/imgpy
+
 # set default to system python
 python_exec="/usr/bin/python"
 
@@ -10,4 +11,4 @@ if [ -d "$anaconda_dir" ]; then
 	python_exec="$anaconda_dir/bin/python"
 fi
 
-$python_exec $imgpy_dir/isis_imaging/main.py "$@"
+PYTHONPATH="$imgpy_dir:$PYTHONPATH" $python_exec $imgpy_dir/isis_imaging/main.py "$@"
