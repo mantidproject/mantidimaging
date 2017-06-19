@@ -1,6 +1,6 @@
-# Imgdata package
+# IO package
 
-The `imgdata` module provides easy modules to load and save stacks of data.
+The `io` module provides easy modules to load and save stacks of data.
 
 ## Loading data
 

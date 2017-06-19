@@ -163,7 +163,7 @@ Currently the scripts expect the folder structure to be:
     │   ├── configurations
     │   ├── convert
     │   ├── filters
-    │   ├── imgdata
+    │   ├── io
     │   ├── imopr
     │   ├── parallel
     │   └── tools
