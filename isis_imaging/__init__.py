@@ -35,7 +35,7 @@ from isis_imaging.core import configs
 from isis_imaging.core import configurations
 from isis_imaging.core import convert
 from isis_imaging.core import filters
-from isis_imaging.core import imgdata
+from isis_imaging.core import io
 from isis_imaging.core import imopr
 from isis_imaging.core import parallel
 from isis_imaging.core import tools

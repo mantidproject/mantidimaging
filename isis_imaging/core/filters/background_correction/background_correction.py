@@ -40,7 +40,7 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(darkPath, darkButton)
 
     def decorate_execute():
-        from isis_imaging.core.imgdata import loader
+        from isis_imaging.core.io import loader
         import os
 
         flat_path = str(flatPath.text())

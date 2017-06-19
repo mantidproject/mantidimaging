@@ -175,7 +175,7 @@ class FunctionalConfig(object):
             type=str,
             help="Input directory for flat images")
 
-        from isis_imaging.core.imgdata import loader
+        from isis_imaging.core.io import loader
         grp_func.add_argument(
             "--in-format",
             required=False,
@@ -193,7 +193,7 @@ class FunctionalConfig(object):
             help="Where to write the output slice images (reconstructed volume)"
         )
 
-        from isis_imaging.core.imgdata.saver import Saver
+        from isis_imaging.core.io.saver import Saver
         grp_func.add_argument(
             "--out-format",
             required=False,

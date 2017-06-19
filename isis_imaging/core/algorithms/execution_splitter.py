@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from isis_imaging.core.algorithms import cor_interpolate
 from isis_imaging.core.algorithms.shape_splitter import ShapeSplitter
-from isis_imaging.core.imgdata import loader
+from isis_imaging.core.io import loader
 
 
 def execute(config, executable):

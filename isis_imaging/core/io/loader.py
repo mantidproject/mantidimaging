@@ -144,7 +144,7 @@ def load(input_path=None,
             "Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if img_format in ['nxs']:
-        from isis_imaging.core.imgdata import stack_loader
+        from isis_imaging.core.io import stack_loader
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
         sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load",
@@ -156,7 +156,7 @@ def load(input_path=None,
         else:
             load_func = imread
 
-        from isis_imaging.core.imgdata import img_loader
+        from isis_imaging.core.io import img_loader
         sample, flat, dark = img_loader.execute(
             load_func, input_file_names, input_path_flat, input_path_dark,
             img_format, dtype, cores, chunksize, parallel_load, indices)

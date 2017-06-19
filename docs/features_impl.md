@@ -49,7 +49,7 @@ Main Window (parent)
 Image stacks are child objects to the Main Window. The stack handles it's own process list/history. Saving out saves out the images, and the history. Reloading then reads back the history.
 
 ## Loading
-Loading of the images must be done via the `core.imgdata` module, which already handles loading of any supported image types. Any future extensions for new file types must be a part of the core module.
+Loading of the images must be done via the `core.io` module, which already handles loading of any supported image types. Any future extensions for new file types must be a part of the core module.
 
 The Loading will be done via a dialogue:
 - It will ask for the paths for Sample, Flat and Dark images. Only Sample path is required and loaded. Dark and Flat images are NOT loaded, but the paths will be cached.

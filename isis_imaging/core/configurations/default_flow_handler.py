@@ -4,7 +4,7 @@ import numpy as np
 
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import cor_interpolate
-from isis_imaging.core.imgdata import loader, saver
+from isis_imaging.core.io import loader, saver
 from isis_imaging.core.tools import importer
 from isis_imaging.readme_creator import Readme
 

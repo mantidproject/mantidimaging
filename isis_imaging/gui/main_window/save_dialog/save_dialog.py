@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 from PyQt4 import QtGui
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from isis_imaging.core.imgdata.loader import supported_formats
+from isis_imaging.core.io.loader import supported_formats
 
 
 def select_directory(field, caption):

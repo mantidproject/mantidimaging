@@ -8,7 +8,7 @@ from isis_imaging import helper as h
 
 
 def write_fits(data, filename, overwrite=False):
-    from isis_imaging.core.imgdata.loader import import_pyfits
+    from isis_imaging.core.io.loader import import_pyfits
     fits = import_pyfits()
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
@@ -16,7 +16,7 @@ def write_fits(data, filename, overwrite=False):
 
 
 def write_img(data, filename, overwrite=False):
-    from isis_imaging.core.imgdata.loader import import_skimage_io
+    from isis_imaging.core.io.loader import import_skimage_io
     skio = import_skimage_io()
     skio.imsave(filename, data)
 
@@ -160,7 +160,7 @@ class Saver(object):
     @staticmethod
     def supported_formats():
         # reuse supported formats, they currently share them
-        from isis_imaging.core.imgdata.loader import supported_formats
+        from isis_imaging.core.io.loader import supported_formats
         return supported_formats()
 
     def __init__(self, config):

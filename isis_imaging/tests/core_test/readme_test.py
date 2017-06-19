@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
-from isis_imaging.core.imgdata import saver
+from isis_imaging.core.io import saver
 from isis_imaging.readme_creator import Readme
 from isis_imaging.tests import test_helper as th
 

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from isis_imaging import helper as h
-from isis_imaging.core.imgdata import loader
+from isis_imaging.core.io import loader
 
 
 def get_available_operators():

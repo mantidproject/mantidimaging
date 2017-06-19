@@ -146,7 +146,7 @@ Something that might cause issues - I am not sure how well it integrates with `n
 - [MuhRec](http://www.imagingscience.ch/downloadsection/)
 
 ## File Structure
-The aim is to make use of Pyhton's modular structure as much as possible. There is very little actual Object Oriented Programming used within the files, and I would discourage its use, unless it makes sense, for example the `core.imgdata.saver.Saver` is a class that can store all necessary information about the saving, so that when used in `core.configurations.default_flow_handler` we don't have to repeatedly pass in arguments, however the `save` function is globally available without needing to create instance of the class, making it very convenient to use through command line.
+The aim is to make use of Pyhton's modular structure as much as possible. There is very little actual Object Oriented Programming used within the files, and I would discourage its use, unless it makes sense, for example the `core.io.saver.Saver` is a class that can store all necessary information about the saving, so that when used in `core.configurations.default_flow_handler` we don't have to repeatedly pass in arguments, however the `save` function is globally available without needing to create instance of the class, making it very convenient to use through command line.
 
 Another example is in the `core.tools` module, we want the tools to implement a common API, so that if we want to change the tool we can just import another one, and it _should_ work. This is done via having an `AbtractTool` that the other tools should inherit from, and should implement its interface.
 
@@ -214,7 +214,7 @@ Stack Visualiser (Image Volume)
 Currently the `.ui` is compiled dynamically while running. It might be better if this is changed to the mslice approach where all of the `.ui` files are compiled during 'build' and `.uic` files are created.
 
 ## Loading
-Loading of the images must be done via the `core.imgdata` module, which already handles loading of any supported image types.
+Loading of the images must be done via the `core.io` module, which already handles loading of any supported image types.
 
 The Loading will be done via a dialogue:
 - It will ask for the paths for the images.
