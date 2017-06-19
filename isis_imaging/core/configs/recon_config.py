@@ -42,7 +42,7 @@ class ReconstructionConfig(object):
     Full configuration (pre-proc + tool/algorithm + post-proc.
     """
 
-    def __init__(self, functional_config, args):
+    def __init__(self, functional_config, args, special_args=True):
         """
         :param functional_config: The functional config,
                                   must be the class FunctionalConfig
@@ -58,7 +58,8 @@ class ReconstructionConfig(object):
         self.args = args
 
         # THIS MUST BE THE LAST THING THIS FUNCTION DOES
-        self.handle_special_arguments()
+        if special_args:
+            self.handle_special_arguments()
 
     def handle_special_arguments(self):
         if self.args.region_of_interest:
@@ -167,4 +168,4 @@ class ReconstructionConfig(object):
         # update the configs
         functional_args.update(fake_args)
 
-        return ReconstructionConfig(functional_args, fake_args)
+        return ReconstructionConfig(functional_args, fake_args, special_args=False)
