@@ -11,9 +11,9 @@ from isis_imaging.core.configs.recon_config import ReconstructionConfig
 from isis_imaging.core.io.saver import Saver
 
 
-class DataTest(unittest.TestCase):
+class IOTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(DataTest, self).__init__(*args, **kwargs)
+        super(IOTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
         self.config = ReconstructionConfig.empty_init()
@@ -67,13 +67,13 @@ class DataTest(unittest.TestCase):
             pass
         try:
             # delete files from test_load_sample_flat_and_dark
-            self.delete_files(prefix='imgdatatest_flat')
+            self.delete_files(prefix='imgIOTest_flat')
         except OSError:
             # no preprocessed images were saved
             pass
         try:
             # delete files from test_load_sample_flat_and_dark
-            self.delete_files(prefix='imgdatatest_dark')
+            self.delete_files(prefix='imgIOTest_dark')
         except OSError:
             # no preprocessed images were saved
             pass
@@ -444,15 +444,15 @@ class DataTest(unittest.TestCase):
                 images = images[saver_indices[0]:saver_indices[1]]
 
             saver.save_preproc_images(images)
-            saver._preproc_dir = "imgdatatest_flat"
+            saver._preproc_dir = "imgIOTest_flat"
             saver.save_preproc_images(flat)
-            saver._preproc_dir = "imgdatatest_dark"
+            saver._preproc_dir = "imgIOTest_dark"
             saver.save_preproc_images(dark)
 
             # create the same path as the saved out preproc images
             sample_output_path = saver._output_path + '/pre_processed/'
-            flat_output_path = saver._output_path + '/imgdatatest_flat/'
-            dark_output_path = saver._output_path + '/imgdatatest_dark/'
+            flat_output_path = saver._output_path + '/imgIOTest_flat/'
+            dark_output_path = saver._output_path + '/imgIOTest_dark/'
 
             self.assert_files_exist(sample_output_path + 'out_preproc_image',
                                     saver._img_format, data_as_stack,
@@ -480,8 +480,8 @@ class DataTest(unittest.TestCase):
                 assert len(
                     sample
                 ) == expected_len, "The length of the loaded data doesn't "\
-                                "match the expected length: {0}, "\
-                                "Got: {1}".format(expected_len, len(sample))
+                    "match the expected length: {0}, "\
+                    "Got: {1}".format(expected_len, len(sample))
 
                 # crop the original images to make sure the tests is correct
                 images = images[loader_indices[0]:loader_indices[1]]
