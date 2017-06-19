@@ -43,9 +43,6 @@ class ConfigsTest(unittest.TestCase):
 
     def test_missing_cors_error(self):
         # don't add CORS, which is mandatory if running reconstruction
-        import pydevd
-        pydevd.settrace('localhost', port=59003,
-                        stdoutToServer=True, stderrToServer=True)
         fake_args_list = ['--input-path', '23']
         fake_args = self.parser.parse_args(fake_args_list)
         self.func_config.update(fake_args)
