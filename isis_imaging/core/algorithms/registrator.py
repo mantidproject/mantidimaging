@@ -74,7 +74,7 @@ def register_into(obj,
                   directory=None,
                   package="core/filters",
                   func=_cli,
-                  norecurse=False):
+                  ignore_packages=["core/filters", "core/filters/wip"]):
     """
     This function will build the path to the specified package, and then import all of the modules from it,
     and call _cli_register if _cli is specified, or _gui_register if _gui is specified.
@@ -96,14 +96,9 @@ def register_into(obj,
 
     # replace the / with . to match python package syntax
     for root, dirs, files in all_files:
-        # Find the package string within the _full_ path, crop everything in front of it and replace the / with .
-        # We replace / with . so that the import statement below can work
-        # For example: /home/user/Documents/isis_imaging/isis_imaging/core/filters
-        # becomes <trim /home/user/Documents/isis_imaging/isis_imaging/ >,
-        # replace / to . in rest -> core/filters
         package_dir = root[root.find(package):].replace('/', '.')
+        if package_dir in ignore_packages:
+            continue
         obj = func(obj, package_dir)
-        if norecurse:
-            return obj
 
     return obj
