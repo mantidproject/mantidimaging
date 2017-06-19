@@ -22,24 +22,6 @@ class ImporterTest(unittest.TestCase):
         tool = importer.do_importing('tomopy')
         assert isinstance(tool, TomoPyTool)
 
-    def test_tomopy_astra(self):
-        from isis_imaging.core.tools.astra_tool import AstraTool
-        from isis_imaging.core.tools import importer
-        self.config.func.tool = 'astra'
-        self.config.func.algorithm = 'fbp'
-        tool = importer.timed_import(self.config)
-        assert isinstance(tool, AstraTool)
-
-        tool = importer.do_importing('astra')
-        assert isinstance(tool, AstraTool)
-
-    def test_tomopy_astra_not_supported_alg(self):
-        # not supported algorithm
-        from isis_imaging.core.tools import importer
-        self.config.func.tool = 'astra'
-        self.config.func.algorithm = 'gridrec'
-        self.assertRaises(ValueError, importer.timed_import, self.config)
-
     def test_not_supported_tool(self):
         # not supported tool
         from isis_imaging.core.tools import importer
