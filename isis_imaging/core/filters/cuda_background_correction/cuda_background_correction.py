@@ -45,10 +45,17 @@ def execute(data,
     python main.py -i /some/data --input-path-flat /some/flat/images 
                    --input-path-flat /some/dark/images
     """
-    _execute_par(data, flat, dark, clip_min, clip_max, cores,
-                 chunksize)
 
-    return data
+    if flat is not None and dark is not None and isinstance(
+            flat, cp.ndarray) and isinstance(dark, cp.ndarray):
+        if 2 != flat.ndim or 2 != dark.ndim:
+            raise ValueError(
+                "Incorrect shape of the flat image ({0}) or dark image ({1}) \
+                which should match the shape of the sample images ({2})"
+                .format(flat.shape, dark.shape, data[0].shape))
+
+    return _execute_par(data, flat, dark, clip_min, clip_max, cores,
+                        chunksize)
 
 
 def _execute_par(data,
