@@ -497,17 +497,6 @@ class FunctionalConfig(object):
             "to max memory.")
 
         grp_recon.add_argument(
-            "--indices",
-            required=False,
-            nargs='*',
-            type=str,  # will be converted to ints in self.update()
-            default=self.indices,
-            help="Specify indices you want to be loaded.\n"
-            "If not provided the whole stack will be loaded.\n"
-            "If a single indice is provided: --indices 15, it will load "
-            "indices in range [0, 15).")
-
-        grp_recon.add_argument(
             "--max-memory",
             required=False,
             type=int,
@@ -533,6 +522,17 @@ class FunctionalConfig(object):
             help="Default: %(default)s. If specified, the size of the "
             "reconstructed volume will not be taken into account. This can "
             "be useful for --only-preproc runs.")
+
+        grp_recon.add_argument(
+            "--indices",
+            required=False,
+            nargs='*',
+            type=str,  # will be converted to ints in self.update()
+            default=self.indices,
+            help="Specify indices you want to be loaded.\n"
+            "If not provided the whole stack will be loaded.\n"
+            "If a single indice is provided: --indices 15, it will load "
+            "indices in range [0, 15).")
 
         return parser
 
