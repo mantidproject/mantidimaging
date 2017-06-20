@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from isis_imaging.core.convert import convert
-from isis_imaging.core.imgdata import loader
+from isis_imaging.core.io import loader
 from isis_imaging.tests import test_helper as th
 
 
@@ -25,7 +25,7 @@ class ConvertTest(unittest.TestCase):
         self.config.func.verbosity = 0
 
     def create_saver(self):
-        from isis_imaging.core.imgdata.saver import Saver
+        from isis_imaging.core.io.saver import Saver
         return Saver(self.config)
 
     def delete_files(self, prefix=''):

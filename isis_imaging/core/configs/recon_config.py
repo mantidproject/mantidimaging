@@ -42,7 +42,7 @@ class ReconstructionConfig(object):
     Full configuration (pre-proc + tool/algorithm + post-proc.
     """
 
-    def __init__(self, functional_config, args):
+    def __init__(self, functional_config, args, special_args=True):
         """
         :param functional_config: The functional config,
                                   must be the class FunctionalConfig
@@ -58,7 +58,8 @@ class ReconstructionConfig(object):
         self.args = args
 
         # THIS MUST BE THE LAST THING THIS FUNCTION DOES
-        self.handle_special_arguments()
+        if special_args:
+            self.handle_special_arguments()
 
     def handle_special_arguments(self):
         if self.args.region_of_interest:
@@ -90,13 +91,7 @@ class ReconstructionConfig(object):
                 "The options that require output directory are:\n"
                 "-s/--save-preproc, --convert, --aggregate")
 
-        if self.func.cors is None \
-                and not self.func.only_preproc \
-                and not self.func.imopr \
-                and not self.func.aggregate\
-                and not self.func.convert\
-                and not self.func.only_postproc\
-                and not self.func.gui:
+        if self.func.cors is None and self.func.reconstruction:
             raise ValueError("If running a reconstruction a Center of "
                              "Rotation MUST be provided")
 
@@ -131,10 +126,6 @@ class ReconstructionConfig(object):
                     self.func.indices[0], self.func.indices[1], 1
                 ]
 
-        # if we're doing only postprocessing then we should skip pre-processing
-        if self.func.only_postproc:
-            self.func.reuse_preproc = True
-
     def __str__(self):
         return str(self.func) + str(self.args)
 
@@ -167,4 +158,4 @@ class ReconstructionConfig(object):
         # update the configs
         functional_args.update(fake_args)
 
-        return ReconstructionConfig(functional_args, fake_args)
+        return ReconstructionConfig(functional_args, fake_args, special_args=False)

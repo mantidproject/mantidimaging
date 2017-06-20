@@ -12,13 +12,14 @@ def get_location_and_package_name(module_file, root_package='isis_imaging'):
     """
     s = os.path.dirname(os.path.realpath(module_file))
     root_package_position = s.find(root_package) + len(root_package)
-    internal_core_package = root_package_position + 1  # add +1 to remove the leading /
+    # add +1 to remove the leading /
+    internal_core_package = root_package_position + 1
     return s[internal_core_package:], s[:root_package_position]
 
 
 def get_location(module_file, root_package='isis_imaging'):
     """
-    Find the internal ISIS_IMAGING package for the specified module
+    Find the external ISIS_IMAGING location for the whole package
     :param module_file: The module whose package we're looking for
     :param root_package: The top level package of isis_imaging
     """

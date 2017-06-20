@@ -24,7 +24,7 @@ from __future__ import absolute_import, division, print_function
 
 __all__ = [
     'aggregate', 'algorithms', 'configs', 'configurations', 'convert',
-    'filters', 'imgdata', 'imopr', 'parallel', 'tools'
+    'filters', 'io', 'imopr', 'parallel', 'tools'
 ]
 
 # packages part of public API, this will give direct access to the packages from
@@ -35,7 +35,7 @@ from isis_imaging.core import configs
 from isis_imaging.core import configurations
 from isis_imaging.core import convert
 from isis_imaging.core import filters
-from isis_imaging.core import imgdata
+from isis_imaging.core import io
 from isis_imaging.core import imopr
 from isis_imaging.core import parallel
 from isis_imaging.core import tools

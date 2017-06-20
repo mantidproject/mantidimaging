@@ -15,7 +15,7 @@ class HelperTest(unittest.TestCase):
     def test_readme_caching(self):
         config = ReconstructionConfig.empty_init()
 
-        from isis_imaging.core.imgdata.saver import Saver
+        from isis_imaging.core.io.saver import Saver
         saver = Saver(config)
 
         from isis_imaging.readme_creator import Readme

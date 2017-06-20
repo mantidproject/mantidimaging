@@ -41,9 +41,7 @@ class FunctionalConfig(object):
 
         # Processing options
         self.save_preproc = True
-        self.only_preproc = False
-        self.only_postproc = False
-        self.no_postproc = False
+        self.reconstruction = False
         self.reuse_preproc = False
         self.preproc_subdir = 'pre_processed'
         self.swap_axes = False
@@ -111,9 +109,7 @@ class FunctionalConfig(object):
                + "Output horizontal slices subdir: {0}\n".format(str(self.out_horiz_slices_subdir)) \
                + "Save horizontal slices: {0}\n".format(str(self.save_horiz_slices)) \
                + "Save preprocessed images: {0}\n".format(str(self.save_preproc)) \
-               + "Do only pre processing and exit: {0}\n".format(str(self.only_preproc)) \
-               + "Do only post processing and exit: {0}\n".format(str(self.only_postproc)) \
-               + "Force skip post-processing: {0}\n".format(str(self.no_postproc)) \
+               + "Do only pre processing and exit: {0}\n".format(str(self.reconstruction)) \
                + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
                + "Radiograms: {0}\n".format(str(self.swap_axes)) \
@@ -175,7 +171,7 @@ class FunctionalConfig(object):
             type=str,
             help="Input directory for flat images")
 
-        from isis_imaging.core.imgdata import loader
+        from isis_imaging.core.io import loader
         grp_func.add_argument(
             "--in-format",
             required=False,
@@ -193,7 +189,7 @@ class FunctionalConfig(object):
             help="Where to write the output slice images (reconstructed volume)"
         )
 
-        from isis_imaging.core.imgdata.saver import Saver
+        from isis_imaging.core.io.saver import Saver
         grp_func.add_argument(
             "--out-format",
             required=False,
@@ -231,7 +227,7 @@ class FunctionalConfig(object):
             help="Save out the pre-processed images.")
 
         grp_func.add_argument(
-            "--only-preproc",
+            "--reconstruction",
             required=False,
             action='store_true',
             help="Complete pre-processing of images and exit.")
@@ -242,20 +238,6 @@ class FunctionalConfig(object):
             action='store_true',
             help="The images loaded have already been pre-processed. "
             "All pre-processing steps will be skipped.")
-
-        grp_func.add_argument(
-            "--only-postproc",
-            required=False,
-            action='store_true',
-            help="The images have already been reconstructed. All "
-            "pre-processing and reconstruciton steps will be skipped.")
-
-        grp_func.add_argument(
-            "--no-postproc",
-            required=False,
-            action='store_true',
-            help="The images have already been reconstructed. "
-            "Force skip all post-processing.")
 
         grp_func.add_argument(
             "--save-horiz-slices",
@@ -497,17 +479,6 @@ class FunctionalConfig(object):
             "to max memory.")
 
         grp_recon.add_argument(
-            "--indices",
-            required=False,
-            nargs='*',
-            type=str,  # will be converted to ints in self.update()
-            default=self.indices,
-            help="Specify indices you want to be loaded.\n"
-            "If not provided the whole stack will be loaded.\n"
-            "If a single indice is provided: --indices 15, it will load "
-            "indices in range [0, 15).")
-
-        grp_recon.add_argument(
             "--max-memory",
             required=False,
             type=int,
@@ -534,6 +505,17 @@ class FunctionalConfig(object):
             "reconstructed volume will not be taken into account. This can "
             "be useful for --only-preproc runs.")
 
+        grp_recon.add_argument(
+            "--indices",
+            required=False,
+            nargs='*',
+            type=str,  # will be converted to ints in self.update()
+            default=self.indices,
+            help="Specify indices you want to be loaded.\n"
+            "If not provided the whole stack will be loaded.\n"
+            "If a single indice is provided: --indices 15, it will load "
+            "indices in range [0, 15).")
+
         return parser
 
     def update(self, args):
@@ -557,10 +539,8 @@ class FunctionalConfig(object):
         self.save_horiz_slices = args.save_horiz_slices
 
         self.save_preproc = args.save_preproc
-        self.only_preproc = args.only_preproc
+        self.reconstruction = args.reconstruction
         self.reuse_preproc = args.reuse_preproc
-        self.no_postproc = args.no_postproc
-        self.only_postproc = args.only_postproc
         self.preproc_subdir = args.preproc_subdir
         self.swap_axes = args.swap_axes
 

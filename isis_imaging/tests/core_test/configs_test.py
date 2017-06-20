@@ -1,35 +1,31 @@
 from __future__ import absolute_import, division, print_function
 
 import argparse
+import os
+import sys
 import unittest
+from copy import deepcopy
 
 import numpy.testing as npt
 
+from isis_imaging.core.algorithms import registrator
 from isis_imaging.core.configs.functional_config import FunctionalConfig
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
-from isis_imaging.core.algorithms import registrator
 
 
 class ConfigsTest(unittest.TestCase):
-    def setUp(self):
-        self.parser = argparse.ArgumentParser()
-        self.func_config = FunctionalConfig()
-        self.parser = self.func_config.setup_parser(self.parser)
-        registrator.register_into(self.parser)
+    @classmethod
+    def setUpClass(cls):
+        cls.parser = argparse.ArgumentParser()
+        cls.func_config = FunctionalConfig()
+        cls.parser = cls.func_config.setup_parser(cls.parser)
+
+        sys.path[0] = os.path.join(sys.path[0], "isis_imaging")
+        registrator.register_into(cls.parser)
 
     def test_functional_config_doctest(self):
         self._compare_dict_to_str(self.func_config.__dict__,
                                   str(self.func_config), FunctionalConfig)
-
-    def test__cli_registering(self):
-        parser = argparse.ArgumentParser()
-        self.func_config = FunctionalConfig()
-        parser = self.func_config.setup_parser(parser)
-
-        registrator.register_into(parser)
-
-        assert parser is not None, "The parser object is None! \
-        It was lost somewhere in registrator!"
 
     def test_no_input_path_error(self):
         # the error is thrown from handle_special_arguments
@@ -39,15 +35,20 @@ class ConfigsTest(unittest.TestCase):
             fake_args = self.parser.parse_args(fake_args_list)
             self.func_config.update(fake_args)
             ReconstructionConfig(self.func_config, fake_args)
+            assert False, "If we reached this point we have failed the test, \
+                          because we were supposed to crash without --input--path specified"
         except SystemExit:
             # it was supposed to fail, it's fine
             pass
 
     def test_missing_cors_error(self):
         # don't add CORS, which is mandatory if running reconstruction
-        fake_args_list = ['--input-path', '23']
+        fake_args_list = ['--input-path', '23', '--reconstruction']
         fake_args = self.parser.parse_args(fake_args_list)
         self.func_config.update(fake_args)
+        # this was causing troubles, because the state is not refreshed with a
+        # global setUpClass
+        self.func_config.cors = None
         npt.assert_raises(ValueError, ReconstructionConfig, self.func_config,
                           fake_args)
 

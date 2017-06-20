@@ -5,7 +5,7 @@ import uuid
 
 from enum import IntEnum
 
-from isis_imaging.core.imgdata import loader, saver
+from isis_imaging.core.io import loader, saver
 from gui.main_window.mw_model import ImgpyMainWindowModel
 
 

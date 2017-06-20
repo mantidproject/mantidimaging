@@ -6,7 +6,7 @@ from isis_imaging import helper as h
 from isis_imaging.core.parallel import two_shared_mem as ptsm
 from isis_imaging.core.parallel import utility as pu
 
-from isis_imaging.core.imgdata.loader import get_file_names
+from isis_imaging.core.io.loader import get_file_names
 
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
@@ -88,7 +88,7 @@ def _load_sample_data(load_func,
                                   data_dtype, "Sample", cores, chunksize,
                                   parallel_load)
     elif len(img_shape) == 3:  # the loaded file was a stack of fits images
-        from isis_imaging.core.imgdata import stack_loader
+        from isis_imaging.core.io import stack_loader
         sample_data = stack_loader.execute(load_func, input_file_names[0],
                                            data_dtype, "Sample", cores,
                                            chunksize, parallel_load)

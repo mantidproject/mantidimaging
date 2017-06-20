@@ -13,7 +13,7 @@ MAXIMUM_PIXEL_VALUE = 3
 
 def _cli_register(parser):
     # this doesn't have anything to add,
-    # the options are added in the funcitonal config,
+    # the options are added in the functional config,
     # which should be moved to here TODO
     return parser
 
@@ -40,7 +40,7 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(darkPath, darkButton)
 
     def decorate_execute():
-        from isis_imaging.core.imgdata import loader
+        from isis_imaging.core.io import loader
         import os
 
         flat_path = str(flatPath.text())

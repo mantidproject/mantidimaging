@@ -4,11 +4,11 @@ import numpy as np
 
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import cor_interpolate
-from isis_imaging.core.imgdata import loader, saver
+from isis_imaging.core.io import loader, saver
 from isis_imaging.core.tools import importer
 from isis_imaging.readme_creator import Readme
 
-from isis_imaging.core.configurations import default_preprocessing, default_postprocessing
+from isis_imaging.core.configurations import default_filtering
 
 
 def execute(config):
@@ -55,30 +55,26 @@ def execute(config):
     else:
         sample, flat, dark = result
 
-    sample, flat, dark = default_preprocessing.execute(config, sample, flat,
-                                                       dark)
+    sample, flat, dark = default_filtering.execute(config, sample, flat,
+                                                   dark)
 
     # Save pre-proc images, print inside
     saver_class.save_preproc_images(sample)
-    if config.func.only_preproc:
-        h.tomo_print_note("Only pre-processing run, exiting.")
+    if not config.func.reconstruct:
+        h.tomo_print_note(
+            "Skipping reconstruction because no --reconstruct flag was passed.")
         readme.end()
         return sample
 
-    if not config.func.only_postproc:
-        cors = config.func.cors
-        # if they're the same length then we have a COR for each slice!
-        if len(cors) != sample.shape[0]:
-            # interpolate the CORs
-            cor_slices = config.func.cor_slices
-            config.func.cors = cor_interpolate.execute(sample.shape[0],
-                                                       cor_slices, cors)
+    cors = config.func.cors
+    # if they're the same length then we have a COR for each slice!
+    if len(cors) != sample.shape[0]:
+        # interpolate the CORs
+        cor_slices = config.func.cor_slices
+        config.func.cors = cor_interpolate.execute(sample.shape[0],
+                                                   cor_slices, cors)
 
-        sample = tool.run_reconstruct(sample, config)
-    else:
-        h.tomo_print_note("Only post-processing run, skipping reconstruction.")
-
-    sample = default_postprocessing.execute(config, sample)
+    sample = tool.run_reconstruct(sample, config)
 
     saver_class.save_recon_output(sample)
     readme.end()
