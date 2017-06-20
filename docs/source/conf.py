@@ -161,3 +161,6 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
+
+# Stop sphinx from being a smartypants and merging the -- into a single unicode dash
+html_use_smartypants = False

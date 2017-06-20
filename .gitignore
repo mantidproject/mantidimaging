@@ -8,6 +8,3 @@
 
 # Tags created from the VSCode python extension
 tags
-
-# Ignore sphinx build files
-docs/build/
