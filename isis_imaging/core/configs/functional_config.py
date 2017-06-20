@@ -41,9 +41,7 @@ class FunctionalConfig(object):
 
         # Processing options
         self.save_preproc = True
-        self.only_preproc = False
-        self.only_postproc = False
-        self.no_postproc = False
+        self.reconstruction = False
         self.reuse_preproc = False
         self.preproc_subdir = 'pre_processed'
         self.swap_axes = False
@@ -111,9 +109,7 @@ class FunctionalConfig(object):
                + "Output horizontal slices subdir: {0}\n".format(str(self.out_horiz_slices_subdir)) \
                + "Save horizontal slices: {0}\n".format(str(self.save_horiz_slices)) \
                + "Save preprocessed images: {0}\n".format(str(self.save_preproc)) \
-               + "Do only pre processing and exit: {0}\n".format(str(self.only_preproc)) \
-               + "Do only post processing and exit: {0}\n".format(str(self.only_postproc)) \
-               + "Force skip post-processing: {0}\n".format(str(self.no_postproc)) \
+               + "Do only pre processing and exit: {0}\n".format(str(self.reconstruction)) \
                + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
                + "Radiograms: {0}\n".format(str(self.swap_axes)) \
@@ -231,7 +227,7 @@ class FunctionalConfig(object):
             help="Save out the pre-processed images.")
 
         grp_func.add_argument(
-            "--only-preproc",
+            "--reconstruction",
             required=False,
             action='store_true',
             help="Complete pre-processing of images and exit.")
@@ -242,20 +238,6 @@ class FunctionalConfig(object):
             action='store_true',
             help="The images loaded have already been pre-processed. "
             "All pre-processing steps will be skipped.")
-
-        grp_func.add_argument(
-            "--only-postproc",
-            required=False,
-            action='store_true',
-            help="The images have already been reconstructed. All "
-            "pre-processing and reconstruciton steps will be skipped.")
-
-        grp_func.add_argument(
-            "--no-postproc",
-            required=False,
-            action='store_true',
-            help="The images have already been reconstructed. "
-            "Force skip all post-processing.")
 
         grp_func.add_argument(
             "--save-horiz-slices",
@@ -557,10 +539,8 @@ class FunctionalConfig(object):
         self.save_horiz_slices = args.save_horiz_slices
 
         self.save_preproc = args.save_preproc
-        self.only_preproc = args.only_preproc
+        self.reconstruction = args.reconstruction
         self.reuse_preproc = args.reuse_preproc
-        self.no_postproc = args.no_postproc
-        self.only_postproc = args.only_postproc
         self.preproc_subdir = args.preproc_subdir
         self.swap_axes = args.swap_axes
 

@@ -3,9 +3,9 @@ from __future__ import absolute_import, division, print_function
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import value_scaling
 from isis_imaging.core.filters import (background_correction, contrast_normalisation,
-                          crop_coords, cut_off, gaussian, median_filter,
-                          minus_log, outliers, rebin, rotate_stack,
-                          stripe_removal)
+                                       crop_coords, cut_off, gaussian, median_filter,
+                                       minus_log, outliers, rebin, rotate_stack,
+                                       stripe_removal, circular_mask, clip_values, ring_removal)
 
 
 def execute(config, sample, flat, dark):
@@ -74,5 +74,31 @@ def execute(config, sample, flat, dark):
     # this should be last because the other filters
     # do not expect to work in -log data
     sample = minus_log.execute(sample, config.args.minus_log)
+
+    sample = outliers.execute(sample, config.args.outliers,
+                              config.args.outliers_radius,
+                              config.args.outliers_mode, cores)
+
+    sample = ring_removal.execute(
+        sample, config.args.ring_removal, config.args.ring_removal_x,
+        config.args.ring_removal_y, config.args.ring_removal_thresh,
+        config.args.ring_removal_thresh_max,
+        config.args.ring_removal_thresh_min,
+        config.args.ring_removal_theta_min, config.args.ring_removal_rwidth,
+        cores, config.func.chunksize)
+
+    sample = median_filter.execute(sample, config.args.median_size,
+                                   config.args.median_mode, cores,
+                                   config.func.chunksize)
+
+    sample = gaussian.execute(
+        sample, config.args.gaussian_size, config.args.gaussian_mode,
+        config.args.gaussian_order, cores, config.func.chunksize)
+
+    sample = circular_mask.execute(sample, config.args.circular_mask,
+                                   config.args.circular_mask_val, cores)
+
+    sample = clip_values.execute(sample, config.args.clip_min,
+                                 config.args.clip_max)
 
     return sample, flat, dark

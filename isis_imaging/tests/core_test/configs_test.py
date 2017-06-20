@@ -43,7 +43,7 @@ class ConfigsTest(unittest.TestCase):
 
     def test_missing_cors_error(self):
         # don't add CORS, which is mandatory if running reconstruction
-        fake_args_list = ['--input-path', '23']
+        fake_args_list = ['--input-path', '23', '--reconstruction']
         fake_args = self.parser.parse_args(fake_args_list)
         self.func_config.update(fake_args)
         # this was causing troubles, because the state is not refreshed with a
