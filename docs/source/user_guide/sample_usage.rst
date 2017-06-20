@@ -137,25 +137,70 @@ For converting images that have already been saved out, use the following comman
 `imgpy -i /some/path/ -o /output/path --convert --swap-axes`
 
 
-^^^^^^^^^^^
-Finding COR
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+Automatic Finding COR
+^^^^^^^^^^^^^^^^^^^^^
 
 - Note: This expects images as sinograms. Please refer to `Saving out sinograms`_.
 
 To run one of the Tomopy's automatic COR finding algorithms use:
 
-`--imopr cor --indices 1 10`
---imopr corwrite -o --indices 1 2
+`--imopr cor --indices 10`
+
+This will run the automatic COR algorithm on the first 10 slices.
+
+^^^^^^^^^^^^^^^^^^
+Manual Finding COR
+^^^^^^^^^^^^^^^^^^
+- Note: This expects images as sinograms. Please refer to `Saving out sinograms`_.
+
+If the algorithm is not accurate you can use the manual approach:
+
+`--imopr <cor_start> <cor_end> <cor_step> corwrite -o /some/path --indices 10`
+
+`--imopr`'s `corwrite` allows to manually specify CORs, reconstruct the slices with those CORs and save them out.
+The functionality is extended to provide a way for multiple slices in one go.
 
 
+`imgpy -i /some/sinogrmas --imopr 200 300 1 corwrite -o /some/path --indices 10`
+
+This will reconstruct the first 10 slices (from `--indices 10`) and will use the CORs in range 200 to 300, with a step of 1 (from `--imopr 200 300 1 corwrite`). 
+Then it will save them out to the path specified by `-o`.
+
+^^^^^^^^^^^^^^^^^^^^^^
 Running reconstruction
---reconstruct
---cor-slices --cors
---cors only
+^^^^^^^^^^^^^^^^^^^^^^
+When the correct CORs have been found you can run the reconstruction.
+The `--reconstruction` flag must be specified, which also requires the `--cor-slices --cors` to be specified.
 
-Selecting tool
--t --tool
-Selecting algorithm
--a --algorithm
+`--cors` 
 
+Specifies the COR for each slice. If a single COR is passed, it will be assumed all slices have the same COR.
+
+`--cor-slices` 
+
+Specifies which are the slices for which the CORs are specified with the `--cors` flag. This must have the same number of arguments as `--cors`. 
+If only a single COR is passed into `--cors` you **must not** specify this flag.
+
+Example command line:
+
+
+`imgpy -i /some/sinograms/ --cor-slices 100 200 300 --cors 340 341 342 --reconstruction -o /some/output/path`
+
+This specifies that slice 100 has COR of 340, slice 200 has a COR of 341, and slice 300 has a COR of 342. The CORs between the slices will be interpolated based on the ones that are passed in.
+
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Selecting tool and algorithm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The tool used can be specified with:
+
+`-t` or `--tool`
+
+The algorithm can be specified with:
+
+`-a` or `--algorithm`
+
+
+For available tools and algorithms please refer to the `Printing the help`_.
