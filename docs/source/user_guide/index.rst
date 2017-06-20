@@ -10,4 +10,4 @@ User Guide
   
 
    setting_up
-   sample_usage
+   quick_start
