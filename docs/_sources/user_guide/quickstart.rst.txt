@@ -1,0 +1,27 @@
+.. Sample usage master file
+   See http://sphinx-doc.org/tutorial.html#defining-document-structure
+
+.. Sample usage contents:
+
+=============
+Sample usage
+=============
+-----------------
+Printing the help
+-----------------
+
+The help can be printed by passing the `-h` flag.
+
+Depending on how you're accessing the package it will be either:
+
+`imgpy -h`
+
+or
+
+`. imgpy.sh -h`
+
+This will print out the whole help, containing each available command line parameter that can be passed.
+
+------------
+Loading Data 
+------------

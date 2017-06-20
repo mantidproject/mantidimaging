@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Setting up &#8212; ISIS Imaging 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sample usage" href="sample_usage.html" />
+    <link rel="prev" title="User Guide" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="setting-up">
+<h1>Setting up<a class="headerlink" href="#setting-up" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-the-package">
+<h2>Installing the package<a class="headerlink" href="#installing-the-package" title="Permalink to this headline">¶</a></h2>
+<p><strong>It is recommended that the package is installed in the User's Home directory.</strong></p>
+<div class="section" id="cloning-the-repository">
+<h3>Cloning the repository<a class="headerlink" href="#cloning-the-repository" title="Permalink to this headline">¶</a></h3>
+<p>Requires <cite>git</cite> installed. For instructions on how to install <cite>git</cite> on your Linux distribution please visit <a class="reference external" href="https://git-scm.com/download/linux">this webpage</a>.</p>
+<div class="section" id="https">
+<h4>HTTPS:<a class="headerlink" href="#https" title="Permalink to this headline">¶</a></h4>
+<p><cite>git clone https://github.com/mantidproject/isis_imaging.git</cite></p>
+</div>
+<div class="section" id="ssh">
+<h4>SSH:<a class="headerlink" href="#ssh" title="Permalink to this headline">¶</a></h4>
+<p><cite>git clone git&#64;github.com:mantidproject/isis_imaging.git</cite></p>
+</div>
+</div>
+<div class="section" id="downloading-the-repository">
+<h3>Downloading the repository<a class="headerlink" href="#downloading-the-repository" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://github.com/mantidproject/isis_imaging/archive/master.zip">https://github.com/mantidproject/isis_imaging/archive/master.zip</a></p>
+</div>
+</div>
+<div class="section" id="setting-up-python">
+<h2>Setting up Python<a class="headerlink" href="#setting-up-python" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to start using this package is to  have installed <a class="reference external" href="https://www.continuum.io/downloads">Anaconda 2</a>. This way you only need to add the tools which you will be using.</p>
+<div class="section" id="tomopy">
+<h3>Tomopy:<a class="headerlink" href="#tomopy" title="Permalink to this headline">¶</a></h3>
+<p><cite>conda install -c dgursoy tomopy=1.0.1</cite>.</p>
+<p>Link to the page in Anaconda: <a class="reference external" href="https://anaconda.org/dgursoy/tomopy">Tomopy in Anaconda</a></p>
+</div>
+<div class="section" id="astra-toolbox-not-supported-yet">
+<h3>Astra Toolbox: (not supported yet)<a class="headerlink" href="#astra-toolbox-not-supported-yet" title="Permalink to this headline">¶</a></h3>
+<p><cite>conda install -c astra-toolbox astra-toolbox=1.8</cite>.</p>
+<p>Link to the page in Anaconda: <a class="reference external" href="https://anaconda.org/astra-toolbox/astra-toolbox">Astra Toolbox in Anaconda</a></p>
+</div>
+</div>
+<div class="section" id="starting-the-package">
+<h2>Starting the package<a class="headerlink" href="#starting-the-package" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Calling from command line</li>
+</ul>
+<p>Starting the package is done through calling the <cite>imgpy.sh</cite> file in the installation folder. This is a shell script so it needs to be called like this:</p>
+<p><cite>. imgpy.sh &lt;args...&gt;</cite></p>
+<p>or</p>
+<p><cite>sh imgpy.sh &lt;args...&gt;</cite></p>
+<p>or</p>
+<p><cite>bash imgpy.sh &lt;args...&gt;</cite></p>
+<ul class="simple">
+<li>Using iPython</li>
+</ul>
+<p>To start the package and enter iPython use one of these:</p>
+<p><cite>. imgpy-ipython.sh &lt;args...&gt;</cite></p>
+<p>or</p>
+<p><cite>sh imgpy-ipython.sh &lt;args...&gt;</cite></p>
+<p>or</p>
+<p><cite>bash imgpy-ipython.sh &lt;args...&gt;</cite></p>
+<ul class="simple">
+<li>Using GUI</li>
+</ul>
+<p>To start the GUI use one of these:</p>
+<p><cite>. imgpy-gui.sh &lt;args...&gt;</cite></p>
+<p>or</p>
+<p><cite>sh imgpy-gui.sh &lt;args...&gt;</cite></p>
+<p>or</p>
+<p><cite>bash imgpy-gui.sh &lt;args...&gt;</cite></p>
+</div>
+<div class="section" id="global-access-to-the-package">
+<h2>Global access to the package<a class="headerlink" href="#global-access-to-the-package" title="Permalink to this headline">¶</a></h2>
+<p>If the package is installed in the $HOME directory it can be given access globally using the following commands:</p>
+<p><cite>sudo ln -s $HOME/imgpy/imgpy.sh /usr/local/bin/imgpy</cite></p>
+<p><cite>sudo ln -s $HOME/imgpy/imgpy-ipython.sh /usr/local/bin/imgpy-ipython</cite></p>
+<p><cite>sudo ln -s $HOME/imgpy/imgpy-gui.sh /usr/local/bin/imgpy-gui</cite></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Setting up</a><ul>
+<li><a class="reference internal" href="#installing-the-package">Installing the package</a><ul>
+<li><a class="reference internal" href="#cloning-the-repository">Cloning the repository</a><ul>
+<li><a class="reference internal" href="#https">HTTPS:</a></li>
+<li><a class="reference internal" href="#ssh">SSH:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#downloading-the-repository">Downloading the repository</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-up-python">Setting up Python</a><ul>
+<li><a class="reference internal" href="#tomopy">Tomopy:</a></li>
+<li><a class="reference internal" href="#astra-toolbox-not-supported-yet">Astra Toolbox: (not supported yet)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#starting-the-package">Starting the package</a></li>
+<li><a class="reference internal" href="#global-access-to-the-package">Global access to the package</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">User Guide</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">User Guide</a></li>
+      <li>Next: <a href="sample_usage.html" title="next chapter">Sample usage</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/setting_up.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Dimitar Tasev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/user_guide/setting_up.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
