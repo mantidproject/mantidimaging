@@ -11,5 +11,3 @@ User Guide
 
    setting_up
    sample_usage
-   
-.. dot will match all files (except index.rst) in the directory
