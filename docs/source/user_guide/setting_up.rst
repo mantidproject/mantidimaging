@@ -1,11 +1,11 @@
-.. First Time users master file
+.. Setting up master file
    See http://sphinx-doc.org/tutorial.html#defining-document-structure
 
-.. first_time_usage contents:
+.. Setting up contents:
 
-=================
- First Time Usage
-=================
+===========
+ Setting up
+===========
 
 ----------------------
 Installing the package
@@ -116,23 +116,3 @@ If the package is installed in the $HOME directory it can be given access global
 
 `sudo ln -s $HOME/imgpy/imgpy-gui.sh /usr/local/bin/imgpy-gui`
 
-
------------------
-Printing the help
------------------
-
-The help can be printed by passing the `-h` flag.
-
-Depending on how you're accessing the package it will be either:
-
-`imgpy -h`
-
-or
-
-`. imgpy.sh -h`
-
-This will print out the whole help, containing each available command line parameter that can be passed.
-
-------------
-Loading Data 
-------------
