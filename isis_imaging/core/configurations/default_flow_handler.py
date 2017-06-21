@@ -9,6 +9,15 @@ from isis_imaging.core.tools import importer
 from isis_imaging.readme_creator import Readme
 
 from isis_imaging.core.configurations import default_filtering
+from isis_imaging.core.algorithms import size_calc
+
+from psutil import virtual_memory
+
+
+def _print_expected_memory_usage(data_shape, dtype):
+    h.tomo_print_note("Predicted memory usage for data: " +
+                      str(size_calc.full_size(data_shape, 0, dtype)) +
+                      " MB, Total available on system: " + str(virtual_memory().total / 1024 / 1024) + " MB")
 
 
 def execute(config):
@@ -20,7 +29,7 @@ def execute(config):
         - do the reconstruction with the appropriate tool
         - save out reconstruction images
 
-    The configuration for pre_processing and reconstruction are read from 
+    The configuration for pre_processing and reconstruction are read from
     the config parameter.
 
     :param config: A ReconstructionConfig with all the necessary parameters to
@@ -46,6 +55,10 @@ def execute(config):
     readme = Readme(config, saver_class)
     readme.begin(config.cmd_line, config)
     h.set_readme(readme)
+
+    data_shape = loader.read_in_shape(config)
+
+    _print_expected_memory_usage(data_shape, config.func.data_dtype)
 
     result = loader.load_from_config(config)
     if isinstance(result, np.ndarray):
