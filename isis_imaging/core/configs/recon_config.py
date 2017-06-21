@@ -125,6 +125,9 @@ class ReconstructionConfig(object):
                 self.func.indices = [
                     self.func.indices[0], self.func.indices[1], 1
                 ]
+        if self.func.split and not self.func.max_memory:
+            raise ValueError(
+                "The --split flag was passed, but no --max-memory was specified!")
 
     def __str__(self):
         return str(self.func) + str(self.args)

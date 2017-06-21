@@ -6,7 +6,6 @@ from isis_imaging.core.io import loader
 
 
 def execute(config, executable):
-
     data_shape = loader.read_in_shape(config)
     shape_splitter = ShapeSplitter(data_shape, 0, config.func.data_dtype,
                                    config.func.max_memory,

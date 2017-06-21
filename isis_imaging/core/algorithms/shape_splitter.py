@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 import numpy as np
 
+from isis_imaging.core.algorithms import size_calc
+
 
 class ShapeSplitter(object):
     def __init__(self,
@@ -16,76 +18,6 @@ class ShapeSplitter(object):
         self.max_mem = max_mem
         self.max_ratio = max_ratio
         self.no_recon = no_recon
-
-    def single_size(self, shape=None, axis=None):
-        """
-        Size of a single unit across the axis we are traversing.
-        This does not take into account data type, it returns the pure size.
-
-        To get bits from this, multiply by the data size.
-        To get bytes, divide the bits by 8.
-        To get the size of the whole dataset, multiply by the length axis (the one that we are traversing across).
-        To get kilobytes, divide by 1024.
-        To get megabytes, divide by 1024 again.
-        """
-        shape = self.shape if shape is None else shape
-        axis = self.axis if axis is None else axis
-        single = 1
-        for i in range(len(shape)):
-            if i == axis:
-                continue
-            single *= shape[i]
-
-        return single
-
-    def _determine_dtype_size(self, dtype=None):
-        dtype = self.dtype if dtype is None else dtype
-        if dtype in ['int16', 'float16', 'np.int16', 'np.float16', '16']\
-                    or isinstance(dtype,np.int16) \
-                    or isinstance(dtype,np.float16) \
-                    or self.dtype is np.int16 \
-                    or self.dtype is np.float16:
-
-            return 16
-        elif dtype in ['int32', 'float32', 'np.int32', 'np.float32','32'] \
-                    or isinstance(dtype,np.int32) \
-                    or isinstance(dtype,np.float32) \
-                    or self.dtype is np.int32 \
-                    or self.dtype is np.float32:
-            return 32
-        elif dtype in ['int64', 'float64', 'np.int64', 'np.float64', '64'] \
-                    or isinstance(dtype,np.int64) \
-                    or isinstance(dtype,np.float64) \
-                    or self.dtype is np.int64 \
-                    or self.dtype is np.float64:
-            return 64
-
-    def full_size(self, shape=None, axis=None, dtype=None):
-        """
-        Compute the full size of the data and return in Megabytes.
-
-        If a parameter is not specified on call, the one provided at the class initialisation will be used!
-
-        :param shape: The shape of the data for which the size will be calculated
-        :param axis: The axis on which the shape is going to be traversed
-        :param dtype: The data type
-
-        """
-        shape = self.shape if shape is None else shape
-        axis = self.axis if axis is None else axis
-        dtype = self.dtype if dtype is None else dtype
-
-        mul = self._determine_dtype_size(dtype)
-
-        single_size = self.single_size(shape, axis)
-        # get the bits
-        single_bits = single_size * mul
-        # get the bytes
-        single_bytes = single_bits / 8
-
-        full_size_bytes = shape[axis] * single_bytes
-        # convert to MB
-        return full_size_bytes / 1024 / 1024
 
     def R(self, size, sinograms=True):
         # we are using sinograms, so the reconstructed shape will be exactly the same,
@@ -104,14 +36,16 @@ class ShapeSplitter(object):
         length = self.shape[self.axis]
 
         # the size of a single object across the length axis
-        single = self.single_size()
+        single = size_calc.single_size(self.shape, self.axis)
+
+        def func_full_size(shape): return size_calc.full_size(
+            shape, self.axis, self.dtype)
+        full_size = func_full_size(self.shape)
 
         print(
             "Single size of shape {0} on axis {1}: {2}\nTotal size: {3}\nAllowed memory: {4}"
-            .format(self.shape, self.axis, single,
-                    self.full_size(), self.max_mem))
+            .format(self.shape, self.axis, single, full_size, self.max_mem))
 
-        full_size = self.full_size()
         ratio = self.R(full_size)
         ratio = int(np.ceil(ratio))
 
@@ -126,17 +60,20 @@ class ShapeSplitter(object):
         # if we're traversing along axis 0, with a shape (15,300,400)
         # this will create the new shape (step, 300, 400). If we're
         # traversing along axis 1, then it will be (15, step, 400)
-        new_shape = self.shape[:self.axis] + (int(step),
-                                              ) + self.shape[self.axis + 1:]
+        new_shape = self.shape[:self.axis] + \
+            (int(step),) + self.shape[self.axis + 1:]
 
-        while self.R(self.full_size(new_shape)) > self.max_ratio:
+        while self.R(func_full_size(new_shape)) > self.max_ratio:
             split, step = np.linspace(
                 0, length, ratio, dtype=np.int32, retstep=True)
-            new_shape = self.shape[:self.axis] + (
-                int(step), ) + self.shape[self.axis + 1:]
+
+            new_shape = self.shape[:self.axis] + \
+                (int(step), ) + self.shape[self.axis + 1:]
+
+            # same reason as in the if statement
             ratio += 1
             print("Step per reconstruction", step, "with a ratio to memory",
-                  self.R(self.full_size(new_shape)), "indices", split)
+                  self.R(func_full_size(new_shape)), "indices", split)
 
         return split, step
 
