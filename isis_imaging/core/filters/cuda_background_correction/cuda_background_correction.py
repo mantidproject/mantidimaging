@@ -54,32 +54,17 @@ def execute(data,
                 which should match the shape of the sample images ({2})"
                 .format(flat.shape, dark.shape, data[0].shape))
 
-    return _execute_par(data, flat, dark, clip_min, clip_max, cores,
-                        chunksize)
+    return _execute(data, flat, dark, clip_min, clip_max, cores,
+                    chunksize)
 
 
-def _execute_par(data,
-                 flat=None,
-                 dark=None,
-                 clip_min=MINIMUM_PIXEL_VALUE,
-                 clip_max=MAXIMUM_PIXEL_VALUE,
-                 cores=None,
-                 chunksize=None):
-    """
-    A benchmark justifying the current implementation, performed on 500x2048x2048 images
-
-    #1 Separate runs
-    Subtract (sequential with np.subtract(data, dark, out=data)) - 13s
-    Divide (par) - 1.15s
-
-    #2 Separate parallel runs
-    Subtract (par) - 5.5s
-    Divide (par) - 1.15s
-
-    #3 Added subtract into _divide so that it is:
-                np.true_divide(np.subtract(data, dark, out=data), norm_divide, out=data)
-    Subtract then divide (par) - 55s
-    """
+def _execute(data,
+             flat=None,
+             dark=None,
+             clip_min=MINIMUM_PIXEL_VALUE,
+             clip_max=MAXIMUM_PIXEL_VALUE,
+             cores=None,
+             chunksize=None):
     h.pstart("Starting PARALLEL normalization by flat/dark images.")
 
     norm_divide = cp.zeros((1, data.shape[1], data.shape[2]), data.dtype)
