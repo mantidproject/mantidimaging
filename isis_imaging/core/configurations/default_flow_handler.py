@@ -73,9 +73,9 @@ def execute(config):
 
     # Save pre-proc images, print inside
     saver_class.save_preproc_images(sample)
-    if not config.func.reconstruct:
+    if not config.func.reconstruction:
         h.tomo_print_note(
-            "Skipping reconstruction because no --reconstruct flag was passed.")
+            "Skipping reconstruction because no --reconstruction flag was passed.")
         readme.end()
         return sample
 
