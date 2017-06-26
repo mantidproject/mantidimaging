@@ -105,7 +105,7 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def assert_files_exist(cls, base_name, file_format, stack=True, num_images=1):
+def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', stack=True, num_images=1):
     import os
     import unittest
     assert isinstance(
@@ -116,13 +116,15 @@ def assert_files_exist(cls, base_name, file_format, stack=True, num_images=1):
         # generate a list of filenames with 000000 numbers appended
         filenames = []
         for i in range(num_images):
-            filenames.append(base_name + str(i) + '.' + file_format)
+            filenames.append(base_name + str(i) +
+                             file_extension_separator + file_extension)
 
         for f in filenames:
             cls.assertTrue(os.path.isfile(f))
 
     else:
-        filename = base_name + '.' + file_format
+        if file_extension:
+            filename = base_name + file_extension_separator + file_extension
         cls.assertTrue(os.path.isfile(filename))
 
 

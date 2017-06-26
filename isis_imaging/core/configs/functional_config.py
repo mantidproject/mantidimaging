@@ -94,6 +94,8 @@ class FunctionalConfig(object):
         self.max_ratio = 1.
         self.no_recon = False
 
+        # process list execution
+        self.process_list = None
         # start the GUI
         self.gui = False
 
@@ -319,6 +321,14 @@ class FunctionalConfig(object):
             default=self.parallel_load,
             help="Load the data with multiple reader processes. "
             "This CAN MAKE THE LOADING slower on a local Hard Disk Drive.")
+
+        grp_func.add_argument(
+            "--process-list",
+            required=False,
+            action='store_true',
+            default=self.process_list,
+            help="Use the process list parser. Intended use is for cluster submission."
+            "It can parse a string from command line, file containing the commands, or a saved process list.")
 
         grp_run_modes = parser.add_argument_group('Run Modes')
 
@@ -586,4 +596,5 @@ class FunctionalConfig(object):
         self.max_ratio = args.max_ratio
         self.no_recon = args.no_recon
 
+        self.process_list = args.process_list
         self.gui = args.gui

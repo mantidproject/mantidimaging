@@ -46,8 +46,9 @@ def get_cores():
 
 def generate_indices(num_images):
     """
-    Generate indices for each image.
-    :param num_images:
+    Generate indices for each image. 
+    This will automatically be turned into a generator with Python 3
+    :param num_images: The number of images.
     :return:
     """
     return range(num_images)
