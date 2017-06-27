@@ -2,22 +2,10 @@ from __future__ import (absolute_import, division, print_function)
 
 import os
 
-
-def get_location_and_package_name(module_file, root_package='isis_imaging'):
-    """
-    Find the internal ISIS_IMAGING package for the specified module
-    :param module_file: The module whose package we're looking for
-    :param root_package: The top level package of isis_imaging
-    :returns (package_name, location,)
-    """
-    s = os.path.dirname(os.path.realpath(module_file))
-    root_package_position = s.find(root_package) + len(root_package)
-    # add +1 to remove the leading /
-    internal_core_package = root_package_position + 1
-    return s[internal_core_package:], s[:root_package_position]
+ROOT_PACKAGE = 'isis_imaging'
 
 
-def get_location(module_file, root_package='isis_imaging'):
+def get_external_location(module_file, root_package=ROOT_PACKAGE):
     """
     Find the external ISIS_IMAGING location for the whole package
     :param module_file: The module whose package we're looking for
@@ -27,17 +15,18 @@ def get_location(module_file, root_package='isis_imaging'):
     return s[:s.find(root_package)]
 
 
-def get_package_name(module_file, core_package='core'):
+def get_package(module_file, root_package=ROOT_PACKAGE):
     """
     Find the internal ISIS_IMAGING package for the specified module
     :param module_file: The module whose package we're looking for
-    :param core_package: The core package within which the module is expected to be
+    :param root_package: The core package within which the module is expected to be
     """
     s = os.path.dirname(os.path.realpath(module_file))
-    return s[s.find(core_package):]
+    internal_core_package = s.find(root_package) + len(root_package) + 1
+    return s[internal_core_package:]
 
 
-def all_modules(package, root_package='isis_imaging'):
+def all_modules(package, root_package=ROOT_PACKAGE):
     """
     This function will build the path to the specified package, and then import all of the modules from it,
     and call _cli_register if _cli is specified, or _gui_register if _gui is specified.
@@ -72,7 +61,7 @@ def all_modules(package, root_package='isis_imaging'):
         return modules
 
 
-def all_packages(package, root_package='isis_imaging', ignore=[]):
+def all_packages(package, root_package=ROOT_PACKAGE, ignore=[]):
     """
     Finds all packages inside a package. This will only look for folder names. 
     For individual modules use all_modules.

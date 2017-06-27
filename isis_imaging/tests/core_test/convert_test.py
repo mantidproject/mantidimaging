@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-import shutil
 import tempfile
 import unittest
 
@@ -28,49 +27,26 @@ class ConvertTest(unittest.TestCase):
         from isis_imaging.core.io.saver import Saver
         return Saver(self.config)
 
-    def delete_files(self, prefix=''):
-        with tempfile.NamedTemporaryFile() as f:
-            full_path = os.path.join(os.path.dirname(f.name), prefix)
-            shutil.rmtree(full_path)
-
     def tearDown(self):
         """
         Cleanup, Make sure all files are deleted from tmp
         """
         try:
-            self.delete_files(prefix='pre_processed')
+            th.delete_files(folder='pre_processed')
         except OSError:
             # no preprocessed images were saved
             pass
         try:
-            self.delete_files(prefix='reconstructed')
+            th.delete_files(folder='reconstructed')
         except OSError:
             # no reconstructed images were saved
             pass
 
         try:
-            self.delete_files(prefix='converted')
+            th.delete_files(folder='converted')
         except OSError:
             # no reconstructed images were saved
             pass
-
-    def assert_files_exist(self,
-                           base_name,
-                           file_format,
-                           stack=True,
-                           num_images=1):
-        if not stack:
-            # generate a list of filenames with 000000 numbers appended
-            filenames = []
-            for i in range(num_images):
-                filenames.append(base_name + str(i) + '.' + file_format)
-
-            for f in filenames:
-                self.assertTrue(os.path.isfile(f))
-
-        else:
-            filename = base_name + '.' + file_format
-            self.assertTrue(os.path.isfile(filename))
 
     def test_convert_fits_fits_nostack(self):
         self.do_convert(
@@ -124,9 +100,9 @@ class ConvertTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            self.assert_files_exist(converted_output_path + '/converted',
-                                    convert_format, saver._data_as_stack,
-                                    images.shape[0])
+            th.assert_files_exist(self, converted_output_path + '/converted',
+                                  convert_format, single_file=saver._data_as_stack,
+                                  num_images=images.shape[0])
 
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
@@ -176,9 +152,9 @@ class ConvertTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            self.assert_files_exist(converted_output_path + '/converted',
-                                    convert_format, saver._data_as_stack,
-                                    images.shape[0])
+            th.assert_files_exist(self, converted_output_path + '/converted',
+                                  convert_format, single_file=saver._data_as_stack,
+                                  num_images=images.shape[0])
 
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
@@ -230,8 +206,8 @@ class ConvertTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            self.assert_files_exist(converted_output_path + '/converted',
-                                    convert_format, stack, images.shape[0])
+            th.assert_files_exist(self, converted_output_path + '/converted',
+                                  convert_format, single_file=stack, num_images=images.shape[0])
 
 
 if __name__ == '__main__':

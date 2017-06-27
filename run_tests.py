@@ -16,6 +16,8 @@ _avail_modules = {
     'io': TEST_CORE_DIR + 'io_test.py',
     'helper': TEST_CORE_DIR + 'helper_test.py',
     'tools': TEST_CORE_DIR + 'importer_test.py',
+    'processlist': TEST_CORE_DIR + 'process_list_test.py',
+    'readme': TEST_CORE_DIR + 'readme_test.py',
     'gui': TEST_GUI_DIR,
     'algorithms': TEST_ALGORITHMS_DIR,
     'filters': TEST_FILTERS_DIR,

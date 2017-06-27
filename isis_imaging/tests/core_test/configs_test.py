@@ -4,7 +4,6 @@ import argparse
 import os
 import sys
 import unittest
-from copy import deepcopy
 
 import numpy.testing as npt
 

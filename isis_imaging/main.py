@@ -41,6 +41,13 @@ def main():
     elif config.func.convert:
         from isis_imaging.core.convert import convert
         thingy_to_execute = convert.execute
+    elif config.func.process_list:
+        from isis_imaging.core import process_list
+        thingy_to_execute = process_list.executor
+        raise NotImplementedError(
+            "Refactor the default_flow_handler common functionality "
+            "into a more generic function. The bit we need is the loading"
+            " of data, creating save directory, readme, etc (stuff before pre-processing)")
     else:
         from isis_imaging.core.configurations import default_flow_handler
         cmd_line = " ".join(sys.argv)

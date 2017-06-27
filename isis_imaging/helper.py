@@ -58,20 +58,19 @@ def check_config_integrity(config):
             "No output path specified, no output will be produced!")
 
 
-def check_data_stack(data, expected_dims=3):
-
+def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
     # the data must be a np array, otherwise most functionality won't work
-    if not isinstance(data, np.ndarray):
+    if not isinstance(data, expected_class):
         raise ValueError(
-            "Invalid stack of images data. It is not a Numpy ndarray: {0}".
+            "Invalid data type. It is not a Numpy ndarray: {0}".
             format(data))
 
     # the scripts are designed to work with a 3 dimensional dataset
-    # in the case of 4 dimensional data, it's typically reduced to 3 dimensions 
+    # in the case of 4 dimensional data, it's typically reduced to 3 dimensions
     # via the aggregate functionality
     if expected_dims != len(data.shape):
         raise ValueError(
-            "Invalid stack of images data. It does not have 3 dimensions. "
+            "Invalid data format. It does not have 3 dimensions. "
             "Shape: {0}".format(data.shape))
 
 

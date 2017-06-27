@@ -1,6 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import os
+import shutil
+import tempfile
+
 import numpy as np
 import numpy.testing as npt
+
 from isis_imaging.core.parallel import utility as pu
 
 backup_mp_avail = None
@@ -105,24 +111,42 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def assert_files_exist(cls, base_name, file_format, stack=True, num_images=1):
+def delete_files(folder=None):
+    """
+    Deletes the test files in a specified folder.
+    """
+    with tempfile.NamedTemporaryFile() as f:
+        full_path = os.path.join(os.path.dirname(f.name), folder)
+        shutil.rmtree(full_path)
+
+
+def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
+    """
+    Asserts that the
+    :param cls: Must be a unittest.TestCase class, in order to use the assertTrue
+    :param base_name: The base name of the filename.
+    :param file_extension: The expected extension
+    :param file_extension_separator: The extension separator. It should normally always be '.'
+    :param single_file: Are we looking for a 'stack' of images
+    """
     import os
     import unittest
     assert isinstance(
         cls, unittest.TestCase
     ), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
 
-    if not stack:
+    if not single_file:
         # generate a list of filenames with 000000 numbers appended
         filenames = []
         for i in range(num_images):
-            filenames.append(base_name + str(i) + '.' + file_format)
+            filenames.append(base_name + str(i) +
+                             file_extension_separator + file_extension)
 
         for f in filenames:
             cls.assertTrue(os.path.isfile(f))
 
     else:
-        filename = base_name + '.' + file_format
+        filename = base_name + file_extension_separator + file_extension
         cls.assertTrue(os.path.isfile(filename))
 
 
