@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-import shutil
 import tempfile
 import unittest
 
@@ -25,61 +24,38 @@ class AggregateTest(unittest.TestCase):
     def create_saver(self):
         return Saver(self.config)
 
-    def delete_files(self, prefix=''):
-        with tempfile.NamedTemporaryFile() as f:
-            full_path = os.path.join(os.path.dirname(f.name), prefix)
-            shutil.rmtree(full_path)
-
     def tearDown(self):
         """
         Cleanup, Make sure all files are deleted from tmp
         """
         try:
-            self.delete_files(prefix='pre_processed')
+            th.delete_files(folder='pre_processed')
         except OSError:
             # no preprocessed images were saved
             pass
         try:
-            self.delete_files(prefix='reconstructed')
+            th.delete_files(folder='reconstructed')
         except OSError:
             # no reconstructed images were saved
             pass
 
         try:
-            self.delete_files(prefix='converted')
+            th.delete_files(folder='converted')
         except OSError:
             # no reconstructed images were saved
             pass
 
         try:
-            self.delete_files(prefix='aggregated')
+            th.delete_files(folder='aggregated')
         except OSError:
             # no reconstructed images were saved
             pass
 
         try:
-            self.delete_files(prefix='aggregate')
+            th.delete_files(folder='aggregate')
         except OSError:
             # no reconstructed images were saved
             pass
-
-    def assert_files_exist(self,
-                           base_name,
-                           file_format,
-                           stack=True,
-                           num_images=1):
-        if not stack:
-            # generate a list of filenames with 000000 numbers appended
-            filenames = []
-            for i in range(num_images):
-                filenames.append(base_name + str(i) + '.' + file_format)
-
-            for f in filenames:
-                self.assertTrue(os.path.isfile(f))
-
-        else:
-            filename = base_name + '_stack.' + file_format
-            self.assertTrue(os.path.isfile(filename))
 
     def test_aggregate_single_folder_sum_fits(self):
         self.do_aggregate_single_folder('fits', 'fits', 'sum')
@@ -151,9 +127,9 @@ class AggregateTest(unittest.TestCase):
             for i in sample:
                 th.assert_equals(i, expected)
 
-            self.assert_files_exist(
-                aggregate_output_path + '/out_' + mode + '_0_10_',
-                saver._img_format, saver._data_as_stack, aggregate_angles)
+            th.assert_files_exist(self,
+                                  aggregate_output_path + '/out_' + mode + '_0_10_',
+                                  saver._img_format, single_file=saver._data_as_stack, num_images=aggregate_angles)
 
     def test_aggregate_not_single_folder_sum_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'sum')
@@ -236,11 +212,11 @@ class AggregateTest(unittest.TestCase):
                 # this means that an additional 0 will be appended to the
                 # filename: out_...00_10 and will get the correct file name.
                 # This is a cheat to avoid an additional if statement
-                self.assert_files_exist(
-                    angle_path + '/out_' + mode + '00_1',
-                    saver._img_format,
-                    saver._data_as_stack,
-                    num_images=1)
+                th.assert_files_exist(self,
+                                      angle_path + '/out_' + mode + '00_1',
+                                      saver._img_format,
+                                      single_file=saver._data_as_stack,
+                                      num_images=1)
 
 
 if __name__ == '__main__':

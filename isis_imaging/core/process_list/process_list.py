@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import cStringIO
-import importlib
 import inspect
 import os
 # using pickle instead of dill, because dill is not available on SCARF
@@ -40,19 +39,30 @@ def load(file=None):
 
 class ProcessList(object):
     def __init__(self):
-        self._list = deque()
+        self._dequeue = deque()
 
     def __str__(self):
         # call with default separators
-        return self.to_string(DEFAULT_ARGUMENT_SEPARATOR, DEFAULT_FUNCTION_SEPARATOR)
+        return self.to_string(DEFAULT_ARGUMENT_SEPARATOR, '\n')
 
     def __len__(self):
-        return len(self._list)
+        return len(self._dequeue)
 
     def __eq__(self, rhs):
-        return self._list == rhs._list
+        return self._dequeue == rhs._dequeue
+
+    def clear(self):
+        self._dequeue.clear()
 
     def store(self, func, *args, **kwargs):
+        """
+        Store a function in the process list to be executed later. The arguments must be literal values.
+        Note: More arguments can be appended when the funciton is called for execution.
+
+        :param func: This works with a function reference, because metadata needs to be read from the funciton.
+        :param args: Arguments that will be forwarded to the function. They must be literal values.
+        :param kwargs: Keyword arguments that will be forwarded to the function. They must be literal values.
+        """
         if(isinstance(func, str)):
             self._store_string(func, args, kwargs)
         else:
@@ -67,10 +77,16 @@ class ProcessList(object):
         self._store_string(func_package, func_name, args, kwargs)
 
     def _store_string(self, package, func, args, kwargs):
-        self._list.append((package, func, args, kwargs))
+        self._dequeue.append((package, func, args, kwargs))
 
     def pop(self):
-        return self._list.popleft()
+        return self._dequeue.popleft()
+
+    def first(self):
+        """
+        Return the first member of the queue, but do not remove.
+        """
+        return self._dequeue[0]
 
     def save(self, file=None):
         file = os.path.abspath(os.path.expanduser(file))
@@ -82,7 +98,7 @@ class ProcessList(object):
         :param func_separator: Separator character to be used between functions.
         """
         out = cStringIO.StringIO()
-        for entry in self._list:
+        for entry in self._dequeue:
             e = map(lambda x: str(x), list(entry))
 
             out.write(e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR +
@@ -101,12 +117,3 @@ class ProcessList(object):
         except (AttributeError, SyntaxError, ValueError) as e:
             raise ValueError(
                 "Error encountered while processing from the input string. The formatting may be invalid." + str(e))
-
-
-def execute(data, entry):
-    package = importlib.import_module(entry[0].replace('/', '.'))
-    func = entry[1]
-    args = entry[2]
-    kwargs = entry[3]
-    to_call = getattr(package, func)
-    return to_call(data, *args, **kwargs)

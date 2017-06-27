@@ -1,14 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-import unittest
-import tempfile
 import os
-import shutil
+import tempfile
+import unittest
 
-from isis_imaging.core.io import loader
-from isis_imaging.tests import test_helper as th
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.io import loader
 from isis_imaging.core.io.saver import Saver
+from isis_imaging.tests import test_helper as th
 
 
 class IOTest(unittest.TestCase):
@@ -51,34 +50,29 @@ class IOTest(unittest.TestCase):
             filename = base_name + '.' + file_format
             self.assertTrue(os.path.isfile(filename))
 
-    def delete_files(self, prefix=''):
-        with tempfile.NamedTemporaryFile() as f:
-            full_path = os.path.join(os.path.dirname(f.name), prefix)
-            shutil.rmtree(full_path)
-
     def tearDown(self):
         """
         Cleanup, Make sure all files are deleted from tmp
         """
         try:
-            self.delete_files(prefix='pre_processed')
+            th.delete_files(folder='pre_processed')
         except OSError:
             # no preprocessed images were saved
             pass
         try:
             # delete files from test_load_sample_flat_and_dark
-            self.delete_files(prefix='imgIOTest_flat')
+            th.delete_files(folder='imgIOTest_flat')
         except OSError:
             # no preprocessed images were saved
             pass
         try:
             # delete files from test_load_sample_flat_and_dark
-            self.delete_files(prefix='imgIOTest_dark')
+            th.delete_files(folder='imgIOTest_dark')
         except OSError:
             # no preprocessed images were saved
             pass
         try:
-            self.delete_files(prefix='reconstructed')
+            th.delete_files(folder='reconstructed')
         except OSError:
             # no reconstructed images were saved
             pass
