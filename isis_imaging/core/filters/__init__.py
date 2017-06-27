@@ -22,12 +22,22 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from isis_imaging.core.algorithms.finder import get_location_and_package_name, all_packages
+from . import background_correction  # noqa: F401, F403
+from . import circular_mask  # noqa: F401, F403
+from . import clip_values  # noqa: F401, F403
+from . import contrast_normalisation  # noqa: F401, F403
+from . import crop_coords  # noqa: F401, F403
+from . import cut_off  # noqa: F401, F403
+from . import gaussian  # noqa: F401, F403
+from . import median_filter  # noqa: F401, F403
+from . import minus_log  # noqa: F401, F403
+from . import outliers  # noqa: F401, F403
+from . import rebin  # noqa: F401, F403
+from . import ring_removal  # noqa: F401, F403
+from . import rotate_stack  # noqa: F401, F403
+from . import stripe_removal  # noqa: F401, F403
 
-# read in all of the available modules
-__all__ = all_packages(*get_location_and_package_name(__file__))
+from .wip import mcp_corrections  # noqa: F401, F403
 
-from . import *  # noqa: F401, F403
-from .wip import *  # noqa: F401, F403
-
-del all_packages, get_location_and_package_name, absolute_import, division, print_function  # noqa: F821
+# delete the reference to hide from public API
+del absolute_import, division, print_function  # noqa: F821

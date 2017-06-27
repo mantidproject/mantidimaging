@@ -22,13 +22,17 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from isis_imaging.core.algorithms.finder import get_location_and_package_name, all_modules
-
-# read in all of the available modules
-__all__ = all_modules(*get_location_and_package_name(__file__))
-
-# delete the reference
-del all_modules, get_location_and_package_name, absolute_import, division, print_function
-
 # actually do the imports
-from . import *  # noqa: F401, F403
+from . import cor_interpolate  # noqa: F401, F403
+from . import execution_splitter  # noqa: F401, F403
+from . import finder  # noqa: F401, F403
+from . import gui_compile_ui  # noqa: F401, F403
+from . import projection_angles  # noqa: F401, F403
+from . import registrator  # noqa: F401, F403
+from . import shape_splitter  # noqa: F401, F403
+from . import size_calc  # noqa: F401, F403
+from . import value_scaling  # noqa: F401, F403
+
+
+# delete the reference to hide from public API
+del absolute_import, division, print_function
