@@ -123,8 +123,7 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
             cls.assertTrue(os.path.isfile(f))
 
     else:
-        if file_extension:
-            filename = base_name + file_extension_separator + file_extension
+        filename = base_name + file_extension_separator + file_extension
         cls.assertTrue(os.path.isfile(filename))
 
 

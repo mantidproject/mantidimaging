@@ -1,18 +1,37 @@
 from __future__ import absolute_import, division, print_function
 
+import cStringIO
+import importlib
+import inspect
+import os
 # using pickle instead of dill, because dill is not available on SCARF
 import pickle
-import os
-import inspect
-import importlib
-import cStringIO
+from ast import literal_eval
 from collections import deque
 
 from isis_imaging.core.algorithms import finder
 
-
 DEFAULT_ARGUMENT_SEPARATOR = ' '
 DEFAULT_FUNCTION_SEPARATOR = ';'
+DEFAULT_TUPLE_SEPARATOR = ')'
+
+
+def _entry_from_string(entry, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, tuple_separator=DEFAULT_TUPLE_SEPARATOR):
+    whitespace = entry.find(arg_separator)
+    package = entry[:whitespace]
+    entry = entry[whitespace + 1:]
+
+    whitespace = entry.find(arg_separator)
+    func = entry[:whitespace]
+    entry = entry[whitespace + 1:]
+
+    tuple_end_brace = entry.find(tuple_separator) + 1
+    # literal eval to convert into the actual tuple type
+    args = literal_eval(entry[:tuple_end_brace])
+    entry = entry[tuple_end_brace + 1:]
+
+    kwargs = literal_eval(entry)
+    return package, func, args, kwargs
 
 
 def load(file=None):
@@ -68,10 +87,20 @@ class ProcessList(object):
 
             out.write(e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR +
                       e[2] + DEFAULT_ARGUMENT_SEPARATOR + e[3] + DEFAULT_FUNCTION_SEPARATOR)
+
         return out.getvalue()
 
-    def from_string(self, string):
-        pass
+    def from_string(self, string, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func_separator=DEFAULT_FUNCTION_SEPARATOR):
+        # split on func separator and remove any 0 length strings
+        separated_string = filter(lambda s: len(
+            s) > 0, string.split(DEFAULT_FUNCTION_SEPARATOR))
+        try:
+            for entry in separated_string:
+                self._store_string(*_entry_from_string(
+                    entry, arg_separator, DEFAULT_TUPLE_SEPARATOR))
+        except (AttributeError, SyntaxError, ValueError) as e:
+            raise ValueError(
+                "Error encountered while processing from the input string. The formatting may be invalid." + str(e))
 
 
 def execute(data, entry):
