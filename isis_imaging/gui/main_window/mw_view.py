@@ -1,19 +1,19 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt as Qt_
+from PyQt5 import QtCore, Qt
+from PyQt5.QtCore import Qt as Qt_
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from gui.main_window.mw_presenter import ImgpyMainWindowPresenter
-from gui.main_window.mw_presenter import Notification as PresNotification
-from gui.stack_visualiser.sv_view import ImgpyStackVisualiserView
-from gui.main_window.load_dialog.load_dialog import MWLoadDialog
-from gui.main_window.save_dialog.save_dialog import MWSaveDialog
+from isis_imaging.gui.main_window.mw_presenter import MainWindowPresenter
+from isis_imaging.gui.main_window.mw_presenter import Notification as PresNotification
+from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
+from isis_imaging.gui.main_window.load_dialog import MWLoadDialog
+from isis_imaging.gui.main_window.save_dialog import MWSaveDialog
 
 
-class ImgpyMainWindowView(QtGui.QMainWindow):
+class MainWindowView(Qt.QMainWindow):
     def __init__(self, config):
-        super(ImgpyMainWindowView, self).__init__()
+        super(Qt.QMainWindow, self).__init__()
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
 
         # connection of file menu TODO move to func
@@ -23,14 +23,14 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
         self.actionSave.setShortcut('Ctrl+S')
         self.actionSave.triggered.connect(self.show_save_dialogue)
         # setting of shortcuts TODO move to func
-        self.actionExit.triggered.connect(QtGui.qApp.quit)
+        self.actionExit.triggered.connect(Qt.qApp.quit)
         self.actionExit.setShortcut('Ctrl+Q')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("imgpy")
+        self.setWindowTitle("ISIS Imaging")
 
         # filter and algorithm communications will be funneled through this
-        self.presenter = ImgpyMainWindowPresenter(self, config)
+        self.presenter = MainWindowPresenter(self, config)
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
@@ -58,18 +58,18 @@ class ImgpyMainWindowView(QtGui.QMainWindow):
                             title,
                             position=Qt_.BottomDockWidgetArea,
                             floating=False):
-        dock_widget = QtGui.QDockWidget(title, self)
+        dock_widget = Qt.QDockWidget(title, self)
 
         self.addDockWidget(position, dock_widget)
 
         # we can get the stack visualiser widget with dock_widget.widget
         dock_widget.setWidget(
-            ImgpyStackVisualiserView(self, dock_widget, stack))
+            StackVisualiserView(self, dock_widget, stack))
 
         # proof of concept above
         assert isinstance(
-            dock_widget.widget(), ImgpyStackVisualiserView
-        ), "Widget inside dock_widget is not an ImgpyStackVisualiserView!"
+            dock_widget.widget(), StackVisualiserView
+        ), "Widget inside dock_widget is not an StackVisualiserView!"
 
         dock_widget.setFloating(floating)
 

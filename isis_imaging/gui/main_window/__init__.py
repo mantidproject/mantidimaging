@@ -21,3 +21,10 @@ from __future__ import absolute_import, division, print_function
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
+
+from .mw_presenter import MainWindowPresenter  # noqa: F401
+from .mw_view import MainWindowView  # noqa: F401
+from . import load_dialog  # noqa: F401
+from . import save_dialog  # noqa: F401
+
+del absolute_import, division, print_function  # noqa:F821

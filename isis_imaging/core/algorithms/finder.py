@@ -12,7 +12,7 @@ def get_external_location(module_file, root_package=ROOT_PACKAGE):
     :param root_package: The top level package of isis_imaging
     """
     s = os.path.dirname(os.path.realpath(module_file))
-    return s[:s.find(root_package)]
+    return s[:s.rfind(root_package)]
 
 
 def get_package(module_file, root_package=ROOT_PACKAGE):

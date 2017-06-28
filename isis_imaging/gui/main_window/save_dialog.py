@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt4 import QtGui
+from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.core.io.loader import supported_formats
@@ -8,15 +8,15 @@ from isis_imaging.core.io.loader import supported_formats
 
 def select_directory(field, caption):
     assert isinstance(
-        field, QtGui.QLineEdit
+        field, Qt.QLineEdit
     ), "The passed object is of type {0}. This function only works with QLineEdit".format(
         type(field))
 
     # open file dialogue and set the text if file is selected
-    field.setText(QtGui.QFileDialog.getExistingDirectory(caption=caption))
+    field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
 
 
-class MWSaveDialog(QtGui.QDialog):
+class MWSaveDialog(Qt.QDialog):
     def __init__(self, parent, stack_list):
         super(MWSaveDialog, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/save_dialog.ui', self)
@@ -24,7 +24,7 @@ class MWSaveDialog(QtGui.QDialog):
         self.browseButton.clicked.connect(
             lambda: select_directory(self.savePath, "Browse"))
 
-        self.buttonBox.button(QtGui.QDialogButtonBox.SaveAll).clicked.connect(
+        self.buttonBox.button(Qt.QDialogButtonBox.SaveAll).clicked.connect(
             self.save_all)
 
         formats = supported_formats()

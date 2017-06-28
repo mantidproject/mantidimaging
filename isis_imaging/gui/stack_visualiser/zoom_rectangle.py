@@ -1,15 +1,15 @@
 from __future__ import absolute_import, division, print_function
 
-import PyQt4.QtCore as QCore
-import PyQt4.QtGui as QGui
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+import PyQt5.QtCore as QCore
+import PyQt5.QtGui as QGui
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 
 class FigureCanvasColouredRectangle(FigureCanvasQTAgg):
     """
     From http://stackoverflow.com/questions/28599068/changing-the-edge-color-of-zoom-rect-in-matplotlib
-    Subclassing to change the paint event hosted in matplotlib.backends.backend_qt5agg. 
-    Removed all comments for sake of brevity. 
+    Subclassing to change the paint event hosted in matplotlib.backends.backend_qt5agg.
+    Removed all comments for sake of brevity.
     Paintcolor can be set by settings canvas.rectanglecolor to a QColor.
     """
 

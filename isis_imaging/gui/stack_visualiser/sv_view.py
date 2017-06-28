@@ -1,22 +1,20 @@
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
-from matplotlib.backends.backend_qt4agg import \
-    FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.colorbar import ColorbarBase
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
-from PyQt4 import QtCore, QtGui, uic
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5.QtCore import Qt
+from PyQt5 import Qt as MainQt
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from gui.stack_visualiser.sv_presenter import ImgpyStackViewerPresenter
-from gui.stack_visualiser.zoom_rectangle import FigureCanvasColouredRectangle
+from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
 
 
-class ImgpyStackVisualiserView(QtGui.QMainWindow):
+class StackVisualiserView(MainQt.QMainWindow):
     def __init__(self,
                  parent,
                  dock_parent,
@@ -30,16 +28,16 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
             data.ndim)
 
-        super(ImgpyStackVisualiserView, self).__init__(parent)
+        super(StackVisualiserView, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/stack.ui', self)
 
         # black magic to swap out the closeEvent, but still keep the old one
-        self.dock_parent = dock_parent
-        self.dock_parent.oldCloseEvent = self.dock_parent.closeEvent
-        self.dock_parent.closeEvent = self.closeEvent
+        # does that mean that the dock_parent's close event is never called?
+        # could this leak memory?? TODO FIXME
+        dock_parent.closeEvent = self.closeEvent
 
         # View doesn't take any ownership of the data!
-        self.presenter = ImgpyStackViewerPresenter(self, data, axis)
+        self.presenter = StackViewerPresenter(self, data, axis)
 
         self.axis = axis
         self.cmap = cmap
@@ -48,12 +46,13 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         self.mplfig = Figure()
         self.image_axis = self.mplfig.add_subplot(111)
 
-        self.canvas = FigureCanvasColouredRectangle(self.mplfig)
+        self.canvas = FigureCanvasQTAgg(self.mplfig)
         self.canvas.rectanglecolor = Qt.yellow
         self.canvas.setParent(self)
         self.previous_region = None
 
-        self.toolbar = NavigationToolbar(self.canvas, self, coordinates=True)
+        self.toolbar = NavigationToolbar2QT(
+            self.canvas, self, coordinates=True)
 
         self.slider_axis = self.mplfig.add_axes(
             [0.25, 0.01, 0.5, 0.03], axisbg='lightgoldenrodyellow')
@@ -68,9 +67,8 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         self.mplvl.addWidget(self.toolbar)
         self.mplvl.addWidget(self.canvas)
 
+        # how to do contrast adjustment
         # self.change_value_rangle(0, 16000)
-
-        # store the selected region
 
         # not particularly interested in that for now
         # self.fig.canvas.mpl_connect('key_press_event', self.toggle_selector)
@@ -80,20 +78,24 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
         # self.slider_axis = self.axes[1]
 
     def apply_to_data(self, func, *args, **kwargs):
+        # TODO maybe we should separate out actions on data / GUI stuff
         self.presenter.apply_to_data(func, *args, **kwargs)
 
     def closeEvent(self, event):
-        # setting floating to false tricks qt, because in the next call
-        # self.window() will refer to the main window!
-        # However if we do self.window() while setFloating is True
-        # the window() returns the QDockWidget, not the MainWindow that we want
+        # this removes all references to the data, allowing it to be GC'ed
+        # otherwise there is a hanging reference
+        self.presenter.delete_data()
+
+        # setting floating to false makes window() to return the MainWindow
+        # because the window will be docked in, however we delete it
+        # immediatelly after so no visible change occurs
         self.parent().setFloating(False)
         self.window().remove_stack(self)  # refers to MainWindow
         self.deleteLater()
         self.parent().deleteLater()
 
     def createRectangleSelector(self, axis, button=1):
-        # drawtype is 'box' or 'line' or 'none'
+        # drawtype is 'box' or 'line' or 'none', we could use 'line' to show COR
         return RectangleSelector(
             axis,
             self.line_select_callback,
@@ -150,4 +152,4 @@ class ImgpyStackVisualiserView(QtGui.QMainWindow):
 
 
 # def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):
-#     s = ImgpyStackVisualiserView(data, axis, cmap, block)
+#     s = StackVisualiserView(data, axis, cmap, block)

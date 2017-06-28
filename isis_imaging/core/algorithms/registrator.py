@@ -1,9 +1,10 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import argparse
 import importlib
 import os
-import warnings
 import sys
-import argparse
+import warnings
 
 
 def _cli(parser, package_dir):
@@ -35,8 +36,8 @@ def _gui(qt_parent, package_dir):
     :param package_dir: The package from which to register all of the modules
     :param modules: The list of modules inside the package
     """
-    from PyQt4.QtGui import QMenu, QAction
-    from gui.main_window.mw_view import ImgpyMainWindowView
+    from PyQt5.Qt import QMenu, QAction
+    from isis_imaging.gui.main_window.mw_view import MainWindowView
     assert isinstance(
         qt_parent,
         QMenu), "The object passed is not of a QMenu, and is not supported."
@@ -44,7 +45,7 @@ def _gui(qt_parent, package_dir):
     main_window = qt_parent.parent().parent()
     assert isinstance(
         main_window,
-        ImgpyMainWindowView), "This must be the ImgpyMainWindowView object!"
+        MainWindowView), "This must be the MainWindowView object!"
     # this should be menuFilters
     # add new section filters?
     group = QMenu(package_dir, qt_parent)

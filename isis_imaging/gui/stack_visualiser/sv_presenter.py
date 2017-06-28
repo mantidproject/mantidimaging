@@ -1,18 +1,21 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt4.QtGui import QWidget
+from PyQt5.Qt import QWidget
 
-from gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
+from isis_imaging.gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
 
 
-class ImgpyStackViewerPresenter(QWidget):
+class StackViewerPresenter(QWidget):
     def __init__(self, view, data, axis):
-        super(ImgpyStackViewerPresenter, self).__init__()
+        super(StackViewerPresenter, self).__init__()
         self.view = view
         self.data = data
         self.axis = axis
 
         self.model = ImgpyStackVisualiserModel()
+
+    def delete_data(self):
+        del self.data
 
     def get_image(self, index, axis=None):
         if axis is None:

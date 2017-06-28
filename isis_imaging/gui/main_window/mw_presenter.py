@@ -6,7 +6,6 @@ import uuid
 from enum import IntEnum
 
 from isis_imaging.core.io import loader, saver
-from gui.main_window.mw_model import ImgpyMainWindowModel
 
 
 class Notification(IntEnum):
@@ -15,12 +14,11 @@ class Notification(IntEnum):
     SAVE = 3
 
 
-class ImgpyMainWindowPresenter(object):
+class MainWindowPresenter(object):
     def __init__(self, view, config):
-        super(ImgpyMainWindowPresenter, self).__init__()
+        super(MainWindowPresenter, self).__init__()
         self.view = view
         self.config = config
-        self.model = ImgpyMainWindowModel()
         # Move to model? It'll get sufficiently complicated I think
         self.active_stacks = {}
 

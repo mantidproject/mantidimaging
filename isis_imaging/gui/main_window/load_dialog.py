@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt4 import QtGui
+from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
 
@@ -11,15 +11,15 @@ import os
 
 def select_file(field, caption):
     assert isinstance(
-        field, QtGui.QLineEdit
+        field, Qt.QLineEdit
     ), "The passed object is of type {0}. This function only works with QLineEdit".format(
         type(field))
 
     # open file dialogue and set the text if file is selected
-    field.setText(QtGui.QFileDialog.getOpenFileName(caption=caption))
+    field.setText(Qt.QFileDialog.getOpenFileName(caption=caption)[0])
 
 
-class MWLoadDialog(QtGui.QDialog):
+class MWLoadDialog(Qt.QDialog):
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/load_dialog.ui', self)

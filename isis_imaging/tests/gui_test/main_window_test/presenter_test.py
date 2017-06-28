@@ -12,10 +12,10 @@ class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         # spec_set forbids addings new parameters
         self.view = mock.create_autospec(
-            mw_view.ImgpyMainWindowView, spec_set=True)
+            mw_view.MainWindowView, spec_set=True)
         self.config = ReconstructionConfig.empty_init()
-        self.presenter = mw_presenter.ImgpyMainWindowPresenter(self.view,
-                                                               self.config)
+        self.presenter = mw_presenter.MainWindowPresenter(self.view,
+                                                          self.config)
 
     # def test_median_filter_clicked(self):
     #     self.view.set_value = mock.Mock(return_value=None)

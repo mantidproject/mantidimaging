@@ -22,20 +22,21 @@ from __future__ import absolute_import, division, print_function
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-__all__ = [
-    'aggregate', 'algorithms', 'configs', 'configurations', 'convert',
-    'filters', 'io', 'imopr', 'parallel', 'tools'
-]
-
 # packages part of public API, this will give direct access to the packages from
 # isis_imaging.<package_name>
-from isis_imaging.core import aggregate
-from isis_imaging.core import algorithms
-from isis_imaging.core import configs
-from isis_imaging.core import configurations
-from isis_imaging.core import convert
-from isis_imaging.core import filters
-from isis_imaging.core import io
-from isis_imaging.core import imopr
-from isis_imaging.core import parallel
-from isis_imaging.core import tools
+from isis_imaging.core import aggregate  # noqa: F401
+from isis_imaging.core import algorithms  # noqa: F401
+from isis_imaging.core import configs  # noqa: F401
+from isis_imaging.core import configurations  # noqa: F401
+from isis_imaging.core import convert  # noqa: F401
+from isis_imaging.core import filters  # noqa: F401
+from isis_imaging.core import io  # noqa: F401
+from isis_imaging.core import imopr  # noqa: F401
+from isis_imaging.core import parallel  # noqa: F401
+from isis_imaging.core import process_list  # noqa: F401
+from isis_imaging.core import tools  # noqa: F401
+
+# keep the gui in a separate package
+from isis_imaging import gui  # noqa: F401
+
+del absolute_import, division, print_function

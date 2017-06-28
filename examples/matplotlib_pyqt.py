@@ -16,7 +16,7 @@ use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if use_pyside:
     from PySide import QtGui, QtCore
 else:
-    from PyQt4 import QtGui, QtCore
+    from PyQt5 import Qt, QtCore
 
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -75,7 +75,7 @@ class MyDynamicMplCanvas(MyMplCanvas):
         self.draw()
 
 
-class ImgpyMainWindowView(QtGui.QMainWindow):
+class MainWindowView(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -124,8 +124,8 @@ modified versions may be distributed without limitation.""")
 
 qApp = QtGui.QApplication(sys.argv)
 
-aw = ImgpyMainWindowView()
+aw = MainWindowView()
 aw.setWindowTitle("%s" % progname)
 aw.show()
 sys.exit(qApp.exec_())
-#qApp.exec_()
+# qApp.exec_()

@@ -3,16 +3,16 @@ from __future__ import absolute_import, division, print_function
 import sys
 
 from isis_imaging.core.algorithms import registrator
-from PyQt4.QtGui import QApplication
+from PyQt5.Qt import QApplication
 
-from gui.main_window.mw_view import ImgpyMainWindowView
+from isis_imaging.gui.main_window.mw_view import MainWindowView
 
 
 def execute(config):
 
     # create the GUI event loop
     qApp = QApplication(sys.argv)
-    aw = ImgpyMainWindowView(config)
+    aw = MainWindowView(config)
     # register gui stuff into view
     registrator.register_into(aw.menuFilters, func=registrator._gui)
     aw.show()

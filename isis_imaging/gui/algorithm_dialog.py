@@ -1,9 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from gui.main_window.mw_view import ImgpyMainWindowView
+from gui.main_window.mw_view import MainWindowView
 
 
 class AlgorithmDialog(QtGui.QDialog):
@@ -20,7 +20,7 @@ class AlgorithmDialog(QtGui.QDialog):
         """
         super(AlgorithmDialog, self).__init__()
         assert isinstance(
-            main_window, ImgpyMainWindowView
+            main_window, MainWindowView
         ), "The main window passed in is not of the correct type!"
         gui_compile_ui.execute(ui_file, self)
 
