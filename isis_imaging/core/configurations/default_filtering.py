@@ -9,6 +9,8 @@ from isis_imaging.core.filters import (background_correction, contrast_normalisa
 
 
 def execute(config, sample, flat, dark):
+    h.tomo_print_note("Running the default filtering.")
+
     if config.func.reuse_preproc:
         h.tomo_print_warning(
             "Pre-processing steps have been skipped, "

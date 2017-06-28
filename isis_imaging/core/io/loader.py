@@ -114,17 +114,25 @@ def load(input_path=None,
 
 
     :param input_path: Path for the input data folder
+
     :param input_path_flat: Optional: Path for the input Flat images folder
+
     :param input_path_dark: Optional: Path for the input Dark images folder
+
     :param img_format: Default:'fits', format for the input images
+
     :param dtype: Default:np.float32, data type for the input images
+
     :param cores: Default:None (max available), cores to be used if
                   parallel_load is True
+
     :param chunksize: Default:None (auto calculated), chunk of work per worker
+
     :param parallel_load: Default: False, if set to true the loading of the data
                           will be done in parallel.
                           This could be faster depending on the IO system.
                           For local runs (with HDD) recommended setting is False
+
     :return: if flat and dark are loaded:
                 a tuple with shape 3: (sample, flat, dark)
              if no flat and dark:

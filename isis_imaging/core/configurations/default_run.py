@@ -20,23 +20,7 @@ def _print_expected_memory_usage(data_shape, dtype):
                       " MB, Total available on system: " + str(virtual_memory().total / 1024 / 1024) + " MB")
 
 
-def execute(config):
-    """
-    Run the whole reconstruction. The steps in the process are:
-        - load the data
-        - do pre_processing on the data
-        - (optional) save out pre_processing images
-        - do the reconstruction with the appropriate tool
-        - save out reconstruction images
-
-    The configuration for pre_processing and reconstruction are read from
-    the config parameter.
-
-    :param config: A ReconstructionConfig with all the necessary parameters to
-                   run a reconstruction.
-    :param cmd_line: The full command line text if running from the CLI.
-    """
-
+def initialise_run(config):
     saver_class = saver.Saver(config)
 
     h.initialise(config, saver_class)
@@ -59,7 +43,17 @@ def execute(config):
     data_shape = loader.read_in_shape(config)
 
     _print_expected_memory_usage(data_shape, config.func.data_dtype)
+    return saver_class, readme, tool
 
+
+def end_run(readme):
+    readme.end()
+
+
+def load_data(config):
+    """
+    :return -> the returned data as a tuple
+    """
     result = loader.load_from_config(config)
     if isinstance(result, np.ndarray):
         sample = result
@@ -67,6 +61,29 @@ def execute(config):
         dark = None
     else:
         sample, flat, dark = result
+    return sample, flat, dark
+
+
+def execute(config):
+    """
+    Run the whole reconstruction. The steps in the process are:
+        - load the data
+        - do pre_processing on the data
+        - (optional) save out pre_processing images
+        - do the reconstruction with the appropriate tool
+        - save out reconstruction images
+
+    The configuration for pre_processing and reconstruction are read from
+    the config parameter.
+
+    :param config: A ReconstructionConfig with all the necessary parameters to
+                   run a reconstruction.
+    :param cmd_line: The full command line text if running from the CLI.
+    """
+
+    saver_class, readme, tool = initialise_run(config)
+
+    sample, flat, dark = load_data(config)
 
     sample, flat, dark = default_filtering.execute(config, sample, flat,
                                                    dark)
@@ -90,5 +107,5 @@ def execute(config):
     sample = tool.run_reconstruct(sample, config)
 
     saver_class.save_recon_output(sample)
-    readme.end()
+    end_run(readme)
     return sample

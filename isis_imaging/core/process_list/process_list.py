@@ -37,6 +37,27 @@ def load(file=None):
     return pickle.load(open(file, "rb"))
 
 
+def from_string(string, cls=None, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func_separator=DEFAULT_FUNCTION_SEPARATOR):
+    if cls is not None:
+        assert isinstance(
+            cls, ProcessList), "The class parameter is not of the correct type ProcessList!"
+    else:
+        cls = ProcessList()
+
+    # split on func separator and remove any 0 length strings
+    separated_string = filter(lambda s: len(
+        s) > 0, string.split(DEFAULT_FUNCTION_SEPARATOR))
+    try:
+        for entry in separated_string:
+            cls._store_string(*_entry_from_string(
+                entry, arg_separator, DEFAULT_TUPLE_SEPARATOR))
+    except (AttributeError, SyntaxError, ValueError) as e:
+        raise ValueError(
+            "Error encountered while processing from the input string. The formatting may be invalid." + str(e))
+
+    return cls
+
+
 class ProcessList(object):
     """
     Stores a queue of functions to be executed in first-in first-out order.
@@ -117,13 +138,4 @@ class ProcessList(object):
         return out.getvalue()
 
     def from_string(self, string, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func_separator=DEFAULT_FUNCTION_SEPARATOR):
-        # split on func separator and remove any 0 length strings
-        separated_string = filter(lambda s: len(
-            s) > 0, string.split(DEFAULT_FUNCTION_SEPARATOR))
-        try:
-            for entry in separated_string:
-                self._store_string(*_entry_from_string(
-                    entry, arg_separator, DEFAULT_TUPLE_SEPARATOR))
-        except (AttributeError, SyntaxError, ValueError) as e:
-            raise ValueError(
-                "Error encountered while processing from the input string. The formatting may be invalid." + str(e))
+        from_string(string, self, arg_separator, func_separator)
