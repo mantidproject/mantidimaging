@@ -119,7 +119,7 @@ class AggregateTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this does not load any flats or darks as they were not saved out
-            sample = loader.load(
+            sample, _, _ = loader.load(
                 aggregate_output_path,
                 img_format=saver._img_format,
                 parallel_load=parallel)
@@ -200,7 +200,7 @@ class AggregateTest(unittest.TestCase):
                 angle_path = os.path.dirname(
                     f.name) + '/aggregated/angle_' + mode + str(i)
 
-                sample = loader.load(
+                sample, _, _ = loader.load(
                     angle_path,
                     img_format=saver._img_format,
                     parallel_load=parallel)

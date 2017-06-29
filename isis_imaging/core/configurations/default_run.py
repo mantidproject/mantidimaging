@@ -50,20 +50,6 @@ def end_run(readme):
     readme.end()
 
 
-def load_data(config):
-    """
-    :return -> the returned data as a tuple
-    """
-    result = loader.load_from_config(config)
-    if isinstance(result, np.ndarray):
-        sample = result
-        flat = None
-        dark = None
-    else:
-        sample, flat, dark = result
-    return sample, flat, dark
-
-
 def execute(config):
     """
     Run the whole reconstruction. The steps in the process are:
@@ -83,7 +69,7 @@ def execute(config):
 
     saver_class, readme, tool = initialise_run(config)
 
-    sample, flat, dark = load_data(config)
+    sample, flat, dark = loader.load_from_config(config)
 
     sample, flat, dark = default_filtering.execute(config, sample, flat,
                                                    dark)

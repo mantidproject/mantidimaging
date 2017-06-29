@@ -257,7 +257,7 @@ class IOTest(unittest.TestCase):
                                     saver_indices)
 
             # this does not load any flats or darks as they were not saved out
-            sample = loader.load(
+            sample, _, _ = loader.load(
                 preproc_output_path,
                 img_format=saver._img_format,
                 cores=1,
@@ -337,7 +337,7 @@ class IOTest(unittest.TestCase):
             # this is a race condition versus the saving from the saver
             # when load is executed in parallel, the 8 threads try to
             # load the data too fast, and the data loaded is corrupted
-            sample = loader.load(
+            sample, _, _ = loader.load(
                 preproc_output_path,
                 img_format=saver._img_format,
                 cores=1,  # hard coded 1 core to avoid race condition

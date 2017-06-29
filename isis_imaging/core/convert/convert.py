@@ -22,7 +22,7 @@ def execute(config):
     # fail early if invalid directory
     saver.make_dirs_if_needed(output_dir, config.func.overwrite_all)
 
-    sample = loader.load_from_config(config)
+    sample, _, _ = loader.load_from_config(config)
 
     # save out in the main output directory
     saver.save(

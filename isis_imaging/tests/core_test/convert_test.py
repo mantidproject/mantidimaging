@@ -93,7 +93,7 @@ class ConvertTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this odes not load any flats or darks as they were not saved out
-            sample = loader.load(
+            sample, _, _ = loader.load(
                 converted_output_path,
                 img_format=convert_format,
                 parallel_load=parallel)
@@ -145,7 +145,7 @@ class ConvertTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this odes not load any flats or darks as they were not saved out
-            sample = loader.load(
+            sample, _, _ = loader.load(
                 converted_output_path,
                 img_format=convert_format,
                 parallel_load=parallel)
@@ -199,7 +199,7 @@ class ConvertTest(unittest.TestCase):
             # compare data to original
 
             # this does not load any flats or darks as they were not saved out
-            sample = loader.load(
+            sample, _, _ = loader.load(
                 converted_output_path,
                 img_format=convert_format,
                 parallel_load=parallel)

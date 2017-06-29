@@ -38,7 +38,7 @@ def _run_tests(full_args):
 
     except IndexError:
         print(
-            'Please specify the folder/test file to be executed, or one of the available modules: {0}'.
+            'Please specify the folder/test file to be executed, or one of the available modules:\n{0}'.
             format(_avail_modules.keys()))
         return
 

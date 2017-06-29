@@ -133,10 +133,7 @@ def load(input_path=None,
                           This could be faster depending on the IO system.
                           For local runs (with HDD) recommended setting is False
 
-    :return: if flat and dark are loaded:
-                a tuple with shape 3: (sample, flat, dark)
-             if no flat and dark:
-                a single 3d numpy ndarray
+    :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark were loaded, they will be None
     """
 
     if not file_names:
@@ -170,10 +167,6 @@ def load(input_path=None,
             img_format, dtype, cores, chunksize, parallel_load, indices)
 
     h.check_data_stack(sample)
-
-    # don't return a tuple, just a single value
-    if flat is None and dark is None:
-        return sample
 
     return sample, flat, dark
 
