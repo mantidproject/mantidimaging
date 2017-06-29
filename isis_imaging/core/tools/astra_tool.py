@@ -68,11 +68,16 @@ class AstraTool(AbstractTool):
         http://www.astra-toolbox.com/docs/proj2d.html
         http://www.astra-toolbox.com/docs/algs/index.html
 
-        :param data: The sample image data as a 3D numpy.ndarray
+        :param data: Input data as a 3D numpy.ndarray
+
         :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
+
         :param proj_angles: The projection angle for each slice
+
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
-        :return: The reconstructed volume
+
+        :return: 3D numpy.ndarray containing the reconstructed data
+
         """
 
         # import pydevd

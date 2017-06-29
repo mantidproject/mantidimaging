@@ -46,14 +46,14 @@ def execute(data, threshold):
     Execute the Cut off filter.
     Cut off values above threshold relative to the max pixels.
 
-    :param data: The sample image data as a 3D numpy.ndarray
-    :param threshold: The threshold related to the minimum
-                      pixel value that will be clipped
+    :param data: Input data as a 3D numpy.ndarray
 
-    :return: the data after being processed with the filter
+    :param threshold: The threshold related to the minimum pixel value that will be clipped
+
+    :return: The processed 3D numpy.ndarray
 
     Example command line:
-    python main.py -i /some/data/ --cut-off 0.95
+    isis_imaging -i /some/data/ --cut-off 0.95
     """
 
     if threshold and threshold > 0.0:

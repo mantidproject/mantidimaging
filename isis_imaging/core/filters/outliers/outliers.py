@@ -89,16 +89,22 @@ def execute(data, diff, radius=_default_radius, mode=_default_mode,
     """
     Execute the Outliers filter. Requires tomopy to be available.
 
-    :param data: The sample image data as a 3D numpy.ndarray
+    :param data: Input data as a 3D numpy.ndarray
+
     :param diff: Pixel value difference above which to crop bright pixels
+
     :param radius: Which pixels will be clipped: dark, bright or both
+
     :param cores: The number of cores that will be used to process the data.
 
-    :return: the data after being processed with the filter
+
+    :return: The processed 3D numpy.ndarray
 
     Example command line:
-    python main.py -i /some/data --outliers 1
-    python main.py -i /some/data --outliers 1 --outliers-radius 4
+
+    isis_imaging -i /some/data --outliers 1
+
+    isis_imaging -i /some/data --outliers 1 --outliers-radius 4
     """
 
     if diff and radius and diff > 0 and radius > 0:

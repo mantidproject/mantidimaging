@@ -58,17 +58,19 @@ def _gui_register(main_window):
 
 def execute(data, clip_min=None, clip_max=None):
     """
-    Execute the Clip filter.
     Clip values below the min and above the max pixels.
 
-    :param data: The sample image data as a 3D numpy.ndarray
-    :param clip_min: The minimum value to be clipped
-    :param clip_max: The maximum value to be clipped
+    :param data: Input data as a 3D numpy.ndarray
 
-    :return: the data after being processed with the filter
+    :param clip_min: The minimum value to be clipped from the data
+
+    :param clip_max: The maximum value to be clipped from the data
+
+    :return: The processed 3D numpy.ndarray
 
     Example command line:
-    python main.py -i /some/data/ --clip-min -120 --clip-max 42
+
+    isis_imaging -i /some/data/ --clip-min -120 --clip-max 42
     """
 
     # we're using is not None because if the value specified is 0.0 that evaluates to false

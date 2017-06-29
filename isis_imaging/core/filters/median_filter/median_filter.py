@@ -72,23 +72,26 @@ def execute(data, size, mode=modes()[0], cores=None, chunksize=None):
     """
     Execute the Median filter.
 
-    :param data: The sample image data as a 3D numpy.ndarray
+    :param data: Input data as a 3D numpy.ndarray
+
     :param size: Size of the kernel
+
     :param mode: The mode with which to handle the endges.
                  One of [reflect, constant, nearest, mirror, wrap].
+
     :param cores: The number of cores that will be used to process the data.
+
     :param chunksize: The number of chunks that each worker will receive.
 
     :return: Returns the processed data
 
-    Full reference:
-    https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html
+    Example command line:
 
-    python main.py -i /some/data --median-size 3
-    python main.py -i /some/data --median-size 3
-                   --median-mode 'nearest'
-    python main.py -i /some/data --median-size 3
-                   --median-mode 'nearest'
+    isis_imaging -i /some/data --median-size 3
+
+    isis_imaging -i /some/data --median-size 3 --median-mode 'nearest'
+
+    [Full reference](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html)
 
     """
     h.check_data_stack(data)

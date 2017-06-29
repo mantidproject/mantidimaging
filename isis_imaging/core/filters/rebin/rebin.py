@@ -44,22 +44,25 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None):
     Execute the Rebin/imresize filter.
 
     :param data: Sample data which is to be processed. Expected in radiograms
+
     :param rebin_param: int, float or tuple
                         int - Percentage of current size.
                         float - Fraction of current size.
                         tuple - Size of the output image.
+
     :param mode: Interpolation to use for re-sizing
                  ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
+
     :param cores: The number of cores that will be used to process the data.
+
     :param chunksize: The number of chunks that each worker will receive.
 
-    :return: the data after being processed with the filter
-
-    Full reference:
-    https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.misc.imresize.html
+    :return: The processed 3D numpy.ndarray
 
     Example command line:
-    python main.py -i /some/data --rebin 0.5 --rebin-mode 'nearest'
+    isis_imaging -i /some/data --rebin 0.5 --rebin-mode 'nearest'
+
+    [Full reference](https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.misc.imresize.html)
     """
     h.check_data_stack(data)
     if rebin_param and 0 < rebin_param:

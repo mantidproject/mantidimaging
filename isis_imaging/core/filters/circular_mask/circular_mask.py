@@ -67,14 +67,16 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     """
     Execute the Circular Mask filter.
 
-    :param data: The sample image data as a 3D numpy.ndarray
+    :param data: Input data as a 3D numpy.ndarray
+
     :param circular_mask_ratio: The ratio to the full image.
                                 The ratio must be 0 < ratio < 1
+
     :param circular_mask_value: Default 0.
                                 The value that all pixels in the mask
                                 will be set to.
 
-    :return: the data after being processed with the filter
+    :return: The processed 3D numpy.ndarray
 
     Full Reference:
     http://tomopy.readthedocs.io/en/latest/api/tomopy.misc.corr.html?highlight=circular%20mask

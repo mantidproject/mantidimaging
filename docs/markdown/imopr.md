@@ -8,7 +8,7 @@ There are 2 main ways to find CORs on a sample:
 
 Example usage:
 
-`python main.py -i /some/data/ --imopr 100 500 50 cor`
+`isis_imaging -i /some/data/ --imopr 100 500 50 cor`
 
 This will find the COR for every 50 slices, and print it out on the screen.
 
@@ -20,7 +20,7 @@ Example usages:
 
 - Single slice:
 
-`python main.py -i /some/data -o /some/data --imopr 42 250 350 10 corwrite`
+`isis_imaging -i /some/data -o /some/data --imopr 42 250 350 10 corwrite`
 
 This will reconstruct slice `42`, with CORs starting from 250 to 350, with a step of 10. The output will be a single folder with the name of the angle number (in this case it will be a folder with name `42`), and inside it will save a reconstructed image for every COR.
 
@@ -28,6 +28,6 @@ This will reconstruct slice `42`, with CORs starting from 250 to 350, with a ste
 
 - Multiple slices
 
-`python main.py -i /some/data -o /some/data --imopr 100 500 50 250 350 10 corwrite`
+`isis_imaging -i /some/data -o /some/data --imopr 100 500 50 250 350 10 corwrite`
 
 This will reconstruct every 50 slices between 100 and 500, with the same COR range as the single slice: starting from 250 to 350, with a step of 10. The output will be a folder for _each_ angle, with an image for _each_ COR.

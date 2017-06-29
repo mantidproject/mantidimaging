@@ -57,10 +57,9 @@ def execute(config):
     h.check_config_integrity(config)
     module.sanity_checks(config)
 
-    sample = loader.load_from_config(config)
+    sample, flat, dark = loader.load_from_config(config)
 
     h.tomo_print("Data shape {0}".format(sample.shape))
-    flat = dark = None
 
     # from isis_imaging.core.recon.recon import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)

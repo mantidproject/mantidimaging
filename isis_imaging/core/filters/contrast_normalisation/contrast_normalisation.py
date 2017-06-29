@@ -42,18 +42,21 @@ def execute(data, air_region, cores=None, chunksize=None):
     the crop give back a 0 shape of the coordinates that were wrong.
 
     :param data: Sample data which is to be processed. Expected in radiograms
-    :param air_region: The air region from which sums will be calculated and
-                       all images will be normalised.
-                       The selection is a rectangle and
-                       expected order is - Left Top Right Bottom.
+
+    :param air_region: The order is - Left Top Right Bottom. The air region from which sums will be 
+                       calculated and all images will be normalised.
+
     :param cores: The number of cores that will be used to process the data.
+
     :param chunksize: The number of chunks that each worker will receive.
 
     :returns: filtered data (stack of images)
 
     Example command line:
-    python main.py -i /some/data -A 134 203 170 250
-    python main.py -i /some/data --air-region 134 203 170 250
+
+    isis_imaging -i /some/data -A 134 203 170 250
+
+    isis_imaging -i /some/data --air-region 134 203 170 250
     """
     h.check_data_stack(data)
 

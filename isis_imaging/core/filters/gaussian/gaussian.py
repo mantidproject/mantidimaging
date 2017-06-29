@@ -85,31 +85,37 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
     """
     Execute the Gaussian filter.
 
-    :param data: The sample image data as a 3D numpy.ndarray
+    :param data: Input data as a 3D numpy.ndarray
+
     :param size: Size of the kernel
+
     :param mode: The mode with which to handle the endges.
                  One of [reflect, constant, nearest, mirror, wrap].
+
     :param order: The order of the filter along each axis is given as a
                   sequence of integers, or as a single number.
                   An order of 0 corresponds to convolution with a Gaussian kernel.
                   An order of 1, 2, or 3 corresponds to convolution
                   with the first, second or third derivatives of a Gaussian.
                   Higher order derivatives are not implemented
+
     :param cores: The number of cores that will be used to process the data.
+
     :param chunksize: The number of chunks that each worker will receive.
 
-    :return: the data after being processed with the filter
-
-    Full reference:
-    https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html
+    :return: The processed 3D numpy.ndarray
 
     Example command line:
-    python main.py -i /some/data --gaussian-size 3
-    python main.py -i /some/data --gaussian-size 3
+
+    isis_imaging -i /some/data --gaussian-size 3
+
+    isis_imaging -i /some/data --gaussian-size 3
                    --gaussian-mode 'nearest'
-    python main.py -i /some/data --gaussian-size 3
+
+    isis_imaging -i /some/data --gaussian-size 3
                    --gaussian-mode 'nearest' --gaussian-order 1
 
+    [Full reference](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html)
     """
     h.check_data_stack(data)
 
