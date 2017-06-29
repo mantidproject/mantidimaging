@@ -33,14 +33,7 @@ class Readme(object):
         :param string: string to be appended
         """
         self._total_lines += 1
-        if isinstance(string, str):
-            self._total_string += string + '\n'
-        elif isinstance(string, tuple):
-            for s in string:
-                print(s)
-                self._total_string += s + '\n'
-        else:
-            raise ValueError("Unexpected format of string!")
+        self._total_string += string + '\n'
 
     def begin(self, cmd_line, config):
         """

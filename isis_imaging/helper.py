@@ -25,9 +25,9 @@ _verbosity = 2
 
 _cache_last_memory = None
 
-_note_str = " > Note:"
-_warning_str = " >> WARNING:"
-_error_str = " >>> ERROR:"
+_note_str = " > Note: "
+_warning_str = " >> WARNING: "
+_error_str = " >>> ERROR: "
 
 _progress_bar = None
 
@@ -165,15 +165,7 @@ def tomo_print_same_line(message, verbosity=2):
         print(message, end='')
 
 
-def tomo_print(*messages):
-    _tomo_print(_verbosity, messages)
-
-
-def tomo_verb_print(message, verbosity=2):
-    _tomo_print(verbosity, message)
-
-
-def _tomo_print(verbosity=2, *messages):
+def tomo_print(messages, verbosity=2):
     """
     Verbosity levels:
     0 -> debug, print everything
@@ -199,22 +191,22 @@ def _tomo_print(verbosity=2, *messages):
     # which returns 0, because there is nothing appended to it yet, which evaluates to False,
     # and nothing is ever appended to the readme!
     if _readme is not None:
-        _readme.append(*messages)
+        _readme.append(messages)
 
     if verbosity <= _verbosity:
-        print(*messages)
+        print(messages)
 
 
 def tomo_print_note(message, verbosity=2):
-    _tomo_print(verbosity, _note_str, message)
+    tomo_print(_note_str + message)
 
 
 def tomo_print_warning(message, verbosity=2):
-    _tomo_print(verbosity, _warning_str, message)
+    tomo_print(_warning_str + message, verbosity)
 
 
 def tomo_print_error(message, verbosity=1):
-    _tomo_print(verbosity, _error_str, message)
+    tomo_print(_error_str + message, verbosity)
 
 
 def pstart(message, verbosity=2):
