@@ -89,14 +89,6 @@ def execute(config, sample, flat, dark):
         config.args.ring_removal_theta_min, config.args.ring_removal_rwidth,
         cores, config.func.chunksize)
 
-    sample = median_filter.execute(sample, config.args.median_size,
-                                   config.args.median_mode, cores,
-                                   config.func.chunksize)
-
-    sample = gaussian.execute(
-        sample, config.args.gaussian_size, config.args.gaussian_mode,
-        config.args.gaussian_order, cores, config.func.chunksize)
-
     sample = circular_mask.execute(sample, config.args.circular_mask,
                                    config.args.circular_mask_val, cores)
 
