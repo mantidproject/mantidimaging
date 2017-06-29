@@ -83,21 +83,29 @@ def execute(data,
             cores=None,
             chunksize=None):
     """
-    Normalise by flat and dark images
+    Do background correction with flat and dark images
 
     :param data: Sample data which is to be processed. Expected in radiograms
-    :param flat: flat (open beam) image to use in normalization
-    :param dark: dark image to use in normalization
+
+    :param flat: Flat (open beam) image to use in normalization
+
+    :param dark: Dark image to use in normalization
+
     :param clip_min: After normalisation, clip any pixels under this value.
+
     :param clip_max: After normalisation, clip any pixels over this value.
+
     :param cores: The number of cores that will be used to process the data.
+
     :param chunksize: The number of chunks that each worker will receive.
+
 
     :returns: filtered data (stack of images)
 
     Example command line:
-    python main.py -i /some/data -F /some/flat/images -D /some/dark/images
-    python main.py -i /some/data --input-path-flat /some/flat/images 
+    isis_imaging -i /some/data -F /some/flat/images -D /some/dark/images
+
+    isis_imaging -i /some/data --input-path-flat /some/flat/images
                    --input-path-flat /some/dark/images
     """
     h.check_data_stack(data)
