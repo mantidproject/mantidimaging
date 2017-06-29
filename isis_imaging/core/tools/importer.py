@@ -12,7 +12,7 @@ def timed_import(config):
     :return: the imported tool
     """
 
-    h.pstart("Importing tool " + config.func.tool)
+    h.pstart("Importing tool {0}".format(config.func.tool))
     tool = do_importing(config.func.tool, config.func.algorithm)
     h.pstop("Tool loaded.")
     return tool

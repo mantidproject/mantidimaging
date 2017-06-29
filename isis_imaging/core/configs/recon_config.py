@@ -1,10 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
 import argparse
+import os
+import tempfile
 from argparse import RawTextHelpFormatter
 
-from isis_imaging.core.configs.functional_config import FunctionalConfig
 from isis_imaging.core.algorithms import registrator
+from isis_imaging.core.configs.functional_config import FunctionalConfig
 
 
 def grab_full_config():
@@ -152,8 +154,11 @@ class ReconstructionConfig(object):
         # setup args for the filters
         registrator.register_into(parser)
 
+        # get the OS's temp directory
+        with tempfile.NamedTemporaryFile() as f:
+            temp_dir = os.path.dirname(f.name)
         # pass in the mandatory arguments
-        fake_args_list = ['--input-path', '/tmp/', '--cors', '42']
+        fake_args_list = ['--input-path', temp_dir, '--cors', '42']
 
         # parse the fake arguments
         fake_args = parser.parse_args(fake_args_list)

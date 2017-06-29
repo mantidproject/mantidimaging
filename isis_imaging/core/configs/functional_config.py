@@ -92,7 +92,6 @@ class FunctionalConfig(object):
         self.indices = None
         self.max_memory = None
         self.max_ratio = 1.
-        self.no_recon = False
 
         # process list execution
         self.process_list = None
@@ -508,15 +507,6 @@ class FunctionalConfig(object):
             "This needs to be in range of 0 < ratio < 1")
 
         grp_recon.add_argument(
-            "--no-recon",
-            required=False,
-            action='store_true',
-            default=self.no_recon,
-            help="Default: %(default)s. If specified, the size of the "
-            "reconstructed volume will not be taken into account. This can "
-            "be useful for --only-preproc runs.")
-
-        grp_recon.add_argument(
             "--indices",
             required=False,
             nargs='*',
@@ -595,7 +585,6 @@ class FunctionalConfig(object):
         self.indices = args.indices
         self.max_memory = args.max_memory
         self.max_ratio = args.max_ratio
-        self.no_recon = args.no_recon
 
         self.process_list = args.process_list
         self.gui = args.gui

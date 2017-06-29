@@ -68,9 +68,9 @@ def read_in_shape(config):
     parallel_load = config.func.parallel_load
 
     input_file_names = get_file_names(input_path, img_format)
-    sample = load(input_path, None, None,
-                  img_format, data_dtype, cores, chunksize,
-                  parallel_load, indices=[0, 1, 1])
+    sample, _, _ = load(input_path, None, None,
+                        img_format, data_dtype, cores, chunksize,
+                        parallel_load, indices=[0, 1, 1])
     return (len(input_file_names),) + sample.shape[1:]
 
 
