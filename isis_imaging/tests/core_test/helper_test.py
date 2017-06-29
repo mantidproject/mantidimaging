@@ -6,22 +6,30 @@ import numpy.testing as npt
 
 from isis_imaging import helper as h
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
+from isis_imaging.core.io.saver import Saver
+from isis_imaging.readme_creator import Readme
 
 
 class HelperTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(HelperTest, self).__init__(*args, **kwargs)
 
-    def test_readme_caching(self):
+    def setUp(self):
         config = ReconstructionConfig.empty_init()
-
-        from isis_imaging.core.io.saver import Saver
         saver = Saver(config)
-
-        from isis_imaging.readme_creator import Readme
         readme = Readme(config, saver)
         h.set_readme(readme)
+
+    def test_readme_caching(self):
         h.tomo_print("Testing verbosity at 0")
+        self.assertGreater(len(h._readme), 0)
+
+    def test_print_single_arg(self):
+        h.tomo_print("Testing verbosity at 0")
+        self.assertGreater(len(h._readme), 0)
+
+    def test_print_var_arg(self):
+        h.tomo_print("Testing verbosity at 0", "Test more")
         # cache output even when verbosity is 0
         self.assertGreater(len(h._readme), 0)
 

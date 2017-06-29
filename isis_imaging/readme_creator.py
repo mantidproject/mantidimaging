@@ -1,14 +1,15 @@
-from __future__ import (absolute_import, division, print_function)
-import time
+from __future__ import absolute_import, division, print_function
+
 import os
+import time
 from time import gmtime, strftime
 
 
 class Readme(object):
     def __init__(self, config, saver):
 
-        self._readme_file_name = "readme_" + strftime("%d_%b_%Y_%H_%M_%S",
-                                                      gmtime()) + ".txt"
+        self._readme_file_name = "readme_" + \
+            strftime("%d_%b_%Y_%H_%M_%S", gmtime()) + ".txt"
         self._output_path = None
         self._output_path = saver.get_output_path()
         self._total_lines = 0
@@ -32,13 +33,21 @@ class Readme(object):
         :param string: string to be appended
         """
         self._total_lines += 1
-        self._total_string += string + '\n'
+        if isinstance(string, str):
+            self._total_string += string + '\n'
+        elif isinstance(string, tuple):
+            for s in string:
+                print(s)
+                self._total_string += s + '\n'
+        else:
+            raise ValueError("Unexpected format of string!")
 
     def begin(self, cmd_line, config):
         """
         Create the file and begin the readme.
 
         :param cmd_line: command line used to run the reconstruction
+
         :param config: the full reconstruction configuration
         """
 
