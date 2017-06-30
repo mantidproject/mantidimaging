@@ -30,7 +30,7 @@ from . import gui_compile_ui  # noqa: F401, F403
 from . import projection_angles  # noqa: F401, F403
 from . import registrator  # noqa: F401, F403
 from . import shape_splitter  # noqa: F401, F403
-from . import size_calc  # noqa: F401, F403
+from . import size_calculator  # noqa: F401, F403
 from . import value_scaling  # noqa: F401, F403
 
 

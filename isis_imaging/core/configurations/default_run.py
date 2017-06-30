@@ -9,14 +9,14 @@ from isis_imaging.core.tools import importer
 from isis_imaging.readme_creator import Readme
 
 from isis_imaging.core.configurations import default_filtering
-from isis_imaging.core.algorithms import size_calc
+from isis_imaging.core.algorithms import size_calculator
 
 from psutil import virtual_memory
 
 
 def _print_expected_memory_usage(data_shape, dtype):
     h.tomo_print_note("Predicted memory usage for data: " +
-                      str(size_calc.full_size(data_shape, 0, dtype)) +
+                      str(size_calculator.full_size(data_shape, 0, dtype)) +
                       " MB, Total available on system: " + str(virtual_memory().total / 1024 / 1024) + " MB")
 
 

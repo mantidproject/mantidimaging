@@ -501,6 +501,47 @@ class IOTest(unittest.TestCase):
             file_names=["/somefile"],
             img_format='txt')
 
+    def test_read_in_shape(self):
+        images = th.gen_img_shared_array_with_val(42.)
+
+        expected_shape = images.shape
+        saver = self.create_saver()
+        with tempfile.NamedTemporaryFile() as f:
+            saver._output_path = os.path.dirname(f.name)
+            saver._img_format = "tiff"
+            saver._save_preproc = True
+            saver._swap_axes = False
+
+            config = ReconstructionConfig.empty_init()
+            config.func.input_path = os.path.join(
+                saver._output_path, saver._preproc_dir)
+            config.func.in_format = saver._img_format
+            saver.save_preproc_images(images)
+
+            shape = loader.read_in_shape(config)
+
+            self.assertEqual(shape, expected_shape)
+
+    def test_load_from_config(self):
+        images = th.gen_img_shared_array_with_val(42.)
+
+        saver = self.create_saver()
+        with tempfile.NamedTemporaryFile() as f:
+            saver._output_path = os.path.dirname(f.name)
+            saver._img_format = "tiff"
+            saver._save_preproc = True
+            saver._swap_axes = False
+
+            config = ReconstructionConfig.empty_init()
+            config.func.input_path = os.path.join(
+                saver._output_path, saver._preproc_dir)
+            config.func.in_format = saver._img_format
+            saver.save_preproc_images(images)
+
+            loaded_sample, _, _ = loader.load_from_config(config)
+
+            th.assert_equals(images, loaded_sample)
+
 
 if __name__ == '__main__':
     unittest.main()
