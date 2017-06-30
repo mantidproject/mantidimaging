@@ -21,8 +21,8 @@ def execute(config, executable):
     """
     The execution splitters allows limitation of the memory usage.
 
-    This is achieved by calculating how we can subset the data so it can be
-    processed a subset at a time, without going the maximum allowed memory.
+    This is done by calculating how we can subset the data so it can be
+    processed a subset at a time, without going over the maximum allowed memory.
 
     :param config: The reconstruciton config. Necessary to read the reconstruction parameters.
 
@@ -46,5 +46,3 @@ def execute(config, executable):
             config.func.cors = centers_of_rotation[split[i]:split[i + 1]]
 
         executable(config)
-
-    return split, step

@@ -1,8 +1,11 @@
 from __future__ import absolute_import, division, print_function
+
 import unittest
-from isis_imaging.core.algorithms import execution_splitter
 from functools import partial
+
+from isis_imaging.core.algorithms import execution_splitter
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
+
 _global_variable = 0
 
 

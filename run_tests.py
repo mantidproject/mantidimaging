@@ -31,10 +31,20 @@ def _run_tests(full_args):
         # get only the test class name
         args = full_args.pop(1)
         rest_of_args = full_args[1:]
+        default_args = [args, "--no-path-adjustment"]
 
         if args in ['-h', '--help', '-?']:
             # just go inside the except block
             raise IndexError
+
+        if '--debug' in rest_of_args:
+            # --verbose shows more output
+            # --nocapture shows the stdout from the tests
+            default_args.append("--verbose")
+            default_args.append("--nocapture")
+
+            # remove, because that is also a valid parameter for nose
+            rest_of_args.remove("--debug")
 
     except IndexError:
         print(
@@ -54,7 +64,6 @@ def _run_tests(full_args):
 
     # force the no path adjustment flag otherwise the path is changed and cli
     # registrator doesn't import the filters
-    default_args = [args, "--no-path-adjustment"]
     # forward any additional flags that were passed to nose
     # for verbose run add [test_paths, "-vv", "--collect-only"]
     all_args = default_args + rest_of_args if rest_of_args else default_args
