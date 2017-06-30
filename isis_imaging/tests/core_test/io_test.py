@@ -251,7 +251,7 @@ class IOTest(unittest.TestCase):
             # create the same path as the saved out preproc images
             preproc_output_path = saver._output_path + '/pre_processed/'
 
-            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._img_format, data_as_stack,
                                     images.shape[0], loader_indices or
                                     saver_indices)
@@ -276,7 +276,7 @@ class IOTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._img_format, data_as_stack,
                                     images.shape[0], loader_indices or
                                     saver_indices)
@@ -327,9 +327,10 @@ class IOTest(unittest.TestCase):
             saver.save_preproc_images(images)
 
             # create the same path as the saved out preproc images
-            preproc_output_path = saver._output_path + '/pre_processed/'
+            preproc_output_path = os.path.join(
+                saver._output_path, 'pre_processed/')
 
-            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._img_format, data_as_stack,
                                     images.shape[0])
 
@@ -356,7 +357,7 @@ class IOTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            self.assert_files_exist(preproc_output_path + 'out_preproc_image',
+            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._img_format, data_as_stack,
                                     images.shape[0])
 
@@ -397,15 +398,17 @@ class IOTest(unittest.TestCase):
 
             saver.save_recon_output(images)
 
-            recon_output_path = saver._output_path + '/reconstructed/'
+            recon_output_path = os.path.join(
+                saver._output_path, 'reconstructed/')
 
-            self.assert_files_exist(recon_output_path + 'recon_slice',
+            self.assert_files_exist(os.path.join(recon_output_path, 'recon_slice'),
                                     saver._img_format, data_as_stack,
                                     images.shape[0], saver_indices)
 
             if horiz_slices:
                 self.assert_files_exist(
-                    recon_output_path + 'horiz_slices/recon_horiz',
+                    os.path.join(recon_output_path,
+                                 'horiz_slices/recon_horiz'),
                     saver._img_format, data_as_stack, images.shape[1],
                     saver_indices)
 
@@ -444,21 +447,26 @@ class IOTest(unittest.TestCase):
             saver.save_preproc_images(dark)
 
             # create the same path as the saved out preproc images
-            sample_output_path = saver._output_path + '/pre_processed/'
-            flat_output_path = saver._output_path + '/imgIOTest_flat/'
-            dark_output_path = saver._output_path + '/imgIOTest_dark/'
+            sample_output_path = os.path.join(
+                saver._output_path, 'pre_processed')
+            flat_output_path = os.path.join(
+                saver._output_path, 'imgIOTest_flat')
+            dark_output_path = os.path.join(
+                saver._output_path, 'imgIOTest_dark')
 
-            self.assert_files_exist(sample_output_path + 'out_preproc_image',
+            self.assert_files_exist(os.path.join(sample_output_path, 'out_preproc_image'),
                                     saver._img_format, data_as_stack,
                                     images.shape[0], loader_indices or
                                     saver_indices)
 
             self.assert_files_exist(
-                flat_output_path + 'out_preproc_image', saver._img_format,
+                os.path.join(flat_output_path,
+                             'out_preproc_image'), saver._img_format,
                 data_as_stack, flat.shape[0], loader_indices or saver_indices)
 
             self.assert_files_exist(
-                dark_output_path + 'out_preproc_image', saver._img_format,
+                os.path.join(dark_output_path,
+                             'out_preproc_image'), saver._img_format,
                 data_as_stack, dark.shape[0], loader_indices or saver_indices)
 
             sample, loaded_flat, loaded_dark = loader.load(
