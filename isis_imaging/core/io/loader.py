@@ -2,10 +2,12 @@ from __future__ import absolute_import, division, print_function
 
 import glob
 import os
+import re
 
 import numpy as np
 
 from isis_imaging import helper as h
+from isis_imaging.core.io import img_loader, stack_loader
 
 
 def fitsread(filename):
@@ -133,6 +135,11 @@ def load(input_path=None,
                           This could be faster depending on the IO system.
                           For local runs (with HDD) recommended setting is False
 
+    :param file_names: Use provided file names for loading
+    :param indices: Specify which indices are loaded from the found files. 
+                    This **DOES NOT** check for the number in the image filename, 
+                    but removes all indices from the filenames list that are not selected
+
     :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark were loaded, they will be None
     """
 
@@ -149,7 +156,7 @@ def load(input_path=None,
             "Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if img_format in ['nxs']:
-        from isis_imaging.core.io import stack_loader
+
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
         sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load",
@@ -161,7 +168,6 @@ def load(input_path=None,
         else:
             load_func = imread
 
-        from isis_imaging.core.io import img_loader
         sample, flat, dark = img_loader.execute(
             load_func, input_file_names, input_path_flat, input_path_dark,
             img_format, dtype, cores, chunksize, parallel_load, indices)
@@ -227,8 +233,11 @@ def get_file_names(path, img_format, prefix=''):
     """
     Get all file names in a directory with a specific format.
     :param path: The path to be checked.
+
     :param img_format: The image format used as a postfix after the .
+
     :param prefix: A specific prefix for the images
+
     :return: All the file names, sorted by ascending
     """
 
@@ -239,7 +248,7 @@ def get_file_names(path, img_format, prefix=''):
 
     if len(files_match) <= 0:
         raise RuntimeError(
-            "Could not find any image files in {0} with extension: {1}".format(
+            "Could not find any image files in '{0}' with extension: {1}".format(
                 path, img_format))
 
     # this is a necessary step, otherwise the file order is not guaranteed to be
@@ -252,13 +261,16 @@ def get_file_names(path, img_format, prefix=''):
 def get_folder_names(path):
     """
     Get all folder names in a specific path.
+
     :param path: The path to be checked.
+
     :return: All the folder names, sorted by ascending
+
     """
-    import os
 
     path = os.path.abspath(os.path.expanduser(path))
 
+    # os.walk returns a tuple (dirpath, dirnames, filenames), we only want dirnames
     folders = next(os.walk(path))[1]
 
     if len(folders) <= 0:
@@ -286,7 +298,6 @@ def _alphanum_key_split(path_str):
     Several variants compared here:
     https://dave.st.germa.in/blog/2007/12/11/exception-handling-slow/
     """
-    import re
     alpha_num_split_re = re.compile('([0-9]+)')
     return [
         int(c) if c.isdigit() else c
