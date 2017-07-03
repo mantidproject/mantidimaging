@@ -11,7 +11,14 @@ def execute(entry, *args, **kwargs):
     """
     Execute the stored function in ProcessList.
     Any additional arguments will be appended to the front of the currently existing arguments
-    :param
+
+    :param entry: Tuple with the following structure: (module path, function, args, kwargs)
+
+    :param *args: The arguments to be appended to the back of the currently existing arguments
+
+    :param **kwargs: The keyword arguments to be appended to the back of the currently existing arguments
+
+    :returns: The result from the function that was called
     """
     package = _import_module(entry[0])
     func = entry[1]
@@ -26,7 +33,14 @@ def execute_back(entry, *args, **kwargs):
     """
     Execute the stored function in ProcessList.
     Any additional arguments will be appended to the back of the currently existing arguments
-    :param
+
+    :param entry: Tuple with the following structure: (module path, function, args, kwargs)
+
+    :param *args: The arguments to be appended to the back of the currently existing arguments
+
+    :param **kwargs: The keyword arguments to be appended to the back of the currently existing arguments
+
+    :returns: The result from the function that was called
     """
     package = _import_module(entry[0])
     func = entry[1]
@@ -40,6 +54,14 @@ def execute_new(entry, *args, **kwargs):
     """
     Execute the stored function in ProcessList.
     The original arguments will be discarded, and only the new ones will be used
+
+    :param entry: Tuple with the following structure: (module path, function, args, kwargs)
+
+    :param *args: The arguments to be appended to the back of the currently existing arguments
+
+    :param **kwargs: The keyword arguments to be appended to the back of the currently existing arguments
+
+    :returns: The result from the function that was called
     """
     package = _import_module(entry[0])
     func = entry[1]

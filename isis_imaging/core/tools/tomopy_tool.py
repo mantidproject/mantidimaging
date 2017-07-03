@@ -7,6 +7,27 @@ from isis_imaging.core.algorithms import projection_angles
 from isis_imaging.core.tools.abstract_tool import AbstractTool
 
 
+def run_reconstruct(sample, config, proj_angles=None, **kwargs):
+    """
+    Module function for running a reconstruction. It will create the tomopy tool object at runtime.
+
+    :param sample: The sample image data as a 3D numpy.ndarray
+
+    :param config: A ReconstructionConfig with all the necessary parameters
+                   to run a reconstruction. The Centers of Rotation
+                    must be interpolated independently!
+
+    :param proj_angles: The projection angle for each slice.
+                        If not provided equidistant angles will be generated
+
+    :param kwargs: Any keyword arguments will be forwarded to the TomoPy
+                   reconstruction function
+
+    :return: The reconstructed volume
+    """
+    tool = TomoPyTool()
+    return tool.run_reconstruct(sample, config, proj_angles, **kwargs)
+
 class TomoPyTool(AbstractTool):
     @staticmethod
     def tool_supported_methods():
@@ -66,13 +87,17 @@ class TomoPyTool(AbstractTool):
             http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
 
         :param sample: The sample image data as a 3D numpy.ndarray
+
         :param config: A ReconstructionConfig with all the necessary parameters
                        to run a reconstruction. The Centers of Rotation
                         must be interpolated independently!
+
         :param proj_angles: The projection angle for each slice.
                             If not provided equidistant angles will be generated
+
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy
                        reconstruction function
+
         :return: The reconstructed volume
         """
         h.check_config_integrity(config)

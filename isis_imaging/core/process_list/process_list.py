@@ -140,7 +140,7 @@ class ProcessList(object):
         assert set(kwargs.viewkeys()).issubset(inspect.getargspec(func)[0]), \
             "One or more of the keyword arguments provided were NOT found in the function's declaration!"
 
-        func_package = finder.get_package(func.func_globals['__file__'])
+        func_package = func.func_globals['__name__']
         func_name = func.func_name
         self._store_string(func_package, func_name, args, kwargs)
 
