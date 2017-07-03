@@ -10,9 +10,6 @@ def execute(config):
     sample, flat, dark = loader.load_from_config(config)
 
     pl = process_list.from_string(config.func.process_list)
-    while pl:
-        # TODO fix the loader confusing behaviour
-        # TODO add nice documentation with return types
-        # TODO do the things from ONENOTE!
-        process_list.execute()
+    while not pl.is_over():
+        process_list.execute(next(pl), sample)
     end_run(readme)

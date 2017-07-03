@@ -149,6 +149,10 @@ class ReconstructionConfig(object):
             self.cor_slices = [int(slice_id)
                                for slice_id in self.func.cor_slices]
 
+        if isinstance(self.func.process_list, list):
+            # remove the list, we want a single string
+            self.func.process_list = self.func.process_list[0]
+
     def __str__(self):
         return str(self.func) + str(self.args)
 

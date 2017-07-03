@@ -80,24 +80,24 @@ class ProcessListTest(unittest.TestCase):
     def test_from_string(self):
         input_string = "isis_imaging/core/filters/median_filter execute (3, 'reflect') {'cores': 3}"
         # empty the pre-setup list
-        self.pl._dequeue = []
+        self.pl._list = []
         self.pl.from_string(input_string)
         exp_package = 'isis_imaging/core/filters/median_filter'
         exp_func = 'execute'
         exp_args = (3, 'reflect')
         exp_kwargs = {'cores': 3}
 
-        self.assertEqual(self.pl._dequeue[0][0], exp_package)
-        self.assertEqual(self.pl._dequeue[0][1], exp_func)
-        self.assertEqual(self.pl._dequeue[0][2], exp_args)
-        self.assertEqual(self.pl._dequeue[0][3], exp_kwargs)
+        self.assertEqual(self.pl._list[0][0], exp_package)
+        self.assertEqual(self.pl._list[0][1], exp_func)
+        self.assertEqual(self.pl._list[0][2], exp_args)
+        self.assertEqual(self.pl._list[0][3], exp_kwargs)
 
     def test_from_string_multiple(self):
         REPS = 3
         # duplicate the string
         input_string = "isis_imaging/core/filters/median_filter execute (3, 'reflect') {'cores': 3};" * REPS
         # empty the pre-setup list
-        self.pl._dequeue = []
+        self.pl._list = []
         self.pl.from_string(input_string)
         exp_package = 'isis_imaging/core/filters/median_filter'
         exp_func = 'execute'
@@ -106,7 +106,7 @@ class ProcessListTest(unittest.TestCase):
 
         # check if all are equal
         for i in range(REPS):
-            self.assertEqual(self.pl._dequeue[i][0], exp_package)
-            self.assertEqual(self.pl._dequeue[i][1], exp_func)
-            self.assertEqual(self.pl._dequeue[i][2], exp_args)
-            self.assertEqual(self.pl._dequeue[i][3], exp_kwargs)
+            self.assertEqual(self.pl._list[i][0], exp_package)
+            self.assertEqual(self.pl._list[i][1], exp_func)
+            self.assertEqual(self.pl._list[i][2], exp_args)
+            self.assertEqual(self.pl._list[i][3], exp_kwargs)

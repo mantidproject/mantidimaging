@@ -16,7 +16,8 @@ def execute(entry, *args, **kwargs):
     package = _import_module(entry[0])
     func = entry[1]
     args = args + entry[2]
-    kwargs = kwargs + entry[3]
+    kwargs.update(entry[3])
+
     to_call = getattr(package, func)
     return to_call(*args, **kwargs)
 

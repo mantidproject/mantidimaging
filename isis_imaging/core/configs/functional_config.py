@@ -328,7 +328,7 @@ class FunctionalConfig(object):
         grp_func.add_argument(
             "--process-list",
             required=False,
-            action='store_true',
+            nargs="*",
             default=self.process_list,
             help="Use the process list parser. Intended use is for cluster submission."
             "It can parse a string from command line, file containing the commands, or a saved process list.")

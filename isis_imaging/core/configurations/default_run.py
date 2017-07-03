@@ -72,7 +72,6 @@ def execute(config):
     sample, flat, dark = default_filtering.execute(config, sample, flat,
                                                    dark)
 
-    # Save pre-proc images, print inside
     saver_class.save_preproc_images(sample)
     if not config.func.reconstruction:
         h.tomo_print_note(
@@ -81,7 +80,7 @@ def execute(config):
         return sample
 
     cors = config.func.cors
-    # if they're the same length then we have a COR for each slice!
+    # if they're the same length then we have a COR for each slice, so we don't have to generate anything
     if len(cors) != sample.shape[0]:
         # interpolate the CORs
         cor_slices = config.func.cor_slices

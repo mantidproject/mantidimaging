@@ -27,7 +27,9 @@ def main():
             stdoutToServer=True,
             stderrToServer=True)
 
-    thingy_to_execute = None
+    cmd_line = " ".join(sys.argv)
+    # dynamically attach the parameter used in recon
+    config.cmd_line = cmd_line
     if config.func.gui:
         # this has the highest priority
         from gui import gui
@@ -42,17 +44,10 @@ def main():
         from isis_imaging.core.convert import convert
         thingy_to_execute = convert.execute
     elif config.func.process_list:
-        from isis_imaging.configurations import process_list_run
+        from isis_imaging.core.configurations import process_list_run
         thingy_to_execute = process_list_run.execute
-        raise NotImplementedError(
-            "Refactor the default_run common functionality "
-            "into a more generic function. The bit we need is the loading"
-            " of data, creating save directory, readme, etc (stuff before pre-processing)")
     else:
         from isis_imaging.core.configurations import default_run
-        cmd_line = " ".join(sys.argv)
-        # dynamically attach the parameter used in recon
-        config.cmd_line = cmd_line
         thingy_to_execute = default_run.execute
 
     h.total_execution_timer()

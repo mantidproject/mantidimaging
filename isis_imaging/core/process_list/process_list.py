@@ -6,7 +6,6 @@ import os
 # using pickle instead of dill, because dill is not available on SCARF
 import pickle
 from ast import literal_eval
-from collections import deque
 
 from isis_imaging.core.algorithms import finder
 
@@ -70,20 +69,58 @@ class ProcessList(object):
     """
 
     def __init__(self):
-        self._dequeue = deque()
+        self._list = []
+        self._list_idx = 0
 
     def __str__(self):
         # call with default separators
         return self.to_string(DEFAULT_ARGUMENT_SEPARATOR, '\n')
 
     def __len__(self):
-        return len(self._dequeue)
+        return len(self._list)
 
     def __eq__(self, rhs):
-        return self._dequeue == rhs._dequeue
+        return self._list == rhs._dequeue
+
+    def __getitem__(self, item):
+        return self._list[item]
+
+    def __iter__(self):
+        return self
+
+    def is_over(self):
+        """
+        :return: True if we have traversed all of the list, False otherwise
+        """
+        return self._list_idx == len(self._list)
+
+    def next(self):
+        """
+        :return: Return the next function stored in the Process List
+        """
+        if self.is_over():
+            return None
+        else:
+            f = self._list[self._list_idx]
+            self._list_idx += 1
+            return f
+
+    def previous(self):
+        """
+        :return: Return the previous function stored in the Process List
+        """
+        if self._list_idx == 0:
+            return None
+        else:
+            f = self._list[self._list_idx]
+            self._list_idx -= 1
+            return f
 
     def clear(self):
-        self._dequeue.clear()
+        """
+        Clear all contents from the Process List
+        """
+        self._list = []
 
     def store(self, func, *args, **kwargs):
         """
@@ -108,16 +145,13 @@ class ProcessList(object):
         self._store_string(func_package, func_name, args, kwargs)
 
     def _store_string(self, package, func, args, kwargs):
-        self._dequeue.append((package, func, args, kwargs))
-
-    def pop(self):
-        return self._dequeue.popleft()
+        self._list.append((package, func, args, kwargs))
 
     def first(self):
         """
         Return the first member of the queue, but do not remove.
         """
-        return self._dequeue[0]
+        return self._list[0]
 
     def save(self, file=None):
         file = os.path.abspath(os.path.expanduser(file))
@@ -129,7 +163,7 @@ class ProcessList(object):
         :param func_separator: Separator character to be used between functions.
         """
         out = cStringIO.StringIO()
-        for entry in self._dequeue:
+        for entry in self._list:
             e = map(lambda x: str(x), list(entry))
 
             out.write(e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR +
