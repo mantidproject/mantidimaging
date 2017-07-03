@@ -8,7 +8,7 @@ from isis_imaging import helper as h
 
 
 def write_fits(data, filename, overwrite=False):
-    from isis_imaging.core.io.loader import import_pyfits
+    from isis_imaging.core.io.loader.imports import import_pyfits
     fits = import_pyfits()
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
@@ -16,7 +16,7 @@ def write_fits(data, filename, overwrite=False):
 
 
 def write_img(data, filename, overwrite=False):
-    from isis_imaging.core.io.loader import import_skimage_io
+    from isis_imaging.core.io.loader.imports import import_skimage_io
     skio = import_skimage_io()
     skio.imsave(filename, data)
 
@@ -94,12 +94,14 @@ def save(data,
             # pass all other formats to skimage
             write_func = write_img
 
-        names = generate_names(name_prefix, indices, custom_idx, data.shape[0], zfill_len, name_postfix, img_format)
+        names = generate_names(name_prefix, indices, custom_idx,
+                               data.shape[0], zfill_len, name_postfix, img_format)
 
         h.prog_init(data.shape[0], "Saving " + img_format + " images")
         # loop through images in data array
         for idx in range(data.shape[0]):
-            write_func(data[idx, :, :], os.path.join(output_dir, names[idx]), overwrite_all)
+            write_func(data[idx, :, :], os.path.join(
+                output_dir, names[idx]), overwrite_all)
             h.prog_update()
         h.prog_close()
 
@@ -116,7 +118,8 @@ def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name
     names = []
     for idx in range(num_images):
         # create the file name, and use the format as extension
-        names.append(name_prefix + str(index).zfill(zfill_len) + name_postfix + "." + img_format)
+        names.append(name_prefix + str(index).zfill(zfill_len) +
+                     name_postfix + "." + img_format)
         index += increment
     return names
 

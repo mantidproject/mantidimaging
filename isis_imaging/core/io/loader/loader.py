@@ -1,22 +1,21 @@
 from __future__ import absolute_import, division, print_function
 
-import glob
-import os
-import re
-
 import numpy as np
 
 from isis_imaging import helper as h
-from isis_imaging.core.io import img_loader, stack_loader
+from isis_imaging.core.io.utility import get_file_names
+
+from . import img_loader, stack_loader
 
 
-def fitsread(filename):
+def _fitsread(filename):
     """
     Read one image and return it as a 2d numpy array
 
     :param filename :: name of the image file, can be relative or absolute path
     :param img_format: format of the image ('fits')
     """
+    from .imports import import_pyfits
     pyfits = import_pyfits()
     image = pyfits.open(filename)
     if len(image) < 1:
@@ -28,14 +27,15 @@ def fitsread(filename):
     return image[0].data
 
 
-def nxsread(filename):
+def _nxsread(filename):
     import h5py
     nexus = h5py.File(filename, 'r')
     data = nexus["tomography/sample_data"]
     return data
 
 
-def imread(filename):
+def _imread(filename):
+    from .imports import import_skimage_io
     skio = import_skimage_io()
     return skio.imread(filename)
 
@@ -62,6 +62,19 @@ def supported_formats():
 
 
 def read_in_shape(config):
+    """
+    This function is intended for internal usage.
+
+    Read in ONLY the first image in the specified directory, and return the total shape
+    that all the images in that folder will have after loaded. This is determined by the
+    number of images, and the loaded image's width and height.
+
+    It is assumed all images are the same. If they are not the loader will fail on runtime.
+
+    :param config: The reconstruction config from which the parameters are read.
+
+    :returns: The full shape of the images in the specified directory in a tuple of (Length, X, Y)
+    """
     input_path = config.func.input_path
     img_format = config.func.in_format
     data_dtype = config.func.data_dtype
@@ -73,6 +86,8 @@ def read_in_shape(config):
     sample, _, _ = load(input_path, None, None,
                         img_format, data_dtype, cores, chunksize,
                         parallel_load, indices=[0, 1, 1])
+
+    # construct and return the new shape
     return (len(input_file_names),) + sample.shape[1:]
 
 
@@ -101,7 +116,7 @@ def load_from_config(config):
                 parallel_load, indices=indices)
 
 
-def load(input_path=None,
+def load(input_path,
          input_path_flat=None,
          input_path_dark=None,
          img_format=None,
@@ -142,12 +157,6 @@ def load(input_path=None,
 
     :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark were loaded, they will be None
     """
-
-    if not file_names:
-        input_file_names = get_file_names(input_path, img_format)
-    else:
-        input_file_names = file_names
-
     if img_format not in supported_formats():
         raise ValueError("Image format " + img_format + " not supported!")
 
@@ -155,18 +164,22 @@ def load(input_path=None,
         raise ValueError(
             "Indices at this point MUST have 3 elements: [start, stop, step]!")
 
-    if img_format in ['nxs']:
+    if not file_names:
+        input_file_names = get_file_names(input_path, img_format)
+    else:
+        input_file_names = file_names
 
+    if img_format in ['nxs']:
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
-        sample = stack_loader.execute(nxsread, input_file, dtype, "NXS Load",
+        sample = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load",
                                       cores, chunksize, parallel_load, indices)
         flat = dark = None
     else:
         if img_format in ['fits', 'fit']:
-            load_func = fitsread
+            load_func = _fitsread
         else:
-            load_func = imread
+            load_func = _imread
 
         sample, flat, dark = img_loader.execute(
             load_func, input_file_names, input_path_flat, input_path_dark,
@@ -175,136 +188,3 @@ def load(input_path=None,
     h.check_data_stack(sample)
 
     return sample, flat, dark
-
-
-def import_pyfits():
-    try:
-        import pyfits
-    except ImportError:
-        # In Anaconda python, the pyfits package is in a different place,
-        # and this is what you frequently find on windows.
-        try:
-            import astropy.io.fits as pyfits
-        except ImportError:
-            raise ImportError(
-                "Cannot find the package 'pyfits' which is required to "
-                "read/write FITS image files")
-
-    return pyfits
-
-
-def import_skimage_io():
-    """
-    To import skimage io only when it is/can be used
-    """
-    try:
-        from skimage import io as skio
-        # tifffile works better on local, but not available on scarf
-        # no plugin will use the default python imaging library (PIL)
-        # This behaviour might need to be changed when switching to python 3
-        skio.use_plugin('tifffile')
-    except ImportError as exc:
-        raise ImportError(
-            "Could not find the package skimage, its subpackage "
-            "io and the pluging freeimage which are required to support "
-            "several image formats. Error details: {0}".format(exc))
-    return skio
-
-
-def get_file_extension(file):
-    """
-    >>> get_file_extension("/home/user/file_path.test")
-    'test'
-    >>> get_file_extension("/home/user/file.path.test")
-    'test'
-    >>> get_file_extension("/home/")  # oh boy I can't wait for this to fail miserably on windows
-
-    # above is expecting a None which.. well doesn't show as anything so just an empty line with a comment explaining it
-    """
-    if os.path.isdir(file):
-        return None
-
-    # find the last dot in the file
-    just_after_dot_index = file.rfind('.') + 1
-    return file[just_after_dot_index:]
-
-
-def get_file_names(path, img_format, prefix=''):
-    """
-    Get all file names in a directory with a specific format.
-    :param path: The path to be checked.
-
-    :param img_format: The image format used as a postfix after the .
-
-    :param prefix: A specific prefix for the images
-
-    :return: All the file names, sorted by ascending
-    """
-
-    path = os.path.abspath(os.path.expanduser(path))
-
-    files_match = glob.glob(
-        os.path.join(path, "{0}*.{1}".format(prefix, img_format)))
-
-    if len(files_match) <= 0:
-        raise RuntimeError(
-            "Could not find any image files in '{0}' with extension: {1}".format(
-                path, img_format))
-
-    # this is a necessary step, otherwise the file order is not guaranteed to be
-    # sequential and we get randomly ordered stack of names
-    files_match.sort(key=_alphanum_key_split)
-
-    return files_match
-
-
-def get_folder_names(path):
-    """
-    Get all folder names in a specific path.
-
-    :param path: The path to be checked.
-
-    :return: All the folder names, sorted by ascending
-
-    """
-
-    path = os.path.abspath(os.path.expanduser(path))
-
-    # os.walk returns a tuple (dirpath, dirnames, filenames), we only want dirnames
-    folders = next(os.walk(path))[1]
-
-    if len(folders) <= 0:
-        raise RuntimeError("Could not find any folders in {0}".format(path))
-
-    # this is a necessary step, otherwise the file order is not guaranteed to be
-    # sequential and we get randomly ordered stack of names
-    folders.sort(key=_alphanum_key_split)
-
-    return folders
-
-
-def _alphanum_key_split(path_str):
-    """
-    From a string to a list of alphabetic and numeric elements. Intended to
-    be used for sequence number/natural sorting. In list.sort() the
-    key can be a list, so here we split the alpha/numeric fields into
-    a list. For example (in the final order after sort() would be applied):
-
-    "angle4" -> ["angle", 4]
-    "angle31" -> ["angle", 31]
-    "angle42" -> ["angle", 42]
-    "angle101" -> ["angle", 101]
-
-    Several variants compared here:
-    https://dave.st.germa.in/blog/2007/12/11/exception-handling-slow/
-    """
-    alpha_num_split_re = re.compile('([0-9]+)')
-    return [
-        int(c) if c.isdigit() else c
-        for c in alpha_num_split_re.split(path_str)
-    ]
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

@@ -28,7 +28,7 @@ def do_importing(tool, alg='fbp'):
     :return: the tool reference
     """
     if not isinstance(tool, str):
-        raise ValueError(
+        raise TypeError(
             "The name of a reconstruction tool is required as a string. Got: {0}".
             format(tool))
     if 'tomopy' == tool:

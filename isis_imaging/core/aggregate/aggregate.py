@@ -6,7 +6,7 @@ import numpy as np
 
 from isis_imaging import helper as h
 from isis_imaging.core.io import loader, saver
-from isis_imaging.core.io.loader import get_file_names, get_folder_names
+from isis_imaging.core.io.utility import get_file_names, get_folder_names
 
 
 def execute(config):

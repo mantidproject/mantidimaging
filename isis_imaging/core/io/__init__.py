@@ -25,5 +25,6 @@ from __future__ import (absolute_import, division, print_function)
 # hide all of the other modules
 from . import saver  # noqa: F401
 from . import loader  # noqa: F401
+from . import utility  # noqa: F401
 
 del absolute_import, division, print_function

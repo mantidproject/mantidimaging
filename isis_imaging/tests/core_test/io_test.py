@@ -495,11 +495,8 @@ class IOTest(unittest.TestCase):
             th.assert_equals(loaded_dark, dark[0])
 
     def test_raise_on_invalid_format(self):
-        self.assertRaises(
-            ValueError,
-            loader.load,
-            file_names=["/somefile"],
-            img_format='txt')
+        self.assertRaises(ValueError, loader.load, "/some/path",
+                          file_names=["/somefile"], img_format='txt')
 
     def test_read_in_shape(self):
         images = th.gen_img_shared_array_with_val(42.)

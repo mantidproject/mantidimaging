@@ -30,10 +30,10 @@ class FunctionalConfig(object):
         self.input_path = None
         self.input_path_flat = None
         self.input_path_dark = None
-        self.in_format = 'tiff'
+        self.in_format = 'tif'
 
         self.output_path = None
-        self.out_format = 'tiff'
+        self.out_format = 'tif'
         self.out_slices_prefix = 'recon_slice'
         self.out_horiz_slices_prefix = 'recon_horiz'
         self.out_horiz_slices_subdir = 'horiz_slices'
@@ -42,7 +42,7 @@ class FunctionalConfig(object):
         # Processing options
         self.save_preproc = True
         self.reconstruction = False
-        self.reuse_preproc = False
+        self.skip_preproc = False
         self.preproc_subdir = 'pre_processed'
         self.swap_axes = False
 
@@ -111,7 +111,7 @@ class FunctionalConfig(object):
                + "Save horizontal slices: {0}\n".format(str(self.save_horiz_slices)) \
                + "Save preprocessed images: {0}\n".format(str(self.save_preproc)) \
                + "Do only pre processing and exit: {0}\n".format(str(self.reconstruction)) \
-               + "Reuse preprocessing images: {0}\n".format(str(self.reuse_preproc)) \
+               + "Skip preprocessing step: {0}\n".format(str(self.skip_preproc)) \
                + "Pre processing images subdir: {0}\n".format(str(self.preproc_subdir)) \
                + "Radiograms: {0}\n".format(str(self.swap_axes)) \
                + "Data type: {0}\n".format(str(self.data_dtype)) \
@@ -138,7 +138,6 @@ class FunctionalConfig(object):
                + "Split the execution into separate runs: {0}\n".format(str(self.split)) \
                + "Max memory for split execution: {0}\n".format(str(self.max_memory)) \
                + "Max ratio to memory for split execution: {0}\n".format(str(self.max_ratio)) \
-               + "Do not account for reconstruction memory when splitting execution: {0}\n".format(str(self.no_recon)) \
                + "Use a process list for execution: {0}\n".format(str(self.process_list)) \
                + "Running the GUI: {0}\n".format(str(self.gui))
 
@@ -235,7 +234,7 @@ class FunctionalConfig(object):
             help="Complete pre-processing of images and exit.")
 
         grp_func.add_argument(
-            "--reuse-preproc",
+            "--skip-preproc",
             required=False,
             action='store_true',
             help="The images loaded have already been pre-processed. "
@@ -541,7 +540,7 @@ class FunctionalConfig(object):
 
         self.save_preproc = args.save_preproc
         self.reconstruction = args.reconstruction
-        self.reuse_preproc = args.reuse_preproc
+        self.skip_preproc = args.skip_preproc
         self.preproc_subdir = args.preproc_subdir
         self.swap_axes = args.swap_axes
 

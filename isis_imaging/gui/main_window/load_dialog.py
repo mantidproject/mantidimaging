@@ -4,7 +4,7 @@ from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
 
-from isis_imaging.core.io.loader import get_file_names, get_file_extension
+from isis_imaging.core.io.utility import get_file_names, get_file_extension
 
 import os
 
