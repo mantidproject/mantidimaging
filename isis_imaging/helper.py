@@ -165,7 +165,7 @@ def tomo_print_same_line(message, verbosity=2):
         print(message, end='')
 
 
-def tomo_print(messages, verbosity=2):
+def tomo_print(message, verbosity=2):
     """
     Verbosity levels:
     0 -> debug, print everything
@@ -191,10 +191,10 @@ def tomo_print(messages, verbosity=2):
     # which returns 0, because there is nothing appended to it yet, which evaluates to False,
     # and nothing is ever appended to the readme!
     if _readme is not None:
-        _readme.append(messages)
+        _readme.append(message)
 
     if verbosity <= _verbosity:
-        print(messages)
+        print(message)
 
 
 def tomo_print_note(message, verbosity=2):
