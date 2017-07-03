@@ -27,12 +27,10 @@ def _gui_register(dialog):
 
 
 def _rotate_image_inplace(data, rotation=None):
-    # rot90 rotates counterclockwise; config.args.rotation rotates clockwise
     data[:, :] = np.rot90(data[:, :], rotation)
 
 
 def _rotate_image(data, rotation=None):
-    # rot90 rotates counterclockwise; config.args.rotation rotates clockwise
     return np.rot90(data[:, :], rotation)
 
 
@@ -56,6 +54,7 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
     """
     h.check_data_stack(data)
     if rotation:
+        # rot90 rotates counterclockwise; config.args.rotation rotates clockwise
         clockwise_rotations = 4 - rotation
 
         if pu.multiprocessing_available():
@@ -81,7 +80,7 @@ def _execute_seq(data, rotation):
     h.prog_init(img_count, "Rotating stack")
     for idx in range(0, img_count):
         data[idx] = _rotate_image(data[idx], rotation)
-        h.prog_update(1)
+        h.prog_update()
 
     h.prog_close()
 

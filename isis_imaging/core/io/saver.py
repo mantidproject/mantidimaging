@@ -45,7 +45,7 @@ def save(data,
          output_dir,
          name_prefix='image',
          swap_axes=False,
-         img_format='tiff',
+         out_format='tif',
          overwrite_all=False,
          custom_idx=None,
          zfill_len=6,
@@ -61,7 +61,7 @@ def save(data,
                         appended before the image number
     :param swap_axes: Swap the 0 and 1 axis of the images
                       (convert from radiograms to sinograms on saving)
-    :param img_format: File format of the saved out images
+    :param out_format: File format of the saved out images
     :param overwrite_all: Overwrite existing images with conflicting names
     :param custom_idx: Single index to be used for the file name,
                        instead of incremental numbers
@@ -84,20 +84,20 @@ def save(data,
     if swap_axes:
         data = np.swapaxes(data, 0, 1)
 
-    if img_format in ['nxs']:
+    if out_format in ['nxs']:
         filename = os.path.join(output_dir, name_prefix + name_postfix)
         write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
     else:
-        if img_format in ['fit', 'fits']:
+        if out_format in ['fit', 'fits']:
             write_func = write_fits
         else:
             # pass all other formats to skimage
             write_func = write_img
 
         names = generate_names(name_prefix, indices, custom_idx,
-                               data.shape[0], zfill_len, name_postfix, img_format)
+                               data.shape[0], zfill_len, name_postfix, out_format)
 
-        h.prog_init(data.shape[0], "Saving " + img_format + " images")
+        h.prog_init(data.shape[0], "Saving " + out_format + " images")
         # loop through images in data array
         for idx in range(data.shape[0]):
             write_func(data[idx, :, :], os.path.join(
@@ -106,7 +106,7 @@ def save(data,
         h.prog_close()
 
 
-def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name_postfix, img_format):
+def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name_postfix, out_format):
     start_index = indices[0] if indices else 0
     if custom_idx:
         index = custom_idx
@@ -119,7 +119,7 @@ def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name
     for idx in range(num_images):
         # create the file name, and use the format as extension
         names.append(name_prefix + str(index).zfill(zfill_len) +
-                     name_postfix + "." + img_format)
+                     name_postfix + "." + out_format)
         index += increment
     return names
 
@@ -173,7 +173,7 @@ class Saver(object):
             self._output_path = os.path.abspath(
                 os.path.expanduser(self._output_path))
 
-        self._img_format = config.func.out_format
+        self._out_format = config.func.out_format
         self._overwrite_all = config.func.overwrite_all
         self._swap_axes = config.func.swap_axes
         self._indices = config.func.indices
@@ -245,7 +245,7 @@ class Saver(object):
             output_dir,
             name,
             swap_axes,
-            img_format=self._img_format,
+            out_format=self._out_format,
             overwrite_all=self._overwrite_all,
             zfill_len=zfill_len,
             name_postfix=name_postfix,
@@ -270,7 +270,7 @@ class Saver(object):
                      format(preproc_dir, data.dtype))
 
             save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
-                 self._img_format, self._overwrite_all, indices=self._indices)
+                 self._out_format, self._overwrite_all, indices=self._indices)
 
             h.pstop("Saving pre-processed images finished.")
 
@@ -301,7 +301,7 @@ class Saver(object):
             format(out_recon_dir))
 
         save(data, out_recon_dir, self._out_slices_prefix,
-             self._swap_axes, self._img_format, self._overwrite_all,
+             self._swap_axes, self._out_format, self._overwrite_all,
              indices=self._indices)
 
         # Sideways slices:
@@ -314,7 +314,7 @@ class Saver(object):
 
             # save out the horizontal slices by flipping the axes
             save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                 not self._swap_axes, self._img_format,
+                 not self._swap_axes, self._out_format,
                  self._overwrite_all)
 
         h.pstop("Finished saving slices of the reconstructed volume in: {0}".

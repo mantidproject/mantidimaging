@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
-
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import cor_interpolate
 from isis_imaging.core.io import loader, saver

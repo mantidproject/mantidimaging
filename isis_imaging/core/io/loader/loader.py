@@ -110,25 +110,26 @@ def load_from_config(config):
     chunksize = config.func.chunksize
     parallel_load = config.func.parallel_load
     indices = config.func.indices
+    construct_sinograms = config.func.construct_sinograms
 
     return load(input_path, input_path_flat, input_path_dark,
                 img_format, data_dtype, cores, chunksize,
-                parallel_load, indices=indices)
+                parallel_load, indices=indices, construct_sinograms=construct_sinograms)
 
 
 def load(input_path,
          input_path_flat=None,
          input_path_dark=None,
-         img_format=None,
+         in_format='tif',
          dtype=np.float32,
          cores=None,
          chunksize=None,
          parallel_load=False,
          file_names=None,
-         indices=None):
+         indices=None,
+         construct_sinograms=False):
     """
     Loads a stack, including sample, white and dark images.
-
 
     :param input_path: Path for the input data folder
 
@@ -151,39 +152,42 @@ def load(input_path,
                           For local runs (with HDD) recommended setting is False
 
     :param file_names: Use provided file names for loading
-    :param indices: Specify which indices are loaded from the found files. 
-                    This **DOES NOT** check for the number in the image filename, 
+
+    :param indices: Specify which indices are loaded from the found files.
+                    This **DOES NOT** check for the number in the image filename,
                     but removes all indices from the filenames list that are not selected
+
+    :param construct_sinograms: The loaded images will be used to construct the sinograms during loading
 
     :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark were loaded, they will be None
     """
-    if img_format not in supported_formats():
-        raise ValueError("Image format " + img_format + " not supported!")
+    if in_format not in supported_formats():
+        raise ValueError("Image format {0} not supported!".format(in_format))
 
     if indices and len(indices) < 3:
         raise ValueError(
             "Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if not file_names:
-        input_file_names = get_file_names(input_path, img_format)
+        input_file_names = get_file_names(input_path, in_format)
     else:
         input_file_names = file_names
 
-    if img_format in ['nxs']:
+    if in_format in ['nxs']:
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
         sample = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load",
                                       cores, chunksize, parallel_load, indices)
         flat = dark = None
     else:
-        if img_format in ['fits', 'fit']:
+        if in_format in ['fits', 'fit']:
             load_func = _fitsread
         else:
             load_func = _imread
 
         sample, flat, dark = img_loader.execute(
-            load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, dtype, cores, chunksize, parallel_load, indices)
+            load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype, cores, chunksize,
+            parallel_load, indices, construct_sinograms)
 
     h.check_data_stack(sample)
 

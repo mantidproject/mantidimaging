@@ -1,4 +1,4 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 __doc__ = """
 parallel.shared_mem: Runs a function in parallel.
                      Expects and uses a single 3D shared memory array between the processes.
@@ -10,4 +10,6 @@ parallel.exclusive_mem: Runs a function in parallel.
                          or modified, triggering the copy-on-write.
 """
 
-from . import *  # noqa: F401, F403
+from . import exclusive_mem, shared_mem, two_shared_mem, utility  # noqa: F401
+
+del absolute_import, division, print_function

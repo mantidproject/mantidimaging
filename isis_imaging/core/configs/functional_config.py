@@ -24,13 +24,12 @@ class FunctionalConfig(object):
             False - Note the failure to import but continue execution without applying the filter
         """
 
-        self.readme_file_name = '0.README_reconstruction.txt'
-
         # Functionality options
         self.input_path = None
         self.input_path_flat = None
         self.input_path_dark = None
         self.in_format = 'tif'
+        self.construct_sinograms = False
 
         self.output_path = None
         self.out_format = 'tif'
@@ -45,8 +44,6 @@ class FunctionalConfig(object):
         self.skip_preproc = False
         self.preproc_subdir = 'pre_processed'
         self.swap_axes = False
-
-        import numpy as np
 
         self.data_dtype = np.float32
 
@@ -141,7 +138,7 @@ class FunctionalConfig(object):
                + "Use a process list for execution: {0}\n".format(str(self.process_list)) \
                + "Running the GUI: {0}\n".format(str(self.gui))
 
-    def setup_parser(self, parser):
+    def _setup_parser(self, parser):
         """
         Setup the functional arguments for the script
         :param parser: The parser which is set up
@@ -180,6 +177,13 @@ class FunctionalConfig(object):
             type=str,
             choices=loader.supported_formats(),
             help="Format/file extension expected for the input images.")
+
+        grp_func.add_argument(
+            "--construct-sinograms",
+            required=False,
+            default=self.construct_sinograms,
+            action='store_true',
+            help="Construct the sinograms on load.")
 
         grp_func.add_argument(
             "-o",
@@ -518,7 +522,7 @@ class FunctionalConfig(object):
 
         return parser
 
-    def update(self, args):
+    def _update(self, args):
         """
         Should be called after the parser has had a chance to
         parse the real arguments from the user.
@@ -526,64 +530,9 @@ class FunctionalConfig(object):
         SPECIAL CASES ARE HANDLED IN:
         recon_config.ReconstructionConfig.handle_special_arguments
         """
-        self.input_path = args.input_path
-        self.input_path_flat = args.input_path_flat
-        self.input_path_dark = args.input_path_dark
-        self.in_format = args.in_format
+        # remove all the built-in parameters that start with __
+        all_args = filter(lambda param: not param.startswith("_"), dir(self))
 
-        self.output_path = args.output_path
-        self.out_format = args.out_format
-        self.out_slices_prefix = args.out_slices_prefix
-        self.out_horiz_slices_prefix = args.out_horiz_slices_prefix
-        self.out_horiz_slices_subdir = args.out_horiz_slices_subdir
-        self.save_horiz_slices = args.save_horiz_slices
-
-        self.save_preproc = args.save_preproc
-        self.reconstruction = args.reconstruction
-        self.skip_preproc = args.skip_preproc
-        self.preproc_subdir = args.preproc_subdir
-        self.swap_axes = args.swap_axes
-
-        # float16, uint16 data types produce exceptions
-        # > float 16 - scipy median filter does not support it
-        # > uint16 -  division is wrong, so all values become 0 and 1
-        # could convert to float16, but then we'd have to go up to
-        # float32 for the median filter anyway
-        if args.data_dtype == 'float32':
-            self.data_dtype = np.float32
-        elif args.data_dtype == 'float64':
-            self.data_dtype = np.float64
-
-        self.debug = args.debug
-        self.debug_port = args.debug_port
-
-        if args.cors:
-            self.cors = [float(cor) for cor in args.cors]
-        if args.cor_slices:
-            self.cor_slices = [int(slice_id) for slice_id in args.cor_slices]
-
-        self.verbosity = args.verbosity
-        self.overwrite_all = args.overwrite_all
-
-        # grab tools options
-        self.tool = args.tool
-        self.algorithm = args.algorithm
-        self.num_iter = args.num_iter
-        self.max_angle = args.max_angle
-        self.cores = args.cores
-        self.chunksize = args.chunksize
-        self.parallel_load = args.parallel_load
-        self.convert = args.convert
-        self.convert_prefix = args.convert_prefix
-        self.imopr = args.imopr
-        self.aggregate = args.aggregate
-        self.aggregate_angles = args.aggregate_angles
-        self.aggregate_single_folder_output = args.aggregate_single_folder_output
-
-        self.split = args.split
-        self.indices = args.indices
-        self.max_memory = args.max_memory
-        self.max_ratio = args.max_ratio
-
-        self.process_list = args.process_list
-        self.gui = args.gui
+        # update all the arguments
+        for arg in all_args:
+            setattr(self, arg, getattr(args, arg))

@@ -14,7 +14,7 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, data_dtype, cores, chunksize, parallel_load, indices):
+            img_format, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms):
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -30,30 +30,8 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
         '>f2' - float16
         '>f4' - float32
 
-    :param load_func: function to be used to load the files
-
-    :param input_file_names: path to sample images. Can be a file or directory
-
-    :param input_path_flat: (optional) path to open beam / flat image(s).
-                            Can be a file or directory
-
-    :param input_path_dark: (optional) path to dark field image(s).
-                            Can be a file or directory
-
-    :param img_format: file extension (supported tiff, tif, fits, or fit)
-
-    :param data_dtype: Recommended: float32. The data type in which
-                       the data will be convert to after loading
-
-    :param cores: Cores to be used for parallel loading
-
-    :param chunksize: Chunk of work that each worker will receive
-
-    :param parallel_load: Do the loading with parallel processes.
-
-    :param indices: Which files will be loaded
-
     :return: sample, average flat image, average dark image
+
     """
 
     # Assumed that all images have the same size and properties as the first.
@@ -67,7 +45,7 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
     # forward all arguments to internal class
     l = ImageLoader(load_func, input_file_names, input_path_flat, input_path_dark,
-                    img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices)
+                    img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms)
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
     # this removes the image number dimension, if we loaded a stack of images
@@ -83,7 +61,7 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
 class ImageLoader(object):
     def __init__(self, load_func, input_file_names, input_path_flat, input_path_dark,
-                 img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices):
+                 img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms):
         self.load_func = load_func
         self.input_file_names = input_file_names
         self.input_path_flat = input_path_flat
@@ -95,6 +73,7 @@ class ImageLoader(object):
         self.chunksize = chunksize
         self.parallel_load = parallel_load
         self.indices = indices
+        self.construct_sinograms = construct_sinograms
 
     def load_sample_data(self, input_file_names):
         # determine what the loaded data was
@@ -120,7 +99,25 @@ class ImageLoader(object):
         h.prog_init(len(files), desc=name)
         for idx, in_file in enumerate(files):
             try:
-                data[idx, :, :] = self.load_func(in_file)[:]
+                _inplace_load(data[idx], in_file, self.load_func)
+                h.prog_update()
+            except ValueError as exc:
+                raise ValueError(
+                    "An image has different width and/or height dimensions! "
+                    "All images must have the same dimensions. "
+                    "Expected dimensions: {0} Error message: {1}".format(self.img_shape, exc))
+            except IOError as exc:
+                raise RuntimeError("Could not load file {0}. Error details: {1}".
+                                   format(in_file, exc))
+        h.prog_close()
+
+        return data
+
+    def _do_files_sinogram_load_seq(self, data, files, name):
+        h.prog_init(len(files), desc=name)
+        for idx, in_file in enumerate(files):
+            try:
+                _inplace_load(data[:, idx, :], in_file, self.load_func)
                 h.prog_update()
             except ValueError as exc:
                 raise ValueError(
@@ -136,23 +133,31 @@ class ImageLoader(object):
 
     def _do_files_load_par(self, data, files, name):
         f = ptsm.create_partial(
-            _par_inplace_load_fwd_func, ptsm.inplace, load_func=self.load_func)
+            _inplace_load, ptsm.inplace, load_func=self.load_func)
+
         ptsm.execute(data, files, f, self.cores, self.chunksize, name)
         return data
 
     def load_files(self, files, name=None):
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
-        data = pu.create_shared_array(
-            (len(files), self.img_shape[0], self.img_shape[1]), dtype=self.data_dtype)
+        data = self.allocate_data(num_images=len(files))
 
-        if self.parallel_load:
+        if self.construct_sinograms:
+            return self._do_files_sinogram_load_seq(data, files, name)
+        elif self.parallel_load:
             return self._do_files_load_par(data, files, name)
         else:
             return self._do_files_load_seq(data, files, name)
 
+    def allocate_data(self, num_images):
+        if self.construct_sinograms:
+            return pu.create_shared_array((self.img_shape[0], num_images, self.img_shape[1]), dtype=self.data_dtype)
+        else:
+            return pu.create_shared_array((num_images, self.img_shape[0], self.img_shape[1]), dtype=self.data_dtype)
 
-def _par_inplace_load_fwd_func(data, filename, load_func=None):
+
+def _inplace_load(data, filename, load_func=None):
     data[:] = load_func(filename)
 
 

@@ -17,7 +17,7 @@ class ConfigsTest(unittest.TestCase):
     def setUpClass(cls):
         cls.parser = argparse.ArgumentParser()
         cls.func_config = FunctionalConfig()
-        cls.parser = cls.func_config.setup_parser(cls.parser)
+        cls.parser = cls.func_config._setup_parser(cls.parser)
 
         sys.path[0] = os.path.join(sys.path[0], "isis_imaging")
         registrator.register_into(cls.parser)

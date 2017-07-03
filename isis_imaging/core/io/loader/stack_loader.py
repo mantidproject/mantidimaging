@@ -8,7 +8,9 @@ def parallel_move_data(input_data, output_data):
     """
     Forwarded function for parallel loading of data
     :param input_data: shared_data
+
     :param output_data: second_shared_data
+
     """
     output_data[:] = input_data[:]
 
@@ -19,9 +21,9 @@ def do_stack_load_seq(data, new_data, img_shape, name):
     This performs faster locally, but parallel performs faster on SCARF
 
     :param data: shared array of data
-    :param new_data:
-    :param img_shape:
-    :param name:
+    :param new_data: the new data to be moved into the shared array
+    :param img_shape: The shape of the image
+    :param name: Name for the loading bar
     :return: the loaded data
     """
     h.prog_init(img_shape[0], name)

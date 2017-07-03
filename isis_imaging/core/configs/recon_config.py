@@ -5,6 +5,8 @@ import os
 import tempfile
 from argparse import RawTextHelpFormatter
 
+import numpy as np
+
 from isis_imaging.core.algorithms import registrator
 from isis_imaging.core.configs.functional_config import FunctionalConfig
 
@@ -24,7 +26,7 @@ def grab_full_config():
     # this sets up the arguments in the parser, with defaults from the Config
     # file
     functional_args = FunctionalConfig()
-    parser = functional_args.setup_parser(parser)
+    parser = functional_args._setup_parser(parser)
 
     # setup args for the filters
     registrator.register_into(parser)
@@ -33,7 +35,7 @@ def grab_full_config():
     args = parser.parse_args()
 
     # update the configs
-    functional_args.update(args)
+    functional_args._update(args)
 
     # combine all of them together
     return ReconstructionConfig(functional_args, args)
@@ -131,6 +133,22 @@ class ReconstructionConfig(object):
             raise ValueError(
                 "The --split flag was passed, but no --max-memory was specified!")
 
+            # float16, uint16 data types produce exceptions
+        # > float 16 - scipy median filter does not support it
+        # > uint16 -  division is wrong, so all values become 0 and 1
+        # could convert to float16, but then we'd have to go up to
+        # float32 for the median filter anyway
+        if self.func.data_dtype == 'float32':
+            self.data_dtype = np.float32
+        elif self.func.data_dtype == 'float64':
+            self.data_dtype = np.float64
+
+        if self.func.cors:
+            self.cors = [float(cor) for cor in self.func.cors]
+        if self.func.cor_slices:
+            self.cor_slices = [int(slice_id)
+                               for slice_id in self.func.cor_slices]
+
     def __str__(self):
         return str(self.func) + str(self.args)
 
@@ -149,7 +167,7 @@ class ReconstructionConfig(object):
         parser = argparse.ArgumentParser()
 
         functional_args = FunctionalConfig()
-        parser = functional_args.setup_parser(parser)
+        parser = functional_args._setup_parser(parser)
 
         # setup args for the filters
         registrator.register_into(parser)
@@ -164,6 +182,6 @@ class ReconstructionConfig(object):
         fake_args = parser.parse_args(fake_args_list)
 
         # update the configs
-        functional_args.update(fake_args)
+        functional_args._update(fake_args)
 
         return ReconstructionConfig(functional_args, fake_args, special_args=False)

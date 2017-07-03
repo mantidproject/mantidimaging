@@ -11,10 +11,10 @@ from isis_imaging.core.filters import (background_correction, contrast_normalisa
 def execute(config, sample, flat, dark):
     h.tomo_print_note("Running the default filtering.")
 
-    if config.func.reuse_preproc:
+    if config.func.skip_preproc:
         h.tomo_print_warning(
             "Pre-processing steps have been skipped, "
-            "because --reuse-preproc or --only-postproc flag has been passed.")
+            "because --skip-preproc flag has been passed.")
         return sample, flat, dark
 
     cores = config.func.cores
