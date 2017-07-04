@@ -41,8 +41,9 @@ def register_into(the_object, func=None, directory=None, package="core/filters",
 
     all_files = os.walk(directory)
 
-    # replace the / with . to match python package syntax
-    for root, dirs, files in all_files:
+    # sort by filename
+    for root, dirs, files in sorted(all_files, key=lambda file_tuple: file_tuple[2]):
+        # replace the / with . to match python package syntax
         package_dir = root[root.find(package):].replace('/', '.')
         if package_dir in all_ignores:
             continue
