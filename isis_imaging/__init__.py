@@ -36,7 +36,11 @@ from isis_imaging.core import parallel  # noqa: F401
 from isis_imaging.core import process_list  # noqa: F401
 from isis_imaging.core import tools  # noqa: F401
 
-# keep the gui in a separate package
-from isis_imaging import gui  # noqa: F401
-
 del absolute_import, division, print_function
+
+"""
+The gui package is not imported here, because it will pull in all of 
+PyQt packages, which we do not want when using only the CLI. This
+is both a speedup benefit and we do not have to deal if PyQt is missing 
+(like on SCARF) when not using the GUI.
+"""

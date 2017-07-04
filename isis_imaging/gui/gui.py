@@ -2,19 +2,20 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
-from isis_imaging.core.algorithms import registrator
 from PyQt5.Qt import QApplication
 
+from isis_imaging.core.algorithms import registrator
+from isis_imaging.core.algorithms.registrator.gui_registrator import gui_register
 from isis_imaging.gui.main_window.mw_view import MainWindowView
-
 
 def execute(config):
 
     # create the GUI event loop
-    qApp = QApplication(sys.argv)
-    aw = MainWindowView(config)
-    # register gui stuff into view
-    registrator.register_into(aw.menuFilters, func=registrator._gui)
-    aw.show()
+    q_application = QApplication(sys.argv)
+    application_window = MainWindowView(config)
 
-    return sys.exit(qApp.exec_())
+    # register gui part of algorithms into view
+    registrator.register_into(application_window.menuFilters, func=gui_register)
+    application_window.show()
+
+    return sys.exit(q_application.exec_())

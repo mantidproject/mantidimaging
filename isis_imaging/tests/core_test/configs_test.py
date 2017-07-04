@@ -7,7 +7,7 @@ import unittest
 
 import numpy.testing as npt
 
-from isis_imaging.core.algorithms import registrator
+from isis_imaging.core.algorithms.registrator import registrator
 from isis_imaging.core.configs.functional_config import FunctionalConfig
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
 

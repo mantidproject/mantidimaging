@@ -21,6 +21,7 @@ def inplace(func, i, **kwargs):
         - The data will be changed INPLACE inside the function being forwarded (the parameter function)
 
     You HAVE to be careful when using this, for example the func:
+
     def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
