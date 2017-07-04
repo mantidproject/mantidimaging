@@ -28,41 +28,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(main_window):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
-    from PyQt5 import Qt
-    dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
-    dialog.setWindowTitle("Circular Mask")
-
-    label_radius = Qt.QLabel("Radius")
-    radius_field = Qt.QDoubleSpinBox()
-    radius_field.setMinimum(0)
-    radius_field.setMaximum(1)
-    radius_field.setValue(0.95)
-
-    label_value = Qt.QLabel("Set to value")
-    value_field = Qt.QDoubleSpinBox()
-    value_field.setMinimum(-100000)
-    value_field.setMaximum(100000)
-    value_field.setValue(0)
-
-    dialog.formLayout.addRow(label_radius, radius_field)
-    dialog.formLayout.addRow(label_value, value_field)
-
-    def decorate_execute():
-        from functools import partial
-        return partial(
-            execute,
-            circular_mask_ratio=radius_field.value(),
-            circular_mask_value=value_field.value())
-
-    # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
-    return dialog
-
-
 def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
     """
     Execute the Circular Mask filter.

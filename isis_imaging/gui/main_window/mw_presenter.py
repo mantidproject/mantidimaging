@@ -68,7 +68,7 @@ class MainWindowPresenter(object):
         if not sample_path:
             return
 
-        stack = loader.load(
+        stack, _, _ = loader.load(
             sample_path,
             None,
             None,

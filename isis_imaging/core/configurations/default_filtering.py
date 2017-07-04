@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import value_scaling
-from isis_imaging.core.filters import (background_correction, contrast_normalisation,
+from isis_imaging.core.filters import (background_correction, roi_normalisation,
                                        crop_coords, cut_off, gaussian, median_filter,
                                        minus_log, outliers, rebin, rotate_stack,
                                        stripe_removal, circular_mask, clip_values, ring_removal)
@@ -40,7 +40,7 @@ def execute(config, sample, flat, dark):
         sample, flat, dark, cores=cores, chunksize=chunksize)
 
     # removes the contrast difference between the stack of images
-    sample = contrast_normalisation.execute(sample, air, cores, chunksize)
+    sample = roi_normalisation.execute(sample, air, cores, chunksize)
 
     # scale up the data to a nice int16 range while keeping the effects
     # from the flat/dark and air normalisations

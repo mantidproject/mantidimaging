@@ -25,7 +25,7 @@ from __future__ import (absolute_import, division, print_function)
 from . import background_correction  # noqa: F401, F403
 from . import circular_mask  # noqa: F401, F403
 from . import clip_values  # noqa: F401, F403
-from . import contrast_normalisation  # noqa: F401, F403
+from . import roi_normalisation  # noqa: F401, F403
 from . import crop_coords  # noqa: F401, F403
 from . import cut_off  # noqa: F401, F403
 from . import gaussian  # noqa: F401, F403

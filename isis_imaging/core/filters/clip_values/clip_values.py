@@ -4,7 +4,6 @@ import numpy as np
 
 from isis_imaging import helper as h
 
-
 def _cli_register(parser):
     parser.add_argument(
         "--clip-min",
@@ -23,37 +22,6 @@ def _cli_register(parser):
         "If not passed the minimum value in the volume will be taken")
 
     return parser
-
-
-def _gui_register(main_window):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
-    from PyQt5 import Qt
-    dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
-    dialog.setWindowTitle("Clip Values")
-
-    label_clip_min = Qt.QLabel("Clip Min")
-    label_clip_max = Qt.QLabel("Clip Max")
-    clip_min_field = Qt.QDoubleSpinBox()
-    clip_min_field.setDecimals(7)
-    clip_min_field.setMinimum(-1000000)
-    clip_max_field = Qt.QDoubleSpinBox()
-    clip_max_field.setDecimals(7)
-    clip_max_field.setMaximum(1000000)
-
-    dialog.formLayout.addRow(label_clip_min, clip_min_field)
-    dialog.formLayout.addRow(label_clip_max, clip_max_field)
-
-    def decorate_execute():
-        clip_min = clip_min_field.value()
-        clip_max = clip_max_field.value()
-        from functools import partial
-        return partial(execute, clip_min=clip_min, clip_max=clip_max)
-
-    # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
-    return dialog
 
 
 def execute(data, clip_min=None, clip_max=None):

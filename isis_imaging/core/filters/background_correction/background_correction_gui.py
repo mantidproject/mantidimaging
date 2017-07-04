@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 import os
 from functools import partial
 
@@ -18,7 +20,7 @@ def _gui_register(main_window):
 
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
-    dialog.setWindowTitle("Background Correction")
+    dialog.setWindowTitle(GUI_MENU_NAME)
 
     flatPath = Qt.QLineEdit()
     flatButton = Qt.QPushButton("Flat")

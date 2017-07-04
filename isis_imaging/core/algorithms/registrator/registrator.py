@@ -72,7 +72,7 @@ def do_importing(package_dir, register_function_name, extended_file_suffix, func
 
     :param extended_file_suffix: The suffix for the module in the extended search
 
-    :param func_to_do_registering: The actual function that will do the registering, and will accept the *args parameter
+    :param func_to_do_registering: The actual function that will do the registering, and will accept the object
 
     :param the_object: The object that the registering function will use to register the modules in.
     """
