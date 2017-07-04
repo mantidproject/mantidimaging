@@ -27,18 +27,18 @@ def _cli_register(parser):
 
 def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from gui.algorithm_dialog import AlgorithmDialog
+    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle("Clip Values")
 
-    label_clip_min = QtGui.QLabel("Clip Min")
-    label_clip_max = QtGui.QLabel("Clip Max")
-    clip_min_field = QtGui.QDoubleSpinBox()
+    label_clip_min = Qt.QLabel("Clip Min")
+    label_clip_max = Qt.QLabel("Clip Max")
+    clip_min_field = Qt.QDoubleSpinBox()
     clip_min_field.setDecimals(7)
     clip_min_field.setMinimum(-1000000)
-    clip_max_field = QtGui.QDoubleSpinBox()
+    clip_max_field = Qt.QDoubleSpinBox()
     clip_max_field.setDecimals(7)
     clip_max_field.setMaximum(1000000)
 

@@ -18,14 +18,14 @@ def _cli_register(parser):
 
 def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from gui.algorithm_dialog import AlgorithmDialog
+    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle("Cut Off")
 
-    label_radius = QtGui.QLabel("Threshold")
-    radius_field = QtGui.QDoubleSpinBox()
+    label_radius = Qt.QLabel("Threshold")
+    radius_field = Qt.QDoubleSpinBox()
     radius_field.setMinimum(0)
     radius_field.setMaximum(1)
     radius_field.setValue(0.95)

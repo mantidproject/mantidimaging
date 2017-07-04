@@ -56,44 +56,44 @@ def _cli_register(parser):
 
 def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from gui.algorithm_dialog import AlgorithmDialog
+    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle("Ring Removal")
 
-    label_x = QtGui.QLabel("Abcissa X")
-    x_field = QtGui.QSpinBox()
+    label_x = Qt.QLabel("Abcissa X")
+    x_field = Qt.QSpinBox()
     x_field.setMinimum(0)
     x_field.setMaximum(1000000)
 
-    label_y = QtGui.QLabel("Ordinate Y")
-    y_field = QtGui.QSpinBox()
+    label_y = Qt.QLabel("Ordinate Y")
+    y_field = Qt.QSpinBox()
     y_field.setMinimum(0)
     y_field.setMaximum(1000000)
 
-    label_thresh = QtGui.QLabel("Threshold")
-    thresh = QtGui.QDoubleSpinBox()
+    label_thresh = Qt.QLabel("Threshold")
+    thresh = Qt.QDoubleSpinBox()
     thresh.setMinimum(-1000000)
     thresh.setMaximum(1000000)
 
-    label_thresh_min = QtGui.QLabel("Threshold Min")
-    thresh_min = QtGui.QDoubleSpinBox()
+    label_thresh_min = Qt.QLabel("Threshold Min")
+    thresh_min = Qt.QDoubleSpinBox()
     thresh_min.setMinimum(-1000000)
     thresh_min.setMaximum(1000000)
 
-    label_thresh_max = QtGui.QLabel("Threshold Max")
-    thresh_max = QtGui.QDoubleSpinBox()
+    label_thresh_max = Qt.QLabel("Threshold Max")
+    thresh_max = Qt.QDoubleSpinBox()
     thresh_max.setMinimum(-1000000)
     thresh_max.setMaximum(1000000)
 
-    label_theta = QtGui.QLabel("Theta")
-    theta = QtGui.QSpinBox()
+    label_theta = Qt.QLabel("Theta")
+    theta = Qt.QSpinBox()
     theta.setMinimum(-1000)
     theta.setMaximum(1000)
 
-    label_rwidth = QtGui.QLabel("RWidth")
-    rwidth = QtGui.QSpinBox()
+    label_rwidth = Qt.QLabel("RWidth")
+    rwidth = Qt.QSpinBox()
     rwidth.setMinimum(-1000000)
     rwidth.setMaximum(1000000)
 

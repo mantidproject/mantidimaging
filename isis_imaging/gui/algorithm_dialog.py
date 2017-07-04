@@ -1,12 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt5 import QtGui
+from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from gui.main_window.mw_view import MainWindowView
+from isis_imaging.gui.main_window.mw_view import MainWindowView
 
 
-class AlgorithmDialog(QtGui.QDialog):
+class AlgorithmDialog(Qt.QDialog):
     def __init__(self, main_window, ui_file='gui/ui/alg_dialog.ui'):
         """
         This AlgorithmDialog sets up the backend for the Algorithm dialog handling.

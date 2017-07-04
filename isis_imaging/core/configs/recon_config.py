@@ -7,7 +7,7 @@ from argparse import RawTextHelpFormatter
 
 import numpy as np
 
-from isis_imaging.core.algorithms.registrator import registrator
+from isis_imaging.core.algorithms import registrator
 from isis_imaging.core.configs.functional_config import FunctionalConfig
 
 
@@ -29,7 +29,7 @@ def grab_full_config():
     parser = functional_args._setup_parser(parser)
 
     # setup args for the filters
-    registrator.register_into(parser)
+    registrator.register_into(parser, registrator.cli_register)
 
     # parse the real arguments
     args = parser.parse_args()
@@ -174,7 +174,7 @@ class ReconstructionConfig(object):
         parser = functional_args._setup_parser(parser)
 
         # setup args for the filters
-        registrator.register_into(parser)
+        registrator.register_into(parser, registrator.cli_register)
 
         # get the OS's temp directory
         with tempfile.NamedTemporaryFile() as f:

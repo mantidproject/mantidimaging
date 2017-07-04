@@ -16,7 +16,7 @@ def _cli_register(parser):
 
 def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from gui.algorithm_dialog import AlgorithmDialog
+    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle("Minus Log")

@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
-from .registrator import register_into # noqa: F401
-from .cli_registrator import cli_register
+from .registrator import register_into, do_importing  # noqa: F401
+from .cli_registrator import cli_register  # noqa: F401
 
 del absolute_import, division, print_function
 

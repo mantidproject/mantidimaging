@@ -35,20 +35,20 @@ def _cli_register(parser):
 
 def _gui_register(main_window):
     from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from gui.algorithm_dialog import AlgorithmDialog
+    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle("Median Filter")
 
-    label_size = QtGui.QLabel("Kernel Size")
-    size_field = QtGui.QSpinBox()
+    label_size = Qt.QLabel("Kernel Size")
+    size_field = Qt.QSpinBox()
     size_field.setMinimum(0)
     size_field.setMaximum(1000)
     size_field.setValue(3)
 
-    label_mode = QtGui.QLabel("Mode")
-    mode_field = QtGui.QComboBox()
+    label_mode = Qt.QLabel("Mode")
+    mode_field = Qt.QComboBox()
     mode_field.addItems(modes())
 
     dialog.formLayout.addRow(label_size, size_field)
