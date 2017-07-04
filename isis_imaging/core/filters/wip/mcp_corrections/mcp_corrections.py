@@ -13,14 +13,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(dialog):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
-    return dialog
-
-
 def fool_my_own_sanity_check(data):
     try:
         h.check_data_stack(data)

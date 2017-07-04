@@ -21,14 +21,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(dialog):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
-    return dialog
-
-
 def execute(data, air_region, cores=None, chunksize=None):
     """
     Normalise by beam intensity. This is not directly about proton
@@ -43,7 +35,7 @@ def execute(data, air_region, cores=None, chunksize=None):
 
     :param data: Sample data which is to be processed. Expected in radiograms
 
-    :param air_region: The order is - Left Top Right Bottom. The air region from which sums will be 
+    :param air_region: The order is - Left Top Right Bottom. The air region from which sums will be
                        calculated and all images will be normalised.
 
     :param cores: The number of cores that will be used to process the data.

@@ -14,21 +14,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(main_window):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-    from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
-    dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
-    dialog.setWindowTitle("Minus Log")
-
-    def decorate_execute():
-        return execute
-
-    # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
-    return dialog
-
-
 def execute(data, minus_log=True):
     """
     This filter should be used on transmission images (background corrected images).

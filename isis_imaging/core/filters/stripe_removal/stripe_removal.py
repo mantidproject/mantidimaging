@@ -43,15 +43,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(dialog):
-    # TODO will probably be best to separate into multiple algs
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
-    return dialog
-
-
 def methods():
     return [
         'wf', 'wavelet-fourier', 'ti', 'titarenko', 'sf', 'smoothing-filter'

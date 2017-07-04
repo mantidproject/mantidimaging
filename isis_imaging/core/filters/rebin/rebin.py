@@ -27,14 +27,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(dialog):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
-    return dialog
-
-
 def modes():
     return ['nearest', 'lanczos', 'bilinear', 'bicubic', 'cubic']
 

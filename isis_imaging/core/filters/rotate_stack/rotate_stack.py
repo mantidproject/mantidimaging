@@ -18,14 +18,6 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(dialog):
-    from isis_imaging.core.algorithms import gui_compile_ui as gcu
-
-    if dialog is None:
-        dialog = gcu.execute("gui/ui/alg_dialog.ui")
-    return dialog
-
-
 def _rotate_image_inplace(data, rotation=None):
     data[:, :] = np.rot90(data[:, :], rotation)
 
