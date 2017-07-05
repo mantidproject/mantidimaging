@@ -99,8 +99,7 @@ class MainWindowPresenter(object):
         overwrite = self.view.save_dialogue.overwrite()
         swap_axes = self.view.save_dialogue.swap_axes()
 
-        # rarely do you see code as ugly as this
-        self.active_stacks[s_uuid][1].widget().apply_to_data(
+        self.active_stacks[s_uuid].widget().apply_to_data(
             saver.save,
             output_dir=output_dir,
             swap_axes=swap_axes,
@@ -109,4 +108,4 @@ class MainWindowPresenter(object):
             indices=indices)
 
     def do_badly(self, stack_uuid, func):
-        self.active_stacks[stack_uuid][1].widget().apply_to_data(func)
+        self.active_stacks[stack_uuid].widget().apply_to_data(func)
