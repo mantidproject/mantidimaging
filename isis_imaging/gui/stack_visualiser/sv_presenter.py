@@ -1,11 +1,16 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt5.Qt import QWidget
+from enum import IntEnum
 
-from isis_imaging.gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
+from isis_imaging.gui.stack_visualiser.sv_model import \
+    ImgpyStackVisualiserModel
 
 
-class StackViewerPresenter(QWidget):
+class Notification(IntEnum):
+    RENAME_WINDOW_ACTION = 0
+
+
+class StackViewerPresenter(object):
     def __init__(self, view, data, axis):
         super(StackViewerPresenter, self).__init__()
         self.view = view
@@ -13,6 +18,23 @@ class StackViewerPresenter(QWidget):
         self.axis = axis
 
         self.model = ImgpyStackVisualiserModel()
+
+    def notify(self, signal):
+        # do some magical error message reusal
+        # try:
+        # except any error:
+        # show error message from the CORE, no errors will be written here!
+        try:
+            if signal == Notification.RENAME_WINDOW_ACTION:
+                self.rename_view_action()
+        except Exception as e:
+            self.show_error(e)
+            raise  # re-raise for full stack trace
+    def show_error(self, error):
+        print("Magic to be done here")
+
+    def rename_view_action(self):
+        self.view.get_user_input()
 
     def delete_data(self):
         del self.data
@@ -26,7 +48,6 @@ class StackViewerPresenter(QWidget):
             return self.data[index, :, :]
         elif axis == 1:
             return self.data[:, index, :]
-
         elif axis == 2:
             return self.data[:, :, index]
 

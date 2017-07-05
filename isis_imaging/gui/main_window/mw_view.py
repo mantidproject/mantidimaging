@@ -1,36 +1,39 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt5 import QtCore, Qt
-from PyQt5.QtCore import Qt as Qt_
+from PyQt5 import Qt, QtCore
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from isis_imaging.gui.main_window.mw_presenter import MainWindowPresenter
-from isis_imaging.gui.main_window.mw_presenter import Notification as PresNotification
-from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
 from isis_imaging.gui.main_window.load_dialog import MWLoadDialog
+from isis_imaging.gui.main_window.mw_presenter import \
+    Notification as PresNotification
+from isis_imaging.gui.main_window.mw_presenter import MainWindowPresenter
 from isis_imaging.gui.main_window.save_dialog import MWSaveDialog
+from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
 
 class MainWindowView(Qt.QMainWindow):
     def __init__(self, config):
-        super(Qt.QMainWindow, self).__init__()
+        super(MainWindowView, self).__init__()
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
 
         # connection of file menu TODO move to func
-        self.actionLoad.setShortcut('F2')
-        self.actionLoad.triggered.connect(self.show_load_dialogue)
-
-        self.actionSave.setShortcut('Ctrl+S')
-        self.actionSave.triggered.connect(self.show_save_dialogue)
-        # setting of shortcuts TODO move to func
-        self.actionExit.triggered.connect(Qt.qApp.quit)
-        self.actionExit.setShortcut('Ctrl+Q')
+        self.setup_shortcuts()
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("ISIS Imaging")
 
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
+
+    def setup_shortcuts(self):
+        self.actionLoad.setShortcut('F1')
+        self.actionLoad.triggered.connect(self.show_load_dialogue)
+
+        self.actionSave.setShortcut('Ctrl+S')
+        self.actionSave.triggered.connect(self.show_save_dialogue)
+
+        self.actionExit.setShortcut('Ctrl+Q')
+        self.actionExit.triggered.connect(Qt.qApp.quit)
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
@@ -56,10 +59,14 @@ class MainWindowView(Qt.QMainWindow):
     def create_stack_window(self,
                             stack,
                             title,
-                            position=Qt_.BottomDockWidgetArea,
+                            position=QtCore.Qt.TopDockWidgetArea,
                             floating=False):
         dock_widget = Qt.QDockWidget(title, self)
 
+        # this puts the new stack window into the centre of the window
+        self.setCentralWidget(dock_widget)
+
+        # add the dock widget into the main window
         self.addDockWidget(position, dock_widget)
 
         # we can get the stack visualiser widget with dock_widget.widget

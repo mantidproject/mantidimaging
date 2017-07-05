@@ -4,17 +4,17 @@ from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
-from PyQt5 import Qt as MainQt
-from PyQt5.QtCore import Qt
+from PyQt5 import Qt, QtCore
 
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
+from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 
 
-class StackVisualiserView(MainQt.QMainWindow):
+class StackVisualiserView(Qt.QMainWindow):
     def __init__(self,
                  parent,
-                 dock_parent,
+                 dock,
                  data,
                  axis=0,
                  cmap='Greys_r',
@@ -22,12 +22,21 @@ class StackVisualiserView(MainQt.QMainWindow):
                  **kwargs):
 
         # enforce not showing a single image
-        assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(data.ndim)
+        assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
+            data.ndim)
 
+        # We set the main window as the parent, the effect is the same as having no parent, the window
+        # will be inside the QDockWidget. If the dock is set as a parent the window will be an independent
+        # floating window
         super(StackVisualiserView, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/stack.ui', self)
 
-        dock_parent.closeEvent = self.closeEvent
+        # capture the QDockWidget reference so that we can access the Qt widget and change things like the title
+        self.dock = dock
+
+        # Swap out the dock close event with our own provided close event. This is needed to manually
+        # delete the data reference, otherwise it is left hanging in the presenter
+        dock.closeEvent = self.closeEvent
 
         # View doesn't take any ownership of the data!
         self.presenter = StackViewerPresenter(self, data, axis)
@@ -40,7 +49,7 @@ class StackVisualiserView(MainQt.QMainWindow):
         self.image_axis = self.mplfig.add_subplot(111)
 
         self.canvas = FigureCanvasQTAgg(self.mplfig)
-        self.canvas.rectanglecolor = Qt.yellow
+        self.canvas.rectanglecolor = QtCore.Qt.yellow
         self.canvas.setParent(self)
         self.previous_region = None
 
@@ -62,13 +71,24 @@ class StackVisualiserView(MainQt.QMainWindow):
 
         # how to do contrast adjustment
         # self.change_value_rangle(0, 16000)
-
+        self.setup_shortcuts()
         # not particularly interested in that for now
-        # self.fig.canvas.mpl_connect('key_press_event', self.toggle_selector)
+        self.canvas.mpl_connect('key_press_event', self.toggle_selector)
 
         # define slider
         # add the axis for the slider
-        # self.slider_axis = self.axes[1]1
+        # self.slider_axis = self.axes[1]
+
+    def get_user_input(self):
+        text, okPressed = Qt.QInputDialog.getText(self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
+
+        if okPressed:
+            self.dock.setWindowTitle(text)
+
+    def setup_shortcuts(self):
+        self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self)
+        self.rename_shortcut.activated.connect(
+            lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW_ACTION))
 
     def apply_to_data(self, func, *args, **kwargs):
         # TODO maybe we should separate out actions on data / GUI stuff
@@ -85,7 +105,7 @@ class StackVisualiserView(MainQt.QMainWindow):
         self.parent().setFloating(False)
         self.window().remove_stack(self)  # refers to MainWindow
         self.deleteLater()
-        self.parent().deleteLater()
+        self.parent().deleteLater() # refers to the QDockWidget within which the stack is contained
 
     def createRectangleSelector(self, axis, button=1):
         # drawtype is 'box' or 'line' or 'none', we could use 'line' to show COR

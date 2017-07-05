@@ -23,7 +23,7 @@ class MainWindowPresenter(object):
         self.active_stacks = {}
 
     def notify(self, signal):
-        # do some magical error message reusal
+        # do some magical error message reusage
         # try:
         # except any error:
         # show error message from the CORE, no errors will be written here!
@@ -45,10 +45,11 @@ class MainWindowPresenter(object):
 
     def stack_list(self):
         stacks = []
-        for stack_uuid, val in self.active_stacks.iteritems():
+        for stack_uuid, widget in self.active_stacks.iteritems():
+            # ask the widget for its current title
+            current_name = widget.windowTitle()
             # append the UUID and user friendly name
-            user_friendly_name = val[0]
-            stacks.append((stack_uuid, user_friendly_name))
+            stacks.append((stack_uuid, current_name))
 
         # sort by user friendly name
         return sorted(stacks, key=lambda x: x[1])
@@ -88,7 +89,7 @@ class MainWindowPresenter(object):
         stackvis.parallel_load = parallel_load
         stackvis.uuid = uuid.uuid1()
 
-        self.active_stacks[stackvis.uuid] = (title, dock_widget)
+        self.active_stacks[stackvis.uuid] = dock_widget
         print("Active stacks", self.active_stacks)
 
     def save(self, indices=None):

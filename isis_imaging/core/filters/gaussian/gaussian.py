@@ -79,7 +79,7 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
     isis_imaging -i /some/data --gaussian-size 3
                    --gaussian-mode 'nearest' --gaussian-order 1
 
-    [Full reference](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html)
+    [Full ref](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html)
     """
     h.check_data_stack(data)
 
