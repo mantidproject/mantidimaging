@@ -493,7 +493,7 @@ class IOTest(unittest.TestCase):
         self.assertRaises(ValueError, loader.load, "/some/path",
                           file_names=["/somefile"], in_format='txt')
 
-    def test_read_in_shape(self):
+    def test_read_in_shape_from_config(self):
         images = th.gen_img_shared_array_with_val(42.)
 
         expected_shape = images.shape
@@ -510,7 +510,7 @@ class IOTest(unittest.TestCase):
             config.func.in_format = saver._out_format
             saver.save_preproc_images(images)
 
-            shape = loader.read_in_shape(config)
+            shape = loader.read_in_shape_from_config(config)
 
             self.assertEqual(shape, expected_shape)
 

@@ -8,7 +8,7 @@ from isis_imaging.core.io import loader
 def _split_data(config):
     recon = config.func.reconstruction if config.func.reconstruction else False
 
-    data_shape = loader.read_in_shape(config)
+    data_shape = loader.read_in_shape_from_config(config)
 
     split, step = shape_splitter.execute(data_shape, 0, config.func.data_dtype,
                                          config.func.max_memory,

@@ -14,7 +14,7 @@ from psutil import virtual_memory
 
 def _print_expected_memory_usage(data_shape, dtype):
     h.tomo_print_note("Predicted memory usage for data: " +
-                      str(size_calculator.full_size(data_shape, 0, dtype)) +
+                      str(size_calculator.full_size_MB(data_shape, 0, dtype)) +
                       " MB, Total available on system: " + str(virtual_memory().total / 1024 / 1024) + " MB")
 
 
@@ -38,7 +38,7 @@ def initialise_run(config):
     readme.begin(config.cmd_line, config)
     h.set_readme(readme)
 
-    data_shape = loader.read_in_shape(config)
+    data_shape = loader.read_in_shape_from_config(config)
 
     _print_expected_memory_usage(data_shape, config.func.data_dtype)
     return saver_class, readme, tool

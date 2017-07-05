@@ -1,6 +1,18 @@
 from __future__ import absolute_import, division, print_function
 
 
+def to_KB(size, dtype=None):
+    return to_bytes(to_bits(size, dtype)) / 1024
+
+
+def to_MB(size, dtype=None):
+    return to_KB(size, dtype) / 1024
+
+
+def to_GB(size, dtype=None):
+    return to_MB(size, dtype) / 1024
+
+
 def single_size(shape=None, axis=None):
     """
     Size of a single unit across the axis we are traversing.
@@ -28,9 +40,22 @@ def _determine_dtype_size(dtype=None):
         return 32
     elif '64' in str(dtype):
         return 64
+    return 1
 
 
-def full_size(shape=None, axis=None, dtype=None):
+def to_bytes(bits):
+    return bits / 8
+
+
+def to_bits(size, dtype=None):
+    if dtype:
+        mul = _determine_dtype_size(dtype)
+    else:
+        mul = 1
+    return size * mul
+
+
+def full_size(shape=None, axis=None):
     """
     Compute the full size of the data and return in Megabytes.
 
@@ -40,21 +65,12 @@ def full_size(shape=None, axis=None, dtype=None):
 
     :param dtype: The data type
 
-
     :returns: The size as a float in Megabytes
 
     """
-    mul = _determine_dtype_size(dtype)
-
     single = single_size(shape, axis)
+    return single * shape[axis]
 
-    # get the bits
-    single_bits = single * mul
 
-    # get the bytes
-    single_bytes = single_bits / 8
-
-    full_size_bytes = shape[axis] * single_bytes
-
-    # convert to MB
-    return full_size_bytes / 1024 / 1024
+def full_size_MB(shape=None, axis=None, dtype=None):
+    return to_MB(full_size(shape, axis), dtype)

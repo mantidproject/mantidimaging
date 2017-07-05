@@ -16,7 +16,7 @@ class SizeCalculatorTest(unittest.TestCase):
         axis = 0
         dtype = '32'
 
-        res = size_calculator.full_size(shape, axis, dtype)
+        res = size_calculator.full_size_MB(shape, axis, dtype)
 
         self.assertAlmostEqual(res, 1995.2508, 4)
 
@@ -27,6 +27,7 @@ class SizeCalculatorTest(unittest.TestCase):
         self.assertEqual(size_calculator._determine_dtype_size('16'), 16)
         self.assertEqual(size_calculator._determine_dtype_size('32'), 32)
         self.assertEqual(size_calculator._determine_dtype_size('64'), 64)
+        self.assertEqual(size_calculator._determine_dtype_size(), 1)
 
         self.assertEqual(size_calculator._determine_dtype_size(np.float16), 16)
         self.assertEqual(size_calculator._determine_dtype_size(np.float32), 32)

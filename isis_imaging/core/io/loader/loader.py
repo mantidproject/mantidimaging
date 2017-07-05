@@ -56,7 +56,7 @@ def supported_formats():
 
     try:
         from .imports import import_pyfits
-        pyfits = import_pyfits()  # noqa0: F841
+        pyfits = import_pyfits()  # noqa: F841
         pyfits_available = True
     except ImportError:
         pyfits_available = False
@@ -69,7 +69,15 @@ def supported_formats():
     return avail_list
 
 
-def read_in_shape(config):
+def read_in_shape(input_path, in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32, cores=None, chunksize=None):
+    input_file_names = get_file_names(input_path, in_format)
+    sample, _, _ = load(input_path, None, None, in_format,
+                        data_dtype, cores, chunksize, indices=[0, 1, 1])
+    # construct and return the new shape
+    return (len(input_file_names),) + sample.shape[1:]
+
+
+def read_in_shape_from_config(config):
     """
     This function is intended for internal usage.
 
@@ -84,19 +92,12 @@ def read_in_shape(config):
     :returns: The full shape of the images in the specified directory in a tuple of (Length, X, Y)
     """
     input_path = config.func.input_path
-    img_format = config.func.in_format
+    in_format = config.func.in_format
     data_dtype = config.func.data_dtype
     cores = config.func.cores
     chunksize = config.func.chunksize
-    parallel_load = config.func.parallel_load
 
-    input_file_names = get_file_names(input_path, img_format)
-    sample, _, _ = load(input_path, None, None,
-                        img_format, data_dtype, cores, chunksize,
-                        parallel_load, indices=[0, 1, 1])
-
-    # construct and return the new shape
-    return (len(input_file_names),) + sample.shape[1:]
+    return read_in_shape(input_path, in_format, data_dtype, cores, chunksize)
 
 
 def load_from_config(config):

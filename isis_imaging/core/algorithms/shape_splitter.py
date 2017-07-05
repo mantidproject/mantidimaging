@@ -55,7 +55,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
 
     # decorate the functions to avoid repeating parameters
     calculate_full_size = partial(
-        size_calculator.full_size, axis=axis, dtype=dtype)
+        size_calculator.full_size_MB, axis=axis, dtype=dtype)
 
     calculate_ratio = partial(_calculate_ratio, max_memory=max_memory,
                               reconstruction=reconstruction)

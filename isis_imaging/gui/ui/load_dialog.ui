@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>372</width>
-    <height>251</height>
+    <height>182</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>200</y>
+     <y>140</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -68,7 +68,7 @@
     </sizepolicy>
    </property>
    <property name="maximum">
-    <number>9999999</number>
+    <number>0</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="index_end">
@@ -145,63 +145,43 @@
     <string>Step</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="flatPath">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>120</y>
-     <width>231</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="darkPath">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>160</y>
-     <width>231</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="flatButton">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>120</y>
-     <width>99</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Flat</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="darkButton">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>160</y>
-     <width>99</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Dark</string>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="parallelLoad">
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>200</y>
+     <y>140</y>
      <width>121</width>
      <height>30</height>
     </rect>
    </property>
    <property name="text">
     <string>Parallel Load</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>114</y>
+     <width>130</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Expected memory:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="expectedMemoryLabel">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>114</y>
+     <width>91</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>0.0 MB</string>
    </property>
   </widget>
  </widget>

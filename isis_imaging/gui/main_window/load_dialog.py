@@ -1,12 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
+import os
+
 from PyQt5 import Qt
 
-from isis_imaging.core.algorithms import gui_compile_ui
-
-from isis_imaging.core.io.utility import get_file_names, get_file_extension
-
-import os
+from isis_imaging.core.algorithms import gui_compile_ui, size_calculator
+from isis_imaging.core.io.loader import read_in_shape
+from isis_imaging.core.io.utility import get_file_extension
 
 
 def select_file(field, caption):
@@ -35,42 +35,50 @@ class MWLoadDialog(Qt.QDialog):
         super(MWLoadDialog, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/load_dialog.ui', self)
 
-        # TODO is there a way to do this only when ACCEPTED
-        # open file path dialogue
         self.sampleButton.clicked.connect(
-            lambda: self.update_indices(select_file(self.samplePath, "Sample")))
+            lambda: self.update_dialogue(select_file(self.samplePath, "Sample")))
 
-        self.flatButton.clicked.connect(
-            lambda: select_file(self.flatPath, "Flat"))
-
-        self.darkButton.clicked.connect(
-            lambda: select_file(self.darkPath, "Dark"))
+        # connect the calculation of expected memory to spinboxes
+        self.index_start.valueChanged.connect(self.update_expected_memory)
+        self.index_end.valueChanged.connect(self.update_expected_memory)
+        self.index_step.valueChanged.connect(self.update_expected_memory)
 
         # if accepted load the stack
         self.accepted.connect(parent.execute_load)
         self.image_format = ''
+        self.single_mem = 0
 
-    def update_indices(self, select_file_successful):
-        """
-        :param select_file_successful: The result from the select_file function
-        """
+    def update_dialogue(self, select_file_successful):
         if not select_file_successful:
             return False
 
         self.image_format = get_file_extension(str(self.samplePath.text()))
-        image_files = get_file_names(self.sample_path(), self.image_format)
+        shape = read_in_shape(self.sample_path(), self.image_format)
+        self.single_mem = size_calculator.to_MB(
+            size_calculator.single_size(shape, axis=0), dtype='32')
+        self.update_indices(shape[0])
+        self.update_expected_memory()
 
-        # cap the end value FIRST, otherwise setValue might fail if the
-        # previous max val is smaller
-        self.index_end.setMaximum(len(image_files))
-        self.index_end.setValue(len(image_files))
+    def update_indices(self, number_of_images):
+        """
+        :param number_of_images: Number of images that will be loaded in from the current selection
+        """
+        # cap the end value FIRST, otherwise setValue might fail if the previous max val is smaller
+        self.index_end.setMaximum(number_of_images)
+        self.index_end.setValue(number_of_images)
 
         # cap the start value to be end - 1
-        self.index_start.setMaximum(len(image_files) - 1)
+        self.index_start.setMaximum(number_of_images - 1)
 
         # enforce the maximum step
-        self.index_step.setMaximum(len(image_files))
-        self.index_step.setValue(len(image_files) / 10)
+        self.index_step.setMaximum(number_of_images)
+        self.index_step.setValue(number_of_images / 10)
+
+    def update_expected_memory(self):
+        exp_mem = self.single_mem * \
+            ((self.index_end.value() - self.index_start.value()) / self.index_step.value())
+        # we also need to account for the step
+        self.expectedMemoryLabel.setText("{} MB".format(round(exp_mem, 1)))
 
     def load_path(self):
         return os.path.basename(str(self.samplePath.text()))
