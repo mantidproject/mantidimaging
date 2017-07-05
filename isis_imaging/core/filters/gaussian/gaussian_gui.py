@@ -5,6 +5,7 @@ from . import gaussian
 
 GUI_MENU_NAME = "Gaussian Filter"
 
+
 def _gui_register(main_window):
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
@@ -32,7 +33,10 @@ def _gui_register(main_window):
     def decorate_execute():
         from functools import partial
         return partial(
-            gaussian.execute, size=size_field.value(), mode=mode_field.currentText())
+            gaussian.execute,
+            size=size_field.value(),
+            mode=mode_field.currentText(),
+            order=order_field.value())
 
     # replace dialog function with this one
     dialog.decorate_execute = decorate_execute

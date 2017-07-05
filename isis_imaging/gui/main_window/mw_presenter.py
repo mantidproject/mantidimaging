@@ -59,8 +59,6 @@ class MainWindowPresenter(object):
 
     def load_stack(self):
         sample_path = self.view.load_dialogue.sample_path()
-        flat_path = self.view.load_dialogue.flat_path()
-        dark_path = self.view.load_dialogue.dark_path()
         image_format = self.view.load_dialogue.image_format
         parallel_load = self.view.load_dialogue.parallel_load()
         indices = self.view.load_dialogue.indices()
@@ -86,8 +84,6 @@ class MainWindowPresenter(object):
         # add information to qdockwidget or the stack window?
         # currently added to the qdockwidget
         stackvis.sample_path = sample_path
-        stackvis.flat_path = flat_path
-        stackvis.dark_path = dark_path
         stackvis.image_format = image_format
         stackvis.parallel_load = parallel_load
         stackvis.uuid = uuid.uuid1()

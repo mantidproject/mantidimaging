@@ -75,6 +75,7 @@ class MWLoadDialog(Qt.QDialog):
         self.index_step.setValue(number_of_images / 10)
 
     def update_expected_memory(self):
+        # TODO maybe refactor the number of images calculation to size_calculator if it's needed elsewhere
         exp_mem = self.single_mem * \
             ((self.index_end.value() - self.index_start.value()) / self.index_step.value())
         # we also need to account for the step
@@ -88,18 +89,6 @@ class MWLoadDialog(Qt.QDialog):
         :return: The directory of the path as a Python string
         """
         return os.path.dirname(str(self.samplePath.text()))
-
-    def flat_path(self):
-        """
-        :return: The directory of the path as a Python string
-        """
-        return os.path.dirname(str(self.flatPath.text()))
-
-    def dark_path(self):
-        """
-        :return: The directory of the path as a Python string
-        """
-        return os.path.dirname(str(self.darkPath.text()))
 
     def parallel_load(self):
         """

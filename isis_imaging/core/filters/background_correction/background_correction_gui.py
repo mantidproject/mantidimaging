@@ -34,7 +34,6 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(darkPath, darkButton)
 
     def decorate_execute():
-
         flat_path = str(flatPath.text())
         dark_path = str(darkPath.text())
         flat_extension = io.utility.get_file_extension(flat_path)
@@ -43,8 +42,11 @@ def _gui_register(main_window):
         flat_dir = os.path.dirname(flat_path)
         dark_dir = os.path.dirname(dark_path)
 
-        flat = (io.loader.load(flat_dir, in_format=flat_extension)).mean(axis=0)
-        dark = (io.loader.load(dark_dir, in_format=dark_extension)).mean(axis=0)
+        flat, _, _ = io.loader.load(flat_dir, in_format=flat_extension)
+        flat = flat.mean(axis=0)
+
+        dark, _, _ = io.loader.load(dark_dir, in_format=dark_extension)
+        dark = dark.mean(axis=0)
 
         par = partial(background_correction.execute, flat=flat, dark=dark)
 
