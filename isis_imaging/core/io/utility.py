@@ -4,6 +4,8 @@ import glob
 import os
 import re
 
+DEFAULT_IO_FILE_FORMAT = 'tif'
+
 
 def get_file_extension(file):
     """

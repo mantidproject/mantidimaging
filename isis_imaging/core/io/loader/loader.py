@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from isis_imaging import helper as h
-from isis_imaging.core.io.utility import get_file_names
+from isis_imaging.core.io.utility import get_file_names, DEFAULT_IO_FILE_FORMAT
 
 from . import img_loader, stack_loader
 
@@ -41,7 +41,7 @@ def _imread(filename):
 
 
 def supported_formats():
-    # ignore errors for unused import (F401), we are only checking availability
+    # ignore errors for unused import/variable, we are only checking availability
     try:
         import h5py  # noqa: F401
         h5nxs_available = True
@@ -54,9 +54,17 @@ def supported_formats():
     except ImportError:
         skio_available = False
 
+    try:
+        from .imports import import_pyfits
+        pyfits = import_pyfits()  # noqa0: F841
+        pyfits_available = True
+    except ImportError:
+        pyfits_available = False
+
     avail_list = \
         (['nxs'] if h5nxs_available else []) + \
-        (['fits', 'fit', 'tif', 'tiff', 'png', 'jpg'] if skio_available else [])
+        (['fits', 'fit'] if pyfits_available else []) + \
+        (['tif', 'tiff', 'png', 'jpg'] if skio_available else [])
 
     return avail_list
 
@@ -120,7 +128,7 @@ def load_from_config(config):
 def load(input_path,
          input_path_flat=None,
          input_path_dark=None,
-         in_format='tif',
+         in_format=DEFAULT_IO_FILE_FORMAT,
          dtype=np.float32,
          cores=None,
          chunksize=None,

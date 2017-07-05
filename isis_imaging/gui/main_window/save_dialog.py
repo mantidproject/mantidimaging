@@ -4,6 +4,7 @@ from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.core.io.loader import supported_formats
+from isis_imaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
 
 
 def select_directory(field, caption):
@@ -27,11 +28,12 @@ class MWSaveDialog(Qt.QDialog):
         self.buttonBox.button(Qt.QDialogButtonBox.SaveAll).clicked.connect(
             self.save_all)
 
+        # dynamically add all the supported formats
         formats = supported_formats()
         self.formats.addItems(formats)
 
         # set the default to tiff
-        self.formats.setCurrentIndex(formats.index('tiff'))
+        self.formats.setCurrentIndex(formats.index(DEFAULT_IO_FILE_FORMAT))
 
         if stack_list:  # we will just show an empty drop down if no stacks
             self.stack_uuids, user_friendly_names = zip(*stack_list)

@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
+from isis_imaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
+
 
 class FunctionalConfig(object):
     """
@@ -28,11 +30,11 @@ class FunctionalConfig(object):
         self.input_path = None
         self.input_path_flat = None
         self.input_path_dark = None
-        self.in_format = 'tif'
+        self.in_format = DEFAULT_IO_FILE_FORMAT
         self.construct_sinograms = False
 
         self.output_path = None
-        self.out_format = 'tif'
+        self.out_format = DEFAULT_IO_FILE_FORMAT
         self.out_slices_prefix = 'recon_slice'
         self.out_horiz_slices_prefix = 'recon_horiz'
         self.out_horiz_slices_subdir = 'horiz_slices'

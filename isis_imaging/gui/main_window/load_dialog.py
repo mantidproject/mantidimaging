@@ -10,13 +10,24 @@ import os
 
 
 def select_file(field, caption):
+    """
+    :param field: The field in which the result will be saved
+    :param caption: Title of the file browser window that will be opened
+    :return: True: If a file has been selected, False otherwise
+    """
     assert isinstance(
         field, Qt.QLineEdit
     ), "The passed object is of type {0}. This function only works with QLineEdit".format(
         type(field))
 
+    selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
     # open file dialogue and set the text if file is selected
-    field.setText(Qt.QFileDialog.getOpenFileName(caption=caption)[0])
+    if selected_file:
+        field.setText(selected_file)
+        return True
+
+    # no file has been selected
+    return False
 
 
 class MWLoadDialog(Qt.QDialog):
@@ -24,6 +35,7 @@ class MWLoadDialog(Qt.QDialog):
         super(MWLoadDialog, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/load_dialog.ui', self)
 
+        # TODO is there a way to do this only when ACCEPTED
         # open file path dialogue
         self.sampleButton.clicked.connect(
             lambda: self.update_indices(select_file(self.samplePath, "Sample")))
@@ -38,10 +50,13 @@ class MWLoadDialog(Qt.QDialog):
         self.accepted.connect(parent.execute_load)
         self.image_format = ''
 
-    def update_indices(self, select_file_result):
+    def update_indices(self, select_file_successful):
         """
-        :param select_file_result: Will be None, because it contains the return of the nested function select_file
+        :param select_file_successful: The result from the select_file function
         """
+        if not select_file_successful:
+            return False
+
         self.image_format = get_file_extension(str(self.samplePath.text()))
         image_files = get_file_names(self.sample_path(), self.image_format)
 

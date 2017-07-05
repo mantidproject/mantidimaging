@@ -1,14 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
-from matplotlib.colorbar import ColorbarBase
+from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
+                                                NavigationToolbar2QT)
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
-from PyQt5 import QtCore, QtGui, uic
-from PyQt5.QtCore import Qt
 from PyQt5 import Qt as MainQt
+from PyQt5.QtCore import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
@@ -24,16 +21,12 @@ class StackVisualiserView(MainQt.QMainWindow):
                  block=False,
                  **kwargs):
 
-        # enfornce not showing a single image
-        assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
-            data.ndim)
+        # enforce not showing a single image
+        assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(data.ndim)
 
         super(StackVisualiserView, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/stack.ui', self)
 
-        # black magic to swap out the closeEvent, but still keep the old one
-        # does that mean that the dock_parent's close event is never called?
-        # could this leak memory?? TODO FIXME
         dock_parent.closeEvent = self.closeEvent
 
         # View doesn't take any ownership of the data!
@@ -75,7 +68,7 @@ class StackVisualiserView(MainQt.QMainWindow):
 
         # define slider
         # add the axis for the slider
-        # self.slider_axis = self.axes[1]
+        # self.slider_axis = self.axes[1]1
 
     def apply_to_data(self, func, *args, **kwargs):
         # TODO maybe we should separate out actions on data / GUI stuff
@@ -88,7 +81,7 @@ class StackVisualiserView(MainQt.QMainWindow):
 
         # setting floating to false makes window() to return the MainWindow
         # because the window will be docked in, however we delete it
-        # immediatelly after so no visible change occurs
+        # immediately after so no visible change occurs
         self.parent().setFloating(False)
         self.window().remove_stack(self)  # refers to MainWindow
         self.deleteLater()

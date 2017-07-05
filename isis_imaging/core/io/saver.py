@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 from isis_imaging import helper as h
-
+from .utility import DEFAULT_IO_FILE_FORMAT
 
 def write_fits(data, filename, overwrite=False):
     from isis_imaging.core.io.loader.imports import import_pyfits
@@ -45,7 +45,7 @@ def save(data,
          output_dir,
          name_prefix='image',
          swap_axes=False,
-         out_format='tif',
+         out_format=DEFAULT_IO_FILE_FORMAT,
          overwrite_all=False,
          custom_idx=None,
          zfill_len=6,
