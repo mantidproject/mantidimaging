@@ -82,8 +82,8 @@ class MainWindowPresenter(object):
         # from inside the stack visualiser class
         stackvis = dock_widget.widget()
 
-        # add information to qdockwidget or the stack window?
-        # currently added to the qdockwidget
+        # add information to QDockWidget or the stack window?
+        # currently added to the QDockWidget
         stackvis.sample_path = sample_path
         stackvis.image_format = image_format
         stackvis.parallel_load = parallel_load
