@@ -9,6 +9,7 @@ from PyQt5 import Qt, QtCore
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
 from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
+from isis_imaging.gui.stack_visualiser import sv_histogram
 
 
 class StackVisualiserView(Qt.QMainWindow):
@@ -38,12 +39,8 @@ class StackVisualiserView(Qt.QMainWindow):
         # delete the data reference, otherwise it is left hanging in the presenter
         dock.closeEvent = self.closeEvent
 
-        # View doesn't take any ownership of the data!
+        # View doesn't take ownership of the data!
         self.presenter = StackViewerPresenter(self, data, axis)
-
-        self.axis = axis
-        self.cmap = cmap
-        self.block = block
 
         self.mplfig = Figure()
         self.image_axis = self.mplfig.add_subplot(111)
@@ -57,38 +54,37 @@ class StackVisualiserView(Qt.QMainWindow):
             self.canvas, self, coordinates=True)
 
         self.slider_axis = self.mplfig.add_axes(
-            [0.25, 0.01, 0.5, 0.03], axisbg='lightgoldenrodyellow')
+            [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
 
         # initialise the slider
-        self.slider = self.initialiseSlider(self.slider_axis,
-                                            data.shape[self.axis] - 1)
+        self.slider = self.create_slider(self.slider_axis,
+                                         data.shape[axis] - 1)
         self.image = self.image_axis.imshow(
             self.presenter.get_image(0), cmap=cmap, **kwargs)
-        self.rectangle = self.createRectangleSelector(self.image_axis, 1)
+        self.rectangle = self.create_rectangle_selector(self.image_axis, 1)
 
         self.mplvl.addWidget(self.toolbar)
         self.mplvl.addWidget(self.canvas)
 
-        # how to do contrast adjustment
-        # self.change_value_rangle(0, 16000)
         self.setup_shortcuts()
-        # not particularly interested in that for now
-        self.canvas.mpl_connect('key_press_event', self.toggle_selector)
 
-        # define slider
-        # add the axis for the slider
-        # self.slider_axis = self.axes[1]
 
-    def get_user_input(self):
+    def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
 
         if okPressed:
             self.dock.setWindowTitle(text)
 
     def setup_shortcuts(self):
-        self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self)
+        self.histogram_shortcut = Qt.QShortcut(Qt.QKeySequence("Shift+C"), self.dock)
+        self.histogram_shortcut.activated.connect(lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
+
+        self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
         self.rename_shortcut.activated.connect(
-            lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW_ACTION))
+            lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW))
+
+        # doesn't work, the pressing the key doesn't seem to call the function
+        # self.canvas.mpl_connect('key_press_event', self.toggle_selector)
 
     def apply_to_data(self, func, *args, **kwargs):
         # TODO maybe we should separate out actions on data / GUI stuff
@@ -107,16 +103,33 @@ class StackVisualiserView(Qt.QMainWindow):
         self.deleteLater()
         self.parent().deleteLater() # refers to the QDockWidget within which the stack is contained
 
-    def createRectangleSelector(self, axis, button=1):
+    def create_rectangle_selector(self, axis, button=1):
         # drawtype is 'box' or 'line' or 'none', we could use 'line' to show COR
         return RectangleSelector(
             axis,
             self.line_select_callback,
             drawtype='box',
             useblit=False,
-            button=[1, 3],  # don't use middle button
+            button=[1],  # don't use middle button
             spancoords='pixels',
             interactive=True)
+
+    def create_slider(self, slider_axis, length):
+        slider = Slider(
+            slider_axis, 'Slices', 0, length, valinit=0, valfmt='%i')
+
+        slider.on_changed(self.show_current_image)
+        return slider
+
+    def toggle_selector(self, event):
+        print(' Key pressed.')
+        if event.key in ['Q', 'q'] and self.rectangle.active:
+            print(' RectangleSelector deactivated.')
+            self.rectangle.set_active(False)
+        if event.key in ['A', 'a'] and not self.rectangle.active:
+            print(' RectangleSelector activated.')
+            self.rectangle.set_active(True)
+
 
     def line_select_callback(self, eclick, erelease):
         'eclick and erelease are the press and release events'
@@ -129,39 +142,35 @@ class StackVisualiserView(Qt.QMainWindow):
         region = "%i %i %i %i" % (x0, y0, x1, y1)
         print(region)
 
-    def update_current_image(self, val=None):
+    def current_index(self):
         """
-        If the name of this is changed to just update,
-        it causes an internal error with the matplotlib backend implementation!
-
-        :param val: Not used, but cannot be removed because slider.on_changed passes in a param
-                    ^ I guess we can actually use the val instead?
+        :return: Current selected index as integer
         """
-        ind = int(self.slider.val)
+        return int(self.slider.val)
 
-        self.image.set_data(self.presenter.get_image(ind))
+    def current_image(self):
+        """
+        :return: The currently visualised image
+        """
+        return self.presenter.get_image(self.current_index())
 
-    def change_value_rangle(self, low, high):
+    def show_histogram_of_current_image(self):
+        current_image = self.current_image()
+        import random
+        # if random.random() <= 0.5:
+        #     sv_histogram.show(current_image)
+        # else:
+        sv_histogram.show_transparent(current_image)
+
+    def show_current_image(self, val=None):
+        """
+        :param val: Unused, but required so that the function has the same signature as the expected one
+        """
+        self.image.set_data(self.current_image())
+
+    def change_value_range(self, low, high):
         self.image.set_clim((low, high))
 
-    def toggle_selector(self, event):
-        print(' Key pressed.')
-        if event.key in ['Q', 'q'] and self.rectangle.active:
-            print(' RectangleSelector deactivated.')
-            self.rectangle.set_active(False)
-        if event.key in ['A', 'a'] and not self.rectangle.active:
-            print(' RectangleSelector activated.')
-            self.rectangle.set_active(True)
-
-    def initialiseSlider(self, slider_axis, length):
-        # axcolor = 'lightgoldenrodyellow'
-
-        slider = Slider(
-            slider_axis, 'Slices', 0, length, valinit=0, valfmt='%i')
-
-        # Change to on_changed(lambda x: self.presenter.notify(Notification.IMAGE_CHANGED))?
-        slider.on_changed(self.update_current_image)
-        return slider
 
 
 # def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):
