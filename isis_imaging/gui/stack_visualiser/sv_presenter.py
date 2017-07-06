@@ -51,12 +51,15 @@ class StackViewerPresenter(object):
             return self.data[:, :, index]
 
     def apply_to_data(self, func, *args, **kwargs):
-        # TODO refactor
+        # TODO refactor, and provide a way to read ROI
+        # TODO provide a standard way to request parameters?
+        # TODO Should we go to Mantid-style algorithm with functions like getProperty, etc?
+        # It might be worth moving back into mantid at that point and using the existing algorithm structure
         do_before = getattr(func, "do_before", None)
-        if hasattr(func, "do_before"):
+        if do_before:
             delattr(func, "do_before")
         do_after = getattr(func, "do_after", None)
-        if hasattr(func, "do_after"):
+        if do_after:
             delattr(func, "do_after")
 
         if do_before:

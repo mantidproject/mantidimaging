@@ -19,10 +19,13 @@ def _gui_register(main_window):
     label_clip_max = Qt.QLabel("Clip Max")
     clip_min_field = Qt.QDoubleSpinBox()
     clip_min_field.setDecimals(7)
-    clip_min_field.setMinimum(-1000000)
+    clip_min_field.setMinimum(-10000000)
+    clip_min_field.setMaximum(10000000)
+
     clip_max_field = Qt.QDoubleSpinBox()
     clip_max_field.setDecimals(7)
-    clip_max_field.setMaximum(1000000)
+    clip_max_field.setMinimum(-10000000)
+    clip_max_field.setMaximum(10000000)
 
     dialog.formLayout.addRow(label_clip_min, clip_min_field)
     dialog.formLayout.addRow(label_clip_max, clip_max_field)
