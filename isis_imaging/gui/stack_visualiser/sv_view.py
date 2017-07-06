@@ -125,7 +125,7 @@ class StackVisualiserView(Qt.QMainWindow):
             axis,
             self.region_select_callback,
             drawtype='box',
-            useblit=True,
+            useblit=False,
             button=[1, 3],  # don't use middle button
             spancoords='pixels',
             minspanx=3,
@@ -186,7 +186,6 @@ class StackVisualiserView(Qt.QMainWindow):
         :param val: Unused, but required so that the function has the same signature as the expected one
         """
         self.image.set_data(self.current_image())
-        self.rectangle_selector.
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
