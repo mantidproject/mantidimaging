@@ -40,13 +40,16 @@ def register_into(the_object, func=None, directory=None, package="core/filters",
         directory = os.path.join(sys.path[0], package)
 
     all_files = os.walk(directory)
-
     # sort by filename
     for root, dirs, files in sorted(all_files, key=lambda file_tuple: file_tuple[2]):
-        # replace the / with . to match python package syntax
+        if "__pycache__" in root:
+            continue
+
+        # replace the / with . to match python package syntax, because it will be later imported dynamically
         package_dir = root[root.find(package):].replace('/', '.')
         if package_dir in all_ignores:
             continue
+
         the_object = func(the_object, package_dir)
 
     return the_object

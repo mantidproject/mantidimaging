@@ -45,7 +45,7 @@ class MainWindowPresenter(object):
 
     def stack_list(self):
         stacks = []
-        for stack_uuid, widget in self.active_stacks.iteritems():
+        for stack_uuid, widget in self.active_stacks.items():
             # ask the widget for its current title
             current_name = widget.windowTitle()
             # append the UUID and user friendly name
