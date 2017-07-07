@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -39,8 +39,19 @@
      <string>Filters</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuReconstruct">
+    <property name="title">
+     <string>Reconstruct</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionCenter_of_Rotation"/>
+    <addaction name="actionManual_Center_of_Rotation"/>
+    <addaction name="separator"/>
+    <addaction name="actionTomopy"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuFilters"/>
+   <addaction name="menuReconstruct"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLoad">
@@ -56,6 +67,21 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionTomopy">
+   <property name="text">
+    <string>Tomopy</string>
+   </property>
+  </action>
+  <action name="actionCenter_of_Rotation">
+   <property name="text">
+    <string>Center of Rotation</string>
+   </property>
+  </action>
+  <action name="actionManual_Center_of_Rotation">
+   <property name="text">
+    <string>Manual Center of Rotation</string>
    </property>
   </action>
  </widget>

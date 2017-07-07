@@ -158,30 +158,17 @@
     <string>Parallel Load</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="expectedResourcesLabel">
    <property name="geometry">
     <rect>
      <x>140</x>
      <y>114</y>
-     <width>130</width>
+     <width>211</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Expected memory:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="expectedMemoryLabel">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>114</y>
-     <width>91</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0.0 MB</string>
+    <string/>
    </property>
   </widget>
  </widget>

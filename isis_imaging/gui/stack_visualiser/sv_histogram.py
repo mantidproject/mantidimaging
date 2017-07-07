@@ -10,7 +10,7 @@ def _setup_normal(current_image, ax):
     ax.hist(current_image.flatten(), bins=HISTOGRAM_BIN_SIZE)
 
 def _setup_transparent(current_image, ax):
-    histogram, bins = np.histogram(current_image.flatten(), bins=256)
+    histogram, bins = np.histogram(current_image.flatten(), bins=512)
     center = (bins[:-1] + bins[1:]) / 2
     ax.plot(center, histogram)
 

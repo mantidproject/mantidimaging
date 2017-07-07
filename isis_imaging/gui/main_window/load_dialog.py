@@ -39,25 +39,28 @@ class MWLoadDialog(Qt.QDialog):
             lambda: self.update_dialogue(select_file(self.samplePath, "Sample")))
 
         # connect the calculation of expected memory to spinboxes
-        self.index_start.valueChanged.connect(self.update_expected_memory)
-        self.index_end.valueChanged.connect(self.update_expected_memory)
-        self.index_step.valueChanged.connect(self.update_expected_memory)
+        self.index_start.valueChanged.connect(self.update_expected)
+        self.index_end.valueChanged.connect(self.update_expected)
+        self.index_step.valueChanged.connect(self.update_expected)
 
         # if accepted load the stack
         self.accepted.connect(parent.execute_load)
         self.image_format = ''
         self.single_mem = 0
+        self.last_shape = (0,0,0)
+
+        # TODO to be read from the input dialog
+        self.dtype = '32'
 
     def update_dialogue(self, select_file_successful):
         if not select_file_successful:
             return False
 
         self.image_format = get_file_extension(str(self.samplePath.text()))
-        shape = read_in_shape(self.sample_path(), self.image_format)
-        self.single_mem = size_calculator.to_MB(
-            size_calculator.single_size(shape, axis=0), dtype='32')
-        self.update_indices(shape[0])
-        self.update_expected_memory()
+        self.last_shape = read_in_shape(self.sample_path(), self.image_format)
+
+        self.update_indices(self.last_shape[0])
+        self.update_expected()
 
     def update_indices(self, number_of_images):
         """
@@ -74,12 +77,16 @@ class MWLoadDialog(Qt.QDialog):
         self.index_step.setMaximum(number_of_images)
         self.index_step.setValue(number_of_images / 10)
 
-    def update_expected_memory(self):
-        # TODO maybe refactor the number of images calculation to size_calculator if it's needed elsewhere
-        exp_mem = self.single_mem * \
-            ((self.index_end.value() - self.index_start.value()) / self.index_step.value())
-        # we also need to account for the step
-        self.expectedMemoryLabel.setText("{} MB".format(round(exp_mem, 1)))
+    def update_expected(self):
+        num_images = size_calculator.number_of_images_from_indices(
+            self.index_start.value(), self.index_end.value(), self.index_step.value())
+
+        single_mem = size_calculator.to_MB(
+            size_calculator.single_size(self.last_shape, axis=0), dtype=self.dtype)
+
+        exp_mem = round(single_mem * num_images, 2)
+        self.expectedResourcesLabel.setText(
+            "{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1], self.last_shape[2], exp_mem))
 
     def load_path(self):
         return os.path.basename(str(self.samplePath.text()))

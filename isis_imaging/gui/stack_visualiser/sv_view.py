@@ -49,7 +49,7 @@ class StackVisualiserView(Qt.QMainWindow):
         self.canvas = FigureCanvasQTAgg(self.mplfig)
         self.canvas.rectanglecolor = QtCore.Qt.yellow
         self.canvas.setParent(self)
-        self.previous_region = (100, 100, 200, 200)
+        self.current_roi = (100, 100, 200, 200)
 
         self.toolbar = NavigationToolbar2QT(
             self.canvas, self, coordinates=True)
@@ -128,8 +128,8 @@ class StackVisualiserView(Qt.QMainWindow):
             useblit=False,
             button=[1, 3],  # don't use middle button
             spancoords='pixels',
-            minspanx=3,
-            minspany=3,
+            minspanx=20,
+            minspany=20,
             interactive=True)
 
     def create_slider(self, slider_axis, length):
@@ -139,26 +139,13 @@ class StackVisualiserView(Qt.QMainWindow):
         slider.on_changed(self.show_current_image)
         return slider
 
-    def toggle_selector(self, event):
-        print(' Key pressed.')
-        if event.key in ['Q', 'q'] and self.rectangle_selector.active:
-            print(' RectangleSelector deactivated.')
-            self.rectangle_selector.set_active(False)
-        if event.key in ['A', 'a'] and not self.rectangle_selector.active:
-            print(' RectangleSelector activated.')
-            self.rectangle_selector.set_active(True)
-
-
     def region_select_callback(self, eclick, erelease):
-        print(eclick)
-        print(erelease)
         # eclick and erelease are the press and release events
-        x0, y0 = eclick.xdata, eclick.ydata
-        x1, y1 = erelease.xdata, erelease.ydata
-        # different order here, than in how we handle it
-        # this is because the unpacking for draw_rect is different
-        self.previous_region = (x0, x1, y0, y1)
-        region = "%i %i %i %i" % (x0, y0, x1, y1)
+        left, top = eclick.xdata, eclick.ydata
+        bottom, right = erelease.xdata, erelease.ydata
+
+        self.current_roi = (int(left), int(top), int(right), int(bottom))
+        region = "%i %i %i %i" % self.current_roi
         print(region)
 
     def current_index(self):
@@ -173,13 +160,21 @@ class StackVisualiserView(Qt.QMainWindow):
         """
         return self.presenter.get_image(self.current_index())
 
+    def current_image_roi(self):
+        """
+        :return: The selected region of the currently visualised image
+        """
+        image = self.current_image()
+        left, top, right, bottom = self.current_roi
+        return image[top:bottom, left:right]
+
     def show_histogram_of_current_image(self):
-        current_image = self.current_image()
-        # import random
-        # if random.random() <= 0.5:
-        #     sv_histogram.show(current_image)
-        # else:
-        sv_histogram.show_transparent(current_image)
+        if self.rectangle_selector.visible:
+            print("Showing hist of ROI")
+            sv_histogram.show_transparent(self.current_image_roi())
+        else:
+            print("Showing hist of full image")
+            sv_histogram.show_transparent(self.current_image())
 
     def show_current_image(self, val=None):
         """
