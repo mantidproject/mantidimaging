@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-import cStringIO
+from io import StringIO
 import inspect
 import os
 # using pickle instead of dill, because dill is not available on SCARF
@@ -162,7 +162,7 @@ class ProcessList(object):
         :param arg_separator: Separator character to be used between arguments.
         :param func_separator: Separator character to be used between functions.
         """
-        out = cStringIO.StringIO()
+        out = StringIO()
         for entry in self._list:
             e = map(lambda x: str(x), list(entry))
 
