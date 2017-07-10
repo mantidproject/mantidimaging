@@ -31,7 +31,7 @@ def execute(entry, *args, **kwargs):
 
 def execute_back(entry, *args, **kwargs):
     """
-    Execute the stored function in ProcessList.
+    Execute the stored function in ProcessList. Assumes the first argument passed in the input data.
     Any additional arguments will be appended to the back of the currently existing arguments
 
     :param entry: Tuple with the following structure: (module path, function, args, kwargs)
@@ -44,8 +44,9 @@ def execute_back(entry, *args, **kwargs):
     """
     package = _import_module(entry[0])
     func = entry[1]
-    args = entry[2] + args
-    kwargs = entry[3] + kwargs
+    # assume the first parameter is the input data, and append the rest at the end
+    args = (args[0],) + entry[2] + args[1:]
+    kwargs.update(entry[3])
     to_call = getattr(package, func)
     return to_call(*args, **kwargs)
 
