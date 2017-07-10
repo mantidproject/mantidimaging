@@ -4,10 +4,9 @@ from PyQt5 import Qt, QtCore
 
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
-
 from .load_dialog import MWLoadDialog
-from .mw_presenter import Notification as PresNotification
 from .mw_presenter import MainWindowPresenter
+from .mw_presenter import Notification as PresNotification
 from .save_dialog import MWSaveDialog
 
 
@@ -51,7 +50,7 @@ class MainWindowView(Qt.QMainWindow):
 
     def stack_names(self):
         # unpacks the tuple and only gives the correctly sorted human readable names
-        return zip(*self.presenter.stack_list())[1]
+        return self.presenter.stack_names()
 
     def stack_list(self):
         return self.presenter.stack_list()

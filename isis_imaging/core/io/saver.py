@@ -7,6 +7,10 @@ import numpy as np
 from isis_imaging import helper as h
 from .utility import DEFAULT_IO_FILE_FORMAT
 
+DEFAULT_ZFILL_LENGTH = 6
+DEFAULT_NAME_PREFIX = 'image'
+DEFAULT_NAME_POSTFIX = ''
+
 def write_fits(data, filename, overwrite=False):
     from isis_imaging.core.io.loader.imports import import_pyfits
     fits = import_pyfits()
@@ -43,13 +47,13 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
 
 def save(data,
          output_dir,
-         name_prefix='image',
+         name_prefix=DEFAULT_NAME_PREFIX,
          swap_axes=False,
          out_format=DEFAULT_IO_FILE_FORMAT,
          overwrite_all=False,
          custom_idx=None,
-         zfill_len=6,
-         name_postfix='',
+         zfill_len=DEFAULT_ZFILL_LENGTH,
+         name_postfix=DEFAULT_NAME_POSTFIX,
          indices=None):
     """
     Save image volume (3d) into a series of slices along the Z axis.
@@ -94,8 +98,7 @@ def save(data,
             # pass all other formats to skimage
             write_func = write_img
 
-        names = generate_names(name_prefix, indices, custom_idx,
-                               data.shape[0], zfill_len, name_postfix, out_format)
+        names = generate_names(name_prefix, indices, data.shape[0], custom_idx, zfill_len, name_postfix, out_format)
 
         h.prog_init(data.shape[0], "Saving " + out_format + " images")
         # loop through images in data array
@@ -106,7 +109,8 @@ def save(data,
         h.prog_close()
 
 
-def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name_postfix, out_format):
+def generate_names(name_prefix, indices, num_images, custom_idx=None, zfill_len=DEFAULT_ZFILL_LENGTH,
+                   name_postfix=DEFAULT_NAME_POSTFIX, out_format=DEFAULT_IO_FILE_FORMAT):
     start_index = indices[0] if indices else 0
     if custom_idx:
         index = custom_idx
@@ -118,7 +122,7 @@ def generate_names(name_prefix, indices, custom_idx, num_images, zfill_len, name
     names = []
     for idx in range(num_images):
         # create the file name, and use the format as extension
-        names.append(name_prefix + str(index).zfill(zfill_len) +
+        names.append(name_prefix + '_' + str(index).zfill(zfill_len) +
                      name_postfix + "." + out_format)
         index += increment
     return names
@@ -142,7 +146,7 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
         raise RuntimeError(
             "The output directory is NOT empty:{0}\n. This can be "
             "overridden with -w/--overwrite-all.".
-            format(path))
+                format(path))
 
 
 class Saver(object):
@@ -298,7 +302,7 @@ class Saver(object):
 
         h.pstart(
             "Starting saving slices of the reconstructed volume in: {0}...".
-            format(out_recon_dir))
+                format(out_recon_dir))
 
         save(data, out_recon_dir, self._out_slices_prefix,
              self._swap_axes, self._out_format, self._overwrite_all,

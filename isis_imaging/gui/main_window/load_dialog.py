@@ -49,7 +49,7 @@ class MWLoadDialog(Qt.QDialog):
         self.single_mem = 0
         self.last_shape = (0,0,0)
 
-        # TODO to be read from the input dialog
+        # TODO add data type field and read from the input dialog
         self.dtype = '32'
 
     def update_dialogue(self, select_file_successful):
@@ -88,7 +88,11 @@ class MWLoadDialog(Qt.QDialog):
         self.expectedResourcesLabel.setText(
             "{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1], self.last_shape[2], exp_mem))
 
-    def load_path(self):
+
+    def sample_file(self):
+        """
+        :return: The file that the use has selected
+        """
         return os.path.basename(str(self.samplePath.text()))
 
     def sample_path(self):

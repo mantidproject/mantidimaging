@@ -8,7 +8,7 @@ import numpy as np
 
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
 from isis_imaging.core.io import loader
-from isis_imaging.core.io.saver import Saver
+from isis_imaging.core.io.saver import Saver, generate_names
 from isis_imaging.tests import test_helper as th
 
 
@@ -35,15 +35,10 @@ class IOTest(unittest.TestCase):
             filenames = []
 
             # this way we account for only selected indices in the filenames
-            if indices:
-                start, end, step = indices
-            else:
-                start = 0
-                end = num_images
+            if not indices:
+                indices = [0, num_images, 1]
 
-            for i in range(start, end):
-                filenames.append(base_name + '00000' + str(i) + '.' +
-                                 file_format)
+            filenames = generate_names(base_name, indices, num_images, out_format=file_format)
 
             for f in filenames:
                 self.assertTrue(os.path.isfile(f))
@@ -255,8 +250,7 @@ class IOTest(unittest.TestCase):
 
             self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._out_format, data_as_stack,
-                                    images.shape[0], loader_indices or
-                                    saver_indices)
+                                    images.shape[0], saver_indices)
 
             # this does not load any flats or darks as they were not saved out
             sample, _, _ = loader.load(preproc_output_path, in_format=saver._out_format,
@@ -265,8 +259,8 @@ class IOTest(unittest.TestCase):
             if loader_indices:
                 assert len(
                     sample
-                ) == expected_len, "The length of the loaded data does not "\
-                                   "match the expected length! Expected: {0}, "\
+                ) == expected_len, "The length of the loaded data does not " \
+                                   "match the expected length! Expected: {0}, " \
                                    "Got {1}".format(expected_len, len(sample))
 
                 # crop the original images to make sure the tests is correct
@@ -274,10 +268,6 @@ class IOTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
-                                    saver._out_format, data_as_stack,
-                                    images.shape[0], loader_indices or
-                                    saver_indices)
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
@@ -343,8 +333,8 @@ class IOTest(unittest.TestCase):
             if loader_indices:
                 assert len(
                     sample
-                ) == expected_len, "The length of the loaded data does not "\
-                                   "match the expected length! Expected: {0}, "\
+                ) == expected_len, "The length of the loaded data does not " \
+                                   "match the expected length! Expected: {0}, " \
                                    "Got {1}".format(expected_len, len(sample))
 
                 # crop the original images to make sure the tests is correct
@@ -476,9 +466,9 @@ class IOTest(unittest.TestCase):
             if loader_indices:
                 assert len(
                     sample
-                ) == expected_len, "The length of the loaded data doesn't "\
-                    "match the expected length: {0}, "\
-                    "Got: {1}".format(expected_len, len(sample))
+                ) == expected_len, "The length of the loaded data doesn't " \
+                                   "match the expected length: {0}, " \
+                                   "Got: {1}".format(expected_len, len(sample))
 
                 # crop the original images to make sure the tests is correct
                 images = images[loader_indices[0]:loader_indices[1]]

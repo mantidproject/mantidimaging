@@ -53,6 +53,12 @@ class MWSaveDialog(Qt.QDialog):
         """
         return str(self.savePath.text())
 
+    def name_prefix(self):
+        """
+            :return: The directory of the path as a Python string
+        """
+        return str(self.namePrefix.text())
+
     def swap_axes(self):
         return self.swapAxes.isChecked()
 

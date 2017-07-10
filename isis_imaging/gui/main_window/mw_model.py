@@ -1,21 +1,23 @@
 from __future__ import (absolute_import, division, print_function)
 
-import os
 import uuid
 
+import numpy as np
+from PyQt5.QtWidgets import QDockWidget
+
 from isis_imaging.core.io import loader, saver
+from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
 
 class MainWindowModel(object):
-    def __init__(self, view, config):
+    def __init__(self, config):
         super(MainWindowModel, self).__init__()
-        self.view = view
         self.config = config
 
         self.active_stacks = {}
 
-    def do_load_stack(self, sample_path, image_format, parallel_load, indices):
-        stack, _, _ = loader.load(
+    def do_load_stack(self, sample_path, image_format, parallel_load, indices) -> np.ndarray:
+        sample, _, _ = loader.load(
             sample_path,
             None,
             None,
@@ -23,30 +25,25 @@ class MainWindowModel(object):
             parallel_load=parallel_load,
             indices=indices)
 
-        title = self.create_title_from_path(sample_path)
+        return sample
 
-        dock_widget = self.view.create_stack_window(stack, title=title)
-
-        stackvis = dock_widget.widget()
-
-        # generate unique ID for this stack
-        stackvis.uuid = uuid.uuid1()
-        self.active_stacks[stackvis.uuid] = dock_widget
-        print("Active stacks", self.active_stacks)
-
-    def do_saving(self, stack_uuid, output_dir, image_format, overwrite, swap_axes, indices):
+    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, indices):
         self.get_stack_visualiser(stack_uuid).apply_to_data(
             saver.save,
             output_dir=output_dir,
+            name_prefix=name_prefix,
             swap_axes=swap_axes,
             overwrite_all=overwrite,
-            img_format=image_format,
+            out_format=image_format,
             indices=indices)
 
-    def create_title_from_path(self, path):
-        return os.path.basename(path)
+    def create_title(self, file):
+        # TODO can add more processing of the file, e.g. remove the numbers from the file and convert to
+        # 'image_name_xxx' or simply strip all numbers, but we can't be sure the last underscore in the string
+        # will be right before the number
+        return file
 
-    def stack_list(self):
+    def stack_list(self) -> list:
         stacks = []
         for stack_uuid, widget in self.active_stacks.items():
             # ask the widget for its current title
@@ -57,7 +54,17 @@ class MainWindowModel(object):
         # sort by user friendly name
         return sorted(stacks, key=lambda x: x[1])
 
-    def get_stack(self, stack_uuid):
+    def stack_names(self) -> list:
+        # unpacks the tuple and only gives the correctly sorted human readable names
+        return zip(*self.stack_list())[1]
+
+    def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: QDockWidget):
+        # generate unique ID for this stack
+        stack_visualiser.uuid = uuid.uuid1()
+        self.active_stacks[stack_visualiser.uuid] = dock_widget
+        print("Active stacks", self.active_stacks)
+
+    def get_stack(self, stack_uuid) -> QDockWidget:
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The QDockWidget that contains the Stack Visualiser. For direct access to the
@@ -65,7 +72,7 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def get_stack_visualiser(self, stack_uuid):
+    def get_stack_visualiser(self, stack_uuid) -> StackVisualiserView:
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The Stack Visualiser widget that contains the data.
