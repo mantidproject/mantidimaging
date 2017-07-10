@@ -17,8 +17,8 @@ def gimme_shape():
     return g_shape
 
 
-def gen_img_numpy_rand():
-    return np.random.rand(*g_shape)
+def gen_img_numpy_rand(shape=g_shape):
+    return np.random.rand(*shape)
 
 
 def gen_img_shared_array_and_copy(shape=g_shape):

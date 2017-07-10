@@ -3,11 +3,9 @@ from __future__ import absolute_import, division, print_function
 import tempfile
 import unittest
 
-
-from isis_imaging.tests import test_helper as th
 from isis_imaging.core import process_list
 from isis_imaging.core.filters import median_filter
-# def execute(data, size, mode=modes()[0], cores=None, chunksize=None):
+from isis_imaging.tests import test_helper as th
 
 PACKAGE_LOCATION_STRING = 'isis_imaging.core.filters.median_filter'
 FUNC_NAME = 'execute'

@@ -1,3 +1,5 @@
+.noseids
+
 **/*.pyc
 
 # PyCharm project ignore
