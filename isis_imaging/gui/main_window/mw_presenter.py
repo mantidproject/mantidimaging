@@ -47,8 +47,7 @@ class MainWindowPresenter(object):
         if not sample_path:
             return
 
-        self.model.do_load_stack(
-            image_format, indices, parallel_load, sample_path)
+        self.model.do_load_stack(sample_path, image_format, parallel_load, indices)
 
     def save(self, indices=None):
         stack_uuid = self.view.save_dialogue.selected_stack

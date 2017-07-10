@@ -60,14 +60,14 @@ class AggregateTest(unittest.TestCase):
     def test_aggregate_single_folder_sum_fits(self):
         self.do_aggregate_single_folder('fits', 'fits', 'sum')
 
-    def test_aggregate_single_folder_sum_tiff(self):
-        self.do_aggregate_single_folder('tiff', 'tiff', 'sum')
+    def test_aggregate_single_folder_sum_tif(self):
+        self.do_aggregate_single_folder('tif', 'tif', 'sum')
 
     def test_aggregate_single_folder_avg_fits(self):
         self.do_aggregate_single_folder('fits', 'fits', 'avg')
 
-    def test_aggregate_single_folder_avg_tiff(self):
-        self.do_aggregate_single_folder('tiff', 'tiff', 'avg')
+    def test_aggregate_single_folder_avg_tif(self):
+        self.do_aggregate_single_folder('tif', 'tif', 'avg')
 
     def do_aggregate_single_folder(self,
                                    img_format,
@@ -91,14 +91,14 @@ class AggregateTest(unittest.TestCase):
             for i in range(aggregate_angles):
                 angle_path = aggregate_path + '/angle' + str(i)
                 saver._output_path = angle_path
-                saver._img_format = img_format
+                saver._out_format = img_format
                 saver._data_as_stack = stack
                 # do the actual saving out, directories will be created here
                 saver.save(
                     images,
                     angle_path,
                     'out_angle',
-                    img_format=saver._img_format)
+                    out_format=saver._out_format)
 
             # aggregate them
             conf = self.config
@@ -107,7 +107,7 @@ class AggregateTest(unittest.TestCase):
             conf.func.aggregate_angles = ['0', str(aggregate_angles - 1)]
             conf.func.aggregate_single_folder_output = True
             conf.func.input_path = aggregate_path
-            conf.func.in_format = saver._img_format
+            conf.func.in_format = saver._out_format
             conf.func.out_format = convert_format
             aggregate_output_path = os.path.dirname(f.name) + '/aggregated'
             conf.func.output_path = aggregate_output_path
@@ -121,7 +121,7 @@ class AggregateTest(unittest.TestCase):
             # this does not load any flats or darks as they were not saved out
             sample, _, _ = loader.load(
                 aggregate_output_path,
-                img_format=saver._img_format,
+                in_format=saver._out_format,
                 parallel_load=parallel)
 
             for i in sample:
@@ -129,19 +129,19 @@ class AggregateTest(unittest.TestCase):
 
             th.assert_files_exist(self,
                                   aggregate_output_path + '/out_' + mode + '_0_10_',
-                                  saver._img_format, single_file=saver._data_as_stack, num_images=aggregate_angles)
+                                  saver._out_format, single_file=saver._data_as_stack, num_images=aggregate_angles)
 
     def test_aggregate_not_single_folder_sum_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'sum')
 
-    def test_aggregate_not_single_folder_sum_tiff(self):
-        self.do_aggregate_not_single_folder('tiff', 'tiff', 'sum')
+    def test_aggregate_not_single_folder_sum_tif(self):
+        self.do_aggregate_not_single_folder('tif', 'tif', 'sum')
 
     def test_aggregate_not_single_folder_avg_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'avg')
 
-    def test_aggregate_not_single_folder_avg_tiff(self):
-        self.do_aggregate_not_single_folder('tiff', 'tiff', 'avg')
+    def test_aggregate_not_single_folder_avg_tif(self):
+        self.do_aggregate_not_single_folder('tif', 'tif', 'avg')
 
     def do_aggregate_not_single_folder(self,
                                        img_format,
@@ -167,7 +167,7 @@ class AggregateTest(unittest.TestCase):
             for i in range(aggregate_angles):
                 angle_paths.append(aggregate_path + '/angle' + str(i))
                 saver._output_path = angle_paths[i]
-                saver._img_format = img_format
+                saver._out_format = img_format
                 saver._data_as_stack = stack
                 saver._overwrite_all = True
                 # do the actual saving out, directories will be created here
@@ -176,7 +176,7 @@ class AggregateTest(unittest.TestCase):
                     angle_paths[i],
                     'out_angle',
                     swap_axes=False,
-                    img_format=saver._img_format)
+                    out_format=saver._out_format)
 
             # aggregate them
             conf = self.config
@@ -185,7 +185,7 @@ class AggregateTest(unittest.TestCase):
             conf.func.aggregate_angles = ['0', str(aggregate_angles - 1)]
             conf.func.aggregate_single_folder_output = False
             conf.func.input_path = aggregate_path
-            conf.func.in_format = saver._img_format
+            conf.func.in_format = saver._out_format
             conf.func.out_format = convert_format
             aggregate_output_path = os.path.dirname(f.name) + '/aggregated'
             conf.func.output_path = aggregate_output_path
@@ -202,7 +202,7 @@ class AggregateTest(unittest.TestCase):
 
                 sample, _, _ = loader.load(
                     angle_path,
-                    img_format=saver._img_format,
+                    in_format=saver._out_format,
                     parallel_load=parallel)
 
                 for i in sample:
@@ -214,7 +214,7 @@ class AggregateTest(unittest.TestCase):
                 # This is a cheat to avoid an additional if statement
                 th.assert_files_exist(self,
                                       angle_path + '/out_' + mode + '00_1',
-                                      saver._img_format,
+                                      saver._out_format,
                                       single_file=saver._data_as_stack,
                                       num_images=1)
 

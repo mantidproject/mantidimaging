@@ -14,7 +14,7 @@ class MainWindowModel(object):
 
         self.active_stacks = {}
 
-    def do_load_stack(self, image_format, indices, parallel_load, sample_path):
+    def do_load_stack(self, sample_path, image_format, parallel_load, indices):
         stack, _, _ = loader.load(
             sample_path,
             None,
@@ -22,14 +22,29 @@ class MainWindowModel(object):
             image_format,
             parallel_load=parallel_load,
             indices=indices)
-        title = os.path.basename(sample_path)
+
+        title = self.create_title_from_path(sample_path)
+
         dock_widget = self.view.create_stack_window(stack, title=title)
 
         stackvis = dock_widget.widget()
 
+        # generate unique ID for this stack
         stackvis.uuid = uuid.uuid1()
         self.active_stacks[stackvis.uuid] = dock_widget
         print("Active stacks", self.active_stacks)
+
+    def do_saving(self, stack_uuid, output_dir, image_format, overwrite, swap_axes, indices):
+        self.get_stack_visualiser(stack_uuid).apply_to_data(
+            saver.save,
+            output_dir=output_dir,
+            swap_axes=swap_axes,
+            overwrite_all=overwrite,
+            img_format=image_format,
+            indices=indices)
+
+    def create_title_from_path(self, path):
+        return os.path.basename(path)
 
     def stack_list(self):
         stacks = []
@@ -64,15 +79,6 @@ class MainWindowModel(object):
         :param stack_uuid: The unique ID of the stack that will be removed.
         """
         del self.active_stacks[uuid]
-
-    def do_saving(self, stack_uuid, output_dir, image_format, overwrite, swap_axes, indices):
-        self.get_stack_visualiser(stack_uuid).apply_to_data(
-            saver.save,
-            output_dir=output_dir,
-            swap_axes=swap_axes,
-            overwrite_all=overwrite,
-            img_format=image_format,
-            indices=indices)
 
     def apply_to_data(self, stack_uuid, function):
         self.get_stack_visualiser(stack_uuid).apply_to_data(function)

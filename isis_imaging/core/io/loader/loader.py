@@ -126,7 +126,7 @@ def load_from_config(config):
                 parallel_load, indices=indices, construct_sinograms=construct_sinograms)
 
 
-def load(input_path,
+def load(input_path=None,
          input_path_flat=None,
          input_path_dark=None,
          in_format=DEFAULT_IO_FILE_FORMAT,

@@ -3,12 +3,12 @@ from __future__ import absolute_import, division, print_function
 from PyQt5 import Qt, QtCore
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from isis_imaging.gui.main_window.load_dialog import MWLoadDialog
-from isis_imaging.gui.main_window.mw_presenter import \
-    Notification as PresNotification
-from isis_imaging.gui.main_window.mw_presenter import MainWindowPresenter
-from isis_imaging.gui.main_window.save_dialog import MWSaveDialog
 from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
+
+from .load_dialog import MWLoadDialog
+from .mw_presenter import Notification as PresNotification
+from .mw_presenter import MainWindowPresenter
+from .save_dialog import MWSaveDialog
 
 
 class MainWindowView(Qt.QMainWindow):

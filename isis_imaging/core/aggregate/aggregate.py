@@ -99,7 +99,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
             angle, os.path.dirname(image_paths[0])))
         images, _, _ = loader.load(
             file_names=image_paths,
-            img_format=img_format,
+            in_format=img_format,
             parallel_load=parallel_load)
 
         # sum or average them
