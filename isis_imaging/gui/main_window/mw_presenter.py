@@ -1,26 +1,21 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-import uuid
 
-from enum import IntEnum
+from enum import Enum
 
-from isis_imaging.core.io import loader, saver
+from . import mw_model
 
 
-class Notification(IntEnum):
-    MEDIAN_FILTER_CLICKED = 1
-    LOAD = 2
-    SAVE = 3
+class Notification(Enum):
+    LOAD = 1
+    SAVE = 2
 
 
 class MainWindowPresenter(object):
     def __init__(self, view, config):
         super(MainWindowPresenter, self).__init__()
         self.view = view
-        self.config = config
-        # Move to model? It'll get sufficiently complicated I think
-        self.active_stacks = {}
+        self.model = mw_model.MainWindowModel(config)
 
     def notify(self, signal):
         # do some magical error message reusage
@@ -28,10 +23,7 @@ class MainWindowPresenter(object):
         # except any error:
         # show error message from the CORE, no errors will be written here!
         try:
-
-            if signal == Notification.MEDIAN_FILTER_CLICKED:
-                self.update_view_value()
-            elif signal == Notification.LOAD:
+            if signal == Notification.LOAD:
                 self.load_stack()
             elif signal == Notification.SAVE:
                 self.save()
@@ -41,22 +33,10 @@ class MainWindowPresenter(object):
             raise  # re-raise for full stack trace
 
     def show_error(self, error):
-        print("Magic to be done here")
-
-    def stack_list(self):
-        stacks = []
-        for stack_uuid, widget in self.active_stacks.items():
-            # ask the widget for its current title
-            current_name = widget.windowTitle()
-            # append the UUID and user friendly name
-            stacks.append((stack_uuid, current_name))
-
-        # sort by user friendly name
-        return sorted(stacks, key=lambda x: x[1])
+        print("TODO Error window should be shown here to the user with the following error:", error)
 
     def remove_stack(self, uuid):
-        # need to call active_stack.destroy()?
-        del self.active_stacks[uuid]
+        self.model.do_remove_stack(uuid)
 
     def load_stack(self):
         sample_path = self.view.load_dialogue.sample_path()
@@ -67,45 +47,18 @@ class MainWindowPresenter(object):
         if not sample_path:
             return
 
-        stack, _, _ = loader.load(
-            sample_path,
-            None,
-            None,
-            image_format,
-            parallel_load=parallel_load,
-            indices=indices)
-
-        title = os.path.basename(sample_path)
-        dock_widget = self.view.create_stack_window(stack, title=title)
-
-        # append this onto the widget, otherwise it will be a pain to retrieve the information
-        # from inside the stack visualiser class
-        stackvis = dock_widget.widget()
-
-        # add information to QDockWidget or the stack window?
-        # currently added to the QDockWidget
-        stackvis.sample_path = sample_path
-        stackvis.image_format = image_format
-        stackvis.parallel_load = parallel_load
-        stackvis.uuid = uuid.uuid1()
-
-        self.active_stacks[stackvis.uuid] = dock_widget
-        print("Active stacks", self.active_stacks)
+        self.model.do_load_stack(
+            image_format, indices, parallel_load, sample_path)
 
     def save(self, indices=None):
-        s_uuid = self.view.save_dialogue.selected_stack
+        stack_uuid = self.view.save_dialogue.selected_stack
         output_dir = self.view.save_dialogue.save_path()
         image_format = self.view.save_dialogue.image_format()
         overwrite = self.view.save_dialogue.overwrite()
         swap_axes = self.view.save_dialogue.swap_axes()
 
-        self.active_stacks[s_uuid].widget().apply_to_data(
-            saver.save,
-            output_dir=output_dir,
-            swap_axes=swap_axes,
-            overwrite_all=overwrite,
-            img_format=image_format,
-            indices=indices)
+        self.model.do_saving(stack_uuid, output_dir,
+                             image_format, overwrite, swap_axes, indices)
 
-    def do_badly(self, stack_uuid, func):
-        self.active_stacks[stack_uuid].widget().apply_to_data(func)
+    def apply_to_data(self, stack_uuid, func):
+        self.model.apply_to_data(stack_uuid, func)

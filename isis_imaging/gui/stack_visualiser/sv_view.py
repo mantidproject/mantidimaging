@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
 from matplotlib.figure import Figure
-from matplotlib import pyplot
 from matplotlib.widgets import RectangleSelector, Slider
 from PyQt5 import Qt, QtCore
 
@@ -63,29 +62,33 @@ class StackVisualiserView(Qt.QMainWindow):
         self.image = self.image_axis.imshow(
             self.presenter.get_image(0), cmap=cmap, **kwargs)
 
-        self.rectangle_selector = self.create_rectangle_selector(self.image_axis, 1)
+        self.rectangle_selector = self.create_rectangle_selector(
+            self.image_axis, 1)
 
         self.mplvl.addWidget(self.toolbar)
         self.mplvl.addWidget(self.canvas)
 
         self.setup_shortcuts()
 
-
     def update_title_event(self):
-        text, okPressed = Qt.QInputDialog.getText(self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
+        text, okPressed = Qt.QInputDialog.getText(
+            self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
 
         if okPressed:
             self.dock.setWindowTitle(text)
 
     def setup_shortcuts(self):
-        self.histogram_shortcut = Qt.QShortcut(Qt.QKeySequence("Shift+C"), self.dock)
-        self.histogram_shortcut.activated.connect(lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
+        self.histogram_shortcut = Qt.QShortcut(
+            Qt.QKeySequence("Shift+C"), self.dock)
+        self.histogram_shortcut.activated.connect(
+            lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
 
         self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
         self.rename_shortcut.activated.connect(
             lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW))
 
-        # self.remove_roi_shortcut = Qt.QMouseEvent(Qt.QEvent.MouseButtonPress, self.mapToGlobal(QtCore.QPoint(0,0)), QtCore.Qt.RightButton, QtCore.Qt.NoButton, QtCore.Qt.NoModifier)
+        # self.remove_roi_shortcut = Qt.QMouseEvent(Qt.QEvent.MouseButtonPress, self.mapToGlobal(
+        # QtCore.QPoint(0,0)), QtCore.Qt.RightButton, QtCore.Qt.NoButton, QtCore.Qt.NoModifier)
         # self.remove_roi_shortcut.activated.connect(self.mouse_button_pressed)
         # self.mousePressEvent(self.remove_roi_shortcut)
         # doesn't work, the pressing the key doesn't seem to call the function
@@ -116,7 +119,8 @@ class StackVisualiserView(Qt.QMainWindow):
         self.parent().setFloating(False)
         self.window().remove_stack(self)  # refers to MainWindow
         self.deleteLater()
-        self.parent().deleteLater() # refers to the QDockWidget within which the stack is contained
+        # refers to the QDockWidget within which the stack is contained
+        self.parent().deleteLater()
 
     def create_rectangle_selector(self, axis, button=1):
         # drawtype is 'box' or 'line' or 'none', we could use 'line' to show COR, but the line
@@ -184,7 +188,6 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
-
 
 
 # def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):

@@ -87,4 +87,4 @@ class MainWindowView(Qt.QMainWindow):
         self.presenter.remove_stack(obj.uuid)
 
     def algorithm_accepted(self, stack_uuid, func):
-        self.presenter.do_badly(stack_uuid, func)
+        self.presenter.apply_to_data(stack_uuid, func)
