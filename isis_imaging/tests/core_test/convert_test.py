@@ -69,7 +69,7 @@ class ConvertTest(unittest.TestCase):
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
-            saver._img_format = img_format
+            saver._out_format = img_format
             saver._save_preproc = True
             saver._data_as_stack = stack
             saver._overwrite_all = True
@@ -82,7 +82,7 @@ class ConvertTest(unittest.TestCase):
             # convert them
             conf = self.config
             conf.func.input_path = preproc_output_path
-            conf.func.in_format = saver._img_format
+            conf.func.in_format = saver._out_format
             converted_output_path = saver._output_path + '/converted'
             conf.func.output_path = converted_output_path
             conf.func.out_format = convert_format
@@ -95,7 +95,7 @@ class ConvertTest(unittest.TestCase):
             # this odes not load any flats or darks as they were not saved out
             sample, _, _ = loader.load(
                 converted_output_path,
-                img_format=convert_format,
+                in_format=convert_format,
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
@@ -122,7 +122,7 @@ class ConvertTest(unittest.TestCase):
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
-            saver._img_format = img_format
+            saver._out_format = img_format
             saver._data_as_stack = stack
             saver._save_preproc = True
             saver._overwrite_all = True
@@ -134,7 +134,7 @@ class ConvertTest(unittest.TestCase):
             # convert them
             conf = self.config
             conf.func.input_path = preproc_output_path
-            conf.func.in_format = saver._img_format
+            conf.func.in_format = saver._out_format
             converted_output_path = saver._output_path + '/converted'
             conf.func.output_path = converted_output_path
             conf.func.out_format = convert_format
@@ -147,7 +147,7 @@ class ConvertTest(unittest.TestCase):
             # this odes not load any flats or darks as they were not saved out
             sample, _, _ = loader.load(
                 converted_output_path,
-                img_format=convert_format,
+                in_format=convert_format,
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
@@ -175,7 +175,7 @@ class ConvertTest(unittest.TestCase):
 
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
-            saver._img_format = img_format
+            saver._out_format = img_format
             # force saving out as STACK because we're saving NXS files
             saver._data_as_stack = True
             saver._save_preproc = True
@@ -188,7 +188,7 @@ class ConvertTest(unittest.TestCase):
             # convert them
             conf = self.config
             conf.func.input_path = preproc_output_path
-            conf.func.in_format = saver._img_format
+            conf.func.in_format = saver._out_format
             converted_output_path = saver._output_path + '/converted'
             conf.func.output_path = converted_output_path
             conf.func.out_format = convert_format
@@ -201,7 +201,7 @@ class ConvertTest(unittest.TestCase):
             # this does not load any flats or darks as they were not saved out
             sample, _, _ = loader.load(
                 converted_output_path,
-                img_format=convert_format,
+                in_format=convert_format,
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
