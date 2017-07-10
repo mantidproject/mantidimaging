@@ -7,8 +7,6 @@ import os
 import pickle
 from ast import literal_eval
 
-from isis_imaging.core.algorithms import finder
-
 DEFAULT_ARGUMENT_SEPARATOR = ' '
 DEFAULT_FUNCTION_SEPARATOR = ';'
 DEFAULT_TUPLE_SEPARATOR = ')'
@@ -80,7 +78,7 @@ class ProcessList(object):
         return len(self._list)
 
     def __eq__(self, rhs):
-        return self._list == rhs._dequeue
+        return self._list == rhs._list
 
     def __getitem__(self, item):
         return self._list[item]
@@ -131,17 +129,15 @@ class ProcessList(object):
         :param args: Arguments that will be forwarded to the function. They must be literal values.
         :param kwargs: Keyword arguments that will be forwarded to the function. They must be literal values.
         """
-        if(isinstance(func, str)):
-            self._store_string(func, args, kwargs)
-        else:
-            self._store_func(func, args, kwargs)
+        self._store_func(func, args, kwargs)
 
     def _store_func(self, func, args, kwargs):
-        assert set(kwargs.viewkeys()).issubset(inspect.getargspec(func)[0]), \
+        parameters = inspect.signature(func).parameters
+        assert set(kwargs.keys()).issubset(parameters), \
             "One or more of the keyword arguments provided were NOT found in the function's declaration!"
 
-        func_package = func.func_globals['__name__']
-        func_name = func.func_name
+        func_package = func.__globals__['__package__']
+        func_name = func.__name__
         self._store_string(func_package, func_name, args, kwargs)
 
     def _store_string(self, package, func, args, kwargs):
@@ -164,10 +160,10 @@ class ProcessList(object):
         """
         out = StringIO()
         for entry in self._list:
-            e = map(lambda x: str(x), list(entry))
+            e = list(map(lambda x: str(x), list(entry)))
 
-            out.write(e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR +
-                      e[2] + DEFAULT_ARGUMENT_SEPARATOR + e[3] + DEFAULT_FUNCTION_SEPARATOR)
+            output_string = e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR + e[2] + DEFAULT_ARGUMENT_SEPARATOR + e[3] + DEFAULT_FUNCTION_SEPARATOR
+            out.write(output_string)
 
         return out.getvalue()
 

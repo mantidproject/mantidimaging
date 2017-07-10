@@ -9,7 +9,7 @@ from isis_imaging.core import process_list
 from isis_imaging.core.filters import median_filter
 # def execute(data, size, mode=modes()[0], cores=None, chunksize=None):
 
-PACKAGE_LOCATION_STRING = 'isis_imaging/core/filters/median_filter'
+PACKAGE_LOCATION_STRING = 'isis_imaging.core.filters.median_filter'
 FUNC_NAME = 'execute'
 
 
@@ -29,19 +29,19 @@ class ProcessListTest(unittest.TestCase):
         self.assertEquals(len(self.pl), 6)
 
     def test_pop(self):
-        func_tuple = self.pl.pop()
+        func_tuple = self.pl.next()
         self.assertEqual(func_tuple[0], PACKAGE_LOCATION_STRING)
         self.assertEqual(func_tuple[1], FUNC_NAME)
         self.assertEqual(func_tuple[2], (3,))
         self.assertEqual(func_tuple[3], {})
 
-        func_tuple = self.pl.pop()
+        func_tuple = self.pl.next()
         self.assertEqual(func_tuple[0], PACKAGE_LOCATION_STRING)
         self.assertEqual(func_tuple[1], FUNC_NAME)
         self.assertEqual(func_tuple[2], ())
         self.assertEqual(func_tuple[3], {'size': 55})
 
-        func_tuple = self.pl.pop()
+        func_tuple = self.pl.next()
         self.assertEqual(func_tuple[0], PACKAGE_LOCATION_STRING)
         self.assertEqual(func_tuple[1], FUNC_NAME)
         self.assertEqual(func_tuple[2], (11,))
