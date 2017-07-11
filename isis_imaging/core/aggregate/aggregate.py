@@ -8,6 +8,8 @@ from isis_imaging import helper as h
 from isis_imaging.core.io import loader, saver
 from isis_imaging.core.io.utility import get_file_names, get_folder_names
 
+DEFAULT_AGGREGATE_PREFIX='out'
+
 
 def execute(config):
     """
@@ -91,12 +93,12 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
     """
 
     :param angle_image_paths: Enumerated generator that contains pairs of (angle number, list of all files for angle)
-    :param img_format:
-    :param agg_method:
-    :param energies_label:
-    :param single_folder:
-    :param config:
-    :return:
+    :param img_format: The input and output format of the images
+    :param agg_method: Which method to be used for aggregation, sum or mean
+    :param energies_label: Which energy levels are we aggregating
+    :param single_folder: Is the output in a single folder, or a folder per aggregate angle
+    :param config: The reconstruction config
+    :return: None
     """
     s = saver.Saver(config)  # this also sets the output format from the config
     parallel_load = config.func.parallel_load
@@ -118,7 +120,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
 
         h.pstop("Finished aggregating.")
 
-        custom_index, name, name_postfix, subdir = create_name(agg_method, angle, energies_label, single_folder)
+        custom_index, name, name_postfix, subdir = create_name(DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label, single_folder)
 
         s.save_single_image(
             aggregated_images,
@@ -129,23 +131,23 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
             use_preproc_folder=False)
 
 
-def create_name(agg_method, angle, energies_label, single_folder):
+def create_name(prefix, agg_method, angle, energies_label, single_folder):
     if not single_folder:
-        return create_name_multiple_files(agg_method, angle, energies_label)
+        return create_name_multiple_files(prefix, agg_method, angle, energies_label)
     else:
-        return create_name_single_folder(agg_method, angle, energies_label)
+        return create_name_single_folder(prefix, agg_method, angle, energies_label)
 
 
-def create_name_single_folder(agg_method, angle, energies_label):
-    name = 'out_' + agg_method + '_' + energies_label + '_'
+def create_name_single_folder(prefix, agg_method, angle, energies_label):
+    name = prefix + '_' + agg_method + '_' + energies_label + '_'
     name_postfix = ''
     subdir = ''
     custom_index = angle
     return custom_index, name, name_postfix, subdir
 
 
-def create_name_multiple_files(agg_method, angle, energies_label):
-    name = 'out_' + agg_method
+def create_name_multiple_files(prefix, agg_method, angle, energies_label):
+    name = prefix + '_' + agg_method
     name_postfix = energies_label
     subdir = 'angle_' + agg_method + str(angle)
     custom_index = ''

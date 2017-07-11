@@ -7,7 +7,7 @@ import unittest
 
 import numpy.testing as npt
 
-from isis_imaging.core.algorithms.registrator import registrator
+from isis_imaging.core.algorithms import registrator
 from isis_imaging.core.configs.functional_config import FunctionalConfig
 from isis_imaging.core.configs.recon_config import ReconstructionConfig
 
@@ -20,7 +20,7 @@ class ConfigsTest(unittest.TestCase):
         cls.parser = cls.func_config._setup_parser(cls.parser)
 
         sys.path[0] = os.path.join(sys.path[0], "isis_imaging")
-        registrator.register_into(cls.parser)
+        registrator.register_into(cls.parser, registrator.cli_register)
 
     def test_functional_config_doctest(self):
         self._compare_dict_to_str(self.func_config.__dict__,
@@ -32,7 +32,7 @@ class ConfigsTest(unittest.TestCase):
             # don't add input path, which is supposed to be mandatory
             fake_args_list = ['--cors', '42']
             fake_args = self.parser.parse_args(fake_args_list)
-            self.func_config.update(fake_args)
+            self.func_config._update(fake_args)
             ReconstructionConfig(self.func_config, fake_args)
             assert False, "If we reached this point we have failed the test, \
                           because we were supposed to crash without --input--path specified"
@@ -44,7 +44,7 @@ class ConfigsTest(unittest.TestCase):
         # don't add CORS, which is mandatory if running reconstruction
         fake_args_list = ['--input-path', '23', '--reconstruction']
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         # this was causing troubles, because the state is not refreshed with a
         # global setUpClass
         self.func_config.cors = None
@@ -54,7 +54,7 @@ class ConfigsTest(unittest.TestCase):
     def test_cors_success(self):
         fake_args_list = ['--input-path', '23', '--cors', '42']
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         ReconstructionConfig(self.func_config, fake_args)
 
     def test_save_preproc_no_output_path_error(self):
@@ -62,14 +62,14 @@ class ConfigsTest(unittest.TestCase):
             '--input-path', '23', '--cors', '42', '--save-preproc'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         npt.assert_raises(ValueError, ReconstructionConfig, self.func_config,
                           fake_args)
 
     def test_convert_no_output_path_error(self):
         fake_args_list = ['--input-path', '23', '--cors', '42', '--convert']
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         npt.assert_raises(ValueError, ReconstructionConfig, self.func_config,
                           fake_args)
 
@@ -78,7 +78,7 @@ class ConfigsTest(unittest.TestCase):
             '--input-path', '23', '--cors', '42', '--aggregate', '10 20'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         npt.assert_raises(ValueError, ReconstructionConfig, self.func_config,
                           fake_args)
 
@@ -88,7 +88,7 @@ class ConfigsTest(unittest.TestCase):
             '--input-path', '/tmp/', '--cors', '42', '--output-path', '/tmp/'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         # this shouldn't raise anything, if it does the test will crash
         ReconstructionConfig(self.func_config, fake_args)
 
@@ -98,7 +98,7 @@ class ConfigsTest(unittest.TestCase):
             'test', 'boop', 'what', 'why'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         npt.assert_raises(ValueError, ReconstructionConfig, self.func_config,
                           fake_args)
 
@@ -108,7 +108,7 @@ class ConfigsTest(unittest.TestCase):
             '20', '10', '20'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         ReconstructionConfig(self.func_config, fake_args)
 
     def test_air_region_not_int_fail(self):
@@ -117,7 +117,7 @@ class ConfigsTest(unittest.TestCase):
             'boop', 'what', 'why'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         npt.assert_raises(ValueError, ReconstructionConfig, self.func_config,
                           fake_args)
 
@@ -127,7 +127,7 @@ class ConfigsTest(unittest.TestCase):
             '10', '20'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         ReconstructionConfig(self.func_config, fake_args)
 
     def test_indices_single(self):
@@ -135,7 +135,7 @@ class ConfigsTest(unittest.TestCase):
             '--input-path', '23', '--cors', '42', '--indices', '42'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         rc = ReconstructionConfig(self.func_config, fake_args)
         self.assertEqual(rc.func.indices, [0, 42, 1])
 
@@ -144,7 +144,7 @@ class ConfigsTest(unittest.TestCase):
             '--input-path', '23', '--cors', '42', '--indices', '10', '42'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         rc = ReconstructionConfig(self.func_config, fake_args)
         self.assertEqual(rc.func.indices, [10, 42, 1])
 
@@ -153,7 +153,7 @@ class ConfigsTest(unittest.TestCase):
             '--input-path', '23', '--cors', '42', '--indices', '15', '33', '3'
         ]
         fake_args = self.parser.parse_args(fake_args_list)
-        self.func_config.update(fake_args)
+        self.func_config._update(fake_args)
         rc = ReconstructionConfig(self.func_config, fake_args)
         self.assertEqual(rc.func.indices, [15, 33, 3])
 

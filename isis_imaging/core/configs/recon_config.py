@@ -83,7 +83,7 @@ class ReconstructionConfig(object):
                 raise ValueError(
                     "Not enough arguments provided for the Air Region "
                     "Normalisation! Expecting 4, but found {0}: {1}"
-                    .format(len(self.args.air_region), self.args.air_region))
+                        .format(len(self.args.air_region), self.args.air_region))
 
             self.args.air_region = [int(val) for val in self.args.air_region]
 
@@ -115,10 +115,10 @@ class ReconstructionConfig(object):
             left = self.args.region_of_interest[0]
 
             # subtract from all the cors
-            self.func.cors = map(lambda cor: cor - left, self.func.cors)
+            self.func.cors = [int(cor) - left for cor in self.func.cors]
 
         if self.func.indices:
-            self.func.indices = map(lambda i: int(i), self.func.indices)
+            self.func.indices = [int(index) for index in self.func.indices]
 
             # if a single value is passed, assume we want from 0 up to the passed value
             if len(self.func.indices) < 2:
@@ -129,11 +129,12 @@ class ReconstructionConfig(object):
                 self.func.indices = [
                     self.func.indices[0], self.func.indices[1], 1
                 ]
+
         if self.func.split and not self.func.max_memory:
             raise ValueError(
                 "The --split flag was passed, but no --max-memory was specified!")
 
-            # float16, uint16 data types produce exceptions
+        # float16, uint16 data types produce exceptions
         # > float 16 - scipy median filter does not support it
         # > uint16 -  division is wrong, so all values become 0 and 1
         # could convert to float16, but then we'd have to go up to

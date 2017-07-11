@@ -100,10 +100,6 @@ class ConvertTest(unittest.TestCase):
 
             th.assert_equals(sample, images)
 
-            th.assert_files_exist(self, converted_output_path + '/converted',
-                                  convert_format, single_file=saver._data_as_stack,
-                                  num_images=images.shape[0])
-
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
         self.do_convert_to_nxs(
@@ -151,10 +147,6 @@ class ConvertTest(unittest.TestCase):
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
-
-            th.assert_files_exist(self, converted_output_path + '/converted',
-                                  convert_format, single_file=saver._data_as_stack,
-                                  num_images=images.shape[0])
 
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
@@ -205,9 +197,6 @@ class ConvertTest(unittest.TestCase):
                 parallel_load=parallel)
 
             th.assert_equals(sample, images)
-
-            th.assert_files_exist(self, converted_output_path + '/converted',
-                                  convert_format, single_file=stack, num_images=images.shape[0])
 
 
 if __name__ == '__main__':
