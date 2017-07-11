@@ -127,10 +127,6 @@ class AggregateTest(unittest.TestCase):
             for i in sample:
                 th.assert_equals(i, expected)
 
-            th.assert_files_exist(self,
-                                  aggregate_output_path + '/out_' + mode + '_0_10_',
-                                  saver._out_format, single_file=saver._data_as_stack, num_images=aggregate_angles)
-
     def test_aggregate_not_single_folder_sum_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'sum')
 
@@ -207,16 +203,6 @@ class AggregateTest(unittest.TestCase):
 
                 for i in sample:
                     th.assert_equals(i, expected)
-
-                # we leave it as '00_1' here and leave the num_images parameter
-                # this means that an additional 0 will be appended to the
-                # filename: out_...00_10 and will get the correct file name.
-                # This is a cheat to avoid an additional if statement
-                th.assert_files_exist(self,
-                                      angle_path + '/out_' + mode + '00_1',
-                                      saver._out_format,
-                                      single_file=saver._data_as_stack,
-                                      num_images=1)
 
 
 if __name__ == '__main__':

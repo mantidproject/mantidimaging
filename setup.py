@@ -33,4 +33,4 @@ setup(
     extras_require={
         'testing': ['nose'],
     },
-    long_description=open("README.md").read())
+    long_description=open("README.md").read(), install_requires=['numpy'])

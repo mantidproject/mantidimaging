@@ -11,6 +11,7 @@ DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'
 DEFAULT_NAME_POSTFIX = ''
 
+
 def write_fits(data, filename, overwrite=False):
     from isis_imaging.core.io.loader.imports import import_pyfits
     fits = import_pyfits()
@@ -197,9 +198,15 @@ class Saver(object):
     def get_output_path(self):
         return self._output_path
 
-    def save_single_image(self, data, subdir=None, name='saved_image',
-                          swap_axes=False, custom_index=None, zfill_len=0,
-                          name_postfix='', use_preproc_folder=True):
+    def save_single_image(self,
+                          data,
+                          subdir=None,
+                          name='saved_image',
+                          swap_axes=False,
+                          custom_index=None,
+                          zfill_len=0,
+                          name_postfix='',
+                          use_preproc_folder=True):
         """
         Save a single image to a single image file.
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
@@ -222,7 +229,10 @@ class Saver(object):
                              the order of the images, and they could
                              end up not loading all of the images.
         """
+        assert data.ndim == 2, "This should not be used with a 3D stack of images!"
 
+        # reshape so that it works with the internals
+        data = data.reshape(1, data.shape[0], data.shape[1])
         if self._output_path is None:
             h.tomo_print_note(
                 "Not saving a single image, "

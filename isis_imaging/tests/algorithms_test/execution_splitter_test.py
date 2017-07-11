@@ -68,7 +68,7 @@ class ExecutionSplitterTest(unittest.TestCase):
     def test_number_of_runs(self):
         execution_splitter.execute(self.rconfig, _func_to_be_executed)
 
-        self.assertEquals(global_variable, self.expected_iterations)
+        self.assertEquals(_global_variable, self.expected_iterations)
 
         # restore the function for other tests
 

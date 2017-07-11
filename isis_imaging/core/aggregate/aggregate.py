@@ -45,7 +45,7 @@ def execute(config):
     agg_method = commands.pop()
     do_sanity_checks(output_path, agg_method, commands)
 
-    # get the range of energy levels, in pairs of 2, [start end]
+    # get the range of energy levels, in pairs of 2, [start, end]
     energy_levels = [int(c) for c in commands]
 
     # this will drop the indices for energies that are not selected
@@ -88,15 +88,23 @@ def execute(config):
 
 def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
                    single_folder, config):
+    """
 
-    s = saver.Saver(config)
+    :param angle_image_paths: Enumerated generator that contains pairs of (angle number, list of all files for angle)
+    :param img_format:
+    :param agg_method:
+    :param energies_label:
+    :param single_folder:
+    :param config:
+    :return:
+    """
+    s = saver.Saver(config)  # this also sets the output format from the config
     parallel_load = config.func.parallel_load
     saver.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     for angle, image_paths in angle_image_paths:
-        # load all the images from angle, [0] to discard flat and dark
-        h.pstart("Aggregating data for angle {0} from path {1}".format(
-            angle, os.path.dirname(image_paths[0])))
+        # load all the images from angle, [0] to get the sample path data
+        h.pstart("Aggregating data for angle {0} from path {1}".format(angle, os.path.dirname(image_paths[0])))
         images, _, _ = loader.load(
             file_names=image_paths,
             in_format=img_format,
@@ -104,30 +112,44 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
 
         # sum or average them
         if 'sum' == agg_method:
-            acc = images.sum(axis=0, dtype=np.float32)
+            aggregated_images = images.sum(axis=0, dtype=np.float32)
         else:
-            acc = images.mean(axis=0, dtype=np.float32)
+            aggregated_images = images.mean(axis=0, dtype=np.float32)
 
         h.pstop("Finished aggregating.")
 
-        if not single_folder:
-            name = 'out_' + agg_method
-            name_postfix = energies_label
-            subdir = 'angle_' + agg_method + str(angle)
-            custom_index = ''
-        else:
-            name = 'out_' + agg_method + '_' + energies_label + '_'
-            name_postfix = ''
-            subdir = ''
-            custom_index = angle
+        custom_index, name, name_postfix, subdir = create_name(agg_method, angle, energies_label, single_folder)
 
         s.save_single_image(
-            acc.reshape(1, acc.shape[0], acc.shape[1]),
+            aggregated_images,
             subdir=subdir,
             name=name,
             custom_index=custom_index,
             name_postfix=name_postfix,
             use_preproc_folder=False)
+
+
+def create_name(agg_method, angle, energies_label, single_folder):
+    if not single_folder:
+        return create_name_multiple_files(agg_method, angle, energies_label)
+    else:
+        return create_name_single_folder(agg_method, angle, energies_label)
+
+
+def create_name_single_folder(agg_method, angle, energies_label):
+    name = 'out_' + agg_method + '_' + energies_label + '_'
+    name_postfix = ''
+    subdir = ''
+    custom_index = angle
+    return custom_index, name, name_postfix, subdir
+
+
+def create_name_multiple_files(agg_method, angle, energies_label):
+    name = 'out_' + agg_method
+    name_postfix = energies_label
+    subdir = 'angle_' + agg_method + str(angle)
+    custom_index = ''
+    return custom_index, name, name_postfix, subdir
 
 
 def do_sanity_checks(output_path, agg_method, commands):

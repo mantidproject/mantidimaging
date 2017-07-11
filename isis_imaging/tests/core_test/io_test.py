@@ -31,9 +31,6 @@ class IOTest(unittest.TestCase):
                            indices=None):
 
         if not stack:
-            # generate a list of filenames with 000000 numbers appended
-            filenames = []
-
             # this way we account for only selected indices in the filenames
             if not indices:
                 indices = [0, num_images, 1]
@@ -267,7 +264,6 @@ class IOTest(unittest.TestCase):
                 images = images[loader_indices[0]:loader_indices[1]]
 
             th.assert_equals(sample, images)
-
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
