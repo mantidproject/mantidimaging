@@ -1,15 +1,15 @@
 from __future__ import absolute_import, division, print_function
 
+from PyQt5 import Qt, QtCore
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
-from PyQt5 import Qt, QtCore
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
-from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 from isis_imaging.gui.stack_visualiser import sv_histogram
+from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
+from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
 
 
 class StackVisualiserView(Qt.QMainWindow):
@@ -21,7 +21,6 @@ class StackVisualiserView(Qt.QMainWindow):
                  cmap='Greys_r',
                  block=False,
                  **kwargs):
-
         # enforce not showing a single image
         assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
             data.ndim)
@@ -42,18 +41,19 @@ class StackVisualiserView(Qt.QMainWindow):
         # View doesn't take ownership of the data!
         self.presenter = StackViewerPresenter(self, data, axis)
 
-        self.mplfig = Figure()
-        self.image_axis = self.mplfig.add_subplot(111)
+        self.figure = Figure()
+        self.image_axis = self.figure.add_subplot(111)
 
-        self.canvas = FigureCanvasQTAgg(self.mplfig)
+        self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.rectanglecolor = QtCore.Qt.yellow
         self.canvas.setParent(self)
-        self.current_roi = (100, 100, 200, 200)
+        self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
+        self.current_roi = None
 
         self.toolbar = NavigationToolbar2QT(
             self.canvas, self, coordinates=True)
 
-        self.slider_axis = self.mplfig.add_axes(
+        self.slider_axis = self.figure.add_axes(
             [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
 
         # initialise the slider
@@ -69,6 +69,33 @@ class StackVisualiserView(Qt.QMainWindow):
         self.mplvl.addWidget(self.canvas)
 
         self.setup_shortcuts()
+
+    def remove_any_selected_roi(self, event):
+        """
+        This removes the previously selected ROI. This function is called on a single
+        button click and 2 things can happen:
+
+        - If a rectangle selection is present and the user just single clicked, the ROI will be kept,
+          because region_select_callback will be called afterwards
+
+        - If a rectangle selection is no longer present the region_select_callback will not be called and the ROI will
+          be deleted
+
+        This assumes that the order will always be matplotlib on click event first,
+        and then the rectangle selector callback.
+        This might be a wrong assumption which could cause weird plotting issues. For now I have not seen an issue and
+        the order seems to always be correct
+        """
+        self.current_roi = None
+
+    def region_select_callback(self, eclick, erelease):
+        # eclick and erelease are the press and release events
+        left, top = eclick.xdata, eclick.ydata
+        bottom, right = erelease.xdata, erelease.ydata
+
+        self.current_roi = (int(left), int(top), int(right), int(bottom))
+        region = "%i %i %i %i" % self.current_roi
+        print(region)
 
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
@@ -86,23 +113,6 @@ class StackVisualiserView(Qt.QMainWindow):
         self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
         self.rename_shortcut.activated.connect(
             lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW))
-
-        # self.remove_roi_shortcut = Qt.QMouseEvent(Qt.QEvent.MouseButtonPress, self.mapToGlobal(
-        # QtCore.QPoint(0,0)), QtCore.Qt.RightButton, QtCore.Qt.NoButton, QtCore.Qt.NoModifier)
-        # self.remove_roi_shortcut.activated.connect(self.mouse_button_pressed)
-        # self.mousePressEvent(self.remove_roi_shortcut)
-        # doesn't work, the pressing the key doesn't seem to call the function
-        # self.canvas.mpl_connect('key_press_event', self.toggle_selector)
-
-    def remove_roi_on_right_click(self, event):
-        print("In removing roi")
-        if event.button() == QtCore.Qt.RightButton:
-            self.rectangle_selector_visible(False)
-        else:
-            self.rectangle_selector_visible(True)
-
-    def rectangle_selector_visible(self, visible):
-        self.rectangle_selector.set_active(visible)
 
     def apply_to_data(self, func, *args, **kwargs):
         # TODO maybe we should separate out actions on data / GUI stuff
@@ -143,15 +153,6 @@ class StackVisualiserView(Qt.QMainWindow):
         slider.on_changed(self.show_current_image)
         return slider
 
-    def region_select_callback(self, eclick, erelease):
-        # eclick and erelease are the press and release events
-        left, top = eclick.xdata, eclick.ydata
-        bottom, right = erelease.xdata, erelease.ydata
-
-        self.current_roi = (int(left), int(top), int(right), int(bottom))
-        region = "%i %i %i %i" % self.current_roi
-        print(region)
-
     def current_index(self):
         """
         :return: Current selected index as integer
@@ -166,6 +167,10 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def current_image_roi(self):
         """
+        TODO plot the histogram of only the current image ROI, however there doesnt seem to be a way of getting the
+        state of the rectangle selector, so we can't know if the user has actually selected a ROI or not. Need to find
+        a workaround around this or a better rectangle selector
+
         :return: The selected region of the currently visualised image
         """
         image = self.current_image()
@@ -173,12 +178,12 @@ class StackVisualiserView(Qt.QMainWindow):
         return image[top:bottom, left:right]
 
     def show_histogram_of_current_image(self):
-        if self.rectangle_selector.visible:
-            print("Showing hist of ROI")
-            sv_histogram.show_transparent(self.current_image_roi())
+        # TODO move it to a plot legend
+
+        if self.current_roi:
+            sv_histogram.show_transparent(self.current_image_roi(), "{}".format(self.current_roi))
         else:
-            print("Showing hist of full image")
-            sv_histogram.show_transparent(self.current_image())
+            sv_histogram.show_transparent(self.current_image(), "Full image")
 
     def show_current_image(self, val=None):
         """
@@ -188,7 +193,6 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
-
 
 # def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):
 #     s = StackVisualiserView(data, axis, cmap, block)

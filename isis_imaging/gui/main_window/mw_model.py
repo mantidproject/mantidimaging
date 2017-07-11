@@ -85,7 +85,7 @@ class MainWindowModel(object):
 
         :param stack_uuid: The unique ID of the stack that will be removed.
         """
-        del self.active_stacks[uuid]
+        del self.active_stacks[stack_uuid]
 
     def apply_to_data(self, stack_uuid, function):
         self.get_stack_visualiser(stack_uuid).apply_to_data(function)
