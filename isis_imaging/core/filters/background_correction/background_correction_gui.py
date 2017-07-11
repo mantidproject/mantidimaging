@@ -42,11 +42,11 @@ def _gui_register(main_window):
         flat_dir = os.path.dirname(flat_path)
         dark_dir = os.path.dirname(dark_path)
 
-        flat, _, _ = io.loader.load(flat_dir, in_format=flat_extension)
-        flat = flat.mean(axis=0)
+        images_flat_only = io.loader.load(flat_dir, in_format=flat_extension)
+        flat = images_flat_only.get_flat().mean(axis=0)
 
-        dark, _, _ = io.loader.load(dark_dir, in_format=dark_extension)
-        dark = dark.mean(axis=0)
+        images_dark_only = io.loader.load(dark_dir, in_format=dark_extension)
+        dark = images_dark_only.get_dark().mean(axis=0)
 
         par = partial(background_correction.execute, flat=flat, dark=dark)
 

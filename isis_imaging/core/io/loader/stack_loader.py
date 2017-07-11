@@ -1,7 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
 from isis_imaging import helper as h
+from isis_imaging.core.parallel import two_shared_mem as ptsm
 from isis_imaging.core.parallel import utility as pu
+from .images import Images
 
 
 def parallel_move_data(input_data, output_data):
@@ -35,7 +37,6 @@ def do_stack_load_seq(data, new_data, img_shape, name):
 
 
 def do_stack_load_par(data, new_data, cores, chunksize, name):
-    from isis_imaging.core.parallel import two_shared_mem as ptsm
     f = ptsm.create_partial(
         parallel_move_data, fwd_function=ptsm.inplace)
     ptsm.execute(new_data, data, f, cores, chunksize, name)
@@ -49,13 +50,13 @@ def execute(load_func,
             cores=None,
             chunksize=None,
             parallel_load=False,
-            indices=None):
+            indices=None) -> Images:
     """
     Load a single image FILE that is expected to be a stack of images.
 
     Parallel execution can be slower depending on the storage system.
 
-    ! On HDD I've found it's about 50% SLOWER, thus not recommended!
+    On HDD I've found it's about 50% SLOWER, thus not recommended!
 
     :param file_name :: list of image file paths given as strings
     :param load_func :: file name extension if fixed (to set the expected image format)
@@ -76,8 +77,11 @@ def execute(load_func,
     data = pu.create_shared_array(img_shape, dtype=dtype)
 
     if parallel_load:
-        return do_stack_load_par(data, new_data, cores, chunksize, name)
+        data = do_stack_load_par(data, new_data, cores, chunksize, name)
     else:
         # we could just move with data[:] = new_data[:] but then we don't get
         # loading bar information, and I doubt there's any performance gain
-        return do_stack_load_seq(data, new_data, img_shape, name)
+        data = do_stack_load_seq(data, new_data, img_shape, name)
+
+    # Nexus doesn't load flat/dark images yet, if the functionality is requested it should be changed here
+    return Images(data, None, None, file_name)

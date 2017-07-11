@@ -1,6 +1,11 @@
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
+
 import time
+
+import numpy as np
+
+from isis_imaging.core.io import Images
+
 """
 Class for commonly used functions across the modules
 
@@ -59,19 +64,23 @@ def check_config_integrity(config):
 
 
 def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
+    if isinstance(data, Images):
+        to_check = data.get_sample()
+    else:
+        to_check = data
     # the data must be a np array, otherwise most functionality won't work
-    if not isinstance(data, expected_class):
+    if not isinstance(to_check, expected_class):
         raise ValueError(
             "Invalid data type. It is not a Numpy ndarray: {0}".
-            format(data))
+                format(to_check))
 
     # the scripts are designed to work with a 3 dimensional dataset
     # in the case of 4 dimensional data, it's typically reduced to 3 dimensions
     # via the aggregate functionality
-    if expected_dims != len(data.shape):
+    if expected_dims != to_check.ndim:
         raise ValueError(
             "Invalid data format. It does not have 3 dimensions. "
-            "Shape: {0}".format(data.shape))
+            "Shape: {0}".format(to_check.shape))
 
 
 def debug_print_memory_usage_linux(message=""):
@@ -125,11 +134,11 @@ def get_memory_usage_linux(kb=False, mb=False):
 
     tuple_to_return = tuple()  # start with empty tuple
     if kb:
-        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss), )
+        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss),)
 
     if mb:
         tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) /
-                            1024, )
+                            1024,)
     return tuple_to_return
 
 

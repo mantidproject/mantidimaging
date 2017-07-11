@@ -182,10 +182,10 @@ class StackVisualiserView(Qt.QMainWindow):
         # This can work with sv_histogram.show_transparent or sv_histogram.show
         if self.current_roi:
             sv_histogram.show_transparent(self.current_image_roi(), legend="Image {} {}".format(self.current_index(), self.current_roi),
-                                          title="")
+                                          title=self.dock.windowTitle())
         else:
-            sv_histogram.show_transparent(self.current_image(), legend="Full image {}".format(self.current_index()),
-                                          title="")
+            sv_histogram.show_transparent(self.current_image(), legend="Image {}".format(self.current_index()),
+                                          title=self.dock.windowTitle())
 
     def show_current_image(self, val=None):
         """

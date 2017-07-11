@@ -26,5 +26,6 @@ from __future__ import (absolute_import, division, print_function)
 from . import saver  # noqa: F401
 from . import loader  # noqa: F401
 from . import utility  # noqa: F401
+from .loader.images import Images
 
 del absolute_import, division, print_function

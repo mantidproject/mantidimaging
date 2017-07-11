@@ -8,7 +8,7 @@ from isis_imaging import helper as h
 from isis_imaging.core.io import loader, saver
 from isis_imaging.core.io.utility import get_file_names, get_folder_names
 
-DEFAULT_AGGREGATE_PREFIX='out'
+DEFAULT_AGGREGATE_PREFIX = 'out'
 
 
 def execute(config):
@@ -106,12 +106,13 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
 
     for angle, image_paths in angle_image_paths:
         # load all the images from angle, [0] to get the sample path data
-        h.pstart("Aggregating data for angle {0} from path {1}".format(angle, os.path.dirname(image_paths[0])))
-        images, _, _ = loader.load(
-            file_names=image_paths,
-            in_format=img_format,
-            parallel_load=parallel_load)
+        h.pstart("Aggregating data for angle {0} from path {1}".format(
+            angle, os.path.dirname(image_paths[0])))
 
+        images = loader.load(file_names=image_paths,
+                             in_format=img_format, parallel_load=parallel_load)
+
+        images = images.get_sample()
         # sum or average them
         if 'sum' == agg_method:
             aggregated_images = images.sum(axis=0, dtype=np.float32)
@@ -120,7 +121,8 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
 
         h.pstop("Finished aggregating.")
 
-        custom_index, name, name_postfix, subdir = create_name(DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label, single_folder)
+        custom_index, name, name_postfix, subdir = create_name(
+            DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label, single_folder)
 
         s.save_single_image(
             aggregated_images,

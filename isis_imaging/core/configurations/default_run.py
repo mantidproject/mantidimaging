@@ -1,15 +1,14 @@
 from __future__ import absolute_import, division, print_function
 
+from psutil import virtual_memory
+
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import cor_interpolate
+from isis_imaging.core.algorithms import size_calculator
+from isis_imaging.core.configurations import default_filtering
 from isis_imaging.core.io import loader, saver
 from isis_imaging.core.tools import importer
 from isis_imaging.readme_creator import Readme
-
-from isis_imaging.core.configurations import default_filtering
-from isis_imaging.core.algorithms import size_calculator
-
-from psutil import virtual_memory
 
 
 def _print_expected_memory_usage(data_shape, dtype):
@@ -67,10 +66,9 @@ def execute(config):
 
     saver_class, readme, tool = initialise_run(config)
 
-    sample, flat, dark = loader.load_from_config(config)
+    images = loader.load_from_config(config)
 
-    sample, flat, dark = default_filtering.execute(config, sample, flat,
-                                                   dark)
+    sample, flat, dark = default_filtering.execute(config, images.get_sample(), images.get_flat(), images.get_dark())
 
     saver_class.save_preproc_images(sample)
     if not config.func.reconstruction:

@@ -17,7 +17,7 @@ class MainWindowModel(object):
         self.active_stacks = {}
 
     def do_load_stack(self, sample_path, image_format, parallel_load, indices) -> np.ndarray:
-        sample, _, _ = loader.load(
+        images = loader.load(
             sample_path,
             None,
             None,
@@ -25,7 +25,7 @@ class MainWindowModel(object):
             parallel_load=parallel_load,
             indices=indices)
 
-        return sample
+        return images
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, indices):
         self.get_stack_visualiser(stack_uuid).apply_to_data(

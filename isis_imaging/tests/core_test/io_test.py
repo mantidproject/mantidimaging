@@ -35,7 +35,8 @@ class IOTest(unittest.TestCase):
             if not indices:
                 indices = [0, num_images, 1]
 
-            filenames = generate_names(base_name, indices, num_images, out_format=file_format)
+            filenames = generate_names(
+                base_name, indices, num_images, out_format=file_format)
 
             for f in filenames:
                 self.assertTrue(os.path.isfile(f))
@@ -224,7 +225,7 @@ class IOTest(unittest.TestCase):
                    loader_indices=None,
                    expected_len=None,
                    saver_indices=None):
-        images = th.gen_img_shared_array_with_val(42.)
+        expected_images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
@@ -238,32 +239,34 @@ class IOTest(unittest.TestCase):
             # saver indices only affects the enumeration of the data
             if saver_indices:
                 # crop the original images to make sure the tests is correct
-                images = images[saver_indices[0]:saver_indices[1]]
+                expected_images = expected_images[saver_indices[0]
+                :saver_indices[1]]
 
-            saver.save_preproc_images(images)
+            saver.save_preproc_images(expected_images)
 
             # create the same path as the saved out preproc images
             preproc_output_path = saver._output_path + '/pre_processed/'
 
             self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._out_format, data_as_stack,
-                                    images.shape[0], saver_indices)
+                                    expected_images.shape[0], saver_indices)
 
             # this does not load any flats or darks as they were not saved out
-            sample, _, _ = loader.load(preproc_output_path, in_format=saver._out_format,
-                                       cores=1, parallel_load=parallel, indices=loader_indices)
+            loaded_images = loader.load(preproc_output_path, in_format=saver._out_format,
+                                        cores=1, parallel_load=parallel, indices=loader_indices)
 
             if loader_indices:
                 assert len(
-                    sample
+                    loaded_images.get_sample()
                 ) == expected_len, "The length of the loaded data does not " \
                                    "match the expected length! Expected: {0}, " \
-                                   "Got {1}".format(expected_len, len(sample))
+                                   "Got {1}".format(expected_len, len(
+                    loaded_images.get_sample()))
 
                 # crop the original images to make sure the tests is correct
-                images = images[loader_indices[0]:loader_indices[1]]
+                expected_images = expected_images[loader_indices[0]:loader_indices[1]]
 
-            th.assert_equals(sample, images)
+            th.assert_equals(loaded_images.get_sample(), expected_images)
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
@@ -298,7 +301,7 @@ class IOTest(unittest.TestCase):
         and the saver indices are only used for enumeration,
         so it doesn't make sense to test it
         """
-        images = th.gen_img_shared_array_with_val(42.)
+        expected_images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
 
         with tempfile.NamedTemporaryFile() as f:
@@ -308,7 +311,7 @@ class IOTest(unittest.TestCase):
             saver._swap_axes = False
             data_as_stack = True
 
-            saver.save_preproc_images(images)
+            saver.save_preproc_images(expected_images)
 
             # create the same path as the saved out preproc images
             preproc_output_path = os.path.join(
@@ -316,31 +319,32 @@ class IOTest(unittest.TestCase):
 
             self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._out_format, data_as_stack,
-                                    images.shape[0])
+                                    expected_images.shape[0])
 
             # this does not load any flats or darks as they were not saved out!
             # this is a race condition versus the saving from the saver
             # when load is executed in parallel, the 8 threads try to
             # load the data too fast, and the data loaded is corrupted
             # hard coded 1 core to avoid race condition
-            sample, _, _ = loader.load(preproc_output_path, in_format=saver._out_format, cores=1,
-                                       parallel_load=parallel, indices=loader_indices)
+            images = loader.load(preproc_output_path, in_format=saver._out_format, cores=1,
+                                 parallel_load=parallel, indices=loader_indices)
 
             if loader_indices:
                 assert len(
-                    sample
+                    images.get_sample()
                 ) == expected_len, "The length of the loaded data does not " \
                                    "match the expected length! Expected: {0}, " \
-                                   "Got {1}".format(expected_len, len(sample))
+                                   "Got {1}".format(
+                    expected_len, len(images.get_sample()))
 
                 # crop the original images to make sure the tests is correct
-                images = images[loader_indices[0]:loader_indices[1]]
+                expected_images = expected_images[loader_indices[0]:loader_indices[1]]
 
-            th.assert_equals(sample, images)
+            th.assert_equals(images.get_sample(), expected_images)
 
             self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                     saver._out_format, data_as_stack,
-                                    images.shape[0])
+                                    expected_images.shape[0])
 
     def test_do_recon_fits(self):
         self.do_recon(img_format='fits', horiz_slices=False)
@@ -516,9 +520,9 @@ class IOTest(unittest.TestCase):
             config.func.in_format = saver._out_format
             saver.save_preproc_images(images)
 
-            loaded_sample, _, _ = loader.load_from_config(config)
+            loaded_images = loader.load_from_config(config)
 
-            th.assert_equals(images, loaded_sample)
+            th.assert_equals(images, loaded_images.get_sample())
 
     def test_construct_sinograms(self):
         images = th.gen_img_shared_array_with_val(42.)
@@ -538,9 +542,9 @@ class IOTest(unittest.TestCase):
             saver.save_preproc_images(images)
 
             config.func.construct_sinograms = True
-            loaded_sample, _, _ = loader.load_from_config(config)
+            loaded_images = loader.load_from_config(config)
 
-            th.assert_equals(exp_sinograms, loaded_sample)
+            th.assert_equals(exp_sinograms, loaded_images.get_sample())
 
 
 if __name__ == '__main__':

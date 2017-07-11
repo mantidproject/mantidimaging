@@ -1,12 +1,15 @@
 from __future__ import absolute_import, division, print_function
 
+from typing import Optional
+
 import numpy as np
 
 from isis_imaging import helper as h
+from isis_imaging.core.io.utility import get_file_names
 from isis_imaging.core.parallel import two_shared_mem as ptsm
 from isis_imaging.core.parallel import utility as pu
-
-from isis_imaging.core.io.utility import get_file_names
+from . import stack_loader
+from .images import Images
 
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
@@ -14,7 +17,7 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms):
+            img_format, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms) -> Images:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -43,20 +46,19 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     # get the shape of all images
     img_shape = first_sample_img.shape
 
-    # forward all arguments to internal class
+    # forward all arguments to internal class for easy re-usage
     l = ImageLoader(load_func, input_file_names, input_path_flat, input_path_dark,
                     img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms)
+
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    # this removes the image number dimension, if we loaded a stack of images
-
     flat_avg = l.load_and_avg_data(input_path_flat, "Flat")
 
     dark_avg = l.load_and_avg_data(input_path_dark, "Dark")
 
     sample_data = l.load_sample_data(input_file_names)
 
-    return sample_data, flat_avg, dark_avg
+    return Images(sample_data, flat_avg, dark_avg, input_file_names)
 
 
 class ImageLoader(object):
@@ -75,12 +77,11 @@ class ImageLoader(object):
         self.indices = indices
         self.construct_sinograms = construct_sinograms
 
-    def load_sample_data(self, input_file_names):
+    def load_sample_data(self, input_file_names) -> np.ndarray:
         # determine what the loaded data was
         if len(self.img_shape) == 2:  # the loaded file was a single image
             sample_data = self.load_files(input_file_names, "Sample")
         elif len(self.img_shape) == 3:  # the loaded file was a file containing a stack of images
-            from isis_imaging.core.io import stack_loader
             sample_data = stack_loader.execute(input_file_names[0], "Sample")
         else:
             raise ValueError(
@@ -88,7 +89,7 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_and_avg_data(self, file_path, prog_prefix=None):
+    def load_and_avg_data(self, file_path, prog_prefix=None) -> Optional[np.ndarray]:
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
 

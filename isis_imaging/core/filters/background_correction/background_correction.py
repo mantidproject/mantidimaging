@@ -51,8 +51,7 @@ def execute(data,
 
     :param chunksize: The number of chunks that each worker will receive.
 
-
-    :returns: filtered data (stack of images)
+    :return: filtered data (stack of images)
 
     Example command line:
     isis_imaging -i /some/data -F /some/flat/images -D /some/dark/images

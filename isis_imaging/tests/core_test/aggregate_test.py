@@ -119,12 +119,12 @@ class AggregateTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this does not load any flats or darks as they were not saved out
-            sample, _, _ = loader.load(
+            images = loader.load(
                 aggregate_output_path,
                 in_format=saver._out_format,
                 parallel_load=parallel)
 
-            for i in sample:
+            for i in images.get_sample():
                 th.assert_equals(i, expected)
 
     def test_aggregate_not_single_folder_sum_fits(self):
@@ -196,12 +196,12 @@ class AggregateTest(unittest.TestCase):
                 angle_path = os.path.dirname(
                     f.name) + '/aggregated/angle_' + mode + str(i)
 
-                sample, _, _ = loader.load(
+                images = loader.load(
                     angle_path,
                     in_format=saver._out_format,
                     parallel_load=parallel)
 
-                for i in sample:
+                for i in images.get_sample():
                     th.assert_equals(i, expected)
 
 

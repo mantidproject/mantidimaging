@@ -6,6 +6,7 @@ from isis_imaging import helper as h
 from isis_imaging.core.io.utility import get_file_names, DEFAULT_IO_FILE_FORMAT
 
 from . import img_loader, stack_loader
+from .images import Images
 
 
 def _fitsread(filename):
@@ -71,10 +72,11 @@ def supported_formats():
 
 def read_in_shape(input_path, in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32, cores=None, chunksize=None):
     input_file_names = get_file_names(input_path, in_format)
-    sample, _, _ = load(input_path, None, None, in_format,
-                        data_dtype, cores, chunksize, indices=[0, 1, 1])
+    images = load(input_path, None, None, in_format,
+                  data_dtype, cores, chunksize, indices=[0, 1, 1])
+
     # construct and return the new shape
-    return (len(input_file_names),) + sample.shape[1:]
+    return (len(input_file_names),) + images.get_sample().shape[1:]
 
 
 def read_in_shape_from_config(config):
@@ -100,7 +102,7 @@ def read_in_shape_from_config(config):
     return read_in_shape(input_path, in_format, data_dtype, cores, chunksize)
 
 
-def load_from_config(config):
+def load_from_config(config)-> Images:
     """
     Load data by reading the provided configuration file for paths.
     This is intended to be used internally within the scripts.
@@ -136,7 +138,7 @@ def load(input_path=None,
          parallel_load=False,
          file_names=None,
          indices=None,
-         construct_sinograms=False):
+         construct_sinograms=False) -> Images:
     """
     Loads a stack, including sample, white and dark images.
 
@@ -185,19 +187,18 @@ def load(input_path=None,
     if in_format in ['nxs']:
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
-        sample = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load",
+        images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load",
                                       cores, chunksize, parallel_load, indices)
-        flat = dark = None
     else:
         if in_format in ['fits', 'fit']:
             load_func = _fitsread
         else:
             load_func = _imread
 
-        sample, flat, dark = img_loader.execute(
+        images = img_loader.execute(
             load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype, cores, chunksize,
             parallel_load, indices, construct_sinograms)
 
-    h.check_data_stack(sample)
+    images.check_data_stack(images)
 
-    return sample, flat, dark
+    return images

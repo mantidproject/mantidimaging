@@ -65,7 +65,7 @@ class ConvertTest(unittest.TestCase):
     def do_convert(self, img_format, convert_format, stack, parallel=False):
         # this just converts between the formats, but not NXS!
         # create some images
-        images = th.gen_img_shared_array()
+        expected_images = th.gen_img_shared_array()
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
@@ -75,7 +75,7 @@ class ConvertTest(unittest.TestCase):
             saver._overwrite_all = True
 
             # save them out
-            saver.save_preproc_images(images)
+            saver.save_preproc_images(expected_images)
 
             preproc_output_path = saver._output_path + '/pre_processed'
 
@@ -93,12 +93,12 @@ class ConvertTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this odes not load any flats or darks as they were not saved out
-            sample, _, _ = loader.load(
+            loaded_images = loader.load(
                 converted_output_path,
                 in_format=convert_format,
                 parallel_load=parallel)
 
-            th.assert_equals(sample, images)
+            th.assert_equals(loaded_images.get_sample(), expected_images)
 
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
@@ -114,7 +114,7 @@ class ConvertTest(unittest.TestCase):
         # this saves out different formats to a nxs stack
         # create some images
         parallel = False
-        images = th.gen_img_shared_array()
+        expected_images = th.gen_img_shared_array()
         saver = self.create_saver()
         with tempfile.NamedTemporaryFile() as f:
             saver._output_path = os.path.dirname(f.name)
@@ -124,7 +124,7 @@ class ConvertTest(unittest.TestCase):
             saver._overwrite_all = True
 
             # save them out
-            saver.save_preproc_images(images)
+            saver.save_preproc_images(expected_images)
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
@@ -141,12 +141,12 @@ class ConvertTest(unittest.TestCase):
             # load them back
             # compare data to original
             # this odes not load any flats or darks as they were not saved out
-            sample, _, _ = loader.load(
+            loaded_images = loader.load(
                 converted_output_path,
                 in_format=convert_format,
                 parallel_load=parallel)
 
-            th.assert_equals(sample, images)
+            th.assert_equals(loaded_images.get_sample(), expected_images)
 
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
@@ -160,7 +160,7 @@ class ConvertTest(unittest.TestCase):
         # this saves out a nexus stack and then loads it in different formats
         # create some images
         parallel = False
-        images = th.gen_img_shared_array()
+        expected_images = th.gen_img_shared_array()
         # expected none, because NXS doesn't currently save
         # out flat or dark image
         saver = self.create_saver()
@@ -174,7 +174,7 @@ class ConvertTest(unittest.TestCase):
             saver._overwrite_all = True
 
             # save them out
-            saver.save_preproc_images(images)
+            saver.save_preproc_images(expected_images)
             preproc_output_path = saver._output_path + '/pre_processed'
 
             # convert them
@@ -187,16 +187,13 @@ class ConvertTest(unittest.TestCase):
             conf.func.data_as_stack = stack
             conf.func.convert_prefix = 'converted'
             convert.execute(conf)
-            # load them back
-            # compare data to original
 
+            # load them back and compare data to original
             # this does not load any flats or darks as they were not saved out
-            sample, _, _ = loader.load(
-                converted_output_path,
-                in_format=convert_format,
-                parallel_load=parallel)
+            loaded_images = loader.load(
+                converted_output_path, in_format=convert_format, parallel_load=parallel)
 
-            th.assert_equals(sample, images)
+            th.assert_equals(loaded_images.get_sample(), expected_images)
 
 
 if __name__ == '__main__':
