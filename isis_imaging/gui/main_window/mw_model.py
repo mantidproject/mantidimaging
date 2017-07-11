@@ -2,10 +2,9 @@ from __future__ import (absolute_import, division, print_function)
 
 import uuid
 
-import numpy as np
 from PyQt5.QtWidgets import QDockWidget
 
-from isis_imaging.core.io import loader, saver
+from isis_imaging.core.io import loader, saver, Images
 from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
 
@@ -16,7 +15,7 @@ class MainWindowModel(object):
 
         self.active_stacks = {}
 
-    def do_load_stack(self, sample_path, image_format, parallel_load, indices) -> np.ndarray:
+    def do_load_stack(self, sample_path, image_format, parallel_load, indices) -> Images:
         images = loader.load(
             sample_path,
             None,

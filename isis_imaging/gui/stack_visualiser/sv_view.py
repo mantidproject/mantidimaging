@@ -7,23 +7,17 @@ from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 
 from isis_imaging.core.algorithms import gui_compile_ui
+from isis_imaging.core.io import Images
 from isis_imaging.gui.stack_visualiser import sv_histogram
 from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
 
 
 class StackVisualiserView(Qt.QMainWindow):
-    def __init__(self,
-                 parent,
-                 dock,
-                 data,
-                 axis=0,
-                 cmap='Greys_r',
-                 block=False,
-                 **kwargs):
+    def __init__(self, parent, dock, images: Images, axis=0, cmap='Greys_r', block=False, **kwargs):
         # enforce not showing a single image
-        assert data.ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
-            data.ndim)
+        assert images.get_sample().ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
+            images.get_sample().ndim)
 
         # We set the main window as the parent, the effect is the same as having no parent, the window
         # will be inside the QDockWidget. If the dock is set as a parent the window will be an independent
@@ -39,36 +33,54 @@ class StackVisualiserView(Qt.QMainWindow):
         dock.closeEvent = self.closeEvent
 
         # View doesn't take ownership of the data!
-        self.presenter = StackViewerPresenter(self, data, axis)
+        self.presenter = StackViewerPresenter(self, images, axis)
 
         self.figure = Figure()
-        self.image_axis = self.figure.add_subplot(111)
 
-        self.canvas = FigureCanvasQTAgg(self.figure)
-        self.canvas.rectanglecolor = QtCore.Qt.yellow
-        self.canvas.setParent(self)
-        self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
+        self.initialise_canvas()
         self.current_roi = None
 
-        self.toolbar = NavigationToolbar2QT(
-            self.canvas, self, coordinates=True)
+        self.toolbar = NavigationToolbar2QT(self.canvas, self, coordinates=True)
 
-        self.slider_axis = self.figure.add_axes(
-            [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
+        self.initialise_slider(axis, images)
+        self.initialise_image(cmap, kwargs)
 
-        # initialise the slider
-        self.slider = self.create_slider(self.slider_axis,
-                                         data.shape[axis] - 1)
-        self.image = self.image_axis.imshow(
-            self.presenter.get_image(0), cmap=cmap, **kwargs)
-
-        self.rectangle_selector = self.create_rectangle_selector(
-            self.image_axis, 1)
+        self.rectangle_selector = self.create_rectangle_selector(self.image_axis, 1)
 
         self.mplvl.addWidget(self.toolbar)
         self.mplvl.addWidget(self.canvas)
 
         self.setup_shortcuts()
+
+    def initialise_image(self, cmap, kwargs):
+        """
+        Initialises the image axis and the image object
+        :param cmap: The color map which is to be used
+        :param kwargs: Any additional kwargs are forwarded to imshow
+        """
+        self.image_axis = self.figure.add_subplot(111)
+        self.image = self.image_axis.imshow(self.presenter.get_image(0), cmap=cmap, **kwargs)
+        self.set_image_title_to_current_filename()
+
+    def initialise_canvas(self):
+        """
+        Creates the canvas object from the figure
+        """
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.canvas.rectanglecolor = QtCore.Qt.yellow
+        self.canvas.setParent(self)
+        self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
+
+    def initialise_slider(self, axis, images):
+        """
+        Creates the axis for the slider and initialises the slider
+        :param axis:
+        :param images:
+        :return:
+        """
+        self.slider_axis = self.figure.add_axes(
+            [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
+        self.slider = self.create_slider(self.slider_axis, images.get_sample().shape[axis] - 1)
 
     def remove_any_selected_roi(self, event):
         """
@@ -110,6 +122,11 @@ class StackVisualiserView(Qt.QMainWindow):
         self.histogram_shortcut.activated.connect(
             lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
 
+        self.new_window_histogram_shortcut = Qt.QShortcut(
+            Qt.QKeySequence("Ctrl+Shift+C"), self.dock)
+        self.new_window_histogram_shortcut.activated.connect(
+            lambda: self.presenter.notify(StackWindowNotification.NEW_WINDOW_HISTOGRAM))
+
         self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
         self.rename_shortcut.activated.connect(
             lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW))
@@ -147,8 +164,7 @@ class StackVisualiserView(Qt.QMainWindow):
             interactive=True)
 
     def create_slider(self, slider_axis, length):
-        slider = Slider(
-            slider_axis, 'Slices', 0, length, valinit=0, valfmt='%i')
+        slider = Slider(slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
 
         slider.on_changed(self.show_current_image)
         return slider
@@ -177,21 +193,34 @@ class StackVisualiserView(Qt.QMainWindow):
         left, top, right, bottom = self.current_roi
         return image[top:bottom, left:right]
 
-    def show_histogram_of_current_image(self):
-        # TODO SET TITLE TO BE FILENAME
+    def show_histogram_of_current_image(self, new_window=False):
         # This can work with sv_histogram.show_transparent or sv_histogram.show
+        current_index = self.current_index()
+        current_filename = self.presenter.get_image_filename(current_index)
+        title = self.dock.windowTitle()
+        common_label = "Index: {current_index}, {current_filename}"
+        legend = self._create_label(common_label, current_filename, current_index)
+        histogram_function = sv_histogram.show_transparent if not new_window else sv_histogram.show_floating_transparent
+        histogram_function(self.current_image(), legend=legend, title=title)
+
+    def _create_label(self, common_label, current_filename, current_index):
         if self.current_roi:
-            sv_histogram.show_transparent(self.current_image_roi(), legend="Image {} {}".format(self.current_index(), self.current_roi),
-                                          title=self.dock.windowTitle())
+            legend = (common_label + " {current_roi}").format(
+                current_filename=current_filename, current_index=current_index, current_roi=self.current_roi)
         else:
-            sv_histogram.show_transparent(self.current_image(), legend="Image {}".format(self.current_index()),
-                                          title=self.dock.windowTitle())
+            legend = common_label.format(current_filename=current_filename,
+                                         current_index=current_index)
+        return legend
 
     def show_current_image(self, val=None):
         """
         :param val: Unused, but required so that the function has the same signature as the expected one
         """
+        self.set_image_title_to_current_filename()
         self.image.set_data(self.current_image())
+
+    def set_image_title_to_current_filename(self):
+        self.image_axis.set_title(self.presenter.get_image_filename(self.current_index()))
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))

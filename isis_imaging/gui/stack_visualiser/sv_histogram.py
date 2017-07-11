@@ -19,8 +19,6 @@ def _setup_transparent(current_image, ax, legend=None, title=None):
     center = (bins[:-1] + bins[1:]) / 2
     ax.plot(center, histogram, label=legend)
     ax.legend(loc='upper left')
-    if title:
-        ax.title(title)
 
 
 def add_new_figure():
@@ -37,20 +35,29 @@ def _show():
 
 def show(current_image, legend=None, title=None):
     _setup_normal(current_image, pyplot, legend, title)
+    if title:
+        pyplot.title(title)
     _show()
 
 
 def show_transparent(current_image, legend=None, title=None):
     _setup_transparent(current_image, pyplot, legend, title)
+    if title:
+        pyplot.title(title)
     _show()
 
 
 def show_floating(current_image, legend=None, title=None):
     ax = add_new_figure()
     _setup_normal(current_image, ax, legend, title)
+    if title:
+        ax.set_title(title)
     _show()
 
 
 def show_floating_transparent(current_image, legend=None, title=None):
     ax = add_new_figure()
+    if title:
+        ax.set_title(title)
     _setup_transparent(current_image, ax, legend, title)
+    _show()
