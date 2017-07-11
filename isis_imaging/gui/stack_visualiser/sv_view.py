@@ -178,12 +178,14 @@ class StackVisualiserView(Qt.QMainWindow):
         return image[top:bottom, left:right]
 
     def show_histogram_of_current_image(self):
-        # TODO move it to a plot legend
-
+        # TODO SET TITLE TO BE FILENAME
+        # This can work with sv_histogram.show_transparent or sv_histogram.show
         if self.current_roi:
-            sv_histogram.show_transparent(self.current_image_roi(), "{}".format(self.current_roi))
+            sv_histogram.show_transparent(self.current_image_roi(), legend="Image {} {}".format(self.current_index(), self.current_roi),
+                                          title="")
         else:
-            sv_histogram.show_transparent(self.current_image(), "Full image")
+            sv_histogram.show_transparent(self.current_image(), legend="Full image {}".format(self.current_index()),
+                                          title="")
 
     def show_current_image(self, val=None):
         """
