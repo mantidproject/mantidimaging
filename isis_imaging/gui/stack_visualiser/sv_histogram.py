@@ -5,17 +5,17 @@ from matplotlib import pyplot
 
 # from .mslice_plotting import pyplot
 
-HISTOGRAM_BIN_SIZE = 256
+HISTOGRAM_BIN_SIZE = 2048
 
 
-def _setup_normal(current_image, ax, legend=None, title=None):
+def _setup_normal(current_image, ax, legend, title):
     ax.hist(current_image.flatten(), bins=HISTOGRAM_BIN_SIZE, label=legend)
     ax.legend(loc='upper left')
     ax.title(title)
 
 
-def _setup_transparent(current_image, ax, legend=None, title=None):
-    histogram, bins = np.histogram(current_image.flatten(), bins=512)
+def _setup_transparent(current_image, ax, legend):
+    histogram, bins = np.histogram(current_image.flatten(), bins=HISTOGRAM_BIN_SIZE)
     center = (bins[:-1] + bins[1:]) / 2
     ax.plot(center, histogram, label=legend)
     ax.legend(loc='upper left')
@@ -29,35 +29,35 @@ def add_new_figure():
 
 def _show():
     pyplot.show()
-    # redraw the plot, this shows an updated histogram
+    # redraw the plot, this will show any new histograms
     pyplot.draw()
 
 
-def show(current_image, legend=None, title=None):
+def show(current_image, legend, title):
     _setup_normal(current_image, pyplot, legend, title)
-    if title:
-        pyplot.title(title)
+    pyplot.title(title)
     _show()
+    return pyplot
 
 
-def show_transparent(current_image, legend=None, title=None):
-    _setup_transparent(current_image, pyplot, legend, title)
-    if title:
-        pyplot.title(title)
+def show_transparent(current_image, legend, title):
+    _setup_transparent(current_image, pyplot, legend)
+    pyplot.title(title)
     _show()
+    return pyplot
 
 
-def show_floating(current_image, legend=None, title=None):
+def show_floating(current_image, legend, title):
     ax = add_new_figure()
     _setup_normal(current_image, ax, legend, title)
-    if title:
-        ax.set_title(title)
+    ax.set_title(title)
     _show()
+    return ax
 
 
-def show_floating_transparent(current_image, legend=None, title=None):
+def show_floating_transparent(current_image, legend, title):
     ax = add_new_figure()
-    if title:
-        ax.set_title(title)
-    _setup_transparent(current_image, ax, legend, title)
+    _setup_transparent(current_image, ax, legend)
+    ax.set_title(title)
     _show()
+    return ax

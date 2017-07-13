@@ -15,7 +15,7 @@ class Notification(IntEnum):
 
 
 class StackViewerPresenter(object):
-    def __init__(self, view, images: Images, axis):
+    def __init__(self, view, images, axis):
         super(StackViewerPresenter, self).__init__()
         self.view = view
         self.images = images
@@ -62,7 +62,8 @@ class StackViewerPresenter(object):
         return self.images.get_filenames()[index]
 
     def get_image_filename(self, index):
-        return os.path.basename(self.images.get_filenames()[index])
+        filenames = self.images.get_filenames()
+        return os.path.basename(filenames[index] if filenames is not None else "")
 
     def apply_to_data(self, func, *args, **kwargs):
         # TODO refactor, and provide a way to read ROI

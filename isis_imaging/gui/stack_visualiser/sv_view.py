@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+import sys
+
 from PyQt5 import Qt, QtCore
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
@@ -7,14 +9,13 @@ from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from isis_imaging.core.io import Images
 from isis_imaging.gui.stack_visualiser import sv_histogram
 from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
 
 
 class StackVisualiserView(Qt.QMainWindow):
-    def __init__(self, parent, dock, images: Images, axis=0, cmap='Greys_r', block=False, **kwargs):
+    def __init__(self, parent, dock, images, axis=0, cmap='Greys_r', block=False, **kwargs):
         # enforce not showing a single image
         assert images.get_sample().ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
             images.get_sample().ndim)
@@ -27,7 +28,6 @@ class StackVisualiserView(Qt.QMainWindow):
 
         # capture the QDockWidget reference so that we can access the Qt widget and change things like the title
         self.dock = dock
-
         # Swap out the dock close event with our own provided close event. This is needed to manually
         # delete the data reference, otherwise it is left hanging in the presenter
         dock.closeEvent = self.closeEvent
@@ -144,7 +144,11 @@ class StackVisualiserView(Qt.QMainWindow):
         # because the window will be docked in, however we delete it
         # immediately after so no visible change occurs
         self.parent().setFloating(False)
-        self.window().remove_stack(self)  # refers to MainWindow
+
+        # this could happen if run without a parent through see(..)
+        if not isinstance(self.window(), Qt.QDockWidget):
+            self.window().remove_stack(self)  # refers to MainWindow
+
         self.deleteLater()
         # refers to the QDockWidget within which the stack is contained
         self.parent().deleteLater()
@@ -200,6 +204,7 @@ class StackVisualiserView(Qt.QMainWindow):
         title = self.dock.windowTitle()
         common_label = "Index: {current_index}, {current_filename}"
         legend = self._create_label(common_label, current_filename, current_index)
+
         histogram_function = sv_histogram.show_transparent if not new_window else sv_histogram.show_floating_transparent
         histogram_function(self.current_image(), legend=legend, title=title)
 
@@ -225,5 +230,18 @@ class StackVisualiserView(Qt.QMainWindow):
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
 
-# def show_3d(data, axis=0, cmap='Greys_r', block=False, **kwargs):
-#     s = StackVisualiserView(data, axis, cmap, block)
+
+def see(data, axis=0, cmap='Greys_r', block=False, **kwargs):
+    print("Running independent Stack Visualiser")
+
+    # We cache the QApplication reference, otherwise the interpreter will segfault when we try to create
+    # a second QApplication on a consecutive call. We cache it as a parameter of this function, because we don't
+    # want to expose the QApplication to the outside
+    if not hasattr(see, 'q_application'):
+        see.q_application = Qt.QApplication(sys.argv)
+
+    dock = Qt.QDockWidget(None)
+    s = StackVisualiserView(None, dock, data, axis, cmap, block)
+    dock.setWidget(s)
+    dock.show()
+    see.q_application.exec_()
