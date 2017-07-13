@@ -4,6 +4,6 @@ imgpy_dir=$HOME/isis_imaging
 # this will be used in the env script
 python_exec="ipython"
 
-. $imgpy_dir/isis_imaging-env.sh
+. $imgpy_dir/isis_imaging-env-py27.sh
 
 PYTHONPATH="$imgpy_dir:$PYTHONPATH" ${python_location} -i $imgpy_dir/isis_imaging/ipython.py "$@"
