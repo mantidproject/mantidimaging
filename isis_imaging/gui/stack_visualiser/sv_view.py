@@ -47,8 +47,8 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.rectangle_selector = self.create_rectangle_selector(self.image_axis, 1)
 
-        self.mplvl.addWidget(self.toolbar)
-        self.mplvl.addWidget(self.canvas)
+        self.matplotlib_layout.addWidget(self.toolbar)
+        self.matplotlib_layout.addWidget(self.canvas)
 
         self.setup_shortcuts()
 
@@ -161,7 +161,7 @@ class StackVisualiserView(Qt.QMainWindow):
             self.region_select_callback,
             drawtype='box',
             useblit=False,
-            button=[1, 3],  # don't use middle button
+            button=[1],  # don't use middle button
             spancoords='pixels',
             minspanx=20,
             minspany=20,

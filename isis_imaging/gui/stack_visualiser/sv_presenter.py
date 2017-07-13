@@ -70,6 +70,7 @@ class StackViewerPresenter(object):
         # TODO provide a standard way to request parameters?
         # TODO Should we go to Mantid-style algorithm with functions like getProperty, etc?
         # It might be worth moving back into mantid at that point and using the existing algorithm structure
+
         do_before = getattr(func, "do_before", None)
         if do_before:
             delattr(func, "do_before")
@@ -79,7 +80,10 @@ class StackViewerPresenter(object):
 
         if do_before:
             res_before = do_before(self.images.get_sample())
+        else:
+            res_before = ()
+
         func(self.images.get_sample(), *args, **kwargs)
         if do_after:
-            do_after(self.images.get_sample(), res_before)
+            do_after(self.images.get_sample(), *res_before)
         self.view.show_current_image()

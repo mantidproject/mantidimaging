@@ -28,6 +28,28 @@ class AlgorithmDialog(Qt.QDialog):
         self.accepted.connect(self.accepted_action)
         self.stack_uuids = None
         self.selected_stack = None
+        self._do_before = []
+        self._do_after = []
+
+    def apply_before(self, action):
+        """
+        Any functions added here will be applied before running the main filter.
+        This can store multiple functions.
+
+        :param action: Function that will be executed.
+        """
+        self._do_before.append(action)
+
+    def apply_after(self, action):
+        """
+
+        :param action:
+        :return:
+        """
+        self._do_after.append(action)
+
+    def set_execute(self, execute_function):
+        self.execute = execute_function
 
     def accepted_action(self):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]

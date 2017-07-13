@@ -10,14 +10,12 @@ from isis_imaging.core.algorithms import gui_compile_ui as gcu
 from isis_imaging.core.algorithms import value_scaling
 from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
 from isis_imaging.gui.main_window.load_dialog import select_file
-
 from . import background_correction
 
 GUI_MENU_NAME = 'Background Correction'
 
 
 def _gui_register(main_window):
-
     dialog = AlgorithmDialog(main_window)
     gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle(GUI_MENU_NAME)
@@ -50,13 +48,12 @@ def _gui_register(main_window):
 
         par = partial(background_correction.execute, flat=flat, dark=dark)
 
-        # function to be applied before the execute function
-        par.do_before = value_scaling.create_factors
-        # function to be applied after the execute function
-        par.do_after = value_scaling.apply_factor
-
         return par
 
-    # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
+    dialog.apply_before(value_scaling.create_factors)
+
+    dialog.apply_after(value_scaling.apply_factor)
+
+    dialog.set_execute(decorate_execute)
+
     return dialog

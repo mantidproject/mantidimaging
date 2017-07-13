@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1076</width>
-    <height>866</height>
+    <height>854</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,7 +37,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="mplvl"/>
+     <layout class="QVBoxLayout" name="matplotlib_layout"/>
     </item>
    </layout>
   </widget>
