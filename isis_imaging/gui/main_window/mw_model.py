@@ -4,8 +4,7 @@ import uuid
 
 from PyQt5.QtWidgets import QDockWidget
 
-from isis_imaging.core.io import loader, saver, Images
-from isis_imaging.gui.stack_visualiser.sv_view import StackVisualiserView
+from isis_imaging.core.io import loader, saver
 
 
 class MainWindowModel(object):
@@ -15,7 +14,7 @@ class MainWindowModel(object):
 
         self.active_stacks = {}
 
-    def do_load_stack(self, sample_path, image_format, parallel_load, indices) -> Images:
+    def do_load_stack(self, sample_path, image_format, parallel_load, indices):
         images = loader.load(
             sample_path,
             None,
@@ -42,7 +41,7 @@ class MainWindowModel(object):
         # will be right before the number
         return file
 
-    def stack_list(self) -> list:
+    def stack_list(self):
         stacks = []
         for stack_uuid, widget in self.active_stacks.items():
             # ask the widget for its current title
@@ -53,17 +52,17 @@ class MainWindowModel(object):
         # sort by user friendly name
         return sorted(stacks, key=lambda x: x[1])
 
-    def stack_names(self) -> list:
+    def stack_names(self):
         # unpacks the tuple and only gives the correctly sorted human readable names
         return zip(*self.stack_list())[1]
 
-    def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: QDockWidget):
+    def add_stack(self, stack_visualiser, dock_widget):
         # generate unique ID for this stack
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
         print("Active stacks", self.active_stacks)
 
-    def get_stack(self, stack_uuid) -> QDockWidget:
+    def get_stack(self, stack_uuid):
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The QDockWidget that contains the Stack Visualiser. For direct access to the
@@ -71,7 +70,7 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def get_stack_visualiser(self, stack_uuid) -> StackVisualiserView:
+    def get_stack_visualiser(self, stack_uuid):
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The Stack Visualiser widget that contains the data.

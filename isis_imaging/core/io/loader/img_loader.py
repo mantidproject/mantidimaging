@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-from typing import Optional
-
 import numpy as np
 
 from isis_imaging import helper as h
@@ -17,7 +15,7 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms) -> Images:
+            img_format, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms):
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -77,7 +75,7 @@ class ImageLoader(object):
         self.indices = indices
         self.construct_sinograms = construct_sinograms
 
-    def load_sample_data(self, input_file_names) -> np.ndarray:
+    def load_sample_data(self, input_file_names):
         # determine what the loaded data was
         if len(self.img_shape) == 2:  # the loaded file was a single image
             sample_data = self.load_files(input_file_names, "Sample")
@@ -89,7 +87,7 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_and_avg_data(self, file_path, prog_prefix=None) -> Optional[np.ndarray]:
+    def load_and_avg_data(self, file_path, prog_prefix=None):
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
 

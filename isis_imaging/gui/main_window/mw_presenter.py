@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 from enum import Enum
 
-from isis_imaging.core.configs.recon_config import ReconstructionConfig
 from .mw_model import MainWindowModel
 
 
@@ -12,7 +11,7 @@ class Notification(Enum):
 
 
 class MainWindowPresenter(object):
-    def __init__(self, view, config: ReconstructionConfig):
+    def __init__(self, view, config):
         super(MainWindowPresenter, self).__init__()
         self.view = view
         self.model = MainWindowModel(config)

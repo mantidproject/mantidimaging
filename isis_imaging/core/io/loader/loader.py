@@ -102,7 +102,7 @@ def read_in_shape_from_config(config):
     return read_in_shape(input_path, in_format, data_dtype, cores, chunksize)
 
 
-def load_from_config(config)-> Images:
+def load_from_config(config):
     """
     Load data by reading the provided configuration file for paths.
     This is intended to be used internally within the scripts.
@@ -138,7 +138,7 @@ def load(input_path=None,
          parallel_load=False,
          file_names=None,
          indices=None,
-         construct_sinograms=False) -> Images:
+         construct_sinograms=False):
     """
     Loads a stack, including sample, white and dark images.
 

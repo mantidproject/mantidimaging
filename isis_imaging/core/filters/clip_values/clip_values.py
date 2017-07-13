@@ -4,6 +4,7 @@ import numpy as np
 
 from isis_imaging import helper as h
 
+
 def _cli_register(parser):
     parser.add_argument(
         "--clip-min",
@@ -48,7 +49,7 @@ def execute(data, clip_min=None, clip_max=None):
         h.pstart("Clipping data with values min {0} and max {1}.".format(
             clip_min, clip_max))
 
-        np.clip(data, clip_min, clip_max, data)
+        np.clip(data, clip_min, clip_max, out=data)
 
         h.pstop("Finished data clipping.")
 

@@ -50,7 +50,7 @@ def execute(load_func,
             cores=None,
             chunksize=None,
             parallel_load=False,
-            indices=None) -> Images:
+            indices=None):
     """
     Load a single image FILE that is expected to be a stack of images.
 

@@ -4,7 +4,7 @@ import numpy as np
 
 
 def create_shared_array(shape, dtype=np.float32):
-    import multiprocessing
+    from multiprocessing import sharedctypes
     import ctypes
 
     ctype = ctypes.c_float  # default to numpy float32 / C type float
@@ -18,11 +18,10 @@ def create_shared_array(shape, dtype=np.float32):
         ctype = ctypes.c_double
         dtype = np.float64
 
-    shared_array_base = multiprocessing.Array(ctype,
-                                              shape[0] * shape[1] * shape[2])
+    shared_array_base = sharedctypes.RawArray(ctype, shape[0] * shape[1] * shape[2])
 
     # create a numpy array from shared array
-    data = np.frombuffer(shared_array_base.get_obj(), dtype=dtype)
+    data = np.frombuffer(shared_array_base, dtype=dtype)
     return data.reshape(shape)
 
 
@@ -46,10 +45,9 @@ def get_cores():
 
 def generate_indices(num_images):
     """
-    Generate indices for each image. 
-    This will automatically be turned into a generator with Python 3
+    Generate indices for each image.
+
     :param num_images: The number of images.
-    :return:
     """
     return range(num_images)
 

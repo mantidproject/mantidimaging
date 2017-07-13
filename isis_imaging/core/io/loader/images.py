@@ -1,4 +1,4 @@
-from typing import List
+from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 from isis_imaging import helper as h
@@ -22,16 +22,16 @@ class Images(object):
                 "Please use index 0 to access Sample images, index 1 to access Flat images and index 2 to access Dark "
                 "images. Any other indices will raise a ValueError")
 
-    def get_sample(self) -> np.ndarray:
+    def get_sample(self):
         return self.sample
 
-    def get_flat(self) -> np.ndarray:
+    def get_flat(self):
         return self.flat
 
-    def get_dark(self) -> np.ndarray:
+    def get_dark(self):
         return self.dark
 
-    def get_filenames(self) -> List[str]:
+    def get_filenames(self):
         return self.filenames
 
     @staticmethod
