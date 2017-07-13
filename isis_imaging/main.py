@@ -35,7 +35,7 @@ def main():
     config.cmd_line = cmd_line
     if config.func.gui:
         # this has the highest priority
-        from gui import gui
+        from isis_imaging import gui
         thingy_to_execute = gui.execute
     elif config.func.imopr:
         from isis_imaging.core.imopr import imopr

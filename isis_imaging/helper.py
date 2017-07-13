@@ -4,8 +4,6 @@ import time
 
 import numpy as np
 
-from isis_imaging.core.io import Images
-
 """
 Class for commonly used functions across the modules
 
@@ -64,15 +62,16 @@ def check_config_integrity(config):
 
 
 def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
-    if isinstance(data, Images):
-        to_check = data.get_sample()
-    else:
+    if isinstance(data, np.ndarray):
         to_check = data
+    else:
+        to_check = data.get_sample()
+
     # the data must be a np array, otherwise most functionality won't work
     if not isinstance(to_check, expected_class):
         raise ValueError(
             "Invalid data type. It is not a Numpy ndarray: {0}".
-                format(to_check))
+            format(to_check))
 
     # the scripts are designed to work with a 3 dimensional dataset
     # in the case of 4 dimensional data, it's typically reduced to 3 dimensions
