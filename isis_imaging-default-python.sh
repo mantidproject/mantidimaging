@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 imgpy_dir=${HOME}/isis_imaging
 
-# this will be used in the env script
-python_exec="python"
-
-PYTHONPATH="$imgpy_dir:$PYTHONPATH" ${python_location} $imgpy_dir/isis_imaging/main.py "$@"
+# This will pick up whichever python is on the PATH
+PYTHONPATH="$imgpy_dir:$PYTHONPATH" python $imgpy_dir/isis_imaging/main.py "$@"
