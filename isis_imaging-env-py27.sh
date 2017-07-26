@@ -10,7 +10,7 @@ py27="$anaconda_dir/bin"
 
 # if anaconda is installed in default directory
 if [ -d "$anaconda_dir" ]; then
-    echo "Found anacondCa at $py27"
+    echo "Found anaconda at $py27"
     # update python executable to anaconda python
     python_location="${py27}/$python_exec"
     $python_location -V
