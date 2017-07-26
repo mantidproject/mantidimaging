@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-from psutil import virtual_memory
-
 from isis_imaging import helper as h
 from isis_imaging.core.algorithms import cor_interpolate
 from isis_imaging.core.algorithms import size_calculator
@@ -12,9 +10,8 @@ from isis_imaging.readme_creator import Readme
 
 
 def _print_expected_memory_usage(data_shape, dtype):
-    h.tomo_print_note("Predicted memory usage for data: " +
-                      str(size_calculator.full_size_MB(data_shape, 0, dtype)) +
-                      " MB, Total available on system: " + str(virtual_memory().total / 1024 / 1024) + " MB")
+    h.tomo_print_note(
+        "Predicted memory usage for data: {0} MB".format(size_calculator.full_size_MB(data_shape, 0, dtype)))
 
 
 def initialise_run(config):

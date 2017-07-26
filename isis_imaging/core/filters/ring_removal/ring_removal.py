@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
-from isis_imaging import helper as h
+
 import tomopy.misc.corr
+
+from isis_imaging import helper as h
 
 
 def _cli_register(parser):

@@ -82,19 +82,20 @@ def do_importing(package_dir, register_function_name, extended_file_suffix, func
     """
     module = importlib.import_module(package_dir)
     # Check if the imported module has the function attribute
-    if hasattr(module, register_function_name):
-        func_to_do_registering(module, package_dir, the_object)
-    # the attribute wasn't found, do the extended search and attempt to import the module with suffix
-    else:
-        extended_package_dir = package_dir + \
-            package_dir[package_dir.rfind('.'):] + extended_file_suffix
-        try:
-            extended_module = importlib.import_module(extended_package_dir)
+    try:
+        if hasattr(module, register_function_name):
+            func_to_do_registering(module, package_dir, the_object)
+        # the attribute wasn't found, do the extended search and attempt to import the module with suffix
+        else:
+            package_dir = package_dir + \
+                          package_dir[package_dir.rfind('.'):] + extended_file_suffix
+            extended_module = importlib.import_module(package_dir)
             func_to_do_registering(extended_module, package_dir, the_object)
-        except AttributeError:
-            warnings.warn(
-                "Package {0}.{1} function not found!".format(extended_package_dir, register_function_name))
-        except ImportError:
-            warnings.warn(
-                "Package {0}{1} was not found! It is not registered with the GUI and it will not appear.".format(
-                    extended_package_dir, extended_file_suffix))
+
+    except AttributeError:
+        warnings.warn(
+            "Package {0}.{1} function not found!".format(package_dir, register_function_name))
+    except ImportError:
+        warnings.warn(
+            "Package {0}{1} was not found! It is not registered with the GUI and it will not appear.".format(
+                package_dir, extended_file_suffix))
