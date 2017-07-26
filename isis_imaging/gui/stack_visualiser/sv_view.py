@@ -15,7 +15,7 @@ from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
 
 
 class StackVisualiserView(Qt.QMainWindow):
-    def __init__(self, parent, dock, images, axis=0, cmap='Greys_r', block=False, **kwargs):
+    def __init__(self, parent, dock, images, data_traversal_axis=0, cmap='Greys_r', block=False):
         # enforce not showing a single image
         assert images.get_sample().ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
             images.get_sample().ndim)
@@ -33,7 +33,7 @@ class StackVisualiserView(Qt.QMainWindow):
         dock.closeEvent = self.closeEvent
 
         # View doesn't take ownership of the data!
-        self.presenter = StackViewerPresenter(self, images, axis)
+        self.presenter = StackViewerPresenter(self, images, data_traversal_axis)
 
         self.figure = Figure()
 
@@ -42,8 +42,8 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.toolbar = NavigationToolbar2QT(self.canvas, self, coordinates=True)
 
-        self.initialise_slider(axis, images)
-        self.initialise_image(cmap, kwargs)
+        self.initialise_slider(data_traversal_axis, images)
+        self.initialise_image(cmap)
 
         self.rectangle_selector = self.create_rectangle_selector(self.image_axis, 1)
 
@@ -52,14 +52,13 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.setup_shortcuts()
 
-    def initialise_image(self, cmap, kwargs):
+    def initialise_image(self, cmap):
         """
         Initialises the image axis and the image object
         :param cmap: The color map which is to be used
-        :param kwargs: Any additional kwargs are forwarded to imshow
         """
         self.image_axis = self.figure.add_subplot(111)
-        self.image = self.image_axis.imshow(self.presenter.get_image(0), cmap=cmap, **kwargs)
+        self.image = self.image_axis.imshow(self.presenter.get_image(0), cmap=cmap)
         self.set_image_title_to_current_filename()
 
     def initialise_canvas(self):
@@ -69,18 +68,20 @@ class StackVisualiserView(Qt.QMainWindow):
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.rectanglecolor = QtCore.Qt.yellow
         self.canvas.setParent(self)
+
+        # connect an event that will clear the ROI if the user clicks but does not drag a new ROI rectangle
         self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
 
-    def initialise_slider(self, axis, images):
+    def initialise_slider(self, data_traversal_axis, images):
         """
         Creates the axis for the slider and initialises the slider
-        :param axis:
+        :param data_traversal_axis:
         :param images:
         :return:
         """
         self.slider_axis = self.figure.add_axes(
             [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
-        self.slider = self.create_slider(self.slider_axis, images.get_sample().shape[axis] - 1)
+        self.slider = self.create_slider(self.slider_axis, images.get_sample().shape[data_traversal_axis] - 1)
 
     def remove_any_selected_roi(self, event):
         """
@@ -187,10 +188,6 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def current_image_roi(self):
         """
-        TODO plot the histogram of only the current image ROI, however there doesnt seem to be a way of getting the
-        state of the rectangle selector, so we can't know if the user has actually selected a ROI or not. Need to find
-        a workaround around this or a better rectangle selector
-
         :return: The selected region of the currently visualised image
         """
         image = self.current_image()
@@ -198,17 +195,29 @@ class StackVisualiserView(Qt.QMainWindow):
         return image[top:bottom, left:right]
 
     def show_histogram_of_current_image(self, new_window=False):
+        """
+        Event that will show a histogram of the current image (full or the selected ROI).
+
+        :param new_window: Whether to put the new histogram into a new floating window,
+                           or append to the last focused plotting window
+        """
         # This can work with sv_histogram.show_transparent or sv_histogram.show
         current_index = self.current_index()
         current_filename = self.presenter.get_image_filename(current_index)
         title = self.dock.windowTitle()
-        common_label = "Index: {current_index}, {current_filename}"
-        legend = self._create_label(common_label, current_filename, current_index)
+        legend = self._create_label(current_filename, current_index)
 
+        # Choose plotting function depending on whether we're creating a histogram in the same window, or a new window.
+        # The last window that was focused will be considered the 'active' window.
         histogram_function = sv_histogram.show_transparent if not new_window else sv_histogram.show_floating_transparent
-        histogram_function(self.current_image(), legend=legend, title=title)
 
-    def _create_label(self, common_label, current_filename, current_index):
+        if self.current_roi:
+            histogram_function(self.current_image_roi(), legend=legend, title=title)
+        else:
+            histogram_function(self.current_image(), legend=legend, title=title)
+
+    def _create_label(self, current_filename, current_index):
+        common_label = "Index: {current_index}, {current_filename}"
         if self.current_roi:
             legend = (common_label + " {current_roi}").format(
                 current_filename=current_filename, current_index=current_index, current_roi=self.current_roi)
@@ -231,7 +240,19 @@ class StackVisualiserView(Qt.QMainWindow):
         self.image.set_clim((low, high))
 
 
-def see(data, axis=0, cmap='Greys_r', block=False, **kwargs):
+def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
+    """
+    This method provides an option to run an independent stack visualiser.
+    It might be useful when using the ISIS Imaging package through IPython.
+
+    Warning: This function will internally hide a QApplication in order to show the Stack Visualiser.
+    This can be accessed with see.q_application, and if modified externally it might crash the caller process.
+
+    :param data: Data to be visualised
+    :param data_traversal_axis: axis on which we're traversing the data
+    :param cmap: Color map
+    :param block: Whether to block the calling process, or not
+    """
     print("Running independent Stack Visualiser")
 
     # We cache the QApplication reference, otherwise the interpreter will segfault when we try to create
@@ -241,7 +262,7 @@ def see(data, axis=0, cmap='Greys_r', block=False, **kwargs):
         see.q_application = Qt.QApplication(sys.argv)
 
     dock = Qt.QDockWidget(None)
-    s = StackVisualiserView(None, dock, data, axis, cmap, block)
+    s = StackVisualiserView(None, dock, data, data_traversal_axis, cmap, block)
     dock.setWidget(s)
     dock.show()
     see.q_application.exec_()

@@ -15,11 +15,11 @@ class Notification(IntEnum):
 
 
 class StackViewerPresenter(object):
-    def __init__(self, view, images, axis):
+    def __init__(self, view, images, data_traversal_axis):
         super(StackViewerPresenter, self).__init__()
         self.view = view
         self.images = images
-        self.axis = axis
+        self.axis = data_traversal_axis
 
         self.model = ImgpyStackVisualiserModel()
 
