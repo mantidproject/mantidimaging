@@ -15,10 +15,6 @@ verbosity: Default 2, existing levels:
         usage before and after each step
 """
 
-# do we want to wrap this in a global class?
-# so that helper will just store the functionality,
-# but helper_data will store the actual data?
-
 _whole_exec_timer = None
 _timer_running = False
 _timer_start = None
@@ -26,14 +22,13 @@ _timer_print_prefix = " ---"
 
 _verbosity = 2
 
-_cache_last_memory = None
-
 _note_str = " > Note: "
 _warning_str = " >> WARNING: "
 _error_str = " >>> ERROR: "
 
 _progress_bar = None
 
+# global readme so that all imports of the header will write to the same buffer
 _readme = None
 
 
@@ -62,7 +57,10 @@ def check_config_integrity(config):
 
 
 def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
-    if isinstance(data, np.ndarray):
+    if data is None:
+        raise ValueError("Data is a None type.")
+
+    if isinstance(data, expected_class):
         to_check = data
     else:
         to_check = data.get_sample()
@@ -142,19 +140,21 @@ def get_memory_usage_linux(kb=False, mb=False):
 
 
 def get_memory_usage_linux_str():
+
     memory_in_kbs, memory_in_mbs = get_memory_usage_linux(kb=True, mb=True)
     # handle caching
     memory_string = " {0} KB, {1} MB".format(memory_in_kbs, memory_in_mbs)
 
-    global _cache_last_memory
-    if not _cache_last_memory:
-        _cache_last_memory = memory_in_kbs
+    # use an attribute to this function only, instead a global variable visible outside
+    if not hasattr(get_memory_usage_linux_str, 'last_memory_cache'):
+        get_memory_usage_linux_str.last_memory_cache = memory_in_kbs
     else:
         # get memory difference in Megabytes
-        delta_memory = (memory_in_kbs - _cache_last_memory) / 1024
+        delta_memory = (
+            memory_in_kbs - get_memory_usage_linux_str.last_memory_cache) / 1024
 
         # remove cached memory
-        _cache_last_memory = None
+        get_memory_usage_linux_str.last_memory_cache = None
         memory_string += ". Memory change: {0} MB".format(delta_memory)
 
     return memory_string
