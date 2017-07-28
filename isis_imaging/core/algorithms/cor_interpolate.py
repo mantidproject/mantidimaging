@@ -15,4 +15,10 @@ def execute(data_length, slice_ids, cors_for_slices):
 
     :returns: A np.array with length equal to data_length containing the interpolated CORs.
     """
+    assert cors_for_slices and all(
+        isinstance(cor, float) for cor in cors_for_slices), "The centers of rotation MUST be floats"
+
+    assert slice_ids and all(isinstance(slice, int) for slice in
+                             slice_ids), "The slices associated with the centers of rotation MUST be ints"
+
     return np.interp(list(range(data_length)), slice_ids, cors_for_slices)
