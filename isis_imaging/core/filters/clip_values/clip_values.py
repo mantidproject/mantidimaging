@@ -49,7 +49,10 @@ def execute(data, clip_min=None, clip_max=None):
         h.pstart("Clipping data with values min {0} and max {1}.".format(
             clip_min, clip_max))
 
-        np.clip(data, clip_min, clip_max, out=data)
+        # this is the fastest way to clip the values
+        # np.clip does not do the clipping in place and ends up copying the data
+        data[data < clip_min] = clip_min
+        data[data > clip_max] = clip_max
 
         h.pstop("Finished data clipping.")
 
