@@ -20,7 +20,7 @@ def grab_full_config():
     # sometimes we don't want to process the sys.argv arguments
 
     parser = argparse.ArgumentParser(
-        description='Run tomographic reconstruction via third party tools',
+        description='Run image processing and tomographic reconstruction via third party tools',
         formatter_class=RawTextHelpFormatter)
 
     # this sets up the arguments in the parser, with defaults from the Config
@@ -99,6 +99,14 @@ class ReconstructionConfig(object):
             raise ValueError("If running a reconstruction a Center of "
                              "Rotation MUST be provided")
 
+        # Convert the centers of rotation (if provided) to floats
+        if self.func.cors:
+            self.func.cors = [float(cor) for cor in self.func.cors]
+
+        # Convert the slices for the center of rotation centers of rotation (if provided) to ints
+        if self.func.cor_slices:
+            self.func.cor_slices = [int(slice_id) for slice_id in self.func.cor_slices]
+
         if self.func.cors and self.func.cor_slices:
             len_cors = len(self.func.cors)
             len_cor_slices = len(self.func.cor_slices)
@@ -107,14 +115,16 @@ class ReconstructionConfig(object):
                     "Centers of Rotation (len {0}) doesn't match length of "
                     "Slice Indices (len {1})!".format(len_cors,
                                                       len_cor_slices))
+
         # if the reconstruction is ran on already cropped images, then no ROI
-        # should be provided
+        # should be provided, however if we have a ROI then the Centers of Rotation
+        # will be inaccurate because the image has moved
         if self.func.cors and self.args.region_of_interest:
             # the COR is going to be related to the full image
             # as we are going to be cropping it, we subtract the crop
             left = self.args.region_of_interest[0]
 
-            # subtract from all the cors
+            # subtract the move to the left to account for the crop from all the CORs
             self.func.cors = [int(cor) - left for cor in self.func.cors]
 
         if self.func.indices:
@@ -143,12 +153,6 @@ class ReconstructionConfig(object):
             self.data_dtype = np.float32
         elif self.func.data_dtype == 'float64':
             self.data_dtype = np.float64
-
-        if self.func.cors:
-            self.cors = [float(cor) for cor in self.func.cors]
-        if self.func.cor_slices:
-            self.cor_slices = [int(slice_id)
-                               for slice_id in self.func.cor_slices]
 
         if isinstance(self.func.process_list, list):
             # remove the list, we want a single string
