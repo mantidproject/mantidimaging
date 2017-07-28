@@ -5,7 +5,7 @@ from isis_imaging.core.algorithms import cor_interpolate, shape_splitter
 from isis_imaging.core.io import loader
 
 
-def _split_data(config):
+def prepare_parameters(config):
     recon = config.func.reconstruction if config.func.reconstruction else False
 
     data_shape = loader.read_in_shape_from_config(config)
@@ -28,7 +28,7 @@ def execute(config, executable):
 
     :param executable: The function that will be executed.
     """
-    recon, data_shape, split, step = _split_data(config)
+    recon, data_shape, split, step = prepare_parameters(config)
 
     # if we are reconstructing
     if recon:

@@ -59,11 +59,11 @@ class ExecutionSplitterTest(unittest.TestCase):
             return self.recon, self.data_shape, self.split, self.step
 
         # override the function for the tests, this is restored in tearDown()
-        self.backup, execution_splitter._split_data = execution_splitter._split_data, override_split_data
+        self.backup, execution_splitter.prepare_parameters = execution_splitter.prepare_parameters, override_split_data
 
     def tearDown(self):
         # restore the function for the next test
-        execution_splitter._split_data = self.backup
+        execution_splitter.prepare_parameters = self.backup
 
     def test_number_of_runs(self):
         execution_splitter.execute(self.rconfig, _func_to_be_executed)
