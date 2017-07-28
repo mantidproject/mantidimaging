@@ -16,6 +16,7 @@ def execute(sample, flat, dark, config, indices):
     tool = importer.timed_import(config)
 
     print("Calculating projection angles..")
+
     # developer note: we are processing sinograms,
     # but we need the number of radiograms
     num_radiograms = sample.shape[1]
