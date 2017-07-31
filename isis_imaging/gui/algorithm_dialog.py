@@ -21,47 +21,61 @@ class AlgorithmDialog(Qt.QDialog):
         super(AlgorithmDialog, self).__init__()
         assert isinstance(
             main_window, MainWindowView
-        ), "The main window passed in is not of the correct type!"
+        ), "The object passed in for main window is not of the correct type!"
         gui_compile_ui.execute(ui_file, self)
 
         self.main_window = main_window
         self.accepted.connect(self.accepted_action)
         self.stack_uuids = None
         self.selected_stack = None
-        self._do_before = []
-        self._do_after = []
+        self.execute = None
+        self.do_before = None
+        self.do_after = None
+        self.requested_parameter = None
 
-    def apply_before(self, action):
+    def request_parameter(self, param):
+
+        if param in ["ROI"]:
+            self.request_parameter = param
+        else:
+            raise ValueError("Invalid parameter")
+
+    def apply_before(self, function):
         """
         Any functions added here will be applied before running the main filter.
-        This can store multiple functions.
+        This can store multiple functions. All of the results will be forwarded
+        to the function inside apply_after!
 
-        :param action: Function that will be executed.
+        :param function: Function that will be executed.
         """
-        self._do_before.append(action)
+        self.do_before = function
 
-    def apply_after(self, action):
+    def apply_after(self, function):
         """
+        Function that will be executed after the main execute function (set via set_execute) is finished.
+        The parameters provided will be in this order: (data, all_parameters_returned_from_before)
 
-        :param action:
-        :return:
+        :param function: Function that will be executed.
         """
-        self._do_after.append(action)
+        self.do_after = function
 
     def set_execute(self, execute_function):
+        """
+        Set the main execute function. Only the data parameter will be passed into it, as the rest are expected to be
+        decorated during the creation in the GUI files.
+
+        :param execute_function: The main execute function
+        """
         self.execute = execute_function
 
     def accepted_action(self):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
-        decorated_func = self.decorate_execute()
-        # TODO how to tell main from which dialogue we're returning?
-        # main window only needs to get the partial tho
-        self.main_window.algorithm_accepted(self.selected_stack,
-                                            decorated_func)
+        # main window only needs to get the partial
+        self.main_window.algorithm_accepted(self.selected_stack, self.execute)
 
     def update_and_show(self):
-        # clear the drop down menu
-        self.stackNames.clear(),
+        # clear the previous entries from the drop down menu
+        self.stackNames.clear()
 
         # get all the new stacks
         stack_list = self.main_window.stack_list()
@@ -70,7 +84,3 @@ class AlgorithmDialog(Qt.QDialog):
             self.stackNames.addItems(user_friendly_names)
         # show the dialogue with the updated stacks
         self.show()
-
-    def decorate_execute(self):
-        raise NotImplementedError(
-            "This function must be implemented by the AlgorithmDialog creator")
