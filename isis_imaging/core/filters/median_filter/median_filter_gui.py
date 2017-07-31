@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui as gcu
@@ -26,11 +28,10 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(label_size, size_field)
     dialog.formLayout.addRow(label_mode, mode_field)
 
-    def decorate_execute():
-        from functools import partial
+    def custom_execute():
         return partial(
             median_filter.execute, size=size_field.value(), mode=mode_field.currentText())
 
     # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
+    dialog.set_execute(custom_execute)
     return dialog

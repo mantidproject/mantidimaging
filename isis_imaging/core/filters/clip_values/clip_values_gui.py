@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from functools import partial
+
 from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui as gcu
@@ -30,12 +32,11 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(label_clip_min, clip_min_field)
     dialog.formLayout.addRow(label_clip_max, clip_max_field)
 
-    def decorate_execute():
+    def custom_execute():
         clip_min = clip_min_field.value()
         clip_max = clip_max_field.value()
-        from functools import partial
         return partial(clip_values.execute, clip_min=clip_min, clip_max=clip_max)
 
     # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
+    dialog.set_execute(custom_execute)
     return dialog

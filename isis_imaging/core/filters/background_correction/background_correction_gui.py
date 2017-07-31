@@ -31,7 +31,7 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(flatPath, flatButton)
     dialog.formLayout.addRow(darkPath, darkButton)
 
-    def decorate_execute():
+    def custom_execute():
         flat_path = str(flatPath.text())
         dark_path = str(darkPath.text())
         flat_extension = io.utility.get_file_extension(flat_path)
@@ -54,6 +54,6 @@ def _gui_register(main_window):
 
     dialog.apply_after(value_scaling.apply_factor)
 
-    dialog.set_execute(decorate_execute)
+    dialog.set_execute(custom_execute)
 
     return dialog

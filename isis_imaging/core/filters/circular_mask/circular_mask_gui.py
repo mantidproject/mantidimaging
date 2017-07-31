@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from functools import partial
+
 from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui as gcu
@@ -8,6 +10,7 @@ from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
 from . import circular_mask
 
 GUI_MENU_NAME = 'Circular Mask'
+
 
 def _gui_register(main_window):
     dialog = AlgorithmDialog(main_window)
@@ -29,13 +32,12 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(label_radius, radius_field)
     dialog.formLayout.addRow(label_value, value_field)
 
-    def decorate_execute():
-        from functools import partial
+    def custom_execute():
         return partial(
             circular_mask.execute,
             circular_mask_ratio=radius_field.value(),
             circular_mask_value=value_field.value())
 
     # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
+    dialog.set_execute(custom_execute)
     return dialog
