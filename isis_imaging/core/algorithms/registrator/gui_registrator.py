@@ -1,12 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-
 from PyQt5.Qt import QMenu, QAction
+
+from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
 from isis_imaging.gui.main_window.mw_view import MainWindowView
 from .registrator import do_importing
 
 
-def gui_register(qt_parent, package_dir):
+def gui_register(qt_parent, module_dir):
     assert isinstance(
         qt_parent,
         QMenu), "The object passed is not of a QMenu, and is not supported."
@@ -17,21 +18,44 @@ def gui_register(qt_parent, package_dir):
         MainWindowView), "This must be the MainWindowView object! If it's not, it means the structure has been " \
                          "changed, and the registrator code needs to be adjusted "
 
-    do_importing(package_dir, '_gui_register', '_gui',
-                 do_registering, main_window)
+    do_importing(module_dir, '_gui_register', '_gui', do_registering, main_window)
 
     return qt_parent
 
 
-def do_registering(module, package_dir, main_window):
+def do_registering(module, module_dir, main_window):
+    """
+    This function is a callback from the registrator. It will handle the registration for the GUI.
+
+    :param module: The module that we are currently registering into the GUI.
+
+    :param module_dir: The module's directory to be used as a name,
+                       if the GUI_MENU_NAME constant is not specified in the module.
+
+    :param main_window: The main window object, at this point we are guaranteed
+                        for it to be a MainWindowView because of the assertion in gui_register
+
+    """
     menu = main_window.menuFilters
+
+    # This will call the _gui_register function on each of the filters, where _gui_register is found
+    # We pass in the main_window reference to use it as the dialog's parent
     dialog = module._gui_register(main_window)
-    action = QAction(getattr(module, 'GUI_MENU_NAME', package_dir), menu)
+
+    assert isinstance(
+        dialog, AlgorithmDialog), "Function _gui_register of {0} did not return the expected type. Check that the " \
+                                  "dialog is of type AlgorithmDialog and is returned at the end of the _gui_register " \
+                                  "function.".format(module_dir)
+
+    assert dialog.execute is not None, "The execute function must be set manually!"
+
+    action = QAction(getattr(module, 'GUI_MENU_NAME', module_dir), menu)
+
     # the captured_dialog=dialog in the lambda captures THE ORIGINAL reference to the dialog
     # and when the user clicks the QAction in the QMenu the correct dialog is shown!
-    # If we do not capture, EVERY QAction will .show() only the last dialogue! For proof of this
-    # remove the capture, and set dialog=None after menu.addAction,
-    # Qt will raise NoneObject doesnt have .show()
+    # If we do not capture, EVERY QAction will .show() only the last dialogue, because the reference is overwritten
     action.triggered.connect(
         lambda x, captured_dialog=dialog: captured_dialog.update_and_show())
+
+    # finally add to the drop down menus
     menu.addAction(action)

@@ -18,7 +18,7 @@ def register_into(the_object, func=None, directory=None, package="core/filters",
 
     :param package: The internal package from which modules will be imported
 
-    :param func: Two built in functions are provided, registrator.cli_register and registrator.gui_register,
+    :param func: registrator.cli_register and registrator.gui_register,
                  for registration into the command line interface (CLI) or the graphical user interface (GUI)
 
     :param ignore_packages: Expected: List, If the package name matches an entry in the list, it will be ignored.
@@ -40,22 +40,29 @@ def register_into(the_object, func=None, directory=None, package="core/filters",
         directory = os.path.join(sys.path[0], package)
 
     all_files = os.walk(directory)
+
     # sort by filename
     for root, dirs, files in sorted(all_files, key=lambda file_tuple: file_tuple[2]):
+
+        # skip the python compiled files
         if "__pycache__" in root:
             continue
 
         # replace the / with . to match python package syntax, because it will be later imported dynamically
-        package_dir = root[root.find(package):].replace('/', '.')
-        if package_dir in all_ignores:
+        module_dir = root[root.find(package):].replace('/', '.')
+        if module_dir in all_ignores:
             continue
 
-        the_object = func(the_object, package_dir)
+        the_object = func(the_object, module_dir)
 
     return the_object
 
 
-def do_importing(package_dir, register_function_name, extended_file_suffix, func_to_do_registering, the_object):
+def do_importing(module_dir,
+                 name_of_register_function,
+                 extended_search_file_suffix,
+                 func_to_do_registering,
+                 the_object):
     """
     The interface registering code can be defined in two places:
 
@@ -68,34 +75,46 @@ def do_importing(package_dir, register_function_name, extended_file_suffix, func
 
     This is done in order to avoid importing the GUI library on a non-GUI run.
 
-    :param package_dir: The package directory
+    :param module_dir: The package directory
 
-    :param register_function_name: The function will check if this function is available in the module.
-                                   If not it will fallback to looking for a module with the
-                                   extended_file_suffix appended at the end.
+    :param name_of_register_function: The function will check if this function is available in the module.
+                                      If not it will fallback to looking for a module with the
+                                      extended_file_suffix appended at the end.
 
-    :param extended_file_suffix: The suffix for the module in the extended search
+    :param extended_search_file_suffix: The suffix for the module in the extended search
 
     :param func_to_do_registering: The actual function that will do the registering, and will accept the object
 
     :param the_object: The object that the registering function will use to register the modules in.
     """
-    module = importlib.import_module(package_dir)
-    # Check if the imported module has the function attribute
+
+    # import the module inside the provided package_dir,
+    # e.g. this will pass the isis_imaging.filters.median_filter package and it will be imported here
+    module = importlib.import_module(module_dir)
+
+    # try registering, and if it fails, show warning to the user
     try:
-        if hasattr(module, register_function_name):
-            func_to_do_registering(module, package_dir, the_object)
-        # the attribute wasn't found, do the extended search and attempt to import the module with suffix
+
+        # If the module has this attribute, it is the function defined in the .py file
+        if hasattr(module, name_of_register_function):
+
+            # the function that will do the actual registering, refer to the specialised modules for cli, gui, etc
+            func_to_do_registering(module, module_dir, the_object)
+
+        # the attribute wasn't found, do the extended search and attempt to import the module with the provided suffix
+        # this will search for a file that has the original filter module name + the suffix appended
         else:
-            package_dir = package_dir + \
-                          package_dir[package_dir.rfind('.'):] + extended_file_suffix
-            extended_module = importlib.import_module(package_dir)
-            func_to_do_registering(extended_module, package_dir, the_object)
+            # build the new module name
+            module_dir = module_dir + module_dir[module_dir.rfind('.'):] + extended_search_file_suffix
+
+            extended_module = importlib.import_module(module_dir)
+
+            func_to_do_registering(extended_module, module_dir, the_object)
 
     except AttributeError:
         warnings.warn(
-            "Package {0}.{1} function not found!".format(package_dir, register_function_name))
+            "Package {0}.{1} function not found!".format(module_dir, name_of_register_function))
     except ImportError:
         warnings.warn(
             "Package {0}{1} was not found! It is not registered with the GUI and it will not appear.".format(
-                package_dir, extended_file_suffix))
+                module_dir, extended_search_file_suffix))

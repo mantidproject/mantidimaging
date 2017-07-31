@@ -63,7 +63,7 @@ def all_modules(package, root_package=ROOT_PACKAGE):
 
 def all_packages(package, root_package=ROOT_PACKAGE, ignore=[]):
     """
-    Finds all packages inside a package. This will only look for folder names. 
+    Finds all packages inside a package. This will only look for folder names.
     For individual modules use all_modules.
     """
     # type: (str) -> [str]
