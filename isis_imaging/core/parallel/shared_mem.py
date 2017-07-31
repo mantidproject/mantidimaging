@@ -1,8 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
-from isis_imaging import helper as h
-from isis_imaging.core.parallel import utility as pu
+
 from functools import partial
 from multiprocessing import Pool
+
+from isis_imaging import helper as h
+from isis_imaging.core.parallel import utility as pu
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
@@ -139,15 +141,14 @@ def execute(data=None,
                     name + " " + str(cores) + "c " + str(chunksize) + "chs")
 
     indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(
-            pool.imap(partial_func, indices_list, chunksize=chunksize)):
+    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
         h.prog_update()
 
     pool.close()
     pool.join()
     h.prog_close()
 
-    # remove the global references and allow the GC to remove then
+    # remove the global references to remove unused dangling handles to the data, which might prevent it from being GCed
     temp_data_ref = shared_data
     del shared_data
 

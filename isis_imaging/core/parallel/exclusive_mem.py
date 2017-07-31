@@ -1,7 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
+
+from multiprocessing import Pool
+
 from isis_imaging import helper as h
 from isis_imaging.core.parallel import utility as pu
-from multiprocessing import Pool
 
 
 def create_partial(func, **kwargs):

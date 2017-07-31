@@ -16,7 +16,7 @@ from . import exclusive_mem, shared_mem, two_shared_mem, utility  # noqa: F401
 """
 Replace the memory allocation function for subprocesses. In Python 2.7 this would allocate the memory in RAM and then
 share it between the processes. This was changed in Python 3.x to allocate a file that is used for shared memory.
-The following code reverts that change back to the Python 2.7 behaviour. 
+The following code reverts that change back to the Python 2.7 behaviour.
 
 The `mmap.mmap(-1, self.size)` is taken from the Python 2.7 source.
 The Python 3.x source function is this:
@@ -52,12 +52,10 @@ import sys
 if sys.platform != 'win32':
     import multiprocessing.heap
 
-
     def allocate_in_ram(self, size, fd=-1):
         self.size = size
         self.fd = fd
         self.buffer = mmap.mmap(-1, self.size)
-
 
     # monkey patch the old behaviour
     multiprocessing.heap.Arena.__init__ = allocate_in_ram

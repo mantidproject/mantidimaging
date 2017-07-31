@@ -144,9 +144,8 @@ def execute(data=None,
     When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK TO REPLACE THE ORIGINAL
     as is done in parallel.exclusive_mem, it is merely discarded.
 
-    - imap_unordered gives the images back in random order!
-    - map and map_async cannot replace the data in place and end up
-    doubling the memory. They do not improve speed performance either
+    - imap_unordered gives the images back in random order
+    - map and map_async do not improve speed performance
     - imap seems to be the best choice
 
     Using _ in the for _ enumerate is slightly faster, because the tuple
@@ -195,19 +194,17 @@ def execute(data=None,
     img_num = data.shape[0]
 
     if show_timer:
-        h.prog_init(img_num,
-                    name + " " + str(cores) + "c " + str(chunksize) + "chs")
+        h.prog_init(img_num, name + " " + str(cores) + "c " + str(chunksize) + "chs")
 
     indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(
-            pool.imap(partial_func, indices_list, chunksize=chunksize)):
+    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
         h.prog_update()
 
     pool.close()
     pool.join()
     h.prog_close()
 
-    # remove the global references to allow the GC to remove them
+    # remove the global references to remove unused dangling handles to the data, which might prevent it from being GCed
     temp_data_ref = shared_data
     del shared_data
     temp_data_2_ref = second_shared_data

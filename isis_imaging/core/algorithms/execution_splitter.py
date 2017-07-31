@@ -24,7 +24,7 @@ def execute(config, executable):
     This is done by calculating how we can subset the data so it can be
     processed a subset at a time, without going over the maximum allowed memory.
 
-    :param config: The reconstruciton config. Necessary to read the reconstruction parameters.
+    :param config: The reconstruction config. Necessary to read the reconstruction parameters.
 
     :param executable: The function that will be executed.
     """
