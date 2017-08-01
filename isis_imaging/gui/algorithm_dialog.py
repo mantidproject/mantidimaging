@@ -19,9 +19,11 @@ class AlgorithmDialog(Qt.QDialog):
         :param ui_file: An option to specify custom .ui file if the a custom design is wanted
         """
         super(AlgorithmDialog, self).__init__()
+
         assert isinstance(
             main_window, MainWindowView
         ), "The object passed in for main window is not of the correct type!"
+
         gui_compile_ui.execute(ui_file, self)
 
         self.main_window = main_window
@@ -31,12 +33,11 @@ class AlgorithmDialog(Qt.QDialog):
         self.execute = None
         self.do_before = None
         self.do_after = None
-        self.requested_parameter = None
+        self.requested_parameter_name = None
 
     def request_parameter(self, param):
-
         if param in ["ROI"]:
-            self.request_parameter = param
+            self.requested_parameter_name = param
         else:
             raise ValueError("Invalid parameter")
 
@@ -59,19 +60,28 @@ class AlgorithmDialog(Qt.QDialog):
         """
         self.do_after = function
 
-    def set_execute(self, execute_function):
+    def _call_partial_first_then_forward_args(self, *args, **kwargs):
+        # retrieve the decorated function from the GUI file
+        decorated_function = self.partial_execute_function()
+
+        # execute it
+        return decorated_function(*args, **kwargs)
+
+    def set_execute(self, partial_execute_function):
         """
         Set the main execute function. Only the data parameter will be passed into it, as the rest are expected to be
         decorated during the creation in the GUI files.
 
-        :param execute_function: The main execute function
+        :param partial_execute_function: Partial function that needs to be executed, and will decorate the execute
+                                         function with the parameters that the user has put in the dialog
         """
-        self.execute = execute_function
+        self.partial_execute_function = partial_execute_function
+        self.execute = self._call_partial_first_then_forward_args
 
     def accepted_action(self):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
         # main window only needs to get the partial
-        self.main_window.algorithm_accepted(self.selected_stack, self.execute)
+        self.main_window.algorithm_accepted(self.selected_stack, self)
 
     def update_and_show(self):
         # clear the previous entries from the drop down menu

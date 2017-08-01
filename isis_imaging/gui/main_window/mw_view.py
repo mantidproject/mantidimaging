@@ -85,5 +85,12 @@ class MainWindowView(Qt.QMainWindow):
         print("Removing stack with uuid", obj.uuid)
         self.presenter.remove_stack(obj.uuid)
 
-    def algorithm_accepted(self, stack_uuid, func):
-        self.presenter.apply_to_data(stack_uuid, func)
+    def algorithm_accepted(self, stack_uuid, algorithm_dialog):
+        """
+        We forward the data onwards to the presenter and then the model, so that we can have a passive view.
+
+        :param stack_uuid: The unique ID of the stack
+
+        :param algorithm_dialog: The algorithm dialog object
+        """
+        self.presenter.apply_to_data(stack_uuid, algorithm_dialog)

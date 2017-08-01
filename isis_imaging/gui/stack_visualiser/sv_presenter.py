@@ -1,11 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+
 from enum import IntEnum
 
-from isis_imaging.core.io import Images
-from isis_imaging.gui.stack_visualiser.sv_model import \
-    ImgpyStackVisualiserModel
+# from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
+from isis_imaging.gui.stack_visualiser.sv_model import ImgpyStackVisualiserModel
 
 
 class Notification(IntEnum):
@@ -65,25 +65,41 @@ class StackViewerPresenter(object):
         filenames = self.images.get_filenames()
         return os.path.basename(filenames[index] if filenames is not None else "")
 
-    def apply_to_data(self, func, *args, **kwargs):
-        # TODO refactor, and provide a way to read ROI
-        # TODO provide a standard way to request parameters?
-        # TODO Should we go to Mantid-style algorithm with functions like getProperty, etc?
-        # It might be worth moving back into mantid at that point and using the existing algorithm structure
-
-        do_before = getattr(func, "do_before", None)
-        if do_before:
-            delattr(func, "do_before")
-        do_after = getattr(func, "do_after", None)
-        if do_after:
-            delattr(func, "do_after")
-
-        if do_before:
-            res_before = do_before(self.images.get_sample())
+    def handle_algorithm_dialog_request(self, parameter):
+        if parameter == "ROI":
+            return self.view.current_roi
         else:
-            res_before = ()
+            raise ValueError("Invalid parameter name.")
 
-        func(self.images.get_sample(), *args, **kwargs)
+    def apply_to_data(self, algorithm_dialog, *args, **kwargs):
+        # We can't do this in Python 2.7 because we crash due to a circular reference
+        # It should work when executed with Python 3.5
+        # assert isinstance(
+        #     algorithm_dialog, AlgorithmDialog), "The object is not of the expected type."
+
+        parameter_name = getattr(algorithm_dialog, "requested_parameter_name", None)
+        parameter_value = self.handle_algorithm_dialog_request(parameter_name) if parameter_name else ()
+
+        do_before = self.getattr_and_remove(algorithm_dialog, "do_before")
+        do_after = self.getattr_and_remove(algorithm_dialog, "do_after")
+
+        # save the result from the do_before operation, else just an empty tuple
+        res_before = do_before(self.images.get_sample()) if do_before else ()
+
+        # enforce that even single arguments are tuples, multiple returned arguments should be tuples by default
+        if not isinstance(res_before, tuple):
+            res_before = (res_before,)
+
+        all_args = parameter_value + args
+        algorithm_dialog.execute(self.images.get_sample(), *all_args, **kwargs)
+
         if do_after:
             do_after(self.images.get_sample(), *res_before)
+
         self.view.show_current_image()
+
+    def getattr_and_remove(self, algorithm_dialog, attribute):
+        attr = getattr(algorithm_dialog, attribute, None)
+        if attr:
+            delattr(algorithm_dialog, attribute)
+        return attr

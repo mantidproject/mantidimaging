@@ -16,6 +16,9 @@ class MainWindowPresenter(object):
         self.view = view
         self.model = MainWindowModel(config)
 
+        # directly forward the reference
+        self.apply_to_data = self.model.apply_to_data
+
     def notify(self, signal):
         try:
             if signal == Notification.LOAD:
@@ -63,9 +66,6 @@ class MainWindowPresenter(object):
 
         self.model.do_saving(stack_uuid, output_dir, name_prefix,
                              image_format, overwrite, swap_axes, indices)
-
-    def apply_to_data(self, stack_uuid, func):
-        self.model.apply_to_data(stack_uuid, func)
 
     def stack_names(self):
         return self.model.stack_names()
