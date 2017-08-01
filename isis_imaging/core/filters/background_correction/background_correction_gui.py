@@ -41,10 +41,14 @@ def _gui_register(main_window):
         dark_dir = os.path.dirname(dark_path)
 
         images_flat_only = io.loader.load(flat_dir, in_format=flat_extension)
-        flat = images_flat_only.get_flat().mean(axis=0)
+
+        # this will be put in the 'sample' attribute, because we load a single volume
+        flat = images_flat_only.get_sample().mean(axis=0)
 
         images_dark_only = io.loader.load(dark_dir, in_format=dark_extension)
-        dark = images_dark_only.get_dark().mean(axis=0)
+
+        # this will be put in the 'sample' attribute, because we load a single volume
+        dark = images_dark_only.get_sample().mean(axis=0)
 
         par = partial(background_correction.execute, flat=flat, dark=dark)
 

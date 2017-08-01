@@ -1,11 +1,12 @@
+from functools import partial
+
 from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui as gcu
 from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
-
 from . import outliers
 
-GUI_MENU_NAME="Outliers"
+GUI_MENU_NAME = "Outliers"
 
 
 def _gui_register(main_window):
@@ -34,13 +35,11 @@ def _gui_register(main_window):
     dialog.formLayout.addRow(label_mode, mode_field)
 
     def decorate_execute():
-        from functools import partial
         return partial(
             outliers.execute,
             diff=diff_field.value(),
             radius=size_field.value(),
             mode=mode_field.currentText())
 
-    # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
+    dialog.set_execute(decorate_execute)
     return dialog
