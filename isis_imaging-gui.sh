@@ -8,4 +8,4 @@ python_exec="python"
 # i.e. all the variables defined within the -env script will be visible here
 . $imgpy_dir/isis_imaging-env-py27.sh
 
-PYTHONPATH="$imgpy_dir:$PYTHONPATH" $python_location $imgpy_dir/isis_imaging/main.py --gui "$@"
+PYTHONPATH="$imgpy_dir:$PYTHONPATH" $python_location $imgpy_dir/isis_imaging/main.py --gui -i . "$@"
