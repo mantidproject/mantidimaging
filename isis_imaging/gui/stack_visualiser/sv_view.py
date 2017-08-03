@@ -11,7 +11,7 @@ from matplotlib.widgets import RectangleSelector, Slider
 from isis_imaging.core.algorithms import gui_compile_ui
 from isis_imaging.gui.stack_visualiser import sv_histogram
 from isis_imaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
-from isis_imaging.gui.stack_visualiser.sv_presenter import StackViewerPresenter
+from isis_imaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
 
 
 class StackVisualiserView(Qt.QMainWindow):
@@ -33,12 +33,12 @@ class StackVisualiserView(Qt.QMainWindow):
         dock.closeEvent = self.closeEvent
 
         # View doesn't take ownership of the data!
-        self.presenter = StackViewerPresenter(self, images, data_traversal_axis)
+        self.presenter = StackVisualiserPresenter(self, images, data_traversal_axis)
 
         self.figure = Figure()
 
         self.initialise_canvas()
-        self.current_roi = None
+        self._current_roi = None
 
         self.toolbar = NavigationToolbar2QT(self.canvas, self, coordinates=True)
 
@@ -83,6 +83,14 @@ class StackVisualiserView(Qt.QMainWindow):
             [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
         self.slider = self.create_slider(self.slider_axis, images.get_sample().shape[data_traversal_axis] - 1)
 
+    @property
+    def current_roi(self):
+        return self._current_roi
+
+    @current_roi.setter
+    def current_roi(self, value):
+        self._current_roi = value
+
     def remove_any_selected_roi(self, event):
         """
         This removes the previously selected ROI. This function is called on a single
@@ -125,6 +133,7 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.new_window_histogram_shortcut = Qt.QShortcut(
             Qt.QKeySequence("Ctrl+Shift+C"), self.dock)
+
         self.new_window_histogram_shortcut.activated.connect(
             lambda: self.presenter.notify(StackWindowNotification.NEW_WINDOW_HISTOGRAM))
 
