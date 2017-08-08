@@ -239,8 +239,7 @@ class IOTest(unittest.TestCase):
             # saver indices only affects the enumeration of the data
             if saver_indices:
                 # crop the original images to make sure the tests is correct
-                expected_images = expected_images[saver_indices[0]
-                :saver_indices[1]]
+                expected_images = expected_images[saver_indices[0]:saver_indices[1]]
 
             saver.save_preproc_images(expected_images)
 
@@ -256,12 +255,10 @@ class IOTest(unittest.TestCase):
                                         cores=1, parallel_load=parallel, indices=loader_indices)
 
             if loader_indices:
-                assert len(
-                    loaded_images.get_sample()
-                ) == expected_len, "The length of the loaded data does not " \
-                                   "match the expected length! Expected: {0}, " \
-                                   "Got {1}".format(expected_len, len(
-                    loaded_images.get_sample()))
+                assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data does not " \
+                    "match the expected length! Expected: {0}, " \
+                    "Got {1}".format(expected_len, len(
+                        loaded_images.get_sample()))
 
                 # crop the original images to make sure the tests is correct
                 expected_images = expected_images[loader_indices[0]:loader_indices[1]]
@@ -454,30 +451,22 @@ class IOTest(unittest.TestCase):
                              'out_preproc_image'), saver._out_format,
                 data_as_stack, dark.shape[0], loader_indices or saver_indices)
 
-            sample, loaded_flat, loaded_dark = loader.load(
-                sample_output_path,
-                flat_output_path,
-                dark_output_path,
-                saver._out_format,
-                cores=1,
-                parallel_load=parallel,
-                indices=loader_indices)
+            loaded_images = loader.load(sample_output_path, flat_output_path, dark_output_path,
+                                        saver._out_format, cores=1, parallel_load=parallel, indices=loader_indices)
 
             if loader_indices:
-                assert len(
-                    sample
-                ) == expected_len, "The length of the loaded data doesn't " \
-                                   "match the expected length: {0}, " \
-                                   "Got: {1}".format(expected_len, len(sample))
+                assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data doesn't " \
+                    "match the expected length: {0}, " \
+                    "Got: {1}".format(expected_len, len(loaded_images.get_sample()))
 
                 # crop the original images to make sure the tests is correct
                 images = images[loader_indices[0]:loader_indices[1]]
 
-            th.assert_equals(sample, images)
+            th.assert_equals(loaded_images.get_sample(), images)
             # we only check the first image because they will be
             # averaged out when loaded! The initial images are only 3s
-            th.assert_equals(loaded_flat, flat[0])
-            th.assert_equals(loaded_dark, dark[0])
+            th.assert_equals(loaded_images.get_flat(), flat[0])
+            th.assert_equals(loaded_images.get_dark(), dark[0])
 
     def test_raise_on_invalid_format(self):
         self.assertRaises(ValueError, loader.load, "/some/path",

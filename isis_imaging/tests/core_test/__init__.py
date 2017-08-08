@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function)
 
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
@@ -21,5 +21,3 @@ from __future__ import absolute_import, division, print_function
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
-
-from . import *  # noqa no questions asked
