@@ -19,7 +19,7 @@ share it between the processes. This was changed in Python 3.x to allocate a fil
 The following code reverts that change back to the Python 2.7 behaviour.
 
 The `mmap.mmap(-1, self.size)` is taken from the Python 2.7 source.
-The Python 3.x source function is this:
+The source up to Python 3.6 function is this:
 
 def __init__(self, size, fd=-1):
     self.size = size
@@ -39,25 +39,51 @@ def __init__(self, size, fd=-1):
             f.write(b'\0' * (size % bs))
             assert f.tell() == size
     self.buffer = mmap.mmap(self.fd, self.size)
-    
-On the line with open(...) python allocates the shared memory as a file. 
 
-multiprocessing.set_start_method() supports multiple methods, this change will break any code 
-that uses the 'spawn' or 'forkserver' start methods. Currently they are not used anywhere in the package, but it
-is noted as a precaution.
+On the line with open(...) python allocates the shared memory as a file.
+
+This is the code from the bug issue at http://bugs.python.org/issue30919.
+The performance testing that has been done with the fix (copied the code from Python 3.7)
+seems to give the same performance as the Python 2.7.
+
+It will be officially in Python when 3.7 is released.
 """
-import mmap
 import sys
 
-if sys.platform != 'win32':
-    import multiprocessing.heap
 
-    def allocate_in_ram(self, size, fd=-1):
+if sys.platform != 'win32':
+    import mmap
+    import multiprocessing.heap
+    import tempfile
+    import os
+    import multiprocessing.util as util
+
+    multiprocessing.heap.Arena._dir_candidates = ['/dev/shm']
+
+    def _choose_dir(self, size):
+        # Choose a non-storage backed directory if possible,
+        # to improve performance
+        for d in self._dir_candidates:
+            st = os.statvfs(d)
+            if st.f_bavail * st.f_frsize >= size:  # enough free space?
+                return d
+        return util.get_temp_dir()
+
+    multiprocessing.heap.Arena._choose_dir = _choose_dir
+
+    def ftruncate_allocation(self, size, fd=-1):
         self.size = size
         self.fd = fd
-        self.buffer = mmap.mmap(-1, self.size)
+        if fd == -1:
+            self.fd, name = tempfile.mkstemp(
+                prefix='pym-%d-' % os.getpid(),
+                dir=self._choose_dir(size))
+            print(name)
+            os.unlink(name)
+            util.Finalize(self, os.close, (self.fd,))
+            os.ftruncate(self.fd, size)
+        self.buffer = mmap.mmap(self.fd, self.size)
 
-    # monkey patch the old behaviour
-    multiprocessing.heap.Arena.__init__ = allocate_in_ram
+    multiprocessing.heap.Arena.__init__ = ftruncate_allocation
 
 del absolute_import, division, print_function
