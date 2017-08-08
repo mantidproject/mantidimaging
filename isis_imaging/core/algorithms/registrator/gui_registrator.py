@@ -10,7 +10,7 @@ from .registrator import do_importing
 def gui_register(qt_parent, module_dir):
     assert isinstance(
         qt_parent,
-        QMenu), "The object passed is not of a QMenu, and is not supported."
+        QMenu), "The object passed {0} is not a QMenu, and is not supported.".format(qt_parent)
 
     main_window = qt_parent.parent().parent()
     assert isinstance(
@@ -47,7 +47,8 @@ def do_registering(module, module_dir, main_window):
                                   "dialog is of type AlgorithmDialog and is returned at the end of the _gui_register " \
                                   "function.".format(module_dir)
 
-    assert dialog.execute is not None, "The execute function must be set manually!"
+    assert dialog.execute is not None, \
+        "The execute function must be set manually! The module {0} has not set execute correctly".format(module_dir)
 
     action = QAction(getattr(module, 'GUI_MENU_NAME', module_dir), menu)
 
