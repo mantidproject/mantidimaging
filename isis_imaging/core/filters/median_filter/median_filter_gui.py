@@ -29,7 +29,7 @@ def _gui_register(main_window):
 
     def custom_execute():
         return partial(
-        median_filter.execute, size=size_field.value(), mode=mode_field.currentText())
+            median_filter.execute, size=size_field.value(), mode=mode_field.currentText())
 
     dialog.set_execute(custom_execute)
     return dialog
