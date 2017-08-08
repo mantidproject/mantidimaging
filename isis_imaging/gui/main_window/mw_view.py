@@ -15,7 +15,6 @@ class MainWindowView(Qt.QMainWindow):
         super(MainWindowView, self).__init__()
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
 
-        # connection of file menu TODO move to func
         self.setup_shortcuts()
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)

@@ -5,7 +5,7 @@ import os
 from enum import IntEnum
 
 from isis_imaging.gui.algorithm_dialog import AlgorithmDialog
-from isis_imaging.gui.stack_visualiser.sv_available_parameters import Parameters
+from isis_imaging.gui.stack_visualiser.sv_available_parameters import Parameters, PARAMETERS_ERROR_MESSAGE
 
 
 class Notification(IntEnum):
@@ -73,19 +73,18 @@ class StackVisualiserPresenter(object):
         return os.path.basename(filenames[index] if filenames is not None else "")
 
     def handle_algorithm_dialog_request(self, parameter):
+        # Developer note: Parameters need to be checked for both here and in algorithm_dialog.py
         if parameter == Parameters.ROI:
             return self.view.current_roi
         else:
-            raise ValueError(
-                "Invalid parameter name has been requested from the Stack Visualiser, parameter: {0}".format(parameter))
+            raise ValueError(PARAMETERS_ERROR_MESSAGE.format(parameter))
 
     def apply_to_data(self, algorithm_dialog, *args, **kwargs):
         # We can't do this in Python 2.7 because we crash due to a circular reference
         # It should work when executed with Python 3.5
         assert isinstance(algorithm_dialog, AlgorithmDialog), "The object is not of the expected type."
 
-        parameter_name = getattr(algorithm_dialog, "requested_parameter_name", None)
-
+        parameter_name = algorithm_dialog.requested_parameter_name
         parameter_value = self.handle_algorithm_dialog_request(parameter_name) if parameter_name else ()
 
         do_before = self.getattr_and_clear(algorithm_dialog, "do_before")
@@ -101,6 +100,7 @@ class StackVisualiserPresenter(object):
         all_args = parameter_value + args
         algorithm_dialog.execute(self.images.get_sample(), *all_args, **kwargs)
 
+        # execute the do_after function by passing the results from the do_before
         if do_after:
             do_after(self.images.get_sample(), *res_before)
 

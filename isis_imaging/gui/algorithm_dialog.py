@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 from PyQt5 import Qt
 
 from isis_imaging.core.algorithms import gui_compile_ui
-from isis_imaging.gui.main_window.mw_view import MainWindowView
+from isis_imaging.gui.stack_visualiser.sv_available_parameters import Parameters, PARAMETERS_ERROR_MESSAGE
 
 
 class AlgorithmDialog(Qt.QDialog):
@@ -20,10 +20,6 @@ class AlgorithmDialog(Qt.QDialog):
         """
         super(AlgorithmDialog, self).__init__()
 
-        assert isinstance(
-            main_window, MainWindowView
-        ), "The object passed in for main window is not of the correct type!"
-
         gui_compile_ui.execute(ui_file, self)
 
         self.main_window = main_window
@@ -33,19 +29,26 @@ class AlgorithmDialog(Qt.QDialog):
         self.execute = None
         self.do_before = None
         self.do_after = None
-        self.requested_parameter_name = None
+        self._requested_parameter_name = None
 
-    def request_parameter(self, param):
-        if param in ["ROI"]:
-            self.requested_parameter_name = param
+    @property
+    def requested_parameter_name(self):
+        return self._requested_parameter_name
+
+    @requested_parameter_name.setter
+    def requested_parameter_name(self, value):
+        self._requested_parameter_name = value
+
+    def request_parameter(self, parameter):
+        if parameter == Parameters.ROI:
+            self.requested_parameter_name = parameter
         else:
-            raise ValueError("Invalid parameter")
+            raise ValueError(PARAMETERS_ERROR_MESSAGE.format(parameter))
 
     def apply_before(self, function):
         """
         Any functions added here will be applied before running the main filter.
-        This can store multiple functions. All of the results will be forwarded
-        to the function inside apply_after!
+        The result will be forwarded to the function inside apply_after!
 
         :param function: Function that will be executed.
         """
