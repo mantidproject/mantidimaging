@@ -36,6 +36,18 @@ def gen_img_shared_array(shape=g_shape):
     return d
 
 
+def generate_images_class_random_shared_array(shape=g_shape):
+    from isis_imaging.core.io.loader.images import Images
+    d = pu.create_shared_array(shape)
+    n = np.random.rand(shape[0], shape[1], shape[2])
+    # move the data in the shared array
+    d[:] = n[:]
+
+    images = Images(d)
+
+    return images
+
+
 def gen_empty_shared_array(shape=g_shape):
     d = pu.create_shared_array(shape)
     return d
@@ -50,12 +62,26 @@ def gen_img_shared_array_with_val(val=1., shape=g_shape):
     return d
 
 
-def assert_equals(thing1, thing2):
-    npt.assert_equal(thing1, thing2)
+def assert_equals(numpy_ndarray1, numpy_ndarray2):
+    """
+    Assert equality for numpy ndarrays using the numpy testing library.
+
+    :param numpy_ndarray1: The left side of the comparison
+
+    :param numpy_ndarray2: The right side of the comparison
+    """
+    npt.assert_equal(numpy_ndarray1, numpy_ndarray2)
 
 
-def assert_not_equals(thing1, thing2):
-    npt.assert_raises(AssertionError, npt.assert_equal, thing1, thing2)
+def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
+    """
+    Assert equality for numpy ndarrays using the numpy testing library.
+
+    :param numpy_ndarray1: The left side of the comparison
+
+    :param numpy_ndarray2: The right side of the comparison
+    """
+    npt.assert_raises(AssertionError, npt.assert_equal, numpy_ndarray1, numpy_ndarray2)
 
 
 def deepcopy(source):
@@ -161,3 +187,22 @@ def delete_folder_from_temp(subdir=''):
         full_path = os.path.join(os.path.dirname(f.name), subdir)
         if os.path.isdir(full_path):
             shutil.rmtree(full_path)
+
+
+def mock_property(obj, object_property, property_return_value=None):
+    """
+    Mock a property of the object. This is a helper function to work around the limitations
+    of mocking a property with different return values.
+
+    :param obj: The object whose property will be mocked.
+
+    :param object_property: The property that will be mocked as a string.
+
+    :param property_return_value: The expected return value
+
+    :returns: The PropertyMock object that you can do assertions with
+    """
+    import mock
+    temp_property_mock = mock.PropertyMock(return_value=property_return_value)
+    setattr(type(obj), object_property, temp_property_mock)
+    return temp_property_mock
