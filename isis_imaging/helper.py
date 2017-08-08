@@ -153,8 +153,8 @@ def get_memory_usage_linux_str():
         delta_memory = (
             memory_in_kbs - get_memory_usage_linux_str.last_memory_cache) / 1024
 
-        # remove cached memory
-        get_memory_usage_linux_str.last_memory_cache = None
+        # remove cached memory, del removes the reference so that hasattr will work correctly
+        del get_memory_usage_linux_str.last_memory_cache
         memory_string += ". Memory change: {0} MB".format(delta_memory)
 
     return memory_string
