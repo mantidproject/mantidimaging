@@ -18,7 +18,7 @@ class MainWindowView(Qt.QMainWindow):
         self.setup_shortcuts()
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("ISIS Imaging")
+        self.setWindowTitle("MantidImaging")
 
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
