@@ -5,11 +5,11 @@ import os
 
 THIS_PATH = os.path.dirname(__file__)
 setup(
-    name='isis_imaging',
+    name='mantidimaging',
     version='0.9',
     packages=find_packages(),
-    py_modules=['isis_imaging'],
-    url='https://github.com/mantidproject/isis_imaging',
+    py_modules=['mantidimaging'],
+    url='https://github.com/mantidproject/mantidimaging',
     license='GPL-3.0',
     author='Dimitar Tasev',
     author_email='dimitar.tasev@stfc.ac.uk',

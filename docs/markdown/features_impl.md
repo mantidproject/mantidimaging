@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [Implementation design for ISIS_Imaging GUI](#implementation-design-for-isis_imaging-gui)
+- [Implementation design for ISIS_Imaging GUI](#implementation-design-for-mantidimaging-gui)
 - [Motivation](#motivation)
 - [Requirements](#requirements)
 - [Design](#design)
@@ -21,9 +21,9 @@
 <!-- /TOC -->
 
 # Implementation design for ISIS_Imaging GUI
-The user requirements for the interface have been listed [here](https://github.com/mantidproject/isis_imaging/wiki/High-Level-User-Requirements-and-Use-Cases) and have been reviewed and confirmed by the imaging scientists.
+The user requirements for the interface have been listed [here](https://github.com/mantidproject/mantidimaging/wiki/High-Level-User-Requirements-and-Use-Cases) and have been reviewed and confirmed by the imaging scientists.
 
-The development requirements, following from the user requirements, are listed [here](https://github.com/mantidproject/isis_imaging/wiki/High-Level-Development-Requirements-and-Guidelines)
+The development requirements, following from the user requirements, are listed [here](https://github.com/mantidproject/mantidimaging/wiki/High-Level-Development-Requirements-and-Guidelines)
 
 # Motivation
 The current [Tomography Reconstruction](https://github.com/mantidproject/mantid/tree/043095a619bc8851942a31253a1a8f8b820ab30f/MantidQt/CustomInterfaces/inc/MantidQtCustomInterfaces/Tomography) interface was found to not satisfy the current imaging requirements. An easy solution to the problems was not found. With the agreement of the IMAT imaging scientists work is to be started on this design for a rewrite of the interface. Python is the language of choice, in order to be able to make use of visualising libraries like Matplotlib and reconstruction packages like Tomopy.
@@ -74,7 +74,7 @@ The visualisation must allow for a rectangle ROI selection, that is persistent i
 ## Applying a filter
 Applying a filter will bring up a dialogue in which the user has to select on which stack to apply the filter via a dropdown menu, and fill in the required parameters the filter has.
 
-Any filters should be dynamically registered using a [registrator](https://github.com/mantidproject/isis_imaging/blob/master/isis_imaging/core/algorithms/registrator.py) style approach. This brings issues outlined in https://github.com/mantidproject/isis_imaging/issues/40, the most important of which how to not pull in (import) the PyQt library when NOT using the GUI, and thus not needing dynamic registering for the GUI.
+Any filters should be dynamically registered using a [registrator](https://github.com/mantidproject/mantidimaging/blob/master/mantidimaging/core/algorithms/registrator.py) style approach. This brings issues outlined in https://github.com/mantidproject/mantidimaging/issues/40, the most important of which how to not pull in (import) the PyQt library when NOT using the GUI, and thus not needing dynamic registering for the GUI.
 
 ## Undoing an operation
 Building the Undo operation may be complicated, but here are a few high level approaches:

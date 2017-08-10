@@ -1,0 +1,39 @@
+Sender: LSF System <lsfadmin@cn103.scarf.rl.ac.uk>
+Subject: Job 179717: <UPLOAD_test1> in cluster <sctsc> Done
+
+Job <UPLOAD_test1> was submitted from host <portal.scarf.rl.ac.uk> by user <scarf180> in cluster <sctsc>.
+Job was executed on host(s) <cn103.scarf.rl.ac.uk>, in queue <scarf-lexicon-2>, as user <scarf180> in cluster <sctsc>.
+</home/escg/scarf180> was used as the home directory.
+</home/escg/scarf180/../scarf180/UPLOAD_test1_14785248174595wDjE> was used as the working directory.
+Started at Results reported on 
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/usr/bin/md5sum test1G
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   3.11 sec.
+    Max Memory :                                 4.47 MB
+    Average Memory :                             4.47 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   228 MB
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   12 sec.
+    Turnaround time :                            12 sec.
+
+The output (if any) follows:
+
+f051376ad963b66318a0a21499809f5b  test1G
+
+
+PS:
+
+Read file <179717.err> for stderr output of this job.
+

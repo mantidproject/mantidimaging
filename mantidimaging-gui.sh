@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
-imgpy_dir=${HOME}/isis_imaging
+mantidimaging_dir=${HOME}/mantidimaging
 
-# this will be used in the env script
-python_exec="python"
+# This doesn't call any environment scripts and will just call the system python
 
-# Call using . syntax, this will change this script's environment,
-# i.e. all the variables defined within the -env script will be visible here
-. $imgpy_dir/isis_imaging-env-py27.sh
-
-PYTHONPATH="$imgpy_dir:$PYTHONPATH" $python_location $imgpy_dir/isis_imaging/main.py --gui -i . "$@"
+# This will pick up whichever python is on the PATH
+PYTHONPATH="$mantidimaging_dir:$PYTHONPATH" python $mantidimaging_dir/mantidimaging/main.py "$@"

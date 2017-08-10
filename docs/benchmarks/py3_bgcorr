@@ -1,8 +1,8 @@
 dtasev@dtasev-OptiPlex-7010:~/win_img/chadwick_insert$ time imgpy -i Data/ -F Open_Tomo_BeforeInsert/ -D Dark_Tomo/ --indices 100 --only-preproc -s -o ~/temp/chadwick_test --in-format tif -w
 
-/home/dtasev/imgpy/isis_imaging/core/algorithms/registrator.py:28: UserWarning: The package core.filters does NOT have a _cli_register(parser) method!
+/home/dtasev/imgpy/mantidimaging/core/algorithms/registrator.py:28: UserWarning: The package core.filters does NOT have a _cli_register(parser) method!
   warnings.warn(_cli_register_warning)
-/home/dtasev/imgpy/isis_imaging/core/algorithms/registrator.py:28: UserWarning: The package core.filters.wip does NOT have a _cli_register(parser) method!
+/home/dtasev/imgpy/mantidimaging/core/algorithms/registrator.py:28: UserWarning: The package core.filters.wip does NOT have a _cli_register(parser) method!
   warnings.warn(_cli_register_warning)
  > Note: Progress bar library TQDM not available. To install locally please use pip install tqdm. Falling back to ASCII progress bar.
  > Note: Running process on 8 cores.

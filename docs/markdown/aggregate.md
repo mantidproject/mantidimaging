@@ -32,9 +32,9 @@ For usage of this mode the following arguments are available:
 
 Example usage:
 
-`isis_imaging -i /some/data/ --aggregate 0 10 -o /some/directory`
+`mantidimaging -i /some/data/ --aggregate 0 10 -o /some/directory`
 
-`isis_imaging -i /some/data/ --aggregate 150 435 -o /some/directory`
+`mantidimaging -i /some/data/ --aggregate 150 435 -o /some/directory`
 
 ---
 
@@ -42,15 +42,15 @@ Example usage:
 
 Example usage:
 
-`isis_imaging -i /some/data/ --aggregate 0 10 --aggregate-angles 0 10 -o /some/directory`
+`mantidimaging -i /some/data/ --aggregate 0 10 --aggregate-angles 0 10 -o /some/directory`
 
-`isis_imaging -i /some/data/ --aggregate 0 10 --aggregate-angles 3 4 -o /some/directory`
+`mantidimaging -i /some/data/ --aggregate 0 10 --aggregate-angles 3 4 -o /some/directory`
 
 ---
 
 The default output directory structure will create a folder for each angle, and inside this folder there will be an image for each range of energy levels selected. 
 
-This command line `isis_imaging -i /data/ --aggregate 0 10 avg -o aggregate/` creates the following structure:
+This command line `mantidimaging -i /data/ --aggregate 0 10 avg -o aggregate/` creates the following structure:
 ```
 aggregate/
 ├── angle_avg0
@@ -85,7 +85,7 @@ Inside the folders the images contain the energy levels which were aggregated.
 
 `--aggregate-single-folder-output`: This command gives the option to **not** create the structure above. 
 
-This command line `isis_imaging -i /data/ --aggregate 0 100 avg -o aggregate/ --aggregate-single-folder-output` creates the following file structure:
+This command line `mantidimaging -i /data/ --aggregate 0 100 avg -o aggregate/ --aggregate-single-folder-output` creates the following file structure:
 ```
 aggregate/
 ├── out_avg_0_100_0.tiff

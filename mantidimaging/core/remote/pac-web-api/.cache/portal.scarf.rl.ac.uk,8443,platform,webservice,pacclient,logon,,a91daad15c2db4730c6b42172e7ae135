@@ -1,0 +1,12 @@
+status: 200
+content-length: 154
+content-location: https://portal.scarf.rl.ac.uk:8443/platform/webservice/pacclient/logon/
+x-powered-by: Servlet/3.0
+set-cookie: JSESSIONID=0000zwYeJ7e8Idp9Pq3y0rx3RGw:portal.scarf.rl.ac.uk;
+	Path=/
+expires: Thu, 01 Dec 1994 16:00:00 GMT
+cache-control: no-cache="set-cookie, set-cookie2"
+date: Thu, 26 Nov 2015 16:58:16 GMT
+content-type: text/xml
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><User><errMsg>Failed to authenticate user:dr35</errMsg><name>dr35</name><timeout>0</timeout></User>

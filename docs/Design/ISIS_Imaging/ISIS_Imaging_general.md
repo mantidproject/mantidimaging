@@ -18,7 +18,7 @@
     - [Reconstruction tools expansion](#reconstruction-tools-expansion)
     - [File Structure](#file-structure)
     - [Filters - General implementation structure](#filters---general-implementation-structure)
-- [Implementation for ISIS_Imaging GUI](#implementation-for-isis_imaging-gui)
+- [Implementation for ISIS_Imaging GUI](#implementation-for-mantidimaging-gui)
     - [General Structure](#general-structure)
     - [.ui Compiling](#ui-compiling)
     - [Loading](#loading)
@@ -46,9 +46,9 @@
 
 <!-- /TOC -->
 
-The user requirements for the interface have been listed [here](https://github.com/mantidproject/isis_imaging/wiki/High-Level-User-Requirements-and-Use-Cases) and have been reviewed and confirmed by the imaging scientists.
+The user requirements for the interface have been listed [here](https://github.com/mantidproject/mantidimaging/wiki/High-Level-User-Requirements-and-Use-Cases) and have been reviewed and confirmed by the imaging scientists.
 
-The development requirements, following from the user requirements, are listed [here](https://github.com/mantidproject/isis_imaging/wiki/High-Level-Development-Requirements-and-Guidelines)
+The development requirements, following from the user requirements, are listed [here](https://github.com/mantidproject/mantidimaging/wiki/High-Level-Development-Requirements-and-Guidelines)
 
 # Motivation
 The current [Tomography Reconstruction](https://github.com/mantidproject/mantid/tree/043095a619bc8851942a31253a1a8f8b820ab30f/MantidQt/CustomInterfaces/inc/MantidQtCustomInterfaces/Tomography) interface was found to not satisfy the current imaging requirements. An easy solution to the problems was not found. With the agreement of the IMAT imaging scientists and senior members of the Mantid team, work is to be started on this design for a rewrite of the interface. Python is the preferred language here, in order to be able to make use of visualising libraries like Matplotlib and interactions with Python based reconstruction packages like Tomopy.
@@ -132,7 +132,7 @@ A potential problem for CUDA is for machines with low VRAM, transferring the dat
 ### CuPy
 This package supports CUDA and nicely implements most of the `numpy` API, meaning it can make transition over to GPU processing easy, for filters that only use `numpy` functions (background correction, contrast normalisation, etc).
 
-For filters requiring custom code, kernels for other filters like Median, Gaussian, etc, can be written additionaly. [Related issue on repository.](https://github.com/mantidproject/isis_imaging/issues/50) This issue links to a response in the CuPy repository about how to write CUDA kernels in external files and then compile them inside during Python execution.
+For filters requiring custom code, kernels for other filters like Median, Gaussian, etc, can be written additionaly. [Related issue on repository.](https://github.com/mantidproject/mantidimaging/issues/50) This issue links to a response in the CuPy repository about how to write CUDA kernels in external files and then compile them inside during Python execution.
 
 I would recommend asking on the [CuPy repository](https://github.com/cupy/cupy) for implementation (and performance wise) advice before finalising the implementation of any filter.
 
@@ -155,7 +155,7 @@ Another example is in the `core.tools` module, we want the tools to implement a 
 Currently the scripts expect the folder structure to be:
 ```
 <repository_folder>/
-└── isis_imaging
+└── mantidimaging
     ├── core
     │   ├── aggregate
     │   ├── algorithms
@@ -176,7 +176,7 @@ It is not expected to have many changes of this top level structure. If any stru
 - Renaming `core` to something else, e.g. `thecore`. A find and replace of `core` to `thecore` made the package usable again.
 - Adding another level before the `core` package, so the structure would be:
 ```
-└── isis_imaging
+└── mantidimaging
     └── another_level_package
         └── core
 ```
@@ -275,7 +275,7 @@ Matplotlib provides a method to specify contrast range via `set_clim` method on 
 ## Applying a filter
 Applying a filter will bring up a dialogue in which the user has to select on which stack to apply the filter via a dropdown menu, and fill in the required parameters the filter has.
 
-Any filters should be dynamically registered using the [registrator](https://github.com/mantidproject/isis_imaging/blob/master/isis_imaging/core/algorithms/registrator.py) style approach. Filters will have to implement `cli_register` and `gui_register` functions that register them with the command line and graphical interface, respectively, in order to be visible on each of the interfaces.
+Any filters should be dynamically registered using the [registrator](https://github.com/mantidproject/mantidimaging/blob/master/mantidimaging/core/algorithms/registrator.py) style approach. Filters will have to implement `cli_register` and `gui_register` functions that register them with the command line and graphical interface, respectively, in order to be visible on each of the interfaces.
 
 Current issues for this section:
 ### Dynamic dialogue building

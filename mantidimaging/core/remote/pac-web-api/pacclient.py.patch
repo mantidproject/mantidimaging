@@ -1,0 +1,9 @@
+--- orig/pacclient.py	2015-12-01 11:12:15.340833344 +0000
++++ pacclient.py	2015-11-26 18:10:39.011841000 +0000
+@@ -15,4 +15,6 @@
+ from pac_api import *
+ 
++httplib2.CA_CERTS="cacerts.txt"
++
+ def logon_usage():
+ 	print """

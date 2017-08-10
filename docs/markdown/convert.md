@@ -4,6 +4,6 @@ This mode is simply to convert from one file format to another which might be mo
 
 Example usage:
 
-`isis_imaging -i /some/data/ -o /some/output/ --in-format <img_format> --out-format <img_format>`
+`mantidimaging -i /some/data/ -o /some/output/ --in-format <img_format> --out-format <img_format>`
 
 This will load all images from `/some/data` and save them out in `/some/output` with the format specified by `--out-format`.
