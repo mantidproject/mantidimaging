@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>372</width>
-    <height>182</height>
+    <height>221</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>140</y>
+     <y>180</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -149,7 +149,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>140</y>
+     <y>180</y>
      <width>121</width>
      <height>30</height>
     </rect>
@@ -168,7 +168,33 @@
     </rect>
    </property>
    <property name="text">
-    <string/>
+    <string>Placeholder txt for Developer</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="stackName">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>143</y>
+     <width>141</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set custom name that will be used as the stack's name. If not provided the folder name will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>145</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Custom Name</string>
    </property>
   </widget>
  </widget>

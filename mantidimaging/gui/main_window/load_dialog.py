@@ -47,9 +47,13 @@ class MWLoadDialog(Qt.QDialog):
         self.accepted.connect(parent.execute_load)
         self.image_format = ''
         self.single_mem = 0
-        self.last_shape = (0,0,0)
+        self.last_shape = (0, 0, 0)
+
+        # remove the placeholder text from QtCreator
+        self.expectedResourcesLabel.setText("")
 
         # TODO add data type field and read from the input dialog
+        # however for now we always work in 32 bit floats
         self.dtype = '32'
 
     def update_dialogue(self, select_file_successful):
@@ -88,7 +92,6 @@ class MWLoadDialog(Qt.QDialog):
         self.expectedResourcesLabel.setText(
             "{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1], self.last_shape[2], exp_mem))
 
-
     def sample_file(self):
         """
         :return: The file that the use has selected
@@ -108,5 +111,8 @@ class MWLoadDialog(Qt.QDialog):
         return self.parallelLoad.isChecked()
 
     def indices(self):
-        return self.index_start.value(), self.index_end.value(
-        ), self.index_step.value()
+        return self.index_start.value(), self.index_end.value(), self.index_step.value()
+
+    def window_title(self):
+        user_text = self.stackName.text()
+        return user_text if len(user_text) > 0 else None

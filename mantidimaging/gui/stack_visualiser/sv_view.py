@@ -141,8 +141,8 @@ class StackVisualiserView(Qt.QMainWindow):
         self.rename_shortcut.activated.connect(
             lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW))
 
-    def apply_to_data(self, algorithm_dialog, *args, **kwargs):
-        self.presenter.apply_to_data(algorithm_dialog, *args, **kwargs)
+    def apply_to_data(self, algorithm_dialog):
+        self.presenter.apply_to_data(algorithm_dialog)
 
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed

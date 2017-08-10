@@ -42,13 +42,14 @@ class MainWindowPresenter(object):
         image_format = self.view.load_dialogue.image_format
         parallel_load = self.view.load_dialogue.parallel_load()
         indices = self.view.load_dialogue.indices()
+        window_title = self.view.load_dialogue.window_title()
 
         if not sample_path:
             return
 
         data = self.model.do_load_stack(sample_path, image_format, parallel_load, indices)
 
-        title = self.model.create_title(selected_file)
+        title = self.model.create_title(selected_file) if not window_title else window_title
 
         dock_widget = self.view.create_stack_window(data, title=title)
 

@@ -30,6 +30,7 @@ class AlgorithmDialog(Qt.QDialog):
         self.do_before = None
         self.do_after = None
         self._requested_parameter_name = None
+        self._parameters_prepared = False
 
     @property
     def requested_parameter_name(self):
@@ -63,15 +64,33 @@ class AlgorithmDialog(Qt.QDialog):
         """
         self.do_after = function
 
-    def _call_partial_first_then_forward_args(self, *args, **kwargs):
+    def prepare_execute(self):
+        """
+        This function will run the filter dialog's decorated function, which will read the parameters through a custom_execute
+        function defined in the filter dialog's own _gui declaration.
+        """
         # retrieve the decorated function from the GUI file
         decorated_function = self.partial_execute_function()
 
         assert decorated_function is not None, "After the partial function was executed, " \
-            "it returned a None! It must return a callable."
+                                               "it returned a None! It must return a callable."
 
-        # execute it
-        return decorated_function(*args, **kwargs)
+        # update the execute function, to the correct one
+        self.execute = decorated_function
+
+        self._parameters_prepared = True
+
+    def _check_parameters_prepared(self, *args, **kwargs):
+        """
+        The purpose of this function is to ensure that the caller has called prepare_execute.
+
+        :param args: This function can receive any parameters, to conform to the interface for the forwarding call
+        :param kwargs: This function can receive any parameters, to conform to the interface for the forwarding call
+        """
+        assert self._parameters_prepared == True, "The function prepare_execute has not been called! " \
+                                                  "The execution cannot proceed because the custom_execute " \
+                                                  "function will not have been executed, and the parameter " \
+                                                  "values will not have been updated."
 
     def set_execute(self, partial_execute_function):
         """
@@ -83,7 +102,10 @@ class AlgorithmDialog(Qt.QDialog):
         """
         assert partial_execute_function is not None, "The partial function provided is None! It must be a callable."
         self.partial_execute_function = partial_execute_function
-        self.execute = self._call_partial_first_then_forward_args
+
+        # Set the execute attribute for the assertion check in the registrator. If this attribute does not exist, i.e.
+        # this set_execute function was not called, an assertion will fail during registering.
+        self.execute = self._check_parameters_prepared
 
     def accepted_action(self):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]

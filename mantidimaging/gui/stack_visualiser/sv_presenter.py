@@ -79,10 +79,14 @@ class StackVisualiserPresenter(object):
         else:
             raise ValueError(PARAMETERS_ERROR_MESSAGE.format(parameter))
 
-    def apply_to_data(self, algorithm_dialog, *args, **kwargs):
+    def apply_to_data(self, algorithm_dialog):
         # We can't do this in Python 2.7 because we crash due to a circular reference
         # It should work when executed with Python 3.5
         assert isinstance(algorithm_dialog, AlgorithmDialog), "The object is not of the expected type."
+
+        # This will call the custom_execute function in the filter's _gui declaration, and read off the values from the
+        # parameter fields that have been shown to the user
+        algorithm_dialog.prepare_execute()
 
         parameter_name = algorithm_dialog.requested_parameter_name
         parameter_value = self.handle_algorithm_dialog_request(parameter_name) if parameter_name else ()
@@ -100,8 +104,7 @@ class StackVisualiserPresenter(object):
         if not isinstance(res_before, tuple):
             res_before = (res_before,)
 
-        all_args = parameter_value + args
-        algorithm_dialog.execute(self.images.get_sample(), *all_args, **kwargs)
+        algorithm_dialog.execute(self.images.get_sample(), *parameter_value)
 
         # execute the do_after function by passing the results from the do_before
         if do_after:
