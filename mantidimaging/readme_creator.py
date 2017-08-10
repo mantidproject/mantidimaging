@@ -10,16 +10,15 @@ class Readme(object):
 
         self._output_path = saver.get_output_path()
         self._total_lines = 0
-        self._readme_fullpath = None
         self._total_string = ""
         self._time_start = None
 
         readme_name = self._output_path if self._output_path else "readme"
-        self._readme_file_name = readme_name + strftime("%d_%b_%Y_%H_%M_%S", gmtime()) + ".txt"
+        self._readme_file_name = readme_name + strftime("_%d_%b_%Y_%H_%M_%S", gmtime()) + ".txt"
 
+        self._readme_fullpath = None
         if self._output_path:
-            self._readme_fullpath = os.path.join(self._output_path,
-                                                 self._readme_file_name)
+            self._readme_fullpath = os.path.join(self._output_path, self._readme_file_name)
 
     def __len__(self):
         return len(self._total_string)

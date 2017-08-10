@@ -67,8 +67,8 @@ def execute(config):
 
     sample, flat, dark = default_filtering.execute(config, images.get_sample(), images.get_flat(), images.get_dark())
 
-    saver_class.save_preproc_images(sample)
     if not config.func.reconstruction:
+        saver_class.save_preproc_images(sample)
         h.tomo_print_note(
             "Skipping reconstruction because no --reconstruction flag was passed.")
         readme.end()

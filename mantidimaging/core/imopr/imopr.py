@@ -57,13 +57,13 @@ def execute(config):
     h.check_config_integrity(config)
     module.sanity_checks(config)
 
-    sample, flat, dark = loader.load_from_config(config)
+    images = loader.load_from_config(config)
 
-    h.tomo_print("Data shape {0}".format(sample.shape))
+    h.tomo_print("Data shape {0}".format(images.get_sample().shape))
 
     # from mantidimaging.core.recon.recon import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)
-    return module.execute(sample, flat, dark, config, indices)
+    return module.execute(images.get_sample(), images.get_flat(), images.get_dark(), config, indices)
 
 
 def get_function(module_name):
