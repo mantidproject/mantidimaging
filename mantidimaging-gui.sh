@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 mantidimaging_dir=${HOME}/mantidimaging
 
-# This doesn't call any environment scripts and will just call the system python
+# this will be used in the env script
+python_exec="python"
 
-# This will pick up whichever python is on the PATH
-PYTHONPATH="$mantidimaging_dir:$PYTHONPATH" python $mantidimaging_dir/mantidimaging/main.py "$@"
+# Call using . syntax, this will change this script's environment,
+# i.e. all the variables defined within the -env script will be visible here
+. $mantidimaging_dir/mantidimaging-env-py27.sh
+
+PYTHONPATH="$mantidimaging_dir:$PYTHONPATH" ${python_location} $mantidimaging_dir/mantidimaging/main.py --gui -i . "$@"
