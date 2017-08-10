@@ -251,7 +251,7 @@ class StackVisualiserView(Qt.QMainWindow):
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
     """
     This method provides an option to run an independent stack visualiser.
-    It might be useful when using the ISIS Imaging package through IPython.
+    It might be useful when using the MantidImaging package through IPython.
 
     Warning: This function will internally hide a QApplication in order to show the Stack Visualiser.
     This can be accessed with see.q_application, and if modified externally it might crash the caller process.

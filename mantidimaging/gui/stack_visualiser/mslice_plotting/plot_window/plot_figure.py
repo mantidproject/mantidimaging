@@ -6,7 +6,7 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.container import ErrorbarContainer
 from PyQt5.QtCore import Qt
 
-# ISIS_IMAGING: Added to compile on runtime
+# MantidImaging: Added to compile on runtime
 from mantidimaging.core.algorithms import gui_compile_ui
 
 from .base_qt_plot_window import BaseQtPlotWindow
@@ -16,7 +16,7 @@ from .plot_options import LegendDescriptor, PlotConfig, PlotOptionsDialog
 class PlotFigureManager(BaseQtPlotWindow):
     def __init__(self, number, manager):
         super(PlotFigureManager, self).__init__(number, manager)
-        # ISIS_IMAGING: Added to compile on runtime
+        # MantidImaging: Added to compile on runtime
         gui_compile_ui.execute('gui/ui/plot_window.ui', self)
 
         self.actionKeep.triggered.connect(self._report_as_kept_to_manager)

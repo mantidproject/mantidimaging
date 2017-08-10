@@ -58,7 +58,7 @@ def from_string(string, cls=None, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func
 class ProcessList(object):
     """
     Stores a queue of functions to be executed in first-in first-out order.
-    Currently only works with ISIS_IMAGING internal functions.
+    Currently only works with MantidImaging internal functions.
 
     When it needs to be more generic changes to finder.get_package need to be made
     to account that the function package can be in any arbitrary folder. This is
@@ -162,7 +162,8 @@ class ProcessList(object):
         for entry in self._list:
             e = list(map(lambda x: str(x), list(entry)))
 
-            output_string = e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR + e[2] + DEFAULT_ARGUMENT_SEPARATOR + e[3] + DEFAULT_FUNCTION_SEPARATOR
+            output_string = e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR + \
+                e[2] + DEFAULT_ARGUMENT_SEPARATOR + e[3] + DEFAULT_FUNCTION_SEPARATOR
             out.write(output_string)
 
         return out.getvalue()

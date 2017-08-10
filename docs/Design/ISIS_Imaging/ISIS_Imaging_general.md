@@ -11,14 +11,14 @@
     - [Testing](#testing)
         - [Core](#core)
         - [GUI](#gui)
-- [Guidelines for ISIS Imaging CORE](#guidelines-for-isis-imaging-core)
+- [Guidelines for MantidImaging CORE](#guidelines-for-isis-imaging-core)
     - [CUDA filter expansion](#cuda-filter-expansion)
         - [CuPy](#cupy)
         - [OpenCV](#opencv)
     - [Reconstruction tools expansion](#reconstruction-tools-expansion)
     - [File Structure](#file-structure)
     - [Filters - General implementation structure](#filters---general-implementation-structure)
-- [Implementation for ISIS_Imaging GUI](#implementation-for-mantidimaging-gui)
+- [Implementation for MantidImaging GUI](#implementation-for-mantidimaging-gui)
     - [General Structure](#general-structure)
     - [.ui Compiling](#ui-compiling)
     - [Loading](#loading)
@@ -123,7 +123,7 @@ There should also be a collection of system tests to make sure that the function
 ### GUI
 The GUI should use the MVP pattern, making it easier to mock and unit test. Mocking should be done with the python built-in `mock`. There should be an associated mock and presenter unit testing for every MVP used.
 
-# Guidelines for ISIS Imaging CORE
+# Guidelines for MantidImaging CORE
 ## CUDA filter expansion
 Integrating a package that supports CUDA has potential for improvement and expansion of the imaging filters.
 
@@ -191,7 +191,7 @@ Having this structure also allows to expose a consistent Public API through the 
 - All filters must implement a parallel and sequential execution. How that is done is up to the developer.
 - Future extensions could be adding CUDA execution to some/all fitlers. This would ideally be handled as part of the checks for parallel inside the `execute` function, but if that is not possible or desirable, a new function might be added to the API specifically for CUDA execution.
 
-# Implementation for ISIS_Imaging GUI
+# Implementation for MantidImaging GUI
 
 ## General Structure
 Main Window (top level)

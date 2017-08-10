@@ -7,7 +7,7 @@ ROOT_PACKAGE = 'mantidimaging'
 
 def get_external_location(module_file, root_package=ROOT_PACKAGE):
     """
-    Find the external ISIS_IMAGING location for the whole package
+    Find the external MantidImaging location for the whole package
     :param module_file: The module whose package we're looking for
     :param root_package: The top level package of mantidimaging
     """
@@ -17,7 +17,7 @@ def get_external_location(module_file, root_package=ROOT_PACKAGE):
 
 def get_package(module_file, root_package=ROOT_PACKAGE):
     """
-    Find the internal ISIS_IMAGING package for the specified module
+    Find the internal MantidImaging package for the specified module
     :param module_file: The module whose package we're looking for
     :param root_package: The core package within which the module is expected to be
     """
@@ -32,7 +32,7 @@ def all_modules(package, root_package=ROOT_PACKAGE):
     and call _cli_register if _cli is specified, or _gui_register if _gui is specified.
 
     :param package: The internal package from which modules will be imported
-    :param root_package: The directory where the ISIS Imaging package is installed.
+    :param root_package: The directory where the MantidImaging package is installed.
     """
     # sys path 0 will give us the parent directory of the package, and we
     # append the internal package location

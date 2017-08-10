@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [Implementation design for ISIS_Imaging GUI](#implementation-design-for-mantidimaging-gui)
+- [Implementation design for MantidImaging GUI](#implementation-design-for-mantidimaging-gui)
 - [Motivation](#motivation)
 - [Requirements](#requirements)
 - [Design](#design)
@@ -20,7 +20,7 @@
 
 <!-- /TOC -->
 
-# Implementation design for ISIS_Imaging GUI
+# Implementation design for MantidImaging GUI
 The user requirements for the interface have been listed [here](https://github.com/mantidproject/mantidimaging/wiki/High-Level-User-Requirements-and-Use-Cases) and have been reviewed and confirmed by the imaging scientists.
 
 The development requirements, following from the user requirements, are listed [here](https://github.com/mantidproject/mantidimaging/wiki/High-Level-Development-Requirements-and-Guidelines)

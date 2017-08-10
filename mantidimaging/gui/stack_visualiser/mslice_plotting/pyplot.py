@@ -22,9 +22,9 @@ from ._pyplot_decorators import draw_colorbar
 from .figuremanager import FigureManager, activate_category
 from .script_generation import script_log
 
-# from mslice.app import MPL_COMPAT # ISIS_IMAGING: not necessary when not mslice
+# from mslice.app import MPL_COMPAT # MantidImaging: not necessary when not mslice
 MPL_COMPAT = False
-# ISIS_IMAGING: not necessary when not mslice
+# MantidImaging: not necessary when not mslice
 # Handles older matplotlib than 1.5
 if MPL_COMPAT:
     def _string_to_bool(val):

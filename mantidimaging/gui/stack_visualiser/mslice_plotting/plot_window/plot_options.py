@@ -1,13 +1,13 @@
 from PyQt5 import Qt
 
-# ISIS_IMAGING: Added to compile on runtime
+# MantidImaging: Added to compile on runtime
 from mantidimaging.core.algorithms import gui_compile_ui
 
 
 class PlotOptionsDialog(Qt.QDialog):
     def __init__(self, current_config):
         super(PlotOptionsDialog, self).__init__()
-        # ISIS_IMAGING: Added to compile on runtime
+        # MantidImaging: Added to compile on runtime
         gui_compile_ui.execute('gui/ui/plot_options.ui', self)
 
         if current_config.title is not None:

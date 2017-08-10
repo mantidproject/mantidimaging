@@ -14,7 +14,7 @@ setup(
     author='Dimitar Tasev',
     author_email='dimitar.tasev@stfc.ac.uk',
     tests_require=['nose'],
-    description='ISIS Imaging Tomographic Reconstruction package',
+    description='MantidImaging Tomographic Reconstruction package',
     platforms=["Linux"],
     test_suite='nose.collector',
     classifiers=[

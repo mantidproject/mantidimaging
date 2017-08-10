@@ -14,5 +14,4 @@ if [ -d "$anaconda_dir" ]; then
     # update python executable to anaconda python
     python_location="${py35_env}/$python_exec"
     $python_location -V
-
 fi
