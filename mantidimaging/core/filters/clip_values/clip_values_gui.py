@@ -48,6 +48,7 @@ def _gui_register(main_window):
     def updateFieldOnValueChanged(field, field_new_value):
         field_new_value.setValue(field.value())
 
+    # using lambda we can pass in parameters
     clip_min_field.valueChanged.connect(lambda: updateFieldOnValueChanged(clip_min_field, clip_min_new_value_field))
     clip_max_field.valueChanged.connect(lambda: updateFieldOnValueChanged(clip_max_field, clip_max_new_value_field))
 
