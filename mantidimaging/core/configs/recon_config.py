@@ -13,8 +13,8 @@ from mantidimaging.core.configs.functional_config import FunctionalConfig
 
 def grab_full_config():
     """
-    Parses the arguments passed in from command line
-    and creates the ReconstructionConfig
+    Build the command line at runtime, by parsing all of the filters' parameter. 
+    Afterwards parses the arguments passed in from command line, updates the vales and creates the ReconstructionConfig.
     """
     # intentionally not importing with the whole module
     # sometimes we don't want to process the sys.argv arguments
@@ -67,7 +67,7 @@ class ReconstructionConfig(object):
 
     def handle_special_arguments(self):
         if self.args.region_of_interest:
-            if len(self.args.region_of_interest) < 4:
+            if len(self.args.region_of_interest) != 4:
                 raise ValueError(
                     "Not enough arguments provided for the Region of Interest!"
                     " Expecting 4, but found {0}: {1}".format(
@@ -79,11 +79,11 @@ class ReconstructionConfig(object):
             ]
 
         if self.args.air_region:
-            if len(self.args.air_region) < 4:
+            if len(self.args.air_region) != 4:
                 raise ValueError(
                     "Not enough arguments provided for the Air Region "
                     "Normalisation! Expecting 4, but found {0}: {1}"
-                        .format(len(self.args.air_region), self.args.air_region))
+                    .format(len(self.args.air_region), self.args.air_region))
 
             self.args.air_region = [int(val) for val in self.args.air_region]
 
@@ -139,6 +139,10 @@ class ReconstructionConfig(object):
                 self.func.indices = [
                     self.func.indices[0], self.func.indices[1], 1
                 ]
+            else:
+                raise ValueError(
+                    "Invalid amount of indices provided! Please use one of the formats --indices <end_idx>,"
+                    " --indices <start_idx> <end_idx>, --indices <start_idx> <end_idx> <step>")
 
         if self.func.split and not self.func.max_memory:
             raise ValueError(

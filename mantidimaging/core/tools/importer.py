@@ -23,8 +23,10 @@ def do_importing(tool, alg='fbp'):
     The main importing function. Does the decision on which tool to import based on the input.
 
     :param tool: The name of the tool to be imported
-    :param alg: The algorithm that will be used. This is only done the enusre that it is actually supported.
-        If no algorithm is provided, the default is 'fbp', because it's supported by all tools.
+
+    :param alg: The algorithm that will be used. This is only done the ensure that it is actually supported.
+                If no algorithm is provided, the default is 'fbp', because it's supported by all tools.
+
     :return: the tool reference
     """
     if not isinstance(tool, str):
