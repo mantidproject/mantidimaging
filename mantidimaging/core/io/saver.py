@@ -6,6 +6,7 @@ import numpy as np
 
 from mantidimaging import helper as h
 from .utility import DEFAULT_IO_FILE_FORMAT
+from .loader.images import Images
 
 DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'
@@ -29,7 +30,7 @@ def write_img(data, filename, overwrite=False):
 def write_nxs(data, filename, projection_angles=None, overwrite=False):
     import h5py
     nxs = h5py.File(filename, 'w')
-
+    print("Saving data shape", data.shape)
     # appending flat and dark images is disabled for now
     # new shape to account for appending flat and dark images
     # correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])
@@ -82,7 +83,11 @@ def save(data,
                     Specify the start and end range of the indices
                     which will be used for the file names.
     """
-    # expand the path for plugins that don't do it themselves
+
+    if isinstance(data, Images):
+        data = data.get_sample()
+
+        # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
 
@@ -147,7 +152,7 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
         raise RuntimeError(
             "The output directory is NOT empty:{0}\n. This can be "
             "overridden with -w/--overwrite-all.".
-                format(path))
+            format(path))
 
 
 class Saver(object):
@@ -312,7 +317,7 @@ class Saver(object):
 
         h.pstart(
             "Starting saving slices of the reconstructed volume in: {0}...".
-                format(out_recon_dir))
+            format(out_recon_dir))
 
         save(data, out_recon_dir, self._out_slices_prefix,
              self._swap_axes, self._out_format, self._overwrite_all,

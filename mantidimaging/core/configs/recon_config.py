@@ -139,7 +139,7 @@ class ReconstructionConfig(object):
                 self.func.indices = [
                     self.func.indices[0], self.func.indices[1], 1
                 ]
-            else:
+            elif len(self.func.indices) > 3:
                 raise ValueError(
                     "Invalid amount of indices provided! Please use one of the formats --indices <end_idx>,"
                     " --indices <start_idx> <end_idx>, --indices <start_idx> <end_idx> <step>")

@@ -37,8 +37,7 @@ def do_stack_load_seq(data, new_data, img_shape, name):
 
 
 def do_stack_load_par(data, new_data, cores, chunksize, name):
-    f = ptsm.create_partial(
-        parallel_move_data, fwd_function=ptsm.inplace)
+    f = ptsm.create_partial(parallel_move_data, fwd_function=ptsm.inplace)
     ptsm.execute(new_data, data, f, cores, chunksize, name)
     return data
 
