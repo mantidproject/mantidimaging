@@ -21,3 +21,15 @@ from __future__ import (absolute_import, division, print_function)
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
+
+from . import aggregate  # noqa: F401
+from . import algorithms  # noqa: F401
+from . import configs  # noqa: F401
+from . import configurations  # noqa: F401
+from . import convert  # noqa: F401
+from . import filters  # noqa: F401
+from . import io  # noqa: F401
+from . import imopr  # noqa: F401
+from . import parallel  # noqa: F401
+from . import process_list  # noqa: F401
+from . import tools  # noqa: F401

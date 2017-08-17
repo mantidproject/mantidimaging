@@ -90,7 +90,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         # this means we split the data in 2, 3, 4 runs
         number_of_indice_splits += 1
 
-    h.tomo_print_note("Step per reconstruction: {0}, with a ratio to memory: {1}, indices: {2}".format(
+    h.tomo_print_note("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
         step, calculate_ratio(calculate_full_size(new_shape)), split))
 
     return split, step

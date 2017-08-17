@@ -30,7 +30,7 @@ def write_img(data, filename, overwrite=False):
 def write_nxs(data, filename, projection_angles=None, overwrite=False):
     import h5py
     nxs = h5py.File(filename, 'w')
-    print("Saving data shape", data.shape)
+
     # appending flat and dark images is disabled for now
     # new shape to account for appending flat and dark images
     # correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])

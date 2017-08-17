@@ -2,11 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.io.utility import get_file_names, DEFAULT_IO_FILE_FORMAT
 
-from . import img_loader, stack_loader
-from .images import Images
+from mantidimaging.core.io.loader import img_loader, stack_loader
 
 
 def _fitsread(filename):
@@ -36,7 +34,7 @@ def _nxsread(filename):
 
 
 def _imread(filename):
-    from .imports import import_skimage_io
+    from mantidimaging.core.io.loader.imports import import_skimage_io
     skio = import_skimage_io()
     return skio.imread(filename)
 
@@ -56,7 +54,7 @@ def supported_formats():
         skio_available = False
 
     try:
-        from .imports import import_pyfits
+        from mantidimaging.core.io.loader.imports import import_pyfits
         pyfits = import_pyfits()  # noqa: F841
         pyfits_available = True
     except ImportError:
@@ -202,3 +200,44 @@ def load(input_path=None,
     images.check_data_stack(images)
 
     return images
+
+
+def load_sinogram(input_path=None, sinogram_number=0, in_format=DEFAULT_IO_FILE_FORMAT, dtype=np.float32):
+    """
+    This function is not be exposed to the CLI. It can only be accessed internally and through IPython interface.
+    The reason is because this function will have a lot slower performance than the normal load.
+    """
+    if in_format not in supported_formats():
+        raise ValueError("Image format {0} not supported!".format(in_format))
+
+    if in_format == 'nxs':
+        raise NotImplementedError("This functionality is not yet implemented for NXS files")
+
+    input_file_names = get_file_names(input_path, in_format)
+
+    num_images = len(input_file_names)
+
+    sample_image = _imread(input_file_names[0])
+
+    img_shape = sample_image.shape
+
+    from mantidimaging.core.parallel import utility as pu
+
+    # allocate memory for a single sinogram
+    output_data = pu.create_shared_array((1, num_images, img_shape[1]), dtype=dtype)
+
+    print("Output data shape:", output_data.shape)
+
+    from mantidimaging import helper as h
+
+    h.prog_init(num_images, "Loading sinograms")
+
+    for idx, input_file in enumerate(input_file_names):
+        # read a single row from each projection, very wasteful but can quickly create a sinogram
+        loaded_image = _imread(input_file)
+        output_data[0, idx, :] = loaded_image[:, sinogram_number]
+        h.prog_update()
+
+    h.prog_close()
+
+    return output_data

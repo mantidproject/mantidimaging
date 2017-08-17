@@ -24,17 +24,7 @@ from __future__ import absolute_import, division, print_function
 
 # packages part of public API, this will give direct access to the packages from
 # mantidimaging.<package_name>
-from mantidimaging.core import aggregate  # noqa: F401
-from mantidimaging.core import algorithms  # noqa: F401
-from mantidimaging.core import configs  # noqa: F401
-from mantidimaging.core import configurations  # noqa: F401
-from mantidimaging.core import convert  # noqa: F401
-from mantidimaging.core import filters  # noqa: F401
-from mantidimaging.core import io  # noqa: F401
-from mantidimaging.core import imopr  # noqa: F401
-from mantidimaging.core import parallel  # noqa: F401
-from mantidimaging.core import process_list  # noqa: F401
-from mantidimaging.core import tools  # noqa: F401
+from mantidimaging import core  # noqa: F401
 
 del absolute_import, division, print_function
 

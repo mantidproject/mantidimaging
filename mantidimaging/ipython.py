@@ -10,4 +10,5 @@ print("Importing mantidimaging... ", end="")
 
 # import after the path has been corrected
 import mantidimaging  # noqa
+
 print("Done")
