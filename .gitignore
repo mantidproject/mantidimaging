@@ -5,6 +5,9 @@
 # PyCharm project ignore
 .idea
 
+# Jupyter Notebook temporary files
+.ipynb_checkpoints
+
 # VSCode cache 
 .vscode
 
