@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import sys
 
 from logging import getLogger
-from PyQt5 import Qt, QtCore
+from PyQt5 import Qt, QtCore, QtWidgets
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
 from matplotlib.figure import Figure
@@ -247,6 +247,14 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
+
+    def show_error_dialog(self, msg=""):
+        """
+        Shows an error message.
+
+        :param msg: Error message string
+        """
+        QtWidgets.QMessageBox.critical(self, "Error", msg)
 
 
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):

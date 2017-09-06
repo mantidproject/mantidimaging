@@ -31,7 +31,7 @@ class MainWindowPresenter(object):
             raise  # re-raise for full stack trace
 
     def show_error(self, error):
-        print("TODO Error window should be shown here to the user with the following error:", error)
+        self.view.show_error_dialog(error)
 
     def remove_stack(self, uuid):
         self.model.do_remove_stack(uuid)
