@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from functools import partial
+from logging import getLogger
 
 import numpy as np
 
@@ -90,7 +91,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         # this means we split the data in 2, 3, 4 runs
         number_of_indice_splits += 1
 
-    h.tomo_print_note("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
+    getLogger(__name__).info("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
         step, calculate_ratio(calculate_full_size(new_shape)), split))
 
     return split, step

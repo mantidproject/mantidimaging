@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+import logging
 import unittest
 
 import numpy as np
@@ -190,7 +191,7 @@ class ParallelTest(unittest.TestCase):
 
 def _create_test_helper():
     c = ReconstructionConfig.empty_init()
-    c.func.verbosity = 3
+    c.func.verbosity = logging.DEBUG
     return Helper(c)
 
 
@@ -235,7 +236,7 @@ if __name__ == '__main__':
     # print("chunksize", chunksize)
 
     # c = ReconstructionConfig.empty_init()
-    # c.func.verbosity = 3
+    # c.func.verbosity = logging.DEBUG
     # h = Helper(c)
 
     # data = _create_test_shared_array(test_shape)

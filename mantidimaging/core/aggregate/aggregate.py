@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 import os
 
 import numpy as np
@@ -67,8 +69,9 @@ def execute(config):
     selected_angles = config.func.aggregate_angles
     angle_folders, selected_angles = get_angle_folders(input_path, img_format,
                                                        selected_angles)
-    h.tomo_print_note('Applying aggregating method {0} on angles: {1}'.format(
-        agg_method, angle_folders))
+    getLogger(__name__).info(
+            'Applying aggregating method {0} on angles: {1}'.format(
+            agg_method, angle_folders))
 
     # generate the file names in each angle folder
     angle_image_paths = get_image_files_paths(input_path, angle_folders,

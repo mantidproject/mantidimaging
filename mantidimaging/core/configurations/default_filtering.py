@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from mantidimaging import helper as h
 from mantidimaging.core.algorithms import value_scaling
 from mantidimaging.core.filters import (background_correction, roi_normalisation,
@@ -9,10 +11,10 @@ from mantidimaging.core.filters import (background_correction, roi_normalisation
 
 
 def execute(config, sample, flat, dark):
-    h.tomo_print_note("Running the default filtering.")
+    getLogger(__name__).info("Running the default filtering.")
 
     if config.func.skip_preproc:
-        h.tomo_print_warning(
+        getLogger(__name__).warning(
             "Pre-processing steps have been skipped, "
             "because --skip-preproc flag has been passed.")
         return sample, flat, dark
