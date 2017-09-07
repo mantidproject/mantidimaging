@@ -70,8 +70,15 @@ class StackVisualiserView(Qt.QMainWindow):
         self.canvas.rectanglecolor = QtCore.Qt.yellow
         self.canvas.setParent(self)
 
-        # connect an event that will clear the ROI if the user clicks but does not drag a new ROI rectangle
-        self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
+        # Create context menu
+        self.canvas_context_menu = Qt.QMenu(self)
+        # Add context menu items
+        self.canvas_context_menu.addAction(Qt.QAction('A', self.canvas))
+        self.canvas_context_menu.addAction(Qt.QAction('B', self.canvas))
+        self.canvas_context_menu.addAction(Qt.QAction('C', self.canvas))
+
+        # Register mouse release callback
+        self.canvas.mpl_connect('button_press_event', self.on_button_press)
 
         self.canvas.mpl_connect('scroll_event', self. handle_canvas_scroll_wheel)
 
@@ -108,10 +115,13 @@ class StackVisualiserView(Qt.QMainWindow):
         elif event.button == 'down':
             self.presenter.notify(StackWindowNotification.SCROLL_DOWN)
 
-    def remove_any_selected_roi(self, event):
+    def on_button_press(self, event):
         """
-        This removes the previously selected ROI. This function is called on a single
-        button click and 2 things can happen:
+        Handles mouse button release events.
+
+        On left click (mouse button 1) this removes the previously selected
+        ROI. This function is called on a single button click and 2 things can
+        happen:
 
         - If a rectangle selection is present and the user just single clicked, the ROI will be kept,
           because region_select_callback will be called afterwards
@@ -123,8 +133,22 @@ class StackVisualiserView(Qt.QMainWindow):
         and then the rectangle selector callback.
         This might be a wrong assumption which could cause weird plotting issues. For now I have not seen an issue and
         the order seems to always be correct
+
+        On right click (mouse button 2) this opens the context menu.
         """
-        self.current_roi = None
+        print(event)
+
+        if event.button == 1:
+            self.current_roi = None
+
+        if event.button == 3:
+            # Get the mouse position on the canvas widget, converting from figure space to Qt space
+            point_on_canvas = Qt.QPoint(event.x, self.canvas.get_width_height()[1] - event.y)
+            # Show the context menu at (or near to) the mouse position
+            action = self.canvas_context_menu.exec_(self.canvas.mapToGlobal(point_on_canvas))
+
+            # TODO
+            print(action)
 
     def region_select_callback(self, eclick, erelease):
         # eclick and erelease are the press and release events
