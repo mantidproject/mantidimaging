@@ -24,7 +24,7 @@ from __future__ import absolute_import, division, print_function
 
 # packages part of public API, this will give direct access to the packages from
 # mantidimaging.<package_name>
-from mantidimaging import core  # noqa: F401
+from mantidimaging import core, main, ipython  # noqa: F401
 
 del absolute_import, division, print_function
 
