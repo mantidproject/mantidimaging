@@ -10,6 +10,8 @@ import numpy as np
 from mantidimaging.core.algorithms import registrator
 from mantidimaging.core.configs.functional_config import FunctionalConfig
 
+import mantidimaging.core.filters
+
 
 def grab_full_config():
     """
@@ -29,7 +31,9 @@ def grab_full_config():
     parser = functional_args._setup_parser(parser)
 
     # setup args for the filters
-    registrator.register_into(parser, registrator.cli_register)
+    registrator.register_into(
+            parser, func=registrator.cli_register,
+            package=mantidimaging.core.filters)
 
     # parse the real arguments
     args = parser.parse_args()
@@ -183,7 +187,9 @@ class ReconstructionConfig(object):
         parser = functional_args._setup_parser(parser)
 
         # setup args for the filters
-        registrator.register_into(parser, registrator.cli_register)
+        registrator.register_into(
+                parser, func=registrator.cli_register,
+                package=mantidimaging.core.filters)
 
         # get the OS's temp directory
         with tempfile.NamedTemporaryFile() as f:

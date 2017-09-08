@@ -2,19 +2,18 @@ from __future__ import absolute_import, division, print_function
 
 import importlib
 import os
+import pkgutil
 import sys
 import warnings
 
 
-def register_into(the_object, func=None, directory=None, package="core/filters", ignore_packages=None):
+def register_into(the_object, func=None, package=None, ignore_packages=None):
     """
     This function will walk all of the packages in the specified package directory,
     and forward the this_object parameter with the specified func parameter,
 
     :param the_object: the object into which the modules will be registered,
                         this is forwarded to the actual functions that do the registering
-
-    :param directory: The directory to be walked for python modules. If not provided sys.path[0] will be used.
 
     :param package: The internal package from which modules will be imported
 
@@ -29,31 +28,23 @@ def register_into(the_object, func=None, directory=None, package="core/filters",
             "The func parameter must be specified! It should be one of either registrator.cli_register or "
             "registrator.gui_register.")
 
-    # use dots because the check is after the conversion of slashes to dots
-    all_ignores = ["core.filters", "core.filters.wip"]
+    all_ignores = ["mantidimaging.core.filters.wip"]
+
     if ignore_packages is not None:
         all_ignores.extend(list(ignore_packages))
 
-    # sys path 0 will give us the parent directory of the package, and we
-    # append the internal package location
-    if not directory:
-        directory = os.path.join(sys.path[0], package)
-
-    all_files = os.walk(directory)
-
-    # sort by filename
-    for root, dirs, files in sorted(all_files, key=lambda file_tuple: file_tuple[2]):
-
-        # skip the python compiled files
-        if "__pycache__" in root:
+    # Walk the children (packages and modules) of the provided root package
+    pkg_prefix = package.__name__ + '.'
+    for pkg in pkgutil.walk_packages(package.__path__, prefix=pkg_prefix):
+        # Ignore those that are modules, we want packages
+        if not pkg[2]:
             continue
 
-        # replace the / with . to match python package syntax, because it will be later imported dynamically
-        module_dir = root[root.find(package):].replace('/', '.')
-        if module_dir in all_ignores:
+        # Ignore moduels that we want to ignore
+        if pkg[1] in all_ignores:
             continue
 
-        the_object = func(the_object, module_dir)
+        the_object = func(the_object, pkg[1])
 
     return the_object
 
