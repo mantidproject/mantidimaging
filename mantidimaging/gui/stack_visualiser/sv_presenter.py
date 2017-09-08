@@ -73,6 +73,15 @@ class StackVisualiserPresenter(object):
         filenames = self.images.get_filenames()
         return os.path.basename(filenames[index] if filenames is not None else "")
 
+    def get_image_count_on_axis(self, axis=None):
+        """
+        Returns the number of images on a given axis.
+        :param axis: Axis on which to count images (defaults to data traversal axis)
+        """
+        if axis is None:
+            axis = self.axis
+        return self.images.get_sample().shape[self.axis]
+
     def handle_algorithm_dialog_request(self, parameter):
         # Developer note: Parameters need to be checked for both here and in algorithm_dialog.py
         if parameter == Parameters.ROI:

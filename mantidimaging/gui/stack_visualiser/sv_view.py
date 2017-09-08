@@ -43,7 +43,7 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.toolbar = NavigationToolbar2QT(self.canvas, self, coordinates=True)
 
-        self.initialise_slider(data_traversal_axis, images)
+        self.initialise_slider()
         self.initialise_image(cmap)
 
         self.rectangle_selector = self.create_rectangle_selector(self.image_axis, 1)
@@ -73,16 +73,17 @@ class StackVisualiserView(Qt.QMainWindow):
         # connect an event that will clear the ROI if the user clicks but does not drag a new ROI rectangle
         self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
 
-    def initialise_slider(self, data_traversal_axis, images):
+        self.canvas.mpl_connect('scroll_event', self. handle_canvas_scroll_wheel)
+
+    def initialise_slider(self):
         """
         Creates the axis for the slider and initialises the slider
-        :param data_traversal_axis:
-        :param images:
         :return:
         """
         self.slider_axis = self.figure.add_axes(
             [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
-        self.slider = self.create_slider(self.slider_axis, images.get_sample().shape[data_traversal_axis] - 1)
+        self.slider = self.create_slider(
+                self.slider_axis, self.presenter.get_image_count_on_axis() - 1)
 
     @property
     def current_roi(self):
@@ -91,6 +92,23 @@ class StackVisualiserView(Qt.QMainWindow):
     @current_roi.setter
     def current_roi(self, value):
         self._current_roi = value
+
+    def handle_canvas_scroll_wheel(self, event):
+        """
+        Handles the mouse scroll wheeel event when the cursor is over the
+        canvas.
+
+        Increments or decrements the current image index depending on direction
+        of scroll wheel movement.
+
+        :param event: Mouse scroll wheel event
+        """
+        current_idx = self.current_index();
+        if event.button == 'up':
+            current_idx += 1
+        elif event.button == 'down':
+            current_idx -= 1
+        self.set_index(current_idx)
 
     def remove_any_selected_roi(self, event):
         """
@@ -182,6 +200,13 @@ class StackVisualiserView(Qt.QMainWindow):
 
         slider.on_changed(self.show_current_image)
         return slider
+
+    def set_index(self, index):
+        """
+        :param index: Index of image to show
+        """
+        index = max(0, min(self.presenter.get_image_count_on_axis() - 1, index))
+        self.slider.set_val(index)
 
     def current_index(self):
         """
