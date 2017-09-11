@@ -22,6 +22,7 @@ else:
 import numpy as np
 
 import mantidimaging.tests.test_helper as th
+
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.stack_visualiser.sv_available_parameters import Parameters
 from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
@@ -180,6 +181,10 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_do_new_window_histogram(self):
         self.presenter.notify(PresenterNotifications.NEW_WINDOW_HISTOGRAM)
         self.view.show_histogram_of_current_image.assert_called_once()
+
+    def test_show_error_message_forwarded_to_view(self):
+        self.presenter.show_error("test message")
+        self.view.show_error_dialog.assert_called_once_with("test message")
 
 
 if __name__ == '__main__':
