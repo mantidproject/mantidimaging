@@ -171,6 +171,11 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.show_error("test message")
         self.view.show_error_dialog.assert_called_once_with("test message")
 
+    def test_get_image_count_on_axis(self):
+        self.assertEquals(
+                self.presenter.get_image_count_on_axis(),
+                self.test_data.get_sample().shape[self.presenter.axis])
+
 
 if __name__ == '__main__':
     unittest.main()
