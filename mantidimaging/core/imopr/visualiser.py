@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
+from logging import getLogger
+
 
 def sanity_checks(config):
     pass
@@ -7,7 +9,7 @@ def sanity_checks(config):
 
 def execute(sample, flat, dark, config, indices):
     from mantidimaging.core.imopr import helper
-    helper.print_start("Running IMOPR with action VISUALISE/SHOW")
+    getLogger(__name__).info("Running IMOPR with action VISUALISE/SHOW")
     import matplotlib.pyplot as plt
 
     if len(indices) == 0:
@@ -88,12 +90,12 @@ class StackVisualiser(object):
         plt.show(block)
 
     def toggle_selector(self, event):
-        print(' Key pressed.')
+        getLogger(__name__).debug('Key pressed.')
         if event.key in ['Q', 'q'] and self.rectangle.active:
-            print(' RectangleSelector deactivated.')
+            getLogger(__name__).info('RectangleSelector deactivated.')
             self.rectangle.set_active(False)
         if event.key in ['A', 'a'] and not self.rectangle.active:
-            print(' RectangleSelector activated.')
+            getLogger(__name__).info('RectangleSelector activated.')
             self.rectangle.set_active(True)
 
     def line_select_callback(self, eclick, erelease):
@@ -101,7 +103,7 @@ class StackVisualiser(object):
         x1, y1 = eclick.xdata, eclick.ydata
         x2, y2 = erelease.xdata, erelease.ydata
         region = "%i %i %i %i" % (x1, y1, x2, y2)
-        print(region)
+        getLogger(__name__).debug(region)
 
         if self.previous_region is not None:
             self.previous_region.remove()
@@ -321,12 +323,12 @@ class Annotate(object):
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
 
     def on_press(self, event):
-        print('press')
+        getLogger(__name__).debug('press')
         self.x0 = event.xdata
         self.y0 = event.ydata
 
     def on_release(self, event):
-        print('release')
+        getLogger(__name__).debug('release')
         self.x1 = event.xdata
         self.y1 = event.ydata
         self.rect.set_width(self.x1 - self.x0)

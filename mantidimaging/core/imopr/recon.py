@@ -1,4 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
+
+from logging import getLogger
+
 import numpy as np
 
 
@@ -8,7 +11,7 @@ def sanity_checks(config):
 
 def execute(sample, flat, dark, config, indices):
     from mantidimaging.core.imopr import helper
-    helper.print_start("Running IMOPR with action RECON")
+    getLogger(__name__).info("Running IMOPR with action RECON")
 
     from mantidimaging.core.tools import importer
     tool = importer.timed_import(config)

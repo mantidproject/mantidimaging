@@ -1,9 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
 from PyQt5 import Qt, QtCore
 
 from mantidimaging.core.algorithms import gui_compile_ui
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
+
 from .load_dialog import MWLoadDialog
 from .mw_presenter import MainWindowPresenter
 from .mw_presenter import Notification as PresNotification
@@ -81,7 +83,7 @@ class MainWindowView(Qt.QMainWindow):
         return dock_widget
 
     def remove_stack(self, obj):
-        print("Removing stack with uuid", obj.uuid)
+        getLogger(__name__).debug("Removing stack with uuid {}".format(obj.uuid))
         self.presenter.remove_stack(obj.uuid)
 
     def algorithm_accepted(self, stack_uuid, algorithm_dialog):

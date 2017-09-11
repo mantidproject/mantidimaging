@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 import numpy as np
 
 from mantidimaging.core.io.utility import get_file_names, DEFAULT_IO_FILE_FORMAT
@@ -226,7 +228,7 @@ def load_sinogram(input_path=None, sinogram_number=0, in_format=DEFAULT_IO_FILE_
     # allocate memory for a single sinogram
     output_data = pu.create_shared_array((1, num_images, img_shape[1]), dtype=dtype)
 
-    print("Output data shape:", output_data.shape)
+    logging.getLogger(__name__).info("Output data shape: {}".format(output_data.shape))
 
     from mantidimaging import helper as h
 

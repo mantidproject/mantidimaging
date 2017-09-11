@@ -81,7 +81,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         (int(step),) + shape[axis + 1:]
 
     while calculate_ratio(calculate_full_size(new_shape)) > max_ratio:
-        print(calculate_ratio(calculate_full_size(new_shape)))
+        getLogger(__name__).info(calculate_ratio(calculate_full_size(new_shape)))
         split, step = np.linspace(
             0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
 

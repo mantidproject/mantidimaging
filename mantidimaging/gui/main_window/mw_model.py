@@ -2,6 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import uuid
 
+from logging import getLogger
 from PyQt5.QtWidgets import QDockWidget
 
 from mantidimaging.core.io import loader, saver
@@ -60,7 +61,7 @@ class MainWindowModel(object):
         # generate unique ID for this stack
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
-        print("Active stacks", self.active_stacks)
+        getLogger(__name__).debug("Active stacks {}".format(self.active_stacks))
 
     def get_stack(self, stack_uuid):
         """

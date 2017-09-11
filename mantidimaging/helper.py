@@ -135,14 +135,14 @@ def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
             "Shape: {0}".format(to_check.shape))
 
 
-def debug_print_memory_usage_linux(message=""):
+def debug_log_memory_usage_linux(message=""):
     try:
         # Windows doesn't seem to have resource package, so this will
         # silently fail
         import resource as res
-        print(" >> Memory usage", res.getrusage(res.RUSAGE_SELF).ru_maxrss,
-              "KB, ", int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024,
-              "MB", message)
+        log = getLogger(__name__)
+        log.info("Memory usage {} KB, {} MB".format(res.getrusage(res.RUSAGE_SELF).ru_maxrss, int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024))
+        log.info(message)
     except ImportError:
         res = None
         pass

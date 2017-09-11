@@ -11,7 +11,7 @@ class ImporterTest(unittest.TestCase):
         # force silent outputs
         from mantidimaging.core.configs.recon_config import ReconstructionConfig
         self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = logger.CRITICAL
+        self.config.func.verbosity = logging.CRITICAL
 
     # that's the only supported tool right now, Astra is used through TomoPy
     def test_tomopy(self):

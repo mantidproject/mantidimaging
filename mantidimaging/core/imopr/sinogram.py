@@ -1,4 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
+
+from logging import getLogger
+
 import numpy as np
 
 
@@ -9,7 +12,7 @@ def sanity_checks(config):
 def execute(sample, flat, dark, config, indices):
     from mantidimaging.core.imopr import helper
     from mantidimaging.core.imopr.visualiser import show_3d
-    helper.print_start("Running IMOPR with action SINOGRAM")
+    getLogger(__name__).info("Running IMOPR with action SINOGRAM")
 
     if len(indices) == 0:
         show_3d(sample[:], axis=1)

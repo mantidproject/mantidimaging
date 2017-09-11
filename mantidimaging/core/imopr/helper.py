@@ -4,11 +4,6 @@ from __future__ import (absolute_import, division, print_function)
 # the other helper.py that's not in imopr
 
 
-def print_start(action_name):
-    print("*********************************************\n*\n*     " +
-          action_name + "\n*\n*********************************************")
-
-
 def handle_indices(indices, retstep=False):
     args = len(indices)
     if args == 1:
