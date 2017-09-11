@@ -7,7 +7,24 @@ import sys
 import warnings
 
 
-def register_into(the_object, func=None, package=None, ignore_packages=None):
+def find_package_path(package_str):
+    """
+    Attempts to find the path to a given package provided the root package is
+    already on the path.
+
+    :param package_str: Package to search for as a Python path (i.e. "mantidimaging.core.filters")
+    :return: Path to package
+    """
+    package_as_path = os.sep.join(package_str.split('.'))
+    for path in sys.path:
+        candidate_path = os.path.join(path, package_as_path)
+        if os.path.exists(candidate_path):
+            return candidate_path
+
+    raise RuntimeError("Cannot find path for package {}".format(package_str))
+
+
+def register_into(the_object, func=None, package='mantidimaging.core.filters', ignore_packages=None):
     """
     This function will walk all of the packages in the specified package directory,
     and forward the this_object parameter with the specified func parameter,
@@ -34,8 +51,7 @@ def register_into(the_object, func=None, package=None, ignore_packages=None):
         all_ignores.extend(list(ignore_packages))
 
     # Walk the children (packages and modules) of the provided root package
-    pkg_prefix = package.__name__ + '.'
-    for pkg in pkgutil.walk_packages(package.__path__, prefix=pkg_prefix):
+    for pkg in pkgutil.walk_packages([find_package_path(package)], prefix=package + '.'):
         # Ignore those that are modules, we want packages
         if not pkg[2]:
             continue

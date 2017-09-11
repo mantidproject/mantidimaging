@@ -8,8 +8,6 @@ from mantidimaging.core.algorithms import registrator
 from mantidimaging.core.algorithms.registrator.gui_registrator import gui_register
 from mantidimaging.gui.main_window.mw_view import MainWindowView
 
-import mantidimaging.core.filters
-
 
 def execute(config):
     # create the GUI event loop
@@ -19,7 +17,7 @@ def execute(config):
     # register gui part of algorithms into view
     registrator.register_into(
             application_window.menuFilters, func=gui_register,
-            package=mantidimaging.core.filters)
+            package='mantidimaging.core.filters')
 
     application_window.show()
 
