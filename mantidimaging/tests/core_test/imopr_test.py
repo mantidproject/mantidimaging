@@ -59,6 +59,24 @@ class ImoprTest(unittest.TestCase):
 
             npt.assert_array_equal(cors, expected)
 
+    def test_load_cor_file_single_cor(self):
+        text_data = '5 1.230000\n'
+
+        expected = new_cor_array(1)
+        expected[0] = (5, 1.23)
+
+        with tempfile.NamedTemporaryFile() as f:
+            output_path = os.path.dirname(f.name)
+            filename = os.path.join(output_path, 'cors.txt')
+
+            with open(filename, 'w') as tf:
+                tf.write(text_data)
+
+            cors = load_cors_from_file(filename)
+
+            self.assertEquals(cors.shape, (1,))
+            npt.assert_array_equal(cors, expected)
+
 
 if __name__ == '__main__':
     unittest.main()

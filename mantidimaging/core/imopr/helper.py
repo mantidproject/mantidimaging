@@ -37,4 +37,4 @@ def save_cors_to_file(filename, cors):
 
 
 def load_cors_from_file(filename):
-    return np.loadtxt(filename, dtype='int, float')
+    return np.loadtxt(filename, dtype='int, float', ndmin=1)
