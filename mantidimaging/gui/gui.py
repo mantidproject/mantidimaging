@@ -16,7 +16,9 @@ def execute(config):
 
     # register gui part of algorithms into view
     registrator.register_into(
-        application_window.menuFilters, func=gui_register)
+            application_window.menuFilters, func=gui_register,
+            package='mantidimaging.core.filters')
+
     application_window.show()
 
     return sys.exit(q_application.exec_())
