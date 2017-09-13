@@ -1,10 +1,16 @@
 from __future__ import absolute_import, division, print_function
 
 import glob
+import itertools
 import os
 import re
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
+
+SIMILAR_FILE_EXTENSIONS = (
+        ('tif', 'tiff'),
+        ('fit', 'fits')
+    )
 
 
 def get_file_extension(file):
@@ -15,7 +21,8 @@ def get_file_extension(file):
     'test'
     >>> get_file_extension("/home/")  # oh boy I can't wait for this to fail miserably on windows
 
-    # above is expecting a None which.. well doesn't show as anything so just an empty line with a comment explaining it
+    # above is expecting a None which.. well doesn't show as anything so just
+    # an empty line with a comment explaining it
     """
     if os.path.isdir(file):
         return None
@@ -23,6 +30,27 @@ def get_file_extension(file):
     # find the last dot in the file
     just_after_dot_index = file.rfind('.') + 1
     return file[just_after_dot_index:]
+
+
+def get_candidate_file_extensions(ext):
+    """
+    Gets a list of file extensions which can be used to load files.
+    :param ext: User provided file extension
+    :returns: List of extensions in the order they should be tested
+    """
+    # Get all tuples of similar extensions that the provided extension appears
+    # in
+    candidates = [e for e in SIMILAR_FILE_EXTENSIONS if ext in e]
+
+    # Concatenate them all into a single list
+    candidates = list(itertools.chain(*candidates))
+
+    # Remove the provided extension from the list
+    if ext in candidates:
+        candidates.remove(ext)
+
+    # Return candidates, provided extension is always first to give it priority
+    return [ext] + candidates
 
 
 def get_file_names(path, img_format, prefix=''):
@@ -38,17 +66,24 @@ def get_file_names(path, img_format, prefix=''):
     """
 
     path = os.path.abspath(os.path.expanduser(path))
+    extensions = get_candidate_file_extensions(img_format)
 
-    files_match = glob.glob(
-        os.path.join(path, "{0}*.{1}".format(prefix, img_format)))
+    # TODO: could do with some logging here
+
+    for ext in extensions:
+        files_match = glob.glob(
+            os.path.join(path, "{0}*.{1}".format(prefix, ext)))
+
+        if len(files_match) > 0:
+            break
 
     if len(files_match) <= 0:
         raise RuntimeError(
-            "Could not find any image files in '{0}' with extension: {1}".format(
-                path, img_format))
+            "Could not find any image files in '{0}' with extensions: {1}".format(
+                path, extensions))
 
-    # this is a necessary step, otherwise the file order is not guaranteed to be
-    # sequential and we get randomly ordered stack of names
+    # this is a necessary step, otherwise the file order is not guaranteed to
+    # be sequential and we get randomly ordered stack of names
     files_match.sort(key=_alphanum_key_split)
 
     return files_match
@@ -66,14 +101,15 @@ def get_folder_names(path):
 
     path = os.path.abspath(os.path.expanduser(path))
 
-    # os.walk returns a tuple (dirpath, dirnames, filenames), we only want dirnames
+    # os.walk returns a tuple (dirpath, dirnames, filenames), we only want
+    # dirnames
     folders = next(os.walk(path))[1]
 
     if len(folders) <= 0:
         raise RuntimeError("Could not find any folders in {0}".format(path))
 
-    # this is a necessary step, otherwise the file order is not guaranteed to be
-    # sequential and we get randomly ordered stack of names
+    # this is a necessary step, otherwise the file order is not guaranteed to
+    # be sequential and we get randomly ordered stack of names
     folders.sort(key=_alphanum_key_split)
 
     return folders
