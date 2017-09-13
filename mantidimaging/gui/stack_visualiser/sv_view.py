@@ -72,10 +72,17 @@ class StackVisualiserView(Qt.QMainWindow):
 
         # Create context menu
         self.canvas_context_menu = Qt.QMenu(self)
+
+        def add_context_menu_action(text, func):
+            action = Qt.QAction(text, self.canvas)
+            action.triggered.connect(func)
+            self.canvas_context_menu.addAction(action)
+
         # Add context menu items
-        self.canvas_context_menu.addAction(Qt.QAction('A', self.canvas))
-        self.canvas_context_menu.addAction(Qt.QAction('B', self.canvas))
-        self.canvas_context_menu.addAction(Qt.QAction('C', self.canvas))
+        add_context_menu_action("Show Histogram", self.presenter.do_histogram)
+        add_context_menu_action(
+                "Show Histogram in new window",
+                self.presenter.do_new_window_histogram)
 
         # Register mouse release callback
         self.canvas.mpl_connect('button_press_event', self.on_button_press)
@@ -142,13 +149,13 @@ class StackVisualiserView(Qt.QMainWindow):
             self.current_roi = None
 
         if event.button == 3:
-            # Get the mouse position on the canvas widget, converting from figure space to Qt space
-            point_on_canvas = Qt.QPoint(event.x, self.canvas.get_width_height()[1] - event.y)
+            # Get the mouse position on the canvas widget, converting from
+            # figure space to Qt space
+            point_on_canvas = Qt.QPoint(
+                    event.x, self.canvas.get_width_height()[1] - event.y)
             # Show the context menu at (or near to) the mouse position
-            action = self.canvas_context_menu.exec_(self.canvas.mapToGlobal(point_on_canvas))
-
-            # TODO
-            print(action)
+            self.canvas_context_menu.exec_(
+                    self.canvas.mapToGlobal(point_on_canvas))
 
     def region_select_callback(self, eclick, erelease):
         # eclick and erelease are the press and release events
