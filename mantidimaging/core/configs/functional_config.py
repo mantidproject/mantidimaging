@@ -27,6 +27,7 @@ class FunctionalConfig(object):
         self.input_path = None
         self.input_path_flat = None
         self.input_path_dark = None
+        self.in_prefix = ''
         self.in_format = DEFAULT_IO_FILE_FORMAT
         self.construct_sinograms = False
 
@@ -98,6 +99,7 @@ class FunctionalConfig(object):
         return "Input directory: {0}\n".format(os.path.abspath(str(self.input_path))) \
                + "Flat directory: {0}\n".format(os.path.abspath(str(self.input_path_flat))) \
                + "Dark directory: {0}\n".format(os.path.abspath(str(self.input_path_dark))) \
+               + "Input image prefix: {0}\n".format(str(self.in_prefix)) \
                + "Input image format: {0}\n".format(str(self.in_format)) \
                + "Output directory: {0}\n".format(os.path.abspath(str(self.output_path))) \
                + "Output image format: {0}\n".format(str(self.out_format)) \
@@ -167,6 +169,14 @@ class FunctionalConfig(object):
             default=self.input_path_dark,
             type=str,
             help="Input directory for flat images")
+
+        grp_func.add_argument(
+            "--in-prefix",
+            required=False,
+            default=self.out_format,
+            type=str,
+            help="Filename prefix to use when searching for input image files "
+                 "to load.")
 
         from mantidimaging.core.io import loader
         grp_func.add_argument(
