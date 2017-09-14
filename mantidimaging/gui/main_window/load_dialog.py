@@ -67,7 +67,8 @@ class MWLoadDialog(Qt.QDialog):
         self.image_format = get_file_extension(sample_filename)
 
         try:
-            self.last_shape = read_in_shape(self.sample_path(), self.image_format)
+            self.last_shape = read_in_shape(self.sample_path(),
+                                            in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
             self.parent_view.presenter.show_error("Failed to read this file. See log for details.")

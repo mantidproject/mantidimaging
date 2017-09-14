@@ -20,7 +20,7 @@ class MainWindowModel(object):
             sample_path,
             None,
             None,
-            image_format,
+            in_format=image_format,
             parallel_load=parallel_load,
             indices=indices)
 
