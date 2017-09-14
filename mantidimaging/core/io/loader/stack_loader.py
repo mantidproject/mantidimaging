@@ -57,14 +57,25 @@ def execute(load_func,
 
     On HDD I've found it's about 50% SLOWER, thus not recommended!
 
-    :param file_name :: list of image file paths given as strings
-    :param load_func :: file name extension if fixed (to set the expected image format)
-    :param dtype :: data type for the output numpy array
+    :param file_name: list of image file paths given as strings
+
+    :param load_func: file name extension if fixed (to set the expected image
+                      format)
+
+    :param dtype: data type for the output numpy array
+
     :param cores: Default:1, cores to be used if parallel_load is True
+
     :param chunksize: chunk of work per worker
-    :param parallel_load: Default: False, if set to true the loading of the data will be done in parallel.
-            This could be faster depending on the IO system. For local HDD runs the recommended setting is False
-    :return: stack of images as a 3-elements tuple: numpy array with sample images, white image, and dark image.
+
+    :param parallel_load: Default: False, if set to true the loading of the
+                          data will be done in parallel.
+                          This could be faster depending on the IO
+                          system.
+                          For local HDD runs the recommended setting is False
+
+    :return: stack of images as a 3-elements tuple: numpy array with sample
+             images, white image, and dark image.
     """
     # create shared array
     new_data = load_func(file_name)
@@ -82,5 +93,6 @@ def execute(load_func,
         # loading bar information, and I doubt there's any performance gain
         data = do_stack_load_seq(data, new_data, img_shape, name)
 
-    # Nexus doesn't load flat/dark images yet, if the functionality is requested it should be changed here
+    # Nexus doesn't load flat/dark images yet, if the functionality is
+    # requested it should be changed here
     return Images(data, None, None, file_name)
