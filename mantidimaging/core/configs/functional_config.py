@@ -173,7 +173,7 @@ class FunctionalConfig(object):
         grp_func.add_argument(
             "--in-prefix",
             required=False,
-            default=self.out_format,
+            default=self.in_prefix,
             type=str,
             help="Filename prefix to use when searching for input image files "
                  "to load.")

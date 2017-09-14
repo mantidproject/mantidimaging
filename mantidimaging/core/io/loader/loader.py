@@ -71,12 +71,13 @@ def supported_formats():
 
 
 def read_in_shape(input_path,
+                  in_prefix='',
                   in_format=DEFAULT_IO_FILE_FORMAT,
                   data_dtype=np.float32,
                   cores=None,
                   chunksize=None):
-    input_file_names = get_file_names(input_path, in_format)
-    images = load(input_path, None, None, in_format,
+    input_file_names = get_file_names(input_path, in_format, in_prefix)
+    images = load(input_path, None, None, in_prefix, in_format,
                   data_dtype, cores, chunksize, indices=[0, 1, 1])
 
     # construct and return the new shape
@@ -102,12 +103,14 @@ def read_in_shape_from_config(config):
               tuple of (Length, X, Y)
     """
     input_path = config.func.input_path
+    in_prefix = config.func.in_prefix
     in_format = config.func.in_format
     data_dtype = config.func.data_dtype
     cores = config.func.cores
     chunksize = config.func.chunksize
 
-    return read_in_shape(input_path, in_format, data_dtype, cores, chunksize)
+    return read_in_shape(
+            input_path, in_prefix, in_format, data_dtype, cores, chunksize)
 
 
 def load_from_config(config):
@@ -123,6 +126,7 @@ def load_from_config(config):
     input_path = config.func.input_path
     input_path_flat = config.func.input_path_flat
     input_path_dark = config.func.input_path_dark
+    img_prefix = config.func.in_prefix
     img_format = config.func.in_format
     data_dtype = config.func.data_dtype
     cores = config.func.cores
@@ -131,14 +135,15 @@ def load_from_config(config):
     indices = config.func.indices
     construct_sinograms = config.func.construct_sinograms
 
-    return load(input_path, input_path_flat, input_path_dark,
-                img_format, data_dtype, cores, chunksize,
-                parallel_load, indices=indices, construct_sinograms=construct_sinograms)
+    return load(input_path, input_path_flat, input_path_dark, img_prefix,
+                img_format, data_dtype, cores, chunksize, parallel_load,
+                indices=indices, construct_sinograms=construct_sinograms)
 
 
 def load(input_path=None,
          input_path_flat=None,
          input_path_dark=None,
+         in_prefix='',
          in_format=DEFAULT_IO_FILE_FORMAT,
          dtype=np.float32,
          cores=None,
@@ -155,6 +160,8 @@ def load(input_path=None,
     :param input_path_flat: Optional: Path for the input Flat images folder
 
     :param input_path_dark: Optional: Path for the input Dark images folder
+
+    :param in_prefix: Optional: Prefix for loaded files
 
     :param img_format: Default:'fits', format for the input images
 
@@ -192,7 +199,7 @@ def load(input_path=None,
             "Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if not file_names:
-        input_file_names = get_file_names(input_path, in_format)
+        input_file_names = get_file_names(input_path, in_format, in_prefix)
     else:
         input_file_names = file_names
 
@@ -217,7 +224,11 @@ def load(input_path=None,
     return images
 
 
-def load_sinogram(input_path=None, sinogram_number=0, in_format=DEFAULT_IO_FILE_FORMAT, dtype=np.float32):
+def load_sinogram(input_path=None,
+                  sinogram_number=0,
+                  in_prefix='',
+                  in_format=DEFAULT_IO_FILE_FORMAT,
+                  dtype=np.float32):
     """
     This function is not be exposed to the CLI.
 
@@ -233,7 +244,7 @@ def load_sinogram(input_path=None, sinogram_number=0, in_format=DEFAULT_IO_FILE_
         raise NotImplementedError(
                 "This functionality is not yet implemented for NXS files")
 
-    input_file_names = get_file_names(input_path, in_format)
+    input_file_names = get_file_names(input_path, in_format, in_prefix)
 
     num_images = len(input_file_names)
 
