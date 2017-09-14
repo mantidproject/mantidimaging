@@ -423,8 +423,10 @@ class IOTest(FileOutputtingTestCase):
                          'out_preproc_image'), saver._out_format,
             data_as_stack, dark.shape[0], loader_indices or saver_indices)
 
-        loaded_images = loader.load(sample_output_path, flat_output_path, dark_output_path,
-                                    saver._out_format, cores=1, parallel_load=parallel, indices=loader_indices)
+        loaded_images = loader.load(
+                sample_output_path, flat_output_path, dark_output_path,
+                in_format=saver._out_format, cores=1, parallel_load=parallel,
+                indices=loader_indices)
 
         if loader_indices:
             assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data doesn't " \
