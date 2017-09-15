@@ -30,10 +30,10 @@ fi
 if [ ! -d "$py_env_dir" ]
 then
   echo "Python 3.5 environment not found in Anaconda directory"
-  "$anaconda_bin"/conda create -y --override-channels -c defaults -n $py_env_name python=3.5 anaconda
+  "$anaconda_bin"/conda create -y -q --override-channels -c defaults -n $py_env_name python=3.5 anaconda
   echo "Activating $py_env_name environment"
   source "$anaconda_bin"/activate py35
-  "$anaconda_bin"/conda install -y --override-channels -c dgursoy tomopy=1.0.1
+  "$anaconda_bin"/conda install -y -q --override-channels -c dgursoy tomopy=1.0.1
 else
   echo "Python 3.5 environment found"
 fi
