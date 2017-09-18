@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import argparse
 import os
+import sys
 import tempfile
 from argparse import RawTextHelpFormatter
 
@@ -11,7 +12,7 @@ from mantidimaging.core.algorithms import registrator
 from mantidimaging.core.configs.functional_config import FunctionalConfig
 
 
-def grab_full_config():
+def grab_full_config(default_args=None):
     """
     Build the command line at runtime, by parsing all of the filters' parameter. 
     Afterwards parses the arguments passed in from command line, updates the vales and creates the ReconstructionConfig.
@@ -34,7 +35,7 @@ def grab_full_config():
             package='mantidimaging.core.filters')
 
     # parse the real arguments
-    args = parser.parse_args()
+    args = parser.parse_args(default_args if default_args is not None else [] + sys.argv)
 
     # update the configs
     functional_args._update(args)

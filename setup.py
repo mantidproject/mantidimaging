@@ -9,6 +9,15 @@ setup(
     version='0.9',
     packages=find_packages(),
     py_modules=['mantidimaging'],
+    entry_points={
+        'console_scripts': [
+            'mantidimaging = mantidimaging.main:cli_main',
+            'mantidimaging-ipython = mantidimaging.ipython:main'
+        ],
+        'gui_scripts': [
+            'mantidimaging-gui = mantidimaging.main:gui_main'
+        ]
+    },
     url='https://github.com/mantidproject/mantidimaging',
     license='GPL-3.0',
     author='Dimitar Tasev',

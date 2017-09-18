@@ -18,10 +18,11 @@ def check_version_info():
             "Version found: {0}".format(python_version))
 
 
-def main():
+def main(default_args):
     h.initialise_logging()
     check_version_info()
-    config = recon_config.grab_full_config()
+
+    config = recon_config.grab_full_config(default_args)
 
     if config.func.debug and config.func.debug_port:
         import pydevd
@@ -63,6 +64,14 @@ def main():
     h.total_execution_timer()
 
     return res
+
+
+def cli_main():
+    main(None)
+
+
+def gui_main():
+    main(['-i', '.', '--gui'])
 
 
 if __name__ == '__main__':
