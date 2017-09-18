@@ -42,6 +42,11 @@ def initialise_logging():
     logging.getLogger(__name__).debug("Logging initialised")
 
 
+def set_logging_from_config(config):
+    root_logger = logging.getLogger()
+    root_logger.setLevel(config.func.verbosity)
+
+
 def check_config_class(config):
     from mantidimaging.core.configs.recon_config import ReconstructionConfig
     assert isinstance(
@@ -51,6 +56,8 @@ def check_config_class(config):
 
 def initialise(config, saver=None):
     root_logger = logging.getLogger()
+
+    set_logging_from_config(config)
 
     # File handler
     global _log_file_handler
@@ -64,9 +71,6 @@ def initialise(config, saver=None):
     _log_file_handler = logging.FileHandler(log_fullpath, mode='w')
     _log_file_handler.setFormatter(_log_formatter)
     root_logger.addHandler(_log_file_handler)
-
-    # Log level
-    # config.func.verbosity
 
     # Start global execution timer
     global _time_start

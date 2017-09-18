@@ -34,8 +34,12 @@ def grab_full_config(default_args=None):
             parser, func=registrator.cli_register,
             package='mantidimaging.core.filters')
 
-    # parse the real arguments
-    args = parser.parse_args(default_args if default_args is not None else [] + sys.argv)
+    # generate a list of both default arguments and real arguments
+    arg_list = default_args if default_args is not None else []
+    arg_list += sys.argv[1:]
+
+    # so parsing
+    args = parser.parse_args(arg_list)
 
     # update the configs
     functional_args._update(args)
