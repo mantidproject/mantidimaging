@@ -1,6 +1,24 @@
+import sys
 import unittest
 
-import mock
+if sys.version_info >= (3, 3):
+    # Use unittest.mock on Python 3.3 and above
+    import unittest.mock as mock
+
+    if sys.version_info < (3, 6):
+        # If on Python 3.5 and below then need to monkey patch this function in
+        # It is available as standard on Python 3.6 and above
+        def assert_called_once(_mock_self):
+            self = _mock_self
+            if not self.call_count == 1:
+                msg = ("Expected '%s' to have been called once. Called %s times." %
+                        (self._mock_name or 'mock', self.call_count))
+                raise AssertionError(msg)
+        unittest.mock.Mock.assert_called_once = assert_called_once
+else:
+    # Use mock on Python < 3.3
+    import mock
+
 import numpy as np
 
 import mantidimaging.tests.test_helper as th
