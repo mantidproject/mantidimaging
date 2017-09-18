@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 import os
 
 import numpy as np
@@ -162,9 +164,6 @@ class Saver(object):
 
     However if the directory in which the output should be written out does
     not exist, it will be created on the first call of make_dirs_if_needed.
-    And if the directory cannot be created/accessed/written to afterwards,
-    it will fail on writing out the Readme Summary beginning, which is
-    early in the reconstruction, before loading any data in, or even the tool.
 
     This class should always fail early before any
     expensive operations have been attempted.
@@ -239,7 +238,7 @@ class Saver(object):
         # reshape so that it works with the internals
         data = data.reshape(1, data.shape[0], data.shape[1])
         if self._output_path is None:
-            h.tomo_print_note(
+            getLogger(__name__).info(
                 "Not saving a single image, "
                 "because no output path is specified."
             )
@@ -307,7 +306,7 @@ class Saver(object):
         :param data: Reconstructed data volume that will be saved out.
         """
         if self._output_path is None:
-            h.tomo_print_warning(
+            getLogger(__name__).warning(
                 "Not saving reconstruction output, "
                 "because no output path is specified."
             )
@@ -328,7 +327,7 @@ class Saver(object):
             out_horiz_dir = os.path.join(out_recon_dir,
                                          self._out_horiz_slices_subdir)
 
-            h.tomo_print_note(
+            getLogger(__name__).info(
                 "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
             # save out the horizontal slices by flipping the axes

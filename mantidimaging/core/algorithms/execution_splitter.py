@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 import mantidimaging.helper as h
 from mantidimaging.core.algorithms import cor_interpolate, shape_splitter
 from mantidimaging.core.io import loader
@@ -36,12 +38,12 @@ def execute(config, executable):
         slices = config.func.cor_slices if config.func.cor_slices is not None else 0
         centers_of_rotation = cor_interpolate.execute(data_shape[0], slices,
                                                       config.func.cors)
-        h.tomo_print("Generated cors: {0}".format(centers_of_rotation))
+        getLogger(__name__).info("Generated cors: {0}".format(centers_of_rotation))
 
     # subtract one here, because we go through 2 at a time
     for i in range(len(split) - 1):
         config.func.indices = [split[i], split[i + 1], 1]
-        h.tomo_print("Running on indices: {0}".format(config.func.indices))
+        getLogger(__name__).info("Running on indices: {0}".format(config.func.indices))
         if recon:
             config.func.cors = centers_of_rotation[split[i]:split[i + 1]]
 

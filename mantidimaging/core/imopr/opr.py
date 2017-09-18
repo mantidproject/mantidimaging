@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
 from functools import partial
+from logging import getLogger
 import numpy as np
 
 
@@ -39,7 +40,7 @@ def execute(sample, flat, dark, config, indices):
     opr = config.func.imopr[-1]
 
     from mantidimaging.core.imopr import helper
-    helper.print_start("Running IMOPR with operation {0}".format(opr))
+    getLogger(__name__).info("Running IMOPR with operation {0}".format(opr))
 
     i1, i2 = helper.handle_indices(indices)
 

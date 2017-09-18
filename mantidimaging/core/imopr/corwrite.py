@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
+from logging import getLogger
+
 from mantidimaging.core.algorithms import projection_angles
 from mantidimaging.core.imopr import helper
 from mantidimaging.core.tools import importer
@@ -29,13 +31,15 @@ def execute(sample, flat, dark, config, indices):
     :param config: the full reconstruction config
     :param indices: indices that will be processed in the function.
     """
-    helper.print_start(
+    log = getLogger(__name__)
+
+    log.info(
         "Running IMOPR with action COR using tomopy write_center. "
         "This works ONLY with sinograms!")
 
     tool = importer.timed_import(config)
 
-    print("Calculating projection angles..")
+    log.info("Calculating projection angles..")
     # developer note: we are processing sinograms,
     # but we need the number of radiograms
     num_radiograms = sample.shape[1]
@@ -43,14 +47,14 @@ def execute(sample, flat, dark, config, indices):
                                              num_radiograms)
 
     i1, i2, step = config.func.indices
-    print(indices)
+    log.info(indices)
     for i, actual_slice_index in zip(
             range(sample.shape[0]), range(i1, i2, step)):
 
         angle_output_path = os.path.join(config.func.output_path,
                                          str(actual_slice_index))
 
-        print("Starting writing CORs for slice {0} in {1}".format(
+        log.info("Starting writing CORs for slice {0} in {1}".format(
             actual_slice_index, angle_output_path))
 
         tool._tomopy.write_center(
@@ -61,5 +65,5 @@ def execute(sample, flat, dark, config, indices):
             sinogram_order=True,
             cen_range=indices[0:])
 
-    print("Finished writing CORs in", config.func.output_path)
+    log.info("Finished writing CORs in", config.func.output_path)
     return sample

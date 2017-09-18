@@ -3,13 +3,13 @@ from __future__ import absolute_import, division, print_function
 import os
 
 from mantidimaging.core.algorithms import cor_interpolate
-from mantidimaging.core.configurations.default_run import initialise_run, end_run
+from mantidimaging.core.configurations.default_run import initialise_run
 from mantidimaging.core import process_list
 from mantidimaging.core.io import loader
 
 
 def execute(config):
-    saver_class, readme, tool = initialise_run(config)
+    saver_class, tool = initialise_run(config)
     sample, flat, dark = loader.load_from_config(config)
 
     if os.path.isfile(config.func.process_list):
@@ -25,7 +25,6 @@ def execute(config):
         _do_reconstruction(sample, config, pl)
         saver_class.save_recon_output(sample)
 
-    end_run(readme)
     return sample
 
 

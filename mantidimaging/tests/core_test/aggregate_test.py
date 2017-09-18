@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+import logging
 import os
 import tempfile
 import unittest
@@ -19,7 +20,7 @@ class AggregateTest(unittest.TestCase):
 
         # force silent outputs
         self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = 0
+        self.config.func.verbosity = logging.CRITICAL
 
     def create_saver(self):
         return Saver(self.config)

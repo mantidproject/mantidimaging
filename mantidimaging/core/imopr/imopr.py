@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from mantidimaging import helper as h
 from mantidimaging.core.io import loader
 
@@ -59,7 +61,7 @@ def execute(config):
 
     images = loader.load_from_config(config)
 
-    h.tomo_print("Data shape {0}".format(images.get_sample().shape))
+    getLogger(__name__).info("Data shape {0}".format(images.get_sample().shape))
 
     # from mantidimaging.core.recon.recon import pre_processing
     # sample, flat, dark = pre_processing(config, sample, flat, dark)

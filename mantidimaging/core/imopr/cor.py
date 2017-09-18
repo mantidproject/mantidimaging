@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from mantidimaging.core.algorithms import projection_angles
 from mantidimaging.core.imopr import helper
 from mantidimaging.core.tools import importer
@@ -10,12 +12,13 @@ def sanity_checks(config):
 
 
 def execute(sample, flat, dark, config, indices):
-    helper.print_start(
-        "Running IMOPR with action COR. This works ONLY with sinograms")
+    log = getLogger(__name__)
+
+    log.info("Running IMOPR with action COR. This works ONLY with sinograms")
 
     tool = importer.timed_import(config)
 
-    print("Calculating projection angles..")
+    log.info("Calculating projection angles..")
 
     # developer note: we are processing sinograms,
     # but we need the number of radiograms
@@ -28,13 +31,13 @@ def execute(sample, flat, dark, config, indices):
     i1, i2, step = config.func.indices
     for i, actual_slice_index in zip(
             range(sample.shape[0]), range(i1, i2, step)):
-        print("Running COR for index", actual_slice_index, end=" ")
+        log.info("Running COR for index {}".format(actual_slice_index))
         cor = tool.find_center(
             tomo=sample,
             theta=proj_angles,
             sinogram_order=True,
             ind=i,
             init=initial_guess)
-        print(cor)
+        log.info(cor)
 
     return sample

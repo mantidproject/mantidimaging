@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from mantidimaging.core.imopr import helper
 from mantidimaging.core.tools import importer
 
@@ -9,7 +11,9 @@ def sanity_checks(config):
 
 
 def execute(sample, flat, dark, config, indices):
-    helper.print_start("Running IMOPR with action COR")
+    log = getLogger(__name__)
+
+    log.info("Running IMOPR with action COR")
 
     tool = importer.timed_import(config)
 
@@ -17,7 +21,7 @@ def execute(sample, flat, dark, config, indices):
 
     for i, actual_slice_index in zip(
             range(sample.shape[0]), range(i1, i2, step)):
-        print("Running COR for index", actual_slice_index, end=" ")
+        log.info("Running COR for index {}".format(actual_slice_index))
         cor = tool.find_center_vo(
             tomo=sample,
             ind=i,
@@ -27,6 +31,6 @@ def execute(sample, flat, dark, config, indices):
             srad=10,
             step=2,
             drop=0)
-        print(cor)
+        log.info(cor)
 
     return sample

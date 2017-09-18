@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 
+from logging import getLogger
 from PyQt5 import Qt, QtCore
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
@@ -116,7 +117,7 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.current_roi = (int(left), int(top), int(right), int(bottom))
         region = "%i %i %i %i" % self.current_roi
-        print(region)
+        getLogger(__name__).info(region)
 
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
@@ -261,7 +262,7 @@ def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
     :param cmap: Color map
     :param block: Whether to block the calling process, or not
     """
-    print("Running independent Stack Visualiser")
+    getLogger(__name__).info("Running independent Stack Visualiser")
 
     # We cache the QApplication reference, otherwise the interpreter will segfault when we try to create
     # a second QApplication on a consecutive call. We cache it as a parameter of this function, because we don't

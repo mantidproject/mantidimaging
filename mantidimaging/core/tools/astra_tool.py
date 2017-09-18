@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from mantidimaging import helper as h
 from mantidimaging.core.tools.abstract_tool import AbstractTool
 
@@ -65,14 +67,14 @@ class AstraTool(AbstractTool):
         astra_version = float(astra.__version__)
         if isinstance(astra_version,
                       float) and astra_version >= min_astra_version:
-            print("Imported astra successfully. Version: {0}".format(
+            getLogger(__name__).info("Imported astra successfully. Version: {0}".format(
                 astra_version))
         else:
             raise RuntimeError(
                 "Could not find the required version of astra. Found version: {0}".
                 format(astra_version))
 
-        print("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
+        getLogger(__name__).info("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
         return astra
 
     def run_reconstruct(self, data, config, proj_angles=None, **kwargs):
@@ -111,7 +113,7 @@ class AstraTool(AbstractTool):
             proj_angles = projection_angles.generate(config.func.max_angle,
                                                      data.shape[1])
 
-        print(len(proj_angles))
+        getLogger(__name__).debug(len(proj_angles))
 
         detector_spacing_x = 0.55
         detector_spacing_y = 0.55
@@ -124,7 +126,7 @@ class AstraTool(AbstractTool):
             'parallel3d', detector_spacing_x, detector_spacing_y,
             data.shape[0], data.shape[2], proj_angles)
 
-        print(projections_geometry)
+        getLogger(__name__).debug(projections_geometry)
 
         sinogram_id = self._astra.data3d.create('-sino', projections_geometry,
                                                 data)

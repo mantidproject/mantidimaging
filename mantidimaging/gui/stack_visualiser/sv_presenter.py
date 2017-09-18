@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
+from logging import getLogger
 from enum import IntEnum
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
@@ -90,7 +91,7 @@ class StackVisualiserPresenter(object):
 
         parameter_name = algorithm_dialog.requested_parameter_name
         parameter_value = self.handle_algorithm_dialog_request(parameter_name) if parameter_name else ()
-        print("Received parameter value", parameter_value)
+        getLogger(__name__).info("Received parameter value {}".format(parameter_value))
         if not isinstance(parameter_value, tuple):
             parameter_value = (parameter_value,)
 

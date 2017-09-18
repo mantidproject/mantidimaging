@@ -19,6 +19,7 @@ def check_version_info():
 
 
 def main():
+    h.initialise_logging()
     check_version_info()
     config = recon_config.grab_full_config()
 

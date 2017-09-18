@@ -1,6 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
+import logging
 import os
+
 import numpy as np
 
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
@@ -14,12 +16,6 @@ class FunctionalConfig(object):
     def __init__(self):
         """
         Builds a default post-processing configuration with a sensible choice of parameters
-
-        verbosity: Default 2, existing levels:
-            0 - Silent, no output at all (not recommended)
-            1 - Low verbosity, will output each step that is being performed
-            2 - Normal verbosity, will output each step and execution time
-            3 - High verbosity, will output the step name, execution time and memory usage before and after each step
 
         crash_on_failed_import: Default True, this option tells if the program should stop execution if an import
                                 fails and a step cannot be executed:
@@ -54,7 +50,7 @@ class FunctionalConfig(object):
         # single member list so that interpolation doesn't fail in cor_interpolate
         self.cor_slices = [0]
 
-        self.verbosity = 3
+        self.verbosity = logging.INFO
 
         self.overwrite_all = False
 
@@ -287,12 +283,11 @@ class FunctionalConfig(object):
             "--verbosity",
             type=int,
             default=self.verbosity,
-            help="Default: 2 - Normal verbosity.\n"
-            "0 - Silent, no text output, except results (not recommended)\n"
-            "1 - Low verbosity, will output text on step name\n"
-            "2 (recommended) - Normal verbosity, will output step name "
+            help="Default: %(default)s\n"
+            "30 - Low verbosity, will only output warnings\n"
+            "20 (recommended) - Normal verbosity, will output step name "
             "and execution time\n"
-            "3 - High verbosity, will output step name, execution time "
+            "10 - High verbosity, will output step name, execution time "
             "and memory usage before and after each step\n")
 
         grp_func.add_argument(

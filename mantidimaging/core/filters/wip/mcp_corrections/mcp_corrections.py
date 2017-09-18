@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from mantidimaging import helper as h
 
 
@@ -21,7 +23,7 @@ def fool_my_own_sanity_check(data):
 
 
 def execute(data, cores=None, chunksize=None):
-    print("Warning!: This only implement gap filling code. "
+    getLogger(__name__).warn("This only implement gap filling code. "
           "NO CODE FOR SHIFTING THE CHIPS IS CURRENTLY IMPLEMENTED!")
     fool_my_own_sanity_check(data)
 

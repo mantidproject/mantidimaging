@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from functools import partial
+from logging import getLogger
 
 import numpy as np
 
@@ -80,7 +81,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         (int(step),) + shape[axis + 1:]
 
     while calculate_ratio(calculate_full_size(new_shape)) > max_ratio:
-        print(calculate_ratio(calculate_full_size(new_shape)))
+        getLogger(__name__).info(calculate_ratio(calculate_full_size(new_shape)))
         split, step = np.linspace(
             0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
 
@@ -90,7 +91,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         # this means we split the data in 2, 3, 4 runs
         number_of_indice_splits += 1
 
-    h.tomo_print_note("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
+    getLogger(__name__).info("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
         step, calculate_ratio(calculate_full_size(new_shape)), split))
 
     return split, step
