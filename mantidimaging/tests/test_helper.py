@@ -13,10 +13,6 @@ backup_mp_avail = None
 g_shape = (10, 8, 10)
 
 
-def gimme_shape():
-    return g_shape
-
-
 def gen_img_numpy_rand(shape=g_shape):
     return np.random.rand(*shape)
 

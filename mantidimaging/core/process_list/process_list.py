@@ -59,11 +59,6 @@ class ProcessList(object):
     """
     Stores a queue of functions to be executed in first-in first-out order.
     Currently only works with MantidImaging internal functions.
-
-    When it needs to be more generic changes to finder.get_package need to be made
-    to account that the function package can be in any arbitrary folder. This is
-    currently possible via the finder.get_package's root_package argument, but maybe
-    it could be automated further.
     """
 
     def __init__(self):
