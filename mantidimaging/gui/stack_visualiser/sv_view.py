@@ -79,6 +79,7 @@ class StackVisualiserView(Qt.QMainWindow):
             self.canvas_context_menu.addAction(action)
 
         # Add context menu items
+        add_context_menu_action("Clear ROI", self.presenter.do_clear_roi)
         add_context_menu_action("Show Histogram", self.presenter.do_histogram)
         add_context_menu_action(
                 "Show Histogram in new window",
@@ -122,6 +123,10 @@ class StackVisualiserView(Qt.QMainWindow):
         elif event.button == 'down':
             self.presenter.notify(StackWindowNotification.SCROLL_DOWN)
 
+    def deselect_current_roi(self):
+        self.current_roi = None
+        self.rectangle_selector.extents = (0, 0, 0, 0)
+
     def on_button_press(self, event):
         """
         Handles mouse button release events.
@@ -143,8 +148,6 @@ class StackVisualiserView(Qt.QMainWindow):
 
         On right click (mouse button 2) this opens the context menu.
         """
-        print(event)
-
         if event.button == 1:
             self.current_roi = None
 
@@ -163,8 +166,7 @@ class StackVisualiserView(Qt.QMainWindow):
         bottom, right = erelease.xdata, erelease.ydata
 
         self.current_roi = (int(left), int(top), int(right), int(bottom))
-        region = "%i %i %i %i" % self.current_roi
-        getLogger(__name__).info(region)
+        getLogger(__name__).info("ROI: %i %i %i %i", *self.current_roi)
 
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
