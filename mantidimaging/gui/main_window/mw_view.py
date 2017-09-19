@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from logging import getLogger
 from PyQt5 import Qt, QtCore
+from PyQt5 import Qt, QtCore, QtWidgets
 
 from mantidimaging.core.algorithms import gui_compile_ui
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
@@ -95,3 +96,11 @@ class MainWindowView(Qt.QMainWindow):
         :param algorithm_dialog: The algorithm dialog object
         """
         self.presenter.apply_to_data(stack_uuid, algorithm_dialog)
+
+    def show_error_dialog(self, msg=""):
+        """
+        Shows an error message.
+
+        :param msg: Error message string
+        """
+        QtWidgets.QMessageBox.critical(self, "Error", msg)

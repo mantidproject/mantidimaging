@@ -35,7 +35,7 @@ class StackVisualiserPresenter(object):
             raise  # re-raise for full stack trace
 
     def show_error(self, error):
-        print("Magic to be done here")
+        self.view.show_error_dialog(error)
 
     def do_rename_view(self):
         self.view.update_title_event()
