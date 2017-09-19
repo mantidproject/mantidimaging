@@ -18,6 +18,9 @@ class ProcessListTest(unittest.TestCase):
         self.pl.store(median_filter.execute, size=55)
         self.pl.store(median_filter.execute, 11, mode='test')
 
+    def tearDown(self):
+        self.pl = None
+
     def test_store(self):
         self.pl.store(median_filter.execute, 3)
         self.pl.store(median_filter.execute, 1)
