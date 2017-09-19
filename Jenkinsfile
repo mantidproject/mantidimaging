@@ -11,6 +11,12 @@ pipeline {
       }
     }
 
+    stage('Clean Environment') {
+      steps {
+        sh 'cd mantidimaging && git clean -Xf'
+      }
+    }
+
     stage('Test') {
       steps {
         parallel python35: {
