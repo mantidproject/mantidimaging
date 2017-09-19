@@ -1,23 +1,4 @@
-import sys
 import unittest
-
-if sys.version_info >= (3, 3):
-    # Use unittest.mock on Python 3.3 and above
-    import unittest.mock as mock
-
-    if sys.version_info < (3, 6):
-        # If on Python 3.5 and below then need to monkey patch this function in
-        # It is available as standard on Python 3.6 and above
-        def assert_called_once(_mock_self):
-            self = _mock_self
-            if not self.call_count == 1:
-                msg = ("Expected '%s' to have been called once. Called %s times." %
-                        (self._mock_name or 'mock', self.call_count))
-                raise AssertionError(msg)
-        unittest.mock.Mock.assert_called_once = assert_called_once
-else:
-    # Use mock on Python < 3.3
-    import mock
 
 import numpy as np
 
@@ -29,6 +10,8 @@ from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPrese
 from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as PresenterNotifications
 # if we do not want to import the actual View and pull in Qt, we have to create an abstract view
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
+
+mock = th.import_mock()
 
 TEST_APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
 TEST_MOCK_VIEW_ROI = (1, 2, 3, 4)
@@ -87,8 +70,8 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
         self.presenter.apply_to_data(mock_algorithm_dialog)
 
-        do_before_mock.assert_called()
-        do_after_mock.assert_called()
+        do_before_mock.assert_any_call()
+        do_after_mock.assert_any_call()
 
         # we're expecting only to be read once and moved into another variable
         requested_parameter_name_mock.assert_called_once()
@@ -111,8 +94,10 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
         self.presenter.apply_to_data(mock_algorithm_dialog)
 
-        do_before_mock.assert_called()
-        do_after_mock.assert_called()
+        print(dir(do_before_mock))
+
+        do_before_mock.assert_any_call()
+        do_after_mock.assert_any_call()
 
         requested_parameter_name_mock.assert_called_once()
         current_roi_mock.assert_called_once()

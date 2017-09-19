@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import shutil
+import sys
 import tempfile
 
 import numpy as np
@@ -151,7 +152,6 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
     :param file_extension_separator: The extension separator. It should normally always be '.'
     :param single_file: Are we looking for a 'stack' of images
     """
-    import os
     import unittest
     assert isinstance(
         cls, unittest.TestCase
@@ -178,11 +178,37 @@ def delete_folder_from_temp(subdir=''):
     """
     import shutil
     import tempfile
-    import os
     with tempfile.NamedTemporaryFile() as f:
         full_path = os.path.join(os.path.dirname(f.name), subdir)
         if os.path.isdir(full_path):
             shutil.rmtree(full_path)
+
+
+def import_mock():
+    """
+    Loads a suitable version of mock depedning on the Python version being
+    used.
+    """
+    if sys.version_info >= (3, 3):
+        # Use unittest.mock on Python 3.3 and above
+        import unittest
+        import unittest.mock as mock
+
+        if sys.version_info < (3, 6):
+            # If on Python 3.5 and below then need to monkey patch this function in
+            # It is available as standard on Python 3.6 and above
+            def assert_called_once(_mock_self):
+                self = _mock_self
+                if not self.call_count == 1:
+                    msg = ("Expected '%s' to have been called once. Called %s times." %
+                            (self._mock_name or 'mock', self.call_count))
+                    raise AssertionError(msg)
+            unittest.mock.Mock.assert_called_once = assert_called_once
+    else:
+        # Use mock on Python < 3.3
+        import mock
+
+    return mock
 
 
 def mock_property(obj, object_property, property_return_value=None):
@@ -198,7 +224,7 @@ def mock_property(obj, object_property, property_return_value=None):
 
     :returns: The PropertyMock object that you can do assertions with
     """
-    import mock
+    mock = import_mock()
     temp_property_mock = mock.PropertyMock(return_value=property_return_value)
     setattr(type(obj), object_property, temp_property_mock)
     return temp_property_mock
