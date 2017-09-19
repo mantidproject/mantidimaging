@@ -19,12 +19,8 @@ pipeline {
 
     stage('Test') {
       steps {
-        parallel python35: {
-          sh './anaconda3/envs/py35/bin/nosetests'
-        },
-        python27: {
-          sh './anaconda2/bin/nosetests'
-        }
+        sh './anaconda3/envs/py35/bin/nosetests'
+        sh './anaconda2/bin/nosetests'
       }
     }
   }
