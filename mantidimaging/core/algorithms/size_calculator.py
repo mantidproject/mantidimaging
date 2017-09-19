@@ -77,4 +77,4 @@ def full_size_MB(shape=None, axis=None, dtype=None):
 
 
 def number_of_images_from_indices(start, end, step):
-    return int((end - start) / step)
+    return int((end - start) / step) if step != 0 else 0
