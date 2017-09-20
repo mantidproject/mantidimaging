@@ -6,145 +6,94 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>219</height>
+    <width>375</width>
+    <height>206</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Save</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>183</y>
-     <width>271</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::SaveAll</set>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="savePath">
-   <property name="geometry">
-    <rect>
-     <x>73</x>
-     <y>73</y>
-     <width>191</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="browseButton">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>74</y>
-     <width>99</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Browse</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="formats">
-   <property name="geometry">
-    <rect>
-     <x>257</x>
-     <y>150</y>
-     <width>121</width>
-     <height>30</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="stackNames">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>20</y>
-     <width>349</width>
-     <height>30</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="swapAxes">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>150</y>
-     <width>96</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Swap Axes</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="overwriteAll">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>150</y>
-     <width>96</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Overwrite</string>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="namePrefix">
-   <property name="geometry">
-    <rect>
-     <x>73</x>
-     <y>114</y>
-     <width>191</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>image</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>114</y>
-     <width>60</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Name
-Prefix</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>8</x>
-     <y>73</y>
-     <width>60</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Output
-Directory</string>
-   </property>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QComboBox" name="stackNames"/>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Output Directory:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Name Prefix:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="savePath">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QLineEdit" name="namePrefix">
+       <property name="text">
+        <string>image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Format:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="browseButton">
+       <property name="text">
+        <string>Browse</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QComboBox" name="formats"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="overwriteAll">
+       <property name="text">
+        <string>Overwrite</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="swapAxes">
+       <property name="text">
+        <string>Swap Axes</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::SaveAll</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
