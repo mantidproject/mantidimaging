@@ -1,24 +1,29 @@
 from __future__ import absolute_import, division, print_function
 
-import tempfile
-import unittest
+import os
 
 from mantidimaging.core import process_list
 from mantidimaging.core.filters import median_filter
+from mantidimaging.tests.file_outputting_test_case import (
+        FileOutputtingTestCase)
 from mantidimaging.tests import test_helper as th
 
 PACKAGE_LOCATION_STRING = 'mantidimaging.core.filters.median_filter'
 FUNC_NAME = 'execute'
 
 
-class ProcessListTest(unittest.TestCase):
+class ProcessListTest(FileOutputtingTestCase):
     def setUp(self):
+        super(ProcessListTest, self).setUp()
+
         self.pl = process_list.ProcessList()
         self.pl.store(median_filter.execute, 3)
         self.pl.store(median_filter.execute, size=55)
         self.pl.store(median_filter.execute, 11, mode='test')
 
     def tearDown(self):
+        super(ProcessListTest, self).tearDown()
+
         self.pl = None
 
     def test_store(self):
@@ -49,16 +54,16 @@ class ProcessListTest(unittest.TestCase):
         self.assertEqual(func_tuple[3], {'mode': 'test'})
 
     def test_save(self):
-        with tempfile.NamedTemporaryFile() as f:
-            self.pl.save(f.name)
-            th.assert_files_exist(
-                self, f.name, file_extension='', file_extension_separator='')
+        filename = os.path.join(self.output_directory, 'test_process_list.txt')
+        self.pl.save(filename)
+        th.assert_files_exist(
+            self, filename, file_extension='', file_extension_separator='')
 
     def test_load(self):
-        with tempfile.NamedTemporaryFile() as f:
-            self.pl.save(f.name)
-            process_list2 = process_list.load(f.name)
-            self.assertTrue(self.pl == process_list2)
+        filename = os.path.join(self.output_directory, 'test_process_list.txt')
+        self.pl.save(filename)
+        process_list2 = process_list.load(filename)
+        self.assertTrue(self.pl == process_list2)
 
     def test_to_string(self):
         res = self.pl.to_string()

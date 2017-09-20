@@ -10,10 +10,12 @@ import numpy as np
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
 from mantidimaging.core.io.saver import Saver, generate_names
+from mantidimaging.tests.file_outputting_test_case import (
+        FileOutputtingTestCase)
 from mantidimaging.tests import test_helper as th
 
 
-class IOTest(unittest.TestCase):
+class IOTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
         super(IOTest, self).__init__(*args, **kwargs)
 
@@ -45,33 +47,6 @@ class IOTest(unittest.TestCase):
         else:
             filename = base_name + '.' + file_format
             self.assertTrue(os.path.isfile(filename))
-
-    def tearDown(self):
-        """
-        Cleanup, Make sure all files are deleted from tmp
-        """
-        try:
-            th.delete_files(folder='pre_processed')
-        except OSError:
-            # no preprocessed images were saved
-            pass
-        try:
-            # delete files from test_load_sample_flat_and_dark
-            th.delete_files(folder='imgIOTest_flat')
-        except OSError:
-            # no preprocessed images were saved
-            pass
-        try:
-            # delete files from test_load_sample_flat_and_dark
-            th.delete_files(folder='imgIOTest_dark')
-        except OSError:
-            # no preprocessed images were saved
-            pass
-        try:
-            th.delete_files(folder='reconstructed')
-        except OSError:
-            # no reconstructed images were saved
-            pass
 
     def test_preproc_fits_par(self):
         self.do_preproc('fits', parallel=True)
@@ -228,43 +203,42 @@ class IOTest(unittest.TestCase):
                    saver_indices=None):
         expected_images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = img_format
-            saver._save_preproc = True
-            saver._swap_axes = False
-            # this only affects enumeration
-            saver._indices = saver_indices
-            data_as_stack = False
+        saver._output_path = self. output_directory
+        saver._out_format = img_format
+        saver._save_preproc = True
+        saver._swap_axes = False
+        # this only affects enumeration
+        saver._indices = saver_indices
+        data_as_stack = False
 
-            # saver indices only affects the enumeration of the data
-            if saver_indices:
-                # crop the original images to make sure the tests is correct
-                expected_images = expected_images[saver_indices[0]:saver_indices[1]]
+        # saver indices only affects the enumeration of the data
+        if saver_indices:
+            # crop the original images to make sure the tests is correct
+            expected_images = expected_images[saver_indices[0]:saver_indices[1]]
 
-            saver.save_preproc_images(expected_images)
+        saver.save_preproc_images(expected_images)
 
-            # create the same path as the saved out preproc images
-            preproc_output_path = saver._output_path + '/pre_processed/'
+        # create the same path as the saved out preproc images
+        preproc_output_path = saver._output_path + '/pre_processed/'
 
-            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
-                                    saver._out_format, data_as_stack,
-                                    expected_images.shape[0], saver_indices)
+        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
+                                saver._out_format, data_as_stack,
+                                expected_images.shape[0], saver_indices)
 
-            # this does not load any flats or darks as they were not saved out
-            loaded_images = loader.load(preproc_output_path, in_format=saver._out_format,
-                                        cores=1, parallel_load=parallel, indices=loader_indices)
+        # this does not load any flats or darks as they were not saved out
+        loaded_images = loader.load(preproc_output_path, in_format=saver._out_format,
+                                    cores=1, parallel_load=parallel, indices=loader_indices)
 
-            if loader_indices:
-                assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data does not " \
-                    "match the expected length! Expected: {0}, " \
-                    "Got {1}".format(expected_len, len(
-                        loaded_images.get_sample()))
+        if loader_indices:
+            assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data does not " \
+                "match the expected length! Expected: {0}, " \
+                "Got {1}".format(expected_len, len(
+                    loaded_images.get_sample()))
 
-                # crop the original images to make sure the tests is correct
-                expected_images = expected_images[loader_indices[0]:loader_indices[1]]
+            # crop the original images to make sure the tests is correct
+            expected_images = expected_images[loader_indices[0]:loader_indices[1]]
 
-            th.assert_equals(loaded_images.get_sample(), expected_images)
+        th.assert_equals(loaded_images.get_sample(), expected_images)
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
@@ -301,48 +275,46 @@ class IOTest(unittest.TestCase):
         """
         expected_images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
+        saver._output_path = self.output_directory
+        saver._save_preproc = True
+        saver._out_format = save_out_img_format
+        saver._swap_axes = False
+        data_as_stack = True
 
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._save_preproc = True
-            saver._out_format = save_out_img_format
-            saver._swap_axes = False
-            data_as_stack = True
+        saver.save_preproc_images(expected_images)
 
-            saver.save_preproc_images(expected_images)
+        # create the same path as the saved out preproc images
+        preproc_output_path = os.path.join(
+            saver._output_path, 'pre_processed/')
 
-            # create the same path as the saved out preproc images
-            preproc_output_path = os.path.join(
-                saver._output_path, 'pre_processed/')
+        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
+                                saver._out_format, data_as_stack,
+                                expected_images.shape[0])
 
-            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
-                                    saver._out_format, data_as_stack,
-                                    expected_images.shape[0])
+        # this does not load any flats or darks as they were not saved out!
+        # this is a race condition versus the saving from the saver
+        # when load is executed in parallel, the 8 threads try to
+        # load the data too fast, and the data loaded is corrupted
+        # hard coded 1 core to avoid race condition
+        images = loader.load(preproc_output_path, in_format=saver._out_format, cores=1,
+                             parallel_load=parallel, indices=loader_indices)
 
-            # this does not load any flats or darks as they were not saved out!
-            # this is a race condition versus the saving from the saver
-            # when load is executed in parallel, the 8 threads try to
-            # load the data too fast, and the data loaded is corrupted
-            # hard coded 1 core to avoid race condition
-            images = loader.load(preproc_output_path, in_format=saver._out_format, cores=1,
-                                 parallel_load=parallel, indices=loader_indices)
+        if loader_indices:
+            assert len(
+                images.get_sample()
+            ) == expected_len, "The length of the loaded data does not " \
+                               "match the expected length! Expected: {0}, " \
+                               "Got {1}".format(
+                expected_len, len(images.get_sample()))
 
-            if loader_indices:
-                assert len(
-                    images.get_sample()
-                ) == expected_len, "The length of the loaded data does not " \
-                                   "match the expected length! Expected: {0}, " \
-                                   "Got {1}".format(
-                    expected_len, len(images.get_sample()))
+            # crop the original images to make sure the tests is correct
+            expected_images = expected_images[loader_indices[0]:loader_indices[1]]
 
-                # crop the original images to make sure the tests is correct
-                expected_images = expected_images[loader_indices[0]:loader_indices[1]]
+        th.assert_equals(images.get_sample(), expected_images)
 
-            th.assert_equals(images.get_sample(), expected_images)
-
-            self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
-                                    saver._out_format, data_as_stack,
-                                    expected_images.shape[0])
+        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
+                                saver._out_format, data_as_stack,
+                                expected_images.shape[0])
 
     def test_do_recon_fits(self):
         self.do_recon(img_format='fits', horiz_slices=False)
@@ -370,30 +342,29 @@ class IOTest(unittest.TestCase):
         """
         images = th.gen_img_shared_array()
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = img_format
-            saver._swap_axes = False
-            saver._save_horiz_slices = horiz_slices
-            # this only affects enumeration
-            saver._indices = saver_indices
-            data_as_stack = False
+        saver._output_path = self.output_directory
+        saver._out_format = img_format
+        saver._swap_axes = False
+        saver._save_horiz_slices = horiz_slices
+        # this only affects enumeration
+        saver._indices = saver_indices
+        data_as_stack = False
 
-            saver.save_recon_output(images)
+        saver.save_recon_output(images)
 
-            recon_output_path = os.path.join(
-                saver._output_path, 'reconstructed/')
+        recon_output_path = os.path.join(
+            saver._output_path, 'reconstructed/')
 
-            self.assert_files_exist(os.path.join(recon_output_path, 'recon_slice'),
-                                    saver._out_format, data_as_stack,
-                                    images.shape[0], saver_indices)
+        self.assert_files_exist(os.path.join(recon_output_path, 'recon_slice'),
+                                saver._out_format, data_as_stack,
+                                images.shape[0], saver_indices)
 
-            if horiz_slices:
-                self.assert_files_exist(
-                    os.path.join(recon_output_path,
-                                 'horiz_slices/recon_horiz'),
-                    saver._out_format, data_as_stack, images.shape[1],
-                    saver_indices)
+        if horiz_slices:
+            self.assert_files_exist(
+                os.path.join(recon_output_path,
+                             'horiz_slices/recon_horiz'),
+                saver._out_format, data_as_stack, images.shape[1],
+                saver_indices)
 
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
@@ -409,65 +380,64 @@ class IOTest(unittest.TestCase):
         dark[:] = 3
 
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = img_format
-            saver._save_preproc = True
-            saver._swap_axes = False
-            # this only affects enumeration
-            saver._indices = saver_indices
-            data_as_stack = False
+        saver._output_path = self.output_directory
+        saver._out_format = img_format
+        saver._save_preproc = True
+        saver._swap_axes = False
+        # this only affects enumeration
+        saver._indices = saver_indices
+        data_as_stack = False
 
-            # saver indices only affects the enumeration of the data
-            if saver_indices:
-                # crop the original images to make sure the tests is correct
-                images = images[saver_indices[0]:saver_indices[1]]
+        # saver indices only affects the enumeration of the data
+        if saver_indices:
+            # crop the original images to make sure the tests is correct
+            images = images[saver_indices[0]:saver_indices[1]]
 
-            saver.save_preproc_images(images)
-            saver._preproc_dir = "imgIOTest_flat"
-            saver.save_preproc_images(flat)
-            saver._preproc_dir = "imgIOTest_dark"
-            saver.save_preproc_images(dark)
+        saver.save_preproc_images(images)
+        saver._preproc_dir = "imgIOTest_flat"
+        saver.save_preproc_images(flat)
+        saver._preproc_dir = "imgIOTest_dark"
+        saver.save_preproc_images(dark)
 
-            # create the same path as the saved out preproc images
-            sample_output_path = os.path.join(
-                saver._output_path, 'pre_processed')
-            flat_output_path = os.path.join(
-                saver._output_path, 'imgIOTest_flat')
-            dark_output_path = os.path.join(
-                saver._output_path, 'imgIOTest_dark')
+        # create the same path as the saved out preproc images
+        sample_output_path = os.path.join(
+            saver._output_path, 'pre_processed')
+        flat_output_path = os.path.join(
+            saver._output_path, 'imgIOTest_flat')
+        dark_output_path = os.path.join(
+            saver._output_path, 'imgIOTest_dark')
 
-            self.assert_files_exist(os.path.join(sample_output_path, 'out_preproc_image'),
-                                    saver._out_format, data_as_stack,
-                                    images.shape[0], loader_indices or
-                                    saver_indices)
+        self.assert_files_exist(os.path.join(sample_output_path, 'out_preproc_image'),
+                                saver._out_format, data_as_stack,
+                                images.shape[0], loader_indices or
+                                saver_indices)
 
-            self.assert_files_exist(
-                os.path.join(flat_output_path,
-                             'out_preproc_image'), saver._out_format,
-                data_as_stack, flat.shape[0], loader_indices or saver_indices)
+        self.assert_files_exist(
+            os.path.join(flat_output_path,
+                         'out_preproc_image'), saver._out_format,
+            data_as_stack, flat.shape[0], loader_indices or saver_indices)
 
-            self.assert_files_exist(
-                os.path.join(dark_output_path,
-                             'out_preproc_image'), saver._out_format,
-                data_as_stack, dark.shape[0], loader_indices or saver_indices)
+        self.assert_files_exist(
+            os.path.join(dark_output_path,
+                         'out_preproc_image'), saver._out_format,
+            data_as_stack, dark.shape[0], loader_indices or saver_indices)
 
-            loaded_images = loader.load(sample_output_path, flat_output_path, dark_output_path,
-                                        saver._out_format, cores=1, parallel_load=parallel, indices=loader_indices)
+        loaded_images = loader.load(sample_output_path, flat_output_path, dark_output_path,
+                                    saver._out_format, cores=1, parallel_load=parallel, indices=loader_indices)
 
-            if loader_indices:
-                assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data doesn't " \
-                    "match the expected length: {0}, " \
-                    "Got: {1}".format(expected_len, len(loaded_images.get_sample()))
+        if loader_indices:
+            assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data doesn't " \
+                "match the expected length: {0}, " \
+                "Got: {1}".format(expected_len, len(loaded_images.get_sample()))
 
-                # crop the original images to make sure the tests is correct
-                images = images[loader_indices[0]:loader_indices[1]]
+            # crop the original images to make sure the tests is correct
+            images = images[loader_indices[0]:loader_indices[1]]
 
-            th.assert_equals(loaded_images.get_sample(), images)
-            # we only check the first image because they will be
-            # averaged out when loaded! The initial images are only 3s
-            th.assert_equals(loaded_images.get_flat(), flat[0])
-            th.assert_equals(loaded_images.get_dark(), dark[0])
+        th.assert_equals(loaded_images.get_sample(), images)
+        # we only check the first image because they will be
+        # averaged out when loaded! The initial images are only 3s
+        th.assert_equals(loaded_images.get_flat(), flat[0])
+        th.assert_equals(loaded_images.get_dark(), dark[0])
 
     def test_raise_on_invalid_format(self):
         self.assertRaises(ValueError, loader.load, "/some/path",
@@ -478,63 +448,60 @@ class IOTest(unittest.TestCase):
 
         expected_shape = images.shape
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = "tiff"
-            saver._save_preproc = True
-            saver._swap_axes = False
+        saver._output_path = self.output_directory
+        saver._out_format = "tiff"
+        saver._save_preproc = True
+        saver._swap_axes = False
 
-            config = ReconstructionConfig.empty_init()
-            config.func.input_path = os.path.join(
-                saver._output_path, saver._preproc_dir)
-            config.func.in_format = saver._out_format
-            saver.save_preproc_images(images)
+        config = ReconstructionConfig.empty_init()
+        config.func.input_path = os.path.join(
+            saver._output_path, saver._preproc_dir)
+        config.func.in_format = saver._out_format
+        saver.save_preproc_images(images)
 
-            shape = loader.read_in_shape_from_config(config)
+        shape = loader.read_in_shape_from_config(config)
 
-            self.assertEqual(shape, expected_shape)
+        self.assertEqual(shape, expected_shape)
 
     def test_load_from_config(self):
         images = th.gen_img_shared_array_with_val(42.)
 
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = "tiff"
-            saver._save_preproc = True
-            saver._swap_axes = False
+        saver._output_path = self.output_directory
+        saver._out_format = "tiff"
+        saver._save_preproc = True
+        saver._swap_axes = False
 
-            config = ReconstructionConfig.empty_init()
-            config.func.input_path = os.path.join(
-                saver._output_path, saver._preproc_dir)
-            config.func.in_format = saver._out_format
-            saver.save_preproc_images(images)
+        config = ReconstructionConfig.empty_init()
+        config.func.input_path = os.path.join(
+            saver._output_path, saver._preproc_dir)
+        config.func.in_format = saver._out_format
+        saver.save_preproc_images(images)
 
-            loaded_images = loader.load_from_config(config)
+        loaded_images = loader.load_from_config(config)
 
-            th.assert_equals(images, loaded_images.get_sample())
+        th.assert_equals(images, loaded_images.get_sample())
 
     def test_construct_sinograms(self):
         images = th.gen_img_shared_array_with_val(42.)
         exp_sinograms = np.swapaxes(images, 0, 1)
 
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = "tiff"
-            saver._save_preproc = True
-            saver._swap_axes = False
+        saver._output_path = self.output_directory
+        saver._out_format = "tiff"
+        saver._save_preproc = True
+        saver._swap_axes = False
 
-            config = ReconstructionConfig.empty_init()
-            config.func.input_path = os.path.join(
-                saver._output_path, saver._preproc_dir)
-            config.func.in_format = saver._out_format
-            saver.save_preproc_images(images)
+        config = ReconstructionConfig.empty_init()
+        config.func.input_path = os.path.join(
+            saver._output_path, saver._preproc_dir)
+        config.func.in_format = saver._out_format
+        saver.save_preproc_images(images)
 
-            config.func.construct_sinograms = True
-            loaded_images = loader.load_from_config(config)
+        config.func.construct_sinograms = True
+        loaded_images = loader.load_from_config(config)
 
-            th.assert_equals(exp_sinograms, loaded_images.get_sample())
+        th.assert_equals(exp_sinograms, loaded_images.get_sample())
 
 
 if __name__ == '__main__':

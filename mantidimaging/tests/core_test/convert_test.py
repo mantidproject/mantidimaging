@@ -1,16 +1,16 @@
 from __future__ import absolute_import, division, print_function
 
 import logging
-import os
-import tempfile
 import unittest
 
 from mantidimaging.core.convert import convert
 from mantidimaging.core.io import loader
+from mantidimaging.tests.file_outputting_test_case import (
+        FileOutputtingTestCase)
 from mantidimaging.tests import test_helper as th
 
 
-class ConvertTest(unittest.TestCase):
+class ConvertTest(FileOutputtingTestCase):
     """
     This test actually tests the saver and loader modules too, but
     it isn't focussed on them
@@ -20,34 +20,14 @@ class ConvertTest(unittest.TestCase):
         super(ConvertTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from mantidimaging.core.configs.recon_config import ReconstructionConfig
+        from mantidimaging.core.configs.recon_config import (
+                ReconstructionConfig)
         self.config = ReconstructionConfig.empty_init()
         self.config.func.verbosity = logging.CRITICAL
 
     def create_saver(self):
         from mantidimaging.core.io.saver import Saver
         return Saver(self.config)
-
-    def tearDown(self):
-        """
-        Cleanup, Make sure all files are deleted from tmp
-        """
-        try:
-            th.delete_files(folder='pre_processed')
-        except OSError:
-            # no preprocessed images were saved
-            pass
-        try:
-            th.delete_files(folder='reconstructed')
-        except OSError:
-            # no reconstructed images were saved
-            pass
-
-        try:
-            th.delete_files(folder='converted')
-        except OSError:
-            # no reconstructed images were saved
-            pass
 
     def test_convert_fits_fits_nostack(self):
         self.do_convert(
@@ -68,38 +48,37 @@ class ConvertTest(unittest.TestCase):
         # create some images
         expected_images = th.gen_img_shared_array()
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = img_format
-            saver._save_preproc = True
-            saver._data_as_stack = stack
-            saver._overwrite_all = True
+        saver._output_path = self.output_directory
+        saver._out_format = img_format
+        saver._save_preproc = True
+        saver._data_as_stack = stack
+        saver._overwrite_all = True
 
-            # save them out
-            saver.save_preproc_images(expected_images)
+        # save them out
+        saver.save_preproc_images(expected_images)
 
-            preproc_output_path = saver._output_path + '/pre_processed'
+        preproc_output_path = saver._output_path + '/pre_processed'
 
-            # convert them
-            conf = self.config
-            conf.func.input_path = preproc_output_path
-            conf.func.in_format = saver._out_format
-            converted_output_path = saver._output_path + '/converted'
-            conf.func.output_path = converted_output_path
-            conf.func.out_format = convert_format
-            conf.func.data_as_stack = stack
-            conf.func.convert_prefix = 'converted'
-            convert.execute(conf)
+        # convert them
+        conf = self.config
+        conf.func.input_path = preproc_output_path
+        conf.func.in_format = saver._out_format
+        converted_output_path = saver._output_path + '/converted'
+        conf.func.output_path = converted_output_path
+        conf.func.out_format = convert_format
+        conf.func.data_as_stack = stack
+        conf.func.convert_prefix = 'converted'
+        convert.execute(conf)
 
-            # load them back
-            # compare data to original
-            # this odes not load any flats or darks as they were not saved out
-            loaded_images = loader.load(
-                converted_output_path,
-                in_format=convert_format,
-                parallel_load=parallel)
+        # load them back
+        # compare data to original
+        # this odes not load any flats or darks as they were not saved out
+        loaded_images = loader.load(
+            converted_output_path,
+            in_format=convert_format,
+            parallel_load=parallel)
 
-            th.assert_equals(loaded_images.get_sample(), expected_images)
+        th.assert_equals(loaded_images.get_sample(), expected_images)
 
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
@@ -117,37 +96,36 @@ class ConvertTest(unittest.TestCase):
         parallel = False
         expected_images = th.gen_img_shared_array()
         saver = self.create_saver()
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = img_format
-            saver._data_as_stack = stack
-            saver._save_preproc = True
-            saver._overwrite_all = True
+        saver._output_path = self.output_directory
+        saver._out_format = img_format
+        saver._data_as_stack = stack
+        saver._save_preproc = True
+        saver._overwrite_all = True
 
-            # save them out
-            saver.save_preproc_images(expected_images)
-            preproc_output_path = saver._output_path + '/pre_processed'
+        # save them out
+        saver.save_preproc_images(expected_images)
+        preproc_output_path = saver._output_path + '/pre_processed'
 
-            # convert them
-            conf = self.config
-            conf.func.input_path = preproc_output_path
-            conf.func.in_format = saver._out_format
-            converted_output_path = saver._output_path + '/converted'
-            conf.func.output_path = converted_output_path
-            conf.func.out_format = convert_format
-            conf.func.data_as_stack = stack
-            conf.func.convert_prefix = 'converted'
-            convert.execute(conf)
+        # convert them
+        conf = self.config
+        conf.func.input_path = preproc_output_path
+        conf.func.in_format = saver._out_format
+        converted_output_path = saver._output_path + '/converted'
+        conf.func.output_path = converted_output_path
+        conf.func.out_format = convert_format
+        conf.func.data_as_stack = stack
+        conf.func.convert_prefix = 'converted'
+        convert.execute(conf)
 
-            # load them back
-            # compare data to original
-            # this odes not load any flats or darks as they were not saved out
-            loaded_images = loader.load(
-                converted_output_path,
-                in_format=convert_format,
-                parallel_load=parallel)
+        # load them back
+        # compare data to original
+        # this odes not load any flats or darks as they were not saved out
+        loaded_images = loader.load(
+            converted_output_path,
+            in_format=convert_format,
+            parallel_load=parallel)
 
-            th.assert_equals(loaded_images.get_sample(), expected_images)
+        th.assert_equals(loaded_images.get_sample(), expected_images)
 
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
@@ -165,36 +143,35 @@ class ConvertTest(unittest.TestCase):
         # expected none, because NXS doesn't currently save
         # out flat or dark image
         saver = self.create_saver()
+        saver._output_path = self.output_directory
+        saver._out_format = img_format
+        # force saving out as STACK because we're saving NXS files
+        saver._data_as_stack = True
+        saver._save_preproc = True
+        saver._overwrite_all = True
 
-        with tempfile.NamedTemporaryFile() as f:
-            saver._output_path = os.path.dirname(f.name)
-            saver._out_format = img_format
-            # force saving out as STACK because we're saving NXS files
-            saver._data_as_stack = True
-            saver._save_preproc = True
-            saver._overwrite_all = True
+        # save them out
+        saver.save_preproc_images(expected_images)
+        preproc_output_path = saver._output_path + '/pre_processed'
 
-            # save them out
-            saver.save_preproc_images(expected_images)
-            preproc_output_path = saver._output_path + '/pre_processed'
+        # convert them
+        conf = self.config
+        conf.func.input_path = preproc_output_path
+        conf.func.in_format = saver._out_format
+        converted_output_path = saver._output_path + '/converted'
+        conf.func.output_path = converted_output_path
+        conf.func.out_format = convert_format
+        conf.func.data_as_stack = stack
+        conf.func.convert_prefix = 'converted'
+        convert.execute(conf)
 
-            # convert them
-            conf = self.config
-            conf.func.input_path = preproc_output_path
-            conf.func.in_format = saver._out_format
-            converted_output_path = saver._output_path + '/converted'
-            conf.func.output_path = converted_output_path
-            conf.func.out_format = convert_format
-            conf.func.data_as_stack = stack
-            conf.func.convert_prefix = 'converted'
-            convert.execute(conf)
+        # load them back and compare data to original
+        # this does not load any flats or darks as they were not saved out
+        loaded_images = loader.load(converted_output_path,
+                                    in_format=convert_format,
+                                    parallel_load=parallel)
 
-            # load them back and compare data to original
-            # this does not load any flats or darks as they were not saved out
-            loaded_images = loader.load(
-                converted_output_path, in_format=convert_format, parallel_load=parallel)
-
-            th.assert_equals(loaded_images.get_sample(), expected_images)
+        th.assert_equals(loaded_images.get_sample(), expected_images)
 
 
 if __name__ == '__main__':
