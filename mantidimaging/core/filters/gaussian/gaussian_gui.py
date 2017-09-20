@@ -11,7 +11,6 @@ GUI_MENU_NAME = "Gaussian Filter"
 def _gui_register(main_window):
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle(GUI_MENU_NAME)
 
     label_size = Qt.QLabel("Kernel Size")

@@ -14,7 +14,6 @@ GUI_MENU_NAME = 'Circular Mask'
 
 def _gui_register(main_window):
     dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle(GUI_MENU_NAME)
 
     label_radius = Qt.QLabel("Radius")
