@@ -1,11 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
-from io import StringIO
-import inspect
 import os
+import sys
 # using pickle instead of dill, because dill is not available on SCARF
 import pickle
+
 from ast import literal_eval
+from six import StringIO
 
 DEFAULT_ARGUMENT_SEPARATOR = ' '
 DEFAULT_FUNCTION_SEPARATOR = ';'
@@ -120,18 +121,23 @@ class ProcessList(object):
         Store a function in the process list to be executed later. The arguments must be literal values.
         Note: More arguments can be appended when the funciton is called for execution.
 
-        :param func: This works with a function reference, because metadata needs to be read from the funciton.
+        :param func: This works with a function reference, because metadata needs to be read from the function.
         :param args: Arguments that will be forwarded to the function. They must be literal values.
         :param kwargs: Keyword arguments that will be forwarded to the function. They must be literal values.
         """
         self._store_func(func, args, kwargs)
 
     def _store_func(self, func, args, kwargs):
+        if sys.version_info >= (3, 3):
+            import inspect
+        else:
+            import funcsigs as inspect
+
         parameters = inspect.signature(func).parameters
         assert set(kwargs.keys()).issubset(parameters), \
             "One or more of the keyword arguments provided were NOT found in the function's declaration!"
 
-        func_package = func.__globals__['__package__']
+        func_package = func.__globals__['__name__'].rsplit('.', 1)[0]
         func_name = func.__name__
         self._store_string(func_package, func_name, args, kwargs)
 
