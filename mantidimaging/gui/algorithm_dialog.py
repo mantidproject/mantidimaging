@@ -108,7 +108,10 @@ class AlgorithmDialog(Qt.QDialog):
         self.execute = self._check_parameters_prepared
 
     def accepted_action(self):
-        self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
+        self.selected_stack = \
+                self.stack_uuids[self.stackNames.currentIndex()] \
+                if self.stack_uuids else None
+        getLogger(__name__).debug("Selected stack: %s", self.selected_stack)
         # main window only needs to get the partial
         self.main_window.algorithm_accepted(self.selected_stack, self)
 
