@@ -1,9 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-import shutil
 import sys
-import tempfile
 
 import numpy as np
 import numpy.testing as npt
@@ -134,15 +132,6 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def delete_files(folder=None):
-    """
-    Deletes the test files in a specified folder.
-    """
-    with tempfile.NamedTemporaryFile() as f:
-        full_path = os.path.join(os.path.dirname(f.name), folder)
-        shutil.rmtree(full_path)
-
-
 def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
     """
     Asserts that the
@@ -170,18 +159,6 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
     else:
         filename = base_name + file_extension_separator + file_extension
         cls.assertTrue(os.path.isfile(filename))
-
-
-def delete_folder_from_temp(subdir=''):
-    """
-    Use with caution, this deletes things!
-    """
-    import shutil
-    import tempfile
-    with tempfile.NamedTemporaryFile() as f:
-        full_path = os.path.join(os.path.dirname(f.name), subdir)
-        if os.path.isdir(full_path):
-            shutil.rmtree(full_path)
 
 
 def import_mock():
