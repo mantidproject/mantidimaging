@@ -52,7 +52,8 @@ class MainWindowView(Qt.QMainWindow):
         self.save_dialogue.show()
 
     def stack_names(self):
-        # unpacks the tuple and only gives the correctly sorted human readable names
+        # unpacks the tuple and only gives the correctly sorted human readable
+        # names
         return self.presenter.stack_names()
 
     def stack_list(self):
@@ -85,12 +86,13 @@ class MainWindowView(Qt.QMainWindow):
         return dock_widget
 
     def remove_stack(self, obj):
-        getLogger(__name__).debug("Removing stack with uuid {}".format(obj.uuid))
+        getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)
         self.presenter.remove_stack(obj.uuid)
 
     def algorithm_accepted(self, stack_uuid, algorithm_dialog):
         """
-        We forward the data onwards to the presenter and then the model, so that we can have a passive view.
+        We forward the data onwards to the presenter and then the model, so
+        that we can have a passive view.
 
         :param stack_uuid: The unique ID of the stack
 
