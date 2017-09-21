@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from enum import Enum
+from logging import getLogger
 
 from .mw_model import MainWindowModel
 
@@ -37,6 +38,8 @@ class MainWindowPresenter(object):
         self.model.do_remove_stack(uuid)
 
     def load_stack(self):
+        log = getLogger(__name__)
+
         selected_file = self.view.load_dialogue.sample_file()
         sample_path = self.view.load_dialogue.sample_path()
         image_format = self.view.load_dialogue.image_format
@@ -45,17 +48,21 @@ class MainWindowPresenter(object):
         window_title = self.view.load_dialogue.window_title()
 
         if not sample_path:
+            log.debug("No sample path provided, cannot load anything")
             return
 
-        data = self.model.do_load_stack(sample_path, image_format, parallel_load, indices)
+        try:
+            data = self.model.do_load_stack(sample_path, image_format, parallel_load, indices)
+        except Exception as e:
+            log.error("Failed to load file %s %s (%s)", sample_path, image_format, e)
+            self.show_error("Failed to read data file. See log for details.")
+            data = None
 
-        title = self.model.create_title(selected_file) if not window_title else window_title
-
-        dock_widget = self.view.create_stack_window(data, title=title)
-
-        stack_visualiser = dock_widget.widget()
-
-        self.model.add_stack(stack_visualiser, dock_widget)
+        if data is not None:
+            title = self.model.create_title(selected_file) if not window_title else window_title
+            dock_widget = self.view.create_stack_window(data, title=title)
+            stack_visualiser = dock_widget.widget()
+            self.model.add_stack(stack_visualiser, dock_widget)
 
     def save(self, indices=None):
         stack_uuid = self.view.save_dialogue.selected_stack

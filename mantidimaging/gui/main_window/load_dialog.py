@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+from logging import getLogger
 
 from PyQt5 import Qt
 
@@ -35,6 +36,8 @@ class MWLoadDialog(Qt.QDialog):
         super(MWLoadDialog, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/load_dialog.ui', self)
 
+        self.parent_view = parent
+
         self.sampleButton.clicked.connect(
             lambda: self.update_dialogue(select_file(self.samplePath, "Sample")))
 
@@ -60,8 +63,15 @@ class MWLoadDialog(Qt.QDialog):
         if not select_file_successful:
             return False
 
-        self.image_format = get_file_extension(str(self.samplePath.text()))
-        self.last_shape = read_in_shape(self.sample_path(), self.image_format)
+        sample_filename = str(self.samplePath.text())
+        self.image_format = get_file_extension(sample_filename)
+
+        try:
+            self.last_shape = read_in_shape(self.sample_path(), self.image_format)
+        except Exception as e:
+            getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
+            self.parent_view.presenter.show_error("Failed to read this file. See log for details.")
+            self.last_shape = (0, 0, 0)
 
         self.update_indices(self.last_shape[0])
         self.update_expected()
