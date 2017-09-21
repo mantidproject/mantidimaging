@@ -1,7 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
+import matplotlib
+
 from logging import getLogger
-from PyQt5 import Qt, QtCore
 from PyQt5 import Qt, QtCore, QtWidgets
 
 from mantidimaging.core.algorithms import gui_compile_ui
@@ -104,3 +105,12 @@ class MainWindowView(Qt.QMainWindow):
         :param msg: Error message string
         """
         QtWidgets.QMessageBox.critical(self, "Error", msg)
+
+    def closeEvent(self, event):
+        """
+        Close all matplotlib PyPlot windows when exiting.
+
+        :param event: Unused
+        """
+        getLogger(__name__).debug("Closing all PyPlot windows")
+        matplotlib.pyplot.close("all")
