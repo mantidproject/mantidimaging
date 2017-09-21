@@ -42,6 +42,7 @@ class MWLoadDialog(Qt.QDialog):
         self.index_start.valueChanged.connect(self.update_expected)
         self.index_end.valueChanged.connect(self.update_expected)
         self.index_step.valueChanged.connect(self.update_expected)
+        self.pixelBitDepth.currentIndexChanged.connect(self.update_expected)
 
         # if accepted load the stack
         self.accepted.connect(parent.execute_load)
@@ -52,8 +53,6 @@ class MWLoadDialog(Qt.QDialog):
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")
 
-        # TODO add data type field and read from the input dialog
-        # however for now we always work in 32 bit floats
         self.dtype = '32'
 
     def update_dialogue(self, select_file_successful):
@@ -82,6 +81,8 @@ class MWLoadDialog(Qt.QDialog):
         self.index_step.setValue(number_of_images / 10)
 
     def update_expected(self):
+        self.dtype = self.pixelBitDepth.currentText()
+
         num_images = size_calculator.number_of_images_from_indices(
             self.index_start.value(), self.index_end.value(), self.index_step.value())
 
