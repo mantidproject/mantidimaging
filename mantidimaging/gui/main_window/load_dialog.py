@@ -70,9 +70,11 @@ class MWLoadDialog(Qt.QDialog):
 
     def update_indices(self, number_of_images):
         """
-        :param number_of_images: Number of images that will be loaded in from the current selection
+        :param number_of_images: Number of images that will be loaded in from
+                                 the current selection
         """
-        # cap the end value FIRST, otherwise setValue might fail if the previous max val is smaller
+        # cap the end value FIRST, otherwise setValue might fail if the
+        # previous max val is smaller
         self.index_end.setMaximum(number_of_images)
         self.index_end.setValue(number_of_images)
 
@@ -87,14 +89,18 @@ class MWLoadDialog(Qt.QDialog):
         self.dtype = self.pixelBitDepth.currentText()
 
         num_images = size_calculator.number_of_images_from_indices(
-            self.index_start.value(), self.index_end.value(), self.index_step.value())
+            self.index_start.value(),
+            self.index_end.value(),
+            self.index_step.value())
 
         single_mem = size_calculator.to_MB(
-            size_calculator.single_size(self.last_shape, axis=0), dtype=self.dtype)
+            size_calculator.single_size(self.last_shape, axis=0),
+            dtype=self.dtype)
 
         exp_mem = round(single_mem * num_images, 2)
         self.expectedResourcesLabel.setText(
-            "{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1], self.last_shape[2], exp_mem))
+            "{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1],
+                                         self.last_shape[2], exp_mem))
 
     def sample_file(self):
         """
@@ -115,7 +121,9 @@ class MWLoadDialog(Qt.QDialog):
         return self.parallelLoad.isChecked()
 
     def indices(self):
-        return self.index_start.value(), self.index_end.value(), self.index_step.value()
+        return (self.index_start.value(),
+                self.index_end.value(),
+                self.index_step.value())
 
     def window_title(self):
         user_text = self.stackName.text()
