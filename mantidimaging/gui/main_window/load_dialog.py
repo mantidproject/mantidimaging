@@ -55,6 +55,9 @@ class MWLoadDialog(Qt.QDialog):
 
         self.dtype = '32'
 
+        # Populate the size calculator result with initial values (zeros)
+        self.update_expected()
+
     def update_dialogue(self, select_file_successful):
         if not select_file_successful:
             return False
