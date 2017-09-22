@@ -23,4 +23,7 @@ from __future__ import (absolute_import, division, print_function)
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 __all__ = ['convert']
+
 from . import convert  # noqa: F401, F403
+
+del absolute_import, division, print_function

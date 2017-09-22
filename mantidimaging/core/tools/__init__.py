@@ -22,6 +22,9 @@ from __future__ import absolute_import, division, print_function
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from . import importer, tomopy_tool, astra_tool #  noqa: F401
+from . import (  # noqa: F401
+        importer,
+        tomopy_tool,
+        astra_tool)
 
 del absolute_import, division, print_function

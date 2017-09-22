@@ -23,4 +23,5 @@ from __future__ import (absolute_import, division, print_function)
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 __all__ = ['aggregate']
+
 from . import aggregate  # noqa: F401, F403

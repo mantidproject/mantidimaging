@@ -24,13 +24,14 @@ from __future__ import absolute_import, division, print_function
 
 # packages part of public API, this will give direct access to the packages from
 # mantidimaging.<package_name>
+
 from mantidimaging import core, main, ipython  # noqa: F401
 
 del absolute_import, division, print_function
 
 """
-The gui package is not imported here, because it will pull in all of 
-PyQt packages, which we do not want when using only the CLI. This
-is both a speedup benefit and we do not have to deal if PyQt is missing 
-(like on SCARF) when not using the GUI.
+The gui package is not imported here, because it will pull in all of PyQt
+packages, which we do not want when using only the CLI. This is both a speedup
+benefit and we do not have to deal if PyQt is missing (like on SCARF) when not
+using the GUI.
 """
