@@ -241,6 +241,7 @@ class StackVisualiserView(Qt.QMainWindow):
         """
         self.set_image_title_to_current_filename()
         self.image.set_data(self.current_image())
+        self.canvas.draw()
 
     def set_image_title_to_current_filename(self):
         self.image_axis.set_title(self.presenter.get_image_filename(self.current_index()))
