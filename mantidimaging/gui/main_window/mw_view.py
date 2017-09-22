@@ -13,6 +13,8 @@ from .mw_presenter import MainWindowPresenter
 from .mw_presenter import Notification as PresNotification
 from .save_dialog import MWSaveDialog
 
+from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
+
 
 class MainWindowView(Qt.QMainWindow):
 
@@ -50,7 +52,14 @@ class MainWindowView(Qt.QMainWindow):
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
-        self.load_dialogue.show()
+        # self.load_dialogue.show()
+
+        # TODO: testing only
+        from functools import partial
+        win = AsyncTaskDialogView(self, auto_close=True)
+        win.presenter.set_task(partial(lambda a, b: a + b, 5, 6))
+        win.presenter.set_on_complete(print)
+        win.presenter.do_start_processing()
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)
