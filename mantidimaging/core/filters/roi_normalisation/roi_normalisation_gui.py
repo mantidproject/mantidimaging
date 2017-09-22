@@ -12,7 +12,6 @@ GUI_MENU_NAME = 'ROI Normalisation'
 
 def _gui_register(main_window):
     dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
     dialog.setWindowTitle(GUI_MENU_NAME)
 
     # TODO add label that from image will be used if nothing is selected here
