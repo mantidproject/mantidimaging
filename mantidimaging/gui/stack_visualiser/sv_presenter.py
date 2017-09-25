@@ -13,6 +13,8 @@ class Notification(IntEnum):
     RENAME_WINDOW = 0
     HISTOGRAM = 1
     NEW_WINDOW_HISTOGRAM = 2
+    SCROLL_UP = 3
+    SCROLL_DOWN = 4
 
 
 class StackVisualiserPresenter(object):
@@ -30,6 +32,10 @@ class StackVisualiserPresenter(object):
                 self.do_histogram()
             elif signal == Notification.NEW_WINDOW_HISTOGRAM:
                 self.do_new_window_histogram()
+            elif signal == Notification.SCROLL_UP:
+                self.do_scroll_stack(1)
+            elif signal == Notification.SCROLL_DOWN:
+                self.do_scroll_stack(-1)
         except Exception as e:
             self.show_error(e)
             raise  # re-raise for full stack trace

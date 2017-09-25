@@ -104,9 +104,9 @@ class StackVisualiserView(Qt.QMainWindow):
         :param event: Mouse scroll wheel event
         """
         if event.button == 'up':
-            self.presenter.do_scroll_stack(1)
+            self.presenter.notify(StackWindowNotification.SCROLL_UP)
         elif event.button == 'down':
-            self.presenter.do_scroll_stack(-1)
+            self.presenter.notify(StackWindowNotification.SCROLL_DOWN)
 
     def remove_any_selected_roi(self, event):
         """
