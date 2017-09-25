@@ -82,6 +82,14 @@ class StackVisualiserPresenter(object):
             axis = self.axis
         return self.images.get_sample().shape[self.axis]
 
+    def do_scroll_stack(self, offset):
+        """
+        Scrolls through the stack by a given number of images.
+        :param offset: Number of images to scroll through stack
+        """
+        idx = self.view.current_index() + offset
+        self.view.set_index(idx)
+
     def handle_algorithm_dialog_request(self, parameter):
         # Developer note: Parameters need to be checked for both here and in algorithm_dialog.py
         if parameter == Parameters.ROI:
