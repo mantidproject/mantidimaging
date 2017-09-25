@@ -4,7 +4,9 @@ import argparse
 import os
 import sys
 import tempfile
+
 from argparse import RawTextHelpFormatter
+from logging import getLogger
 
 import numpy as np
 
@@ -73,6 +75,8 @@ class ReconstructionConfig(object):
             self.handle_special_arguments()
 
     def handle_special_arguments(self):
+        log = getLogger(__name__)
+
         if self.args.region_of_interest:
             if len(self.args.region_of_interest) != 4:
                 raise ValueError(
@@ -133,9 +137,8 @@ class ReconstructionConfig(object):
                     "Slice Indices (len {1})!".format(len_cors,
                                                       len_cor_slices))
 
-        # TODO
-        print(self.func.cors)
-        print(self.func.cor_slices)
+        log.debug("CORs: {}".format(self.func.cors))
+        log.debug("COR slices: {}".format(self.func.cor_slices))
 
         # if the reconstruction is ran on already cropped images, then no ROI
         # should be provided, however if we have a ROI then the Centers of Rotation
