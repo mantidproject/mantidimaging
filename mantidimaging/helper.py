@@ -64,10 +64,21 @@ def initialise(config, saver=None):
     if _log_file_handler is not None:
         root_logger.removeLogger(_log_file_handler)
 
+    # Generate log file filename
     output_path = saver.get_output_path()
-    log_name_prefix = output_path if output_path is not None else "log"
+    if output_path is None:
+        # If no output path is provided then output the log in the current
+        # working directory with the filename log_DATE.txt
+        log_path = '.'
+        log_name_prefix = 'log'
+    else:
+        # If an output path was provided then output the log in the same
+        # directory as the output directory with the filename OUTDIR_DATE.txt
+        # For example: "-o out" would give the log filename "out_DATE.txt"
+        log_path = output_path
+        log_name_prefix = output_path
     log_name_suffix = strftime("_%d_%b_%Y_%H_%M_%S", gmtime()) + ".txt"
-    log_fullpath = os.path.join(output_path, log_name_prefix + log_name_suffix)
+    log_fullpath = os.path.join(log_path, log_name_prefix + log_name_suffix)
     _log_file_handler = logging.FileHandler(log_fullpath, mode='w')
     _log_file_handler.setFormatter(_log_formatter)
     root_logger.addHandler(_log_file_handler)

@@ -89,7 +89,7 @@ def save(data,
     if isinstance(data, Images):
         data = data.get_sample()
 
-        # expand the path for plugins that don't do it themselves
+    # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
 
