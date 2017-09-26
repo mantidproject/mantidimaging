@@ -13,6 +13,8 @@ class Notification(IntEnum):
     RENAME_WINDOW = 0
     HISTOGRAM = 1
     NEW_WINDOW_HISTOGRAM = 2
+    SCROLL_UP = 3
+    SCROLL_DOWN = 4
 
 
 class StackVisualiserPresenter(object):
@@ -30,6 +32,10 @@ class StackVisualiserPresenter(object):
                 self.do_histogram()
             elif signal == Notification.NEW_WINDOW_HISTOGRAM:
                 self.do_new_window_histogram()
+            elif signal == Notification.SCROLL_UP:
+                self.do_scroll_stack(1)
+            elif signal == Notification.SCROLL_DOWN:
+                self.do_scroll_stack(-1)
         except Exception as e:
             self.show_error(e)
             raise  # re-raise for full stack trace
@@ -72,6 +78,24 @@ class StackVisualiserPresenter(object):
     def get_image_filename(self, index):
         filenames = self.images.get_filenames()
         return os.path.basename(filenames[index] if filenames is not None else "")
+
+    def get_image_count_on_axis(self, axis=None):
+        """
+        Returns the number of images on a given axis.
+        :param axis: Axis on which to count images (defaults to data traversal axis)
+        """
+        if axis is None:
+            axis = self.axis
+        return self.images.get_sample().shape[self.axis]
+
+    def do_scroll_stack(self, offset):
+        """
+        Scrolls through the stack by a given number of images.
+        :param offset: Number of images to scroll through stack
+        """
+        idx = self.view.current_index() + offset
+        print('idx ', idx)
+        self.view.set_index(idx)
 
     def handle_algorithm_dialog_request(self, parameter):
         # Developer note: Parameters need to be checked for both here and in algorithm_dialog.py

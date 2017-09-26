@@ -171,6 +171,26 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.show_error("test message")
         self.view.show_error_dialog.assert_called_once_with("test message")
 
+    def test_get_image_count_on_axis(self):
+        self.assertEquals(
+                self.presenter.get_image_count_on_axis(),
+                self.test_data.get_sample().shape[self.presenter.axis])
+
+    def test_scroll_stack(self):
+        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.do_scroll_stack(2)
+        self.view.set_index.assert_called_once_with(5)
+
+    def test_do_scroll_up(self):
+        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.notify(PresenterNotifications.SCROLL_UP)
+        self.view.set_index.assert_called_once_with(4)
+
+    def test_do_scroll_down(self):
+        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.notify(PresenterNotifications.SCROLL_DOWN)
+        self.view.set_index.assert_called_once_with(2)
+
 
 if __name__ == '__main__':
     unittest.main()
