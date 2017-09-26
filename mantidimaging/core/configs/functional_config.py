@@ -463,7 +463,10 @@ class FunctionalConfig(object):
             nargs='*',
             type=str,  # will be converted to floats in self.update()
             default=self.cors,
-            help="Provide the CORs for the selected slices with --cor-slices.\n"
+            help="Either a list of CORs or a file containing CORs.\n"
+            "If a file is used it must be a text file with a pair of slice"
+            "index and COR on each line.\n"
+            "Provide the CORs for the selected slices with --cor-slices.\n"
             "If no slices are provided a SINGLE COR is expected, "
             "that will be used for the whole stack.\n"
             "If slices are provided, the number of CORs provided "

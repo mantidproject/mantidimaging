@@ -1,9 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
+import os
 from logging import getLogger
 
 from mantidimaging.core.algorithms import projection_angles
 from mantidimaging.core.imopr import helper
+from mantidimaging.core.io.saver import Saver
 from mantidimaging.core.tools import importer
 
 
@@ -28,9 +30,11 @@ def execute(sample, flat, dark, config, indices):
 
     initial_guess = config.func.cors if config.func.cors is not None else None
 
+    num_slices = sample.shape[0]
+    cors = helper.new_cor_array(num_slices)
     i1, i2, step = config.func.indices
     for i, actual_slice_index in zip(
-            range(sample.shape[0]), range(i1, i2, step)):
+            range(num_slices), range(i1, i2, step)):
         log.info("Running COR for index {}".format(actual_slice_index))
         cor = tool.find_center(
             tomo=sample,
@@ -39,5 +43,14 @@ def execute(sample, flat, dark, config, indices):
             ind=i,
             init=initial_guess)
         log.info(cor)
+        cors[i] = (actual_slice_index, cor[0])
+
+    # Save COR data if output directory is provided
+    saver = Saver(config)
+    if saver.should_save_output():
+        saver.make_dirs_if_needed(
+                saver.get_output_path(), saver._overwrite_all)
+        out_filename = os.path.join(saver.get_output_path(), 'cors.txt')
+        helper.save_cors_to_file(out_filename, cors)
 
     return sample

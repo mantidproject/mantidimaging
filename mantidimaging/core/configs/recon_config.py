@@ -4,7 +4,9 @@ import argparse
 import os
 import sys
 import tempfile
+
 from argparse import RawTextHelpFormatter
+from logging import getLogger
 
 import numpy as np
 
@@ -73,6 +75,8 @@ class ReconstructionConfig(object):
             self.handle_special_arguments()
 
     def handle_special_arguments(self):
+        log = getLogger(__name__)
+
         if self.args.region_of_interest:
             if len(self.args.region_of_interest) != 4:
                 raise ValueError(
@@ -106,13 +110,23 @@ class ReconstructionConfig(object):
             raise ValueError("If running a reconstruction a Center of "
                              "Rotation MUST be provided")
 
-        # Convert the centers of rotation (if provided) to floats
-        if self.func.cors:
-            self.func.cors = [float(cor) for cor in self.func.cors]
+        if self.func.cors and os.path.exists(self.func.cors[0]):
+            # If the provided cors is a filename then load COR from file
+            from mantidimaging.core.imopr.helper import load_cors_from_file
+            cors = load_cors_from_file(self.func.cors[0])
+            self.func.cors = []
+            self.func.cor_slices = []
+            for c in cors:
+                self.func.cor_slices.append(int(c[0]))
+                self.func.cors.append(float(c[1]))
+        else:
+            # Convert the centers of rotation (if provided) to floats
+            if self.func.cors:
+                self.func.cors = [float(cor) for cor in self.func.cors]
 
-        # Convert the slices for the center of rotation centers of rotation (if provided) to ints
-        if self.func.cor_slices:
-            self.func.cor_slices = [int(slice_id) for slice_id in self.func.cor_slices]
+            # Convert the slices for the center of rotation centers of rotation (if provided) to ints
+            if self.func.cor_slices:
+                self.func.cor_slices = [int(slice_id) for slice_id in self.func.cor_slices]
 
         if self.func.cors and self.func.cor_slices:
             len_cors = len(self.func.cors)
@@ -122,6 +136,9 @@ class ReconstructionConfig(object):
                     "Centers of Rotation (len {0}) doesn't match length of "
                     "Slice Indices (len {1})!".format(len_cors,
                                                       len_cor_slices))
+
+        log.debug("CORs: {}".format(self.func.cors))
+        log.debug("COR slices: {}".format(self.func.cor_slices))
 
         # if the reconstruction is ran on already cropped images, then no ROI
         # should be provided, however if we have a ROI then the Centers of Rotation

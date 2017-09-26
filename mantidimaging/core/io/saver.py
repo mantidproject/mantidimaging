@@ -176,7 +176,6 @@ class Saver(object):
         return supported_formats()
 
     def __init__(self, config):
-
         self._output_path = config.func.output_path
         if self._output_path is not None:
             self._output_path = os.path.abspath(
@@ -198,6 +197,9 @@ class Saver(object):
         # assign package functions for ease of access
         self.save = save
         self.make_dirs_if_needed = make_dirs_if_needed
+
+    def should_save_output(self):
+        return self._output_path is not None
 
     def get_output_path(self):
         return self._output_path
