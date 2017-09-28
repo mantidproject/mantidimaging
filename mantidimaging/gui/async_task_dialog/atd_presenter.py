@@ -11,7 +11,6 @@ class Notification(Enum):
 
 class AsyncTaskDialogPresenter(object):
     def __init__(self, view):
-        super(AsyncTaskDialogPresenter, self).__init__()
         self.view = view
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
@@ -25,7 +24,11 @@ class AsyncTaskDialogPresenter(object):
             raise  # re-raise for full stack trace
 
     def set_task(self, f):
-        self.model.task_thread.task_function = f
+        self.model.task.task_function = f
+
+    def set_parameters(self, *args, **kwargs):
+        self.model.task.args = args
+        self.model.task.kwargs = kwargs
 
     def set_on_complete(self, f):
         self.model.on_complete_function = f

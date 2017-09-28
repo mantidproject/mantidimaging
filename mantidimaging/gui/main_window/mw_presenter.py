@@ -4,6 +4,7 @@ from enum import Enum
 from logging import getLogger
 
 from .mw_model import MainWindowModel
+from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
 
 
 class Notification(Enum):
@@ -41,30 +42,42 @@ class MainWindowPresenter(object):
     def load_stack(self):
         log = getLogger(__name__)
 
-        selected_file = self.view.load_dialogue.sample_file()
-        sample_path = self.view.load_dialogue.sample_path()
-        image_format = self.view.load_dialogue.image_format
-        parallel_load = self.view.load_dialogue.parallel_load()
-        indices = self.view.load_dialogue.indices()
-        custom_name = self.view.load_dialogue.window_title()
+        kwargs = {}
+        kwargs['selected_file'] = self.view.load_dialogue.sample_file()
+        kwargs['sample_path'] = self.view.load_dialogue.sample_path()
+        kwargs['image_format'] = self.view.load_dialogue.image_format
+        kwargs['parallel_load'] = self.view.load_dialogue.parallel_load()
+        kwargs['indices'] = self.view.load_dialogue.indices()
+        kwargs['custom_name'] = self.view.load_dialogue.window_title()
 
-        if not sample_path:
+        if not kwargs['sample_path']:
             log.debug("No sample path provided, cannot load anything")
             return
 
-        try:
-            data = self.model.do_load_stack(sample_path, image_format, parallel_load, indices)
-        except Exception as e:
-            log.error("Failed to load file %s %s (%s)", sample_path, image_format, e)
-            self.show_error("Failed to read data file. See log for details.")
-            data = None
+        atd = AsyncTaskDialogView(self.view, auto_close=True)
+        atd.presenter.set_task(self.model.do_load_stack)
+        atd.presenter.set_on_complete(self._on_stack_load_done)
+        atd.presenter.set_parameters(**kwargs)
+        atd.presenter.do_start_processing()
 
-        if data is not None:
-            name = self.model.create_name(selected_file) if not custom_name else custom_name
-            dock_widget = self.view.create_stack_window(data, title=name)
+    def _on_stack_load_done(self, task):
+        log = getLogger(__name__)
+
+        if task.was_successful():
+            custom_name = task.kwargs['custom_name']
+            title = self.model.create_name(task.kwargs['selected_file']) if \
+                not custom_name else custom_name
+
+            dock_widget = self.view.create_stack_window(
+                    task.result, title=title)
+
             stack_visualiser = dock_widget.widget()
             self.model.add_stack(stack_visualiser, dock_widget)
             self.view.active_stacks_changed.emit()
+
+        else:
+            log.error("Failed to load file: %s", str(task.error))
+            self.show_error("Failed to read data file. See log for details.")
 
     def save(self, indices=None):
         stack_uuid = self.view.save_dialogue.selected_stack
