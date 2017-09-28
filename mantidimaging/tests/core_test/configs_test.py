@@ -7,6 +7,8 @@ import unittest
 
 import numpy.testing as npt
 
+import mantidimaging.tests.test_helper as th
+
 from mantidimaging.core.algorithms import registrator
 from mantidimaging.core.configs.functional_config import FunctionalConfig
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
@@ -28,18 +30,20 @@ class ConfigsTest(unittest.TestCase):
                                   str(self.func_config), FunctionalConfig)
 
     def test_no_input_path_error(self):
-        # the error is thrown from handle_special_arguments
-        try:
-            # don't add input path, which is supposed to be mandatory
-            fake_args_list = ['--cors', '42']
-            fake_args = self.parser.parse_args(fake_args_list)
-            self.func_config._update(fake_args)
-            ReconstructionConfig(self.func_config, fake_args)
-            assert False, "If we reached this point we have failed the test, \
-                          because we were supposed to crash without --input--path specified"
-        except SystemExit:
-            # it was supposed to fail, it's fine
-            pass
+        # Ignore output to stdout/stderr
+        with th.IgnoreOutputStreams():
+            # the error is thrown from handle_special_arguments
+            try:
+                # don't add input path, which is supposed to be mandatory
+                fake_args_list = ['--cors', '42']
+                fake_args = self.parser.parse_args(fake_args_list)
+                self.func_config._update(fake_args)
+                ReconstructionConfig(self.func_config, fake_args)
+                assert False, "If we reached this point we have failed the test, \
+                              because we were supposed to crash without --input--path specified"
+            except SystemExit:
+                # it was supposed to fail, it's fine
+                pass
 
     def test_missing_cors_error(self):
         # don't add CORS, which is mandatory if running reconstruction
