@@ -13,10 +13,10 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'cd mantidimaging && git clean -Xf'
+        sh 'cd mantidimaging && git clean -xdf'
         sh './anaconda3/envs/py35/bin/nosetests'
 
-        sh 'cd mantidimaging && git clean -Xf'
+        sh 'cd mantidimaging && git clean -xdf'
         sh './anaconda2/bin/nosetests'
       }
     }
