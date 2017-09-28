@@ -94,7 +94,6 @@ class StackVisualiserPresenter(object):
         :param offset: Number of images to scroll through stack
         """
         idx = self.view.current_index() + offset
-        print('idx ', idx)
         self.view.set_index(idx)
 
     def handle_algorithm_dialog_request(self, parameter):
