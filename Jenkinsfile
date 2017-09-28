@@ -11,20 +11,13 @@ pipeline {
       }
     }
 
-    stage('Clean Environment') {
-      steps {
-        sh 'cd mantidimaging && git clean -Xf'
-      }
-    }
-
     stage('Test') {
       steps {
-        parallel python35: {
-          sh './anaconda3/envs/py35/bin/nosetests'
-        },
-        python27: {
-          sh './anaconda2/bin/nosetests'
-        }
+        sh 'cd mantidimaging && git clean -Xf'
+        sh './anaconda3/envs/py35/bin/nosetests'
+
+        sh 'cd mantidimaging && git clean -Xf'
+        sh './anaconda2/bin/nosetests'
       }
     }
   }
