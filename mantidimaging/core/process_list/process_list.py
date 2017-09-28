@@ -128,11 +128,8 @@ class ProcessList(object):
         self._store_func(func, args, kwargs)
 
     def _store_func(self, func, args, kwargs):
-        if sys.version_info >= (3, 3):
-            import inspect
-        else:
-            import funcsigs as inspect
-
+        import mantidimaging.core.algorithms.special_imports as imps
+        inspect = imps.import_inspect()
         parameters = inspect.signature(func).parameters
         assert set(kwargs.keys()).issubset(parameters), \
             "One or more of the keyword arguments provided were NOT found in the function's declaration!"

@@ -4,6 +4,8 @@ import numpy as np
 
 import mantidimaging.tests.test_helper as th
 
+from mantidimaging.core.algorithms.special_imports import import_mock
+
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.stack_visualiser.sv_available_parameters import Parameters
 from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
@@ -11,7 +13,7 @@ from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as Pres
 # if we do not want to import the actual View and pull in Qt, we have to create an abstract view
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
-mock = th.import_mock()
+mock = import_mock()
 
 TEST_APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
 TEST_MOCK_VIEW_ROI = (1, 2, 3, 4)

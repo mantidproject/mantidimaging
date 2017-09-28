@@ -161,37 +161,10 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
         cls.assertTrue(os.path.isfile(filename))
 
 
-def import_mock():
-    """
-    Loads a suitable version of mock depedning on the Python version being
-    used.
-    """
-    if sys.version_info >= (3, 3):
-        # Use unittest.mock on Python 3.3 and above
-        import unittest
-        import unittest.mock as mock
-
-        if sys.version_info < (3, 6):
-            # If on Python 3.5 and below then need to monkey patch this function in
-            # It is available as standard on Python 3.6 and above
-            def assert_called_once(_mock_self):
-                self = _mock_self
-                if not self.call_count == 1:
-                    msg = ("Expected '%s' to have been called once. Called %s times." %
-                            (self._mock_name or 'mock', self.call_count))
-                    raise AssertionError(msg)
-            unittest.mock.Mock.assert_called_once = assert_called_once
-    else:
-        # Use mock on Python < 3.3
-        import mock
-
-    return mock
-
-
 def mock_property(obj, object_property, property_return_value=None):
     """
-    Mock a property of the object. This is a helper function to work around the limitations
-    of mocking a property with different return values.
+    Mock a property of the object. This is a helper function to work around the
+    limitations of mocking a property with different return values.
 
     :param obj: The object whose property will be mocked.
 
@@ -201,7 +174,8 @@ def mock_property(obj, object_property, property_return_value=None):
 
     :returns: The PropertyMock object that you can do assertions with
     """
-    mock = import_mock()
+    import mantidimaging.core.algorithms.special_imports as imps
+    mock = imps.import_mock()
     temp_property_mock = mock.PropertyMock(return_value=property_return_value)
     setattr(type(obj), object_property, temp_property_mock)
     return temp_property_mock
