@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.core.algorithms import value_scaling
+from mantidimaging.core.utility import value_scaling
 from mantidimaging.tests import test_helper as th
 
 

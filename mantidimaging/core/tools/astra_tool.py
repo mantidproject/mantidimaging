@@ -108,7 +108,7 @@ class AstraTool(AbstractTool):
         # plow = (data.shape[2] - cor * 2)
         # phigh = 0
 
-        from mantidimaging.core.algorithms import projection_angles
+        from mantidimaging.core.utility import projection_angles
         if proj_angles is None:
             proj_angles = projection_angles.generate(config.func.max_angle,
                                                      data.shape[1])

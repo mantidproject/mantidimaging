@@ -36,7 +36,7 @@ def _nxsread(filename):
 
 
 def _imread(filename):
-    from mantidimaging.core.algorithms.special_imports import import_skimage_io
+    from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
     return skio.imread(filename)
 

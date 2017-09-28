@@ -2,9 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 from PyQt5 import Qt
 
-from mantidimaging.core.algorithms import gui_compile_ui
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
+from mantidimaging.core.utility import gui_compile_ui
 
 
 def select_directory(field, caption):

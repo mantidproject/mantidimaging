@@ -3,10 +3,10 @@ from __future__ import absolute_import, division, print_function
 import os
 from logging import getLogger
 
-from mantidimaging.core.algorithms import projection_angles
 from mantidimaging.core.imopr import helper
 from mantidimaging.core.io.saver import Saver
 from mantidimaging.core.tools import importer
+from mantidimaging.core.utility import projection_angles
 
 
 def sanity_checks(config):

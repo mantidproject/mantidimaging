@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.core.algorithms import shape_splitter
+from mantidimaging.core.utility import shape_splitter
 
 
 class ShapeSplitterTest(unittest.TestCase):

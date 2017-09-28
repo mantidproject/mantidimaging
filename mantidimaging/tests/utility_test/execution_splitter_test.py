@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 import unittest
 from functools import partial
 
-from mantidimaging.core.algorithms import execution_splitter
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
+from mantidimaging.core.utility import execution_splitter
 
 _global_variable = 0
 

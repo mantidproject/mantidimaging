@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from mantidimaging import helper as h
-from mantidimaging.core.algorithms import projection_angles
 from mantidimaging.core.tools.abstract_tool import AbstractTool
+from mantidimaging.core.utility import projection_angles
 
 
 def run_reconstruct(sample, config, proj_angles=None, **kwargs):
@@ -116,7 +116,7 @@ class TomoPyTool(AbstractTool):
         assert len(cors) == sample.shape[0],\
             "The provided number of CORs does not match the slice number! \
             A Center of rotation must be provided for each slice. Usually \
-            that is done via core.algorithms.cor_interpolate"
+            that is done via core.utility.cor_interpolate"
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 

@@ -5,9 +5,9 @@ from logging import getLogger
 
 from PyQt5 import Qt
 
-from mantidimaging.core.algorithms import gui_compile_ui, size_calculator
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension
+from mantidimaging.core.utility import gui_compile_ui, size_calculator
 
 
 def select_file(field, caption):

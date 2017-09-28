@@ -5,7 +5,7 @@ import numpy.testing as npt
 
 import mantidimaging.tests.test_helper as th
 
-from mantidimaging.core.algorithms.special_imports import import_mock
+from mantidimaging.core.utility.special_imports import import_mock
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.stack_visualiser.sv_available_parameters import Parameters

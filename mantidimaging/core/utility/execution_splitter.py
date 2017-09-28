@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 from logging import getLogger
 
 import mantidimaging.helper as h
-from mantidimaging.core.algorithms import cor_interpolate, shape_splitter
 from mantidimaging.core.io import loader
+from mantidimaging.core.utility import cor_interpolate, shape_splitter
 
 
 def prepare_parameters(config):

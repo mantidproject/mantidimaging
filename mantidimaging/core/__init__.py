@@ -24,7 +24,6 @@ from __future__ import (absolute_import, division, print_function)
 
 from . import (  # noqa: F401
         aggregate,
-        algorithms,
         configs,
         configurations,
         convert,
@@ -33,6 +32,7 @@ from . import (  # noqa: F401
         imopr,
         parallel,
         process_list,
-        tools)
+        tools,
+        utility)
 
 del absolute_import, division, print_function

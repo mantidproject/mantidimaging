@@ -1,7 +1,8 @@
 import os
 import unittest
 
-from mantidimaging.core.algorithms.special_imports import import_mock
+from mantidimaging.core.utility.special_imports import import_mock
+
 from mantidimaging.tests.file_outputting_test_case import (
         FileOutputtingTestCase)
 

@@ -2,10 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-from mantidimaging.core.algorithms import cor_interpolate
 from mantidimaging.core.configurations.default_run import initialise_run
 from mantidimaging.core import process_list
 from mantidimaging.core.io import loader
+from mantidimaging.core.utility import cor_interpolate
 
 
 def execute(config):

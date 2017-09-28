@@ -4,7 +4,7 @@ import os
 from functools import partial
 
 from mantidimaging.core import io
-from mantidimaging.core.algorithms import value_scaling
+from mantidimaging.core.utility import value_scaling
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from . import background_correction
 

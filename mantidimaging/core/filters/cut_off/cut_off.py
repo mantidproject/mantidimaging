@@ -17,7 +17,7 @@ def _cli_register(parser):
 
 
 def _gui_register(main_window):
-    from mantidimaging.core.algorithms import gui_compile_ui as gcu
+    from mantidimaging.core.utility import gui_compile_ui as gcu
     from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
     from PyQt5 import Qt
     dialog = AlgorithmDialog(main_window)
