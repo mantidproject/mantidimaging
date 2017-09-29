@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.filters import crop_coords
@@ -129,12 +129,12 @@ class CropCoordsTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
         roi = [1, 1, 5, 5]
 
-        cached_memory = h.get_memory_usage_linux(mb=True)[0]
+        cached_memory = get_memory_usage_linux(mb=True)[0]
 
         result = crop_coords.execute(images, roi)[0]
 
         self.assertLess(
-            h.get_memory_usage_linux(mb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(mb=True)[0], cached_memory * 1.1)
 
         expected_shape = (10, 4, 4)
 

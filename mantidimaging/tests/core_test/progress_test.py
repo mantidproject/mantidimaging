@@ -4,7 +4,7 @@ import unittest
 
 import mantidimaging.tests.test_helper as th
 
-from mantidimaging.core.algorithms.progress_reporting import Progress
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 class ProgressTest(unittest.TestCase):
@@ -19,7 +19,7 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 1)
         self.assertEquals(p.completion(), 0.0)
 
-        p.update_progress(msg='do a thing')
+        p.update(msg='do a thing')
 
         self.assertTrue(p.is_started())
         self.assertEquals(len(p.progress_history), 2)
@@ -39,7 +39,7 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 1)
         self.assertEquals(p.completion(), 0.0)
 
-        p.update_progress(msg='Estimate how complex I am')
+        p.update(msg='Estimate how complex I am')
 
         self.assertEquals(p.end_step, 2)
         self.assertEquals(len(p.progress_history), 2)
@@ -52,22 +52,22 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 2)
         self.assertEquals(p.completion(), 0.091)
 
-        p.update_progress(steps=2, msg='Do two things')
+        p.update(steps=2, msg='Do two things')
 
         self.assertEquals(len(p.progress_history), 3)
         self.assertEquals(p.completion(), 0.273)
 
-        p.update_progress(steps=2, msg='Do two more things')
+        p.update(steps=2, msg='Do two more things')
 
         self.assertEquals(len(p.progress_history), 4)
         self.assertEquals(p.completion(), 0.455)
 
-        p.update_progress(steps=3, msg='Do three things')
+        p.update(steps=3, msg='Do three things')
 
         self.assertEquals(len(p.progress_history), 5)
         self.assertEquals(p.completion(), 0.727)
 
-        p.update_progress(steps=2, msg='Do two final things')
+        p.update(steps=2, msg='Do two final things')
 
         self.assertEquals(len(p.progress_history), 6)
         self.assertEquals(p.completion(), 0.909)
@@ -99,16 +99,16 @@ class ProgressTest(unittest.TestCase):
         p.attach_callback(cb1)
         p.attach_callback(cb2)
 
-        p.update_progress(msg='First')
+        p.update(msg='First')
         assert_call(0.167, 1, 'First')
 
-        p.update_progress(steps=2, msg='Second')
+        p.update(steps=2, msg='Second')
         assert_call(0.5, 3, 'Second')
 
-        p.update_progress(msg='Third')
+        p.update(msg='Third')
         assert_call(0.667, 4, 'Third')
 
-        p.update_progress(msg='Last')
+        p.update(msg='Last')
         assert_call(0.833, 5, 'Last')
 
         p.mark_complete()

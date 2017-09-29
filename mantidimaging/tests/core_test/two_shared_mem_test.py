@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.parallel import two_shared_mem as ptsm
@@ -256,11 +256,11 @@ class TwoSharedMemTest(unittest.TestCase):
         f = ptsm.create_partial(
             add_inplace, fwd_function=ptsm.inplace, add_arg=5)
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Inplace test")
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(img, expected)
         npt.assert_equal(img2nd, orig_2nd)
@@ -284,10 +284,10 @@ class TwoSharedMemTest(unittest.TestCase):
             add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
         ptsm.execute(img, img2nd, f, name="Second 2D test")
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(img, expected)
         npt.assert_equal(img2nd, orig_2nd[0])
@@ -309,10 +309,10 @@ class TwoSharedMemTest(unittest.TestCase):
             return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to first test")
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(res1, expected)
         npt.assert_equal(res2, orig_2nd)
@@ -334,12 +334,14 @@ class TwoSharedMemTest(unittest.TestCase):
             return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to second test")
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(res2, expected)
         npt.assert_equal(res1, orig_img)
+
+
 if __name__ == '__main__':
     unittest.main()

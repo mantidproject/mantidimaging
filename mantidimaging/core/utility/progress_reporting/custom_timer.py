@@ -27,7 +27,9 @@ import sys
 
 class CustomTimer(object):
     """
-    Custom fallback implementation for timer that provides only a basic loading bar.
+    Custom fallback implementation for timer that provides only a basic loading
+    bar.
+
     This timer bar will be used if tqdm is not present of the system.
     """
 

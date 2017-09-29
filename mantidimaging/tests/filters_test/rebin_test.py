@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.filters import rebin
@@ -85,7 +85,6 @@ class RebinTest(unittest.TestCase):
         # npt.assert_equal(images.shape[1], expected_x)
         # npt.assert_equal(images.shape[2], expected_y)
 
-
     def test_memory_change_acceptable(self):
         """
         This filter will increase the memory usage as it has to allocate memory
@@ -100,12 +99,12 @@ class RebinTest(unittest.TestCase):
         expected_x = int(images.shape[1] * val)
         expected_y = int(images.shape[2] * val)
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = rebin.execute(images, val, mode)
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 2)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 2)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
