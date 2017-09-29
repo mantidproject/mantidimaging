@@ -34,6 +34,7 @@ then
   echo "Activating $py_env_name environment"
   source "$anaconda_bin"/activate py35
   "$anaconda_bin"/conda install -y -q --override-channels -c dgursoy tomopy=1.0.1
+  "$anaconda_bin"/conda install -y -q --override-channels -c defaults flake8
 else
   echo "Python 3.5 environment found"
 fi
