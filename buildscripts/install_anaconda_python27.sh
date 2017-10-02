@@ -17,11 +17,14 @@ then
   chmod +x $installer
   ./$installer -b -p "$anaconda_dir"
   rm $installer
-  "$anaconda_bin"/conda install -y -q --override-channels -c dgursoy tomopy=1.0.1
-  "$anaconda_bin"/conda install -y -q --override-channels -c defaults mock
 else
   echo "Anaconda (Python 2) already exists in this workspace"
 fi
+
+# Install Python dependencies
+echo "Installing dependencies"
+"$anaconda_bin"/conda install -y -q --override-channels -c dgursoy tomopy=1.0.1
+"$anaconda_bin"/conda install -y -q --override-channels -c defaults mock
 
 echo "Anaconda directory: $anaconda_dir"
 ls -la "$anaconda_dir"
