@@ -36,8 +36,9 @@ pipeline {
     stage('Flake8') {
       steps {
         timeout(5) {
-          sh 'cd mantidimaging && ${WORKSPACE}/anaconda3/envs/py35/bin/flake8 --exit-zero'
-          step([$class: 'WarningsPublisher', parserConfigurations: [[parserName: 'Flake8']]])
+          sh 'rm -f ${WORKSPACE}/flake8.log'
+          sh 'cd mantidimaging && ${WORKSPACE}/anaconda3/envs/py35/bin/flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log'
+          step([$class: 'WarningsPublisher', parserConfigurations: [[parserName: 'Flake8', pattern: 'flake8.log']]])
         }
       }
     }
