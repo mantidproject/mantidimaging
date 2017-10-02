@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
+
 from mantidimaging import helper as h
+
 import numpy as np
 
 
@@ -16,38 +18,14 @@ def _cli_register(parser):
     return parser
 
 
-def _gui_register(main_window):
-    from mantidimaging.core.utility import gui_compile_ui as gcu
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-    from PyQt5 import Qt
-    dialog = AlgorithmDialog(main_window)
-    gcu.execute("gui/ui/alg_dialog.ui", dialog)
-    dialog.setWindowTitle("Cut Off")
-
-    label_radius = Qt.QLabel("Threshold")
-    radius_field = Qt.QDoubleSpinBox()
-    radius_field.setMinimum(0)
-    radius_field.setMaximum(1)
-    radius_field.setValue(0.95)
-
-    dialog.formLayout.addRow(label_radius, radius_field)
-
-    def decorate_execute():
-        from functools import partial
-        return partial(execute, threshold=radius_field.value())
-
-    # replace dialog function with this one
-    dialog.decorate_execute = decorate_execute
-    return dialog
-
-
 def execute(data, threshold):
     """
     Cut off values above threshold relative to the max pixels.
 
     :param data: Input data as a 3D numpy.ndarray
 
-    :param threshold: The threshold related to the minimum pixel value that will be clipped
+    :param threshold: The threshold related to the minimum pixel value that
+                      will be clipped
 
     :return: The processed 3D numpy.ndarray
     """
