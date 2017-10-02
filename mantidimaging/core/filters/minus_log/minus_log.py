@@ -1,4 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
+
 from mantidimaging import helper as h
 from mantidimaging.core.tools import importer
 
