@@ -142,7 +142,7 @@ class StackVisualiserPresenter(object):
         if not isinstance(res_before, tuple):
             res_before = (res_before,)
 
-        algorithm_dialog.execute(self.images.get_sample(), *parameter_value)
+        self.images.sample = algorithm_dialog.execute(self.images.get_sample(), *parameter_value)
 
         # execute the do_after function by passing the results from the do_before
         if do_after:
