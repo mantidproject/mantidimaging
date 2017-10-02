@@ -42,7 +42,7 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None,
     :param rebin_param: int, float or tuple
                         int - Percentage of current size.
                         float - Fraction of current size.
-                        tuple - Size of the output image.
+                        tuple - Size of the output image (x, y).
 
     :param mode: Interpolation to use for re-sizing
                  ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
@@ -55,7 +55,15 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None,
     """
     h.check_data_stack(data)
 
-    if rebin_param and 0 < rebin_param:
+    param_valid = False
+    if rebin_param is None:
+        pass
+    elif isinstance(rebin_param, tuple):
+        param_valid = rebin_param[0] > 0 and rebin_param[1] > 0
+    else:
+        param_valid = rebin_param > 0
+
+    if param_valid:
         if pu.multiprocessing_available():
             data = _execute_par(data, rebin_param, mode, cores, chunksize,
                                 progress)
@@ -109,8 +117,12 @@ def _create_reshaped_array(old_shape, rebin_param):
 
     # use SciPy's calculation to find the expected dimensions
     # int to avoid visible deprecation warning
-    expected_dimy = int(rebin_param * old_shape[1])
-    expected_dimx = int(rebin_param * old_shape[2])
+    if isinstance(rebin_param, tuple):
+        expected_dimy = int(rebin_param[0])
+        expected_dimx = int(rebin_param[1])
+    else:
+        expected_dimy = int(rebin_param * old_shape[1])
+        expected_dimx = int(rebin_param * old_shape[2])
 
     # allocate memory for images with new dimensions
     return pu.create_shared_array((num_images, expected_dimy, expected_dimx))

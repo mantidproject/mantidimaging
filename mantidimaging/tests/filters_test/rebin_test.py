@@ -53,23 +53,23 @@ class RebinTest(unittest.TestCase):
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
-    def test_executed_par_2(self):
-        self.do_execute(2.)
+    def test_executed_uniform_par_2(self):
+        self.do_execute_uniform(2.0)
 
-    def test_executed_par_5(self):
-        self.do_execute(5.)
+    def test_executed_uniform_par_5(self):
+        self.do_execute_uniform(5.0)
 
-    def test_executed_seq_2(self):
+    def test_executed_uniform_seq_2(self):
         th.switch_mp_off()
-        self.do_execute(2.)
+        self.do_execute_uniform(2.0)
         th.switch_mp_on()
 
-    def test_executed_seq_5(self):
+    def test_executed_uniform_seq_5(self):
         th.switch_mp_off()
-        self.do_execute(5.)
+        self.do_execute_uniform(5.0)
         th.switch_mp_on()
 
-    def do_execute(self, val=2.):
+    def do_execute_uniform(self, val=2.0):
         images = th.gen_img_shared_array()
         mode = 'nearest'
 
@@ -77,6 +77,46 @@ class RebinTest(unittest.TestCase):
         expected_y = int(images.shape[2] * val)
 
         result = rebin.execute(images, val, mode)
+
+        npt.assert_equal(result.shape[1], expected_x)
+        npt.assert_equal(result.shape[2], expected_y)
+
+        # TODO: in-place data test
+        # npt.assert_equal(images.shape[1], expected_x)
+        # npt.assert_equal(images.shape[2], expected_y)
+
+    def test_executed_xy_par_128_256(self):
+        self.do_execute_xy((128, 256))
+
+    def test_executed_xy_par_512_256(self):
+        self.do_execute_xy((512, 256))
+
+    def test_executed_xy_par_1024_1024(self):
+        self.do_execute_xy((1024, 1024))
+
+    def test_executed_xy_seq_128_256(self):
+        th.switch_mp_off()
+        self.do_execute_xy((128, 256))
+        th.switch_mp_on()
+
+    def test_executed_xy_seq_512_256(self):
+        th.switch_mp_off()
+        self.do_execute_xy((512, 256))
+        th.switch_mp_on()
+
+    def test_executed_xy_seq_1024_1024(self):
+        th.switch_mp_off()
+        self.do_execute_xy((1024, 1024))
+        th.switch_mp_on()
+
+    def do_execute_xy(self, val=(512, 512)):
+        images = th.gen_img_shared_array()
+        mode = 'nearest'
+
+        expected_x = int(val[0])
+        expected_y = int(val[1])
+
+        result = rebin.execute(images, rebin_param=val, mode=mode)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
