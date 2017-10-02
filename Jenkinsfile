@@ -19,7 +19,7 @@ pipeline {
         sh 'cd mantidimaging && git clean -xdf'
         sh '${WORKSPACE}/anaconda2/bin/nosetests'
 
-        sh 'cd mantidimaging && ${WORKSPACE}/anaconda3/envs/py35/bin/flake8'
+        sh 'cd mantidimaging && ${WORKSPACE}/anaconda3/envs/py35/bin/flake8 --exit-zero'
       }
     }
   }
