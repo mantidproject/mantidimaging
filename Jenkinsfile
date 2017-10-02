@@ -11,15 +11,31 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Test - Python 3.5') {
       steps {
-        sh 'cd mantidimaging && git clean -xdf'
-        sh '${WORKSPACE}/anaconda3/envs/py35/bin/nosetests'
+        timeout(5) {
+          sh 'cd mantidimaging && git clean -xdf'
+          sh '${WORKSPACE}/anaconda3/envs/py35/bin/nosetests --xunit-file=${WORKSPACE}/python35_nosetests.xml'
+          junit '**/python35_nosetests.xml'
+        }
+      }
+    }
 
-        sh 'cd mantidimaging && git clean -xdf'
-        sh '${WORKSPACE}/anaconda2/bin/nosetests'
+    stage('Test - Python 2.7') {
+      steps {
+        timeout(5) {
+          sh 'cd mantidimaging && git clean -xdf'
+          sh '${WORKSPACE}/anaconda2/bin/nosetests --xunit-file=${WORKSPACE}/python27_nosetests.xml'
+          junit '**/python27_nosetests.xml'
+        }
+      }
+    }
 
-        sh 'cd mantidimaging && ${WORKSPACE}/anaconda3/envs/py35/bin/flake8 --exit-zero'
+    stage('Flake8') {
+      steps {
+        sh 'rm -f ${WORKSPACE}/flake8.log'
+        sh 'cd mantidimaging && ${WORKSPACE}/anaconda3/envs/py35/bin/flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log'
+        step([$class: 'WarningsPublisher', parserConfigurations: [[parserName: 'Flake8', pattern: 'flake8.log']]])
       }
     }
   }
