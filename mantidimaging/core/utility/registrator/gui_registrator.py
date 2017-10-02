@@ -1,9 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from PyQt5.Qt import QMenu, QAction
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.main_window.mw_view import MainWindowView
+
 from .registrator import do_importing
 
 
@@ -36,6 +39,9 @@ def do_registering(module, module_dir, main_window):
                         for it to be a MainWindowView because of the assertion in gui_register
 
     """
+    log = getLogger(__name__)
+    log.debug("Registering GUI: %s", module)
+
     menu = main_window.menuFilters
 
     # This will call the _gui_register function on each of the filters, where _gui_register is found
@@ -59,7 +65,8 @@ def do_registering(module, module_dir, main_window):
     assert dialog.execute is not None, \
         "The execute function must be set manually! The module {0} has not set execute correctly".format(module_dir)
 
-    action = QAction(getattr(module, 'GUI_MENU_NAME', module_dir), menu)
+    menu_name = getattr(module, 'GUI_MENU_NAME', module_dir)
+    action = QAction(menu_name, menu)
 
     # the captured_dialog=dialog in the lambda captures THE ORIGINAL reference to the dialog
     # and when the user clicks the QAction in the QMenu the correct dialog is shown!
