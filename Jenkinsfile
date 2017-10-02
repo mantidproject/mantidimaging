@@ -15,7 +15,7 @@ pipeline {
       steps {
         timeout(5) {
           sh 'cd mantidimaging && git clean -xdf'
-          sh '${WORKSPACE}/anaconda3/envs/py35/bin/nosetests --xunit-file=${WORKSPACE}/python35_nosetests.xml'
+          sh '${WORKSPACE}/anaconda3/envs/py35/bin/nosetests --xunit-file=${WORKSPACE}/python35_nosetests.xml --xunit-testsuite-name=python35_nosetests'
           junit '**/python35_nosetests.xml'
         }
       }
@@ -25,7 +25,7 @@ pipeline {
       steps {
         timeout(5) {
           sh 'cd mantidimaging && git clean -xdf'
-          sh '${WORKSPACE}/anaconda2/bin/nosetests --xunit-file=${WORKSPACE}/python27_nosetests.xml'
+          sh '${WORKSPACE}/anaconda2/bin/nosetests --xunit-file=${WORKSPACE}/python27_nosetests.xml --xunit-testsuite-name=python27_nosetests'
           junit '**/python27_nosetests.xml'
         }
       }
