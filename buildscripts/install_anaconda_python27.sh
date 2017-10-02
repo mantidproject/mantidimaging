@@ -24,7 +24,7 @@ fi
 # Install Python dependencies
 echo "Installing dependencies"
 "$anaconda_bin"/conda install -y -q --override-channels -c dgursoy tomopy=1.0.1
-"$anaconda_bin"/conda install -y -q --override-channels -c defaults mock
+"$anaconda_bin"/conda install -y -q --override-channels -c defaults coverage mock
 
 echo "Anaconda directory: $anaconda_dir"
 ls -la "$anaconda_dir"
