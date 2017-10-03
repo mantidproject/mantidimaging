@@ -2,9 +2,12 @@ from __future__ import absolute_import, division, print_function
 
 import unittest
 
+import numpy.testing as npt
+
 from mantidimaging import helper as h
-from mantidimaging.core.parallel import exclusive_mem as esm
 from mantidimaging.tests import test_helper as th
+
+from mantidimaging.core.parallel import exclusive_mem as esm
 
 
 def return_from_func(first_shared, add_arg):
@@ -28,7 +31,7 @@ class ExclusiveMemTest(unittest.TestCase):
 
         f = esm.create_partial(return_from_func, add_arg=add_arg)
         img = esm.execute(img, f, name="Exclusive mem test")
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
     def test_memory_change_acceptable(self):
         img = th.gen_img_numpy_rand()
@@ -40,7 +43,7 @@ class ExclusiveMemTest(unittest.TestCase):
         img = esm.execute(img, f, name="Exclusive mem test")
         self.assertLess(
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
 
 if __name__ == '__main__':

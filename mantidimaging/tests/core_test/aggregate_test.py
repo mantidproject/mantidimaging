@@ -5,6 +5,7 @@ import os
 import unittest
 
 import numpy as np
+import numpy.testing as npt
 
 from mantidimaging.core.aggregate import aggregate
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
@@ -94,7 +95,7 @@ class AggregateTest(FileOutputtingTestCase):
             parallel_load=parallel)
 
         for i in images.get_sample():
-            th.assert_equals(i, expected)
+            npt.assert_equal(i, expected)
 
     def test_aggregate_not_single_folder_sum_fits(self):
         self.do_aggregate_not_single_folder('fits', 'fits', 'sum')
@@ -171,7 +172,7 @@ class AggregateTest(FileOutputtingTestCase):
                 parallel_load=parallel)
 
             for i in images.get_sample():
-                th.assert_equals(i, expected)
+                npt.assert_equal(i, expected)
 
 
 if __name__ == '__main__':

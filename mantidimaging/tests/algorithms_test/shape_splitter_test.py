@@ -3,9 +3,9 @@ from __future__ import absolute_import, division, print_function
 import unittest
 
 import numpy as np
+import numpy.testing as npt
 
 from mantidimaging.core.algorithms import shape_splitter
-from mantidimaging.tests import test_helper as th
 
 
 class ShapeSplitterTest(unittest.TestCase):
@@ -37,5 +37,5 @@ class ShapeSplitterTest(unittest.TestCase):
             shape, axis, dtype, max_memory, max_ratio, reconstruction)
 
         # convert to numpy arrays to use the numpy.testing equals
-        th.assert_equals(np.array(res_split), np.array([0, 500, 1000]))
+        npt.assert_equal(np.array(res_split), np.array([0, 500, 1000]))
         self.assertEqual(res_step, 500)

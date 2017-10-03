@@ -2,10 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 import os
-import tempfile
 import unittest
 
 import numpy as np
+import numpy.testing as npt
 
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
@@ -238,7 +238,7 @@ class IOTest(FileOutputtingTestCase):
             # crop the original images to make sure the tests is correct
             expected_images = expected_images[loader_indices[0]:loader_indices[1]]
 
-        th.assert_equals(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.get_sample(), expected_images)
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
@@ -310,7 +310,7 @@ class IOTest(FileOutputtingTestCase):
             # crop the original images to make sure the tests is correct
             expected_images = expected_images[loader_indices[0]:loader_indices[1]]
 
-        th.assert_equals(images.get_sample(), expected_images)
+        npt.assert_equal(images.get_sample(), expected_images)
 
         self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
                                 saver._out_format, data_as_stack,
@@ -433,11 +433,11 @@ class IOTest(FileOutputtingTestCase):
             # crop the original images to make sure the tests is correct
             images = images[loader_indices[0]:loader_indices[1]]
 
-        th.assert_equals(loaded_images.get_sample(), images)
+        npt.assert_equal(loaded_images.get_sample(), images)
         # we only check the first image because they will be
         # averaged out when loaded! The initial images are only 3s
-        th.assert_equals(loaded_images.get_flat(), flat[0])
-        th.assert_equals(loaded_images.get_dark(), dark[0])
+        npt.assert_equal(loaded_images.get_flat(), flat[0])
+        npt.assert_equal(loaded_images.get_dark(), dark[0])
 
     def test_raise_on_invalid_format(self):
         self.assertRaises(ValueError, loader.load, "/some/path",
@@ -480,7 +480,7 @@ class IOTest(FileOutputtingTestCase):
 
         loaded_images = loader.load_from_config(config)
 
-        th.assert_equals(images, loaded_images.get_sample())
+        npt.assert_equal(images, loaded_images.get_sample())
 
     def test_construct_sinograms(self):
         images = th.gen_img_shared_array_with_val(42.)
@@ -501,7 +501,7 @@ class IOTest(FileOutputtingTestCase):
         config.func.construct_sinograms = True
         loaded_images = loader.load_from_config(config)
 
-        th.assert_equals(exp_sinograms, loaded_images.get_sample())
+        npt.assert_equal(exp_sinograms, loaded_images.get_sample())
 
 
 if __name__ == '__main__':

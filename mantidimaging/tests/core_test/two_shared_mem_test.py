@@ -2,9 +2,12 @@ from __future__ import absolute_import, division, print_function
 
 import unittest
 
+import numpy.testing as npt
+
 from mantidimaging import helper as h
-from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.tests import test_helper as th
+
+from mantidimaging.core.parallel import two_shared_mem as ptsm
 
 
 def add_inplace(first_shared, second_shared, add_arg):
@@ -42,8 +45,8 @@ class TwoSharedMemTest(unittest.TestCase):
         ptsm.execute(img, img2nd, f, name="Inplace test")
 
         # compare results
-        th.assert_equals(img, expected)
-        th.assert_equals(img2nd, orig_2nd)
+        npt.assert_equal(img, expected)
+        npt.assert_equal(img2nd, orig_2nd)
 
     def test_fwd_func_second_2d(self):
         # create data as shared array
@@ -67,8 +70,8 @@ class TwoSharedMemTest(unittest.TestCase):
         ptsm.execute(img, img2nd, f, name="Second 2D test")
 
         # compare results
-        th.assert_equals(img, expected)
-        th.assert_equals(img2nd, orig_2nd[0])
+        npt.assert_equal(img, expected)
+        npt.assert_equal(img2nd, orig_2nd[0])
 
     def test_return_to_first(self):
         # create data as shared array
@@ -90,8 +93,8 @@ class TwoSharedMemTest(unittest.TestCase):
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to first test")
 
         # compare results
-        th.assert_equals(res1, expected)
-        th.assert_equals(res2, orig_2nd)
+        npt.assert_equal(res1, expected)
+        npt.assert_equal(res2, orig_2nd)
 
     def test_return_to_second(self):
         # create data as shared array
@@ -113,8 +116,8 @@ class TwoSharedMemTest(unittest.TestCase):
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to second test")
 
         # compare results
-        th.assert_equals(res2, expected)
-        th.assert_equals(res1, orig_img)
+        npt.assert_equal(res2, expected)
+        npt.assert_equal(res1, orig_img)
 
 # ------------------------- FAIL CASES -----------------------
 
@@ -143,8 +146,8 @@ class TwoSharedMemTest(unittest.TestCase):
         # compare results
         th.assert_not_equals(img, expected)
         th.assert_not_equals(img2nd, expected)
-        th.assert_equals(img, orig_img)
-        th.assert_equals(img2nd, orig_img2nd)
+        npt.assert_equal(img, orig_img)
+        npt.assert_equal(img2nd, orig_img2nd)
 
     def test_fail_with_normal_array_fwd_func_second_2d(self):
         # create data as normal nd array
@@ -174,8 +177,8 @@ class TwoSharedMemTest(unittest.TestCase):
         # compare results
         th.assert_not_equals(img, expected)
         th.assert_not_equals(img2nd, expected)
-        th.assert_equals(img, orig_img)
-        th.assert_equals(img2nd, orig_img2nd[0])
+        npt.assert_equal(img, orig_img)
+        npt.assert_equal(img2nd, orig_img2nd[0])
 
     def test_fail_with_normal_array_return_to_first(self):
         # create data as normal nd array
@@ -200,8 +203,8 @@ class TwoSharedMemTest(unittest.TestCase):
             img, img2nd, f, name="Fail Return to first test")
 
         # compare results
-        th.assert_equals(res1, img)
-        th.assert_equals(res2, img2nd)
+        npt.assert_equal(res1, img)
+        npt.assert_equal(res2, img2nd)
         th.assert_not_equals(res1, expected)
 
     def test_fail_with_normal_array_return_to_second(self):
@@ -231,8 +234,8 @@ class TwoSharedMemTest(unittest.TestCase):
             img, img2nd, f, name="Fail Return to second test")
 
         # compare results
-        th.assert_equals(res1, img)
-        th.assert_equals(res2, img2nd)
+        npt.assert_equal(res1, img)
+        npt.assert_equal(res2, img2nd)
         th.assert_not_equals(res2, expected)
 
 # ------------------------- MEMORY TESTS -----------------------
@@ -259,8 +262,8 @@ class TwoSharedMemTest(unittest.TestCase):
         self.assertLess(
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
-        th.assert_equals(img, expected)
-        th.assert_equals(img2nd, orig_2nd)
+        npt.assert_equal(img, expected)
+        npt.assert_equal(img2nd, orig_2nd)
 
     def test_memory_fwd_func_second_2d(self):
         # create data as shared array
@@ -286,8 +289,8 @@ class TwoSharedMemTest(unittest.TestCase):
         self.assertLess(
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
-        th.assert_equals(img, expected)
-        th.assert_equals(img2nd, orig_2nd[0])
+        npt.assert_equal(img, expected)
+        npt.assert_equal(img2nd, orig_2nd[0])
 
     def test_memory_return_to_first(self):
         # create data as shared array
@@ -311,8 +314,8 @@ class TwoSharedMemTest(unittest.TestCase):
         self.assertLess(
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
-        th.assert_equals(res1, expected)
-        th.assert_equals(res2, orig_2nd)
+        npt.assert_equal(res1, expected)
+        npt.assert_equal(res2, orig_2nd)
 
     def test_memory_return_to_second(self):
         # create data as shared array
@@ -336,7 +339,7 @@ class TwoSharedMemTest(unittest.TestCase):
         self.assertLess(
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
-        th.assert_equals(res2, expected)
-        th.assert_equals(res1, orig_img)
+        npt.assert_equal(res2, expected)
+        npt.assert_equal(res1, orig_img)
 if __name__ == '__main__':
     unittest.main()

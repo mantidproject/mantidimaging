@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import unittest
 
+import numpy.testing as npt
+
 from mantidimaging import helper as h
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.tests import test_helper as th
@@ -38,7 +40,7 @@ class SharedMemTest(unittest.TestCase):
         img = psm.execute(img, f, name="Inplace test")
 
         # compare results
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
     def test_fwd_func(self):
         # create data as shared array
@@ -59,7 +61,7 @@ class SharedMemTest(unittest.TestCase):
         img = psm.execute(img, f, name="Fwd func test")
 
         # compare results
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
 # ------------------------- FAIL CASES -----------------------
 
@@ -85,7 +87,7 @@ class SharedMemTest(unittest.TestCase):
 
         # compare results
         th.assert_not_equals(res, expected)
-        th.assert_equals(img, orig)
+        npt.assert_equal(img, orig)
 
     def test_fail_with_normal_array_fwd_func(self):
         # create data as shared array
@@ -108,7 +110,7 @@ class SharedMemTest(unittest.TestCase):
 
         # compare results
         th.assert_not_equals(res, expected)
-        th.assert_equals(img, orig)
+        npt.assert_equal(img, orig)
 
 # ------------------------- MEMORY TESTS -----------------------
 
@@ -135,7 +137,7 @@ class SharedMemTest(unittest.TestCase):
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
     def test_memory_fwd_func(self):
         """
@@ -168,7 +170,7 @@ class SharedMemTest(unittest.TestCase):
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
 if __name__ == '__main__':
     unittest.main()
