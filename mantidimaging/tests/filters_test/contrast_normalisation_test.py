@@ -1,12 +1,22 @@
 from __future__ import (absolute_import, division, print_function)
+
 import unittest
+
 import numpy as np
 import numpy.testing as npt
+
 from mantidimaging.tests import test_helper as th
+
 from mantidimaging.core.filters import roi_normalisation
 
 
 class ContrastNormalisationTest(unittest.TestCase):
+    """
+    Test contrast ROI normalisation filter.
+
+    Tests return value and in-place modified data.
+    """
+
     def __init__(self, *args, **kwargs):
         super(ContrastNormalisationTest, self).__init__(*args, **kwargs)
 
@@ -15,7 +25,9 @@ class ContrastNormalisationTest(unittest.TestCase):
 
         air = None
         result = roi_normalisation.execute(images, air)
+
         npt.assert_equal(result, control)
+        npt.assert_equal(images, control)
 
     def test_not_executed_invalid_shape(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -38,7 +50,11 @@ class ContrastNormalisationTest(unittest.TestCase):
 
         air = [3, 3, 4, 4]
         result = roi_normalisation.execute(images, air)
+
         th.assert_not_equals(result, control)
+        th.assert_not_equals(images, control)
+
+        npt.assert_equal(result, images)
 
 
 if __name__ == '__main__':
