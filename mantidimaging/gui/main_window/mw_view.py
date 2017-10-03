@@ -15,11 +15,12 @@ from .save_dialog import MWSaveDialog
 
 
 class MainWindowView(Qt.QMainWindow):
+
+    active_stacks_changed = Qt.pyqtSignal()
+
     def __init__(self, config):
         super(MainWindowView, self).__init__()
         gui_compile_ui.execute('gui/ui/main_window.ui', self)
-
-        self.setup_shortcuts()
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("MantidImaging")
@@ -27,6 +28,7 @@ class MainWindowView(Qt.QMainWindow):
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
 
+        self.setup_shortcuts()
         self.update_shortcuts()
 
     def setup_shortcuts(self):
@@ -38,6 +40,8 @@ class MainWindowView(Qt.QMainWindow):
 
         self.actionExit.setShortcut('Ctrl+Q')
         self.actionExit.triggered.connect(Qt.qApp.quit)
+
+        self.active_stacks_changed.connect(self.update_shortcuts)
 
     def update_shortcuts(self):
         self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)

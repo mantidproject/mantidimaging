@@ -216,7 +216,7 @@ class AlgorithmDialog(Qt.QDialog):
         if self.selected_stack:
             self.main_window.algorithm_accepted(self.selected_stack, self)
 
-    def update_and_show(self):
+    def refresh_stack_list(self):
         # clear the previous entries from the drop down menu
         self.stackNames.clear()
 
@@ -225,5 +225,7 @@ class AlgorithmDialog(Qt.QDialog):
         if stack_list:  # run away if no stacks are loaded
             self.stack_uuids, user_friendly_names = zip(*stack_list)
             self.stackNames.addItems(user_friendly_names)
-        # show the dialogue with the updated stacks
+
+    def update_and_show(self):
+        self.refresh_stack_list()
         self.show()
