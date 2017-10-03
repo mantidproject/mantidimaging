@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 import os
 
 THIS_PATH = os.path.dirname(__file__)
+
 setup(
     name='mantidimaging',
     version='0.9',
@@ -42,4 +43,6 @@ setup(
     extras_require={
         'testing': ['nose'],
     },
-    long_description=open("README.md").read(), install_requires=['numpy'])
+    long_description=open("README.md").read(),
+    install_requires=['numpy']
+)
