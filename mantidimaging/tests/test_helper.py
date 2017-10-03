@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 import os
 import sys
 
+from six import StringIO
+
 import numpy as np
 import numpy.testing as npt
 
@@ -190,8 +192,8 @@ def import_mock():
 
 def mock_property(obj, object_property, property_return_value=None):
     """
-    Mock a property of the object. This is a helper function to work around the limitations
-    of mocking a property with different return values.
+    Mock a property of the object. This is a helper function to work around the
+    limitations of mocking a property with different return values.
 
     :param obj: The object whose property will be mocked.
 
@@ -205,3 +207,23 @@ def mock_property(obj, object_property, property_return_value=None):
     temp_property_mock = mock.PropertyMock(return_value=property_return_value)
     setattr(type(obj), object_property, temp_property_mock)
     return temp_property_mock
+
+
+class IgnoreOutputStreams(object):
+    def __init__(self):
+        self.stdout = None
+        self.stderr = None
+
+    def __enter__(self):
+        # Record the default streams
+        self.stdout = sys.stdout
+        self.stderr = sys.stderr
+
+        # Replace them with string IO "dummy" buffers
+        sys.stdout = StringIO()
+        sys.stderr = StringIO()
+
+    def __exit__(self, type, value, traceback):
+        # Restore the default streams
+        sys.stdout = self.stdout
+        sys.stderr = self.stderr

@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 from logging import getLogger
 
 import os
+import warnings
 
 import numpy as np
 
@@ -26,7 +27,10 @@ def write_fits(data, filename, overwrite=False):
 def write_img(data, filename, overwrite=False):
     from mantidimaging.core.io.loader.imports import import_skimage_io
     skio = import_skimage_io()
-    skio.imsave(filename, data)
+    with warnings.catch_warnings(record=True) as warn_messages:
+        skio.imsave(filename, data)
+        for w in warn_messages:
+            getLogger(__name__).warn('skimage warning: %s', str(w))
 
 
 def write_nxs(data, filename, projection_angles=None, overwrite=False):
