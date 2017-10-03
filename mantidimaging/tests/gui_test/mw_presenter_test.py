@@ -6,12 +6,14 @@ import numpy as np
 
 import mantidimaging.tests.test_helper as th
 
+from mantidimaging.core.algorithms.special_imports import import_mock
+
 from mantidimaging.gui.main_window.load_dialog import MWLoadDialog
 from mantidimaging.gui.main_window.mw_presenter import (
         MainWindowPresenter, Notification)
 from mantidimaging.gui.main_window.mw_view import MainWindowView
 
-mock = th.import_mock()
+mock = import_mock()
 
 
 class MainWindowPresenterTest(unittest.TestCase):

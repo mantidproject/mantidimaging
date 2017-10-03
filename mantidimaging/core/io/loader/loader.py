@@ -16,7 +16,7 @@ def _fitsread(filename):
     :param filename :: name of the image file, can be relative or absolute path
     :param img_format: format of the image ('fits')
     """
-    from .imports import import_pyfits
+    from mantidimaging.core.algorithms.special_imports import import_pyfits
     pyfits = import_pyfits()
     image = pyfits.open(filename)
     if len(image) < 1:
@@ -36,7 +36,7 @@ def _nxsread(filename):
 
 
 def _imread(filename):
-    from mantidimaging.core.io.loader.imports import import_skimage_io
+    from mantidimaging.core.algorithms.special_imports import import_skimage_io
     skio = import_skimage_io()
     return skio.imread(filename)
 
@@ -56,7 +56,7 @@ def supported_formats():
         skio_available = False
 
     try:
-        from mantidimaging.core.io.loader.imports import import_pyfits
+        from mantidimaging.core.algorithms.special_imports import import_pyfits
         pyfits = import_pyfits()  # noqa: F841
         pyfits_available = True
     except ImportError:

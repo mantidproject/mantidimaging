@@ -17,7 +17,7 @@ DEFAULT_NAME_POSTFIX = ''
 
 
 def write_fits(data, filename, overwrite=False):
-    from mantidimaging.core.io.loader.imports import import_pyfits
+    from mantidimaging.core.algorithms.special_imports import import_pyfits
     fits = import_pyfits()
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
@@ -25,7 +25,7 @@ def write_fits(data, filename, overwrite=False):
 
 
 def write_img(data, filename, overwrite=False):
-    from mantidimaging.core.io.loader.imports import import_skimage_io
+    from mantidimaging.core.algorithms.special_imports import import_skimage_io
     skio = import_skimage_io()
     with warnings.catch_warnings(record=True) as warn_messages:
         skio.imsave(filename, data)
