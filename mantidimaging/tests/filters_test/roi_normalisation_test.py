@@ -10,7 +10,7 @@ from mantidimaging.tests import test_helper as th
 from mantidimaging.core.filters import roi_normalisation
 
 
-class ContrastNormalisationTest(unittest.TestCase):
+class ROINormalisationTest(unittest.TestCase):
     """
     Test contrast ROI normalisation filter.
 
@@ -18,7 +18,7 @@ class ContrastNormalisationTest(unittest.TestCase):
     """
 
     def __init__(self, *args, **kwargs):
-        super(ContrastNormalisationTest, self).__init__(*args, **kwargs)
+        super(ROINormalisationTest, self).__init__(*args, **kwargs)
 
     def test_not_executed_empty_params(self):
         images, control = th.gen_img_shared_array_and_copy()
