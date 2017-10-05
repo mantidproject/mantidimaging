@@ -7,8 +7,8 @@ pipeline {
     stage('Setup') {
       steps {
         timeout(15) {
-          sh '${WORKSPACE}/buildscripts/install_anaconda_python35.sh'
-          sh '${WORKSPACE}/buildscripts/install_anaconda_python27.sh'
+          sh '${WORKSPACE}/buildscripts/install_anaconda_python35.sh -b'
+          sh '${WORKSPACE}/buildscripts/install_anaconda_python27.sh -b'
         }
       }
     }

@@ -3,10 +3,20 @@
 anaconda_dir="`pwd`"/anaconda3/
 anaconda_bin="$anaconda_dir"/bin
 anaconda_env_dir="$anaconda_dir"/envs
+anaconda_install_args=""
+
+while getopts ":b" o; do
+  case "${o}" in
+    b)
+      anaconda_install_args="-b"
+      ;;
+  esac
+done
 
 echo "Anaconda directory: $anaconda_dir"
 echo "Anaconda bin directory: $anaconda_bin"
 echo "Anaconda env directory: $anaconda_env_dir"
+echo "Anaconda installer arguments: $anaconda_install_args"
 
 py_env_name=py35
 py_env_dir="$anaconda_env_dir"/$py_env_name
@@ -20,7 +30,7 @@ then
   installer=anaconda_installer.sh
   wget https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh -O $installer
   chmod +x $installer
-  ./$installer -b -p "$anaconda_dir"
+  ./$installer -p "$anaconda_dir" "$anaconda_install_args"
   rm $installer
 else
   echo "Anaconda (Python 3) already exists in this workspace"
