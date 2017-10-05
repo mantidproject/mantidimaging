@@ -17,8 +17,7 @@ DEFAULT_NAME_POSTFIX = ''
 
 
 def write_fits(data, filename, overwrite=False):
-    from mantidimaging.core.algorithms.special_imports import import_pyfits
-    fits = import_pyfits()
+    import astropy.io.fits as fits
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
     hdulist.writeto(filename, clobber=overwrite)
