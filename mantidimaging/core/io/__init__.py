@@ -22,10 +22,11 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-# hide all of the other modules
-from . import saver  # noqa: F401
-from . import loader  # noqa: F401
-from . import utility  # noqa: F401
+from . import (  # noqa: F401
+        saver,
+        loader,
+        utility)
+
 from .loader.images import Images  # noqa: F401
 
 del absolute_import, division, print_function

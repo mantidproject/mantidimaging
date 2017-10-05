@@ -1,6 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-from .process_list import ProcessList, load, from_string  # noqa: F401
-from .executor import execute, execute_back, execute_new  # noqa: F401
+from .process_list import (  # noqa: F401
+        ProcessList,
+        load,
+        from_string)
+
+from .executor import (  # noqa: F401
+        execute,
+        execute_back,
+        execute_new)
 
 del absolute_import, division, print_function

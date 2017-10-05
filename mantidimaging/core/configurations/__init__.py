@@ -22,6 +22,9 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from . import default_filtering  # noqa: F401
-from . import default_run  # noqa: F401
-from . import process_list_run  # noqa: F401
+from . import (  # noqa: F401
+        default_filtering,
+        default_run,
+        process_list_run)
+
+del absolute_import, division, print_function
