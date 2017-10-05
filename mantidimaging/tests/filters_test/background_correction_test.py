@@ -26,7 +26,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # no dark
         background_correction.execute(images, flat[0])
-        th.assert_equals(images, control)
+        npt.assert_equal(images, control)
 
     def test_not_executed_no_flat(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -34,7 +34,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # no flat
         background_correction.execute(images, None, dark[0])
-        th.assert_equals(images, control)
+        npt.assert_equal(images, control)
 
     def test_not_executed_bad_flat(self):
         images, control = th.gen_img_shared_array_and_copy()

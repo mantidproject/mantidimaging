@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 import logging
 import unittest
 
+import numpy.testing as npt
+
 from mantidimaging.core.convert import convert
 from mantidimaging.core.io import loader
 from mantidimaging.tests.file_outputting_test_case import (
@@ -78,7 +80,7 @@ class ConvertTest(FileOutputtingTestCase):
             in_format=convert_format,
             parallel_load=parallel)
 
-        th.assert_equals(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.get_sample(), expected_images)
 
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
@@ -125,7 +127,7 @@ class ConvertTest(FileOutputtingTestCase):
             in_format=convert_format,
             parallel_load=parallel)
 
-        th.assert_equals(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.get_sample(), expected_images)
 
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
@@ -171,7 +173,7 @@ class ConvertTest(FileOutputtingTestCase):
                                     in_format=convert_format,
                                     parallel_load=parallel)
 
-        th.assert_equals(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.get_sample(), expected_images)
 
 
 if __name__ == '__main__':

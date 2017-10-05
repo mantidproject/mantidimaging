@@ -59,17 +59,6 @@ def gen_img_shared_array_with_val(val=1., shape=g_shape):
     return d
 
 
-def assert_equals(numpy_ndarray1, numpy_ndarray2):
-    """
-    Assert equality for numpy ndarrays using the numpy testing library.
-
-    :param numpy_ndarray1: The left side of the comparison
-
-    :param numpy_ndarray2: The right side of the comparison
-    """
-    npt.assert_equal(numpy_ndarray1, numpy_ndarray2)
-
-
 def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
     """
     Assert equality for numpy ndarrays using the numpy testing library.
@@ -78,7 +67,9 @@ def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
 
     :param numpy_ndarray2: The right side of the comparison
     """
-    npt.assert_raises(AssertionError, npt.assert_equal, numpy_ndarray1, numpy_ndarray2)
+    npt.assert_raises(AssertionError,
+                      npt.assert_equal,
+                      numpy_ndarray1, numpy_ndarray2)
 
 
 def deepcopy(source):
@@ -104,8 +95,8 @@ def vsdebug():
     import ptvsd
     ptvsd.enable_attach("my_secret", address=('0.0.0.0', 59003))
     print("Waiting for remote debugger at localhost:59003")
-    # Enable the below line of code only if you want the application to wait untill
-    # the debugger has attached to it
+    # Enable the below line of code only if you want the application to wait
+    # untill the debugger has attached to it
     ptvsd.wait_for_attach()
 
 
@@ -134,13 +125,17 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
+def assert_files_exist(cls, base_name, file_extension,
+                       file_extension_separator='.', single_file=True,
+                       num_images=1):
     """
     Asserts that the
-    :param cls: Must be a unittest.TestCase class, in order to use the assertTrue
+    :param cls: Must be a unittest.TestCase class, in order to use the
+                assertTrue
     :param base_name: The base name of the filename.
     :param file_extension: The expected extension
-    :param file_extension_separator: The extension separator. It should normally always be '.'
+    :param file_extension_separator: The extension separator. It should
+                                     normally always be '.'
     :param single_file: Are we looking for a 'stack' of images
     """
     import unittest

@@ -1,6 +1,7 @@
 import unittest
 
 import numpy as np
+import numpy.testing as npt
 
 import mantidimaging.tests.test_helper as th
 
@@ -138,15 +139,15 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         test_data = self.test_data.get_sample()
 
         img = self.presenter.get_image(index)
-        th.assert_equals(test_data[index], img)
+        npt.assert_equal(test_data[index], img)
 
         self.presenter.axis = 1
         img = self.presenter.get_image(index)
-        th.assert_equals(test_data[:, index, :], img)
+        npt.assert_equal(test_data[:, index, :], img)
 
         self.presenter.axis = 2
         img = self.presenter.get_image(index)
-        th.assert_equals(test_data[:, :, index], img)
+        npt.assert_equal(test_data[:, :, index], img)
 
         # make sure we reset it to default
         self.presenter.axis = 0
