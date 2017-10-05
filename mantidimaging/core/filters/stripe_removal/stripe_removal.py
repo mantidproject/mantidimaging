@@ -49,11 +49,18 @@ def methods():
     ]
 
 
+def wavelet_names():
+    return [
+        'haar', 'db5', 'sym5'
+    ]
+
+
 def execute(data, wf, ti, sf, cores=None, chunksize=None):
     """
     Execute stripe removal filters.
 
-    Multiple filters can be executed, if they are specified on the command line.
+    Multiple filters can be executed, if they are specified on the command
+    line.
 
     The order for that execution will always be: wavelett-fourier, titarenko,
     smoothing-filter.
