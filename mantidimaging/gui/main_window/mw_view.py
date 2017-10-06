@@ -106,7 +106,7 @@ class MainWindowView(Qt.QMainWindow):
 
         :param msg: Error message string
         """
-        QtWidgets.QMessageBox.critical(self, "Error", msg)
+        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
 
     def closeEvent(self, event):
         """
