@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 import sys
 
 from logging import getLogger
+
 from PyQt5 import Qt, QtCore, QtWidgets
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
@@ -46,7 +47,10 @@ class StackVisualiserView(Qt.QMainWindow):
         self.initialise_slider()
         self.initialise_image(cmap)
 
-        self.rectangle_selector = self.create_rectangle_selector(self.image_axis, 1)
+        self.roi_selector = self.create_rectangle_selector(self.image_axis, 1)
+
+        # left, top, right, bottom
+        self.roi_bounds_indicators = [None, None, None, None]
 
         self.matplotlib_layout.addWidget(self.toolbar)
         self.matplotlib_layout.addWidget(self.canvas)
@@ -160,13 +164,45 @@ class StackVisualiserView(Qt.QMainWindow):
             self.canvas_context_menu.exec_(
                     self.canvas.mapToGlobal(point_on_canvas))
 
+        # Remove the coordinate indicators
+        for i in self.roi_bounds_indicators:
+            if i:
+                i.remove()
+        self.roi_bounds_indicators = [None, None, None, None]
+
     def region_select_callback(self, eclick, erelease):
         # eclick and erelease are the press and release events
-        left, top = eclick.xdata, eclick.ydata
-        bottom, right = erelease.xdata, erelease.ydata
+        left, top = int(eclick.xdata), int(eclick.ydata)
+        right, bottom = int(erelease.xdata), int(erelease.ydata)
 
-        self.current_roi = (int(left), int(top), int(right), int(bottom))
+        self.current_roi = (left, top, right, bottom)
         getLogger(__name__).info("ROI: %i %i %i %i", *self.current_roi)
+
+        # Common options for ROI bounds indicators
+        mid = lambda lower, upper: int(lower + ((upper - lower) / 2))
+        padding = 5
+        common_kwargs = {
+            'size': 'large',
+            'color': 'r'
+        }
+
+        # Add ROI bounds indicators
+        self.roi_bounds_indicators[0] = self.image_axis.annotate(
+                str(left), (left - padding, mid(top, bottom)),
+                horizontalalignment='right', verticalalignment='center',
+                **common_kwargs)
+        self.roi_bounds_indicators[1] = self.image_axis.annotate(
+                str(top), (mid(left, right), top - padding),
+                horizontalalignment='center', verticalalignment='bottom',
+                **common_kwargs)
+        self.roi_bounds_indicators[2] = self.image_axis.annotate(
+                str(right), (right + padding, mid(top, bottom)),
+                horizontalalignment='left', verticalalignment='center',
+                **common_kwargs)
+        self.roi_bounds_indicators[3] = self.image_axis.annotate(
+                str(bottom), (mid(left, right), bottom + padding),
+                horizontalalignment='center', verticalalignment='top',
+                **common_kwargs)
 
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
