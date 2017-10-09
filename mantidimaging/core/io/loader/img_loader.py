@@ -15,7 +15,8 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
-            img_format, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms):
+            img_format, data_dtype, cores, chunksize, parallel_load, indices,
+            construct_sinograms):
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -45,8 +46,9 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     img_shape = first_sample_img.shape
 
     # forward all arguments to internal class for easy re-usage
-    l = ImageLoader(load_func, input_file_names, input_path_flat, input_path_dark,
-                    img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms)
+    l = ImageLoader(load_func, input_file_names, input_path_flat,
+                    input_path_dark, img_format, img_shape, data_dtype, cores,
+                    chunksize, parallel_load, indices, construct_sinograms)
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
@@ -56,7 +58,8 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
     sample_data = l.load_sample_data(input_file_names)
 
-    # if this is true, then the loaded sample data was created via the stack_loader
+    # if this is true, then the loaded sample data was created via the
+    # stack_loader
     if isinstance(sample_data, Images):
         sample_data = sample_data.get_sample()
 
@@ -64,8 +67,9 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
 
 class ImageLoader(object):
-    def __init__(self, load_func, input_file_names, input_path_flat, input_path_dark,
-                 img_format, img_shape, data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms):
+    def __init__(self, load_func, input_file_names, input_path_flat,
+                 input_path_dark, img_format, img_shape, data_dtype, cores,
+                 chunksize, parallel_load, indices, construct_sinograms):
         self.load_func = load_func
         self.input_file_names = input_file_names
         self.input_path_flat = input_path_flat
@@ -81,9 +85,11 @@ class ImageLoader(object):
 
     def load_sample_data(self, input_file_names):
         # determine what the loaded data was
-        if len(self.img_shape) == 2:  # the loaded file was a single image
+        if len(self.img_shape) == 2:
+            # the loaded file was a single image
             sample_data = self.load_files(input_file_names, "Sample")
-        elif len(self.img_shape) == 3:  # the loaded file was a file containing a stack of images
+        elif len(self.img_shape) == 3:
+            # the loaded file was a file containing a stack of images
             sample_data = stack_loader.execute(
                 self.load_func, input_file_names[0], self.data_dtype, "Sample",
                 self.cores, self.chunksize, self.parallel_load, self.indices)
@@ -110,10 +116,12 @@ class ImageLoader(object):
                 raise ValueError(
                     "An image has different width and/or height dimensions! "
                     "All images must have the same dimensions. "
-                    "Expected dimensions: {0} Error message: {1}".format(self.img_shape, exc))
+                    "Expected dimensions: {0} Error message: {1}".format(
+                        self.img_shape, exc))
             except IOError as exc:
-                raise RuntimeError("Could not load file {0}. Error details: {1}".
-                                   format(in_file, exc))
+                raise RuntimeError(
+                        "Could not load file {0}. Error details: {1}".format(
+                            in_file, exc))
         h.prog_close()
 
         return data
@@ -128,10 +136,12 @@ class ImageLoader(object):
                 raise ValueError(
                     "An image has different width and/or height dimensions! "
                     "All images must have the same dimensions. "
-                    "Expected dimensions: {0} Error message: {1}".format(self.img_shape, exc))
+                    "Expected dimensions: {0} Error message: {1}".format(
+                        self.img_shape, exc))
             except IOError as exc:
-                raise RuntimeError("Could not load file {0}. Error details: {1}".
-                                   format(in_file, exc))
+                raise RuntimeError(
+                        "Could not load file {0}. Error details: {1}".format(
+                            in_file, exc))
         h.prog_close()
 
         return data
@@ -157,9 +167,13 @@ class ImageLoader(object):
 
     def allocate_data(self, num_images):
         if self.construct_sinograms:
-            return pu.create_shared_array((self.img_shape[0], num_images, self.img_shape[1]), dtype=self.data_dtype)
+            return pu.create_shared_array(
+                    (self.img_shape[0], num_images, self.img_shape[1]),
+                    dtype=self.data_dtype)
         else:
-            return pu.create_shared_array((num_images, self.img_shape[0], self.img_shape[1]), dtype=self.data_dtype)
+            return pu.create_shared_array(
+                    (num_images, self.img_shape[0], self.img_shape[1]),
+                    dtype=self.data_dtype)
 
 
 def _inplace_load(data, filename, load_func=None):
