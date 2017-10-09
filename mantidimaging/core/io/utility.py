@@ -5,6 +5,8 @@ import itertools
 import os
 import re
 
+from logging import getLogger
+
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
 SIMILAR_FILE_EXTENSIONS = (
@@ -64,11 +66,10 @@ def get_file_names(path, img_format, prefix=''):
 
     :return: All the file names, sorted by ascending
     """
+    log = getLogger(__name__)
 
     path = os.path.abspath(os.path.expanduser(path))
     extensions = get_candidate_file_extensions(img_format)
-
-    # TODO: could do with some logging here
 
     for ext in extensions:
         files_match = glob.glob(
@@ -82,9 +83,11 @@ def get_file_names(path, img_format, prefix=''):
             "Could not find any image files in '{0}' with extensions: {1}".format(
                 path, extensions))
 
-    # this is a necessary step, otherwise the file order is not guaranteed to
+    # This is a necessary step, otherwise the file order is not guaranteed to
     # be sequential and we get randomly ordered stack of names
     files_match.sort(key=_alphanum_key_split)
+
+    log.debug('Found files: {}'.format(files_match))
 
     return files_match
 
