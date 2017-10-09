@@ -7,57 +7,26 @@ import numpy.testing as npt
 from mantidimaging import helper as h
 from mantidimaging.tests import test_helper as th
 
-from mantidimaging.core.filters import median_filter
+from mantidimaging.core.filters import minus_log
 
 
-class MedianTest(unittest.TestCase):
+class MinusLogTest(unittest.TestCase):
     """
-    Test median filter.
+    Test minus log filter.
 
     Tests return value and in-place modified data.
     """
 
     def __init__(self, *args, **kwargs):
-        super(MedianTest, self).__init__(*args, **kwargs)
+        super(MinusLogTest, self).__init__(*args, **kwargs)
 
-    def test_not_executed(self):
+    def test_no_execute(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        size = None
-        mode = None
-
-        result = median_filter.execute(images, size, mode)
+        result = minus_log.execute(images, minus_log=False)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
-
-    def test_executed_no_helper_parallel(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-
-        result = median_filter.execute(images, size, mode)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
-
-    def test_executed_no_helper_seq(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-
-        th.switch_mp_off()
-        result = median_filter.execute(images, size, mode)
-        th.switch_mp_on()
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_memory_change_acceptable(self):
         """
@@ -73,12 +42,10 @@ class MedianTest(unittest.TestCase):
         This will still capture if the data is doubled, which is the main goal.
         """
         images, control = th.gen_img_shared_array_and_copy()
-        size = 3
-        mode = 'reflect'
 
         cached_memory = h.get_memory_usage_linux(kb=True)[0]
 
-        result = median_filter.execute(images, size, mode)
+        result = minus_log.execute(images, minus_log=True)
 
         self.assertLess(
             h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

@@ -5,11 +5,18 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.core.filters import background_correction
 from mantidimaging.tests import test_helper as th
+
+from mantidimaging.core.filters import background_correction
 
 
 class BackgroundCorrectionTest(unittest.TestCase):
+    """
+    Test background correction filter.
+
+    Tests return value and in-place modified data.
+    """
+
     def __init__(self, *args, **kwargs):
         super(BackgroundCorrectionTest, self).__init__(*args, **kwargs)
 
@@ -18,14 +25,18 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # empty params
         result = background_correction.execute(images)
+
         npt.assert_equal(result, control)
+        npt.assert_equal(images, control)
 
     def test_not_executed_no_dark(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
 
         # no dark
-        background_correction.execute(images, flat[0])
+        result = background_correction.execute(images, flat[0])
+
+        npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
     def test_not_executed_no_flat(self):
@@ -33,7 +44,9 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # no flat
-        background_correction.execute(images, None, dark[0])
+        result = background_correction.execute(images, None, dark[0])
+
+        npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
     def test_not_executed_bad_flat(self):
@@ -54,9 +67,6 @@ class BackgroundCorrectionTest(unittest.TestCase):
         npt.assert_raises(ValueError, background_correction.execute, images,
                           flat, dark[0])
 
-    # def test_real_result_par(self):
-    #     self.do_real_result()
-
     def test_real_result(self):
         th.switch_mp_off()
         self.do_real_result()
@@ -75,8 +85,12 @@ class BackgroundCorrectionTest(unittest.TestCase):
         expected = np.full(sample.shape, 20.)
 
         # we dont want anything to be cropped out
-        res = background_correction.execute(sample, flat, dark, clip_max=20)
-        npt.assert_almost_equal(res, expected, 7)
+        result = background_correction.execute(sample, flat, dark, clip_max=20)
+
+        npt.assert_almost_equal(result, expected, 7)
+        npt.assert_almost_equal(sample, expected, 7)
+
+        npt.assert_equal(result, sample)
 
     def test_clip_works(self):
         # the calculation here was designed on purpose to have a value
@@ -91,8 +105,12 @@ class BackgroundCorrectionTest(unittest.TestCase):
         expected = np.full(sample.shape, 3.)
 
         # we dont want anything to be cropped out
-        res = background_correction.execute(sample, flat, dark)
-        npt.assert_equal(res, expected)
+        result = background_correction.execute(sample, flat, dark)
+
+        npt.assert_equal(result, expected)
+        npt.assert_equal(sample, expected)
+
+        npt.assert_equal(result, sample)
 
 
 if __name__ == '__main__':
