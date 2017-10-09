@@ -10,22 +10,6 @@ from __future__ import absolute_import, division, print_function
 import sys
 
 
-def import_pyfits():
-    try:
-        import pyfits
-    except ImportError:
-        # In Anaconda python, the pyfits package is in a different place,
-        # and this is what you frequently find on windows.
-        try:
-            import astropy.io.fits as pyfits
-        except ImportError:
-            raise ImportError(
-                "Cannot find the package 'pyfits' which is required to "
-                "read/write FITS image files")
-
-    return pyfits
-
-
 def import_skimage_io():
     """
     To import skimage io only when it is/can be used

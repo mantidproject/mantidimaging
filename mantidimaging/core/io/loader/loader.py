@@ -16,9 +16,8 @@ def _fitsread(filename):
     :param filename :: name of the image file, can be relative or absolute path
     :param img_format: format of the image ('fits')
     """
-    from mantidimaging.core.algorithms.special_imports import import_pyfits
-    pyfits = import_pyfits()
-    image = pyfits.open(filename)
+    import astropy.io.fits as fits
+    image = fits.open(filename)
     if len(image) < 1:
         raise RuntimeError(
             "Could not load at least one FITS image/table file from: {0}".
@@ -56,15 +55,14 @@ def supported_formats():
         skio_available = False
 
     try:
-        from mantidimaging.core.algorithms.special_imports import import_pyfits
-        pyfits = import_pyfits()  # noqa: F841
-        pyfits_available = True
+        import astropy.io.fits as fits  # noqa: F401
+        fits_available = True
     except ImportError:
-        pyfits_available = False
+        fits_available = False
 
     avail_list = \
         (['nxs'] if h5nxs_available else []) + \
-        (['fits', 'fit'] if pyfits_available else []) + \
+        (['fits', 'fit'] if fits_available else []) + \
         (['tif', 'tiff', 'png', 'jpg'] if skio_available else [])
 
     return avail_list
