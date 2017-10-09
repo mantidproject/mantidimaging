@@ -18,14 +18,14 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertEquals(self.model.stack_names(),
                           [])
 
-    def test_create_title_no_stacks_loaded(self):
+    def test_create_name_no_stacks_loaded(self):
         # Mock the stack list function (this depends on Qt)
         self.model.stack_list = mock.MagicMock(return_value=[])
 
-        self.assertEquals(self.model.create_title("test"),
+        self.assertEquals(self.model.create_name("test"),
                           "test")
 
-    def test_create_title_one_duplicate_stack_loaded(self):
+    def test_create_name_one_duplicate_stack_loaded(self):
         # Mock the stack list function (this depends on Qt)
         self.model.stack_list = mock.MagicMock(return_value=[
             ('aaa', 'test')
@@ -35,10 +35,10 @@ class MainWindowModelTest(unittest.TestCase):
         # when returning stack lists)
         self.model.active_stacks = [0]
 
-        self.assertEquals(self.model.create_title("test"),
+        self.assertEquals(self.model.create_name("test"),
                           "test_2")
 
-    def test_create_title_multiple_duplicate_stacks_loaded(self):
+    def test_create_name_multiple_duplicate_stacks_loaded(self):
         # Mock the stack list function (this depends on Qt)
         self.model.stack_list = mock.MagicMock(return_value=[
             ('aaa', 'test'),
@@ -50,14 +50,14 @@ class MainWindowModelTest(unittest.TestCase):
         # when returning stack lists)
         self.model.active_stacks = [0]
 
-        self.assertEquals(self.model.create_title("test"),
+        self.assertEquals(self.model.create_name("test"),
                           "test_4")
 
-    def test_create_title_strips_extension(self):
+    def test_create_name_strips_extension(self):
         # Mock the stack list function (this depends on Qt)
         self.model.stack_list = mock.MagicMock(return_value=[])
 
-        self.assertEquals(self.model.create_title("test.tif"),
+        self.assertEquals(self.model.create_name("test.tif"),
                           "test")
 
 
