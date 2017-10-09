@@ -77,6 +77,38 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 7)
         self.assertEquals(p.completion(), 1.0)
 
+    def test_multi_step_early_completion(self):
+        # Default to estimating a single step
+        p = Progress()
+
+        self.assertEquals(p.end_step, 2)
+        self.assertEquals(len(p.progress_history), 1)
+        self.assertEquals(p.completion(), 0.0)
+
+        p.update(msg='Estimate how complex I am')
+
+        self.assertEquals(p.end_step, 2)
+        self.assertEquals(len(p.progress_history), 2)
+        self.assertEquals(p.completion(), 0.5)
+
+        # First step to execute may decide that more steps are required
+        p.set_estimated_steps(10)
+
+        self.assertEquals(p.end_step, 11)
+        self.assertEquals(len(p.progress_history), 2)
+        self.assertEquals(p.completion(), 0.091)
+
+        p.update(steps=2, msg='Do two things')
+
+        self.assertEquals(len(p.progress_history), 3)
+        self.assertEquals(p.completion(), 0.273)
+
+        # Finish early
+        p.mark_complete()
+
+        self.assertEquals(len(p.progress_history), 4)
+        self.assertEquals(p.completion(), 1.0)
+
     def test_callbacks(self):
         mock = th.import_mock()
 
@@ -113,6 +145,25 @@ class ProgressTest(unittest.TestCase):
 
         p.mark_complete()
         assert_call(1.0, 6, 'complete')
+
+    def test_context(self):
+        p = Progress()
+
+        self.assertFalse(p.is_started())
+        self.assertFalse(p.is_completed())
+        self.assertEquals(len(p.progress_history), 1)
+        self.assertEquals(p.completion(), 0.0)
+
+        with p:
+            p.update(msg='do a thing')
+
+            self.assertTrue(p.is_started())
+            self.assertEquals(len(p.progress_history), 2)
+            self.assertEquals(p.completion(), 0.5)
+
+        self.assertTrue(p.is_completed())
+        self.assertEquals(len(p.progress_history), 3)
+        self.assertEquals(p.completion(), 1.0)
 
 
 if __name__ == '__main__':

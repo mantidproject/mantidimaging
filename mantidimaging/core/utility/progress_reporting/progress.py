@@ -56,6 +56,12 @@ class Progress(object):
     def __str__(self):
         return 'Progress(\n{})'.format('\n'.join(self.progress_history))
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.mark_complete()
+
     def is_started(self):
         """
         Checks if the task has been started.
@@ -138,14 +144,15 @@ class Progress(object):
             for cb in self.progress_callbacks:
                 cb(**cb_args)
 
-    def mark_complete(self):
+    def mark_complete(self, msg='complete'):
         """
         Marks the task as completed.
         """
         log = getLogger(__name__)
 
         self.complete = True
-        self.update(msg='complete')
+        self.update(msg=msg)
+        self.end_step = self.current_step
 
         # Log elapsed time and final memory usage
         log.info("Elapsed time: %d sec.", self.execution_time())
