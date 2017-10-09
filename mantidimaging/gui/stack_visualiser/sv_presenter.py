@@ -60,6 +60,12 @@ class StackVisualiserPresenter(object):
         """
         self.view.show_histogram_of_current_image(new_window=True)
 
+    def do_clear_roi(self):
+        """
+        Clears the active ROI selection.
+        """
+        self.view.deselect_current_roi()
+
     def delete_data(self):
         del self.images
 

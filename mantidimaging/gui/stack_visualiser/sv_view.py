@@ -70,8 +70,23 @@ class StackVisualiserView(Qt.QMainWindow):
         self.canvas.rectanglecolor = QtCore.Qt.yellow
         self.canvas.setParent(self)
 
-        # connect an event that will clear the ROI if the user clicks but does not drag a new ROI rectangle
-        self.canvas.mpl_connect('button_press_event', self.remove_any_selected_roi)
+        # Create context menu
+        self.canvas_context_menu = Qt.QMenu(self)
+
+        def add_context_menu_action(text, func):
+            action = Qt.QAction(text, self.canvas)
+            action.triggered.connect(func)
+            self.canvas_context_menu.addAction(action)
+
+        # Add context menu items
+        add_context_menu_action("Clear ROI", self.presenter.do_clear_roi)
+        add_context_menu_action("Show Histogram", self.presenter.do_histogram)
+        add_context_menu_action(
+                "Show Histogram in new window",
+                self.presenter.do_new_window_histogram)
+
+        # Register mouse release callback
+        self.canvas.mpl_connect('button_press_event', self.on_button_press)
 
         self.canvas.mpl_connect('scroll_event', self. handle_canvas_scroll_wheel)
 
@@ -108,10 +123,17 @@ class StackVisualiserView(Qt.QMainWindow):
         elif event.button == 'down':
             self.presenter.notify(StackWindowNotification.SCROLL_DOWN)
 
-    def remove_any_selected_roi(self, event):
+    def deselect_current_roi(self):
+        self.current_roi = None
+        self.rectangle_selector.extents = (0, 0, 0, 0)
+
+    def on_button_press(self, event):
         """
-        This removes the previously selected ROI. This function is called on a single
-        button click and 2 things can happen:
+        Handles mouse button release events.
+
+        On left click (mouse button 1) this removes the previously selected
+        ROI. This function is called on a single button click and 2 things can
+        happen:
 
         - If a rectangle selection is present and the user just single clicked, the ROI will be kept,
           because region_select_callback will be called afterwards
@@ -123,8 +145,20 @@ class StackVisualiserView(Qt.QMainWindow):
         and then the rectangle selector callback.
         This might be a wrong assumption which could cause weird plotting issues. For now I have not seen an issue and
         the order seems to always be correct
+
+        On right click (mouse button 2) this opens the context menu.
         """
-        self.current_roi = None
+        if event.button == 1:
+            self.current_roi = None
+
+        if event.button == 3:
+            # Get the mouse position on the canvas widget, converting from
+            # figure space to Qt space
+            point_on_canvas = Qt.QPoint(
+                    event.x, self.canvas.get_width_height()[1] - event.y)
+            # Show the context menu at (or near to) the mouse position
+            self.canvas_context_menu.exec_(
+                    self.canvas.mapToGlobal(point_on_canvas))
 
     def region_select_callback(self, eclick, erelease):
         # eclick and erelease are the press and release events
@@ -132,8 +166,7 @@ class StackVisualiserView(Qt.QMainWindow):
         bottom, right = erelease.xdata, erelease.ydata
 
         self.current_roi = (int(left), int(top), int(right), int(bottom))
-        region = "%i %i %i %i" % self.current_roi
-        getLogger(__name__).info(region)
+        getLogger(__name__).info("ROI: %i %i %i %i", *self.current_roi)
 
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
