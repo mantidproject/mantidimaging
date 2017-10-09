@@ -9,6 +9,16 @@ from mantidimaging.core.utility.memory_usage import (
         get_memory_usage_linux_str)
 
 
+class ProgressHandler(object):
+
+    def __init__(self):
+        self.progress = None
+
+    def update(self):
+        raise NotImplementedError(
+                "Need to implement this method in the child class")
+
+
 class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
@@ -20,7 +30,12 @@ class Progress(object):
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.
         """
-        return p if p is not None else Progress(*args, **kwargs)
+        if not p:
+            p = Progress(*args, **kwargs)
+            from .console_progress_bar import ConsoleProgressBar
+            p.add_progress_handler(ConsoleProgressBar())
+
+        return p
 
     def __init__(self, num_steps=1, task_name='Task'):
         self.task_name = task_name
@@ -42,8 +57,8 @@ class Progress(object):
         # Lock used to synchronise modifications to the progress state
         self.lock = threading.Lock()
 
-        # Functions that are called when the progress is updated
-        self.progress_callbacks = []
+        # Handers that receive notifications when progress updates occur
+        self.progress_handlers = []
 
         # Add initial step to history
         self.update(0, 'init')
@@ -109,8 +124,17 @@ class Progress(object):
         """
         self.end_step += num_steps
 
-    def attach_callback(self, cb):
-        self.progress_callbacks.append(cb)
+    def add_progress_handler(self, handler):
+        """
+        Adds a hander to receiver progress updates.
+        :param handler: Instance of a progress handler
+        """
+        if not isinstance(handler, ProgressHandler):
+            raise ValueError(
+                    "Progress handlers must be of type ProgressHandler")
+
+        self.progress_handlers.append(handler)
+        handler.progress = self
 
     def update(self, steps=1, msg=''):
         """
@@ -140,16 +164,9 @@ class Progress(object):
                   self.end_step)
 
         # Process progress callbacks
-        if len(self. progress_callbacks) != 0:
-            # Collect arguments for progress callback functions
-            cb_args = {
-                    'completion': self.completion(),
-                    'step_details': step_details
-                    }
-
-            # Fire progress callbacks
-            for cb in self.progress_callbacks:
-                cb(**cb_args)
+        if len(self.progress_handlers) != 0:
+            for cb in self.progress_handlers:
+                cb.update()
 
     def mark_complete(self, msg='complete'):
         """

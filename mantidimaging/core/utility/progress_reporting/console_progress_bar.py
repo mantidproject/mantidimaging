@@ -1,29 +1,39 @@
 from __future__ import (absolute_import, division, print_function)
 
-from logging import getLogger
+import sys
+
+from .progress import ProgressHandler
 
 
-class ConsoleProgressBar(object):
+def _print_ascii_progress_bar(progress, bar_len, prefix='', suffix=''):
+    filled_len = int(round(bar_len * progress))
 
-    def __init__(self, parent_progress, ascii_bar=False):
-        log = getLogger(__name__)
+    if prefix:
+        prefix = prefix + ': '
 
-        msg = 'Progress'
-        total = parent_progress.end_step
+    bar = '{}[{}{}]{}'.format(
+            prefix,
+            '=' * filled_len,
+            '-' * (bar_len - filled_len),
+            suffix)
 
-        try:
-            from tqdm import tqdm
-            self.progress_bar = tqdm(total=total, desc=msg, ascii=ascii_bar)
-        except ImportError:
-            try:
-                from custom_timer import CustomTimer
-                self.progress_bar = CustomTimer(total, msg)
-            except ImportError:
-                self.progress_bar = None
-                log.error('Failed to initialise progress bar')
+    print(bar, end='\r')
+    sys.stdout.flush()
 
-    def close(self):
-        self.progress_bar.close()
 
-    def update(self, value):
-        self.progress_bar.update(value)
+class ConsoleProgressBar(ProgressHandler):
+
+    def __init__(self, width=70):
+        super(ConsoleProgressBar, self).__init__()
+        self.width = width
+
+    def update(self):
+        suffix = '{}/{}'.format(self.progress.current_step,
+                                self.progress.end_step)
+
+        _print_ascii_progress_bar(
+                self.progress.completion(), self.width,
+                self.progress.task_name, suffix)
+
+        if self.progress.is_completed():
+            print()

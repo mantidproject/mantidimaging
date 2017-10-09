@@ -4,7 +4,8 @@ import unittest
 
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.progress_reporting import (
+        Progress, ProgressHandler)
 
 
 class ProgressTest(unittest.TestCase):
@@ -144,24 +145,18 @@ class ProgressTest(unittest.TestCase):
     def test_callbacks(self):
         mock = import_mock()
 
-        cb1 = mock.MagicMock()
-        cb2 = mock.MagicMock()
+        cb1 = mock.create_autospec(ProgressHandler)
+        cb2 = mock.create_autospec(ProgressHandler)
         callbacks = [cb1, cb2]
 
         def assert_call(expected_completion, expected_step, expected_msg):
             for m in callbacks:
-                m.assert_called_once()
-
-                _, kwargs = m.call_args
-                self.assertEquals(kwargs['completion'], expected_completion)
-                self.assertEquals(kwargs['step_details'][1], expected_step)
-                self.assertEquals(kwargs['step_details'][2], expected_msg)
-
+                m.update.assert_called_once()
                 m.reset_mock()
 
         p = Progress(5)
-        p.attach_callback(cb1)
-        p.attach_callback(cb2)
+        p.add_progress_handler(cb1)
+        p.add_progress_handler(cb2)
 
         p.update(msg='First')
         assert_call(0.167, 1, 'First')
