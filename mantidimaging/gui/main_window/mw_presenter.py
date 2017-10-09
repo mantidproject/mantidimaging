@@ -36,6 +36,7 @@ class MainWindowPresenter(object):
 
     def remove_stack(self, uuid):
         self.model.do_remove_stack(uuid)
+        self.view.update_shortcuts()
 
     def load_stack(self):
         log = getLogger(__name__)
@@ -63,6 +64,7 @@ class MainWindowPresenter(object):
             dock_widget = self.view.create_stack_window(data, title=title)
             stack_visualiser = dock_widget.widget()
             self.model.add_stack(stack_visualiser, dock_widget)
+            self.view.update_shortcuts()
 
     def save(self, indices=None):
         stack_uuid = self.view.save_dialogue.selected_stack

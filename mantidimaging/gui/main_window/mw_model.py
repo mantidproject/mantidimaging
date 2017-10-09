@@ -57,7 +57,7 @@ class MainWindowModel(object):
 
     def stack_names(self):
         # unpacks the tuple and only gives the correctly sorted human readable names
-        return zip(*self.stack_list())[1]
+        return list(zip(*self.stack_list()))[1] if self.active_stacks else []
 
     def add_stack(self, stack_visualiser, dock_widget):
         # generate unique ID for this stack
