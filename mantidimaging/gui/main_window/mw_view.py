@@ -27,6 +27,8 @@ class MainWindowView(Qt.QMainWindow):
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
 
+        self.update_shortcuts()
+
     def setup_shortcuts(self):
         self.actionLoad.setShortcut('F1')
         self.actionLoad.triggered.connect(self.show_load_dialogue)
@@ -36,6 +38,9 @@ class MainWindowView(Qt.QMainWindow):
 
         self.actionExit.setShortcut('Ctrl+Q')
         self.actionExit.triggered.connect(Qt.qApp.quit)
+
+    def update_shortcuts(self):
+        self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
@@ -106,7 +111,7 @@ class MainWindowView(Qt.QMainWindow):
 
         :param msg: Error message string
         """
-        QtWidgets.QMessageBox.critical(self, "Error", msg)
+        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
 
     def closeEvent(self, event):
         """

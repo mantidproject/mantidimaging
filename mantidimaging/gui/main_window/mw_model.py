@@ -26,9 +26,11 @@ class MainWindowModel(object):
 
         return images
 
-    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, indices):
-        self.get_stack_visualiser(stack_uuid).apply_to_data(
-            saver.save,
+    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format,
+                  overwrite, swap_axes, indices):
+        svp = self.get_stack_visualiser(stack_uuid).presenter
+        saver.save(
+            data=svp.images.get_sample(),
             output_dir=output_dir,
             name_prefix=name_prefix,
             swap_axes=swap_axes,
@@ -55,7 +57,7 @@ class MainWindowModel(object):
 
     def stack_names(self):
         # unpacks the tuple and only gives the correctly sorted human readable names
-        return zip(*self.stack_list())[1]
+        return list(zip(*self.stack_list()))[1] if self.active_stacks else []
 
     def add_stack(self, stack_visualiser, dock_widget):
         # generate unique ID for this stack
