@@ -53,6 +53,13 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertEquals(self.model.create_title("test"),
                           "test_4")
 
+    def test_create_title_strips_extension(self):
+        # Mock the stack list function (this depends on Qt)
+        self.model.stack_list = mock.MagicMock(return_value=[])
+
+        self.assertEquals(self.model.create_title("test.tif"),
+                          "test")
+
 
 if __name__ == '__main__':
     unittest.main()

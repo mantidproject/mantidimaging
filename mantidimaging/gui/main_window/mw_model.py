@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 
+import os
 import uuid
 
 from logging import getLogger
@@ -39,8 +40,11 @@ class MainWindowModel(object):
             indices=indices)
 
     def create_title(self, filename):
-        name = filename
+        # Avoid file extensions in names
+        filename = os.path.splitext(filename)[0]
 
+        # Avoid duplicate names
+        name = filename
         current_names = self.stack_names()
         num = 1
         while name in current_names:
