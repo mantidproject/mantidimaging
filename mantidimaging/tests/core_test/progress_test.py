@@ -11,7 +11,7 @@ class ProgressTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(ProgressTest, self).__init__(*args, **kwargs)
 
-    def test_basic_single_setp(self):
+    def test_basic_single_step(self):
         p = Progress()
 
         self.assertFalse(p.is_started())
@@ -93,6 +93,38 @@ class ProgressTest(unittest.TestCase):
 
         # First step to execute may decide that more steps are required
         p.set_estimated_steps(10)
+
+        self.assertEquals(p.end_step, 11)
+        self.assertEquals(len(p.progress_history), 2)
+        self.assertEquals(p.completion(), 0.091)
+
+        p.update(steps=2, msg='Do two things')
+
+        self.assertEquals(len(p.progress_history), 3)
+        self.assertEquals(p.completion(), 0.273)
+
+        # Finish early
+        p.mark_complete()
+
+        self.assertEquals(len(p.progress_history), 4)
+        self.assertEquals(p.completion(), 1.0)
+
+    def test_multi_step_step_increments(self):
+        # Default to estimating a single step
+        p = Progress()
+
+        self.assertEquals(p.end_step, 2)
+        self.assertEquals(len(p.progress_history), 1)
+        self.assertEquals(p.completion(), 0.0)
+
+        p.update(msg='Estimate how complex I am')
+
+        self.assertEquals(p.end_step, 2)
+        self.assertEquals(len(p.progress_history), 2)
+        self.assertEquals(p.completion(), 0.5)
+
+        # First step to execute may decide that more steps are required
+        p.add_estimated_steps(9)
 
         self.assertEquals(p.end_step, 11)
         self.assertEquals(len(p.progress_history), 2)

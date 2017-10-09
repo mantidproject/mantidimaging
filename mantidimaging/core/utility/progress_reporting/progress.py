@@ -102,6 +102,13 @@ class Progress(object):
         """
         self.end_step = num_steps + 1
 
+    def add_estimated_steps(self, num_steps):
+        """
+        Increments the number of steps this task is expected to take to
+        complete.
+        """
+        self.end_step += num_steps
+
     def attach_callback(self, cb):
         self.progress_callbacks.append(cb)
 
