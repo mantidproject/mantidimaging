@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.tools import importer
+from mantidimaging.core.utility.progress_reporting import Progress
 
 OUTLIERS_DARK = 'dark'
 OUTLIERS_BRIGHT = 'bright'
@@ -44,7 +44,7 @@ def modes():
 
 
 def execute(data, diff, radius=_default_radius, mode=_default_mode,
-            cores=None):
+            cores=None, progress=None):
     """
     Requires tomopy to be available.
 
@@ -61,25 +61,25 @@ def execute(data, diff, radius=_default_radius, mode=_default_mode,
 
     :return: The processed 3D numpy.ndarray
     """
+    progress = Progress.ensure_instance(progress)
 
     if diff and radius and diff > 0 and radius > 0:
-        h.pstart("Applying outliers with threshold: {0} and radius {1}".format(
-            diff, radius))
+        with progress:
+            progress.update(msg="Applying outliers with threshold: {0} and "
+                                "radius {1}".format(diff, radius))
 
-        # we flip the histogram horizontally,
-        # this makes the darkest pixels the brightest
-        if mode == OUTLIERS_DARK:
-            np.negative(data, out=data)
+            # we flip the histogram horizontally, this makes the darkest pixels
+            # the brightest
+            if mode == OUTLIERS_DARK:
+                np.negative(data, out=data)
 
-        tomopy = importer.do_importing('tomopy')
+            tomopy = importer.do_importing('tomopy')
 
-        data = tomopy.misc.corr.remove_outlier(data, diff, radius, ncore=cores)
+            data = tomopy.misc.corr.remove_outlier(
+                    data, diff, radius, ncore=cores)
 
-        # reverse the inversion
-        if mode == OUTLIERS_DARK:
-            np.negative(data, out=data)
-
-        h.pstop("Finished outliers step, with pixel data type: {0}.".format(
-            data.dtype))
+            # reverse the inversion
+            if mode == OUTLIERS_DARK:
+                np.negative(data, out=data)
 
     return data

@@ -1,8 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
-from mantidimaging import helper as h
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 from .images import Images
 
 
@@ -17,7 +17,7 @@ def parallel_move_data(input_data, output_data):
     output_data[:] = input_data[:]
 
 
-def do_stack_load_seq(data, new_data, img_shape, name):
+def do_stack_load_seq(data, new_data, img_shape, name, progress):
     """
     Sequential version of loading the data.
     This performs faster locally, but parallel performs faster on SCARF
@@ -28,17 +28,21 @@ def do_stack_load_seq(data, new_data, img_shape, name):
     :param name: Name for the loading bar
     :return: the loaded data
     """
-    h.prog_init(img_shape[0], name)
-    for i in range(img_shape[0]):
-        data[i] = new_data[i]
-        h.prog_update()
-    h.prog_close()
+    progress = Progress.ensure_instance(progress)
+
+    with progress:
+        progress.add_estimated_steps(img_shape[0])
+
+        for i in range(img_shape[0]):
+            data[i] = new_data[i]
+            progress.update(msg=name)
+
     return data
 
 
-def do_stack_load_par(data, new_data, cores, chunksize, name):
+def do_stack_load_par(data, new_data, cores, chunksize, name, progress):
     f = ptsm.create_partial(parallel_move_data, fwd_function=ptsm.inplace)
-    ptsm.execute(new_data, data, f, cores, chunksize, name)
+    ptsm.execute(new_data, data, f, cores, chunksize, name, progress)
     return data
 
 
@@ -49,7 +53,8 @@ def execute(load_func,
             cores=None,
             chunksize=None,
             parallel_load=False,
-            indices=None):
+            indices=None,
+            progress=None):
     """
     Load a single image FILE that is expected to be a stack of images.
 
@@ -87,11 +92,12 @@ def execute(load_func,
     data = pu.create_shared_array(img_shape, dtype=dtype)
 
     if parallel_load:
-        data = do_stack_load_par(data, new_data, cores, chunksize, name)
+        data = do_stack_load_par(
+                data, new_data, cores, chunksize, name, progress)
     else:
         # we could just move with data[:] = new_data[:] but then we don't get
         # loading bar information, and I doubt there's any performance gain
-        data = do_stack_load_seq(data, new_data, img_shape, name)
+        data = do_stack_load_seq(data, new_data, img_shape, name, progress)
 
     # Nexus doesn't load flat/dark images yet, if the functionality is
     # requested it should be changed here

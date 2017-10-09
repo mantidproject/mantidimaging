@@ -3,8 +3,8 @@ from __future__ import (absolute_import, division, print_function)
 from functools import partial
 from multiprocessing import Pool
 
-from mantidimaging.core.algorithms.progress_reporting import Progress
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place

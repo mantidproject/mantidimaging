@@ -1,8 +1,13 @@
 from __future__ import (absolute_import, division, print_function)
+
+from logging import getLogger
+
 import numpy as np
+
 from mantidimaging import helper as h
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -21,7 +26,7 @@ def _cli_register(parser):
     return parser
 
 
-def execute(data, air_region, cores=None, chunksize=None):
+def execute(data, air_region, cores=None, chunksize=None, progress=None):
     """
     Normalise by beam intensity.
 
@@ -32,8 +37,9 @@ def execute(data, air_region, cores=None, chunksize=None):
 
     :param data: Sample data which is to be processed. Expected in radiograms
 
-    :param air_region: The order is - Left Top Right Bottom. The air region from which sums will be
-                       calculated and all images will be normalised.
+    :param air_region: The order is - Left Top Right Bottom. The air region
+                       from which sums will be calculated and all images will
+                       be normalised.
 
     :param cores: The number of cores that will be used to process the data.
 
@@ -49,9 +55,9 @@ def execute(data, air_region, cores=None, chunksize=None):
         assert all(isinstance(region, int) for region in
                    air_region), "The air region coordinates are not integers!"
         if pu.multiprocessing_available():
-            data = _execute_par(data, air_region, cores, chunksize)
+            data = _execute_par(data, air_region, cores, chunksize, progress)
         else:
-            data = _execute_seq(data, air_region)
+            data = _execute_seq(data, air_region, progress)
 
     h.check_data_stack(data)
     return data
@@ -75,79 +81,84 @@ def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute_par(data, air_region, cores=None, chunksize=None):
+def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
+    progress = Progress.ensure_instance(progress)
+    log = getLogger(__name__)
 
     left = air_region[0]
     top = air_region[1]
     right = air_region[2]
     bottom = air_region[3]
-    h.pstart("Starting normalization by air region...")
 
-    # initialise same number of air sums
-    img_num = data.shape[0]
-    air_sums = pu.create_shared_array((img_num, 1, 1))
+    with progress:
+        progress.update(msg="Normalization by air region")
 
-    # turn into a 1D array, from the 3D that is returned
-    air_sums = air_sums.reshape(img_num)
+        # initialise same number of air sums
+        img_num = data.shape[0]
+        air_sums = pu.create_shared_array((img_num, 1, 1))
 
-    calc_sums_partial = ptsm.create_partial(
-        _calc_sum,
-        fwd_function=ptsm.return_to_second,
-        air_left=left,
-        air_top=top,
-        air_right=right,
-        air_bottom=bottom)
+        # turn into a 1D array, from the 3D that is returned
+        air_sums = air_sums.reshape(img_num)
 
-    data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores,
-                                  chunksize, "Calculating air sums")
+        calc_sums_partial = ptsm.create_partial(
+            _calc_sum,
+            fwd_function=ptsm.return_to_second,
+            air_left=left,
+            air_top=top,
+            air_right=right,
+            air_bottom=bottom)
 
-    air_sums_partial = ptsm.create_partial(
-        _divide_by_air_sum, fwd_function=ptsm.inplace)
+        data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores,
+                                      chunksize, "Calculating air sums")
 
-    data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores,
-                                  chunksize, "Norm by Air Sums")
+        air_sums_partial = ptsm.create_partial(
+            _divide_by_air_sum, fwd_function=ptsm.inplace)
 
-    avg = np.average(air_sums)
-    max_avg = np.max(air_sums) / avg
-    min_avg = np.min(air_sums) / avg
+        data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores,
+                                      chunksize, "Norm by Air Sums")
 
-    h.pstop("Finished normalization by air region. "
-            "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
-                avg, max_avg, min_avg))
+        avg = np.average(air_sums)
+        max_avg = np.max(air_sums) / avg
+        min_avg = np.min(air_sums) / avg
+
+        log.info("Normalization by air region. "
+                 "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
+                     avg, max_avg, min_avg))
 
     return data
 
 
-def _execute_seq(data, air_region):
+def _execute_seq(data, air_region, progress):
+    progress = Progress.ensure_instance(progress)
+    log = getLogger(__name__)
+
     left = air_region[0]
     top = air_region[1]
     right = air_region[2]
     bottom = air_region[3]
 
-    h.pstart("Starting normalization by air region...")
-    h.prog_init(data.shape[0], "Calculating air sums")
-    air_sums = []
-    for idx in range(0, data.shape[0]):
-        air_data_sum = data[idx, top:bottom, left:right].sum()
-        air_sums.append(air_data_sum)
-        h.prog_update()
+    with progress:
+        progress.update(msg="Normalization by air region")
+        progress.add_estimated_steps((2 * data.shape[0]) + 1)
 
-    h.prog_close()
+        air_sums = []
+        for idx in range(0, data.shape[0]):
+            air_data_sum = data[idx, top:bottom, left:right].sum()
+            air_sums.append(air_data_sum)
+            progress.update()
 
-    h.prog_init(data.shape[0], desc="Norm by Air Sums")
-    air_sums = np.true_divide(air_sums, np.amax(air_sums))
-    for idx in range(0, data.shape[0]):
-        data[idx, :, :] = np.true_divide(data[idx, :, :], air_sums[idx])
-        h.prog_update()
+        progress.update(msg="Normalization by air sums")
+        air_sums = np.true_divide(air_sums, np.amax(air_sums))
+        for idx in range(0, data.shape[0]):
+            data[idx, :, :] = np.true_divide(data[idx, :, :], air_sums[idx])
+            progress.update()
 
-    h.prog_close()
+        avg = np.average(air_sums)
+        max_avg = np.max(air_sums) / avg
+        min_avg = np.min(air_sums) / avg
 
-    avg = np.average(air_sums)
-    max_avg = np.max(air_sums) / avg
-    min_avg = np.min(air_sums) / avg
-
-    h.pstop("Finished normalization by air region. "
-            "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
-                avg, max_avg, min_avg))
+        log.info("Normalization by air region. "
+                 "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
+                     avg, max_avg, min_avg))
 
     return data

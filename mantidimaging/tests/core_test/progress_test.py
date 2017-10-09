@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import unittest
 
-import mantidimaging.tests.test_helper as th
+from mantidimaging.core.utility.special_imports import import_mock
 
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -142,7 +142,7 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(p.completion(), 1.0)
 
     def test_callbacks(self):
-        mock = th.import_mock()
+        mock = import_mock()
 
         cb1 = mock.MagicMock()
         cb2 = mock.MagicMock()

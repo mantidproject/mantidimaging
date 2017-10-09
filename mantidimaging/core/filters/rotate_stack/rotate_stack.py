@@ -5,6 +5,7 @@ import numpy as np
 from mantidimaging import helper as h
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -28,14 +29,15 @@ def _rotate_image(data, rotation=None):
     return np.rot90(data[:, :], rotation)
 
 
-def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
+def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None,
+            progress=None):
     """
     Rotates a stack (sample, flat and dark images).
 
     This function only works with square images.
 
-    If the picture is cropped first, the ROI coordinates
-    have to be adjusted separately to be pointing at the NON ROTATED image!
+    If the picture is cropped first, the ROI coordinates have to be adjusted
+    separately to be pointing at the NON ROTATED image!
 
     :param data: stack of sample images
     :param rotation: The rotation to be performed
@@ -46,7 +48,10 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
 
     :return: rotated images
     """
+    progress = Progress.ensure_instance(progress)
+
     h.check_data_stack(data)
+
     if rotation:
         # rot90 rotates counterclockwise; config.args.rotation rotates
         # clockwise
@@ -58,9 +63,9 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
             _execute_seq(data, clockwise_rotations)
 
         if flat is not None:
-            flat = _rotate_image(flat, clockwise_rotations)
+            flat = _rotate_image(flat, clockwise_rotations, progress)
         if dark is not None:
-            dark = _rotate_image(dark, clockwise_rotations)
+            dark = _rotate_image(dark, clockwise_rotations, progress)
 
     h.check_data_stack(data)
 
@@ -70,36 +75,35 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
         return data, flat, dark
 
 
-def _execute_seq(data, rotation):
-    h.pstart(
-        "Starting rotation step ({0} degrees clockwise), data type: {1}...".
-        format(rotation * 90, data.dtype))
+def _execute_seq(data, rotation, progress=None):
+    progress = Progress.ensure_instance(progress)
 
-    img_count = data.shape[0]
-    h.prog_init(img_count, "Rotating stack")
-    for idx in range(0, img_count):
-        data[idx] = _rotate_image(data[idx], rotation)
-        h.prog_update()
+    with progress:
+        progress.update(msg="Starting rotation step ({0} degrees clockwise), "
+                            "data type: {1}...".format(
+                                rotation * 90, data.dtype))
 
-    h.prog_close()
-
-    h.pstop("Finished rotation step ({0} degrees clockwise), data type: {1}."
-            .format(rotation * 90, data.dtype))
+        img_count = data.shape[0]
+        progress.add_estimated_steps(img_count)
+        for idx in range(0, img_count):
+            data[idx] = _rotate_image(data[idx], rotation)
+            progress.update()
 
     return data
 
 
-def _execute_par(data, rotation, cores=None, chunksize=None):
-    h.pstart("Starting PARALLEL rotation step ({0} degrees clockwise), "
-             "data type: {1}...".format(rotation * 90, data.dtype))
+def _execute_par(data, rotation, cores=None, chunksize=None, progress=None):
+    progress = Progress.ensure_instance(progress)
 
-    f = psm.create_partial(
-        _rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
+    with progress:
+        progress.update(msg="Starting PARALLEL rotation step ({0} degrees "
+                            "clockwise), data type: {1}...".format(
+                                rotation * 90, data.dtype))
 
-    data = psm.execute(
-        data, f, cores=cores, chunksize=chunksize, name="Rotation")
+        f = psm.create_partial(
+            _rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
 
-    h.pstop("Finished PARALLEL rotation step ({0} degrees clockwise), "
-            "data type: {1}.".format(rotation * 90, data.dtype))
+        data = psm.execute(
+            data, f, cores=cores, chunksize=chunksize, name="Rotation")
 
     return data

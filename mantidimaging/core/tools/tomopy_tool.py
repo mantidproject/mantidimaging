@@ -1,15 +1,20 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.tools.abstract_tool import AbstractTool
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility import projection_angles
 
 
 def run_reconstruct(sample, config, proj_angles=None, **kwargs):
     """
-    Module function for running a reconstruction. It will create the tomopy tool object at runtime.
+    Module function for running a reconstruction.
+
+    It will create the tomopy tool object at runtime.
 
     :param sample: The sample image data as a 3D numpy.ndarray
 
@@ -27,6 +32,7 @@ def run_reconstruct(sample, config, proj_angles=None, **kwargs):
     """
     tool = TomoPyTool()
     return tool.run_reconstruct(sample, config, proj_angles, **kwargs)
+
 
 class TomoPyTool(AbstractTool):
     @staticmethod
@@ -79,9 +85,11 @@ class TomoPyTool(AbstractTool):
 
         return tomopy
 
-    def run_reconstruct(self, sample, config, proj_angles=None, **kwargs):
+    def run_reconstruct(self, sample, config, proj_angles=None, progress=None,
+                        **kwargs):
         """
-        Run a reconstruction with TomoPy, using the CPU algorithms they provide.
+        Run a reconstruction with TomoPy, using the CPU algorithms they
+        provide.
 
         Information for each reconstruction method is available at
             http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html
@@ -93,13 +101,17 @@ class TomoPyTool(AbstractTool):
                         must be interpolated independently!
 
         :param proj_angles: The projection angle for each slice.
-                            If not provided equidistant angles will be generated
+                            If not provided equidistant angles will be
+                            generated
 
         :param kwargs: Any keyword arguments will be forwarded to the TomoPy
                        reconstruction function
 
         :return: The reconstructed volume
         """
+        progress = Progress.ensure_instance(progress)
+        log = getLogger(__name__)
+
         h.check_config_integrity(config)
         h.check_data_stack(sample)
 
@@ -120,33 +132,33 @@ class TomoPyTool(AbstractTool):
 
         iterative_algorithm = False if alg in ['gridrec', 'fbp'] else True
 
-        if iterative_algorithm:  # run the iterative algorithms
-            h.pstart(
-                "Starting iterative method with TomoPy. Avg Center of Rotation:"
-                " {0}, Algorithm: {1}, number of iterations: {2}...".format(
-                    np.mean(cors), alg, num_iter))
+        with progress:
+            if iterative_algorithm:  # run the iterative algorithms
+                progress.update(msg="Iterative method with TomoPy")
+                log.info("Avg Center of Rotation: {0}, Algorithm: {1}, number "
+                         "of iterations: {2}...".format(
+                             np.mean(cors), alg, num_iter))
 
-            kwargs = dict(kwargs, num_iter=num_iter)
-        else:  # run the non-iterative algorithms
-            h.pstart(
-                "Starting non-iterative reconstruction algorithm with TomoPy. "
-                "Mean COR: {0}, Number of CORs provided {1}, Algorithm: {2}...".
-                format(np.mean(cors), len(cors), alg))
+                kwargs = dict(kwargs, num_iter=num_iter)
+            else:  # run the non-iterative algorithms
+                progress.update(msg="Non-iterative method with TomoPy")
+                log.info("Mean COR: {0}, Number of CORs provided {1}, "
+                         "Algorithm: {2}...".format(
+                             np.mean(cors), len(cors), alg))
 
-            # TODO need to expose the filters to CLI
-            # filter_name='parzen',
-            # filter_par=[5.],
-        recon = self._tomopy.recon(
-            tomo=sample,
-            theta=proj_angles,
-            center=cors,
-            ncore=cores,
-            algorithm=alg,
-            sinogram_order=True,
-            **kwargs)
+                # TODO need to expose the filters to CLI
+                # filter_name='parzen',
+                # filter_par=[5.],
+            recon = self._tomopy.recon(
+                tomo=sample,
+                theta=proj_angles,
+                center=cors,
+                ncore=cores,
+                algorithm=alg,
+                sinogram_order=True,
+                **kwargs)
 
-        h.pstop(
-            "Reconstructed 3D volume. Shape: {0}, and pixel data type: {1}.".
-            format(recon.shape, recon.dtype))
+        log.info("Reconstructed 3D volume. Shape: {0}, and pixel data type: "
+                 "{1}.".format(recon.shape, recon.dtype))
 
         return recon

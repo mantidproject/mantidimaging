@@ -7,6 +7,8 @@ import os
 import numpy as np
 
 from mantidimaging import helper as h
+from mantidimaging.core.utility.progress_reporting import Progress
+
 from .utility import DEFAULT_IO_FILE_FORMAT
 from .loader.images import Images
 
@@ -57,7 +59,8 @@ def save(data,
          custom_idx=None,
          zfill_len=DEFAULT_ZFILL_LENGTH,
          name_postfix=DEFAULT_NAME_POSTFIX,
-         indices=None):
+         indices=None,
+         progress=None):
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -84,6 +87,7 @@ def save(data,
                     Specify the start and end range of the indices
                     which will be used for the file names.
     """
+    progress = Progress.ensure_instance(progress)
 
     if isinstance(data, Images):
         data = data.get_sample()
@@ -105,19 +109,23 @@ def save(data,
             # pass all other formats to skimage
             write_func = write_img
 
-        names = generate_names(name_prefix, indices, data.shape[0], custom_idx, zfill_len, name_postfix, out_format)
+        names = generate_names(name_prefix, indices, data.shape[0], custom_idx,
+                               zfill_len, name_postfix, out_format)
 
-        h.prog_init(data.shape[0], "Saving " + out_format + " images")
-        # loop through images in data array
-        for idx in range(data.shape[0]):
-            write_func(data[idx, :, :], os.path.join(
-                output_dir, names[idx]), overwrite_all)
-            h.prog_update()
-        h.prog_close()
+        with progress:
+            progress.add_estimated_steps(data.shape[0])
+
+            for idx in range(data.shape[0]):
+                write_func(data[idx, :, :], os.path.join(
+                    output_dir, names[idx]), overwrite_all)
+
+                progress.update()
 
 
-def generate_names(name_prefix, indices, num_images, custom_idx=None, zfill_len=DEFAULT_ZFILL_LENGTH,
-                   name_postfix=DEFAULT_NAME_POSTFIX, out_format=DEFAULT_IO_FILE_FORMAT):
+def generate_names(name_prefix, indices, num_images, custom_idx=None,
+                   zfill_len=DEFAULT_ZFILL_LENGTH,
+                   name_postfix=DEFAULT_NAME_POSTFIX,
+                   out_format=DEFAULT_IO_FILE_FORMAT):
     start_index = indices[0] if indices else 0
     if custom_idx:
         index = custom_idx
@@ -211,7 +219,8 @@ class Saver(object):
                           custom_index=None,
                           zfill_len=0,
                           name_postfix='',
-                          use_preproc_folder=True):
+                          use_preproc_folder=True,
+                          progress=None):
         """
         Save a single image to a single image file.
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
@@ -236,6 +245,8 @@ class Saver(object):
         """
         assert data.ndim == 2, "This should not be used with a 3D stack of images!"
 
+        progress = Progress.ensure_instance(progress)
+
         # reshape so that it works with the internals
         data = data.reshape(1, data.shape[0], data.shape[1])
         if self._output_path is None:
@@ -256,24 +267,23 @@ class Saver(object):
             output_dir = os.path.join(output_dir, subdir)
             output_dir = os.path.abspath(output_dir)
 
-        h.pstart("Saving single image {0} dtype: {1}".format(output_dir,
-                                                             data.dtype))
+        with progress:
+            progress.update(msg="Saving single image {0} dtype: {1}".format(
+                output_dir, data.dtype))
 
-        save(
-            data,
-            output_dir,
-            name,
-            swap_axes,
-            out_format=self._out_format,
-            overwrite_all=self._overwrite_all,
-            zfill_len=zfill_len,
-            name_postfix=name_postfix,
-            custom_idx=custom_index,
-            indices=self._indices)
+            save(
+                data,
+                output_dir,
+                name,
+                swap_axes,
+                out_format=self._out_format,
+                overwrite_all=self._overwrite_all,
+                zfill_len=zfill_len,
+                name_postfix=name_postfix,
+                custom_idx=custom_index,
+                indices=self._indices)
 
-        h.pstop("Finished saving single image.")
-
-    def save_preproc_images(self, data):
+    def save_preproc_images(self, data, progress=None):
         """
         Specialised save function to save out the pre-processed images.
 
@@ -281,19 +291,21 @@ class Saver(object):
 
         :param data: The pre-processed data that will be saved
         """
+        progress = Progress.ensure_instance(progress)
 
         if self._save_preproc and self._output_path is not None:
             preproc_dir = os.path.join(self._output_path, self._preproc_dir)
 
-            h.pstart("Saving all pre-processed images into {0} dtype: {1}".
-                     format(preproc_dir, data.dtype))
+            with progress:
+                progress.update(msg="Saving all pre-processed images into {0} "
+                                    "dtype: {1}".format(
+                                        preproc_dir, data.dtype))
 
-            save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
-                 self._out_format, self._overwrite_all, indices=self._indices)
+                save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
+                     self._out_format, self._overwrite_all,
+                     indices=self._indices)
 
-            h.pstop("Saving pre-processed images finished.")
-
-    def save_recon_output(self, data):
+    def save_recon_output(self, data, progress=None):
         """
         Specialised method to save out the reconstructed data
         depending on the configuration options.
@@ -306,6 +318,8 @@ class Saver(object):
 
         :param data: Reconstructed data volume that will be saved out.
         """
+        progress = Progress.ensure_instance(progress)
+
         if self._output_path is None:
             getLogger(__name__).warning(
                 "Not saving reconstruction output, "
@@ -315,26 +329,23 @@ class Saver(object):
 
         out_recon_dir = os.path.join(self._output_path, 'reconstructed')
 
-        h.pstart(
-            "Starting saving slices of the reconstructed volume in: {0}...".
-            format(out_recon_dir))
+        with progress:
+            progress.update(msg="Starting saving slices of the reconstructed "
+                                "volume in: {0}...".format(out_recon_dir))
 
-        save(data, out_recon_dir, self._out_slices_prefix,
-             self._swap_axes, self._out_format, self._overwrite_all,
-             indices=self._indices)
+            save(data, out_recon_dir, self._out_slices_prefix,
+                 self._swap_axes, self._out_format, self._overwrite_all,
+                 indices=self._indices)
 
-        # Sideways slices:
-        if self._save_horiz_slices:
-            out_horiz_dir = os.path.join(out_recon_dir,
-                                         self._out_horiz_slices_subdir)
+            # Sideways slices:
+            if self._save_horiz_slices:
+                out_horiz_dir = os.path.join(out_recon_dir,
+                                             self._out_horiz_slices_subdir)
 
-            getLogger(__name__).info(
-                "Saving horizontal slices in: {0}".format(out_horiz_dir))
+                getLogger(__name__).info(
+                    "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
-            # save out the horizontal slices by flipping the axes
-            save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                 not self._swap_axes, self._out_format,
-                 self._overwrite_all)
-
-        h.pstop("Finished saving slices of the reconstructed volume in: {0}".
-                format(out_recon_dir))
+                # save out the horizontal slices by flipping the axes
+                save(data, out_horiz_dir, self._out_horiz_slices_prefix,
+                     not self._swap_axes, self._out_format,
+                     self._overwrite_all)

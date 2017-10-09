@@ -1,8 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 
-from mantidimaging import helper as h
-
 import numpy as np
+
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -18,7 +18,7 @@ def _cli_register(parser):
     return parser
 
 
-def execute(data, threshold):
+def execute(data, threshold, progress=None):
     """
     Cut off values above threshold relative to the max pixels.
 
@@ -29,18 +29,19 @@ def execute(data, threshold):
 
     :return: The processed 3D numpy.ndarray
     """
+    progress = Progress.ensure_instance(progress)
 
     if threshold and threshold > 0.0:
-        dmin = np.amin(data)
-        dmax = np.amax(data)
-        h.pstart(
-            "Applying cut-off with level: {0}, min value {1}, max value {2}".
-            format(threshold, dmin, dmax))
-        rel_cut_off = dmin + threshold * (dmax - dmin)
+        with progress:
+            dmin = np.amin(data)
+            dmax = np.amax(data)
 
-        np.minimum(data, rel_cut_off, out=data)
+            progress.update(
+                "Applying cut-off with level: {0}, min value {1}, max value {2}".format(
+                    threshold, dmin, dmax))
 
-        h.pstop("Finished cut-off step, with pixel data type: {0}.".format(
-            data.dtype))
+            rel_cut_off = dmin + threshold * (dmax - dmin)
+
+            np.minimum(data, rel_cut_off, out=data)
 
     return data

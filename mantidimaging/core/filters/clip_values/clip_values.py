@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -41,7 +41,12 @@ def _cli_register(parser):
     return parser
 
 
-def execute(data, clip_min=None, clip_max=None, clip_min_new_value=None, clip_max_new_value=None):
+def execute(data,
+            clip_min=None,
+            clip_max=None,
+            clip_min_new_value=None,
+            clip_max_new_value=None,
+            progress=None):
     """
     Clip values below the min and above the max pixels.
 
@@ -55,33 +60,37 @@ def execute(data, clip_min=None, clip_max=None, clip_min_new_value=None, clip_ma
 
     :param clip_min_new_value: The value to use when replacing values less than
                                clip_min.
-                               If None is provided then the value of clip_min is
-                               used.
+                               If None is provided then the value of clip_min
+                               is used.
 
     :param clip_max_new_value: The value to use when replacing values greater
                                than clip_max.
-                               If None is provided then the value of clip_max is
-                               used.
+                               If None is provided then the value of clip_max
+                               is used.
 
     :return: The processed 3D numpy.ndarray.
     """
+    progress = Progress.ensure_instance(progress)
 
-    # we're using is not None because if the value specified is 0.0 that evaluates to false
+    # we're using is not None because if the value specified is 0.0 that
+    # evaluates to false
     if clip_min is not None or clip_max is not None:
-        clip_min = clip_min if clip_min is not None else data.min()
-        clip_max = clip_max if clip_max is not None else data.max()
+        with progress:
+            clip_min = clip_min if clip_min is not None else data.min()
+            clip_max = clip_max if clip_max is not None else data.max()
 
-        clip_min_new_value = clip_min_new_value if clip_min_new_value is not None else clip_min
-        clip_max_new_value = clip_max_new_value if clip_max_new_value is not None else clip_max
+            clip_min_new_value = clip_min_new_value \
+                if clip_min_new_value is not None else clip_min
 
-        h.pstart("Clipping data with values min {0} and max {1}.".format(
-            clip_min, clip_max))
+            clip_max_new_value = clip_max_new_value \
+                if clip_max_new_value is not None else clip_max
 
-        # this is the fastest way to clip the values
-        # np.clip does not do the clipping in place and ends up copying the data
-        data[data < clip_min] = clip_min_new_value
-        data[data > clip_max] = clip_max_new_value
+            progress.update("Clipping data with values min {0} and max {1}.".format(
+                clip_min, clip_max))
 
-        h.pstop("Finished data clipping.")
+            # this is the fastest way to clip the values, np.clip does not do
+            # the clipping in place and ends up copying the data
+            data[data < clip_min] = clip_min_new_value
+            data[data > clip_max] = clip_max_new_value
 
     return data

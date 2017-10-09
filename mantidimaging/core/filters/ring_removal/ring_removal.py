@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function)
 import tomopy.misc.corr
 
 from mantidimaging import helper as h
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -66,7 +67,8 @@ def execute(data,
             theta_min=30,
             rwidth=30,
             cores=None,
-            chunksize=None):
+            chunksize=None,
+            progress=None):
     """
     Removal of ring artifacts in reconstructed volume.
 
@@ -86,21 +88,23 @@ def execute(data,
                    Maximum width of the rings to be filtered in pixels
     :returns: Filtered data
     """
+    progress = Progress.ensure_instance(progress)
 
     if run_ring_removal:
         h.check_data_stack(data)
-        h.pstart("Starting ring removal...")
-        data = tomopy.misc.corr.remove_ring(
-            data,
-            center_x=center_x,
-            center_y=center_y,
-            thresh=thresh,
-            thresh_max=thresh_max,
-            thresh_min=thresh_min,
-            theta_min=theta_min,
-            rwidth=rwidth,
-            ncore=cores,
-            nchunk=chunksize)
-        h.pstop("Finished ring removal...")
+
+        with progress:
+            progress.update(msg="Ring Removal")
+            data = tomopy.misc.corr.remove_ring(
+                data,
+                center_x=center_x,
+                center_y=center_y,
+                thresh=thresh,
+                thresh_max=thresh_max,
+                thresh_min=thresh_min,
+                theta_min=theta_min,
+                rwidth=rwidth,
+                ncore=cores,
+                nchunk=chunksize)
 
     return data

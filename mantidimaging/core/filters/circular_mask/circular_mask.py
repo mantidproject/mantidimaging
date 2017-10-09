@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
-from mantidimaging import helper as h
+
 from mantidimaging.core.tools import importer
+from mantidimaging.core.utility.progress_reporting import Progress
 
 __all__ = ['execute', '_gui_register', '_cli_register']
 
@@ -28,7 +29,8 @@ def _cli_register(parser):
     return parser
 
 
-def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
+def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None,
+            progress=None):
     """
     :param data: Input data as a 3D numpy.ndarray
 
@@ -40,17 +42,20 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None):
 
     :return: The processed 3D numpy.ndarray
     """
+    progress = Progress.ensure_instance(progress)
 
     if circular_mask_ratio and 0 < circular_mask_ratio < 1:
         tomopy = importer.do_importing('tomopy')
-        h.pstart("Starting circular mask...")
-        # for some reason this doesn't like the ncore param,
-        # even though it's in the official tomopy docs
-        tomopy.circ_mask(
-            arr=data,
-            axis=0,
-            ratio=circular_mask_ratio,
-            val=circular_mask_value)
-        h.pstop("Finished applying circular mask.")
+
+        with progress:
+            progress.update(msg="Circular mask")
+
+            # for some reason this doesn't like the ncore param, even though
+            # it's in the official tomopy docs
+            tomopy.circ_mask(
+                arr=data,
+                axis=0,
+                ratio=circular_mask_ratio,
+                val=circular_mask_value)
 
     return data

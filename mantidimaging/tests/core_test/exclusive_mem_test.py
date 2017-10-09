@@ -47,7 +47,7 @@ class ExclusiveMemTest(unittest.TestCase):
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
-        th.assert_equals(img, expected)
+        npt.assert_equal(img, expected)
 
 
 if __name__ == '__main__':

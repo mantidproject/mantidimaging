@@ -2,8 +2,8 @@ from __future__ import (absolute_import, division, print_function)
 
 from multiprocessing import Pool
 
-from mantidimaging.core.algorithms.progress_reporting import Progress
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def create_partial(func, **kwargs):

@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
+
 from mantidimaging import helper as h
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -17,12 +19,13 @@ def _cli_register(parser):
     return parser
 
 
-def execute(data, region_of_interest, flat=None, dark=None):
+def execute(data, region_of_interest, flat=None, dark=None, progress=None):
     """
     Execute the Crop Coordinates by Region of Interest filter.
     This does NOT do any checks if the Region of interest is out of bounds!
 
-    If the region of interest is out of bounds, the crop will **FAIL** at runtime.
+    If the region of interest is out of bounds, the crop will **FAIL** at
+    runtime.
 
     If the region of interest is in bounds, but has overlapping coordinates
     the crop give back a 0 shape of the coordinates that were wrong.
@@ -44,32 +47,32 @@ def execute(data, region_of_interest, flat=None, dark=None):
 
     # execute only for sample, if no flat and dark images are provided
     if data is not None and (flat is None or dark is None):
-        return _execute(data, region_of_interest), None, None
+        return _execute(data, region_of_interest, progress), None, None
     else:  # crop all and return as tuple
-        return _execute(data, region_of_interest), \
-            _execute(flat, region_of_interest), \
-            _execute(dark, region_of_interest)
+        return _execute(data, region_of_interest, progress), \
+            _execute(flat, region_of_interest, progress), \
+            _execute(dark, region_of_interest, progress)
 
 
-def _execute(data, region_of_interest):
+def _execute(data, region_of_interest, progress=None):
+    progress = Progress.ensure_instance(progress)
+
     if region_of_interest:
-        assert all(isinstance(region, int) for region in region_of_interest), \
-            "The region of interest coordinates are not integers!"
+        with progress:
+            assert all(isinstance(region, int) for region in region_of_interest), \
+                "The region of interest coordinates are not integers!"
 
-        h.pstart("Starting cropping with coordinates: {0}. ...".format(
-            region_of_interest))
+            progress.update(msg="Cropping with coordinates: {0}.".format(
+                region_of_interest))
 
-        left = region_of_interest[0]
-        top = region_of_interest[1]
-        right = region_of_interest[2]
-        bottom = region_of_interest[3]
+            left = region_of_interest[0]
+            top = region_of_interest[1]
+            right = region_of_interest[2]
+            bottom = region_of_interest[3]
 
-        if data.ndim == 2:
-            data = data[top:bottom, left:right]
-        elif data.ndim == 3:
-            data = data[:, top:bottom, left:right]
-
-        h.pstop("Finished image cropping with pixel data type: {0}, "
-                "resulting shape: {1}.".format(data.dtype, data.shape))
+            if data.ndim == 2:
+                data = data[top:bottom, left:right]
+            elif data.ndim == 3:
+                data = data[:, top:bottom, left:right]
 
     return data
