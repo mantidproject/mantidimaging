@@ -9,6 +9,7 @@ import numpy.testing as npt
 
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
+from mantidimaging.core.io import utility
 from mantidimaging.core.io.saver import Saver, generate_names
 from mantidimaging.tests.file_outputting_test_case import (
         FileOutputtingTestCase)
@@ -502,6 +503,35 @@ class IOTest(FileOutputtingTestCase):
         loaded_images = loader.load_from_config(config)
 
         npt.assert_equal(exp_sinograms, loaded_images.get_sample())
+
+    def test_get_candidate_file_extensions(self):
+        self.assertEquals(
+                ['tif', 'tiff'],
+                utility.get_candidate_file_extensions('tif'))
+
+        self.assertEquals(
+                ['tiff', 'tif'],
+                utility.get_candidate_file_extensions('tiff'))
+
+        self.assertEquals(
+                ['png'],
+                utility.get_candidate_file_extensions('png'))
+
+    def test_get_file_names(self):
+        with tempfile.NamedTemporaryFile() as f:
+            # Directory used for testing
+            dirname = os.path.dirname(f.name)
+
+            # Create test file with .tiff extension
+            tiff_filename = os.path.join(dirname, 'test.tiff')
+            with open(tiff_filename, 'wb') as tf:
+                tf.write(b'\0')
+
+            # Search for files with .tif extension
+            found_files = utility.get_file_names(dirname, 'tif')
+
+            # Expect to find the .tiff file
+            self.assertEquals([tiff_filename], found_files)
 
 
 if __name__ == '__main__':
