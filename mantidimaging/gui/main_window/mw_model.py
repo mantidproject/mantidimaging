@@ -38,11 +38,16 @@ class MainWindowModel(object):
             out_format=image_format,
             indices=indices)
 
-    def create_title(self, file):
-        # TODO can add more processing of the file, e.g. remove the numbers from the file and convert to
-        # 'image_name_xxx' or simply strip all numbers, but we can't be sure the last underscore in the string
-        # will be right before the number
-        return file
+    def create_title(self, filename):
+        name = filename
+
+        current_names = self.stack_names()
+        num = 1
+        while name in current_names:
+            num += 1
+            name = filename + '_{}'.format(num)
+
+        return name
 
     def stack_list(self):
         stacks = []

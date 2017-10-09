@@ -52,9 +52,6 @@ class MainWindowPresenterTest(FileOutputtingTestCase):
         self.view.show_error_dialog.assert_called_once_with(
                 "Failed to read data file. See log for details.")
 
-    def test_initial_stack_list(self):
-        self.assertEquals(self.presenter.model.stack_names(), [])
-
 
 if __name__ == '__main__':
     unittest.main()
