@@ -22,7 +22,7 @@ class AggregateTest(FileOutputtingTestCase):
 
         # force silent outputs
         self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = logging.CRITICAL
+        self.config.func.log_level = logging.CRITICAL
 
     def create_saver(self):
         return Saver(self.config)

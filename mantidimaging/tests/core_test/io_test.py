@@ -7,6 +7,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
+from mantidimaging.helper import initialise_logging
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import utility
@@ -21,8 +22,9 @@ class IOTest(FileOutputtingTestCase):
         super(IOTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
+        initialise_logging()
         self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = logging.CRITICAL
+        self.config.func.log_level = logging.CRITICAL
 
     def create_saver(self):
         return Saver(self.config)

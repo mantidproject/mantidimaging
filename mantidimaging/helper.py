@@ -26,8 +26,15 @@ _progress_bar = None
 
 def initialise_logging():
     global _log_formatter
-    _log_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    _log_formatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s")
 
+    # Add a very verbose logging level
+    logging.addLevelName(5, 'TRACE')
+
+    # Capture all warnings
+    logging.captureWarnings(True)
+
+    # Remove default handlers
     root_logger = logging.getLogger()
     root_logger.handlers = []
 
@@ -39,12 +46,15 @@ def initialise_logging():
     # Default log level
     root_logger.setLevel(logging.DEBUG)
 
+    # Don't ever print all the debug logging from Qt
+    logging.getLogger('PyQt5').setLevel(logging.INFO)
+
     logging.getLogger(__name__).debug("Logging initialised")
 
 
 def set_logging_from_config(config):
     root_logger = logging.getLogger()
-    root_logger.setLevel(config.func.verbosity)
+    root_logger.setLevel(logging.getLevelName(config.func.log_level))
 
 
 def check_config_class(config):
