@@ -1,8 +1,5 @@
 from functools import partial
 
-from PyQt5 import Qt
-
-from mantidimaging.core.algorithms import gui_compile_ui as gcu
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 
 from .ring_removal import execute
@@ -14,59 +11,34 @@ def _gui_register(main_window):
     dialog = AlgorithmDialog(main_window)
     dialog.setWindowTitle(GUI_MENU_NAME)
 
-    label_x = Qt.QLabel("Abcissa X")
-    x_field = Qt.QSpinBox()
-    x_field.setMinimum(0)
-    x_field.setMaximum(1000000)
+    range1 = (0, 1000000)
+    range2 = (-1000000, 1000000)
 
-    label_y = Qt.QLabel("Ordinate Y")
-    y_field = Qt.QSpinBox()
-    y_field.setMinimum(0)
-    y_field.setMaximum(1000000)
+    _, x_field = dialog.add_property('Abcissa X', 'int', valid_values=range1)
+    _, y_field = dialog.add_property('Ordinate Y', 'int', valid_values=range1)
 
-    label_thresh = Qt.QLabel("Threshold")
-    thresh = Qt.QDoubleSpinBox()
-    thresh.setMinimum(-1000000)
-    thresh.setMaximum(1000000)
+    _, thresh = dialog.add_property('Threshold', 'float', valid_values=range2)
 
-    label_thresh_min = Qt.QLabel("Threshold Min")
-    thresh_min = Qt.QDoubleSpinBox()
-    thresh_min.setMinimum(-1000000)
-    thresh_min.setMaximum(1000000)
+    _, thresh_min = dialog.add_property(
+            'Threshold Min', 'float', valid_values=range2)
 
-    label_thresh_max = Qt.QLabel("Threshold Max")
-    thresh_max = Qt.QDoubleSpinBox()
-    thresh_max.setMinimum(-1000000)
-    thresh_max.setMaximum(1000000)
+    _, thresh_max = dialog.add_property(
+            'Threshold Max', 'float', valid_values=range2)
 
-    label_theta = Qt.QLabel("Theta")
-    theta = Qt.QSpinBox()
-    theta.setMinimum(-1000)
-    theta.setMaximum(1000)
+    _, theta = dialog.add_property('Theta', 'int', valid_values=(-1000, 1000))
 
-    label_rwidth = Qt.QLabel("RWidth")
-    rwidth = Qt.QSpinBox()
-    rwidth.setMinimum(-1000000)
-    rwidth.setMaximum(1000000)
-
-    dialog.formLayout.addRow(label_x, x_field)
-    dialog.formLayout.addRow(label_y, y_field)
-    dialog.formLayout.addRow(label_thresh, thresh)
-    dialog.formLayout.addRow(label_thresh_min, thresh_min)
-    dialog.formLayout.addRow(label_thresh_max, thresh_max)
-    dialog.formLayout.addRow(label_theta, theta)
-    dialog.formLayout.addRow(label_rwidth, rwidth)
+    _, rwidth = dialog.add_property('RWidth', 'int', valid_values=range2)
 
     def custom_execute():
-        return partial(
-            execute,
-            center_x=x_field,
-            center_y=y_field,
-            thresh=thresh,
-            thresh_max=thresh_max,
-            thresh_min=thresh_min,
-            theta_min=theta,
-            rwidth=rwidth)
+        return partial(execute,
+                       center_x=x_field,
+                       center_y=y_field,
+                       thresh=thresh,
+                       thresh_max=thresh_max,
+                       thresh_min=thresh_min,
+                       theta_min=theta,
+                       rwidth=rwidth)
 
     dialog.set_execute(custom_execute)
+
     return dialog
