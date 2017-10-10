@@ -46,7 +46,7 @@ class MainWindowPresenter(object):
         image_format = self.view.load_dialogue.image_format
         parallel_load = self.view.load_dialogue.parallel_load()
         indices = self.view.load_dialogue.indices()
-        window_title = self.view.load_dialogue.window_title()
+        custom_name = self.view.load_dialogue.window_title()
 
         if not sample_path:
             log.debug("No sample path provided, cannot load anything")
@@ -60,8 +60,8 @@ class MainWindowPresenter(object):
             data = None
 
         if data is not None:
-            title = self.model.create_title(selected_file) if not window_title else window_title
-            dock_widget = self.view.create_stack_window(data, title=title)
+            name = self.model.create_name(selected_file) if not custom_name else custom_name
+            dock_widget = self.view.create_stack_window(data, title=name)
             stack_visualiser = dock_widget.widget()
             self.model.add_stack(stack_visualiser, dock_widget)
             self.view.update_shortcuts()

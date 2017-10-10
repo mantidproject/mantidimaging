@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 
+import os
 import uuid
 
 from logging import getLogger
-from PyQt5.QtWidgets import QDockWidget
 
 from mantidimaging.core.io import loader, saver
 
@@ -38,11 +38,22 @@ class MainWindowModel(object):
             out_format=image_format,
             indices=indices)
 
-    def create_title(self, file):
-        # TODO can add more processing of the file, e.g. remove the numbers from the file and convert to
-        # 'image_name_xxx' or simply strip all numbers, but we can't be sure the last underscore in the string
-        # will be right before the number
-        return file
+    def create_name(self, filename):
+        """
+        Creates a suitable name for a newly loaded stack.
+        """
+        # Avoid file extensions in names
+        filename = os.path.splitext(filename)[0]
+
+        # Avoid duplicate names
+        name = filename
+        current_names = self.stack_names()
+        num = 1
+        while name in current_names:
+            num += 1
+            name = filename + '_{}'.format(num)
+
+        return name
 
     def stack_list(self):
         stacks = []
@@ -56,20 +67,23 @@ class MainWindowModel(object):
         return sorted(stacks, key=lambda x: x[1])
 
     def stack_names(self):
-        # unpacks the tuple and only gives the correctly sorted human readable names
+        # unpacks the tuple and only gives the correctly sorted human readable
+        # names
         return list(zip(*self.stack_list()))[1] if self.active_stacks else []
 
     def add_stack(self, stack_visualiser, dock_widget):
         # generate unique ID for this stack
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
-        getLogger(__name__).debug("Active stacks {}".format(self.active_stacks))
+        getLogger(__name__).debug(
+                "Active stacks {}".format(self.active_stacks))
 
     def get_stack(self, stack_uuid):
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
-        :return The QDockWidget that contains the Stack Visualiser. For direct access to the
-                Stack Visualiser widget use get_stack_visualiser
+        :return The QDockWidget that contains the Stack Visualiser.
+                For direct access to the Stack Visualiser widget use
+                get_stack_visualiser
         """
         return self.active_stacks[stack_uuid]
 
