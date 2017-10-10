@@ -30,11 +30,15 @@ def execute(config):
 
 def _do_reconstruction(sample, config, pl):
     cors = config.func.cors
-    # if they're the same length then we have a COR for each slice, so we don't have to generate anything
+    # if they're the same length then we have a COR for each slice, so we don't
+    # have to generate anything
     if len(cors) != sample.shape[0]:
         # interpolate the CORs
         cor_slices = config.func.cor_slices
-        config.func.cors = cor_interpolate.execute(sample.shape[0], cor_slices, cors)
+        config.func.cors = cor_interpolate.execute(
+                sample.shape[0], cor_slices, cors)
+
     while not pl.is_over():
         process_list.execute(next(pl), sample, config)
+
     return sample
