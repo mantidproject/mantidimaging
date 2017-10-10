@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
+import numpy as np
+
 from logging import getLogger
 from enum import IntEnum
 
@@ -118,6 +120,8 @@ class StackVisualiserPresenter(object):
             raise ValueError(PARAMETERS_ERROR_MESSAGE.format(parameter))
 
     def apply_to_data(self, algorithm_dialog):
+        log = getLogger(__name__)
+
         # We can't do this in Python 2.7 because we crash due to a circular reference
         # It should work when executed with Python 3.5
         assert isinstance(algorithm_dialog, AlgorithmDialog), "The object is not of the expected type."
@@ -142,7 +146,18 @@ class StackVisualiserPresenter(object):
         if not isinstance(res_before, tuple):
             res_before = (res_before,)
 
-        self.images.sample = algorithm_dialog.execute(self.images.get_sample(), *parameter_value)
+        ret_val = algorithm_dialog.execute(self.images.get_sample(), *parameter_value)
+
+        # Handle the return value from the algorithm dialog
+        if isinstance(ret_val, tuple):
+            # Tuples are assumed to be three elements containing sample, flat
+            # and dark images
+            self.images.sample, self.images.flat, self.images.dark = ret_val
+        elif isinstance(ret_val, np.ndarray):
+            # Single Numpy arrays are assumed to be just the sample image
+            self.images.sample = ret_val
+        else:
+            log.debug('Unknown execute return value: {}'.format(type(ret_val)))
 
         # execute the do_after function by passing the results from the do_before
         if do_after:
