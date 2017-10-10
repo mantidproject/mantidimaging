@@ -129,7 +129,7 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def deselect_current_roi(self):
         self.current_roi = None
-        self.rectangle_selector.extents = (0, 0, 0, 0)
+        self.roi_selector.extents = (0, 0, 0, 0)
 
     def on_button_press(self, event):
         """
