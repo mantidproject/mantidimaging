@@ -136,7 +136,8 @@ class AlgorithmDialog(Qt.QDialog):
                      dtype,
                      default_value=None,
                      valid_values=None,
-                     add_to_form=True):
+                     add_to_form=True,
+                     tooltip=None):
         """
         Adds a property to the algorithm dialog.
 
@@ -164,25 +165,38 @@ class AlgorithmDialog(Qt.QDialog):
             if default_value:
                 box.setValue(default_value)
 
+        def assign_tooltip(widgets):
+            """
+            Helper function to assign tooltips to widgets.
+            """
+            if tooltip:
+                for w in widgets:
+                    w.setToolTip(tooltip)
+
         # Set up data type dependant widgets
         if dtype == 'file':
             left_widget = Qt.QLineEdit()
             right_widget = Qt.QPushButton(label)
+            assign_tooltip([left_widget, right_widget])
             right_widget.clicked.connect(
                     lambda: select_file(left_widget, label))
         elif dtype == 'int':
             right_widget = Qt.QSpinBox()
+            assign_tooltip([right_widget])
             set_spin_box(right_widget)
         elif dtype == 'float':
             right_widget = Qt.QDoubleSpinBox()
+            assign_tooltip([right_widget])
             set_spin_box(right_widget)
         elif dtype == 'bool':
             left_widget = None
             right_widget = Qt.QCheckBox(label)
+            assign_tooltip([right_widget])
             if isinstance(default_value, bool):
                 right_widget.setChecked(default_value)
         elif dtype == 'list':
             right_widget = Qt.QComboBox()
+            assign_tooltip([right_widget])
             right_widget.addItems(valid_values)
         else:
             raise ValueError("Unknown data type")
