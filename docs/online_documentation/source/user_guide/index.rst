@@ -11,5 +11,6 @@ User Guide
    setting_up
    quick_start
    imgdata
+   aggregate
    convert
    imopr
