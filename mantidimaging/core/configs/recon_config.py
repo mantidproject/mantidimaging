@@ -16,14 +16,18 @@ from mantidimaging.core.configs.functional_config import FunctionalConfig
 
 def grab_full_config(default_args=None):
     """
-    Build the command line at runtime, by parsing all of the filters' parameter. 
-    Afterwards parses the arguments passed in from command line, updates the vales and creates the ReconstructionConfig.
+    Build the command line at runtime, by parsing all of the filters'
+    parameter.
+
+    Afterwards parses the arguments passed in from command line, updates the
+    vales and creates the ReconstructionConfig.
     """
-    # intentionally not importing with the whole module
-    # sometimes we don't want to process the sys.argv arguments
+    # intentionally not importing with the whole module sometimes we don't want
+    # to process the sys.argv arguments
 
     parser = argparse.ArgumentParser(
-        description='Run image processing and tomographic reconstruction via third party tools',
+        description="Run image processing and tomographic reconstruction via "
+                    "third party tools",
         formatter_class=RawTextHelpFormatter)
 
     # this sets up the arguments in the parser, with defaults from the Config
@@ -124,9 +128,11 @@ class ReconstructionConfig(object):
             if self.func.cors:
                 self.func.cors = [float(cor) for cor in self.func.cors]
 
-            # Convert the slices for the center of rotation centers of rotation (if provided) to ints
+            # Convert the slices for the center of rotation centers of rotation
+            # (if provided) to ints
             if self.func.cor_slices:
-                self.func.cor_slices = [int(slice_id) for slice_id in self.func.cor_slices]
+                self.func.cor_slices = \
+                        [int(slice_id) for slice_id in self.func.cor_slices]
 
         if self.func.cors and self.func.cor_slices:
             len_cors = len(self.func.cors)
@@ -140,21 +146,23 @@ class ReconstructionConfig(object):
         log.debug("CORs: {}".format(self.func.cors))
         log.debug("COR slices: {}".format(self.func.cor_slices))
 
-        # if the reconstruction is ran on already cropped images, then no ROI
-        # should be provided, however if we have a ROI then the Centers of Rotation
-        # will be inaccurate because the image has moved
+        # If the reconstruction is ran on already cropped images, then no ROI
+        # should be provided, however if we have a ROI then the Centers of
+        # Rotation will be inaccurate because the image has moved
         if self.func.cors and self.args.region_of_interest:
             # the COR is going to be related to the full image
             # as we are going to be cropping it, we subtract the crop
             left = self.args.region_of_interest[0]
 
-            # subtract the move to the left to account for the crop from all the CORs
+            # subtract the move to the left to account for the crop from all
+            # the CORs
             self.func.cors = [int(cor) - left for cor in self.func.cors]
 
         if self.func.indices:
             self.func.indices = [int(index) for index in self.func.indices]
 
-            # if a single value is passed, assume we want from 0 up to the passed value
+            # if a single value is passed, assume we want from 0 up to the
+            # passed value
             if len(self.func.indices) < 2:
                 # start index 0, with step 1
                 self.func.indices = [0, self.func.indices[0], 1]
@@ -165,12 +173,13 @@ class ReconstructionConfig(object):
                 ]
             elif len(self.func.indices) > 3:
                 raise ValueError(
-                    "Invalid amount of indices provided! Please use one of the formats --indices <end_idx>,"
-                    " --indices <start_idx> <end_idx>, --indices <start_idx> <end_idx> <step>")
+                    "Invalid amount of indices provided! Please use one of "
+                    "the formats --indices <end_idx>, --indices <start_idx> "
+                    "<end_idx>, --indices <start_idx> <end_idx> <step>")
 
         if self.func.split and not self.func.max_memory:
-            raise ValueError(
-                "The --split flag was passed, but no --max-memory was specified!")
+            raise ValueError("The --split flag was passed, but no "
+                             "--max-memory was specified!")
 
         # float16, uint16 data types produce exceptions
         # > float 16 - scipy median filter does not support it
@@ -223,4 +232,5 @@ class ReconstructionConfig(object):
         # update the configs
         functional_args._update(fake_args)
 
-        return ReconstructionConfig(functional_args, fake_args, special_args=False)
+        return ReconstructionConfig(
+                functional_args, fake_args, special_args=False)

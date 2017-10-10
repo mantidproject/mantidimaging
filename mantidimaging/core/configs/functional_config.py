@@ -15,12 +15,15 @@ class FunctionalConfig(object):
 
     def __init__(self):
         """
-        Builds a default post-processing configuration with a sensible choice of parameters
+        Builds a default post-processing configuration with a sensible choice
+        of parameters
 
-        crash_on_failed_import: Default True, this option tells if the program should stop execution if an import
-                                fails and a step cannot be executed:
+        crash_on_failed_import: Default True, this option tells if the program
+                                should stop execution if an import fails and a
+                                step cannot be executed:
             True - Raise an exception and stop execution immediately
-            False - Note the failure to import but continue execution without applying the filter
+            False - Note the failure to import but continue execution without
+                    applying the filter
         """
 
         # Functionality options
@@ -48,7 +51,8 @@ class FunctionalConfig(object):
         self.data_dtype = np.float32
 
         self.cors = None
-        # single member list so that interpolation doesn't fail in cor_interpolate
+        # single member list so that interpolation doesn't fail in
+        # cor_interpolate
         self.cor_slices = [0]
 
         self.verbosity = logging.INFO
@@ -96,48 +100,58 @@ class FunctionalConfig(object):
         self.gui = False
 
     def __str__(self):
-        return "Input directory: {0}\n".format(os.path.abspath(str(self.input_path))) \
-               + "Flat directory: {0}\n".format(os.path.abspath(str(self.input_path_flat))) \
-               + "Dark directory: {0}\n".format(os.path.abspath(str(self.input_path_dark))) \
-               + "Input image prefix: {0}\n".format(str(self.in_prefix)) \
-               + "Input image format: {0}\n".format(str(self.in_format)) \
-               + "Output directory: {0}\n".format(os.path.abspath(str(self.output_path))) \
-               + "Output image format: {0}\n".format(str(self.out_format)) \
-               + "Output slices file name prefix: {0}\n".format(str(self.out_slices_prefix)) \
-               + "Output horizontal slices file name prefix: {0}\n".format(str(self.out_horiz_slices_prefix)) \
-               + "Output horizontal slices subdir: {0}\n".format(os.path.abspath(str(self.out_horiz_slices_subdir))) \
-               + "Save horizontal slices: {0}\n".format(str(self.save_horiz_slices)) \
-               + "Save preprocessed images: {0}\n".format(str(self.save_preproc)) \
-               + "Do only pre processing and exit: {0}\n".format(str(self.reconstruction)) \
-               + "Skip preprocessing step: {0}\n".format(str(self.skip_preproc)) \
-               + "Pre processing images subdir: {0}\n".format(os.path.abspath(str(self.preproc_subdir))) \
-               + "Radiograms: {0}\n".format(str(self.swap_axes)) \
-               + "Data type: {0}\n".format(str(self.data_dtype)) \
-               + "Provided center of rotation: {0}\n".format(str(self.cors)) \
-               + "Slice IDs for CORs: {0}\n".format(str(self.cor_slices)) \
-               + "Verbosity: {0}\n".format(str(self.verbosity)) \
-               + "Overwrite files in output directory: {0}\n".format(str(self.overwrite_all)) \
-               + "Debug: {0}\n".format(str(self.debug)) \
-               + "Debug port: {0}\n".format(str(self.debug_port)) \
-               + "Tool: {0}\n".format(str(self.tool)) \
-               + "Algorithm: {0}\n".format(str(self.algorithm)) \
-               + "Number of iterations: {0}\n".format(str(self.num_iter)) \
-               + "Maximum angle: {0}\n".format(str(self.max_angle)) \
-               + "Cores: {0}\n".format(str(self.cores)) \
-               + "Chunk per worker: {0}\n".format(str(self.chunksize)) \
-               + "Load data in parallel: {0}\n".format(str(self.parallel_load)) \
-               + "Image operator mode: {0}\n".format(str(self.imopr)) \
-               + "Aggregate mode: {0}\n".format(str(self.aggregate)) \
-               + "Aggregate angles: {0}\n".format(str(self.aggregate_angles)) \
-               + "Aggregate single folder output: {0}\n".format(str(self.aggregate_single_folder_output)) \
-               + "Convert images mode: {0}\n".format(str(self.convert)) \
-               + "Prefix for the output converted images: {0}\n".format(str(self.convert_prefix)) \
-               + "Which images will be loaded: {0}\n".format(str(self.indices)) \
-               + "Split the execution into separate runs: {0}\n".format(str(self.split)) \
-               + "Max memory for split execution: {0}\n".format(str(self.max_memory)) \
-               + "Max ratio to memory for split execution: {0}\n".format(str(self.max_ratio)) \
-               + "Use a process list for execution: {0}\n".format(str(self.process_list)) \
-               + "Running the GUI: {0}\n".format(str(self.gui))
+        s = ("Input directory: {in_dir}\n"
+             "Flat directory: {flat_dir}\n"
+             "Dark directory: {dark_dir}\n"
+             "Input image prefix: {c.in_prefix}\n"
+             "Input image format: {c.in_format}\n"
+             "Output directory: {out_dir}\n"
+             "Output image format: {c.out_format}\n"
+             "Output slices filename prefix: {c.out_slices_prefix}\n"
+             "Output horizontal slices file name prefix: "
+             "{c.out_horiz_slices_prefix}\n"
+             "Output horizontal slices subdir: {c.out_horiz_slices_subdir}\n"
+             "Save horizontal slices: {c.save_horiz_slices}\n"
+             "Save preprocessed images: {c.save_preproc}\n"
+             "Do only pre processing and exit: {c.reconstruction}\n"
+             "Skip preprocessing step: {c.skip_preproc}\n"
+             "Pre processing images subdir: {preproc_dir}\n"
+             "Radiograms: {c.swap_axes}\n"
+             "Data type: {c.data_dtype}\n"
+             "Provided center of rotation: {c.cors}\n"
+             "Slice IDs for CORs: {c.cor_slices}\n"
+             "Log level: {c.verbosity}\n"
+             "Overwrite files in output directory: {c.overwrite_all}\n"
+             "Debug: {c.debug}\n"
+             "Debug port: {c.debug_port}\n"
+             "Tool: {c.tool}\n"
+             "Algorithm: {c.algorithm}\n"
+             "Number of iterations: {c.num_iter}\n"
+             "Maximum angle: {c.max_angle}\n"
+             "Cores: {c.cores}\n"
+             "Chunk per worker: {c.chunksize}\n"
+             "Load data in parallel: {c.parallel_load}\n"
+             "Image operator mode: {c.imopr}\n"
+             "Aggregate mode: {c.aggregate}\n"
+             "Aggregate angles: {c.aggregate_angles}\n"
+             "Aggregate single folder output: "
+             "{c.aggregate_single_folder_output}\n"
+             "Convert images mode: {c.convert}\n"
+             "Prefix for the output converted images: {c.convert_prefix}\n"
+             "Which images will be loaded: {c.indices}\n"
+             "Split the execution into separate runs: {c.split}\n"
+             "Max memory for split execution: {c.max_memory}\n"
+             "Max ratio to memory for split execution: {c.max_ratio}\n"
+             "Use a process list for execution: {c.process_list}\n"
+             "Running the GUI: {c.gui}\n"
+             ).format(c=self,
+                      in_dir=os.path.abspath(str(self.input_path)),
+                      flat_dir=os.path.abspath(str(self.input_path_flat)),
+                      dark_dir=os.path.abspath(str(self.input_path_dark)),
+                      out_dir=os.path.abspath(str(self.output_path)),
+                      preproc_dir=os.path.abspath(str(self.preproc_subdir)))
+
+        return s
 
     def _setup_parser(self, parser):
         """
@@ -200,8 +214,8 @@ class FunctionalConfig(object):
             required=False,
             default=self.output_path,
             type=str,
-            help="Where to write the output slice images (reconstructed volume)"
-        )
+            help="Where to write the output slice images (reconstructed "
+                 "volume)")
 
         from mantidimaging.core.io.saver import Saver
         grp_func.add_argument(
@@ -338,8 +352,9 @@ class FunctionalConfig(object):
             required=False,
             nargs="*",
             default=self.process_list,
-            help="Use the process list parser. Intended use is for cluster submission."
-            "It can parse a string from command line, file containing the commands, or a saved process list.")
+            help="Use the process list parser. Intended use is for cluster "
+                 "submission. It can parse a string from command line, file "
+                 "containing the commands, or a saved process list.")
 
         grp_run_modes = parser.add_argument_group('Run Modes')
 
@@ -366,7 +381,7 @@ class FunctionalConfig(object):
             type=str,
             default=self.imopr,
             help="Image operator currently supports the following operators: "
-            + str(imopr.get_available_operators()))
+                 "{}".format(imopr.get_available_operators()))
 
         grp_run_modes.add_argument(
             "--aggregate",
@@ -429,9 +444,10 @@ class FunctionalConfig(object):
             type=str,
             default=self.tool,
             choices=supported_tools,
-            help="Default: %(default)s\nTomographic reconstruction tool to use."
-            "\nTODO: Describe pros and cons of each tool (Astra GPU). "
-            "Available: {0}".format(", ".join(supported_tools)))
+            help="Default: %(default)s\n"
+                 "Tomographic reconstruction tool to use.\n"
+                 "TODO: Describe pros and cons of each tool (Astra GPU). "
+                 "Available: {0}".format(", ".join(supported_tools)))
 
         from mantidimaging.core.tools.tomopy_tool import TomoPyTool
         from mantidimaging.core.tools.astra_tool import AstraTool
@@ -453,9 +469,9 @@ class FunctionalConfig(object):
             required=False,
             type=int,
             default=self.num_iter,
-            help="Number of iterations (only valid for iterative methods: art, "
-            "bart, mlem, osem, ospml_hybrid, ospml_quad, pml_hybrid, "
-            "pml_quad, sirt).")
+            help="Number of iterations (only valid for iterative methods: "
+                 "art, bart, mlem, osem, ospml_hybrid, ospml_quad, "
+                 "pml_hybrid, pml_quad, sirt).")
 
         grp_recon.add_argument(
             "--max-angle",
@@ -499,8 +515,8 @@ class FunctionalConfig(object):
             required=False,
             action='store_true',
             default=self.split,
-            help="Split execution based on --max-memory and ratio of data size "
-            "to max memory.")
+            help="Split execution based on --max-memory and ratio of data "
+                 "size to max memory.")
 
         grp_recon.add_argument(
             "--max-memory",
