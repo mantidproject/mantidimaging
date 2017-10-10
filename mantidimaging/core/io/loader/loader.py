@@ -238,7 +238,8 @@ def load_sinogram(input_path=None,
     The reason is because this function will have a lot slower performance than
     the normal load.
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Sinogram Load')
 
     if in_format not in supported_formats():
         raise ValueError("Image format {0} not supported!".format(in_format))

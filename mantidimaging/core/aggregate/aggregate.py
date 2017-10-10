@@ -105,7 +105,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
     :param progress: The progress monitoring instance
     :return: None
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Aggregate')
 
     s = saver.Saver(config)  # this also sets the output format from the config
     parallel_load = config.func.parallel_load

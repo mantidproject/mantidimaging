@@ -87,7 +87,8 @@ def save(data,
                     Specify the start and end range of the indices
                     which will be used for the file names.
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Save')
 
     if isinstance(data, Images):
         data = data.get_sample()
@@ -245,7 +246,8 @@ class Saver(object):
         """
         assert data.ndim == 2, "This should not be used with a 3D stack of images!"
 
-        progress = Progress.ensure_instance(progress)
+        progress = Progress.ensure_instance(progress,
+                                            task_name='Save Image')
 
         # reshape so that it works with the internals
         data = data.reshape(1, data.shape[0], data.shape[1])
@@ -291,7 +293,8 @@ class Saver(object):
 
         :param data: The pre-processed data that will be saved
         """
-        progress = Progress.ensure_instance(progress)
+        progress = Progress.ensure_instance(progress,
+                                            task_name='Save Preprocessed')
 
         if self._save_preproc and self._output_path is not None:
             preproc_dir = os.path.join(self._output_path, self._preproc_dir)
@@ -318,7 +321,8 @@ class Saver(object):
 
         :param data: Reconstructed data volume that will be saved out.
         """
-        progress = Progress.ensure_instance(progress)
+        progress = Progress.ensure_instance(progress,
+                                            task_name='Save Reconstruction')
 
         if self._output_path is None:
             getLogger(__name__).warning(

@@ -218,7 +218,8 @@ def execute(data=None,
     img_num = data.shape[0]
 
     task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress, num_steps=img_num,
+    progress = Progress.ensure_instance(progress,
+                                        num_steps=img_num,
                                         task_name=task_name)
 
     indices_list = pu.generate_indices(img_num)

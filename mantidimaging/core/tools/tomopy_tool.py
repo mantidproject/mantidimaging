@@ -109,7 +109,7 @@ class TomoPyTool(AbstractTool):
 
         :return: The reconstructed volume
         """
-        progress = Progress.ensure_instance(progress)
+        progress = Progress.ensure_instance(progress, task_name='TomoPy')
         log = getLogger(__name__)
 
         h.check_config_integrity(config)

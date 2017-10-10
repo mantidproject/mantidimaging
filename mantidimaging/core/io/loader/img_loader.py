@@ -108,8 +108,9 @@ class ImageLoader(object):
             return _get_data_average(data)
 
     def _do_files_load_seq(self, data, files, name, progress=None):
-        progress = Progress.ensure_instance(progress)
-        progress.add_estimated_steps(len(files))
+        progress = Progress.ensure_instance(progress,
+                                            num_steps=len(files),
+                                            task_name='Load')
 
         with progress:
             for idx, in_file in enumerate(files):
@@ -130,8 +131,9 @@ class ImageLoader(object):
         return data
 
     def _do_files_sinogram_load_seq(self, data, files, name, progress=None):
-        progress = Progress.ensure_instance(progress)
-        progress.add_estimated_steps(len(files))
+        progress = Progress.ensure_instance(progress,
+                                            num_steps=len(files),
+                                            task_name='Sinogram Load')
 
         with progress:
             for idx, in_file in enumerate(files):

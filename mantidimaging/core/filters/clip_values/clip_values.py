@@ -70,7 +70,7 @@ def execute(data,
 
     :return: The processed 3D numpy.ndarray.
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Clip Values')
 
     # we're using is not None because if the value specified is 0.0 that
     # evaluates to false

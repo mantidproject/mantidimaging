@@ -82,7 +82,8 @@ def _divide_by_air_sum(data=None, air_sums=None):
 
 
 def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='ROI Normalisation')
     log = getLogger(__name__)
 
     left = air_region[0]
@@ -129,7 +130,8 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
 
 
 def _execute_seq(data, air_region, progress):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='ROI Normalisation')
     log = getLogger(__name__)
 
     left = air_region[0]

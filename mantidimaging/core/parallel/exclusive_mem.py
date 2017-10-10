@@ -79,7 +79,8 @@ def execute(data=None,
     img_num = output_data.shape[0]
 
     task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress, num_steps=img_num,
+    progress = Progress.ensure_instance(progress,
+                                        num_steps=img_num,
                                         task_name=task_name)
 
     # passing the data triggers a copy-on-write in the child process, even if

@@ -88,7 +88,8 @@ def execute(data,
                    Maximum width of the rings to be filtered in pixels
     :returns: Filtered data
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Ring Removal')
 
     if run_ring_removal:
         h.check_data_stack(data)

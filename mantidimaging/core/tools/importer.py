@@ -14,7 +14,7 @@ def timed_import(config, progress=None):
                    run a reconstruction.
     :return: the imported tool
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Tool Importing')
 
     with progress:
         progress.update(msg="Importing tool {0}".format(config.func.tool))

@@ -28,7 +28,8 @@ def execute(data, cores=None, chunksize=None, progress=None):
                              "NO CODE FOR SHIFTING THE CHIPS IS CURRENTLY "
                              "IMPLEMENTED!")
 
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='MCP Corrections')
 
     fool_my_own_sanity_check(data)
 

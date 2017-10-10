@@ -55,7 +55,7 @@ def execute(data, region_of_interest, flat=None, dark=None, progress=None):
 
 
 def _execute(data, region_of_interest, progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Crop Coords')
 
     if region_of_interest:
         with progress:

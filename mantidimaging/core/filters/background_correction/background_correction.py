@@ -93,7 +93,7 @@ def _execute_par(data,
                     np.subtract(data, dark, out=data), norm_divide, out=data)
     Subtract then divide (par) - 55s
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Background Correction')
 
     with progress:
         progress.update(msg="PARALLEL normalization by flat/dark images")
@@ -135,7 +135,7 @@ def _execute_seq(data,
                  clip_min=MINIMUM_PIXEL_VALUE,
                  clip_max=MAXIMUM_PIXEL_VALUE,
                  progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Background Correction')
 
     with progress:
         progress.update(msg="Normalization by flat/dark images")

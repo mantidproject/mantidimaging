@@ -67,7 +67,8 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None,
 
 def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
                  progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Rebin')
 
     resized_data = _create_reshaped_array(data.shape, rebin_param)
 
@@ -84,7 +85,8 @@ def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
 
 
 def _execute_seq(data, rebin_param, mode, progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Rebin')
 
     with progress:
         progress.update(msg="Starting image rebinning.")

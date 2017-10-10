@@ -29,7 +29,7 @@ def execute(data, threshold, progress=None):
 
     :return: The processed 3D numpy.ndarray
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Cut Off')
 
     if threshold and threshold > 0.0:
         with progress:

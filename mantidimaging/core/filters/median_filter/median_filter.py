@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
@@ -68,11 +70,14 @@ def execute(data, size, mode=modes()[0], cores=None, chunksize=None,
 
 
 def _execute_seq(data, size, mode, progress=None):
-    progress = Progress.ensure_instance(progress)
+    log = getLogger(__name__)
+    progress = Progress.ensure_instance(progress,
+                                        num_steps=data.shape[0],
+                                        task_name='Median filter')
 
     with progress:
-        progress.update(msg="Median filter, with pixel data type: {0}, filter "
-                            "size/width: {1}.".format(data.dtype, size))
+        log.info("Median filter, with pixel data type: {0}, filter "
+                 "size/width: {1}.".format(data.dtype, size))
 
         progress.add_estimated_steps(data.shape[0])
         for idx in range(0, data.shape[0]):
@@ -83,7 +88,8 @@ def _execute_seq(data, size, mode, progress=None):
 
 
 def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress)
+    log = getLogger(__name__)
+    progress = Progress.ensure_instance(progress, task_name='Median filter')
 
     # create the partial function to forward the parameters
     f = psm.create_partial(
@@ -93,10 +99,10 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
         mode=mode)
 
     with progress:
-        progress.update(msg="PARALLEL median filter, with pixel data type: "
-                            "{0}, filter size/width: {1}.".format(
-                             data.dtype, size))
+        log.info("PARALLEL median filter, with pixel data type: {0}, filter "
+                 "size/width: {1}.".format(data.dtype, size))
 
+        progress.update()
         data = psm.execute(data, f, cores, chunksize, "Median Filter")
 
     return data

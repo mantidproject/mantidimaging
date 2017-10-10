@@ -98,7 +98,8 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None, progress=None):
 
     :return: Processed data
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Stripe Removal')
 
     # get the first one, the rest will be processed
     msg = "Starting removal of stripes/ring artifacts using method '{0}'..."

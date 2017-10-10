@@ -48,8 +48,6 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None,
 
     :return: rotated images
     """
-    progress = Progress.ensure_instance(progress)
-
     h.check_data_stack(data)
 
     if rotation:
@@ -76,7 +74,8 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None,
 
 
 def _execute_seq(data, rotation, progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Rotate Stack')
 
     with progress:
         progress.update(msg="Starting rotation step ({0} degrees clockwise), "
@@ -93,7 +92,8 @@ def _execute_seq(data, rotation, progress=None):
 
 
 def _execute_par(data, rotation, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Rotate Stack')
 
     with progress:
         progress.update(msg="Starting PARALLEL rotation step ({0} degrees "

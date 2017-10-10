@@ -28,7 +28,8 @@ def execute(data, minus_log=True, progress=None):
 
     :return: Inverted image
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Minus Log')
 
     if minus_log:
         # import early to check if tomopy is available

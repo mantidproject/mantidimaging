@@ -61,7 +61,8 @@ def execute(data, diff, radius=_default_radius, mode=_default_mode,
 
     :return: The processed 3D numpy.ndarray
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Outliers')
 
     if diff and radius and diff > 0 and radius > 0:
         with progress:

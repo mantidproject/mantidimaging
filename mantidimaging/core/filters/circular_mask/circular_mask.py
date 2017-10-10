@@ -42,7 +42,7 @@ def execute(data, circular_mask_ratio, circular_mask_value=0., cores=None,
 
     :return: The processed 3D numpy.ndarray
     """
-    progress = Progress.ensure_instance(progress)
+    progress = Progress.ensure_instance(progress, task_name='Circular Mask')
 
     if circular_mask_ratio and 0 < circular_mask_ratio < 1:
         tomopy = importer.do_importing('tomopy')

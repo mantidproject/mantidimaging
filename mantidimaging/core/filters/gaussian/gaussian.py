@@ -89,7 +89,7 @@ def _execute_seq(data, size, mode, order, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress,
                                         num_steps=data.shape[0],
-                                        task_name='Gaussian')
+                                        task_name='Gaussian filter')
 
     # Sequential CPU version of the Gaussian filter
     log.info("Starting  gaussian filter, with pixel data type: {0}, "
@@ -110,7 +110,8 @@ def _execute_seq(data, size, mode, order, progress=None):
 def _execute_par(data, size, mode, order, cores=None, chunksize=None,
                  progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, task_name='Gaussian')
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Gaussian filter')
 
     # Parallel CPU version of the Gaussian filter
     # create the partial function to forward the parameters
