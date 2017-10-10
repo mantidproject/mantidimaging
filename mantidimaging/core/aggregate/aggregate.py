@@ -71,7 +71,7 @@ def execute(config):
                                                        selected_angles)
     getLogger(__name__).info(
             'Applying aggregating method {0} on angles: {1}'.format(
-            agg_method, angle_folders))
+                agg_method, angle_folders))
 
     # generate the file names in each angle folder
     angle_image_paths = get_image_files_paths(input_path, angle_folders,
@@ -95,11 +95,13 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
                    single_folder, config):
     """
 
-    :param angle_image_paths: Enumerated generator that contains pairs of (angle number, list of all files for angle)
+    :param angle_image_paths: Enumerated generator that contains pairs of
+                              (angle number, list of all files for angle)
     :param img_format: The input and output format of the images
     :param agg_method: Which method to be used for aggregation, sum or mean
     :param energies_label: Which energy levels are we aggregating
-    :param single_folder: Is the output in a single folder, or a folder per aggregate angle
+    :param single_folder: Is the output in a single folder, or a folder per
+                          aggregate angle
     :param config: The reconstruction config
     :return: None
     """
@@ -125,7 +127,8 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
         h.pstop("Finished aggregating.")
 
         custom_index, name, name_postfix, subdir = create_name(
-            DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label, single_folder)
+            DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label,
+            single_folder)
 
         s.save_single_image(
             aggregated_images,
@@ -138,9 +141,11 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
 
 def create_name(prefix, agg_method, angle, energies_label, single_folder):
     if not single_folder:
-        return create_name_multiple_files(prefix, agg_method, angle, energies_label)
+        return create_name_multiple_files(
+                prefix, agg_method, angle, energies_label)
     else:
-        return create_name_single_folder(prefix, agg_method, angle, energies_label)
+        return create_name_single_folder(
+                prefix, agg_method, angle, energies_label)
 
 
 def create_name_single_folder(prefix, agg_method, angle, energies_label):
@@ -161,14 +166,13 @@ def create_name_multiple_files(prefix, agg_method, angle, energies_label):
 
 def do_sanity_checks(output_path, agg_method, commands):
     if not output_path:
-        raise ValueError(
-            "The flag -o/--output-path MUST be passed for this IMOPR COR mode!")
+        raise ValueError("The flag -o/--output-path MUST be passed for this "
+                         "IMOPR COR mode!")
 
     agg_methods = ['sum', 'avg']
     if agg_method not in agg_methods:
-        raise ValueError(
-            "Invalid method provided for --aggregate, the allowed methods are: "
-            + ", ".join(agg_methods))
+        raise ValueError("Invalid method provided for --aggregate, the "
+                         "allowed methods are: " + ", ".join(agg_methods))
 
     # the length of energy levels must be an even number
     if len(commands) % 2 != 0:
