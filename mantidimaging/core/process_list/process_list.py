@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-import sys
 # using pickle instead of dill, because dill is not available on SCARF
 import pickle
 
@@ -13,7 +12,8 @@ DEFAULT_FUNCTION_SEPARATOR = ';'
 DEFAULT_TUPLE_SEPARATOR = ')'
 
 
-def _entry_from_string(entry, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, tuple_separator=DEFAULT_TUPLE_SEPARATOR):
+def _entry_from_string(entry, arg_separator=DEFAULT_ARGUMENT_SEPARATOR,
+                       tuple_separator=DEFAULT_TUPLE_SEPARATOR):
     whitespace = entry.find(arg_separator)
     package = entry[:whitespace]
     entry = entry[whitespace + 1:]
@@ -35,10 +35,11 @@ def load(file=None):
     return pickle.load(open(file, "rb"))
 
 
-def from_string(string, cls=None, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func_separator=DEFAULT_FUNCTION_SEPARATOR):
+def from_string(string, cls=None, arg_separator=DEFAULT_ARGUMENT_SEPARATOR,
+                func_separator=DEFAULT_FUNCTION_SEPARATOR):
     if cls is not None:
-        assert isinstance(
-            cls, ProcessList), "The class parameter is not of the correct type ProcessList!"
+        assert isinstance(cls, ProcessList), \
+                "The class parameter is not of the correct type ProcessList!"
     else:
         cls = ProcessList()
 
@@ -51,7 +52,8 @@ def from_string(string, cls=None, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func
                 entry, arg_separator, DEFAULT_TUPLE_SEPARATOR))
     except (AttributeError, SyntaxError, ValueError) as e:
         raise ValueError(
-            "Error encountered while processing from the input string. The formatting may be invalid." + str(e))
+            "Error encountered while processing from the input string. "
+            "The formatting may be invalid." + str(e))
 
     return cls
 
@@ -59,6 +61,7 @@ def from_string(string, cls=None, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func
 class ProcessList(object):
     """
     Stores a queue of functions to be executed in first-in first-out order.
+
     Currently only works with MantidImaging internal functions.
     """
 
@@ -118,12 +121,19 @@ class ProcessList(object):
 
     def store(self, func, *args, **kwargs):
         """
-        Store a function in the process list to be executed later. The arguments must be literal values.
-        Note: More arguments can be appended when the funciton is called for execution.
+        Store a function in the process list to be executed later.
 
-        :param func: This works with a function reference, because metadata needs to be read from the function.
-        :param args: Arguments that will be forwarded to the function. They must be literal values.
-        :param kwargs: Keyword arguments that will be forwarded to the function. They must be literal values.
+        The arguments must be literal values.
+
+        Note: More arguments can be appended when the funciton is called for
+        execution.
+
+        :param func: This works with a function reference, because metadata
+                     needs to be read from the function.
+        :param args: Arguments that will be forwarded to the function. They
+                     must be literal values.
+        :param kwargs: Keyword arguments that will be forwarded to the
+                       function. They must be literal values.
         """
         self._store_func(func, args, kwargs)
 
@@ -132,7 +142,8 @@ class ProcessList(object):
         inspect = imps.import_inspect()
         parameters = inspect.signature(func).parameters
         assert set(kwargs.keys()).issubset(parameters), \
-            "One or more of the keyword arguments provided were NOT found in the function's declaration!"
+            "One or more of the keyword arguments provided were NOT found " \
+            "in the function's declaration!"
 
         func_package = func.__globals__['__name__'].rsplit('.', 1)[0]
         func_name = func.__name__
@@ -151,20 +162,25 @@ class ProcessList(object):
         file = os.path.abspath(os.path.expanduser(file))
         pickle.dump(self, open(file, "wb"))
 
-    def to_string(self, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func_separator=DEFAULT_FUNCTION_SEPARATOR):
+    def to_string(self, arg_separator=DEFAULT_ARGUMENT_SEPARATOR,
+                  func_separator=DEFAULT_FUNCTION_SEPARATOR):
         """
         :param arg_separator: Separator character to be used between arguments.
-        :param func_separator: Separator character to be used between functions.
+        :param func_separator: Separator character to be used between
+                               functions.
         """
         out = StringIO()
         for entry in self._list:
             e = list(map(lambda x: str(x), list(entry)))
 
-            output_string = e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] + DEFAULT_ARGUMENT_SEPARATOR + \
-                e[2] + DEFAULT_ARGUMENT_SEPARATOR + e[3] + DEFAULT_FUNCTION_SEPARATOR
+            output_string = (e[0] + DEFAULT_ARGUMENT_SEPARATOR + e[1] +
+                             DEFAULT_ARGUMENT_SEPARATOR + e[2] +
+                             DEFAULT_ARGUMENT_SEPARATOR + e[3] +
+                             DEFAULT_FUNCTION_SEPARATOR)
             out.write(output_string)
 
         return out.getvalue()
 
-    def from_string(self, string, arg_separator=DEFAULT_ARGUMENT_SEPARATOR, func_separator=DEFAULT_FUNCTION_SEPARATOR):
+    def from_string(self, string, arg_separator=DEFAULT_ARGUMENT_SEPARATOR,
+                    func_separator=DEFAULT_FUNCTION_SEPARATOR):
         from_string(string, self, arg_separator, func_separator)
