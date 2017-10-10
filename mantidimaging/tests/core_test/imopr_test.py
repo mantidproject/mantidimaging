@@ -5,7 +5,7 @@ import tempfile
 import unittest
 import numpy.testing as npt
 
-from mantidimaging.core.imopr.helper import (
+from mantidimaging.core.imopr.utility import (
         new_cor_array, save_cors_to_file, load_cors_from_file)
 
 

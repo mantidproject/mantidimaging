@@ -2,9 +2,6 @@ from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 
-# TODO should change the name of this file so its not confused with
-# the other helper.py that's not in imopr
-
 
 def handle_indices(indices, retstep=False):
     args = len(indices)

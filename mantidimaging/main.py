@@ -3,12 +3,14 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 import warnings
+
+from mantidimaging import helper as h
+from mantidimaging.core.configs import recon_config
+
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: \
     formatwarning_orig(message, category, filename, lineno, line='')
 
-from mantidimaging import helper as h
-from mantidimaging.core.configs import recon_config
 
 def check_version_info():
     python_version = sys.version_info
