@@ -9,6 +9,7 @@ from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
                                                 NavigationToolbar2QT)
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from mantidimaging.core.utility import gui_compile_ui
 from mantidimaging.gui.stack_visualiser import sv_histogram
@@ -63,7 +64,14 @@ class StackVisualiserView(Qt.QMainWindow):
         :param cmap: The color map which is to be used
         """
         self.image_axis = self.figure.add_subplot(111)
-        self.image = self.image_axis.imshow(self.presenter.get_image(0), cmap=cmap)
+        self.image = self.image_axis.imshow(
+                self.presenter.get_image(0), cmap=cmap)
+
+        self.color_bar_axis = make_axes_locatable(self.image_axis).append_axes(
+                "right", size="5%", pad=0.1)
+        self.color_bar = self.figure.colorbar(
+                self.image, cax=self.color_bar_axis)
+
         self.set_image_title_to_current_filename()
 
     def initialise_canvas(self):
@@ -338,6 +346,8 @@ class StackVisualiserView(Qt.QMainWindow):
         """
         self.set_image_title_to_current_filename()
         self.image.set_data(self.current_image())
+        self.color_bar.set_clim(self.current_image().min(), self.current_image().max())
+        self.color_bar.draw_all()
         self.canvas.draw()
 
     def set_image_title_to_current_filename(self):
