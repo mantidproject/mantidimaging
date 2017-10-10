@@ -3,10 +3,9 @@
 
 .. Quick Start contents:
 
-=============
 Quick Start
-=============
------------------
+===========
+
 Printing the help
 -----------------
 
@@ -17,17 +16,14 @@ The help can be printed by passing the `-h` flag.
 This will print out the whole help, containing each available command line
 parameter that can be passed.
 
-------------
 Loading Data
 ------------
 
-^^^^^^^^^^^^^^^^^^^^^^
 Specifying Sample data
 ^^^^^^^^^^^^^^^^^^^^^^
 
 `mantidimaging -i /some/path/to/sample`
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Loading Sample, Flat and Dark at once
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -36,7 +32,6 @@ Loading Sample, Flat and Dark at once
 
 `mantidimaging -i /some/path/to/sample -F /some/path/to/flat -D /some/path/to/dark`
 
-^^^^^^^^^^^^^^^^
 Running a filter
 ^^^^^^^^^^^^^^^^
 
@@ -57,7 +52,6 @@ To run the median filter we want to load a stack with `-i` and then append the
 
 This will load in the data, execute median filter.. and do nothing else.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Saving pre-processed images
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -70,7 +64,6 @@ If they are not specified the data will be processed, and then **the result will
 be discarded**. However this also requires an output path specified. Please
 refer to `Specifying output folder`_.
 
-^^^^^^^^^^^^^^^^^^^^^^^^
 Specifying output folder
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -79,7 +72,6 @@ done via one of the following flags:
 
 `-o folder_name` or `--output-path folder_name`
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Customising pre-processed folder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -88,7 +80,6 @@ By default the pre-processing will be saved out in a folder called
 
 `-p folder_name` or `--preproc-subdir folder_name`
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Specifying indices to be processed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -114,7 +105,6 @@ Example usage on the command line:
 These 3 specify the same thing, and show off the different ways to use
 `--indices`.
 
-^^^^^^^^^^^^^^^^^^^^
 Saving out sinograms
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -132,7 +122,6 @@ command:
 `mantidimaging -i /some/path/ -o /output/path --convert --swap-axes`
 
 
-^^^^^^^^^^^^^^^^^^^^^
 Automatic Finding COR
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -145,7 +134,6 @@ To run one of the Tomopy's automatic COR finding algorithms use:
 
 This will run the automatic COR algorithm on the first 10 slices.
 
-^^^^^^^^^^^^^^^^^^
 Manual Finding COR
 ^^^^^^^^^^^^^^^^^^
 
@@ -168,7 +156,6 @@ CORs in range 200 to 300, with a step of 1 (from `--imopr 200 300 1 corwrite`).
 
 Then it will save them out to the path specified by `-o`.
 
-^^^^^^^^^^^^^^^^^^^^^^
 Running reconstruction
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -197,7 +184,6 @@ This specifies that slice 100 has COR of 340, slice 200 has a COR of 341, and
 slice 300 has a COR of 342. The CORs between the slices will be interpolated
 based on the ones that are passed in.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Selecting tool and algorithm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -3,11 +3,9 @@
 
 .. Setting up contents:
 
-==========
 Setting up
 ==========
 
----------------------
 Obtaining the package
 ---------------------
 
@@ -21,7 +19,6 @@ Or downloading a Zip archive of the repository contents:
 `wget https://github.com/mantidproject/mantidimaging/archive/master.zip`
 `unzip mantidimaging-master.zip`
 
------------------------------
 Setting up Python environment
 -----------------------------
 
@@ -36,7 +33,6 @@ add Anaconda to your PATH in your `.bashrc` file. Be sure to specify `yes` at
 this point, this will ensure that the correct version of Python will be used
 when launching the package tools.
 
-----------------------
 Installing the package
 ----------------------
 
@@ -50,7 +46,6 @@ updating or modifying the package:
 
 `pip install -e .`
 
---------------------
 Starting the package
 --------------------
 
