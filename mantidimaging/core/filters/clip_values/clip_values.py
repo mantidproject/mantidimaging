@@ -45,17 +45,25 @@ def execute(data, clip_min=None, clip_max=None, clip_min_new_value=None, clip_ma
     """
     Clip values below the min and above the max pixels.
 
-    :param data: Input data as a 3D numpy.ndarray
+    :param data: Input data as a 3D numpy.ndarray.
 
-    :param clip_min: The minimum value to be clipped from the data
+    :param clip_min: The minimum value to be clipped from the data.
+                     If None is provided then no lower threshold is used.
 
-    :param clip_max: The maximum value to be clipped from the data
+    :param clip_max: The maximum value to be clipped from the data.
+                     If None is provided then no upper threshold is used.
 
-    :return: The processed 3D numpy.ndarray
+    :param clip_min_new_value: The value to use when replacing values less than
+                               clip_min.
+                               If None is provided then the value of clip_min is
+                               used.
 
-    Example command line:
+    :param clip_max_new_value: The value to use when replacing values greater
+                               than clip_max.
+                               If None is provided then the value of clip_max is
+                               used.
 
-    mantidimaging -i /some/data/ --clip-min -120 --clip-max 42
+    :return: The processed 3D numpy.ndarray.
     """
 
     # we're using is not None because if the value specified is 0.0 that evaluates to false

@@ -35,7 +35,7 @@ def execute(data,
             cores=None,
             chunksize=None):
     """
-    Do background correction with flat and dark images
+    Do background correction with flat and dark images.
 
     :param data: Sample data which is to be processed. Expected in radiograms
 
@@ -51,13 +51,7 @@ def execute(data,
 
     :param chunksize: The number of chunks that each worker will receive.
 
-    :return: filtered data (stack of images)
-
-    Example command line:
-    mantidimaging -i /some/data -F /some/flat/images -D /some/dark/images
-
-    mantidimaging -i /some/data --input-path-flat /some/flat/images
-                   --input-path-flat /some/dark/images
+    :return: Filtered data (stack of images)
     """
     h.check_data_stack(data)
 

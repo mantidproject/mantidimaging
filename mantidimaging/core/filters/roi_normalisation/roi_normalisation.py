@@ -43,12 +43,6 @@ def execute(data, air_region, cores=None, chunksize=None):
     :param chunksize: The number of chunks that each worker will receive.
 
     :returns: filtered data (stack of images)
-
-    Example command line:
-
-    mantidimaging -i /some/data -A 134 203 170 250
-
-    mantidimaging -i /some/data --air-region 134 203 170 250
     """
     h.check_data_stack(data)
 

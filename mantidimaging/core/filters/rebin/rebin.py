@@ -33,8 +33,6 @@ def modes():
 
 def execute(data, rebin_param, mode, cores=None, chunksize=None):
     """
-    Execute the Rebin/imresize filter.
-
     :param data: Sample data which is to be processed. Expected in radiograms
 
     :param rebin_param: int, float or tuple
@@ -50,9 +48,6 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None):
     :param chunksize: The number of chunks that each worker will receive.
 
     :return: The processed 3D numpy.ndarray
-
-    Example command line:
-    mantidimaging -i /some/data --rebin 0.5 --rebin-mode 'nearest'
 
     [Full reference](https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.misc.imresize.html)
     """

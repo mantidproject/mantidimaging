@@ -12,3 +12,17 @@ D (zero intensity) images.
 
 After normalisation the value of each pixel is limited to a given range to
 prevent bad values from causing issues with later filtering.
+
+Command line examples
+---------------------
+
+  - :code:`mantidimaging -i /some/data -F /some/flat/images -D
+    /some/dark/images`
+
+  - :code:`mantidimaging -i /some/data --input-path-flat /some/flat/images
+    --input-path-flat /some/dark/images`
+
+Python API
+----------
+
+.. autofunction:: mantidimaging.core.filters.background_correction.execute

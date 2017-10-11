@@ -46,7 +46,7 @@ def modes():
 def execute(data, diff, radius=_default_radius, mode=_default_mode,
             cores=None):
     """
-    Execute the Outliers filter. Requires tomopy to be available.
+    Requires tomopy to be available.
 
     :param data: Input data as a 3D numpy.ndarray
 
@@ -58,12 +58,6 @@ def execute(data, diff, radius=_default_radius, mode=_default_mode,
 
 
     :return: The processed 3D numpy.ndarray
-
-    Example command line:
-
-    mantidimaging -i /some/data --outliers 1
-
-    mantidimaging -i /some/data --outliers 1 --outliers-radius 4
     """
 
     if diff and radius and diff > 0 and radius > 0:

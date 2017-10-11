@@ -87,24 +87,6 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None):
 
                     size (default: 5, int, optional)
                         Size of the smoothing filter.
-
-    Example command line:
-
-    mantidimaging -i /some/data --stripe-removal-wf level=1
-
-    mantidimaging -i /some/data --stripe-removal-wf level=3 pad=False
-
-    mantidimaging -i /some/data
-                    --stripe-removal-wf level=3 pad=False wname=db5
-
-    mantidimaging -i /some/data
-                    --stripe-removal-wf level=3 pad=False wname=db5 sigma=2
-
-    mantidimaging -i /some/data --stripe-removal-ti nblock=3
-
-    mantidimaging -i /some/data --stripe-removal-ti nblock=3 alpha=2
-
-    mantidimaging -i /some/data --stripe-removal-sf size=3
     """
     # get the first one, the rest will be processed
     msg = "Starting removal of stripes/ring artifacts using method '{0}'..."

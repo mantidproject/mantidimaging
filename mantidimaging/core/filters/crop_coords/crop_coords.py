@@ -38,12 +38,6 @@ def execute(data, region_of_interest, flat=None, dark=None):
     :param dark: The average dark image to be cropped
 
     :return: The processed 3D numpy.ndarray
-
-    Example command line:
-
-    mantidimaging -i /some/data -R 134 203 170 250
-
-    mantidimaging -i /some/data --region-of-interest 134 203 170 250
     """
 
     h.check_data_stack(data)

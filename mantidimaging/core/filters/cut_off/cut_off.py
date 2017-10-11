@@ -43,7 +43,6 @@ def _gui_register(main_window):
 
 def execute(data, threshold):
     """
-    Execute the Cut off filter.
     Cut off values above threshold relative to the max pixels.
 
     :param data: Input data as a 3D numpy.ndarray
@@ -51,9 +50,6 @@ def execute(data, threshold):
     :param threshold: The threshold related to the minimum pixel value that will be clipped
 
     :return: The processed 3D numpy.ndarray
-
-    Example command line:
-    mantidimaging -i /some/data/ --cut-off 0.95
     """
 
     if threshold and threshold > 0.0:

@@ -47,8 +47,6 @@ def modes():
 
 def execute(data, size, mode, order, cores=None, chunksize=None):
     """
-    Execute the Gaussian filter.
-
     :param data: Input data as a 3D numpy.ndarray
 
     :param size: Size of the kernel
@@ -68,16 +66,6 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
     :param chunksize: The number of chunks that each worker will receive.
 
     :return: The processed 3D numpy.ndarray
-
-    Example command line:
-
-    mantidimaging -i /some/data --gaussian-size 3
-
-    mantidimaging -i /some/data --gaussian-size 3
-                   --gaussian-mode 'nearest'
-
-    mantidimaging -i /some/data --gaussian-size 3
-                   --gaussian-mode 'nearest' --gaussian-order 1
 
     [Full ref](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html)
     """

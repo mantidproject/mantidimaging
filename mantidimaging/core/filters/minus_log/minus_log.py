@@ -16,12 +16,14 @@ def _cli_register(parser):
 
 def execute(data, minus_log=True):
     """
-    This filter should be used on transmission images (background corrected images).
+    This filter should be used on transmission images (background corrected
+    images).
+
     It converts the images from transmission to attenuation.
 
     :param data: Sample data which is to be processed. Expected in radiograms
-    :param minus_log: Default True
-                      Specify whether to calculate minus log or just return.
+
+    :param minus_log: Specify whether to calculate minus log or just return.
     """
     if minus_log:
         # import early to check if tomopy is available
