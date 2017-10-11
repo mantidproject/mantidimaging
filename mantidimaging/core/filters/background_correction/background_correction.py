@@ -117,6 +117,7 @@ def _execute_par(data,
     f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
     data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark")
 
+    # divide the data by (flat - dark)
     f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
     data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize,
                                      "Norm by Flat")

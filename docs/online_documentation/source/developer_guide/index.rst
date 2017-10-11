@@ -1,5 +1,3 @@
-.. Developer Guide master file
-
 Developer Guide
 ========================================
 
@@ -7,7 +5,6 @@ Developer Guide
    :maxdepth: 1
    :glob:
    :caption: Contents:
-  
 
    notebooks
    python_3x_performance_issues

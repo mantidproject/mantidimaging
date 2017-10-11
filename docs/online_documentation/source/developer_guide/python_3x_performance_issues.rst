@@ -1,9 +1,3 @@
-.. Python <=3.6 performance issues master file
-   See http://sphinx-doc.org/tutorial.html#defining-document-structure
-
-.. Python <=3.6 performance issues contents:
-
-===============================
 Python <=3.6 Performance Issues
 ===============================
 
@@ -19,5 +13,5 @@ performance as the Python 2.7. It will not be available with the default
 distribution until Python 3.7.
 
 The behaviour is monkey-patched at runtime, to have the Python 3.7 code, in the
-`parallel` package's `__init__.py` file. There is more explanation of what is
-being done in the file and why.
+:code:`parallel` package's :code:`__init__.py` file. There is more explanation
+of what is being done in the file and why.

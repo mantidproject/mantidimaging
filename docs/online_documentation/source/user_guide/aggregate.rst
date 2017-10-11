@@ -33,7 +33,7 @@ For usage of this mode the following arguments are available:
 `--aggregate`
 -------------
 
-Syntax: `--aggregate <start_energy> <end_energy>... <mode:{sum/avg}>`
+Syntax: :code:`--aggregate <start_energy> <end_energy>... <mode:{sum/avg}>`
 
 This flag will activate the mode, it requires an even number of inputs, which
 should correspond to start and end energy levels. The final argument must be
@@ -46,33 +46,35 @@ specifying the method used to create the aggregated image.
 
 Example usage:
 
-`mantidimaging -i /some/data/ --aggregate 0 10 -o /some/directory`
+:code:`mantidimaging -i /some/data/ --aggregate 0 10 -o /some/directory`
 
-`mantidimaging -i /some/data/ --aggregate 150 435 -o /some/directory`
+:code:`mantidimaging -i /some/data/ --aggregate 150 435 -o /some/directory`
 
 `--aggregate-angles`
 --------------------
 
-Syntax: `--aggregate-angles <start_angle> <end_angle>`
+Syntax: :code:`--aggregate-angles <start_angle> <end_angle>`
 
 This flag allows to select only certain angles for aggregation _within_ the
 input folder.
 
-The `--aggregate ...` command **MUST** be passed otherwise this flag will be
+The :code:`--aggregate ...` command **MUST** be passed otherwise this flag will be
 ignored.
 
 Example usage:
 
-`mantidimaging -i /some/data/ --aggregate 0 10 --aggregate-angles 0 10 -o /some/directory`
+:code:`mantidimaging -i /some/data/ --aggregate 0 10 --aggregate-angles 0 10 -o
+/some/directory`
 
-`mantidimaging -i /some/data/ --aggregate 0 10 --aggregate-angles 3 4 -o /some/directory`
+:code:`mantidimaging -i /some/data/ --aggregate 0 10 --aggregate-angles 3 4 -o
+/some/directory`
 
 The default output directory structure will create a folder for each angle, and
 inside this folder there will be an image for each range of energy levels
 selected.
 
-This command line `mantidimaging -i /data/ --aggregate 0 10 avg -o aggregate/`
-creates the following structure:
+This command line :code:`mantidimaging -i /data/ --aggregate 0 10 avg -o
+aggregate/` creates the following structure:
 
 .. code::
 
@@ -110,8 +112,9 @@ Inside the folders the images contain the energy levels which were aggregated.
 
 This command gives the option to **not** create the structure above.
 
-This command line `mantidimaging -i /data/ --aggregate 0 100 avg -o aggregate/
---aggregate-single-folder-output` creates the following file structure:
+This command line :code:`mantidimaging -i /data/ --aggregate 0 100 avg -o
+aggregate/ --aggregate-single-folder-output` creates the following file
+structure:
 
 .. code::
 

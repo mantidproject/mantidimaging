@@ -12,7 +12,8 @@ of regions of interest might be inaccurate.
 
 Example usage:
 
-`mantidimaging -i /some/data/ -o /some/output/ --in-format <img_format> --out-format <img_format>`
+:code:`mantidimaging -i /some/data/ -o /some/output/ --in-format <img_format>
+--out-format <img_format>`
 
-This will load all images from `/some/data` and save them out in `/some/output`
-with the format specified by `--out-format`.
+This will load all images from :code:`/some/data` and save them out in
+:code:`/some/output` with the format specified by :code:`--out-format`.

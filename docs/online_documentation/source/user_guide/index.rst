@@ -1,5 +1,3 @@
-.. User Guide master file
-
 User Guide
 ==========
 
@@ -10,7 +8,8 @@ User Guide
 
    setting_up
    quick_start
-   imgdata
+   io
    aggregate
    convert
    imopr
+   filters/index

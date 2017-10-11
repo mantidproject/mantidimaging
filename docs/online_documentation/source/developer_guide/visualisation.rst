@@ -1,9 +1,3 @@
-.. Visualisation master file
-   See http://sphinx-doc.org/tutorial.html#defining-document-structure
-
-.. Visualisation contents:
-
-=============
 Visualisation
 =============
 
