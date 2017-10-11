@@ -171,7 +171,7 @@ def mock_property(obj, object_property, property_return_value=None):
 
     :returns: The PropertyMock object that you can do assertions with
     """
-    import mantidimaging.core.algorithms.special_imports as imps
+    import mantidimaging.core.utility.special_imports as imps
     mock = imps.import_mock()
     temp_property_mock = mock.PropertyMock(return_value=property_return_value)
     setattr(type(obj), object_property, temp_property_mock)

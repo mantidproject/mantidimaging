@@ -10,7 +10,7 @@ from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 
-from mantidimaging.core.algorithms import gui_compile_ui
+from mantidimaging.core.utility import gui_compile_ui
 from mantidimaging.gui.stack_visualiser import sv_histogram
 from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter

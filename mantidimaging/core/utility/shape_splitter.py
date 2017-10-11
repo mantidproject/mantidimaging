@@ -6,7 +6,7 @@ from logging import getLogger
 import numpy as np
 
 import mantidimaging.helper as h
-from mantidimaging.core.algorithms import size_calculator
+from mantidimaging.core.utility import size_calculator
 
 
 def _calculate_ratio(current_size, max_memory, reconstruction):

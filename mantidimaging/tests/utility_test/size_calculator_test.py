@@ -4,7 +4,7 @@ import numpy as np
 
 import unittest
 
-from mantidimaging.core.algorithms import size_calculator
+from mantidimaging.core.utility import size_calculator
 
 
 class SizeCalculatorTest(unittest.TestCase):

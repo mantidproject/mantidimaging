@@ -1,5 +1,5 @@
+from mantidimaging.core.utility import gui_compile_ui as gcu
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-from mantidimaging.core.algorithms import gui_compile_ui as gcu
 
 GUI_MENU_NAME = 'Cut Off'
 

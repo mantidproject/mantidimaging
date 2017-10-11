@@ -1,17 +1,15 @@
 from __future__ import absolute_import, division, print_function
 
 import argparse
-import os
-import sys
 import unittest
 
 import numpy.testing as npt
 
 import mantidimaging.tests.test_helper as th
 
-from mantidimaging.core.algorithms import registrator
 from mantidimaging.core.configs.functional_config import FunctionalConfig
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
+from mantidimaging.core.utility import registrator
 
 
 class ConfigsTest(unittest.TestCase):

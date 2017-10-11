@@ -61,7 +61,7 @@ def main(default_args):
     if not config.func.split:
         res = thingy_to_execute(config)
     else:
-        from mantidimaging.core.algorithms import execution_splitter
+        from mantidimaging.core.utility import execution_splitter
         res = execution_splitter.execute(config, thingy_to_execute)
     h.total_execution_timer()
 

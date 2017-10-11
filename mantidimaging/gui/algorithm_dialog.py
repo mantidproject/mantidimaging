@@ -4,7 +4,7 @@ from logging import getLogger
 
 from PyQt5 import Qt
 
-from mantidimaging.core.algorithms import gui_compile_ui
+from mantidimaging.core.utility import gui_compile_ui
 from mantidimaging.gui.main_window.load_dialog import select_file
 from mantidimaging.gui.stack_visualiser.sv_available_parameters import (
         Parameters, PARAMETERS_ERROR_MESSAGE)

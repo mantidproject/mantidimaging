@@ -10,8 +10,8 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging.core.algorithms import registrator
 from mantidimaging.core.configs.functional_config import FunctionalConfig
+from mantidimaging.core.utility import registrator
 
 
 def grab_full_config(default_args=None):

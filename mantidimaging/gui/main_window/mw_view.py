@@ -5,7 +5,7 @@ import matplotlib
 from logging import getLogger
 from PyQt5 import Qt, QtCore, QtWidgets
 
-from mantidimaging.core.algorithms import gui_compile_ui
+from mantidimaging.core.utility import gui_compile_ui
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
 from .load_dialog import MWLoadDialog

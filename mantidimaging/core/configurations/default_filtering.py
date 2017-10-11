@@ -2,11 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 from logging import getLogger
 
-from mantidimaging.core.algorithms import value_scaling
 from mantidimaging.core.filters import (
         background_correction, roi_normalisation, crop_coords, cut_off,
         gaussian, median_filter, minus_log, outliers, rebin, rotate_stack,
         stripe_removal, circular_mask, clip_values, ring_removal)
+from mantidimaging.core.utility import value_scaling
 
 
 def execute(config, sample, flat, dark):

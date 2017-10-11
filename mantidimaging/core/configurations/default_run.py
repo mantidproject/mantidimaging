@@ -3,11 +3,10 @@ from __future__ import absolute_import, division, print_function
 from logging import getLogger
 
 from mantidimaging import helper as h
-from mantidimaging.core.algorithms import cor_interpolate
-from mantidimaging.core.algorithms import size_calculator
 from mantidimaging.core.configurations import default_filtering
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.tools import importer
+from mantidimaging.core.utility import cor_interpolate, size_calculator
 
 
 def _print_expected_memory_usage(data_shape, dtype):

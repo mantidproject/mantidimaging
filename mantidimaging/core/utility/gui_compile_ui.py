@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-from mantidimaging.core.algorithms import finder
+from mantidimaging.core.utility import finder
 
 
 def execute(ui_file, qt_obj=None):

@@ -4,8 +4,8 @@ import sys
 
 from PyQt5.Qt import QApplication
 
-from mantidimaging.core.algorithms import registrator
-from mantidimaging.core.algorithms.registrator.gui_registrator import gui_register
+from mantidimaging.core.utility import registrator
+from mantidimaging.core.utility.registrator.gui_registrator import gui_register
 from mantidimaging.gui.main_window.mw_view import MainWindowView
 
 

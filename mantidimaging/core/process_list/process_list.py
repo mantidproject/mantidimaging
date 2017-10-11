@@ -138,7 +138,7 @@ class ProcessList(object):
         self._store_func(func, args, kwargs)
 
     def _store_func(self, func, args, kwargs):
-        import mantidimaging.core.algorithms.special_imports as imps
+        import mantidimaging.core.utility.special_imports as imps
         inspect = imps.import_inspect()
         parameters = inspect.signature(func).parameters
         assert set(kwargs.keys()).issubset(parameters), \
