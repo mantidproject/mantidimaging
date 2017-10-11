@@ -94,7 +94,8 @@ html_theme = 'alabaster'
 html_sidebars = {
     '**': [
         'about.html',
-        'navigation.html',
+        'relations.html',
+        'localtoc.html',
         'searchbox.html',
     ]
 }
@@ -113,7 +114,9 @@ html_theme_options = {
     },
     'sidebar_width': '300px',
     'sidebar_collapse': 'true',
-    'page_width': '80%'
+    'show_related': 'true',
+    'page_width': '80%',
+    'description': ' '
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
