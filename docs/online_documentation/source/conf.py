@@ -115,7 +115,7 @@ html_theme_options = {
     'sidebar_width': '300px',
     'sidebar_collapse': 'true',
     'show_related': 'true',
-    'page_width': '80%',
+    'page_width': '90%',
     'description': ' '
 }
 
