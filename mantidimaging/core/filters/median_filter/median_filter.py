@@ -52,8 +52,6 @@ def execute(data, size, mode=modes()[0], cores=None, chunksize=None):
 
     :return: Returns the processed data
 
-    [Full reference](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html)
-
     """
     h.check_data_stack(data)
 

@@ -1,6 +1,10 @@
 Outliers
 ========
 
+.. important::
+
+    This filter requires TomoPy to be available.
+
 TODO
 
 Command line examples

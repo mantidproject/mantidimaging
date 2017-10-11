@@ -66,8 +66,6 @@ def execute(data, size, mode, order, cores=None, chunksize=None):
     :param chunksize: The number of chunks that each worker will receive.
 
     :return: The processed 3D numpy.ndarray
-
-    [Full ref](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html)
     """
     h.check_data_stack(data)
 

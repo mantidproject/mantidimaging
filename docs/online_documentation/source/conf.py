@@ -112,6 +112,7 @@ html_theme_options = {
         'Jenkins CI': 'http://builds.mantidproject.org/view/Imaging/',
     },
     'sidebar_width': '300px',
+    'sidebar_collapse': 'true',
     'page_width': '80%'
 }
 

@@ -3,7 +3,6 @@ Filters
 
 .. toctree::
    :maxdepth: 1
-   :glob:
    :caption: Contents:
 
    background_correction

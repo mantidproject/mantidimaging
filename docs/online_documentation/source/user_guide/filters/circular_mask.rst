@@ -1,6 +1,10 @@
 Circular Mask
 =============
 
+.. important::
+
+    This filter requires TomoPy to be available.
+
 Applies TomoPy's `circular mask`__ filter (:code:`tomopy.misc.corr.circ_mask`).
 
 Command line examples

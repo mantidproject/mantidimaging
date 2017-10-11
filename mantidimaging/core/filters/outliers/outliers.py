@@ -56,7 +56,6 @@ def execute(data, diff, radius=_default_radius, mode=_default_mode,
 
     :param cores: The number of cores that will be used to process the data.
 
-
     :return: The processed 3D numpy.ndarray
     """
 

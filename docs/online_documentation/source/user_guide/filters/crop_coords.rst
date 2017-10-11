@@ -1,7 +1,10 @@
 Crop Coordinates
 ================
 
-TODO
+This filter crops an image to a region of interest (ROI) using the extents of
+the region.
+
+The extents are expected in the order :code:`left top right bottom`.
 
 Command line examples
 ---------------------
