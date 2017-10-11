@@ -53,8 +53,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'MantidImaging'
-copyright = u'2017, Dimitar Tasev'
-author = u'Dimitar Tasev'
+copyright = u'2017, Mantid Project'
+author = u'Dimitar Tasev, Dan Nixon'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -91,11 +91,29 @@ todo_include_todos = True
 #
 html_theme = 'alabaster'
 
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        'searchbox.html',
+    ]
+}
+
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'github_user': 'mantidproject',
+    'github_repo': 'mantidimaging',
+    'github_button': 'false',
+    'extra_nav_links': {
+        'GitHub': 'https://github.com/mantidproject/mantidimaging/',
+        'Jenkins CI': 'http://builds.mantidproject.org/view/Imaging/',
+    },
+    'sidebar_width': '300px',
+    'page_width': '80%'
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -134,7 +152,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'MantidImaging.tex', u'MantidImaging Documentation',
-     u'Dimitar Tasev', 'manual'),
+     u'Dimitar Tasev, Dan Nixon', 'manual'),
 ]
 
 
