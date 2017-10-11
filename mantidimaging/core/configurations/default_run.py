@@ -12,7 +12,8 @@ from mantidimaging.core.tools import importer
 
 def _print_expected_memory_usage(data_shape, dtype):
     getLogger(__name__).info(
-        "Predicted memory usage for data: {0} MB".format(size_calculator.full_size_MB(data_shape, 0, dtype)))
+        "Predicted memory usage for data: {0} MB".format(
+            size_calculator.full_size_MB(data_shape, 0, dtype)))
 
 
 def initialise_run(config):
@@ -57,16 +58,18 @@ def execute(config):
 
     images = loader.load_from_config(config)
 
-    sample, flat, dark = default_filtering.execute(config, images.get_sample(), images.get_flat(), images.get_dark())
+    sample, flat, dark = default_filtering.execute(
+            config, images.get_sample(), images.get_flat(), images.get_dark())
 
     if not config.func.reconstruction:
         saver_class.save_preproc_images(sample)
-        getLogger(__name__).info(
-            "Skipping reconstruction because no --reconstruction flag was passed.")
+        getLogger(__name__).info("Skipping reconstruction because no "
+                                 "--reconstruction flag was passed.")
         return sample
 
     cors = config.func.cors
-    # if they're the same length then we have a COR for each slice, so we don't have to generate anything
+    # if they're the same length then we have a COR for each slice, so we don't
+    # have to generate anything
     if len(cors) != sample.shape[0]:
         # interpolate the CORs
         cor_slices = config.func.cor_slices

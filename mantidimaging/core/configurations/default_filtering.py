@@ -2,12 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 from logging import getLogger
 
-from mantidimaging import helper as h
 from mantidimaging.core.algorithms import value_scaling
-from mantidimaging.core.filters import (background_correction, roi_normalisation,
-                                       crop_coords, cut_off, gaussian, median_filter,
-                                       minus_log, outliers, rebin, rotate_stack,
-                                       stripe_removal, circular_mask, clip_values, ring_removal)
+from mantidimaging.core.filters import (
+        background_correction, roi_normalisation, crop_coords, cut_off,
+        gaussian, median_filter, minus_log, outliers, rebin, rotate_stack,
+        stripe_removal, circular_mask, clip_values, ring_removal)
 
 
 def execute(config, sample, flat, dark):
@@ -95,6 +94,8 @@ def execute(config, sample, flat, dark):
                                    config.args.circular_mask_val, cores)
 
     sample = clip_values.execute(sample, config.args.clip_min,
-                                 config.args.clip_max, config.args.clip_min_new_value, config.args.clip_max_new_value)
+                                 config.args.clip_max,
+                                 config.args.clip_min_new_value,
+                                 config.args.clip_max_new_value)
 
     return sample, flat, dark
