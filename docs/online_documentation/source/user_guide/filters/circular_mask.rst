@@ -5,7 +5,8 @@ Circular Mask
 
     This filter requires TomoPy to be available.
 
-Applies TomoPy's `circular mask`__ filter (:code:`tomopy.misc.corr.circ_mask`).
+Applies TomoPy's circular mask filter (:code:`tomopy.misc.corr.circ_mask`)
+(docs_).
 
 Command line examples
 ---------------------
@@ -17,6 +18,4 @@ Python API
 
 .. autofunction:: mantidimaging.core.filters.circular_mask.execute
 
-.. _FilterDocs: http://tomopy.readthedocs.io/en/latest/api/tomopy.misc.corr.html#tomopy.misc.corr.circ_mask
-
-__ FilterDocs_
+.. _docs: http://tomopy.readthedocs.io/en/latest/api/tomopy.misc.corr.html#tomopy.misc.corr.circ_mask

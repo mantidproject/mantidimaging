@@ -48,8 +48,6 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None):
     :param chunksize: The number of chunks that each worker will receive.
 
     :return: The processed 3D numpy.ndarray
-
-    [Full reference](https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.misc.imresize.html)
     """
     h.check_data_stack(data)
     if rebin_param and 0 < rebin_param:
@@ -95,8 +93,8 @@ def _execute_seq(data, rebin_param, mode):
 
 
 def _create_reshaped_array(old_shape, rebin_param):
-
     num_images = old_shape[0]
+
     # use SciPy's calculation to find the expected dimensions
     # int to avoid visible deprecation warning
     expected_dimy = int(rebin_param * old_shape[1])

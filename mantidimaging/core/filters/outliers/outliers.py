@@ -52,7 +52,10 @@ def execute(data, diff, radius=_default_radius, mode=_default_mode,
 
     :param diff: Pixel value difference above which to crop bright pixels
 
-    :param radius: Which pixels will be clipped: dark, bright or both
+    :param radius: Size of the median filter to apply
+
+    :param mode: Spot brightness to remove.
+                 Either 'bright' or 'dark'.
 
     :param cores: The number of cores that will be used to process the data.
 

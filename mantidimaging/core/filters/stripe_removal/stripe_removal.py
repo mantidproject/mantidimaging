@@ -52,10 +52,11 @@ def methods():
 def execute(data, wf, ti, sf, cores=None, chunksize=None):
     """
     Execute stripe removal filters.
+
     Multiple filters can be executed, if they are specified on the command line.
 
-    The order for that execution will always be:
-        wavelett-fourier, titarenko, smoothing-filter.
+    The order for that execution will always be: wavelett-fourier, titarenko,
+    smoothing-filter.
 
     :param data: Sample data which is to be processed. Expected in radiograms
 
@@ -87,6 +88,8 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None):
 
                     size (default: 5, int, optional)
                         Size of the smoothing filter.
+
+    :return: Processed data
     """
     # get the first one, the rest will be processed
     msg = "Starting removal of stripes/ring artifacts using method '{0}'..."

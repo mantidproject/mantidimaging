@@ -23,10 +23,7 @@ def _cli_register(parser):
 
 def execute(data, air_region, cores=None, chunksize=None):
     """
-    Normalise by beam intensity. This is not directly about proton
-    charge - not using the proton charge field as usually found in
-    experiment/nexus files. This uses an area of normalization, if
-    provided in the pre-processing configuration.
+    Normalise by beam intensity.
 
     This does NOT do any checks if the Air Region is out of bounds!
     If the Air Region is out of bounds, the crop will fail at runtime.
@@ -42,7 +39,7 @@ def execute(data, air_region, cores=None, chunksize=None):
 
     :param chunksize: The number of chunks that each worker will receive.
 
-    :returns: filtered data (stack of images)
+    :returns: Filtered data (stack of images)
     """
     h.check_data_stack(data)
 
