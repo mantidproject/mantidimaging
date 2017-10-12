@@ -31,6 +31,7 @@ def _gui_register(main_window):
 
     def custom_execute():
         return partial(execute,
+                       run_ring_removal=True,
                        center_x=x_field,
                        center_y=y_field,
                        thresh=thresh,

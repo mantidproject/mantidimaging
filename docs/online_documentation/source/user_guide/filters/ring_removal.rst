@@ -13,7 +13,8 @@ This uses the TomoPy implementation (:code:`tomopy.misc.corr.remove_ring`)
 Command line examples
 ---------------------
 
-    - TODO
+  - :code:`mantidimaging -i /some/data/ --ring-removal --ring-removal-x 140
+    --ring-removal-x 128`
 
 Python API
 ----------

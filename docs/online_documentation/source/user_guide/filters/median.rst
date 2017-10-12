@@ -7,9 +7,9 @@ Applies SciPy's median filter (:code:`scipy.ndimage.filters.median_filter`)
 Command line examples
 ---------------------
 
-    - :code:`mantidimaging -i /some/data --median-size 3`
+  - :code:`mantidimaging -i /some/data --median-size 3`
 
-    - :code:`mantidimaging -i /some/data --median-size 3 --median-mode 'nearest'`
+  - :code:`mantidimaging -i /some/data --median-size 3 --median-mode 'nearest'`
 
 Python API
 ----------

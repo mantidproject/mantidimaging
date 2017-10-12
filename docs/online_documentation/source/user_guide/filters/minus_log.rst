@@ -18,7 +18,7 @@ intensity indicating attenuation by the sample).
 Command line examples
 ---------------------
 
-    - :code:`mantidimaging -i /some/data --minus-log`
+  - :code:`mantidimaging -i /some/data --minus-log`
 
 Python API
 ----------

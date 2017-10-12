@@ -13,9 +13,9 @@ This uses the TomoPy implementation (:code:`tomopy.misc.corr.remove_outlier`)
 Command line examples
 ---------------------
 
-    - :code:`mantidimaging -i /some/data --outliers 1`
+  - :code:`mantidimaging -i /some/data --outliers 1`
 
-    - :code:`mantidimaging -i /some/data --outliers 1 --outliers-radius 4`
+  - :code:`mantidimaging -i /some/data --outliers 1 --outliers-radius 4`
 
 Python API
 ----------

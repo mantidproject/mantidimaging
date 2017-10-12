@@ -7,7 +7,7 @@ Reshapes an image (or stack of images) using SciPy's :code:`scipy.misc.imresize`
 Command line examples
 ---------------------
 
-    - :code:`mantidimaging -i /some/data --rebin 0.5 --rebin-mode 'nearest'`
+  - :code:`mantidimaging -i /some/data --rebin 0.5 --rebin-mode 'nearest'`
 
 Python API
 ----------
