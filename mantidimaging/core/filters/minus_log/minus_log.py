@@ -36,7 +36,7 @@ def execute(data, minus_log=True, progress=None):
         tomopy = importer.do_importing('tomopy')
 
         with progress:
-            progress.update("Calculating -log on the sample data.")
+            progress.update(msg="Calculating -log on the sample data")
 
             # this check prevents division by 0 errors from the minus_log
             data[data == 0] = 1e-6

@@ -85,8 +85,8 @@ def execute(data,
             clip_max_new_value = clip_max_new_value \
                 if clip_max_new_value is not None else clip_max
 
-            progress.update("Clipping data with values min {0} and max {1}.".format(
-                clip_min, clip_max))
+            progress.update(msg="Clipping data with values min {0} and max "
+                                "{1}.".format(clip_min, clip_max))
 
             # this is the fastest way to clip the values, np.clip does not do
             # the clipping in place and ends up copying the data

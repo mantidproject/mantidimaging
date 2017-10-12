@@ -36,9 +36,9 @@ def execute(data, threshold, progress=None):
             dmin = np.amin(data)
             dmax = np.amax(data)
 
-            progress.update(
-                "Applying cut-off with level: {0}, min value {1}, max value {2}".format(
-                    threshold, dmin, dmax))
+            progress.update(msg="Applying cut-off with level: {0}, min value "
+                                "{1}, max value {2}".format(
+                                    threshold, dmin, dmax))
 
             rel_cut_off = dmin + threshold * (dmax - dmin)
 

@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.filters import clip_values
@@ -109,7 +109,7 @@ class ClipValuesTest(unittest.TestCase):
         """
         images, control = th.gen_img_shared_array_and_copy()
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = clip_values.execute(images,
                                      clip_min=0.2,
@@ -118,7 +118,7 @@ class ClipValuesTest(unittest.TestCase):
                                      clip_max_new_value=0.9)
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
