@@ -16,19 +16,29 @@ def get_available_operators():
 
 def execute(config):
     """
-    Execute the image operator. This allows performing operations on single images, or specified images slices.
+    Execute the image operator.
+
+    This allows performing operations on single images, or specified images
+    slices.
 
     This mode respects --indices <start> <stop> <step>.
-    This means the operations will be performed only on the indices you have specified.
+
+    This means the operations will be performed only on the indices you have
+    specified.
 
     Currently available modes, more information in each module's file:
-        - cor - get the COR for a slice or multiple slices using tomopy find_center.
-        - corwrite - output a reconstructed image for different CORs for slices.
+        - cor - get the COR for a slice or multiple slices using tomopy
+                find_center.
+        - corwrite - output a reconstructed image for different CORs for
+                     slices.
 
         TODO outdated:
-        - recon - do a reconstruction on a single or multiple slices, --imopr 1 recon, --imopr 10 34 recon
-        - sino - visualise the sinogram for single or multiple slices, --imopr 1 sino, --imopr 10 34 sino
-        - vis - just visualise the single or multiple images, --imopr 1 vis, --imopr 10 34 vis
+        - recon - do a reconstruction on a single or multiple slices, --imopr 1
+                  recon, --imopr 10 34 recon
+        - sino - visualise the sinogram for single or multiple slices, --imopr
+                 1 sino, --imopr 10 34 sino
+        - vis - just visualise the single or multiple images, --imopr 1 vis,
+                --imopr 10 34 vis
         - corvo - get the COR for a slice or multiple slices using
                   tomopy find_center_vo, --imopr 1 corvo, --imopr 10 34 corvo
         - corpc - get the COR for a slice or multiple slices using
@@ -40,15 +50,12 @@ def execute(config):
                 multiply(also mul, *), --imopr 1 3 mul, --imopr 10 34 *
                 mean(also avg, x), --imopr 1 3 avg, --imopr 10 34 x
 
-    COR functions reference: http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.rotation.html
+    COR functions reference:
+    http://tomopy.readthedocs.io/en/latest/api/tomopy.recon.rotation.html
 
     :param config:
     :return:
     """
-    # import pydevd
-    # pydevd.settrace(
-    #     'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
-
     # use [:] to get a copy of the list
     commands = config.func.imopr[:]
     # strip the last command, it must be the name of the module
@@ -61,11 +68,12 @@ def execute(config):
 
     images = loader.load_from_config(config)
 
-    getLogger(__name__).info("Data shape {0}".format(images.get_sample().shape))
+    getLogger(__name__).info(
+            "Data shape {0}".format(images.get_sample().shape))
 
-    # from mantidimaging.core.recon.recon import pre_processing
-    # sample, flat, dark = pre_processing(config, sample, flat, dark)
-    return module.execute(images.get_sample(), images.get_flat(), images.get_dark(), config, indices)
+    return module.execute(
+            images.get_sample(), images.get_flat(), images.get_dark(),
+            config, indices)
 
 
 def get_function(module_name):

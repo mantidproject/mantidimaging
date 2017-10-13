@@ -3,6 +3,10 @@ from __future__ import (absolute_import, division, print_function)
 from logging import getLogger
 
 import numpy as np
+import matplotlib.pyplot as plt
+
+from mantidimaging.core.imopr.utility import handle_indices
+from mantidimaging.core.imopr.visualiser import show_3d, show_image
 
 
 def sanity_checks(config):
@@ -10,8 +14,6 @@ def sanity_checks(config):
 
 
 def execute(sample, flat, dark, config, indices):
-    from mantidimaging.core.imopr import helper
-    from mantidimaging.core.imopr.visualiser import show_3d
     getLogger(__name__).info("Running IMOPR with action SINOGRAM")
 
     if len(indices) == 0:
@@ -19,10 +21,10 @@ def execute(sample, flat, dark, config, indices):
     elif len(indices) == 1:
         show_image(sample[:, indices[0], :])
     else:
-        i1, i2 = helper.handle_indices(indices)
+        i1, i2 = handle_indices(indices)
 
         show_3d(sample[i1:i2], axis=1)
-    import matplotlib.pyplot as plt
+
     plt.show()
 
 

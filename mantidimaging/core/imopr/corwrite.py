@@ -4,8 +4,7 @@ import os
 
 from logging import getLogger
 
-from mantidimaging.core.imopr import helper
-from mantidimaging.core.tools import importer
+from mantidimaging.core.tools.importer import timed_import
 from mantidimaging.core.utility import projection_angles
 
 
@@ -17,9 +16,11 @@ def sanity_checks(config):
     if not len(config.func.indices) == 3:
         raise ValueError(
             "You need to provide input in the format:\n"
-            "--indices <start> <stop> <step> --imopr <cors_start> <cors_end> <cors_step> corwrite: "
-            "--indices 100 200 14 --imopr 5 50 7 corwrite\n"
-            "To load and reconstruct every 14 indices from 100 to 200, with COR from 5 to 50, incrementing by 7."
+            "--indices <start> <stop> <step> --imopr <cors_start> <cors_end> "
+            "<cors_step> corwrite: --indices 100 200 14 --imopr 5 50 7 "
+            "corwrite\n"
+            "To load and reconstruct every 14 indices from 100 to 200, with "
+            "COR from 5 to 50, incrementing by 7."
         )
 
 
@@ -37,7 +38,7 @@ def execute(sample, flat, dark, config, indices):
         "Running IMOPR with action COR using tomopy write_center. "
         "This works ONLY with sinograms!")
 
-    tool = importer.timed_import(config)
+    tool = timed_import(config)
 
     log.info("Calculating projection angles..")
     # developer note: we are processing sinograms,
@@ -66,4 +67,5 @@ def execute(sample, flat, dark, config, indices):
             cen_range=indices[0:])
 
     log.info("Finished writing CORs in", config.func.output_path)
+
     return sample

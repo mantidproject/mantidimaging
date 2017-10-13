@@ -2,24 +2,26 @@ from __future__ import (absolute_import, division, print_function)
 
 from logging import getLogger
 
+from mantidimaging.core.imopr.utility import handle_indices
+
 
 def sanity_checks(config):
     pass
 
 
 def execute(sample, flat, dark, config, indices):
-    from mantidimaging.core.imopr import helper
-    getLogger(__name__).info("Running IMOPR with action VISUALISE/SHOW")
     import matplotlib.pyplot as plt
+
+    getLogger(__name__).info("Running IMOPR with action VISUALISE/SHOW")
 
     if len(indices) == 0:
         show_3d(sample[:])
     elif len(indices) == 1:
         show_image(sample[indices[0]])
     else:
-        i1, i2 = helper.handle_indices(indices)
-
+        i1, i2 = handle_indices(indices)
         show_3d(sample[i1:i2])
+
     plt.show()
 
 
@@ -28,9 +30,8 @@ text_ref = None
 
 class StackVisualiser(object):
     def __init__(self, cube, axis=0, cmap='Greys_r', block=False, **kwargs):
-        from matplotlib.widgets import Slider
-        from matplotlib.widgets import RectangleSelector
         import matplotlib.pyplot as plt
+        from matplotlib.widgets import Slider, RectangleSelector
 
         self.cube = cube
         self.axis = axis
@@ -124,7 +125,7 @@ class StackVisualiser(object):
 
 
 def show_3d(cube, axis=0, cmap='Greys_r', block=False, **kwargs):
-    s = StackVisualiser(cube, axis, cmap, block)
+    StackVisualiser(cube, axis, cmap, block)
 
 
 def show_image(image, cmap='Greys_r', block=False):
