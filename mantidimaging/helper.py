@@ -4,7 +4,9 @@ import logging
 import os
 import sys
 import time
+
 from time import gmtime, strftime
+from logging import getLogger
 
 import numpy as np
 
@@ -26,7 +28,8 @@ _progress_bar = None
 
 def initialise_logging():
     global _log_formatter
-    _log_formatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s")
+    _log_formatter = logging.Formatter(
+            "%(asctime)s %(name)s %(levelname)s %(message)s")
 
     # Add a very verbose logging level
     logging.addLevelName(5, 'TRACE')
@@ -49,12 +52,12 @@ def initialise_logging():
     # Don't ever print all the debug logging from Qt
     logging.getLogger('PyQt5').setLevel(logging.INFO)
 
-    logging.getLogger(__name__).debug("Logging initialised")
 
-
-def set_logging_from_config(config):
+def set_logging_from_func_config(config):
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.getLevelName(config.func.log_level))
+    root_logger.setLevel(logging.getLevelName(config.log_level))
+
+    getLogger(__name__).debug('Log level set to {}'.format(config.log_level))
 
 
 def check_config_class(config):
@@ -67,7 +70,7 @@ def check_config_class(config):
 def initialise(config, saver=None):
     root_logger = logging.getLogger()
 
-    set_logging_from_config(config)
+    set_logging_from_func_config(config.func)
 
     # File handler
     global _log_file_handler

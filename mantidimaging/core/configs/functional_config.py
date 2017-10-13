@@ -6,6 +6,7 @@ import os
 import numpy as np
 
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
+from mantidimaging.helper import set_logging_from_func_config
 
 
 class FunctionalConfig(object):
@@ -558,3 +559,5 @@ class FunctionalConfig(object):
         # update all the arguments
         for arg in all_args:
             setattr(self, arg, getattr(args, arg))
+
+        set_logging_from_func_config(self)
