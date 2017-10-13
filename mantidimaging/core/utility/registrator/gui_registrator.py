@@ -42,6 +42,10 @@ def do_registering(module, module_dir, main_window):
     # We pass in the main_window reference to use it as the dialog's parent
     dialog = module._gui_register(main_window)
 
+    # Refresh the stack list in the algorithm dialog whenever the active stacks
+    # change
+    main_window.active_stacks_changed.connect(dialog.refresh_stack_list)
+
     assert isinstance(
         dialog, AlgorithmDialog), "Function _gui_register of {0} did not return the expected type. Check that the " \
                                   "dialog is of type AlgorithmDialog and is returned at the end of the _gui_register " \
