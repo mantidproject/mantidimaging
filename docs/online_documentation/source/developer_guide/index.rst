@@ -12,6 +12,3 @@ Developer Guide
    parallelism
    execution_splitter
    visualisation
-
-`Design document
-<https://github.com/mantidproject/documents/blob/master/Design/MantidImaging/MantidImaging_general.md>`_.
