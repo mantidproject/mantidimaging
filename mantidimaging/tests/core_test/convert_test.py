@@ -25,7 +25,7 @@ class ConvertTest(FileOutputtingTestCase):
         from mantidimaging.core.configs.recon_config import (
                 ReconstructionConfig)
         self.config = ReconstructionConfig.empty_init()
-        self.config.func.verbosity = logging.CRITICAL
+        self.config.func.log_level = logging.CRITICAL
 
     def create_saver(self):
         from mantidimaging.core.io.saver import Saver

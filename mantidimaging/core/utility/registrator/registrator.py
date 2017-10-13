@@ -101,7 +101,6 @@ def do_importing(module_dir,
 
     # try registering, and if it fails, show warning to the user
     try:
-
         # If the module has this attribute, it is the function defined in the .py file
         if hasattr(module, name_of_register_function):
 

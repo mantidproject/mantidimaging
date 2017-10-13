@@ -26,8 +26,6 @@ def main(default_args):
 
     config = recon_config.grab_full_config(default_args)
 
-    h.set_logging_from_config(config)
-
     if config.func.debug and config.func.debug_port:
         import pydevd
         pydevd.settrace(

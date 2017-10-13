@@ -6,6 +6,7 @@ import os
 import numpy as np
 
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
+from mantidimaging.helper import set_logging_from_func_config
 
 
 class FunctionalConfig(object):
@@ -55,7 +56,7 @@ class FunctionalConfig(object):
         # cor_interpolate
         self.cor_slices = [0]
 
-        self.verbosity = logging.INFO
+        self.log_level = logging.INFO
 
         self.overwrite_all = False
 
@@ -120,7 +121,7 @@ class FunctionalConfig(object):
              "Data type: {c.data_dtype}\n"
              "Provided center of rotation: {c.cors}\n"
              "Slice IDs for CORs: {c.cor_slices}\n"
-             "Log level: {c.verbosity}\n"
+             "Log level: {c.log_level}\n"
              "Overwrite files in output directory: {c.overwrite_all}\n"
              "Debug: {c.debug}\n"
              "Debug port: {c.debug_port}\n"
@@ -303,16 +304,11 @@ class FunctionalConfig(object):
             "Supported: float32, float64")
 
         grp_func.add_argument(
-            "-v",
-            "--verbosity",
-            type=int,
-            default=self.verbosity,
-            help="Default: %(default)s\n"
-            "30 - Low verbosity, will only output warnings\n"
-            "20 (recommended) - Normal verbosity, will output step name "
-            "and execution time\n"
-            "10 - High verbosity, will output step name, execution time "
-            "and memory usage before and after each step\n")
+            "--log-level",
+            type=str,
+            default='INFO',
+            help="Log verbosity level.\n"
+                 "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL")
 
         grp_func.add_argument(
             "-w",
@@ -563,3 +559,5 @@ class FunctionalConfig(object):
         # update all the arguments
         for arg in all_args:
             setattr(self, arg, getattr(args, arg))
+
+        set_logging_from_func_config(self)
