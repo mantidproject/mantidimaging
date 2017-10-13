@@ -46,6 +46,15 @@ class StripeRemovalTest(unittest.TestCase):
 
         npt.assert_equal(result, images)
 
+    def test_executed_wf_dict(self):
+        images, control = th.gen_img_shared_array_and_copy()
+
+        wf = {"level": 1}
+        ti = None
+        sf = None
+        result = stripe_removal.execute(images, wf, ti, sf)
+        th.assert_not_equals(result, control)
+
     def test_executed_ti(self):
         images, control = th.gen_img_shared_array_and_copy()
 
@@ -60,6 +69,15 @@ class StripeRemovalTest(unittest.TestCase):
 
         npt.assert_equal(result, images)
 
+    def test_executed_ti_dict(self):
+        images, control = th.gen_img_shared_array_and_copy()
+
+        wf = None
+        ti = {"nblock": 2}
+        sf = None
+        result = stripe_removal.execute(images, wf, ti, sf)
+        th.assert_not_equals(result, control)
+
     def test_executed_sf(self):
         images, control = th.gen_img_shared_array_and_copy()
 
@@ -73,6 +91,15 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_executed_sf_dict(self):
+        images, control = th.gen_img_shared_array_and_copy()
+
+        wf = None
+        ti = None
+        sf = {"size": 5}
+        result = stripe_removal.execute(images, wf, ti, sf)
+        th.assert_not_equals(result, control)
 
     def test_memory_executed_wf(self):
         images, control = th.gen_img_shared_array_and_copy()

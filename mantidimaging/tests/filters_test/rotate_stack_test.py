@@ -25,7 +25,7 @@ class RotateStackTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
 
         # empty params
-        result = rotate_stack.execute(images, None)[0]
+        result = rotate_stack.execute(images, None)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -45,7 +45,7 @@ class RotateStackTest(unittest.TestCase):
         rotation = 1  # once clockwise
         images[:, 0, 0] = 42  # set all images at 0,0 to 42
 
-        result = rotate_stack.execute(images, rotation)[0]
+        result = rotate_stack.execute(images, rotation)
 
         w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)
@@ -73,7 +73,8 @@ class RotateStackTest(unittest.TestCase):
 
         cached_memory = h.get_memory_usage_linux(kb=True)[0]
 
-        result = rotate_stack.execute(images, rotation)[0]
+        result = rotate_stack.execute(images, rotation)
+
         w = result.shape[2]
 
         self.assertLess(

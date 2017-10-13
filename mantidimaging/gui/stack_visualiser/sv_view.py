@@ -204,6 +204,11 @@ class StackVisualiserView(Qt.QMainWindow):
                 horizontalalignment='center', verticalalignment='top',
                 **common_kwargs)
 
+        region_pretty = \
+            "Top left  (x, y): %i, %i   Bottom right (x, y): %i, %i" % \
+            self.current_roi
+        getLogger(__name__).info(region_pretty)
+
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
             self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")

@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
+
 import numpy as np
+
 from mantidimaging import helper as h
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
@@ -46,7 +48,8 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
     """
     h.check_data_stack(data)
     if rotation:
-        # rot90 rotates counterclockwise; config.args.rotation rotates clockwise
+        # rot90 rotates counterclockwise; config.args.rotation rotates
+        # clockwise
         clockwise_rotations = 4 - rotation
 
         if pu.multiprocessing_available():
@@ -60,7 +63,11 @@ def execute(data, rotation, flat=None, dark=None, cores=None, chunksize=None):
             dark = _rotate_image(dark, clockwise_rotations)
 
     h.check_data_stack(data)
-    return data, flat, dark
+
+    if flat is None and dark is None:
+        return data
+    else:
+        return data, flat, dark
 
 
 def _execute_seq(data, rotation):

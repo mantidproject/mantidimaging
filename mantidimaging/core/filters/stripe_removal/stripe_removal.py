@@ -49,11 +49,18 @@ def methods():
     ]
 
 
+def wavelet_names():
+    return [
+        'haar', 'db5', 'sym5'
+    ]
+
+
 def execute(data, wf, ti, sf, cores=None, chunksize=None):
     """
     Execute stripe removal filters.
 
-    Multiple filters can be executed, if they are specified on the command line.
+    Multiple filters can be executed, if they are specified on the command
+    line.
 
     The order for that execution will always be: wavelett-fourier, titarenko,
     smoothing-filter.
@@ -111,8 +118,16 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None):
     return data
 
 
+def _get_params(params):
+    if isinstance(params, dict):
+        return params
+    else:
+        return dict(map(lambda p: p.split('='), params))
+
+
 def _wf(data, params, cores, chunksize):
     tomopy = importer.do_importing('tomopy')
+
     # creating a dictionary with all possible params for this func
     kwargs = dict(
         level=None,
@@ -123,7 +138,7 @@ def _wf(data, params, cores, chunksize):
         nchunk=chunksize)
 
     # process the input parameters
-    params = dict(map(lambda p: p.split('='), params))
+    params = _get_params(params)
 
     # dict.get returns a None if the keyword arg is not found
     # this means if the user hasn't passed anything that matches the string
@@ -148,8 +163,9 @@ def _ti(data, params, cores, chunksize):
 
     # creating a dictionary with all possible params for this func
     kwargs = dict(nblock=0, alpha=1.5, ncore=cores, nchunk=chunksize)
+
     # process the input parameters
-    params = dict(map(lambda p: p.split('='), params))
+    params = _get_params(params)
 
     # dict.get returns a None if the keyword arg is not found
     # this means if the user hasn't passed anything that matches the string
@@ -167,8 +183,9 @@ def _sf(data, params, cores, chunksize):
 
     # creating a dictionary with all possible params for this func
     kwargs = dict(size=5, ncore=cores, nchunk=chunksize)
+
     # process the input parameters
-    params = dict(map(lambda p: p.split('='), params))
+    params = _get_params(params)
 
     # dict.get returns a None if the keyword arg is not found
     # this means if the user hasn't passed anything that matches the string

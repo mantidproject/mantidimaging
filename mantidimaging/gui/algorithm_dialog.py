@@ -197,7 +197,8 @@ class AlgorithmDialog(Qt.QDialog):
         elif dtype == 'list':
             right_widget = Qt.QComboBox()
             assign_tooltip([right_widget])
-            right_widget.addItems(valid_values)
+            if valid_values:
+                right_widget.addItems(valid_values)
         else:
             raise ValueError("Unknown data type")
 
