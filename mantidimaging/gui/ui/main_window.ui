@@ -35,6 +35,11 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuFilters">
+    <property name="title">
+     <string>Filters</string>
+    </property>
+   </widget>
    <widget class="QMenu" name="menuReconstruct">
     <property name="title">
      <string>Reconstruct</string>
