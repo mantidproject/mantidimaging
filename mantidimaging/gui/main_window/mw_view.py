@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import matplotlib
 
 from logging import getLogger
-from PyQt5 import Qt, QtCore, QtWidgets
+from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
 from mantidimaging.core.utility import gui_compile_ui
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
@@ -32,19 +32,21 @@ class MainWindowView(Qt.QMainWindow):
         self.update_shortcuts()
 
     def setup_shortcuts(self):
-        self.actionLoad.setShortcut('F1')
         self.actionLoad.triggered.connect(self.show_load_dialogue)
-
-        self.actionSave.setShortcut('Ctrl+S')
         self.actionSave.triggered.connect(self.show_save_dialogue)
-
-        self.actionExit.setShortcut('Ctrl+Q')
         self.actionExit.triggered.connect(Qt.qApp.quit)
+
+        self.actionOnlineDocumentation.triggered.connect(
+                self.open_online_documentation)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
     def update_shortcuts(self):
         self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)
+
+    def open_online_documentation(self):
+        url = QtCore.QUrl('https://mantidproject.github.io/mantidimaging/')
+        QtGui.QDesktopServices.openUrl(url)
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
