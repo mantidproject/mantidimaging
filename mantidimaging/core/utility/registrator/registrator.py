@@ -12,7 +12,9 @@ def find_package_path(package_str):
     Attempts to find the path to a given package provided the root package is
     already on the path.
 
-    :param package_str: Package to search for as a Python path (i.e. "mantidimaging.core.filters")
+    :param package_str: Package to search for as a Python path (i.e.
+                        "mantidimaging.core.filters")
+
     :return: Path to package
     """
     package_as_path = os.sep.join(package_str.split('.'))
@@ -24,42 +26,59 @@ def find_package_path(package_str):
     raise RuntimeError("Cannot find path for package {}".format(package_str))
 
 
-def register_into(the_object, func=None, package='mantidimaging.core.filters', ignore_packages=None):
+def get_child_modules(package_name, ignore=None):
     """
-    This function will walk all of the packages in the specified package directory,
-    and forward the this_object parameter with the specified func parameter,
+    Gets a list of names of modules found under a given package.
 
-    :param the_object: the object into which the modules will be registered,
-                        this is forwarded to the actual functions that do the registering
+    :param package: The package to search within
+
+    :param ignore: List of explicitly matching modules to ignore
+
+    :return: Iterator over matching modules
+    """
+    # Walk the children (packages and modules) of the provided root package
+    pkgs = pkgutil.walk_packages([find_package_path(package_name)],
+                                 prefix=package_name + '.')
+
+    # Ignore those that are modules, we want packages
+    pkgs = filter(lambda p: p[2], pkgs)
+
+    # Ignore moduels that we want to ignore
+    pkgs = filter(lambda p: p[1] not in ignore, pkgs)
+
+    return pkgs
+
+
+def register_into(the_object, func=None, package='mantidimaging.core.filters',
+                  ignore=None):
+    """
+    This function will walk all of the packages in the specified package
+    directory, and forward the this_object parameter with the specified func
+    parameter,
+
+    :param the_object: The object into which the modules will be registered,
+                       this is forwarded to the actual functions that do the
+                       registering
 
     :param package: The internal package from which modules will be imported
 
-    :param func: registrator.cli_register and registrator.gui_register,
-                 for registration into the command line interface (CLI) or the graphical user interface (GUI)
+    :param func: Function taking the_object and the module name to be
+                 registered
 
-    :param ignore_packages: Expected: List, If the package name matches an entry in the list, it will be ignored.
+    :param ignore: List of explicitly matching modules to ignore
     """
 
     if not func:
         raise ValueError(
-            "The func parameter must be specified! It should be one of either registrator.cli_register or "
-            "registrator.gui_register.")
+            "The func parameter must be specified! It should be one of either "
+            "registrator.cli_register or registrator.gui_register.")
 
     all_ignores = ["mantidimaging.core.filters.wip"]
 
-    if ignore_packages is not None:
-        all_ignores.extend(list(ignore_packages))
+    if ignore is not None:
+        all_ignores.extend(list(ignore))
 
-    # Walk the children (packages and modules) of the provided root package
-    for pkg in pkgutil.walk_packages([find_package_path(package)], prefix=package + '.'):
-        # Ignore those that are modules, we want packages
-        if not pkg[2]:
-            continue
-
-        # Ignore moduels that we want to ignore
-        if pkg[1] in all_ignores:
-            continue
-
+    for pkg in get_child_modules(package, all_ignores):
         the_object = func(the_object, pkg[1])
 
     return the_object
