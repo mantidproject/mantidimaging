@@ -7,8 +7,6 @@ from .registrator import (  # noqa: F401
         register_modules_into
     )
 
-from .cli_registrator import cli_register  # noqa: F401
-
 del absolute_import, division, print_function
 
 """

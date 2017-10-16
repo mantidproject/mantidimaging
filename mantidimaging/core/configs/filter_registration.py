@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from .registrator import (
+from mantidimaging.core.utility.registrator import (
         get_child_modules,
         import_modules,
         register_modules_into
@@ -30,7 +30,9 @@ def _cli_register_into_parser(parser, module):
     module._cli_register(group)
 
 
-def cli_register(parser, package_name, ignored_packages=None):
+def register_filters_on_cli(
+        parser, package_name='mantidimaging.core.filters',
+        ignored_packages=['mantidimaging.core.filters.wip']):
     """
     Registers filter modules into the CLI.
 

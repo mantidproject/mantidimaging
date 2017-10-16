@@ -11,7 +11,8 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.configs.functional_config import FunctionalConfig
-from mantidimaging.core.utility.registrator import cli_register
+from mantidimaging.core.configs.filter_registration import (
+        register_filters_on_cli)
 
 
 def grab_full_config(default_args=None):
@@ -36,8 +37,7 @@ def grab_full_config(default_args=None):
     parser = functional_args._setup_parser(parser)
 
     # setup args for the filters
-    cli_register(parser, 'mantidimaging.core.filters',
-                 ['mantidimaging.core.filters.wip'])
+    register_filters_on_cli(parser)
 
     # generate a list of both default arguments and real arguments
     arg_list = default_args if default_args is not None else []
@@ -215,8 +215,7 @@ class ReconstructionConfig(object):
         parser = functional_args._setup_parser(parser)
 
         # setup args for the filters
-        cli_register(parser, 'mantidimaging.core.filters',
-                     ['mantidimaging.core.filters.wip'])
+        register_filters_on_cli(parser)
 
         # get the OS's temp directory
         with tempfile.NamedTemporaryFile() as f:
