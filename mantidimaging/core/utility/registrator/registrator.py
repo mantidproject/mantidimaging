@@ -44,9 +44,34 @@ def get_child_modules(package_name, ignore=None):
     pkgs = filter(lambda p: p[2], pkgs)
 
     # Ignore moduels that we want to ignore
-    pkgs = filter(lambda p: p[1] not in ignore, pkgs)
+    if ignore:
+        pkgs = filter(lambda p: not any([m in p[1] for m in ignore]),
+                      pkgs)
 
     return pkgs
+
+
+def import_modules(module_names, required_attributes=None):
+    """
+    Imports a list of modules and filters out those that do not have a
+    specified required list of attributes.
+
+    :param module_names: List of module names to import
+
+    :param required_attributes: Optional list of attributes that must be
+                                present on each individual module
+
+    :return: List of imported modules
+    """
+    imported_modules = [importlib.import_module(m) for m in module_names]
+
+    # Filter out those that do not contain all the required attributes
+    if required_attributes:
+        imported_modules = filter(
+                lambda m: all([hasattr(m, a) for a in required_attributes]),
+                imported_modules)
+
+    return imported_modules
 
 
 def register_into(the_object,
