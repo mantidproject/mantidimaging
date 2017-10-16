@@ -9,7 +9,7 @@ import mantidimaging.tests.test_helper as th
 
 from mantidimaging.core.configs.functional_config import FunctionalConfig
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
-from mantidimaging.core.utility import registrator
+from mantidimaging.core.utility.registrator import cli_register
 
 
 class ConfigsTest(unittest.TestCase):
@@ -19,9 +19,8 @@ class ConfigsTest(unittest.TestCase):
         cls.func_config = FunctionalConfig()
         cls.parser = cls.func_config._setup_parser(cls.parser)
 
-        registrator.register_into(
-                cls.parser, func=registrator.cli_register,
-                package='mantidimaging.core.filters')
+        cli_register(cls.parser, 'mantidimaging.core.filters',
+                     ['mantidimaging.core.filters.wip'])
 
     def test_functional_config_doctest(self):
         self._compare_dict_to_str(self.func_config.__dict__,
