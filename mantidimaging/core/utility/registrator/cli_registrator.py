@@ -28,19 +28,22 @@ def cli_register(parser, module_dir):
 
 def do_registering(module, module_dir, parser):
     """
-    This function is a callback from the registrator. Does the registering into the CLI.
+    This function is a callback from the registrator. Does the registering into
+    the CLI.
 
-    It will add a new group for each filter. If, in the future, we want to group
-    the modules better, this is the function that needs to be changed. However the grouping doesn't seem to do anything
-    except look differently when the `--help` flag is called.
+    It will add a new group for each filter. If, in the future, we want to
+    group the modules better, this is the function that needs to be changed.
+    However the grouping doesn't seem to do anything except look differently
+    when the `--help` flag is called.
 
     :param module: The module that we are registering
 
     :param module_dir: The module's directory, which will be used for the name
 
-    :param parser: The parser into which we're registering. Currently a group will be created using the module_dir
-                   parameter, and the module will be registered into that group.
-    :return:
+    :param parser: The parser into which we're registering.
+                   Currently a group will be created using the module_dir
+                   parameter, and the module will be registered into that
+                   group.
     """
     group = parser.add_argument_group(module_dir)
     module._cli_register(group)
