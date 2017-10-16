@@ -1,17 +1,18 @@
+"""
+This module handles the loading of FIT, FITS, TIF, TIFF
+"""
+
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.io.utility import get_file_names
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
+
 from . import stack_loader
 from .images import Images
-
-"""
-This module handles the loading of FIT, FITS, TIF, TIFF
-"""
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
@@ -99,50 +100,56 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_and_avg_data(self, file_path, prog_prefix=None):
+    def load_and_avg_data(self, file_path, name=None):
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
 
-            data = self.load_files(file_names, prog_prefix)
+            data = self.load_files(file_names, name)
             return _get_data_average(data)
 
-    def _do_files_load_seq(self, data, files, name):
-        h.prog_init(len(files), desc=name)
-        for idx, in_file in enumerate(files):
-            try:
-                _inplace_load(data[idx], in_file, self.load_func)
-                h.prog_update()
-            except ValueError as exc:
-                raise ValueError(
-                    "An image has different width and/or height dimensions! "
-                    "All images must have the same dimensions. "
-                    "Expected dimensions: {0} Error message: {1}".format(
-                        self.img_shape, exc))
-            except IOError as exc:
-                raise RuntimeError(
-                        "Could not load file {0}. Error details: {1}".format(
-                            in_file, exc))
-        h.prog_close()
+    def _do_files_load_seq(self, data, files, name, progress=None):
+        progress = Progress.ensure_instance(progress,
+                                            num_steps=len(files),
+                                            task_name='Load')
+
+        with progress:
+            for idx, in_file in enumerate(files):
+                try:
+                    _inplace_load(data[idx], in_file, self.load_func)
+                    progress.update(msg=name)
+                except ValueError as exc:
+                    raise ValueError(
+                        "An image has different width and/or height "
+                        "dimensions! All images must have the same "
+                        "dimensions. Expected dimensions: {0} Error "
+                        "message: {1}".format(self.img_shape, exc))
+                except IOError as exc:
+                    raise RuntimeError(
+                            "Could not load file {0}. Error details: "
+                            "{1}".format(in_file, exc))
 
         return data
 
-    def _do_files_sinogram_load_seq(self, data, files, name):
-        h.prog_init(len(files), desc=name)
-        for idx, in_file in enumerate(files):
-            try:
-                _inplace_load(data[:, idx, :], in_file, self.load_func)
-                h.prog_update()
-            except ValueError as exc:
-                raise ValueError(
-                    "An image has different width and/or height dimensions! "
-                    "All images must have the same dimensions. "
-                    "Expected dimensions: {0} Error message: {1}".format(
-                        self.img_shape, exc))
-            except IOError as exc:
-                raise RuntimeError(
-                        "Could not load file {0}. Error details: {1}".format(
-                            in_file, exc))
-        h.prog_close()
+    def _do_files_sinogram_load_seq(self, data, files, name, progress=None):
+        progress = Progress.ensure_instance(progress,
+                                            num_steps=len(files),
+                                            task_name='Sinogram Load')
+
+        with progress:
+            for idx, in_file in enumerate(files):
+                try:
+                    _inplace_load(data[:, idx, :], in_file, self.load_func)
+                    progress.update(msg=name)
+                except ValueError as exc:
+                    raise ValueError(
+                        "An image has different width and/or height "
+                        "dimensions! All images must have the same "
+                        "dimensions. Expected dimensions: {0} Error "
+                        "message: {1}".format(self.img_shape, exc))
+                except IOError as exc:
+                    raise RuntimeError(
+                            "Could not load file {0}. Error details: "
+                            "{1}".format(in_file, exc))
 
         return data
 
@@ -153,17 +160,18 @@ class ImageLoader(object):
         ptsm.execute(data, files, f, self.cores, self.chunksize, name)
         return data
 
-    def load_files(self, files, name=None):
+    def load_files(self, files, name=None, progress=None):
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         data = self.allocate_data(num_images=len(files))
 
         if self.construct_sinograms:
-            return self._do_files_sinogram_load_seq(data, files, name)
+            return self._do_files_sinogram_load_seq(
+                    data, files, name, progress)
         elif self.parallel_load:
             return self._do_files_load_par(data, files, name)
         else:
-            return self._do_files_load_seq(data, files, name)
+            return self._do_files_load_seq(data, files, name, progress)
 
     def allocate_data(self, num_images):
         if self.construct_sinograms:

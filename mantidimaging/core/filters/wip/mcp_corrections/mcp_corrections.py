@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 from logging import getLogger
 
 from mantidimaging import helper as h
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -22,9 +23,14 @@ def fool_my_own_sanity_check(data):
         h.check_data_stack(data, expected_dims=2)
 
 
-def execute(data, cores=None, chunksize=None):
+def execute(data, cores=None, chunksize=None, progress=None):
     getLogger(__name__).warn("This only implement gap filling code. "
-          "NO CODE FOR SHIFTING THE CHIPS IS CURRENTLY IMPLEMENTED!")
+                             "NO CODE FOR SHIFTING THE CHIPS IS CURRENTLY "
+                             "IMPLEMENTED!")
+
+    progress = Progress.ensure_instance(progress,
+                                        task_name='MCP Corrections')
+
     fool_my_own_sanity_check(data)
 
     # regions to mask, in order [left, top, right, bottom],
@@ -40,34 +46,35 @@ def execute(data, cores=None, chunksize=None):
     vertical_chip_regions = [top_chip_region, bottom_chip_region]
     horizontal_chip_regions = [left_chip_region, right_chip_region]
 
-    h.pstart("Starting MCP corrections...")
-    # 1st way -> set all of the coordinates to 0 in a for loop per region
-    for region in vertical_chip_regions:
-        left = region[0]
-        top = region[1]
-        right = region[2]
-        bottom = region[3]
-        if data.ndim == 3:
-            for image in data:
-                do_vertical_magic(image, left, top, right, bottom)
-        else:
-            do_vertical_magic(data, left, top, right, bottom)
+    with progress:
+        progress.update(msg="MCP corrections")
+        # 1st way -> set all of the coordinates to 0 in a for loop per region
+        for region in vertical_chip_regions:
+            left = region[0]
+            top = region[1]
+            right = region[2]
+            bottom = region[3]
+            if data.ndim == 3:
+                for image in data:
+                    do_vertical_magic(image, left, top, right, bottom)
+            else:
+                do_vertical_magic(data, left, top, right, bottom)
 
-    for region in horizontal_chip_regions:
-        left = region[0]
-        top = region[1]
-        right = region[2]
-        bottom = region[3]
-        if data.ndim == 3:
-            for image in data:
-                do_horizontal_magic(image, left, top, right, bottom)
-        else:
-            do_horizontal_magic(data, left, top, right, bottom)
+        for region in horizontal_chip_regions:
+            left = region[0]
+            top = region[1]
+            right = region[2]
+            bottom = region[3]
+            if data.ndim == 3:
+                for image in data:
+                    do_horizontal_magic(image, left, top, right, bottom)
+            else:
+                do_horizontal_magic(data, left, top, right, bottom)
 
     # 2nd way -> create a mask of 512, 512 filled with 1, set the coordinates
     # to 1e-9 and then multiply all images by that mask!
-    h.pstop("MCP corrections finished.")
     fool_my_own_sanity_check(data)
+
     return data
 
 

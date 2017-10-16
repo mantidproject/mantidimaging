@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.parallel import exclusive_mem as esm
@@ -39,10 +39,14 @@ class ExclusiveMemTest(unittest.TestCase):
         expected = img + add_arg
 
         f = esm.create_partial(return_from_func, add_arg=add_arg)
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+
+        cached_memory = get_memory_usage_linux(kb=True)[0]
+
         img = esm.execute(img, f, name="Exclusive mem test")
+
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+
         npt.assert_equal(img, expected)
 
 

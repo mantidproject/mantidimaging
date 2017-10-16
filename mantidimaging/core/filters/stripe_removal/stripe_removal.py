@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-from mantidimaging import helper as h
 from mantidimaging.core.tools import importer
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -55,7 +55,7 @@ def wavelet_names():
     ]
 
 
-def execute(data, wf, ti, sf, cores=None, chunksize=None):
+def execute(data, wf, ti, sf, cores=None, chunksize=None, progress=None):
     """
     Execute stripe removal filters.
 
@@ -98,22 +98,24 @@ def execute(data, wf, ti, sf, cores=None, chunksize=None):
 
     :return: Processed data
     """
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Stripe Removal')
+
     # get the first one, the rest will be processed
     msg = "Starting removal of stripes/ring artifacts using method '{0}'..."
-    if wf:
-        h.pstart(msg.format('Wavelett-Fourier'))
-        data = _wf(data, wf, cores, chunksize)
-        h.pstop("Finished removal of stripes/ring artifacts.")
 
-    elif ti:
-        h.pstart(msg.format('Titarenko'))
-        data = _ti(data, ti, cores, chunksize)
-        h.pstop("Finished removal of stripes/ring artifacts.")
+    with progress:
+        if wf:
+            progress.update(msg=msg.format('Wavelett-Fourier'))
+            data = _wf(data, wf, cores, chunksize)
 
-    elif sf:
-        h.pstart(msg.format('Smoothing-Filter'))
-        data = _sf(data, sf, cores, chunksize)
-        h.pstop("Finished removal of stripes/ring artifacts.")
+        elif ti:
+            progress.update(msg=msg.format('Titarenko'))
+            data = _ti(data, ti, cores, chunksize)
+
+        elif sf:
+            progress.update(msg=msg.format('Smoothing-Filter'))
+            data = _sf(data, sf, cores, chunksize)
 
     return data
 

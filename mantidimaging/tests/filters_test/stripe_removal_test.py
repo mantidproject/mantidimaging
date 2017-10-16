@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.filters import stripe_removal
@@ -108,12 +108,12 @@ class StripeRemovalTest(unittest.TestCase):
         ti = None
         sf = None
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = stripe_removal.execute(images, wf, ti, sf)
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -127,12 +127,12 @@ class StripeRemovalTest(unittest.TestCase):
         ti = ['nblock=2']
         sf = None
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = stripe_removal.execute(images, wf, ti, sf)
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -146,12 +146,12 @@ class StripeRemovalTest(unittest.TestCase):
         ti = None
         sf = ['size=5']
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = stripe_removal.execute(images, wf, ti, sf)
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)

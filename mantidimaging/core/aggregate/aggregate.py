@@ -6,9 +6,9 @@ import os
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.utility import get_file_names, get_folder_names
+from mantidimaging.core.utility.progress_reporting import Progress
 
 DEFAULT_AGGREGATE_PREFIX = 'out'
 
@@ -92,9 +92,8 @@ def execute(config):
 
 
 def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
-                   single_folder, config):
+                   single_folder, config, progress=None):
     """
-
     :param angle_image_paths: Enumerated generator that contains pairs of
                               (angle number, list of all files for angle)
     :param img_format: The input and output format of the images
@@ -103,28 +102,32 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
     :param single_folder: Is the output in a single folder, or a folder per
                           aggregate angle
     :param config: The reconstruction config
+    :param progress: The progress monitoring instance
     :return: None
     """
+    progress = Progress.ensure_instance(progress, task_name='Aggregate')
+
     s = saver.Saver(config)  # this also sets the output format from the config
     parallel_load = config.func.parallel_load
     saver.make_dirs_if_needed(s.get_output_path(), s._overwrite_all)
 
     for angle, image_paths in angle_image_paths:
-        # load all the images from angle, [0] to get the sample path data
-        h.pstart("Aggregating data for angle {0} from path {1}".format(
-            angle, os.path.dirname(image_paths[0])))
+        with progress:
+            # load all the images from angle, [0] to get the sample path data
+            progress.update(msg="Aggregating data for angle {0} from path {1}"
+                                .format(angle,
+                                        os.path.dirname(image_paths[0])))
 
-        images = loader.load(file_names=image_paths,
-                             in_format=img_format, parallel_load=parallel_load)
+            images = loader.load(file_names=image_paths,
+                                 in_format=img_format,
+                                 parallel_load=parallel_load)
 
-        images = images.get_sample()
-        # sum or average them
-        if 'sum' == agg_method:
-            aggregated_images = images.sum(axis=0, dtype=np.float32)
-        else:
-            aggregated_images = images.mean(axis=0, dtype=np.float32)
-
-        h.pstop("Finished aggregating.")
+            images = images.get_sample()
+            # sum or average them
+            if 'sum' == agg_method:
+                aggregated_images = images.sum(axis=0, dtype=np.float32)
+            else:
+                aggregated_images = images.mean(axis=0, dtype=np.float32)
 
         custom_index, name, name_postfix, subdir = create_name(
             DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label,

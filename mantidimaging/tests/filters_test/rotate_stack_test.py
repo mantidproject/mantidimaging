@@ -4,7 +4,7 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
 
 from mantidimaging.core.filters import rotate_stack
@@ -71,14 +71,14 @@ class RotateStackTest(unittest.TestCase):
         rotation = 1  # once clockwise
         images[:, 0, 0] = 42  # set all images at 0,0 to 42
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = rotate_stack.execute(images, rotation)
 
         w = result.shape[2]
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         npt.assert_equal(result[:, 0, w - 1], 42.0)
         npt.assert_equal(images[:, 0, w - 1], 42.0)

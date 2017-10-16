@@ -4,9 +4,10 @@ import unittest
 
 import numpy.testing as npt
 
-from mantidimaging import helper as h
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.tests import test_helper as th
+
+from mantidimaging.core.parallel import shared_mem as psm
 
 
 def add_inplace(first_shared, add_arg=3):
@@ -129,12 +130,12 @@ class SharedMemTest(unittest.TestCase):
         f = psm.create_partial(
             add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
         img = psm.execute(img, f, name="Inplace test")
 
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results
         npt.assert_equal(img, expected)
@@ -163,11 +164,11 @@ class SharedMemTest(unittest.TestCase):
         f = psm.create_partial(
             return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
 
-        cached_memory = h.get_memory_usage_linux(kb=True)[0]
+        cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
         img = psm.execute(img, f, name="Fwd func test")
         self.assertLess(
-            h.get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results
         npt.assert_equal(img, expected)

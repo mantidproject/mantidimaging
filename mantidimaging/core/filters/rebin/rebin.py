@@ -1,8 +1,11 @@
 from __future__ import (absolute_import, division, print_function)
-from mantidimaging import helper as h
+
 import scipy.misc
+
+from mantidimaging import helper as h
 from mantidimaging.core.parallel import exclusive_mem as pem
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
@@ -31,7 +34,8 @@ def modes():
     return ['nearest', 'lanczos', 'bilinear', 'bicubic', 'cubic']
 
 
-def execute(data, rebin_param, mode, cores=None, chunksize=None):
+def execute(data, rebin_param, mode, cores=None, chunksize=None,
+            progress=None):
     """
     :param data: Sample data which is to be processed. Expected in radiograms
 
@@ -50,44 +54,52 @@ def execute(data, rebin_param, mode, cores=None, chunksize=None):
     :return: The processed 3D numpy.ndarray
     """
     h.check_data_stack(data)
+
     if rebin_param and 0 < rebin_param:
         if pu.multiprocessing_available():
-            data = _execute_par(data, rebin_param, mode, cores, chunksize)
+            data = _execute_par(data, rebin_param, mode, cores, chunksize,
+                                progress)
         else:
-            data = _execute_seq(data, rebin_param, mode)
+            data = _execute_seq(data, rebin_param, mode, progress)
 
     return data
 
 
-def _execute_par(data, rebin_param, mode, cores=None, chunksize=None):
+def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
+                 progress=None):
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Rebin')
+
     resized_data = _create_reshaped_array(data.shape, rebin_param)
 
-    h.pstart("Starting PARALLEL image rebinning.")
+    with progress:
+        progress.update(msg="Starting PARALLEL image rebinning.")
 
-    f = pem.create_partial(scipy.misc.imresize, size=rebin_param, interp=mode)
-    resized_data = pem.execute(
-        data, f, cores, chunksize, "Rebinning", output_data=resized_data)
+        f = pem.create_partial(
+                scipy.misc.imresize, size=rebin_param, interp=mode)
 
-    h.pstop("Finished PARALLEL image rebinning. New shape: {0}".format(
-        resized_data.shape))
+        resized_data = pem.execute(
+            data, f, cores, chunksize, "Rebinning", output_data=resized_data)
 
     return resized_data
 
 
-def _execute_seq(data, rebin_param, mode):
-    h.pstart("Starting image rebinning.")
-    resized_data = _create_reshaped_array(data.shape, rebin_param)
-    num_images = resized_data.shape[0]
-    h.prog_init(num_images, "Rebinning")
-    for idx in range(num_images):
-        resized_data[idx] = scipy.misc.imresize(
-            data[idx], rebin_param, interp=mode)
+def _execute_seq(data, rebin_param, mode, progress=None):
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Rebin')
 
-        h.prog_update()
+    with progress:
+        progress.update(msg="Starting image rebinning.")
 
-    h.prog_close()
-    h.pstop(
-        "Finished image rebinning. New shape: {0}".format(resized_data.shape))
+        resized_data = _create_reshaped_array(data.shape, rebin_param)
+
+        num_images = resized_data.shape[0]
+        progress.add_estimated_steps(num_images)
+
+        for idx in range(num_images):
+            resized_data[idx] = scipy.misc.imresize(
+                data[idx], rebin_param, interp=mode)
+            progress.update()
 
     return resized_data
 

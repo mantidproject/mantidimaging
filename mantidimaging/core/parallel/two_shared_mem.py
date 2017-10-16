@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 from functools import partial
 from multiprocessing import Pool
 
-from mantidimaging import helper as h
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
@@ -15,10 +15,12 @@ second_shared_data = None
 def inplace(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
-        - Perform an operation on the input data that is dependent on another container
+        - Perform an operation on the input data that is dependent on another
+          container
         - DOES NOT have a return statement
         - The data is NOT RESIZED
-        - The data will be changed INPLACE inside the function being forwarded (the parameter function)
+        - The data will be changed INPLACE inside the function being forwarded
+          (the parameter function)
 
     You HAVE to be careful when using this, for example the func:
 
@@ -26,15 +28,17 @@ def inplace(func, i, **kwargs):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a LOCAL VARIABLE that is discarded.
+    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a
+    LOCAL VARIABLE that is discarded.
 
     The proper way to write this function is:
     def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data[:] = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    Notice the data[:], what this does is REFER to the ACTUAL parameter, and then changes it's contents, as [:] gives
-    a reference back to the inner contents.
+    Notice the data[:], what this does is REFER to the ACTUAL parameter, and
+    then changes it's contents, as [:] gives a reference back to the inner
+    contents.
 
     :param func: Function that will be executed
     :param i: index from the shared_data on which to operate
@@ -47,28 +51,35 @@ def inplace(func, i, **kwargs):
 def inplace_second_2d(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
-        - Perform an operation on the input data that is dependent on the same second parameter
+        - Perform an operation on the input data that is dependent on the same
+          second parameter
         - DOES NOT have a return statement
         - The data is NOT RESIZED
-        - The data will be changed INPLACE inside the function being forwarded (the parameter function)
+        - The data will be changed INPLACE inside the function being forwarded
+          (the parameter function)
 
-    Use if the parameter function does NOT have a return statement, and will overwrite the data in place.
-    Use to share a single 2D second_shared_data, i.e. a single averaged flat image.
+    Use if the parameter function does NOT have a return statement, and will
+    overwrite the data in place.
+
+    Use to share a single 2D second_shared_data, i.e. a single averaged flat
+    image.
 
     You HAVE to be careful when using this, for example the func:
     def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a local variable that is discarded.
+    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a
+    local variable that is discarded.
 
     The proper way to write this function is:
     def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data[:] = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    Notice the data[:], what this does is refer to the ACTUAL parameter, and then changes it's contents, as [:] gives
-    a reference back to the inner contents.
+    Notice the data[:], what this does is refer to the ACTUAL parameter, and
+    then changes it's contents, as [:] gives a reference back to the inner
+    contents.
 
     :param func: Function that will be executed
     :param i: index from the shared_data on which to operate
@@ -81,7 +92,8 @@ def inplace_second_2d(func, i, **kwargs):
 def return_to_first(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
-        - Perform an operation on the input data that is dependent on another container
+        - Perform an operation on the input data that is dependent on another
+          container
         - DOES have a return statement
         - The data is NOT RESIZED
         - The output will be stored in the FIRST INPUT CONTAINER
@@ -97,7 +109,8 @@ def return_to_first(func, i, **kwargs):
 def return_to_second(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
-        - Perform an operation on the input data that is dependent on another container
+        - Perform an operation on the input data that is dependent on another
+          container
         - DOES have a return statement
         - The data is NOT RESIZED
         - The output will be stored in the SECOND INPUT CONTAINER
@@ -113,15 +126,19 @@ def return_to_second(func, i, **kwargs):
 
 def create_partial(func, fwd_function=inplace, **kwargs):
     """
-    Create a partial using functools.partial, to forward the kwargs to the parallel execution of imap.
+    Create a partial using functools.partial, to forward the kwargs to the
+    parallel execution of imap.
+
     If you seem to be getting nans, check if the correct fwd_function is set!
 
     :param func: Function that will be executed
-    :param fwd_function: The function will be forwarded through function. It must be one of:
+    :param fwd_function: The function will be forwarded through function.
+            It must be one of:
             - two_shared_mem.inplace: if the function replaces
             - two_shared_mem.inplace_second_2d: if the function returns a value
             - two_shared_mem.return_to_first: if the function returns a value
-            - two_shared_mem.return_to_second: if the function will overwrite the data in place
+            - two_shared_mem.return_to_second: if the function will overwrite
+              the data in place
     :param kwargs: kwargs to forward to the function func that will be executed
     :return:
     """
@@ -134,15 +151,21 @@ def execute(data=None,
             cores=None,
             chunksize=None,
             name="Progress",
-            show_timer=True):
+            progress=None):
     """
     Executes a function in parallel with shared memory between the processes.
-    The array must have been created using parallel.utility.create_shared_array(shape, dtype).
+
+    The array must have been created using
+    parallel.utility.create_shared_array(shape, dtype).
 
     If the input array IS NOT a shared array, the data will NOT BE CHANGED!
-    The reason for that is that the processes don't work on the data, but on a copy.
-    When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK TO REPLACE THE ORIGINAL
-    as is done in parallel.exclusive_mem, it is merely discarded.
+
+    The reason for that is that the processes don't work on the data, but on a
+    copy.
+
+    When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK
+    TO REPLACE THE ORIGINAL as is done in parallel.exclusive_mem, it is merely
+    discarded.
 
     - imap_unordered gives the images back in random order
     - map and map_async do not improve speed performance
@@ -151,8 +174,8 @@ def execute(data=None,
     Using _ in the for _ enumerate is slightly faster, because the tuple
     from enumerate isn't unpacked, and thus some time is saved.
 
-    From performance tests, the chunksize doesn't seem to make much of a difference,
-    but having larger chunks usually led to slower performance:
+    From performance tests, the chunksize doesn't seem to make much of a
+    difference, but having larger chunks usually led to slower performance:
 
     Shape: (50,512,512)
     1 chunk 3.06s
@@ -166,13 +189,14 @@ def execute(data=None,
     9 chunks 3.45s
 
     :param data: the shared data array that will be processed in parallel
-    :param second_data: the second shared data array that will be processed in parallel
-    :param partial_func: a function constructed using partial to pass the correct arguments
+    :param second_data: the second shared data array that will be processed in
+                        parallel
+    :param partial_func: a function constructed using partial to pass the
+                         correct arguments
     :param cores: number of cores that the processing will use
     :param chunksize: chunk of work per process(worker)
-    :param name: the string that will be appended in front of the progress bar
-    :param show_timer: if False no timer will be shown
-
+    :param name: name of the task used in progress reporting
+    :param progress: Progress instance to use for progress reporting (optional)
     :return:
     """
 
@@ -193,18 +217,22 @@ def execute(data=None,
     pool = Pool(cores)
     img_num = data.shape[0]
 
-    if show_timer:
-        h.prog_init(img_num, name + " " + str(cores) + "c " + str(chunksize) + "chs")
+    task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
+    progress = Progress.ensure_instance(progress,
+                                        num_steps=img_num,
+                                        task_name=task_name)
 
     indices_list = pu.generate_indices(img_num)
     for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
-        h.prog_update()
+        progress.update()
 
     pool.close()
     pool.join()
-    h.prog_close()
 
-    # remove the global references to remove unused dangling handles to the data, which might prevent it from being GCed
+    progress.mark_complete()
+
+    # remove the global references to remove unused dangling handles to the
+    # data, which might prevent it from being GCed
     temp_data_ref = shared_data
     del shared_data
     temp_data_2_ref = second_shared_data

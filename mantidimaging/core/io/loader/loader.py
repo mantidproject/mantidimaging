@@ -4,10 +4,10 @@ from logging import getLogger
 
 import numpy as np
 
+from mantidimaging.core.io.loader import img_loader, stack_loader
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.io.utility import (
         get_file_names, DEFAULT_IO_FILE_FORMAT)
-
-from mantidimaging.core.io.loader import img_loader, stack_loader
 
 
 def _fitsread(filename):
@@ -228,7 +228,8 @@ def load_sinogram(input_path=None,
                   sinogram_number=0,
                   in_prefix='',
                   in_format=DEFAULT_IO_FILE_FORMAT,
-                  dtype=np.float32):
+                  dtype=np.float32,
+                  progress=None):
     """
     This function is not be exposed to the CLI.
 
@@ -237,6 +238,9 @@ def load_sinogram(input_path=None,
     The reason is because this function will have a lot slower performance than
     the normal load.
     """
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Sinogram Load')
+
     if in_format not in supported_formats():
         raise ValueError("Image format {0} not supported!".format(in_format))
 
@@ -258,19 +262,17 @@ def load_sinogram(input_path=None,
     output_data = pu.create_shared_array(
             (1, num_images, img_shape[1]), dtype=dtype)
 
-    logging.getLogger(__name__).info("Output data shape: {}".format(output_data.shape))
+    getLogger(__name__).info("Output data shape: {}".format(output_data.shape))
 
-    from mantidimaging import helper as h
+    with progress:
+        progress.add_estimated_steps(num_images)
 
-    h.prog_init(num_images, "Loading sinograms")
+        for idx, input_file in enumerate(input_file_names):
+            # read a single row from each projection, very wasteful but can
+            # quickly create a sinogram
+            loaded_image = _imread(input_file)
+            output_data[0, idx, :] = loaded_image[:, sinogram_number]
 
-    for idx, input_file in enumerate(input_file_names):
-        # read a single row from each projection, very wasteful but can quickly
-        # create a sinogram
-        loaded_image = _imread(input_file)
-        output_data[0, idx, :] = loaded_image[:, sinogram_number]
-        h.prog_update()
-
-    h.prog_close()
+            progress.update(msg='Loading sinograms')
 
     return output_data
