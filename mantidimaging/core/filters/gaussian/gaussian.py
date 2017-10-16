@@ -2,12 +2,12 @@ from __future__ import (absolute_import, division, print_function)
 
 from logging import getLogger
 
+import scipy.ndimage as scipy_ndimage
+
 from mantidimaging import helper as h
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.parallel import shared_mem as psm
-
-import scipy.ndimage as scipy_ndimage
 
 
 def _cli_register(parser):
