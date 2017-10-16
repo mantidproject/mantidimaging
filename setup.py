@@ -23,8 +23,8 @@ setup(
     license='GPL-3.0',
     author='Dimitar Tasev',
     author_email='dimitar.tasev@stfc.ac.uk',
-    tests_require=['nose'],
     description='MantidImaging Tomographic Reconstruction package',
+    long_description=open("README.md").read(),
     platforms=["Linux"],
     test_suite='nose.collector',
     classifiers=[
@@ -41,8 +41,16 @@ setup(
         'Topic :: Tomographic Reconstruction',
     ],
     extras_require={
-        'testing': ['nose'],
+        'testing': [
+            'nose',
+            'nose-randomly'
+        ],
     },
-    long_description=open("README.md").read(),
-    install_requires=['numpy']
+    tests_require=[
+        'nose',
+        'nose-randomly'
+    ],
+    install_requires=[
+        'numpy'
+    ]
 )
