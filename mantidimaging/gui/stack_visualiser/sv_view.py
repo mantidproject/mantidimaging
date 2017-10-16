@@ -346,8 +346,10 @@ class StackVisualiserView(Qt.QMainWindow):
         """
         self.set_image_title_to_current_filename()
         self.image.set_data(self.current_image())
-        self.color_bar.set_clim(self.current_image().min(), self.current_image().max())
+
+        self.color_bar.set_clim(self.presenter.get_image_pixel_range())
         self.color_bar.draw_all()
+
         self.canvas.draw()
 
     def set_image_title_to_current_filename(self):
@@ -362,7 +364,7 @@ class StackVisualiserView(Qt.QMainWindow):
 
         :param msg: Error message string
         """
-        QtWidgets.QMessageBox.critical(self, "Error", msg)
+        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
 
 
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):

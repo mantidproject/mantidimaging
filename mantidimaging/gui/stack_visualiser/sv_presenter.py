@@ -94,6 +94,14 @@ class StackVisualiserPresenter(object):
             axis = self.axis
         return self.images.get_sample().shape[self.axis]
 
+    def get_image_pixel_range(self):
+        """
+        Gets the range of pixel intensities across all images.
+
+        :return: Tuple of (min, max) pixel intensities
+        """
+        return (self.images.get_sample().min(), self.images.get_sample().max())
+
     def do_scroll_stack(self, offset):
         """
         Scrolls through the stack by a given number of images.
