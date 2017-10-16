@@ -84,7 +84,7 @@ def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
         progress.update(msg="Starting PARALLEL image rebinning.")
 
         f = pem.create_partial(
-                scipy.misc.imresize, size=rebin_param, interp=mode)
+                scipy.misc.imresize, size=rebin_param, interp=mode, mode='F')
 
         resized_data = pem.execute(
             data, f, cores, chunksize, "Rebinning", output_data=resized_data)
@@ -106,7 +106,7 @@ def _execute_seq(data, rebin_param, mode, progress=None):
 
         for idx in range(num_images):
             resized_data[idx] = scipy.misc.imresize(
-                data[idx], rebin_param, interp=mode)
+                data[idx], rebin_param, interp=mode, mode='F')
             progress.update()
 
     return resized_data
