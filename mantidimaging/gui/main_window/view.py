@@ -7,6 +7,7 @@ from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.stack_visualiser import StackVisualiserView
+from mantidimaging.gui.filters_window import FiltersWindowView
 
 from .load_dialog import MWLoadDialog
 from .presenter import MainWindowPresenter
@@ -28,6 +29,8 @@ class MainWindowView(Qt.QMainWindow):
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
 
+        self.filters_window = FiltersWindowView(self)
+
         self.setup_shortcuts()
         self.update_shortcuts()
 
@@ -38,6 +41,8 @@ class MainWindowView(Qt.QMainWindow):
 
         self.actionOnlineDocumentation.triggered.connect(
                 self.open_online_documentation)
+
+        self.actionFilters.triggered.connect(self.show_filters_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
@@ -61,6 +66,9 @@ class MainWindowView(Qt.QMainWindow):
     def show_save_dialogue(self):
         self.save_dialogue = MWSaveDialog(self, self.stack_list())
         self.save_dialogue.show()
+
+    def show_filters_window(self):
+        self.filters_window.show()
 
     def stack_names(self):
         # unpacks the tuple and only gives the correctly sorted human readable

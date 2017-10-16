@@ -50,6 +50,12 @@
     <addaction name="separator"/>
     <addaction name="actionTomopy"/>
    </widget>
+   <widget class="QMenu" name="menuProcessing">
+    <property name="title">
+     <string>Processing</string>
+    </property>
+    <addaction name="actionFilters"/>
+   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
@@ -58,6 +64,7 @@
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuFilters"/>
+   <addaction name="menuProcessing"/>
    <addaction name="menuReconstruct"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -99,6 +106,11 @@
   <action name="actionManual_Center_of_Rotation">
    <property name="text">
     <string>Manual Center of Rotation</string>
+   </property>
+ </action>
+  <action name="actionFilters">
+   <property name="text">
+    <string>Filters</string>
    </property>
   </action>
   <action name="actionOnlineDocumentation">
