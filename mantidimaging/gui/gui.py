@@ -4,7 +4,6 @@ import sys
 
 from PyQt5.Qt import QApplication
 
-from mantidimaging.core.utility import registrator
 from mantidimaging.core.utility.registrator.gui_registrator import gui_register
 from mantidimaging.gui.main_window.mw_view import MainWindowView
 
@@ -15,9 +14,9 @@ def execute(config):
     application_window = MainWindowView(config)
 
     # register gui part of algorithms into view
-    registrator.register_into(
-            application_window.menuFilters, func=gui_register,
-            package='mantidimaging.core.filters')
+    gui_register(application_window.menuFilters,
+                 'mantidimaging.core.filters',
+                 ['mantidimaging.core.filters.wip'])
 
     application_window.show()
 

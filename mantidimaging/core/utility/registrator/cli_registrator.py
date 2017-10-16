@@ -32,7 +32,7 @@ def _cli_register_into_parser(parser, module):
 
 def cli_register(parser, package_name, ignored_packages=None):
     """
-    Registers modules into the CLI.
+    Registers filter modules into the CLI.
 
     :param parser: The parser instace to register into
 

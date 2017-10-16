@@ -9,38 +9,23 @@ from mantidimaging.gui.main_window.mw_view import MainWindowView
 
 from .registrator import do_importing
 
-
-def gui_register(qt_parent, module_dir):
-    assert isinstance(qt_parent, QMenu), (
-            "The object passed {0} is not a QMenu, and is not "
-            "supported.".format(qt_parent))
-
-    main_window = qt_parent.parent().parent()
-    assert isinstance(main_window, MainWindowView), (
-            "This must be the MainWindowView object! If it's not, it means "
-            "the structure has been changed, and the registrator code needs "
-            "to be adjusted")
-
-    do_importing(
-            module_dir, '_gui_register', '_gui', do_registering, main_window)
-
-    return qt_parent
+from .registrator import (
+        get_child_modules,
+        import_modules,
+        register_modules_into
+    )
 
 
-def do_registering(module, module_dir, main_window):
+def _gui_register_into_main_window(main_window, module):
     """
     This function is a callback from the registrator. It will handle the
     registration for the GUI.
-
-    :param module: The module that we are currently registering into the GUI.
-
-    :param module_dir: The module's directory to be used as a name, if the
-                       GUI_MENU_NAME constant is not specified in the module.
 
     :param main_window: The main window object, at this point we are guaranteed
                         for it to be a MainWindowView because of the assertion
                         in gui_register
 
+    :param module: The module that we are currently registering into the GUI.
     """
     log = getLogger(__name__)
     log.debug("Registering GUI: %s", module)
@@ -65,14 +50,13 @@ def do_registering(module, module_dir, main_window):
             "Function _gui_register of {0} did not return the expected type. "
             "Check that the dialog is of type AlgorithmDialog and is "
             "returned at the end of the _gui_register "
-            "function.".format(module_dir))
+            "function.".format(module))
 
     assert dialog.execute is not None, (
             "The execute function must be set manually! The module {0} has "
-            "not set execute correctly".format(module_dir))
+            "not set execute correctly".format(module))
 
-    menu_name = getattr(module, 'GUI_MENU_NAME', module_dir)
-    action = QAction(menu_name, menu)
+    action = QAction(module.NAME, menu)
 
     # the captured_dialog=dialog in the lambda captures THE ORIGINAL reference
     # to the dialog and when the user clicks the QAction in the QMenu the
@@ -84,3 +68,33 @@ def do_registering(module, module_dir, main_window):
 
     # finally add to the drop down menus
     menu.addAction(action)
+
+
+def gui_register(qt_parent, package_name, ignored_packages):
+    """
+    Registers filter modules into the GUI.
+
+    :param main_window: Instance of the main window
+
+    :param package_name: Root package name of modules to register
+
+    :param ignored_packages: Optional list of packages/modules to ignore
+    """
+    assert isinstance(qt_parent, QMenu), (
+            "The object passed {0} is not a QMenu, and is not "
+            "supported.".format(qt_parent))
+
+    main_window = qt_parent.parent().parent()
+    assert isinstance(main_window, MainWindowView), (
+            "This must be the MainWindowView object! If it's not, it means "
+            "the structure has been changed, and the registrator code needs "
+            "to be adjusted")
+
+    modules = get_child_modules(package_name, ignored_packages)
+    modules = [m[1] for m in modules]
+
+    loaded_modules = import_modules(
+            modules, ['execute', 'NAME', '_gui_register'])
+
+    register_modules_into(loaded_modules, main_window,
+                          _gui_register_into_main_window)
