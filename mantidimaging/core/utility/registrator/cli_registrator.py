@@ -1,32 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-import argparse
-
-from .registrator import do_importing
-
-
-def cli_register(parser, module_dir):
-    """
-    Asserts the state of the execution to make sure we have the correct class.
-
-    :param parser: The parser object into which we are registering.
-
-    :param module_dir: The current module directory
-
-    :return: The parser object
-    """
-    assert isinstance(
-        parser, argparse.ArgumentParser
-    ), "The argument parser object was not of the correct type!"
-
-    # we specify the full absolute path and append the package name
-    # the code underneath does import core.filters.package_name
-    do_importing(module_dir, '_cli_register', '_cli', do_registering, parser)
-
-    return parser
+from .registrator import (
+        get_child_modules,
+        import_modules,
+        register_modules_into
+    )
 
 
-def do_registering(module, module_dir, parser):
+def _cli_register_into_parser(parser, module):
     """
     This function is a callback from the registrator. Does the registering into
     the CLI.
@@ -45,5 +26,23 @@ def do_registering(module, module_dir, parser):
                    parameter, and the module will be registered into that
                    group.
     """
-    group = parser.add_argument_group(module_dir)
+    group = parser.add_argument_group(module.__package__)
     module._cli_register(group)
+
+
+def cli_register(parser, package_name, ignored_packages=None):
+    """
+    Registers modules into the CLI.
+
+    :param parser: The parser instace to register into
+
+    :param package_name: Root package name of modules to register
+
+    :param ignored_packages: Optional list of packages/modules to ignore
+    """
+    modules = get_child_modules(package_name, ignored_packages)
+    modules = [m[1] for m in modules]
+
+    loaded_modules = import_modules(modules, ['execute', '_cli_register'])
+
+    register_modules_into(loaded_modules, parser, _cli_register_into_parser)
