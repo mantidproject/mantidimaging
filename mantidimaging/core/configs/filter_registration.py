@@ -19,14 +19,12 @@ def _cli_register_into_parser(parser, module):
 
     :param module: The module that we are registering
 
-    :param module_dir: The module's directory, which will be used for the name
-
     :param parser: The parser into which we're registering.
                    Currently a group will be created using the module_dir
                    parameter, and the module will be registered into that
                    group.
     """
-    group = parser.add_argument_group(module.__package__)
+    group = parser.add_argument_group('{} options'.format(module.NAME))
     module._cli_register(group)
 
 
@@ -45,6 +43,6 @@ def register_filters_on_cli(
     modules = get_child_modules(package_name, ignored_packages)
     modules = [m[1] for m in modules]
 
-    loaded_modules = import_modules(modules, ['execute', '_cli_register'])
+    loaded_modules = import_modules(modules, ['execute', 'NAME', '_cli_register'])
 
     register_modules_into(loaded_modules, parser, _cli_register_into_parser)
