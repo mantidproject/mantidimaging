@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import unittest
+import sys
 
 import numpy.testing as npt
 
@@ -10,6 +11,8 @@ from mantidimaging.tests import test_helper as th
 from mantidimaging.core.filters import stripe_removal
 
 
+@unittest.skipIf(sys.version_info < (3, 0),
+                 'Skipping unreliable test on Python 2.7')
 class StripeRemovalTest(unittest.TestCase):
     """
     Test stripe removal filter.
