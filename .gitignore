@@ -1,5 +1,8 @@
 .noseids
 
+# Built documentation
+docs/build_*
+
 # Extracted demo images
 notebooks/demoimages/
 
