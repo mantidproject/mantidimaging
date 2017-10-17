@@ -3,8 +3,9 @@ from __future__ import absolute_import, division, print_function
 from enum import Enum
 from logging import getLogger
 
-from .mw_model import MainWindowModel
 from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
+
+from .mw_model import MainWindowModel
 
 
 class Notification(Enum):

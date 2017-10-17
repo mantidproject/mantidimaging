@@ -22,8 +22,8 @@ from __future__ import absolute_import, division, print_function
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from .atd_presenter import AsyncTaskDialogPresenter  # noqa: F401
-from .atd_view import AsyncTaskDialogView  # noqa: F401
-from .atd_model import AsyncTaskDialogModel, TaskWorkerThread  # noqa: F401
+from .model import AsyncTaskDialogModel, TaskWorkerThread  # noqa: F401
+from .view import AsyncTaskDialogView  # noqa: F401
+from .presenter import AsyncTaskDialogPresenter  # noqa: F401
 
 del absolute_import, division, print_function  # noqa:F821
