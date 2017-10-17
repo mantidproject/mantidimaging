@@ -151,7 +151,7 @@ class ProgressTest(unittest.TestCase):
 
         def assert_call(expected_completion, expected_step, expected_msg):
             for m in callbacks:
-                m.update.assert_called_once()
+                m.progress_update.assert_called_once()
                 m.reset_mock()
 
         p = Progress(5)
@@ -172,6 +172,14 @@ class ProgressTest(unittest.TestCase):
 
         p.mark_complete()
         assert_call(1.0, 6, 'complete')
+
+    def test_add_callback_incorrect_type(self):
+        p = Progress(5)
+
+        not_a_progress_handler = "I'm a string!"
+
+        with self.assertRaises(ValueError):
+            p.add_progress_handler(not_a_progress_handler)
 
     def test_context(self):
         p = Progress()

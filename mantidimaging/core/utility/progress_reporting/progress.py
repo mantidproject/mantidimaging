@@ -14,7 +14,7 @@ class ProgressHandler(object):
     def __init__(self):
         self.progress = None
 
-    def update_progress(self):
+    def progress_update(self):
         raise NotImplementedError(
                 "Need to implement this method in the child class")
 
@@ -139,9 +139,9 @@ class Progress(object):
         Adds a hander to receiver progress updates.
         :param handler: Instance of a progress handler
         """
-        # if not isinstance(handler, ProgressHandler):
-            # raise ValueError(
-                    # "Progress handlers must be of type ProgressHandler")
+        if not isinstance(handler, ProgressHandler):
+            raise ValueError(
+                    "Progress handlers must be of type ProgressHandler")
 
         self.progress_handlers.append(handler)
         handler.progress = self
