@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
 import os
+from setuptools import setup, find_packages
+from sphinx.setup_command import BuildDoc
 
 THIS_PATH = os.path.dirname(__file__)
+
 
 setup(
     name='mantidimaging',
@@ -40,6 +42,9 @@ setup(
         'Topic :: Imaging',
         'Topic :: Tomographic Reconstruction',
     ],
+    cmdclass={
+        'docs': BuildDoc
+    },
     extras_require={
         'testing': [
             'nose',
