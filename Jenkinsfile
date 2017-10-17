@@ -11,6 +11,7 @@ pipeline {
           sh '${WORKSPACE}/anaconda3/envs/py35/bin/pip install -r test-requirements.txt'
           sh '${WORKSPACE}/buildscripts/install_anaconda_python27.sh -b'
           sh '${WORKSPACE}/anaconda2/bin/pip install -r test-requirements.txt'
+          sh '${WORKSPACE}/anaconda2/bin/pip install -r setup-requirements.txt'
         }
       }
     }
