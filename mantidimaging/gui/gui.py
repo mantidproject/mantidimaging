@@ -4,8 +4,9 @@ import sys
 
 from PyQt5.Qt import QApplication
 
-from mantidimaging.core.utility.registrator.gui_registrator import gui_register
 from mantidimaging.gui.main_window.mw_view import MainWindowView
+
+from .filter_registration import gui_register
 
 
 def execute(config):

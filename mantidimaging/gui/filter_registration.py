@@ -7,9 +7,7 @@ from PyQt5.Qt import QMenu, QAction
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.main_window.mw_view import MainWindowView
 
-from .registrator import do_importing
-
-from .registrator import (
+from mantidimaging.core.utility.registrator import (
         get_child_modules,
         import_modules,
         register_modules_into
