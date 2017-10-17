@@ -24,5 +24,6 @@ from __future__ import absolute_import, division, print_function
 
 from .atd_presenter import AsyncTaskDialogPresenter  # noqa: F401
 from .atd_view import AsyncTaskDialogView  # noqa: F401
+from .atd_model import AsyncTaskDialogModel, TaskWorkerThread  # noqa: F401
 
 del absolute_import, division, print_function  # noqa:F821
