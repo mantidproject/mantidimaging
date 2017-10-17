@@ -4,4 +4,4 @@
 # the latest version.
 
 git pull origin master
-pip install -e .
+python setup.py develop

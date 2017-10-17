@@ -34,12 +34,12 @@ Installing the package
 The package can be installed using the following command inside the
 :code:`mantidimaging` directory:
 
-:code:`setup.py install`
+:code:`python setup.py install`
 
-Alternatively, it can be useful to install via :code:`pip` if you plan on
+Alternatively, it can be useful to install in development mode if you plan on
 frequently updating or modifying the package:
 
-:code:`pip install -e .`
+:code:`python setup.py develop`
 
 Starting the package
 --------------------
