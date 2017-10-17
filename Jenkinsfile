@@ -44,5 +44,14 @@ pipeline {
         }
       }
     }
+
+    stage('Build Documentation') {
+      steps {
+        timeout(5) {
+          sh '${WORKSPACE}/anaconda2/bin/python setup.py docs -b html'
+          sh '${WORKSPACE}/anaconda2/bin/python setup.py docs -b qthelp'
+        }
+      }
+    }
   }
 }
