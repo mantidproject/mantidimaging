@@ -17,7 +17,7 @@ from .images import Images
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
             img_format, data_dtype, cores, chunksize, parallel_load, indices,
-            construct_sinograms):
+            construct_sinograms, progress=None):
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -49,7 +49,8 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     # forward all arguments to internal class for easy re-usage
     l = ImageLoader(load_func, input_file_names, input_path_flat,
                     input_path_dark, img_format, img_shape, data_dtype, cores,
-                    chunksize, parallel_load, indices, construct_sinograms)
+                    chunksize, parallel_load, indices, construct_sinograms,
+                    progress)
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
@@ -70,7 +71,8 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 class ImageLoader(object):
     def __init__(self, load_func, input_file_names, input_path_flat,
                  input_path_dark, img_format, img_shape, data_dtype, cores,
-                 chunksize, parallel_load, indices, construct_sinograms):
+                 chunksize, parallel_load, indices, construct_sinograms,
+                 progress=None):
         self.load_func = load_func
         self.input_file_names = input_file_names
         self.input_path_flat = input_path_flat
@@ -83,6 +85,7 @@ class ImageLoader(object):
         self.parallel_load = parallel_load
         self.indices = indices
         self.construct_sinograms = construct_sinograms
+        self.progress = progress
 
     def load_sample_data(self, input_file_names):
         # determine what the loaded data was
@@ -93,7 +96,8 @@ class ImageLoader(object):
             # the loaded file was a file containing a stack of images
             sample_data = stack_loader.execute(
                 self.load_func, input_file_names[0], self.data_dtype, "Sample",
-                self.cores, self.chunksize, self.parallel_load, self.indices)
+                self.cores, self.chunksize, self.parallel_load, self.indices,
+                progress=self.progress)
         else:
             raise ValueError(
                 "Data loaded has invalid shape: {0}", self.img_shape)
@@ -107,10 +111,12 @@ class ImageLoader(object):
             data = self.load_files(file_names, name)
             return _get_data_average(data)
 
-    def _do_files_load_seq(self, data, files, name, progress=None):
-        progress = Progress.ensure_instance(progress,
+    def _do_files_load_seq(self, data, files, name):
+        progress = Progress.ensure_instance(self.progress,
                                             num_steps=len(files),
                                             task_name='Load')
+
+        progress.add_estimated_steps(len(files))
 
         with progress:
             for idx, in_file in enumerate(files):
@@ -130,10 +136,12 @@ class ImageLoader(object):
 
         return data
 
-    def _do_files_sinogram_load_seq(self, data, files, name, progress=None):
-        progress = Progress.ensure_instance(progress,
+    def _do_files_sinogram_load_seq(self, data, files, name):
+        progress = Progress.ensure_instance(self.progress,
                                             num_steps=len(files),
                                             task_name='Sinogram Load')
+
+        progress.add_estimated_steps(len(files))
 
         with progress:
             for idx, in_file in enumerate(files):
@@ -157,21 +165,21 @@ class ImageLoader(object):
         f = ptsm.create_partial(
             _inplace_load, ptsm.inplace, load_func=self.load_func)
 
-        ptsm.execute(data, files, f, self.cores, self.chunksize, name)
+        ptsm.execute(data, files, f, self.cores, self.chunksize, name,
+                     self.progress)
         return data
 
-    def load_files(self, files, name=None, progress=None):
+    def load_files(self, files, name=None):
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         data = self.allocate_data(num_images=len(files))
 
         if self.construct_sinograms:
-            return self._do_files_sinogram_load_seq(
-                    data, files, name, progress)
+            return self._do_files_sinogram_load_seq(data, files, name)
         elif self.parallel_load:
             return self._do_files_load_par(data, files, name)
         else:
-            return self._do_files_load_seq(data, files, name, progress)
+            return self._do_files_load_seq(data, files, name)
 
     def allocate_data(self, num_images):
         if self.construct_sinograms:

@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 from enum import Enum
 from logging import getLogger
 
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
 
 from .mw_model import MainWindowModel
@@ -56,6 +57,9 @@ class MainWindowPresenter(object):
             return
 
         atd = AsyncTaskDialogView(self.view, auto_close=True)
+        kwargs['progress'] = Progress()
+        kwargs['progress'].add_progress_handler(atd.presenter)
+
         atd.presenter.set_task(self.model.do_load_stack)
         atd.presenter.set_on_complete(self._on_stack_load_done)
         atd.presenter.set_parameters(**kwargs)

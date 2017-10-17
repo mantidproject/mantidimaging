@@ -151,7 +151,8 @@ def load(input_path=None,
          parallel_load=False,
          file_names=None,
          indices=None,
-         construct_sinograms=False):
+         construct_sinograms=False,
+         progress=None):
     """
     Loads a stack, including sample, white and dark images.
 
@@ -188,6 +189,8 @@ def load(input_path=None,
     :param construct_sinograms: The loaded images will be used to construct the
                                 sinograms during loading
 
+    :param progress: The progress reporting instance
+
     :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark
              were loaded, they will be None
     """
@@ -207,7 +210,8 @@ def load(input_path=None,
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
         images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load",
-                                      cores, chunksize, parallel_load, indices)
+                                      cores, chunksize, parallel_load, indices,
+                                      progress)
     else:
         if in_format in ['fits', 'fit']:
             load_func = _fitsread
@@ -217,7 +221,7 @@ def load(input_path=None,
         images = img_loader.execute(
             load_func, input_file_names, input_path_flat, input_path_dark,
             in_format, dtype, cores, chunksize, parallel_load, indices,
-            construct_sinograms)
+            construct_sinograms, progress)
 
     images.check_data_stack(images)
 
@@ -251,6 +255,7 @@ def load_sinogram(input_path=None,
     input_file_names = get_file_names(input_path, in_format, in_prefix)
 
     num_images = len(input_file_names)
+    progress.add_estimated_steps(num_images)
 
     sample_image = _imread(input_file_names[0])
 
@@ -265,8 +270,6 @@ def load_sinogram(input_path=None,
     getLogger(__name__).info("Output data shape: {}".format(output_data.shape))
 
     with progress:
-        progress.add_estimated_steps(num_images)
-
         for idx, input_file in enumerate(input_file_names):
             # read a single row from each projection, very wasteful but can
             # quickly create a sinogram

@@ -27,7 +27,7 @@ class ConsoleProgressBar(ProgressHandler):
         super(ConsoleProgressBar, self).__init__()
         self.width = width
 
-    def update(self):
+    def progress_update(self):
         suffix = '{}/{}'.format(self.progress.current_step,
                                 self.progress.end_step)
 

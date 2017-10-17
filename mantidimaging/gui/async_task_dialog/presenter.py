@@ -2,15 +2,18 @@ from __future__ import absolute_import, division, print_function
 
 from enum import Enum
 
-from .atd_model import AsyncTaskDialogModel
+from mantidimaging.core.utility.progress_reporting import ProgressHandler
+
+from .model import AsyncTaskDialogModel
 
 
 class Notification(Enum):
     START = 1
 
 
-class AsyncTaskDialogPresenter(object):
+class AsyncTaskDialogPresenter(ProgressHandler):
     def __init__(self, view):
+        super(AsyncTaskDialogPresenter, self).__init__()
         self.view = view
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
@@ -39,3 +42,7 @@ class AsyncTaskDialogPresenter(object):
         """
         self.model.do_execute_async()
         self.view.show()
+
+    def progress_update(self):
+        self.view.set_progress(self.progress.completion(),
+                               self.progress.last_status_message())

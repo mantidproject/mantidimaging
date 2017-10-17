@@ -4,7 +4,7 @@ from PyQt5 import Qt
 
 from mantidimaging.core.utility import gui_compile_ui
 
-from .atd_presenter import AsyncTaskDialogPresenter
+from .presenter import AsyncTaskDialogPresenter
 
 
 class AsyncTaskDialogView(Qt.QDialog):
@@ -17,6 +17,9 @@ class AsyncTaskDialogView(Qt.QDialog):
 
         self.auto_close = auto_close
 
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(1000)
+
     def handle_completion(self, successful):
         """
         Updates the UI after the task has been completed.
@@ -26,11 +29,14 @@ class AsyncTaskDialogView(Qt.QDialog):
         # Set info text to "Complete"
         self.infoText.setText("Complete")
 
-        # Set the progress bar to full
-        finalProgress = self.progressBar.maximum() if successful \
-            else self.progressBar.minimum()
-        self.progressBar.setValue(finalProgress)
-
         # If auto close is enabled and the task was sucesfull then hide the UI
         if self.auto_close and successful:
             self.hide()
+
+    def set_progress(self, progress, message):
+        # Set status message
+        if message:
+            self.infoText.setText(message)
+
+        # Update progress bar
+        self.progressBar.setValue(progress * 1000)

@@ -15,14 +15,16 @@ class MainWindowModel(object):
 
         self.active_stacks = {}
 
-    def do_load_stack(self, sample_path, image_format, parallel_load, indices):
+    def do_load_stack(self, sample_path, image_format, parallel_load, indices,
+                      progress):
         images = loader.load(
             sample_path,
             None,
             None,
             in_format=image_format,
             parallel_load=parallel_load,
-            indices=indices)
+            indices=indices,
+            progress=progress)
 
         return images
 
