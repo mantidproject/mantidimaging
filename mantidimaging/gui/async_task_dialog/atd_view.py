@@ -15,16 +15,7 @@ class AsyncTaskDialogView(Qt.QDialog):
         self.parent_view = parent
         self.presenter = AsyncTaskDialogPresenter(self)
 
-        self.cancelButton.clicked.connect(self.cancel_clicked)
-
         self.auto_close = auto_close
-
-    def cancel_clicked(self):
-        """
-        Handles the user clicking the Cancel button.
-        """
-        # TODO: actually handle cancellation
-        self.parent_view.presenter.show_error("I've been cancelled")
 
     def handle_completion(self, successful):
         """
@@ -39,9 +30,6 @@ class AsyncTaskDialogView(Qt.QDialog):
         finalProgress = self.progressBar.maximum() if successful \
             else self.progressBar.minimum()
         self.progressBar.setValue(finalProgress)
-
-        # Disable the cancel button
-        self.cancelButton.setEnabled(False)
 
         # If auto close is enabled and the task was sucesfull then hide the UI
         if self.auto_close and successful:
