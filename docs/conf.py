@@ -88,14 +88,12 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'alabaster'
+html_theme = 'classic'
 
 html_sidebars = {
     '**': [
-        'about.html',
-        'relations.html',
         'localtoc.html',
+        'relations.html',
         'searchbox.html',
     ]
 }
@@ -103,20 +101,7 @@ html_sidebars = {
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#
 html_theme_options = {
-    'github_user': 'mantidproject',
-    'github_repo': 'mantidimaging',
-    'github_button': 'false',
-    'extra_nav_links': {
-        'GitHub': 'https://github.com/mantidproject/mantidimaging/',
-        'Jenkins CI': 'http://builds.mantidproject.org/view/Imaging/',
-    },
-    'sidebar_width': '300px',
-    'sidebar_collapse': 'true',
-    'show_related': 'true',
-    'page_width': '90%',
-    'description': ' '
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

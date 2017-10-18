@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+import subprocess
+
 from distutils.core import Command
 from setuptools import setup, find_packages
 from sphinx.setup_command import BuildDoc
@@ -45,6 +47,32 @@ class PublishDocsToGitHubPages(Command):
         g.push('--force', self.repo, 'master:gh-pages')
 
 
+class GenerateSphinxApidoc(Command):
+    description = 'Generate API documentation with sphinx-apidoc'
+    user_options = []
+
+    def initialize_options(self):
+        self.sphinx_options = []
+        self.module_dir = None
+        self.out_dir = None
+
+    def finalize_options(self):
+        self.sphinx_options.append('sphinx-apidoc')
+        self.sphinx_options.extend(['-f', '-M', '-e', '-T'])
+
+        self.sphinx_options.extend(['-d', '10'])
+
+        self.module_dir = 'mantidimaging'
+        self.sphinx_options.append(self.module_dir)
+
+        self.out_dir = 'docs/api/'
+        self.sphinx_options.extend(['-o', self.out_dir])
+
+    def run(self):
+        print('Running: {}'.format(' '.join(self.sphinx_options)))
+        subprocess.call(self.sphinx_options)
+
+
 setup(
     name='mantidimaging',
     version='0.9',
@@ -81,6 +109,7 @@ setup(
         'Topic :: Tomographic Reconstruction',
     ],
     cmdclass={
+        'docs_api': GenerateSphinxApidoc,
         'docs': BuildDoc,
         'docs_publish': PublishDocsToGitHubPages
     },

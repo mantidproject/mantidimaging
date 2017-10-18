@@ -7,6 +7,7 @@ MantidImaging
 
    user_guide/index
    developer_guide/index
+   api
 
 |
 
