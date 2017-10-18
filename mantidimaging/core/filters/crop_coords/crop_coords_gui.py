@@ -2,16 +2,14 @@ from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-from . import crop_coords
-
-GUI_MENU_NAME = 'Crop Coords'
+from . import crop_coords, NAME
 
 
 def _gui_register(main_window):
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     valid_range = (0, 99999)
 

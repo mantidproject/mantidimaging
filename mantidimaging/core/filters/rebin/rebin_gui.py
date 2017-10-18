@@ -1,17 +1,14 @@
 from functools import partial
 
-from PyQt5 import Qt
-
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-from . import rebin
-
-GUI_MENU_NAME = "Rebin"
+from . import execute, modes, NAME
 
 
 def _gui_register(main_window):
+    from PyQt5 import Qt
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     # Rebin by uniform factor options
     _, factor = dialog.add_property('Factor', 'float', 0.5, (0.0, 1.0), False)
@@ -47,7 +44,7 @@ def _gui_register(main_window):
     # Rebin mode options
     label_mode = Qt.QLabel("Mode")
     mode_field = Qt.QComboBox()
-    mode_field.addItems(rebin.modes())
+    mode_field.addItems(modes())
 
     dialog.formLayout.addRow(rebin_to_dimensions_radio, shape_fields)
     dialog.formLayout.addRow(rebin_by_factor_radio, factor)
@@ -65,7 +62,7 @@ def _gui_register(main_window):
         else:
             raise ValueError('Unknown bin dimension mode')
 
-        return partial(rebin.execute,
+        return partial(execute,
                        mode=mode_field.currentText(),
                        rebin_param=params)
 
