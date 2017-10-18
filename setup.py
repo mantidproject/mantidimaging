@@ -82,7 +82,7 @@ setup(
     ],
     cmdclass={
         'docs': BuildDoc,
-        'publish_online_docs': PublishDocsToGitHubPages
+        'docs_publish': PublishDocsToGitHubPages
     },
     extras_require={
         'testing': [

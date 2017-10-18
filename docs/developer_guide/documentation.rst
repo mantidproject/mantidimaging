@@ -21,8 +21,8 @@ the documentation in :code:`docs/build.html`.
 There is a setuptools command configured to deploy the documentation to GitHub
 Pages where it will be visible at https://mantidproject.github.io/mantidimaging
 
-This can be done via the command :code:`python setup.py publish_online_docs`.
-This assumes you are using SSH as your Git push protocol, if you are not you may
+This can be done via the command :code:`python setup.py docs_publish`.  This
+assumes you are using SSH as your Git push protocol, if you are not you may
 specify an alternative remote URL using the :code:`-r` argument.
 
 QtHelp
