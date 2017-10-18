@@ -1,5 +1,5 @@
-Imopr mode
-==========
+Immage Operator (imopr) mode
+============================
 
 This mode helps find the COR of a sample.
 
@@ -42,11 +42,11 @@ Example usages:
   :code:`mantidimaging -i /some/data -o /some/data --imopr 42 250 350 10
   corwrite`
 
-This will reconstruct slice `42`, with CORs starting from 250 to 350, with a
+This will reconstruct slice 42, with CORs starting from 250 up to 350, with a
 step of 10.
 
 The output will be a single folder with the name of the angle number (in this
-case it will be a folder with name `42`), and inside it will save a
+case it will be a folder with name :code:`42`), and inside it will save a
 reconstructed image for every COR.
 
 - Multiple slices:

@@ -7,8 +7,8 @@ Loading data
 ------------
 
 The :code:`core.io.loader` module provides a :code:`load` method, that takes a
-path, and :code:`img_format` (the default is tiff, if different it needs to be
-specified) and will load _ALL_ of the images in that folder.
+path, and :code:`img_format` (the default is :code:`tiff`, if different it needs
+to be specified) and will load **all** of the images in that folder.
 
 Saving data
 -----------
