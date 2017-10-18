@@ -6,7 +6,6 @@ import os
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.utility.progress_reporting import Progress
 
 from .utility import DEFAULT_IO_FILE_FORMAT
@@ -244,7 +243,8 @@ class Saver(object):
                              the order of the images, and they could
                              end up not loading all of the images.
         """
-        assert data.ndim == 2, "This should not be used with a 3D stack of images!"
+        assert data.ndim == 2, \
+            "This should not be used with a 3D stack of images!"
 
         progress = Progress.ensure_instance(progress,
                                             task_name='Save Image')

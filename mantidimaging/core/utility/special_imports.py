@@ -55,9 +55,11 @@ def import_mock():
             def assert_called_once(_mock_self):
                 self = _mock_self
                 if not self.call_count == 1:
-                    msg = ("Expected '%s' to have been called once. Called %s times." %
-                            (self._mock_name or 'mock', self.call_count))
+                    msg = ("Expected '{}' to have been called once. "
+                           "Called {} times.".format(
+                               self._mock_name or 'mock', self.call_count))
                     raise AssertionError(msg)
+
             unittest.mock.Mock.assert_called_once = assert_called_once
     else:
         # Use mock on Python < 3.3

@@ -5,7 +5,6 @@ from logging import getLogger
 
 import numpy as np
 
-import mantidimaging.helper as h
 from mantidimaging.core.utility import size_calculator
 
 
@@ -19,8 +18,8 @@ def _calculate_ratio(current_size, max_memory, reconstruction):
     :returns: The calculated ratio
     """
 
-    # we are using sinograms, so the reconstructed shape will be exactly the same,
-    # thus we double the size of the reconstruction
+    # we are using sinograms, so the reconstructed shape will be exactly the
+    # same, thus we double the size of the reconstruction
     if not reconstruction:
         ratio = current_size / max_memory
     else:
@@ -40,12 +39,15 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
 
     :param max_memory: The maximum allowed memory usage
 
-    :param max_ratio: The maximum allowed ratio of data size per split to the max_memory
+    :param max_ratio: The maximum allowed ratio of data size per split to the
+                      max_memory
 
-    :param reconstruction: Account for reconstruction data (double the usage) or not
+    :param reconstruction: Account for reconstruction data (double the usage)
+                           or not
 
     :returns: Tuple containing list of split indices and step.
-              - split: List of start and end indices. This should be traversed two elements at a time.
+              - split: List of start and end indices.
+                       This should be traversed two elements at a time.
               - step: The step between each index in the split list.
     """
     assert axis < len(
@@ -66,7 +68,8 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
     # get the first ratio to be a whole number
     number_of_indice_splits = int(np.ceil(calculate_ratio(full_size)))
 
-    # if number_of_indice_splits is == 1 then numpy linspace returns just [0.] and a step of NaN
+    # if number_of_indice_splits is == 1 then numpy linspace returns just [0.]
+    # and a step of NaN
     if number_of_indice_splits <= 1:
         number_of_indice_splits += 1
 
@@ -81,17 +84,20 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         (int(step),) + shape[axis + 1:]
 
     while calculate_ratio(calculate_full_size(new_shape)) > max_ratio:
-        getLogger(__name__).info(calculate_ratio(calculate_full_size(new_shape)))
+        getLogger(__name__).info(
+                calculate_ratio(calculate_full_size(new_shape)))
+
         split, step = np.linspace(
             0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
 
         new_shape = shape[:axis] + (int(step), ) + shape[axis + 1:]
 
-        # we increase the number_of_indice_splits until we get a ratio that is acceptable
-        # this means we split the data in 2, 3, 4 runs
+        # we increase the number_of_indice_splits until we get a ratio that is
+        # acceptable this means we split the data in 2, 3, 4 runs
         number_of_indice_splits += 1
 
-    getLogger(__name__).info("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
-        step, calculate_ratio(calculate_full_size(new_shape)), split))
+    getLogger(__name__).info(
+            "Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
+                step, calculate_ratio(calculate_full_size(new_shape)), split))
 
     return split, step

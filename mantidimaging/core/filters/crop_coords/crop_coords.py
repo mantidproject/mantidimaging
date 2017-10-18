@@ -59,7 +59,8 @@ def _execute(data, region_of_interest, progress=None):
 
     if region_of_interest:
         with progress:
-            assert all(isinstance(region, int) for region in region_of_interest), \
+            assert all(isinstance(region, int) for
+                       region in region_of_interest), \
                 "The region of interest coordinates are not integers!"
 
             progress.update(msg="Cropping with coordinates: {0}.".format(

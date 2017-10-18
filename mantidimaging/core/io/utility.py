@@ -21,7 +21,7 @@ def get_file_extension(file):
     'test'
     >>> get_file_extension("/home/user/file.path.test")
     'test'
-    >>> get_file_extension("/home/")  # oh boy I can't wait for this to fail miserably on windows
+    >>> get_file_extension("/home/")
 
     # above is expecting a None which.. well doesn't show as anything so just
     # an empty line with a comment explaining it
@@ -80,8 +80,8 @@ def get_file_names(path, img_format, prefix=''):
 
     if len(files_match) <= 0:
         raise RuntimeError(
-            "Could not find any image files in '{0}' with extensions: {1}".format(
-                path, extensions))
+            "Could not find any image files in '{0}' with extensions: "
+            "{1}".format(path, extensions))
 
     # This is a necessary step, otherwise the file order is not guaranteed to
     # be sequential and we get randomly ordered stack of names

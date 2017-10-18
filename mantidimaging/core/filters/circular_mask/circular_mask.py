@@ -3,8 +3,6 @@ from __future__ import (absolute_import, division, print_function)
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 
-__all__ = ['execute', '_gui_register', '_cli_register']
-
 
 def _cli_register(parser):
     parser.add_argument(

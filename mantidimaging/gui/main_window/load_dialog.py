@@ -16,10 +16,9 @@ def select_file(field, caption):
     :param caption: Title of the file browser window that will be opened
     :return: True: If a file has been selected, False otherwise
     """
-    assert isinstance(
-        field, Qt.QLineEdit
-    ), "The passed object is of type {0}. This function only works with QLineEdit".format(
-        type(field))
+    assert isinstance(field, Qt.QLineEdit), (
+            "The passed object is of type {0}. This function only works with "
+            "QLineEdit".format(type(field)))
 
     selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
     # open file dialogue and set the text if file is selected
@@ -39,7 +38,8 @@ class MWLoadDialog(Qt.QDialog):
         self.parent_view = parent
 
         self.sampleButton.clicked.connect(
-            lambda: self.update_dialogue(select_file(self.samplePath, "Sample")))
+            lambda: self.update_dialogue(select_file(self.samplePath,
+                                         "Sample")))
 
         # connect the calculation of expected memory to spinboxes
         self.index_start.valueChanged.connect(self.update_expected)
@@ -72,8 +72,10 @@ class MWLoadDialog(Qt.QDialog):
             self.last_shape = read_in_shape(self.sample_path(),
                                             in_format=self.image_format)
         except Exception as e:
-            getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
-            self.parent_view.presenter.show_error("Failed to read this file. See log for details.")
+            getLogger(__name__).error(
+                    "Failed to read file %s (%s)", sample_filename, e)
+            self.parent_view.presenter.show_error(
+                    "Failed to read this file. See log for details.")
             self.last_shape = (0, 0, 0)
 
         self.update_indices(self.last_shape[0])

@@ -37,7 +37,9 @@ def execute(config, executable):
     # if we are reconstructing
     if recon:
         # if 0 this will just generate the same for everything
-        slices = config.func.cor_slices if config.func.cor_slices is not None else 0
+        slices = config.func.cor_slices if config.func.cor_slices is not None \
+                else 0
+
         centers_of_rotation = cor_interpolate.execute(data_shape[0], slices,
                                                       config.func.cors)
 
