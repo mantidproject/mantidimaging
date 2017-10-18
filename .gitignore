@@ -2,6 +2,7 @@
 
 # Generated documentation
 docs/build/
+docs/api/
 
 # Extracted demo images
 notebooks/demoimages/

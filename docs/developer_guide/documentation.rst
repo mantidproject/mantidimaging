@@ -12,6 +12,32 @@ The documentation is version controlled along with the code, therefore it is
 beneficial to make relevant changes to the documentation as the code is
 modified.
 
+Workflow
+--------
+
+TL;DR of building the documentation.
+
+Run the commands:
+
+.. code::
+
+   python setup.py docs_api
+   python setup.py docs
+   python setup.py docs -b qthelp
+
+If you also want to publish the docs:
+
+.. code::
+
+   python setup.py docs_publish
+
+
+API Documentation
+-----------------
+
+The API documentation must be generated prior to building the documentation.
+This is done with the command: :code:`python setup.py docs_api`.
+
 HTML
 ----
 

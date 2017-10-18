@@ -49,6 +49,7 @@ pipeline {
     stage('Build Documentation - HTML') {
       steps {
         timeout(1) {
+          sh '${WORKSPACE}/anaconda2/bin/python setup.py docs_api'
           sh '${WORKSPACE}/anaconda2/bin/python setup.py docs -b html'
           warnings consoleParsers: [[parserName: 'Sphinx-build']]
         }
