@@ -25,11 +25,17 @@ def find_package_path(package_str):
     raise RuntimeError("Cannot find path for package {}".format(package_str))
 
 
-def get_child_modules(package_name, ignore=None):
+def get_package_children(package_name, packages=False, modules=False,
+                         ignore=None):
     """
-    Gets a list of names of modules found under a given package.
+    Gets a list of names of child packages or modules found under a given
+    package.
 
     :param package: The package to search within
+
+    :param packages: Set to True to return packages
+
+    :param modules: Set to True to return modules
 
     :param ignore: List of explicitly matching modules to ignore
 
@@ -39,8 +45,8 @@ def get_child_modules(package_name, ignore=None):
     pkgs = pkgutil.walk_packages([find_package_path(package_name)],
                                  prefix=package_name + '.')
 
-    # Ignore those that are modules, we want packages
-    pkgs = filter(lambda p: p[2], pkgs)
+    # Ignore those that do not match the package/module selection criteria
+    pkgs = filter(lambda p: p[2] and packages or not p[2] and modules, pkgs)
 
     # Ignore moduels that we want to ignore
     if ignore:
@@ -50,38 +56,39 @@ def get_child_modules(package_name, ignore=None):
     return pkgs
 
 
-def import_modules(module_names, required_attributes=None):
+def import_items(names, required_attributes=None):
     """
-    Imports a list of modules and filters out those that do not have a
+    Imports a list of packages/modules and filters out those that do not have a
     specified required list of attributes.
 
-    :param module_names: List of module names to import
+    :param names: List of package/module names to import
 
     :param required_attributes: Optional list of attributes that must be
                                 present on each individual module
 
-    :return: List of imported modules
+    :return: List of imported packages/modules
     """
-    imported_modules = [importlib.import_module(m) for m in module_names]
+    imported = [importlib.import_module(n) for n in names]
 
     # Filter out those that do not contain all the required attributes
     if required_attributes:
-        imported_modules = filter(
-                lambda m: all([hasattr(m, a) for a in required_attributes]),
-                imported_modules)
+        imported = filter(
+                lambda i: all([hasattr(i, a) for a in required_attributes]),
+                imported)
 
-    return imported_modules
+    return imported
 
 
-def register_modules_into(modules, container, func):
+def register_into(items, container, func):
     """
-    Registers a list of modules into a containing instance.
+    Registers a list of packages and/or modules into a containing instance.
 
-    :param modules: List of modules to register
+    :param items: List of packages/modules to register
 
     :param container: Container (instance) to register them into
 
-    :param func: Function by which modules are registered into the container
+    :param func: Function by which packages/modules are registered into the
+                 container
     """
-    for m in modules:
+    for m in items:
         func(container, m)

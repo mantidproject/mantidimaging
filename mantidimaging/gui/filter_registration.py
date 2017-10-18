@@ -8,9 +8,9 @@ from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.main_window.mw_view import MainWindowView
 
 from mantidimaging.core.utility.registrator import (
-        get_child_modules,
-        import_modules,
-        register_modules_into
+        get_package_children,
+        import_items,
+        register_into
     )
 
 
@@ -88,11 +88,12 @@ def gui_register(qt_parent, package_name, ignored_packages):
             "the structure has been changed, and the registrator code needs "
             "to be adjusted")
 
-    modules = get_child_modules(package_name, ignored_packages)
-    modules = [m[1] for m in modules]
+    filter_packages = get_package_children(package_name, packages=True,
+                                           ignore=ignored_packages)
 
-    loaded_modules = import_modules(
-            modules, ['execute', 'NAME', '_gui_register'])
+    filter_packages = [p[1] for p in filter_packages]
 
-    register_modules_into(loaded_modules, main_window,
-                          _gui_register_into_main_window)
+    loaded_filters = import_items(filter_packages,
+                                  ['execute', 'NAME', '_gui_register'])
+
+    register_into(loaded_filters, main_window, _gui_register_into_main_window)

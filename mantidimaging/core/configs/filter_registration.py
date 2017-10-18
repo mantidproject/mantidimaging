@@ -1,9 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
 from mantidimaging.core.utility.registrator import (
-        get_child_modules,
-        import_modules,
-        register_modules_into
+        get_package_children,
+        import_items,
+        register_into
     )
 
 
@@ -40,9 +40,12 @@ def register_filters_on_cli(
 
     :param ignored_packages: Optional list of packages/modules to ignore
     """
-    modules = get_child_modules(package_name, ignored_packages)
-    modules = [m[1] for m in modules]
+    filter_packages = get_package_children(package_name, packages=True,
+                                           ignore=ignored_packages)
 
-    loaded_modules = import_modules(modules, ['execute', 'NAME', '_cli_register'])
+    filter_packages = [p[1] for p in filter_packages]
 
-    register_modules_into(loaded_modules, parser, _cli_register_into_parser)
+    loaded_filters = import_items(filter_packages,
+                                  ['execute', 'NAME', '_cli_register'])
+
+    register_into(loaded_filters, parser, _cli_register_into_parser)
