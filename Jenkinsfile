@@ -46,10 +46,18 @@ pipeline {
       }
     }
 
-    stage('Build Documentation') {
+    stage('Build Documentation - HTML') {
       steps {
         timeout(1) {
           sh '${WORKSPACE}/anaconda2/bin/python setup.py docs -b html'
+          warnings consoleParsers: [[parserName: 'Sphinx-build']]
+        }
+      }
+    }
+
+    stage('Build Documentation - QtHelp') {
+      steps {
+        timeout(1) {
           sh '${WORKSPACE}/anaconda2/bin/python setup.py docs -b qthelp'
         }
       }
