@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from enum import Enum
+from PyQt5 import Qt
 
 from mantidimaging.core.utility.progress_reporting import ProgressHandler
 
@@ -11,10 +12,15 @@ class Notification(Enum):
     START = 1
 
 
-class AsyncTaskDialogPresenter(ProgressHandler):
+class AsyncTaskDialogPresenter(Qt.QObject, ProgressHandler):
+    progress_updated = Qt.pyqtSignal(float, str)
+
     def __init__(self, view):
         super(AsyncTaskDialogPresenter, self).__init__()
+
         self.view = view
+        self.progress_updated.connect(self.view.set_progress)
+
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
 
@@ -44,5 +50,5 @@ class AsyncTaskDialogPresenter(ProgressHandler):
         self.view.show()
 
     def progress_update(self):
-        self.view.set_progress(self.progress.completion(),
-                               self.progress.last_status_message())
+        self.progress_updated.emit(self.progress.completion(),
+                                   self.progress.last_status_message())

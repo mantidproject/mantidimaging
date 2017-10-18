@@ -20,6 +20,8 @@ class AsyncTaskDialogView(Qt.QDialog):
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(1000)
 
+        self.progress_text = self.infoText.text()
+
     def handle_completion(self, successful):
         """
         Updates the UI after the task has been completed.
