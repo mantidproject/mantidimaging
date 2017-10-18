@@ -29,7 +29,7 @@ class MainWindowModel(object):
         return images
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format,
-                  overwrite, swap_axes, indices):
+                  overwrite, swap_axes, indices, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
         saver.save(
             data=svp.images.get_sample(),
@@ -38,7 +38,10 @@ class MainWindowModel(object):
             swap_axes=swap_axes,
             overwrite_all=overwrite,
             out_format=image_format,
-            indices=indices)
+            indices=indices,
+            progress=progress)
+
+        return True
 
     def create_name(self, filename):
         """

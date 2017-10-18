@@ -28,7 +28,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.show_error("test message")
         self.view.show_error_dialog.assert_called_once_with("test message")
 
-    def test_attempt_to_load_bad_datafile_shows_error(self):
+    def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
         task = TaskWorkerThread()
         task.error = 'something'
@@ -39,7 +39,20 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         # Expect error message
         self.view.show_error_dialog.assert_called_once_with(
-                "Failed to read data file. See log for details.")
+                "Failed to load stack. See log for details.")
+
+    def test_failed_attempt_to_save_shows_error(self):
+        # Create a filed load async task
+        task = TaskWorkerThread()
+        task.error = 'something'
+        self.assertFalse(task.was_successful())
+
+        # Call the callback with a task that failed
+        self.presenter._on_save_done(task)
+
+        # Expect error message
+        self.view.show_error_dialog.assert_called_once_with(
+                "Failed to save stack. See log for details.")
 
 
 if __name__ == '__main__':

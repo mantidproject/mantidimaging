@@ -116,13 +116,15 @@ class ImageLoader(object):
                                             num_steps=len(files),
                                             task_name='Load')
 
-        progress.add_estimated_steps(len(files))
+        num_images = len(files)
+        progress.add_estimated_steps(num_images)
 
         with progress:
             for idx, in_file in enumerate(files):
                 try:
                     _inplace_load(data[idx], in_file, self.load_func)
-                    progress.update(msg=name)
+                    progress.update(msg='Image {} of {}'.format(
+                        idx, num_images))
                 except ValueError as exc:
                     raise ValueError(
                         "An image has different width and/or height "

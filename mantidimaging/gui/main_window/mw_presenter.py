@@ -81,19 +81,34 @@ class MainWindowPresenter(object):
             self.view.active_stacks_changed.emit()
 
         else:
-            log.error("Failed to load file: %s", str(task.error))
-            self.show_error("Failed to read data file. See log for details.")
+            log.error("Failed to load stack: %s", str(task.error))
+            self.show_error("Failed to load stack. See log for details.")
 
     def save(self, indices=None):
-        stack_uuid = self.view.save_dialogue.selected_stack
-        output_dir = self.view.save_dialogue.save_path()
-        name_prefix = self.view.save_dialogue.name_prefix()
-        image_format = self.view.save_dialogue.image_format()
-        overwrite = self.view.save_dialogue.overwrite()
-        swap_axes = self.view.save_dialogue.swap_axes()
+        kwargs = {}
+        kwargs['stack_uuid'] = self.view.save_dialogue.selected_stack
+        kwargs['output_dir'] = self.view.save_dialogue.save_path()
+        kwargs['name_prefix'] = self.view.save_dialogue.name_prefix()
+        kwargs['image_format'] = self.view.save_dialogue.image_format()
+        kwargs['overwrite'] = self.view.save_dialogue.overwrite()
+        kwargs['swap_axes'] = self.view.save_dialogue.swap_axes()
+        kwargs['indices'] = indices
 
-        self.model.do_saving(stack_uuid, output_dir, name_prefix,
-                             image_format, overwrite, swap_axes, indices)
+        atd = AsyncTaskDialogView(self.view, auto_close=True)
+        kwargs['progress'] = Progress()
+        kwargs['progress'].add_progress_handler(atd.presenter)
+
+        atd.presenter.set_task(self.model.do_saving)
+        atd.presenter.set_on_complete(self._on_save_done)
+        atd.presenter.set_parameters(**kwargs)
+        atd.presenter.do_start_processing()
+
+    def _on_save_done(self, task):
+        log = getLogger(__name__)
+
+        if not task.was_successful():
+            log.error("Failed to save stack: %s", str(task.error))
+            self.show_error("Failed to save stack. See log for details.")
 
     def stack_names(self):
         return self.model.stack_names()

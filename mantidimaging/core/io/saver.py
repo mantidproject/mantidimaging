@@ -6,7 +6,6 @@ import os
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.utility.progress_reporting import Progress
 
 from .utility import DEFAULT_IO_FILE_FORMAT
@@ -110,17 +109,19 @@ def save(data,
             # pass all other formats to skimage
             write_func = write_img
 
-        names = generate_names(name_prefix, indices, data.shape[0], custom_idx,
+        num_images = data.shape[0]
+        progress.add_estimated_steps(num_images)
+
+        names = generate_names(name_prefix, indices, num_images, custom_idx,
                                zfill_len, name_postfix, out_format)
 
         with progress:
-            progress.add_estimated_steps(data.shape[0])
-
-            for idx in range(data.shape[0]):
+            for idx in range(num_images):
                 write_func(data[idx, :, :], os.path.join(
                     output_dir, names[idx]), overwrite_all)
 
-                progress.update()
+                progress.update(msg='Image {} of {}'.format(
+                    idx, num_images))
 
 
 def generate_names(name_prefix, indices, num_images, custom_idx=None,
