@@ -33,7 +33,8 @@ def _gui_register(main_window):
         roi_right = roi_right_field.value()
         roi_bottom = roi_bottom_field.value()
 
-        if roi_left == 0 and roi_top == 0 and roi_right == 0 and roi_bottom == 0:
+        if roi_left == 0 and roi_top == 0 and \
+                roi_right == 0 and roi_bottom == 0:
             dialog.request_parameter(Parameters.ROI)
             return execute
         else:

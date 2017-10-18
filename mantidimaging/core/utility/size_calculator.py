@@ -18,11 +18,12 @@ def single_size(shape=None, axis=None):
     Size of a single unit across the axis we are traversing.
     This does not take into account data type, it returns the pure size.
 
-    To get bits from this, multiply by the data size.
-    To get bytes, divide the bits by 8.
-    To get the size of the whole dataset, multiply by the length axis (the one that we are traversing across).
-    To get kilobytes, divide by 1024.
-    To get megabytes, divide by 1024 again.
+    - To get bits from this, multiply by the data size.
+    - To get bytes, divide the bits by 8.
+    - To get the size of the whole dataset, multiply by the length axis (the
+      one that we are traversing across).
+    - To get kilobytes, divide by 1024.
+    - To get megabytes, divide by 1024 again.
     """
     single = 1
     for i, curr_shape in enumerate(shape):

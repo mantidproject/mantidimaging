@@ -17,9 +17,10 @@ def _cli_register(parser):
         required=False,
         type=float,
         default=None,
-        help="The clipped values from --clip-min will be set to this new value. "
-        "If this is not set the clipped values will be set to the --clip-min value. "
-        "This allows to make noise values very far outliers, which can then be hidden in visualisation.")
+        help="The clipped values from --clip-min will be set to this new "
+        "value. If this is not set the clipped values will be set to the "
+        "--clip-min value. This allows to make noise values very far "
+        "outliers, which can then be hidden in visualisation.")
 
     parser.add_argument(
         "--clip-max",
@@ -34,9 +35,10 @@ def _cli_register(parser):
         required=False,
         type=float,
         default=None,
-        help="The clipped values from --clip-max will be set to this new value. "
-        "If this is not set the clipped values will be set to the --clip-max value. "
-        "This allows to make noise values very far outliers, which can then be hidden in visualisation.")
+        help="The clipped values from --clip-max will be set to this new "
+        "value. If this is not set the clipped values will be set to the "
+        "--clip-max value. This allows to make noise values very far "
+        "outliers, which can then be hidden in visualisation.")
 
     return parser
 

@@ -8,10 +8,9 @@ from mantidimaging.core.utility import gui_compile_ui
 
 
 def select_directory(field, caption):
-    assert isinstance(
-        field, Qt.QLineEdit
-    ), "The passed object is of type {0}. This function only works with QLineEdit".format(
-        type(field))
+    assert isinstance(field, Qt.QLineEdit), (
+            "The passed object is of type {0}. This function only works with "
+            "QLineEdit".format(type(field)))
 
     # open file dialogue and set the text if file is selected
     field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
@@ -37,8 +36,9 @@ class MWSaveDialog(Qt.QDialog):
 
         if stack_list:  # we will just show an empty drop down if no stacks
             self.stack_uuids, user_friendly_names = zip(*stack_list)
-            # the stacklist is created in the main windows presenter and has format
-            # [(uuid, title)...], doing zip(*stack_list) unzips the tuples into separate lists
+            # the stacklist is created in the main windows presenter and has
+            # format [(uuid, title)...], doing zip(*stack_list) unzips the
+            # tuples into separate lists
             self.stackNames.addItems(user_friendly_names)
 
         self.selected_stack = None
