@@ -23,7 +23,8 @@ class FiltersWindowPresenter(object):
 
         # Refresh the stack list in the algorithm dialog whenever the active
         # stacks change
-        self.main_window.active_stacks_changed.connect(self.update_stack_list)
+        self.main_window.active_stacks_changed.connect(
+                lambda: self.notify(Notification.UPDATE_STACK_LIST))
 
     def notify(self, signal):
         try:
@@ -51,7 +52,7 @@ class FiltersWindowPresenter(object):
         self.view.stackSelector.clear()
 
         # Get all the new stacks
-        stack_list = self.model.main_window.stack_list()
+        stack_list = self.main_window.stack_list()
         if stack_list:
             self.model.stack_uuids, user_friendly_names = zip(*stack_list)
             self.view.stackSelector.addItems(user_friendly_names)
