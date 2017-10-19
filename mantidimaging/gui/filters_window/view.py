@@ -20,6 +20,7 @@ class FiltersWindowView(Qt.QDialog):
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentIndexChanged[int].connect(
                 self.handle_filter_selection)
+        self.handle_filter_selection(0)
 
         # Handle button clicks
         self.buttonBox.clicked.connect(self.handle_button)
@@ -50,8 +51,19 @@ class FiltersWindowView(Qt.QDialog):
         """
         Handle selection of a filter from the drop down list.
         """
-        # TODO
-        print(filter_idx)
+        # Remove all existing items from the properties layout
+        # https://stackoverflow.com/a/13103617
+        while(self.filterPropertiesLayout.count() > 0):
+            self.filterPropertiesLayout.takeAt(0).widget().setParent(None)
+
+        # Get registration function for new filter
+        register_func = \
+            self.presenter.model.filter_registration_func(filter_idx)
+
+        # Register new filter (adding it's property widgets to the properties
+        # layout)
+        do_before, execute, do_after = \
+            register_func(self.filterPropertiesLayout)
 
     @property
     def selected_stack_idx(self):

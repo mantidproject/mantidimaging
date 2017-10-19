@@ -40,10 +40,10 @@ class FiltersWindowModel(object):
         filter_packages = [p[1] for p in filter_packages]
 
         loaded_filters = import_items(filter_packages,
-                                      ['execute', 'NAME', '_gui_register'])
+                                      ['execute', 'NAME', '_gui_register_2'])
 
         def register_filter(filter_list, module):
-            filter_list.append((module.NAME, module._gui_register))
+            filter_list.append((module.NAME, module._gui_register_2))
 
         self.filters = []
         register_into(loaded_filters, self.filters, register_filter)
@@ -51,6 +51,14 @@ class FiltersWindowModel(object):
     @property
     def filter_names(self):
         return [f[0] for f in self.filters]
+
+    def filter_registration_func(self, filter_idx):
+        """
+        Gets the function used to register the GUI of a given filter.
+
+        :param filter_idx: Index of the filter in the registry
+        """
+        return self.filters[filter_idx][1]
 
     def get_stack(self, idx):
         if not self.stack_uuids:
