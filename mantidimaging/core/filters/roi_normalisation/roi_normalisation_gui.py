@@ -1,29 +1,26 @@
 from functools import partial
 
-from . import execute, NAME
+from . import execute
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog, Parameters
-
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
     # TODO add label that from image will be used if nothing is selected here
 
     value_range = (0, 1000000)
 
-    _, roi_left_field = dialog.add_property(
-            'Left', 'int', valid_values=value_range)
+    _, roi_left_field = add_property_to_form(
+            'Left', 'int', valid_values=value_range, form=form)
 
-    _, roi_top_field = dialog.add_property(
-            'Top', 'int', valid_values=value_range)
+    _, roi_top_field = add_property_to_form(
+            'Top', 'int', valid_values=value_range, form=form)
 
-    _, roi_right_field = dialog.add_property(
-            'Right', 'int', valid_values=value_range)
+    _, roi_right_field = add_property_to_form(
+            'Right', 'int', valid_values=value_range, form=form)
 
-    _, roi_bottom_field = dialog.add_property(
-            'Bottom', 'int', valid_values=value_range)
+    _, roi_bottom_field = add_property_to_form(
+            'Bottom', 'int', valid_values=value_range, form=form)
 
     def custom_execute():
         roi_left = roi_left_field.value()
@@ -33,12 +30,10 @@ def _gui_register(main_window):
 
         if roi_left == 0 and roi_top == 0 and \
                 roi_right == 0 and roi_bottom == 0:
-            dialog.request_parameter(Parameters.ROI)
+            # dialog.request_parameter(Parameters.ROI)
             return execute
         else:
             air_region = (roi_left, roi_top, roi_right, roi_bottom)
             partial(execute, air_region=air_region)
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None, custom_execute, None)

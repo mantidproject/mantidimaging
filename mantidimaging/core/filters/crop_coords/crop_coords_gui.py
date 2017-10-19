@@ -2,21 +2,25 @@ from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
-from . import crop_coords, NAME
+from . import crop_coords
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
     valid_range = (0, 99999)
 
-    _, left = dialog.add_property('Left', 'int', valid_values=valid_range)
-    _, top = dialog.add_property('Top', 'int', valid_values=valid_range)
-    _, right = dialog.add_property('Right', 'int', valid_values=valid_range)
-    _, bottom = dialog.add_property('Bottom', 'int', valid_values=valid_range)
+    _, left = add_property_to_form(
+            'Left', 'int', valid_values=valid_range, form=form)
+
+    _, top = add_property_to_form(
+            'Top', 'int', valid_values=valid_range, form=form)
+
+    _, right = add_property_to_form(
+            'Right', 'int', valid_values=valid_range, form=form)
+
+    _, bottom = add_property_to_form(
+            'Bottom', 'int', valid_values=valid_range, form=form)
 
     def custom_execute():
         # Get ROI from input fields
@@ -24,6 +28,4 @@ def _gui_register(main_window):
 
         return partial(crop_coords._execute, region_of_interest=roi)
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None, custom_execute, None)

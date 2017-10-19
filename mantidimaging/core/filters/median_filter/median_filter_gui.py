@@ -1,24 +1,20 @@
 from functools import partial
 
-from . import execute, modes, NAME
+from . import execute, modes
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
+    _, size_field = add_property_to_form(
+            'Kernel Size', 'int', 3, (0, 1000), form=form)
 
-    _, size_field = dialog.add_property('Kernel Size', 'int', 3, (0, 1000))
-
-    _, mode_field = dialog.add_property(
-            'Mode', 'list', valid_values=modes())
+    _, mode_field = add_property_to_form(
+            'Mode', 'list', valid_values=modes(), form=form)
 
     def custom_execute():
         return partial(execute,
                        size=size_field.value(),
                        mode=mode_field.currentText())
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None, custom_execute, None)

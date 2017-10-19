@@ -1,21 +1,16 @@
 from functools import partial
 
-from . import execute, NAME
+from . import execute
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
-
-    _, threshold_field = dialog.add_property(
-            'Threshold', 'float', 0.95, (0.0, 1.0))
+    _, threshold_field = add_property_to_form(
+            'Threshold', 'float', 0.95, (0.0, 1.0), form=form)
     threshold_field.setSingleStep(0.05)
 
     def custom_execute():
         return partial(execute, threshold=threshold_field.value())
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None, custom_execute, None)

@@ -1,27 +1,21 @@
 from functools import partial
 
-from . import execute, modes, NAME
+from . import execute, modes
 
 
-def _gui_register(main_window):
+def _gui_register(form):
     from PyQt5 import Qt
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
+    from mantidimaging.gui.filters_window import add_property_to_form
 
     # Rebin by uniform factor options
-    _, factor = dialog.add_property('Factor', 'float', 0.5, (0.0, 1.0), False)
+    _, factor = add_property_to_form('Factor', 'float', 0.5, (0.0, 1.0))
     factor.setSingleStep(0.05)
 
     # Rebin to target shape options
     shape_range = (0, 9999)
 
-    _, shape_x = dialog.add_property(
-            'X', 'int', valid_values=shape_range, add_to_form=False)
-
-    _, shape_y = dialog.add_property(
-            'Y', 'int', valid_values=shape_range, add_to_form=False)
+    _, shape_x = add_property_to_form('X', 'int', valid_values=shape_range)
+    _, shape_y = add_property_to_form('Y', 'int', valid_values=shape_range)
 
     shape_fields = Qt.QHBoxLayout()
     shape_fields.addWidget(shape_x)
@@ -46,9 +40,9 @@ def _gui_register(main_window):
     mode_field = Qt.QComboBox()
     mode_field.addItems(modes())
 
-    dialog.formLayout.addRow(rebin_to_dimensions_radio, shape_fields)
-    dialog.formLayout.addRow(rebin_by_factor_radio, factor)
-    dialog.formLayout.addRow(label_mode, mode_field)
+    form.addRow(rebin_to_dimensions_radio, shape_fields)
+    form.addRow(rebin_by_factor_radio, factor)
+    form.addRow(label_mode, mode_field)
 
     # Ensure good default UI state
     rebin_to_dimensions_radio.setChecked(True)
@@ -66,6 +60,4 @@ def _gui_register(main_window):
                        mode=mode_field.currentText(),
                        rebin_param=params)
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None, custom_execute, None)

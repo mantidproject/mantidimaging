@@ -40,10 +40,10 @@ class FiltersWindowModel(object):
         filter_packages = [p[1] for p in filter_packages]
 
         loaded_filters = import_items(filter_packages,
-                                      ['execute', 'NAME', '_gui_register_2'])
+                                      ['execute', 'NAME', '_gui_register'])
 
         def register_filter(filter_list, module):
-            filter_list.append((module.NAME, module._gui_register_2))
+            filter_list.append((module.NAME, module._gui_register))
 
         self.filters = []
         register_into(loaded_filters, self.filters, register_filter)

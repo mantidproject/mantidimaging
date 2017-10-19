@@ -1,31 +1,34 @@
 from functools import partial
 
-from . import execute, NAME
+from . import execute
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
     range1 = (0, 1000000)
     range2 = (-1000000, 1000000)
 
-    _, x_field = dialog.add_property('Abcissa X', 'int', valid_values=range1)
-    _, y_field = dialog.add_property('Ordinate Y', 'int', valid_values=range1)
+    _, x_field = add_property_to_form(
+            'Abcissa X', 'int', valid_values=range1, form=form)
 
-    _, thresh = dialog.add_property('Threshold', 'float', valid_values=range2)
+    _, y_field = add_property_to_form(
+            'Ordinate Y', 'int', valid_values=range1, form=form)
 
-    _, thresh_min = dialog.add_property(
-            'Threshold Min', 'float', valid_values=range2)
+    _, thresh = add_property_to_form(
+            'Threshold', 'float', valid_values=range2, form=form)
 
-    _, thresh_max = dialog.add_property(
-            'Threshold Max', 'float', valid_values=range2)
+    _, thresh_min = add_property_to_form(
+            'Threshold Min', 'float', valid_values=range2, form=form)
 
-    _, theta = dialog.add_property('Theta', 'int', valid_values=(-1000, 1000))
+    _, thresh_max = add_property_to_form(
+            'Threshold Max', 'float', valid_values=range2, form=form)
 
-    _, rwidth = dialog.add_property('RWidth', 'int', valid_values=range2)
+    _, theta = add_property_to_form(
+            'Theta', 'int', valid_values=(-1000, 1000), form=form)
+
+    _, rwidth = add_property_to_form(
+            'RWidth', 'int', valid_values=range2, form=form)
 
     def custom_execute():
         return partial(execute,
@@ -38,6 +41,4 @@ def _gui_register(main_window):
                        theta_min=theta,
                        rwidth=rwidth)
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None, custom_execute, None)

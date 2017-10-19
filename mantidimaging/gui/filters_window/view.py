@@ -8,6 +8,26 @@ from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
 
+def _delete_all_widgets_from_layout(lo):
+    """
+    Removes and deletes all child widgets form a layout.
+
+    :param lo: Layout to clean
+    """
+    # For each item in the layout (removed as iterated)
+    while(lo.count() > 0):
+        item = lo.takeAt(0)
+
+        # Recurse for child layouts
+        if isinstance(item, Qt.QLayout):
+            _delete_all_widgets_from_layout(item)
+
+        # Orphan child widgets (seting a None parent removes them from the
+        # layout and marks them for deletion)
+        elif item.widget() is not None:
+            item.widget().setParent(None)
+
+
 class FiltersWindowView(Qt.QDialog):
 
     def __init__(self, main_window):
@@ -52,9 +72,7 @@ class FiltersWindowView(Qt.QDialog):
         Handle selection of a filter from the drop down list.
         """
         # Remove all existing items from the properties layout
-        # https://stackoverflow.com/a/13103617
-        while(self.filterPropertiesLayout.count() > 0):
-            self.filterPropertiesLayout.takeAt(0).widget().setParent(None)
+        _delete_all_widgets_from_layout(self.filterPropertiesLayout)
 
         # Get registration function for new filter
         register_func = \
