@@ -7,7 +7,6 @@ import numpy as np
 from logging import getLogger
 from enum import IntEnum
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from .available_parameters import (Parameters, PARAMETERS_ERROR_MESSAGE)
 
 
@@ -172,10 +171,6 @@ class StackVisualiserPresenter(object):
 
     def apply_to_data(self, algorithm_dialog):
         log = getLogger(__name__)
-
-        # We can't do this in Python 2.7 because we crash due to a circular reference
-        # It should work when executed with Python 3.5
-        assert isinstance(algorithm_dialog, AlgorithmDialog), "The object is not of the expected type."
 
         # This will call the custom_execute function in the filter's _gui declaration, and read off the values from the
         # parameter fields that have been shown to the user

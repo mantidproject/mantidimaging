@@ -9,9 +9,8 @@ import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.stack_visualiser import (
-        StackVisualiserPresenter, StackVisualiserView, ImageMode, Parameters)
+        StackVisualiserPresenter, StackVisualiserView, ImageMode)
 from mantidimaging.gui.stack_visualiser import \
         Notification as PresenterNotifications
 
@@ -54,72 +53,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.assertTrue(isinstance(data, np.ndarray))
         self.assertTrue(expected_ROI is not None)
         data *= 4
-
-    def algorithm_dialog_has_attributes_sanity_check(self, mock_algorithm_dialog):
-        error_message = "AlgorithmDialog attributes might have changed. This test needs to be updated."
-        assert hasattr(mock_algorithm_dialog, 'apply_before'), error_message
-        assert hasattr(mock_algorithm_dialog, 'apply_after'), error_message
-        assert hasattr(mock_algorithm_dialog, 'set_execute'), error_message
-        assert hasattr(mock_algorithm_dialog, 'requested_parameter_name'), error_message
-
-    def test_apply_to_data(self):
-        mock_algorithm_dialog = mock.create_autospec(AlgorithmDialog)
-
-        self.algorithm_dialog_has_attributes_sanity_check(mock_algorithm_dialog)
-
-        requested_parameter_name_mock = th.mock_property(mock_algorithm_dialog, "requested_parameter_name", None)
-
-        do_before_mock = th.mock_property(mock_algorithm_dialog, "do_before", self.apply_before_mock)
-        do_after_mock = th.mock_property(mock_algorithm_dialog, "do_after", self.apply_after_mock)
-        mock_algorithm_dialog.execute = mock.Mock(return_value=self.multiply_execute_mock)
-
-        self.presenter.apply_to_data(mock_algorithm_dialog)
-
-        do_before_mock.assert_any_call()
-        do_after_mock.assert_any_call()
-
-        # we're expecting only to be read once and moved into another variable
-        requested_parameter_name_mock.assert_called_once()
-        mock_algorithm_dialog.execute.assert_called_once()
-        self.view.show_current_image.assert_called_once()
-
-    def test_apply_to_data_with_parameter_ROI(self):
-        mock_algorithm_dialog = mock.create_autospec(AlgorithmDialog)
-        self.algorithm_dialog_has_attributes_sanity_check(mock_algorithm_dialog)
-
-        # The function returns the MOCK object that we must use to check assertions
-        requested_parameter_name_mock = th.mock_property(
-            mock_algorithm_dialog, "requested_parameter_name", Parameters.ROI)
-
-        current_roi_mock = th.mock_property(self.view, "current_roi", TEST_MOCK_VIEW_ROI)
-
-        do_before_mock = th.mock_property(mock_algorithm_dialog, "do_before", self.apply_before_mock)
-        mock_algorithm_dialog.execute = mock.Mock(return_value=self.multiply_execute_mock_with_ROI_parameter)
-        do_after_mock = th.mock_property(mock_algorithm_dialog, "do_after", self.apply_after_mock)
-
-        self.presenter.apply_to_data(mock_algorithm_dialog)
-
-        do_before_mock.assert_any_call()
-        do_after_mock.assert_any_call()
-
-        requested_parameter_name_mock.assert_called_once()
-        current_roi_mock.assert_called_once()
-        self.view.show_current_image.assert_called_once()
-
-    def test_assertion_error_apply_to_data_with_wrong_class(self):
-        my_mock = mock.Mock()
-        self.assertRaises(AssertionError, self.presenter.apply_to_data, my_mock)
-
-    def test_fail_apply_to_data_with_wrong_parameter(self):
-        mock_algorithm_dialog = mock.create_autospec(AlgorithmDialog)
-        self.algorithm_dialog_has_attributes_sanity_check(mock_algorithm_dialog)
-
-        # The function returns the MOCK object that we must use to check assertions
-        requested_parameter_name_mock = th.mock_property(
-            mock_algorithm_dialog, "requested_parameter_name", "Some other parameter")
-
-        self.assertRaises(ValueError, self.presenter.apply_to_data, mock_algorithm_dialog)
-        requested_parameter_name_mock.assert_called_once()
 
     def test_getattr_and_clear(self):
         # empty class that inherits from object so that we can append
