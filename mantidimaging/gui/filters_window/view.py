@@ -74,14 +74,8 @@ class FiltersWindowView(Qt.QDialog):
         # Remove all existing items from the properties layout
         _delete_all_widgets_from_layout(self.filterPropertiesLayout)
 
-        # Get registration function for new filter
-        register_func = \
-            self.presenter.model.filter_registration_func(filter_idx)
-
-        # Register new filter (adding it's property widgets to the properties
-        # layout)
-        do_before, execute, do_after = \
-            register_func(self.filterPropertiesLayout)
+        # Do registration of new filter
+        self.presenter.notify(PresNotification.REGISTER_ACTIVE_FILTER)
 
     @property
     def selected_stack_idx(self):

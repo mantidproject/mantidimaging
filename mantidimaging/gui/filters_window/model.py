@@ -19,6 +19,11 @@ class FiltersWindowModel(object):
         self.register_filters('mantidimaging.core.filters',
                               ['mantidimaging.core.filters.wip'])
 
+        # Execution info for current filter
+        self.do_before = None
+        self.execute = None
+        self.do_after = None
+
     def register_filters(self, package_name, ignored_packages=None):
         """
         Builds a local registry of filters.

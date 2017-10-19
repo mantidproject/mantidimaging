@@ -7,7 +7,8 @@ from .model import FiltersWindowModel
 
 class Notification(Enum):
     UPDATE_STACK_LIST = 1
-    APPLY_FILTER = 2
+    REGISTER_ACTIVE_FILTER = 2
+    APPLY_FILTER = 3
 
 
 class FiltersWindowPresenter(object):
@@ -28,6 +29,8 @@ class FiltersWindowPresenter(object):
         try:
             if signal == Notification.UPDATE_STACK_LIST:
                 self.do_update_stack_list()
+            elif signal == Notification.REGISTER_ACTIVE_FILTER:
+                self.do_register_active_filter()
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
 
@@ -52,6 +55,18 @@ class FiltersWindowPresenter(object):
         if stack_list:
             self.model.stack_uuids, user_friendly_names = zip(*stack_list)
             self.view.stackSelector.addItems(user_friendly_names)
+
+    def do_register_active_filter(self):
+        filter_idx = self.view.filterSelector.currentIndex()
+
+        # Get registration function for new filter
+        register_func = \
+            self.model.filter_registration_func(filter_idx)
+
+        # Register new filter (adding it's property widgets to the properties
+        # layout)
+        self.model.do_before, self.model.execute, self.model.do_after = \
+            register_func(self.view.filterPropertiesLayout)
 
     def do_apply_filter(self):
         """
