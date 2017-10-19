@@ -16,13 +16,11 @@ class FiltersWindowPresenter(object):
         super(FiltersWindowPresenter, self).__init__()
 
         self.view = view
-        self.model = FiltersWindowModel()
-
-        self.main_window = main_window
+        self.model = FiltersWindowModel(main_window)
 
         # Refresh the stack list in the algorithm dialog whenever the active
         # stacks change
-        self.main_window.active_stacks_changed.connect(
+        self.model.main_window.active_stacks_changed.connect(
                 lambda: self.notify(Notification.UPDATE_STACK_LIST))
 
     def notify(self, signal):
@@ -51,7 +49,7 @@ class FiltersWindowPresenter(object):
         self.view.stackSelector.clear()
 
         # Get all the new stacks
-        stack_list = self.main_window.stack_list()
+        stack_list = self.model.main_window.stack_list()
         if stack_list:
             self.model.stack_uuids, user_friendly_names = zip(*stack_list)
             self.view.stackSelector.addItems(user_friendly_names)
@@ -69,12 +67,5 @@ class FiltersWindowPresenter(object):
             register_func(self.view.filterPropertiesLayout)
 
     def do_apply_filter(self):
-        """
-        Applys the selected filter to the selected stack.
-        """
-        stack = self.model.get_stack(self.view.selected_stack_idx)
-        if not stack:
-            self.show_error('No stack selected')
-
-        # TODO
-        pass
+        self.model.stack_idx = self.view.stackSelector.currentIndex()
+        self.model.do_apply_filter()

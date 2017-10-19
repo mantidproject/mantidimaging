@@ -20,9 +20,6 @@ class MainWindowPresenter(object):
         self.view = view
         self.model = MainWindowModel(config)
 
-        # directly forward the reference
-        self.apply_to_data = self.model.apply_to_data
-
     def notify(self, signal):
         try:
             if signal == Notification.LOAD:
@@ -115,3 +112,6 @@ class MainWindowPresenter(object):
 
     def stack_list(self):
         return self.model.stack_list()
+
+    def get_stack_visualiser(self, stack_uuid):
+        return self.model.get_stack_visualiser(stack_uuid)

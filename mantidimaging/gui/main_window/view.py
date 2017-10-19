@@ -78,6 +78,9 @@ class MainWindowView(Qt.QMainWindow):
     def stack_list(self):
         return self.presenter.stack_list()
 
+    def get_stack_visualiser(self, stack_uuid):
+        return self.presenter.get_stack_visualiser(stack_uuid)
+
     def create_stack_window(self,
                             stack,
                             title,

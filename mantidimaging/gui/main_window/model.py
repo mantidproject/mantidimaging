@@ -106,13 +106,3 @@ class MainWindowModel(object):
         :param stack_uuid: The unique ID of the stack that will be removed.
         """
         del self.active_stacks[stack_uuid]
-
-    def apply_to_data(self, stack_uuid, algorithm_dialog):
-        """
-        Retrieve the stack object and use it to apply the function.
-
-        :param stack_uuid: The unique ID of the stack
-
-        :param algorithm_dialog: The algorithm dialog object
-        """
-        self.get_stack_visualiser(stack_uuid).apply_to_data(algorithm_dialog)
