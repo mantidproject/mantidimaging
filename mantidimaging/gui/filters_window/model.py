@@ -5,14 +5,17 @@ from functools import partial
 
 import numpy as np
 
-from mantidimaging.gui.stack_visualiser.sv_presenter \
-        import Notification as SVNotification
+from mantidimaging.gui.stack_visualiser import Notification as SVNotification
 
 from mantidimaging.core.utility.registrator import (
         get_package_children,
         import_items,
         register_into
     )
+
+
+def ensure_tuple(val):
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):
@@ -90,9 +93,6 @@ class FiltersWindowModel(object):
         Applys the selected filter to the selected stack.
         """
         log = getLogger(__name__)
-
-        def ensure_tuple(val):
-            return val if isinstance(val, tuple) else (val,)
 
         # Get stack
         stack = self.get_stack()

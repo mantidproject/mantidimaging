@@ -45,6 +45,12 @@ class FiltersWindowView(Qt.QDialog):
         # Handle button clicks
         self.buttonBox.clicked.connect(self.handle_button)
 
+        # Refresh the stack list in the algorithm dialog whenever the active
+        # stacks change
+        main_window.active_stacks_changed.connect(
+                lambda: self.presenter.notify(
+                    PresNotification.UPDATE_STACK_LIST))
+
     def show_error_dialog(self, msg=""):
         """
         Shows an error message.

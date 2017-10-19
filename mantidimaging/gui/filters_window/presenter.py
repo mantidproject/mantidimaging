@@ -18,11 +18,6 @@ class FiltersWindowPresenter(object):
         self.view = view
         self.model = FiltersWindowModel(main_window)
 
-        # Refresh the stack list in the algorithm dialog whenever the active
-        # stacks change
-        self.model.main_window.active_stacks_changed.connect(
-                lambda: self.notify(Notification.UPDATE_STACK_LIST))
-
     def notify(self, signal):
         try:
             if signal == Notification.UPDATE_STACK_LIST:
