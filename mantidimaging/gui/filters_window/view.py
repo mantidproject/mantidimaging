@@ -16,6 +16,12 @@ class FiltersWindowView(Qt.QDialog):
 
         self.presenter = FiltersWindowPresenter(self, main_window)
 
+        # Populate list of filters and handle filter selection
+        self.filterSelector.addItems(self.presenter.model.filter_names)
+        self.filterSelector.currentIndexChanged[int].connect(
+                self.handle_filter_selection)
+
+        # Handle button clicks
         self.buttonBox.clicked.connect(self.handle_button)
 
     def show_error_dialog(self, msg=""):
@@ -39,6 +45,13 @@ class FiltersWindowView(Qt.QDialog):
         # If Apply was clicked
         if role == QtWidgets.QDialogButtonBox.ApplyRole:
             self.presenter.notify(PresNotification.APPLY_FILTER)
+
+    def handle_filter_selection(self, filter_idx):
+        """
+        Handle selection of a filter from the drop down list.
+        """
+        # TODO
+        print(filter_idx)
 
     @property
     def selected_stack_idx(self):
