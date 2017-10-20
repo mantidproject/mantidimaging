@@ -3,8 +3,11 @@ from __future__ import (absolute_import, division, print_function)
 
 class AbstractTool:
     """
-    The AbstractTool class requires the tools to know how to import themselves, and how to run their reconstructions.
-    Currently there can only be one reconstruction tool supported, and this might have to be changed in future revisions.
+    The AbstractTool class requires the tools to know how to import themselves,
+    and how to run their reconstructions.
+
+    Currently there can only be one reconstruction tool supported, and this
+    might have to be changed in future revisions.
     """
 
     def __init__(self):

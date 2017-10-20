@@ -22,8 +22,8 @@ from __future__ import absolute_import, division, print_function
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-# packages part of public API, this will give direct access to the packages from
-# mantidimaging.<package_name>
+# Packages part of public API, this will give direct access to the packages
+# from mantidimaging.<package_name>
 
 from mantidimaging import core, main, ipython  # noqa: F401
 

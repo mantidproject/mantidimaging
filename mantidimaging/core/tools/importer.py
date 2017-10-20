@@ -12,6 +12,7 @@ def timed_import(config, progress=None):
 
     :param config: A ReconstructionConfig with all the necessary parameters to
                    run a reconstruction.
+
     :return: the imported tool
     """
     progress = Progress.ensure_instance(progress, task_name='Tool Importing')

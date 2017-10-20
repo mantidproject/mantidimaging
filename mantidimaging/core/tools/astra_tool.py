@@ -2,12 +2,15 @@ from __future__ import absolute_import, division, print_function
 
 from logging import getLogger
 
-from mantidimaging import helper as h
 from mantidimaging.core.tools.abstract_tool import AbstractTool
+from mantidimaging.core.utility import projection_angles
+
 
 def run_reconstruct(sample, config, proj_angles=None, **kwargs):
     """
-    Module function for running a reconstruction. It will create the Astra tool object at runtime.
+    Module function for running a reconstruction.
+
+    It will create the Astra tool object at runtime.
 
     :param sample: The sample image data as a 3D numpy.ndarray
 
@@ -25,6 +28,7 @@ def run_reconstruct(sample, config, proj_angles=None, **kwargs):
     """
     tool = AstraTool()
     return tool.run_reconstruct(sample, config, proj_angles, **kwargs)
+
 
 class AstraTool(AbstractTool):
     """
@@ -67,48 +71,42 @@ class AstraTool(AbstractTool):
         astra_version = float(astra.__version__)
         if isinstance(astra_version,
                       float) and astra_version >= min_astra_version:
-            getLogger(__name__).info("Imported astra successfully. Version: {0}".format(
-                astra_version))
+            getLogger(__name__).info(
+                    "Imported astra successfully. Version: {0}".format(
+                        astra_version))
         else:
             raise RuntimeError(
-                "Could not find the required version of astra. Found version: {0}".
-                format(astra_version))
+                "Could not find the required version of astra. "
+                "Found version: {0}".format(astra_version))
 
-        getLogger(__name__).info("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
+        getLogger(__name__).info("Astra using CUDA: {0}".format(
+            astra.astra.use_cuda()))
         return astra
 
     def run_reconstruct(self, data, config, proj_angles=None, **kwargs):
         """
-        Run a reconstruction with TomoPy's ASTRA integration, using the CPU and GPU algorithms they provide.
-        TODO This reconstruction function does NOT fully support the full range of options that are available for
-         each algorithm in Astra.
+        Run a reconstruction with TomoPy's ASTRA integration, using the CPU and
+        GPU algorithms they provide.
+
+        TODO This reconstruction function does NOT fully support the full range
+        of options that are available for each algorithm in Astra.
 
         Information about how to use Astra through TomoPy is available at:
         http://tomopy.readthedocs.io/en/latest/ipynb/astra.html
 
-        More information about the ASTRA Reconstruction parameters is available at:
-        http://www.astra-toolbox.com/docs/proj2d.html
-        http://www.astra-toolbox.com/docs/algs/index.html
+        More information about the ASTRA Reconstruction parameters is available
+        at:
+         - http://www.astra-toolbox.com/docs/proj2d.html
+         - http://www.astra-toolbox.com/docs/algs/index.html
 
         :param data: Input data as a 3D numpy.ndarray
-
-        :param config: A ReconstructionConfig with all the necessary parameters to run a reconstruction.
-
+        :param config: A ReconstructionConfig with all the necessary parameters
+                       to run a reconstruction.
         :param proj_angles: The projection angle for each slice
-
-        :param kwargs: Any keyword arguments will be forwarded to the TomoPy reconstruction function
-
+        :param kwargs: Any keyword arguments will be forwarded to the TomoPy
+                       reconstruction function
         :return: 3D numpy.ndarray containing the reconstructed data
-
         """
-
-        # import pydevd
-        # pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
-
-        # plow = (data.shape[2] - cor * 2)
-        # phigh = 0
-
-        from mantidimaging.core.utility import projection_angles
         if proj_angles is None:
             proj_angles = projection_angles.generate(config.func.max_angle,
                                                      data.shape[1])
