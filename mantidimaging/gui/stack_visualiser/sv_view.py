@@ -44,6 +44,7 @@ class StackVisualiserView(Qt.QMainWindow):
         self._current_roi = None
 
         self.toolbar = StackNavigationToolbar(self.canvas, self, coordinates=True)
+        self.toolbar.stack_visualiser = self
 
         self.initialise_slider()
         self.initialise_image(cmap)
