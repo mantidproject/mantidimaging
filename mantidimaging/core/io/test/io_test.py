@@ -10,7 +10,6 @@ import numpy.testing as npt
 from mantidimaging.helper import initialise_logging
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
-from mantidimaging.core.io import utility
 from mantidimaging.core.io.saver import Saver, generate_names
 from mantidimaging.test.file_outputting_test_case import (
         FileOutputtingTestCase)
@@ -444,10 +443,6 @@ class IOTest(FileOutputtingTestCase):
         npt.assert_equal(loaded_images.get_flat(), flat[0])
         npt.assert_equal(loaded_images.get_dark(), dark[0])
 
-    def test_raise_on_invalid_format(self):
-        self.assertRaises(ValueError, loader.load, "/some/path",
-                          file_names=["/somefile"], in_format='txt')
-
     def test_read_in_shape_from_config(self):
         images = th.gen_img_shared_array_with_val(42.)
 
@@ -507,31 +502,6 @@ class IOTest(FileOutputtingTestCase):
         loaded_images = loader.load_from_config(config)
 
         npt.assert_equal(exp_sinograms, loaded_images.get_sample())
-
-    def test_get_candidate_file_extensions(self):
-        self.assertEquals(
-                ['tif', 'tiff'],
-                utility.get_candidate_file_extensions('tif'))
-
-        self.assertEquals(
-                ['tiff', 'tif'],
-                utility.get_candidate_file_extensions('tiff'))
-
-        self.assertEquals(
-                ['png'],
-                utility.get_candidate_file_extensions('png'))
-
-    def test_get_file_names(self):
-        # Create test file with .tiff extension
-        tiff_filename = os.path.join(self.output_directory, 'test.tiff')
-        with open(tiff_filename, 'wb') as tf:
-            tf.write(b'\0')
-
-        # Search for files with .tif extension
-        found_files = utility.get_file_names(self.output_directory, 'tif')
-
-        # Expect to find the .tiff file
-        self.assertEquals([tiff_filename], found_files)
 
 
 if __name__ == '__main__':
