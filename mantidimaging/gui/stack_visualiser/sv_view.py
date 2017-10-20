@@ -5,13 +5,13 @@ import sys
 from logging import getLogger
 
 from PyQt5 import Qt, QtCore, QtWidgets
-from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
-                                                NavigationToolbar2QT)
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from mantidimaging.core.utility import gui_compile_ui
+from mantidimaging.gui. stack_navigation_toolbar import StackNavigationToolbar
 from mantidimaging.gui.stack_visualiser import sv_histogram
 from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
@@ -43,7 +43,7 @@ class StackVisualiserView(Qt.QMainWindow):
         self.initialise_canvas()
         self._current_roi = None
 
-        self.toolbar = NavigationToolbar2QT(self.canvas, self, coordinates=True)
+        self.toolbar = StackNavigationToolbar(self.canvas, self, coordinates=True)
 
         self.initialise_slider()
         self.initialise_image(cmap)
