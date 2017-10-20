@@ -14,7 +14,7 @@ class ProgressHandler(object):
     def __init__(self):
         self.progress = None
 
-    def update(self):
+    def progress_update(self):
         raise NotImplementedError(
                 "Need to implement this method in the child class")
 
@@ -97,6 +97,16 @@ class Progress(object):
         """
         return round(self.current_step / self.end_step, 3)
 
+    def last_status_message(self):
+        """
+        Gets the message from the last progress update.
+        """
+        if len(self.progress_history) > 0:
+            msg = self.progress_history[-1][2]
+            return msg if len(msg) > 0 else None
+
+        return None
+
     def execution_time(self):
         """
         Gets the total time this task has been executing.
@@ -166,7 +176,7 @@ class Progress(object):
         # Process progress callbacks
         if len(self.progress_handlers) != 0:
             for cb in self.progress_handlers:
-                cb.update()
+                cb.progress_update()
 
     def mark_complete(self, msg='complete'):
         """
