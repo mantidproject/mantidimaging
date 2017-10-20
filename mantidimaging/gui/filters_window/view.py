@@ -67,14 +67,25 @@ class FiltersWindowView(Qt.QDialog):
         self.mplLayout.addWidget(self.toolbar)
         self.mplLayout.addWidget(self.canvas)
 
-        def add_plot(num, title):
-            plt = self.figure.add_subplot(num, title=title)
+        def add_plot(num, title, **kwargs):
+            plt = self.figure.add_subplot(num, title=title, **kwargs)
             return plt
 
-        self.preview_image_before = add_plot(221, 'Image Before')
-        self.preview_image_after = add_plot(223, 'Image After')
-        self.preview_histogram_before = add_plot(222, 'Histogram Before')
-        self.preview_histogram_after = add_plot(224, 'Histogram After')
+        self.preview_image_before = add_plot(
+                221, 'Image Before')
+
+        self.preview_image_after = add_plot(
+                223, 'Image After',
+                sharex=self.preview_image_before,
+                sharey=self.preview_image_before)
+
+        self.preview_histogram_before = add_plot(
+                222, 'Histogram Before')
+
+        self.preview_histogram_after = add_plot(
+                224, 'Histogram After',
+                sharex=self.preview_histogram_before,
+                sharey=self.preview_histogram_before)
 
     def show_error_dialog(self, msg=""):
         """
