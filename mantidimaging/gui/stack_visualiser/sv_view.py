@@ -342,13 +342,26 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def show_current_image(self, val=None):
         """
-        :param val: Unused, but required so that the function has the same signature as the expected one
+        :param val: Unused, but required so that the function has the same
+                    signature as the expected one
         """
         self.set_image_title_to_current_filename()
         self.image.set_data(self.current_image())
 
+        # Update colour bar extents
         self.color_bar.set_clim(self.presenter.get_image_pixel_range())
         self.color_bar.draw_all()
+
+        # Update image extents
+        old_extent = self.image.get_extent()
+        self.image.set_extent((
+            0, self.current_image().shape[1],
+            self.current_image().shape[0], 0)
+        )
+
+        # If the size of the image is different then clear the old ROI
+        if old_extent != self.image.get_extent():
+            self.presenter.do_clear_roi()
 
         self.canvas.draw()
 

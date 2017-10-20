@@ -97,8 +97,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
         self.presenter.apply_to_data(mock_algorithm_dialog)
 
-        print(dir(do_before_mock))
-
         do_before_mock.assert_any_call()
         do_after_mock.assert_any_call()
 
