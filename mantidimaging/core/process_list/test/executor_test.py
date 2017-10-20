@@ -4,7 +4,7 @@ import numpy.testing as npt
 
 from mantidimaging.core import process_list
 from mantidimaging.core.filters import median_filter
-from mantidimaging.tests import test_helper as th
+from mantidimaging.test import test_helper as th
 
 # global var that will be incremented when the executor successfully executes
 # the function

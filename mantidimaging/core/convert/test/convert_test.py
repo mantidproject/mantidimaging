@@ -7,9 +7,9 @@ import numpy.testing as npt
 
 from mantidimaging.core.convert import convert
 from mantidimaging.core.io import loader
-from mantidimaging.tests.file_outputting_test_case import (
+from mantidimaging.test.file_outputting_test_case import (
         FileOutputtingTestCase)
-from mantidimaging.tests import test_helper as th
+from mantidimaging.test import test_helper as th
 
 
 class ConvertTest(FileOutputtingTestCase):

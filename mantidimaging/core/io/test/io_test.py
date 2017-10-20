@@ -12,9 +12,9 @@ from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import utility
 from mantidimaging.core.io.saver import Saver, generate_names
-from mantidimaging.tests.file_outputting_test_case import (
+from mantidimaging.test.file_outputting_test_case import (
         FileOutputtingTestCase)
-from mantidimaging.tests import test_helper as th
+from mantidimaging.test import test_helper as th
 
 
 class IOTest(FileOutputtingTestCase):

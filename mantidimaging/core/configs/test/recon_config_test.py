@@ -5,15 +5,15 @@ import unittest
 
 import numpy.testing as npt
 
-import mantidimaging.tests.test_helper as th
+import mantidimaging.test.test_helper as th
 
-from mantidimaging.core.configs.functional_config import FunctionalConfig
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.configs.filter_registration import (
         register_filters_on_cli)
+from mantidimaging.core.configs.functional_config import FunctionalConfig
 
 
-class ConfigsTest(unittest.TestCase):
+class FunctionalConfigTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.parser = argparse.ArgumentParser()
@@ -21,10 +21,6 @@ class ConfigsTest(unittest.TestCase):
         cls.parser = cls.func_config._setup_parser(cls.parser)
 
         register_filters_on_cli(cls.parser)
-
-    def test_functional_config_doctest(self):
-        self._compare_dict_to_str(self.func_config.__dict__,
-                                  str(self.func_config), FunctionalConfig)
 
     def test_no_input_path_error(self):
         # Ignore output to stdout/stderr
@@ -158,16 +154,6 @@ class ConfigsTest(unittest.TestCase):
         self.func_config._update(fake_args)
         rc = ReconstructionConfig(self.func_config, fake_args)
         self.assertEqual(rc.func.indices, [15, 33, 3])
-
-    def _compare_dict_to_str(self, class_dict, class_str, this_config):
-        dictlen = len(class_dict)
-        strlen = len(class_str.split('\n'))
-
-        self.assertEquals(
-            dictlen, strlen,
-            "Different size of __dict__({0}) and __str__({1}). "
-            "Some of the attributes in the {2} are not documented!".format(
-                dictlen, strlen, this_config))
 
 
 if __name__ == '__main__':

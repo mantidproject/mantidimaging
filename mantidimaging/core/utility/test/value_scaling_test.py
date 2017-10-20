@@ -6,7 +6,7 @@ import numpy as np
 import numpy.testing as npt
 
 from mantidimaging.core.utility import value_scaling
-from mantidimaging.tests import test_helper as th
+from mantidimaging.test import test_helper as th
 
 
 class ValueScalingTest(unittest.TestCase):

@@ -4,9 +4,9 @@ import os
 
 from mantidimaging.core import process_list
 from mantidimaging.core.filters import median_filter
-from mantidimaging.tests.file_outputting_test_case import (
+from mantidimaging.test.file_outputting_test_case import (
         FileOutputtingTestCase)
-from mantidimaging.tests import test_helper as th
+from mantidimaging.test import test_helper as th
 
 PACKAGE_LOCATION_STRING = 'mantidimaging.core.filters.median_filter'
 FUNC_NAME = 'execute'
