@@ -2,6 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 from PyQt5 import Qt, QtWidgets
 
+from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
+                                                NavigationToolbar2QT)
+from matplotlib.figure import Figure
+
 from mantidimaging.gui.utility import compile_ui
 
 from .presenter import FiltersWindowPresenter
@@ -50,6 +54,27 @@ class FiltersWindowView(Qt.QDialog):
         main_window.active_stacks_changed.connect(
                 lambda: self.presenter.notify(
                     PresNotification.UPDATE_STACK_LIST))
+
+        # Preview area
+        self.figure = Figure(tight_layout=True)
+
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.canvas.setParent(self)
+
+        self.toolbar = NavigationToolbar2QT(
+                self.canvas, self, coordinates=True)
+
+        self.mplLayout.addWidget(self.toolbar)
+        self.mplLayout.addWidget(self.canvas)
+
+        def add_plot(num, title):
+            plt = self.figure.add_subplot(num, title=title)
+            return plt
+
+        self.preview_image_before = add_plot(221, 'Image Before')
+        self.preview_image_after = add_plot(223, 'Image After')
+        self.preview_histogram_before = add_plot(222, 'Histogram Before')
+        self.preview_histogram_after = add_plot(224, 'Histogram After')
 
     def show_error_dialog(self, msg=""):
         """
