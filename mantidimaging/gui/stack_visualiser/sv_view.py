@@ -11,7 +11,7 @@ from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from mantidimaging.core.utility import gui_compile_ui
-from mantidimaging.gui. stack_navigation_toolbar import StackNavigationToolbar
+from mantidimaging.gui.stack_navigation_toolbar import StackNavigationToolbar
 from mantidimaging.gui.stack_visualiser import sv_histogram
 from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
 from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
