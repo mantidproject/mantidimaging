@@ -19,8 +19,6 @@ _log_formatter = None
 
 _time_start = None
 
-_whole_exec_timer = None
-
 
 def initialise_logging():
     global _log_formatter
@@ -171,21 +169,3 @@ def run_import_checks(config):
         log.info("Multiprocessing not available.")
     else:
         log.info("Running process on {0} cores.".format(config.func.cores))
-
-
-def total_execution_timer(message="Total execution time was "):
-    """
-    This will ONLY be used to time the WHOLE execution time.
-    The first call to this will be in tomo_reconstruct.py and it will start it.
-    The last call will be at the end of find_center or do_recon.
-    """
-    global _whole_exec_timer
-
-    if not _whole_exec_timer:
-        # change type from bool to timer
-        _whole_exec_timer = time.time()
-    else:
-        # change from timer to string
-        _whole_exec_timer = str(time.time() - _whole_exec_timer)
-        message += _whole_exec_timer + " sec"
-        logging.getLogger(__name__).info(message)

@@ -6,6 +6,7 @@ import warnings
 
 from mantidimaging import helper as h
 from mantidimaging.core.configs import recon_config
+from mantidimaging.core.utility import ExecutionTimer
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: \
@@ -57,13 +58,14 @@ def main(default_args):
         from mantidimaging.core.configurations import default_run
         thingy_to_execute = default_run.execute
 
-    h.total_execution_timer()
-    if not config.func.split:
-        res = thingy_to_execute(config)
-    else:
-        from mantidimaging.core.utility import execution_splitter
-        res = execution_splitter.execute(config, thingy_to_execute)
-    h.total_execution_timer()
+    exec_timer = ExecutionTimer(msg='Total execution time')
+    with exec_timer:
+        if not config.func.split:
+            res = thingy_to_execute(config)
+        else:
+            from mantidimaging.core.utility import execution_splitter
+            res = execution_splitter.execute(config, thingy_to_execute)
+    print(exec_timer)
 
     return res
 

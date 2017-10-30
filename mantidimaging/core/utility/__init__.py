@@ -13,4 +13,6 @@ from . import (  # noqa: F401
         size_calculator,
         value_scaling)
 
+from .execution_timer import ExecutionTimer  # noqa: F401
+
 del absolute_import, division, print_function
