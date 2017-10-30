@@ -276,6 +276,7 @@ def load_sinogram(input_path=None,
             loaded_image = _imread(input_file)
             output_data[0, idx, :] = loaded_image[:, sinogram_number]
 
-            progress.update(msg='Loading sinograms')
+            progress.update(msg='Loading sinogram {} of {}'.format(
+                idx, num_images))
 
     return output_data
