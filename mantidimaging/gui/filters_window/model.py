@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
 from logging import getLogger
+from functools import partial
 
 import numpy as np
 
@@ -106,6 +107,11 @@ class FiltersWindowModel(object):
 
         # Generate the execute partial from filter registration
         execute_func = self.execute()
+
+        # Log execute function parameters
+        if isinstance(execute_func, partial):
+            log.info("Filter args: {}".format(execute_func.args))
+            log.info("Filter kwargs: {}".format(execute_func.keywords))
 
         # Do preprocessing and save result
         preproc_res = self.do_before(stack.images.get_sample()) if \
