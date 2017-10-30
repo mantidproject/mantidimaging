@@ -2,9 +2,10 @@ from unittest import TestCase
 
 import numpy.testing as npt
 
+import mantidimaging.core.testing.unit_test_helper as th
+
 from mantidimaging.core import process_list
 from mantidimaging.core.filters import median_filter
-from mantidimaging.test import test_helper as th
 
 # global var that will be incremented when the executor successfully executes
 # the function

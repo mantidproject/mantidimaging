@@ -7,13 +7,13 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
+import mantidimaging.core.testing.unit_test_helper as th
+
 from mantidimaging.helper import initialise_logging
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import loader
 from mantidimaging.core.io.saver import Saver, generate_names
-from mantidimaging.test.file_outputting_test_case import (
-        FileOutputtingTestCase)
-from mantidimaging.test import test_helper as th
+from mantidimaging.core.testing import FileOutputtingTestCase
 
 
 class IOTest(FileOutputtingTestCase):

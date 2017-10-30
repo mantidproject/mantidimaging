@@ -5,7 +5,7 @@ import unittest
 
 import numpy.testing as npt
 
-import mantidimaging.test.test_helper as th
+import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.configs.filter_registration import (

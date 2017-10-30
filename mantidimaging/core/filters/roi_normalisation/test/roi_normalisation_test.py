@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.test import test_helper as th
+import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.core.filters import roi_normalisation
 

@@ -5,11 +5,11 @@ import unittest
 
 import numpy.testing as npt
 
+import mantidimaging.core.testing.unit_test_helper as th
+
 from mantidimaging.core.convert import convert
 from mantidimaging.core.io import loader
-from mantidimaging.test.file_outputting_test_case import (
-        FileOutputtingTestCase)
-from mantidimaging.test import test_helper as th
+from mantidimaging.core.testing import FileOutputtingTestCase
 
 
 class ConvertTest(FileOutputtingTestCase):

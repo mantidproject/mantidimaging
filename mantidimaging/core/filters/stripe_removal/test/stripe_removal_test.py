@@ -5,8 +5,9 @@ import sys
 
 import numpy.testing as npt
 
+import mantidimaging.core.testing.unit_test_helper as th
+
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-from mantidimaging.test import test_helper as th
 
 from mantidimaging.core.filters import stripe_removal
 

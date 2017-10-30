@@ -6,8 +6,7 @@ import os
 from mantidimaging.helper import initialise_logging
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import utility
-from mantidimaging.test.file_outputting_test_case import (
-        FileOutputtingTestCase)
+from mantidimaging.core.testing import FileOutputtingTestCase
 
 
 class UtilityTest(FileOutputtingTestCase):

@@ -2,11 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
+import mantidimaging.core.testing.unit_test_helper as th
+
 from mantidimaging.core import process_list
 from mantidimaging.core.filters import median_filter
-from mantidimaging.test.file_outputting_test_case import (
-        FileOutputtingTestCase)
-from mantidimaging.test import test_helper as th
+from mantidimaging.core.testing import FileOutputtingTestCase
 
 PACKAGE_LOCATION_STRING = 'mantidimaging.core.filters.median_filter'
 FUNC_NAME = 'execute'
