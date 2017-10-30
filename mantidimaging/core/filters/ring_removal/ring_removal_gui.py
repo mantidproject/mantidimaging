@@ -1,15 +1,13 @@
 from functools import partial
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-from .ring_removal import execute
-
-GUI_MENU_NAME = "Ring Removal"
+from . import execute, NAME
 
 
 def _gui_register(main_window):
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     range1 = (0, 1000000)
     range2 = (-1000000, 1000000)

@@ -5,15 +5,15 @@ from functools import partial
 
 from mantidimaging.core import io
 from mantidimaging.core.utility import value_scaling
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-from . import background_correction
 
-GUI_MENU_NAME = 'Background Correction'
+from . import execute, NAME
 
 
 def _gui_register(main_window):
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     flatPath, _ = dialog.add_property('Flat', 'file')
     darkPath, _ = dialog.add_property('Dark', 'file')
@@ -39,7 +39,7 @@ def _gui_register(main_window):
         # volume
         dark = images_dark_only.get_sample().mean(axis=0)
 
-        par = partial(background_correction.execute, flat=flat, dark=dark)
+        par = partial(execute, flat=flat, dark=dark)
 
         return par
 

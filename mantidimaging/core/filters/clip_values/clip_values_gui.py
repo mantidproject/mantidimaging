@@ -2,16 +2,14 @@ from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-from . import clip_values
-
-GUI_MENU_NAME = 'Clip Values'
+from . import execute, NAME
 
 
 def _gui_register(main_window):
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     value_range = (-10000000, 10000000)
 
@@ -56,7 +54,7 @@ def _gui_register(main_window):
         clip_max = clip_max_field.value()
         clip_min_new_value = clip_min_new_value_field.value()
         clip_max_new_value = clip_max_new_value_field.value()
-        return partial(clip_values.execute,
+        return partial(execute,
                        clip_min=clip_min,
                        clip_max=clip_max,
                        clip_min_new_value=clip_min_new_value,

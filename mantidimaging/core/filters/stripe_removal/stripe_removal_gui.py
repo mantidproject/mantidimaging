@@ -1,15 +1,13 @@
 from functools import partial
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-
-from . import stripe_removal
-
-GUI_MENU_NAME = 'Stripe Removal'
+from . import execute, wavelet_names, NAME
 
 
 def _gui_register(main_window):
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     # Filter type option
     _, value_filter_type = dialog.add_property('Filter Type', 'list')
@@ -19,7 +17,7 @@ def _gui_register(main_window):
             'Level', 'int', valid_values=(0, 100))
     _, value_wf_wname = dialog.add_property(
             'Wavelet Filter', 'list',
-            valid_values=stripe_removal.wavelet_names())
+            valid_values=wavelet_names())
     _, value_wf_sigma = dialog.add_property(
             'Sigma', 'float', 2.0, (0.0, 100.0))
 
@@ -67,7 +65,7 @@ def _gui_register(main_window):
         elif filter_type == 'smoothing-filter':
             sf = {'size': value_sf_size.value()}
 
-        return partial(stripe_removal.execute, wf=wf, ti=ti, sf=sf)
+        return partial(execute, wf=wf, ti=ti, sf=sf)
 
     dialog.set_execute(custom_execute)
 

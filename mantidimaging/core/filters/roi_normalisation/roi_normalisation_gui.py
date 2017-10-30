@@ -1,15 +1,13 @@
 from functools import partial
 
-from mantidimaging.gui.algorithm_dialog import AlgorithmDialog, Parameters
-
-from .roi_normalisation import execute
-
-GUI_MENU_NAME = 'ROI Normalisation'
+from . import execute, NAME
 
 
 def _gui_register(main_window):
+    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog, Parameters
+
     dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(GUI_MENU_NAME)
+    dialog.setWindowTitle(NAME)
 
     # TODO add label that from image will be used if nothing is selected here
 
