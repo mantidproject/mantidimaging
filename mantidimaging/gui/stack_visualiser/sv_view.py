@@ -86,17 +86,30 @@ class StackVisualiserView(Qt.QMainWindow):
         # Create context menu
         self.canvas_context_menu = Qt.QMenu(self)
 
-        def add_context_menu_action(text, func):
+        def add_context_menu_action(text, n):
             action = Qt.QAction(text, self.canvas)
-            action.triggered.connect(func)
+            action.triggered.connect(lambda: self.presenter.notify(n))
             self.canvas_context_menu.addAction(action)
 
         # Add context menu items
-        add_context_menu_action("Clear ROI", self.presenter.do_clear_roi)
-        add_context_menu_action("Show Histogram", self.presenter.do_histogram)
+        add_context_menu_action(
+                "Clear ROI",
+                StackWindowNotification.CLEAR_ROI)
+        add_context_menu_action(
+                "Rename",
+                StackWindowNotification.RENAME_WINDOW)
+        add_context_menu_action(
+                "Show Histogram",
+                StackWindowNotification.HISTOGRAM)
         add_context_menu_action(
                 "Show Histogram in new window",
-                self.presenter.do_new_window_histogram)
+                StackWindowNotification.NEW_WINDOW_HISTOGRAM)
+        add_context_menu_action(
+                "Stack mode",
+                StackWindowNotification.STACK_MODE)
+        add_context_menu_action(
+                "Sum mode",
+                StackWindowNotification.SUM_MODE)
 
         # Register mouse release callback
         self.canvas.mpl_connect('button_press_event', self.on_button_press)
