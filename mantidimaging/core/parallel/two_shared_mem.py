@@ -24,7 +24,8 @@ def inplace(func, i, **kwargs):
 
     You HAVE to be careful when using this, for example the func:
 
-    def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+    def _apply_normalise_inplace(
+            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
@@ -32,7 +33,8 @@ def inplace(func, i, **kwargs):
     LOCAL VARIABLE that is discarded.
 
     The proper way to write this function is:
-    def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+    def _apply_normalise_inplace(
+            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data[:] = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
@@ -65,7 +67,8 @@ def inplace_second_2d(func, i, **kwargs):
     image.
 
     You HAVE to be careful when using this, for example the func:
-    def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+    def _apply_normalise_inplace(
+            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
@@ -73,7 +76,8 @@ def inplace_second_2d(func, i, **kwargs):
     local variable that is discarded.
 
     The proper way to write this function is:
-    def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+    def _apply_normalise_inplace(
+            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data[:] = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
@@ -223,7 +227,8 @@ def execute(data=None,
                                         task_name=task_name)
 
     indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
+    for _ in enumerate(pool.imap(
+            partial_func, indices_list, chunksize=chunksize)):
         progress.update()
 
     pool.close()

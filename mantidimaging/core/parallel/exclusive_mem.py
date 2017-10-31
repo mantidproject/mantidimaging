@@ -44,7 +44,8 @@ def execute(data=None,
     doubling the memory. They do not improve speed performance either
     - imap seems to be the best choice
 
-    This also means that this class potentially uses MUCH more memory, and performs a lot slower.
+    This also means that this class potentially uses MUCH more memory, and
+    performs a lot slower.
 
     If you get a similar error:
         output_data[i] = res_data[:]

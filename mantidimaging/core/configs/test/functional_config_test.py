@@ -4,7 +4,6 @@ import argparse
 import unittest
 
 from mantidimaging.core.configs.functional_config import FunctionalConfig
-from mantidimaging.core.utility import registrator
 
 
 class FunctionalConfigTest(unittest.TestCase):

@@ -18,7 +18,8 @@ def create_shared_array(shape, dtype=np.float32):
         ctype = ctypes.c_double
         dtype = np.float64
 
-    shared_array_base = sharedctypes.RawArray(ctype, shape[0] * shape[1] * shape[2])
+    shared_array_base = sharedctypes.RawArray(
+            ctype, shape[0] * shape[1] * shape[2])
 
     # create a numpy array from shared array
     data = np.frombuffer(shared_array_base, dtype=dtype)
@@ -53,5 +54,6 @@ def generate_indices(num_images):
 
 
 def calculate_chunksize(cores):
-    # TODO possible proper calculation of chunksize, although best performance has been with 1
+    # TODO possible proper calculation of chunksize, although best performance
+    # has been with 1
     return 1

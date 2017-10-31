@@ -174,5 +174,6 @@ class SharedMemTest(unittest.TestCase):
         # compare results
         npt.assert_equal(img, expected)
 
+
 if __name__ == '__main__':
     unittest.main()

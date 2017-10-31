@@ -21,14 +21,17 @@ def inplace(func, i, **kwargs):
           (the parameter function)
 
     You HAVE to be careful when using this, for example the func:
-    def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+    def _apply_normalise_inplace(
+            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
-    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a LOCAL VARIABLE that is discarded.
+    DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a
+    LOCAL VARIABLE that is discarded.
 
     The proper way to write this function is:
-    def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+    def _apply_normalise_inplace(
+            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
         data[:] = np.clip(np.true_divide(
             data - dark, norm_divide), clip_min, clip_max)
 
@@ -58,7 +61,8 @@ def return_fwd_func(func, i, **kwargs):
     overwriting in place. In that case use fwd_func_inplace as a fwd_function
     parameter for create_partial, creating something like:
 
-    f = parallel.create_partial(func_to_be_executed, parallel.inplace, **kwargs)
+    f = parallel.create_partial(
+        func_to_be_executed, parallel.inplace, **kwargs)
 
     :param func: Function that will be executed
     :param i: index from the shared_data on which to operate
@@ -159,7 +163,8 @@ def execute(data=None,
                                         task_name=task_name)
 
     indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
+    for _ in enumerate(pool.imap(
+            partial_func, indices_list, chunksize=chunksize)):
         progress.update()
 
     pool.close()

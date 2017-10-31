@@ -56,9 +56,9 @@ def set_logging_from_func_config(config):
 
 def check_config_class(config):
     from mantidimaging.core.configs.recon_config import ReconstructionConfig
-    assert isinstance(
-        config, ReconstructionConfig
-    ), "The provided config is not of type ReconstructionConfig and cannot be used!"
+    assert isinstance(config, ReconstructionConfig), \
+        "The provided config is not of type ReconstructionConfig and cannot \
+        be used!"
 
 
 def initialise(config, saver=None):

@@ -61,7 +61,8 @@ class RegistratorTest(unittest.TestCase):
         modules = get_package_children('mantidimaging.core.filters',
                                        packages=True,
                                        ignore=[
-                                           'mantidimaging.core.filters.wip', 'test'])
+                                           'mantidimaging.core.filters.wip',
+                                           'test'])
 
         modules = list([m[1] for m in modules])
 

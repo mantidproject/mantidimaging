@@ -21,8 +21,10 @@ def _indices_check(cls, splits, iteration, config):
     """
     :param cls: The unittest.TestCase class to use for assertions
     :param splits: The custom-made splits
-    :param iteration: List of length 1, containing an integer that server as an internal counter
-    :param config: The reconstruction config that has been modified by the execution_splitter
+    :param iteration: List of length 1, containing an integer that server as an
+                      internal counter
+    :param config: The reconstruction config that has been modified by the
+                   execution_splitter
     """
     indices = config.func.indices
 
@@ -37,7 +39,8 @@ def _indices_check(cls, splits, iteration, config):
     # assert the step is 1
     cls.assertEquals(indices[2], 1)
 
-    # modify the member, we use a list because the change will persist through iterations
+    # modify the member, we use a list because the change will persist through
+    # iterations
     iteration[0] += 1
 
 
@@ -53,13 +56,15 @@ class ExecutionSplitterTest(unittest.TestCase):
         self.expected_iterations = len(self.split) - 1
         self.step = 200
 
-        # define our own custom function that will replace the original _split_data
-        # this way we do not have to load data, and we can directly control the returns
+        # define our own custom function that will replace the original
+        # _split_data this way we do not have to load data, and we can directly
+        # control the returns
         def override_split_data(config):
             return self.recon, self.data_shape, self.split, self.step
 
         # override the function for the tests, this is restored in tearDown()
-        self.backup, execution_splitter.prepare_parameters = execution_splitter.prepare_parameters, override_split_data
+        self.backup, execution_splitter.prepare_parameters = \
+            execution_splitter.prepare_parameters, override_split_data
 
     def tearDown(self):
         # restore the function for the next test

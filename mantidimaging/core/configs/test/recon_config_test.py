@@ -33,7 +33,8 @@ class FunctionalConfigTest(unittest.TestCase):
                 self.func_config._update(fake_args)
                 ReconstructionConfig(self.func_config, fake_args)
                 assert False, "If we reached this point we have failed the test, \
-                              because we were supposed to crash without --input--path specified"
+                              because we were supposed to crash without \
+                              --input--path specified"
             except SystemExit:
                 # it was supposed to fail, it's fine
                 pass
