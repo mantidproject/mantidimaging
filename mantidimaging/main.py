@@ -9,7 +9,8 @@ from mantidimaging.core.configs import recon_config
 from mantidimaging.core.utility import ExecutionTimer
 
 formatwarning_orig = warnings.formatwarning
-warnings.formatwarning = lambda message, category, filename, lineno, line=None: \
+warnings.formatwarning = \
+    lambda message, category, filename, lineno, line=None: \
     formatwarning_orig(message, category, filename, lineno, line='')
 
 

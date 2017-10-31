@@ -216,29 +216,36 @@ class IOTest(FileOutputtingTestCase):
         # saver indices only affects the enumeration of the data
         if saver_indices:
             # crop the original images to make sure the tests is correct
-            expected_images = expected_images[saver_indices[0]:saver_indices[1]]
+            expected_images =\
+                expected_images[saver_indices[0]:saver_indices[1]]
 
         saver.save_preproc_images(expected_images)
 
         # create the same path as the saved out preproc images
         preproc_output_path = saver._output_path + '/pre_processed/'
 
-        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
+        self.assert_files_exist(os.path.join(preproc_output_path,
+                                             'out_preproc_image'),
                                 saver._out_format, data_as_stack,
                                 expected_images.shape[0], saver_indices)
 
         # this does not load any flats or darks as they were not saved out
-        loaded_images = loader.load(preproc_output_path, in_format=saver._out_format,
-                                    cores=1, parallel_load=parallel, indices=loader_indices)
+        loaded_images = loader.load(preproc_output_path,
+                                    in_format=saver._out_format,
+                                    cores=1,
+                                    parallel_load=parallel,
+                                    indices=loader_indices)
 
         if loader_indices:
-            assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data does not " \
+            assert len(loaded_images.get_sample()) == expected_len, \
+                "The length of the loaded data does not " \
                 "match the expected length! Expected: {0}, " \
                 "Got {1}".format(expected_len, len(
                     loaded_images.get_sample()))
 
             # crop the original images to make sure the tests is correct
-            expected_images = expected_images[loader_indices[0]:loader_indices[1]]
+            expected_images = \
+                expected_images[loader_indices[0]:loader_indices[1]]
 
         npt.assert_equal(loaded_images.get_sample(), expected_images)
 
@@ -289,7 +296,8 @@ class IOTest(FileOutputtingTestCase):
         preproc_output_path = os.path.join(
             saver._output_path, 'pre_processed/')
 
-        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
+        self.assert_files_exist(os.path.join(preproc_output_path,
+                                             'out_preproc_image'),
                                 saver._out_format, data_as_stack,
                                 expected_images.shape[0])
 
@@ -298,8 +306,11 @@ class IOTest(FileOutputtingTestCase):
         # when load is executed in parallel, the 8 threads try to
         # load the data too fast, and the data loaded is corrupted
         # hard coded 1 core to avoid race condition
-        images = loader.load(preproc_output_path, in_format=saver._out_format, cores=1,
-                             parallel_load=parallel, indices=loader_indices)
+        images = loader.load(preproc_output_path,
+                             in_format=saver._out_format,
+                             cores=1,
+                             parallel_load=parallel,
+                             indices=loader_indices)
 
         if loader_indices:
             assert len(
@@ -310,11 +321,13 @@ class IOTest(FileOutputtingTestCase):
                 expected_len, len(images.get_sample()))
 
             # crop the original images to make sure the tests is correct
-            expected_images = expected_images[loader_indices[0]:loader_indices[1]]
+            expected_images = \
+                expected_images[loader_indices[0]:loader_indices[1]]
 
         npt.assert_equal(images.get_sample(), expected_images)
 
-        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'),
+        self.assert_files_exist(os.path.join(preproc_output_path,
+                                             'out_preproc_image'),
                                 saver._out_format, data_as_stack,
                                 expected_images.shape[0])
 
@@ -409,7 +422,8 @@ class IOTest(FileOutputtingTestCase):
         dark_output_path = os.path.join(
             saver._output_path, 'imgIOTest_dark')
 
-        self.assert_files_exist(os.path.join(sample_output_path, 'out_preproc_image'),
+        self.assert_files_exist(os.path.join(sample_output_path,
+                                             'out_preproc_image'),
                                 saver._out_format, data_as_stack,
                                 images.shape[0], loader_indices or
                                 saver_indices)
@@ -430,9 +444,11 @@ class IOTest(FileOutputtingTestCase):
                 indices=loader_indices)
 
         if loader_indices:
-            assert len(loaded_images.get_sample()) == expected_len, "The length of the loaded data doesn't " \
+            assert len(loaded_images.get_sample()) == expected_len, \
+                "The length of the loaded data doesn't " \
                 "match the expected length: {0}, " \
-                "Got: {1}".format(expected_len, len(loaded_images.get_sample()))
+                "Got: {1}".format(
+                        expected_len, len(loaded_images.get_sample()))
 
             # crop the original images to make sure the tests is correct
             images = images[loader_indices[0]:loader_indices[1]]

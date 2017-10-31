@@ -6,11 +6,11 @@ from logging import getLogger
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
 from mantidimaging.core.utility import gui_compile_ui
-from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
+from mantidimaging.gui.stack_visualiser import StackVisualiserView
 
 from .load_dialog import MWLoadDialog
-from .mw_presenter import MainWindowPresenter
-from .mw_presenter import Notification as PresNotification
+from .presenter import MainWindowPresenter
+from .presenter import Notification as PresNotification
 from .save_dialog import MWSaveDialog
 
 

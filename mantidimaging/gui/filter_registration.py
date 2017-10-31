@@ -5,7 +5,7 @@ from logging import getLogger
 from PyQt5.Qt import QMenu, QAction
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-from mantidimaging.gui.main_window.mw_view import MainWindowView
+from mantidimaging.gui.main_window import MainWindowView
 
 from mantidimaging.core.utility.registrator import (
         get_package_children,

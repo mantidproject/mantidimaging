@@ -2,7 +2,7 @@ import unittest
 
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.gui.main_window.mw_model import MainWindowModel
+from mantidimaging.gui.main_window import MainWindowModel
 
 mock = import_mock()
 

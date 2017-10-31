@@ -11,39 +11,47 @@ from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from mantidimaging.core.utility import gui_compile_ui
-from mantidimaging.gui.stack_navigation_toolbar import StackNavigationToolbar
-from mantidimaging.gui.stack_visualiser import sv_histogram
-from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as StackWindowNotification
-from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
+
+from . import histogram
+from .navigation_toolbar import StackNavigationToolbar
+from .presenter import StackVisualiserPresenter
+from .presenter import Notification as StackWindowNotification
 
 
 class StackVisualiserView(Qt.QMainWindow):
-    def __init__(self, parent, dock, images, data_traversal_axis=0, cmap='Greys_r', block=False):
+    def __init__(self, parent, dock, images, data_traversal_axis=0,
+                 cmap='Greys_r', block=False):
         # enforce not showing a single image
-        assert images.get_sample().ndim == 3, "Data does NOT have 3 dimensions! Dimensions found: {0}".format(
+        assert images.get_sample().ndim == 3, \
+                "Data does NOT have 3 dimensions! Dimensions found: \
+                {0}".format(
             images.get_sample().ndim)
 
-        # We set the main window as the parent, the effect is the same as having no parent, the window
-        # will be inside the QDockWidget. If the dock is set as a parent the window will be an independent
-        # floating window
+        # We set the main window as the parent, the effect is the same as
+        # having no parent, the window will be inside the QDockWidget. If the
+        # dock is set as a parent the window will be an independent floating
+        # window
         super(StackVisualiserView, self).__init__(parent)
         gui_compile_ui.execute('gui/ui/stack.ui', self)
 
-        # capture the QDockWidget reference so that we can access the Qt widget and change things like the title
+        # capture the QDockWidget reference so that we can access the Qt widget
+        # and change things like the title
         self.dock = dock
-        # Swap out the dock close event with our own provided close event. This is needed to manually
-        # delete the data reference, otherwise it is left hanging in the presenter
+        # Swap out the dock close event with our own provided close event. This
+        # is needed to manually delete the data reference, otherwise it is left
+        # hanging in the presenter
         dock.closeEvent = self.closeEvent
 
-        # View doesn't take ownership of the data!
-        self.presenter = StackVisualiserPresenter(self, images, data_traversal_axis)
+        self.presenter = StackVisualiserPresenter(
+                self, images, data_traversal_axis)
 
         self.figure = Figure()
 
         self.initialise_canvas()
         self._current_roi = None
 
-        self.toolbar = StackNavigationToolbar(self.canvas, self, coordinates=True)
+        self.toolbar = StackNavigationToolbar(
+                self.canvas, self, coordinates=True)
         self.toolbar.stack_visualiser = self
 
         self.initialise_slider()
@@ -125,9 +133,11 @@ class StackVisualiserView(Qt.QMainWindow):
                 StackWindowNotification.NEW_WINDOW_HISTOGRAM)
 
         # Register mouse release callback
-        self.canvas.mpl_connect('button_press_event', self.on_button_press)
+        self.canvas.mpl_connect(
+                'button_press_event', self.on_button_press)
 
-        self.canvas.mpl_connect('scroll_event', self. handle_canvas_scroll_wheel)
+        self.canvas.mpl_connect(
+                'scroll_event', self.handle_canvas_scroll_wheel)
 
     def initialise_slider(self):
         """
@@ -174,16 +184,18 @@ class StackVisualiserView(Qt.QMainWindow):
         ROI. This function is called on a single button click and 2 things can
         happen:
 
-        - If a rectangle selection is present and the user just single clicked, the ROI will be kept,
-          because region_select_callback will be called afterwards
+        - If a rectangle selection is present and the user just single clicked,
+          the ROI will be kept, because region_select_callback will be called
+          afterwards
 
-        - If a rectangle selection is no longer present the region_select_callback will not be called and the ROI will
-          be deleted
+        - If a rectangle selection is no longer present the
+          region_select_callback will not be called and the ROI will be deleted
 
-        This assumes that the order will always be matplotlib on click event first,
-        and then the rectangle selector callback.
-        This might be a wrong assumption which could cause weird plotting issues. For now I have not seen an issue and
-        the order seems to always be correct
+        This assumes that the order will always be matplotlib on click event
+        first, and then the rectangle selector callback.
+        This might be a wrong assumption which could cause weird plotting
+        issues. For now I have not seen an issue and the order seems to always
+        be correct
 
         On right click (mouse button 2) this opens the context menu.
         """
@@ -213,8 +225,10 @@ class StackVisualiserView(Qt.QMainWindow):
         self.current_roi = (left, top, right, bottom)
         getLogger(__name__).info("ROI: %i %i %i %i", *self.current_roi)
 
+        def mid(lower, upper):
+            return int(lower + ((upper - lower) / 2))
+
         # Common options for ROI bounds indicators
-        mid = lambda lower, upper: int(lower + ((upper - lower) / 2))
         padding = 5
         common_kwargs = {
             'size': 'large',
@@ -259,13 +273,14 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.new_window_histogram_shortcut = Qt.QShortcut(
             Qt.QKeySequence("Ctrl+Shift+C"), self.dock)
-
         self.new_window_histogram_shortcut.activated.connect(
-            lambda: self.presenter.notify(StackWindowNotification.NEW_WINDOW_HISTOGRAM))
+            lambda: self.presenter.notify(
+                StackWindowNotification.NEW_WINDOW_HISTOGRAM))
 
         self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
         self.rename_shortcut.activated.connect(
-            lambda: self.presenter.notify(StackWindowNotification.RENAME_WINDOW))
+            lambda: self.presenter.notify(
+                StackWindowNotification.RENAME_WINDOW))
 
     def apply_to_data(self, algorithm_dialog):
         self.presenter.apply_to_data(algorithm_dialog)
@@ -289,8 +304,9 @@ class StackVisualiserView(Qt.QMainWindow):
         self.parent().deleteLater()
 
     def create_rectangle_selector(self, axis, button=1):
-        # drawtype is 'box' or 'line' or 'none', we could use 'line' to show COR, but the line
-        # doesn't want to flip horizontally so it only ends up leaning right
+        # drawtype is 'box' or 'line' or 'none', we could use 'line' to show
+        # COR, but the line doesn't want to flip horizontally so it only ends
+        # up leaning right
         return RectangleSelector(
             axis,
             self.region_select_callback,
@@ -303,7 +319,8 @@ class StackVisualiserView(Qt.QMainWindow):
             interactive=True)
 
     def create_slider(self, slider_axis, length):
-        slider = Slider(slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
+        slider = Slider(
+                slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
 
         slider.on_changed(self.show_current_image)
         return slider
@@ -312,7 +329,8 @@ class StackVisualiserView(Qt.QMainWindow):
         """
         :param index: Index of image to show
         """
-        index = max(0, min(self.presenter.get_image_count_on_axis() - 1, index))
+        max_index = self.presenter.get_image_count_on_axis() - 1
+        index = max(0, min(max_index, index))
         self.slider.set_val(index)
 
     def current_index(self):
@@ -337,31 +355,40 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def show_histogram_of_current_image(self, new_window=False):
         """
-        Event that will show a histogram of the current image (full or the selected ROI).
+        Event that will show a histogram of the current image (full or the
+        selected ROI).
 
-        :param new_window: Whether to put the new histogram into a new floating window,
-                           or append to the last focused plotting window
+        :param new_window: Whether to put the new histogram into a new floating
+                           window, or append to the last focused plotting
+                           window
         """
-        # This can work with sv_histogram.show_transparent or sv_histogram.show
+        # This can work with histogram.show_transparent or histogram.show
         current_index = self.current_index()
         current_filename = self.presenter.get_image_filename(current_index)
         title = self.dock.windowTitle()
         legend = self._create_label(current_filename, current_index)
 
-        # Choose plotting function depending on whether we're creating a histogram in the same window, or a new window.
-        # The last window that was focused will be considered the 'active' window.
-        histogram_function = sv_histogram.show_transparent if not new_window else sv_histogram.show_floating_transparent
+        # Choose plotting function depending on whether we're creating a
+        # histogram in the same window, or a new window.
+        # The last window that was focused will be considered the 'active'
+        # window.
+        histogram_function = histogram.show_transparent if not new_window \
+            else histogram.show_floating_transparent
 
         if self.current_roi:
-            histogram_function(self.current_image_roi(), legend=legend, title=title)
+            histogram_function(
+                    self.current_image_roi(), legend=legend, title=title)
         else:
-            histogram_function(self.current_image(), legend=legend, title=title)
+            histogram_function(
+                    self.current_image(), legend=legend, title=title)
 
     def _create_label(self, current_filename, current_index):
         common_label = "Index: {current_index}, {current_filename}"
         if self.current_roi:
             legend = (common_label + " {current_roi}").format(
-                current_filename=current_filename, current_index=current_index, current_roi=self.current_roi)
+                current_filename=current_filename,
+                current_index=current_index,
+                current_roi=self.current_roi)
         else:
             legend = common_label.format(current_filename=current_filename,
                                          current_index=current_index)
@@ -393,7 +420,8 @@ class StackVisualiserView(Qt.QMainWindow):
         self.canvas.draw()
 
     def set_image_title_to_current_filename(self):
-        self.image_axis.set_title(self.presenter.get_image_filename(self.current_index()))
+        self.image_axis.set_title(
+                self.presenter.get_image_filename(self.current_index()))
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
@@ -412,8 +440,9 @@ def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
     This method provides an option to run an independent stack visualiser.
     It might be useful when using the MantidImaging package through IPython.
 
-    Warning: This function will internally hide a QApplication in order to show the Stack Visualiser.
-    This can be accessed with see.q_application, and if modified externally it might crash the caller process.
+    Warning: This function will internally hide a QApplication in order to show
+    the Stack Visualiser.  This can be accessed with see.q_application, and if
+    modified externally it might crash the caller process.
 
     :param data: Data to be visualised
     :param data_traversal_axis: axis on which we're traversing the data
@@ -422,9 +451,10 @@ def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
     """
     getLogger(__name__).info("Running independent Stack Visualiser")
 
-    # We cache the QApplication reference, otherwise the interpreter will segfault when we try to create
-    # a second QApplication on a consecutive call. We cache it as a parameter of this function, because we don't
-    # want to expose the QApplication to the outside
+    # We cache the QApplication reference, otherwise the interpreter will
+    # segfault when we try to create a second QApplication on a consecutive
+    # call. We cache it as a parameter of this function, because we don't want
+    # to expose the QApplication to the outside
     if not hasattr(see, 'q_application'):
         see.q_application = Qt.QApplication(sys.argv)
 

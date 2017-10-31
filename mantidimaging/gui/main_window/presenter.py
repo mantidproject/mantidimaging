@@ -6,7 +6,7 @@ from logging import getLogger
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
 
-from .mw_model import MainWindowModel
+from .model import MainWindowModel
 
 
 class Notification(Enum):

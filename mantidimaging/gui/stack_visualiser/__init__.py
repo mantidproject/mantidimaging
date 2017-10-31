@@ -22,8 +22,15 @@ from __future__ import (absolute_import, division, print_function)
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from . import (  # noqa: F401
-        sv_presenter,
-        sv_view)
+from .available_parameters import (  # noqa: F401
+        Parameters,
+        PARAMETERS_ERROR_MESSAGE)
+
+from .view import StackVisualiserView  # noqa: F401
+
+from .presenter import (  # noqa: F401
+        StackVisualiserPresenter,
+        Notification,
+        ImageMode)
 
 del absolute_import, division, print_function  # noqa:F821

@@ -33,4 +33,4 @@ class ExecutionTimer(object):
         None if the timer has not been run or is still running.
         """
         return self.time_end - self.time_start if \
-                self.time_start and self.time_end else None
+            self.time_start and self.time_end else None

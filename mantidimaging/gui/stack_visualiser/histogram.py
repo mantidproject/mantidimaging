@@ -15,7 +15,8 @@ def _setup_normal(current_image, ax, legend, title):
 
 
 def _setup_transparent(current_image, ax, legend):
-    histogram, bins = np.histogram(current_image.flatten(), bins=HISTOGRAM_BIN_SIZE)
+    histogram, bins = np.histogram(
+            current_image.flatten(), bins=HISTOGRAM_BIN_SIZE)
     center = (bins[:-1] + bins[1:]) / 2
     ax.plot(center, histogram, label=legend)
     ax.legend(loc='upper left')

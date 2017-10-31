@@ -24,8 +24,10 @@ from __future__ import absolute_import, division, print_function
 
 from . import (  # noqa: F401
         load_dialog,
-        mw_presenter,
-        mw_view,
         save_dialog)
+
+from .model import MainWindowModel  # noqa: F401
+from .view import MainWindowView  # noqa: F401
+from .presenter import MainWindowPresenter  # noqa: F401
 
 del absolute_import, division, print_function  # noqa:F821

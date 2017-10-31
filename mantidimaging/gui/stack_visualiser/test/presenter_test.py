@@ -10,12 +10,10 @@ import mantidimaging.core.testing.unit_test_helper as th
 from mantidimaging.core.utility.special_imports import import_mock
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-from mantidimaging.gui.stack_visualiser.sv_available_parameters import Parameters
-from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
-from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as PresenterNotifications
-from mantidimaging.gui.stack_visualiser.sv_presenter import ImageMode
-# if we do not want to import the actual View and pull in Qt, we have to create an abstract view
-from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
+from mantidimaging.gui.stack_visualiser import (
+        StackVisualiserPresenter, StackVisualiserView, ImageMode, Parameters)
+from mantidimaging.gui.stack_visualiser import \
+        Notification as PresenterNotifications
 
 mock = import_mock()
 
