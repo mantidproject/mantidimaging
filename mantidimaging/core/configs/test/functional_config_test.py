@@ -14,10 +14,6 @@ class FunctionalConfigTest(unittest.TestCase):
         cls.func_config = FunctionalConfig()
         cls.parser = cls.func_config._setup_parser(cls.parser)
 
-        registrator.register_into(
-                cls.parser, func=registrator.cli_register,
-                package='mantidimaging.core.filters')
-
     def test_config_doctest(self):
         self._compare_dict_to_str(self.func_config.__dict__,
                                   str(self.func_config), FunctionalConfig)

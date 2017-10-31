@@ -26,19 +26,33 @@ class RegistratorTest(unittest.TestCase):
 
         self.assertEquals(modules, [
             'mantidimaging.core.filters.background_correction',
+            'mantidimaging.core.filters.background_correction.test',
             'mantidimaging.core.filters.circular_mask',
+            'mantidimaging.core.filters.circular_mask.test',
             'mantidimaging.core.filters.clip_values',
+            'mantidimaging.core.filters.clip_values.test',
             'mantidimaging.core.filters.crop_coords',
+            'mantidimaging.core.filters.crop_coords.test',
             'mantidimaging.core.filters.cut_off',
+            'mantidimaging.core.filters.cut_off.test',
             'mantidimaging.core.filters.gaussian',
+            'mantidimaging.core.filters.gaussian.test',
             'mantidimaging.core.filters.median_filter',
+            'mantidimaging.core.filters.median_filter.test',
             'mantidimaging.core.filters.minus_log',
+            'mantidimaging.core.filters.minus_log.test',
             'mantidimaging.core.filters.outliers',
+            'mantidimaging.core.filters.outliers.test',
             'mantidimaging.core.filters.rebin',
+            'mantidimaging.core.filters.rebin.test',
             'mantidimaging.core.filters.ring_removal',
+            'mantidimaging.core.filters.ring_removal.test',
             'mantidimaging.core.filters.roi_normalisation',
+            'mantidimaging.core.filters.roi_normalisation.test',
             'mantidimaging.core.filters.rotate_stack',
+            'mantidimaging.core.filters.rotate_stack.test',
             'mantidimaging.core.filters.stripe_removal',
+            'mantidimaging.core.filters.stripe_removal.test',
             'mantidimaging.core.filters.wip',
             'mantidimaging.core.filters.wip.mcp_corrections'
         ])
@@ -47,7 +61,7 @@ class RegistratorTest(unittest.TestCase):
         modules = get_package_children('mantidimaging.core.filters',
                                        packages=True,
                                        ignore=[
-                                           'mantidimaging.core.filters.wip'])
+                                           'mantidimaging.core.filters.wip', 'test'])
 
         modules = list([m[1] for m in modules])
 
