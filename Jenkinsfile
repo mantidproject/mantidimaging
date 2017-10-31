@@ -20,7 +20,7 @@ pipeline {
       steps {
         timeout(2) {
           sh 'git clean -xdf --exclude="anaconda*"'
-          sh '${WORKSPACE}/anaconda3/envs/py35/bin/nosetests --xunit-file=${WORKSPACE}/python35_nosetests.xml --xunit-testsuite-name=python35_nosetests || true'
+          sh '${WORKSPACE}/anaconda3/envs/py35/bin/nosetests --with-coverage --xunit-file=${WORKSPACE}/python35_nosetests.xml --xunit-testsuite-name=python35_nosetests || true'
           junit '**/python35_nosetests.xml'
         }
       }
@@ -30,7 +30,7 @@ pipeline {
       steps {
         timeout(2) {
           sh 'git clean -xdf --exclude="anaconda*"'
-          sh '${WORKSPACE}/anaconda2/bin/nosetests --xunit-file=${WORKSPACE}/python27_nosetests.xml --xunit-testsuite-name=python27_nosetests || true'
+          sh '${WORKSPACE}/anaconda2/bin/nosetests --with-coverage --xunit-file=${WORKSPACE}/python27_nosetests.xml --xunit-testsuite-name=python27_nosetests || true'
           junit '**/python27_nosetests.xml'
         }
       }
