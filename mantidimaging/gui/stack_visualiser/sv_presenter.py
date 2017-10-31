@@ -17,6 +17,14 @@ class Notification(IntEnum):
     NEW_WINDOW_HISTOGRAM = 2
     SCROLL_UP = 3
     SCROLL_DOWN = 4
+    CLEAR_ROI = 5
+    STACK_MODE = 6
+    SUM_MODE = 7
+
+
+class ImageMode(IntEnum):
+    STACK = 0
+    SUM = 1
 
 
 class StackVisualiserPresenter(object):
@@ -25,6 +33,8 @@ class StackVisualiserPresenter(object):
         self.view = view
         self.images = images
         self.axis = data_traversal_axis
+        self.mode = ImageMode.STACK
+        self.summed_image = None
 
     def notify(self, signal):
         try:
@@ -38,6 +48,12 @@ class StackVisualiserPresenter(object):
                 self.do_scroll_stack(1)
             elif signal == Notification.SCROLL_DOWN:
                 self.do_scroll_stack(-1)
+            elif signal == Notification.CLEAR_ROI:
+                self.do_clear_roi()
+            elif signal == Notification.STACK_MODE:
+                self.image_mode = ImageMode.STACK
+            elif signal == Notification.SUM_MODE:
+                self.image_mode = ImageMode.SUM
         except Exception as e:
             self.show_error(e)
             raise  # re-raise for full stack trace
@@ -71,13 +87,47 @@ class StackVisualiserPresenter(object):
     def delete_data(self):
         del self.images
 
+    @property
+    def image_mode(self):
+        return self.mode
+
+    @image_mode.setter
+    def image_mode(self, mode):
+        """
+        Sets the mode used to display images.
+
+        STACK mode allows scrolling through the stack of individual images.
+
+        SUM mode summes the entire stack into a single image, divided by the
+        number of images in the stack.
+        """
+        self.mode = mode
+
+        # Create the summed image lazily
+        if mode == ImageMode.SUM and self.summed_image is None:
+            self.summed_image = np.divide(
+                    np.sum(self.images.sample, axis=self.axis),
+                    self.images.sample.shape[0])
+
+        # Update image view
+        self.view.show_current_image()
+
+        # Disable slider in sum mode
+        self.view.slider.set_active(mode == ImageMode.STACK)
+
     def get_image(self, index):
-        if self.axis == 0:
-            return self.images.get_sample()[index, :, :]
-        elif self.axis == 1:
-            return self.images.get_sample()[:, index, :]
-        elif self.axis == 2:
-            return self.images.get_sample()[:, :, index]
+        if self.mode == ImageMode.STACK:
+            if self.axis == 0:
+                return self.images.get_sample()[index, :, :]
+            elif self.axis == 1:
+                return self.images.get_sample()[:, index, :]
+            elif self.axis == 2:
+                return self.images.get_sample()[:, :, index]
+
+        elif self.mode == ImageMode.SUM:
+            return self.summed_image
+
+        raise ValueError('Unknown image mode')
 
     def get_image_fullpath(self, index):
         filenames = self.images.get_filenames()
@@ -109,8 +159,9 @@ class StackVisualiserPresenter(object):
         Scrolls through the stack by a given number of images.
         :param offset: Number of images to scroll through stack
         """
-        idx = self.view.current_index() + offset
-        self.view.set_index(idx)
+        if self.mode == ImageMode.STACK:
+            idx = self.view.current_index() + offset
+            self.view.set_index(idx)
 
     def handle_algorithm_dialog_request(self, parameter):
         # Developer note: Parameters need to be checked for both here and in algorithm_dialog.py

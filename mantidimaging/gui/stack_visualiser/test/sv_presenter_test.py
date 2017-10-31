@@ -3,6 +3,8 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
+from matplotlib.widgets import Slider
+
 import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.core.utility.special_imports import import_mock
@@ -11,6 +13,7 @@ from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
 from mantidimaging.gui.stack_visualiser.sv_available_parameters import Parameters
 from mantidimaging.gui.stack_visualiser.sv_presenter import StackVisualiserPresenter
 from mantidimaging.gui.stack_visualiser.sv_presenter import Notification as PresenterNotifications
+from mantidimaging.gui.stack_visualiser.sv_presenter import ImageMode
 # if we do not want to import the actual View and pull in Qt, we have to create an abstract view
 from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
@@ -31,6 +34,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
+        self.view.slider = mock.create_autospec(Slider)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data, data_traversal_axis=0)
 
     def apply_before_mock(self, data):
@@ -191,6 +195,45 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.view.current_index = mock.MagicMock(return_value=3)
         self.presenter.notify(PresenterNotifications.SCROLL_DOWN)
         self.view.set_index.assert_called_once_with(2)
+
+    def test_summed_image_creation(self):
+        test_data = self.test_data.get_sample()
+
+        # No summed image by default
+        self.assertEquals(self.presenter.image_mode, ImageMode.STACK)
+        self.assertIsNone(self.presenter.summed_image)
+
+        # Stack mode gets image from stack
+        img = self.presenter.get_image(0)
+        npt.assert_equal(test_data[0], img)
+
+        # Summed image is created when first switching to summed mode
+        self.presenter.image_mode = ImageMode.SUM
+        self.assertEquals(self.presenter.image_mode, ImageMode.SUM)
+        self.assertIsNotNone(self.presenter.summed_image)
+
+        # Summed mode gets summed image
+        img = self.presenter.get_image(0)
+        npt.assert_equal(self.presenter.summed_image, img)
+
+        # Summed image is not deleted when switching back to stack mode
+        self.presenter.image_mode = ImageMode.STACK
+        self.assertEquals(self.presenter.image_mode, ImageMode.STACK)
+        self.assertIsNotNone(self.presenter.summed_image)
+
+        # Stack mode gets image from stack
+        img = self.presenter.get_image(0)
+        npt.assert_equal(test_data[0], img)
+
+    def test_summed_mode_disables_stack_scrolling(self):
+        # Enable summed mode
+        self.presenter.image_mode = ImageMode.SUM
+        self.assertEquals(self.presenter.image_mode, ImageMode.SUM)
+
+        # Ensure scroll stack events are not processed
+        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.notify(PresenterNotifications.SCROLL_UP)
+        self.view.set_index.assert_not_called()
 
 
 if __name__ == '__main__':
