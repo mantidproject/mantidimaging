@@ -112,6 +112,9 @@ class StackVisualiserPresenter(object):
         # Update image view
         self.view.show_current_image()
 
+        # Disable slider in sum mode
+        self.view.slider.set_active(mode == ImageMode.STACK)
+
     def get_image(self, index):
         if self.mode == ImageMode.STACK:
             if self.axis == 0:
@@ -156,8 +159,9 @@ class StackVisualiserPresenter(object):
         Scrolls through the stack by a given number of images.
         :param offset: Number of images to scroll through stack
         """
-        idx = self.view.current_index() + offset
-        self.view.set_index(idx)
+        if self.mode == ImageMode.STACK:
+            idx = self.view.current_index() + offset
+            self.view.set_index(idx)
 
     def handle_algorithm_dialog_request(self, parameter):
         # Developer note: Parameters need to be checked for both here and in algorithm_dialog.py

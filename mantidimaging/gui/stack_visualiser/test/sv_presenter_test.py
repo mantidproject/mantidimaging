@@ -3,6 +3,8 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
+from matplotlib.widgets import Slider
+
 import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.core.utility.special_imports import import_mock
@@ -32,6 +34,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
+        self.view.slider = mock.create_autospec(Slider)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data, data_traversal_axis=0)
 
     def apply_before_mock(self, data):
@@ -221,6 +224,16 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         # Stack mode gets image from stack
         img = self.presenter.get_image(0)
         npt.assert_equal(test_data[0], img)
+
+    def test_summed_mode_disables_stack_scrolling(self):
+        # Enable summed mode
+        self.presenter.image_mode = ImageMode.SUM
+        self.assertEquals(self.presenter.image_mode, ImageMode.SUM)
+
+        # Ensure scroll stack events are not processed
+        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.notify(PresenterNotifications.SCROLL_UP)
+        self.view.set_index.assert_not_called()
 
 
 if __name__ == '__main__':
