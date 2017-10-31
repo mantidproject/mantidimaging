@@ -80,13 +80,17 @@ class FiltersWindowModel(object):
         return self.filters[filter_idx][1]
 
     def get_stack(self):
+        """
+        Gets the presenter for the selected stack.
+        """
         if not self.stack_uuids:
             return None
 
         stack_uuid = None if self.stack_idx > len(self.stack_uuids) else \
             self.stack_uuids[self.stack_idx]
 
-        return self.main_window.get_stack_visualiser(stack_uuid)
+        stack = self.main_window.get_stack_visualiser(stack_uuid)
+        return stack.presenter if stack is not None else None
 
     def do_apply_filter(self):
         """
@@ -98,7 +102,6 @@ class FiltersWindowModel(object):
         stack = self.get_stack()
         if not stack:
             raise ValueError('No stack selected')
-        stack = stack.presenter
 
         # Get auto parameters
         # TODO
@@ -106,6 +109,8 @@ class FiltersWindowModel(object):
         parameters = ensure_tuple(parameters)
 
         # Generate the execute partial from filter registration
+        do_before_func = self.do_before() if self.do_before else lambda _: ()
+        do_after_func = self.do_after() if self.do_after else lambda *_: None
         execute_func = self.execute()
 
         # Log execute function parameters
@@ -114,8 +119,7 @@ class FiltersWindowModel(object):
             log.info("Filter kwargs: {}".format(execute_func.keywords))
 
         # Do preprocessing and save result
-        preproc_res = self.do_before(stack.images.get_sample()) if \
-            self.do_before else ()
+        preproc_res = do_before_func(stack.images.get_sample())
         preproc_res = ensure_tuple(preproc_res)
 
         # Run filter
@@ -132,9 +136,8 @@ class FiltersWindowModel(object):
         else:
             log.debug('Unknown execute return value: {}'.format(type(ret_val)))
 
-        # Do postprocessign using return value of preprocessing as parameter
-        if self.do_after:
-            self.do_after(stack.images.get_sample(), *preproc_res)
+        # Do postprocessing using return value of preprocessing as parameter
+        do_after_func(stack.images.get_sample(), *preproc_res)
 
         # Refresh the image in the stack visualiser
         stack.notify(SVNotification.REFRESH_IMAGE)

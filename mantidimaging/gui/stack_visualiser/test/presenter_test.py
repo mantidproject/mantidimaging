@@ -16,9 +16,6 @@ from mantidimaging.gui.stack_visualiser import \
 
 mock = import_mock()
 
-TEST_APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
-TEST_MOCK_VIEW_ROI = (1, 2, 3, 4)
-
 
 class StackVisualiserPresenterTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -33,26 +30,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(StackVisualiserView)
         self.view.slider = mock.create_autospec(Slider)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data, data_traversal_axis=0)
-
-    def apply_before_mock(self, data):
-        # the data here will be a ndarray, because we extract it inside the presenter
-        self.assertTrue(isinstance(data, np.ndarray))
-        self.apply_before_mock_variable = TEST_APPLY_BEFORE_AFTER_MAGIC_NUMBER
-        return self.apply_before_mock_variable
-
-    def apply_after_mock(self, data, result_from_before):
-        # the data here will be a ndarray, because we extract it inside the presenter
-        self.assertTrue(isinstance(data, np.ndarray))
-        self.assertEqual(result_from_before, TEST_APPLY_BEFORE_AFTER_MAGIC_NUMBER)
-
-    def multiply_execute_mock(self, data):
-        self.assertTrue(isinstance(data, np.ndarray))
-        data *= 4
-
-    def multiply_execute_mock_with_ROI_parameter(self, data, expected_ROI):
-        self.assertTrue(isinstance(data, np.ndarray))
-        self.assertTrue(expected_ROI is not None)
-        data *= 4
 
     def test_getattr_and_clear(self):
         # empty class that inherits from object so that we can append

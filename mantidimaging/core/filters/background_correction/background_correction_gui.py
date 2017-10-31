@@ -40,6 +40,12 @@ def _gui_register(form):
 
         return par
 
-    return (value_scaling.create_factors,
+    def custom_do_before():
+        return partial(value_scaling.create_factors)
+
+    def custom_do_after():
+        return partial(value_scaling.apply_factor)
+
+    return (custom_do_before,
             custom_execute,
-            value_scaling.apply_factor)
+            custom_do_after)
