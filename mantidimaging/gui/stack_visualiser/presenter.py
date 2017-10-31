@@ -5,6 +5,7 @@ import os
 import numpy as np
 
 from enum import IntEnum
+from logging import getLogger
 
 
 class Notification(IntEnum):
@@ -59,7 +60,7 @@ class StackVisualiserPresenter(object):
                 self.view.show_current_image()
         except Exception as e:
             self.show_error(e)
-            raise  # re-raise for full stack trace
+            getLogger(__name__).exception("Notification handler failed")
 
     def show_error(self, error):
         self.view.show_error_dialog(error)

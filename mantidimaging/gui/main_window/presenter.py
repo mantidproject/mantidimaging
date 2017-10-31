@@ -29,7 +29,7 @@ class MainWindowPresenter(object):
 
         except Exception as e:
             self.show_error(e)
-            raise  # re-raise for full stack trace
+            getLogger(__name__).exception("Notification handler failed")
 
     def show_error(self, error):
         self.view.show_error_dialog(error)
