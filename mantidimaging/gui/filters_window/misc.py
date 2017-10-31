@@ -71,6 +71,8 @@ def add_property_to_form(label,
         assign_tooltip([right_widget])
         if valid_values:
             right_widget.addItems(valid_values)
+    elif dtype == 'label':
+        pass
     else:
         raise ValueError("Unknown data type")
 

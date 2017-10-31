@@ -2,30 +2,22 @@ from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
+from mantidimaging.gui.stack_visualiser import Parameters
+
 from . import crop_coords
 
 
 def _gui_register(form):
     from mantidimaging.gui.filters_window import add_property_to_form
 
-    valid_range = (0, 99999)
-
-    _, left = add_property_to_form(
-            'Left', 'int', valid_values=valid_range, form=form)
-
-    _, top = add_property_to_form(
-            'Top', 'int', valid_values=valid_range, form=form)
-
-    _, right = add_property_to_form(
-            'Right', 'int', valid_values=valid_range, form=form)
-
-    _, bottom = add_property_to_form(
-            'Bottom', 'int', valid_values=valid_range, form=form)
+    add_property_to_form(
+            'Select ROI on stack visualiser.', 'label', form=form)
 
     def custom_execute():
-        # Get ROI from input fields
-        roi = [left.value(), top.value(), right.value(), bottom.value()]
+        return partial(crop_coords._execute)
 
-        return partial(crop_coords._execute, region_of_interest=roi)
+    params = {
+        'region_of_interest': Parameters.ROI
+    }
 
-    return (None, None, custom_execute, None)
+    return (params, None, custom_execute, None)
