@@ -86,16 +86,17 @@ class MWLoadDialog(Qt.QDialog):
         :param number_of_images: Number of images that will be loaded in from
                                  the current selection
         """
-        # cap the end value FIRST, otherwise setValue might fail if the
+        # Cap the end value FIRST, otherwise setValue might fail if the
         # previous max val is smaller
         self.index_end.setMaximum(number_of_images)
         self.index_end.setValue(number_of_images)
 
-        # cap the start value to be end - 1
-        self.index_start.setMaximum(number_of_images - 1)
+        # Cap the start value to be end - 1 (ensure no negative value can be
+        # set in case of loading failure)
+        self.index_start.setMaximum(max(number_of_images - 1, 0))
 
-        # enforce the maximum step
-        self.index_step.setMaximum(number_of_images)
+        # Enforce the maximum step (ensure a minimum of 1)
+        self.index_step.setMaximum(max(number_of_images, 1))
         self.index_step.setValue(number_of_images / 10)
 
     def update_expected(self):
