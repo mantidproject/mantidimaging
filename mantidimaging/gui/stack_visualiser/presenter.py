@@ -4,10 +4,7 @@ import os
 
 import numpy as np
 
-from logging import getLogger
 from enum import IntEnum
-
-from .available_parameters import (Parameters, PARAMETERS_ERROR_MESSAGE)
 
 
 class Notification(IntEnum):
@@ -20,6 +17,10 @@ class Notification(IntEnum):
     STACK_MODE = 6
     SUM_MODE = 7
     REFRESH_IMAGE = 8
+
+
+class Parameters(IntEnum):
+    ROI = 0
 
 
 class ImageMode(IntEnum):
@@ -137,12 +138,14 @@ class StackVisualiserPresenter(object):
 
     def get_image_filename(self, index):
         filenames = self.images.get_filenames()
-        return os.path.basename(filenames[index] if filenames is not None else "")
+        return os.path.basename(
+                filenames[index] if filenames is not None else "")
 
     def get_image_count_on_axis(self, axis=None):
         """
         Returns the number of images on a given axis.
-        :param axis: Axis on which to count images (defaults to data traversal axis)
+        :param axis: Axis on which to count images (defaults to data traversal
+                     axis)
         """
         if axis is None:
             axis = self.axis
@@ -164,6 +167,18 @@ class StackVisualiserPresenter(object):
         if self.mode == ImageMode.STACK:
             idx = self.view.current_index() + offset
             self.view.set_index(idx)
+
+    def get_parameter_value(self, parameter):
+        """
+        Gets a parameter from the stack visualiser for use elsewhere (e.g.
+        filters).
+        """
+        if parameter == Parameters.ROI:
+            return self.view.current_roi
+        else:
+            raise ValueError(
+                    "Invalid parameter name has been requested from the Stack "
+                    "Visualiser, parameter: {0}".format(parameter))
 
     def getattr_and_clear(self, algorithm_dialog, attribute):
         attr = getattr(algorithm_dialog, attribute, None)

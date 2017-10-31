@@ -36,4 +36,4 @@ def _gui_register(form):
             air_region = (roi_left, roi_top, roi_right, roi_bottom)
             partial(execute, air_region=air_region)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

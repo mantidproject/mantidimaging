@@ -58,8 +58,8 @@ class FiltersWindowPresenter(object):
 
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        self.model.do_before, self.model.execute, self.model.do_after = \
-            register_func(self.view.filterPropertiesLayout)
+        self.model.setup_filter(
+                register_func(self.view.filterPropertiesLayout))
 
     def do_apply_filter(self):
         self.model.stack_idx = self.view.stackSelector.currentIndex()

@@ -41,4 +41,4 @@ def _gui_register(form):
                        theta_min=theta,
                        rwidth=rwidth)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

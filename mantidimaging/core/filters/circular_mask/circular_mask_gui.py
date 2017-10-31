@@ -19,4 +19,4 @@ def _gui_register(form):
                        circular_mask_ratio=radius_field.value(),
                        circular_mask_value=value_field.value())
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

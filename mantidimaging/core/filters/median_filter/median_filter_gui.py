@@ -17,4 +17,4 @@ def _gui_register(form):
                        size=size_field.value(),
                        mode=mode_field.currentText())
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

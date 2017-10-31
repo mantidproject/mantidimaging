@@ -70,4 +70,4 @@ def _gui_register(form):
 
         return partial(execute, wf=wf, ti=ti, sf=sf)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

@@ -13,4 +13,4 @@ def _gui_register(form):
         num_rotations = rotation_count.value()
         return partial(execute, rotation=num_rotations)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

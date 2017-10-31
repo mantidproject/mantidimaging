@@ -18,6 +18,11 @@ def ensure_tuple(val):
     return val if isinstance(val, tuple) else (val,)
 
 
+def get_auto_params_from_stack(stack, params):
+    return {k: stack.get_parameter_value(v) for (k, v) in params.items()} \
+        if params else {}
+
+
 class FiltersWindowModel(object):
 
     def __init__(self, main_window):
@@ -92,6 +97,13 @@ class FiltersWindowModel(object):
         stack = self.main_window.get_stack_visualiser(stack_uuid)
         return stack.presenter if stack is not None else None
 
+    def setup_filter(self, filter_specifics):
+        """
+        Sets filter properties from result of registration function.
+        """
+        self.auto_props, self.do_before, self.execute, self.do_after = \
+            filter_specifics
+
     def do_apply_filter(self):
         """
         Applys the selected filter to the selected stack.
@@ -104,9 +116,7 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        # TODO
-        parameters = ()
-        parameters = ensure_tuple(parameters)
+        exec_kwargs = get_auto_params_from_stack(stack, self.auto_props)
 
         # Generate the execute partial from filter registration
         do_before_func = self.do_before() if self.do_before else lambda _: ()
@@ -123,7 +133,7 @@ class FiltersWindowModel(object):
         preproc_res = ensure_tuple(preproc_res)
 
         # Run filter
-        ret_val = execute_func(stack.images.get_sample(), *parameters)
+        ret_val = execute_func(stack.images.get_sample(), **exec_kwargs)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):

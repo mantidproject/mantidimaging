@@ -60,4 +60,4 @@ def _gui_register(form):
                        mode=mode_field.currentText(),
                        rebin_param=params)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

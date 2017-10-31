@@ -46,6 +46,7 @@ def _gui_register(form):
     def custom_do_after():
         return partial(value_scaling.apply_factor)
 
-    return (custom_do_before,
+    return (None,
+            custom_do_before,
             custom_execute,
             custom_do_after)

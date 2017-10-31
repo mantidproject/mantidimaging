@@ -21,4 +21,4 @@ def _gui_register(form):
                        mode=mode_field.currentText(),
                        order=order_field.value())
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

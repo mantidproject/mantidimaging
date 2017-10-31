@@ -28,4 +28,4 @@ def _gui_register(form):
 
         return partial(crop_coords._execute, region_of_interest=roi)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

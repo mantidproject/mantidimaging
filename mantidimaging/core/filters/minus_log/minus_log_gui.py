@@ -9,4 +9,4 @@ def _gui_register(form):
     def custom_execute():
         return partial(execute, minus_log=True)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)

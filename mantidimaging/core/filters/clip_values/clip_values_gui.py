@@ -57,4 +57,4 @@ def _gui_register(form):
                        clip_min_new_value=clip_min_new_value,
                        clip_max_new_value=clip_max_new_value)
 
-    return (None, custom_execute, None)
+    return (None, None, custom_execute, None)
