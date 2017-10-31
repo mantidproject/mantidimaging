@@ -10,14 +10,10 @@ import mantidimaging.core.testing.unit_test_helper as th
 from mantidimaging.core.utility.special_imports import import_mock
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-from mantidimaging.gui.stack_visualiser.sv_available_parameters import (
-        Parameters)
-from mantidimaging.gui.stack_visualiser.sv_presenter import (
-        StackVisualiserPresenter)
-from mantidimaging.gui.stack_visualiser.sv_presenter import \
+from mantidimaging.gui.stack_visualiser import (
+        StackVisualiserPresenter, StackVisualiserView, ImageMode, Parameters)
+from mantidimaging.gui.stack_visualiser import \
         Notification as PresenterNotifications
-from mantidimaging.gui.stack_visualiser.sv_presenter import ImageMode
-from mantidimaging.gui.stack_visualiser.sv_view import StackVisualiserView
 
 mock = import_mock()
 

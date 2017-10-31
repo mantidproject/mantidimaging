@@ -8,7 +8,7 @@ from logging import getLogger
 from enum import IntEnum
 
 from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
-from mantidimaging.gui.stack_visualiser.sv_available_parameters import Parameters, PARAMETERS_ERROR_MESSAGE
+from .available_parameters import (Parameters, PARAMETERS_ERROR_MESSAGE)
 
 
 class Notification(IntEnum):
@@ -67,14 +67,14 @@ class StackVisualiserPresenter(object):
     def do_histogram(self):
         """
         Executed when the shortcut is pressed by the user.
-        For the current shortcut please check setup_shortcuts in sv_view.
+        For the current shortcut please check setup_shortcuts in view.
         """
         self.view.show_histogram_of_current_image(new_window=False)
 
     def do_new_window_histogram(self):
         """
         Executed when the shortcut is pressed by the user.
-        For the current shortcut please check setup_shortcuts in sv_view.
+        For the current shortcut please check setup_shortcuts in view.
         """
         self.view.show_histogram_of_current_image(new_window=True)
 

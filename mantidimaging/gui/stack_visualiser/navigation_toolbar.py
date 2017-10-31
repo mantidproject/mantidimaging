@@ -2,8 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
-from mantidimaging.gui.stack_visualiser.sv_presenter import Notification \
-        as StackVisualiserNotification
+from .presenter import Notification
 
 
 class StackNavigationToolbar(NavigationToolbar2QT):
@@ -28,10 +27,8 @@ class StackNavigationToolbar(NavigationToolbar2QT):
 
     def scroll_stack_back(self):
         if self.stack_visualiser:
-            self.stack_visualiser.presenter.notify(
-                    StackVisualiserNotification.SCROLL_DOWN)
+            self.stack_visualiser.presenter.notify(Notification.SCROLL_DOWN)
 
     def scroll_stack_forward(self):
         if self.stack_visualiser:
-            self.stack_visualiser.presenter.notify(
-                    StackVisualiserNotification.SCROLL_UP)
+            self.stack_visualiser.presenter.notify(Notification.SCROLL_UP)

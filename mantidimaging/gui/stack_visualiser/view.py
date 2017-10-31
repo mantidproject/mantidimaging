@@ -11,12 +11,11 @@ from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from mantidimaging.core.utility import gui_compile_ui
-from mantidimaging.gui.stack_navigation_toolbar import StackNavigationToolbar
-from mantidimaging.gui.stack_visualiser import sv_histogram
-from mantidimaging.gui.stack_visualiser.sv_presenter import \
-        Notification as StackWindowNotification
-from mantidimaging.gui.stack_visualiser.sv_presenter import (
-        StackVisualiserPresenter)
+
+from . import histogram
+from .navigation_toolbar import StackNavigationToolbar
+from .presenter import StackVisualiserPresenter
+from .presenter import Notification as StackWindowNotification
 
 
 class StackVisualiserView(Qt.QMainWindow):
@@ -363,7 +362,7 @@ class StackVisualiserView(Qt.QMainWindow):
                            window, or append to the last focused plotting
                            window
         """
-        # This can work with sv_histogram.show_transparent or sv_histogram.show
+        # This can work with histogram.show_transparent or histogram.show
         current_index = self.current_index()
         current_filename = self.presenter.get_image_filename(current_index)
         title = self.dock.windowTitle()
@@ -373,8 +372,8 @@ class StackVisualiserView(Qt.QMainWindow):
         # histogram in the same window, or a new window.
         # The last window that was focused will be considered the 'active'
         # window.
-        histogram_function = sv_histogram.show_transparent if not new_window \
-            else sv_histogram.show_floating_transparent
+        histogram_function = histogram.show_transparent if not new_window \
+            else histogram.show_floating_transparent
 
         if self.current_roi:
             histogram_function(
