@@ -5,7 +5,7 @@ import unittest
 from mantidimaging.core.io import loader
 
 
-class UtilityTest(unittest.TestCase):
+class LoaderTest(unittest.TestCase):
 
     def test_raise_on_invalid_format(self):
         self.assertRaises(ValueError, loader.load, "/some/path",

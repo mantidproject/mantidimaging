@@ -5,11 +5,17 @@ from mantidimaging import helper as h
 
 
 class Images(object):
-    def __init__(self, sample, flat=None, dark=None, filenames=None):
+    def __init__(self, sample=None, flat=None, dark=None, filenames=None):
         self.sample = sample
         self.flat = flat
         self.dark = dark
         self.filenames = filenames
+
+    def __str__(self):
+        return 'Image Stack: sample={}, flat={}, dark={}'.format(
+                self.sample.shape if self.sample is not None else None,
+                self.flat.shape if self.flat is not None else None,
+                self.dark.shape if self.dark is not None else None)
 
     def get_sample(self):
         return self.sample
