@@ -5,7 +5,7 @@ import matplotlib
 from logging import getLogger
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
-from mantidimaging.core.utility import gui_compile_ui
+from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.stack_visualiser import StackVisualiserView
 
 from .load_dialog import MWLoadDialog
@@ -20,7 +20,7 @@ class MainWindowView(Qt.QMainWindow):
 
     def __init__(self, config):
         super(MainWindowView, self).__init__()
-        gui_compile_ui.execute('gui/ui/main_window.ui', self)
+        compile_ui('gui/ui/main_window.ui', self)
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("MantidImaging")

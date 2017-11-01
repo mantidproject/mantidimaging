@@ -2,8 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from PyQt5 import Qt
 
-from mantidimaging.core.utility import gui_compile_ui
-from mantidimaging.core.utility.qt_block_signals import BlockQtSignals
+from mantidimaging.gui.utility import (BlockQtSignals, compile_ui)
 
 from .presenter import Notification
 
@@ -26,7 +25,7 @@ class ROISelectorWidget(Qt.QWidget):
 
     def __init__(self, parent, stack_view):
         super(ROISelectorWidget, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/roi_selector_widget.ui', self)
+        compile_ui('gui/ui/roi_selector_widget.ui', self)
 
         self.stack_view = stack_view
 

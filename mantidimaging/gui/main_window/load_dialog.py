@@ -7,7 +7,8 @@ from PyQt5 import Qt
 
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension
-from mantidimaging.core.utility import gui_compile_ui, size_calculator
+from mantidimaging.core.utility import size_calculator
+from mantidimaging.gui.utility import compile_ui
 
 
 def select_file(field, caption):
@@ -33,7 +34,7 @@ def select_file(field, caption):
 class MWLoadDialog(Qt.QDialog):
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/load_dialog.ui', self)
+        compile_ui('gui/ui/load_dialog.ui', self)
 
         self.parent_view = parent
 

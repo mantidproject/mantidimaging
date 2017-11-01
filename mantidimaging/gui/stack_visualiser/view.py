@@ -10,7 +10,7 @@ from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from mantidimaging.core.utility import gui_compile_ui
+from mantidimaging.gui.utility import compile_ui
 
 from . import histogram
 from .navigation_toolbar import StackNavigationToolbar
@@ -33,7 +33,7 @@ class StackVisualiserView(Qt.QMainWindow):
         # dock is set as a parent the window will be an independent floating
         # window
         super(StackVisualiserView, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/stack.ui', self)
+        compile_ui('gui/ui/stack.ui', self)
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title

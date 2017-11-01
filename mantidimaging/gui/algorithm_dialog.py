@@ -4,7 +4,7 @@ from logging import getLogger
 
 from PyQt5 import Qt
 
-from mantidimaging.core.utility import gui_compile_ui
+from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.main_window.load_dialog import select_file
 from mantidimaging.gui.stack_visualiser import (
         Parameters, PARAMETERS_ERROR_MESSAGE)
@@ -30,7 +30,7 @@ class AlgorithmDialog(Qt.QDialog):
         """
         super(AlgorithmDialog, self).__init__()
 
-        gui_compile_ui.execute(ui_file, self)
+        compile_ui(ui_file, self)
 
         self.main_window = main_window
         self.accepted.connect(self.accepted_action)
