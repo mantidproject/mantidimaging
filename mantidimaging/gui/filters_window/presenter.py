@@ -3,10 +3,14 @@ from __future__ import absolute_import, division, print_function
 from enum import Enum
 from logging import getLogger
 
+import numpy as np
+
+from mantidimaging.core.io.loader import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
 
+from .misc import get_auto_params_from_stack
 from .model import FiltersWindowModel
 
 
@@ -86,6 +90,8 @@ class FiltersWindowPresenter(object):
         self.model.do_apply_filter()
 
     def do_update_previews(self):
+        log = getLogger(__name__)
+
         progress = Progress.ensure_instance()
         progress.task_name = 'Filter preview'
         progress.add_estimated_steps(9)
@@ -104,14 +110,23 @@ class FiltersWindowPresenter(object):
 
             # Generate sub-stack and run filter
             progress.update(msg='Running preview filter')
-            # TODO
-            filtered_image_data = stack.get_image(0)
+            exec_kwargs = get_auto_params_from_stack(
+                    stack, self.model.auto_props)
+
+            filtered_image_data = None
+            try:
+                sub_images = Images(np.asarray([stack.get_image(0)]))
+                self.model.apply_filter(sub_images, exec_kwargs)
+                filtered_image_data = sub_images.get_sample()[0]
+            except Exception:
+                log.exception("Error applying filter for preview")
 
             # Update image after
-            self._update_preview_image(filtered_image_data,
-                                       self.view.preview_image_after,
-                                       self.view.preview_histogram_after,
-                                       progress)
+            if filtered_image_data is not None:
+                self._update_preview_image(filtered_image_data,
+                                           self.view.preview_image_after,
+                                           self.view.preview_histogram_after,
+                                           progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')

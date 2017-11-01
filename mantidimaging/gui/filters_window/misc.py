@@ -81,3 +81,8 @@ def add_property_to_form(label,
         form.addRow(left_widget, right_widget)
 
     return (left_widget, right_widget)
+
+
+def get_auto_params_from_stack(stack, params):
+    return {k: stack.get_parameter_value(v) for (k, v) in params.items()} \
+        if params else {}
