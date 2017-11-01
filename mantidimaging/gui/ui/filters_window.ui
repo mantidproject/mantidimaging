@@ -84,10 +84,10 @@
           <item>
            <widget class="QPushButton" name="updatePreviewButton">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
-             <string>Update</string>
+             <string>Update Now</string>
             </property>
            </widget>
           </item>
@@ -157,22 +157,6 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>previewAutoUpdate</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>updatePreviewButton</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>450</x>
-     <y>118</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>539</x>
-     <y>118</y>
     </hint>
    </hints>
   </connection>
