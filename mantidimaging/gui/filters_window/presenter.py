@@ -3,6 +3,10 @@ from __future__ import absolute_import, division, print_function
 from enum import Enum
 from logging import getLogger
 
+from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.histogram import (
+        generate_histogram_from_image)
+
 from .model import FiltersWindowModel
 
 
@@ -10,6 +14,7 @@ class Notification(Enum):
     UPDATE_STACK_LIST = 1
     REGISTER_ACTIVE_FILTER = 2
     APPLY_FILTER = 3
+    UPDATE_PREVIEWS = 4
 
 
 class FiltersWindowPresenter(object):
@@ -34,6 +39,8 @@ class FiltersWindowPresenter(object):
                 self.do_register_active_filter()
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
+            elif signal == Notification.UPDATE_PREVIEWS:
+                self.do_update_previews()
 
         except Exception as e:
             self.show_error(e)
@@ -41,6 +48,12 @@ class FiltersWindowPresenter(object):
 
     def show_error(self, error):
         self.view.show_error_dialog(error)
+
+    def set_stack_index(self, stack_idx):
+        """
+        Sets the currently selected stack index.
+        """
+        self.model.stack_idx = stack_idx
 
     def do_update_stack_list(self):
         """
@@ -70,5 +83,55 @@ class FiltersWindowPresenter(object):
                 register_func(self.view.filterPropertiesLayout))
 
     def do_apply_filter(self):
-        self.model.stack_idx = self.view.stackSelector.currentIndex()
         self.model.do_apply_filter()
+
+    def do_update_previews(self):
+        progress = Progress.ensure_instance()
+        progress.task_name = 'Filter preview'
+        progress.add_estimated_steps(9)
+
+        with progress:
+            progress.update(msg='Getting stack')
+            stack = self.model.get_stack()
+            if stack is None:
+                return
+
+            # Update image before
+            self._update_preview_image(stack.get_image(0),
+                                       self.view.preview_image_before,
+                                       self.view.preview_histogram_before,
+                                       progress)
+
+            # Generate sub-stack and run filter
+            progress.update(msg='Running preview filter')
+            # TODO
+            filtered_image_data = stack.get_image(0)
+
+            # Update image after
+            self._update_preview_image(filtered_image_data,
+                                       self.view.preview_image_after,
+                                       self.view.preview_histogram_after,
+                                       progress)
+
+            # Redraw
+            progress.update(msg='Redraw canvas')
+            self.view.canvas.draw()
+
+    def _update_preview_image(self, image_data, image, histogram, progress):
+        # Generate histogram data
+        progress.update(msg='Generating histogram')
+        center, hist, _ = generate_histogram_from_image(image_data)
+
+        # Update image
+        progress.update(msg='Updating image')
+        # TODO: ideally this should update the data without replotting but a
+        # valid image must exist to start with (which may not always happen)
+        # and this only works as long as the extents do not change.
+        image.cla()
+        image.imshow(image_data)
+
+        # Update histogram
+        progress.update(msg='Updating histogram')
+        histogram.lines[0].set_data(center, hist)
+        histogram.relim()
+        histogram.autoscale()

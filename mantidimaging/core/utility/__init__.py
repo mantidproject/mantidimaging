@@ -6,6 +6,7 @@ from . import (  # noqa: F401
         cor_interpolate,
         execution_splitter,
         finder,
+        histogram,
         memory_usage,
         projection_angles,
         shape_splitter,

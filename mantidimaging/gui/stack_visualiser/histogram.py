@@ -3,8 +3,6 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 from matplotlib import pyplot
 
-# from .mslice_plotting import pyplot
-
 HISTOGRAM_BIN_SIZE = 2048
 
 

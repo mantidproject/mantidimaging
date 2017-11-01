@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+import numpy as np
+
 from PyQt5 import Qt, QtWidgets
 
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
@@ -34,6 +36,8 @@ def _delete_all_widgets_from_layout(lo):
 
 class FiltersWindowView(Qt.QDialog):
 
+    auto_update_triggered = Qt.pyqtSignal()
+
     def __init__(self, main_window):
         super(FiltersWindowView, self).__init__()
         compile_ui('gui/ui/filters_window.ui', self)
@@ -45,6 +49,12 @@ class FiltersWindowView(Qt.QDialog):
         self.filterSelector.currentIndexChanged[int].connect(
                 self.handle_filter_selection)
         self.handle_filter_selection(0)
+
+        # Handle stack selection
+        self.stackSelector.currentIndexChanged[int].connect(
+                self.presenter.set_stack_index)
+        self.stackSelector.currentIndexChanged[int].connect(
+                self.auto_update_triggered.emit)
 
         # Handle button clicks
         self.buttonBox.clicked.connect(self.handle_button)
@@ -81,11 +91,18 @@ class FiltersWindowView(Qt.QDialog):
 
         self.preview_histogram_before = add_plot(
                 222, 'Histogram Before')
+        self.preview_histogram_before.plot([], [])
 
         self.preview_histogram_after = add_plot(
                 224, 'Histogram After',
                 sharex=self.preview_histogram_before,
                 sharey=self.preview_histogram_before)
+        self.preview_histogram_after.plot([], [])
+
+        # Preview update triggers
+        self.auto_update_triggered.connect(self.on_auto_update_triggered)
+        self.updatePreviewButton.clicked.connect(
+            lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
     def show_error_dialog(self, msg=""):
         """
@@ -119,9 +136,10 @@ class FiltersWindowView(Qt.QDialog):
         # Do registration of new filter
         self.presenter.notify(PresNotification.REGISTER_ACTIVE_FILTER)
 
-    @property
-    def selected_stack_idx(self):
+    def on_auto_update_triggered(self):
         """
-        Gets the currently selected index on the stack selector.
+        Called when the signal indicating the filter, filter properties or data
+        has changed such that the previews are now out of date.
         """
-        return self.stackSelector.currentIndex()
+        if self.previewAutoUpdate.isChecked():
+            self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
