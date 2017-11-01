@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
-
 from PyQt5 import Qt, QtWidgets
 
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
@@ -38,7 +36,7 @@ class FiltersWindowView(Qt.QDialog):
 
     auto_update_triggered = Qt.pyqtSignal()
 
-    def __init__(self, main_window):
+    def __init__(self, main_window, cmap='Greys_r'):
         super(FiltersWindowView, self).__init__()
         compile_ui('gui/ui/filters_window.ui', self)
 
@@ -66,6 +64,8 @@ class FiltersWindowView(Qt.QDialog):
                     PresNotification.UPDATE_STACK_LIST))
 
         # Preview area
+        self.cmap = cmap
+
         self.figure = Figure(tight_layout=True)
 
         self.canvas = FigureCanvasQTAgg(self.figure)
@@ -115,6 +115,7 @@ class FiltersWindowView(Qt.QDialog):
     def show(self):
         self.presenter.notify(PresNotification.UPDATE_STACK_LIST)
         super(FiltersWindowView, self).show()
+        self.auto_update_triggered.emit()
 
     def handle_button(self, button):
         """
@@ -136,10 +137,14 @@ class FiltersWindowView(Qt.QDialog):
         # Do registration of new filter
         self.presenter.notify(PresNotification.REGISTER_ACTIVE_FILTER)
 
+        # Update preview on filter selection (on the off chance the default
+        # options are valid)
+        self.auto_update_triggered.emit()
+
     def on_auto_update_triggered(self):
         """
         Called when the signal indicating the filter, filter properties or data
         has changed such that the previews are now out of date.
         """
-        if self.previewAutoUpdate.isChecked():
+        if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)

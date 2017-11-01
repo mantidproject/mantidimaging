@@ -143,7 +143,7 @@ class FiltersWindowPresenter(object):
         # valid image must exist to start with (which may not always happen)
         # and this only works as long as the extents do not change.
         image.cla()
-        image.imshow(image_data)
+        image.imshow(image_data, cmap=self.view.cmap)
 
         # Update histogram
         progress.update(msg='Updating histogram')
