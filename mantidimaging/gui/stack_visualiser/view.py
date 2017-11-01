@@ -14,6 +14,7 @@ from mantidimaging.core.utility import gui_compile_ui
 
 from . import histogram
 from .navigation_toolbar import StackNavigationToolbar
+from .roi_selector_widget import ROISelectorWidget
 from .presenter import StackVisualiserPresenter
 from .presenter import Notification as StackWindowNotification
 
@@ -54,6 +55,8 @@ class StackVisualiserView(Qt.QMainWindow):
                 self.canvas, self, coordinates=True)
         self.toolbar.stack_visualiser = self
 
+        self.roi_selector_toolbar = ROISelectorWidget(self.canvas, self)
+
         self.initialise_slider()
         self.initialise_image(cmap)
 
@@ -63,6 +66,7 @@ class StackVisualiserView(Qt.QMainWindow):
         self.roi_bounds_indicators = [None, None, None, None]
 
         self.matplotlib_layout.addWidget(self.toolbar)
+        self.matplotlib_layout.addWidget(self.roi_selector_toolbar)
         self.matplotlib_layout.addWidget(self.canvas)
 
         self.setup_shortcuts()
@@ -224,6 +228,9 @@ class StackVisualiserView(Qt.QMainWindow):
 
         self.current_roi = (left, top, right, bottom)
         getLogger(__name__).info("ROI: %i %i %i %i", *self.current_roi)
+
+        # Update the ROI selector toolbar
+        self.roi_selector_toolbar.roi = self.current_roi
 
         def mid(lower, upper):
             return int(lower + ((upper - lower) / 2))
