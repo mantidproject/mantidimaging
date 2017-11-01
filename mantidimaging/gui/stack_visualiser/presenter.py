@@ -82,7 +82,7 @@ class StackVisualiserPresenter(object):
         """
         Clears the active ROI selection.
         """
-        self.view.deselect_current_roi()
+        self.view.current_roi = None
 
     def delete_data(self):
         del self.images
