@@ -2,12 +2,12 @@ from __future__ import absolute_import, division, print_function
 
 from PyQt5 import Qt, QtWidgets
 
-from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg,
-                                                NavigationToolbar2QT)
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.utility import compile_ui
 
+from .navigation_toolbar import FiltersWindowNavigationToolbar
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
@@ -19,7 +19,7 @@ def _delete_all_widgets_from_layout(lo):
     :param lo: Layout to clean
     """
     # For each item in the layout (removed as iterated)
-    while(lo.count() > 0):
+    while lo.count() > 0:
         item = lo.takeAt(0)
 
         # Recurse for child layouts
@@ -71,8 +71,9 @@ class FiltersWindowView(Qt.QDialog):
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.setParent(self)
 
-        self.toolbar = NavigationToolbar2QT(
-                self.canvas, self, coordinates=True)
+        self.toolbar = FiltersWindowNavigationToolbar(
+                self.canvas, self)
+        self.toolbar.filter_window = self
 
         self.mplLayout.addWidget(self.toolbar)
         self.mplLayout.addWidget(self.canvas)
@@ -98,6 +99,10 @@ class FiltersWindowView(Qt.QDialog):
                 sharex=self.preview_histogram_before,
                 sharey=self.preview_histogram_before)
         self.preview_histogram_after.plot([], [])
+
+        # Handle preview index selection
+        self.previewImageIndex.valueChanged[int].connect(
+                self.presenter.set_preview_image_index)
 
         # Preview update triggers
         self.auto_update_triggered.connect(self.on_auto_update_triggered)

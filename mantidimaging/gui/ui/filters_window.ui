@@ -104,6 +104,16 @@
             </property>
            </spacer>
           </item>
+          <item>
+           <widget class="QLabel" name="previewImageIndexLabel">
+            <property name="text">
+             <string>Image:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="previewImageIndex"/>
+          </item>
          </layout>
         </widget>
        </item>

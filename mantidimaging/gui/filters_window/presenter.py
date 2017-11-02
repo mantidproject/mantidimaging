@@ -9,6 +9,7 @@ from mantidimaging.core.io.loader import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
+from mantidimaging.gui.utility import BlockQtSignals
 
 from .misc import get_auto_params_from_stack
 from .model import FiltersWindowModel
@@ -19,6 +20,8 @@ class Notification(Enum):
     REGISTER_ACTIVE_FILTER = 2
     APPLY_FILTER = 3
     UPDATE_PREVIEWS = 4
+    SCROLL_PREVIEW_UP = 5
+    SCROLL_PREVIEW_DOWN = 6
 
 
 class FiltersWindowPresenter(object):
@@ -45,6 +48,10 @@ class FiltersWindowPresenter(object):
                 self.do_apply_filter()
             elif signal == Notification.UPDATE_PREVIEWS:
                 self.do_update_previews()
+            elif signal == Notification.SCROLL_PREVIEW_UP:
+                self.do_scroll_preview(1)
+            elif signal == Notification.SCROLL_PREVIEW_DOWN:
+                self.do_scroll_preview(-1)
 
         except Exception as e:
             self.show_error(e)
@@ -53,11 +60,33 @@ class FiltersWindowPresenter(object):
     def show_error(self, error):
         self.view.show_error_dialog(error)
 
+    @property
+    def max_preview_image_idx(self):
+        return max(self.model.num_images_in_stack - 1, 0)
+
     def set_stack_index(self, stack_idx):
         """
         Sets the currently selected stack index.
         """
         self.model.stack_idx = stack_idx
+
+        # Update the preview image index
+        self.set_preview_image_index(0)
+        self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+
+    def set_preview_image_index(self, image_idx):
+        """
+        Sets the current preview image index.
+        """
+        self.model.preview_image_idx = image_idx
+
+        # Set preview index spin box to new index
+        preview_idx_spin = self.view.previewImageIndex
+        with BlockQtSignals([preview_idx_spin]):
+            preview_idx_spin.setValue(self.model.preview_image_idx)
+
+        # Trigger preview updating
+        self.view.auto_update_triggered.emit()
 
     def do_update_stack_list(self):
         """
@@ -65,6 +94,8 @@ class FiltersWindowPresenter(object):
 
         Must be called at least once before the UI is shown.
         """
+        # TODO: block stackSelector signals here
+
         # Clear the previous entries from the drop down menu
         self.view.stackSelector.clear()
 
@@ -73,6 +104,8 @@ class FiltersWindowPresenter(object):
         if stack_list:
             self.model.stack_uuids, user_friendly_names = zip(*stack_list)
             self.view.stackSelector.addItems(user_friendly_names)
+
+        print(stack_list)
 
     def do_register_active_filter(self):
         filter_idx = self.view.filterSelector.currentIndex()
@@ -102,8 +135,10 @@ class FiltersWindowPresenter(object):
             if stack is None:
                 return
 
+            before_image_data = stack.get_image(self.model.preview_image_idx)
+
             # Update image before
-            self._update_preview_image(stack.get_image(0),
+            self._update_preview_image(before_image_data,
                                        self.view.preview_image_before,
                                        self.view.preview_histogram_before,
                                        progress)
@@ -115,7 +150,7 @@ class FiltersWindowPresenter(object):
 
             filtered_image_data = None
             try:
-                sub_images = Images(np.asarray([stack.get_image(0)]))
+                sub_images = Images(np.asarray([before_image_data]))
                 self.model.apply_filter(sub_images, exec_kwargs)
                 filtered_image_data = sub_images.get_sample()[0]
             except Exception:
@@ -150,3 +185,8 @@ class FiltersWindowPresenter(object):
         histogram.lines[0].set_data(center, hist)
         histogram.relim()
         histogram.autoscale()
+
+    def do_scroll_preview(self, offset):
+        idx = self.model.preview_image_idx + offset
+        idx = max(min(idx, self.max_preview_image_idx), 0)
+        self.set_preview_image_index(idx)

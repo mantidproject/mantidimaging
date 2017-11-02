@@ -34,6 +34,8 @@ class FiltersWindowModel(object):
         self.register_filters('mantidimaging.core.filters',
                               ['mantidimaging.core.filters.wip'])
 
+        self.preview_image_idx = 0
+
         # Execution info for current filter
         self.stack_idx = 0
         self.do_before = None
@@ -93,6 +95,13 @@ class FiltersWindowModel(object):
 
         stack = self.main_window.get_stack_visualiser(stack_uuid)
         return stack.presenter if stack is not None else None
+
+    @property
+    def num_images_in_stack(self):
+        stack = self.get_stack()
+        num_images = stack.images.get_sample().shape[0] \
+            if stack is not None else 0
+        return num_images
 
     def setup_filter(self, filter_specifics):
         """
