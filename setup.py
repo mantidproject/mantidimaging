@@ -112,18 +112,5 @@ setup(
         'docs_api': GenerateSphinxApidoc,
         'docs': BuildDoc,
         'docs_publish': PublishDocsToGitHubPages
-    },
-    extras_require={
-        'testing': [
-            'nose',
-            'nose-randomly'
-        ],
-    },
-    tests_require=[
-        'nose',
-        'nose-randomly'
-    ],
-    install_requires=[
-        'numpy'
-    ]
+    }
 )
