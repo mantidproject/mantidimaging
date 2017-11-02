@@ -46,7 +46,7 @@ class TaskWorkerThread(Qt.QThread):
                     self.task_function, *self.args, **self.kwargs)
 
         except Exception as e:
-            log.error("Failed to execute task: %s", str(e))
+            log.exception("Failed to execute task")
             self.result = None
             self.error = e
 
@@ -97,6 +97,6 @@ class AsyncTaskDialogModel(Qt.QObject):
         if self.on_complete_function is not None:
             try:
                 self.on_complete_function(self.task)
-            except Exception as e:
-                log.error("Failed to run task completion callback: %s", str(e))
+            except Exception:
+                log.exception("Failed to run task completion callback")
                 raise
