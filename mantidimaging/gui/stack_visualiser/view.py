@@ -10,10 +10,11 @@ from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from mantidimaging.core.utility import gui_compile_ui
+from mantidimaging.gui.utility import compile_ui
 
 from . import histogram
 from .navigation_toolbar import StackNavigationToolbar
+from .roi_selector_widget import ROISelectorWidget
 from .presenter import StackVisualiserPresenter
 from .presenter import Notification as StackWindowNotification
 
@@ -32,7 +33,7 @@ class StackVisualiserView(Qt.QMainWindow):
         # dock is set as a parent the window will be an independent floating
         # window
         super(StackVisualiserView, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/stack.ui', self)
+        compile_ui('gui/ui/stack.ui', self)
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title
@@ -54,15 +55,15 @@ class StackVisualiserView(Qt.QMainWindow):
                 self.canvas, self, coordinates=True)
         self.toolbar.stack_visualiser = self
 
+        self.roi_selector_toolbar = ROISelectorWidget(self.canvas, self)
+
         self.initialise_slider()
         self.initialise_image(cmap)
 
         self.roi_selector = self.create_rectangle_selector(self.image_axis, 1)
 
-        # left, top, right, bottom
-        self.roi_bounds_indicators = [None, None, None, None]
-
         self.matplotlib_layout.addWidget(self.toolbar)
+        self.matplotlib_layout.addWidget(self.roi_selector_toolbar)
         self.matplotlib_layout.addWidget(self.canvas)
 
         self.setup_shortcuts()
@@ -80,6 +81,8 @@ class StackVisualiserView(Qt.QMainWindow):
                 "right", size="5%", pad=0.1)
         self.color_bar = self.figure.colorbar(
                 self.image, cax=self.color_bar_axis)
+
+        self.roi_selector_toolbar.image_size = self.current_image().shape
 
         self.set_image_title_to_current_filename()
 
@@ -157,6 +160,20 @@ class StackVisualiserView(Qt.QMainWindow):
     def current_roi(self, value):
         self._current_roi = value
 
+        getLogger(__name__).debug("ROI: %s", str(value))
+
+        if value is not None:
+            getLogger(__name__).debug(
+                    "Top left  (x, y): %i, %i   Bottom right (x, y): %i, %i",
+                    *value)
+
+        # Update the ROI selector toolbar
+        self.roi_selector_toolbar.roi = value
+
+        # Update ROI selector
+        self.roi_selector.extents = (value[0], value[2], value[1], value[3]) \
+            if value is not None else (0, 0, 0, 0)
+
     def handle_canvas_scroll_wheel(self, event):
         """
         Handles the mouse scroll wheeel event when the cursor is over the
@@ -171,10 +188,6 @@ class StackVisualiserView(Qt.QMainWindow):
             self.presenter.notify(StackWindowNotification.SCROLL_UP)
         elif event.button == 'down':
             self.presenter.notify(StackWindowNotification.SCROLL_DOWN)
-
-    def deselect_current_roi(self):
-        self.current_roi = None
-        self.roi_selector.extents = (0, 0, 0, 0)
 
     def on_button_press(self, event):
         """
@@ -211,52 +224,12 @@ class StackVisualiserView(Qt.QMainWindow):
             self.canvas_context_menu.exec_(
                     self.canvas.mapToGlobal(point_on_canvas))
 
-        # Remove the coordinate indicators
-        for i in self.roi_bounds_indicators:
-            if i:
-                i.remove()
-        self.roi_bounds_indicators = [None, None, None, None]
-
     def region_select_callback(self, eclick, erelease):
         # eclick and erelease are the press and release events
         left, top = int(eclick.xdata), int(eclick.ydata)
         right, bottom = int(erelease.xdata), int(erelease.ydata)
 
         self.current_roi = (left, top, right, bottom)
-        getLogger(__name__).info("ROI: %i %i %i %i", *self.current_roi)
-
-        def mid(lower, upper):
-            return int(lower + ((upper - lower) / 2))
-
-        # Common options for ROI bounds indicators
-        padding = 5
-        common_kwargs = {
-            'size': 'large',
-            'color': 'r'
-        }
-
-        # Add ROI bounds indicators
-        self.roi_bounds_indicators[0] = self.image_axis.annotate(
-                str(left), (left - padding, mid(top, bottom)),
-                horizontalalignment='right', verticalalignment='center',
-                **common_kwargs)
-        self.roi_bounds_indicators[1] = self.image_axis.annotate(
-                str(top), (mid(left, right), top - padding),
-                horizontalalignment='center', verticalalignment='bottom',
-                **common_kwargs)
-        self.roi_bounds_indicators[2] = self.image_axis.annotate(
-                str(right), (right + padding, mid(top, bottom)),
-                horizontalalignment='left', verticalalignment='center',
-                **common_kwargs)
-        self.roi_bounds_indicators[3] = self.image_axis.annotate(
-                str(bottom), (mid(left, right), bottom + padding),
-                horizontalalignment='center', verticalalignment='top',
-                **common_kwargs)
-
-        region_pretty = \
-            "Top left  (x, y): %i, %i   Bottom right (x, y): %i, %i" % \
-            self.current_roi
-        getLogger(__name__).info(region_pretty)
 
     def update_title_event(self):
         text, okPressed = Qt.QInputDialog.getText(
@@ -416,6 +389,8 @@ class StackVisualiserView(Qt.QMainWindow):
         # If the size of the image is different then clear the old ROI
         if old_extent != self.image.get_extent():
             self.presenter.do_clear_roi()
+
+        self.roi_selector_toolbar.image_size = self.current_image().shape
 
         self.canvas.draw()
 

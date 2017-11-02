@@ -4,7 +4,7 @@ from PyQt5 import Qt
 
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
-from mantidimaging.core.utility import gui_compile_ui
+from mantidimaging.gui.utility import compile_ui
 
 
 def select_directory(field, caption):
@@ -19,7 +19,7 @@ def select_directory(field, caption):
 class MWSaveDialog(Qt.QDialog):
     def __init__(self, parent, stack_list):
         super(MWSaveDialog, self).__init__(parent)
-        gui_compile_ui.execute('gui/ui/save_dialog.ui', self)
+        compile_ui('gui/ui/save_dialog.ui', self)
 
         self.browseButton.clicked.connect(
             lambda: select_directory(self.savePath, "Browse"))
