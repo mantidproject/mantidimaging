@@ -47,17 +47,19 @@ def execute(data, region_of_interest, flat=None, dark=None, progress=None):
 
     # execute only for sample, if no flat and dark images are provided
     if data is not None and (flat is None or dark is None):
-        return _execute(data, region_of_interest, progress), None, None
+        return execute_single(data, region_of_interest, progress), None, None
     else:  # crop all and return as tuple
-        return _execute(data, region_of_interest, progress), \
-            _execute(flat, region_of_interest, progress), \
-            _execute(dark, region_of_interest, progress)
+        return execute_single(data, region_of_interest, progress), \
+            execute_single(flat, region_of_interest, progress), \
+            execute_single(dark, region_of_interest, progress)
 
 
-def _execute(data, region_of_interest, progress=None):
+def execute_single(data, region_of_interest, progress=None):
     progress = Progress.ensure_instance(progress, task_name='Crop Coords')
 
     if region_of_interest:
+        progress.add_estimated_steps(1)
+
         with progress:
             assert all(isinstance(region, int) for
                        region in region_of_interest), \
