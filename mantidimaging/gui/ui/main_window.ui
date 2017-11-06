@@ -35,20 +35,11 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuFilters">
-    <property name="title">
-     <string>Filters</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuReconstruct">
     <property name="title">
      <string>Reconstruct</string>
     </property>
-    <addaction name="separator"/>
-    <addaction name="actionCenter_of_Rotation"/>
-    <addaction name="actionManual_Center_of_Rotation"/>
-    <addaction name="separator"/>
-    <addaction name="actionTomopy"/>
+    <addaction name="actionCorTilt"/>
    </widget>
    <widget class="QMenu" name="menuProcessing">
     <property name="title">
@@ -97,9 +88,9 @@
     <string>Tomopy</string>
    </property>
   </action>
-  <action name="actionCenter_of_Rotation">
+  <action name="actionCorTilt">
    <property name="text">
-    <string>Center of Rotation</string>
+    <string>Find COR and Tilt</string>
    </property>
   </action>
   <action name="actionManual_Center_of_Rotation">
