@@ -94,18 +94,25 @@ class FiltersWindowPresenter(object):
 
         Must be called at least once before the UI is shown.
         """
-        # TODO: block stackSelector signals here
+        stack_selector = self.view.stackSelector
 
-        # Clear the previous entries from the drop down menu
-        self.view.stackSelector.clear()
+        # Don't want signals emitted when changing the list of stacks
+        with BlockQtSignals([stack_selector]):
+            # Clear the previous entries from the drop down menu
+            stack_selector.clear()
 
-        # Get all the new stacks
-        stack_list = self.main_window.stack_list()
-        if stack_list:
-            self.model.stack_uuids, user_friendly_names = zip(*stack_list)
-            self.view.stackSelector.addItems(user_friendly_names)
+            # Get all the new stacks
+            stack_list = self.main_window.stack_list()
+            self.model.stack_uuids, user_friendly_names = \
+                zip(*stack_list) if stack_list else (None, [])
+            stack_selector.addItems(user_friendly_names)
 
-        print(stack_list)
+            # Default to the first item
+            stack_selector.setCurrentIndex(0)
+            self.set_stack_index(0)
+
+        # Now we'll update the preview
+        self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
         filter_idx = self.view.filterSelector.currentIndex()
