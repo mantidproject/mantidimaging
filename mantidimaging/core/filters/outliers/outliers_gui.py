@@ -4,7 +4,7 @@ from . import execute, modes
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     _, diff_field = add_property_to_form(
             'Difference', 'int', 1, (-1000000, 1000000), form=form)

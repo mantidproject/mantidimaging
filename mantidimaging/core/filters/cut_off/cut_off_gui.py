@@ -4,7 +4,7 @@ from . import execute
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     _, threshold_field = add_property_to_form(
             'Threshold', 'float', 0.95, (0.0, 1.0), form=form)

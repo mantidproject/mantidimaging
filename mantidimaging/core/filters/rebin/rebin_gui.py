@@ -5,7 +5,7 @@ from . import execute, modes
 
 def _gui_register(form):
     from PyQt5 import Qt
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     # Rebin by uniform factor options
     _, factor = add_property_to_form('Factor', 'float', 0.5, (0.0, 1.0))

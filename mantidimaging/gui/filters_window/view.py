@@ -5,31 +5,12 @@ from PyQt5 import Qt, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from mantidimaging.gui.utility import compile_ui
+from mantidimaging.gui.utility import (
+        compile_ui, delete_all_widgets_from_layout)
 
 from .navigation_toolbar import FiltersWindowNavigationToolbar
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
-
-
-def _delete_all_widgets_from_layout(lo):
-    """
-    Removes and deletes all child widgets form a layout.
-
-    :param lo: Layout to clean
-    """
-    # For each item in the layout (removed as iterated)
-    while lo.count() > 0:
-        item = lo.takeAt(0)
-
-        # Recurse for child layouts
-        if isinstance(item, Qt.QLayout):
-            _delete_all_widgets_from_layout(item)
-
-        # Orphan child widgets (seting a None parent removes them from the
-        # layout and marks them for deletion)
-        elif item.widget() is not None:
-            item.widget().setParent(None)
 
 
 class FiltersWindowView(Qt.QDialog):
@@ -137,7 +118,7 @@ class FiltersWindowView(Qt.QDialog):
         Handle selection of a filter from the drop down list.
         """
         # Remove all existing items from the properties layout
-        _delete_all_widgets_from_layout(self.filterPropertiesLayout)
+        delete_all_widgets_from_layout(self.filterPropertiesLayout)
 
         # Do registration of new filter
         self.presenter.notify(PresNotification.REGISTER_ACTIVE_FILTER)

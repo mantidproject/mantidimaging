@@ -4,7 +4,7 @@ from . import execute
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     range1 = (0, 1000000)
     range2 = (-1000000, 1000000)
