@@ -13,14 +13,11 @@ from mantidimaging.core.utility.registrator import (
         register_into
     )
 
+from .misc import get_auto_params_from_stack
+
 
 def ensure_tuple(val):
     return val if isinstance(val, tuple) else (val,)
-
-
-def get_auto_params_from_stack(stack, params):
-    return {k: stack.get_parameter_value(v) for (k, v) in params.items()} \
-        if params else {}
 
 
 class FiltersWindowModel(object):
@@ -36,6 +33,8 @@ class FiltersWindowModel(object):
         self.filters = None
         self.register_filters('mantidimaging.core.filters',
                               ['mantidimaging.core.filters.wip'])
+
+        self.preview_image_idx = 0
 
         # Execution info for current filter
         self.stack_idx = 0
@@ -97,6 +96,13 @@ class FiltersWindowModel(object):
         stack = self.main_window.get_stack_visualiser(stack_uuid)
         return stack.presenter if stack is not None else None
 
+    @property
+    def num_images_in_stack(self):
+        stack = self.get_stack()
+        num_images = stack.images.get_sample().shape[0] \
+            if stack is not None else 0
+        return num_images
+
     def setup_filter(self, filter_specifics):
         """
         Sets filter properties from result of registration function.
@@ -104,19 +110,11 @@ class FiltersWindowModel(object):
         self.auto_props, self.do_before, self.execute, self.do_after = \
             filter_specifics
 
-    def do_apply_filter(self):
+    def apply_filter(self, images, exec_kwargs):
         """
-        Applys the selected filter to the selected stack.
+        Applies the selected filter to a given image stack.
         """
         log = getLogger(__name__)
-
-        # Get stack
-        stack = self.get_stack()
-        if not stack:
-            raise ValueError('No stack selected')
-
-        # Get auto parameters
-        exec_kwargs = get_auto_params_from_stack(stack, self.auto_props)
 
         # Generate the execute partial from filter registration
         do_before_func = self.do_before() if self.do_before else lambda _: ()
@@ -129,25 +127,39 @@ class FiltersWindowModel(object):
             log.info("Filter kwargs: {}".format(execute_func.keywords))
 
         # Do preprocessing and save result
-        preproc_res = do_before_func(stack.images.get_sample())
+        preproc_res = do_before_func(images.get_sample())
         preproc_res = ensure_tuple(preproc_res)
 
         # Run filter
-        ret_val = execute_func(stack.images.get_sample(), **exec_kwargs)
+        ret_val = execute_func(images.get_sample(), **exec_kwargs)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):
             # Tuples are assumed to be three elements containing sample, flat
             # and dark images
-            stack.images.sample, stack.images.flat, stack.images.dark = ret_val
+            images.sample, images.flat, images.dark = ret_val
         elif isinstance(ret_val, np.ndarray):
             # Single Numpy arrays are assumed to be just the sample image
-            stack.images.sample = ret_val
+            images.sample = ret_val
         else:
             log.debug('Unknown execute return value: {}'.format(type(ret_val)))
 
         # Do postprocessing using return value of preprocessing as parameter
-        do_after_func(stack.images.get_sample(), *preproc_res)
+        do_after_func(images.get_sample(), *preproc_res)
+
+    def do_apply_filter(self):
+        """
+        Applys the selected filter to the selected stack.
+        """
+        # Get stack
+        stack = self.get_stack()
+        if not stack:
+            raise ValueError('No stack selected')
+
+        # Get auto parameters
+        exec_kwargs = get_auto_params_from_stack(stack, self.auto_props)
+
+        self.apply_filter(stack.images, exec_kwargs)
 
         # Refresh the image in the stack visualiser
         stack.notify(SVNotification.REFRESH_IMAGE)

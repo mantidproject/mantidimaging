@@ -20,6 +20,9 @@ from .presenter import Notification as StackWindowNotification
 
 
 class StackVisualiserView(Qt.QMainWindow):
+
+    image_updated = Qt.pyqtSignal()
+
     def __init__(self, parent, dock, images, data_traversal_axis=0,
                  cmap='Greys_r', block=False):
         # enforce not showing a single image
@@ -85,6 +88,8 @@ class StackVisualiserView(Qt.QMainWindow):
         self.roi_selector_toolbar.image_size = self.current_image().shape
 
         self.set_image_title_to_current_filename()
+
+        self.image_updated.emit()
 
     def initialise_canvas(self):
         """
@@ -393,6 +398,8 @@ class StackVisualiserView(Qt.QMainWindow):
         self.roi_selector_toolbar.image_size = self.current_image().shape
 
         self.canvas.draw()
+
+        self.image_updated.emit()
 
     def set_image_title_to_current_filename(self):
         self.image_axis.set_title(
