@@ -20,10 +20,10 @@ _log_formatter = None
 _time_start = None
 
 
-def initialise_logging():
+def initialise_logging(default_level=logging.DEBUG):
     global _log_formatter
     _log_formatter = logging.Formatter(
-            "%(asctime)s %(name)s %(levelname)s %(message)s")
+            "%(asctime)s [%(name)s] %(levelname)s: %(message)s")
 
     # Add a very verbose logging level
     logging.addLevelName(5, 'TRACE')
@@ -41,7 +41,7 @@ def initialise_logging():
     root_logger.addHandler(console_handler)
 
     # Default log level
-    root_logger.setLevel(logging.DEBUG)
+    root_logger.setLevel(default_level)
 
     # Don't ever print all the debug logging from Qt
     logging.getLogger('PyQt5').setLevel(logging.INFO)
