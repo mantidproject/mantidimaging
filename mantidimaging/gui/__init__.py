@@ -24,7 +24,6 @@ from __future__ import (absolute_import, division, print_function)
 
 from . import (  # noqa: F401
         main_window,
-        stack_visualiser,
-        algorithm_dialog)
+        stack_visualiser)
 
 from .gui import execute  # noqa: F401

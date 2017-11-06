@@ -2,28 +2,22 @@ from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
-from . import crop_coords, NAME
+from mantidimaging.gui.stack_visualiser import Parameters
+
+from . import crop_coords
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
-
-    valid_range = (0, 99999)
-
-    _, left = dialog.add_property('Left', 'int', valid_values=valid_range)
-    _, top = dialog.add_property('Top', 'int', valid_values=valid_range)
-    _, right = dialog.add_property('Right', 'int', valid_values=valid_range)
-    _, bottom = dialog.add_property('Bottom', 'int', valid_values=valid_range)
+    add_property_to_form(
+            'Select ROI on stack visualiser.', 'label', form=form)
 
     def custom_execute():
-        # Get ROI from input fields
-        roi = [left.value(), top.value(), right.value(), bottom.value()]
+        return partial(crop_coords._execute)
 
-        return partial(crop_coords._execute, region_of_interest=roi)
+    params = {
+        'region_of_interest': Parameters.ROI
+    }
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (params, None, custom_execute, None)

@@ -6,17 +6,14 @@ from functools import partial
 from mantidimaging.core import io
 from mantidimaging.core.utility import value_scaling
 
-from . import execute, NAME
+from . import execute
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
-
-    flatPath, _ = dialog.add_property('Flat', 'file')
-    darkPath, _ = dialog.add_property('Dark', 'file')
+    flatPath, _ = add_property_to_form('Flat', 'file', form=form)
+    darkPath, _ = add_property_to_form('Dark', 'file', form=form)
 
     def custom_execute():
         flat_path = str(flatPath.text())
@@ -43,10 +40,13 @@ def _gui_register(main_window):
 
         return par
 
-    dialog.apply_before(value_scaling.create_factors)
+    def custom_do_before():
+        return partial(value_scaling.create_factors)
 
-    dialog.apply_after(value_scaling.apply_factor)
+    def custom_do_after():
+        return partial(value_scaling.apply_factor)
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (None,
+            custom_do_before,
+            custom_execute,
+            custom_do_after)

@@ -1,44 +1,21 @@
 from functools import partial
 
-from . import execute, NAME
+from mantidimaging.gui.stack_visualiser import Parameters
+
+from . import execute
 
 
-def _gui_register(main_window):
-    from mantidimaging.gui.algorithm_dialog import AlgorithmDialog, Parameters
+def _gui_register(form):
+    from mantidimaging.gui.filters_window import add_property_to_form
 
-    dialog = AlgorithmDialog(main_window)
-    dialog.setWindowTitle(NAME)
-
-    # TODO add label that from image will be used if nothing is selected here
-
-    value_range = (0, 1000000)
-
-    _, roi_left_field = dialog.add_property(
-            'Left', 'int', valid_values=value_range)
-
-    _, roi_top_field = dialog.add_property(
-            'Top', 'int', valid_values=value_range)
-
-    _, roi_right_field = dialog.add_property(
-            'Right', 'int', valid_values=value_range)
-
-    _, roi_bottom_field = dialog.add_property(
-            'Bottom', 'int', valid_values=value_range)
+    add_property_to_form(
+            'Select ROI on stack visualiser.', 'label', form=form)
 
     def custom_execute():
-        roi_left = roi_left_field.value()
-        roi_top = roi_top_field.value()
-        roi_right = roi_right_field.value()
-        roi_bottom = roi_bottom_field.value()
+        return partial(execute)
 
-        if roi_left == 0 and roi_top == 0 and \
-                roi_right == 0 and roi_bottom == 0:
-            dialog.request_parameter(Parameters.ROI)
-            return execute
-        else:
-            air_region = (roi_left, roi_top, roi_right, roi_bottom)
-            partial(execute, air_region=air_region)
+    params = {
+        'air_region': Parameters.ROI
+    }
 
-    dialog.set_execute(custom_execute)
-
-    return dialog
+    return (params, None, custom_execute, None)
