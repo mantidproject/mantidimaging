@@ -1,6 +1,5 @@
 import unittest
 
-import numpy as np
 import numpy.testing as npt
 
 from matplotlib.widgets import Slider
@@ -29,7 +28,8 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
         self.view.slider = mock.create_autospec(Slider)
-        self.presenter = StackVisualiserPresenter(self.view, self.test_data, data_traversal_axis=0)
+        self.presenter = StackVisualiserPresenter(
+                self.view, self.test_data, data_traversal_axis=0)
 
     def test_getattr_and_clear(self):
         # empty class that inherits from object so that we can append
