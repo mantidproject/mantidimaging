@@ -200,6 +200,33 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 3)
         self.assertEquals(p.completion(), 1.0)
 
+    def test_context_nested(self):
+        p = Progress()
+
+        self.assertFalse(p.is_started())
+        self.assertFalse(p.is_completed())
+        self.assertEquals(len(p.progress_history), 1)
+        self.assertEquals(p.completion(), 0.0)
+
+        with p:
+            p.update(msg='do a thing')
+            self.assertEquals(len(p.progress_history), 2)
+
+            for i in range(5):
+                with p:
+                    p.update(
+                        msg='do a thing in a loop nested in the other thing')
+
+                self.assertEquals(len(p.progress_history), 3 + i)
+                self.assertFalse(p.is_completed())
+
+            self.assertEquals(len(p.progress_history), 7)
+            self.assertFalse(p.is_completed())
+
+        self.assertTrue(p.is_completed())
+        self.assertEquals(len(p.progress_history), 8)
+        self.assertEquals(p.completion(), 1.0)
+
 
 if __name__ == '__main__':
     unittest.main()
