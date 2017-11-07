@@ -3,7 +3,6 @@ from __future__ import (absolute_import, division, print_function)
 from logging import getLogger
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from mantidimaging.core.imopr.utility import handle_indices
 from mantidimaging.core.imopr.visualiser import show_3d, show_image
@@ -25,6 +24,7 @@ def execute(sample, flat, dark, config, indices):
 
         show_3d(sample[i1:i2], axis=1)
 
+    import matplotlib.pyplot as plt
     plt.show()
 
 
