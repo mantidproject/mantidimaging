@@ -65,6 +65,10 @@ class FiltersWindowModel(object):
         loaded_filters = import_items(filter_packages,
                                       ['execute', 'NAME', '_gui_register'])
 
+        loaded_filters = filter(
+                lambda f: f.available() if hasattr(f, 'available') else True,
+                loaded_filters)
+
         def register_filter(filter_list, module):
             filter_list.append((module.NAME, module._gui_register))
 
