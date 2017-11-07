@@ -87,7 +87,8 @@ class FiltersDialogPresenter(BasePresenter):
         # Register new filter (adding it's property widgets to the properties
         # layout)
         self.model.setup_filter(
-                register_func(self.view.filterPropertiesLayout))
+                register_func(self.view.filterPropertiesLayout,
+                              self.view.auto_update_triggered.emit))
 
     def do_apply_filter(self):
         self.model.do_apply_filter()

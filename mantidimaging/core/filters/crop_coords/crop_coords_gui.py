@@ -7,7 +7,7 @@ from mantidimaging.gui.windows.stack_visualiser import Parameters
 from . import crop_coords
 
 
-def _gui_register(form):
+def _gui_register(form, on_change):
     from mantidimaging.gui.utility import add_property_to_form
 
     add_property_to_form(

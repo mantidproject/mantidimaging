@@ -3,11 +3,12 @@ from functools import partial
 from . import execute
 
 
-def _gui_register(form):
+def _gui_register(form, on_change):
     from mantidimaging.gui.utility import add_property_to_form
 
     _, rotation_count = add_property_to_form(
-            'Number of rotations', 'int', 1, (0, 99), form=form)
+            'Number of rotations', 'int', 1, (0, 99),
+            form=form, on_change=on_change)
 
     def custom_execute():
         num_rotations = rotation_count.value()

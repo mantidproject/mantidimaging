@@ -74,6 +74,7 @@ def add_property_to_form(label,
                          default_value=None,
                          valid_values=None,
                          tooltip=None,
+                         on_change=None,
                          form=None):
     """
     Adds a property to the algorithm dialog.
@@ -85,6 +86,8 @@ def add_property_to_form(label,
     :param default_value: Optionally select the default value
     :param valid_values: Optionally provide the range or selection of valid
                          values
+    :param tooltip: Optional tooltip text to show on property
+    :param on_change: Function to be called when the property changes
     :param form: Form layout to optionally add the new widgets to
     """
     # By default assume the left hand side widget will be a label
@@ -116,27 +119,43 @@ def add_property_to_form(label,
         assign_tooltip([left_widget, right_widget])
         right_widget.clicked.connect(
                 lambda: select_file(left_widget, label))
+        if on_change is not None:
+            left_widget.textChanged.connect(lambda: on_change())
+
     elif dtype == 'int':
         right_widget = Qt.QSpinBox()
         assign_tooltip([right_widget])
         set_spin_box(right_widget)
+        if on_change is not None:
+            right_widget.valueChanged[int].connect(lambda: on_change())
+
     elif dtype == 'float':
         right_widget = Qt.QDoubleSpinBox()
         assign_tooltip([right_widget])
         set_spin_box(right_widget)
+        if on_change is not None:
+            right_widget.valueChanged[float].connect(lambda: on_change())
+
     elif dtype == 'bool':
         left_widget = None
         right_widget = Qt.QCheckBox(label)
         assign_tooltip([right_widget])
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
+        if on_change is not None:
+            right_widget.stateChanged[int].connect(lambda: on_change())
+
     elif dtype == 'list':
         right_widget = Qt.QComboBox()
         assign_tooltip([right_widget])
         if valid_values:
             right_widget.addItems(valid_values)
+        if on_change is not None:
+            right_widget.currentIndexChanged[int].connect(lambda: on_change())
+
     elif dtype == 'label':
         pass
+
     else:
         raise ValueError("Unknown data type")
 

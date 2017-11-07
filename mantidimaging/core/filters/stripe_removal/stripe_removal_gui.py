@@ -3,34 +3,41 @@ from functools import partial
 from . import execute, wavelet_names
 
 
-def _gui_register(form):
+def _gui_register(form, on_change):
     from mantidimaging.gui.utility import add_property_to_form
 
     # Filter type option
     _, value_filter_type = add_property_to_form(
-            'Filter Type', 'list', form=form)
+            'Filter Type', 'list',
+            form=form, on_change=on_change)
 
     # Wavelet options
     _, value_wf_level = add_property_to_form(
-            'Level', 'int', valid_values=(0, 100), form=form)
+            'Level', 'int', valid_values=(0, 100),
+            form=form, on_change=on_change)
 
     _, value_wf_wname = add_property_to_form(
             'Wavelet Filter', 'list',
-            valid_values=wavelet_names(), form=form)
+            valid_values=wavelet_names(),
+            form=form, on_change=on_change)
 
     _, value_wf_sigma = add_property_to_form(
-            'Sigma', 'float', 2.0, (0.0, 100.0), form=form)
+            'Sigma', 'float', 2.0, (0.0, 100.0),
+            form=form, on_change=on_change)
 
     # Titarenko options
     _, value_ti_nblock = add_property_to_form(
-            'Number of Blocks', 'int', 0, (0, 100), form=form)
+            'Number of Blocks', 'int', 0, (0, 100),
+            form=form, on_change=on_change)
 
     _, value_ti_alpha = add_property_to_form(
-            'Alpha', 'float', 1.5, form=form)
+            'Alpha', 'float', 1.5,
+            form=form, on_change=on_change)
 
     # Smoothing filter options
     _, value_sf_size = add_property_to_form(
-            'Size', 'int', 5, (0, 100), form=form)
+            'Size', 'int', 5, (0, 100),
+            form=form, on_change=on_change)
 
     filters = [
             ('wavelet-fourier',
@@ -46,6 +53,7 @@ def _gui_register(form):
             enabled = name == f[0]
             for ui_item in f[1]:
                 ui_item.setEnabled(enabled)
+        on_change()
 
     value_filter_type.addItems([f[0] for f in filters])
     value_filter_type.currentIndexChanged[str].connect(on_filter_type_change)

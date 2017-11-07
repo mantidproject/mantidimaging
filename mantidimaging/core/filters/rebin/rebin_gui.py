@@ -3,19 +3,27 @@ from functools import partial
 from . import execute, modes
 
 
-def _gui_register(form):
+def _gui_register(form, on_change):
     from PyQt5 import Qt
     from mantidimaging.gui.utility import add_property_to_form
 
     # Rebin by uniform factor options
-    _, factor = add_property_to_form('Factor', 'float', 0.5, (0.0, 1.0))
+    _, factor = add_property_to_form(
+            'Factor', 'float', 0.5, (0.0, 1.0),
+            on_change=on_change)
     factor.setSingleStep(0.05)
 
     # Rebin to target shape options
     shape_range = (0, 9999)
 
-    _, shape_x = add_property_to_form('X', 'int', valid_values=shape_range)
-    _, shape_y = add_property_to_form('Y', 'int', valid_values=shape_range)
+    _, shape_x = add_property_to_form(
+            'X', 'int',
+            valid_values=shape_range,
+            on_change=on_change)
+    _, shape_y = add_property_to_form(
+            'Y', 'int',
+            valid_values=shape_range,
+            on_change=on_change)
 
     shape_fields = Qt.QHBoxLayout()
     shape_fields.addWidget(shape_x)
@@ -26,6 +34,7 @@ def _gui_register(form):
 
     def size_by_factor_toggled(enabled):
         factor.setEnabled(enabled)
+        on_change()
     rebin_by_factor_radio.toggled.connect(size_by_factor_toggled)
 
     rebin_to_dimensions_radio = Qt.QRadioButton("Rebin to Dimensions")
@@ -33,6 +42,7 @@ def _gui_register(form):
     def size_by_dimensions_toggled(enabled):
         shape_x.setEnabled(enabled)
         shape_y.setEnabled(enabled)
+        on_change()
     rebin_to_dimensions_radio.toggled.connect(size_by_dimensions_toggled)
 
     # Rebin mode options
