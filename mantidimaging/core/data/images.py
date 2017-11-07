@@ -14,11 +14,15 @@ class Images(object):
 
         self._filenames = filenames
 
+        self.properties = {}
+
     def __str__(self):
-        return 'Image Stack: sample={}, flat={}, dark={}'.format(
+        return \
+            'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
                 self.sample.shape if self.sample is not None else None,
                 self.flat.shape if self.flat is not None else None,
-                self.dark.shape if self.dark is not None else None)
+                self.dark.shape if self.dark is not None else None,
+                len(self.properties))
 
     @property
     def sample(self):

@@ -13,11 +13,13 @@ class ImagesTest(unittest.TestCase):
         imgs = Images()
         self.assertEquals(
                 str(imgs),
-                'Image Stack: sample=None, flat=None, dark=None')
+                'Image Stack: sample=None, flat=None, dark=None, '
+                '|properties|=0')
 
     def test_to_string_with_sample(self):
         sample = np.ndarray(shape=(2, 64, 64))
         imgs = Images(sample)
         self.assertEquals(
                 str(imgs),
-                'Image Stack: sample=(2, 64, 64), flat=None, dark=None')
+                'Image Stack: sample=(2, 64, 64), flat=None, dark=None, '
+                '|properties|=0')
