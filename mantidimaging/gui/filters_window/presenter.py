@@ -9,6 +9,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
+from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (
         BlockQtSignals, get_auto_params_from_stack)
 
@@ -24,13 +25,12 @@ class Notification(Enum):
     SCROLL_PREVIEW_DOWN = 6
 
 
-class FiltersWindowPresenter(object):
+class FiltersWindowPresenter(BasePresenter):
+
     def __init__(self, view, main_window):
-        super(FiltersWindowPresenter, self).__init__()
+        super(FiltersWindowPresenter, self).__init__(view)
 
-        self.view = view
         self.model = FiltersWindowModel(main_window)
-
         self.main_window = main_window
 
     def notify(self, signal):
@@ -51,9 +51,6 @@ class FiltersWindowPresenter(object):
         except Exception as e:
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")
-
-    def show_error(self, error):
-        self.view.show_error_dialog(error)
 
     @property
     def max_preview_image_idx(self):
