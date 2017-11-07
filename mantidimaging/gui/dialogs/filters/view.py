@@ -77,6 +77,8 @@ class FiltersDialogView(BaseDialogView):
                 sharey=self.preview_histogram_before)
         self.preview_histogram_after.plot([], [])
 
+        self.clear_preview_plots()
+
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
                 self.presenter.set_preview_image_index)
@@ -121,3 +123,13 @@ class FiltersDialogView(BaseDialogView):
         """
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
+
+    def clear_preview_plots(self):
+        """
+        Clears the plotted data from the preview images and plots.
+        """
+        self.preview_image_before.cla()
+        self.preview_image_after.cla()
+
+        self.preview_histogram_before.lines[0].set_data([], [])
+        self.preview_histogram_after.lines[0].set_data([], [])

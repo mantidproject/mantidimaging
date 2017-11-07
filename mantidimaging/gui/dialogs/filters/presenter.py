@@ -97,41 +97,50 @@ class FiltersDialogPresenter(BasePresenter):
 
         progress = Progress.ensure_instance()
         progress.task_name = 'Filter preview'
-        progress.add_estimated_steps(9)
+        progress.add_estimated_steps(1)
 
         with progress:
             progress.update(msg='Getting stack')
             stack = self.model.get_stack()
+
+            # If there is no stack then clear the preview area
             if stack is None:
-                return
+                self.view.clear_preview_plots()
 
-            before_image_data = stack.get_image(self.model.preview_image_idx)
+            else:
+                # Add the remaining steps for calculating the preview
+                progress.add_estimated_steps(8)
 
-            # Update image before
-            self._update_preview_image(before_image_data,
-                                       self.view.preview_image_before,
-                                       self.view.preview_histogram_before,
-                                       progress)
+                before_image_data = stack.get_image(
+                        self.model.preview_image_idx)
 
-            # Generate sub-stack and run filter
-            progress.update(msg='Running preview filter')
-            exec_kwargs = get_auto_params_from_stack(
-                    stack, self.model.auto_props)
+                # Update image before
+                self._update_preview_image(
+                        before_image_data,
+                        self.view.preview_image_before,
+                        self.view.preview_histogram_before,
+                        progress)
 
-            filtered_image_data = None
-            try:
-                sub_images = Images(np.asarray([before_image_data]))
-                self.model.apply_filter(sub_images, exec_kwargs)
-                filtered_image_data = sub_images.sample[0]
-            except Exception:
-                log.exception("Error applying filter for preview")
+                # Generate sub-stack and run filter
+                progress.update(msg='Running preview filter')
+                exec_kwargs = get_auto_params_from_stack(
+                        stack, self.model.auto_props)
 
-            # Update image after
-            if filtered_image_data is not None:
-                self._update_preview_image(filtered_image_data,
-                                           self.view.preview_image_after,
-                                           self.view.preview_histogram_after,
-                                           progress)
+                filtered_image_data = None
+                try:
+                    sub_images = Images(np.asarray([before_image_data]))
+                    self.model.apply_filter(sub_images, exec_kwargs)
+                    filtered_image_data = sub_images.sample[0]
+                except Exception:
+                    log.exception("Error applying filter for preview")
+
+                # Update image after
+                if filtered_image_data is not None:
+                    self._update_preview_image(
+                            filtered_image_data,
+                            self.view.preview_image_after,
+                            self.view.preview_histogram_after,
+                            progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
