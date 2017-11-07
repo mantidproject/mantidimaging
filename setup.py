@@ -77,6 +77,9 @@ setup(
     name='mantidimaging',
     version='0.9',
     packages=find_packages(),
+    package_data={
+        'mantidimaging.gui': ['ui/*.ui']
+    },
     py_modules=['mantidimaging'],
     entry_points={
         'console_scripts': [
