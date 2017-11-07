@@ -1,15 +1,18 @@
 from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
+
 from mantidimaging import helper as h
 
 
 class Images(object):
     def __init__(self, sample=None, flat=None, dark=None, filenames=None):
-        self.sample = sample
-        self.flat = flat
-        self.dark = dark
-        self.filenames = filenames
+
+        self._sample = sample
+        self._flat = flat
+        self._dark = dark
+
+        self._filenames = filenames
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}'.format(
@@ -17,17 +20,33 @@ class Images(object):
                 self.flat.shape if self.flat is not None else None,
                 self.dark.shape if self.dark is not None else None)
 
-    def get_sample(self):
-        return self.sample
+    @property
+    def sample(self):
+        return self._sample
 
-    def get_flat(self):
-        return self.flat
+    @sample.setter
+    def sample(self, imgs):
+        self._sample = imgs
 
-    def get_dark(self):
-        return self.dark
+    @property
+    def flat(self):
+        return self._flat
 
-    def get_filenames(self):
-        return self.filenames
+    @flat.setter
+    def flat(self, imgs):
+        self._flat = imgs
+
+    @property
+    def dark(self):
+        return self._dark
+
+    @dark.setter
+    def dark(self, imgs):
+        self._dark = imgs
+
+    @property
+    def filenames(self):
+        return self._filenames
 
     @staticmethod
     def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):

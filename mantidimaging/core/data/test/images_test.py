@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from mantidimaging.core.io.loader import Images
+from mantidimaging.core.data import Images
 
 
 class ImagesTest(unittest.TestCase):

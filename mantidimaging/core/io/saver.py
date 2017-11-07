@@ -7,9 +7,9 @@ import os
 import numpy as np
 
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.data import Images
 
 from .utility import DEFAULT_IO_FILE_FORMAT
-from .loader.images import Images
 
 DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'

@@ -5,7 +5,7 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging.core.io.loader import Images
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)

@@ -1,9 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
-from .images import Images
 
 
 def parallel_move_data(input_data, output_data):

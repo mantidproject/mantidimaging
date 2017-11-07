@@ -27,6 +27,4 @@ from . import (  # noqa: F401
         loader,
         utility)
 
-from .loader.images import Images  # noqa: F401
-
 del absolute_import, division, print_function

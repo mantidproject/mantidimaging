@@ -34,7 +34,7 @@ def gen_img_shared_array(shape=g_shape):
 
 
 def generate_images_class_random_shared_array(shape=g_shape):
-    from mantidimaging.core.io.loader.images import Images
+    from mantidimaging.core.data import Images
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     # move the data in the shared array
