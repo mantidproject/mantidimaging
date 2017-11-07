@@ -81,7 +81,7 @@ def read_in_shape(input_path,
                   data_dtype, cores, chunksize, indices=[0, 1, 1])
 
     # construct and return the new shape
-    return (len(input_file_names),) + images.get_sample().shape[1:]
+    return (len(input_file_names),) + images.sample.shape[1:]
 
 
 def read_in_shape_from_config(config):

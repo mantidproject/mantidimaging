@@ -23,11 +23,10 @@ def execute(config):
     saver.make_dirs_if_needed(output_dir, config.func.overwrite_all)
 
     images = loader.load_from_config(config)
-    sample = images.get_sample()
 
     # save out in the main output directory
     saver.save(
-        sample,
+        images.sample,
         output_dir,
         config.func.convert_prefix,
         config.func.swap_axes,

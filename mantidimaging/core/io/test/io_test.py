@@ -237,17 +237,17 @@ class IOTest(FileOutputtingTestCase):
                                     indices=loader_indices)
 
         if loader_indices:
-            assert len(loaded_images.get_sample()) == expected_len, \
+            assert len(loaded_images.sample) == expected_len, \
                 "The length of the loaded data does not " \
                 "match the expected length! Expected: {0}, " \
                 "Got {1}".format(expected_len, len(
-                    loaded_images.get_sample()))
+                    loaded_images.sample))
 
             # crop the original images to make sure the tests is correct
             expected_images = \
                 expected_images[loader_indices[0]:loader_indices[1]]
 
-        npt.assert_equal(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.sample, expected_images)
 
     def test_save_nxs_seq(self):
         self.do_preproc_nxs(parallel=False)
@@ -314,17 +314,17 @@ class IOTest(FileOutputtingTestCase):
 
         if loader_indices:
             assert len(
-                images.get_sample()
+                images.sample
             ) == expected_len, "The length of the loaded data does not " \
                                "match the expected length! Expected: {0}, " \
                                "Got {1}".format(
-                expected_len, len(images.get_sample()))
+                expected_len, len(images.sample))
 
             # crop the original images to make sure the tests is correct
             expected_images = \
                 expected_images[loader_indices[0]:loader_indices[1]]
 
-        npt.assert_equal(images.get_sample(), expected_images)
+        npt.assert_equal(images.sample, expected_images)
 
         self.assert_files_exist(os.path.join(preproc_output_path,
                                              'out_preproc_image'),
@@ -444,20 +444,20 @@ class IOTest(FileOutputtingTestCase):
                 indices=loader_indices)
 
         if loader_indices:
-            assert len(loaded_images.get_sample()) == expected_len, \
+            assert len(loaded_images.sample) == expected_len, \
                 "The length of the loaded data doesn't " \
                 "match the expected length: {0}, " \
                 "Got: {1}".format(
-                        expected_len, len(loaded_images.get_sample()))
+                        expected_len, len(loaded_images.sample))
 
             # crop the original images to make sure the tests is correct
             images = images[loader_indices[0]:loader_indices[1]]
 
-        npt.assert_equal(loaded_images.get_sample(), images)
+        npt.assert_equal(loaded_images.sample, images)
         # we only check the first image because they will be
         # averaged out when loaded! The initial images are only 3s
-        npt.assert_equal(loaded_images.get_flat(), flat[0])
-        npt.assert_equal(loaded_images.get_dark(), dark[0])
+        npt.assert_equal(loaded_images.flat, flat[0])
+        npt.assert_equal(loaded_images.dark, dark[0])
 
     def test_read_in_shape_from_config(self):
         images = th.gen_img_shared_array_with_val(42.)
@@ -496,7 +496,7 @@ class IOTest(FileOutputtingTestCase):
 
         loaded_images = loader.load_from_config(config)
 
-        npt.assert_equal(images, loaded_images.get_sample())
+        npt.assert_equal(images, loaded_images.sample)
 
     def test_construct_sinograms(self):
         images = th.gen_img_shared_array_with_val(42.)
@@ -517,7 +517,7 @@ class IOTest(FileOutputtingTestCase):
         config.func.construct_sinograms = True
         loaded_images = loader.load_from_config(config)
 
-        npt.assert_equal(exp_sinograms, loaded_images.get_sample())
+        npt.assert_equal(exp_sinograms, loaded_images.sample)
 
 
 if __name__ == '__main__':

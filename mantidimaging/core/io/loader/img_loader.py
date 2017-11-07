@@ -63,7 +63,7 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     # if this is true, then the loaded sample data was created via the
     # stack_loader
     if isinstance(sample_data, Images):
-        sample_data = sample_data.get_sample()
+        sample_data = sample_data.sample
 
     return Images(sample_data, flat_avg, dark_avg, input_file_names)
 

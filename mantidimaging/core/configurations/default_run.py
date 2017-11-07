@@ -58,7 +58,7 @@ def execute(config):
     images = loader.load_from_config(config)
 
     sample, flat, dark = default_filtering.execute(
-            config, images.get_sample(), images.get_flat(), images.get_dark())
+            config, images.sample, images.flat, images.dark)
 
     if not config.func.reconstruction:
         saver_class.save_preproc_images(sample)

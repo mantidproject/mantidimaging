@@ -28,13 +28,13 @@ def _gui_register(form):
 
         # this will be put in the 'sample' attribute, because we load a single
         # volume
-        flat = images_flat_only.get_sample().mean(axis=0)
+        flat = images_flat_only.sample.mean(axis=0)
 
         images_dark_only = io.loader.load(dark_dir, in_format=dark_extension)
 
         # this will be put in the 'sample' attribute, because we load a single
         # volume
-        dark = images_dark_only.get_sample().mean(axis=0)
+        dark = images_dark_only.sample.mean(axis=0)
 
         par = partial(execute, flat=flat, dark=dark)
 

@@ -90,7 +90,7 @@ def save(data,
                                         task_name='Save')
 
     if isinstance(data, Images):
-        data = data.get_sample()
+        data = data.sample
 
     # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))

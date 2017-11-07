@@ -99,7 +99,7 @@ class FiltersWindowModel(object):
     @property
     def num_images_in_stack(self):
         stack = self.get_stack()
-        num_images = stack.images.get_sample().shape[0] \
+        num_images = stack.images.sample.shape[0] \
             if stack is not None else 0
         return num_images
 
@@ -127,11 +127,11 @@ class FiltersWindowModel(object):
             log.info("Filter kwargs: {}".format(execute_func.keywords))
 
         # Do preprocessing and save result
-        preproc_res = do_before_func(images.get_sample())
+        preproc_res = do_before_func(images.sample)
         preproc_res = ensure_tuple(preproc_res)
 
         # Run filter
-        ret_val = execute_func(images.get_sample(), **exec_kwargs)
+        ret_val = execute_func(images.sample, **exec_kwargs)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):
@@ -145,7 +145,7 @@ class FiltersWindowModel(object):
             log.debug('Unknown execute return value: {}'.format(type(ret_val)))
 
         # Do postprocessing using return value of preprocessing as parameter
-        do_after_func(images.get_sample(), *preproc_res)
+        do_after_func(images.sample, *preproc_res)
 
     def do_apply_filter(self):
         """
