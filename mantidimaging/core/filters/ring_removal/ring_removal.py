@@ -1,8 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
-import tomopy.misc.corr
-
 from mantidimaging import helper as h
+from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
 
 
@@ -91,12 +90,14 @@ def execute(data,
     progress = Progress.ensure_instance(progress,
                                         task_name='Ring Removal')
 
+    tp = safe_import('tomopy.misc.corr')
+
     if run_ring_removal:
         h.check_data_stack(data)
 
         with progress:
             progress.update(msg="Ring Removal")
-            data = tomopy.misc.corr.remove_ring(
+            data = tp.remove_ring(
                 data,
                 center_x=center_x,
                 center_y=center_y,
