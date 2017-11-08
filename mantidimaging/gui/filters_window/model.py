@@ -25,8 +25,6 @@ class FiltersWindowModel(object):
 
         self.main_window = main_window
 
-        self.stack_uuids = []
-
         # Update the local filter registry
         self.filters = None
         self.register_filters('mantidimaging.core.filters',
@@ -35,7 +33,7 @@ class FiltersWindowModel(object):
         self.preview_image_idx = 0
 
         # Execution info for current filter
-        self.stack_idx = 0
+        self.stack_uuid = None
         self.do_before = None
         self.execute = None
         self.do_after = None
@@ -89,13 +87,8 @@ class FiltersWindowModel(object):
         """
         Gets the presenter for the selected stack.
         """
-        if not self.stack_uuids:
-            return None
-
-        stack_uuid = None if self.stack_idx > len(self.stack_uuids) else \
-            self.stack_uuids[self.stack_idx]
-
-        stack = self.main_window.get_stack_visualiser(stack_uuid)
+        stack = self.main_window.get_stack_visualiser(self.stack_uuid) \
+            if self.stack_uuid else None
         return stack.presenter if stack is not None else None
 
     @property

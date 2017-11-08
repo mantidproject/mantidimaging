@@ -69,13 +69,14 @@ class MainWindowView(BaseMainWindowView):
     def show_filters_window(self):
         self.filters_window.show()
 
-    def stack_names(self):
-        # unpacks the tuple and only gives the correctly sorted human readable
-        # names
-        return self.presenter.stack_names()
-
     def stack_list(self):
         return self.presenter.stack_list()
+
+    def stack_names(self):
+        return self.presenter.stack_names()
+
+    def stack_uuids(self):
+        return self.presenter.stack_uuids()
 
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)

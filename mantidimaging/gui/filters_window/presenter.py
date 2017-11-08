@@ -17,12 +17,11 @@ from .model import FiltersWindowModel
 
 
 class Notification(Enum):
-    UPDATE_STACK_LIST = 1
-    REGISTER_ACTIVE_FILTER = 2
-    APPLY_FILTER = 3
-    UPDATE_PREVIEWS = 4
-    SCROLL_PREVIEW_UP = 5
-    SCROLL_PREVIEW_DOWN = 6
+    REGISTER_ACTIVE_FILTER = 1
+    APPLY_FILTER = 2
+    UPDATE_PREVIEWS = 3
+    SCROLL_PREVIEW_UP = 4
+    SCROLL_PREVIEW_DOWN = 5
 
 
 class FiltersWindowPresenter(BasePresenter):
@@ -35,9 +34,7 @@ class FiltersWindowPresenter(BasePresenter):
 
     def notify(self, signal):
         try:
-            if signal == Notification.UPDATE_STACK_LIST:
-                self.do_update_stack_list()
-            elif signal == Notification.REGISTER_ACTIVE_FILTER:
+            if signal == Notification.REGISTER_ACTIVE_FILTER:
                 self.do_register_active_filter()
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
@@ -56,11 +53,11 @@ class FiltersWindowPresenter(BasePresenter):
     def max_preview_image_idx(self):
         return max(self.model.num_images_in_stack - 1, 0)
 
-    def set_stack_index(self, stack_idx):
+    def set_stack_uuid(self, stack_uuid):
         """
-        Sets the currently selected stack index.
+        Sets the UUID of the currently selected stack.
         """
-        self.model.stack_idx = stack_idx
+        self.model.stack_uuid = stack_uuid
 
         # Update the preview image index
         self.set_preview_image_index(0)
@@ -78,32 +75,6 @@ class FiltersWindowPresenter(BasePresenter):
             preview_idx_spin.setValue(self.model.preview_image_idx)
 
         # Trigger preview updating
-        self.view.auto_update_triggered.emit()
-
-    def do_update_stack_list(self):
-        """
-        Refreshes the stack list and UUID cache.
-
-        Must be called at least once before the UI is shown.
-        """
-        stack_selector = self.view.stackSelector
-
-        # Don't want signals emitted when changing the list of stacks
-        with BlockQtSignals([stack_selector]):
-            # Clear the previous entries from the drop down menu
-            stack_selector.clear()
-
-            # Get all the new stacks
-            stack_list = self.main_window.stack_list()
-            self.model.stack_uuids, user_friendly_names = \
-                zip(*stack_list) if stack_list else (None, [])
-            stack_selector.addItems(user_friendly_names)
-
-            # Default to the first item
-            stack_selector.setCurrentIndex(0)
-            self.set_stack_index(0)
-
-        # Now we'll update the preview
         self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
