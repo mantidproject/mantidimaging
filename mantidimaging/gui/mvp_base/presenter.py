@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 
 class BasePresenter(object):
 
@@ -11,4 +13,9 @@ class BasePresenter(object):
                 "Presenter must implement the notify() method")
 
     def show_error(self, error):
-        self.view.show_error_dialog(error)
+        if hasattr(self.view, 'show_error_dialog'):
+            # If the view knows how to handle an error message
+            self.view.show_error_dialog(error)
+        else:
+            # Otherwise just log the error
+            getLogger(__name__).error('Presenter error: {}'.format(error))
