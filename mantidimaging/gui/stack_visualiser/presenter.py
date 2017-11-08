@@ -122,11 +122,11 @@ class StackVisualiserPresenter(object):
     def get_image(self, index):
         if self.mode == ImageMode.STACK:
             if self.axis == 0:
-                return self.images.get_sample()[index, :, :]
+                return self.images.sample[index, :, :]
             elif self.axis == 1:
-                return self.images.get_sample()[:, index, :]
+                return self.images.sample[:, index, :]
             elif self.axis == 2:
-                return self.images.get_sample()[:, :, index]
+                return self.images.sample[:, :, index]
 
         elif self.mode == ImageMode.SUM:
             return self.summed_image
@@ -134,11 +134,11 @@ class StackVisualiserPresenter(object):
         raise ValueError('Unknown image mode')
 
     def get_image_fullpath(self, index):
-        filenames = self.images.get_filenames()
+        filenames = self.images.filenames
         return filenames[index] if filenames is not None else ""
 
     def get_image_filename(self, index):
-        filenames = self.images.get_filenames()
+        filenames = self.images.filenames
         return os.path.basename(
                 filenames[index] if filenames is not None else "")
 
@@ -150,7 +150,7 @@ class StackVisualiserPresenter(object):
         """
         if axis is None:
             axis = self.axis
-        return self.images.get_sample().shape[self.axis]
+        return self.images.sample.shape[self.axis]
 
     def get_image_pixel_range(self):
         """
@@ -158,7 +158,7 @@ class StackVisualiserPresenter(object):
 
         :return: Tuple of (min, max) pixel intensities
         """
-        return (self.images.get_sample().min(), self.images.get_sample().max())
+        return (self.images.sample.min(), self.images.sample.max())
 
     def do_scroll_stack(self, offset):
         """

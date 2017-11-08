@@ -6,13 +6,13 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.io.utility import get_file_names
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 
 from . import stack_loader
-from .images import Images
 
 
 def execute(load_func, input_file_names, input_path_flat, input_path_dark,
@@ -63,7 +63,7 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     # if this is true, then the loaded sample data was created via the
     # stack_loader
     if isinstance(sample_data, Images):
-        sample_data = sample_data.get_sample()
+        sample_data = sample_data.sample
 
     return Images(sample_data, flat_avg, dark_avg, input_file_names)
 

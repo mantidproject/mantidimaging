@@ -80,7 +80,7 @@ class ConvertTest(FileOutputtingTestCase):
             in_format=convert_format,
             parallel_load=parallel)
 
-        npt.assert_equal(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.sample, expected_images)
 
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
@@ -127,7 +127,7 @@ class ConvertTest(FileOutputtingTestCase):
             in_format=convert_format,
             parallel_load=parallel)
 
-        npt.assert_equal(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.sample, expected_images)
 
     def test_convert_nxs_fits_nostack(self):
         self.do_convert_from_nxs(
@@ -173,7 +173,7 @@ class ConvertTest(FileOutputtingTestCase):
                                     in_format=convert_format,
                                     parallel_load=parallel)
 
-        npt.assert_equal(loaded_images.get_sample(), expected_images)
+        npt.assert_equal(loaded_images.sample, expected_images)
 
 
 if __name__ == '__main__':

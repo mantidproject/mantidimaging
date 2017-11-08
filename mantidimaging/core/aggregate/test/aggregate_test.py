@@ -94,7 +94,7 @@ class AggregateTest(FileOutputtingTestCase):
             in_format=saver._out_format,
             parallel_load=parallel)
 
-        for i in images.get_sample():
+        for i in images.sample:
             npt.assert_equal(i, expected)
 
     def test_aggregate_not_single_folder_sum_fits(self):
@@ -171,7 +171,7 @@ class AggregateTest(FileOutputtingTestCase):
                 in_format=saver._out_format,
                 parallel_load=parallel)
 
-            for i in images.get_sample():
+            for i in images.sample:
                 npt.assert_equal(i, expected)
 
 

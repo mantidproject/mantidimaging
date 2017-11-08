@@ -69,10 +69,10 @@ def execute(config):
     images = loader.load_from_config(config)
 
     getLogger(__name__).info(
-            "Data shape {0}".format(images.get_sample().shape))
+            "Data shape {0}".format(images.sample.shape))
 
     return module.execute(
-            images.get_sample(), images.get_flat(), images.get_dark(),
+            images.sample, images.flat, images.dark,
             config, indices)
 
 

@@ -122,7 +122,7 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
                                  in_format=img_format,
                                  parallel_load=parallel_load)
 
-            images = images.get_sample()
+            images = images.sample
             # sum or average them
             if 'sum' == agg_method:
                 aggregated_images = images.sum(axis=0, dtype=np.float32)

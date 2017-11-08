@@ -46,7 +46,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_get_image(self):
         index = 3
 
-        test_data = self.test_data.get_sample()
+        test_data = self.test_data.sample
 
         img = self.presenter.get_image(index)
         npt.assert_equal(test_data[index], img)
@@ -87,7 +87,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_get_image_count_on_axis(self):
         self.assertEquals(
                 self.presenter.get_image_count_on_axis(),
-                self.test_data.get_sample().shape[self.presenter.axis])
+                self.test_data.sample.shape[self.presenter.axis])
 
     def test_scroll_stack(self):
         self.view.current_index = mock.MagicMock(return_value=3)
@@ -105,7 +105,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.view.set_index.assert_called_once_with(2)
 
     def test_summed_image_creation(self):
-        test_data = self.test_data.get_sample()
+        test_data = self.test_data.sample
 
         # No summed image by default
         self.assertEquals(self.presenter.image_mode, ImageMode.STACK)

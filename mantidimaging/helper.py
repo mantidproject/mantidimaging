@@ -140,7 +140,7 @@ def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
     if isinstance(data, expected_class):
         to_check = data
     else:
-        to_check = data.get_sample()
+        to_check = data.sample
 
     # the data must be a np array, otherwise most functionality won't work
     if not isinstance(to_check, expected_class):

@@ -5,7 +5,7 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging.core.io.loader import Images
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
@@ -154,7 +154,7 @@ class FiltersWindowPresenter(object):
             try:
                 sub_images = Images(np.asarray([before_image_data]))
                 self.model.apply_filter(sub_images, exec_kwargs)
-                filtered_image_data = sub_images.get_sample()[0]
+                filtered_image_data = sub_images.sample[0]
             except Exception:
                 log.exception("Error applying filter for preview")
 

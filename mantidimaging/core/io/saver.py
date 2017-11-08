@@ -7,9 +7,9 @@ import os
 import numpy as np
 
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.data import Images
 
 from .utility import DEFAULT_IO_FILE_FORMAT
-from .loader.images import Images
 
 DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'
@@ -90,7 +90,7 @@ def save(data,
                                         task_name='Save')
 
     if isinstance(data, Images):
-        data = data.get_sample()
+        data = data.sample
 
     # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
