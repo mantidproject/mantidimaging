@@ -20,7 +20,7 @@ class FiltersDialogView(BaseDialogView):
 
     def __init__(self, main_window, cmap='Greys_r'):
         super(FiltersDialogView, self).__init__(
-                None, 'gui/ui/filters_dialog.ui')
+                main_window, 'gui/ui/filters_dialog.ui')
 
         self.presenter = FiltersDialogPresenter(self, main_window)
 
