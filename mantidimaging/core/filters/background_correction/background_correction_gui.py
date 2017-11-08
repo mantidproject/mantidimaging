@@ -10,7 +10,7 @@ from . import execute
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     flatPath, _ = add_property_to_form('Flat', 'file', form=form)
     darkPath, _ = add_property_to_form('Dark', 'file', form=form)

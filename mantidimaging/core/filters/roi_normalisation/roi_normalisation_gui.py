@@ -6,7 +6,7 @@ from . import execute
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     add_property_to_form(
             'Select ROI on stack visualiser.', 'label', form=form)

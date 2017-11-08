@@ -4,7 +4,7 @@ from . import execute, modes
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     _, size_field = add_property_to_form(
             'Kernel Size', 'int', 3, (0, 1000), form=form)

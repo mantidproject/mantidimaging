@@ -1,8 +1,43 @@
+"""
+Module containing helper functions relating to PyQt.
+"""
+
 from __future__ import absolute_import, division, print_function
 
-from PyQt5 import Qt
+import os
 
-from mantidimaging.gui.main_window.load_dialog import select_file
+from PyQt5 import Qt, uic
+
+from mantidimaging.core.utility import finder
+
+
+class BlockQtSignals(object):
+    """
+    Used to block Qt signals from a selection of QWidgets within a context.
+    """
+
+    def __init__(self, q_objects):
+        from PyQt5 import Qt
+        for obj in q_objects:
+            assert isinstance(obj, Qt.QObject), \
+                "This class must be used with QObjects"
+
+        self.q_objects = q_objects
+        self.previous_values = None
+
+    def __enter__(self):
+        self.previous_values = \
+            [obj.blockSignals(True) for obj in self.q_objects]
+
+    def __exit__(self, *args):
+        for obj, prev in zip(self.q_objects, self.previous_values):
+            obj.blockSignals(prev)
+
+
+def compile_ui(ui_file, qt_obj=None):
+    base_path = os.path.join(
+        finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+    return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
 
 
 def add_property_to_form(label,
@@ -47,6 +82,7 @@ def add_property_to_form(label,
 
     # Set up data type dependant widgets
     if dtype == 'file':
+        from mantidimaging.gui.main_window.load_dialog import select_file
         left_widget = Qt.QLineEdit()
         right_widget = Qt.QPushButton(label)
         assign_tooltip([left_widget, right_widget])
@@ -83,6 +119,21 @@ def add_property_to_form(label,
     return (left_widget, right_widget)
 
 
-def get_auto_params_from_stack(stack, params):
-    return {k: stack.get_parameter_value(v) for (k, v) in params.items()} \
-        if params else {}
+def delete_all_widgets_from_layout(lo):
+    """
+    Removes and deletes all child widgets form a layout.
+
+    :param lo: Layout to clean
+    """
+    # For each item in the layout (removed as iterated)
+    while lo.count() > 0:
+        item = lo.takeAt(0)
+
+        # Recurse for child layouts
+        if isinstance(item, Qt.QLayout):
+            delete_all_widgets_from_layout(item)
+
+        # Orphan child widgets (seting a None parent removes them from the
+        # layout and marks them for deletion)
+        elif item.widget() is not None:
+            item.widget().setParent(None)

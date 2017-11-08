@@ -9,9 +9,9 @@ from mantidimaging.core.io.loader import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
-from mantidimaging.gui.utility import BlockQtSignals
+from mantidimaging.gui.utility import (
+        BlockQtSignals, get_auto_params_from_stack)
 
-from .misc import get_auto_params_from_stack
 from .model import FiltersWindowModel
 
 

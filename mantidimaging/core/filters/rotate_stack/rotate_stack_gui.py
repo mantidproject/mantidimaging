@@ -4,7 +4,7 @@ from . import execute
 
 
 def _gui_register(form):
-    from mantidimaging.gui.filters_window import add_property_to_form
+    from mantidimaging.gui.utility import add_property_to_form
 
     _, rotation_count = add_property_to_form(
             'Number of rotations', 'int', 1, (0, 99), form=form)
