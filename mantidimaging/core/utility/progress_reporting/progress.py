@@ -60,6 +60,9 @@ class Progress(object):
         # Handers that receive notifications when progress updates occur
         self.progress_handlers = []
 
+        # Levels of nesting when used as a context manager
+        self.context_nesting_level = 0
+
         # Add initial step to history
         self.update(0, 'init')
 
@@ -72,10 +75,15 @@ class Progress(object):
         return 'Progress(\n{})'.format('\n'.join(self.progress_history))
 
     def __enter__(self):
+        self.context_nesting_level += 1
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.mark_complete()
+        self.context_nesting_level -= 1
+
+        # Only when we have left the context at all levels is the task complete
+        if self.context_nesting_level == 0:
+            self.mark_complete()
 
     def is_started(self):
         """
