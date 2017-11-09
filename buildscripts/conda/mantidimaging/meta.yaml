@@ -3,8 +3,7 @@ package:
   version: "nightly"
 
 source:
-  git_rev: master
-  git_url: https://github.com/mantidproject/mantidimaging.git
+  path: ../../../
 
 requirements:
   build:
