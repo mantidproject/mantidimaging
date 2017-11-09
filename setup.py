@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import fnmatch
 import os
 import subprocess
 
@@ -73,6 +74,40 @@ class GenerateSphinxApidoc(Command):
         subprocess.call(self.sphinx_options)
 
 
+class CompilePyQtUiFiles(Command):
+    description = 'Compiles any PyQt .ui files found in the source tree'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    @staticmethod
+    def compile_single_file(ui_filename):
+        from PyQt5 import uic
+        py_filename = os.path.splitext(ui_filename)[0] + '.py'
+        with open(py_filename, 'w') as py_file:
+            uic.compileUi(ui_filename, py_file)
+
+    @staticmethod
+    def find_ui_files():
+        matches = []
+        for root, dirnames, filenames in os.walk('./mantidimaging/'):
+            for filename in fnmatch.filter(filenames, '*.ui'):
+                matches.append(os.path.join(root, filename))
+        return matches
+
+    def run(self):
+        ui_files = self.find_ui_files()
+        for f in ui_files:
+            try:
+                self. compile_single_file(f)
+            except Exception as e:
+                print('Failed to compile {}: {}'.format(
+                    os.path.basename(f), e))
+
 setup(
     name='mantidimaging',
     version='0.9',
@@ -114,6 +149,7 @@ setup(
     cmdclass={
         'docs_api': GenerateSphinxApidoc,
         'docs': BuildDoc,
-        'docs_publish': PublishDocsToGitHubPages
+        'docs_publish': PublishDocsToGitHubPages,
+        'compile_ui': CompilePyQtUiFiles
     }
 )
