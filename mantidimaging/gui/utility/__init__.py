@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-from .get_auto_params_from_stack import get_auto_params_from_stack  # noqa: F401
+from .get_auto_params_from_stack import (  # noqa: F401
+        get_auto_params_from_stack)
 
 from .qt_helpers import (  # noqa: F401
         compile_ui,

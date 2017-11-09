@@ -28,8 +28,7 @@ class StackVisualiserView(BaseMainWindowView):
         # enforce not showing a single image
         assert images.sample.ndim == 3, \
                 "Data does NOT have 3 dimensions! Dimensions found: \
-                {0}".format(
-            images.sample.ndim)
+                {0}".format(images.sample.ndim)
 
         # We set the main window as the parent, the effect is the same as
         # having no parent, the window will be inside the QDockWidget. If the
