@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.utility import (
-        compile_ui, delete_all_widgets_from_layout)
+        delete_all_widgets_from_layout)
 
 from .navigation_toolbar import FiltersWindowNavigationToolbar
 from .presenter import FiltersWindowPresenter
