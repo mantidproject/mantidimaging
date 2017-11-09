@@ -102,11 +102,7 @@ class CompilePyQtUiFiles(Command):
     def run(self):
         ui_files = self.find_ui_files()
         for f in ui_files:
-            try:
-                self. compile_single_file(f)
-            except Exception as e:
-                print('Failed to compile {}: {}'.format(
-                    os.path.basename(f), e))
+            self. compile_single_file(f)
 
 setup(
     name='mantidimaging',
