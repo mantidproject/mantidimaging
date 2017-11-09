@@ -6,8 +6,8 @@ from logging import getLogger
 from PyQt5 import Qt, QtCore, QtGui
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.stack_visualiser import StackVisualiserView
-from mantidimaging.gui.filters_window import FiltersWindowView
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+from mantidimaging.gui.dialogs.filters import FiltersWindowView
 
 from .load_dialog import MWLoadDialog
 from .presenter import MainWindowPresenter

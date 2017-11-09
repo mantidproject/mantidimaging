@@ -5,7 +5,7 @@ from logging import getLogger
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
+from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 
 from .model import MainWindowModel
 

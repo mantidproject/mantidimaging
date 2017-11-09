@@ -4,7 +4,7 @@ import sys
 
 from PyQt5.Qt import QApplication
 
-from mantidimaging.gui.main_window import MainWindowView
+from mantidimaging.gui.windows.main import MainWindowView
 
 
 def execute(config):

@@ -4,10 +4,10 @@ import numpy as np
 
 import mantidimaging.core.testing.unit_test_helper as th
 from mantidimaging.core.utility.special_imports import import_mock
-from mantidimaging.gui.stack_visualiser import (
+from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserView, StackVisualiserPresenter, Parameters)
 
-from mantidimaging.gui.filters_window import FiltersWindowModel
+from mantidimaging.gui.dialogs.filters import FiltersWindowModel
 
 mock = import_mock()
 

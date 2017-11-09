@@ -5,7 +5,7 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging.gui.stack_visualiser import Notification as SVNotification
+from mantidimaging.gui.windows.stack_visualiser import Notification as SVNotification
 from mantidimaging.gui.utility import get_auto_params_from_stack
 from mantidimaging.core.utility.registrator import (
         get_package_children,
