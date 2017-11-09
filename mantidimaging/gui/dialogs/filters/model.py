@@ -18,10 +18,10 @@ def ensure_tuple(val):
     return val if isinstance(val, tuple) else (val,)
 
 
-class FiltersWindowModel(object):
+class FiltersDialogModel(object):
 
     def __init__(self, main_window):
-        super(FiltersWindowModel, self).__init__()
+        super(FiltersDialogModel, self).__init__()
 
         self.main_window = main_window
 
