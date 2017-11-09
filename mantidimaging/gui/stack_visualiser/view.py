@@ -4,13 +4,13 @@ import sys
 
 from logging import getLogger
 
-from PyQt5 import Qt, QtCore, QtWidgets
+from PyQt5 import Qt, QtCore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from mantidimaging.gui.utility import compile_ui
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 from . import histogram
 from .navigation_toolbar import StackNavigationToolbar
@@ -19,7 +19,7 @@ from .presenter import StackVisualiserPresenter
 from .presenter import Notification as StackWindowNotification
 
 
-class StackVisualiserView(Qt.QMainWindow):
+class StackVisualiserView(BaseMainWindowView):
 
     image_updated = Qt.pyqtSignal()
 
@@ -35,8 +35,7 @@ class StackVisualiserView(Qt.QMainWindow):
         # having no parent, the window will be inside the QDockWidget. If the
         # dock is set as a parent the window will be an independent floating
         # window
-        super(StackVisualiserView, self).__init__(parent)
-        compile_ui('gui/ui/stack.ui', self)
+        super(StackVisualiserView, self).__init__(parent, 'gui/ui/stack.ui')
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title
@@ -407,14 +406,6 @@ class StackVisualiserView(Qt.QMainWindow):
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
-
-    def show_error_dialog(self, msg=""):
-        """
-        Shows an error message.
-
-        :param msg: Error message string
-        """
-        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
 
 
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):

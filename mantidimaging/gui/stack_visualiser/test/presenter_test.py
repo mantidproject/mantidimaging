@@ -80,10 +80,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.notify(PresenterNotifications.NEW_WINDOW_HISTOGRAM)
         self.view.show_histogram_of_current_image.assert_called_once()
 
-    def test_show_error_message_forwarded_to_view(self):
-        self.presenter.show_error("test message")
-        self.view.show_error_dialog.assert_called_once_with("test message")
-
     def test_get_image_count_on_axis(self):
         self.assertEquals(
                 self.presenter.get_image_count_on_axis(),

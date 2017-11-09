@@ -5,6 +5,7 @@ from PyQt5 import Qt, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
+from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.utility import (
         compile_ui, delete_all_widgets_from_layout)
 
@@ -13,13 +14,13 @@ from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
 
-class FiltersWindowView(Qt.QDialog):
+class FiltersWindowView(BaseDialogView):
 
     auto_update_triggered = Qt.pyqtSignal()
 
     def __init__(self, main_window, cmap='Greys_r'):
-        super(FiltersWindowView, self).__init__()
-        compile_ui('gui/ui/filters_window.ui', self)
+        super(FiltersWindowView, self).__init__(
+                None, 'gui/ui/filters_window.ui')
 
         self.presenter = FiltersWindowPresenter(self, main_window)
 
@@ -89,14 +90,6 @@ class FiltersWindowView(Qt.QDialog):
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
         self.updatePreviewButton.clicked.connect(
             lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
-
-    def show_error_dialog(self, msg=""):
-        """
-        Shows an error message.
-
-        :param msg: Error message string
-        """
-        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
 
     def show(self):
         self.presenter.notify(PresNotification.UPDATE_STACK_LIST)

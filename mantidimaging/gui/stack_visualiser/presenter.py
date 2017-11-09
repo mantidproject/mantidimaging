@@ -7,6 +7,8 @@ import numpy as np
 from enum import IntEnum
 from logging import getLogger
 
+from mantidimaging.gui.mvp_base import BasePresenter
+
 
 class Notification(IntEnum):
     RENAME_WINDOW = 0
@@ -29,10 +31,10 @@ class ImageMode(IntEnum):
     SUM = 1
 
 
-class StackVisualiserPresenter(object):
+class StackVisualiserPresenter(BasePresenter):
+
     def __init__(self, view, images, data_traversal_axis):
-        super(StackVisualiserPresenter, self).__init__()
-        self.view = view
+        super(StackVisualiserPresenter, self).__init__(view)
         self.images = images
         self.axis = data_traversal_axis
         self.mode = ImageMode.STACK
@@ -61,9 +63,6 @@ class StackVisualiserPresenter(object):
         except Exception as e:
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")
-
-    def show_error(self, error):
-        self.view.show_error_dialog(error)
 
     def do_rename_view(self):
         self.view.update_title_event()

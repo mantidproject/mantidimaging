@@ -1,16 +1,14 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt5 import Qt
-
-from mantidimaging.gui.utility import compile_ui
+from mantidimaging.gui.mvp_base import BaseDialogView
 
 from .presenter import AsyncTaskDialogPresenter
 
 
-class AsyncTaskDialogView(Qt.QDialog):
+class AsyncTaskDialogView(BaseDialogView):
     def __init__(self, parent, auto_close=False):
-        super(AsyncTaskDialogView, self).__init__(parent)
-        compile_ui('gui/ui/async_task_dialog.ui', self)
+        super(AsyncTaskDialogView, self).__init__(
+                parent, 'gui/ui/async_task_dialog.ui')
 
         self.parent_view = parent
         self.presenter = AsyncTaskDialogPresenter(self)

@@ -4,6 +4,7 @@ from enum import Enum
 from logging import getLogger
 
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.async_task_dialog import AsyncTaskDialogView
 
 from .model import MainWindowModel
@@ -14,10 +15,10 @@ class Notification(Enum):
     SAVE = 2
 
 
-class MainWindowPresenter(object):
+class MainWindowPresenter(BasePresenter):
+
     def __init__(self, view, config):
-        super(MainWindowPresenter, self).__init__()
-        self.view = view
+        super(MainWindowPresenter, self).__init__(view)
         self.model = MainWindowModel(config)
 
     def notify(self, signal):
@@ -30,9 +31,6 @@ class MainWindowPresenter(object):
         except Exception as e:
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")
-
-    def show_error(self, error):
-        self.view.show_error_dialog(error)
 
     def remove_stack(self, uuid):
         self.model.do_remove_stack(uuid)

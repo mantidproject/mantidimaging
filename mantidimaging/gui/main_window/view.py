@@ -3,9 +3,9 @@ from __future__ import absolute_import, division, print_function
 import matplotlib
 
 from logging import getLogger
-from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5 import Qt, QtCore, QtGui
 
-from mantidimaging.gui.utility import compile_ui
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.filters_window import FiltersWindowView
 
@@ -15,13 +15,12 @@ from .presenter import Notification as PresNotification
 from .save_dialog import MWSaveDialog
 
 
-class MainWindowView(Qt.QMainWindow):
+class MainWindowView(BaseMainWindowView):
 
     active_stacks_changed = Qt.pyqtSignal()
 
     def __init__(self, config):
-        super(MainWindowView, self).__init__()
-        compile_ui('gui/ui/main_window.ui', self)
+        super(MainWindowView, self).__init__(None, 'gui/ui/main_window.ui')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("MantidImaging")
@@ -121,14 +120,6 @@ class MainWindowView(Qt.QMainWindow):
         :param algorithm_dialog: The algorithm dialog object
         """
         self.presenter.apply_to_data(stack_uuid, algorithm_dialog)
-
-    def show_error_dialog(self, msg=""):
-        """
-        Shows an error message.
-
-        :param msg: Error message string
-        """
-        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
 
     def closeEvent(self, event):
         """
