@@ -7,6 +7,7 @@ User Guide
 
    setting_up
    quick_start
+   troubleshooting
    io
    aggregate
    convert
