@@ -14,7 +14,7 @@ def _gui_register(form):
             'Select ROI on stack visualiser.', 'label', form=form)
 
     def custom_execute():
-        return partial(crop_coords._execute)
+        return partial(crop_coords.execute_single)
 
     params = {
         'region_of_interest': Parameters.ROI
