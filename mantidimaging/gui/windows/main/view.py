@@ -6,8 +6,8 @@ from logging import getLogger
 from PyQt5 import Qt, QtCore, QtGui
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.stack_visualiser import StackVisualiserView
-from mantidimaging.gui.filters_window import FiltersWindowView
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+from mantidimaging.gui.dialogs.filters import FiltersDialogView
 
 from .load_dialog import MWLoadDialog
 from .presenter import MainWindowPresenter
@@ -28,7 +28,7 @@ class MainWindowView(BaseMainWindowView):
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
 
-        self.filters_window = FiltersWindowView(self)
+        self.filters_window = FiltersDialogView(self)
 
         self.setup_shortcuts()
         self.update_shortcuts()

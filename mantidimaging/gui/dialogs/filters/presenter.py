@@ -13,7 +13,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (
         BlockQtSignals, get_auto_params_from_stack)
 
-from .model import FiltersWindowModel
+from .model import FiltersDialogModel
 
 
 class Notification(Enum):
@@ -24,12 +24,12 @@ class Notification(Enum):
     SCROLL_PREVIEW_DOWN = 5
 
 
-class FiltersWindowPresenter(BasePresenter):
+class FiltersDialogPresenter(BasePresenter):
 
     def __init__(self, view, main_window):
-        super(FiltersWindowPresenter, self).__init__(view)
+        super(FiltersDialogPresenter, self).__init__(view)
 
-        self.model = FiltersWindowModel(main_window)
+        self.model = FiltersDialogModel(main_window)
         self.main_window = main_window
 
     def notify(self, signal):

@@ -8,27 +8,7 @@ from PyQt5 import Qt
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension
 from mantidimaging.core.utility import size_calculator
-from mantidimaging.gui.utility import compile_ui
-
-
-def select_file(field, caption):
-    """
-    :param field: The field in which the result will be saved
-    :param caption: Title of the file browser window that will be opened
-    :return: True: If a file has been selected, False otherwise
-    """
-    assert isinstance(field, Qt.QLineEdit), (
-            "The passed object is of type {0}. This function only works with "
-            "QLineEdit".format(type(field)))
-
-    selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
-    # open file dialogue and set the text if file is selected
-    if selected_file:
-        field.setText(selected_file)
-        return True
-
-    # no file has been selected
-    return False
+from mantidimaging.gui.utility import (compile_ui, select_file)
 
 
 class MWLoadDialog(Qt.QDialog):

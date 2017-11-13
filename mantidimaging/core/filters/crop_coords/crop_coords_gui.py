@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
-from mantidimaging.gui.stack_visualiser import Parameters
+from mantidimaging.gui.windows.stack_visualiser import Parameters
 
 from . import crop_coords
 

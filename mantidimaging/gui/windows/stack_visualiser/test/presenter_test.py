@@ -8,9 +8,9 @@ import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.gui.stack_visualiser import (
+from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserPresenter, StackVisualiserView, ImageMode)
-from mantidimaging.gui.stack_visualiser import \
+from mantidimaging.gui.windows.stack_visualiser import \
         Notification as PresenterNotifications
 
 mock = import_mock()

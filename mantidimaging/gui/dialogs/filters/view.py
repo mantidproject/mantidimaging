@@ -9,20 +9,20 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.utility import (
         delete_all_widgets_from_layout)
 
-from .navigation_toolbar import FiltersWindowNavigationToolbar
-from .presenter import FiltersWindowPresenter
+from .navigation_toolbar import FiltersDialogNavigationToolbar
+from .presenter import FiltersDialogPresenter
 from .presenter import Notification as PresNotification
 
 
-class FiltersWindowView(BaseDialogView):
+class FiltersDialogView(BaseDialogView):
 
     auto_update_triggered = Qt.pyqtSignal()
 
     def __init__(self, main_window, cmap='Greys_r'):
-        super(FiltersWindowView, self).__init__(
-                None, 'gui/ui/filters_window.ui')
+        super(FiltersDialogView, self).__init__(
+                None, 'gui/ui/filters_dialog.ui')
 
-        self.presenter = FiltersWindowPresenter(self, main_window)
+        self.presenter = FiltersDialogPresenter(self, main_window)
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
@@ -31,7 +31,7 @@ class FiltersWindowView(BaseDialogView):
         self.handle_filter_selection(0)
 
         # Handle stack selection
-        self. stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.stack_selected_uuid.connect(
                 self.presenter.set_stack_uuid)
         self.stackSelector.stack_selected_uuid.connect(
@@ -48,7 +48,7 @@ class FiltersWindowView(BaseDialogView):
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.setParent(self)
 
-        self.toolbar = FiltersWindowNavigationToolbar(
+        self.toolbar = FiltersDialogNavigationToolbar(
                 self.canvas, self)
         self.toolbar.filter_window = self
 
@@ -87,7 +87,7 @@ class FiltersWindowView(BaseDialogView):
             lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
     def show(self):
-        super(FiltersWindowView, self).show()
+        super(FiltersDialogView, self).show()
         self.auto_update_triggered.emit()
 
     def handle_button(self, button):

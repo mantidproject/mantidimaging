@@ -4,16 +4,7 @@ from PyQt5 import Qt
 
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
-from mantidimaging.gui.utility import compile_ui
-
-
-def select_directory(field, caption):
-    assert isinstance(field, Qt.QLineEdit), (
-            "The passed object is of type {0}. This function only works with "
-            "QLineEdit".format(type(field)))
-
-    # open file dialogue and set the text if file is selected
-    field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
+from mantidimaging.gui.utility import (compile_ui, select_directory)
 
 
 class MWSaveDialog(Qt.QDialog):
