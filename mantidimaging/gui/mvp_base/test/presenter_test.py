@@ -1,5 +1,7 @@
 import unittest
 
+from testfixtures import LogCapture
+
 from mantidimaging.core.utility.special_imports import import_mock
 
 from mantidimaging.gui.mvp_base import (
@@ -30,6 +32,21 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         presenter.show_error("test message")
         view.show_error_dialog.assert_called_once_with("test message")
+
+    def test_bad_view_causes_errors_to_be_logged(self):
+        class V(object):
+            pass
+
+        view = V()
+        presenter = BasePresenter(view)
+
+        with LogCapture() as l:
+            presenter.show_error("test message")
+
+        l.check(
+            ('mantidimaging.gui.mvp_base.presenter', 'ERROR',
+             'Presenter error: test message')
+        )
 
 
 if __name__ == '__main__':

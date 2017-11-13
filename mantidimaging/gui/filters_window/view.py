@@ -31,19 +31,14 @@ class FiltersWindowView(BaseDialogView):
         self.handle_filter_selection(0)
 
         # Handle stack selection
-        self.stackSelector.currentIndexChanged[int].connect(
-                self.presenter.set_stack_index)
-        self.stackSelector.currentIndexChanged[int].connect(
+        self. stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.stack_selected_uuid.connect(
+                self.presenter.set_stack_uuid)
+        self.stackSelector.stack_selected_uuid.connect(
                 self.auto_update_triggered.emit)
 
         # Handle button clicks
         self.buttonBox.clicked.connect(self.handle_button)
-
-        # Refresh the stack list in the algorithm dialog whenever the active
-        # stacks change
-        main_window.active_stacks_changed.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.UPDATE_STACK_LIST))
 
         # Preview area
         self.cmap = cmap
@@ -92,7 +87,6 @@ class FiltersWindowView(BaseDialogView):
             lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
     def show(self):
-        self.presenter.notify(PresNotification.UPDATE_STACK_LIST)
         super(FiltersWindowView, self).show()
         self.auto_update_triggered.emit()
 

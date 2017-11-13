@@ -105,11 +105,14 @@ class MainWindowPresenter(BasePresenter):
             log.error("Failed to save stack: %s", str(task.error))
             self.show_error("Failed to save stack. See log for details.")
 
-    def stack_names(self):
-        return self.model.stack_names()
-
     def stack_list(self):
         return self.model.stack_list()
+
+    def stack_uuids(self):
+        return self.model.stack_uuids()
+
+    def stack_names(self):
+        return self.model.stack_names()
 
     def get_stack_visualiser(self, stack_uuid):
         return self.model.get_stack_visualiser(stack_uuid)

@@ -71,6 +71,9 @@ class MainWindowModel(object):
         # sort by user friendly name
         return sorted(stacks, key=lambda x: x[1])
 
+    def stack_uuids(self):
+        return list(zip(*self.stack_list()))[0] if self.active_stacks else []
+
     def stack_names(self):
         # unpacks the tuple and only gives the correctly sorted human readable
         # names

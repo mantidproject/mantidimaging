@@ -27,3 +27,5 @@ from . import (  # noqa: F401
         stack_visualiser)
 
 from .gui import execute  # noqa: F401
+
+del absolute_import, division, print_function  # noqa:F821
