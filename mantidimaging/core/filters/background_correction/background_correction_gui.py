@@ -9,11 +9,16 @@ from mantidimaging.core.utility import value_scaling
 from . import execute
 
 
-def _gui_register(form):
+def _gui_register(form, on_change):
     from mantidimaging.gui.utility import add_property_to_form
 
-    flatPath, _ = add_property_to_form('Flat', 'file', form=form)
-    darkPath, _ = add_property_to_form('Dark', 'file', form=form)
+    flatPath, _ = add_property_to_form(
+            'Flat', 'file',
+            form=form, on_change=on_change)
+
+    darkPath, _ = add_property_to_form(
+            'Dark', 'file',
+            form=form, on_change=on_change)
 
     def custom_execute():
         flat_path = str(flatPath.text())

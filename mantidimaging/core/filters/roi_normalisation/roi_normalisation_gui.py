@@ -5,11 +5,12 @@ from mantidimaging.gui.windows.stack_visualiser import Parameters
 from . import execute
 
 
-def _gui_register(form):
+def _gui_register(form, on_change):
     from mantidimaging.gui.utility import add_property_to_form
 
     add_property_to_form(
-            'Select ROI on stack visualiser.', 'label', form=form)
+            'Select ROI on stack visualiser.', 'label',
+            form=form, on_change=on_change)
 
     def custom_execute():
         return partial(execute)

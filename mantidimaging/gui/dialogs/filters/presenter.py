@@ -87,7 +87,8 @@ class FiltersDialogPresenter(BasePresenter):
         # Register new filter (adding it's property widgets to the properties
         # layout)
         self.model.setup_filter(
-                register_func(self.view.filterPropertiesLayout))
+                register_func(self.view.filterPropertiesLayout,
+                              self.view.auto_update_triggered.emit))
 
     def do_apply_filter(self):
         self.model.do_apply_filter()
@@ -97,41 +98,64 @@ class FiltersDialogPresenter(BasePresenter):
 
         progress = Progress.ensure_instance()
         progress.task_name = 'Filter preview'
-        progress.add_estimated_steps(9)
+        progress.add_estimated_steps(1)
 
         with progress:
             progress.update(msg='Getting stack')
             stack = self.model.get_stack()
+
+            # If there is no stack then clear the preview area
             if stack is None:
-                return
+                self.view.clear_preview_plots()
 
-            before_image_data = stack.get_image(self.model.preview_image_idx)
+            else:
+                # Add the remaining steps for calculating the preview
+                progress.add_estimated_steps(8)
 
-            # Update image before
-            self._update_preview_image(before_image_data,
-                                       self.view.preview_image_before,
-                                       self.view.preview_histogram_before,
-                                       progress)
+                before_image_data = stack.get_image(
+                        self.model.preview_image_idx)
 
-            # Generate sub-stack and run filter
-            progress.update(msg='Running preview filter')
-            exec_kwargs = get_auto_params_from_stack(
-                    stack, self.model.auto_props)
+                # Record the image axis range from the existing preview image
+                image_axis_ranges = (
+                    self.view.preview_image_before.get_xlim(),
+                    self.view.preview_image_before.get_ylim()
+                ) if self.view.preview_image_before.images else None
 
-            filtered_image_data = None
-            try:
-                sub_images = Images(np.asarray([before_image_data]))
-                self.model.apply_filter(sub_images, exec_kwargs)
-                filtered_image_data = sub_images.sample[0]
-            except Exception:
-                log.exception("Error applying filter for preview")
+                # Update image before
+                self._update_preview_image(
+                        before_image_data,
+                        self.view.preview_image_before,
+                        self.view.preview_histogram_before,
+                        progress)
 
-            # Update image after
-            if filtered_image_data is not None:
-                self._update_preview_image(filtered_image_data,
-                                           self.view.preview_image_after,
-                                           self.view.preview_histogram_after,
-                                           progress)
+                # Generate sub-stack and run filter
+                progress.update(msg='Running preview filter')
+                exec_kwargs = get_auto_params_from_stack(
+                        stack, self.model.auto_props)
+
+                filtered_image_data = None
+                try:
+                    sub_images = Images(np.asarray([before_image_data]))
+                    self.model.apply_filter(sub_images, exec_kwargs)
+                    filtered_image_data = sub_images.sample[0]
+                except Exception:
+                    log.exception("Error applying filter for preview")
+
+                # Update image after
+                if filtered_image_data is not None:
+                    self._update_preview_image(
+                            filtered_image_data,
+                            self.view.preview_image_after,
+                            self.view.preview_histogram_after,
+                            progress)
+
+                # Set the axis range on the newly created image to keep same
+                # zoom level/pan region
+                if image_axis_ranges is not None:
+                    self.view.preview_image_before.set_xlim(
+                            image_axis_ranges[0])
+                    self.view.preview_image_before.set_ylim(
+                            image_axis_ranges[1])
 
             # Redraw
             progress.update(msg='Redraw canvas')
