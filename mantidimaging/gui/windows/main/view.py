@@ -6,8 +6,9 @@ from logging import getLogger
 from PyQt5 import Qt, QtCore, QtGui
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+from mantidimaging.gui.dialogs.cor_tilt import CORTiltDialogView
 from mantidimaging.gui.dialogs.filters import FiltersDialogView
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 from .load_dialog import MWLoadDialog
 from .presenter import MainWindowPresenter
@@ -29,6 +30,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter = MainWindowPresenter(self, config)
 
         self.filters_window = FiltersDialogView(self)
+        self.cor_tilt_window = CORTiltDialogView(self)
 
         self.setup_shortcuts()
         self.update_shortcuts()
@@ -41,6 +43,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionOnlineDocumentation.triggered.connect(
                 self.open_online_documentation)
 
+        self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionFilters.triggered.connect(self.show_filters_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
@@ -65,6 +68,9 @@ class MainWindowView(BaseMainWindowView):
     def show_save_dialogue(self):
         self.save_dialogue = MWSaveDialog(self, self.stack_list())
         self.save_dialogue.show()
+
+    def show_cor_tilt_window(self):
+        self.cor_tilt_window.show()
 
     def show_filters_window(self):
         self.filters_window.show()

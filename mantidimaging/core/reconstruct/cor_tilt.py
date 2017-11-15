@@ -15,18 +15,18 @@ from mantidimaging.core.utility.optional_imports import (  # noqa: F401
         safe_import,
         tomopy_available as available)
 
-tomopy = safe_import('tomopy')
+import mantidimaging.external.tomopy_rotation as rotation
 
 
 def find_cor_at_slice(sample_data, slice_idx):
-    return tomopy.find_center_vo(
+    return rotation.find_center_vo(
           tomo=sample_data,
           ind=slice_idx,
           ratio=1.0,
           smin=0,
           smax=200,
-          srad=10,
-          step=2,
+          srad=10.0,
+          step=2.0,
           drop=0)
 
 
@@ -89,4 +89,4 @@ def calculate_cor_and_tilt(sample_data, roi, indices, progress=None):
 
         log.info("COR={}, tilt={} ({}deg)".format(cor, tilt, np.rad2deg(tilt)))
 
-    return tilt, cor, slices, cors
+    return tilt, cor, slices, cors, m
