@@ -21,8 +21,9 @@ class CORTiltDialogView(BaseDialogView):
 
         self.cmap = cmap
 
-        # Handle button clicks
-        self.buttonBox.clicked.connect(self.handle_button)
+        # Handle calculate button click
+        self.calculateButton.clicked.connect(
+                lambda: self.presenter.notify(PresNotification.RUN))
 
         # Handle stack selection
         self.stackSelector.subscribe_to_main_window(main_window)
@@ -51,17 +52,9 @@ class CORTiltDialogView(BaseDialogView):
         # Linear fit plot
         self.fit_figure, self.fit_canvas = add_mpl_figure(self.fitLayout)
         self.fit_plot = self.fit_figure.add_subplot(111)
+        self.update_fit_plot(None, None, None)
 
         self.set_results(0, 0)
-
-    def handle_button(self, button):
-        """
-        Handle button presses from the dialog button box.
-        """
-        role = self.buttonBox.buttonRole(button)
-
-        if role == QtWidgets.QDialogButtonBox.AcceptRole:
-            self.presenter.notify(PresNotification.RUN)
 
     def set_results(self, cor, tilt):
         self.resultCor.setValue(cor)
@@ -90,6 +83,10 @@ class CORTiltDialogView(BaseDialogView):
 
     def update_fit_plot(self, x_axis, cor_data, fit_data):
         self.fit_plot.cla()
+
+        # Set axes labels
+        self.fit_plot.set_xlabel('Slice')
+        self.fit_plot.set_ylabel('COR')
 
         # Plot COR data
         if cor_data is not None:
