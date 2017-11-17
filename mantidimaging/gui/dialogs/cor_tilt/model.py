@@ -58,10 +58,19 @@ class CORTiltDialogModel(object):
             self.slice_indices = np.arange(upper - 1, lower, -step)
 
     def run_finding(self, progress):
+        if self.stack is None:
+            raise ValueError('No image stack is provided')
+
+        if self.roi is None:
+            raise ValueError('No region of interest is defined')
+
+        if self.slice_indices is None:
+            raise ValueError('No slices are defined')
+
         self.tilt, self.cor, self.slices, self.cors, self.m = \
-                calculate_cor_and_tilt(
-                        self.sample, self.roi, self.slice_indices,
-                        progress=progress)
+            calculate_cor_and_tilt(
+                    self.sample, self.roi, self.slice_indices,
+                    progress=progress)
 
         return True
 
