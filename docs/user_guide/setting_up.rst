@@ -28,6 +28,32 @@ add Anaconda to your PATH in your :code:`.bashrc` file. Be sure to specify
 :code:`yes` at this point, this will ensure that the correct version of Python
 will be used when launching the package tools.
 
+Using an existing Anaconda distribution
+---------------------------------------
+
+You can make use of an existing Anaconda distribution (either Python 2 or Python
+3).
+
+Python 3.5 virtual environment
+##############################
+
+If you have an Anaconda distribution with Python 3 you must first create a
+virtual environment with Python 3.5 (this is due to requirements from
+dependencies). This is done using the command: :code:`conda create -n
+mantidimaging python=3.5 anaconda` (note that you can replace
+:code:`mantidimaging` with whatever name you would prefer).
+
+The virtual environment can then be activated using the command :code:`source
+activate mantidimaging`, this must be done before the :code:`mantidimaging`
+package can be used (even after installation).
+
+Dependencies
+############
+
+Run the following commands to install the required dependencies:
+
+:code:`conda install -c dgursoy tomopy=1.0.1`
+
 Installing the package
 ----------------------
 
@@ -48,7 +74,7 @@ Once the package is installed it can be launched via either of the following
 commands:
 
     - Command line: :code:`mantidimaging.sh <args...>`
-    - iPython: :code:`mantidimaging-ipython.sh <args...>`
+    - IPython: :code:`mantidimaging-ipython.sh <args...>`
     - GUI: :code:`mantidimaging-gui.sh <args...>`
 
 Note that if using Python version 3.5 you will have to activate the virtual
