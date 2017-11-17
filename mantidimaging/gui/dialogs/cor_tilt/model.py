@@ -57,10 +57,13 @@ class CORTiltDialogModel(object):
 
             self.slice_indices = np.arange(upper - 1, lower, -step)
 
-    def run_finding(self):
+    def run_finding(self, progress):
         self.tilt, self.cor, self.slices, self.cors, self.m = \
                 calculate_cor_and_tilt(
-                        self.sample, self.roi, self.slice_indices)
+                        self.sample, self.roi, self.slice_indices,
+                        progress=progress)
+
+        return True
 
     @property
     def preview_tilt_line_data(self):

@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 from enum import Enum
 from logging import getLogger
 
+from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 
 from .model import CORTiltDialogModel
@@ -74,6 +76,21 @@ class CORTiltDialogPresenter(BasePresenter):
         self.model.calculate_slices(self.view.sliceCount.value())
 
     def do_execute(self):
-        self.model.run_finding()
-        self.view.set_results(self.model.cor, self.model.tilt)
-        self.notify(Notification.UPDATE_PREVIEWS)
+        atd = AsyncTaskDialogView(self.view, auto_close=True)
+        kwargs = {'progress': Progress()}
+        kwargs['progress'].add_progress_handler(atd.presenter)
+
+        atd.presenter.set_task(self.model.run_finding)
+        atd.presenter.set_on_complete(self._on_finding_done)
+        atd.presenter.set_parameters(**kwargs)
+        atd.presenter.do_start_processing()
+
+    def _on_finding_done(self, task):
+        log = getLogger(__name__)
+
+        if task.was_successful():
+            self.view.set_results(self.model.cor, self.model.tilt)
+            self.notify(Notification.UPDATE_PREVIEWS)
+        else:
+            log.error("COR/Tilt finding failed: %s", str(task.error))
+            self.show_error("COR/Tilt finding failed. See log for details.")
