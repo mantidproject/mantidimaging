@@ -9,6 +9,7 @@ class CORTiltDialogModel(object):
 
     def __init__(self):
         self.stack = None
+        self.preview_idx = 0
         self.roi = None
         self.slice_indices = None
 
@@ -27,10 +28,16 @@ class CORTiltDialogModel(object):
     def sample(self):
         return self.stack.presenter.images.sample if self.stack else None
 
+    @property
+    def num_projections(self):
+        s = self.sample
+        return s.shape[0] if s is not None else 0
+
     def initial_select_data(self, stack):
         self.reset_results()
 
         self.stack = stack
+        self.preview_idx = 0
 
         if stack is not None:
             image_shape = self.sample[0].shape

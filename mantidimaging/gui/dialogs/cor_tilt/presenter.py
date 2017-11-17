@@ -45,6 +45,12 @@ class CORTiltDialogPresenter(BasePresenter):
         self.notify(Notification.UPDATE_PREVIEWS)
         self.notify(Notification.UPDATE_INDICES)
         self.view.set_results(0, 0)
+        self.view.previewStackIndex.setMaximum(self.model.num_projections - 1)
+        self.view.previewStackIndex.setValue(0)
+
+    def set_preview_idx(self, idx):
+        self.model.preview_idx = idx
+        self.notify(Notification.UPDATE_PREVIEWS)
 
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
@@ -54,8 +60,8 @@ class CORTiltDialogPresenter(BasePresenter):
         self.view.set_results(0, 0)
 
     def do_update_previews(self):
-        img_data = self.model.sample[0] if self.model.sample is not None \
-                else None
+        img_data = self.model.sample[self.model.preview_idx] \
+                if self.model.sample is not None else None
 
         self.view.update_image_preview(
                 img_data, self.model.preview_tilt_line_data, self.model.roi)

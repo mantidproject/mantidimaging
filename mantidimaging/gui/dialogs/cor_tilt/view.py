@@ -34,6 +34,10 @@ class CORTiltDialogView(BaseDialogView):
         self.setRoi.clicked.connect(
                 lambda: self.presenter.notify(PresNotification.CROP_TO_ROI))
 
+        # Handle preview image selection
+        self.previewStackIndex.valueChanged[int].connect(
+                self.presenter.set_preview_idx)
+
         # Handle index definition
         self.sliceCount.valueChanged[int].connect(
                 lambda: self.presenter.notify(PresNotification.UPDATE_INDICES))
