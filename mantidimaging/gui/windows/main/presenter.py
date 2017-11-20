@@ -65,19 +65,20 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             custom_name = task.kwargs['custom_name']
-            title = self.model.create_name(task.kwargs['selected_file']) if \
-                not custom_name else custom_name
-
-            dock_widget = self.view.create_stack_window(
-                    task.result, title=title)
-
-            stack_visualiser = dock_widget.widget()
-            self.model.add_stack(stack_visualiser, dock_widget)
-            self.view.active_stacks_changed.emit()
+            title = task.kwargs['selected_file'] if not custom_name \
+                else custom_name
+            self.create_new_stack(task.result, title)
 
         else:
             log.error("Failed to load stack: %s", str(task.error))
             self.show_error("Failed to load stack. See log for details.")
+
+    def create_new_stack(self, data, title):
+        title = self.model.create_name(title)
+        dock_widget = self.view.create_stack_window(data, title=title)
+        stack_visualiser = dock_widget.widget()
+        self.model.add_stack(stack_visualiser, dock_widget)
+        self.view.active_stacks_changed.emit()
 
     def save(self, indices=None):
         kwargs = {}

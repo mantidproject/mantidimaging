@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from logging import getLogger
 
+import math
+
 import numpy as np
 import scipy as sp
 
@@ -12,7 +14,6 @@ from mantidimaging.core.filters.crop_coords import execute_single as crop
 # check if the functionality of a module is available based on the presence of
 # optional libraries
 from mantidimaging.core.utility.optional_imports import (  # noqa: F401
-        safe_import,
         tomopy_available as available)
 
 import mantidimaging.external.tomopy_rotation as rotation
@@ -81,12 +82,31 @@ def calculate_cor_and_tilt(sample_data, roi, indices, progress=None):
         cor += roi[0]
         cors += roi[0]
 
-        # Caulcuate tilt angle
-        hyp = slices[-1]
-        adj = (m * slices[-1])
-        opp = np.sqrt(hyp ** 2 + adj ** 2)
-        tilt = np.arcsin(adj / opp)
+        # Calculate tilt angle
+        tilt = cors_to_tilt_angle(slices[-1], m)
 
         log.info("COR={}, tilt={} ({}deg)".format(cor, tilt, np.rad2deg(tilt)))
 
     return tilt, cor, slices, cors, m
+
+
+def cors_to_tilt_angle(slice_upper, m):
+    adj = slice_upper
+    opp = m * slice_upper
+    hyp = np.sqrt(adj ** 2 + opp ** 2)
+    return np.arcsin(opp / hyp)
+
+
+def tilt_angle_to_cors(theta, cor_zero, slice_range):
+    # Calculate max COR
+    adj = slice_range[-1] - slice_range[0]
+    adj_a = (math.pi / 2) - theta
+    cor_max = ((adj / np.sin(adj_a)) * np.sin(theta)) + cor_zero
+
+    # Interpolate COR over range
+    interpolated_cors = np.interp(
+            slice_range,
+            np.linspace(slice_range[0], slice_range[-1], 2),
+            np.asarray([cor_zero, cor_max]))
+
+    return interpolated_cors
