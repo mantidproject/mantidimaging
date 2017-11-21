@@ -65,6 +65,7 @@ from tomopy.recon.algorithm import recon
 import tomopy.util.dtype as dtype
 import os.path
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -237,8 +238,9 @@ def find_center_vo(tomo, ind=None, smin=-50, smax=50, srad=6, step=0.5,
         ind = tomo.shape[1] // 2
     _tomo = tomo[:, ind, :]
 
-    # Enable cache for FFTW.
-    pyfftw.interfaces.cache.enable()
+    if sys.version_info <= (3, 0):
+        # Enable cache for FFTW.
+        pyfftw.interfaces.cache.enable()
 
     # Reduce noise by smooth filters. Use different filters for coarse and fine search
     _tomo_cs = ndimage.filters.gaussian_filter(_tomo, (3, 1))
