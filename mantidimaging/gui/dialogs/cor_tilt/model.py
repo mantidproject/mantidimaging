@@ -9,6 +9,7 @@ class CORTiltDialogModel(object):
 
     def __init__(self):
         self.stack = None
+        self.preview_idx = 0
         self.roi = None
         self.slice_indices = None
 
@@ -27,10 +28,16 @@ class CORTiltDialogModel(object):
     def sample(self):
         return self.stack.presenter.images.sample if self.stack else None
 
+    @property
+    def num_projections(self):
+        s = self.sample
+        return s.shape[0] if s is not None else 0
+
     def initial_select_data(self, stack):
         self.reset_results()
 
         self.stack = stack
+        self.preview_idx = 0
 
         if stack is not None:
             image_shape = self.sample[0].shape
@@ -50,10 +57,22 @@ class CORTiltDialogModel(object):
 
             self.slice_indices = np.arange(upper - 1, lower, -step)
 
-    def run_finding(self):
+    def run_finding(self, progress):
+        if self.stack is None:
+            raise ValueError('No image stack is provided')
+
+        if self.roi is None:
+            raise ValueError('No region of interest is defined')
+
+        if self.slice_indices is None:
+            raise ValueError('No slices are defined')
+
         self.tilt, self.cor, self.slices, self.cors, self.m = \
-                calculate_cor_and_tilt(
-                        self.sample, self.roi, self.slice_indices)
+            calculate_cor_and_tilt(
+                    self.sample, self.roi, self.slice_indices,
+                    progress=progress)
+
+        return True
 
     @property
     def preview_tilt_line_data(self):
