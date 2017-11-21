@@ -46,16 +46,18 @@ class TomopyReconDialogModel(object):
             self.projection_angles = \
                 generate_projection_angles(max_angle, num_radiograms)
 
-    def reconstruct_slice(self):
+    def reconstruct_slice(self, progress):
         data = np.asarray([self.sample[self.preview_slice_idx]])
 
         return reconstruct(
                 sample=data,
                 cor=self.cors[self.preview_slice_idx],
-                proj_angles=self.projection_angles)
+                proj_angles=self.projection_angles,
+                progress=progress)
 
-    def reconstruct_volume(self):
+    def reconstruct_volume(self, progress):
         return reconstruct(
                 sample=self.sample,
                 cor=self.cors,
-                proj_angles=self.projection_angles)
+                proj_angles=self.projection_angles,
+                progress=progress)

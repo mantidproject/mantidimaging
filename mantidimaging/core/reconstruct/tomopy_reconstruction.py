@@ -20,7 +20,6 @@ def reconstruct(sample,
                 proj_angles=None,
                 ncores=None,
                 progress=None):
-
     progress = Progress.ensure_instance(progress)
 
     if ncores is None:
@@ -29,7 +28,7 @@ def reconstruct(sample,
 
     volume = None
     with progress:
-        # TODO
+        progress.update(msg='TomoPy reconstruction')
         volume = tomopy.recon(
                 ncore=ncores,
                 tomo=sample,

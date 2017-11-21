@@ -4,10 +4,15 @@ from enum import Enum
 from logging import getLogger
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 
 from .model import TomopyReconDialogModel
+
+
+LOG = getLogger(__name__)
 
 
 class Notification(Enum):
@@ -40,7 +45,7 @@ class TomopyReconDialogPresenter(BasePresenter):
 
         except Exception as e:
             self.show_error(e)
-            getLogger(__name__).exception("Notification handler failed")
+            LOG.exception("Notification handler failed")
 
     def set_stack_uuid(self, uuid):
         self.model.initial_select_data(
@@ -82,12 +87,42 @@ class TomopyReconDialogPresenter(BasePresenter):
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()
-        slice_data = self.model.reconstruct_slice()
-        self.view.update_recon_preview(slice_data[0])
+
+        atd = AsyncTaskDialogView(self.view, auto_close=True)
+        kwargs = {'progress': Progress()}
+        kwargs['progress'].add_progress_handler(atd.presenter)
+
+        atd.presenter.set_task(self.model.reconstruct_slice)
+        atd.presenter.set_on_complete(self._on_reconstruct_slice_done)
+        atd.presenter.set_parameters(**kwargs)
+        atd.presenter.do_start_processing()
+
+    def _on_reconstruct_slice_done(self, task):
+        if task.was_successful():
+            slice_data = task.result
+            self.view.update_recon_preview(slice_data[0])
+        else:
+            LOG.error('Reconstruction failed: %s', str(task.error))
+            self.show_error('Reconstruction failed. See log for details.')
 
     def do_reconstruct_volume(self):
         self.prepare_reconstruction()
-        volume_data = self.model.reconstruct_volume()
-        volume_stack = Images(volume_data)
-        name = '{}_recon'.format(self.model.stack.name)
-        self.main_window.presenter.create_new_stack(volume_stack, name)
+
+        atd = AsyncTaskDialogView(self.view, auto_close=True)
+        kwargs = {'progress': Progress()}
+        kwargs['progress'].add_progress_handler(atd.presenter)
+
+        atd.presenter.set_task(self.model.reconstruct_volume)
+        atd.presenter.set_on_complete(self._on_reconstruct_volume_done)
+        atd.presenter.set_parameters(**kwargs)
+        atd.presenter.do_start_processing()
+
+    def _on_reconstruct_volume_done(self, task):
+        if task.was_successful():
+            volume_data = task.result
+            volume_stack = Images(volume_data)
+            name = '{}_recon'.format(self.model.stack.name)
+            self.main_window.presenter.create_new_stack(volume_stack, name)
+        else:
+            LOG.error('Reconstruction failed: %s', str(task.error))
+            self.show_error('Reconstruction failed. See log for details.')
