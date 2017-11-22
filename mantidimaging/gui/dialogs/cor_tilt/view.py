@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt5 import QtWidgets
-
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 

@@ -40,10 +40,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         view = V()
         presenter = BasePresenter(view)
 
-        with LogCapture() as l:
+        with LogCapture() as lc:
             presenter.show_error("test message")
 
-        l.check(
+        lc.check(
             ('mantidimaging.gui.mvp_base.presenter', 'ERROR',
              'Presenter error: test message')
         )

@@ -47,18 +47,18 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     img_shape = first_sample_img.shape
 
     # forward all arguments to internal class for easy re-usage
-    l = ImageLoader(load_func, input_file_names, input_path_flat,
-                    input_path_dark, img_format, img_shape, data_dtype, cores,
-                    chunksize, parallel_load, indices, construct_sinograms,
-                    progress)
+    il = ImageLoader(load_func, input_file_names, input_path_flat,
+                     input_path_dark, img_format, img_shape, data_dtype, cores,
+                     chunksize, parallel_load, indices, construct_sinograms,
+                     progress)
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    flat_avg = l.load_and_avg_data(input_path_flat, "Flat")
+    flat_avg = il.load_and_avg_data(input_path_flat, "Flat")
 
-    dark_avg = l.load_and_avg_data(input_path_dark, "Dark")
+    dark_avg = il.load_and_avg_data(input_path_dark, "Dark")
 
-    sample_data = l.load_sample_data(input_file_names)
+    sample_data = il.load_sample_data(input_file_names)
 
     # if this is true, then the loaded sample data was created via the
     # stack_loader
