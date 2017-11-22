@@ -258,9 +258,6 @@ class StackVisualiserView(BaseMainWindowView):
             lambda: self.presenter.notify(
                 StackWindowNotification.RENAME_WINDOW))
 
-    def apply_to_data(self, algorithm_dialog):
-        self.presenter.apply_to_data(algorithm_dialog)
-
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed
         # otherwise there is a hanging reference
