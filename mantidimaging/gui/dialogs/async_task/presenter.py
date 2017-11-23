@@ -49,6 +49,10 @@ class AsyncTaskDialogPresenter(Qt.QObject, ProgressHandler):
         self.model.do_execute_async()
         self.view.show()
 
+    @property
+    def task_is_running(self):
+        return self.model.task_is_running
+
     def progress_update(self):
         self.progress_updated.emit(self.progress.completion(),
                                    self.progress.last_status_message())
