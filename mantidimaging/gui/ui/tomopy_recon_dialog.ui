@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>TomoPyReconstructionDialog</class>
+ <widget class="QDialog" name="TomoPyReconstructionDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>TomoPy Reconstruction</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -175,7 +175,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>TomoPyReconstructionDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
