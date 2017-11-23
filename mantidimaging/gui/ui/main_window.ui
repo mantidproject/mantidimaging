@@ -40,6 +40,7 @@
      <string>Reconstruct</string>
     </property>
     <addaction name="actionCorTilt"/>
+    <addaction name="actionTomopyRecon"/>
    </widget>
    <widget class="QMenu" name="menuProcessing">
     <property name="title">
@@ -109,6 +110,11 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionTomopyRecon">
+   <property name="text">
+    <string>TomoPy Reconstruction</string>
    </property>
   </action>
  </widget>

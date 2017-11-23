@@ -146,9 +146,9 @@ class TomoPyTool(AbstractTool):
                          "Algorithm: {2}...".format(
                              np.mean(cors), len(cors), alg))
 
-                # TODO need to expose the filters to CLI
-                # filter_name='parzen',
-                # filter_par=[5.],
+            # TODO need to expose the filters to CLI
+            # filter_name='parzen',
+            # filter_par=[5.],
             recon = self._tomopy.recon(
                 tomo=sample,
                 theta=proj_angles,

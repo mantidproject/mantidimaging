@@ -81,6 +81,10 @@ class AsyncTaskDialogModel(Qt.QObject):
         """
         self.task.start()
 
+    @property
+    def task_is_running(self):
+        return self.task.isRunning()
+
     def _on_task_exit(self):
         """
         Handler for task thread completion.

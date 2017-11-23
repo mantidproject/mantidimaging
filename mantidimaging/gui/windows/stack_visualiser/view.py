@@ -156,6 +156,10 @@ class StackVisualiserView(BaseMainWindowView):
                 self.slider_axis, self.presenter.get_image_count_on_axis() - 1)
 
     @property
+    def name(self):
+        return self.dock.windowTitle()
+
+    @property
     def current_roi(self):
         return self._current_roi
 

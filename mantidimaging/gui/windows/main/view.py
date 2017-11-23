@@ -8,6 +8,7 @@ from PyQt5 import Qt, QtCore, QtGui
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.dialogs.cor_tilt import CORTiltDialogView
 from mantidimaging.gui.dialogs.filters import FiltersDialogView
+from mantidimaging.gui.dialogs.tomopy_recon import TomopyReconDialogView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 from .load_dialog import MWLoadDialog
@@ -31,6 +32,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.filters_window = FiltersDialogView(self)
         self.cor_tilt_window = CORTiltDialogView(self)
+        self.tomopy_recon_window = TomopyReconDialogView(self)
 
         self.setup_shortcuts()
         self.update_shortcuts()
@@ -45,6 +47,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionFilters.triggered.connect(self.show_filters_window)
+        self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
@@ -74,6 +77,9 @@ class MainWindowView(BaseMainWindowView):
 
     def show_filters_window(self):
         self.filters_window.show()
+
+    def show_tomopy_recon_window(self):
+        self.tomopy_recon_window.show()
 
     def stack_list(self):
         return self.presenter.stack_list()
