@@ -5,6 +5,8 @@ from logging import getLogger
 import numpy as np
 import scipy as sp
 
+from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.filters.crop_coords import execute_single as crop
 
@@ -18,7 +20,7 @@ from mantidimaging.core.utility.optional_imports import (  # noqa: F401
 import mantidimaging.external.tomopy_rotation as rotation
 
 
-def find_cor_at_slice(sample_data, slice_idx):
+def find_cor_at_slice(slice_idx, sample_data):
     return rotation.find_center_vo(
           tomo=sample_data,
           ind=slice_idx,
@@ -30,7 +32,8 @@ def find_cor_at_slice(sample_data, slice_idx):
           drop=0)
 
 
-def calculate_cor_and_tilt(sample_data, roi, indices, progress=None):
+def calculate_cor_and_tilt(
+        sample_data, roi, indices, cores=None, progress=None):
     """
     :param sample_data: Full image stack
     :param roi: Region of interest from which to calculate CORs
@@ -62,15 +65,18 @@ def calculate_cor_and_tilt(sample_data, roi, indices, progress=None):
         fliped_data = np.flip(cropped_data, 1)
 
         # Obtain COR for each desired slice of ROI
-        cors = []
-        for idx in indices_in_roi_flipped:
-            progress.update(msg="COR at slice {}".format(idx))
-            cor = find_cor_at_slice(fliped_data, idx)
-            cors.append((idx, cor))
+        cors = pu.create_shared_array(
+                indices_in_roi_flipped.shape,
+                indices_in_roi_flipped.dtype)
+        np.copyto(cors, indices_in_roi_flipped)
 
-        # Collect data in Numpy array
-        cors = np.asarray(cors)
-        slices, cors = cors[:, 0], cors[:, 1]
+        f = psm.create_partial(find_cor_at_slice,
+                               fwd_func=psm.return_fwd_func,
+                               sample_data=fliped_data)
+
+        psm.execute(cors, f, cores=cores)
+
+        slices = indices_in_roi_flipped
 
         # Perform linear regression of calculated CORs against slice index
         progress.update(msg="Linear regression")
