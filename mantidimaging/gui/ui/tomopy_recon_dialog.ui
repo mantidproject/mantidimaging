@@ -165,7 +165,9 @@
  <tabstops>
   <tabstop>stackSelector</tabstop>
   <tabstop>maxProjAngle</tabstop>
+  <tabstop>cor</tabstop>
   <tabstop>tilt</tabstop>
+  <tabstop>previewSlice</tabstop>
   <tabstop>reconstructSlice</tabstop>
   <tabstop>reconstructVolume</tabstop>
   <tabstop>buttonBox</tabstop>
