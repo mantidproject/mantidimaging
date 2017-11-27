@@ -99,3 +99,11 @@ class CORTiltDialogView(BaseDialogView):
             self.fit_plot.plot(x_axis, fit_data)
 
         self.fit_canvas.draw()
+
+    def set_max_preview_idx(self, max_idx):
+        self.previewStackIndex.setValue(0)
+        self.previewStackIndex.setMaximum(max_idx)
+
+    @property
+    def slice_count(self):
+        return self.sliceCount.value()
