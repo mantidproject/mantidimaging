@@ -63,6 +63,9 @@ class Progress(object):
         # Levels of nesting when used as a context manager
         self.context_nesting_level = 0
 
+        # Flag to indicate cancellation of the current task
+        self.cancel_msg = None
+
         # Add initial step to history
         self.update(0, 'init')
 
@@ -154,7 +157,7 @@ class Progress(object):
         self.progress_handlers.append(handler)
         handler.progress = self
 
-    def update(self, steps=1, msg=''):
+    def update(self, steps=1, msg='', force_continue=False):
         """
         Updates the progress of the task.
 
@@ -186,15 +189,38 @@ class Progress(object):
             for cb in self.progress_handlers:
                 cb.progress_update()
 
+        # Force cancellation on progress update
+        if self.should_cancel and not force_continue:
+            raise RuntimeError('Task has been cancelled')
+
+    def cancel(self, msg='cancelled'):
+        """
+        Mark the task tree that uses this progress instance for cancellation.
+
+        Task should either periodically inspect should_cancel or have suitably
+        many calls to update() to be cancellable.
+        """
+        self.cancel_msg = msg
+
+    @property
+    def should_cancel(self):
+        """
+        Checks if the task should be cancelled.
+        """
+        return self.cancel_msg is not None
+
     def mark_complete(self, msg='complete'):
         """
         Marks the task as completed.
         """
         log = getLogger(__name__)
 
-        self.complete = True
-        self.update(msg=msg)
-        self.end_step = self.current_step
+        self.update(force_continue=True,
+                    msg=self.cancel_msg if self.should_cancel else msg)
+
+        if not self.should_cancel:
+            self.complete = True
+            self.end_step = self.current_step
 
         # Log elapsed time and final memory usage
         log.info("Elapsed time: %d sec.", self.execution_time())
