@@ -57,8 +57,14 @@ class Images(object):
     def metadata_load(self, f):
         self.properties = json.load(f)
 
+    def metadata_loads(self, s):
+        self.properties = json.loads(s)
+
     def metadata_save(self, f):
         json.dump(self.properties, f)
+
+    def metadata_saves(self):
+        return json.dumps(self.properties)
 
     @staticmethod
     def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):

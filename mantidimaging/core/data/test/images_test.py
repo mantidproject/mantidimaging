@@ -37,17 +37,36 @@ class ImagesTest(unittest.TestCase):
             for k in imgs.properties.keys():
                 self.assertTrue(k in s)
 
+        s = imgs.metadata_saves()
+        validate_str(s)
+
         f = StringIO()
         imgs.metadata_save(f)
         validate_str(f.getvalue())
 
-    def test_parse_metadata_str(self):
+    def test_parse_metadata_file(self):
         json_file = StringIO(
                 '{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
                 '"three"], "a_float": 3.65e-05, "a_bool": true}')
 
         imgs = Images()
         imgs.metadata_load(json_file)
+
+        def validate_prop(k, v):
+            self.assertEquals(imgs.properties[k], v)
+
+        validate_prop('a_bool', True)
+        validate_prop('a_string', 'yes')
+        validate_prop('a_int', 42)
+        validate_prop('a_arr', ['one', 'two', 'three'])
+
+    def test_parse_metadata_str(self):
+        json_str = \
+                '{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", ' \
+                '"three"], "a_float": 3.65e-05, "a_bool": true}'
+
+        imgs = Images()
+        imgs.metadata_loads(json_str)
 
         def validate_prop(k, v):
             self.assertEquals(imgs.properties[k], v)
