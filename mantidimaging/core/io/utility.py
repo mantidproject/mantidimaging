@@ -71,6 +71,10 @@ def get_file_names(path, img_format, prefix='', essential=True):
     """
     log = getLogger(__name__)
 
+    # Return no found files on None path
+    if path is None:
+        return []
+
     path = os.path.abspath(os.path.expanduser(path))
     extensions = get_candidate_file_extensions(img_format)
 

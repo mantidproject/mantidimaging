@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-
 from logging import getLogger
 
 import numpy as np
@@ -233,12 +231,12 @@ def load(input_path=None,
     metadata_filename = get_file_names(input_path, 'json', in_prefix,
                                        essential=False)
     metadata_filename = metadata_filename[0] if metadata_filename else None
-    if metadata_filename and os.path.exists(metadata_filename):
+    if metadata_filename:
         with open(metadata_filename) as f:
             images.metadata_load(f)
             LOG.debug('Loaded metadata from: {}'.format(metadata_filename))
     else:
-        LOG.debug('No metadata file found: {}'.format(metadata_filename))
+        LOG.debug('No metadata file found')
 
     return images
 
