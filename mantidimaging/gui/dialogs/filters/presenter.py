@@ -10,6 +10,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.windows.stack_visualiser import Parameters
 from mantidimaging.gui.utility import (
         BlockQtSignals, get_auto_params_from_stack)
 
@@ -74,8 +75,8 @@ class FiltersDialogPresenter(BasePresenter):
         self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
 
     def handle_roi_selection(self, roi):
-        if roi:
-            self.notify(Notification.UPDATE_PREVIEWS)
+        if roi and self.filter_uses_auto_property(Parameters.ROI):
+            self.view.auto_update_triggered.emit()
 
     def set_preview_image_index(self, image_idx):
         """
@@ -103,6 +104,10 @@ class FiltersDialogPresenter(BasePresenter):
         self.model.setup_filter(
                 register_func(self.view.filterPropertiesLayout,
                               self.view.auto_update_triggered.emit))
+
+    def filter_uses_auto_property(self, prop):
+        return prop in self.model.auto_props.values() if \
+                self.model.auto_props is not None else False
 
     def do_apply_filter(self):
         self.model.do_apply_filter()
