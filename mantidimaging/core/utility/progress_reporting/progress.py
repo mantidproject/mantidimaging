@@ -106,15 +106,17 @@ class Progress(object):
         """
         Gets the completion of the task in the range of 0.0 - 1.0
         """
-        return round(self.current_step / self.end_step, 3)
+        with self.lock:
+            return round(self.current_step / self.end_step, 3)
 
     def last_status_message(self):
         """
         Gets the message from the last progress update.
         """
-        if len(self.progress_history) > 0:
-            msg = self.progress_history[-1][2]
-            return msg if len(msg) > 0 else None
+        with self.lock:
+            if len(self.progress_history) > 0:
+                msg = self.progress_history[-1][2]
+                return msg if len(msg) > 0 else None
 
         return None
 
