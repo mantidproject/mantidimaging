@@ -11,8 +11,9 @@ import mantidimaging.core.testing.unit_test_helper as th
 
 from mantidimaging.helper import initialise_logging
 from mantidimaging.core.configs.recon_config import ReconstructionConfig
+from mantidimaging.core.data import Images
 from mantidimaging.core.io import loader
-from mantidimaging.core.io.saver import Saver, generate_names
+from mantidimaging.core.io.saver import Saver, save, generate_names
 from mantidimaging.core.testing import FileOutputtingTestCase
 
 
@@ -520,7 +521,19 @@ class IOTest(FileOutputtingTestCase):
         npt.assert_equal(exp_sinograms, loaded_images.sample)
 
     def test_metadata_round_trip(self):
-        self.fail('TODO: write this test')
+        # Create dummy image stack
+        sample = th.gen_img_shared_array_with_val(42.)
+        images = Images(sample)
+        images.properties['message'] = 'hello, world!'
+
+        # Save image stack
+        save(images, self.output_directory)
+
+        # Load image stack back
+        loaded_images = loader.load(self.output_directory)
+
+        # Ensure properties have been preserved
+        self.assertEquals(loaded_images.properties, images.properties)
 
 
 if __name__ == '__main__':
