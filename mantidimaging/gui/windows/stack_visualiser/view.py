@@ -22,7 +22,7 @@ from .presenter import Notification as StackWindowNotification
 class StackVisualiserView(BaseMainWindowView):
 
     image_updated = Qt.pyqtSignal()
-    roi_updated = Qt.pyqtSignal()
+    roi_updated = Qt.pyqtSignal('PyQt_PyObject')
 
     def __init__(self, parent, dock, images, data_traversal_axis=0,
                  cmap='Greys_r', block=False):
@@ -182,7 +182,8 @@ class StackVisualiserView(BaseMainWindowView):
         self.roi_selector.extents = (value[0], value[2], value[1], value[3]) \
             if value is not None else (0, 0, 0, 0)
 
-        self.roi_updated.emit()
+        # Notify of new ROI selected
+        self.roi_updated.emit(self.current_roi)
 
     def handle_canvas_scroll_wheel(self, event):
         """

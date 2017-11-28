@@ -59,11 +59,23 @@ class FiltersDialogPresenter(BasePresenter):
                 if uuid is not None else None)
 
     def set_stack(self, stack):
-        self.model.stack_presenter = stack.presenter
+        # Disconnect ROI update singal from previous stack
+        if self.model.stack:
+            self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
+
+        # Connect ROI update signal to newly selected stack
+        if stack:
+            stack.roi_updated.connect(self.handle_roi_selection)
+
+        self.model.stack = stack
 
         # Update the preview image index
         self.set_preview_image_index(0)
         self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+
+    def handle_roi_selection(self, roi):
+        if roi:
+            self.notify(Notification.UPDATE_PREVIEWS)
 
     def set_preview_image_index(self, image_idx):
         """

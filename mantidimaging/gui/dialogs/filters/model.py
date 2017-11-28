@@ -32,7 +32,7 @@ class FiltersDialogModel(object):
         self.preview_image_idx = 0
 
         # Execution info for current filter
-        self.stack_presenter = None
+        self.stack = None
         self.do_before = None
         self.execute = None
         self.do_after = None
@@ -81,6 +81,10 @@ class FiltersDialogModel(object):
         :param filter_idx: Index of the filter in the registry
         """
         return self.filters[filter_idx][1]
+
+    @property
+    def stack_presenter(self):
+        return self.stack.presenter if self.stack else None
 
     @property
     def num_images_in_stack(self):
