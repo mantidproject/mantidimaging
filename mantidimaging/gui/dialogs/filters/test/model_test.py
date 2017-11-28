@@ -31,7 +31,7 @@ class FiltersDialogModelTest(unittest.TestCase):
         self.sv_presenter = StackVisualiserPresenter(
                 self.sv_view, self.test_data, data_traversal_axis=0)
 
-        self.model = FiltersDialogModel(None)
+        self.model = FiltersDialogModel()
 
     def execute_mock(self, data):
         self.assertTrue(isinstance(data, np.ndarray))
@@ -59,7 +59,7 @@ class FiltersDialogModelTest(unittest.TestCase):
         self.assertTrue(len(self.model.filter_names) > 0)
 
     def test_do_apply_filter(self):
-        self.model.get_stack = lambda: self.sv_presenter
+        self.model.stack_presenter = self.sv_presenter
 
         execute = mock.MagicMock(
                 return_value=self.execute_mock)
@@ -70,7 +70,7 @@ class FiltersDialogModelTest(unittest.TestCase):
         execute.assert_called_once()
 
     def test_do_apply_filter_with_roi(self):
-        self.model.get_stack = lambda: self.sv_presenter
+        self.model.stack_presenter = self.sv_presenter
 
         execute = mock.MagicMock(
                 return_value=self.execute_mock_with_roi)
@@ -85,7 +85,7 @@ class FiltersDialogModelTest(unittest.TestCase):
         execute.assert_called_once()
 
     def test_do_apply_filter_pre_post_processing(self):
-        self.model.get_stack = lambda: self.sv_presenter
+        self.model.stack_presenter = self.sv_presenter
 
         execute = mock.MagicMock(
                 return_value=self.execute_mock)

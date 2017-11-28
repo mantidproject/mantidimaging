@@ -29,7 +29,7 @@ class FiltersDialogPresenter(BasePresenter):
     def __init__(self, view, main_window):
         super(FiltersDialogPresenter, self).__init__(view)
 
-        self.model = FiltersDialogModel(main_window)
+        self.model = FiltersDialogModel()
         self.main_window = main_window
 
     def notify(self, signal):
@@ -53,11 +53,13 @@ class FiltersDialogPresenter(BasePresenter):
     def max_preview_image_idx(self):
         return max(self.model.num_images_in_stack - 1, 0)
 
-    def set_stack_uuid(self, stack_uuid):
-        """
-        Sets the UUID of the currently selected stack.
-        """
-        self.model.stack_uuid = stack_uuid
+    def set_stack_uuid(self, uuid):
+        self.set_stack(
+                self.main_window.get_stack_visualiser(uuid)
+                if uuid is not None else None)
+
+    def set_stack(self, stack):
+        self.model.stack_presenter = stack.presenter
 
         # Update the preview image index
         self.set_preview_image_index(0)
@@ -102,7 +104,7 @@ class FiltersDialogPresenter(BasePresenter):
 
         with progress:
             progress.update(msg='Getting stack')
-            stack = self.model.get_stack()
+            stack = self.model.stack_presenter
 
             # If there is no stack then clear the preview area
             if stack is None:
