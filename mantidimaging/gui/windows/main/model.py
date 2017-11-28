@@ -32,7 +32,7 @@ class MainWindowModel(object):
                   overwrite, swap_axes, indices, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
         saver.save(
-            data=svp.images.sample,
+            data=svp.images,
             output_dir=output_dir,
             name_prefix=name_prefix,
             swap_axes=swap_axes,
