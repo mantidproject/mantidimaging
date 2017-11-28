@@ -91,17 +91,18 @@ def save(data,
     progress = Progress.ensure_instance(progress,
                                         task_name='Save')
 
-    if isinstance(data, Images):
-        metadata_filename = os.path.join(output_dir, name_prefix + '.json')
-        LOG.debug('Metadata filename: {}'.format(metadata_filename))
-        with open(metadata_filename, 'w') as f:
-            data.metadata_save(f)
-
-        data = data.sample
-
     # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
+
+    if isinstance(data, Images):
+        # Save metadata
+        metadata_filename = os.path.join(output_dir, name_prefix + '.json')
+        LOG.debug('Metadata filename: {}'.format(metadata_filename))
+        with open(metadata_filename, 'w+') as f:
+            data.metadata_save(f)
+
+        data = data.sample
 
     if swap_axes:
         data = np.swapaxes(data, 0, 1)

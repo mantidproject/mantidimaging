@@ -519,6 +519,9 @@ class IOTest(FileOutputtingTestCase):
 
         npt.assert_equal(exp_sinograms, loaded_images.sample)
 
+    def test_metadata_round_trip(self):
+        self.fail('TODO: write this test')
+
 
 if __name__ == '__main__':
     unittest.main()
