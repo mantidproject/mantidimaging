@@ -50,7 +50,7 @@ echo "Activating $py_env_name environment"
 source "$anaconda_bin"/activate py35
 
 echo "Installing dependencies"
-"$anaconda_bin"/conda install -y -q --override-channels -c dgursoy tomopy=1.0.1
+"$anaconda_bin"/conda install -y -q --override-channels -c conda-forge tomopy=1.0.1
 "$anaconda_bin"/conda install -y -q --override-channels -c defaults coverage flake8
 
 echo "Anaconda directory: $anaconda_dir"

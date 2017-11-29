@@ -52,7 +52,7 @@ Dependencies
 
 Run the following commands to install the required dependencies:
 
-:code:`conda install -c dgursoy tomopy=1.0.1`
+:code:`conda install -c conda-forge tomopy=1.0.1`
 
 Installing the package
 ----------------------
