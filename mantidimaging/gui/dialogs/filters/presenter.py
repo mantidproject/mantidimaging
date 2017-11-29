@@ -60,8 +60,11 @@ class FiltersDialogPresenter(BasePresenter):
         self.model.stack_uuid = stack_uuid
 
         # Update the preview image index
-        self.set_preview_image_index(0)
-        self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+        with BlockQtSignals([self.view]):
+            self.set_preview_image_index(0)
+            self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+
+        self.do_update_previews(False)
 
     def set_preview_image_index(self, image_idx):
         """
@@ -93,7 +96,7 @@ class FiltersDialogPresenter(BasePresenter):
     def do_apply_filter(self):
         self.model.do_apply_filter()
 
-    def do_update_previews(self):
+    def do_update_previews(self, maintain_axes=True):
         log = getLogger(__name__)
 
         progress = Progress.ensure_instance()
@@ -115,11 +118,13 @@ class FiltersDialogPresenter(BasePresenter):
                 before_image_data = stack.get_image(
                         self.model.preview_image_idx)
 
-                # Record the image axis range from the existing preview image
-                image_axis_ranges = (
-                    self.view.preview_image_before.get_xlim(),
-                    self.view.preview_image_before.get_ylim()
-                ) if self.view.preview_image_before.images else None
+                if maintain_axes:
+                    # Record the image axis range from the existing preview
+                    # image
+                    image_axis_ranges = (
+                        self.view.preview_image_before.get_xlim(),
+                        self.view.preview_image_before.get_ylim()
+                    ) if self.view.preview_image_before.images else None
 
                 # Update image before
                 self._update_preview_image(
@@ -149,13 +154,14 @@ class FiltersDialogPresenter(BasePresenter):
                             self.view.preview_histogram_after,
                             progress)
 
-                # Set the axis range on the newly created image to keep same
-                # zoom level/pan region
-                if image_axis_ranges is not None:
-                    self.view.preview_image_before.set_xlim(
-                            image_axis_ranges[0])
-                    self.view.preview_image_before.set_ylim(
-                            image_axis_ranges[1])
+                if maintain_axes:
+                    # Set the axis range on the newly created image to keep
+                    # same zoom level/pan region
+                    if image_axis_ranges is not None:
+                        self.view.preview_image_before.set_xlim(
+                                image_axis_ranges[0])
+                        self.view.preview_image_before.set_ylim(
+                                image_axis_ranges[1])
 
             # Redraw
             progress.update(msg='Redraw canvas')
