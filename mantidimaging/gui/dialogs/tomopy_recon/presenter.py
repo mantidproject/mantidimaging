@@ -7,7 +7,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import BlockQtSignals
 
 from .model import TomopyReconDialogModel
 
@@ -48,13 +47,16 @@ class TomopyReconDialogPresenter(BasePresenter):
             LOG.exception("Notification handler failed")
 
     def set_stack_uuid(self, uuid):
-        self.model.initial_select_data(
+        self.set_stack(
                 self.main_window.get_stack_visualiser(uuid)
                 if uuid is not None else None)
 
-        self.view.previewSlice.setValue(0)
+    def set_stack(self, stack):
+        self.model.initial_select_data(stack)
+
+        self.view.set_preview_slice_idx(0)
         if self.model.sample is not None:
-            self.view.previewSlice.setMaximum(self.model.sample.shape[0] - 1)
+            self.view.set_preview_slice_max_idx(self.model.sample.shape[0] - 1)
 
         # Update projection preview
         self.notify(Notification.UPDATE_PROJECTION_PREVIEW)
@@ -67,8 +69,7 @@ class TomopyReconDialogPresenter(BasePresenter):
             self.model.sample.shape[0] if self.model.sample is not None else 0
         idx = max(0, min(max_idx, idx))
         self.model.preview_slice_idx = idx
-        with BlockQtSignals([self.view.previewSlice]):
-            self.view.previewSlice.setValue(idx)
+        self.view.set_preview_slice_idx(0)
         self.notify(Notification.UPDATE_PROJECTION_PREVIEW)
 
     def do_update_previews(self):
@@ -79,11 +80,11 @@ class TomopyReconDialogPresenter(BasePresenter):
 
     def prepare_reconstruction(self):
         self.model.generate_cors(
-                self.view.cor.value(),
-                self.view.tilt.value())
+                self.view.get_cor(),
+                self.view.get_tilt())
 
         self.model.generate_projection_angles(
-                self.view.maxProjAngle.value())
+                self.view.get_max_proj_angle())
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()

@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
 from enum import Enum
 from PyQt5 import Qt
 
@@ -28,9 +29,10 @@ class AsyncTaskDialogPresenter(Qt.QObject, ProgressHandler):
         try:
             if signal == Notification.START:
                 self.do_start_processing()
+
         except Exception as e:
             self.show_error(e)
-            raise  # re-raise for full stack trace
+            getLogger(__name__).exception("Notification handler failed")
 
     def set_task(self, f):
         self.model.task.task_function = f

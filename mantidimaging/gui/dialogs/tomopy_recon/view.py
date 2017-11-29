@@ -4,6 +4,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.utility import BlockQtSignals
 
 from .navigation_toolbar import TomopyReconNavigationToolbar
 from .presenter import TomopyReconDialogPresenter
@@ -105,3 +106,19 @@ class TomopyReconDialogView(BaseDialogView):
             self.recon_plot.set_ylim(image_axis_ranges[1])
 
         self.recon_canvas.draw()
+
+    def set_preview_slice_idx(self, idx):
+        with BlockQtSignals([self.previewSlice]):
+            self.previewSlice.setValue(idx)
+
+    def set_preview_slice_max_idx(self, max_idx):
+        self.previewSlice.setMaximum(max_idx)
+
+    def get_cor(self):
+        return self.cor.value()
+
+    def get_tilt(self):
+        return self.tilt.value()
+
+    def get_max_proj_angle(self):
+        return self.maxProjAngle.value()

@@ -40,15 +40,17 @@ class CORTiltDialogPresenter(BasePresenter):
             getLogger(__name__).exception("Notification handler failed")
 
     def set_stack_uuid(self, uuid):
-        self.model.initial_select_data(
+        self.set_stack(
                 self.main_window.get_stack_visualiser(uuid)
                 if uuid is not None else None)
+
+    def set_stack(self, stack):
+        self.model.initial_select_data(stack)
 
         self.notify(Notification.UPDATE_PREVIEWS)
         self.notify(Notification.UPDATE_INDICES)
         self.view.set_results(0, 0)
-        self.view.previewStackIndex.setMaximum(self.model.num_projections - 1)
-        self.view.previewStackIndex.setValue(0)
+        self.view.set_max_preview_idx(self.model.num_projections - 1)
 
     def set_preview_idx(self, idx):
         self.model.preview_idx = idx
@@ -73,7 +75,7 @@ class CORTiltDialogPresenter(BasePresenter):
                                   self.model.preview_fit_y_data)
 
     def do_update_indices(self):
-        self.model.calculate_slices(self.view.sliceCount.value())
+        self.model.calculate_slices(self.view.slice_count)
 
     def do_execute(self):
         atd = AsyncTaskDialogView(self.view, auto_close=True)

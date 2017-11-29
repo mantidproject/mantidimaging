@@ -77,10 +77,10 @@ class CORTiltDialogModel(object):
     @property
     def preview_tilt_line_data(self):
         return ([self.cor, self.cors[-1]],
-                [self.slice_indices[0], self.slice_indices[-1]]) if self.cor \
-                        else None
+                [self.slice_indices[0], self.slice_indices[-1]]) \
+                        if self.cor is not None else None
 
     @property
     def preview_fit_y_data(self):
         return [self.m * s + self.cor for s in self.slices] \
-                if self.cor else None
+                if self.cor is not None else None
