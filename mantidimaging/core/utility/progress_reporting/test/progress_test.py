@@ -227,6 +227,26 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 8)
         self.assertEquals(p.completion(), 1.0)
 
+    def test_cancellation(self):
+        p = Progress()
+        p.add_estimated_steps(10)
+
+        with p:
+            for i in range(10):
+                if i < 6:
+                    p.update()
+
+                    if i == 5:
+                        p.cancel('nope')
+                        self.assertTrue(p.should_cancel)
+
+                else:
+                    with self.assertRaises(RuntimeError):
+                        p.update()
+
+        self.assertFalse(p.is_completed())
+        self.assertTrue(p.should_cancel)
+
 
 if __name__ == '__main__':
     unittest.main()
