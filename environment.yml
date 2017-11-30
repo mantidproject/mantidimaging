@@ -1,0 +1,22 @@
+name: mantidimaging
+
+channels:
+  - conda-forge
+  - dgursoy
+  - defaults
+
+dependencies:
+  - python=2.7
+  - tomopy
+  - pyfftw
+  - astropy
+  - pip:
+    - enum34
+    - IPython
+    - nose
+    - nose-randomly
+    - mock
+    - testfixtures
+    - flake8
+    - GitPython
+    - sphinx

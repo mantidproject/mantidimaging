@@ -1,0 +1,20 @@
+name: mantidimaging-py35
+
+channels:
+  - conda-forge
+  - dgursoy
+  - defaults
+
+dependencies:
+  - python=3.5
+  - tomopy
+  - pyfftw
+  - astropy
+  - pip:
+    - IPython
+    - nose
+    - nose-randomly
+    - testfixtures
+    - flake8
+    - GitPython
+    - sphinx
