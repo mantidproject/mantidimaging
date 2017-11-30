@@ -7,7 +7,7 @@ import numpy as np
 from mantidimaging.core.utility.projection_angles import \
         generate as generate_projection_angles
 from mantidimaging.core.reconstruct.cor_tilt import tilt_angle_to_cors
-from mantidimaging.core.reconstruct.tomopy_reconstruction import reconstruct
+from mantidimaging.core.reconstruct import tomopy_reconstruct
 
 
 LOG = getLogger(__name__)
@@ -50,14 +50,14 @@ class TomopyReconDialogModel(object):
     def reconstruct_slice(self, progress):
         data = np.asarray([self.sample[self.preview_slice_idx]])
 
-        return reconstruct(
+        return tomopy_reconstruct(
                 sample=data,
                 cor=self.cors[self.preview_slice_idx],
                 proj_angles=self.projection_angles,
                 progress=progress)
 
     def reconstruct_volume(self, progress):
-        return reconstruct(
+        return tomopy_reconstruct(
                 sample=self.sample,
                 cor=self.cors,
                 proj_angles=self.projection_angles,
