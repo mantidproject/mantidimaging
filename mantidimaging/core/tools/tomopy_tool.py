@@ -55,8 +55,6 @@ class TomoPyTool(AbstractTool):
         import tomopy.prep
         import tomopy.recon
         import tomopy.misc
-        import tomopy.io
-        import tomopy.sim
 
         # pretend we have the functions
         self.find_center = self._tomopy.find_center
@@ -67,8 +65,6 @@ class TomoPyTool(AbstractTool):
         self.misc = tomopy.misc
         self.prep = tomopy.prep
         self.recon = tomopy.recon
-        self.sim = tomopy.sim
-        self.io = tomopy.io
 
     def import_self(self):
         try:
@@ -76,7 +72,6 @@ class TomoPyTool(AbstractTool):
             import tomopy.prep
             import tomopy.recon
             import tomopy.misc
-            import tomopy.io
 
         except ImportError as exc:
             raise ImportError(
