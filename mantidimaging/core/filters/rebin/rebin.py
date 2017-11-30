@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 
-import scipy.misc
+import skimage.transform
 
 from mantidimaging import helper as h
 from mantidimaging.core.parallel import exclusive_mem as pem
@@ -78,13 +78,14 @@ def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
     progress = Progress.ensure_instance(progress,
                                         task_name='Rebin')
 
-    resized_data = _create_reshaped_array(data.shape, rebin_param)
+    resized_data, resized_shape = _create_reshaped_array(
+            data.shape, rebin_param)
 
     with progress:
         progress.update(msg="Starting PARALLEL image rebinning.")
 
-        f = pem.create_partial(
-                scipy.misc.imresize, size=rebin_param, interp=mode, mode='F')
+        f = pem.create_partial(skimage.transform.resize,
+                               output_shape=resized_shape[1:])
 
         resized_data = pem.execute(
             data, f, cores, chunksize, "Rebinning", output_data=resized_data)
@@ -99,14 +100,15 @@ def _execute_seq(data, rebin_param, mode, progress=None):
     with progress:
         progress.update(msg="Starting image rebinning.")
 
-        resized_data = _create_reshaped_array(data.shape, rebin_param)
+        resized_data, resized_shape = _create_reshaped_array(
+                data.shape, rebin_param)
 
         num_images = resized_data.shape[0]
         progress.add_estimated_steps(num_images)
 
         for idx in range(num_images):
-            resized_data[idx] = scipy.misc.imresize(
-                data[idx], rebin_param, interp=mode, mode='F')
+            resized_data[idx] = skimage.transform.resize(
+                    data[idx], resized_shape[1:])
             progress.update()
 
     return resized_data
@@ -125,4 +127,7 @@ def _create_reshaped_array(old_shape, rebin_param):
         expected_dimx = int(rebin_param * old_shape[2])
 
     # allocate memory for images with new dimensions
-    return pu.create_shared_array((num_images, expected_dimy, expected_dimx))
+    shape = (num_images, expected_dimy, expected_dimx)
+    data = pu.create_shared_array(shape)
+
+    return (data, shape)
