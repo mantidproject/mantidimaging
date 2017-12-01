@@ -25,7 +25,7 @@ Currently only one file structure is supported:
       │   ├── some_images_here_2.img_format
       │   ├── some_images_here_N.img_format
 
-.. image:: ../_static/aggregate.png
+.. image:: ../../_static/aggregate.png
     :alt: Aggregate Directory Structure
 
 For usage of this mode the following arguments are available:

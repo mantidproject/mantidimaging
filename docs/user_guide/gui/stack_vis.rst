@@ -1,4 +1,4 @@
-Stack Visuaaliser
-=================
+Stack Visualiser
+================
 
 TODO
