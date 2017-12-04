@@ -11,6 +11,8 @@ from mantidimaging.core.data import Images
 
 from .utility import DEFAULT_IO_FILE_FORMAT
 
+LOG = getLogger(__name__)
+
 DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'
 DEFAULT_NAME_POSTFIX = ''
@@ -89,12 +91,18 @@ def save(data,
     progress = Progress.ensure_instance(progress,
                                         task_name='Save')
 
-    if isinstance(data, Images):
-        data = data.sample
-
     # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
+
+    if isinstance(data, Images):
+        # Save metadata
+        metadata_filename = os.path.join(output_dir, name_prefix + '.json')
+        LOG.debug('Metadata filename: {}'.format(metadata_filename))
+        with open(metadata_filename, 'w+') as f:
+            data.metadata_save(f)
+
+        data = data.sample
 
     if swap_axes:
         data = np.swapaxes(data, 0, 1)
@@ -254,7 +262,7 @@ class Saver(object):
         # reshape so that it works with the internals
         data = data.reshape(1, data.shape[0], data.shape[1])
         if self._output_path is None:
-            getLogger(__name__).info(
+            LOG.info(
                 "Not saving a single image, "
                 "because no output path is specified."
             )
@@ -327,7 +335,7 @@ class Saver(object):
                                             task_name='Save Reconstruction')
 
         if self._output_path is None:
-            getLogger(__name__).warning(
+            LOG.warning(
                 "Not saving reconstruction output, "
                 "because no output path is specified."
             )
@@ -348,7 +356,7 @@ class Saver(object):
                 out_horiz_dir = os.path.join(out_recon_dir,
                                              self._out_horiz_slices_subdir)
 
-                getLogger(__name__).info(
+                LOG.info(
                     "Saving horizontal slices in: {0}".format(out_horiz_dir))
 
                 # save out the horizontal slices by flipping the axes

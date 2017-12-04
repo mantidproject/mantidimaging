@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
+import json
+
 import numpy as np
 
 from mantidimaging import helper as h
@@ -51,6 +53,18 @@ class Images(object):
     @property
     def filenames(self):
         return self._filenames
+
+    def metadata_load(self, f):
+        self.properties = json.load(f)
+
+    def metadata_loads(self, s):
+        self.properties = json.loads(s)
+
+    def metadata_save(self, f):
+        json.dump(self.properties, f)
+
+    def metadata_saves(self):
+        return json.dumps(self.properties)
 
     @staticmethod
     def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):

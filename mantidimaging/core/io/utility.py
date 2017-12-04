@@ -55,7 +55,7 @@ def get_candidate_file_extensions(ext):
     return [ext] + candidates
 
 
-def get_file_names(path, img_format, prefix=''):
+def get_file_names(path, img_format, prefix='', essential=True):
     """
     Get all file names in a directory with a specific format.
     :param path: The path to be checked.
@@ -64,9 +64,16 @@ def get_file_names(path, img_format, prefix=''):
 
     :param prefix: A specific prefix for the images
 
+    :param essential: Flag indicating if failure to find file should raise and
+                      exception
+
     :return: All the file names, sorted by ascending
     """
     log = getLogger(__name__)
+
+    # Return no found files on None path
+    if path is None:
+        return []
 
     path = os.path.abspath(os.path.expanduser(path))
     extensions = get_candidate_file_extensions(img_format)
@@ -78,7 +85,7 @@ def get_file_names(path, img_format, prefix=''):
         if len(files_match) > 0:
             break
 
-    if len(files_match) <= 0:
+    if len(files_match) <= 0 and essential:
         raise RuntimeError(
             "Could not find any image files in '{0}' with extensions: "
             "{1}".format(path, extensions))

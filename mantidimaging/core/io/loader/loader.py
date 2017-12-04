@@ -9,6 +9,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.io.utility import (
         get_file_names, DEFAULT_IO_FILE_FORMAT)
 
+LOG = getLogger(__name__)
+
 
 def _fitsread(filename):
     """
@@ -225,6 +227,17 @@ def load(input_path=None,
 
     images.check_data_stack(images)
 
+    # Search for and load metadata file
+    metadata_filename = get_file_names(input_path, 'json', in_prefix,
+                                       essential=False)
+    metadata_filename = metadata_filename[0] if metadata_filename else None
+    if metadata_filename:
+        with open(metadata_filename) as f:
+            images.metadata_load(f)
+            LOG.debug('Loaded metadata from: {}'.format(metadata_filename))
+    else:
+        LOG.debug('No metadata file found')
+
     return images
 
 
@@ -267,7 +280,7 @@ def load_sinogram(input_path=None,
     output_data = pu.create_shared_array(
             (1, num_images, img_shape[1]), dtype=dtype)
 
-    getLogger(__name__).info("Output data shape: {}".format(output_data.shape))
+    LOG.info("Output data shape: {}".format(output_data.shape))
 
     with progress:
         for idx, input_file in enumerate(input_file_names):
