@@ -70,9 +70,13 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.roi_selector = self.create_rectangle_selector(self.image_axis, 1)
 
+        self.toolbar_layout = Qt.QHBoxLayout()
+        self.toolbar_layout.addWidget(self.roi_selector_toolbar)
+        self.toolbar_layout.addWidget(self.image_selector_toolbar)
+        self.toolbar_layout.addStretch(1)
+
         self.matplotlib_layout.addWidget(self.toolbar)
-        self.matplotlib_layout.addWidget(self.roi_selector_toolbar)
-        self.matplotlib_layout.addWidget(self.image_selector_toolbar)
+        self.matplotlib_layout.addLayout(self.toolbar_layout)
         self.matplotlib_layout.addWidget(self.canvas)
 
         self.setup_shortcuts()
