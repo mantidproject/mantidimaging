@@ -51,6 +51,8 @@ class TomopyReconDialogPresenterTest(unittest.TestCase):
 
     def test_set_preview_slice_index(self):
         self.presenter.set_stack(self.stack)
+        self.view.set_preview_slice_idx.reset_mock()
 
         self.presenter.set_preview_slice_idx(5)
         self.assertEquals(self.presenter.model.preview_slice_idx, 5)
+        self.view.set_preview_slice_idx.assert_called_once_with(5)
