@@ -69,7 +69,7 @@ class TomopyReconDialogPresenter(BasePresenter):
             self.model.sample.shape[0] if self.model.sample is not None else 0
         idx = max(0, min(max_idx, idx))
         self.model.preview_slice_idx = idx
-        self.view.set_preview_slice_idx(0)
+        self.view.set_preview_slice_idx(idx)
         self.notify(Notification.UPDATE_PROJECTION_PREVIEW)
 
     def do_update_previews(self):
