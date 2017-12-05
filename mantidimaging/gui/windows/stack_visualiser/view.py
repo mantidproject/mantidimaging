@@ -11,8 +11,10 @@ from matplotlib.widgets import RectangleSelector, Slider
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.gui.utility import BlockQtSignals
 
 from . import histogram
+from .image_selector_widget import ImageSelectorWidget
 from .navigation_toolbar import StackNavigationToolbar
 from .roi_selector_widget import ROISelectorWidget
 from .presenter import StackVisualiserPresenter
@@ -23,6 +25,7 @@ class StackVisualiserView(BaseMainWindowView):
 
     image_updated = Qt.pyqtSignal()
     roi_updated = Qt.pyqtSignal('PyQt_PyObject')
+    image_selected = Qt.pyqtSignal(int)
 
     def __init__(self, parent, dock, images, data_traversal_axis=0,
                  cmap='Greys_r', block=False):
@@ -58,6 +61,9 @@ class StackVisualiserView(BaseMainWindowView):
         self.toolbar.stack_visualiser = self
 
         self.roi_selector_toolbar = ROISelectorWidget(self.canvas, self)
+        self.image_selector_toolbar = ImageSelectorWidget(self.canvas, self)
+        self.image_selector_toolbar.max_index = \
+            self.presenter.get_image_count_on_axis() - 1
 
         self.initialise_slider()
         self.initialise_image(cmap)
@@ -66,9 +72,14 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.matplotlib_layout.addWidget(self.toolbar)
         self.matplotlib_layout.addWidget(self.roi_selector_toolbar)
+        self.matplotlib_layout.addWidget(self.image_selector_toolbar)
         self.matplotlib_layout.addWidget(self.canvas)
 
         self.setup_shortcuts()
+
+        def presenter_set_image_index(i):
+            self.presenter.current_image_index = i
+        self.image_selected.connect(presenter_set_image_index)
 
     def initialise_image(self, cmap):
         """
@@ -84,7 +95,8 @@ class StackVisualiserView(BaseMainWindowView):
         self.color_bar = self.figure.colorbar(
                 self.image, cax=self.color_bar_axis)
 
-        self.roi_selector_toolbar.image_size = self.current_image().shape
+        self.roi_selector_toolbar.image_size = \
+            self.presenter.current_image.shape
 
         self.set_image_title_to_current_filename()
 
@@ -302,35 +314,14 @@ class StackVisualiserView(BaseMainWindowView):
     def create_slider(self, slider_axis, length):
         slider = Slider(
                 slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
-
-        slider.on_changed(self.show_current_image)
+        slider.on_changed(self.image_selected.emit)
         return slider
-
-    def set_index(self, index):
-        """
-        :param index: Index of image to show
-        """
-        max_index = self.presenter.get_image_count_on_axis() - 1
-        index = max(0, min(max_index, index))
-        self.slider.set_val(index)
-
-    def current_index(self):
-        """
-        :return: Current selected index as integer
-        """
-        return int(self.slider.val)
-
-    def current_image(self):
-        """
-        :return: The currently visualised image
-        """
-        return self.presenter.get_image(self.current_index())
 
     def current_image_roi(self):
         """
         :return: The selected region of the currently visualised image
         """
-        image = self.current_image()
+        image = self.presenter.current_image
         left, top, right, bottom = self.current_roi
         return image[top:bottom, left:right]
 
@@ -344,7 +335,7 @@ class StackVisualiserView(BaseMainWindowView):
                            window
         """
         # This can work with histogram.show_transparent or histogram.show
-        current_index = self.current_index()
+        current_index = self.presenter.current_image_index
         current_filename = self.presenter.get_image_filename(current_index)
         title = self.dock.windowTitle()
         legend = self._create_label(current_filename, current_index)
@@ -361,7 +352,7 @@ class StackVisualiserView(BaseMainWindowView):
                     self.current_image_roi(), legend=legend, title=title)
         else:
             histogram_function(
-                    self.current_image(), legend=legend, title=title)
+                    self.presenter.current_image, legend=legend, title=title)
 
     def _create_label(self, current_filename, current_index):
         common_label = "Index: {current_index}, {current_filename}"
@@ -375,13 +366,14 @@ class StackVisualiserView(BaseMainWindowView):
                                          current_index=current_index)
         return legend
 
-    def show_current_image(self, val=None):
+    def show_current_image(self):
         """
-        :param val: Unused, but required so that the function has the same
-                    signature as the expected one
+        Shows the current image on the plot area.
         """
+        image = self.presenter.current_image
+
         self.set_image_title_to_current_filename()
-        self.image.set_data(self.current_image())
+        self.image.set_data(image)
 
         # Update colour bar extents
         self.color_bar.set_clim(self.presenter.get_image_pixel_range())
@@ -389,16 +381,13 @@ class StackVisualiserView(BaseMainWindowView):
 
         # Update image extents
         old_extent = self.image.get_extent()
-        self.image.set_extent((
-            0, self.current_image().shape[1],
-            self.current_image().shape[0], 0)
-        )
+        self.image.set_extent((0, image.shape[1], image.shape[0], 0))
 
         # If the size of the image is different then clear the old ROI
         if old_extent != self.image.get_extent():
             self.presenter.do_clear_roi()
 
-        self.roi_selector_toolbar.image_size = self.current_image().shape
+        self.roi_selector_toolbar.image_size = image.shape
 
         self.canvas.draw()
 
@@ -406,10 +395,18 @@ class StackVisualiserView(BaseMainWindowView):
 
     def set_image_title_to_current_filename(self):
         self.image_axis.set_title(
-                self.presenter.get_image_filename(self.current_index()))
+                self.presenter.get_image_filename(
+                    self.presenter.current_image_index))
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))
+
+    def set_current_image_index(self, index):
+        with BlockQtSignals([self]):
+            self.slider.set_val(index)
+            self.image_selector_toolbar.index = index
+
+        self.show_current_image()
 
 
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
