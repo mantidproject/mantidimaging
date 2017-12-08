@@ -21,10 +21,8 @@ def ensure_tuple(val):
 
 class FiltersDialogModel(object):
 
-    def __init__(self, main_window):
+    def __init__(self):
         super(FiltersDialogModel, self).__init__()
-
-        self.main_window = main_window
 
         # Update the local filter registry
         self.filters = None
@@ -34,7 +32,7 @@ class FiltersDialogModel(object):
         self.preview_image_idx = 0
 
         # Execution info for current filter
-        self.stack_uuid = None
+        self.stack = None
         self.do_before = None
         self.execute = None
         self.do_after = None
@@ -84,19 +82,14 @@ class FiltersDialogModel(object):
         """
         return self.filters[filter_idx][1]
 
-    def get_stack(self):
-        """
-        Gets the presenter for the selected stack.
-        """
-        stack = self.main_window.get_stack_visualiser(self.stack_uuid) \
-            if self.stack_uuid else None
-        return stack.presenter if stack is not None else None
+    @property
+    def stack_presenter(self):
+        return self.stack.presenter if self.stack else None
 
     @property
     def num_images_in_stack(self):
-        stack = self.get_stack()
-        num_images = stack.images.sample.shape[0] \
-            if stack is not None else 0
+        num_images = self.stack_presenter.images.sample.shape[0] \
+            if self.stack_presenter is not None else 0
         return num_images
 
     def setup_filter(self, filter_specifics):
@@ -147,15 +140,14 @@ class FiltersDialogModel(object):
         """
         Applys the selected filter to the selected stack.
         """
-        # Get stack
-        stack = self.get_stack()
-        if not stack:
+        if not self.stack_presenter:
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        exec_kwargs = get_auto_params_from_stack(stack, self.auto_props)
+        exec_kwargs = get_auto_params_from_stack(
+                self.stack_presenter, self.auto_props)
 
-        self.apply_filter(stack.images, exec_kwargs)
+        self.apply_filter(self.stack_presenter.images, exec_kwargs)
 
         # Refresh the image in the stack visualiser
-        stack.notify(SVNotification.REFRESH_IMAGE)
+        self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)

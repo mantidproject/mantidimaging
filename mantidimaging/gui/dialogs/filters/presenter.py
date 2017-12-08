@@ -10,6 +10,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
         generate_histogram_from_image)
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.windows.stack_visualiser import Parameters
 from mantidimaging.gui.utility import (
         BlockQtSignals, get_auto_params_from_stack)
 
@@ -29,7 +30,7 @@ class FiltersDialogPresenter(BasePresenter):
     def __init__(self, view, main_window):
         super(FiltersDialogPresenter, self).__init__(view)
 
-        self.model = FiltersDialogModel(main_window)
+        self.model = FiltersDialogModel()
         self.main_window = main_window
 
     def notify(self, signal):
@@ -53,15 +54,29 @@ class FiltersDialogPresenter(BasePresenter):
     def max_preview_image_idx(self):
         return max(self.model.num_images_in_stack - 1, 0)
 
-    def set_stack_uuid(self, stack_uuid):
-        """
-        Sets the UUID of the currently selected stack.
-        """
-        self.model.stack_uuid = stack_uuid
+    def set_stack_uuid(self, uuid):
+        self.set_stack(
+                self.main_window.get_stack_visualiser(uuid)
+                if uuid is not None else None)
+
+    def set_stack(self, stack):
+        # Disconnect ROI update singal from previous stack
+        if self.model.stack:
+            self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
+
+        # Connect ROI update signal to newly selected stack
+        if stack:
+            stack.roi_updated.connect(self.handle_roi_selection)
+
+        self.model.stack = stack
 
         # Update the preview image index
         self.set_preview_image_index(0)
         self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+
+    def handle_roi_selection(self, roi):
+        if roi and self.filter_uses_auto_property(Parameters.ROI):
+            self.view.auto_update_triggered.emit()
 
     def set_preview_image_index(self, image_idx):
         """
@@ -90,6 +105,10 @@ class FiltersDialogPresenter(BasePresenter):
                 register_func(self.view.filterPropertiesLayout,
                               self.view.auto_update_triggered.emit))
 
+    def filter_uses_auto_property(self, prop):
+        return prop in self.model.auto_props.values() if \
+                self.model.auto_props is not None else False
+
     def do_apply_filter(self):
         self.model.do_apply_filter()
 
@@ -102,7 +121,7 @@ class FiltersDialogPresenter(BasePresenter):
 
         with progress:
             progress.update(msg='Getting stack')
-            stack = self.model.get_stack()
+            stack = self.model.stack_presenter
 
             # If there is no stack then clear the preview area
             if stack is None:
