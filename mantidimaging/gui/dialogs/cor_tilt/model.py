@@ -29,6 +29,10 @@ class CORTiltDialogModel(object):
         return self.stack.presenter.images.sample if self.stack else None
 
     @property
+    def images(self):
+        return self.stack.presenter.images if self.stack else None
+
+    @property
     def num_projections(self):
         s = self.sample
         return s.shape[0] if s is not None else 0
@@ -69,7 +73,7 @@ class CORTiltDialogModel(object):
 
         self.tilt, self.cor, self.slices, self.cors, self.m = \
             calculate_cor_and_tilt(
-                    self.sample, self.roi, self.slice_indices,
+                    self.images, self.roi, self.slice_indices,
                     progress=progress)
 
         return True
