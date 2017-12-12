@@ -111,9 +111,18 @@ class FiltersDialogModel(object):
         execute_func = self.execute()
 
         # Log execute function parameters
+        log.info("Filter kwargs: {}".format(exec_kwargs))
         if isinstance(execute_func, partial):
-            log.info("Filter args: {}".format(execute_func.args))
-            log.info("Filter kwargs: {}".format(execute_func.keywords))
+            log.info("Filter partial args: {}".format(execute_func.args))
+            log.info("Filter partial kwargs: {}".format(execute_func.keywords))
+
+            all_kwargs = execute_func.keywords.copy()
+            all_kwargs.update(exec_kwargs)
+
+            images.record_parameters_in_metadata(
+                    '{}.{}'.format(execute_func.func.__module__,
+                                   execute_func.func.__name__),
+                    *execute_func.args, **all_kwargs)
 
         # Do preprocessing and save result
         preproc_res = do_before_func(images.sample)
@@ -138,7 +147,7 @@ class FiltersDialogModel(object):
 
     def do_apply_filter(self):
         """
-        Applys the selected filter to the selected stack.
+        Applies the selected filter to the selected stack.
         """
         if not self.stack_presenter:
             raise ValueError('No stack selected')
