@@ -66,6 +66,20 @@ class Images(object):
     def metadata_saves(self):
         return json.dumps(self.properties)
 
+    def record_parameters_in_metadata(self, func, *args, **kwargs):
+        if 'operation_history' not in self.properties:
+            self.properties['operation_history'] = []
+
+        def accepted_type(o):
+            return type(o) in [str, int, float, bool, tuple]
+
+        self.properties['operation_history'].append({
+            'name': func,
+            'args': [a if accepted_type(a) else None for a in args],
+            'kwargs': dict([(k, v if accepted_type(v) else None) for
+                           (k, v) in kwargs.items()])
+        })
+
     @staticmethod
     def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
         h.check_data_stack(data, expected_dims, expected_class)
