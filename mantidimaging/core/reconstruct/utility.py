@@ -19,7 +19,7 @@ def get_roi_left_shift(images):
 
 
 def get_cor_tilt_from_images(images):
-    if const.AUTO_COR_TILT not in images.properties:
+    if not images or const.AUTO_COR_TILT not in images.properties:
         return (0, 0.0)
 
     auto_cor_tilt = images.properties[const.AUTO_COR_TILT]

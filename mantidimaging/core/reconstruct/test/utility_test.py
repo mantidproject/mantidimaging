@@ -134,3 +134,8 @@ class UtilityTest(TestCase):
         cor, tilt = utility.get_cor_tilt_from_images(imgs)
         self.assertEquals(cor, 0)
         self.assertEquals(tilt, 0.0)
+
+    def test_get_cor_tilt_from_images_none(self):
+        cor, tilt = utility.get_cor_tilt_from_images(None)
+        self.assertEquals(cor, 0)
+        self.assertEquals(tilt, 0.0)
