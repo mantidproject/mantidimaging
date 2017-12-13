@@ -4,6 +4,7 @@ from enum import Enum
 from logging import getLogger
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -63,6 +64,11 @@ class TomopyReconDialogPresenter(BasePresenter):
 
         # Remove existing reconstructed preview
         self.view.update_recon_preview(None)
+
+        # Pre-populate COR and tilt options
+        cor, tilt = get_cor_tilt_from_images(self.model.images)
+        self.view.set_cor(cor)
+        self.view.set_tilt(tilt)
 
     def set_preview_slice_idx(self, idx):
         max_idx = \

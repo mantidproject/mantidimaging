@@ -37,6 +37,8 @@ class TomopyReconDialogPresenterTest(unittest.TestCase):
 
         self.view.update_projection_preview.assert_called_once()
         self.view.update_recon_preview.assert_called_once_with(None)
+        self.view.set_cor.assert_called_once_with(0)
+        self.view.set_tilt.assert_called_once_with(0)
 
     def test_prepare_recon(self):
         self.presenter.set_stack(self.stack)
