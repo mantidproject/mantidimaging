@@ -75,3 +75,24 @@ class ImagesTest(unittest.TestCase):
         validate_prop('a_string', 'yes')
         validate_prop('a_int', 42)
         validate_prop('a_arr', ['one', 'two', 'three'])
+
+    def test_record_parameters_in_metadata(self):
+        imgs = Images()
+        imgs.record_parameters_in_metadata(
+                'test_func',
+                56, 9002, np.ndarray((800, 1024, 1024)), 'yes', False,
+                this=765, that=495.0, roi=(1, 2, 3, 4))
+
+        self.assertEquals(imgs.properties, {
+            'operation_history': [
+                {
+                    'name': 'test_func',
+                    'args': [56, 9002, None, 'yes', False],
+                    'kwargs': {
+                        'this': 765,
+                        'that': 495.0,
+                        'roi': (1, 2, 3, 4)
+                    }
+                }
+            ]
+        })
