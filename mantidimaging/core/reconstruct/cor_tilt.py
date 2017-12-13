@@ -34,9 +34,9 @@ def find_cor_at_slice(slice_idx, sample_data):
 
 
 def calculate_cor_and_tilt(
-        sample_data, roi, indices, cores=None, progress=None):
+        stack, roi, indices, cores=None, progress=None):
     """
-    :param sample_data: Full image stack
+    :param stack: Full image stack
     :param roi: Region of interest from which to calculate CORs
     :param indices: Indices of slices to calculate CORs (in full image
                     coordinates)
@@ -51,7 +51,7 @@ def calculate_cor_and_tilt(
     with progress:
         # Crop to the ROI from which the COR/tilt are calculated
         progress.update(msg="Crop to ROI")
-        cropped_data = crop(sample_data,
+        cropped_data = crop(stack.sample,
                             region_of_interest=roi,
                             progress=progress)
         log.debug("Cropped data shape: {}".format(cropped_data.shape))
@@ -92,6 +92,15 @@ def calculate_cor_and_tilt(
         tilt = cors_to_tilt_angle(slices[-1], m)
 
         log.info("COR={}, tilt={} ({}deg)".format(cor, tilt, np.rad2deg(tilt)))
+
+        # Record results in stack properties
+        stack.properties['auto_cor_tilt'] = {
+            'rotation_centre': cor,
+            'tilt_angle_rad': tilt,
+            'fitted_gradient': m,
+            'slice_indices': slices.tolist(),
+            'rotation_centres': cors.tolist()
+        }
 
     return tilt, cor, slices, cors, m
 
