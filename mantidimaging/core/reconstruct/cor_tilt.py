@@ -7,6 +7,7 @@ import math
 import numpy as np
 import scipy as sp
 
+from mantidimaging.core.data import const
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -94,7 +95,7 @@ def calculate_cor_and_tilt(
         log.info("COR={}, tilt={} ({}deg)".format(cor, tilt, np.rad2deg(tilt)))
 
         # Record results in stack properties
-        stack.properties['auto_cor_tilt'] = {
+        stack.properties[const.AUTO_COR_TILT] = {
             'rotation_centre': cor,
             'tilt_angle_rad': tilt,
             'fitted_gradient': m,

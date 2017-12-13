@@ -4,6 +4,7 @@ import json
 
 import numpy as np
 
+from . import const
 from mantidimaging import helper as h
 
 
@@ -67,13 +68,13 @@ class Images(object):
         return json.dumps(self.properties)
 
     def record_parameters_in_metadata(self, func, *args, **kwargs):
-        if 'operation_history' not in self.properties:
-            self.properties['operation_history'] = []
+        if const.OPERATION_HISTORY not in self.properties:
+            self.properties[const.OPERATION_HISTORY] = []
 
         def accepted_type(o):
             return type(o) in [str, int, float, bool, tuple]
 
-        self.properties['operation_history'].append({
+        self.properties[const.OPERATION_HISTORY].append({
             'name': func,
             'args': [a if accepted_type(a) else None for a in args],
             'kwargs': dict([(k, v if accepted_type(v) else None) for
