@@ -35,7 +35,8 @@ def find_cor_at_slice(slice_idx, sample_data):
 
 
 def calculate_cor_and_tilt(
-        stack, roi, indices, cores=None, progress=None):
+        stack, roi, indices, cores=None,
+        progress=None):
     """
     :param stack: Full image stack
     :param roi: Region of interest from which to calculate CORs
@@ -49,28 +50,27 @@ def calculate_cor_and_tilt(
     progress.task_name = "Find COR and tilt"
     progress.add_estimated_steps(3 + indices.size)
 
+    roi = (roi[0], 0, roi[2], stack.sample.shape[1])
+
     with progress:
         # Crop to the ROI from which the COR/tilt are calculated
         progress.update(msg="Crop to ROI")
-        cropped_data = crop(stack.sample,
+        cropped_data = crop(stack.sample[:, list(indices), :],
                             region_of_interest=roi,
                             progress=progress)
         log.debug("Cropped data shape: {}".format(cropped_data.shape))
 
-        # Indices relative to the top of the ROI in image order (top zero)
-        indices_in_roi = indices - roi[1]
-
         # Flip the Y coordinates so that 0 is the bottom of the sample
         # This allows us to take the Y intercept from the linear regression as
         # the COR
-        indices_in_roi_flipped = cropped_data.shape[1] - indices_in_roi
+        slices = cropped_data.shape[1] - (indices - roi[1])
         fliped_data = np.flip(cropped_data, 1)
 
+        cropped_indices = np.flip(np.arange(slices.shape[0]), 0)
+
         # Obtain COR for each desired slice of ROI
-        cors = pu.create_shared_array(
-                indices_in_roi_flipped.shape,
-                indices_in_roi_flipped.dtype)
-        np.copyto(cors, indices_in_roi_flipped)
+        cors = pu.create_shared_array(slices.shape, np.int32)
+        np.copyto(cors, cropped_indices)
 
         f = psm.create_partial(find_cor_at_slice,
                                fwd_func=psm.return_fwd_func,
@@ -78,8 +78,6 @@ def calculate_cor_and_tilt(
 
         progress.update(msg="Rotation centre finding")
         psm.execute(cors, f, cores=cores, progress=progress)
-
-        slices = indices_in_roi_flipped
 
         # Perform linear regression of calculated CORs against slice index
         progress.update(msg="Linear regression")
