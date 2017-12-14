@@ -23,5 +23,9 @@ class StackSelectorWidgetView(Qt.QComboBox):
     def subscribe_to_main_window(self, main_window):
         self.main_window = main_window
 
+        # Initial population of stack list
+        self.presenter.notify(Notification.RELOAD_STACKS)
+
+        # Connect signal for auto update on stack change
         self.main_window.active_stacks_changed.connect(
                 lambda: self.presenter.notify(Notification.RELOAD_STACKS))

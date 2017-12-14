@@ -30,6 +30,8 @@ class BaseDialogView(Qt.QDialog):
         if ui_file is not None:
             compile_ui(ui_file, self)
 
+        self.setAttribute(Qt.Qt.WA_DeleteOnClose)
+
     def show_error_dialog(self, msg=""):
         """
         Shows an error message.
