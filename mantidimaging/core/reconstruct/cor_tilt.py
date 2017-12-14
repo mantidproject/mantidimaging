@@ -47,7 +47,7 @@ def calculate_cor_and_tilt(
 
     progress = Progress.ensure_instance(progress)
     progress.task_name = "Find COR and tilt"
-    progress.add_estimated_steps(2 + indices.size)
+    progress.add_estimated_steps(3 + indices.size)
 
     with progress:
         # Crop to the ROI from which the COR/tilt are calculated
@@ -76,7 +76,8 @@ def calculate_cor_and_tilt(
                                fwd_func=psm.return_fwd_func,
                                sample_data=fliped_data)
 
-        psm.execute(cors, f, cores=cores)
+        progress.update(msg="Rotation centre finding")
+        psm.execute(cors, f, cores=cores, progress=progress)
 
         slices = indices_in_roi_flipped
 
