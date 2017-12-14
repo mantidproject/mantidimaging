@@ -28,6 +28,10 @@ class TomopyReconDialogModel(object):
         return self.stack.presenter.images.sample if self.stack is not None \
                 else None
 
+    @property
+    def images(self):
+        return self.stack.presenter.images if self.stack is not None else None
+
     def initial_select_data(self, stack):
         self.stack = stack
 

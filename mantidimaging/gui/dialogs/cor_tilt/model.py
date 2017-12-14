@@ -58,6 +58,7 @@ class CORTiltDialogModel(object):
             upper = self.roi[3]
 
             step = int((upper - lower) / count) if count != 0 else 1
+            step = step if step != 0 else 1
 
             self.slice_indices = np.arange(upper - 1, lower, -step)
 

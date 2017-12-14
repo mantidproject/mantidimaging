@@ -7,6 +7,7 @@ import math
 import numpy as np
 import scipy as sp
 
+from mantidimaging.core.data import const
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -46,7 +47,7 @@ def calculate_cor_and_tilt(
 
     progress = Progress.ensure_instance(progress)
     progress.task_name = "Find COR and tilt"
-    progress.add_estimated_steps(2 + indices.size)
+    progress.add_estimated_steps(3 + indices.size)
 
     with progress:
         # Crop to the ROI from which the COR/tilt are calculated
@@ -75,7 +76,8 @@ def calculate_cor_and_tilt(
                                fwd_func=psm.return_fwd_func,
                                sample_data=fliped_data)
 
-        psm.execute(cors, f, cores=cores)
+        progress.update(msg="Rotation centre finding")
+        psm.execute(cors, f, cores=cores, progress=progress)
 
         slices = indices_in_roi_flipped
 
@@ -94,7 +96,7 @@ def calculate_cor_and_tilt(
         log.info("COR={}, tilt={} ({}deg)".format(cor, tilt, np.rad2deg(tilt)))
 
         # Record results in stack properties
-        stack.properties['auto_cor_tilt'] = {
+        stack.properties[const.AUTO_COR_TILT] = {
             'rotation_centre': cor,
             'tilt_angle_rad': tilt,
             'fitted_gradient': m,

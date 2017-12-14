@@ -117,8 +117,14 @@ class TomopyReconDialogView(BaseDialogView):
     def get_cor(self):
         return self.cor.value()
 
+    def set_cor(self, value):
+        self.cor.setValue(value)
+
     def get_tilt(self):
         return self.tilt.value()
+
+    def set_tilt(self, value):
+        self.tilt.setValue(value)
 
     def get_max_proj_angle(self):
         return self.maxProjAngle.value()
