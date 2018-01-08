@@ -35,13 +35,17 @@ def find_cor_at_slice(slice_idx, sample_data):
 
 
 def calculate_cor_and_tilt(
-        stack, roi, indices, cores=None,
+        stack, roi, indices, projections=None, cores=None,
         progress=None):
     """
     :param stack: Full image stack
     :param roi: Region of interest from which to calculate CORs
     :param indices: Indices of slices to calculate CORs (in full image
                     coordinates)
+    :param projections: Indices of projections to include in calculation, by
+                        default all are used.
+    :param cores: Number of CPU cores to execute over, by default use all
+                  available
     :param progress: Progress reporting instance
     """
     log = getLogger(__name__)
@@ -55,7 +59,13 @@ def calculate_cor_and_tilt(
     with progress:
         # Crop to the ROI from which the COR/tilt are calculated
         progress.update(msg="Crop to ROI")
-        cropped_data = crop(stack.sample[:, list(indices), :],
+        if projections is None:
+            projections = np.arange(0, stack.sample.shape[0])
+        log.debug('Projection indices: {}'.format(list(projections)))
+        sample_data = \
+            stack.sample[list(projections), :, :][:, list(indices), :]
+        log.debug('Sample data shape: {}'.format(sample_data.shape))
+        cropped_data = crop(sample_data,
                             region_of_interest=roi,
                             progress=progress)
         log.debug("Cropped data shape: {}".format(cropped_data.shape))
@@ -63,9 +73,9 @@ def calculate_cor_and_tilt(
         # Flip the Y coordinates so that 0 is the bottom of the sample
         # This allows us to take the Y intercept from the linear regression as
         # the COR
-        slices = cropped_data.shape[1] - (indices - roi[1])
         fliped_data = np.flip(cropped_data, 1)
 
+        slices = cropped_data.shape[1] - (indices - roi[1])
         cropped_indices = np.flip(np.arange(slices.shape[0]), 0)
 
         # Obtain COR for each desired slice of ROI

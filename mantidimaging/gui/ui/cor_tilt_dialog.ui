@@ -62,15 +62,35 @@
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="sliceCountLabel">
             <property name="text">
              <string>Number of slices:</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QSpinBox" name="sliceCount">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>9999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="projectionCountLabel">
+            <property name="text">
+             <string>Number of projections:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="projectionCount">
+            <property name="minimum">
+             <number>1</number>
+            </property>
             <property name="maximum">
              <number>9999</number>
             </property>
@@ -183,6 +203,17 @@
    <header>mantidimaging.gui.widgets.stack_selector</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>stackSelector</tabstop>
+  <tabstop>setRoi</tabstop>
+  <tabstop>previewStackIndex</tabstop>
+  <tabstop>projectionCount</tabstop>
+  <tabstop>sliceCount</tabstop>
+  <tabstop>calculateButton</tabstop>
+  <tabstop>resultCor</tabstop>
+  <tabstop>resultTilt</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

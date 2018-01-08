@@ -39,6 +39,9 @@ class CORTiltDialogView(BaseDialogView):
         # Handle index definition
         self.sliceCount.valueChanged[int].connect(
                 lambda: self.presenter.notify(PresNotification.UPDATE_INDICES))
+        self.projectionCount.valueChanged[int].connect(
+                lambda: self.presenter.notify(
+                    PresNotification.UPDATE_PROJECTIONS))
 
         def add_mpl_figure(layout):
             figure = Figure()
@@ -107,3 +110,7 @@ class CORTiltDialogView(BaseDialogView):
     @property
     def slice_count(self):
         return self.sliceCount.value()
+
+    @property
+    def projection_count(self):
+        return self.projectionCount.value()

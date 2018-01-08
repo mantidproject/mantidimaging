@@ -14,7 +14,8 @@ class Notification(Enum):
     CROP_TO_ROI = 1
     UPDATE_PREVIEWS = 2
     UPDATE_INDICES = 3
-    RUN = 4
+    UPDATE_PROJECTIONS = 4
+    RUN = 5
 
 
 class CORTiltDialogPresenter(BasePresenter):
@@ -32,6 +33,8 @@ class CORTiltDialogPresenter(BasePresenter):
                 self.do_update_previews()
             elif signal == Notification.UPDATE_INDICES:
                 self.do_update_indices()
+            elif signal == Notification.UPDATE_PROJECTIONS:
+                self.do_update_projections()
             elif signal == Notification.RUN:
                 self.do_execute()
 
@@ -76,6 +79,9 @@ class CORTiltDialogPresenter(BasePresenter):
 
     def do_update_indices(self):
         self.model.calculate_slices(self.view.slice_count)
+
+    def do_update_projections(self):
+        self.model.calculate_projections(self.view.projection_count)
 
     def do_execute(self):
         atd = AsyncTaskDialogView(self.view, auto_close=True)
