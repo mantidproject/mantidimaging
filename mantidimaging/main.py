@@ -14,17 +14,8 @@ warnings.formatwarning = \
     formatwarning_orig(message, category, filename, lineno, line='')
 
 
-def check_version_info():
-    python_version = sys.version_info
-    if python_version < (2, 7, 0):
-        raise RuntimeError(
-            "Not running this script as it requires Python >= 2.7. "
-            "Version found: {0}".format(python_version))
-
-
 def main(default_args):
     h.initialise_logging()
-    check_version_info()
 
     config = recon_config.grab_full_config(default_args)
 
