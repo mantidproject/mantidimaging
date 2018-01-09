@@ -17,13 +17,13 @@ from mantidimaging.core.filters.crop_coords import execute_single as crop
 # check if the functionality of a module is available based on the presence of
 # optional libraries
 from mantidimaging.core.utility.optional_imports import (  # noqa: F401
-        tomopy_available as available)
+        safe_import, tomopy_available as available)
 
-import mantidimaging.external.tomopy_rotation as rotation
+tomopy = safe_import('tomopy')
 
 
 def find_cor_at_slice(slice_idx, sample_data):
-    return rotation.find_center_vo(
+    return tomopy.find_center_vo(
           tomo=sample_data,
           ind=slice_idx,
           ratio=1.0,

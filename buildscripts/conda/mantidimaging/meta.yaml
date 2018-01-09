@@ -16,7 +16,7 @@ requirements:
     - numpy
     - scipy
     - matplotlib
-    - tomopy
+    - tomopy 1.1.2
     - pyqt
 
 test:

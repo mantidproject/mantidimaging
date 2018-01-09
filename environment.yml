@@ -7,7 +7,7 @@ channels:
 
 dependencies:
   - python=2.7
-  - tomopy
+  - tomopy=1.1.2
   - pyfftw
   - astropy
   - pip:
