@@ -39,6 +39,7 @@ class StackVisualiserPresenter(BasePresenter):
         self.axis = data_traversal_axis
         self.mode = ImageMode.STACK
         self.summed_image = None
+        self._current_image_index = 0
 
     def notify(self, signal):
         try:
@@ -118,6 +119,24 @@ class StackVisualiserPresenter(BasePresenter):
         # Disable slider in sum mode
         self.view.slider.set_active(mode == ImageMode.STACK)
 
+    @property
+    def current_image_index(self):
+        return self._current_image_index
+
+    @current_image_index.setter
+    def current_image_index(self, value):
+        if self.mode == ImageMode.STACK:
+            max_index = self.get_image_count_on_axis() - 1
+            self._current_image_index = max(0, min(max_index, value))
+            self.view.set_current_image_index(self._current_image_index)
+
+    @property
+    def current_image(self):
+        """
+        :return: The currently visualised image
+        """
+        return self.get_image(self._current_image_index)
+
     def get_image(self, index):
         if self.mode == ImageMode.STACK:
             if self.axis == 0:
@@ -164,9 +183,8 @@ class StackVisualiserPresenter(BasePresenter):
         Scrolls through the stack by a given number of images.
         :param offset: Number of images to scroll through stack
         """
-        if self.mode == ImageMode.STACK:
-            idx = self.view.current_index() + offset
-            self.view.set_index(idx)
+        idx = self.current_image_index + offset
+        self.current_image_index = idx
 
     def get_parameter_value(self, parameter):
         """

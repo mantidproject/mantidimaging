@@ -86,19 +86,31 @@ class StackVisualiserPresenterTest(unittest.TestCase):
                 self.test_data.sample.shape[self.presenter.axis])
 
     def test_scroll_stack(self):
-        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.current_image_index = 3
+        self.view.set_current_image_index.reset_mock()
+
         self.presenter.do_scroll_stack(2)
-        self.view.set_index.assert_called_once_with(5)
+
+        self.assertEquals(self.presenter.current_image_index, 5)
+        self.view.set_current_image_index.assert_called_once_with(5)
 
     def test_do_scroll_up(self):
-        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.current_image_index = 3
+        self.view.set_current_image_index.reset_mock()
+
         self.presenter.notify(PresenterNotifications.SCROLL_UP)
-        self.view.set_index.assert_called_once_with(4)
+
+        self.assertEquals(self.presenter.current_image_index, 4)
+        self.view.set_current_image_index.assert_called_once_with(4)
 
     def test_do_scroll_down(self):
-        self.view.current_index = mock.MagicMock(return_value=3)
+        self.presenter.current_image_index = 3
+        self.view.set_current_image_index.reset_mock()
+
         self.presenter.notify(PresenterNotifications.SCROLL_DOWN)
-        self.view.set_index.assert_called_once_with(2)
+
+        self.assertEquals(self.presenter.current_image_index, 2)
+        self.view.set_current_image_index.assert_called_once_with(2)
 
     def test_summed_image_creation(self):
         test_data = self.test_data.sample
@@ -137,7 +149,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         # Ensure scroll stack events are not processed
         self.view.current_index = mock.MagicMock(return_value=3)
         self.presenter.notify(PresenterNotifications.SCROLL_UP)
-        self.view.set_index.assert_not_called()
+        self.view.set_current_image_index.assert_not_called()
 
 
 if __name__ == '__main__':
