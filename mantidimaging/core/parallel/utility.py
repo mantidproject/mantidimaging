@@ -1,6 +1,11 @@
 from __future__ import (absolute_import, division, print_function)
 
+from logging import getLogger
+
 import numpy as np
+
+
+LOG = getLogger(__name__)
 
 
 def create_shared_array(shape, dtype=np.float32):
@@ -24,6 +29,10 @@ def create_shared_array(shape, dtype=np.float32):
     length = 1
     for axis_length in shape:
         length *= axis_length
+
+    LOG.debug(
+        'Requested shared array with shape={}, length={}, dtype={}'.format(
+            shape, length, dtype))
 
     shared_array_base = sharedctypes.RawArray(ctype, length)
 
