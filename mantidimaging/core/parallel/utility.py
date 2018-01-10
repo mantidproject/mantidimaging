@@ -7,7 +7,7 @@ LOG = getLogger(__name__)
 
 
 def create_shared_array(shape, dtype=np.float32):
-    from multiprocessing import sharedctypes
+    from multiprocessing import heap
     import ctypes
 
     ctype = ctypes.c_float  # default to numpy float32 / C type float
@@ -28,14 +28,21 @@ def create_shared_array(shape, dtype=np.float32):
     for axis_length in shape:
         length *= axis_length
 
+    size = ctypes.sizeof(ctype(1)) * length
+
     LOG.debug(
-        'Requested shared array with shape={}, length={}, dtype={}'.format(
-            shape, length, dtype))
+        'Requested shared array with shape={}, length={}, size={}, '
+        'dtype={}'.format(
+            shape, length, size, dtype))
 
-    shared_array_base = sharedctypes.RawArray(ctype, length)
+    arena = heap.Arena(size)
+    mem = memoryview(arena.buffer)
 
-    # create a numpy array from shared array
-    data = np.frombuffer(shared_array_base, dtype=dtype)
+    array_type = ctype * length
+    array = array_type.from_buffer(mem)
+
+    data = np.frombuffer(array, dtype=dtype)
+
     return data.reshape(shape)
 
 
