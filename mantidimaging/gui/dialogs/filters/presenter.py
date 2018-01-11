@@ -162,8 +162,9 @@ class FiltersDialogPresenter(BasePresenter):
                     sub_images = Images(np.asarray([before_image_data]))
                     self.model.apply_filter(sub_images, exec_kwargs)
                     filtered_image_data = sub_images.sample[0]
-                except Exception:
-                    log.exception("Error applying filter for preview")
+                except Exception as e:
+                    log.debug(
+                            "Error applying filter for preview: {}".format(e))
 
                 # Update image after
                 if filtered_image_data is not None:
