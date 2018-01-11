@@ -103,9 +103,17 @@ class CORTiltDialogView(BaseDialogView):
 
         self.fit_canvas.draw()
 
-    def set_max_preview_idx(self, max_idx):
+    def set_num_projections(self, count):
+        """
+        Set the number of projections in the input dataset.
+        """
+        # Preview image control
         self.previewStackIndex.setValue(0)
-        self.previewStackIndex.setMaximum(max_idx)
+        self.previewStackIndex.setMaximum(count - 1)
+
+        # Projection downsample control
+        self.projectionCount.setMaximum(count)
+        self.projectionCount.setValue(count)
 
     @property
     def slice_count(self):

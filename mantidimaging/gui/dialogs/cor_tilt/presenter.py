@@ -53,7 +53,7 @@ class CORTiltDialogPresenter(BasePresenter):
         self.notify(Notification.UPDATE_PREVIEWS)
         self.notify(Notification.UPDATE_INDICES)
         self.view.set_results(0, 0)
-        self.view.set_max_preview_idx(self.model.num_projections - 1)
+        self.view.set_num_projections(self.model.num_projections)
 
     def set_preview_idx(self, idx):
         self.model.preview_idx = idx
