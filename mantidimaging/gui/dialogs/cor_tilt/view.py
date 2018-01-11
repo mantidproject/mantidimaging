@@ -36,12 +36,13 @@ class CORTiltDialogView(BaseDialogView):
         self.previewStackIndex.valueChanged[int].connect(
                 self.presenter.set_preview_idx)
 
-        # Handle index definition
+        # Handle calculation parameters
         self.sliceCount.valueChanged[int].connect(
                 lambda: self.presenter.notify(PresNotification.UPDATE_INDICES))
         self.projectionCount.valueChanged[int].connect(
                 lambda: self.presenter.notify(
                     PresNotification.UPDATE_PROJECTIONS))
+        self.projectionCountReset.clicked.connect(self.reset_projection_count)
 
         def add_mpl_figure(layout):
             figure = Figure()
@@ -114,6 +115,12 @@ class CORTiltDialogView(BaseDialogView):
         # Projection downsample control
         self.projectionCount.setMaximum(count)
         self.projectionCount.setValue(count)
+
+    def reset_projection_count(self):
+        """
+        Resets the number of projections to the maximum available.
+        """
+        self.projectionCount.setValue(self.projectionCount.maximum())
 
     @property
     def slice_count(self):
