@@ -21,3 +21,4 @@ dependencies:
     - GitPython
     - sphinx
     - coverage>=4.5.0
+    - git+https://github.com/mrsmn/hazelnut.git
