@@ -22,7 +22,6 @@ class TomopyReconDialogView(BaseDialogView):
         self.cmap = cmap
 
         # Handle stack selection
-        self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.stack_selected_uuid.connect(
                 self.presenter.set_stack_uuid)
 
@@ -61,6 +60,8 @@ class TomopyReconDialogView(BaseDialogView):
         self.recon_figure, self.recon_canvas = \
             add_mpl_figure(self.reconLayout, True)
         self.recon_plot = self.recon_figure.add_subplot(111)
+
+        self.stackSelector.subscribe_to_main_window(main_window)
 
     def proj_on_button_press(self, event):
         if event.button == 1 and event.ydata is not None:

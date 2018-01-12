@@ -24,7 +24,6 @@ class CORTiltDialogView(BaseDialogView):
                 lambda: self.presenter.notify(PresNotification.RUN))
 
         # Handle stack selection
-        self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.stack_selected_uuid.connect(
                 self.presenter.set_stack_uuid)
 
@@ -57,6 +56,8 @@ class CORTiltDialogView(BaseDialogView):
         self.update_fit_plot(None, None, None)
 
         self.set_results(0, 0)
+
+        self.stackSelector.subscribe_to_main_window(main_window)
 
     def set_results(self, cor, tilt):
         self.resultCor.setValue(cor)

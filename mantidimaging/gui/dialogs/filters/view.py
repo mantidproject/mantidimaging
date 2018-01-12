@@ -31,7 +31,6 @@ class FiltersDialogView(BaseDialogView):
         self.handle_filter_selection(0)
 
         # Handle stack selection
-        self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.stack_selected_uuid.connect(
                 self.presenter.set_stack_uuid)
         self.stackSelector.stack_selected_uuid.connect(
@@ -87,6 +86,8 @@ class FiltersDialogView(BaseDialogView):
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
         self.updatePreviewButton.clicked.connect(
             lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
+
+        self.stackSelector.subscribe_to_main_window(main_window)
 
     def show(self):
         super(FiltersDialogView, self).show()

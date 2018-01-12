@@ -30,10 +30,6 @@ class MainWindowView(BaseMainWindowView):
         # filter and algorithm communications will be funneled through this
         self.presenter = MainWindowPresenter(self, config)
 
-        self.filters_window = FiltersDialogView(self)
-        self.cor_tilt_window = CORTiltDialogView(self)
-        self.tomopy_recon_window = TomopyReconDialogView(self)
-
         self.setup_shortcuts()
         self.update_shortcuts()
 
@@ -73,13 +69,13 @@ class MainWindowView(BaseMainWindowView):
         self.save_dialogue.show()
 
     def show_cor_tilt_window(self):
-        self.cor_tilt_window.show()
+        CORTiltDialogView(self).show()
 
     def show_filters_window(self):
-        self.filters_window.show()
+        FiltersDialogView(self).show()
 
     def show_tomopy_recon_window(self):
-        self.tomopy_recon_window.show()
+        TomopyReconDialogView(self).show()
 
     def stack_list(self):
         return self.presenter.stack_list()
