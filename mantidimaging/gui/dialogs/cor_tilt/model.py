@@ -12,6 +12,7 @@ class CORTiltDialogModel(object):
         self.preview_idx = 0
         self.roi = None
         self.slice_indices = None
+        self.projection_indices = None
 
         self.slices = None
         self.cors = None
@@ -62,6 +63,15 @@ class CORTiltDialogModel(object):
 
             self.slice_indices = np.arange(upper - 1, lower, -step)
 
+    def calculate_projections(self, count):
+        self.reset_results()
+        if self.sample is not None:
+            sample_proj_count = self.sample.shape[0]
+            downsample_proj_count = min(sample_proj_count, count)
+            self.projection_indices = \
+                np.linspace(0, sample_proj_count - 1, downsample_proj_count,
+                            dtype=int)
+
     def run_finding(self, progress):
         if self.stack is None:
             raise ValueError('No image stack is provided')
@@ -75,7 +85,7 @@ class CORTiltDialogModel(object):
         self.tilt, self.cor, self.slices, self.cors, self.m = \
             calculate_cor_and_tilt(
                     self.images, self.roi, self.slice_indices,
-                    progress=progress)
+                    self.projection_indices, progress=progress)
 
         return True
 
