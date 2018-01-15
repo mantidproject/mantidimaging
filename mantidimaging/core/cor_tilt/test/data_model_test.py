@@ -54,17 +54,6 @@ class CorTiltDataModelTest(TestCase):
         self.assertEquals(m.slices, [])
         self.assertEquals(m.cors, [])
 
-    def test_set_point(self):
-        m = CorTiltDataModel()
-        m.add_point(0)
-        m.add_point(0, 20, 5.0)
-        m.add_point(1, 60, 7.8)
-        m.set_point(0, cor=55.0)
-        m.set_point(1, slice_idx=25)
-
-        self.assertEquals(m.slices, [20, 25, 0])
-        self.assertEquals(m.cors, [55.0, 7.8, 0.0])
-
     def test_populate_slice_indices_no_cor(self):
         m = CorTiltDataModel()
         m.populate_slice_indices(300, 400, 20)
@@ -173,3 +162,46 @@ class CorTiltDataModelTest(TestCase):
         m.clear_results()
 
         self.assertFalse(m.has_results)
+
+    def test_data_ordering(self):
+        m = CorTiltDataModel()
+        m.add_point(None, 30, 7.0)
+        m.add_point(None, 10, 5.0)
+        m.add_point(None, 40, 8.0)
+        m.add_point(None, 20, 6.0)
+
+        m.sort_points()
+
+        # Expect data to be sorted as it is inserted
+        self.assertEquals(m.slices, [10, 20, 30, 40])
+        self.assertEquals(m.cors, [5.0, 6.0, 7.0, 8.0])
+
+        m.linear_regression()
+
+        self.assertTrue(m.has_results)
+        self.assertAlmostEqual(m.m, 0.1)
+        self.assertAlmostEqual(m.c, 4.0)
+
+    def test_get_cor_for_slice(self):
+        m = CorTiltDataModel()
+        m.add_point(None, 10, 5.0)
+        m.add_point(None, 20, 6.0)
+        m.add_point(None, 30, 7.0)
+        m.add_point(None, 40, 8.0)
+
+        self.assertEquals(m.get_cor_for_slice(10), 5.0)
+        self.assertEquals(m.get_cor_for_slice(30), 7.0)
+        self.assertIsNone(m.get_cor_for_slice(45))
+
+    def test_get_cor_for_slice_from_regression(self):
+        m = CorTiltDataModel()
+        m.add_point(None, 10, 5.0)
+        m.add_point(None, 20, 6.0)
+        m.add_point(None, 30, 7.0)
+        m.add_point(None, 40, 8.0)
+
+        m.linear_regression()
+
+        self.assertEquals(m.get_cor_for_slice_from_regression(0), 4.0)
+        self.assertEquals(m.get_cor_for_slice_from_regression(10), 5.0)
+        self.assertEquals(m.get_cor_for_slice_from_regression(50), 9.0)

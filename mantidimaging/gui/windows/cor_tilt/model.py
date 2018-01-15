@@ -1,19 +1,30 @@
 from __future__ import (absolute_import, division, print_function)
 
+from logging import getLogger
+
 import numpy as np
 
-from mantidimaging.core.cor_tilt import (
-        CorTiltDataModel, run_auto_finding_on_images)
+from mantidimaging.core.cor_tilt import run_auto_finding_on_images
+from mantidimaging.core.reconstruct import tomopy_reconstruct_preview
+from mantidimaging.core.utility.projection_angles import (
+        generate as generate_projection_angles)
+
+LOG = getLogger(__name__)
 
 
 class CORTiltWindowModel(object):
 
-    def __init__(self):
+    def __init__(self, model):
         self.stack = None
-        self.preview_idx = 0
+        self.preview_projection_idx = 0
+        self.preview_slice_idx = 0
         self.roi = None
         self.projection_indices = None
-        self.model = CorTiltDataModel()
+        self.model = model
+
+    @property
+    def has_results(self):
+        return self.model.has_results
 
     @property
     def sample(self):
@@ -28,15 +39,27 @@ class CORTiltWindowModel(object):
         s = self.sample
         return s.shape[0] if s is not None else 0
 
+    @property
+    def num_slices(self):
+        s = self.sample
+        return s.shape[1] if s is not None else 0
+
+    @property
+    def cor_for_current_preview_slice(self):
+        return self.model.get_cor_for_slice(self.preview_slice_idx)
+
     def initial_select_data(self, stack):
         self.model.clear_results()
 
         self.stack = stack
-        self.preview_idx = 0
+        self.preview_projection_idx = 0
+        self.preview_slice_idx = 0
 
         if stack is not None:
             image_shape = self.sample[0].shape
             self.roi = (0, 0, image_shape[1] - 1, image_shape[0] - 1)
+            self.proj_angles = generate_projection_angles(
+                    360, self.sample.shape[0])
 
     def update_roi_from_stack(self):
         self.model.clear_results()
@@ -58,7 +81,8 @@ class CORTiltWindowModel(object):
                 np.linspace(0, sample_proj_count - 1, downsample_proj_count,
                             dtype=int)
 
-    def run_finding(self, progress):
+    def run_finding_automatic(self, progress):
+        # Ensure we have some sample data
         if self.stack is None:
             raise ValueError('No image stack is provided')
 
@@ -72,7 +96,31 @@ class CORTiltWindowModel(object):
                 self.projection_indices,
                 progress=progress)
 
+        # Async task needs a non-None result of some sort
         return True
+
+    def run_finding_manual(self, progress):
+        # Ensure we have some sample data
+        if self.stack is None:
+            raise ValueError('No image stack is provided')
+
+        if self.roi is None:
+            raise ValueError('No region of interest is defined')
+
+        self.model.linear_regression()
+        self.images.properties.update(self.model.stack_properties)
+
+        # Async task needs a non-None result of some sort
+        return True
+
+    def run_preview_recon(self, slice_idx, cor):
+        # Ensure we have some sample data
+        if self.sample is None:
+            raise ValueError('No sample to use for preview reconstruction')
+
+        # Perform single slice reconstruction
+        return tomopy_reconstruct_preview(
+               self.sample, slice_idx, cor, self.proj_angles)
 
     @property
     def preview_tilt_line_data(self):
