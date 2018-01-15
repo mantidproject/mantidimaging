@@ -14,7 +14,7 @@ pipeline {
 
     stage('Setup - Python 2.7') {
       steps {
-        timeout(15) {
+        timeout(30) {
           sh '${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment.yml mi27'
         }
       }
@@ -22,7 +22,7 @@ pipeline {
 
     stage('Setup - Python 3.5') {
       steps {
-        timeout(15) {
+        timeout(30) {
           sh '${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment-py35.yml mi35'
         }
       }
