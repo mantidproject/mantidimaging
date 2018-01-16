@@ -3,17 +3,52 @@ from __future__ import absolute_import, division, print_function
 from logging import getLogger
 import concurrent.futures as cf
 
+import numpy as np
+
 from mantidimaging.core.utility.progress_reporting import Progress
 
 # This import is used to provide the available() function which is used to
 # check if the functionality of a module is available based on the presence of
 # optional libraries
 from mantidimaging.core.utility.optional_imports import (  # noqa: F401
-        safe_import,
-        tomopy_available as available)
+    safe_import,
+    tomopy_available as available)
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
+
+
+def reconstruct_single_preview(sample,
+                               slice_idx,
+                               cor,
+                               proj_angles,
+                               progress=None):
+    """
+    Performs a preview of a single slice/sinogram from a 3D volume provided as
+    a stack of projections.
+
+    :param sample: 3D projection data
+    :param slice_idx: Index of slice/sinogram to reconstruct
+    :param cor: Centre of rotation value
+    :param proj_angles: Array of projection angles
+    :param progress: Optional progress reporter
+    :return: 2D image data for reconstructed slice
+    """
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Tomopy reconstruction')
+
+    volume = [None]
+    with progress:
+        s = np.swapaxes(sample[:, [slice_idx], :], 0, 1)
+
+        volume = tomopy.recon(
+                tomo=s,
+                sinogram_order=True,
+                theta=proj_angles,
+                center=cor,
+                algorithm='gridrec')
+
+    return volume[0]
 
 
 def reconstruct(sample,
@@ -21,6 +56,16 @@ def reconstruct(sample,
                 proj_angles=None,
                 ncores=None,
                 progress=None):
+    """
+    Performs a volume reconstruction using sample data provided as sinograms.
+
+    :param sample: Array of sinogram images
+    :param cor: Array of centre of rotation values
+    :param proj_angles: Array of projection angles
+    :param ncores: Number of CPU cores to execute on, defaults to all
+    :param progress: Optional progress reporter
+    :return: 3D image data for reconstructed volume
+    """
     progress = Progress.ensure_instance(progress,
                                         task_name='Tomopy reconstruction')
 
