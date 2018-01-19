@@ -36,11 +36,6 @@ class CORTiltDialogView(BaseDialogView):
                 self.presenter.set_preview_idx)
 
         # Handle calculation parameters
-        self.sliceCount.valueChanged[int].connect(
-                lambda: self.presenter.notify(PresNotification.UPDATE_INDICES))
-        self.projectionCount.valueChanged[int].connect(
-                lambda: self.presenter.notify(
-                    PresNotification.UPDATE_PROJECTIONS))
         self.projectionCountReset.clicked.connect(self.reset_projection_count)
 
         def add_mpl_figure(layout):

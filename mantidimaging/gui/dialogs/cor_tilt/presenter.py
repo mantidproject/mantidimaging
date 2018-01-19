@@ -13,9 +13,7 @@ from .model import CORTiltDialogModel
 class Notification(Enum):
     CROP_TO_ROI = 1
     UPDATE_PREVIEWS = 2
-    UPDATE_INDICES = 3
-    UPDATE_PROJECTIONS = 4
-    RUN = 5
+    RUN = 3
 
 
 class CORTiltDialogPresenter(BasePresenter):
@@ -31,10 +29,6 @@ class CORTiltDialogPresenter(BasePresenter):
                 self.do_crop_to_roi()
             elif signal == Notification.UPDATE_PREVIEWS:
                 self.do_update_previews()
-            elif signal == Notification.UPDATE_INDICES:
-                self.do_update_indices()
-            elif signal == Notification.UPDATE_PROJECTIONS:
-                self.do_update_projections()
             elif signal == Notification.RUN:
                 self.do_execute()
 
@@ -49,11 +43,9 @@ class CORTiltDialogPresenter(BasePresenter):
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
-
-        self.notify(Notification.UPDATE_PREVIEWS)
-        self.notify(Notification.UPDATE_INDICES)
         self.view.set_results(0, 0)
         self.view.set_num_projections(self.model.num_projections)
+        self.notify(Notification.UPDATE_PREVIEWS)
 
     def set_preview_idx(self, idx):
         self.model.preview_idx = idx
@@ -61,10 +53,8 @@ class CORTiltDialogPresenter(BasePresenter):
 
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
-
-        self.notify(Notification.UPDATE_PREVIEWS)
-        self.notify(Notification.UPDATE_INDICES)
         self.view.set_results(0, 0)
+        self.notify(Notification.UPDATE_PREVIEWS)
 
     def do_update_previews(self):
         img_data = self.model.sample[self.model.preview_idx] \
@@ -73,17 +63,14 @@ class CORTiltDialogPresenter(BasePresenter):
         self.view.update_image_preview(
                 img_data, self.model.preview_tilt_line_data, self.model.roi)
 
-        self.view.update_fit_plot(self.model.slice_indices,
-                                  self.model.cors,
+        self.view.update_fit_plot(self.model.model.slices,
+                                  self.model.model.cors,
                                   self.model.preview_fit_y_data)
 
-    def do_update_indices(self):
+    def do_execute(self):
         self.model.calculate_slices(self.view.slice_count)
-
-    def do_update_projections(self):
         self.model.calculate_projections(self.view.projection_count)
 
-    def do_execute(self):
         atd = AsyncTaskDialogView(self.view, auto_close=True)
         kwargs = {'progress': Progress()}
         kwargs['progress'].add_progress_handler(atd.presenter)
@@ -97,7 +84,9 @@ class CORTiltDialogPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.view.set_results(self.model.cor, self.model.tilt)
+            self.view.set_results(
+                    self.model.model.c,
+                    self.model.model.angle_rad)
             self.notify(Notification.UPDATE_PREVIEWS)
         else:
             log.error("COR/Tilt finding failed: %s", str(task.error))
