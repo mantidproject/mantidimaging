@@ -20,6 +20,7 @@ class Notification(IntEnum):
     STACK_MODE = 6
     SUM_MODE = 7
     REFRESH_IMAGE = 8
+    SHOW_METADATA = 9
 
 
 class Parameters(IntEnum):
@@ -61,6 +62,8 @@ class StackVisualiserPresenter(BasePresenter):
                 self.image_mode = ImageMode.SUM
             elif signal == Notification.REFRESH_IMAGE:
                 self.view.show_current_image()
+            elif signal == Notification.SHOW_METADATA:
+                self.view.show_image_metadata()
         except Exception as e:
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")

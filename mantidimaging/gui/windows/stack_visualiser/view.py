@@ -15,6 +15,7 @@ from mantidimaging.gui.utility import BlockQtSignals
 
 from . import histogram
 from .image_selector_widget import ImageSelectorWidget
+from .metadata_dialog import MetadataDialog
 from .navigation_toolbar import StackNavigationToolbar
 from .roi_selector_widget import ROISelectorWidget
 from .presenter import StackVisualiserPresenter
@@ -154,6 +155,12 @@ class StackVisualiserView(BaseMainWindowView):
         add_context_menu_action(
                 "Show Histogram in new window",
                 StackWindowNotification.NEW_WINDOW_HISTOGRAM)
+
+        self.canvas_context_menu.addSeparator()
+
+        add_context_menu_action(
+                "Show metadata",
+                StackWindowNotification.SHOW_METADATA)
 
         # Register mouse release callback
         self.canvas.mpl_connect(
@@ -411,6 +418,12 @@ class StackVisualiserView(BaseMainWindowView):
             self.image_selector_toolbar.index = index
 
         self.show_current_image()
+
+    def show_image_metadata(self):
+        """
+        Shows image metadata in a dialog.
+        """
+        MetadataDialog(self, self.presenter.images).show()
 
 
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
