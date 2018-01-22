@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
 import json
+import pprint
 
 import numpy as np
 
@@ -54,6 +55,11 @@ class Images(object):
     @property
     def filenames(self):
         return self._filenames
+
+    @property
+    def properties_pretty(self):
+        pp = pprint.PrettyPrinter(indent=2)
+        return pp.pformat(self.properties)
 
     def metadata_load(self, f):
         self.properties = json.load(f)
