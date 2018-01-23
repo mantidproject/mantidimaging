@@ -37,30 +37,43 @@ class CORTiltDialogModelTest(unittest.TestCase):
         self.assertEquals(self.model.num_projections, 10)
 
     def test_calculate_slices(self):
-        self.assertIsNone(self.model.slice_indices)
+        self.assertEquals(self.model.model.slices, [])
+        self.assertEquals(self.model.model.num_points, 0)
         self.model.roi = (30, 25, 100, 120)
         self.model.calculate_slices(5)
-        self.assertEquals(self.model.slice_indices.shape, (5, ))
+        self.assertEquals(len(self.model.model.slices), 5)
+        self.assertEquals(self.model.model.num_points, 5)
 
     def test_calculate_slices_no_roi(self):
-        self.assertIsNone(self.model.slice_indices)
+        self.assertEquals(self.model.model.slices, [])
+        self.assertEquals(self.model.model.num_points, 0)
         self.model.roi = None
         self.model.calculate_slices(5)
-        self.assertIsNone(self.model.slice_indices)
+        self.assertEquals(self.model.model.slices, [])
+        self.assertEquals(self.model.model.num_points, 0)
 
     def test_tilt_line_data(self):
-        self.model.slice_indices = np.array([50, 40, 30, 20])
-        self.model.cors = np.array([1, 2, 3, 4])
-        self.model.cor = 1
+        self.model.model._points = [
+            [50, 1],
+            [40, 2],
+            [30, 3],
+            [20, 4]
+        ]
+        self.model.model._cached_c = 1
+        self.model.model._cached_m = 2
 
         data = self.model.preview_tilt_line_data
 
         self.assertEquals(data, ([1, 4], [50, 20]))
 
     def test_fit_y_data(self):
-        self.model.slices = np.array([1, 2, 3])
-        self.model.cor = 1
-        self.model.m = 2
+        self.model.model._points = [
+            [1, 0.0],
+            [2, 0.0],
+            [3, 0.0]
+        ]
+        self.model.model._cached_c = 1
+        self.model.model._cached_m = 2
 
         data = self.model.preview_fit_y_data
 

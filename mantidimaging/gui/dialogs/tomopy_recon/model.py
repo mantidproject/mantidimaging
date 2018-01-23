@@ -6,7 +6,7 @@ import numpy as np
 
 from mantidimaging.core.utility.projection_angles import \
         generate as generate_projection_angles
-from mantidimaging.core.reconstruct.cor_tilt import tilt_angle_to_cors
+from mantidimaging.core.cor_tilt import tilt_angle_to_cors
 from mantidimaging.core.reconstruct import tomopy_reconstruct
 
 
