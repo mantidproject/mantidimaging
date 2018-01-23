@@ -7,18 +7,18 @@ from mantidimaging.core.utility.special_imports import import_mock
 from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserView, StackVisualiserPresenter, Parameters)
 
-from mantidimaging.gui.dialogs.filters import FiltersDialogModel
+from mantidimaging.gui.windows.filters import FiltersWindowModel
 
 mock = import_mock()
 
 
-class FiltersDialogModelTest(unittest.TestCase):
+class FiltersWindowModelTest(unittest.TestCase):
 
     APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
     ROI_PARAMETER = (4, 3, 2, 1)
 
     def __init__(self, *args, **kwargs):
-        super(FiltersDialogModelTest, self).__init__(*args, **kwargs)
+        super(FiltersWindowModelTest, self).__init__(*args, **kwargs)
 
     @classmethod
     def setUpClass(cls):
@@ -32,7 +32,7 @@ class FiltersDialogModelTest(unittest.TestCase):
                 self.sv_view, self.test_data, data_traversal_axis=0)
         self.sv_view.presenter = self.sv_presenter
 
-        self.model = FiltersDialogModel()
+        self.model = FiltersWindowModel()
 
     def execute_mock(self, data):
         self.assertTrue(isinstance(data, np.ndarray))

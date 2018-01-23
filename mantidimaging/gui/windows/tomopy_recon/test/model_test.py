@@ -7,17 +7,17 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.gui.dialogs.tomopy_recon import TomopyReconDialogModel
+from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowModel
 from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserView, StackVisualiserPresenter)
 
 mock = import_mock()
 
 
-class TomopyReconDialogModelTest(unittest.TestCase):
+class TomopyReconWindowModelTest(unittest.TestCase):
 
     def setUp(self):
-        self.model = TomopyReconDialogModel()
+        self.model = TomopyReconWindowModel()
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
@@ -28,7 +28,7 @@ class TomopyReconDialogModelTest(unittest.TestCase):
         self.model.initial_select_data(self.stack)
 
     def test_empty_init(self):
-        m = TomopyReconDialogModel()
+        m = TomopyReconWindowModel()
         self.assertIsNone(m.sample)
         self.assertIsNone(m.projection)
 

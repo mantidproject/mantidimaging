@@ -6,10 +6,10 @@ from logging import getLogger
 from PyQt5 import Qt, QtCore, QtGui
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.dialogs.cor_tilt import CORTiltDialogView
-from mantidimaging.gui.dialogs.filters import FiltersDialogView
-from mantidimaging.gui.dialogs.tomopy_recon import TomopyReconDialogView
+from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
+from mantidimaging.gui.windows.filters import FiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 from .load_dialog import MWLoadDialog
 from .presenter import MainWindowPresenter
@@ -69,13 +69,13 @@ class MainWindowView(BaseMainWindowView):
         self.save_dialogue.show()
 
     def show_cor_tilt_window(self):
-        CORTiltDialogView(self).show()
+        CORTiltWindowView(self).show()
 
     def show_filters_window(self):
-        FiltersDialogView(self).show()
+        FiltersWindowView(self).show()
 
     def show_tomopy_recon_window(self):
-        TomopyReconDialogView(self).show()
+        TomopyReconWindowView(self).show()
 
     def stack_list(self):
         return self.presenter.stack_list()

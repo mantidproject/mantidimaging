@@ -7,7 +7,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 
-from .model import CORTiltDialogModel
+from .model import CORTiltWindowModel
 
 
 class Notification(Enum):
@@ -16,11 +16,11 @@ class Notification(Enum):
     RUN = 3
 
 
-class CORTiltDialogPresenter(BasePresenter):
+class CORTiltWindowPresenter(BasePresenter):
 
     def __init__(self, view, main_window):
-        super(CORTiltDialogPresenter, self).__init__(view)
-        self.model = CORTiltDialogModel()
+        super(CORTiltWindowPresenter, self).__init__(view)
+        self.model = CORTiltWindowModel()
         self.main_window = main_window
 
     def notify(self, signal):
