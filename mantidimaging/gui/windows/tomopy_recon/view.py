@@ -63,6 +63,9 @@ class TomopyReconWindowView(BaseMainWindowView):
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
+    def cleanup(self):
+        self.stackSelector.unsubscribe_from_main_window()
+
     def proj_on_button_press(self, event):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))

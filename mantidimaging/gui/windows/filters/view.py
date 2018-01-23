@@ -90,6 +90,9 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
+    def cleanup(self):
+        self.stackSelector.unsubscribe_from_main_window()
+
     def show(self):
         super(FiltersWindowView, self).show()
         self.auto_update_triggered.emit()

@@ -1,8 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
+from logging import getLogger
+
 from PyQt5 import Qt, QtWidgets
 
 from mantidimaging.gui.utility import compile_ui
+
+
+LOG = getLogger(__name__)
 
 
 class BaseMainWindowView(Qt.QMainWindow):
@@ -12,6 +17,17 @@ class BaseMainWindowView(Qt.QMainWindow):
 
         if ui_file is not None:
             compile_ui(ui_file, self)
+
+    def closeEvent(self, e):
+        LOG.debug('UI window closed')
+        self.cleanup()
+        super(BaseMainWindowView, self).closeEvent(e)
+
+    def cleanup(self):
+        """
+        Runs when the window is closed.
+        """
+        pass
 
     def show_error_dialog(self, msg=""):
         """

@@ -28,4 +28,21 @@ class StackSelectorWidgetView(Qt.QComboBox):
 
         # Connect signal for auto update on stack change
         self.main_window.active_stacks_changed.connect(
-                lambda: self.presenter.notify(Notification.RELOAD_STACKS))
+                self._handle_loaded_stacks_changed)
+
+    def unsubscribe_from_main_window(self):
+        """
+        Removes connections to main window.
+
+        Must be called before the widget is destroyed.
+        """
+        if self.main_window:
+            # Disconnect signal
+            self.main_window.active_stacks_changed.disconnect(
+                    self._handle_loaded_stacks_changed)
+
+    def _handle_loaded_stacks_changed(self):
+        """
+        Handle a change in loaded stacks.
+        """
+        self.presenter.notify(Notification.RELOAD_STACKS)

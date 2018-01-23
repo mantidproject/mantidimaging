@@ -58,6 +58,9 @@ class CORTiltWindowView(BaseMainWindowView):
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
+    def cleanup(self):
+        self.stackSelector.unsubscribe_from_main_window()
+
     def set_results(self, cor, tilt):
         self.resultCor.setValue(cor)
         self.resultTilt.setValue(tilt)
