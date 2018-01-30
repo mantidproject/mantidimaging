@@ -79,7 +79,7 @@ def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
                                         task_name='Rebin')
 
     resized_data, resized_shape = _create_reshaped_array(
-            data.shape, rebin_param)
+            data.shape, data.dtype, rebin_param)
 
     with progress:
         progress.update(msg="Starting PARALLEL image rebinning.")
@@ -101,7 +101,7 @@ def _execute_seq(data, rebin_param, mode, progress=None):
         progress.update(msg="Starting image rebinning.")
 
         resized_data, resized_shape = _create_reshaped_array(
-                data.shape, rebin_param)
+                data.shape, data.dtype, rebin_param)
 
         num_images = resized_data.shape[0]
         progress.add_estimated_steps(num_images)
@@ -114,7 +114,7 @@ def _execute_seq(data, rebin_param, mode, progress=None):
     return resized_data
 
 
-def _create_reshaped_array(old_shape, rebin_param):
+def _create_reshaped_array(old_shape, dtype, rebin_param):
     num_images = old_shape[0]
 
     # use SciPy's calculation to find the expected dimensions
@@ -128,6 +128,6 @@ def _create_reshaped_array(old_shape, rebin_param):
 
     # allocate memory for images with new dimensions
     shape = (num_images, expected_dimy, expected_dimx)
-    data = pu.create_shared_array(shape)
+    data = pu.create_shared_array(shape, dtype)
 
     return (data, shape)
