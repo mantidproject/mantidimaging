@@ -71,4 +71,4 @@ def gui_main():
 
 
 if __name__ == '__main__':
-    main()
+    cli_main()
