@@ -3,19 +3,19 @@ from __future__ import absolute_import, division, print_function
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 
-from .presenter import CORTiltDialogPresenter
+from .presenter import CORTiltWindowPresenter
 from .presenter import Notification as PresNotification
 
 
-class CORTiltDialogView(BaseDialogView):
+class CORTiltWindowView(BaseMainWindowView):
 
     def __init__(self, main_window, cmap='Greys_r'):
-        super(CORTiltDialogView, self).__init__(
-                main_window, 'gui/ui/cor_tilt_dialog.ui')
+        super(CORTiltWindowView, self).__init__(
+                main_window, 'gui/ui/cor_tilt_window.ui')
 
-        self.presenter = CORTiltDialogPresenter(self, main_window)
+        self.presenter = CORTiltWindowPresenter(self, main_window)
 
         self.cmap = cmap
 
@@ -57,6 +57,9 @@ class CORTiltDialogView(BaseDialogView):
         self.set_results(0, 0)
 
         self.stackSelector.subscribe_to_main_window(main_window)
+
+    def cleanup(self):
+        self.stackSelector.unsubscribe_from_main_window()
 
     def set_results(self, cor, tilt):
         self.resultCor.setValue(cor)

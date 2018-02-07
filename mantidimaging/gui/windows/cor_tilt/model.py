@@ -6,7 +6,7 @@ from mantidimaging.core.cor_tilt import (
         CorTiltDataModel, run_auto_finding_on_images)
 
 
-class CORTiltDialogModel(object):
+class CORTiltWindowModel(object):
 
     def __init__(self):
         self.stack = None

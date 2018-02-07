@@ -3,21 +3,21 @@ from __future__ import absolute_import, division, print_function
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import BlockQtSignals
 
 from .navigation_toolbar import TomopyReconNavigationToolbar
-from .presenter import TomopyReconDialogPresenter
+from .presenter import TomopyReconWindowPresenter
 from .presenter import Notification as PresNotification
 
 
-class TomopyReconDialogView(BaseDialogView):
+class TomopyReconWindowView(BaseMainWindowView):
 
     def __init__(self, main_window, cmap='Greys_r'):
-        super(TomopyReconDialogView, self).__init__(
-                main_window, 'gui/ui/tomopy_recon_dialog.ui')
+        super(TomopyReconWindowView, self).__init__(
+                main_window, 'gui/ui/tomopy_recon_window.ui')
 
-        self.presenter = TomopyReconDialogPresenter(self, main_window)
+        self.presenter = TomopyReconWindowPresenter(self, main_window)
 
         self.cmap = cmap
 
@@ -62,6 +62,9 @@ class TomopyReconDialogView(BaseDialogView):
         self.recon_plot = self.recon_figure.add_subplot(111)
 
         self.stackSelector.subscribe_to_main_window(main_window)
+
+    def cleanup(self):
+        self.stackSelector.unsubscribe_from_main_window()
 
     def proj_on_button_press(self, event):
         if event.button == 1 and event.ydata is not None:

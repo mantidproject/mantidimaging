@@ -9,7 +9,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 
-from .model import TomopyReconDialogModel
+from .model import TomopyReconWindowModel
 
 
 LOG = getLogger(__name__)
@@ -23,11 +23,11 @@ class Notification(Enum):
     RECONSTRUCT_VOLUME = 5
 
 
-class TomopyReconDialogPresenter(BasePresenter):
+class TomopyReconWindowPresenter(BasePresenter):
 
     def __init__(self, view, main_window):
-        super(TomopyReconDialogPresenter, self).__init__(view)
-        self.model = TomopyReconDialogModel()
+        super(TomopyReconWindowPresenter, self).__init__(view)
+        self.model = TomopyReconWindowModel()
         self.main_window = main_window
 
     def notify(self, signal):

@@ -19,10 +19,10 @@ def ensure_tuple(val):
     return val if isinstance(val, tuple) else (val,)
 
 
-class FiltersDialogModel(object):
+class FiltersWindowModel(object):
 
     def __init__(self):
-        super(FiltersDialogModel, self).__init__()
+        super(FiltersWindowModel, self).__init__()
 
         # Update the local filter registry
         self.filters = None

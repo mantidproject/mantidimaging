@@ -5,7 +5,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from .presenter import Notification
 
 
-class FiltersDialogNavigationToolbar(NavigationToolbar2QT):
+class FiltersWindowNavigationToolbar(NavigationToolbar2QT):
 
     # See [Matplotlib]/lib/matplotlib/backend_bases.py
     toolitems = (

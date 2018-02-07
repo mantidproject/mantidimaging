@@ -7,24 +7,24 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.gui.dialogs.tomopy_recon import (
-        TomopyReconDialogView, TomopyReconDialogPresenter)
+from mantidimaging.gui.windows.tomopy_recon import (
+        TomopyReconWindowView, TomopyReconWindowPresenter)
 from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserView, StackVisualiserPresenter)
 
 mock = import_mock()
 
 
-class TomopyReconDialogPresenterTest(unittest.TestCase):
+class TomopyReconWindowPresenterTest(unittest.TestCase):
 
     def setUp(self):
         # Mock view
-        self.view = mock.create_autospec(TomopyReconDialogView)
+        self.view = mock.create_autospec(TomopyReconWindowView)
         self.view.get_cor = mock.MagicMock(return_value=500)
         self.view.get_tilt = mock.MagicMock(return_value=0)
         self.view.get_max_proj_angle = mock.MagicMock(return_value=360)
 
-        self.presenter = TomopyReconDialogPresenter(self.view, None)
+        self.presenter = TomopyReconWindowPresenter(self.view, None)
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)

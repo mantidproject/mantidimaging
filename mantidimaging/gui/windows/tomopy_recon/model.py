@@ -13,7 +13,7 @@ from mantidimaging.core.reconstruct import tomopy_reconstruct
 LOG = getLogger(__name__)
 
 
-class TomopyReconDialogModel(object):
+class TomopyReconWindowModel(object):
 
     def __init__(self):
         self.stack = None

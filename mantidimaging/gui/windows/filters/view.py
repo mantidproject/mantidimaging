@@ -1,28 +1,28 @@
 from __future__ import absolute_import, division, print_function
 
-from PyQt5 import Qt, QtWidgets
+from PyQt5 import Qt
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
         delete_all_widgets_from_layout)
 
-from .navigation_toolbar import FiltersDialogNavigationToolbar
-from .presenter import FiltersDialogPresenter
+from .navigation_toolbar import FiltersWindowNavigationToolbar
+from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
 
-class FiltersDialogView(BaseDialogView):
+class FiltersWindowView(BaseMainWindowView):
 
     auto_update_triggered = Qt.pyqtSignal()
 
     def __init__(self, main_window, cmap='Greys_r'):
-        super(FiltersDialogView, self).__init__(
-                main_window, 'gui/ui/filters_dialog.ui')
+        super(FiltersWindowView, self).__init__(
+                main_window, 'gui/ui/filters_window.ui')
 
-        self.presenter = FiltersDialogPresenter(self, main_window)
+        self.presenter = FiltersWindowPresenter(self, main_window)
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
@@ -36,8 +36,9 @@ class FiltersDialogView(BaseDialogView):
         self.stackSelector.stack_selected_uuid.connect(
                 self.auto_update_triggered.emit)
 
-        # Handle button clicks
-        self.buttonBox.clicked.connect(self.handle_button)
+        # Handle apply filter
+        self.applyButton.clicked.connect(
+                lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
         # Preview area
         self.cmap = cmap
@@ -47,7 +48,7 @@ class FiltersDialogView(BaseDialogView):
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.setParent(self)
 
-        self.toolbar = FiltersDialogNavigationToolbar(
+        self.toolbar = FiltersWindowNavigationToolbar(
                 self.canvas, self)
         self.toolbar.filter_window = self
 
@@ -89,19 +90,12 @@ class FiltersDialogView(BaseDialogView):
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
+    def cleanup(self):
+        self.stackSelector.unsubscribe_from_main_window()
+
     def show(self):
-        super(FiltersDialogView, self).show()
+        super(FiltersWindowView, self).show()
         self.auto_update_triggered.emit()
-
-    def handle_button(self, button):
-        """
-        Handle button presses from the dialog button box.
-        """
-        role = self.buttonBox.buttonRole(button)
-
-        # If Apply was clicked
-        if role == QtWidgets.QDialogButtonBox.ApplyRole:
-            self.presenter.notify(PresNotification.APPLY_FILTER)
 
     def handle_filter_selection(self, filter_idx):
         """

@@ -7,21 +7,21 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.special_imports import import_mock
 
-from mantidimaging.gui.dialogs.cor_tilt import (
-        CORTiltDialogView, CORTiltDialogPresenter)
+from mantidimaging.gui.windows.cor_tilt import (
+        CORTiltWindowView, CORTiltWindowPresenter)
 from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserView, StackVisualiserPresenter)
 
 mock = import_mock()
 
 
-class CORTiltDialogPresenterTest(unittest.TestCase):
+class CORTiltWindowPresenterTest(unittest.TestCase):
 
     def setUp(self):
         # Mock view
-        self.view = mock.create_autospec(CORTiltDialogView)
+        self.view = mock.create_autospec(CORTiltWindowView)
 
-        self.presenter = CORTiltDialogPresenter(self.view, None)
+        self.presenter = CORTiltWindowPresenter(self.view, None)
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
