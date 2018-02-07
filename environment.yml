@@ -17,6 +17,7 @@ dependencies:
     - nose-randomly
     - mock
     - testfixtures
-    - flake8
+    - flake8=3.5.0
+    - pylint=1.8.2
     - GitPython
     - sphinx
