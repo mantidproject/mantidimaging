@@ -48,7 +48,7 @@ pipeline {
       }
     }
 
-    stage('Flake8') {
+    stage('Static Analysis - Flake8') {
       steps {
         timeout(5) {
           sh 'rm -f ${WORKSPACE}/flake8.log'
@@ -58,7 +58,7 @@ pipeline {
       }
     }
 
-    stage('Build Documentation - HTML') {
+    stage('Documentation - HTML') {
       steps {
         timeout(1) {
           sh '${WORKSPACE}/anaconda/envs/mi27/bin/python setup.py docs_api'
@@ -68,7 +68,7 @@ pipeline {
       }
     }
 
-    stage('Build Documentation - QtHelp') {
+    stage('Documentation - QtHelp') {
       steps {
         timeout(1) {
           sh '${WORKSPACE}/anaconda/envs/mi27/bin/python setup.py docs -b qthelp'
