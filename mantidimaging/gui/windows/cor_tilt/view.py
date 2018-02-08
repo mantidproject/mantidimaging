@@ -71,6 +71,11 @@ class CORTiltWindowView(BaseMainWindowView):
         self.fit_figure, self.fit_canvas, _ = add_mpl_figure(self.fitLayout)
         self.fit_plot = self.fit_figure.add_subplot(111)
         self.update_fit_plot(None, None, None)
+        self.fit_canvas.mpl_connect(
+                'button_press_event', self.handle_fit_plot_button_press)
+        self.fit_canvas.setToolTip(
+                'Double click to open a larger plot (requires at least '
+                '2 points)')
 
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
@@ -89,7 +94,8 @@ class CORTiltWindowView(BaseMainWindowView):
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
             if tl == br and tl.column() == Field.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
-                slice_idx = mdl.data(mdl.index(tl.row(), Field.SLICE_INDEX.value))
+                slice_idx = mdl.data(
+                        mdl.index(tl.row(), Field.SLICE_INDEX.value))
                 self.presenter.handle_cor_manually_changed(slice_idx)
 
         self.tableView.model().rowsRemoved.connect(
@@ -262,6 +268,17 @@ class CORTiltWindowView(BaseMainWindowView):
         self.fit_figure.tight_layout()
 
         self.fit_canvas.draw()
+
+    def handle_fit_plot_button_press(self, event):
+        """
+        Handle mouse button presses on the fit plot preview.
+
+        Currently opens a larger version of the plot in a new window when the
+        plot is double (left) clicked.
+        """
+        # Double left click
+        if event.button == 1 and event.dblclick:
+            self.presenter.notify(PresNotification.SHOW_COR_VS_SLICE_PLOT)
 
     def set_num_projections(self, count):
         """

@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 from enum import Enum
 from logging import getLogger
 
+import matplotlib.pyplot as plt
+
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
@@ -23,6 +25,7 @@ class Notification(Enum):
     PREVIEW_RECONSTRUCTION_SET_COR = 6
     ADD_NEW_COR_TABLE_ROW = 7
     REFINE_SELECTED_COR = 8
+    SHOW_COR_VS_SLICE_PLOT = 9
 
 
 class CORTiltWindowPresenter(BasePresenter):
@@ -50,6 +53,8 @@ class CORTiltWindowPresenter(BasePresenter):
                 self.do_add_manual_cor_table_row()
             elif signal == Notification.REFINE_SELECTED_COR:
                 self.do_refine_selected_cor()
+            elif signal == Notification.SHOW_COR_VS_SLICE_PLOT:
+                self.do_plot_cor_vs_slice_index()
 
         except Exception as e:
             self.show_error(e)
@@ -140,6 +145,33 @@ class CORTiltWindowPresenter(BasePresenter):
 
         # Update reconstruction preview with new COR
         self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
+
+    def do_plot_cor_vs_slice_index(self):
+        if self.model.model.num_points > 1:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+
+            lines = []
+            names = []
+
+            # Add data line
+            lines.append(ax.plot(self.model.model.slices, self.model.model.cors)[0])
+            names.append('Data')
+
+            # Add fit line (if a fit has been performed)
+            fit_data = self.model.preview_fit_y_data
+            if fit_data is not None:
+                lines.append(ax.plot(self.model.model.slices, fit_data)[0])
+                names.append('Fit')
+
+            # Add legend
+            ax.legend(lines, names)
+
+            # Set axes labels
+            ax.set_xlabel('Slice Index')
+            ax.set_ylabel('Rotation Centre')
+
+            plt.show()
 
     def do_execute_automatic(self):
         self.model.calculate_slices(self.view.slice_count)
