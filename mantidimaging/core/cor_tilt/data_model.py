@@ -37,32 +37,42 @@ class CorTiltDataModel(object):
         self._cached_c = None
 
     def populate_slice_indices(self, begin, end, count, cor=0.0):
-        self._points = [[idx, cor] for idx in np.linspace(
+        self.clear_results()
+
+        self._points = [[int(idx), cor] for idx in np.linspace(
             begin, end, count, dtype=int)]
         LOG.debug('Populated slice indices: {}'.format(self.slices))
 
     def linear_regression(self):
+        LOG.debug('Running linear regression with {} points'.format(
+            self.num_points))
         result = sp.stats.linregress(self.slices, self.cors)
         self._cached_m, self._cached_c = result[:2]
 
     def add_point(self, idx=None, slice_idx=0, cor=0.0):
+        self.clear_results()
+
         if idx is None:
             self._points.append([slice_idx, cor])
         else:
             self._points.insert(idx, [slice_idx, cor])
 
     def set_point(self, idx, slice_idx=None, cor=None):
+        self.clear_results()
+
         if slice_idx is not None:
-            self._points[idx][Field.SLICE_INDEX.value] = slice_idx
+            self._points[idx][Field.SLICE_INDEX.value] = int(slice_idx)
 
         if cor is not None:
-            self._points[idx][Field.CENTRE_OF_ROTATION.value] = cor
+            self._points[idx][Field.CENTRE_OF_ROTATION.value] = float(cor)
 
     def remove_point(self, idx):
+        self.clear_results()
         del self._points[idx]
 
     def clear_points(self):
         self._points = []
+        self.clear_results()
 
     def clear_results(self):
         self._cached_m = None
@@ -70,6 +80,21 @@ class CorTiltDataModel(object):
 
     def point(self, idx):
         return self._points[idx] if idx < self.num_points else None
+
+    def sort_points(self):
+        self._points.sort(key=lambda p: p[Field.SLICE_INDEX.value])
+
+    def get_cor_for_slice(self, slice_idx):
+        a = [p[Field.CENTRE_OF_ROTATION.value] for p in self._points if \
+                p[Field.SLICE_INDEX.value] == slice_idx]
+        return a[0] if a else None
+
+    def get_cor_for_slice_from_regression(self, slice_idx):
+        if not self.has_results:
+            return None
+
+        cor = (self.m * slice_idx) + self.c
+        return cor
 
     @property
     def slices(self):

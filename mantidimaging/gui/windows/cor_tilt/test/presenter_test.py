@@ -34,8 +34,14 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
 
         self.view.update_image_preview.assert_called_once()
 
-    def test_set_preview_index(self):
+    def test_set_slice_preview_index(self):
         self.presenter.set_stack(self.stack)
 
-        self.presenter.set_preview_idx(5)
-        self.assertEquals(self.presenter.model.preview_idx, 5)
+        self.presenter.set_preview_slice_idx(5)
+        self.assertEquals(self.presenter.model.preview_slice_idx, 5)
+
+    def test_set_projection_preview_index(self):
+        self.presenter.set_stack(self.stack)
+
+        self.presenter.set_preview_projection_idx(5)
+        self.assertEquals(self.presenter.model.preview_projection_idx, 5)
