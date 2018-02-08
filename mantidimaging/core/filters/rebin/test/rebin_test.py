@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import unittest
 
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.core.testing.unit_test_helper as th
@@ -70,8 +71,13 @@ class RebinTest(unittest.TestCase):
         self.do_execute_uniform(5.0)
         th.switch_mp_on()
 
-    def do_execute_uniform(self, val=2.0):
-        images = th.gen_img_shared_array()
+    def test_executed_uniform_seq_5_int(self):
+        th.switch_mp_off()
+        self.do_execute_uniform(5.0, np.int32)
+        th.switch_mp_on()
+
+    def do_execute_uniform(self, val=2.0, dtype=np.float32):
+        images = th.gen_img_shared_array(dtype=dtype)
         mode = 'nearest'
 
         expected_x = int(images.shape[1] * val)
@@ -81,6 +87,9 @@ class RebinTest(unittest.TestCase):
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
+
+        self.assertEquals(images.dtype, dtype)
+        self.assertEquals(result.dtype, dtype)
 
         # TODO: in-place data test
         # npt.assert_equal(images.shape[1], expected_x)
