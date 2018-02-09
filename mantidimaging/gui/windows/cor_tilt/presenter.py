@@ -5,6 +5,7 @@ from logging import getLogger
 
 import matplotlib.pyplot as plt
 
+from mantidimaging.core.data import const as data_const
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
@@ -126,7 +127,9 @@ class CORTiltWindowPresenter(BasePresenter):
 
     def do_add_manual_cor_table_row(self):
         idx = self.model.preview_slice_idx
-        self.view.add_cor_table_row(idx)
+        cor = self.model.last_result[data_const.AUTO_COR_TILT]['rotation_centre'] if \
+            self.model.last_result else 0
+        self.view.add_cor_table_row(idx, cor)
 
     def do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx

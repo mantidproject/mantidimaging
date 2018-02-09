@@ -32,6 +32,7 @@ class CORTiltWindowModelTest(unittest.TestCase):
         m = CORTiltWindowModel(CorTiltPointQtModel(None))
         self.assertIsNone(m.stack)
         self.assertIsNone(m.sample)
+        self.assertIsNone(m.last_result)
 
     def test_init(self):
         self.assertEquals(self.model.sample.shape, (10, 128, 128))
