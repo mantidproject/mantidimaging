@@ -52,7 +52,7 @@ pipeline {
       steps {
         timeout(5) {
           sh 'rm -f ${WORKSPACE}/flake8.log'
-          sh 'cd mantidimaging && ${WORKSPACE}/anaconda/envs/mi27/bin/flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log'
+          sh 'cd mantidimaging && ${WORKSPACE}/anaconda/envs/mi35/bin/flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log'
           step([$class: 'WarningsPublisher', parserConfigurations: [[parserName: 'Flake8', pattern: 'flake8.log']]])
         }
       }
@@ -61,8 +61,8 @@ pipeline {
     stage('Documentation - HTML') {
       steps {
         timeout(1) {
-          sh '${WORKSPACE}/anaconda/envs/mi27/bin/python setup.py docs_api'
-          sh '${WORKSPACE}/anaconda/envs/mi27/bin/python setup.py docs -b html'
+          sh '${WORKSPACE}/anaconda/envs/mi35/bin/python setup.py docs_api'
+          sh '${WORKSPACE}/anaconda/envs/mi35/bin/python setup.py docs -b html'
           warnings consoleParsers: [[parserName: 'Sphinx-build']]
         }
       }
@@ -71,7 +71,7 @@ pipeline {
     stage('Documentation - QtHelp') {
       steps {
         timeout(1) {
-          sh '${WORKSPACE}/anaconda/envs/mi27/bin/python setup.py docs -b qthelp'
+          sh '${WORKSPACE}/anaconda/envs/mi35/bin/python setup.py docs -b qthelp'
         }
       }
     }
