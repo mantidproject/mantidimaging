@@ -104,8 +104,12 @@ class CORTiltWindowView(BaseMainWindowView):
         self.manualAddButton.clicked.connect(
                 lambda: self.presenter.notify(
                     PresNotification.ADD_NEW_COR_TABLE_ROW))
+        self.manualRefineCorButton.clicked.connect(
+                lambda: self.presenter.notify(
+                    PresNotification.REFINE_SELECTED_COR))
         self.manualFitButton.clicked.connect(
-                lambda: self.presenter.notify(PresNotification.RUN_MANUAL))
+                lambda: self.presenter.notify(
+                    PresNotification.RUN_MANUAL))
 
         def on_row_change(item, _):
             """
@@ -118,6 +122,10 @@ class CORTiltWindowView(BaseMainWindowView):
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.presenter.notify(
                         PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
+
+            # Only allow the refine button to be clicked when a valid row is
+            # selected
+            self.manualRefineCorButton.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(
                 on_row_change)

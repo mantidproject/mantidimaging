@@ -5,6 +5,7 @@ from logging import getLogger
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
+from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 
 from .model import CORTiltWindowModel
@@ -21,6 +22,7 @@ class Notification(Enum):
     PREVIEW_RECONSTRUCTION = 5
     PREVIEW_RECONSTRUCTION_SET_COR = 6
     ADD_NEW_COR_TABLE_ROW = 7
+    REFINE_SELECTED_COR = 8
 
 
 class CORTiltWindowPresenter(BasePresenter):
@@ -46,6 +48,8 @@ class CORTiltWindowPresenter(BasePresenter):
                 self.do_preview_reconstruction_set_cor()
             elif signal == Notification.ADD_NEW_COR_TABLE_ROW:
                 self.do_add_manual_cor_table_row()
+            elif signal == Notification.REFINE_SELECTED_COR:
+                self.do_refine_selected_cor()
 
         except Exception as e:
             self.show_error(e)
@@ -118,6 +122,24 @@ class CORTiltWindowPresenter(BasePresenter):
     def do_add_manual_cor_table_row(self):
         idx = self.model.preview_slice_idx
         self.view.add_cor_table_row(idx)
+
+    def do_refine_selected_cor(self):
+        slice_idx = self.model.preview_slice_idx
+
+        dialog = CORInspectionDialogView(
+                self.view,
+                data=self.model.sample,
+                slice_idx=slice_idx)
+
+        res = dialog.exec()
+        LOG.debug('COR refine dialog result: {}'.format(res))
+        if res == CORInspectionDialogView.Accepted:
+            new_cor = dialog.optimal_rotation_centre
+            LOG.debug('New optimal rotation centre: {}'.format(new_cor))
+            self.model.model.set_cor_at_slice(slice_idx, new_cor)
+
+        # Update reconstruction preview with new COR
+        self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
 
     def do_execute_automatic(self):
         self.model.calculate_slices(self.view.slice_count)
