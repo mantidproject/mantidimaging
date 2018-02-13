@@ -12,28 +12,10 @@ pipeline {
       }
     }
 
-    stage('Setup - Python 2.7') {
-      steps {
-        timeout(30) {
-          sh '${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment.yml mi27'
-        }
-      }
-    }
-
     stage('Setup - Python 3.5') {
       steps {
         timeout(30) {
-          sh '${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment-py35.yml mi35'
-        }
-      }
-    }
-
-    stage('Test - Python 2.7') {
-      steps {
-        timeout(2) {
-          sh 'git clean -xdf --exclude="anaconda*"'
-          sh '${WORKSPACE}/anaconda/envs/mi27/bin/nosetests --with-coverage --xunit-file=${WORKSPACE}/python27_nosetests.xml --xunit-testsuite-name=python27_nosetests || true'
-          junit '**/python27_nosetests.xml'
+          sh '${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment.yml mi35'
         }
       }
     }
