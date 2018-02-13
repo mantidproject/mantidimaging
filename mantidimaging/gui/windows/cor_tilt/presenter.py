@@ -52,6 +52,7 @@ class CORTiltWindowPresenter(BasePresenter):
             LOG.exception("Notification handler failed")
 
     def set_stack_uuid(self, uuid):
+        self.view.reset_image_recon_preview()
         self.set_stack(
                 self.main_window.get_stack_visualiser(uuid)
                 if uuid is not None else None)
