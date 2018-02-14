@@ -7,11 +7,11 @@ source:
 
 requirements:
   build:
-    - python {{ python }}
+    - python 3.5
     - setuptools
     - sphinx
   run:
-    - python {{ python }}
+    - python 3.5
     - astropy
     - numpy
     - scipy

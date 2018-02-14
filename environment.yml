@@ -1,4 +1,4 @@
-name: mantidimaging
+name: mantidimaging-py35
 
 channels:
   - conda-forge
@@ -6,16 +6,14 @@ channels:
   - defaults
 
 dependencies:
-  - python=2.7
+  - python=3.5
   - tomopy=1.1.2
   - pyfftw
   - astropy
   - pip:
-    - enum34
     - IPython
     - nose
     - nose-randomly
-    - mock
     - testfixtures
     - flake8==3.5.0
     - pylint==1.8.2
