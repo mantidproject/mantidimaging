@@ -65,6 +65,7 @@ class CORTiltWindowView(BaseMainWindowView):
         self.recon_figure, self.recon_canvas, self.recon_toolbar = \
             add_mpl_figure(self.reconPreviewLayout, NavigationToolbarSimple)
         self.recon_plot = self.recon_figure.add_subplot(111)
+        self.recon_image = None
 
         # Linear fit plot
         self.fit_figure, self.fit_canvas, _ = add_mpl_figure(self.fitLayout)
@@ -204,13 +205,26 @@ class CORTiltWindowView(BaseMainWindowView):
         """
         Updates the reconstruction preview image with new data.
         """
-        self.recon_plot.cla()
-
         # Plot image
         if image_data is not None:
-            self.recon_plot.imshow(image_data, cmap=self.cmap)
+            # Cache image
+            # Saves time when drawing and maintains image extents
+            if self.recon_image is None:
+                self.recon_image = self.recon_plot.imshow(
+                        image_data, cmap=self.cmap)
+            else:
+                self.recon_image.set_data(image_data)
+                self.recon_image.autoscale()
 
         self.recon_canvas.draw()
+
+    def reset_image_recon_preview(self):
+        """
+        Resets the recon preview image, forcing a complete redraw next time it
+        is updated.
+        """
+        self.recon_plot.cla()
+        self.recon_image = None
 
     def update_fit_plot(self, x_axis, cor_data, fit_data):
         """
