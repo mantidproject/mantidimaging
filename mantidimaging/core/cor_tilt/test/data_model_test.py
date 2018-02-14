@@ -205,3 +205,23 @@ class CorTiltDataModelTest(TestCase):
         self.assertEquals(m.get_cor_for_slice_from_regression(0), 4.0)
         self.assertEquals(m.get_cor_for_slice_from_regression(10), 5.0)
         self.assertEquals(m.get_cor_for_slice_from_regression(50), 9.0)
+
+    def test_get_data_idx_for_slice_idx(self):
+        m = CorTiltDataModel()
+        m.add_point(None, 10, 5.0)
+        m.add_point(None, 20, 6.0)
+        m.add_point(None, 30, 7.0)
+        m.add_point(None, 40, 8.0)
+
+        self.assertEquals(m._get_data_idx_from_slice_idx(10), 0)
+        self.assertIsNone(m._get_data_idx_from_slice_idx(100))
+
+    def test_set_cor_at_slice(self):
+        m = CorTiltDataModel()
+        m.add_point(None, 10, 5.0)
+        m.add_point(None, 20, 6.0)
+        m.add_point(None, 30, 7.0)
+        m.add_point(None, 40, 8.0)
+
+        m.set_cor_at_slice(30, 15)
+        self.assertEquals(m.cors, [5.0, 6.0, 15.0, 8.0])

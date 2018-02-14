@@ -66,6 +66,16 @@ class CorTiltDataModel(object):
         if cor is not None:
             self._points[idx][Field.CENTRE_OF_ROTATION.value] = float(cor)
 
+    def _get_data_idx_from_slice_idx(self, slice_idx):
+        for i, p in enumerate(self._points):
+            if int(p[Field.SLICE_INDEX.value]) == slice_idx:
+                return i
+        return None
+
+    def set_cor_at_slice(self, slice_idx, cor):
+        data_idx = self._get_data_idx_from_slice_idx(slice_idx)
+        self.set_point(data_idx, cor=cor)
+
     def remove_point(self, idx):
         self.clear_results()
         del self._points[idx]
