@@ -22,8 +22,8 @@
       </property>
       <widget class="QWidget" name="formLayoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="spacing">
-         <number>0</number>
+        <property name="margin">
+         <number>9</number>
         </property>
         <item>
          <widget class="QTabWidget" name="tabWidget">

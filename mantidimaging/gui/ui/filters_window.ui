@@ -31,6 +31,9 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
+        <property name="margin">
+         <number>9</number>
+        </property>
         <item>
          <layout class="QFormLayout" name="optionsLayout">
           <property name="fieldGrowthPolicy">

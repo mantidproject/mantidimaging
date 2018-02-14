@@ -22,6 +22,9 @@
       </property>
       <widget class="QWidget" name="verticalLayoutWidget_2">
        <layout class="QVBoxLayout" name="paramsLayout">
+        <property name="margin">
+         <number>9</number>
+        </property>
         <item>
          <layout class="QGridLayout" name="optionsLayout">
           <item row="3" column="1">
