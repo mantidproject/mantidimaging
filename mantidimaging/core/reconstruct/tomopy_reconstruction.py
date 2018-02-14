@@ -51,6 +51,33 @@ def reconstruct_single_preview(sample,
     return volume[0]
 
 
+def reconstruct_single_preview_from_sinogram(sample,
+                                             cor,
+                                             proj_angles,
+                                             progress=None):
+    """
+
+    :param sample: 2D sinogram data
+    :param cor: Centre of rotation value
+    :param proj_angles: Array of projection angles
+    :param progress: Optional progress reporter
+    :return: 2D image data for reconstructed slice
+    """
+    progress = Progress.ensure_instance(progress,
+                                        task_name='Tomopy reconstruction')
+
+    volume = [None]
+    with progress:
+        volume = tomopy.recon(
+                tomo=[sample],
+                sinogram_order=True,
+                theta=proj_angles,
+                center=cor,
+                algorithm='gridrec')
+
+    return volume[0]
+
+
 def reconstruct(sample,
                 cor=None,
                 proj_angles=None,
