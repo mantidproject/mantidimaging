@@ -12,8 +12,6 @@ from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.core.filters import stripe_removal
 
 
-@unittest.skipIf(sys.version_info < (3, 0),
-                 'Skipping unreliable test on Python 2.7')
 class StripeRemovalTest(unittest.TestCase):
     """
     Test stripe removal filter.
