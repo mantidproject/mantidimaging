@@ -28,17 +28,6 @@ def import_skimage_io():
     return skio
 
 
-def import_inspect():
-    if sys.version_info >= (3, 3):
-        # Can use inspect on Python 3.3 and above
-        import inspect
-    else:
-        # On lower Python versions fall back to funcsigs
-        import funcsigs as inspect
-
-    return inspect
-
-
 def import_mock():
     """
     Loads a suitable version of mock depedning on the Python version being
