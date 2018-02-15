@@ -18,13 +18,14 @@ def get_roi_left_shift(images):
 
 def get_cor_tilt_from_images(images):
     if not images or const.AUTO_COR_TILT not in images.properties:
-        return (0, 0.0)
+        return (0, 0.0, 0.0)
 
     auto_cor_tilt = images.properties[const.AUTO_COR_TILT]
 
     cor = auto_cor_tilt['rotation_centre']
     tilt = auto_cor_tilt['tilt_angle_rad']
+    m = auto_cor_tilt['fitted_gradient']
 
     cor -= get_roi_left_shift(images)
 
-    return (cor, tilt)
+    return (cor, tilt, m)

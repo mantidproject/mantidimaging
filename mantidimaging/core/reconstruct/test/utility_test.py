@@ -125,17 +125,20 @@ class UtilityTest(TestCase):
     def test_get_cor_tilt_from_images(self):
         imgs = Images()
         imgs.properties = TEST_PARAMS_1
-        cor, tilt = utility.get_cor_tilt_from_images(imgs)
+        cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
         self.assertEquals(cor, 1427.6 - 821)
         self.assertAlmostEqual(tilt, -0.01238)
+        self.assertAlmostEqual(m, -0.012)
 
     def test_get_cor_tilt_from_images_empty(self):
         imgs = Images()
-        cor, tilt = utility.get_cor_tilt_from_images(imgs)
+        cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
         self.assertEquals(cor, 0)
         self.assertEquals(tilt, 0.0)
+        self.assertEquals(m, 0.0)
 
     def test_get_cor_tilt_from_images_none(self):
-        cor, tilt = utility.get_cor_tilt_from_images(None)
+        cor, tilt, m = utility.get_cor_tilt_from_images(None)
         self.assertEquals(cor, 0)
         self.assertEquals(tilt, 0.0)
+        self.assertEquals(m, 0.0)

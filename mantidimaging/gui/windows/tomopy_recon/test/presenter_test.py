@@ -18,9 +18,9 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         # Mock view
         self.view = mock.create_autospec(TomopyReconWindowView)
-        self.view.get_cor = mock.MagicMock(return_value=500)
-        self.view.get_tilt = mock.MagicMock(return_value=0)
-        self.view.get_max_proj_angle = mock.MagicMock(return_value=360)
+        self.view.rotation_centre = 500
+        self.view.cor_gradient = 0
+        self.view.max_proj_angle = 360
 
         self.presenter = TomopyReconWindowPresenter(self.view, None)
 
@@ -35,8 +35,8 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
 
         self.view.update_projection_preview.assert_called_once()
         self.view.update_recon_preview.assert_called_once_with(None)
-        self.view.set_cor.assert_called_once_with(0)
-        self.view.set_tilt.assert_called_once_with(0)
+        self.assertEquals(self.view.rotation_centre, 0)
+        self.assertEquals(self.view.cor_gradient, 0.0)
 
     def test_prepare_recon(self):
         self.presenter.set_stack(self.stack)

@@ -116,17 +116,22 @@ class TomopyReconWindowView(BaseMainWindowView):
     def set_preview_slice_max_idx(self, max_idx):
         self.previewSlice.setMaximum(max_idx)
 
-    def get_cor(self):
+    @property
+    def rotation_centre(self):
         return self.cor.value()
 
-    def set_cor(self, value):
+    @rotation_centre.setter
+    def rotation_centre(self, value):
         self.cor.setValue(value)
 
-    def get_tilt(self):
-        return self.tilt.value()
+    @property
+    def cor_gradient(self):
+        return self.gradient.value()
 
-    def set_tilt(self, value):
-        self.tilt.setValue(value)
+    @cor_gradient.setter
+    def cor_gradient(self, value):
+        self.gradient.setValue(value)
 
-    def get_max_proj_angle(self):
+    @property
+    def max_proj_angle(self):
         return self.maxProjAngle.value()
