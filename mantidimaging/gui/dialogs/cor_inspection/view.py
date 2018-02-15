@@ -70,6 +70,7 @@ class CORInspectionDialogView(BaseDialogView):
                     plot.imshow(data, cmap=self.cmap)
         else:
             image.set_data(data)
+            image.autoscale()
 
         plot.set_title(title)
 
