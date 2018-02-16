@@ -14,45 +14,22 @@ Or downloading a Zip archive of the repository contents:
 :code:`wget https://github.com/mantidproject/mantidimaging/archive/master.zip`
 :code:`unzip mantidimaging-master.zip`
 
-Setting up Python environment
------------------------------
+Prerequisites
+-------------
 
-Scripts are provided in the :code:`mantidimaging/buildscripts` directory which
-setup an Anaconda Python environment which allows you to run the imaging tools.
+MantidImaging requires you to have an Anaconda distribution setup. If you do not
+already have one then install Miniconda.
 
-There are scripts for both Python version 2.7 or version 3.5, if unsure which
-version to choose use version 2.7.
+Environment
+-----------
 
-Near the end of the Anaconda installation you will be prompted if you wish to
-add Anaconda to your PATH in your :code:`.bashrc` file. Be sure to specify
-:code:`yes` at this point, this will ensure that the correct version of Python
-will be used when launching the package tools.
-
-Using an existing Anaconda distribution
----------------------------------------
-
-You can make use of an existing Anaconda distribution (either Python 2 or Python
-3).
-
-Python 3.5 virtual environment
-##############################
-
-If you have an Anaconda distribution with Python 3 you must first create a
-virtual environment with Python 3.5 (this is due to requirements from
-dependencies). This is done using the command: :code:`conda create -n
-mantidimaging python=3.5 anaconda` (note that you can replace
-:code:`mantidimaging` with whatever name you would prefer).
+Create a virtual environment to run MantidImaging within using the command:
+:code:`conda create -n mantidimaging python=3.5 anaconda` (note that you can
+replace :code:`mantidimaging` with whatever name you would prefer).
 
 The virtual environment can then be activated using the command :code:`source
 activate mantidimaging`, this must be done before the :code:`mantidimaging`
 package can be used (even after installation).
-
-Dependencies
-############
-
-Run the following commands to install the required dependencies:
-
-:code:`conda install -c conda-forge tomopy=1.0.1`
 
 Installing the package
 ----------------------
@@ -76,8 +53,3 @@ commands:
     - Command line: :code:`mantidimaging.sh <args...>`
     - IPython: :code:`mantidimaging-ipython.sh <args...>`
     - GUI: :code:`mantidimaging-gui.sh <args...>`
-
-Note that if using Python version 3.5 you will have to activate the virtual
-environment before calling any of the above commands. This is done using the
-command :code:`source activate py35`. Once finished the command :code:`source
-deactivate` can be used to exit the virtual environment.
