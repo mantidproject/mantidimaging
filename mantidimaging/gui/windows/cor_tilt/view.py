@@ -335,11 +335,11 @@ class CORTiltWindowView(BaseMainWindowView):
         enough_to_fit = self.tableView.model().num_points >= 2
         self.manualFitButton.setEnabled(enough_to_fit)
 
-    def add_cor_table_row(self, idx):
+    def add_cor_table_row(self, idx, cor):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
-        self.tableView.model().appendNewRow(idx)
+        self.tableView.model().appendNewRow(idx, cor)
 
     @property
     def slice_count(self):

@@ -21,6 +21,7 @@ class CORTiltWindowModel(object):
         self.roi = None
         self.projection_indices = None
         self.model = model
+        self.last_result = None
 
     @property
     def has_results(self):
@@ -96,6 +97,9 @@ class CORTiltWindowModel(object):
                 self.projection_indices,
                 progress=progress)
 
+        # Cache last result
+        self.last_result = self.model.stack_properties
+
         # Async task needs a non-None result of some sort
         return True
 
@@ -109,6 +113,9 @@ class CORTiltWindowModel(object):
 
         self.model.linear_regression()
         self.images.properties.update(self.model.stack_properties)
+
+        # Cache last result
+        self.last_result = self.model.stack_properties
 
         # Async task needs a non-None result of some sort
         return True
