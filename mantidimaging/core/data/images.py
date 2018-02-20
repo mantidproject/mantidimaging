@@ -55,6 +55,10 @@ class Images(object):
         return self._filenames
 
     @property
+    def has_history(self):
+        return const.OPERATION_HISTORY in self.properties
+
+    @property
     def properties_pretty(self):
         pp = pprint.PrettyPrinter(indent=2)
         return pp.pformat(self.properties)
@@ -76,7 +80,7 @@ class Images(object):
             self.properties[const.OPERATION_HISTORY] = []
 
         def accepted_type(o):
-            return type(o) in [str, int, float, bool, tuple]
+            return type(o) in [str, int, float, bool, tuple, list]
 
         self.properties[const.OPERATION_HISTORY].append({
             'name': func,

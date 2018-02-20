@@ -13,4 +13,11 @@ def run_auto_finding_on_images(
     """
     auto_find_cors(images.sample, roi, model, projections, cores, progress)
     model.linear_regression()
-    images.properties.update(model.stack_properties)
+    update_image_operations(images, model)
+
+
+def update_image_operations(images, model):
+    """
+    Updates the image operation history with the results in the given model.
+    """
+    images.record_parameters_in_metadata('cor_tilt_finding', **model.stack_properties)

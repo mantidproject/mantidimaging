@@ -2,7 +2,8 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging.core.cor_tilt import run_auto_finding_on_images
+from mantidimaging.core.cor_tilt import (
+        run_auto_finding_on_images, update_image_operations)
 from mantidimaging.core.reconstruct import tomopy_reconstruct_preview
 from mantidimaging.core.utility.projection_angles import (
         generate as generate_projection_angles)
@@ -110,7 +111,7 @@ class CORTiltWindowModel(object):
             raise ValueError('No region of interest is defined')
 
         self.model.linear_regression()
-        self.images.properties.update(self.model.stack_properties)
+        update_image_operations(self.images, self.model)
 
         # Cache last result
         self.last_result = self.model.stack_properties

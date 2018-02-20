@@ -10,4 +10,5 @@ from .data_model import (  # noqa: F401
         FIELD_NAMES)
 
 from .workflow import (  # noqa: F401
-        run_auto_finding_on_images)
+        run_auto_finding_on_images,
+        update_image_operations)

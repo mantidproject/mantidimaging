@@ -139,11 +139,9 @@ class CorTiltDataModel(object):
     @property
     def stack_properties(self):
         return {
-            const.AUTO_COR_TILT: {
-                'rotation_centre': self.c,
-                'fitted_gradient': self.m,
-                'tilt_angle_rad': self.angle_rad,
-                'slice_indices': self.slices,
-                'rotation_centres': self.cors
-            }
+            'rotation_centre': float(self.c),
+            'fitted_gradient': float(self.m),
+            'tilt_angle_rad': float(self.angle_rad),
+            'slice_indices': self.slices,
+            'rotation_centres': self.cors
         }
