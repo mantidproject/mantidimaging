@@ -20,3 +20,4 @@ dependencies:
     - pylint==1.8.2
     - GitPython
     - sphinx
+    - coverage>=4.5.0
