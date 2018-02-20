@@ -83,10 +83,12 @@ class Images(object):
             return type(o) in [str, int, float, bool, tuple, list]
 
         self.properties[const.OPERATION_HISTORY].append({
-            'name': func,
-            'args': [a if accepted_type(a) else None for a in args],
-            'kwargs': dict([(k, v if accepted_type(v) else None) for
-                           (k, v) in kwargs.items()])
+            const.OPERATION_NAME: func,
+            const.OPERATION_ARGS:
+                [a if accepted_type(a) else None for a in args],
+            const.OPERATION_KEYWORD_ARGS:
+                dict([(k, v if accepted_type(v) else None) for (k, v)
+                      in kwargs.items()])
         })
 
     @staticmethod

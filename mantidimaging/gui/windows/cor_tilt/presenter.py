@@ -125,7 +125,7 @@ class CORTiltWindowPresenter(BasePresenter):
 
     def do_add_manual_cor_table_row(self):
         idx = self.model.preview_slice_idx
-        cor = self.model.last_result[data_const.AUTO_COR_TILT]['rotation_centre'] if \
+        cor = self.model.last_result[data_const.AUTO_COR_TILT][data_const.COR_TILT_ROTATION_CENTRE] if \
             self.model.last_result else 0
         self.view.add_cor_table_row(idx, cor)
 

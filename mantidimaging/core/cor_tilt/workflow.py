@@ -1,3 +1,5 @@
+from mantidimaging.core.data import const
+
 from .auto import auto_find_cors
 
 
@@ -20,4 +22,6 @@ def update_image_operations(images, model):
     """
     Updates the image operation history with the results in the given model.
     """
-    images.record_parameters_in_metadata('cor_tilt_finding', **model.stack_properties)
+    images.record_parameters_in_metadata(
+            const.OPERATION_NAME_COR_TILT_FINDING,
+            **model.stack_properties)
