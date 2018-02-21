@@ -8,6 +8,7 @@ pipeline {
       steps {
         timeout(15) {
           sh '${WORKSPACE}/buildscripts/install_anaconda.sh -b'
+          sh '${WORKSPACE}/anaconda/bin/conda install -y conda-build'
         }
       }
     }
