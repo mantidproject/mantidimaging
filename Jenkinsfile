@@ -57,5 +57,13 @@ pipeline {
         }
       }
     }
+
+    stage('Package - Conda') {
+      steps {
+        timeout(30) {
+          sh 'buildscripts/conda/build.sh'
+        }
+      }
+    }
   }
 }
