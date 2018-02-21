@@ -7,6 +7,7 @@ import warnings
 from mantidimaging import helper as h
 from mantidimaging.core.configs import recon_config
 from mantidimaging.core.utility import ExecutionTimer
+from mantidimaging.core.utility.optional_imports import safe_import
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = \
@@ -14,8 +15,20 @@ warnings.formatwarning = \
     formatwarning_orig(message, category, filename, lineno, line='')
 
 
+def startup_checks():
+    tomopy = safe_import('tomopy')
+    if tomopy is not None:
+        ver = tomopy.__version__
+        if ver != '1.1.2':
+            raise RuntimeError(
+                    'Unexpected TomoPy version {}, '
+                    'please update Conda environment'.format(ver))
+
+
 def main(default_args):
     h.initialise_logging()
+
+    startup_checks()
 
     config = recon_config.grab_full_config(default_args)
 
