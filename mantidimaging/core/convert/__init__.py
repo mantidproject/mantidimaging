@@ -23,5 +23,3 @@
 __all__ = ['convert']
 
 from . import convert  # noqa: F401, F403
-
-del absolute_import, division, print_function

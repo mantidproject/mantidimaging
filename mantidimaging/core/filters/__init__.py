@@ -37,5 +37,3 @@ from . import (  # noqa: F401
         stripe_removal)
 
 from .wip import mcp_corrections  # noqa: F401
-
-del absolute_import, division, print_function

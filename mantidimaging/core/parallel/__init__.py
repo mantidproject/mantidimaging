@@ -91,5 +91,3 @@ if sys.platform != 'win32':
         self.buffer = mmap.mmap(self.fd, self.size)
 
     multiprocessing.heap.Arena.__init__ = ftruncate_allocation
-
-del absolute_import, division, print_function

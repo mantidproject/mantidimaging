@@ -25,8 +25,6 @@
 
 from mantidimaging import core, main, ipython  # noqa: F401
 
-del absolute_import, division, print_function
-
 """
 The gui package is not imported here, because it will pull in all of PyQt
 packages, which we do not want when using only the CLI. This is both a speedup

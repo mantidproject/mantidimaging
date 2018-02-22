@@ -30,5 +30,3 @@ from . import (  # noqa: F401
         recon,
         sinogram,
         visualiser)
-
-del absolute_import, division, print_function

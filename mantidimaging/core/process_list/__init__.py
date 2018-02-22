@@ -7,5 +7,3 @@ from .executor import (  # noqa: F401
         execute,
         execute_back,
         execute_new)
-
-del absolute_import, division, print_function

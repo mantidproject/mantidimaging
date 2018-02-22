@@ -20,6 +20,4 @@
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from . import mcp_corrections  # noqa: F401, F403
-
-del absolute_import, division, print_function  # noqa: F821
+from . import mcp_corrections  # noqa: F401, F403  # noqa: F821

@@ -9,5 +9,3 @@ from .qt_helpers import (  # noqa: F401
         delete_all_widgets_from_layout,
         BlockQtSignals
     )
-
-del absolute_import, division, print_function

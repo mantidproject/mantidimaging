@@ -22,6 +22,4 @@
 
 from .model import AsyncTaskDialogModel, TaskWorkerThread  # noqa: F401
 from .view import AsyncTaskDialogView  # noqa: F401
-from .presenter import AsyncTaskDialogPresenter  # noqa: F401
-
-del absolute_import, division, print_function  # noqa:F821
+from .presenter import AsyncTaskDialogPresenter  # noqa: F401  # noqa:F821

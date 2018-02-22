@@ -21,5 +21,3 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import functional_config, recon_config  # noqa: F401
-
-del absolute_import, division, print_function

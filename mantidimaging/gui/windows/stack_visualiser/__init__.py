@@ -26,6 +26,4 @@ from .presenter import (  # noqa: F401
         StackVisualiserPresenter,
         Notification,
         Parameters,
-        ImageMode)
-
-del absolute_import, division, print_function  # noqa:F821
+        ImageMode)  # noqa:F821
