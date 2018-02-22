@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from .model import CORInspectionDialogModel  # noqa: F401
 from .view import CORInspectionDialogView  # noqa: F401
 from .types import ImageType  # noqa: F401

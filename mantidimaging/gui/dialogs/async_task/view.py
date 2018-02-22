@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from mantidimaging.gui.mvp_base import BaseDialogView
 
 from .presenter import AsyncTaskDialogPresenter

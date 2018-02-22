@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'Rebin'
 
 from .rebin import execute, modes, _cli_register  # noqa:F401

@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'ROI Normalisation'
 
 from .roi_normalisation import execute, _cli_register  # noqa:F401

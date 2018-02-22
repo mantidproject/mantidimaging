@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'Clip Values'
 
 from .clip_values import execute, _cli_register  # noqa:F401

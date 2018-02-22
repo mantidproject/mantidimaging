@@ -1,6 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
-
 class AbstractTool:
     """
     The AbstractTool class requires the tools to know how to import themselves,

@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 

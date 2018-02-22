@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'Rotate Stack'
 
 from .rotate_stack import execute, _cli_register  # noqa:F401

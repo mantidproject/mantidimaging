@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
-
 def to_KB(size, dtype=None):
     return to_bytes(to_bits(size, dtype)) / 1024
 

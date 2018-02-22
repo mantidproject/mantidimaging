@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 from mantidimaging.core.cor_tilt import (

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import os
 # using pickle instead of dill, because dill is not available on SCARF
 import pickle

@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'Background Correction'
 
 from .background_correction import execute, _cli_register  # noqa:F401

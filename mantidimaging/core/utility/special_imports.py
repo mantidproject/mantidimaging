@@ -5,8 +5,6 @@ If something requires additional logic to import it for whatever reason (e.g.
 version dependencies), it should go in here.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import sys
 
 

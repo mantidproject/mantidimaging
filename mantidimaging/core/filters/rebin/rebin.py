@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 import skimage.transform
 
 from mantidimaging import helper as h

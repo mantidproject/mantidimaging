@@ -12,8 +12,6 @@ parallel.exclusive_mem: Runs a function in parallel.
                          the copy-on-write.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import sys
 
 from . import (  # noqa: F401

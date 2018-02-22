@@ -2,8 +2,6 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 
-from __future__ import absolute_import, division, print_function
-
 import numpy as np
 
 from mantidimaging.core.data import Images

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from mantidimaging.core.utility.registrator import (
         get_package_children,
         import_items,

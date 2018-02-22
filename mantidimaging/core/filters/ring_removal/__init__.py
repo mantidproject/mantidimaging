@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'Ring Removal'
 
 from .ring_removal import execute, _cli_register  # noqa:F401

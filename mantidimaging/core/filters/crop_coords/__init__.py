@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 NAME = 'Crop Coordinates'
 
 from .crop_coords import execute, execute_single, _cli_register  # noqa:F401

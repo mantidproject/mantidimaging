@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 from .angles import (  # noqa: F401
         cors_to_tilt_angle,
         tilt_angle_to_cors)
