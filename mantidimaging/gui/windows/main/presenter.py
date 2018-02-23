@@ -66,6 +66,7 @@ class MainWindowPresenter(BasePresenter):
             title = task.kwargs['selected_file'] if not custom_name \
                 else custom_name
             self.create_new_stack(task.result, title)
+            del task.result
 
         else:
             log.error("Failed to load stack: %s", str(task.error))

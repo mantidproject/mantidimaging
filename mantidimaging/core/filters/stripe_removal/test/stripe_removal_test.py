@@ -14,7 +14,7 @@ class StripeRemovalTest(unittest.TestCase):
     """
     Test stripe removal filter.
 
-    Tests return value and in-place modified data.
+    Tests return value only.
     """
 
     def __init__(self, *args, **kwargs):
@@ -42,9 +42,6 @@ class StripeRemovalTest(unittest.TestCase):
         result = stripe_removal.execute(images, wf, ti, sf)
 
         th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_executed_wf_dict(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -65,9 +62,6 @@ class StripeRemovalTest(unittest.TestCase):
         result = stripe_removal.execute(images, wf, ti, sf)
 
         th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_executed_ti_dict(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -88,9 +82,6 @@ class StripeRemovalTest(unittest.TestCase):
         result = stripe_removal.execute(images, wf, ti, sf)
 
         th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_executed_sf_dict(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -116,9 +107,6 @@ class StripeRemovalTest(unittest.TestCase):
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_memory_executed_ti(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -135,9 +123,6 @@ class StripeRemovalTest(unittest.TestCase):
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_memory_executed_sf(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -154,9 +139,6 @@ class StripeRemovalTest(unittest.TestCase):
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
 
 if __name__ == '__main__':
