@@ -3,8 +3,6 @@ A place for availability checking and import logic for optional dependencies to
 live.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import importlib
 import traceback
 import warnings

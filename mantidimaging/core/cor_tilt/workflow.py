@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from .auto import auto_find_cors
 
 

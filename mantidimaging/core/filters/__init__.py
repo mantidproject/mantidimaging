@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
 #
@@ -39,5 +37,3 @@ from . import (  # noqa: F401
         stripe_removal)
 
 from .wip import mcp_corrections  # noqa: F401
-
-del absolute_import, division, print_function

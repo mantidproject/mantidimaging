@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from PyQt5.QtWidgets import QAbstractItemView

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
 #
@@ -28,6 +26,4 @@ from . import (  # noqa: F401
 
 from .model import MainWindowModel  # noqa: F401
 from .view import MainWindowView  # noqa: F401
-from .presenter import MainWindowPresenter  # noqa: F401
-
-del absolute_import, division, print_function  # noqa:F821
+from .presenter import MainWindowPresenter  # noqa: F401  # noqa:F821

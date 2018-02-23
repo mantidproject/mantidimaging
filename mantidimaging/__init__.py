@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 # Copyright &copy; 2017-2018 ISIS Rutherford Appleton Laboratory, NScD
 # Oak Ridge National Laboratory & European Spallation Source
 #
@@ -26,8 +24,6 @@ from __future__ import absolute_import, division, print_function
 # from mantidimaging.<package_name>
 
 from mantidimaging import core, main, ipython  # noqa: F401
-
-del absolute_import, division, print_function
 
 """
 The gui package is not imported here, because it will pull in all of PyQt

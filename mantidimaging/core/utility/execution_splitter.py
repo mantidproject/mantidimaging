@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from logging import getLogger
 
 from mantidimaging.core.utility import cor_interpolate, shape_splitter

@@ -12,8 +12,6 @@ parallel.exclusive_mem: Runs a function in parallel.
                          the copy-on-write.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import sys
 
 from . import (  # noqa: F401
@@ -93,5 +91,3 @@ if sys.platform != 'win32':
         self.buffer = mmap.mmap(self.fd, self.size)
 
     multiprocessing.heap.Arena.__init__ = ftruncate_allocation
-
-del absolute_import, division, print_function

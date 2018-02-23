@@ -5,8 +5,6 @@ If something requires additional logic to import it for whatever reason (e.g.
 version dependencies), it should go in here.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import sys
 
 
@@ -28,41 +26,25 @@ def import_skimage_io():
     return skio
 
 
-def import_inspect():
-    if sys.version_info >= (3, 3):
-        # Can use inspect on Python 3.3 and above
-        import inspect
-    else:
-        # On lower Python versions fall back to funcsigs
-        import funcsigs as inspect
-
-    return inspect
-
-
 def import_mock():
     """
     Loads a suitable version of mock depedning on the Python version being
     used.
     """
-    if sys.version_info >= (3, 3):
-        # Use unittest.mock on Python 3.3 and above
-        import unittest
-        import unittest.mock as mock
+    import unittest
+    import unittest.mock as mock
 
-        if sys.version_info < (3, 6):
-            # If on Python 3.5 and below then need to monkey patch this
-            # function in It is available as standard on Python 3.6 and above
-            def assert_called_once(_mock_self):
-                self = _mock_self
-                if not self.call_count == 1:
-                    msg = ("Expected '{}' to have been called once. "
-                           "Called {} times.".format(
-                               self._mock_name or 'mock', self.call_count))
-                    raise AssertionError(msg)
+    if sys.version_info < (3, 6):
+        # If on Python 3.5 and below then need to monkey patch this
+        # function in It is available as standard on Python 3.6 and above
+        def assert_called_once(_mock_self):
+            self = _mock_self
+            if not self.call_count == 1:
+                msg = ("Expected '{}' to have been called once. "
+                       "Called {} times.".format(
+                           self._mock_name or 'mock', self.call_count))
+                raise AssertionError(msg)
 
-            unittest.mock.Mock.assert_called_once = assert_called_once
-    else:
-        # Use mock on Python < 3.3
-        import mock
+        unittest.mock.Mock.assert_called_once = assert_called_once
 
     return mock

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import os
 
 from mantidimaging.core.configurations.default_run import initialise_run

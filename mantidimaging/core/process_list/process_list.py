@@ -1,8 +1,7 @@
-from __future__ import absolute_import, division, print_function
-
 import os
 # using pickle instead of dill, because dill is not available on SCARF
 import pickle
+import inspect
 
 from ast import literal_eval
 from six import StringIO
@@ -138,8 +137,6 @@ class ProcessList(object):
         self._store_func(func, args, kwargs)
 
     def _store_func(self, func, args, kwargs):
-        import mantidimaging.core.utility.special_imports as imps
-        inspect = imps.import_inspect()
         parameters = inspect.signature(func).parameters
         assert set(kwargs.keys()).issubset(parameters), \
             "One or more of the keyword arguments provided were NOT found " \

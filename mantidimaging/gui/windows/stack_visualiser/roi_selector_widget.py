@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from PyQt5 import Qt
 
 from mantidimaging.gui.utility import (BlockQtSignals, compile_ui)

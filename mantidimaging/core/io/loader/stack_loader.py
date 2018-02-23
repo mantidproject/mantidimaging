@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import numpy as np
 
 from mantidimaging.core.parallel import two_shared_mem as ptsm
