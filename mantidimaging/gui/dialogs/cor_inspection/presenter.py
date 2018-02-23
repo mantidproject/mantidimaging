@@ -2,7 +2,6 @@ from logging import getLogger
 from enum import Enum
 from PyQt5 import Qt
 
-from mantidimaging.core.utility.progress_reporting import ProgressHandler
 from mantidimaging.gui.mvp_base import BasePresenter
 
 from .model import CORInspectionDialogModel

@@ -156,7 +156,8 @@ class CORTiltWindowPresenter(BasePresenter):
             names = []
 
             # Add data line
-            lines.append(ax.plot(self.model.model.slices, self.model.model.cors)[0])
+            lines.append(
+                ax.plot(self.model.model.slices, self.model.model.cors)[0])
             names.append('Data')
 
             # Add fit line (if a fit has been performed)
