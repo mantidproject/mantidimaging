@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-import numpy as np
-
 from mantidimaging.core.cor_tilt import (
         CorTiltDataModel, Field, FIELD_NAMES)
 

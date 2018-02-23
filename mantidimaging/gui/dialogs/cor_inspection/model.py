@@ -14,7 +14,8 @@ LOG = getLogger(__name__)
 
 class CORInspectionDialogModel(object):
 
-    def __init__(self, data, slice_idx=None, initial_cor=None, initial_step=50, max_angle=360):
+    def __init__(self, data, slice_idx=None, initial_cor=None, initial_step=50,
+                 max_angle=360):
         # Extract the sinogram
         if slice_idx is None:
             self.sino = data

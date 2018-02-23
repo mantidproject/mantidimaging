@@ -93,8 +93,8 @@ class CorTiltDataModel(object):
         self._points.sort(key=lambda p: p[Field.SLICE_INDEX.value])
 
     def get_cor_for_slice(self, slice_idx):
-        a = [p[Field.CENTRE_OF_ROTATION.value] for p in self._points if \
-                p[Field.SLICE_INDEX.value] == slice_idx]
+        a = [p[Field.CENTRE_OF_ROTATION.value] for p in self._points if
+             p[Field.SLICE_INDEX.value] == slice_idx]
         return a[0] if a else None
 
     def get_cor_for_slice_from_regression(self, slice_idx):

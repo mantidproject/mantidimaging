@@ -4,7 +4,6 @@ import math
 
 import numpy as np
 
-from mantidimaging.core.data import Images
 from mantidimaging.core.cor_tilt import angles
 
 

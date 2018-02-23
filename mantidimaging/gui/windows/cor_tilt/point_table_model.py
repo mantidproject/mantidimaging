@@ -11,7 +11,8 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.beginResetModel()
-        super(CorTiltPointQtModel, self).populate_slice_indices(begin, end, count, cor)
+        super(CorTiltPointQtModel, self).populate_slice_indices(
+                begin, end, count, cor)
         self.endResetModel()
 
     def sort_points(self):
