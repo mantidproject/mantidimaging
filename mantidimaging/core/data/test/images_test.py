@@ -76,10 +76,14 @@ class ImagesTest(unittest.TestCase):
 
     def test_record_parameters_in_metadata(self):
         imgs = Images()
+        self.assertFalse(imgs.has_history)
+
         imgs.record_parameters_in_metadata(
                 'test_func',
                 56, 9002, np.ndarray((800, 1024, 1024)), 'yes', False,
                 this=765, that=495.0, roi=(1, 2, 3, 4))
+
+        self.assertTrue(imgs.has_history)
 
         self.assertEquals(imgs.properties, {
             'operation_history': [

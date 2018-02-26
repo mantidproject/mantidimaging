@@ -138,9 +138,6 @@ class CorTiltDataModelTest(TestCase):
         m.linear_regression()
 
         d = m.stack_properties
-        self.assertTrue('auto_cor_tilt' in d)
-
-        d = d['auto_cor_tilt']
         self.assertEqual(len(d), 5)
 
         self.assertEqual(d['fitted_gradient'], m.m)

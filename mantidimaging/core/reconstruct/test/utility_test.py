@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import Images, const
 from mantidimaging.core.reconstruct import utility
 
 
@@ -39,42 +39,7 @@ TEST_PARAMS_1 = {
             "name":
             "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
         }
-    ],
-    "auto_cor_tilt": {
-        "fitted_gradient": -0.012,
-        "rotation_centre": 1427.6,
-        "rotation_centres": [
-            1428,
-            1425,
-            1427,
-            1426,
-            1424,
-            1423,
-            1422,
-            1421,
-            1422,
-            1420,
-            1419,
-            1418,
-            1416
-        ],
-        "slice_indices": [
-            1,
-            71,
-            141,
-            211,
-            281,
-            351,
-            421,
-            491,
-            561,
-            631,
-            701,
-            771,
-            841
-        ],
-        "tilt_angle_rad": -0.01238
-    }
+    ]
 }
 
 
@@ -97,38 +62,178 @@ TEST_PARAMS_2 = {
 }
 
 
+TEST_PARAMS_3 = {
+    'operation_history': [
+        {
+            'args': [],
+            'kwargs': {'threshold': 0.22},
+            'name': 'mantidimaging.core.filters.cut_off.cut_off.execute'
+        },
+        {
+            'args': [],
+            'kwargs': {
+                'region_of_interest': [
+                    72,
+                    697,
+                    2038,
+                    1578
+                ]
+            },
+            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        },
+        {
+            'args': [],
+            'kwargs': {
+                'region_of_interest': [
+                    705,
+                    22,
+                    1944,
+                    845
+                ]
+            },
+            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        },
+        {
+            'args': [],
+            'kwargs': {
+                'fitted_gradient': 0.009657997234305727,
+                'rotation_centre': 617.2297924368454,
+                'rotation_centres': [
+                    619.0,
+                    620.171875,
+                    624.078125
+                ],
+                'slice_indices': [
+                    143,
+                    376,
+                    678
+                ],
+                'tilt_angle_rad': 0.009657696961729184
+            },
+            'name': 'cor_tilt_finding'
+        },
+        {
+            'args': [],
+            'kwargs': {
+                'region_of_interest': [
+                    14,
+                    0,
+                    1191,
+                    249
+                ]
+            },
+            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        }
+    ]
+}
+
+
+TEST_PARAMS_4 = {
+    'operation_history': [
+        {
+            'args': [],
+            'kwargs': {
+                'fitted_gradient': 1,
+                'rotation_centre': 50,
+                'tilt_angle_rad': 0
+            },
+            'name': 'cor_tilt_finding'
+        },
+        {
+            'args': [],
+            'kwargs': {
+                'region_of_interest': [
+                    0,
+                    20,
+                    100,
+                    100
+                ]
+            },
+            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        }
+    ]
+}
+
+
 class UtilityTest(TestCase):
 
-    def test_get_roi_left_shift_multiple(self):
+    def test_get_crop_multiple(self):
         imgs = Images()
         imgs.properties = TEST_PARAMS_1
-        roi_offset = utility.get_roi_left_shift(imgs)
+        roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 821)
 
-    def test_get_roi_left_shift_single(self):
+    def test_get_crop_multiple_select_1(self):
         imgs = Images()
-        imgs.properties = TEST_PARAMS_2
-        roi_offset = utility.get_roi_left_shift(imgs)
+        imgs.properties = TEST_PARAMS_1
+        roi_offset = utility.get_crop(imgs, 0, end=2)
         self.assertEquals(roi_offset, 61)
 
-    def test_get_roi_left_shift_no_hist(self):
+    def test_get_crop_multiple_select_2(self):
+        imgs = Images()
+        imgs.properties = TEST_PARAMS_1
+        roi_offset = utility.get_crop(imgs, 0, start=2, end=3)
+        self.assertEquals(roi_offset, 760)
+
+    def test_get_crop_multiple_select_2_top(self):
+        imgs = Images()
+        imgs.properties = TEST_PARAMS_1
+        roi_offset = utility.get_crop(imgs, 1, start=2, end=3)
+        self.assertEquals(roi_offset, 316)
+
+    def test_get_crop_single(self):
+        imgs = Images()
+        imgs.properties = TEST_PARAMS_2
+        roi_offset = utility.get_crop(imgs, 0)
+        self.assertEquals(roi_offset, 61)
+
+    def test_get_crop_no_hist(self):
         imgs = Images()
         imgs.properties = {"operation_history": []}
-        roi_offset = utility.get_roi_left_shift(imgs)
+        roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 0)
 
-    def test_get_roi_left_shift_empty(self):
+    def test_get_crop_empty(self):
         imgs = Images()
-        roi_offset = utility.get_roi_left_shift(imgs)
+        roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 0)
+
+    def test_get_last_cor_tilt_find(self):
+        imgs = Images()
+        imgs.properties = TEST_PARAMS_3
+        finding, idx = utility.get_last_cor_tilt_find(imgs)
+
+        self.assertIsNotNone(finding)
+        self.assertEquals(idx, 3)
+
+        self.assertEquals(
+            finding,
+            imgs.properties[const.OPERATION_HISTORY][idx]['kwargs']
+        )
+
+    def test_get_last_cor_tilt_find_empty(self):
+        imgs = Images()
+        last_find, last_find_idx = utility.get_last_cor_tilt_find(imgs)
+        self.assertIsNone(last_find)
+        self.assertIsNone(last_find_idx)
 
     def test_get_cor_tilt_from_images(self):
         imgs = Images()
-        imgs.properties = TEST_PARAMS_1
+        imgs.properties = TEST_PARAMS_3
         cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
-        self.assertEquals(cor, 1427.6 - 821)
-        self.assertAlmostEqual(tilt, -0.01238)
-        self.assertAlmostEqual(m, -0.012)
+
+        self.assertAlmostEqual(cor, 603.2297924368454)
+        self.assertAlmostEqual(tilt, 0.009657696961729184)
+        self.assertAlmostEqual(m, 0.009657997234305727)
+
+    def test_get_cor_tilt_from_images_subsequent_top_crop(self):
+        imgs = Images()
+        imgs.properties = TEST_PARAMS_4
+        cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
+
+        self.assertAlmostEqual(cor, 70)
+        self.assertAlmostEqual(tilt, 0)
+        self.assertAlmostEqual(m, 1)
 
     def test_get_cor_tilt_from_images_empty(self):
         imgs = Images()

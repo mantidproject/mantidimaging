@@ -32,15 +32,18 @@ class WorkflowTest(TestCase):
         self.assertEquals(len(model.slices), 5)
         self.assertEquals(len(model.cors), 5)
 
-        auto_cor_tilt = images.properties['auto_cor_tilt']
+        auto_cor_tilt = images.properties['operation_history'][-1]
+        self.assertEquals(auto_cor_tilt['name'], 'cor_tilt_finding')
 
+        auto_cor_tilt_kwargs = auto_cor_tilt['kwargs']
+        print(auto_cor_tilt)
         self.assertAlmostEqual(
-                auto_cor_tilt['rotation_centre'], model.c)
+                auto_cor_tilt_kwargs['rotation_centre'], model.c)
         self.assertAlmostEqual(
-                auto_cor_tilt['fitted_gradient'], model.m)
+                auto_cor_tilt_kwargs['fitted_gradient'], model.m)
         self.assertAlmostEqual(
-                auto_cor_tilt['tilt_angle_rad'], model.angle_rad)
+                auto_cor_tilt_kwargs['tilt_angle_rad'], model.angle_rad)
         self.assertTrue(isinstance(
-            auto_cor_tilt['slice_indices'], list))
+            auto_cor_tilt_kwargs['slice_indices'], list))
         self.assertTrue(isinstance(
-            auto_cor_tilt['rotation_centres'], list))
+            auto_cor_tilt_kwargs['rotation_centres'], list))
