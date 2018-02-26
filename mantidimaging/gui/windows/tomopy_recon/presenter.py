@@ -64,9 +64,9 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.view.update_recon_preview(None)
 
         # Pre-populate COR and tilt options
-        cor, tilt = get_cor_tilt_from_images(self.model.images)
-        self.view.set_cor(cor)
-        self.view.set_tilt(tilt)
+        cor, _, m = get_cor_tilt_from_images(self.model.images)
+        self.view.rotation_centre = cor
+        self.view.cor_gradient = m
 
     def set_preview_slice_idx(self, idx):
         max_idx = \
@@ -84,11 +84,11 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def prepare_reconstruction(self):
         self.model.generate_cors(
-                self.view.get_cor(),
-                self.view.get_tilt())
+                self.view.rotation_centre,
+                self.view.cor_gradient)
 
         self.model.generate_projection_angles(
-                self.view.get_max_proj_angle())
+                self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()

@@ -4,7 +4,6 @@ import numpy as np
 
 from mantidimaging.core.utility.projection_angles import \
         generate as generate_projection_angles
-from mantidimaging.core.cor_tilt import tilt_angle_to_cors
 from mantidimaging.core.reconstruct import tomopy_reconstruct
 
 
@@ -36,11 +35,10 @@ class TomopyReconWindowModel(object):
         self.projection = self.sample.swapaxes(0, 1) \
             if stack is not None else None
 
-    def generate_cors(self, cor, tilt):
+    def generate_cors(self, cor, gradient):
         if self.stack is not None:
             num_slices = self.sample.shape[0]
-            self.cors = tilt_angle_to_cors(
-                    tilt, cor, np.arange(0, num_slices, 1))
+            self.cors = (np.arange(0, num_slices, 1) * gradient) + cor
             LOG.debug('Generated CORs: {}'.format(self.cors))
 
     def generate_projection_angles(self, max_angle):

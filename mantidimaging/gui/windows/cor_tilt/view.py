@@ -150,13 +150,13 @@ class CORTiltWindowView(BaseMainWindowView):
             self.tableView.setModel(mdl)
         return self.tableView.model()
 
-    def set_results(self, cor, tilt, m):
+    def set_results(self, cor, tilt, gradient):
         """
         Sets the numerical COR and tilt angle results.
         """
         self.resultCor.setValue(cor)
         self.resultTilt.setValue(tilt)
-        self.resultGradient.setValue(m)
+        self.resultGradient.setValue(gradient)
 
     def update_image_preview(self,
                              image_data,

@@ -47,30 +47,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="corLabel">
             <property name="text">
-             <string>Rotation centre:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="tiltLabel">
-            <property name="text">
-             <string>Tilt angle:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QDoubleSpinBox" name="tilt">
-            <property name="decimals">
-             <number>9</number>
-            </property>
-            <property name="minimum">
-             <double>-6.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>6.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
+             <string>Rotation centre (at top of stack):</string>
             </property>
            </widget>
           </item>
@@ -101,6 +78,29 @@
             </property>
             <property name="singleStep">
              <double>10.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="gradientLabel">
+            <property name="text">
+             <string>Rotation centre gradient:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="gradient">
+            <property name="decimals">
+             <number>9</number>
+            </property>
+            <property name="minimum">
+             <double>-1.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.001000000000000</double>
             </property>
            </widget>
           </item>
