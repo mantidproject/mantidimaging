@@ -7,8 +7,11 @@ pipeline {
     stage('Setup - Miniconda') {
       steps {
         timeout(15) {
-          sh '${WORKSPACE}/buildscripts/install_anaconda.sh -b'
-          sh '${WORKSPACE}/anaconda/bin/conda install -y conda-build'
+          sh """
+            export PATH=${WORKSPACE}/anaconda/bin:$PATH
+            ${WORKSPACE}/buildscripts/install_anaconda.sh -b
+            conda install -y conda-build
+          """
         }
       }
     }
@@ -16,16 +19,22 @@ pipeline {
     stage('Setup - Python 3.5') {
       steps {
         timeout(30) {
-          sh '${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment.yml mi35'
+          sh """
+            export PATH=${WORKSPACE}/anaconda/bin:$PATH
+            ${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment.yml mi35
+          """
         }
       }
     }
 
     stage('Test - Python 3.5') {
       steps {
-        timeout(2) {
-          sh 'git clean -xdf --exclude="anaconda*"'
-          sh '${WORKSPACE}/anaconda/envs/mi35/bin/nosetests --with-coverage --xunit-file=${WORKSPACE}/python35_nosetests.xml --xunit-testsuite-name=python35_nosetests || true'
+          timeout(2) {
+          sh """
+            export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            git clean -xdf --exclude="anaconda*"
+            nosetests --with-coverage --xunit-file=${WORKSPACE}/python35_nosetests.xml --xunit-testsuite-name=python35_nosetests || true
+          """
           junit '**/python35_nosetests.xml'
         }
       }
@@ -34,8 +43,12 @@ pipeline {
     stage('Static Analysis - Flake8') {
       steps {
         timeout(5) {
-          sh 'rm -f ${WORKSPACE}/flake8.log'
-          sh 'cd mantidimaging && ${WORKSPACE}/anaconda/envs/mi35/bin/flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log'
+          sh """
+            export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            rm -f ${WORKSPACE}/flake8.log
+            cd mantidimaging
+            flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log
+          """
           step([$class: 'WarningsPublisher', parserConfigurations: [[parserName: 'Flake8', pattern: 'flake8.log']]])
         }
       }
@@ -44,8 +57,11 @@ pipeline {
     stage('Documentation - HTML') {
       steps {
         timeout(1) {
-          sh '${WORKSPACE}/anaconda/envs/mi35/bin/python setup.py docs_api'
-          sh '${WORKSPACE}/anaconda/envs/mi35/bin/python setup.py docs -b html'
+          sh """
+            export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            python setup.py docs_api
+            python setup.py docs -b html
+          """
           warnings consoleParsers: [[parserName: 'Sphinx-build']]
         }
       }
@@ -54,7 +70,10 @@ pipeline {
     stage('Documentation - QtHelp') {
       steps {
         timeout(1) {
-          sh '${WORKSPACE}/anaconda/envs/mi35/bin/python setup.py docs -b qthelp'
+          sh """
+            export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            python setup.py docs -b qthelp
+          """
         }
       }
     }
@@ -62,7 +81,11 @@ pipeline {
     stage('Package - Conda') {
       steps {
         timeout(30) {
-          sh 'buildscripts/conda/build.sh'
+          sh """
+            export PATH=${WORKSPACE}/anaconda/bin:$PATH
+            cd buildscripts/conda
+            ./build.sh
+          """
         }
       }
     }
