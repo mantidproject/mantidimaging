@@ -14,7 +14,7 @@ then
   echo "Creating environment ${env_name}..."
   ${anaconda_dir}/bin/conda env create -n ${env_name} -f ${env_file}
 else
-  echo "Environment ${env_name} already exists, eupdating..."
+  echo "Environment ${env_name} already exists, updating..."
   ${anaconda_dir}/bin/conda env update -n ${env_name} -f ${env_file}
 fi
 
