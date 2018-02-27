@@ -1,7 +1,7 @@
 import matplotlib
 
 from logging import getLogger
-from PyQt5 import Qt, QtCore, QtGui
+from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
@@ -34,7 +34,7 @@ class MainWindowView(BaseMainWindowView):
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionSave.triggered.connect(self.show_save_dialogue)
-        self.actionExit.triggered.connect(Qt.qApp.quit)
+        self.actionExit.triggered.connect(self.close)
 
         self.actionOnlineDocumentation.triggered.connect(
                 self.open_online_documentation)
@@ -119,9 +119,28 @@ class MainWindowView(BaseMainWindowView):
 
     def closeEvent(self, event):
         """
-        Close all matplotlib PyPlot windows when exiting.
-
-        :param event: Unused
+        Handles a request to quit the application from the user.
         """
-        getLogger(__name__).debug("Closing all PyPlot windows")
-        matplotlib.pyplot.close("all")
+        should_close = True
+
+        if self.presenter.have_active_stacks:
+            # Show confirmation box asking if the user really wants to quit if
+            # they have data loaded
+            msg_box = QtWidgets.QMessageBox.question(
+                    self,
+                    "Quit",
+                    "Are you sure you want to quit?",
+                    defaultButton=QtWidgets.QMessageBox.No)
+            should_close = msg_box == QtWidgets.QMessageBox.Yes
+
+        if should_close:
+            # Close all matplotlib PyPlot windows when exiting.
+            getLogger(__name__).debug("Closing all PyPlot windows")
+            matplotlib.pyplot.close("all")
+
+            # Pass close event to parent
+            super(MainWindowView, self).closeEvent(event)
+
+        else:
+            # Ignore the close event, keeping window open
+            event.ignore()

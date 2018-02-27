@@ -107,3 +107,7 @@ class MainWindowModel(object):
         :param stack_uuid: The unique ID of the stack that will be removed.
         """
         del self.active_stacks[stack_uuid]
+
+    @property
+    def have_active_stacks(self):
+        return len(self.active_stacks) > 0
