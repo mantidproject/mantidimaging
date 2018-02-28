@@ -1,13 +1,22 @@
+{% set name = "mantidimaging" %}
+{% set version = "master" %}
+{% set sha256 = "" %}
+
 package:
-  name: mantidimaging
-  version: "nightly"
+  name: {{ name | lower }}
+  version: {{ version }}
 
 source:
   path: ../../../
 
+build:
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
+
 requirements:
   build:
     - python 3.5
+    - pip
     - setuptools
     - sphinx
   run:
@@ -22,17 +31,8 @@ requirements:
 test:
   imports:
     - mantidimaging
-  requires:
-    - nose
-    - coverage
-    - flake8
 
 about:
   home: https://github.com/mantidproject/mantidimaging
   license: GPL-3
   license_file: LICENSE.txt
-
-app:
-  entry: mantidimaging-gui
-  summary: "GUI for Mantid Imaging toolkit"
-  icon:
