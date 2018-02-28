@@ -39,7 +39,7 @@ class MainWindowView(BaseMainWindowView):
                 self.open_online_documentation)
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
-        self.actionFilters.triggered.connect(self.show_filters_window)
+        self.actionImageOperations.triggered.connect(self.show_filters_window)
         self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
