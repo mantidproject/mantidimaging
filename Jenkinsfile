@@ -9,7 +9,7 @@ pipeline {
         timeout(15) {
           sh """
             export PATH=${WORKSPACE}/anaconda/bin:$PATH
-            ${WORKSPACE}/buildscripts/install_anaconda.sh -b
+            ${WORKSPACE}/source/buildscripts/install_anaconda.sh -b
             conda install -y conda-build
           """
         }
@@ -21,7 +21,7 @@ pipeline {
         timeout(30) {
           sh """
             export PATH=${WORKSPACE}/anaconda/bin:$PATH
-            ${WORKSPACE}/buildscripts/create_conda_environment.sh ${WORKSPACE}/environment.yml mi35
+            ${WORKSPACE}/source/buildscripts/create_conda_environment.sh ${WORKSPACE}/source/environment.yml mi35
           """
         }
       }
@@ -32,6 +32,7 @@ pipeline {
           timeout(2) {
           sh """
             export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            cd ${WORKSPACE}/source
             git clean -xdf --exclude="anaconda*"
             nosetests --with-coverage --xunit-file=${WORKSPACE}/python35_nosetests.xml --xunit-testsuite-name=python35_nosetests || true
           """
@@ -46,7 +47,7 @@ pipeline {
           sh """
             export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
             rm -f ${WORKSPACE}/flake8.log
-            cd mantidimaging
+            cd ${WORKSPACE}/source/mantidimaging
             flake8 --exit-zero --output-file=${WORKSPACE}/flake8.log
           """
           step([$class: 'WarningsPublisher', parserConfigurations: [[parserName: 'Flake8', pattern: 'flake8.log']]])
@@ -59,6 +60,7 @@ pipeline {
         timeout(1) {
           sh """
             export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            cd ${WORKSPACE}/source
             python setup.py docs_api
             python setup.py docs -b html
           """
@@ -72,6 +74,7 @@ pipeline {
         timeout(1) {
           sh """
             export PATH=${WORKSPACE}/anaconda/envs/mi35/bin:$PATH
+            cd ${WORKSPACE}/source
             python setup.py docs -b qthelp
           """
         }
@@ -83,10 +86,21 @@ pipeline {
         timeout(30) {
           sh """
             export PATH=${WORKSPACE}/anaconda/bin:$PATH
-            cd buildscripts/conda
-            ./build.sh
+            rm -rf ${WORKSPACE}/mantidimaging_conda
+            conda-build --croot ${WORKSPACE}/mantidimaging_conda ${WORKSPACE}/source/conda/mantidimaging
+            tar -cvzf ${WORKSPACE}/mantidimaging_conda.tar.gz ${WORKSPACE}/mantidimaging_conda/
           """
+          archiveArtifacts 'mantidimaging_conda.tar.gz'
         }
+      }
+    }
+
+    stage('Package - Publish') {
+      when {
+        branch 'master'
+      }
+      steps {
+        echo 'TODO: do upload here'
       }
     }
   }
