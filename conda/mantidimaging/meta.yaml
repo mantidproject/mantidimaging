@@ -1,6 +1,9 @@
-{% set name = "mantidimaging" %}
-{% set version = "master" %}
-{% set sha256 = "" %}
+{% set name = 'mantidimaging' %}
+
+{% set version_tag = environ.get('GIT_DESCRIBE_TAG', '0.0.0') %}
+{% set version_number = environ.get('GIT_DESCRIBE_NUMBER', '0') | string %}
+
+{% set version = version_tag + '_' + version_number if version_number != '0' else version_tag %}
 
 package:
   name: {{ name | lower }}

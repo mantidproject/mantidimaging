@@ -100,7 +100,11 @@ pipeline {
         branch 'master'
       }
       steps {
-        echo 'TODO: do upload here'
+        withCredentials([string(credentialsId: 'anaconda-cloud-token', variable: 'ANACONDA_CLOUD_TOKEN')]) {
+          sh """
+            anaconda -t $ANACONDA_CLOUD_TOKEN upload -u mantid -l nightly `ls mantidimaging_conda/linux-64/mantidimaging-*.tar.bz2`
+          """
+        }
       }
     }
   }
