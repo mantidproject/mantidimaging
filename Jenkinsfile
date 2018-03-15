@@ -97,7 +97,9 @@ pipeline {
 
     stage('Package - Publish') {
       when {
-        branch 'master'
+        expression {
+          return env.BRANCH_NAME == 'master';
+        }
       }
       steps {
         withCredentials([string(credentialsId: 'anaconda-cloud-token', variable: 'ANACONDA_CLOUD_TOKEN')]) {
