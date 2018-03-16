@@ -98,7 +98,7 @@ pipeline {
     stage('Package - Publish') {
       when {
         expression {
-          return env.BRANCH_NAME == 'master';
+          return env.GIT_BRANCH == 'origin/master';
         }
       }
       steps {
