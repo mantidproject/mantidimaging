@@ -11,6 +11,7 @@ pipeline {
             export PATH=${WORKSPACE}/anaconda/bin:$PATH
             ${WORKSPACE}/source/buildscripts/install_anaconda.sh -b
             conda install -y conda-build
+            conda install -y anaconda-client
           """
         }
       }
@@ -104,6 +105,7 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'anaconda-cloud-token', variable: 'ANACONDA_CLOUD_TOKEN')]) {
           sh """
+            export PATH=${WORKSPACE}/anaconda/bin:$PATH
             anaconda -t $ANACONDA_CLOUD_TOKEN upload -u mantid -l nightly `ls mantidimaging_conda/linux-64/mantidimaging-*.tar.bz2`
           """
         }
