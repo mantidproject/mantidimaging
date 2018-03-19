@@ -15,9 +15,9 @@ class Notification(Enum):
 
 class MainWindowPresenter(BasePresenter):
 
-    def __init__(self, view, config):
+    def __init__(self, view):
         super(MainWindowPresenter, self).__init__(view)
-        self.model = MainWindowModel(config)
+        self.model = MainWindowModel()
 
     def notify(self, signal):
         try:
