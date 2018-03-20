@@ -5,7 +5,7 @@ User Guide
    :maxdepth: 1
    :caption: Contents:
 
-   setting_up
+   installation
    troubleshooting
    gui/index
    filters/index
