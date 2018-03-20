@@ -22,6 +22,6 @@ Running
 1. Activate the environment created in the installation step: :code:`conda activate mantidimaging`
 2. Run using one of the following commands:
 
-  - Command line: :code:`mantidimaging.sh <args...>`
-  - IPython: :code:`mantidimaging-ipython.sh <args...>`
-  - GUI: :code:`mantidimaging-gui.sh <args...>`
+  - GUI: :code:`mantidimaging-gui`
+  - IPython: :code:`mantidimaging-ipython`
+  - Command line (deprecated): :code:`mantidimaging <args...>`
