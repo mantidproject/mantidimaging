@@ -106,7 +106,7 @@ pipeline {
         withCredentials([string(credentialsId: 'anaconda-cloud-token', variable: 'ANACONDA_CLOUD_TOKEN')]) {
           sh """
             export PATH=${WORKSPACE}/anaconda/bin:$PATH
-            anaconda -t $ANACONDA_CLOUD_TOKEN upload -u mantid -l nightly `ls mantidimaging_conda/linux-64/mantidimaging-*.tar.bz2`
+            anaconda -t $ANACONDA_CLOUD_TOKEN upload --force -u mantid -l nightly `ls mantidimaging_conda/linux-64/mantidimaging-*.tar.bz2`
           """
         }
       }
