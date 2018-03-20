@@ -12,7 +12,7 @@ class MainWindowModelTest(unittest.TestCase):
         super(MainWindowModelTest, self).__init__(*args, **kwargs)
 
     def setUp(self):
-        self.model = MainWindowModel(None)
+        self.model = MainWindowModel()
 
     def test_initial_stack_list(self):
         self.assertEquals(self.model.stack_names(),

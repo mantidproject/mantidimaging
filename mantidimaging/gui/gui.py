@@ -8,7 +8,7 @@ from mantidimaging.gui.windows.main import MainWindowView
 def execute(config):
     # create the GUI event loop
     q_application = QApplication(sys.argv)
-    application_window = MainWindowView(config)
+    application_window = MainWindowView()
 
     application_window.show()
 

@@ -7,9 +7,8 @@ from mantidimaging.core.io import loader, saver
 
 
 class MainWindowModel(object):
-    def __init__(self, config):
+    def __init__(self):
         super(MainWindowModel, self).__init__()
-        self.config = config
 
         self.active_stacks = {}
 

@@ -19,14 +19,13 @@ class MainWindowView(BaseMainWindowView):
 
     active_stacks_changed = Qt.pyqtSignal()
 
-    def __init__(self, config):
+    def __init__(self):
         super(MainWindowView, self).__init__(None, 'gui/ui/main_window.ui')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("MantidImaging")
 
-        # filter and algorithm communications will be funneled through this
-        self.presenter = MainWindowPresenter(self, config)
+        self.presenter = MainWindowPresenter(self)
 
         self.setup_shortcuts()
         self.update_shortcuts()

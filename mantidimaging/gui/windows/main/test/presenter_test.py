@@ -17,10 +17,9 @@ class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         super(MainWindowPresenterTest, self).setUp()
 
-        self.config = None
         self.view = mock.create_autospec(MainWindowView)
         self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
-        self.presenter = MainWindowPresenter(self.view, self.config)
+        self.presenter = MainWindowPresenter(self.view)
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
