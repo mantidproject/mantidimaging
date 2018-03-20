@@ -24,4 +24,3 @@ Running
 
   - GUI: :code:`mantidimaging-gui`
   - IPython: :code:`mantidimaging-ipython`
-  - Command line (deprecated): :code:`mantidimaging <args...>`
