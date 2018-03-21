@@ -63,3 +63,19 @@ def apply_factor(data, scale_factors, cores=None, chunksize=None):
                                        "Applying scale factor")
 
     return data
+
+
+def apply_factors(data, scale_factors, cores=None, chunksize=None):
+    """
+
+    :param data: the data stack to which the scale factors will be applied.
+    :param scale_factors: The scale factors to be applied
+    """
+    scale_up_partial = ptsm.create_partial(
+        _scale_inplace, fwd_function=ptsm.inplace)
+
+    data, scale_factors = ptsm.execute(data, scale_factors,
+                                       scale_up_partial, cores, chunksize,
+                                       "Applying scale factors")
+
+    return data
