@@ -1,7 +1,8 @@
 #!/usr/bin/env python
+
+
 def main():
     import sys
-
     import IPython
 
     # Put a \n at the start so that we are below iPython's default message

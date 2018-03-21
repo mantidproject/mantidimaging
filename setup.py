@@ -114,11 +114,10 @@ setup(
     py_modules=['mantidimaging'],
     entry_points={
         'console_scripts': [
-            'mantidimaging = mantidimaging.main:cli_main',
             'mantidimaging-ipython = mantidimaging.ipython:main'
         ],
         'gui_scripts': [
-            'mantidimaging-gui = mantidimaging.main:gui_main'
+            'mantidimaging = mantidimaging.main:main'
         ]
     },
     url='https://github.com/mantidproject/mantidimaging',

@@ -11,12 +11,6 @@ Applies TomoPy's circular mask filter (:code:`tomopy.misc.corr.circ_mask`)
 Takes a radius as a ratio of the smallest image dimension and a value to apply
 to all pixels outside this radius.
 
-Command line examples
----------------------
-
-  - :code:`mantidimaging -i /some/data/ --circular-mask 0.75 --circular-mask-val
-    0`
-
 Python API
 ----------
 

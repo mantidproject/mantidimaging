@@ -9,5 +9,4 @@ User Guide
    troubleshooting
    gui/index
    filters/index
-   command_line/index
    python/index

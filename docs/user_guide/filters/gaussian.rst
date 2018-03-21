@@ -4,17 +4,6 @@ Gaussian
 Applies SciPy's Gaussian filter (:code:`scipy.ndimage.filters.gaussian_filter`)
 (docs_).
 
-Command line examples
----------------------
-
-  - :code:`mantidimaging -i /some/data --gaussian-size 3`
-
-  - :code:`mantidimaging -i /some/data --gaussian-size 3 --gaussian-mode
-    'nearest'`
-
-  - :code:`mantidimaging -i /some/data --gaussian-size 3 --gaussian-mode
-    'nearest' --gaussian-order 1`
-
 Python API
 ----------
 
