@@ -21,8 +21,8 @@ def get_last_cor_tilt_find(images):
     # Iterate over history and find the first instance of COR/Tilt finding
     # (which is the last given that the history was reversed)
     for i, e in enumerate(history):
-        if 'cor_tilt_finding' in e['name']:
-            return e['kwargs'], len(history) - 1 - i
+        if const.OPERATION_NAME_COR_TILT_FINDING in e[const.OPERATION_NAME]:
+            return e[const.OPERATION_KEYWORD_ARGS], len(history) - 1 - i
 
     return None, None
 
@@ -36,7 +36,8 @@ def get_crop_operations(images, start=None, end=None):
         return []
 
     history = images.properties[const.OPERATION_HISTORY][start:end]
-    crops = [e for e in history if 'crop_coords' in e['name']]
+    crops = [e for e in history if const.OPERATION_NAME_CROP in
+             e[const.OPERATION_NAME]]
     return crops
 
 
@@ -47,7 +48,7 @@ def get_crop(images, axis, start=None, end=None):
     """
     total_crop = 0.0
     for crop in get_crop_operations(images, start, end):
-        total_crop += crop['kwargs']['region_of_interest'][axis]
+        total_crop += crop[const.OPERATION_KEYWORD_ARGS][const.CROP_REGION_OF_INTEREST][axis]
     return total_crop
 
 
@@ -61,9 +62,9 @@ def get_cor_tilt_from_images(images):
 
     last_find, last_find_idx = get_last_cor_tilt_find(images)
 
-    cor = last_find['rotation_centre']
-    tilt = last_find['tilt_angle_rad']
-    m = last_find['fitted_gradient']
+    cor = last_find[const.COR_TILT_ROTATION_CENTRE]
+    tilt = last_find[const.COR_TILT_TILT_ANGLE_RAD]
+    gradient = last_find[const.COR_TILT_FITTED_GRADIENT]
 
     cor -= get_crop(images, 0, start=last_find_idx)
 
@@ -73,7 +74,7 @@ def get_cor_tilt_from_images(images):
     LOG.debug('Total top crop: {}'.format(top))
 
     # Calculate new rotation centre at new top of image
-    new_cor = (top * m) + cor
+    new_cor = (top * gradient) + cor
     LOG.debug('New COR corrected for top crop: {}'.format(new_cor))
 
-    return (new_cor, tilt, m)
+    return (new_cor, tilt, gradient)
