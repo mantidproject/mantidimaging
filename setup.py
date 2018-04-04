@@ -104,14 +104,14 @@ class CompilePyQtUiFiles(Command):
         for f in ui_files:
             self. compile_single_file(f)
 
+
 setup(
     name='mantidimaging',
-    version='0.9',
+    version='0.9.0',
     packages=find_packages(),
     package_data={
         'mantidimaging.gui': ['ui/*.ui']
     },
-    py_modules=['mantidimaging'],
     entry_points={
         'console_scripts': [
             'mantidimaging-ipython = mantidimaging.ipython:main'
@@ -122,23 +122,15 @@ setup(
     },
     url='https://github.com/mantidproject/mantidimaging',
     license='GPL-3.0',
-    author='Dimitar Tasev',
-    author_email='dimitar.tasev@stfc.ac.uk',
-    description='MantidImaging Tomographic Reconstruction package',
+    description='Graphical toolkit for neutron imaging',
     long_description=open("README.md").read(),
-    platforms=["Linux"],
     test_suite='nose.collector',
     classifiers=[
-        'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 3.5',
         'Natural Language :: English',
         'Intended Audience :: Science/Research',
-        'Intended Audience :: Education',
-        'Intended Audience :: Developers',
         'Operating System :: POSIX :: Linux',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Imaging',
-        'Topic :: Tomographic Reconstruction',
+        'Topic :: Scientific/Engineering'
     ],
     cmdclass={
         'docs_api': GenerateSphinxApidoc,
