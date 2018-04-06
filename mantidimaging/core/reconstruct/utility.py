@@ -57,10 +57,14 @@ def get_cor_tilt_from_images(images):
     Gets rotation centre at top of image and gradient with which to calculate
     rotation centre arrays for reconstruction.
     """
+    # If there is no stack history
     if not images or not images.has_history:
         return (0, 0.0, 0.0)
 
     last_find, last_find_idx = get_last_cor_tilt_find(images)
+    # If the stack history does not contain a COR/Tilt finding step
+    if not last_find:
+        return (0, 0.0, 0.0)
 
     cor = last_find[const.COR_TILT_ROTATION_CENTRE]
     tilt = last_find[const.COR_TILT_TILT_ANGLE_RAD]
