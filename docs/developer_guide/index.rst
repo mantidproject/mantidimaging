@@ -11,4 +11,3 @@ Developer Guide
    python_3x_performance_issues
    parallelism
    execution_splitter
-   visualisation
