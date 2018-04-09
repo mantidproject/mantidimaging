@@ -17,9 +17,9 @@ class ExecutionTimerTest(unittest.TestCase):
             self.assertEquals(t.total_seconds, None)
             self.assertEquals(str(t), 'Elapsed time: unknown seconds')
 
-            time.sleep(0.01)
+            time.sleep(0.1)
 
-        self.assertAlmostEqual(t.total_seconds, 0.01, delta=0.001)
+        self.assertAlmostEqual(t.total_seconds, 0.1, delta=0.05)
 
     def test_custom_message(self):
         t = ExecutionTimer(msg='Task')
