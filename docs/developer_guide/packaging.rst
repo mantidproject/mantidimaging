@@ -13,8 +13,7 @@ TL;DR
 
 Building:
 
-   1. :code:`cd buildscripts/conda/`
-   2. :code:`./build.sh`
+   1. :code:`conda-build conda/mantidimaging`
 
 Installing:
 
@@ -27,17 +26,12 @@ Building the package
 Before you go any further make sure you have :code:`conda-build` installed, this
 should be as simple as :code:`conda install conda-build`.
 
-The metadata is in :code:`buildscripts/conda/mantidimaging` and a script to
-start the build is included in the :code:`buildscripts/conda` directory, all
-this really does is call :code:`conda-build`.
+The metadata is in :code:`conda/mantidimaging`, this generates a package based
+on the environment and an installation using :code:`setup.py`.
 
-The :code:`build.sh` script defaults the output directory to
-:code:`/tmp/mantidimaging-conda`, this is to get around the issue where
-encrypted volumes under Linux have longer file paths (or at least that's the
-error :code:`conda-build` gives you), regardless it fails if the output
-directory is on an encrypted volume.
-
-Conda packages are created for both Python 2.7 and Python 3.5.
+Note that you may have issues if the Conda root directory is on an encrypted
+volume, in this case you may use the :code:`--croot` option to set a root
+directory that is on a "normal" volume.
 
 Installing the package
 ----------------------
