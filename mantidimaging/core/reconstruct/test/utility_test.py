@@ -154,6 +154,23 @@ TEST_PARAMS_4 = {
     ]
 }
 
+TEST_PARAMS_5 = {
+    'operation_history': [
+        {
+            'args': [],
+            'kwargs': {
+                'region_of_interest': [
+                    0,
+                    20,
+                    100,
+                    100
+                ]
+            },
+            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        }
+    ]
+}
+
 
 class UtilityTest(TestCase):
 
@@ -244,6 +261,14 @@ class UtilityTest(TestCase):
 
     def test_get_cor_tilt_from_images_none(self):
         cor, tilt, m = utility.get_cor_tilt_from_images(None)
+        self.assertEquals(cor, 0)
+        self.assertEquals(tilt, 0.0)
+        self.assertEquals(m, 0.0)
+
+    def test_get_cor_tilt_from_images_no_cor_tilt_in_history(self):
+        imgs = Images()
+        imgs.properties = TEST_PARAMS_5
+        cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
         self.assertEquals(cor, 0)
         self.assertEquals(tilt, 0.0)
         self.assertEquals(m, 0.0)
