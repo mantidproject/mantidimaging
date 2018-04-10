@@ -88,7 +88,7 @@ pipeline {
           sh """
             export PATH=${WORKSPACE}/anaconda/bin:$PATH
             rm -rf ${WORKSPACE}/mantidimaging_conda
-            conda-build --croot ${WORKSPACE}/mantidimaging_conda ${WORKSPACE}/source/conda/mantidimaging
+            conda-build --croot ${WORKSPACE}/mantidimaging_conda -c conda-forge ${WORKSPACE}/source/conda/mantidimaging
             tar -cvzf ${WORKSPACE}/mantidimaging_conda.tar.gz ${WORKSPACE}/mantidimaging_conda/
           """
           archiveArtifacts 'mantidimaging_conda.tar.gz'
