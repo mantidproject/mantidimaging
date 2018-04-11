@@ -6,6 +6,7 @@ Filters
    :caption: Contents:
 
    background_correction
+   background_correction_and_normalisation
    circular_mask
    clip_values
    crop_coords

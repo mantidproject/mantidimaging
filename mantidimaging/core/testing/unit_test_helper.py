@@ -127,7 +127,8 @@ def assert_files_exist(cls, base_name, file_extension,
                        file_extension_separator='.', single_file=True,
                        num_images=1):
     """
-    Asserts that the
+    Asserts that a file exists.
+
     :param cls: Must be a unittest.TestCase class, in order to use the
                 assertTrue
     :param base_name: The base name of the filename.

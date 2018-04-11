@@ -30,3 +30,9 @@ Running
 
   - GUI: :code:`mantidimaging`
   - IPython: :code:`mantidimaging-ipython`
+
+Updating
+--------
+
+To update to the latest version of the toolkit use the command: :code:`conda
+update mantidimaging`.
