@@ -3,8 +3,6 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging import helper as h
-from mantidimaging.core.parallel import two_shared_mem as ptsm
-from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.value_scaling import apply_factors
 
@@ -28,7 +26,8 @@ def execute(data,
     :param data: Sample data which is to be processed. Expected in radiograms
     :param flat: Flat (open beam) image to use in normalization
     :param dark: Dark image to use in normalization
-    :param air_region: Open beam region used for calcualtion of normalisation factors.
+    :param air_region: Open beam region used for calcualtion of normalisation
+                       factors.
     :param cores: The number of cores that will be used to process the data.
     :param chunksize: The number of chunks that each worker will receive.
     :return: Filtered data (stack of images)
@@ -60,21 +59,29 @@ def _execute_seq(sample,
                  dark=None,
                  air_region=None,
                  progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Background Correction and Normalisation')
+    progress = Progress.ensure_instance(
+            progress, task_name='Background Correction and Normalisation')
 
     with progress:
         left, top, right, bottom = air_region
 
         # Calculate sample normalisation factors
         sample_factors = sample[:, top:bottom, left:right].sum(axis=(1, 2))
-        np.divide(sample_factors, sample_factors.max(), out=sample_factors)
-        np.divide(1.0, sample_factors, out=sample_factors)
+        np.divide(sample_factors,
+                  sample_factors.max(),
+                  out=sample_factors)
+        np.divide(1.0,
+                  sample_factors,
+                  out=sample_factors)
 
         # Calculate flat field normalisation factors
         flat_factors = flat[:, top:bottom, left:right].sum(axis=(1, 2))
-        np.divide(flat_factors, flat_factors.max(), out=flat_factors)
-        np.divide(1.0, flat_factors, out=flat_factors)
+        np.divide(flat_factors,
+                  flat_factors.max(),
+                  out=flat_factors)
+        np.divide(1.0,
+                  flat_factors,
+                  out=flat_factors)
 
         # Normalise sample
         apply_factors(sample, sample_factors)
@@ -91,11 +98,17 @@ def _execute_seq(sample,
         LOG.info('Dark field sum: {}'.format(average_dark_field.sum()))
 
         # Subtract dark field from sample
-        np.subtract(sample, average_dark_field, out=sample)
+        np.subtract(sample,
+                    average_dark_field,
+                    out=sample)
 
         # Subtract dark field from flat field
-        np.subtract(average_flat_field, average_dark_field, out=average_flat_field)
+        np.subtract(average_flat_field,
+                    average_dark_field,
+                    out=average_flat_field)
 
         # Divide sample by flat field
         average_flat_field[average_flat_field == 0] = 1e-9
-        np.true_divide(sample, average_flat_field, out=sample)
+        np.true_divide(sample,
+                       average_flat_field,
+                       out=sample)

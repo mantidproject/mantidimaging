@@ -2,8 +2,6 @@ from unittest import TestCase
 
 import math
 
-import numpy as np
-
 from mantidimaging.core.cor_tilt import angles
 
 
