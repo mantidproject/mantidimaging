@@ -1,7 +1,7 @@
 # MantidImaging
 
 [![Build Status](http://builds.mantidproject.org/view/Imaging/job/mantidimaging-master/badge/icon)](http://builds.mantidproject.org/view/Imaging/job/mantidimaging-master/)
-[![Anaconda Badge](https://anaconda.org/mantid/mantidimaging/badges/installer/conda.svg)](https://conda.anaconda.org/mantid/mantidimaging)
+[![Anaconda Badge](https://anaconda.org/mantid/mantidimaging/badges/installer/conda.svg)](https://anaconda.org/mantid/mantidimaging)
 
 ## Links
 
