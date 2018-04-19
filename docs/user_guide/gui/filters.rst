@@ -42,4 +42,7 @@ stack visualiser for the selected image stack (as shown in the screenshot below)
 Pressing *Apply* applies the filter to every image in the stack, replacing the
 data in the stack.
 
-Application of a filter can not be undone.
+It is normal for this to take a significant amount of time for a large stack of
+images.
+
+The application of a filter can not be undone.
