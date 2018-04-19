@@ -7,6 +7,7 @@ Developer Guide
 
    documentation
    packaging
+   release
    notebooks
    python_3x_performance_issues
    parallelism
