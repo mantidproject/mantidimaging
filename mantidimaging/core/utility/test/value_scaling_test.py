@@ -78,7 +78,8 @@ class ValueScalingTest(unittest.TestCase):
     def test_apply_factors_array_2(self):
         images = th.gen_img_shared_array()
         images.fill(1)
-        our_factors = np.array([1.0, 1.1, 1.5, 1.2, 1.1, 1.05, 1.11, 1.12, 1.09, 1.0])
+        our_factors = np.array(
+                [1.0, 1.1, 1.5, 1.2, 1.1, 1.05, 1.11, 1.12, 1.09, 1.0])
         result = self.alg.apply_factors(images, our_factors)
         npt.assert_equal(images, result)
         for i in range(images.shape[0]):
