@@ -55,7 +55,7 @@ class MainWindowView(BaseMainWindowView):
     def show_about(self):
         from mantidimaging import __version__ as version_no
         msg_box = QtWidgets.QMessageBox(self)
-        msg_box.setWindowTitle("About MantidImaging")#
+        msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
         msg_box.setText(
                 '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'\
