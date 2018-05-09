@@ -33,11 +33,23 @@ def parse_args():
         help="Log verbosity level. "
              "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL")
 
+    parser.add_argument(
+        '--version',
+        action='store_true',
+        help='Print version number and exit.')
+
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
+
+    # Print version number and exit
+    if args.version:
+        from mantidimaging import __version__ as version_no
+        print(version_no)
+        return
+
     h.initialise_logging(logging.getLevelName(args.log_level))
 
     startup_checks()

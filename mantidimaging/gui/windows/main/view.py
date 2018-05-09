@@ -37,6 +37,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionOnlineDocumentation.triggered.connect(
                 self.open_online_documentation)
+        self.actionAbout.triggered.connect(self.show_about)
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionImageOperations.triggered.connect(self.show_filters_window)
@@ -50,6 +51,16 @@ class MainWindowView(BaseMainWindowView):
     def open_online_documentation(self):
         url = QtCore.QUrl('https://mantidproject.github.io/mantidimaging/')
         QtGui.QDesktopServices.openUrl(url)
+
+    def show_about(self):
+        from mantidimaging import __version__ as version_no
+        msg_box = QtWidgets.QMessageBox(self)
+        msg_box.setWindowTitle("About MantidImaging")#
+        msg_box.setTextFormat(QtCore.Qt.RichText)
+        msg_box.setText(
+                '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'\
+                '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(version_no))
+        msg_box.show()
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
