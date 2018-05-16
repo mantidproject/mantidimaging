@@ -8,6 +8,9 @@ Releases are created from the ``master`` branch.
 The version number is expected to be in SemVer format and will be referred to as
 ``M.m.p``, adjust this as appropriate.
 
+- Update version numbers in:
+  - ``setup.py``
+  - ``mantidimaging/__init__.py``
 - Create Git tag from ``master``: ``git tag M.m.p --sign``
 - Push the tag to the repository: ``git push M.m.p``
 - (optional) Add release notes in GitHub
