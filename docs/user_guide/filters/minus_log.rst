@@ -15,6 +15,8 @@ This is used to convert from a transmission image (i.e. high intensity
 indicating transmission through the sample) to attenuation images (i.e. high
 intensity indicating attenuation by the sample).
 
+This filter should only be used once image normalisation has been performed.
+
 Python API
 ----------
 
