@@ -38,8 +38,8 @@ Installing the package
 
 Before installing the Conda package the channel from which TomoPy will be
 installed must be added to the local Conda configuration. This is done with the
-command: :code:`conda config --add channels dgursoy`. This only has to be done
-once per machine.
+command: :code:`conda config --add channels conda-forge`. This only has to be
+done once per machine.
 
 The package can be installed from a local build using: :code:`conda install -c
 file:///tmp/mantidimaging-conda/linux-64 mantidimaging` (assuming the package is
