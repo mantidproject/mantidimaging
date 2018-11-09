@@ -27,8 +27,8 @@ requirements:
     - astropy
     - numpy
     - scipy
-    - matplotlib 2.1.0
-    - tomopy 1.1.2
+    - matplotlib >=2.1.0
+    - tomopy >=1.1.2
     - pyqt
 
 test:
