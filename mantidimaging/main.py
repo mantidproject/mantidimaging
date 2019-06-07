@@ -55,6 +55,7 @@ def main():
     startup_checks()
 
     from mantidimaging import gui
+    gui.run_preparations()
     gui.execute()
 
 
