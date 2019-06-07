@@ -12,7 +12,7 @@ from mantidimaging.gui.windows.stack_visualiser import Parameters
 from mantidimaging.gui.utility import (
         BlockQtSignals, get_auto_params_from_stack)
 
-from .model import FiltersWindowModel
+from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel
 
 
 class Notification(Enum):
@@ -23,12 +23,12 @@ class Notification(Enum):
     SCROLL_PREVIEW_DOWN = 5
 
 
-class FiltersWindowPresenter(BasePresenter):
+class SavuFiltersWindowPresenter(BasePresenter):
 
     def __init__(self, view, main_window):
-        super(FiltersWindowPresenter, self).__init__(view)
+        super(SavuFiltersWindowPresenter, self).__init__(view)
 
-        self.model = FiltersWindowModel()
+        self.model = SavuFiltersWindowModel()
         self.main_window = main_window
 
     def notify(self, signal):

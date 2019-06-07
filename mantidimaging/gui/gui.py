@@ -3,6 +3,11 @@ import sys
 from PyQt5.Qt import QApplication
 
 from mantidimaging.gui.windows.main import MainWindowView
+from mantidimaging.gui.windows.savu_filters.preparation import prepare_data
+
+
+def run_preparations():
+    prepare_data()
 
 
 def execute():
