@@ -20,4 +20,4 @@
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from .gui import execute  # noqa: F401  # noqa:F821
+from .gui import execute, run_preparations  # noqa: F401  # noqa:F821

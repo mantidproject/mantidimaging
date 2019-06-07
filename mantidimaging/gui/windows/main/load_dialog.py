@@ -26,6 +26,8 @@ class MWLoadDialog(Qt.QDialog):
         self.index_step.valueChanged.connect(self.update_expected)
         self.pixelBitDepth.currentIndexChanged.connect(self.update_expected)
 
+        self.step_all.clicked.connect(self._set_all_step)
+        self.step_preview.clicked.connect(self._set_preview_step)
         # if accepted load the stack
         self.accepted.connect(parent.execute_load)
         self.image_format = ''
@@ -121,3 +123,8 @@ class MWLoadDialog(Qt.QDialog):
     def window_title(self):
         user_text = self.stackName.text()
         return user_text if len(user_text) > 0 else None
+
+    def _set_all_step(self):
+        self.index_step.setValue(1)
+    def _set_preview_step(self):
+        self.index_step.setValue(self.last_shape[0]/10)

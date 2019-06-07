@@ -1,22 +1,21 @@
-import matplotlib
-
 from logging import getLogger
+
+import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
+from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
-from .load_dialog import MWLoadDialog
-from .presenter import MainWindowPresenter
-from .presenter import Notification as PresNotification
-from .save_dialog import MWSaveDialog
-
 
 class MainWindowView(BaseMainWindowView):
-
     active_stacks_changed = Qt.pyqtSignal()
 
     def __init__(self):
@@ -36,11 +35,12 @@ class MainWindowView(BaseMainWindowView):
         self.actionExit.triggered.connect(self.close)
 
         self.actionOnlineDocumentation.triggered.connect(
-                self.open_online_documentation)
+            self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionImageOperations.triggered.connect(self.show_filters_window)
+        self.actionSavuImageOperations.triggered.connect(self.show_savu_filters_window)
         self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
@@ -58,8 +58,9 @@ class MainWindowView(BaseMainWindowView):
         msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
         msg_box.setText(
-                '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'\
-                '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(version_no))
+            '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>' \
+            '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(
+                version_no))
         msg_box.show()
 
     def show_load_dialogue(self):
@@ -81,6 +82,9 @@ class MainWindowView(BaseMainWindowView):
 
     def show_filters_window(self):
         FiltersWindowView(self).show()
+
+    def show_savu_filters_window(self):
+        SavuFiltersWindowView(self).show()
 
     def show_tomopy_recon_window(self):
         TomopyReconWindowView(self).show()
@@ -137,10 +141,10 @@ class MainWindowView(BaseMainWindowView):
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
             msg_box = QtWidgets.QMessageBox.question(
-                    self,
-                    "Quit",
-                    "Are you sure you want to quit?",
-                    defaultButton=QtWidgets.QMessageBox.No)
+                self,
+                "Quit",
+                "Are you sure you want to quit?",
+                defaultButton=QtWidgets.QMessageBox.No)
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:

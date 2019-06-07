@@ -40,6 +40,7 @@
      <string>Workflow</string>
     </property>
     <addaction name="actionImageOperations"/>
+    <addaction name="actionSavuImageOperations"/>
     <addaction name="actionCorTilt"/>
     <addaction name="actionTomopyRecon"/>
    </widget>
@@ -115,6 +116,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>About MantidImaging</string>
+   </property>
+  </action>
+  <action name="actionSavuImageOperations">
+   <property name="text">
+    <string>Savu Image Operations</string>
    </property>
   </action>
  </widget>
