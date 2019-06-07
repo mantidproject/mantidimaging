@@ -137,5 +137,5 @@ setup(
         'docs': BuildDoc,
         'docs_publish': PublishDocsToGitHubPages,
         'compile_ui': CompilePyQtUiFiles
-    }
+    }, install_requires=['matplotlib', 'PyQt5', 'requests_futures==0.9.9']
 )
