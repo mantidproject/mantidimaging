@@ -17,10 +17,10 @@ def startup_checks():
     tomopy = safe_import('tomopy')
     if tomopy is not None:
         ver = tomopy.__version__
-        if ver != '1.1.2':
-            raise RuntimeError(
-                    'Unexpected TomoPy version {}, '
-                    'please update Conda environment'.format(ver))
+        # if ver != '1.1.2':
+        #     raise RuntimeError(
+        #             'Unexpected TomoPy version {}, '
+        #             'please update Conda environment'.format(ver))
 
 
 def parse_args():
@@ -55,6 +55,7 @@ def main():
     startup_checks()
 
     from mantidimaging import gui
+    gui.run_preparations()
     gui.execute()
 
 
