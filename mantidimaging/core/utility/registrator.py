@@ -77,7 +77,7 @@ def import_items(names, required_attributes=None):
     return imported
 
 
-def register_into(items, container, func):
+def register_into(container, items, func):
     """
     Registers a list of packages and/or modules into a containing instance.
 

@@ -4,15 +4,14 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.histogram import (
-        generate_histogram_from_image)
+    generate_histogram_from_image)
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.stack_visualiser import Parameters
 from mantidimaging.gui.utility import (
-        BlockQtSignals, get_auto_params_from_stack)
-
+    BlockQtSignals, get_auto_params_from_stack)
 from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel
+from mantidimaging.gui.windows.stack_visualiser import Parameters
 
 
 class Notification(Enum):
@@ -54,8 +53,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
     def set_stack_uuid(self, uuid):
         self.set_stack(
-                self.main_window.get_stack_visualiser(uuid)
-                if uuid is not None else None)
+            self.main_window.get_stack_visualiser(uuid)
+            if uuid is not None else None)
 
     def set_stack(self, stack):
         # Disconnect ROI update singal from previous stack
@@ -96,19 +95,27 @@ class SavuFiltersWindowPresenter(BasePresenter):
     def do_register_active_filter(self):
         filter_idx = self.view.filterSelector.currentIndex()
 
-        # Get registration function for new filter
-        register_func = \
-            self.model.filter_registration_func(filter_idx)
+        filter_details = self.model.filter_details(filter_idx)
 
+        # TODO add widgets from details into self.view.filterPropertiesLayout
+        from mantidimaging.gui.utility import add_property_to_form
+        for parameter in filter_details["parameters"]:
+            if parameter["type"] != "NoneType" and not parameter["is_hidden"] and \
+                    not parameter["name"] == "in_datasets" and \
+                    not parameter["name"] == "out_datasets":
+                add_property_to_form(parameter["name"], parameter["type"], parameter["value"],
+                                     tooltip=parameter["description"], form=self.view.filterPropertiesLayout)
+
+        # then trigger self.view.auto_update_triggered.emit to update the view
+
+        # TODO register with the model for applying, etc
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        self.model.setup_filter(
-                register_func(self.view.filterPropertiesLayout,
-                              self.view.auto_update_triggered.emit))
+        # self.model.setup_filter(filter_details)
 
     def filter_uses_auto_property(self, prop):
         return prop in self.model.auto_props.values() if \
-                self.model.auto_props is not None else False
+            self.model.auto_props is not None else False
 
     def do_apply_filter(self):
         self.model.do_apply_filter()
@@ -133,7 +140,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
                 progress.add_estimated_steps(8)
 
                 before_image_data = stack.get_image(
-                        self.model.preview_image_idx)
+                    self.model.preview_image_idx)
 
                 if maintain_axes:
                     # Record the image axis range from the existing preview
@@ -145,15 +152,15 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
                 # Update image before
                 self._update_preview_image(
-                        before_image_data,
-                        self.view.preview_image_before,
-                        self.view.preview_histogram_before,
-                        progress)
+                    before_image_data,
+                    self.view.preview_image_before,
+                    self.view.preview_histogram_before,
+                    progress)
 
                 # Generate sub-stack and run filter
                 progress.update(msg='Running preview filter')
                 exec_kwargs = get_auto_params_from_stack(
-                        stack, self.model.auto_props)
+                    stack, self.model.auto_props)
 
                 filtered_image_data = None
                 try:
@@ -162,24 +169,24 @@ class SavuFiltersWindowPresenter(BasePresenter):
                     filtered_image_data = sub_images.sample[0]
                 except Exception as e:
                     log.error(
-                            "Error applying filter for preview: {}".format(e))
+                        "Error applying filter for preview: {}".format(e))
 
                 # Update image after
                 if filtered_image_data is not None:
                     self._update_preview_image(
-                            filtered_image_data,
-                            self.view.preview_image_after,
-                            self.view.preview_histogram_after,
-                            progress)
+                        filtered_image_data,
+                        self.view.preview_image_after,
+                        self.view.preview_histogram_after,
+                        progress)
 
                 if maintain_axes:
                     # Set the axis range on the newly created image to keep
                     # same zoom level/pan region
                     if image_axis_ranges is not None:
                         self.view.preview_image_before.set_xlim(
-                                image_axis_ranges[0])
+                            image_axis_ranges[0])
                         self.view.preview_image_before.set_ylim(
-                                image_axis_ranges[1])
+                            image_axis_ranges[1])
 
             # Redraw
             progress.update(msg='Redraw canvas')

@@ -45,8 +45,8 @@ def select_file(field, caption):
     :return: True: If a file has been selected, False otherwise
     """
     assert isinstance(field, Qt.QLineEdit), (
-            "The passed object is of type {0}. This function only works with "
-            "QLineEdit".format(type(field)))
+        "The passed object is of type {0}. This function only works with "
+        "QLineEdit".format(type(field)))
 
     selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
     # open file dialogue and set the text if file is selected
@@ -60,8 +60,8 @@ def select_file(field, caption):
 
 def select_directory(field, caption):
     assert isinstance(field, Qt.QLineEdit), (
-            "The passed object is of type {0}. This function only works with "
-            "QLineEdit".format(type(field)))
+        "The passed object is of type {0}. This function only works with "
+        "QLineEdit".format(type(field)))
 
     # open file dialogue and set the text if file is selected
     field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
@@ -92,7 +92,7 @@ def add_property_to_form(label,
     left_widget = Qt.QLabel(label)
     right_widget = None
 
-    def set_spin_box(box):
+    def set_spin_box(box, cast_func):
         """
         Helper function to set default options on a spin box.
         """
@@ -100,7 +100,7 @@ def add_property_to_form(label,
             box.setMinimum(valid_values[0])
             box.setMaximum(valid_values[1])
         if default_value:
-            box.setValue(default_value)
+            box.setValue(cast_func(default_value))
 
     def assign_tooltip(widgets):
         """
@@ -116,21 +116,30 @@ def add_property_to_form(label,
         right_widget = Qt.QPushButton(label)
         assign_tooltip([left_widget, right_widget])
         right_widget.clicked.connect(
-                lambda: select_file(left_widget, label))
+            lambda: select_file(left_widget, label))
         if on_change is not None:
             left_widget.textChanged.connect(lambda: on_change())
+
+    elif dtype == 'str' or dtype == 'tuple':
+        # TODO for tuple with numbers add N combo boxes, N = number of tuple members
+        right_widget = Qt.QLineEdit()
+        right_widget.setToolTip(tooltip)
+        right_widget.setText(default_value)
+
+        if on_change is not None:
+            right_widget.textChanged.connect(lambda: on_change())
 
     elif dtype == 'int':
         right_widget = Qt.QSpinBox()
         assign_tooltip([right_widget])
-        set_spin_box(right_widget)
+        set_spin_box(right_widget, int)
         if on_change is not None:
             right_widget.valueChanged[int].connect(lambda: on_change())
 
     elif dtype == 'float':
         right_widget = Qt.QDoubleSpinBox()
         assign_tooltip([right_widget])
-        set_spin_box(right_widget)
+        set_spin_box(right_widget, float)
         if on_change is not None:
             right_widget.valueChanged[float].connect(lambda: on_change())
 
@@ -140,6 +149,10 @@ def add_property_to_form(label,
         assign_tooltip([right_widget])
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
+        elif isinstance(default_value, str):
+            right_widget.setChecked("True" == default_value)
+        else:
+            raise ValueError(f"Cannot convert value {default_value} to a Boolean.")
         if on_change is not None:
             right_widget.stateChanged[int].connect(lambda: on_change())
 
@@ -161,7 +174,7 @@ def add_property_to_form(label,
     if form is not None:
         form.addRow(left_widget, right_widget)
 
-    return (left_widget, right_widget)
+    return left_widget, right_widget
 
 
 def delete_all_widgets_from_layout(lo):

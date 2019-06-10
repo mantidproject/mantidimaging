@@ -66,7 +66,7 @@ class FiltersWindowModel(object):
             filter_list.append((module.NAME, module._gui_register))
 
         self.filters = []
-        register_into(loaded_filters, self.filters, register_filter)
+        register_into(self.filters, loaded_filters, register_filter)
 
     @property
     def filter_names(self):

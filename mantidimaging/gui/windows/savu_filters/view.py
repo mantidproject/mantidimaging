@@ -1,15 +1,13 @@
 from PyQt5 import Qt
-
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
     delete_all_widgets_from_layout)
-
 from mantidimaging.gui.windows.filters.navigation_toolbar import FiltersWindowNavigationToolbar
-from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
 from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
 
 
 class SavuFiltersWindowView(BaseMainWindowView):
