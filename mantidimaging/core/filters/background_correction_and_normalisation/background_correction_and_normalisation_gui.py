@@ -1,26 +1,26 @@
 import os
 from functools import partial
+from typing import Tuple, Callable, Optional, Dict
 
 from mantidimaging.core import io
-
 from . import execute
 
 
-def _gui_register(form, on_change):
+def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], Optional[Callable], Optional[Callable]]:
     from mantidimaging.gui.windows.stack_visualiser import Parameters
     from mantidimaging.gui.utility import add_property_to_form
 
     flatPath, _ = add_property_to_form(
-            'Flat', 'file',
-            form=form, on_change=on_change)
+        'Flat', 'file',
+        form=form, on_change=on_change)
 
     darkPath, _ = add_property_to_form(
-            'Dark', 'file',
-            form=form, on_change=on_change)
+        'Dark', 'file',
+        form=form, on_change=on_change)
 
     add_property_to_form(
-            'Select ROI on stack visualiser.', 'label',
-            form=form, on_change=on_change)
+        'Select ROI on stack visualiser.', 'label',
+        form=form, on_change=on_change)
 
     params = {
         'air_region': Parameters.ROI
@@ -51,7 +51,4 @@ def _gui_register(form, on_change):
 
         return par
 
-    return (params,
-            None,
-            custom_execute,
-            None)
+    return params, None, custom_execute, None
