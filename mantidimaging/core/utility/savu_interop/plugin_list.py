@@ -58,3 +58,6 @@ class SAVUPluginList:
                             name=np.string_('TiffSaver'),
                             user=np.string_('[]'))
         ]
+
+    def __len__(self):
+        return len(self.prepend_plugins) + len(self.plugins) + len(self.append_plugins)

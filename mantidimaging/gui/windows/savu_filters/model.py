@@ -2,14 +2,15 @@ import json
 from concurrent.futures import Future
 from functools import partial
 from logging import getLogger
+from pathlib import Path
 
 import numpy as np
 from requests import Response
 
-from mantidimaging.gui.utility import get_auto_params_from_stack
+from mantidimaging.core.io import savu_config_writer
+from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList
 from mantidimaging.gui.windows.savu_filters import preparation
-from mantidimaging.gui.windows.stack_visualiser import (
-    Notification as SVNotification)
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 
 def ensure_tuple(val):
@@ -23,6 +24,7 @@ class Panic(Exception):
 
 
 class SavuFiltersWindowModel(object):
+    PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
     def __init__(self):
         super(SavuFiltersWindowModel, self).__init__()
@@ -43,7 +45,7 @@ class SavuFiltersWindowModel(object):
         self.preview_image_idx = 0
 
         # Execution info for current filter
-        self.stack = None
+        self.stack: StackVisualiserView = None
         self.do_before = None
         self.execute = None
         self.do_after = None
@@ -93,8 +95,9 @@ class SavuFiltersWindowModel(object):
         """
         Sets filter properties from result of registration function.
         """
-        self.auto_props, self.do_before, self.execute, self.do_after = \
-            filter_specifics
+        # TODO need to manually add parameters necessary for the SAVU filters in auto_props
+        # self.auto_props, self.do_before, self.execute, self.do_after = filter_details
+        self.auto_props, self.do_before, self.execute, self.do_after = [], [], [], []
 
     def apply_filter(self, images, exec_kwargs):
         """
@@ -149,11 +152,25 @@ class SavuFiltersWindowModel(object):
         if not self.stack_presenter:
             raise ValueError('No stack selected')
 
+        # TODO
+        # save out nxs file
+        spl = SAVUPluginList()
+
+        # makes sure the directories exists, they are created recursively
+        # if they already exist, nothing is done
+        self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
+
+        title = self.stack.windowTitle() if self.stack is not None else ""
+        savu_config_writer.save(spl, self.PROCESS_LIST_DIR / f"pl_{title}_{len(spl)}.nxs", overwrite=True)
+        # send POST request (with progress updates..) to API
+        # listen for end
+        # reload changes? what do
+        # TODO figure out how to get params like ROI later
         # Get auto parameters
-        exec_kwargs = get_auto_params_from_stack(
-            self.stack_presenter, self.auto_props)
-
-        self.apply_filter(self.stack_presenter.images, exec_kwargs)
-
+        # exec_kwargs = get_auto_params_from_stack(
+        #     self.stack_presenter, self.auto_props)
+        #
+        # self.apply_filter(self.stack_presenter.images, exec_kwargs)
+        #
         # Refresh the image in the stack visualiser
-        self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
+        # self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)

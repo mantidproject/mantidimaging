@@ -1,10 +1,10 @@
 from enum import Enum
 from logging import getLogger
+from uuid import UUID
 
 from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
-
+from mantidimaging.gui.mvp_base import BasePresenter
 from .model import MainWindowModel
 
 
@@ -37,13 +37,11 @@ class MainWindowPresenter(BasePresenter):
     def load_stack(self):
         log = getLogger(__name__)
 
-        kwargs = {}
-        kwargs['selected_file'] = self.view.load_dialogue.sample_file()
-        kwargs['sample_path'] = self.view.load_dialogue.sample_path()
-        kwargs['image_format'] = self.view.load_dialogue.image_format
-        kwargs['parallel_load'] = self.view.load_dialogue.parallel_load()
-        kwargs['indices'] = self.view.load_dialogue.indices()
-        kwargs['custom_name'] = self.view.load_dialogue.window_title()
+        kwargs = {'selected_file': self.view.load_dialogue.sample_file(),
+                  'sample_path': self.view.load_dialogue.sample_path(),
+                  'image_format': self.view.load_dialogue.image_format,
+                  'parallel_load': self.view.load_dialogue.parallel_load(),
+                  'indices': self.view.load_dialogue.indices(), 'custom_name': self.view.load_dialogue.window_title()}
 
         if not kwargs['sample_path']:
             log.debug("No sample path provided, cannot load anything")
@@ -80,14 +78,12 @@ class MainWindowPresenter(BasePresenter):
         self.view.active_stacks_changed.emit()
 
     def save(self, indices=None):
-        kwargs = {}
-        kwargs['stack_uuid'] = self.view.save_dialogue.selected_stack
-        kwargs['output_dir'] = self.view.save_dialogue.save_path()
-        kwargs['name_prefix'] = self.view.save_dialogue.name_prefix()
-        kwargs['image_format'] = self.view.save_dialogue.image_format()
-        kwargs['overwrite'] = self.view.save_dialogue.overwrite()
-        kwargs['swap_axes'] = self.view.save_dialogue.swap_axes()
-        kwargs['indices'] = indices
+        kwargs = {'stack_uuid': self.view.save_dialogue.selected_stack,
+                  'output_dir': self.view.save_dialogue.save_path(),
+                  'name_prefix': self.view.save_dialogue.name_prefix(),
+                  'image_format': self.view.save_dialogue.image_format(),
+                  'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes(),
+                  'indices': indices}
 
         atd = AsyncTaskDialogView(self.view, auto_close=True)
         kwargs['progress'] = Progress()
@@ -114,7 +110,7 @@ class MainWindowPresenter(BasePresenter):
     def stack_names(self):
         return self.model.stack_names()
 
-    def get_stack_visualiser(self, stack_uuid):
+    def get_stack_visualiser(self, stack_uuid: UUID):
         return self.model.get_stack_visualiser(stack_uuid)
 
     @property

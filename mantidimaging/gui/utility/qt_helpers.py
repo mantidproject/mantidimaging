@@ -120,7 +120,7 @@ def add_property_to_form(label,
         if on_change is not None:
             left_widget.textChanged.connect(lambda: on_change())
 
-    elif dtype == 'str' or dtype == 'tuple':
+    elif dtype == 'str' or dtype == 'tuple' or dtype == "NoneType":
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
         right_widget = Qt.QLineEdit()
         right_widget.setToolTip(tooltip)

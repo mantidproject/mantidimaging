@@ -1,16 +1,17 @@
 import os
 import uuid
-
 from logging import getLogger
+from typing import Dict
 
 from mantidimaging.core.io import loader, saver
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 
 class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
 
-        self.active_stacks = {}
+        self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
     def do_load_stack(self, sample_path, image_format, parallel_load, indices,
                       progress):
@@ -81,7 +82,7 @@ class MainWindowModel(object):
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
         getLogger(__name__).debug(
-                "Active stacks {}".format(self.active_stacks))
+            "Active stacks {}".format(self.active_stacks))
 
     def get_stack(self, stack_uuid):
         """
@@ -92,14 +93,14 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def get_stack_visualiser(self, stack_uuid):
+    def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The Stack Visualiser widget that contains the data.
         """
         return self.active_stacks[stack_uuid].widget()
 
-    def do_remove_stack(self, stack_uuid):
+    def do_remove_stack(self, stack_uuid) -> None:
         """
         Removes the stack from the active_stacks dictionary.
 

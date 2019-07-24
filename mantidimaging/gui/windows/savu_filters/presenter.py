@@ -1,5 +1,6 @@
 from enum import Enum
 from logging import getLogger
+from uuid import UUID
 
 import numpy as np
 
@@ -11,7 +12,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (
     BlockQtSignals, get_auto_params_from_stack)
 from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel
-from mantidimaging.gui.windows.stack_visualiser import Parameters
+from mantidimaging.gui.windows.stack_visualiser import Parameters, StackVisualiserView
 
 
 class Notification(Enum):
@@ -51,13 +52,13 @@ class SavuFiltersWindowPresenter(BasePresenter):
     def max_preview_image_idx(self):
         return max(self.model.num_images_in_stack - 1, 0)
 
-    def set_stack_uuid(self, uuid):
+    def set_stack_uuid(self, uuid: UUID):
         self.set_stack(
             self.main_window.get_stack_visualiser(uuid)
             if uuid is not None else None)
 
-    def set_stack(self, stack):
-        # Disconnect ROI update singal from previous stack
+    def set_stack(self, stack: StackVisualiserView):
+        # Disconnect ROI update signal from previous stack
         if self.model.stack:
             self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
 
@@ -97,21 +98,19 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
         filter_details = self.model.filter_details(filter_idx)
 
-        # TODO add widgets from details into self.view.filterPropertiesLayout
         from mantidimaging.gui.utility import add_property_to_form
         for parameter in filter_details["parameters"]:
-            if parameter["type"] != "NoneType" and not parameter["is_hidden"] and \
-                    not parameter["name"] == "in_datasets" and \
+            if not parameter["is_hidden"] and not parameter["name"] == "in_datasets" and \
                     not parameter["name"] == "out_datasets":
                 add_property_to_form(parameter["name"], parameter["type"], parameter["value"],
                                      tooltip=parameter["description"], form=self.view.filterPropertiesLayout)
 
-        # then trigger self.view.auto_update_triggered.emit to update the view
+        # TODO then trigger self.view.auto_update_triggered.emit to update the view
 
-        # TODO register with the model for applying, etc
+        # we do not have to do this for SAVU filters as they are all the same #notallfilters
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        # self.model.setup_filter(filter_details)
+        self.model.setup_filter(filter_details)
 
     def filter_uses_auto_property(self, prop):
         return prop in self.model.auto_props.values() if \

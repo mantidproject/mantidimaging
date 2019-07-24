@@ -5,6 +5,7 @@ import numpy as np
 from enum import IntEnum
 from logging import getLogger
 
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
 
 
@@ -32,7 +33,7 @@ class ImageMode(IntEnum):
 
 class StackVisualiserPresenter(BasePresenter):
 
-    def __init__(self, view, images, data_traversal_axis):
+    def __init__(self, view, images: Images, data_traversal_axis):
         super(StackVisualiserPresenter, self).__init__(view)
         self.images = images
         self.axis = data_traversal_axis

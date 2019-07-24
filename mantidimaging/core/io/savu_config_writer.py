@@ -2,7 +2,7 @@
 Writes out NXS files for SAVU
 """
 import itertools as it
-import os
+from pathlib import Path
 from typing import Type
 
 import h5py
@@ -14,14 +14,14 @@ from mantidimaging.core.utility.savu_interop.nxclasses import NXClasses
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList
 
 
-def save(spl: SAVUPluginList, file: str, overwrite=False):
-    if ".nxs" != file[-4:]:
-        file += ".nxs"
+def save(spl: SAVUPluginList, file: Path, overwrite=False):
+    if ".nxs" != file.suffix:
+        file = file.with_suffix(".nxs")
 
-    if os.path.isfile(file) and not overwrite:
+    if file.is_file() and not overwrite:
         raise ValueError("File exists and will not be overwritten!")
 
-    with h5py.File(file, mode="w") as nxs:
+    with h5py.File(str(file), 'w') as nxs:
         entry_group = nxs.create_group(spl.ENTRY_PATH)
         entry_group.attrs["NX_class"] = NXClasses.NXentry.value
 
@@ -59,4 +59,6 @@ def _add_citation_group(framework_group: h5py.Group, dataclass: Type[Citation]):
 
 if __name__ == "__main__":
     pl = SAVUPluginList()
-    mnuhef = save(pl, "np_str_citations", overwrite=True)
+    path = Path("~/mantidimaging/process_lists").expanduser()
+    path.mkdir(parents=True, exist_ok=True)
+    mnuhef = save(pl, path/"testfile", overwrite=True)
