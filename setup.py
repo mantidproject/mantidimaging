@@ -3,8 +3,8 @@
 import fnmatch
 import os
 import subprocess
-
 from distutils.core import Command
+
 from setuptools import setup, find_packages
 from sphinx.setup_command import BuildDoc
 
@@ -14,10 +14,10 @@ THIS_PATH = os.path.dirname(__file__)
 class PublishDocsToGitHubPages(Command):
     description = 'Deploy built documentation to GitHub Pages'
     user_options = [
-            ('repo=', 'r', 'Repository URL'),
-            ('docs-dir=', 'd', 'Directory of documentation to publish'),
-            ('commit-msg=', 'm', 'Commit message')
-        ]
+        ('repo=', 'r', 'Repository URL'),
+        ('docs-dir=', 'd', 'Directory of documentation to publish'),
+        ('commit-msg=', 'm', 'Commit message')
+    ]
 
     def initialize_options(self):
         self.repo = None
@@ -102,7 +102,7 @@ class CompilePyQtUiFiles(Command):
     def run(self):
         ui_files = self.find_ui_files()
         for f in ui_files:
-            self. compile_single_file(f)
+            self.compile_single_file(f)
 
 
 setup(
