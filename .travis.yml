@@ -28,12 +28,10 @@ install:
 script:
     - make test
     - if [[ "$BUILD_PACKAGE" = "true" ]]; then
-        if [[ "$UPLOAD_PACKAGE" = "true" ]]; then
-            conda config --set anaconda_upload yes
-        fi
+        [[ "$UPLOAD_PACKAGE" = "true" ]] && conda config --set anaconda_upload yes;
         if [[ "$MANTIDIMAGING_BUILD_TYPE" = "release" ]]; then
             make build-conda-package-release;
-        else
+        else;
             make build-conda-package-nightly;
-        fi
+        fi;
       fi
