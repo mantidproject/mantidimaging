@@ -14,5 +14,4 @@ build-conda-package-release: install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
 
 test:
-	pip install -r deps/dev-requirements.pip
 	nosetests
