@@ -1,8 +1,8 @@
 language: c
 
-cache:
-    directories:
-        - $HOME/miniconda/
+# cache:
+#     directories:
+#         - $HOME/miniconda/
 
 install:
     - |
@@ -17,6 +17,7 @@ install:
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
+    - conda init bash
 
     - conda config --add channels conda-forge
     - conda config --add channels $UPLOAD_USER
