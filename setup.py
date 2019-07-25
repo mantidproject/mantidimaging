@@ -25,7 +25,7 @@ class PublishDocsToGitHubPages(Command):
         self.commit_msg = None
 
     def finalize_options(self):
-        self.repo = 'git@github.com:mantidproject/mantidimaging.git' \
+        self.repo = 'https://github.com/mantidproject/mantidimaging' \
             if self.repo is None else self.repo
 
         self.docs_dir = 'docs/build/html' \
