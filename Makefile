@@ -1,5 +1,8 @@
 AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
+install-run-requirements:
+	conda install --only-deps -c $$UPLOAD_USER -c conda-forge  mantidimaging
+
 install-build-requirements:
 	conda install --file deps/build-requirements.conda
 

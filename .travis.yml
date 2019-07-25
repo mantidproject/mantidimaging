@@ -1,9 +1,5 @@
 language: c
 
-cache:
-    directories:
-        - $HOME/miniconda/
-
 install:
     - |
       if [[ ! -f $HOME/miniconda/bin/conda ]]; then
@@ -19,7 +15,7 @@ install:
     - conda info -a
 
     - conda config --add channels conda-forge
-    - conda config --add channels dtasev
+    - conda config --add channels $UPLOAD_USER
     - |
       if [[ -f $HOME/miniconda/envs/test-environment/bin/mantidimaging ]]; then
         source activate test-environment;
