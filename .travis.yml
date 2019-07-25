@@ -22,12 +22,12 @@ install:
     - conda config --add channels $UPLOAD_USER
     - |
       if [[ -f $HOME/envs/test-environment/bin/mantidimaging ]]; then
-        source activate test-environment;
+        conda activate $HOME/envs/test-environment;
         conda remove --force mantidimaging;
         conda install --only-deps mantidimaging;
       else
         conda create --prefix $HOME/envs/test-environment --only-deps python=$TRAVIS_PYTHON_VERSION mantidimaging;
-        source activate test-environment;
+        conda activate $HOME/envs/test-environment;
       fi
 
 jobs:
