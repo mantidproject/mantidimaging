@@ -22,7 +22,7 @@ install:
         conda remove --force mantidimaging;
         conda install mantidimaging;
       else
-        conda create -q -f deps/environment.yml -n test-environment python=$TRAVIS_PYTHON_VERSION;
+        conda create -q -f deps/environment.yml -n test-environment;
         source activate test-environment;
       fi
 
