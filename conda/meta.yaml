@@ -21,12 +21,12 @@ build:
 
 requirements:
   build:
-    - python >=3.7
+    - python 3.7.3
     - pip
     - setuptools
     - sphinx
   run:
-    - python >=3.7
+    - python 3.7.3
     - astropy >=3.2.1
     - scipy
     - scikit-image
