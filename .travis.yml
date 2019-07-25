@@ -26,7 +26,7 @@ install:
         conda remove --force mantidimaging;
         conda install --only-deps mantidimaging;
       else
-        conda create --prefix $HOME/envs/test-environment -n test-environment1 --only-deps python=$TRAVIS_PYTHON_VERSION mantidimaging;
+        conda create --prefix $HOME/envs/test-environment --only-deps python=$TRAVIS_PYTHON_VERSION mantidimaging;
         source activate test-environment;
       fi
 
