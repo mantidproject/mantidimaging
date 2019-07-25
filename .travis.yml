@@ -25,12 +25,12 @@ install:
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION mantidimaging
     - source activate test-environment
 
-env:
-    - BUILD_PACKAGE=true
-
 script:
     - make test
     - if [[ "$BUILD_PACKAGE" = "true" ]]; then
+        if [[ "$UPLOAD_PACKAGE" = "true" ]]; then
+            conda config --set anaconda_upload yes
+        fi
         if [[ "$MANTIDIMAGING_BUILD_TYPE" = "release" ]]; then
             make build-conda-package-release;
         else

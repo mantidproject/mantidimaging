@@ -3,30 +3,28 @@ Packaging
 
 The preferred method of packaging the package is as a Conda package.
 
-This is most likely to be the simplest way to distribute the package; for users
+This is most likely to be the simplest way to distribute the package;
 Anaconda Cloud is the simplest way to obtain dependencies (for instance,
-TomoPy), for clusters a Conda package is one of the less painful ways of
-deploying something (so I am told).
+TomoPy).
 
 TL;DR
 -----
 
 Building:
 
-   1. :code:`conda-build conda/mantidimaging`
+   1. :code:`make build-conda-package`
 
 Installing:
 
-   1. :code:`conda config --add channel dgursoy` (once)
-   2. :code:`conda install -c file:///tmp/mantidimaging-conda/linux-64 mantidimaging`
+   1. :code:`conda install -c file:///tmp/mantidimaging-conda/linux-64 -c conda-forge  mantidimaging`
 
 Building the package
 --------------------
 
-Before you go any further make sure you have :code:`conda-build` installed, this
-should be as simple as :code:`conda install conda-build`.
+Before you go any further make sure you have the build requirements installed.
+This can be done via :code:`make install-build-requirements`.
 
-The metadata is in :code:`conda/mantidimaging`, this generates a package based
+The metadata is in :code:`conda/`, this generates a package based
 on the environment and an installation using :code:`setup.py`.
 
 Note that you may have issues if the Conda root directory is on an encrypted
