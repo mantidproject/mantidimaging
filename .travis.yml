@@ -30,14 +30,18 @@ jobs:
         - stage: test
           script: make test
 
-        - stage: prepare-upload
-          if: env(BUILD_PACKAGE) = "true" AND env(UPLOAD_PACKAGE) = "true"
-          script: conda config --set anaconda_upload yes;
-
         - stage: upload-release
           if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "release"
-          script: make build-conda-package-release
+          script:
+            - if [[ UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            - make build-conda-package-release
 
         - stage: upload-nightly
           if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "nightly"
-          script: make build-conda-package-nightly
+          script:
+            - if [[ UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            - make build-conda-package-nightly
