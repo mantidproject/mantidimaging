@@ -15,9 +15,6 @@ package:
 source:
   path: ../
 
-build:
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
 
 requirements:
   build:
@@ -33,7 +30,13 @@ requirements:
     - numpy >=1.16
     - matplotlib =2.2.3
     - tomopy >=1.5.0
+    - h5py
     - pyqt
+
+build:
+  number: 0
+  script:
+    - python -m pip install --no-deps --ignore-installed .
 
 test:
   imports:
@@ -42,7 +45,6 @@ test:
 app:
   summary: "Mantid Imaging"
   own_environment: True
-
 
 about:
   home: https://github.com/mantidproject/mantidimaging
