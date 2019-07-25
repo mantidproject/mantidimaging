@@ -1,5 +1,9 @@
 language: c
 
+cache:
+    directories:
+        - $HOME/miniconda/
+
 install:
     - |
       if [[ ! -f $HOME/miniconda/bin/conda ]]; then
@@ -20,18 +24,16 @@ install:
       if [[ -f $HOME/miniconda/envs/test-environment/bin/mantidimaging ]]; then
         source activate test-environment;
         conda remove --force mantidimaging;
-        conda install mantidimaging;
+        conda install --only-deps mantidimaging;
       else
-        conda env create -q -f deps/environment.yml -n test-environment;
+        conda create -q -n test-environment --only-deps python=$TRAVIS_PYTHON_VERSION mantidimaging;
         source activate test-environment;
       fi
 
 jobs:
     include:
         - stage: test
-          script:
-            - pip install -r deps/dev-requirements.pip
-            - make test
+          script: make test
 
         - stage: upload-release
           if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "release"
