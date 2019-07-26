@@ -4,31 +4,37 @@ language: c
 #     directories:
 #         - $HOME/miniconda/
 
+env:
+    - MINICONDA_DIR=$HOME/miniconda
+    - ENVIRONMENT_DIR=$HOME/envs
+    - ENVIRONMENT_NAME=test-environment
+
 install:
     - |
-      if [[ ! -f $HOME/miniconda/bin/conda ]]; then
-        rm -rf $HOME/miniconda;
+      if [[ ! -f $MINICONDA_DIR/bin/conda ]]; then
+        rm -rf $MINICONDA_DIR;
         wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-        bash miniconda.sh -b -p $HOME/miniconda;
+        bash miniconda.sh -b -p $MINICONDA_DIR;
       fi
-    - export PATH="$HOME/miniconda/bin:$PATH"
+    - export PATH="$MINICONDA_DIR/bin:$PATH"
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
-    - conda init bash
+    # set up the conda environment variables in this shell, for conda activate
+    - source $MINICONDA_DIR/etc/profile.d/conda.sh
 
     - conda config --add channels conda-forge
     - conda config --add channels $UPLOAD_USER
     - |
-      if [[ -f $HOME/envs/test-environment/bin/mantidimaging ]]; then
-        conda activate $HOME/envs/test-environment;
+      if [[ -f $ENVIRONMENT_DIR/$ENVIRONMENT_NAME/bin/mantidimaging ]]; then
+        conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
         conda remove --force mantidimaging;
         conda install --only-deps mantidimaging;
       else
-        conda create --prefix $HOME/envs/test-environment --only-deps python=$TRAVIS_PYTHON_VERSION mantidimaging;
-        conda activate $HOME/envs/test-environment;
+        conda create --prefix $ENVIRONMENT_DIR/$ENVIRONMENT_NAME --only-deps mantidimaging;
+        conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
       fi
 
 jobs:
