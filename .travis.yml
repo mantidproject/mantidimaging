@@ -69,3 +69,17 @@ jobs:
             # this prevent caching big packages like anaconda and conda-forge
             # that are only necessary for building the package
             - exit 0
+
+        - stage: upload-unstable
+          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "unstable"
+          script:
+            - |
+              if [[ $UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            # this will build a package with label unstable
+            - make build-conda-package
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0

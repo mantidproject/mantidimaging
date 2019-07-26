@@ -8,16 +8,16 @@ install-build-requirements:
 
 build-conda-package:
 	# intended for local usage, does not install build requirements
-	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
+	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
 
 build-conda-deps-package:
 	# this builds and labels a package as 'deps' to signify that
 	# this package should be used to pull dependencies in,
 	# preferably with the --only-deps flag
-	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) -l deps
+	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label deps
 
 build-conda-package-nightly: install-build-requirements
-	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) -l nightly
+	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label nightly
 
 build-conda-package-release: install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
