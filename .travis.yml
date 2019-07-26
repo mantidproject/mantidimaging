@@ -5,9 +5,7 @@ language: c
 #         - $HOME/miniconda/
 
 env:
-    - MINICONDA_DIR=$HOME/miniconda
-    - ENVIRONMENT_DIR=$HOME/envs
-    - ENVIRONMENT_NAME=test-environment
+    - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
 
 install:
     - |
@@ -26,7 +24,8 @@ install:
     - source $MINICONDA_DIR/etc/profile.d/conda.sh
 
     - conda config --add channels conda-forge
-    - conda config --add channels $UPLOAD_USER
+    # add the dependencies label from mantidimaging's channel
+    - conda config --add channels $UPLOAD_USER/label/deps
     - |
       if [[ -f $ENVIRONMENT_DIR/$ENVIRONMENT_NAME/bin/mantidimaging ]]; then
         conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
