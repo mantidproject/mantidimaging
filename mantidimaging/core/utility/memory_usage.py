@@ -14,6 +14,7 @@ def get_memory_usage_linux(kb=False, mb=False):
         import resource as res
     except ImportError:
         log.warning('Resource monitoring is not available on Windows')
+        return (0, 0)
 
     tuple_to_return = tuple()  # start with empty tuple
     if kb:
@@ -38,7 +39,7 @@ def get_memory_usage_linux_str():
         # get memory difference in Megabytes
         delta_memory = (
             memory_in_kbs - get_memory_usage_linux_str.last_memory_cache) \
-                    / 1024
+            / 1024
 
         # remove cached memory, del removes the reference so that hasattr will
         # work correctly
