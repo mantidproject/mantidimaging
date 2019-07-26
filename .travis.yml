@@ -1,8 +1,9 @@
 language: c
 
-# cache:
-#     directories:
-#         - $HOME/miniconda/
+cache:
+    directories:
+        - $HOME/miniconda/
+        - $HOME/envs/
 
 env:
     - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
@@ -51,6 +52,10 @@ jobs:
                 conda config --set anaconda_upload yes;
               fi
             - make build-conda-package-release
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0
 
         - stage: upload-nightly
           if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "nightly"
@@ -60,3 +65,7 @@ jobs:
                 conda config --set anaconda_upload yes;
               fi
             - make build-conda-package-nightly
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0

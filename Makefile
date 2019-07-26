@@ -17,7 +17,7 @@ build-conda-deps-package:
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) -l deps
 
 build-conda-package-nightly: install-build-requirements
-	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
+	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) -l nightly
 
 build-conda-package-release: install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
