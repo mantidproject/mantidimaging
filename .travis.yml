@@ -1,29 +1,85 @@
-language: python
-
-python:
-    - '3.7.3'
+language: c
 
 cache:
     directories:
         - $HOME/miniconda/
+        - $HOME/envs/
+
+env:
+    - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
 
 install:
-    - if [[ ! -f $HOME/miniconda/bin/conda ]]; then
-        rm -rf $HOME/miniconda;
+    - |
+      if [[ ! -f $MINICONDA_DIR/bin/conda ]]; then
+        rm -rf $MINICONDA_DIR;
         wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-        bash miniconda.sh -b -p $HOME/miniconda;
+        bash miniconda.sh -b -p $MINICONDA_DIR;
       fi
-    - export PATH="$HOME/miniconda/bin:$PATH"
+    - export PATH="$MINICONDA_DIR/bin:$PATH"
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
+    # set up the conda environment variables in this shell, for conda activate
+    - source $MINICONDA_DIR/etc/profile.d/conda.sh
 
     - conda config --add channels conda-forge
-    - conda config --add channels dtasev
-    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION mantidimaging
-    - source activate test-environment
+    # add the dependencies label from mantidimaging's channel
+    - conda config --add channels $UPLOAD_USER/label/deps
+    - |
+      if [[ -f $ENVIRONMENT_DIR/$ENVIRONMENT_NAME/bin/mantidimaging ]]; then
+        conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
+        conda remove --force mantidimaging;
+        conda install --only-deps mantidimaging;
+      else
+        conda create --prefix $ENVIRONMENT_DIR/$ENVIRONMENT_NAME --only-deps mantidimaging;
+        conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
+      fi
 
-script:
-    - make test
+jobs:
+    include:
+        - stage: test
+          script:
+            - pip install -r deps/dev-requirements.pip
+            - make test
+
+        - stage: upload-release
+          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "release"
+          script:
+            - |
+              if [[ $UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            - make build-conda-package-release
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0
+
+        - stage: upload-nightly
+          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "nightly"
+          script:
+            - |
+              if [[ $UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            - make build-conda-package-nightly
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0
+
+        - stage: upload-unstable
+          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "unstable"
+          script:
+            - |
+              if [[ $UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            # this will build a package with label unstable
+            - make build-conda-package
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0
