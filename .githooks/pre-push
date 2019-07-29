@@ -1,11 +1,13 @@
 #!/bin/sh
-
+echo "Running flake8 at $(which flake8)}"
 python -m flake8 || {
 	echo "flake8 did not succeed. Aborting push. Please run flake8 and fix the warnings."
 	exit 1
 }
-
+echo
+echo "Running mypy with make at $(which make)}"
 make mypy || {
 	echo "mypy did not succeed. Aborting push. Please run `make mypy` and fix the warnings."
 	exit 1
 }
+echo
