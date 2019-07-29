@@ -1,9 +1,11 @@
 language: c
 
 cache:
+    - pip
     directories:
         - $HOME/miniconda/
-        - $HOME/envs/
+        - $HOME/miniconda/pkgs
+        - $HOME/envs/test-environment
 
 env:
     - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
