@@ -48,6 +48,19 @@ jobs:
           script:
             - make test
 
+        - stage: upload-nightly
+          if: branch = master AND TRAVIS_EVENT_TYPE = cron AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
+          script:
+            - |
+              if [[ $UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            - make build-conda-package-nightly
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0
+
         - stage: upload-release
           if: branch = master AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = release
           script:
@@ -61,18 +74,6 @@ jobs:
             # that are only necessary for building the package
             - exit 0
 
-        - stage: upload-nightly
-          if: branch = master AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
-          script:
-            - |
-              if [[ $UPLOAD_PACKAGE = "true" ]]; then
-                conda config --set anaconda_upload yes;
-              fi
-            - make build-conda-package-nightly
-            # stop caching from being ran for a package build
-            # this prevent caching big packages like anaconda and conda-forge
-            # that are only necessary for building the package
-            - exit 0
 
         - stage: upload-unstable
           if: env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = unstable
