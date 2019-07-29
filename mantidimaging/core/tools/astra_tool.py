@@ -148,10 +148,10 @@ class AstraTool(AbstractTool):
 
         return recon
 
-    def algorithm_name_handling(self, alg):
-        # remove xxx_CUDA from the string with the [0:find..]
-        iterative_algorithm = False if alg[0:alg.find(
-            '_')] in ['FBP', 'FB', 'BP'] else True
+    # def algorithm_name_handling(self, alg):
+    #     # remove xxx_CUDA from the string with the [0:find..]
+    #     iterative_algorithm = False if alg[0:alg.find(
+    #         '_')] in ['FBP', 'FB', 'BP'] else True
 
-        # are we using a CUDA algorithm
-        proj_type = 'cuda' if alg[alg.find('_') + 1:] == 'CUDA' else 'linear'
+    #     # are we using a CUDA algorithm
+    #     proj_type = 'cuda' if alg[alg.find('_') + 1:] == 'CUDA' else 'linear'
