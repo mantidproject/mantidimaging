@@ -57,10 +57,9 @@ class MainWindowView(BaseMainWindowView):
         msg_box = QtWidgets.QMessageBox(self)
         msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
-        msg_box.setText(
-            '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
-            '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
-                .format(version_no))
+        msg_box.setText('<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
+                        '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
+                        .format(version_no))
         msg_box.show()
 
     def show_load_dialogue(self):

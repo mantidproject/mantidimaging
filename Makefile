@@ -39,7 +39,7 @@ test-env:
 	$(MAKE) install-dev-requirements
 
 mypy:
-	mypy --ignore-missing-imports mantidimaging
+	python -m mypy --ignore-missing-imports mantidimaging
 
 docker-build:
 	sudo docker build --rm -t mantidimaging -f Dockerfile .
