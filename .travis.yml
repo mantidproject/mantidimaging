@@ -29,10 +29,12 @@ install:
     - conda config --add channels $UPLOAD_USER/label/deps
     - |
       if [[ -f $ENVIRONMENT_DIR/$ENVIRONMENT_NAME/bin/mantidimaging ]]; then
+        echo "Using cached conda environment";
         conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
         conda remove --force mantidimaging;
         conda install --only-deps mantidimaging;
       else
+        echo "Creating new conda environment";
         conda create --prefix $ENVIRONMENT_DIR/$ENVIRONMENT_NAME --only-deps mantidimaging;
         conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
       fi
