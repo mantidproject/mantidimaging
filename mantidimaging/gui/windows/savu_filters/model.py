@@ -32,9 +32,9 @@ class SavuFiltersWindowModel(object):
 
         # Update the local filter registry
         self.filters = []
-        request = preparation.data  # type: Future
+        request: Future = preparation.data
         if not request.running():
-            self.response = request.result()  # type: Response
+            self.response: Response = request.result()
             if self.response.status_code == 200:
                 self.response = json.loads(self.response.content)
             else:
@@ -88,11 +88,7 @@ class SavuFiltersWindowModel(object):
 
     @property
     def num_images_in_stack(self):
-        num_images = (
-            self.stack_presenter.images.sample.shape[0]
-            if self.stack_presenter is not None
-            else 0
-        )
+        num_images = self.stack_presenter.images.sample.shape[0] if self.stack_presenter is not None else 0
         return num_images
 
     def setup_filter(self, filter_details):
@@ -124,9 +120,7 @@ class SavuFiltersWindowModel(object):
             all_kwargs.update(exec_kwargs)
 
             images.record_parameters_in_metadata(
-                "{}.{}".format(
-                    execute_func.func.__module__, execute_func.func.__name__
-                ),
+                "{}.{}".format(execute_func.func.__module__, execute_func.func.__name__),
                 *execute_func.args,
                 **all_kwargs,
             )
@@ -168,9 +162,7 @@ class SavuFiltersWindowModel(object):
         self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
 
         title = self.stack.windowTitle() if self.stack is not None else ""
-        savu_config_writer.save(
-            spl, self.PROCESS_LIST_DIR / f"pl_{title}_{len(spl)}.nxs", overwrite=True
-        )
+        savu_config_writer.save(spl, self.PROCESS_LIST_DIR / f"pl_{title}_{len(spl)}.nxs", overwrite=True)
         # send POST request (with progress updates..) to API
         # listen for end
         # reload changes? what do
