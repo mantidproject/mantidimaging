@@ -16,11 +16,19 @@ build-conda-deps-package:
 	# preferably with the --only-deps flag
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label deps
 
-build-conda-package-nightly: install-build-requirements
+build-conda-package-nightly: .remind-for-upload install-build-requirements
+	echo "If automatic upload is wanted, then `conda config --set anaconda_upload yes` should be set "
+	echo "Current: $(conda config --set anaconda_upload yes$)"
 	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label nightly
 
-build-conda-package-release: install-build-requirements
+build-conda-package-release: .remind-for-upload install-build-requirements
+	echo "If automatic upload is wanted, then `conda config --set anaconda_upload yes` should be set "
+	echo "Current: $(conda config --set anaconda_upload yes$)"
 	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
+
+.remind-for-upload:
+	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
+	@echo "Current: $$(conda config --get anaconda_upload)"
 
 test:
 	nosetests
