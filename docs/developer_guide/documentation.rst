@@ -12,6 +12,28 @@ The documentation is version controlled along with the code, therefore it is
 beneficial to make relevant changes to the documentation as the code is
 modified.
 
+Getting Started
+---------------
+
+TL;DR :code:`conda create -n mantidimaging -c conda-forge -c dtasev/label/deps --only-deps mantidimaging && conda activate mantidimaging`
+
+Setting up the correct environment requires installing a "deps" or dependencies
+package, hosted in the Anaconda repository. This requires using the channel and the label :code:`deps`.
+Additionally the channel :code:`conda-forge` is needed to supply some of the dependencies.
+
+The command for that is as follows:
+
+:code:`conda create -n mantidimaging -c conda-forge -c dtasev/label/deps --only-deps mantidimaging`
+
+This will create an environment called :code:`mantidimaging`, with the :code:`-n mantidimaging` flag.
+It also specifies the :code:`conda-forge` channel, and the :code:`deps` label using :code:`-c dtasev/label/deps`.
+It will only install the dependencies by using the :code:`--only-deps` flag.
+
+Afterwards the environment needs to be activated. This is done with:
+
+:code:`conda activate mantidimaging`
+
+
 Workflow
 --------
 
