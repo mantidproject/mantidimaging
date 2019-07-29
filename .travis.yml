@@ -40,6 +40,10 @@ install:
 
 jobs:
     include:
+        - stage: flake8
+          script:
+            - flake8
+
         - stage: test
           script:
             - make test
