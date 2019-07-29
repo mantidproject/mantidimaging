@@ -36,12 +36,16 @@ install:
         conda create --prefix $ENVIRONMENT_DIR/$ENVIRONMENT_NAME --only-deps mantidimaging;
         conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
       fi
+    - pip install -r deps/dev-requirements.pip
 
 jobs:
     include:
+        - stage: flake8
+          script:
+            - flake8
+
         - stage: test
           script:
-            - pip install -r deps/dev-requirements.pip
             - make test
 
         - stage: upload-release
