@@ -18,7 +18,7 @@ class MWLoadDialog(Qt.QDialog):
 
         self.sampleButton.clicked.connect(
             lambda: self.update_dialogue(select_file(self.samplePath,
-                                         "Sample")))
+                                                     "Sample")))
 
         # connect the calculation of expected memory to spinboxes
         self.index_start.valueChanged.connect(self.update_expected)
@@ -54,9 +54,9 @@ class MWLoadDialog(Qt.QDialog):
                                             in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error(
-                    "Failed to read file %s (%s)", sample_filename, e)
+                "Failed to read file %s (%s)", sample_filename, e)
             self.parent_view.presenter.show_error(
-                    "Failed to read this file. See log for details.")
+                "Failed to read this file. See log for details.")
             self.last_shape = (0, 0, 0)
 
         self.update_indices(self.last_shape[0])
@@ -126,5 +126,6 @@ class MWLoadDialog(Qt.QDialog):
 
     def _set_all_step(self):
         self.index_step.setValue(1)
+
     def _set_preview_step(self):
         self.index_step.setValue(self.last_shape[0]/10)

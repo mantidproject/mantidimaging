@@ -58,15 +58,9 @@ class MainWindowView(BaseMainWindowView):
         msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
         msg_box.setText(
-<<<<<<< HEAD
                 '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
                 '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
                 .format(version_no))
-=======
-            '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>' \
-            '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(
-                version_no))
->>>>>>> Added savu_filters window
         msg_box.show()
 
     def show_load_dialogue(self):

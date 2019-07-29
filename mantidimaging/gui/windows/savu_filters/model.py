@@ -4,6 +4,7 @@ from functools import partial
 from logging import getLogger
 from pathlib import Path
 
+from typing import Dict
 import numpy as np
 from requests import Response
 
@@ -50,7 +51,7 @@ class SavuFiltersWindowModel(object):
         self.execute = None
         self.do_after = None
 
-    def register_filters(self, filters: {}):
+    def register_filters(self, filters: Dict):
         """
         Builds a local registry of filters.
 
@@ -87,8 +88,11 @@ class SavuFiltersWindowModel(object):
 
     @property
     def num_images_in_stack(self):
-        num_images = self.stack_presenter.images.sample.shape[0] \
-            if self.stack_presenter is not None else 0
+        num_images = (
+            self.stack_presenter.images.sample.shape[0]
+            if self.stack_presenter is not None
+            else 0
+        )
         return num_images
 
     def setup_filter(self, filter_details):
@@ -120,9 +124,12 @@ class SavuFiltersWindowModel(object):
             all_kwargs.update(exec_kwargs)
 
             images.record_parameters_in_metadata(
-                '{}.{}'.format(execute_func.func.__module__,
-                               execute_func.func.__name__),
-                *execute_func.args, **all_kwargs)
+                "{}.{}".format(
+                    execute_func.func.__module__, execute_func.func.__name__
+                ),
+                *execute_func.args,
+                **all_kwargs,
+            )
 
         # Do preprocessing and save result
         preproc_res = do_before_func(images.sample)
@@ -140,7 +147,7 @@ class SavuFiltersWindowModel(object):
             # Single Numpy arrays are assumed to be just the sample image
             images.sample = ret_val
         else:
-            log.debug('Unknown execute return value: {}'.format(type(ret_val)))
+            log.debug("Unknown execute return value: {}".format(type(ret_val)))
 
         # Do postprocessing using return value of preprocessing as parameter
         do_after_func(images.sample, *preproc_res)
@@ -150,7 +157,7 @@ class SavuFiltersWindowModel(object):
         Applies the selected filter to the selected stack.
         """
         if not self.stack_presenter:
-            raise ValueError('No stack selected')
+            raise ValueError("No stack selected")
 
         # TODO
         # save out nxs file
@@ -161,7 +168,9 @@ class SavuFiltersWindowModel(object):
         self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
 
         title = self.stack.windowTitle() if self.stack is not None else ""
-        savu_config_writer.save(spl, self.PROCESS_LIST_DIR / f"pl_{title}_{len(spl)}.nxs", overwrite=True)
+        savu_config_writer.save(
+            spl, self.PROCESS_LIST_DIR / f"pl_{title}_{len(spl)}.nxs", overwrite=True
+        )
         # send POST request (with progress updates..) to API
         # listen for end
         # reload changes? what do

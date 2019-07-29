@@ -33,6 +33,9 @@ build-conda-package-release: .remind-for-upload install-build-requirements
 test:
 	nosetests
 
+mypy:
+	mypy --ignore-missing-imports mantidimaging
+
 docker-build:
 	sudo docker build --rm -t mantidimaging -f Dockerfile .
 
