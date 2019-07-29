@@ -58,8 +58,8 @@ class MainWindowView(BaseMainWindowView):
         msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
         msg_box.setText(
-                '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
-                '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
+            '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
+            '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
                 .format(version_no))
         msg_box.show()
 
@@ -84,7 +84,10 @@ class MainWindowView(BaseMainWindowView):
         FiltersWindowView(self).show()
 
     def show_savu_filters_window(self):
-        SavuFiltersWindowView(self).show()
+        try:
+            SavuFiltersWindowView(self).show()
+        except RuntimeError as e:
+            QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
 
     def show_tomopy_recon_window(self):
         TomopyReconWindowView(self).show()
@@ -158,3 +161,7 @@ class MainWindowView(BaseMainWindowView):
         else:
             # Ignore the close event, keeping window open
             event.ignore()
+
+    def uncaught_exception(self, exc_type, exc_value, exc_traceback):
+        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{exc_type}: ")
+        getLogger(__name__).error()

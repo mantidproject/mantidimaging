@@ -18,12 +18,6 @@ def ensure_tuple(val):
     return val if isinstance(val, tuple) else (val,)
 
 
-class Panic(Exception):
-    def __init__(self, message):
-        message = f"EVERYTHING HAS GONE TERRIBLY WRONG.\n\n{message}"
-        super().__init__(message)
-
-
 class SavuFiltersWindowModel(object):
     PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
@@ -33,14 +27,14 @@ class SavuFiltersWindowModel(object):
         # Update the local filter registry
         self.filters = []
         request: Future = preparation.data
-        if not request.running():
+        if request.running():
             self.response: Response = request.result()
             if self.response.status_code == 200:
                 self.response = json.loads(self.response.content)
             else:
                 self.response = {}
         else:
-            raise Panic("HELP")
+            raise RuntimeError("Savu backend is not running. Cannot open GUI.")
         self.register_filters(self.response)
 
         self.preview_image_idx = 0
