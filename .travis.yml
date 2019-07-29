@@ -49,7 +49,7 @@ jobs:
             - make test
 
         - stage: upload-release
-          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "release"
+          if: env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = release
           script:
             - |
               if [[ $UPLOAD_PACKAGE = "true" ]]; then
@@ -62,7 +62,7 @@ jobs:
             - exit 0
 
         - stage: upload-nightly
-          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "nightly"
+          if: env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
           script:
             - |
               if [[ $UPLOAD_PACKAGE = "true" ]]; then
@@ -75,7 +75,7 @@ jobs:
             - exit 0
 
         - stage: upload-unstable
-          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "unstable"
+          if: env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = unstable
           script:
             - |
               if [[ $UPLOAD_PACKAGE = "true" ]]; then
