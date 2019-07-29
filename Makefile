@@ -1,16 +1,19 @@
 AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 install-run-requirements:
-	conda install --only-deps -c $$UPLOAD_USER -c conda-forge  mantidimaging
+	conda install --yes --only-deps -c $$UPLOAD_USER -c conda-forge  mantidimaging
 
 install-build-requirements:
-	conda install -c conda-forge --file deps/build-requirements.conda
+	conda install --yes --file deps/build-requirements.conda
+
+install-dev-requirements:
+	pip install --yes -r deps/dev-requirements.pip
 
 build-conda-package:
 	# intended for local usage, does not install build requirements
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
 
-build-conda-deps-package: .remind-for-upload install-build-requirements
+build-conda-deps-package:
 	# this builds and labels a package as 'deps' to signify that
 	# this package should be used to pull dependencies in,
 	# preferably with the --only-deps flag
@@ -28,6 +31,12 @@ build-conda-package-release: .remind-for-upload install-build-requirements
 
 test:
 	nosetests
+
+test_environment_name = test-env
+test-env:
+	conda create -n $(test_environment_name) -c conda-forge -c dtasev/label/deps mantidimaging
+	conda activate $(test_environment_name)
+	$(MAKE) install-dev-requirements
 
 mypy:
 	mypy --ignore-missing-imports mantidimaging
