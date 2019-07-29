@@ -90,7 +90,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         npt.assert_equal(result, sample)
 
-    def test_clip_works(self):
+    def test_clip_max_works(self):
         # the calculation here was designed on purpose to have a value
         # ABOVE the np.clip in background_correction
         # the operation is (sample - dark) / (flat - dark)
@@ -102,8 +102,27 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark[:] = 6.
         expected = np.full(sample.shape, 3.)
 
-        # we dont want anything to be cropped out
-        result = background_correction.execute(sample, flat, dark)
+        # the resulting values from the calculation are above 3,
+        # but clip_max should make them all equal to 3
+        result = background_correction.execute(sample, flat, dark, clip_max=3)
+
+        npt.assert_equal(result, expected)
+        npt.assert_equal(sample, expected)
+
+        npt.assert_equal(result, sample)
+
+    def test_clip_min_works(self):
+        sample = th.gen_img_shared_array()
+        sample[:] = 846.
+        flat = th.gen_img_shared_array()[0]
+        flat[:] = 42.
+        dark = th.gen_img_shared_array()[0]
+        dark[:] = 6.
+        expected = np.full(sample.shape, 300.)
+
+        # the resulting values from above are below 300,
+        # but clip min should make all values below 300, equal to 300
+        result = background_correction.execute(sample, flat, dark, clip_min=300)
 
         npt.assert_equal(result, expected)
         npt.assert_equal(sample, expected)
