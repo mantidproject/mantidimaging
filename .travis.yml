@@ -36,29 +36,16 @@ install:
         conda create --prefix $ENVIRONMENT_DIR/$ENVIRONMENT_NAME --only-deps mantidimaging;
         conda activate $ENVIRONMENT_DIR/$ENVIRONMENT_NAME;
       fi
+    - pip install -r deps/dev-requirements.pip
 
 jobs:
     include:
         - stage: test
           script:
-            - pip install -r deps/dev-requirements.pip
             - make test
 
-        - stage: upload-release
-          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "release"
-          script:
-            - |
-              if [[ $UPLOAD_PACKAGE = "true" ]]; then
-                conda config --set anaconda_upload yes;
-              fi
-            - make build-conda-package-release
-            # stop caching from being ran for a package build
-            # this prevent caching big packages like anaconda and conda-forge
-            # that are only necessary for building the package
-            - exit 0
-
         - stage: upload-nightly
-          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "nightly"
+          if: branch = master AND TRAVIS_EVENT_TYPE = cron AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
           script:
             - |
               if [[ $UPLOAD_PACKAGE = "true" ]]; then
@@ -70,8 +57,22 @@ jobs:
             # that are only necessary for building the package
             - exit 0
 
+        - stage: upload-release
+          if: branch = master AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = release
+          script:
+            - |
+              if [[ $UPLOAD_PACKAGE = "true" ]]; then
+                conda config --set anaconda_upload yes;
+              fi
+            - make build-conda-package-release
+            # stop caching from being ran for a package build
+            # this prevent caching big packages like anaconda and conda-forge
+            # that are only necessary for building the package
+            - exit 0
+
+
         - stage: upload-unstable
-          if: env(BUILD_PACKAGE) = "true" AND env(MANTIDIMAGING_BUILD_TYPE) = "unstable"
+          if: env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = unstable
           script:
             - |
               if [[ $UPLOAD_PACKAGE = "true" ]]; then

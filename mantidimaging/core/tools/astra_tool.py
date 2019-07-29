@@ -126,7 +126,7 @@ class AstraTool(AbstractTool):
 
         sinogram_id = self._astra.data3d.create('-sino', projections_geometry,
                                                 data)
-        d = self._astra.data3d.get(sinogram_id)
+        # d = self._astra.data3d.get(sinogram_id)
         recon_volume_geometry = self._astra.create_vol_geom(data.shape)
         recon_id = self._astra.data3d.create('-vol', recon_volume_geometry)
 
