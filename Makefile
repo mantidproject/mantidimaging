@@ -4,13 +4,13 @@ install-run-requirements:
 	conda install --only-deps -c $$UPLOAD_USER -c conda-forge  mantidimaging
 
 install-build-requirements:
-	conda install --file deps/build-requirements.conda
+	conda install -c conda-forge --file deps/build-requirements.conda
 
 build-conda-package:
 	# intended for local usage, does not install build requirements
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
 
-build-conda-deps-package: .remind-for-upload
+build-conda-deps-package: .remind-for-upload install-build-requirements
 	# this builds and labels a package as 'deps' to signify that
 	# this package should be used to pull dependencies in,
 	# preferably with the --only-deps flag
