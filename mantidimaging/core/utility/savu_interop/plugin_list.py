@@ -22,6 +22,7 @@ class SAVUPluginList:
     ENTRY_PATH = "entry"
     PLUGIN_PATH = "plugin"
     CITATIONS_PATH = "framework_citations"
+    # Savu has these spaces in there, they can't be removed or it won't properly load
     PLUGIN_INDEX_FMT = "   {} "
 
     def __init__(self):

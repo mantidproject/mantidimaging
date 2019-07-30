@@ -1,10 +1,11 @@
 import json
-from concurrent.futures import Future
+import os
+from concurrent.futures import Future, ProcessPoolExecutor
 from functools import partial
 from logging import getLogger
 from pathlib import Path
+from typing import Dict, Optional
 
-from typing import Dict
 import numpy as np
 from requests import Response
 
@@ -27,20 +28,21 @@ class SavuFiltersWindowModel(object):
         # Update the local filter registry
         self.filters = []
         request: Future = preparation.data
-        if request.running():
-            self.response: Response = request.result()
+        try:
+            self.response: Response = request.result(timeout=5)
             if self.response.status_code == 200:
                 self.response = json.loads(self.response.content)
             else:
-                self.response = {}
-        else:
+                raise ValueError(
+                    f"Did not get valid data from the Savu backend. Error code {self.response.status_code}")
+        except ConnectionError:
             raise RuntimeError("Savu backend is not running. Cannot open GUI.")
         self.register_filters(self.response)
 
         self.preview_image_idx = 0
 
         # Execution info for current filter
-        self.stack: StackVisualiserView = None
+        self.stack: Optional[StackVisualiserView] = None
         self.do_before = None
         self.execute = None
         self.do_after = None
@@ -147,7 +149,12 @@ class SavuFiltersWindowModel(object):
         if not self.stack_presenter:
             raise ValueError("No stack selected")
 
-        # TODO
+        data_path = os.path.dirname(self.stack.presenter.images.filenames[0])
+        # this path will be the root in the savu config,
+        # so it doesn't need to be part of the filepath
+        # TODO read from a config
+        data_path.replace("/mnt/e/", "")
+
         # save out nxs file
         spl = SAVUPluginList()
 
@@ -155,10 +162,32 @@ class SavuFiltersWindowModel(object):
         # if they already exist, nothing is done
         self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
 
-        title = self.stack.windowTitle() if self.stack is not None else ""
-        savu_config_writer.save(spl, self.PROCESS_LIST_DIR / f"pl_{title}_{len(spl)}.nxs", overwrite=True)
+        file = self.PROCESS_LIST_DIR / f"pl_{self.stack.name}_{len(spl)}.nxs"
+        savu_config_writer.save(spl, file, overwrite=True)
+
+        from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, RUN_URL
+        from requests_futures.sessions import FuturesSession
+
+        session: FuturesSession = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
+        files = {"process_list_file": file.read_bytes()}
+        data = {"process_list_name": self.stack.name,
+                "data_dir": "/data"}
         # send POST request (with progress updates..) to API
+        future: Future = session.post(f"{SERVER_URL}/{RUN_URL}", files=files, data=data)
+
+        logger = getLogger(__name__)
+        logger.info("Sent POST request and waiting for response")
         # listen for end
+        try:
+            response: Response = future.result()
+            content = json.loads(response.content)
+            if response.status_code == 200:
+                logger.info(content)
+            else:
+                logger.error(f"Error code: {response.status_code}, message: {content['message']}")
+        except ConnectionError:
+            raise ValueError("Failed to connect to Savu backend")
+
         # reload changes? what do
         # TODO figure out how to get params like ROI later
         # Get auto parameters

@@ -30,6 +30,7 @@ requirements:
     - numpy >=1.16
     - matplotlib =2.2.3
     - tomopy >=1.5.0
+    - requests
     - requests-futures =1.0.0
     - h5py
     - pyqt

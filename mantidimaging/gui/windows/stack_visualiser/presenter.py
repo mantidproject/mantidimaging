@@ -1,9 +1,8 @@
 import os
-
-import numpy as np
-
 from enum import IntEnum
 from logging import getLogger
+
+import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -104,7 +103,7 @@ class StackVisualiserPresenter(BasePresenter):
 
         STACK mode allows scrolling through the stack of individual images.
 
-        SUM mode summes the entire stack into a single image, divided by the
+        SUM mode sums the entire stack into a single image, divided by the
         number of images in the stack.
         """
         self.mode = mode
@@ -112,8 +111,8 @@ class StackVisualiserPresenter(BasePresenter):
         # Create the summed image lazily
         if mode == ImageMode.SUM and self.summed_image is None:
             self.summed_image = np.divide(
-                    np.sum(self.images.sample, axis=self.axis),
-                    self.images.sample.shape[0])
+                np.sum(self.images.sample, axis=self.axis),
+                self.images.sample.shape[0])
 
         # Update image view
         self.view.show_current_image()
@@ -159,8 +158,7 @@ class StackVisualiserPresenter(BasePresenter):
 
     def get_image_filename(self, index):
         filenames = self.images.filenames
-        return os.path.basename(
-                filenames[index] if filenames is not None else "")
+        return os.path.basename(filenames[index] if filenames is not None else "")
 
     def get_image_count_on_axis(self, axis=None):
         """
@@ -178,7 +176,7 @@ class StackVisualiserPresenter(BasePresenter):
 
         :return: Tuple of (min, max) pixel intensities
         """
-        return (self.images.sample.min(), self.images.sample.max())
+        return self.images.sample.min(), self.images.sample.max()
 
     def do_scroll_stack(self, offset):
         """
@@ -197,8 +195,8 @@ class StackVisualiserPresenter(BasePresenter):
             return self.view.current_roi
         else:
             raise ValueError(
-                    "Invalid parameter name has been requested from the Stack "
-                    "Visualiser, parameter: {0}".format(parameter))
+                "Invalid parameter name has been requested from the Stack "
+                "Visualiser, parameter: {0}".format(parameter))
 
     def getattr_and_clear(self, algorithm_dialog, attribute):
         attr = getattr(algorithm_dialog, attribute, None)

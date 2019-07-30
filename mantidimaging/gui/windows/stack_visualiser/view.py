@@ -85,16 +85,12 @@ class StackVisualiserView(BaseMainWindowView):
         :param cmap: The color map which is to be used
         """
         self.image_axis = self.figure.add_subplot(111)
-        self.image = self.image_axis.imshow(
-            self.presenter.get_image(0), cmap=cmap)
+        self.image = self.image_axis.imshow(self.presenter.get_image(0), cmap=cmap)
 
-        self.color_bar_axis = make_axes_locatable(self.image_axis).append_axes(
-            "right", size="5%", pad=0.1)
-        self.color_bar = self.figure.colorbar(
-            self.image, cax=self.color_bar_axis)
+        self.color_bar_axis = make_axes_locatable(self.image_axis).append_axes("right", size="5%", pad=0.1)
+        self.color_bar = self.figure.colorbar(self.image, cax=self.color_bar_axis)
 
-        self.roi_selector_toolbar.image_size = \
-            self.presenter.current_image.shape
+        self.roi_selector_toolbar.image_size = self.presenter.current_image.shape
 
         self.set_image_title_to_current_filename()
 
@@ -121,56 +117,35 @@ class StackVisualiserView(BaseMainWindowView):
             return action
 
         # Add context menu items
-        add_context_menu_action(
-            "Clear ROI",
-            StackWindowNotification.CLEAR_ROI)
-        add_context_menu_action(
-            "Rename",
-            StackWindowNotification.RENAME_WINDOW)
+        add_context_menu_action("Clear ROI", StackWindowNotification.CLEAR_ROI)
+        add_context_menu_action("Rename", StackWindowNotification.RENAME_WINDOW)
 
         self.canvas_context_menu.addSeparator()
 
         mode_group = Qt.QActionGroup(self.canvas)
-        add_context_menu_action(
-            "Stack mode",
-            StackWindowNotification.STACK_MODE,
-            group=mode_group).setChecked(True)
-        add_context_menu_action(
-            "Sum mode",
-            StackWindowNotification.SUM_MODE,
-            group=mode_group)
+        add_context_menu_action("Stack mode", StackWindowNotification.STACK_MODE, group=mode_group).setChecked(True)
+        add_context_menu_action("Sum mode", StackWindowNotification.SUM_MODE, group=mode_group)
 
         self.canvas_context_menu.addSeparator()
 
-        add_context_menu_action(
-            "Show Histogram",
-            StackWindowNotification.HISTOGRAM)
-        add_context_menu_action(
-            "Show Histogram in new window",
-            StackWindowNotification.NEW_WINDOW_HISTOGRAM)
-
+        add_context_menu_action("Show Histogram", StackWindowNotification.HISTOGRAM)
+        add_context_menu_action("Show Histogram in new window", StackWindowNotification.NEW_WINDOW_HISTOGRAM)
         self.canvas_context_menu.addSeparator()
 
-        add_context_menu_action(
-            "Show metadata",
-            StackWindowNotification.SHOW_METADATA)
+        add_context_menu_action("Show metadata", StackWindowNotification.SHOW_METADATA)
 
         # Register mouse release callback
-        self.canvas.mpl_connect(
-            'button_press_event', self.on_button_press)
+        self.canvas.mpl_connect('button_press_event', self.on_button_press)
 
-        self.canvas.mpl_connect(
-            'scroll_event', self.handle_canvas_scroll_wheel)
+        self.canvas.mpl_connect('scroll_event', self.handle_canvas_scroll_wheel)
 
     def initialise_slider(self):
         """
         Creates the axis for the slider and initialises the slider
         :return:
         """
-        self.slider_axis = self.figure.add_axes(
-            [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
-        self.slider = self.create_slider(
-            self.slider_axis, self.presenter.get_image_count_on_axis() - 1)
+        self.slider_axis = self.figure.add_axes([0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
+        self.slider = self.create_slider(self.slider_axis, self.presenter.get_image_count_on_axis() - 1)
 
     @property
     def name(self):

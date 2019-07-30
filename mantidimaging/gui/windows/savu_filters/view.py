@@ -14,8 +14,13 @@ class SavuFiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     def __init__(self, main_window, cmap='Greys_r'):
-        super(SavuFiltersWindowView, self).__init__(
-            main_window, 'gui/ui/filters_window.ui')
+        """
+        TODO add Show plugins directory button
+        Use qt/python/mantidqt/utils/show_in_explorer.py from Mantid
+        :param main_window:
+        :param cmap:
+        """
+        super(SavuFiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
 
         self.presenter = SavuFiltersWindowPresenter(self, main_window)
 
@@ -26,10 +31,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.handle_filter_selection(0)
 
         # Handle stack selection
-        self.stackSelector.stack_selected_uuid.connect(
-            self.presenter.set_stack_uuid)
-        self.stackSelector.stack_selected_uuid.connect(
-            self.auto_update_triggered.emit)
+        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
+        self.stackSelector.stack_selected_uuid.connect(self.auto_update_triggered.emit)
 
         # Handle apply filter
         self.applyButton.clicked.connect(
