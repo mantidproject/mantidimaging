@@ -149,14 +149,13 @@ class SavuFiltersWindowModel(object):
         if not self.stack_presenter:
             raise ValueError("No stack selected")
 
-        data_path = os.path.dirname(self.stack.presenter.images.filenames[0])
-        # this path will be the root in the savu config,
-        # so it doesn't need to be part of the filepath
-        # TODO read from a config
-        data_path.replace("/mnt/e/", "")
+        # TODO make & read from a config. This config should also be used to start the Docker service
+        # the data path will be the root in the savu config, so it doesn't need to be part of the filepath
+        common_prefix = os.path.commonprefix(self.stack.presenter.images.filenames).replace("/mnt/e/", "")
+        num_images = len(self.stack.presenter.images.filenames)
 
         # save out nxs file
-        spl = SAVUPluginList()
+        spl = SAVUPluginList(common_prefix, num_images)
 
         # makes sure the directories exists, they are created recursively
         # if they already exist, nothing is done

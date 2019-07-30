@@ -25,12 +25,13 @@ class SAVUPluginList:
     # Savu has these spaces in there, they can't be removed or it won't properly load
     PLUGIN_INDEX_FMT = "   {} "
 
-    def __init__(self):
+    def __init__(self, data_prefix, num_images):
         self.prepend_plugins: List[SAVUPluginEntry] = [
             SAVUPluginEntry(active=True,
                             data=np.string_(
-                                '{"data_prefix": null, "flat_prefix": null, "dark_prefix": null, "angles": null, '
-                                '"frame_dim": 0, "preview": [], "dataset_name": "tomo"}'),
+                                f'{{"data_prefix": "{data_prefix}", "flat_prefix": null, "dark_prefix": null, '
+                                f'"angles": "np.linspace(0, 360, {num_images})", '
+                                '"frame_dim": 0, "preview": "[:,:,:]", "dataset_name": "tomo"}'),
                             desc=np.string_(
                                 '{"data_prefix": "A file prefix for the data file.", "flat_prefix": "A file prefix '
                                 'for the flat field files, including the folder path if different from the data.", '
@@ -49,7 +50,7 @@ class SAVUPluginList:
         self.append_plugins: List[SAVUPluginEntry] = [
             SAVUPluginEntry(active=True,
                             data=np.string_(
-                                '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "VOLUME_XZ"}'),
+                                '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "PROJECTION"}'),
                             desc=np.string_(
                                 '{"in_datasets": "The name of the dataset to save.", "out_datasets": "Hidden, '
                                 'dummy out_datasets entry.", "prefix": "Override the default output tiff file '
@@ -62,3 +63,7 @@ class SAVUPluginList:
 
     def __len__(self):
         return len(self.prepend_plugins) + len(self.plugins) + len(self.append_plugins)
+
+    def __str__(self):
+        # -2 trims the trailing coma and space
+        return ", ".join([str(x) for x in self.prepend_plugins + self.plugins + self.append_plugins])[:-2]

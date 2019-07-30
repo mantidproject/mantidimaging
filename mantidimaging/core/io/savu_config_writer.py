@@ -58,7 +58,7 @@ def _add_citation_group(framework_group: h5py.Group, dataclass: Type[Citation]):
 
 
 if __name__ == "__main__":
-    pl = SAVUPluginList()
-    path = Path("~/mantidimaging/process_lists").expanduser()
+    pl = SAVUPluginList("Flower_WhiteBeam/pp3_cropped/image_", 1143)
+    path = Path("~/dev/hebi/output/").expanduser()
     path.mkdir(parents=True, exist_ok=True)
     mnuhef = save(pl, path/"testfile", overwrite=True)
