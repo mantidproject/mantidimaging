@@ -9,6 +9,7 @@ from . import const
 
 
 class Images(object):
+    NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
     def __init__(self, sample, flat=None, dark=None,
                  sample_filenames: List[str] = None,
@@ -48,7 +49,7 @@ class Images(object):
     def filenames(self) -> List[str]:
         return self._filenames
 
-    def filename(self, index: int) -> str:
+    def image_title(self, index: int) -> str:
         """
         Return the correct filename for the index. This uses the sample filenames
 
@@ -59,7 +60,8 @@ class Images(object):
                       to give the correct filename
         :return:
         """
-        return self._filenames[index * self.indices[2]] if self._filenames else "Image: {}".format(index)
+        return self._filenames[
+            index * self.indices[2]] if self._filenames else self.NO_FILENAME_IMAGE_TITLE_STRING.format(index)
 
     @property
     def has_history(self) -> bool:

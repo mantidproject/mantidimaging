@@ -14,6 +14,9 @@ class Notification(Enum):
 
 
 class MainWindowPresenter(BasePresenter):
+    LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
+    SAVE_ERROR_STRING = "Failed to save stack. Error: {}"
+
     def __init__(self, view):
         super(MainWindowPresenter, self).__init__(view)
         self.model = MainWindowModel()
@@ -59,9 +62,13 @@ class MainWindowPresenter(BasePresenter):
             self.create_new_stack(task.result, title)
             del task.result
         else:
-            msg = f"Failed to load stack. Error: {task.error}"
-            log.error(msg)
-            self.show_error(msg)
+            self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
+
+    def _handle_task_error(self, base_message: str, log, task):
+        # TODO add types
+        msg = base_message.format(task.error)
+        log.error(msg)
+        self.show_error(msg)
 
     def create_new_stack(self, data, title):
         title = self.model.create_name(title)
@@ -93,8 +100,7 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if not task.was_successful():
-            log.error("Failed to save stack: %s", str(task.error))
-            self.show_error("Failed to save stack. See log for details.")
+            self._handle_task_error(self.SAVE_ERROR_STRING, log, task)
 
     def stack_list(self):
         return self.model.stack_list()

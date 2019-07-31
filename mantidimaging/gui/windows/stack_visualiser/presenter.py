@@ -153,10 +153,10 @@ class StackVisualiserPresenter(BasePresenter):
         raise ValueError('Unknown image mode')
 
     def get_image_fullpath(self, index):
-        return self.images.filename(index)
+        return self.images.image_title(index)
 
     def get_image_title(self, index):
-        return os.path.basename(self.images.filename(index))
+        return os.path.basename(self.images.image_title(index))
 
     def get_image_count_on_axis(self, axis=None):
         """

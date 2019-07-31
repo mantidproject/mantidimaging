@@ -1,17 +1,15 @@
 import unittest
 
 import numpy.testing as npt
-
 from matplotlib.widgets import Slider
 
 import mantidimaging.core.testing.unit_test_helper as th
-
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.special_imports import import_mock
-
-from mantidimaging.gui.windows.stack_visualiser import (
-        StackVisualiserPresenter, StackVisualiserView, ImageMode)
 from mantidimaging.gui.windows.stack_visualiser import \
-        Notification as PresenterNotifications
+    Notification as PresenterNotifications
+from mantidimaging.gui.windows.stack_visualiser import (
+    StackVisualiserPresenter, StackVisualiserView, ImageMode)
 
 mock = import_mock()
 
@@ -29,7 +27,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(StackVisualiserView)
         self.view.slider = mock.create_autospec(Slider)
         self.presenter = StackVisualiserPresenter(
-                self.view, self.test_data, data_traversal_axis=0)
+            self.view, self.test_data, data_traversal_axis=0)
 
     def test_getattr_and_clear(self):
         # empty class that inherits from object so that we can append
@@ -64,9 +62,10 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.axis, 0)
 
     def test_get_empty_fullpath(self):
-        result = self.presenter.get_image_title(3)
+        index = 3
+        result = self.presenter.get_image_title(index)
         # we expect an empty string as we have not set the filenames
-        self.assertEqual(result, "")
+        self.assertEqual(result, Images.NO_FILENAME_IMAGE_TITLE_STRING.format(index))
 
     def test_do_rename_view(self):
         self.presenter.notify(PresenterNotifications.RENAME_WINDOW)
@@ -82,8 +81,8 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
     def test_get_image_count_on_axis(self):
         self.assertEquals(
-                self.presenter.get_image_count_on_axis(),
-                self.test_data.sample.shape[self.presenter.axis])
+            self.presenter.get_image_count_on_axis(),
+            self.test_data.sample.shape[self.presenter.axis])
 
     def test_scroll_stack(self):
         self.presenter.current_image_index = 3
