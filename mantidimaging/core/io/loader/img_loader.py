@@ -9,11 +9,10 @@ from mantidimaging.core.io.utility import get_file_names
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
-
 from . import stack_loader
 
 
-def execute(load_func, input_file_names, input_path_flat, input_path_dark,
+def execute(load_func, all_input_file_names, input_path_flat, input_path_dark,
             img_format, data_dtype, cores, chunksize, parallel_load, indices,
             construct_sinograms, progress=None):
     """
@@ -36,16 +35,16 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
     """
 
     # Assumed that all images have the same size and properties as the first.
-    first_sample_img = load_func(input_file_names[0])
+    first_sample_img = load_func(all_input_file_names[0])
 
-    if indices:
-        input_file_names = input_file_names[indices[0]:indices[1]:indices[2]]
+    chosen_input_file_names = all_input_file_names[
+                              indices[0]:indices[1]:indices[2]] if indices else all_input_file_names
 
     # get the shape of all images
     img_shape = first_sample_img.shape
 
     # forward all arguments to internal class for easy re-usage
-    il = ImageLoader(load_func, input_file_names, input_path_flat,
+    il = ImageLoader(load_func, chosen_input_file_names, input_path_flat,
                      input_path_dark, img_format, img_shape, data_dtype, cores,
                      chunksize, parallel_load, indices, construct_sinograms,
                      progress)
@@ -56,14 +55,14 @@ def execute(load_func, input_file_names, input_path_flat, input_path_dark,
 
     dark_avg = il.load_and_avg_data(input_path_dark, "Dark")
 
-    sample_data = il.load_sample_data(input_file_names)
+    sample_data = il.load_sample_data(chosen_input_file_names)
 
     # if this is true, then the loaded sample data was created via the
     # stack_loader
     if isinstance(sample_data, Images):
         sample_data = sample_data.sample
 
-    return Images(sample_data, flat_avg, dark_avg, input_file_names)
+    return Images(sample_data, flat_avg, dark_avg, all_input_file_names, indices)
 
 
 class ImageLoader(object):
@@ -131,8 +130,8 @@ class ImageLoader(object):
                         "message: {1}".format(self.img_shape, exc))
                 except IOError as exc:
                     raise RuntimeError(
-                            "Could not load file {0}. Error details: "
-                            "{1}".format(in_file, exc))
+                        "Could not load file {0}. Error details: "
+                        "{1}".format(in_file, exc))
 
         return data
 
@@ -156,8 +155,8 @@ class ImageLoader(object):
                         "message: {1}".format(self.img_shape, exc))
                 except IOError as exc:
                     raise RuntimeError(
-                            "Could not load file {0}. Error details: "
-                            "{1}".format(in_file, exc))
+                        "Could not load file {0}. Error details: "
+                        "{1}".format(in_file, exc))
 
         return data
 
@@ -184,12 +183,12 @@ class ImageLoader(object):
     def allocate_data(self, num_images):
         if self.construct_sinograms:
             return pu.create_shared_array(
-                    (self.img_shape[0], num_images, self.img_shape[1]),
-                    dtype=self.data_dtype)
+                (self.img_shape[0], num_images, self.img_shape[1]),
+                dtype=self.data_dtype)
         else:
             return pu.create_shared_array(
-                    (num_images, self.img_shape[0], self.img_shape[1]),
-                    dtype=self.data_dtype)
+                (num_images, self.img_shape[0], self.img_shape[1]),
+                dtype=self.data_dtype)
 
 
 def _inplace_load(data, filename, load_func=None):

@@ -1,18 +1,31 @@
 import json
 import pprint
+from typing import List, Tuple
 
 import numpy as np
 
-from . import const
 from mantidimaging import helper as h
+from . import const
 
 
 class Images(object):
-    def __init__(self, sample=None, flat=None, dark=None, filenames=None):
 
-        self._sample = sample
-        self._flat = flat
-        self._dark = dark
+    def __init__(self, sample=None, flat=None, dark=None,
+                 filenames: List[str] = None,
+                 indices: Tuple[int, int, int] = None):
+        """
+
+        :param sample: Images of the Sample/Projection data
+        :param flat: Images of the Flat data
+        :param dark: Images of the Dark data
+        :param filenames: All filenames that were matched for loading
+        :param indices: Indices that were actually loaded
+        """
+
+        self.sample = sample
+        self.flat = flat
+        self.dark = dark
+        self.indices: Tuple[int, int, int] = indices
 
         self._filenames = filenames
 
@@ -27,35 +40,24 @@ class Images(object):
                 len(self.properties))
 
     @property
-    def sample(self):
-        return self._sample
-
-    @sample.setter
-    def sample(self, imgs):
-        self._sample = imgs
-
-    @property
-    def flat(self):
-        return self._flat
-
-    @flat.setter
-    def flat(self, imgs):
-        self._flat = imgs
-
-    @property
-    def dark(self):
-        return self._dark
-
-    @dark.setter
-    def dark(self, imgs):
-        self._dark = imgs
-
-    @property
-    def filenames(self):
+    def filenames(self) -> List[str]:
         return self._filenames
 
+    def filename(self, index: int) -> str:
+        """
+        Return the correct filename for the index.
+
+        It uses the step in the indices to determine which file
+        from the list of all files is the one relevant to the provided index.
+
+        :param index: Index that will be mapped to the list of all filenames, using the loading step,
+                      to give the correct filename
+        :return:
+        """
+        return self._filenames[index * self.indices[2]]
+
     @property
-    def has_history(self):
+    def has_history(self) -> bool:
         return const.OPERATION_HISTORY in self.properties
 
     @property
