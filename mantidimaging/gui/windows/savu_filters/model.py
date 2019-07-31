@@ -152,7 +152,7 @@ class SavuFiltersWindowModel(object):
         # TODO make & read from a config. This config should also be used to start the Docker service
         # the data path will be the root in the savu config, so it doesn't need to be part of the filepath
         common_prefix = os.path.commonprefix(self.stack.presenter.images.filenames).replace("/mnt/e/", "")
-        num_images = len(self.stack.presenter.images.filenames)
+        num_images = self.stack.presenter.images.count()
 
         # save out nxs file
         spl = SAVUPluginList(common_prefix, num_images)

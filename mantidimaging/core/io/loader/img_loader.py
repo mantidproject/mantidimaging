@@ -1,7 +1,7 @@
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Union
 
 import numpy as np
 
@@ -101,7 +101,7 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_and_avg_data(self, file_path, name=None) -> Optional[Tuple[np.ndarray, List[str]]]:
+    def load_and_avg_data(self, file_path, name=None) -> Union[Tuple[np.ndarray, List[str]], Tuple[None, None]]:
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
 

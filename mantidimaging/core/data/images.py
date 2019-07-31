@@ -1,6 +1,6 @@
 import json
 import pprint
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Any, Dict
 
 import numpy as np
 
@@ -12,10 +12,10 @@ class Images(object):
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
     def __init__(self, sample, flat=None, dark=None,
-                 sample_filenames: List[str] = None,
-                 indices: Tuple[int, int, int] = None,
-                 flat_filenames: List[str] = None,
-                 dark_filenames: List[str] = None):
+                 sample_filenames: Optional[List[str]] = None,
+                 indices: Optional[Tuple[int, int, int]] = None,
+                 flat_filenames: Optional[List[str]] = None,
+                 dark_filenames: Optional[List[str]] = None):
         """
 
         :param sample: Images of the Sample/Projection data
@@ -30,13 +30,13 @@ class Images(object):
         self.sample = sample
         self.flat = flat
         self.dark = dark
-        self.indices: Tuple[int, int, int] = indices
+        self.indices = indices
 
         self._filenames = sample_filenames
         self._flat_filenames = flat_filenames
         self._dark_filenames = dark_filenames
 
-        self.properties = {}
+        self.properties: Dict[str, Any] = {}
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
@@ -45,8 +45,11 @@ class Images(object):
             self.dark.shape if self.dark is not None else None,
             len(self.properties))
 
+    def count(self) -> int:
+        return len(self._filenames) if self._filenames else 0
+
     @property
-    def filenames(self) -> List[str]:
+    def filenames(self) -> Optional[List[str]]:
         return self._filenames
 
     def image_title(self, index: int) -> str:
@@ -60,8 +63,10 @@ class Images(object):
                       to give the correct filename
         :return:
         """
-        return self._filenames[
-            index * self.indices[2]] if self._filenames else self.NO_FILENAME_IMAGE_TITLE_STRING.format(index)
+        if self._filenames and self.indices:
+            return self._filenames[index * self.indices[2]]
+        else:
+            return self.NO_FILENAME_IMAGE_TITLE_STRING.format(index)
 
     @property
     def has_history(self) -> bool:
