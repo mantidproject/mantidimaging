@@ -6,9 +6,7 @@ from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-
 from .model import TomopyReconWindowModel
-
 
 LOG = getLogger(__name__)
 
@@ -47,8 +45,8 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def set_stack_uuid(self, uuid):
         self.set_stack(
-                self.main_window.get_stack_visualiser(uuid)
-                if uuid is not None else None)
+            self.main_window.get_stack_visualiser(uuid)
+            if uuid is not None else None)
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
@@ -79,16 +77,13 @@ class TomopyReconWindowPresenter(BasePresenter):
     def do_update_previews(self):
         proj = self.model.projection
         self.view.update_projection_preview(
-                proj[0] if proj is not None else None,
-                self.model.preview_slice_idx)
+            proj[0] if proj is not None else None,
+            self.model.preview_slice_idx)
 
     def prepare_reconstruction(self):
-        self.model.generate_cors(
-                self.view.rotation_centre,
-                self.view.cor_gradient)
+        self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
 
-        self.model.generate_projection_angles(
-                self.view.max_proj_angle)
+        self.model.generate_projection_angles(self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()

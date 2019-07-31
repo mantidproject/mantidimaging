@@ -64,7 +64,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.axis, 0)
 
     def test_get_empty_fullpath(self):
-        result = self.presenter.get_image_filename(3)
+        result = self.presenter.get_image_title(3)
         # we expect an empty string as we have not set the filenames
         self.assertEqual(result, "")
 

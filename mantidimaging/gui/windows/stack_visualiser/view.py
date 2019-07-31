@@ -315,7 +315,7 @@ class StackVisualiserView(BaseMainWindowView):
         """
         # This can work with histogram.show_transparent or histogram.show
         current_index = self.presenter.current_image_index
-        current_filename = self.presenter.get_image_filename(current_index)
+        current_filename = self.presenter.get_image_title(current_index)
         title = self.dock.windowTitle()
         legend = self._create_label(current_filename, current_index)
 
@@ -374,8 +374,7 @@ class StackVisualiserView(BaseMainWindowView):
 
     def set_image_title_to_current_filename(self):
         self.image_axis.set_title(
-            self.presenter.get_image_filename(
-                self.presenter.current_image_index))
+            self.presenter.get_image_title(self.presenter.current_image_index))
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))

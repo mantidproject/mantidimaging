@@ -155,7 +155,7 @@ class StackVisualiserPresenter(BasePresenter):
     def get_image_fullpath(self, index):
         return self.images.filename(index)
 
-    def get_image_filename(self, index):
+    def get_image_title(self, index):
         return os.path.basename(self.images.filename(index))
 
     def get_image_count_on_axis(self, axis=None):
