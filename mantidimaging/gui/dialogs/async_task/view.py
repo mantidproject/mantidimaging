@@ -29,11 +29,14 @@ class AsyncTaskDialogView(BaseDialogView):
 
         :param successful: If the task was successful
         """
-        # Set info text to "Complete"
-        self.infoText.setText("Complete")
+        if successful:
+            # Set info text to "Complete"
+            self.infoText.setText("Complete")
+        else:
+            self.infoText.setText("Task failed.")
 
-        # If auto close is enabled and the task was sucesfull then hide the UI
-        if self.auto_close and successful:
+        # If auto close is enabled and the task was successful then hide the UI
+        if self.auto_close:
             self.hide()
 
     def set_progress(self, progress, message):

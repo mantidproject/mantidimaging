@@ -11,15 +11,19 @@ from . import const
 class Images(object):
 
     def __init__(self, sample=None, flat=None, dark=None,
-                 filenames: List[str] = None,
-                 indices: Tuple[int, int, int] = None):
+                 sample_filenames: List[str] = None,
+                 indices: Tuple[int, int, int] = None,
+                 flat_filenames: List[str] = None,
+                 dark_filenames: List[str] = None):
         """
 
         :param sample: Images of the Sample/Projection data
         :param flat: Images of the Flat data
         :param dark: Images of the Dark data
-        :param filenames: All filenames that were matched for loading
+        :param sample_filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
+        :param flat_filenames: All filenames that were matched for loading of Flat images
+        :param dark_filenames: All filenames that were matched for loading of Dark images
         """
 
         self.sample = sample
@@ -27,17 +31,18 @@ class Images(object):
         self.dark = dark
         self.indices: Tuple[int, int, int] = indices
 
-        self._filenames = filenames
+        self._filenames = sample_filenames
+        self._flat_filenames = flat_filenames
+        self._dark_filenames = dark_filenames
 
         self.properties = {}
 
     def __str__(self):
-        return \
-            'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
-                self.sample.shape if self.sample is not None else None,
-                self.flat.shape if self.flat is not None else None,
-                self.dark.shape if self.dark is not None else None,
-                len(self.properties))
+        return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
+            self.sample.shape if self.sample is not None else None,
+            self.flat.shape if self.flat is not None else None,
+            self.dark.shape if self.dark is not None else None,
+            len(self.properties))
 
     @property
     def filenames(self) -> List[str]:
@@ -45,7 +50,7 @@ class Images(object):
 
     def filename(self, index: int) -> str:
         """
-        Return the correct filename for the index.
+        Return the correct filename for the index. This uses the sample filenames
 
         It uses the step in the indices to determine which file
         from the list of all files is the one relevant to the provided index.

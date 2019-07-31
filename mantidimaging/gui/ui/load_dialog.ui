@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>296</height>
+    <height>362</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,15 +15,82 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="data_fields_layout">
      <item>
-      <widget class="QLineEdit" name="samplePath"/>
+      <layout class="QHBoxLayout" name="sampleLayout">
+       <item>
+        <widget class="QLineEdit" name="sample_path"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="sample_button">
+         <property name="text">
+          <string>Sample</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="sampleButton">
+      <widget class="QPushButton" name="dark_flat_button">
        <property name="text">
-        <string>Sample</string>
+        <string>Dark &amp;&amp; Flat?</string>
        </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="flat_widget" native="true">
+       <layout class="QHBoxLayout" name="flatLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="flat_path"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="flat_button">
+          <property name="text">
+           <string>Flat</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="dark_widget" native="true">
+       <layout class="QHBoxLayout" name="darkLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="dark_path"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="dark_button">
+          <property name="text">
+           <string>Dark</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

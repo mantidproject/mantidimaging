@@ -14,7 +14,6 @@ class Notification(Enum):
 
 
 class MainWindowPresenter(BasePresenter):
-
     def __init__(self, view):
         super(MainWindowPresenter, self).__init__(view)
         self.model = MainWindowModel()
@@ -38,7 +37,9 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         kwargs = {'selected_file': self.view.load_dialogue.sample_file(),
-                  'sample_path': self.view.load_dialogue.sample_path(),
+                  'sample_path': self.view.load_dialogue.sample_path_text(),
+                  'flat_path': self.view.load_dialogue.flat_path_text(),
+                  'dark_path': self.view.load_dialogue.dark_path_text(),
                   'image_format': self.view.load_dialogue.image_format,
                   'parallel_load': self.view.load_dialogue.parallel_load(),
                   'indices': self.view.load_dialogue.indices(), 'custom_name': self.view.load_dialogue.window_title()}
@@ -47,28 +48,20 @@ class MainWindowPresenter(BasePresenter):
             log.debug("No sample path provided, cannot load anything")
             return
 
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs['progress'] = Progress()
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.do_load_stack)
-        atd.presenter.set_on_complete(self._on_stack_load_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        self.start_async_task(kwargs, self.model.do_load_stack, self._on_stack_load_done)
 
     def _on_stack_load_done(self, task):
         log = getLogger(__name__)
 
         if task.was_successful():
             custom_name = task.kwargs['custom_name']
-            title = task.kwargs['selected_file'] if not custom_name \
-                else custom_name
+            title = task.kwargs['selected_file'] if not custom_name else custom_name
             self.create_new_stack(task.result, title)
             del task.result
-
         else:
-            log.error("Failed to load stack: %s", str(task.error))
-            self.show_error("Failed to load stack. See log for details.")
+            msg = f"Failed to load stack. Error: {task.error}"
+            log.error(msg)
+            self.show_error(msg)
 
     def create_new_stack(self, data, title):
         title = self.model.create_name(title)
@@ -85,12 +78,14 @@ class MainWindowPresenter(BasePresenter):
                   'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes(),
                   'indices': indices}
 
+        self.start_async_task(kwargs, self.model.do_saving, self._on_save_done)
+
+    def start_async_task(self, kwargs, task, on_complete):
         atd = AsyncTaskDialogView(self.view, auto_close=True)
         kwargs['progress'] = Progress()
         kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.do_saving)
-        atd.presenter.set_on_complete(self._on_save_done)
+        atd.presenter.set_task(task)
+        atd.presenter.set_on_complete(on_complete)
         atd.presenter.set_parameters(**kwargs)
         atd.presenter.do_start_processing()
 

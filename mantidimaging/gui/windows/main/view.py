@@ -18,6 +18,9 @@ from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
 
+    load_dialogue: MWLoadDialog
+    save_dialogue: MWSaveDialog
+
     def __init__(self):
         super(MainWindowView, self).__init__(None, 'gui/ui/main_window.ui')
 
@@ -34,8 +37,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
-        self.actionOnlineDocumentation.triggered.connect(
-            self.open_online_documentation)
+        self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
@@ -48,7 +50,8 @@ class MainWindowView(BaseMainWindowView):
     def update_shortcuts(self):
         self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)
 
-    def open_online_documentation(self):
+    @staticmethod
+    def open_online_documentation():
         url = QtCore.QUrl('https://mantidproject.github.io/mantidimaging/')
         QtGui.QDesktopServices.openUrl(url)
 
@@ -161,6 +164,6 @@ class MainWindowView(BaseMainWindowView):
             # Ignore the close event, keeping window open
             event.ignore()
 
-    def uncaught_exception(self, exc_type, exc_value, exc_traceback):
-        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{exc_type}: ")
-        getLogger(__name__).error()
+    def uncaught_exception(self, user_error_msg, log_error_msg):
+        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
+        getLogger(__name__).error(log_error_msg)

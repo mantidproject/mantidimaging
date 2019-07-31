@@ -1,6 +1,7 @@
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
+from typing import List, Tuple, Optional
 
 import numpy as np
 
@@ -51,18 +52,17 @@ def execute(load_func, all_input_file_names, input_path_flat, input_path_dark,
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    flat_avg = il.load_and_avg_data(input_path_flat, "Flat")
+    flat_avg, flat_filenames = il.load_and_avg_data(input_path_flat, "Flat")
 
-    dark_avg = il.load_and_avg_data(input_path_dark, "Dark")
+    dark_avg, dark_filenames = il.load_and_avg_data(input_path_dark, "Dark")
 
     sample_data = il.load_sample_data(chosen_input_file_names)
 
-    # if this is true, then the loaded sample data was created via the
-    # stack_loader
+    # if this is true, then the loaded sample data was created via the stack_loader
     if isinstance(sample_data, Images):
         sample_data = sample_data.sample
 
-    return Images(sample_data, flat_avg, dark_avg, all_input_file_names, indices)
+    return Images(sample_data, flat_avg, dark_avg, all_input_file_names, indices, flat_filenames, dark_filenames)
 
 
 class ImageLoader(object):
@@ -101,12 +101,13 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_and_avg_data(self, file_path, name=None):
+    def load_and_avg_data(self, file_path, name=None) -> Optional[Tuple[np.ndarray, List[str]]]:
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
 
             data = self.load_files(file_names, name)
-            return _get_data_average(data)
+            return _get_data_average(data), file_names
+        return None, None
 
     def _do_files_load_seq(self, data, files, name):
         progress = Progress.ensure_instance(self.progress,

@@ -147,7 +147,7 @@ class Progress(object):
 
     def add_progress_handler(self, handler):
         """
-        Adds a hander to receiver progress updates.
+        Adds a handler to receiver progress updates.
         :param handler: Instance of a progress handler
         """
         if not isinstance(handler, ProgressHandler):

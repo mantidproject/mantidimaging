@@ -14,11 +14,11 @@ class MainWindowModel(object):
         self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
     def do_load_stack(self, sample_path, image_format, parallel_load, indices,
-                      progress):
+                      progress, flat_path=None, dark_path=None):
         images = loader.load(
             sample_path,
-            None,
-            None,
+            flat_path,
+            dark_path,
             in_format=image_format,
             parallel_load=parallel_load,
             indices=indices,
