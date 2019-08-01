@@ -2,19 +2,14 @@ language: c
 
 cache:
     directories:
-        - $HOME/miniconda/
         - $HOME/envs/
 
 env:
     - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
 
 install:
-    - |
-      if [[ ! -f $MINICONDA_DIR/bin/conda ]]; then
-        rm -rf $MINICONDA_DIR;
-        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-        bash miniconda.sh -b -p $MINICONDA_DIR;
-      fi
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    - bash miniconda.sh -b -p $MINICONDA_DIR
     - export PATH="$MINICONDA_DIR/bin:$PATH"
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
@@ -49,7 +44,7 @@ jobs:
             - make test
 
         - stage: upload-nightly
-          if: branch = master AND TRAVIS_EVENT_TYPE = cron AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
+          if: branch = master AND env(TRAVIS_EVENT_TYPE) = cron AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
           script:
             - |
               if [[ $UPLOAD_PACKAGE = "true" ]]; then
