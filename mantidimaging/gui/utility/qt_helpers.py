@@ -181,7 +181,8 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
         if left_widget:
             left_widget.setToolTip(tooltip)
 
-        right_widget.setToolTip(tooltip)
+        if right_widget:
+            right_widget.setToolTip(tooltip)
 
     # Add to form layout
     if form is not None:

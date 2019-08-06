@@ -39,10 +39,14 @@ class SavuFiltersWindowModel(object):
             if self.response.status_code == 200:
                 self.response = json.loads(self.response.content)
             else:
+                preparation.prepare_data()
                 raise ValueError(
                     f"Did not get valid data from the Savu backend. Error code {self.response.status_code}")
+                # try contacting the SAVU backend again
         except ConnectionError:
+            preparation.prepare_data()
             raise RuntimeError("Savu backend is not running. Cannot open GUI.")
+            # try contacting the SAVU backend again
         self.register_filters(self.response)
 
         self.preview_image_idx = 0
@@ -153,16 +157,17 @@ class SavuFiltersWindowModel(object):
         """
         Applies the selected filter to the selected stack.
         """
-        if not self.stack_presenter:
+        if not self.stack:
             raise ValueError("No stack selected")
 
+        presenter = self.stack_presenter
         # TODO make & read from a config. This config should also be used to start the Docker service
         # the data path will be the root in the savu config, so it doesn't need to be part of the filepath
-        common_prefix = os.path.commonprefix(self.stack.presenter.images.filenames).replace("/mnt/e/", "")
-        num_images = self.stack.presenter.images.count()
+        common_prefix = os.path.commonprefix(presenter.images.filenames).replace("/mnt/e/", "")
+        num_images = presenter.images.count()
 
         # save out nxs file
-        spl = SAVUPluginList(common_prefix, num_images)
+        spl = SAVUPluginList(common_prefix, num_images, preview=str(presenter.images.indices))
 
         plugin = self._create_plugin_entry_from(current_filter)
         # TODO add the currently selected filter

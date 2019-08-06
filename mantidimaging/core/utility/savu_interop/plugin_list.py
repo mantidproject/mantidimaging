@@ -25,7 +25,7 @@ class SAVUPlugin(object):
     warn: str
     id: str
     citation: Citation
-    parameters: [SAVUParameter]
+    parameters: List[SAVUParameter]
 
     def __init__(self, name: str, details: dict):
         self.name = name
@@ -48,6 +48,8 @@ class SAVUPlugin(object):
                     not param.name == "in_datasets" and \
                     not param.name == "out_datasets":
                 yield param
+
+
 @dataclass
 class SAVUPluginListEntry:
     """
@@ -73,13 +75,13 @@ class SAVUPluginList:
     # Savu has these spaces in there, they can't be removed or it won't properly load
     PLUGIN_INDEX_FMT = "   {} "
 
-    def __init__(self, data_prefix, num_images):
+    def __init__(self, data_prefix, num_images, preview="[:,:,:]"):
         self.prepend_plugins: List[SAVUPluginListEntry] = [
             SAVUPluginListEntry(active=True,
                                 data=np.string_(
                                     f'{{"data_prefix": "{data_prefix}", "flat_prefix": null, "dark_prefix": null, '
                                     f'"angles": "np.linspace(0, 360, {num_images})", '
-                                    '"frame_dim": 0, "preview": "[:,:,:]", "dataset_name": "tomo"}'),
+                                    f'"frame_dim": 0, "preview": "[:,:,:]", "dataset_name": "tomo"}}'),
                                 desc=np.string_(
                                     '{"data_prefix": "A file prefix for the data file.", "flat_prefix": "A file prefix '
                                     'for the flat field files, including the folder path if different from the data.", '
