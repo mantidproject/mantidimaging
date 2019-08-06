@@ -3,8 +3,10 @@ Module containing helper functions relating to PyQt.
 """
 
 import os
+from typing import Tuple, Union
 
 from PyQt5 import Qt, uic
+from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
 
 from mantidimaging.core.utility import finder
 
@@ -67,13 +69,20 @@ def select_directory(field, caption):
     field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
 
 
-def add_property_to_form(label,
-                         dtype,
-                         default_value=None,
-                         valid_values=None,
-                         tooltip=None,
-                         on_change=None,
-                         form=None):
+def get_value_from_qwidget(widget: QWidget):
+    if isinstance(widget, QLineEdit):
+        return widget.text()
+    elif isinstance(widget, QSpinBox) or isinstance(widget, QDoubleSpinBox):
+        return widget.value()
+    elif isinstance(widget, QCheckBox):
+        return widget.isChecked()
+
+
+def add_property_to_form(label, dtype, default_value=None, valid_values=None, tooltip=None,
+                         on_change=None, form=None) -> Tuple[Union[QLabel, QLineEdit],
+                                                             Union[
+                                                                 QPushButton, QLineEdit, QSpinBox,
+                                                                 QDoubleSpinBox, QCheckBox, QComboBox]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -89,7 +98,7 @@ def add_property_to_form(label,
     :param form: Form layout to optionally add the new widgets to
     """
     # By default assume the left hand side widget will be a label
-    left_widget = Qt.QLabel(label)
+    left_widget = QLabel(label)
     right_widget = None
 
     def set_spin_box(box, cast_func):
