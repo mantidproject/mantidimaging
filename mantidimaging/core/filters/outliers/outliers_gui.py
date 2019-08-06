@@ -16,7 +16,7 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
         form=form, on_change=on_change)
 
     _, mode_field = add_property_to_form(
-        'Mode', 'list', valid_values=modes(),
+        'Mode', 'choice', valid_values=modes(),
         form=form, on_change=on_change)
 
     def custom_execute():

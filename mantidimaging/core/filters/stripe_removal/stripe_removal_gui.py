@@ -9,7 +9,7 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
 
     # Filter type option
     _, value_filter_type = add_property_to_form(
-        'Filter Type', 'list',
+        'Filter Type', 'choice',
         form=form, on_change=on_change)
 
     # Wavelet options
@@ -18,7 +18,7 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
         form=form, on_change=on_change)
 
     _, value_wf_wname = add_property_to_form(
-        'Wavelet Filter', 'list',
+        'Wavelet Filter', 'choice',
         valid_values=wavelet_names(),
         form=form, on_change=on_change)
 
