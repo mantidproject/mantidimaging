@@ -80,9 +80,8 @@ def get_value_from_qwidget(widget: QWidget):
 
 def add_property_to_form(label, dtype, default_value=None, valid_values=None, tooltip=None,
                          on_change=None, form=None) -> Tuple[Union[QLabel, QLineEdit],
-                                                             Union[
-                                                                 QPushButton, QLineEdit, QSpinBox,
-                                                                 QDoubleSpinBox, QCheckBox, QComboBox]]:
+                                                             Union[QPushButton, QLineEdit, QSpinBox,
+                                                                   QDoubleSpinBox, QCheckBox, QComboBox]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -101,6 +100,10 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
     left_widget = QLabel(label)
     right_widget = None
 
+    # sanitize default value
+    if isinstance(default_value, str) and default_value.lower() == "none":
+        default_value = None
+
     def set_spin_box(box, cast_func):
         """
         Helper function to set default options on a spin box.
@@ -108,28 +111,23 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
         if valid_values:
             box.setMinimum(valid_values[0])
             box.setMaximum(valid_values[1])
+        else:
+            box.setMinimum(0)
+            box.setMaximum(10000)
+
         if default_value:
             box.setValue(cast_func(default_value))
-
-    def assign_tooltip(widgets):
-        """
-        Helper function to assign tooltips to widgets.
-        """
-        if tooltip:
-            for w in widgets:
-                w.setToolTip(tooltip)
 
     # Set up data type dependant widgets
     if dtype == 'file':
         left_widget = Qt.QLineEdit()
         right_widget = Qt.QPushButton(label)
-        assign_tooltip([left_widget, right_widget])
         right_widget.clicked.connect(
             lambda: select_file(left_widget, label))
         if on_change is not None:
             left_widget.textChanged.connect(lambda: on_change())
 
-    elif dtype == 'str' or dtype == 'tuple' or dtype == "NoneType":
+    elif dtype == 'str' or dtype == 'tuple' or dtype == "NoneType" or dtype == "list":
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
         right_widget = Qt.QLineEdit()
         right_widget.setToolTip(tooltip)
@@ -140,14 +138,12 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
 
     elif dtype == 'int':
         right_widget = Qt.QSpinBox()
-        assign_tooltip([right_widget])
         set_spin_box(right_widget, int)
         if on_change is not None:
             right_widget.valueChanged[int].connect(lambda: on_change())
 
     elif dtype == 'float':
         right_widget = Qt.QDoubleSpinBox()
-        assign_tooltip([right_widget])
         set_spin_box(right_widget, float)
         if on_change is not None:
             right_widget.valueChanged[float].connect(lambda: on_change())
@@ -155,19 +151,21 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
     elif dtype == 'bool':
         left_widget = None
         right_widget = Qt.QCheckBox(label)
-        assign_tooltip([right_widget])
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
         elif isinstance(default_value, str):
             right_widget.setChecked("True" == default_value)
+        elif default_value is None:
+            # have to pick something
+            right_widget.setChecked(False)
         else:
             raise ValueError(f"Cannot convert value {default_value} to a Boolean.")
+
         if on_change is not None:
             right_widget.stateChanged[int].connect(lambda: on_change())
 
-    elif dtype == 'list':
+    elif dtype == "choice":
         right_widget = Qt.QComboBox()
-        assign_tooltip([right_widget])
         if valid_values:
             right_widget.addItems(valid_values)
         if on_change is not None:
@@ -178,6 +176,12 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
 
     else:
         raise ValueError("Unknown data type")
+
+    if tooltip:
+        if left_widget:
+            left_widget.setToolTip(tooltip)
+
+        right_widget.setToolTip(tooltip)
 
     # Add to form layout
     if form is not None:
