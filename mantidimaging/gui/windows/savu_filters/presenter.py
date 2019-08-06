@@ -1,8 +1,10 @@
 from enum import Enum
 from logging import getLogger
+from typing import List
 from uuid import UUID
 
 import numpy as np
+from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.histogram import (
@@ -11,7 +13,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (
     BlockQtSignals, get_auto_params_from_stack)
-from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel
+from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel, CurrentFilterData
 from mantidimaging.gui.windows.stack_visualiser import Parameters, StackVisualiserView
 
 
@@ -30,6 +33,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
         self.model = SavuFiltersWindowModel()
         self.main_window = main_window
+
+        self.current_filter: CurrentFilterData = ()
 
     def notify(self, signal):
         try:
@@ -94,30 +99,34 @@ class SavuFiltersWindowPresenter(BasePresenter):
         self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
+        # clear the fields of the previous filter
+
         filter_idx = self.view.filterSelector.currentIndex()
 
-        filter_details = self.model.filter_details(filter_idx)
+        savu_filter = self.model.filter(filter_idx)
 
-        from mantidimaging.gui.utility import add_property_to_form
-        for parameter in filter_details["parameters"]:
-            if not parameter["is_hidden"] and not parameter["name"] == "in_datasets" and \
-                    not parameter["name"] == "out_datasets":
-                add_property_to_form(parameter["name"], parameter["type"], parameter["value"],
-                                     tooltip=parameter["description"], form=self.view.filterPropertiesLayout)
+        parameters_widgets: List[QWidget] = []
+        for parameters in savu_filter.visible_parameters():
+            label, widget = add_property_to_form(parameters.name, parameters.type, parameters.value,
+                                                 tooltip=parameters.description,
+                                                 form=self.view.filterPropertiesLayout)
+            parameters_widgets.append(widget)
+
+        self.current_filter = (savu_filter, parameters_widgets)
 
         # TODO then trigger self.view.auto_update_triggered.emit to update the view
 
         # we do not have to do this for SAVU filters as they are all the same #notallfilters
-        # Register new filter (adding it's property widgets to the properties
-        # layout)
-        self.model.setup_filter(filter_details)
+        # Register new filter (adding it's property widgets to the properties layout)
+        # TODO set up the filter further if necessary
+        # self.model.setup_filter(None)
 
     def filter_uses_auto_property(self, prop):
         return prop in self.model.auto_props.values() if \
             self.model.auto_props is not None else False
 
     def do_apply_filter(self):
-        self.model.do_apply_filter()
+        self.model.do_apply_filter(self.current_filter)
 
     def do_update_previews(self, maintain_axes=True):
         log = getLogger(__name__)

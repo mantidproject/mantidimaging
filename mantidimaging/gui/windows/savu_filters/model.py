@@ -4,15 +4,19 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from functools import partial
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Tuple
 
 import numpy as np
+from PyQt5.QtWidgets import QWidget
 from requests import Response
 
 from mantidimaging.core.io import savu_config_writer
-from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList
+from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, SAVUPluginListEntry, SAVUPlugin
+from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
 from mantidimaging.gui.windows.savu_filters import preparation
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
+CurrentFilterData = Tuple[SAVUPlugin, List[QWidget]]
 
 
 def ensure_tuple(val):
@@ -25,8 +29,10 @@ class SavuFiltersWindowModel(object):
     def __init__(self):
         super(SavuFiltersWindowModel, self).__init__()
 
+        # TODO sort these out
+        self.auto_props, self.do_before, self.execute, self.do_after = [], [], [], []
         # Update the local filter registry
-        self.filters = []
+        self.filters: List[SAVUPlugin] = []
         request: Future = preparation.data
         try:
             self.response: Response = request.result(timeout=5)
@@ -60,23 +66,24 @@ class SavuFiltersWindowModel(object):
         :param filters: Filters received from the SAVU API
         """
 
-        visible_filters = []
+        visible_filters: List[SAVUPlugin] = []
         for name, details in filters.items():
-            if "Loader" in name or "Saver" in name or "Recon" in name:
+            # to filter out recons too `or "Recon" in name`
+            if "Loader" in name or "Saver" in name:
                 continue
             else:
-                visible_filters.append((name, details))
+                visible_filters.append(SAVUPlugin(name, details))
         self.filters = visible_filters
 
     @property
     def filter_names(self):
-        return [f[0] for f in self.filters]
+        return [f.name for f in self.filters]
 
-    def filter_details(self, filter_idx):
+    def filter(self, filter_idx) -> SAVUPlugin:
         """
         Returns the filter details
         """
-        return self.filters[filter_idx][1]
+        return self.filters[filter_idx]
 
     @property
     def stack_presenter(self):
@@ -142,7 +149,7 @@ class SavuFiltersWindowModel(object):
         # Do postprocessing using return value of preprocessing as parameter
         do_after_func(images.sample, *preproc_res)
 
-    def do_apply_filter(self):
+    def do_apply_filter(self, current_filter: CurrentFilterData):
         """
         Applies the selected filter to the selected stack.
         """
@@ -156,6 +163,10 @@ class SavuFiltersWindowModel(object):
 
         # save out nxs file
         spl = SAVUPluginList(common_prefix, num_images)
+
+        plugin = self._create_plugin_entry_from(current_filter)
+        # TODO add the currently selected filter
+        spl.add_plugin(plugin)
 
         # makes sure the directories exists, they are created recursively
         # if they already exist, nothing is done
@@ -190,10 +201,31 @@ class SavuFiltersWindowModel(object):
         # reload changes? what do
         # TODO figure out how to get params like ROI later
         # Get auto parameters
-        # exec_kwargs = get_auto_params_from_stack(
-        #     self.stack_presenter, self.auto_props)
+        # exec_kwargs = get_auto_params_from_stack(self.stack_presenter, self.auto_props)
         #
         # self.apply_filter(self.stack_presenter.images, exec_kwargs)
         #
         # Refresh the image in the stack visualiser
         # self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
+
+    def _create_plugin_entry_from(self, current_filter: CurrentFilterData):
+        plugin = current_filter[0]
+        data = {}
+        description = {}
+        hidden = []
+        for index, param in enumerate(plugin.visible_parameters()):
+            data[param.name] = get_value_from_qwidget(current_filter[1][index])
+            description[param.name] = param.description
+            if param.is_hidden:
+                hidden.append(param.name)
+
+        # data["in_datasets"] = ["tomo"]
+        # data["out_datasets"] = ["tomo"]
+
+        return SAVUPluginListEntry(active=True,
+                                   data=np.string_(json.dumps(data)),
+                                   desc=np.string_(json.dumps(description)),
+                                   hide=np.string_(json.dumps(hidden)),
+                                   id=np.string_(plugin.id),
+                                   name=np.string_(plugin.name),
+                                   user=np.string_("[]"))

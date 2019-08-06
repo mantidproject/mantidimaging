@@ -26,8 +26,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
-        self.filterSelector.currentIndexChanged[int].connect(
-            self.handle_filter_selection)
+        self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
         self.handle_filter_selection(0)
 
         # Handle stack selection
