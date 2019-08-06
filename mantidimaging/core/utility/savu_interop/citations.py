@@ -4,6 +4,7 @@ import numpy as np
 
 
 class Citation(ABC):
+    __slots__ = ("name", "bibtex", "description", "doi", "endnote")
     name: np.string_
     bibtex: np.string_
     description: np.string_
