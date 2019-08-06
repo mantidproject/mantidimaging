@@ -1,12 +1,12 @@
 {% set name = 'mantidimaging' %}
 
-{% set version_tag = environ.get('GIT_DESCRIBE_TAG', '0.0.0') %}
-{% set version_number = environ.get('GIT_DESCRIBE_NUMBER', '0') | string %}
-{% set version_number = '_' + version_number if version_number != '0' else '' %}
-{% set build_type = environ.get('MANTIDIMAGING_BUILD_TYPE', 'unstable') %}
-{% set build_type = '_' + build_type if build_type != '' else '' %}
+  {% set version_tag = environ.get('GIT_DESCRIBE_TAG', '0.0.0') %}
+  {% set version_number = environ.get('GIT_DESCRIBE_NUMBER', '0') | string %}
+  {% set version_number = '_' + version_number if version_number != '0' else '' %}
+  {% set build_type = environ.get('MANTIDIMAGING_BUILD_TYPE', 'unstable') %}
+  {% set build_type = '_' + build_type if build_type != '' else '' %}
 
-{% set version = version_tag + version_number + build_type %}
+  {% set version = version_tag + version_number + build_type %}
 
 package:
   name: {{ name | lower }}
@@ -32,6 +32,7 @@ requirements:
     - tomopy >=1.5.0
     - h5py
     - pyqt
+    - pyqtgraph=0.10
 
 build:
   number: 0
