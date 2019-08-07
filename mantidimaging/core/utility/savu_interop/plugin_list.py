@@ -102,7 +102,7 @@ class SAVUPluginList:
         self.append_plugins: List[SAVUPluginListEntry] = [
             SAVUPluginListEntry(active=True,
                                 data=np.string_(
-                                    '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "PROJECTION"}'),
+                                    '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "VOLUME_XZ"}'),
                                 desc=np.string_(
                                     '{"in_datasets": "The name of the dataset to save.", "out_datasets": "Hidden, '
                                     'dummy out_datasets entry.", "prefix": "Override the default output tiff file '
