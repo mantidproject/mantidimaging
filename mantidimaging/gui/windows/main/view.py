@@ -25,7 +25,7 @@ class MainWindowView(BaseMainWindowView):
         super(MainWindowView, self).__init__(None, 'gui/ui/main_window.ui')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("MantidImaging")
+        self.setWindowTitle("Mantid Imaging")
 
         self.presenter = MainWindowPresenter(self)
 
@@ -106,11 +106,7 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
-    def create_stack_window(self,
-                            stack,
-                            title,
-                            position=QtCore.Qt.TopDockWidgetArea,
-                            floating=False):
+    def create_stack_window(self, stack, title, position=QtCore.Qt.TopDockWidgetArea, floating=False):
         dock_widget = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window

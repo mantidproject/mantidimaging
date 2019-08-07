@@ -1,10 +1,10 @@
 from PyQt5 import Qt
+from PyQt5.QtWidgets import QLabel
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import (
-    delete_all_widgets_from_layout)
+from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.windows.filters.navigation_toolbar import FiltersWindowNavigationToolbar
 from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
@@ -12,6 +12,8 @@ from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPr
 
 class SavuFiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
+    info: QLabel
+    description: QLabel
 
     def __init__(self, main_window, cmap='Greys_r'):
         """
@@ -124,3 +126,6 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
         self.preview_histogram_before.lines[0].set_data([], [])
         self.preview_histogram_after.lines[0].set_data([], [])
+
+    def set_description(self, info, desc):
+        self.info.setText("\n".join([info, desc]))

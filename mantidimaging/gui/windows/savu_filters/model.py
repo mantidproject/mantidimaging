@@ -167,11 +167,11 @@ class SavuFiltersWindowModel(object):
         num_images = presenter.images.count()
 
         # save out nxs file
-        spl = SAVUPluginList(common_prefix, num_images, preview=str(presenter.images.indices))
+        spl = SAVUPluginList(common_prefix, num_images, preview=presenter.images.indices)
 
         plugin = self._create_plugin_entry_from(current_filter)
         # TODO add the currently selected filter
-        spl.add_plugin(plugin)
+        # spl.add_plugin(plugin)
 
         # makes sure the directories exists, they are created recursively
         # if they already exist, nothing is done

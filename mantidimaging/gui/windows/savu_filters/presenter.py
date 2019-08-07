@@ -113,6 +113,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
             parameters_widgets.append(widget)
 
         self.current_filter = (savu_filter, parameters_widgets)
+        self.view.set_description(savu_filter.synopsis, savu_filter.info)
 
         # TODO then trigger self.view.auto_update_triggered.emit to update the view
 
