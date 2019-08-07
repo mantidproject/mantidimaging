@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument(
         "--log-level",
         type=str,
-        default="INFO",
+        default="DEBUG",
         help="Log verbosity level. " "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
@@ -52,7 +52,6 @@ def main():
 
     from mantidimaging import gui
 
-    gui.run_preparations()
     gui.execute()
 
 

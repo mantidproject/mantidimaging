@@ -17,3 +17,6 @@ def prepare_data():
     global data
 
     data = response
+
+
+prepare_data()
