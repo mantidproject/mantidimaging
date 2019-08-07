@@ -1,37 +1,32 @@
 import sys
-
 from logging import getLogger
 
-from PyQt5 import Qt, QtCore
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
+from PyQt5 import Qt
+from PyQt5.QtWidgets import QVBoxLayout
 from matplotlib.widgets import RectangleSelector, Slider
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import BlockQtSignals
-
 from . import histogram
-from .image_selector_widget import ImageSelectorWidget
 from .metadata_dialog import MetadataDialog
-from .navigation_toolbar import StackNavigationToolbar
-from .roi_selector_widget import ROISelectorWidget
-from .presenter import StackVisualiserPresenter
 from .presenter import Notification as StackWindowNotification
+from .presenter import StackVisualiserPresenter
 
 
 class StackVisualiserView(BaseMainWindowView):
-
     image_updated = Qt.pyqtSignal()
     roi_updated = Qt.pyqtSignal('PyQt_PyObject')
     image_selected = Qt.pyqtSignal(int)
+
+    layout: QVBoxLayout
 
     def __init__(self, parent, dock, images, data_traversal_axis=0,
                  cmap='Greys_r', block=False):
         # enforce not showing a single image
         assert images.sample.ndim == 3, \
-                "Data does NOT have 3 dimensions! Dimensions found: \
-                {0}".format(images.sample.ndim)
+            "Data does NOT have 3 dimensions! Dimensions found: \
+            {0}".format(images.sample.ndim)
 
         # We set the main window as the parent, the effect is the same as
         # having no parent, the window will be inside the QDockWidget. If the
@@ -47,135 +42,18 @@ class StackVisualiserView(BaseMainWindowView):
         # hanging in the presenter
         dock.closeEvent = self.closeEvent
 
-        self.presenter = StackVisualiserPresenter(
-                self, images, data_traversal_axis)
+        self.presenter = StackVisualiserPresenter(self, images, data_traversal_axis)
 
-        self.figure = Figure()
-
-        self.initialise_canvas()
-        self._current_roi = None
-
-        self.toolbar = StackNavigationToolbar(
-                self.canvas, self, coordinates=True)
-        self.toolbar.stack_visualiser = self
-
-        self.roi_selector_toolbar = ROISelectorWidget(self.canvas, self)
-        self.image_selector_toolbar = ImageSelectorWidget(self.canvas, self)
-        self.image_selector_toolbar.max_index = \
-            self.presenter.get_image_count_on_axis() - 1
-
-        self.initialise_slider()
-        self.initialise_image(cmap)
-
-        self.roi_selector = self.create_rectangle_selector(self.image_axis, 1)
-
-        self.toolbar_layout = Qt.QHBoxLayout()
-        self.toolbar_layout.addWidget(self.roi_selector_toolbar)
-        self.toolbar_layout.addWidget(self.image_selector_toolbar)
-        self.toolbar_layout.addStretch(1)
-
-        self.matplotlib_layout.addWidget(self.toolbar)
-        self.matplotlib_layout.addLayout(self.toolbar_layout)
-        self.matplotlib_layout.addWidget(self.canvas)
+        self.image = ImageView(self)
+        self.image.setImage(self.presenter.images.sample)
+        self.layout.addWidget(self.image)
 
         self.setup_shortcuts()
 
         def presenter_set_image_index(i):
             self.presenter.current_image_index = i
+
         self.image_selected.connect(presenter_set_image_index)
-
-    def initialise_image(self, cmap):
-        """
-        Initialises the image axis and the image object
-        :param cmap: The color map which is to be used
-        """
-        self.image_axis = self.figure.add_subplot(111)
-        self.image = self.image_axis.imshow(
-                self.presenter.get_image(0), cmap=cmap)
-
-        self.color_bar_axis = make_axes_locatable(self.image_axis).append_axes(
-                "right", size="5%", pad=0.1)
-        self.color_bar = self.figure.colorbar(
-                self.image, cax=self.color_bar_axis)
-
-        self.roi_selector_toolbar.image_size = \
-            self.presenter.current_image.shape
-
-        self.set_image_title_to_current_filename()
-
-        self.image_updated.emit()
-
-    def initialise_canvas(self):
-        """
-        Creates the canvas object from the figure
-        """
-        self.canvas = FigureCanvasQTAgg(self.figure)
-        self.canvas.rectanglecolor = QtCore.Qt.yellow
-        self.canvas.setParent(self)
-
-        # Create context menu
-        self.canvas_context_menu = Qt.QMenu(self)
-
-        def add_context_menu_action(text, n, group=None):
-            action = Qt.QAction(text, self.canvas)
-            action.triggered.connect(lambda: self.presenter.notify(n))
-            self.canvas_context_menu.addAction(action)
-            if group is not None:
-                action.setCheckable(True)
-                action.setActionGroup(group)
-            return action
-
-        # Add context menu items
-        add_context_menu_action(
-                "Clear ROI",
-                StackWindowNotification.CLEAR_ROI)
-        add_context_menu_action(
-                "Rename",
-                StackWindowNotification.RENAME_WINDOW)
-
-        self.canvas_context_menu.addSeparator()
-
-        mode_group = Qt.QActionGroup(self.canvas)
-        add_context_menu_action(
-                "Stack mode",
-                StackWindowNotification.STACK_MODE,
-                group=mode_group).setChecked(True)
-        add_context_menu_action(
-                "Sum mode",
-                StackWindowNotification.SUM_MODE,
-                group=mode_group)
-
-        self.canvas_context_menu.addSeparator()
-
-        add_context_menu_action(
-                "Show Histogram",
-                StackWindowNotification.HISTOGRAM)
-        add_context_menu_action(
-                "Show Histogram in new window",
-                StackWindowNotification.NEW_WINDOW_HISTOGRAM)
-
-        self.canvas_context_menu.addSeparator()
-
-        add_context_menu_action(
-                "Show metadata",
-                StackWindowNotification.SHOW_METADATA)
-
-        # Register mouse release callback
-        self.canvas.mpl_connect(
-                'button_press_event', self.on_button_press)
-
-        self.canvas.mpl_connect(
-                'scroll_event', self.handle_canvas_scroll_wheel)
-
-    def initialise_slider(self):
-        """
-        Creates the axis for the slider and initialises the slider
-        :return:
-        """
-        self.slider_axis = self.figure.add_axes(
-            [0.25, 0.01, 0.5, 0.03], facecolor='lightgoldenrodyellow')
-        self.slider = self.create_slider(
-                self.slider_axis, self.presenter.get_image_count_on_axis() - 1)
 
     @property
     def name(self):
@@ -193,8 +71,8 @@ class StackVisualiserView(BaseMainWindowView):
 
         if value is not None:
             getLogger(__name__).debug(
-                    "Top left  (x, y): %i, %i   Bottom right (x, y): %i, %i",
-                    *value)
+                "Top left  (x, y): %i, %i   Bottom right (x, y): %i, %i",
+                *value)
 
         # Update the ROI selector toolbar
         self.roi_selector_toolbar.roi = value
@@ -251,10 +129,10 @@ class StackVisualiserView(BaseMainWindowView):
             # Get the mouse position on the canvas widget, converting from
             # figure space to Qt space
             point_on_canvas = Qt.QPoint(
-                    event.x, self.canvas.get_width_height()[1] - event.y)
+                event.x, self.canvas.get_width_height()[1] - event.y)
             # Show the context menu at (or near to) the mouse position
             self.canvas_context_menu.exec_(
-                    self.canvas.mapToGlobal(point_on_canvas))
+                self.canvas.mapToGlobal(point_on_canvas))
 
     def region_select_callback(self, eclick, erelease):
         # eclick and erelease are the press and release events
@@ -322,7 +200,7 @@ class StackVisualiserView(BaseMainWindowView):
 
     def create_slider(self, slider_axis, length):
         slider = Slider(
-                slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
+            slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
         slider.on_changed(self.image_selected.emit)
         return slider
 
@@ -358,10 +236,10 @@ class StackVisualiserView(BaseMainWindowView):
 
         if self.current_roi:
             histogram_function(
-                    self.current_image_roi(), legend=legend, title=title)
+                self.current_image_roi(), legend=legend, title=title)
         else:
             histogram_function(
-                    self.presenter.current_image, legend=legend, title=title)
+                self.presenter.current_image, legend=legend, title=title)
 
     def _create_label(self, current_filename, current_index):
         common_label = "Index: {current_index}, {current_filename}"
@@ -375,37 +253,10 @@ class StackVisualiserView(BaseMainWindowView):
                                          current_index=current_index)
         return legend
 
-    def show_current_image(self):
-        """
-        Shows the current image on the plot area.
-        """
-        image = self.presenter.current_image
-
-        self.set_image_title_to_current_filename()
-        self.image.set_data(image)
-
-        # Update colour bar extents
-        self.color_bar.set_clim(self.presenter.get_image_pixel_range())
-        self.color_bar.draw_all()
-
-        # Update image extents
-        old_extent = self.image.get_extent()
-        self.image.set_extent((0, image.shape[1], image.shape[0], 0))
-
-        # If the size of the image is different then clear the old ROI
-        if old_extent != self.image.get_extent():
-            self.presenter.do_clear_roi()
-
-        self.roi_selector_toolbar.image_size = image.shape
-
-        self.canvas.draw()
-
-        self.image_updated.emit()
-
     def set_image_title_to_current_filename(self):
         self.image_axis.set_title(
-                self.presenter.get_image_filename(
-                    self.presenter.current_image_index))
+            self.presenter.get_image_filename(
+                self.presenter.current_image_index))
 
     def change_value_range(self, low, high):
         self.image.set_clim((low, high))

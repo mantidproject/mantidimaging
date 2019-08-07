@@ -13,6 +13,7 @@ Widget used for displaying 2D or 3D data. Features:
   - Image normalization through a variety of methods
 """
 import os
+from logging import getLogger
 
 import numpy as np
 from pyqtgraph import debug as debug
@@ -26,6 +27,7 @@ from pyqtgraph.graphicsItems.ROI import *
 from pyqtgraph.graphicsItems.ViewBox import *
 
 from mantidimaging.external.pyqtgraph.imageview.ImageViewTemplate_pyqt import *
+from mantidimaging.external.pyqtgraph.imageview.SensiblePoint import SensiblePoint
 
 try:
     from bottleneck import nanmin, nanmax
@@ -37,7 +39,8 @@ class PlotROI(ROI):
     def __init__(self, size):
         ROI.__init__(self, pos=[0, 0], size=size)  # , scaleSnap=True, translateSnap=True)
         self.addScaleHandle([1, 1], [0, 0])
-        self.addRotateHandle([0, 0], [0.5, 0.5])
+
+        # self.addRotateHandle([0, 0], [0.5, 0.5])
 
 
 class ImageView(QtGui.QWidget):
@@ -137,7 +140,7 @@ class ImageView(QtGui.QWidget):
 
         self.ui.normGroup.hide()
 
-        self.roi = PlotROI(10)
+        self.roi = PlotROI(50)
         self.roi.setZValue(20)
         self.view.addItem(self.roi)
         self.roi.hide()
@@ -556,7 +559,6 @@ class ImageView(QtGui.QWidget):
         if self.image is None:
             return
 
-        print("Recalculating ROI")
         image = self.getProcessedImage()
         if image.ndim == 2:
             axes = (0, 1)
@@ -565,8 +567,25 @@ class ImageView(QtGui.QWidget):
         else:
             return
 
-        # CHANGE FROM v10 src: Removes the returnMappedCoords param
-        data = self.roi.getArrayRegion(image.view(np.ndarray), self.imageItem, axes)
+        roi_pos, roi_size = SensiblePoint(self.roi.pos()), SensiblePoint(self.roi.size())
+
+        roi_pos.x = int(roi_pos.x)
+        roi_pos.y = int(roi_pos.y)
+        roi_size.x = int(roi_size.x)
+        roi_size.y = int(roi_size.y)
+        # Don't allow negative point coordinates
+        if roi_pos.x < 0 or roi_pos.y < 0:
+            getLogger(__name__).info("Region of Interest starts outside the picture! Clipping start to (0, 0)")
+            roi_pos.x = max(roi_pos.x, 0)
+            roi_pos.y = max(roi_pos.y, 0)
+
+        # image indices are in order [Z, X, Y]
+        data = self.image[
+               :,
+               int(roi_pos.x):int(roi_pos.x) + int(roi_size.x),
+               int(roi_pos.y):int(roi_pos.y) + int(roi_size.y)
+               ]
+        
         if data is not None:
             while data.ndim > 1:
                 data = data.mean(axis=1)

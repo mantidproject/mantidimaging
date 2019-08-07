@@ -37,7 +37,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="matplotlib_layout"/>
+     <layout class="QVBoxLayout" name="layout"/>
     </item>
    </layout>
   </widget>
