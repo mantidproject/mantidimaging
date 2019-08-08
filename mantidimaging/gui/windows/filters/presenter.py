@@ -57,7 +57,7 @@ class FiltersWindowPresenter(BasePresenter):
             if uuid is not None else None)
 
     def set_stack(self, stack):
-        # Disconnect ROI update singal from previous stack
+        # Disconnect ROI update signal from previous stack
         if self.model.stack:
             self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
 

@@ -4,14 +4,9 @@ from typing import Dict, Callable, Optional
 
 import numpy as np
 
-from mantidimaging.core.utility.registrator import (
-    get_package_children,
-    import_items,
-    register_into
-)
+from mantidimaging.core.utility.registrator import get_package_children, import_items, register_into
 from mantidimaging.gui.utility import get_parameters_from_stack
-from mantidimaging.gui.windows.stack_visualiser import (
-    Notification as SVNotification)
+from mantidimaging.gui.windows.stack_visualiser import Notification as SVNotification
 
 
 def ensure_tuple(val):
@@ -29,8 +24,7 @@ class FiltersWindowModel(object):
 
         # Update the local filter registry
         self.filters = None
-        self.register_filters('mantidimaging.core.filters',
-                              ['mantidimaging.core.filters.wip'])
+        self.register_filters('mantidimaging.core.filters', ignored_packages=['mantidimaging.core.filters.wip'])
 
         self.preview_image_idx = 0
 

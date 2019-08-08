@@ -60,7 +60,7 @@ class StackVisualiserView(BaseMainWindowView):
         return roi.left, roi.top, roi.right, roi.bottom
 
     def show_current_image(self):
-        self.image.updateImage()
+        self.image.setImage(self.presenter.images.sample)
 
     # def update_title_event(self):
     #     text, okPressed = Qt.QInputDialog.getText(
