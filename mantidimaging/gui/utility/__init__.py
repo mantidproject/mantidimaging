@@ -1,5 +1,5 @@
 from .get_auto_params_from_stack import (  # noqa: F401
-        get_auto_params_from_stack)
+    get_parameters_from_stack)
 
 from .qt_helpers import (  # noqa: F401
         compile_ui,

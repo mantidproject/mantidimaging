@@ -14,6 +14,7 @@ Widget used for displaying 2D or 3D data. Features:
 """
 import os
 from logging import getLogger
+from typing import Tuple
 
 import numpy as np
 from pyqtgraph import debug as debug
@@ -37,10 +38,8 @@ except ImportError:
 
 class PlotROI(ROI):
     def __init__(self, size):
-        ROI.__init__(self, pos=[0, 0], size=size)  # , scaleSnap=True, translateSnap=True)
+        ROI.__init__(self, pos=[0, 0], size=size)
         self.addScaleHandle([1, 1], [0, 0])
-
-        # self.addRotateHandle([0, 0], [0.5, 0.5])
 
 
 class ImageView(QtGui.QWidget):
@@ -559,25 +558,7 @@ class ImageView(QtGui.QWidget):
         if self.image is None:
             return
 
-        image = self.getProcessedImage()
-        if image.ndim == 2:
-            axes = (0, 1)
-        elif image.ndim == 3:
-            axes = (1, 2)
-        else:
-            return
-
-        roi_pos, roi_size = SensiblePoint(self.roi.pos()), SensiblePoint(self.roi.size())
-
-        roi_pos.x = int(roi_pos.x)
-        roi_pos.y = int(roi_pos.y)
-        roi_size.x = int(roi_size.x)
-        roi_size.y = int(roi_size.y)
-        # Don't allow negative point coordinates
-        if roi_pos.x < 0 or roi_pos.y < 0:
-            getLogger(__name__).info("Region of Interest starts outside the picture! Clipping start to (0, 0)")
-            roi_pos.x = max(roi_pos.x, 0)
-            roi_pos.y = max(roi_pos.y, 0)
+        roi_pos, roi_size = self.get_roi()
 
         # image indices are in order [Z, X, Y]
         data = self.image[
@@ -585,7 +566,7 @@ class ImageView(QtGui.QWidget):
                int(roi_pos.x):int(roi_pos.x) + int(roi_size.x),
                int(roi_pos.y):int(roi_pos.y) + int(roi_size.y)
                ]
-        
+
         if data is not None:
             while data.ndim > 1:
                 data = data.mean(axis=1)
@@ -781,3 +762,21 @@ class ImageView(QtGui.QWidget):
         Currently available gradients are:
         """
         self.ui.histogram.gradient.loadPreset(name)
+
+    #################################################################
+    # Methods added for Mantid Imaging that are not part of pyqtgraph
+    #################################################################
+    def get_roi(self, ensure_in_image=True) -> Tuple[SensiblePoint[int], SensiblePoint[int]]:
+        roi_pos, roi_size = SensiblePoint(self.roi.pos()), SensiblePoint(self.roi.size())
+        roi_pos.x = int(roi_pos.x)
+        roi_pos.y = int(roi_pos.y)
+        roi_size.x = int(roi_size.x)
+        roi_size.y = int(roi_size.y)
+
+        if ensure_in_image:
+            # Don't allow negative point coordinates
+            if roi_pos.x < 0 or roi_pos.y < 0:
+                getLogger(__name__).info("Region of Interest starts outside the picture! Clipping start to (0, 0)")
+                roi_pos.x = max(roi_pos.x, 0)
+                roi_pos.y = max(roi_pos.y, 0)
+        return roi_pos, roi_size

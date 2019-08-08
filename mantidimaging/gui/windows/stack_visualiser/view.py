@@ -1,16 +1,13 @@
 import sys
 from logging import getLogger
+from typing import Tuple
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QVBoxLayout
-from matplotlib.widgets import RectangleSelector, Slider
 
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import BlockQtSignals
-from . import histogram
-from .metadata_dialog import MetadataDialog
-from .presenter import Notification as StackWindowNotification
 from .presenter import StackVisualiserPresenter
 
 
@@ -48,8 +45,6 @@ class StackVisualiserView(BaseMainWindowView):
         self.image.setImage(self.presenter.images.sample)
         self.layout.addWidget(self.image)
 
-        self.setup_shortcuts()
-
         def presenter_set_image_index(i):
             self.presenter.current_image_index = i
 
@@ -60,110 +55,33 @@ class StackVisualiserView(BaseMainWindowView):
         return self.dock.windowTitle()
 
     @property
-    def current_roi(self):
-        return self._current_roi
+    def current_roi(self) -> Tuple[int, int, int, int]:
+        roi = SensibleROI.from_points(*self.image.get_roi())
+        return roi.left, roi.top, roi.right, roi.bottom
 
-    @current_roi.setter
-    def current_roi(self, value):
-        self._current_roi = value
-
-        getLogger(__name__).debug("ROI: %s", str(value))
-
-        if value is not None:
-            getLogger(__name__).debug(
-                "Top left  (x, y): %i, %i   Bottom right (x, y): %i, %i",
-                *value)
-
-        # Update the ROI selector toolbar
-        self.roi_selector_toolbar.roi = value
-
-        # Update ROI selector
-        self.roi_selector.extents = (value[0], value[2], value[1], value[3]) \
-            if value is not None else (0, 0, 0, 0)
-
-        # Notify of new ROI selected
-        self.roi_updated.emit(self.current_roi)
-
-    def handle_canvas_scroll_wheel(self, event):
-        """
-        Handles the mouse scroll wheeel event when the cursor is over the
-        canvas.
-
-        Increments or decrements the current image index depending on direction
-        of scroll wheel movement.
-
-        :param event: Mouse scroll wheel event
-        """
-        if event.button == 'up':
-            self.presenter.notify(StackWindowNotification.SCROLL_UP)
-        elif event.button == 'down':
-            self.presenter.notify(StackWindowNotification.SCROLL_DOWN)
-
-    def on_button_press(self, event):
-        """
-        Handles mouse button release events.
-
-        On left click (mouse button 1) this removes the previously selected
-        ROI. This function is called on a single button click and 2 things can
-        happen:
-
-        - If a rectangle selection is present and the user just single clicked,
-          the ROI will be kept, because region_select_callback will be called
-          afterwards
-
-        - If a rectangle selection is no longer present the
-          region_select_callback will not be called and the ROI will be deleted
-
-        This assumes that the order will always be matplotlib on click event
-        first, and then the rectangle selector callback.
-        This might be a wrong assumption which could cause weird plotting
-        issues. For now I have not seen an issue and the order seems to always
-        be correct
-
-        On right click (mouse button 2) this opens the context menu.
-        """
-        if event.button == 1:
-            self.current_roi = None
-
-        if event.button == 3:
-            # Get the mouse position on the canvas widget, converting from
-            # figure space to Qt space
-            point_on_canvas = Qt.QPoint(
-                event.x, self.canvas.get_width_height()[1] - event.y)
-            # Show the context menu at (or near to) the mouse position
-            self.canvas_context_menu.exec_(
-                self.canvas.mapToGlobal(point_on_canvas))
-
-    def region_select_callback(self, eclick, erelease):
-        # eclick and erelease are the press and release events
-        left, top = int(eclick.xdata), int(eclick.ydata)
-        right, bottom = int(erelease.xdata), int(erelease.ydata)
-
-        self.current_roi = (left, top, right, bottom)
-
-    def update_title_event(self):
-        text, okPressed = Qt.QInputDialog.getText(
-            self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
-
-        if okPressed:
-            self.dock.setWindowTitle(text)
-
-    def setup_shortcuts(self):
-        self.histogram_shortcut = Qt.QShortcut(
-            Qt.QKeySequence("Shift+C"), self.dock)
-        self.histogram_shortcut.activated.connect(
-            lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
-
-        self.new_window_histogram_shortcut = Qt.QShortcut(
-            Qt.QKeySequence("Ctrl+Shift+C"), self.dock)
-        self.new_window_histogram_shortcut.activated.connect(
-            lambda: self.presenter.notify(
-                StackWindowNotification.NEW_WINDOW_HISTOGRAM))
-
-        self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
-        self.rename_shortcut.activated.connect(
-            lambda: self.presenter.notify(
-                StackWindowNotification.RENAME_WINDOW))
+    # def update_title_event(self):
+    #     text, okPressed = Qt.QInputDialog.getText(
+    #         self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
+    #
+    #     if okPressed:
+    #         self.dock.setWindowTitle(text)
+    #
+    # def setup_shortcuts(self):
+    #     self.histogram_shortcut = Qt.QShortcut(
+    #         Qt.QKeySequence("Shift+C"), self.dock)
+    #     self.histogram_shortcut.activated.connect(
+    #         lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
+    #
+    #     self.new_window_histogram_shortcut = Qt.QShortcut(
+    #         Qt.QKeySequence("Ctrl+Shift+C"), self.dock)
+    #     self.new_window_histogram_shortcut.activated.connect(
+    #         lambda: self.presenter.notify(
+    #             StackWindowNotification.NEW_WINDOW_HISTOGRAM))
+    #
+    #     self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
+    #     self.rename_shortcut.activated.connect(
+    #         lambda: self.presenter.notify(
+    #             StackWindowNotification.RENAME_WINDOW))
 
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed
@@ -183,96 +101,10 @@ class StackVisualiserView(BaseMainWindowView):
         # refers to the QDockWidget within which the stack is contained
         self.parent().deleteLater()
 
-    def create_rectangle_selector(self, axis, button=1):
-        # drawtype is 'box' or 'line' or 'none', we could use 'line' to show
-        # COR, but the line doesn't want to flip horizontally so it only ends
-        # up leaning right
-        return RectangleSelector(
-            axis,
-            self.region_select_callback,
-            drawtype='box',
-            useblit=False,
-            button=[1],  # don't use middle button
-            spancoords='pixels',
-            minspanx=20,
-            minspany=20,
-            interactive=True)
-
-    def create_slider(self, slider_axis, length):
-        slider = Slider(
-            slider_axis, "Images", 0, length, valinit=0, valfmt='%i')
-        slider.on_changed(self.image_selected.emit)
-        return slider
-
-    def current_image_roi(self):
-        """
-        :return: The selected region of the currently visualised image
-        """
-        image = self.presenter.current_image
-        left, top, right, bottom = self.current_roi
-        return image[top:bottom, left:right]
-
-    def show_histogram_of_current_image(self, new_window=False):
-        """
-        Event that will show a histogram of the current image (full or the
-        selected ROI).
-
-        :param new_window: Whether to put the new histogram into a new floating
-                           window, or append to the last focused plotting
-                           window
-        """
-        # This can work with histogram.show_transparent or histogram.show
-        current_index = self.presenter.current_image_index
-        current_filename = self.presenter.get_image_filename(current_index)
-        title = self.dock.windowTitle()
-        legend = self._create_label(current_filename, current_index)
-
-        # Choose plotting function depending on whether we're creating a
-        # histogram in the same window, or a new window.
-        # The last window that was focused will be considered the 'active'
-        # window.
-        histogram_function = histogram.show_transparent if not new_window \
-            else histogram.show_floating_transparent
-
-        if self.current_roi:
-            histogram_function(
-                self.current_image_roi(), legend=legend, title=title)
-        else:
-            histogram_function(
-                self.presenter.current_image, legend=legend, title=title)
-
-    def _create_label(self, current_filename, current_index):
-        common_label = "Index: {current_index}, {current_filename}"
-        if self.current_roi:
-            legend = (common_label + " {current_roi}").format(
-                current_filename=current_filename,
-                current_index=current_index,
-                current_roi=self.current_roi)
-        else:
-            legend = common_label.format(current_filename=current_filename,
-                                         current_index=current_index)
-        return legend
-
-    def set_image_title_to_current_filename(self):
-        self.image_axis.set_title(
-            self.presenter.get_image_filename(
-                self.presenter.current_image_index))
-
-    def change_value_range(self, low, high):
-        self.image.set_clim((low, high))
-
-    def set_current_image_index(self, index):
-        with BlockQtSignals([self]):
-            self.slider.set_val(index)
-            self.image_selector_toolbar.index = index
-
-        self.show_current_image()
-
-    def show_image_metadata(self):
-        """
-        Shows image metadata in a dialog.
-        """
-        MetadataDialog(self, self.presenter.images).show()
+    # def set_image_title_to_current_filename(self):
+    #     self.image_axis.set_title(
+    #         self.presenter.get_image_filename(
+    #             self.presenter.current_image_index))
 
 
 def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):

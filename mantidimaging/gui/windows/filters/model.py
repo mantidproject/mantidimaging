@@ -1,16 +1,17 @@
 from functools import partial
 from logging import getLogger
+from typing import Dict, Callable, Any, Optional
 
 import numpy as np
 
-from mantidimaging.gui.windows.stack_visualiser import (
-        Notification as SVNotification)
-from mantidimaging.gui.utility import get_auto_params_from_stack
 from mantidimaging.core.utility.registrator import (
-        get_package_children,
-        import_items,
-        register_into
-    )
+    get_package_children,
+    import_items,
+    register_into
+)
+from mantidimaging.gui.utility import get_parameters_from_stack
+from mantidimaging.gui.windows.stack_visualiser import (
+    Notification as SVNotification)
 
 
 def ensure_tuple(val):
@@ -18,6 +19,10 @@ def ensure_tuple(val):
 
 
 class FiltersWindowModel(object):
+    parameters_from_stack: Dict
+    do_before_wrapper: Callable[[], Callable[[Any], Optional[partial]]]
+    execute_wrapper: Callable[[], Callable[[Any], Optional[partial]]]
+    do_after_wrapper: Callable[[], Callable[[Any], Optional[partial]]]
 
     def __init__(self):
         super(FiltersWindowModel, self).__init__()
@@ -31,9 +36,9 @@ class FiltersWindowModel(object):
 
         # Execution info for current filter
         self.stack = None
-        self.do_before = None
-        self.execute = None
-        self.do_after = None
+        self.do_before_wrapper = lambda: lambda: None
+        self.execute_wrapper = lambda: lambda _: None
+        self.do_after_wrapper = lambda: lambda *_: None
 
     def register_filters(self, package_name, ignored_packages=None):
         """
@@ -59,8 +64,8 @@ class FiltersWindowModel(object):
                                       ['execute', 'NAME', '_gui_register'])
 
         loaded_filters = filter(
-                lambda f: f.available() if hasattr(f, 'available') else True,
-                loaded_filters)
+            lambda f: f.available() if hasattr(f, 'available') else True,
+            loaded_filters)
 
         def register_filter(filter_list, module):
             filter_list.append((module.NAME, module._gui_register))
@@ -94,7 +99,7 @@ class FiltersWindowModel(object):
         """
         Sets filter properties from result of registration function.
         """
-        self.auto_props, self.do_before, self.execute, self.do_after = \
+        self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper, self.do_after_wrapper = \
             filter_specifics
 
     def apply_filter(self, images, exec_kwargs):
@@ -104,9 +109,10 @@ class FiltersWindowModel(object):
         log = getLogger(__name__)
 
         # Generate the execute partial from filter registration
-        do_before_func = self.do_before() if self.do_before else lambda _: ()
-        do_after_func = self.do_after() if self.do_after else lambda *_: None
-        execute_func = self.execute()
+        # TODO Why are the functions executed!? Are they partials???
+        do_before_func = self.do_before_wrapper() if self.do_before_wrapper else lambda _: ()
+        do_after_func = self.do_after_wrapper() if self.do_after_wrapper else lambda *_: None
+        execute_func = self.execute_wrapper()
 
         # Log execute function parameters
         log.info("Filter kwargs: {}".format(exec_kwargs))
@@ -118,9 +124,9 @@ class FiltersWindowModel(object):
             all_kwargs.update(exec_kwargs)
 
             images.record_parameters_in_metadata(
-                    '{}.{}'.format(execute_func.func.__module__,
-                                   execute_func.func.__name__),
-                    *execute_func.args, **all_kwargs)
+                '{}.{}'.format(execute_func.func.__module__,
+                               execute_func.func.__name__),
+                *execute_func.args, **all_kwargs)
 
         # Do preprocessing and save result
         preproc_res = do_before_func(images.sample)
@@ -151,8 +157,8 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        exec_kwargs = get_auto_params_from_stack(
-                self.stack_presenter, self.auto_props)
+        exec_kwargs = get_parameters_from_stack(
+            self.stack_presenter, self.parameters_from_stack)
 
         self.apply_filter(self.stack_presenter.images, exec_kwargs)
 
