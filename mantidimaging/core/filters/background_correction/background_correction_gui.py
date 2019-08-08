@@ -2,6 +2,7 @@ import os
 from functools import partial
 
 from mantidimaging.core import io
+from mantidimaging.core.filters.background_correction import execute
 from mantidimaging.core.utility import value_scaling
 
 
@@ -16,7 +17,7 @@ def _gui_register(form, on_change):
         'Dark', 'file',
         form=form, on_change=on_change)
 
-    def execute() -> partial:
+    def execute_wrapper() -> partial:
         flat_path = str(flatPath.text())
         dark_path = str(darkPath.text())
         flat_extension = io.utility.get_file_extension(flat_path)
@@ -47,4 +48,4 @@ def _gui_register(form, on_change):
     def do_after() -> partial:
         return partial(value_scaling.apply_factor)
 
-    return None, do_before, execute, do_after
+    return None, do_before, execute_wrapper, do_after

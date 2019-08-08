@@ -564,8 +564,7 @@ class ImageView(QtGui.QWidget):
         data = self.image[
                :,
                int(roi_pos.x):int(roi_pos.x) + int(roi_size.x),
-               int(roi_pos.y):int(roi_pos.y) + int(roi_size.y)
-               ]
+               int(roi_pos.y):int(roi_pos.y) + int(roi_size.y)]
 
         if data is not None:
             while data.ndim > 1:

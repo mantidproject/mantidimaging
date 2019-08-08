@@ -59,6 +59,9 @@ class StackVisualiserView(BaseMainWindowView):
         roi = SensibleROI.from_points(*self.image.get_roi())
         return roi.left, roi.top, roi.right, roi.bottom
 
+    def show_current_image(self):
+        self.image.updateImage()
+
     # def update_title_event(self):
     #     text, okPressed = Qt.QInputDialog.getText(
     #         self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")

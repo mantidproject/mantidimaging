@@ -1,6 +1,6 @@
 from functools import partial
 from logging import getLogger
-from typing import Dict, Callable, Any, Optional
+from typing import Dict, Callable, Optional
 
 import numpy as np
 
@@ -20,9 +20,9 @@ def ensure_tuple(val):
 
 class FiltersWindowModel(object):
     parameters_from_stack: Dict
-    do_before_wrapper: Callable[[], Callable[[Any], Optional[partial]]]
-    execute_wrapper: Callable[[], Callable[[Any], Optional[partial]]]
-    do_after_wrapper: Callable[[], Callable[[Any], Optional[partial]]]
+    do_before_wrapper: Callable[[], Optional[partial]]
+    execute_wrapper: Callable[[], Optional[partial]]
+    do_after_wrapper: Callable[[], Optional[partial]]
 
     def __init__(self):
         super(FiltersWindowModel, self).__init__()
@@ -109,7 +109,6 @@ class FiltersWindowModel(object):
         log = getLogger(__name__)
 
         # Generate the execute partial from filter registration
-        # TODO Why are the functions executed!? Are they partials???
         do_before_func = self.do_before_wrapper() if self.do_before_wrapper else lambda _: ()
         do_after_func = self.do_after_wrapper() if self.do_after_wrapper else lambda *_: None
         execute_func = self.execute_wrapper()
@@ -123,14 +122,9 @@ class FiltersWindowModel(object):
             all_kwargs = execute_func.keywords.copy()
             all_kwargs.update(exec_kwargs)
 
-            images.record_parameters_in_metadata(
-                '{}.{}'.format(execute_func.func.__module__,
-                               execute_func.func.__name__),
-                *execute_func.args, **all_kwargs)
-
-        # Do preprocessing and save result
-        preproc_res = do_before_func(images.sample)
-        preproc_res = ensure_tuple(preproc_res)
+        # Do pre-processing and save result
+        preproc_result = do_before_func(images.sample)
+        preproc_result = ensure_tuple(preproc_result)
 
         # Run filter
         ret_val = execute_func(images.sample, **exec_kwargs)
@@ -146,8 +140,14 @@ class FiltersWindowModel(object):
         else:
             log.debug('Unknown execute return value: {}'.format(type(ret_val)))
 
-        # Do postprocessing using return value of preprocessing as parameter
-        do_after_func(images.sample, *preproc_res)
+        # Do postprocessing using return value of pre-processing as parameter
+        do_after_func(images.sample, *preproc_result)
+
+        # store the executed filter in history if it all executed successfully
+        images.record_parameters_in_metadata(
+            '{}.{}'.format(execute_func.func.__module__,
+                           execute_func.func.__name__),
+            *execute_func.args, **all_kwargs)
 
     def do_apply_filter(self):
         """

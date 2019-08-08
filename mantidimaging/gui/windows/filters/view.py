@@ -1,42 +1,45 @@
-from PyQt5 import Qt
+from typing import TYPE_CHECKING
 
+from PyQt5 import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
-        delete_all_widgets_from_layout)
-
+    delete_all_widgets_from_layout)
 from .navigation_toolbar import FiltersWindowNavigationToolbar
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView
+
 
 class FiltersWindowView(BaseMainWindowView):
-
     auto_update_triggered = Qt.pyqtSignal()
 
-    def __init__(self, main_window, cmap='Greys_r'):
+    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         super(FiltersWindowView, self).__init__(
-                main_window, 'gui/ui/filters_window.ui')
+            main_window, 'gui/ui/filters_window.ui')
 
+        self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentIndexChanged[int].connect(
-                self.handle_filter_selection)
+            self.handle_filter_selection)
         self.handle_filter_selection(0)
 
         # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(
-                self.presenter.set_stack_uuid)
+            self.presenter.set_stack_uuid)
         self.stackSelector.stack_selected_uuid.connect(
-                self.auto_update_triggered.emit)
+            self.auto_update_triggered.emit)
 
         # Handle apply filter
         self.applyButton.clicked.connect(
-                lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+            lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
         # Preview area
         self.cmap = cmap
@@ -47,7 +50,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.canvas.setParent(self)
 
         self.toolbar = FiltersWindowNavigationToolbar(
-                self.canvas, self)
+            self.canvas, self)
         self.toolbar.filter_window = self
 
         self.mplLayout.addWidget(self.toolbar)
@@ -58,28 +61,28 @@ class FiltersWindowView(BaseMainWindowView):
             return plt
 
         self.preview_image_before = add_plot(
-                221, 'Image Before')
+            221, 'Image Before')
 
         self.preview_image_after = add_plot(
-                223, 'Image After',
-                sharex=self.preview_image_before,
-                sharey=self.preview_image_before)
+            223, 'Image After',
+            sharex=self.preview_image_before,
+            sharey=self.preview_image_before)
 
         self.preview_histogram_before = add_plot(
-                222, 'Histogram Before')
+            222, 'Histogram Before')
         self.preview_histogram_before.plot([], [])
 
         self.preview_histogram_after = add_plot(
-                224, 'Histogram After',
-                sharex=self.preview_histogram_before,
-                sharey=self.preview_histogram_before)
+            224, 'Histogram After',
+            sharex=self.preview_histogram_before,
+            sharey=self.preview_histogram_before)
         self.preview_histogram_after.plot([], [])
 
         self.clear_preview_plots()
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
-                self.presenter.set_preview_image_index)
+            self.presenter.set_preview_image_index)
 
         # Preview update triggers
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
@@ -90,6 +93,7 @@ class FiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
+        self.main_window.filters = None
 
     def show(self):
         super(FiltersWindowView, self).show()
