@@ -17,8 +17,10 @@ from logging import getLogger
 from typing import Tuple
 
 import numpy as np
+from PyQt5.QtWidgets import QLabel
 from pyqtgraph import debug as debug
 from pyqtgraph import ptime as ptime
+from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
 from pyqtgraph.graphicsItems.GradientEditorItem import addGradientListToDocstring
 from pyqtgraph.graphicsItems.ImageItem import *
@@ -27,8 +29,9 @@ from pyqtgraph.graphicsItems.LinearRegionItem import *
 from pyqtgraph.graphicsItems.ROI import *
 from pyqtgraph.graphicsItems.ViewBox import *
 
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.external.pyqtgraph.imageview.ImageViewTemplate_pyqt import *
-from mantidimaging.external.pyqtgraph.imageview.SensiblePoint import SensiblePoint
+from mantidimaging.gui.utility import compile_ui
 
 try:
     from bottleneck import nanmin, nanmax
@@ -75,6 +78,7 @@ class ImageView(QtGui.QWidget):
     """
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
+    details: QLabel
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
@@ -112,8 +116,9 @@ class ImageView(QtGui.QWidget):
         self.image = None
         self.axes = {}
         self.imageDisp = None
-        self.ui = Ui_Form()
-        self.ui.setupUi(self)
+        self.ui = compile_ui('gui/ui/ImageViewTemplate.ui', self)
+        # self.ui = Ui_Form()
+        # self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
 
         self.ignoreTimeLine = False
@@ -130,6 +135,9 @@ class ImageView(QtGui.QWidget):
             self.imageItem = ImageItem()
         else:
             self.imageItem = imageItem
+
+        # implement a hover event, when the user hovers the mouse over the image
+        self.imageItem.hoverEvent = self.image_hover_event
         self.view.addItem(self.imageItem)
         self.currentIndex = 0
 
@@ -141,6 +149,7 @@ class ImageView(QtGui.QWidget):
 
         self.roi = PlotROI(50)
         self.roi.setZValue(20)
+        self.roiString = None
         self.view.addItem(self.roi)
         self.roi.hide()
         self.normRoi = PlotROI(10)
@@ -537,6 +546,7 @@ class ImageView(QtGui.QWidget):
             self.ui.roiPlot.setMouseEnabled(False, False)
             self.roiCurve.hide()
             self.ui.roiPlot.hideAxis('left')
+            self.roiString = None
 
         if self.hasTimeAxis():
             showRoiPlot = True
@@ -561,10 +571,10 @@ class ImageView(QtGui.QWidget):
         roi_pos, roi_size = self.get_roi()
 
         # image indices are in order [Z, X, Y]
-        data = self.image[
-               :,
-               int(roi_pos.x):int(roi_pos.x) + int(roi_size.x),
-               int(roi_pos.y):int(roi_pos.y) + int(roi_size.y)]
+        left, right = roi_pos.x, roi_pos.x + roi_size.x
+        top, bottom = roi_pos.y, roi_pos.y + roi_size.y
+        self.roiString = f"({left}, {top}, {right}, {bottom})"
+        data = self.image[:, left:right, top: bottom]
 
         if data is not None:
             while data.ndim > 1:
@@ -765,12 +775,8 @@ class ImageView(QtGui.QWidget):
     #################################################################
     # Methods added for Mantid Imaging that are not part of pyqtgraph
     #################################################################
-    def get_roi(self, ensure_in_image=True) -> Tuple[SensiblePoint[int], SensiblePoint[int]]:
-        roi_pos, roi_size = SensiblePoint(self.roi.pos()), SensiblePoint(self.roi.size())
-        roi_pos.x = int(roi_pos.x)
-        roi_pos.y = int(roi_pos.y)
-        roi_size.x = int(roi_size.x)
-        roi_size.y = int(roi_size.y)
+    def get_roi(self, ensure_in_image=True) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
+        roi_pos, roi_size = CloseEnoughPoint(self.roi.pos()), CloseEnoughPoint(self.roi.size())
 
         if ensure_in_image:
             # Don't allow negative point coordinates
@@ -779,3 +785,12 @@ class ImageView(QtGui.QWidget):
                 roi_pos.x = max(roi_pos.x, 0)
                 roi_pos.y = max(roi_pos.y, 0)
         return roi_pos, roi_size
+
+    def image_hover_event(self, event: HoverEvent):
+        if event.exit:
+            return
+        pt = CloseEnoughPoint(event.pos())
+        msg = f"x={pt.x}, y={pt.y}, z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]}"
+        if self.roiString is not None:
+            msg += f" | roi = {self.roiString}"
+        self.details.setText(msg)

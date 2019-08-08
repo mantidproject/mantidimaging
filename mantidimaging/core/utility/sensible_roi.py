@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from mantidimaging.external.pyqtgraph.imageview import SensiblePoint
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 
 @dataclass
@@ -12,5 +12,5 @@ class SensibleROI:
     bottom: int
 
     @staticmethod
-    def from_points(position: SensiblePoint, size: SensiblePoint) -> 'SensibleROI':
+    def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> 'SensibleROI':
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
