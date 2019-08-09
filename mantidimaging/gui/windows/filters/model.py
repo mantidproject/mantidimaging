@@ -16,7 +16,7 @@ def ensure_tuple(val):
 class FiltersWindowModel(object):
     parameters_from_stack: Dict
     do_before_wrapper: Callable[[], Optional[partial]]
-    execute_wrapper: Callable[[], Optional[partial]]
+    execute_wrapper: Callable[[], partial]
     do_after_wrapper: Callable[[], Optional[partial]]
 
     def __init__(self):
@@ -105,15 +105,17 @@ class FiltersWindowModel(object):
         # Generate the execute partial from filter registration
         do_before_func = self.do_before_wrapper() if self.do_before_wrapper else lambda _: ()
         do_after_func = self.do_after_wrapper() if self.do_after_wrapper else lambda *_: None
-        execute_func = self.execute_wrapper()
+        execute_func: partial = self.execute_wrapper()
 
         # Log execute function parameters
         log.info("Filter kwargs: {}".format(exec_kwargs))
+
+        all_kwargs = execute_func.keywords.copy()
+
         if isinstance(execute_func, partial):
             log.info("Filter partial args: {}".format(execute_func.args))
             log.info("Filter partial kwargs: {}".format(execute_func.keywords))
 
-            all_kwargs = execute_func.keywords.copy()
             all_kwargs.update(exec_kwargs)
 
         # Do pre-processing and save result
@@ -141,7 +143,8 @@ class FiltersWindowModel(object):
         images.record_parameters_in_metadata(
             '{}.{}'.format(execute_func.func.__module__,
                            execute_func.func.__name__),
-            *execute_func.args, **all_kwargs)
+            *execute_func.args,
+            **all_kwargs)
 
     def do_apply_filter(self):
         """
@@ -151,8 +154,7 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        exec_kwargs = get_parameters_from_stack(
-            self.stack_presenter, self.parameters_from_stack)
+        exec_kwargs = get_parameters_from_stack(self.stack_presenter, self.parameters_from_stack)
 
         self.apply_filter(self.stack_presenter.images, exec_kwargs)
 
