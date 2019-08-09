@@ -3,14 +3,14 @@ import unittest
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.special_imports import import_mock
+
 
 from mantidimaging.gui.windows.tomopy_recon import (
         TomopyReconWindowView, TomopyReconWindowPresenter)
 from mantidimaging.gui.windows.stack_visualiser import (
         StackVisualiserView, StackVisualiserPresenter)
 
-mock = import_mock()
+import mock
 
 
 class TomopyReconWindowPresenterTest(unittest.TestCase):

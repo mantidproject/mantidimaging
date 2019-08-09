@@ -1,13 +1,13 @@
 import unittest
 
-from mantidimaging.core.utility.special_imports import import_mock
+
 
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import (
         MainWindowView, MainWindowPresenter)
 
-mock = import_mock()
+import mock
 
 
 class MainWindowPresenterTest(unittest.TestCase):
