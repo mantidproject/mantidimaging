@@ -5,7 +5,7 @@ import numpy as np
 import mantidimaging.core.testing.unit_test_helper as th
 from mantidimaging.core.utility.special_imports import import_mock
 from mantidimaging.gui.windows.stack_visualiser import (
-        StackVisualiserView, StackVisualiserPresenter, Parameters)
+        StackVisualiserView, StackVisualiserPresenter, SVParameters)
 
 from mantidimaging.gui.windows.filters import FiltersWindowModel
 
@@ -77,7 +77,7 @@ class FiltersWindowModelTest(unittest.TestCase):
                 return_value=self.execute_mock_with_roi)
 
         params = {
-            'roi': Parameters.ROI
+            'roi': SVParameters.ROI
         }
 
         self.model.setup_filter((params, None, execute, None))

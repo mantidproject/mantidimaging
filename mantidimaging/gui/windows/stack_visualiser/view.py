@@ -1,9 +1,7 @@
-import sys
-from logging import getLogger
 from typing import Tuple
 
-from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QVBoxLayout, QDockWidget
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
@@ -12,14 +10,16 @@ from .presenter import StackVisualiserPresenter
 
 
 class StackVisualiserView(BaseMainWindowView):
-    image_updated = Qt.pyqtSignal()
-    roi_updated = Qt.pyqtSignal('PyQt_PyObject')
-    image_selected = Qt.pyqtSignal(int)
+    # Signal that signifies when the ROI is updated. Used to update previews in Filter views
+    # TODO currently not emitted correctly (should use
+    roi_updated = pyqtSignal(SensibleROI)
 
+    image_view: ImageView
+    presenter: StackVisualiserPresenter
+    dock: QDockWidget
     layout: QVBoxLayout
 
-    def __init__(self, parent, dock, images, data_traversal_axis=0,
-                 cmap='Greys_r', block=False):
+    def __init__(self, parent, dock, images, data_traversal_axis=0):
         # enforce not showing a single image
         assert images.sample.ndim == 3, \
             "Data does NOT have 3 dimensions! Dimensions found: \
@@ -41,14 +41,10 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.presenter = StackVisualiserPresenter(self, images, data_traversal_axis)
 
-        self.image = ImageView(self)
-        self.image.setImage(self.presenter.images.sample)
-        self.layout.addWidget(self.image)
-
-        def presenter_set_image_index(i):
-            self.presenter.current_image_index = i
-
-        self.image_selected.connect(presenter_set_image_index)
+        self.image_view = ImageView(self)
+        self.image_view.setImage(self.presenter.images.sample)
+        self.image_view.roi_changed_callback = self.roi_changed_callback
+        self.layout.addWidget(self.image_view)
 
     @property
     def name(self):
@@ -56,35 +52,11 @@ class StackVisualiserView(BaseMainWindowView):
 
     @property
     def current_roi(self) -> Tuple[int, int, int, int]:
-        roi = SensibleROI.from_points(*self.image.get_roi())
+        roi = SensibleROI.from_points(*self.image_view.get_roi())
         return roi.left, roi.top, roi.right, roi.bottom
 
     def show_current_image(self):
-        self.image.setImage(self.presenter.images.sample)
-
-    # def update_title_event(self):
-    #     text, okPressed = Qt.QInputDialog.getText(
-    #         self, "Rename window", "Enter new name", Qt.QLineEdit.Normal, "")
-    #
-    #     if okPressed:
-    #         self.dock.setWindowTitle(text)
-    #
-    # def setup_shortcuts(self):
-    #     self.histogram_shortcut = Qt.QShortcut(
-    #         Qt.QKeySequence("Shift+C"), self.dock)
-    #     self.histogram_shortcut.activated.connect(
-    #         lambda: self.presenter.notify(StackWindowNotification.HISTOGRAM))
-    #
-    #     self.new_window_histogram_shortcut = Qt.QShortcut(
-    #         Qt.QKeySequence("Ctrl+Shift+C"), self.dock)
-    #     self.new_window_histogram_shortcut.activated.connect(
-    #         lambda: self.presenter.notify(
-    #             StackWindowNotification.NEW_WINDOW_HISTOGRAM))
-    #
-    #     self.rename_shortcut = Qt.QShortcut(Qt.QKeySequence("F2"), self.dock)
-    #     self.rename_shortcut.activated.connect(
-    #         lambda: self.presenter.notify(
-    #             StackWindowNotification.RENAME_WINDOW))
+        self.image_view.setImage(self.presenter.images.sample)
 
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed
@@ -97,44 +69,12 @@ class StackVisualiserView(BaseMainWindowView):
         self.parent().setFloating(False)
 
         # this could happen if run without a parent through see(..)
-        if not isinstance(self.window(), Qt.QDockWidget):
+        if not isinstance(self.window(), QDockWidget):
             self.window().remove_stack(self)  # refers to MainWindow
 
         self.deleteLater()
         # refers to the QDockWidget within which the stack is contained
         self.parent().deleteLater()
 
-    # def set_image_title_to_current_filename(self):
-    #     self.image_axis.set_title(
-    #         self.presenter.get_image_filename(
-    #             self.presenter.current_image_index))
-
-
-def see(data, data_traversal_axis=0, cmap='Greys_r', block=False):
-    """
-    This method provides an option to run an independent stack visualiser.
-    It might be useful when using the MantidImaging package through IPython.
-
-    Warning: This function will internally hide a QApplication in order to show
-    the Stack Visualiser.  This can be accessed with see.q_application, and if
-    modified externally it might crash the caller process.
-
-    :param data: Data to be visualised
-    :param data_traversal_axis: axis on which we're traversing the data
-    :param cmap: Color map
-    :param block: Whether to block the calling process, or not
-    """
-    getLogger(__name__).info("Running independent Stack Visualiser")
-
-    # We cache the QApplication reference, otherwise the interpreter will
-    # segfault when we try to create a second QApplication on a consecutive
-    # call. We cache it as a parameter of this function, because we don't want
-    # to expose the QApplication to the outside
-    if not hasattr(see, 'q_application'):
-        see.q_application = Qt.QApplication(sys.argv)
-
-    dock = Qt.QDockWidget(None)
-    s = StackVisualiserView(None, dock, data, data_traversal_axis, cmap, block)
-    dock.setWidget(s)
-    dock.show()
-    see.q_application.exec_()
+    def roi_changed_callback(self, roi: SensibleROI):
+        self.roi_updated.emit(roi)

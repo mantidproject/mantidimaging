@@ -6,6 +6,9 @@ version dependencies), it should go in here.
 """
 
 import sys
+from logging import getLogger
+
+LOG = getLogger(__name__)
 
 
 def import_skimage_io():
@@ -28,11 +31,14 @@ def import_skimage_io():
 
 def import_mock():
     """
-    Loads a suitable version of mock depedning on the Python version being
+    Loads a suitable version of mock depending on the Python version being
     used.
     """
     import unittest
     import unittest.mock as mock
+
+    # TODO remove import_mock from everywhere
+    LOG.warning("import_mock usage should be removed in favour of normal mock")
 
     if sys.version_info < (3, 6):
         # If on Python 3.5 and below then need to monkey patch this
@@ -42,7 +48,7 @@ def import_mock():
             if not self.call_count == 1:
                 msg = ("Expected '{}' to have been called once. "
                        "Called {} times.".format(
-                           self._mock_name or 'mock', self.call_count))
+                    self._mock_name or 'mock', self.call_count))
                 raise AssertionError(msg)
 
         unittest.mock.Mock.assert_called_once = assert_called_once

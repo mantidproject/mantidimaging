@@ -14,7 +14,7 @@ Widget used for displaying 2D or 3D data. Features:
 """
 import os
 from logging import getLogger
-from typing import Tuple
+from typing import Tuple, Optional, Callable
 
 import numpy as np
 from PyQt5.QtWidgets import QLabel
@@ -30,6 +30,7 @@ from pyqtgraph.graphicsItems.ROI import *
 from pyqtgraph.graphicsItems.ViewBox import *
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageViewTemplate_pyqt import *
 from mantidimaging.gui.utility import compile_ui
 
@@ -79,6 +80,8 @@ class ImageView(QtGui.QWidget):
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
     details: QLabel
+
+    roi_changed_callback: Optional[Callable[[SensibleROI], None]]
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
@@ -150,6 +153,7 @@ class ImageView(QtGui.QWidget):
         self.roi = PlotROI(50)
         self.roi.setZValue(20)
         self.roiString = None
+        self.roi_changed_callback = None
         self.view.addItem(self.roi)
         self.roi.hide()
         self.normRoi = PlotROI(10)
@@ -580,6 +584,9 @@ class ImageView(QtGui.QWidget):
             while data.ndim > 1:
                 data = data.mean(axis=1)
             self.roiCurve.setData(y=data, x=self.tVals)
+
+        if self.roi_changed_callback:
+            self.roi_changed_callback(SensibleROI(left, top, right, bottom))
 
     def quickMinMax(self, data):
         """

@@ -7,10 +7,11 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.utility.histogram import (
     generate_histogram_from_image)
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (
     BlockQtSignals, get_parameters_from_stack)
-from mantidimaging.gui.windows.stack_visualiser import Parameters
+from mantidimaging.gui.windows.stack_visualiser import SVParameters
 from .model import FiltersWindowModel
 
 
@@ -74,8 +75,8 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.do_update_previews(False)
 
-    def handle_roi_selection(self, roi):
-        if roi and self.filter_uses_auto_property(Parameters.ROI):
+    def handle_roi_selection(self, roi: SensibleROI):
+        if roi and self.filter_uses_parameter(SVParameters.ROI):
             self.view.auto_update_triggered.emit()
 
     def set_preview_image_index(self, image_idx):
@@ -105,8 +106,8 @@ class FiltersWindowPresenter(BasePresenter):
             register_func(self.view.filterPropertiesLayout,
                           self.view.auto_update_triggered.emit))
 
-    def filter_uses_auto_property(self, prop):
-        return prop in self.model.parameters_from_stack.values() if \
+    def filter_uses_parameter(self, parameter):
+        return parameter in self.model.parameters_from_stack.values() if \
             self.model.parameters_from_stack is not None else False
 
     def do_apply_filter(self):

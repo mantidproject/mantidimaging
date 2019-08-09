@@ -19,8 +19,7 @@ class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
-        super(FiltersWindowView, self).__init__(
-            main_window, 'gui/ui/filters_window.ui')
+        super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
@@ -32,14 +31,11 @@ class FiltersWindowView(BaseMainWindowView):
         self.handle_filter_selection(0)
 
         # Handle stack selection
-        self.stackSelector.stack_selected_uuid.connect(
-            self.presenter.set_stack_uuid)
-        self.stackSelector.stack_selected_uuid.connect(
-            self.auto_update_triggered.emit)
+        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
+        self.stackSelector.stack_selected_uuid.connect(self.auto_update_triggered.emit)
 
         # Handle apply filter
-        self.applyButton.clicked.connect(
-            lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
         # Preview area
         self.cmap = cmap
