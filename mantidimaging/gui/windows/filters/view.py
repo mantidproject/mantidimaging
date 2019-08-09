@@ -12,7 +12,7 @@ from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class FiltersWindowView(BaseMainWindowView):
@@ -45,8 +45,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.setParent(self)
 
-        self.toolbar = FiltersWindowNavigationToolbar(
-            self.canvas, self)
+        self.toolbar = FiltersWindowNavigationToolbar(self.canvas, self)
         self.toolbar.filter_window = self
 
         self.mplLayout.addWidget(self.toolbar)
@@ -56,16 +55,12 @@ class FiltersWindowView(BaseMainWindowView):
             plt = self.figure.add_subplot(num, title=title, **kwargs)
             return plt
 
-        self.preview_image_before = add_plot(
-            221, 'Image Before')
+        self.preview_image_before = add_plot(221, 'Image Before')
 
-        self.preview_image_after = add_plot(
-            223, 'Image After',
-            sharex=self.preview_image_before,
-            sharey=self.preview_image_before)
+        self.preview_image_after = add_plot(223, 'Image After', sharex=self.preview_image_before,
+                                            sharey=self.preview_image_before)
 
-        self.preview_histogram_before = add_plot(
-            222, 'Histogram Before')
+        self.preview_histogram_before = add_plot(222, 'Histogram Before')
         self.preview_histogram_before.plot([], [])
 
         self.preview_histogram_after = add_plot(

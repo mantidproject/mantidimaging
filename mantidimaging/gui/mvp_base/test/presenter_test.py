@@ -1,13 +1,9 @@
 import unittest
 
+import mock
 from testfixtures import LogCapture
 
-
-
-from mantidimaging.gui.mvp_base import (
-        BaseDialogView, BaseMainWindowView, BasePresenter)
-
-import mock
+from mantidimaging.gui.mvp_base import BaseDialogView, BaseMainWindowView, BasePresenter
 
 
 class MainWindowPresenterTest(unittest.TestCase):

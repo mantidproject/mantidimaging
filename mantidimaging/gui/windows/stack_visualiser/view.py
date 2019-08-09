@@ -10,7 +10,7 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class StackVisualiserView(BaseMainWindowView):

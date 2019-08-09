@@ -12,7 +12,7 @@ from .presenter import CORTiltWindowPresenter
 from .presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class CORTiltWindowView(BaseMainWindowView):

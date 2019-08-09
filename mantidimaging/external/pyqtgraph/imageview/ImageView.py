@@ -17,21 +17,16 @@ from logging import getLogger
 from typing import Tuple, Optional, Callable
 
 import numpy as np
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel
-from pyqtgraph import debug as debug
+from pyqtgraph import debug as debug, ROI, ViewBox, ImageItem, InfiniteLine, LinearRegionItem, QtCore
 from pyqtgraph import ptime as ptime
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
 from pyqtgraph.graphicsItems.GradientEditorItem import addGradientListToDocstring
-from pyqtgraph.graphicsItems.ImageItem import *
-from pyqtgraph.graphicsItems.InfiniteLine import *
-from pyqtgraph.graphicsItems.LinearRegionItem import *
-from pyqtgraph.graphicsItems.ROI import *
-from pyqtgraph.graphicsItems.ViewBox import *
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.external.pyqtgraph.imageview.ImageViewTemplate_pyqt import *
 from mantidimaging.gui.utility import compile_ui
 
 try:
@@ -119,9 +114,9 @@ class ImageView(QtGui.QWidget):
         self.image = None
         self.axes = {}
         self.imageDisp = None
+
         self.ui = compile_ui('gui/ui/ImageViewTemplate.ui', self)
-        # self.ui = Ui_Form()
-        # self.ui.setupUi(self)
+
         self.scene = self.ui.graphicsView.scene()
 
         self.ignoreTimeLine = False

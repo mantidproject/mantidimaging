@@ -10,7 +10,7 @@ from .presenter import Notification as PresNotification
 from .presenter import TomopyReconWindowPresenter
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class TomopyReconWindowView(BaseMainWindowView):

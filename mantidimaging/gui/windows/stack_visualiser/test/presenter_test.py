@@ -1,7 +1,7 @@
 import unittest
 
+import mock
 import numpy.testing as npt
-from mock import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification

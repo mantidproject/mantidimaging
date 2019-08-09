@@ -1,13 +1,10 @@
 import unittest
 
-
+import mock
 
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
+from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
-from mantidimaging.gui.windows.main import (
-        MainWindowView, MainWindowPresenter)
-
-import mock
 
 
 class MainWindowPresenterTest(unittest.TestCase):
@@ -32,7 +29,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         # Expect error message
         self.view.show_error_dialog.assert_called_once_with(
-                "Failed to load stack. See log for details.")
+            "Failed to load stack. See log for details.")
 
     def test_failed_attempt_to_save_shows_error(self):
         # Create a filed load async task
@@ -45,7 +42,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         # Expect error message
         self.view.show_error_dialog.assert_called_once_with(
-                "Failed to save stack. See log for details.")
+            "Failed to save stack. See log for details.")
 
 
 if __name__ == '__main__':
