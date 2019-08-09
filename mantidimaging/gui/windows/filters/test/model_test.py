@@ -4,7 +4,7 @@ from functools import partial
 import mock
 import numpy as np
 
-import mantidimaging.core.testing.unit_test_helper as th
+import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.filters import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import (
     StackVisualiserView, StackVisualiserPresenter, SVParameters)
@@ -26,7 +26,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.sv_view.current_roi = self.ROI_PARAMETER
 
         self.sv_presenter = StackVisualiserPresenter(
-            self.sv_view, self.test_data, data_traversal_axis=0)
+            self.sv_view, self.test_data)
         self.sv_view.presenter = self.sv_presenter
 
         self.model = FiltersWindowModel()

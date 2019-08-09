@@ -28,7 +28,7 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
         self.stack = mock.create_autospec(StackVisualiserView)
         data = Images(
                 sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
-        self.stack.presenter = StackVisualiserPresenter(self.stack, data, 0)
+        self.stack.presenter = StackVisualiserPresenter(self.stack, data)
 
     def test_data_selected(self):
         self.presenter.set_stack(self.stack)

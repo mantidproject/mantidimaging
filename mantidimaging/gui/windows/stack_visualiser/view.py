@@ -1,12 +1,16 @@
-from typing import Tuple
+from typing import Tuple, TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QVBoxLayout, QDockWidget
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from .presenter import StackVisualiserPresenter
+from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView
 
 
 class StackVisualiserView(BaseMainWindowView):
@@ -19,7 +23,7 @@ class StackVisualiserView(BaseMainWindowView):
     dock: QDockWidget
     layout: QVBoxLayout
 
-    def __init__(self, parent, dock, images, data_traversal_axis=0):
+    def __init__(self, parent: 'MainWindowView', dock: QDockWidget, images: Images):
         # enforce not showing a single image
         assert images.sample.ndim == 3, \
             "Data does NOT have 3 dimensions! Dimensions found: \
@@ -39,7 +43,7 @@ class StackVisualiserView(BaseMainWindowView):
         # hanging in the presenter
         dock.closeEvent = self.closeEvent
 
-        self.presenter = StackVisualiserPresenter(self, images, data_traversal_axis)
+        self.presenter = StackVisualiserPresenter(self, images)
 
         self.image_view = ImageView(self)
         self.image_view.setImage(self.presenter.images.sample)
@@ -66,7 +70,7 @@ class StackVisualiserView(BaseMainWindowView):
         # setting floating to false makes window() to return the MainWindow
         # because the window will be docked in, however we delete it
         # immediately after so no visible change occurs
-        self.parent().setFloating(False)
+        self.dock.setFloating(False)
 
         # this could happen if run without a parent through see(..)
         if not isinstance(self.window(), QDockWidget):
@@ -74,7 +78,7 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.deleteLater()
         # refers to the QDockWidget within which the stack is contained
-        self.parent().deleteLater()
+        self.dock.deleteLater()
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)

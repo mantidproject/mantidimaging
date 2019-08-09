@@ -17,10 +17,9 @@ class SVParameters(IntEnum):
 
 
 class StackVisualiserPresenter(BasePresenter):
-    def __init__(self, view, images: Images, data_traversal_axis):
+    def __init__(self, view, images: Images):
         super(StackVisualiserPresenter, self).__init__(view)
         self.images = images
-        self.axis = data_traversal_axis
         self._current_image_index = 0
 
     def notify(self, signal):

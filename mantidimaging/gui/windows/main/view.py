@@ -132,8 +132,7 @@ class MainWindowView(BaseMainWindowView):
         self.addDockWidget(position, dock_widget)
 
         # we can get the stack visualiser widget with dock_widget.widget
-        dock_widget.setWidget(
-            StackVisualiserView(self, dock_widget, stack))
+        dock_widget.setWidget(StackVisualiserView(self, dock_widget, stack))
 
         # proof of concept above
         assert isinstance(

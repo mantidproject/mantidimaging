@@ -1,11 +1,10 @@
 import unittest
 
 import numpy.testing as npt
-from matplotlib.widgets import Slider
 from mock import mock
 
-import mantidimaging.core.testing.unit_test_helper as th
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
+import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification
 
 
 class StackVisualiserPresenterTest(unittest.TestCase):
@@ -19,9 +18,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
-        self.view.slider = mock.create_autospec(Slider)
-        self.presenter = StackVisualiserPresenter(
-            self.view, self.test_data, data_traversal_axis=0)
+        self.presenter = StackVisualiserPresenter(self.view, self.test_data)
 
     def test_get_image(self):
         index = 3
@@ -34,6 +31,10 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_delete_data(self):
         self.presenter.delete_data()
         self.assertIsNone(self.presenter.images, None)
+
+    def test_notify_refresh_image(self):
+        self.presenter.notify(SVNotification.REFRESH_IMAGE)
+        self.view.show_current_image.assert_called_once_with()
 
 
 if __name__ == '__main__':

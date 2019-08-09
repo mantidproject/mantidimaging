@@ -21,7 +21,7 @@ class TomopyReconWindowModelTest(unittest.TestCase):
         self.stack = mock.create_autospec(StackVisualiserView)
         data = Images(
                 sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
-        self.stack.presenter = StackVisualiserPresenter(self.stack, data, 0)
+        self.stack.presenter = StackVisualiserPresenter(self.stack, data)
 
         self.model.initial_select_data(self.stack)
 
