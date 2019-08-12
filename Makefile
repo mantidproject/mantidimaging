@@ -9,11 +9,11 @@ install-build-requirements:
 install-dev-requirements:
 	pip install --yes -r deps/dev-requirements.pip
 
-build-conda-package:
+build-conda-package: install-build-requirements
 	# intended for local usage, does not install build requirements
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
 
-build-conda-deps-package:
+build-conda-deps-package: .remind-for-upload install-build-requirements
 	# this builds and labels a package as 'deps' to signify that
 	# this package should be used to pull dependencies in,
 	# preferably with the --only-deps flag
@@ -28,6 +28,8 @@ build-conda-package-release: .remind-for-upload install-build-requirements
 .remind-for-upload:
 	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
 	@echo "Current: $$(conda config --get anaconda_upload)"
+	@if [ -z "$$UPLOAD_USER" ]; then echo "UPLOAD_USER not set!"; exit 1; fi;
+	@if [ -z "$$ANACONDA_API_TOKEN" ]; then echo "UPLOAD_USER not set!"; exit 1; fi;
 
 test:
 	nosetests
