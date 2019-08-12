@@ -1,5 +1,9 @@
 language: c
 
+dist: xenial
+services:
+  - xvfb
+
 env:
   - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
 
@@ -29,9 +33,7 @@ jobs:
       script:
         - flake8
         - make mypy
-        - sudo Xvfb :1 -screen 0 1024x768x24 </dev/null &
-        - export DISPLAY=":1"
-        - LIBGL_DEBUG=verbose nosetests --verbose
+        - nosetests --verbose
 
     - stage: upload-nightly
       if: branch = master AND env(TRAVIS_EVENT_TYPE) = cron AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly
