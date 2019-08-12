@@ -13,7 +13,8 @@ build-conda-package: install-build-requirements
 	# intended for local usage, does not install build requirements
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
 
-build-conda-deps-package: install-build-requirements
+build-conda-deps-package:
+	conda install conda-build
 	# builds a local package without label or uploading
 	conda-build ./conda -c conda-forge
 
