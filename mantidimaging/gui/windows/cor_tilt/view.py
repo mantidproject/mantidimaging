@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from PyQt5.QtWidgets import QAbstractItemView
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -9,12 +11,17 @@ from .point_table_model import CorTiltPointQtModel
 from .presenter import CORTiltWindowPresenter
 from .presenter import Notification as PresNotification
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+
 
 class CORTiltWindowView(BaseMainWindowView):
 
-    def __init__(self, main_window, cmap='Greys_r'):
-        super(CORTiltWindowView, self).__init__(main_window, 'gui/ui/cor_tilt_window.ui')
+    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
+        super(CORTiltWindowView, self).__init__(
+            main_window, 'gui/ui/cor_tilt_window.ui')
 
+        self.main_window = main_window
         self.presenter = CORTiltWindowPresenter(self, main_window)
 
         self.cmap = cmap
@@ -43,7 +50,7 @@ class CORTiltWindowView(BaseMainWindowView):
                 toolbar = toolbar(canvas, self)
                 layout.addWidget(toolbar)
             layout.addWidget(canvas)
-            return (figure, canvas, toolbar)
+            return figure, canvas, toolbar
 
         # Image plot
         self.image_figure, self.image_canvas, _ = \

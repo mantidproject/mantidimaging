@@ -5,7 +5,7 @@ from . import crop_coords
 
 
 def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], Optional[Callable], Optional[Callable]]:
-    from mantidimaging.gui.windows.stack_visualiser import Parameters
+    from mantidimaging.gui.windows.stack_visualiser import SVParameters
     from mantidimaging.gui.utility import add_property_to_form
 
     add_property_to_form(
@@ -15,7 +15,7 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
         return partial(crop_coords.execute_single)
 
     params = {
-        'region_of_interest': Parameters.ROI
+        'region_of_interest': SVParameters.ROI
     }
 
     return params, None, custom_execute, None

@@ -4,7 +4,6 @@ from PyQt5 import Qt, QtWidgets
 
 from mantidimaging.gui.utility import compile_ui
 
-
 LOG = getLogger(__name__)
 
 
@@ -20,6 +19,7 @@ class BaseMainWindowView(Qt.QMainWindow):
         LOG.debug('UI window closed')
         self.cleanup()
         super(BaseMainWindowView, self).closeEvent(e)
+        self.deleteLater()
 
     def cleanup(self):
         """

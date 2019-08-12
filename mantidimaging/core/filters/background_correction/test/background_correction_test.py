@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-import mantidimaging.core.testing.unit_test_helper as th
+import mantidimaging.test_helpers.unit_test_helper as th
 
 from mantidimaging.core.filters import background_correction
 

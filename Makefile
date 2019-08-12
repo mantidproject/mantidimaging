@@ -46,4 +46,3 @@ docker-build:
 
 docker-run:
 	sudo docker run -e DISPLAY -v $(HOME)/.Xauthority:/home/root/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -t mantidimaging
-

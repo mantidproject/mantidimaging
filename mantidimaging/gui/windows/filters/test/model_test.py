@@ -1,19 +1,16 @@
 import unittest
+from functools import partial
 
+import mock
 import numpy as np
 
-import mantidimaging.core.testing.unit_test_helper as th
-from mantidimaging.core.utility.special_imports import import_mock
-from mantidimaging.gui.windows.stack_visualiser import (
-        StackVisualiserView, StackVisualiserPresenter, Parameters)
-
+import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.filters import FiltersWindowModel
-
-mock = import_mock()
+from mantidimaging.gui.windows.stack_visualiser import (
+    StackVisualiserView, StackVisualiserPresenter, SVParameters)
 
 
 class FiltersWindowModelTest(unittest.TestCase):
-
     APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
     ROI_PARAMETER = (4, 3, 2, 1)
 
@@ -29,7 +26,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.sv_view.current_roi = self.ROI_PARAMETER
 
         self.sv_presenter = StackVisualiserPresenter(
-                self.sv_view, self.test_data, data_traversal_axis=0)
+            self.sv_view, self.test_data)
         self.sv_view.presenter = self.sv_presenter
 
         self.model = FiltersWindowModel()
@@ -62,8 +59,7 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_do_apply_filter(self):
         self.model.stack = self.sv_presenter.view
 
-        execute = mock.MagicMock(
-                return_value=self.execute_mock)
+        execute = mock.Mock(return_value=partial(self.execute_mock))
 
         self.model.setup_filter((None, None, execute, None))
         self.model.do_apply_filter()
@@ -73,11 +69,10 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_do_apply_filter_with_roi(self):
         self.model.stack = self.sv_presenter.view
 
-        execute = mock.MagicMock(
-                return_value=self.execute_mock_with_roi)
+        execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
 
         params = {
-            'roi': Parameters.ROI
+            'roi': SVParameters.ROI
         }
 
         self.model.setup_filter((params, None, execute, None))
@@ -88,13 +83,10 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_do_apply_filter_pre_post_processing(self):
         self.model.stack = self.sv_presenter.view
 
-        execute = mock.MagicMock(
-                return_value=self.execute_mock)
+        execute = mock.MagicMock(return_value=partial(self.execute_mock))
 
-        do_before = mock.MagicMock(
-                return_value=self.apply_before_mock)
-        do_after = mock.MagicMock(
-                return_value=self.apply_after_mock)
+        do_before = mock.MagicMock(return_value=partial(self.apply_before_mock))
+        do_after = mock.MagicMock(return_value=partial(self.apply_after_mock))
 
         self.model.setup_filter((None, do_before, execute, do_after))
         self.model.do_apply_filter()

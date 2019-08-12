@@ -1,10 +1,9 @@
 import os
 import sys
 
-from six import StringIO
-
 import numpy as np
 import numpy.testing as npt
+from six import StringIO
 
 from mantidimaging.core.parallel import utility as pu
 
@@ -155,26 +154,6 @@ def assert_files_exist(cls, base_name, file_extension,
     else:
         filename = base_name + file_extension_separator + file_extension
         cls.assertTrue(os.path.isfile(filename))
-
-
-def mock_property(obj, object_property, property_return_value=None):
-    """
-    Mock a property of the object. This is a helper function to work around the
-    limitations of mocking a property with different return values.
-
-    :param obj: The object whose property will be mocked.
-
-    :param object_property: The property that will be mocked as a string.
-
-    :param property_return_value: The expected return value
-
-    :returns: The PropertyMock object that you can do assertions with
-    """
-    import mantidimaging.core.utility.special_imports as imps
-    mock = imps.import_mock()
-    temp_property_mock = mock.PropertyMock(return_value=property_return_value)
-    setattr(type(obj), object_property, temp_property_mock)
-    return temp_property_mock
 
 
 class IgnoreOutputStreams(object):

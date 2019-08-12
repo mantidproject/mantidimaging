@@ -1,11 +1,9 @@
-import unittest
 import time
+import unittest
 
-from mantidimaging.core.utility.special_imports import import_mock
+import mock
 
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogModel
-
-mock = import_mock()
 
 
 class AsyncTaskDialogModelTest(unittest.TestCase):

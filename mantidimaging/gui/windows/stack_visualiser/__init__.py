@@ -20,10 +20,9 @@
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from .view import StackVisualiserView  # noqa: F401
-
-from .presenter import (  # noqa: F401
-        StackVisualiserPresenter,
-        Notification,
-        Parameters,
-        ImageMode)  # noqa:F821
+from mantidimaging.gui.windows.stack_visualiser.presenter import (  # noqa: F401
+    StackVisualiserPresenter,
+    SVNotification,
+    SVParameters,
+)  # noqa:F821
+from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView  # noqa: F401

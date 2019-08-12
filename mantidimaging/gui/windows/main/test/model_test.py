@@ -1,10 +1,8 @@
 import unittest
 
-from mantidimaging.core.utility.special_imports import import_mock
+import mock
 
 from mantidimaging.gui.windows.main import MainWindowModel
-
-mock = import_mock()
 
 
 class MainWindowModelTest(unittest.TestCase):
