@@ -1,7 +1,6 @@
 from functools import partial
 from typing import Tuple, Callable, Optional, Dict
 
-from mantidimaging.core.utility import value_scaling
 from . import execute
 
 
@@ -14,12 +13,6 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
     def custom_execute():
         return partial(execute)
 
-    def custom_do_before() -> partial:
-        return partial(value_scaling.create_factors)
-
-    def custom_do_after() -> partial:
-        return partial(value_scaling.apply_factor)
-
     params = {"air_region": SVParameters.ROI}
 
-    return params, custom_do_before, custom_execute, custom_do_after
+    return params, None, custom_execute, None
