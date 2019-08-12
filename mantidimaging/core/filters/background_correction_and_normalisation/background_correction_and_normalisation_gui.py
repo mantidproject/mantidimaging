@@ -7,24 +7,16 @@ from . import execute
 
 
 def _gui_register(form, on_change):
-    from mantidimaging.gui.windows.stack_visualiser import Parameters
+    from mantidimaging.gui.windows.stack_visualiser import SVParameters
     from mantidimaging.gui.utility import add_property_to_form
 
-    flatPath, _ = add_property_to_form(
-            'Flat', 'file',
-            form=form, on_change=on_change)
+    flatPath, _ = add_property_to_form("Flat", "file", form=form, on_change=on_change)
 
-    darkPath, _ = add_property_to_form(
-            'Dark', 'file',
-            form=form, on_change=on_change)
+    darkPath, _ = add_property_to_form("Dark", "file", form=form, on_change=on_change)
 
-    add_property_to_form(
-            'Select ROI on stack visualiser.', 'label',
-            form=form, on_change=on_change)
+    add_property_to_form("Select ROI on stack visualiser.", "label", form=form, on_change=on_change)
 
-    params = {
-        'air_region': Parameters.ROI
-    }
+    params = {"air_region": SVParameters.ROI}
 
     def custom_execute():
         flat_path = str(flatPath.text())
@@ -51,7 +43,4 @@ def _gui_register(form, on_change):
 
         return par
 
-    return (params,
-            None,
-            custom_execute,
-            None)
+    return (params, None, custom_execute, None)

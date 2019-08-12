@@ -32,3 +32,6 @@ build-conda-package-release: .remind-for-upload install-build-requirements
 
 test:
 	nosetests
+
+mypy:
+	python -m mypy --ignore-missing-imports mantidimaging

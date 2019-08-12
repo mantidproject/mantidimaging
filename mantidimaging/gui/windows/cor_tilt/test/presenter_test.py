@@ -3,14 +3,13 @@ import unittest
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.special_imports import import_mock
 
 from mantidimaging.gui.windows.cor_tilt import (
-        CORTiltWindowView, CORTiltWindowPresenter)
+    CORTiltWindowView, CORTiltWindowPresenter)
 from mantidimaging.gui.windows.stack_visualiser import (
-        StackVisualiserView, StackVisualiserPresenter)
+    StackVisualiserView, StackVisualiserPresenter)
 
-mock = import_mock()
+import mock
 
 
 class CORTiltWindowPresenterTest(unittest.TestCase):
@@ -23,9 +22,8 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
-        data = Images(
-                sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
-        self.stack.presenter = StackVisualiserPresenter(self.stack, data, 0)
+        data = Images(sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        self.stack.presenter = StackVisualiserPresenter(self.stack, data)
 
     def test_data_selected(self):
         self.presenter.set_stack(self.stack)

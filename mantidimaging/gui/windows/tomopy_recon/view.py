@@ -1,39 +1,43 @@
+from typing import TYPE_CHECKING
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import BlockQtSignals
-
 from .navigation_toolbar import TomopyReconNavigationToolbar
-from .presenter import TomopyReconWindowPresenter
 from .presenter import Notification as PresNotification
+from .presenter import TomopyReconWindowPresenter
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class TomopyReconWindowView(BaseMainWindowView):
 
-    def __init__(self, main_window, cmap='Greys_r'):
-        super(TomopyReconWindowView, self).__init__(
-                main_window, 'gui/ui/tomopy_recon_window.ui')
+    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
+        super(TomopyReconWindowView, self).__init__(main_window, 'gui/ui/tomopy_recon_window.ui')
 
+        self.main_window = main_window
         self.presenter = TomopyReconWindowPresenter(self, main_window)
 
         self.cmap = cmap
 
         # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(
-                self.presenter.set_stack_uuid)
+            self.presenter.set_stack_uuid)
 
         # Handle reconstruct buttons
         self.reconstructSlice.clicked.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.RECONSTRUCT_SLICE))
+            lambda: self.presenter.notify(
+                PresNotification.RECONSTRUCT_SLICE))
         self.reconstructVolume.clicked.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.RECONSTRUCT_VOLUME))
+            lambda: self.presenter.notify(
+                PresNotification.RECONSTRUCT_VOLUME))
 
         # Handle preview slice selection
         self.previewSlice.valueChanged[int].connect(
-                self.presenter.set_preview_slice_idx)
+            self.presenter.set_preview_slice_idx)
 
         def add_mpl_figure(layout, add_toolbar=False):
             figure = Figure()
@@ -50,9 +54,9 @@ class TomopyReconWindowView(BaseMainWindowView):
             add_mpl_figure(self.projectionLayout)
         self.proj_plot = self.proj_figure.add_subplot(111)
         self.proj_canvas.mpl_connect(
-                'button_press_event', self.proj_on_button_press)
+            'button_press_event', self.proj_on_button_press)
         self.proj_canvas.mpl_connect(
-                'scroll_event', self.proj_handle_scroll_wheel)
+            'scroll_event', self.proj_handle_scroll_wheel)
 
         # Reconstructed slice image
         self.recon_figure, self.recon_canvas = \
@@ -63,6 +67,7 @@ class TomopyReconWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
+        self.main_window.tomopy_recon = None
 
     def proj_on_button_press(self, event):
         if event.button == 1 and event.ydata is not None:
@@ -87,8 +92,8 @@ class TomopyReconWindowView(BaseMainWindowView):
                 # Plot the slice indicator
                 x_max = proj_image_data.shape[1] - 1
                 self.proj_plot.plot(
-                        [0, x_max], [indicated_slice, indicated_slice],
-                        c='y')
+                    [0, x_max], [indicated_slice, indicated_slice],
+                    c='y')
 
         self.proj_canvas.draw()
 

@@ -1,6 +1,7 @@
-import matplotlib
-
 from logging import getLogger
+from typing import Optional
+
+import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -8,7 +9,6 @@ from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
-
 from .load_dialog import MWLoadDialog
 from .presenter import MainWindowPresenter
 from .presenter import Notification as PresNotification
@@ -16,7 +16,6 @@ from .save_dialog import MWSaveDialog
 
 
 class MainWindowView(BaseMainWindowView):
-
     active_stacks_changed = Qt.pyqtSignal()
 
     def __init__(self):
@@ -27,6 +26,12 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
+        self.filters: Optional[FiltersWindowView] = None
+        self.cor_tilt: Optional[CORTiltWindowView] = None
+        self.tomopy_recon: Optional[TomopyReconWindowView] = None
+        self.save_dialogue: Optional[MWSaveDialog] = None
+        self.load_dialogue: Optional[MWLoadDialog] = None
+
         self.setup_shortcuts()
         self.update_shortcuts()
 
@@ -36,7 +41,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionExit.triggered.connect(self.close)
 
         self.actionOnlineDocumentation.triggered.connect(
-                self.open_online_documentation)
+            self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
@@ -57,10 +62,9 @@ class MainWindowView(BaseMainWindowView):
         msg_box = QtWidgets.QMessageBox(self)
         msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
-        msg_box.setText(
-                '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
-                '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
-                .format(version_no))
+        msg_box.setText('<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
+                        '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
+                        .format(version_no))
         msg_box.show()
 
     def show_load_dialogue(self):
@@ -78,13 +82,28 @@ class MainWindowView(BaseMainWindowView):
         self.save_dialogue.show()
 
     def show_cor_tilt_window(self):
-        CORTiltWindowView(self).show()
+        if not self.cor_tilt:
+            self.cor_tilt = CORTiltWindowView(self)
+            self.cor_tilt.show()
+        else:
+            self.cor_tilt.activateWindow()
+            self.cor_tilt.raise_()
 
     def show_filters_window(self):
-        FiltersWindowView(self).show()
+        if not self.filters:
+            self.filters = FiltersWindowView(self)
+            self.filters.show()
+        else:
+            self.filters.activateWindow()
+            self.filters.raise_()
 
     def show_tomopy_recon_window(self):
-        TomopyReconWindowView(self).show()
+        if not self.tomopy_recon:
+            self.tomopy_recon = TomopyReconWindowView(self)
+            self.tomopy_recon.show()
+        else:
+            self.tomopy_recon.activateWindow()
+            self.tomopy_recon.raise_()
 
     def stack_list(self):
         return self.presenter.stack_list()
@@ -112,8 +131,7 @@ class MainWindowView(BaseMainWindowView):
         self.addDockWidget(position, dock_widget)
 
         # we can get the stack visualiser widget with dock_widget.widget
-        dock_widget.setWidget(
-            StackVisualiserView(self, dock_widget, stack))
+        dock_widget.setWidget(StackVisualiserView(self, dock_widget, stack))
 
         # proof of concept above
         assert isinstance(
@@ -138,10 +156,10 @@ class MainWindowView(BaseMainWindowView):
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
             msg_box = QtWidgets.QMessageBox.question(
-                    self,
-                    "Quit",
-                    "Are you sure you want to quit?",
-                    defaultButton=QtWidgets.QMessageBox.No)
+                self,
+                "Quit",
+                "Are you sure you want to quit?",
+                defaultButton=QtWidgets.QMessageBox.No)
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:

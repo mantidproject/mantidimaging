@@ -20,7 +20,7 @@ def startup_checks():
         if '1.5' not in ver:
             raise RuntimeError(
                     'Unexpected TomoPy version {}, '
-                    'please update Conda environment'.format(ver))
+                    'please update Conda environment.'.format(ver))
 
 
 def parse_args():

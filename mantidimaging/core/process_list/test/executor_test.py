@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy.testing as npt
 
-import mantidimaging.core.testing.unit_test_helper as th
+import mantidimaging.test_helpers.unit_test_helper as th
 
 from mantidimaging.core import process_list
 from mantidimaging.core.filters import median_filter

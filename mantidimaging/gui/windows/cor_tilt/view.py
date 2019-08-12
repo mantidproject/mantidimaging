@@ -1,43 +1,43 @@
+from typing import TYPE_CHECKING
+
+from PyQt5.QtWidgets import QAbstractItemView
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from PyQt5.QtWidgets import QAbstractItemView
 
 from mantidimaging.core.cor_tilt import Field
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import NavigationToolbarSimple
-
+from .point_table_model import CorTiltPointQtModel
 from .presenter import CORTiltWindowPresenter
 from .presenter import Notification as PresNotification
-from .point_table_model import CorTiltPointQtModel
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class CORTiltWindowView(BaseMainWindowView):
 
-    def __init__(self, main_window, cmap='Greys_r'):
+    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         super(CORTiltWindowView, self).__init__(
-                main_window, 'gui/ui/cor_tilt_window.ui')
+            main_window, 'gui/ui/cor_tilt_window.ui')
 
+        self.main_window = main_window
         self.presenter = CORTiltWindowPresenter(self, main_window)
 
         self.cmap = cmap
 
         # Handle calculate button click
-        self.autoCalculateButton.clicked.connect(
-                lambda: self.presenter.notify(PresNotification.RUN_AUTOMATIC))
+        self.autoCalculateButton.clicked.connect(lambda: self.presenter.notify(PresNotification.RUN_AUTOMATIC))
 
         # Handle stack selection
-        self.stackSelector.stack_selected_uuid.connect(
-                self.presenter.set_stack_uuid)
+        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
         # Handle stack cropping
-        self.setRoi.clicked.connect(
-                lambda: self.presenter.notify(PresNotification.CROP_TO_ROI))
+        self.setRoi.clicked.connect(lambda: self.presenter.notify(PresNotification.CROP_TO_ROI))
 
         # Handle preview image selection
-        self.previewProjectionIndex.valueChanged[int].connect(
-                self.presenter.set_preview_projection_idx)
-        self.previewSliceIndex.valueChanged[int].connect(
-                self.presenter.set_preview_slice_idx)
+        self.previewProjectionIndex.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
+        self.previewSliceIndex.valueChanged[int].connect(self.presenter.set_preview_slice_idx)
 
         # Handle calculation parameters
         self.projectionCountReset.clicked.connect(self.reset_projection_count)
@@ -50,7 +50,7 @@ class CORTiltWindowView(BaseMainWindowView):
                 toolbar = toolbar(canvas, self)
                 layout.addWidget(toolbar)
             layout.addWidget(canvas)
-            return (figure, canvas, toolbar)
+            return figure, canvas, toolbar
 
         # Image plot
         self.image_figure, self.image_canvas, _ = \
@@ -70,10 +70,10 @@ class CORTiltWindowView(BaseMainWindowView):
         self.fit_plot = self.fit_figure.add_subplot(111)
         self.update_fit_plot(None, None, None)
         self.fit_canvas.mpl_connect(
-                'button_press_event', self.handle_fit_plot_button_press)
+            'button_press_event', self.handle_fit_plot_button_press)
         self.fit_canvas.setToolTip(
-                'Double click to open a larger plot (requires at least '
-                '2 points)')
+            'Double click to open a larger plot (requires at least '
+            '2 points)')
 
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
@@ -81,11 +81,11 @@ class CORTiltWindowView(BaseMainWindowView):
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
 
         self.tableView.model().rowsInserted.connect(
-                self.on_table_row_count_change)
+            self.on_table_row_count_change)
         self.tableView.model().rowsRemoved.connect(
-                self.on_table_row_count_change)
+            self.on_table_row_count_change)
         self.tableView.model().modelReset.connect(
-                self.on_table_row_count_change)
+            self.on_table_row_count_change)
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
@@ -93,27 +93,27 @@ class CORTiltWindowView(BaseMainWindowView):
             if tl == br and tl.column() == Field.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(
-                        mdl.index(tl.row(), Field.SLICE_INDEX.value))
+                    mdl.index(tl.row(), Field.SLICE_INDEX.value))
                 self.presenter.handle_cor_manually_changed(slice_idx)
 
         self.tableView.model().rowsRemoved.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.UPDATE_PREVIEWS))
+            lambda: self.presenter.notify(
+                PresNotification.UPDATE_PREVIEWS))
         self.tableView.model().dataChanged.connect(on_data_change)
 
         self.manualClearAllButton.clicked.connect(
-                self.tableView.model().removeAllRows)
+            self.tableView.model().removeAllRows)
         self.manualRemoveButton.clicked.connect(
-                self.tableView.removeSelectedRows)
+            self.tableView.removeSelectedRows)
         self.manualAddButton.clicked.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.ADD_NEW_COR_TABLE_ROW))
+            lambda: self.presenter.notify(
+                PresNotification.ADD_NEW_COR_TABLE_ROW))
         self.manualRefineCorButton.clicked.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.REFINE_SELECTED_COR))
+            lambda: self.presenter.notify(
+                PresNotification.REFINE_SELECTED_COR))
         self.manualFitButton.clicked.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.RUN_MANUAL))
+            lambda: self.presenter.notify(
+                PresNotification.RUN_MANUAL))
 
         def on_row_change(item, _):
             """
@@ -122,17 +122,17 @@ class CORTiltWindowView(BaseMainWindowView):
             """
             if item.isValid():
                 slice_idx = item.model().point(item.row())[
-                        Field.SLICE_INDEX.value]
+                    Field.SLICE_INDEX.value]
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.presenter.notify(
-                        PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
+                    PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
 
             # Only allow the refine button to be clicked when a valid row is
             # selected
             self.manualRefineCorButton.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(
-                on_row_change)
+            on_row_change)
 
         # Update initial UI state
         self.on_table_row_count_change()
@@ -188,9 +188,9 @@ class CORTiltWindowView(BaseMainWindowView):
             # Plot preview slice line
             x_max = image_data.shape[1] - 1
             self.image_plot.plot(
-                    [0, x_max],
-                    [preview_slice_index, preview_slice_index],
-                    c='y')
+                [0, x_max],
+                [preview_slice_index, preview_slice_index],
+                c='y')
 
         # Plot tilt line
         if tilt_line_points is not None:
@@ -223,7 +223,7 @@ class CORTiltWindowView(BaseMainWindowView):
             # Saves time when drawing and maintains image extents
             if self.recon_image is None:
                 self.recon_image = self.recon_plot.imshow(
-                        image_data, cmap=self.cmap)
+                    image_data, cmap=self.cmap)
             else:
                 self.recon_image.set_data(image_data)
                 self.recon_image.autoscale()
