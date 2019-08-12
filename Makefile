@@ -13,11 +13,9 @@ build-conda-package: install-build-requirements
 	# intended for local usage, does not install build requirements
 	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
 
-build-conda-deps-package: .remind-for-upload install-build-requirements
-	# this builds and labels a package as 'deps' to signify that
-	# this package should be used to pull dependencies in,
-	# preferably with the --only-deps flag
-	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label deps
+build-conda-deps-package: install-build-requirements
+	# builds a local package without label or uploading
+	conda-build ./conda -c conda-forge
 
 build-conda-package-nightly: .remind-for-upload install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label nightly
