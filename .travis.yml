@@ -4,6 +4,7 @@ env:
   - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
 
 install:
+  - sudo apt-get install xvfb libgl1-mesa-dri libgl1-mesa-glx xserver-common
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $MINICONDA_DIR
   - export PATH="$MINICONDA_DIR/bin:$PATH"
@@ -28,7 +29,9 @@ jobs:
       script:
         - flake8
         - make mypy
-        - make test
+        - sudo Xvfb :1 -screen 0 1024x768x24 </dev/null &
+        - export DISPLAY=":1"
+        - LIBGL_DEBUG=verbose nosetests --verbose
 
     - stage: upload-nightly
       if: branch = master AND env(TRAVIS_EVENT_TYPE) = cron AND env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = nightly

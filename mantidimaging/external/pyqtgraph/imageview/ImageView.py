@@ -72,6 +72,7 @@ class ImageView(QtGui.QWidget):
     * space begins playing frames. If time values (in seconds) are given
       for each frame, then playback is in realtime.
     """
+
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
     details: QLabel
@@ -115,7 +116,7 @@ class ImageView(QtGui.QWidget):
         self.axes = {}
         self.imageDisp = None
 
-        self.ui = compile_ui('gui/ui/ImageViewTemplate.ui', self)
+        self.ui = compile_ui("gui/ui/ImageViewTemplate.ui", self)
 
         self.scene = self.ui.graphicsView.scene()
 
@@ -152,7 +153,7 @@ class ImageView(QtGui.QWidget):
         self.view.addItem(self.roi)
         self.roi.hide()
         self.normRoi = PlotROI(10)
-        self.normRoi.setPen('y')
+        self.normRoi.setPen("y")
         self.normRoi.setZValue(20)
         self.view.addItem(self.normRoi)
         self.normRoi.hide()
@@ -162,7 +163,7 @@ class ImageView(QtGui.QWidget):
         self.timeLine.setZValue(1)
         self.ui.roiPlot.addItem(self.timeLine)
         self.ui.splitter.setSizes([self.height() - 35, 35])
-        self.ui.roiPlot.hideAxis('left')
+        self.ui.roiPlot.hideAxis("left")
 
         self.keysPressed = {}
         self.playTimer = QtCore.QTimer()
@@ -174,12 +175,12 @@ class ImageView(QtGui.QWidget):
         self.ui.roiPlot.addItem(self.normRgn)
         self.normRgn.hide()
 
-        ## wrap functions from view box
-        for fn in ['addItem', 'removeItem']:
+        # wrap functions from view box
+        for fn in ["addItem", "removeItem"]:
             setattr(self, fn, getattr(self.view, fn))
 
-        ## wrap functions from histogram
-        for fn in ['setHistogramRange', 'autoHistogramRange', 'getLookupTable', 'getLevels']:
+        # wrap functions from histogram
+        for fn in ["setHistogramRange", "autoHistogramRange", "getLookupTable", "getLevels"]:
             setattr(self, fn, getattr(self.ui.histogram, fn))
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
@@ -199,16 +200,33 @@ class ImageView(QtGui.QWidget):
         self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
         self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
 
-        self.ui.roiPlot.registerPlot(self.name + '_ROI')
+        self.ui.roiPlot.registerPlot(self.name + "_ROI")
         self.view.register(self.name)
 
-        self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up, QtCore.Qt.Key_Down,
-                             QtCore.Qt.Key_PageUp, QtCore.Qt.Key_PageDown]
+        self.noRepeatKeys = [
+            QtCore.Qt.Key_Right,
+            QtCore.Qt.Key_Left,
+            QtCore.Qt.Key_Up,
+            QtCore.Qt.Key_Down,
+            QtCore.Qt.Key_PageUp,
+            QtCore.Qt.Key_PageDown,
+        ]
 
-        self.roiClicked()  ## initialize roi plot to correct shape / visibility
+        self.roiClicked()  # initialize roi plot to correct shape / visibility
 
-    def setImage(self, img, autoRange=True, autoLevels=True, levels=None, axes=None, xvals=None, pos=None, scale=None,
-                 transform=None, autoHistogramRange=True):
+    def setImage(
+        self,
+        img,
+        autoRange=True,
+        autoLevels=True,
+        levels=None,
+        axes=None,
+        xvals=None,
+        pos=None,
+        scale=None,
+        transform=None,
+        autoHistogramRange=True,
+    ):
         """
         Set the image to be displayed in the widget.
 
@@ -248,15 +266,17 @@ class ImageView(QtGui.QWidget):
         """
         profiler = debug.Profiler()
 
-        if hasattr(img, 'implements') and img.implements('MetaArray'):
+        if hasattr(img, "implements") and img.implements("MetaArray"):
             img = img.asarray()
 
         if not isinstance(img, np.ndarray):
-            required = ['dtype', 'max', 'min', 'ndim', 'shape', 'size']
+            required = ["dtype", "max", "min", "ndim", "shape", "size"]
             if not all([hasattr(img, attr) for attr in required]):
-                raise TypeError("Image must be NumPy array or any object "
-                                "that provides compatible attributes/methods:\n"
-                                "  %s" % str(required))
+                raise TypeError(
+                    "Image must be NumPy array or any object "
+                    "that provides compatible attributes/methods:\n"
+                    "  %s" % str(required)
+                )
 
         self.image = img
         self.imageDisp = None
@@ -264,19 +284,19 @@ class ImageView(QtGui.QWidget):
         profiler()
 
         if axes is None:
-            x, y = (0, 1) if self.imageItem.axisOrder == 'col-major' else (1, 0)
+            x, y = (0, 1) if self.imageItem.axisOrder == "col-major" else (1, 0)
 
             if img.ndim == 2:
-                self.axes = {'t': None, 'x': x, 'y': y, 'c': None}
+                self.axes = {"t": None, "x": x, "y": y, "c": None}
             elif img.ndim == 3:
                 # Ambiguous case; make a guess
                 if img.shape[2] <= 4:
-                    self.axes = {'t': None, 'x': x, 'y': y, 'c': 2}
+                    self.axes = {"t": None, "x": x, "y": y, "c": 2}
                 else:
-                    self.axes = {'t': 0, 'x': x + 1, 'y': y + 1, 'c': None}
+                    self.axes = {"t": 0, "x": x + 1, "y": y + 1, "c": None}
             elif img.ndim == 4:
                 # Even more ambiguous; just assume the default
-                self.axes = {'t': 0, 'x': x + 1, 'y': y + 1, 'c': 3}
+                self.axes = {"t": 0, "x": x + 1, "y": y + 1, "c": 3}
             else:
                 raise Exception("Can not interpret image with dimensions %s" % (str(img.shape)))
         elif isinstance(axes, dict):
@@ -287,23 +307,25 @@ class ImageView(QtGui.QWidget):
                 self.axes[axes[i]] = i
         else:
             raise Exception(
-                "Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1} or ('t', 'x', 'y', 'c')" % (
-                    str(axes)))
+                "Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1}'\
+                    ' or ('t', 'x', 'y', 'c')"
+                % (str(axes))
+            )
 
-        for x in ['t', 'x', 'y', 'c']:
+        for x in ["t", "x", "y", "c"]:
             self.axes[x] = self.axes.get(x, None)
         axes = self.axes
 
         if xvals is not None:
             self.tVals = xvals
-        elif axes['t'] is not None:
-            if hasattr(img, 'xvals'):
+        elif axes["t"] is not None:
+            if hasattr(img, "xvals"):
                 try:
-                    self.tVals = img.xvals(axes['t'])
-                except:
-                    self.tVals = np.arange(img.shape[axes['t']])
+                    self.tVals = img.xvals(axes["t"])
+                except Exception:
+                    self.tVals = np.arange(img.shape[axes["t"]])
             else:
-                self.tVals = np.arange(img.shape[axes['t']])
+                self.tVals = np.arange(img.shape[axes["t"]])
 
         profiler()
 
@@ -311,7 +333,7 @@ class ImageView(QtGui.QWidget):
         self.updateImage(autoHistogramRange=autoHistogramRange)
         if levels is None and autoLevels:
             self.autoLevels()
-        if levels is not None:  ## this does nothing since getProcessedImage sets these values again.
+        if levels is not None:  # this does nothing since getProcessedImage sets these values again.
             self.setLevels(*levels)
 
         if self.ui.roiBtn.isChecked():
@@ -319,7 +341,7 @@ class ImageView(QtGui.QWidget):
 
         profiler()
 
-        if self.axes['t'] is not None:
+        if self.axes["t"] is not None:
             # self.ui.roiPlot.show()
             self.ui.roiPlot.setXRange(self.tVals.min(), self.tVals.max())
             self.timeLine.setValue(0)
@@ -382,7 +404,8 @@ class ImageView(QtGui.QWidget):
 
     def autoRange(self):
         """Auto scale and pan the view around the image such that the image fills the view."""
-        image = self.getProcessedImage()
+        # this is unused but I am not sure whether it triggers the redraw
+        image = self.getProcessedImage()  # noqa F841
         self.view.autoRange()
 
     def getProcessedImage(self):
@@ -442,7 +465,7 @@ class ImageView(QtGui.QWidget):
                 return
             try:
                 del self.keysPressed[ev.key()]
-            except:
+            except Exception:
                 self.keysPressed = {}
             self.evalKeyState()
         else:
@@ -454,8 +477,8 @@ class ImageView(QtGui.QWidget):
             if key == QtCore.Qt.Key_Right:
                 self.play(20)
                 self.jumpFrames(1)
-                self.lastPlayTime = ptime.time() + 0.2  ## 2ms wait before start
-                ## This happens *after* jumpFrames, since it might take longer than 2ms
+                self.lastPlayTime = ptime.time() + 0.2  # 2ms wait before start
+                # This happens *after* jumpFrames, since it might take longer than 2ms
             elif key == QtCore.Qt.Key_Left:
                 self.play(-20)
                 self.jumpFrames(-1)
@@ -478,14 +501,14 @@ class ImageView(QtGui.QWidget):
             return
         n = int(self.playRate * dt)
         if n != 0:
-            self.lastPlayTime += (float(n) / self.playRate)
+            self.lastPlayTime += float(n) / self.playRate
             if self.currentIndex + n > self.image.shape[0]:
                 self.play(0)
             self.jumpFrames(n)
 
     def setCurrentIndex(self, ind):
         """Set the currently displayed frame index."""
-        self.currentIndex = np.clip(ind, 0, self.getProcessedImage().shape[self.axes['t']] - 1)
+        self.currentIndex = np.clip(ind, 0, self.getProcessedImage().shape[self.axes["t"]] - 1)
         self.updateImage()
         self.ignoreTimeLine = True
         self.timeLine.setValue(self.tVals[self.currentIndex])
@@ -493,7 +516,7 @@ class ImageView(QtGui.QWidget):
 
     def jumpFrames(self, n):
         """Move video frame ahead n frames (may be negative)"""
-        if self.axes['t'] is not None:
+        if self.axes["t"] is not None:
             self.setCurrentIndex(self.currentIndex + n)
 
     def normRadioChanged(self):
@@ -527,7 +550,7 @@ class ImageView(QtGui.QWidget):
         self.normRgn.setVisible(b and self.ui.normTimeRangeCheck.isChecked())
 
     def hasTimeAxis(self):
-        return 't' in self.axes and self.axes['t'] is not None
+        return "t" in self.axes and self.axes["t"] is not None
 
     def roiClicked(self):
         showRoiPlot = False
@@ -539,12 +562,12 @@ class ImageView(QtGui.QWidget):
             self.ui.splitter.setSizes([self.height() * 0.6, self.height() * 0.4])
             self.roiCurve.show()
             self.roiChanged()
-            self.ui.roiPlot.showAxis('left')
+            self.ui.roiPlot.showAxis("left")
         else:
             self.roi.hide()
             self.ui.roiPlot.setMouseEnabled(False, False)
             self.roiCurve.hide()
-            self.ui.roiPlot.hideAxis('left')
+            self.ui.roiPlot.hideAxis("left")
             self.roiString = None
 
         if self.hasTimeAxis():
@@ -573,7 +596,7 @@ class ImageView(QtGui.QWidget):
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
         self.roiString = f"({left}, {top}, {right}, {bottom})"
-        data = self.image[:, left:right, top: bottom]
+        data = self.image[:, left:right, top:bottom]
 
         if data is not None:
             while data.ndim > 1:
@@ -657,7 +680,7 @@ class ImageView(QtGui.QWidget):
         self.sigTimeChanged.emit(ind, time)
 
     def updateImage(self, autoHistogramRange=True):
-        ## Redraw image on screen
+        # Redraw image on screen
         if self.image is None:
             return
 
@@ -667,22 +690,22 @@ class ImageView(QtGui.QWidget):
             self.ui.histogram.setHistogramRange(self.levelMin, self.levelMax)
 
         # Transpose image into order expected by ImageItem
-        if self.imageItem.axisOrder == 'col-major':
-            axorder = ['t', 'x', 'y', 'c']
+        if self.imageItem.axisOrder == "col-major":
+            axorder = ["t", "x", "y", "c"]
         else:
-            axorder = ['t', 'y', 'x', 'c']
+            axorder = ["t", "y", "x", "c"]
         axorder = [self.axes[ax] for ax in axorder if self.axes[ax] is not None]
         image = image.transpose(axorder)
 
         # Select time index
-        if self.axes['t'] is not None:
+        if self.axes["t"] is not None:
             self.ui.roiPlot.show()
             image = image[self.currentIndex]
 
         self.imageItem.updateImage(image)
 
     def timeIndex(self, slider):
-        ## Return the time and frame index indicated by a slider
+        # Return the time and frame index indicated by a slider
         if self.image is None:
             return (0, 0)
 
@@ -694,7 +717,7 @@ class ImageView(QtGui.QWidget):
         else:
             if len(xv) < 2:
                 return (0, 0)
-            totTime = xv[-1] + (xv[-1] - xv[-2])
+            # totTime = xv[-1] + (xv[-1] - xv[-2])
             inds = np.argwhere(xv < t)
             if len(inds) < 1:
                 return (0, t)
@@ -737,7 +760,7 @@ class ImageView(QtGui.QWidget):
 
     def exportClicked(self):
         fileName = QtGui.QFileDialog.getSaveFileName()
-        if fileName == '':
+        if fileName == "":
             return
         self.export(fileName)
 
@@ -774,9 +797,9 @@ class ImageView(QtGui.QWidget):
         """
         self.ui.histogram.gradient.loadPreset(name)
 
-    #################################################################
+    #################################
     # Methods added for Mantid Imaging that are not part of pyqtgraph
-    #################################################################
+    #################################
     def get_roi(self, ensure_in_image=True) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
         roi_pos, roi_size = CloseEnoughPoint(self.roi.pos()), CloseEnoughPoint(self.roi.size())
 

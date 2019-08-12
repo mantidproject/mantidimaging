@@ -8,3 +8,4 @@ hazelnut == 0.4.1
 gitpython == 2.1.12
 sphinx
 mock==3.0.5
+mypy
