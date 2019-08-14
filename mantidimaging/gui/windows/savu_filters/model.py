@@ -202,12 +202,14 @@ class SavuFiltersWindowModel(object):
             content = json.loads(response.content)
             if response.status_code == 200:
                 logger.info(content)
-                preparation.sio_client.emit("join",
-                                            json.dumps({
-                                                "job": content["job_id"],
-                                                "queue": "0"
-                                            }),
-                                            namespace=WS_JOB_STATUS_NAMESPACE)
+                if preparation.sio_client:
+                    # TODO this queue should be determined from the response
+                    preparation.sio_client.emit("join",
+                                                json.dumps({
+                                                    "job": content["job_id"],
+                                                    "queue": "0"
+                                                }),
+                                                namespace=WS_JOB_STATUS_NAMESPACE)
 
             else:
                 logger.error(f"Error code: {response.status_code}, message: {content['message']}")

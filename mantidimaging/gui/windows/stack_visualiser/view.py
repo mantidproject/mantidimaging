@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QVBoxLayout, QDockWidget, QAction, QWidget
@@ -9,9 +9,8 @@ from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
 
-
-# if TYPE_CHECKING:
-#     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class StackVisualiserView(BaseMainWindowView):

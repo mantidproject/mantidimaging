@@ -1,4 +1,3 @@
-import json
 from concurrent.futures import Future
 from concurrent.futures import ProcessPoolExecutor
 from logging import getLogger
@@ -33,7 +32,6 @@ async def prepare_data():
 
     try:
         sio.connect(SERVER_WS_URL, namespaces=[WS_JOB_STATUS_NAMESPACE])
-        # sio.emit("join", json.dumps({"job": "0", "queue": "0"}), namespace=WS_JOB_STATUS_NAMESPACE)
     except socketio.exceptions.ConnectionError as err:
         sio = None
         getLogger(__name__).warning(f"Could not connect to SAVU Socket IO, error: {err}")

@@ -89,7 +89,8 @@ class FiltersWindowModel(object):
         """
         Sets filter properties from result of registration function.
         """
-        self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper, self.do_after_wrapper = filter_specifics
+        self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper, self.do_after_wrapper = \
+            filter_specifics
 
     def apply_filter(self, images, exec_kwargs):
         """
