@@ -22,7 +22,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         :param main_window:
         :param cmap:
         """
-        super(SavuFiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
+        super(SavuFiltersWindowView, self).__init__(main_window, 'gui/ui/savu_filters_window.ui')
 
         self.presenter = SavuFiltersWindowPresenter(self, main_window)
 

@@ -1,7 +1,7 @@
 from typing import Tuple, TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QVBoxLayout, QDockWidget
+from PyQt5.QtWidgets import QVBoxLayout, QDockWidget, QAction
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -46,6 +46,10 @@ class StackVisualiserView(BaseMainWindowView):
         self.presenter = StackVisualiserPresenter(self, images)
 
         self.image_view = ImageView(self)
+        self.actionCloseStack = QAction("Close window", self)
+        self.actionCloseStack.triggered.connect(lambda: self.close())
+        self.actionCloseStack.setShortcut("Ctrl+W")
+        self.dock.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.sample)
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
