@@ -7,7 +7,12 @@ from typing import Optional
 import socketio
 from requests_futures.sessions import FuturesSession
 
-from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, SERVER_WS_URL, PLUGINS_WITH_DETAILS_URL
+from mantidimaging.core.utility.savu_interop.webapi import (
+    SERVER_URL,
+    SERVER_WS_URL,
+    PLUGINS_WITH_DETAILS_URL,
+    WS_JOB_STATUS_NAMESPACE,
+)
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
@@ -22,8 +27,8 @@ async def prepare_data():
     sio = socketio.Client()
 
     try:
-        sio.connect(SERVER_WS_URL, namespaces=["/job_status"])
-        sio.emit("join", json.dumps({"job": "0", "queue": "0"}), namespace="/job_status")
+        sio.connect(SERVER_WS_URL, namespaces=[WS_JOB_STATUS_NAMESPACE])
+        sio.emit("join", json.dumps({"job": "0", "queue": "0"}), namespace=WS_JOB_STATUS_NAMESPACE)
     except socketio.exceptions.ConnectionError as err:
         sio = None
         getLogger(__name__).warning(f"Could not connect to SAVU Socket IO, error: {err}")
