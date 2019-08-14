@@ -28,7 +28,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
     def __init__(self, view, main_window):
         super(SavuFiltersWindowPresenter, self).__init__(view)
 
-        self.model = SavuFiltersWindowModel()
+        self.model = SavuFiltersWindowModel(self)
         self.main_window = main_window
 
         self.current_filter: CurrentFilterData = ()
@@ -151,16 +151,13 @@ class SavuFiltersWindowPresenter(BasePresenter):
                 if maintain_axes:
                     # Record the image axis range from the existing preview
                     # image
-                    image_axis_ranges = (
-                        (self.view.preview_image_before.get_xlim(), self.view.preview_image_before.get_ylim())
-                        if self.view.preview_image_before.images
-                        else None
-                    )
+                    image_axis_ranges = ((self.view.preview_image_before.get_xlim(),
+                                          self.view.preview_image_before.get_ylim())
+                                         if self.view.preview_image_before.images else None)
 
                 # Update image before
-                self._update_preview_image(
-                    before_image_data, self.view.preview_image_before, self.view.preview_histogram_before, progress
-                )
+                self._update_preview_image(before_image_data, self.view.preview_image_before,
+                                           self.view.preview_histogram_before, progress)
 
                 # Generate sub-stack and run filter
                 progress.update(msg="Running preview filter")
@@ -176,9 +173,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
                 # Update image after
                 if filtered_image_data is not None:
-                    self._update_preview_image(
-                        filtered_image_data, self.view.preview_image_after, self.view.preview_histogram_after, progress
-                    )
+                    self._update_preview_image(filtered_image_data, self.view.preview_image_after,
+                                               self.view.preview_histogram_after, progress)
 
                 if maintain_axes:
                     # Set the axis range on the newly created image to keep
@@ -214,3 +210,6 @@ class SavuFiltersWindowPresenter(BasePresenter):
         idx = self.model.preview_image_idx + offset
         idx = max(min(idx, self.max_preview_image_idx), 0)
         self.set_preview_image_index(idx)
+
+    def update_output_window(self, text):
+        self.view.new_output.emit(text)

@@ -1,5 +1,5 @@
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
@@ -12,6 +12,7 @@ from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPr
 
 class SavuFiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
+    new_output = Qt.pyqtSignal(str)
     info: QLabel
     description: QLabel
 
@@ -26,6 +27,12 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
         self.presenter = SavuFiltersWindowPresenter(self, main_window)
 
+        self.floating_output_window = QMainWindow(self)
+        self.floating_output = QTextEdit(self.floating_output_window)
+        self.floating_output_window.setCentralWidget(self.floating_output)
+        self.floating_output_window.show()
+        self.new_output.connect(self.set_floating_output_text)
+
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
@@ -36,8 +43,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.stackSelector.stack_selected_uuid.connect(self.auto_update_triggered.emit)
 
         # Handle apply filter
-        self.applyButton.clicked.connect(
-            lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
         # Preview area
         self.cmap = cmap
@@ -57,34 +63,30 @@ class SavuFiltersWindowView(BaseMainWindowView):
             plt = self.figure.add_subplot(num, title=title, **kwargs)
             return plt
 
-        self.preview_image_before = add_plot(
-            221, 'Image Before')
+        self.preview_image_before = add_plot(221, 'Image Before')
 
-        self.preview_image_after = add_plot(
-            223, 'Image After',
-            sharex=self.preview_image_before,
-            sharey=self.preview_image_before)
+        self.preview_image_after = add_plot(223,
+                                            'Image After',
+                                            sharex=self.preview_image_before,
+                                            sharey=self.preview_image_before)
 
-        self.preview_histogram_before = add_plot(
-            222, 'Histogram Before')
+        self.preview_histogram_before = add_plot(222, 'Histogram Before')
         self.preview_histogram_before.plot([], [])
 
-        self.preview_histogram_after = add_plot(
-            224, 'Histogram After',
-            sharex=self.preview_histogram_before,
-            sharey=self.preview_histogram_before)
+        self.preview_histogram_after = add_plot(224,
+                                                'Histogram After',
+                                                sharex=self.preview_histogram_before,
+                                                sharey=self.preview_histogram_before)
         self.preview_histogram_after.plot([], [])
 
         self.clear_preview_plots()
 
         # Handle preview index selection
-        self.previewImageIndex.valueChanged[int].connect(
-            self.presenter.set_preview_image_index)
+        self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)
 
         # Preview update triggers
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
-        self.updatePreviewButton.clicked.connect(
-            lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
+        self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
@@ -129,3 +131,6 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
     def set_description(self, info, desc):
         self.info.setText("\n".join([info, desc]))
+
+    def set_floating_output_text(self, text):
+        self.floating_output.setText(self.floating_output.toPlainText() + "\n" + text)

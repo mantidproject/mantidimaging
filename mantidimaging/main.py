@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import argparse
 import asyncio
 import logging
@@ -11,8 +10,7 @@ from mantidimaging.gui.windows.savu_filters.preparation import prepare_data
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
-    message, category, filename, lineno, line=""
-)
+    message, category, filename, lineno, line="")
 
 
 def startup_checks():
@@ -30,7 +28,8 @@ def parse_args():
         "--log-level",
         type=str,
         default="DEBUG",
-        help="Log verbosity level. " "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+        help="Log verbosity level. "
+        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")

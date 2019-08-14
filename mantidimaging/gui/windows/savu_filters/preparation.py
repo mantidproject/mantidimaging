@@ -26,9 +26,14 @@ async def prepare_data():
     print("Preparing SOCKET IO connection")
     sio = socketio.Client()
 
+    # make output from the communication libs a bit less verbose
+    getLogger("engineio.client").setLevel("WARNING")
+    getLogger("socketio.client").setLevel("WARNING")
+    getLogger("urllib3.connectionpool").setLevel("INFO")
+
     try:
         sio.connect(SERVER_WS_URL, namespaces=[WS_JOB_STATUS_NAMESPACE])
-        sio.emit("join", json.dumps({"job": "0", "queue": "0"}), namespace=WS_JOB_STATUS_NAMESPACE)
+        # sio.emit("join", json.dumps({"job": "0", "queue": "0"}), namespace=WS_JOB_STATUS_NAMESPACE)
     except socketio.exceptions.ConnectionError as err:
         sio = None
         getLogger(__name__).warning(f"Could not connect to SAVU Socket IO, error: {err}")

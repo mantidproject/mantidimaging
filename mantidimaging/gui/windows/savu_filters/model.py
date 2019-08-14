@@ -12,6 +12,8 @@ from requests import Response
 
 from mantidimaging.core.io import savu_config_writer
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, SAVUPluginListEntry, SAVUPlugin
+from mantidimaging.core.utility.savu_interop.webapi import (
+    WS_JOB_STATUS_NAMESPACE, )
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
 from mantidimaging.gui.windows.savu_filters import preparation
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
@@ -20,19 +22,20 @@ CurrentFilterData = Tuple[SAVUPlugin, List[QWidget]]
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val,)
+    return val if isinstance(val, tuple) else (val, )
 
 
 class SavuFiltersWindowModel(object):
     PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
-    def __init__(self):
+    def __init__(self, presenter=None):
         super(SavuFiltersWindowModel, self).__init__()
 
         # TODO sort these out
         self.auto_props, self.do_before, self.execute, self.do_after = [], [], [], []
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
+        self.presenter = presenter
         request: Future = preparation.data
         try:
             self.response: Response = request.result(timeout=5)
@@ -42,7 +45,6 @@ class SavuFiltersWindowModel(object):
                 preparation.prepare_data()
                 raise ValueError(
                     f"Did not get valid data from the Savu backend. Error code {self.response.status_code}")
-                # try contacting the SAVU backend again
         except ConnectionError:
             preparation.prepare_data()
             raise RuntimeError("Savu backend is not running. Cannot open GUI.")
@@ -58,8 +60,8 @@ class SavuFiltersWindowModel(object):
         self.do_after = None
 
         @preparation.sio_client.on("status", namespace="/job_status")
-        def called_when_server_emits_event_status(uhh):
-            print("hi there", uhh)
+        def called_when_server_emits_event_status(output):
+            self.presenter.update_output_window(output)
 
     def register_filters(self, filters: Dict):
         """
@@ -188,8 +190,7 @@ class SavuFiltersWindowModel(object):
 
         session: FuturesSession = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
         files = {"process_list_file": file.read_bytes()}
-        data = {"process_list_name": self.stack.name,
-                "data_dir": "/data"}
+        data = {"process_list_name": self.stack.name, "data_dir": "/data"}
         # send POST request (with progress updates..) to API
         future: Future = session.post(f"{SERVER_URL}/{RUN_URL}", files=files, data=data)
 
@@ -201,6 +202,13 @@ class SavuFiltersWindowModel(object):
             content = json.loads(response.content)
             if response.status_code == 200:
                 logger.info(content)
+                preparation.sio_client.emit("join",
+                                            json.dumps({
+                                                "job": content["job_id"],
+                                                "queue": "0"
+                                            }),
+                                            namespace=WS_JOB_STATUS_NAMESPACE)
+
             else:
                 logger.error(f"Error code: {response.status_code}, message: {content['message']}")
         except ConnectionError:
