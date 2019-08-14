@@ -19,7 +19,7 @@ install:
   # set up the conda environment variables in this shell, for conda activate
   - source $MINICONDA_DIR/etc/profile.d/conda.sh
   # build a local package and install
-  - conda config --add channels conda-forge
+  - conda config --append channels conda-forge
   - make build-conda-deps-package
   - conda create -n $ENVIRONMENT_NAME -c conda-forge --use-local --only-deps mantidimaging
   - conda activate $ENVIRONMENT_NAME

@@ -116,3 +116,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+*.code-workspace

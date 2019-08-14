@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import argparse
+import asyncio
 import logging
 import warnings
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.optional_imports import safe_import
+from mantidimaging.gui.windows.savu_filters.preparation import prepare_data
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -17,7 +19,7 @@ def startup_checks():
     tomopy = safe_import("tomopy")
     if tomopy is not None:
         ver = tomopy.__version__
-        if "1.5" not in ver:
+        if "1.6" not in ver:
             raise RuntimeError("Unexpected TomoPy version {}, " "please update Conda environment".format(ver))
 
 
@@ -36,9 +38,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+async def main():
     args = parse_args()
-
     # Print version number and exit
     if args.version:
         from mantidimaging import __version__ as version_no
@@ -50,10 +51,12 @@ def main():
 
     startup_checks()
 
+    await prepare_data()
+
     from mantidimaging import gui
 
     gui.execute()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
