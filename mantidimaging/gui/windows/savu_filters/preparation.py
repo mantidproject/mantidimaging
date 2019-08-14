@@ -1,22 +1,34 @@
+import json
 from concurrent.futures import Future
 from concurrent.futures import ProcessPoolExecutor
+from logging import getLogger
+from typing import Optional
 
+import socketio
 from requests_futures.sessions import FuturesSession
 
-from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, PLUGINS_WITH_DETAILS_URL
+from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, SERVER_WS_URL, PLUGINS_WITH_DETAILS_URL
 
-data = None
+data: Optional[Future] = None
+sio_client: Optional[socketio.Client] = None
 
 
-def prepare_data():
-    session = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
-    # TODO consider integrating more into the model with the Async requests and stuff
+async def prepare_data():
     # TODO consider moving to CORE as this is not a GUI feature really
-    response: Future = session.get(f"{SERVER_URL}/{PLUGINS_WITH_DETAILS_URL}")
+    session = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
 
-    global data
+    response: Future = session.get(f"{SERVER_URL}/{PLUGINS_WITH_DETAILS_URL}")
+    print("Preparing SOCKET IO connection")
+    sio = socketio.Client()
+
+    try:
+        sio.connect(SERVER_WS_URL, namespaces=["/job_status"])
+        sio.emit("join", json.dumps({"job": "0", "queue": "0"}), namespace="/job_status")
+    except socketio.exceptions.ConnectionError as err:
+        sio = None
+        getLogger(__name__).warning(f"Could not connect to SAVU Socket IO, error: {err}")
+
+    global data, sio_client
 
     data = response
-
-
-prepare_data()
+    sio_client = sio

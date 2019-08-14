@@ -57,6 +57,10 @@ class SavuFiltersWindowModel(object):
         self.execute = None
         self.do_after = None
 
+        @preparation.sio_client.on("status", namespace="/job_status")
+        def called_when_server_emits_event_status(uhh):
+            print("hi there", uhh)
+
     def register_filters(self, filters: Dict):
         """
         Builds a local registry of filters.
