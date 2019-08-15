@@ -23,7 +23,8 @@ async def prepare_data():
 
     response: Future = session.get(f"{SERVER_URL}/{PLUGINS_WITH_DETAILS_URL}")
     print("Preparing SOCKET IO connection")
-    sio = socketio.Client()
+    global sio_client
+    sio_client = socketio.Client()
 
     # make output from the communication libs a bit less verbose
     getLogger("engineio.client").setLevel("WARNING")
@@ -31,12 +32,10 @@ async def prepare_data():
     getLogger("urllib3.connectionpool").setLevel("INFO")
 
     try:
-        sio.connect(SERVER_WS_URL, namespaces=[WS_JOB_STATUS_NAMESPACE])
+        sio_client.connect(SERVER_WS_URL, namespaces=[WS_JOB_STATUS_NAMESPACE])
     except socketio.exceptions.ConnectionError as err:
-        sio = None
         getLogger(__name__).warning(f"Could not connect to SAVU Socket IO, error: {err}")
 
-    global data, sio_client
+    global data
 
     data = response
-    sio_client = sio

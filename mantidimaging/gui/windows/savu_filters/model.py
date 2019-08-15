@@ -4,7 +4,7 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from functools import partial
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Optional, List, Tuple
+from typing import Dict, Optional, List, Tuple, TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
@@ -12,30 +12,33 @@ from requests import Response
 
 from mantidimaging.core.io import savu_config_writer
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, SAVUPluginListEntry, SAVUPlugin
-from mantidimaging.core.utility.savu_interop.webapi import (
-    WS_JOB_STATUS_NAMESPACE, )
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
 from mantidimaging.gui.windows.savu_filters import preparation
+from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.stack_visualiser import SavuFiltersWindowPresenter
 
 CurrentFilterData = Tuple[SAVUPlugin, List[QWidget]]
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class SavuFiltersWindowModel(object):
     PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
-    def __init__(self, presenter=None):
+    def __init__(self, presenter: 'SavuFiltersWindowPresenter'):
         super(SavuFiltersWindowModel, self).__init__()
+        self.presenter: 'SavuFiltersWindowPresenter' = presenter
 
         # TODO sort these out
         self.auto_props, self.do_before, self.execute, self.do_after = [], [], [], []
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
-        self.presenter = presenter
+
         request: Future = preparation.data
         try:
             self.response: Response = request.result(timeout=5)
@@ -58,10 +61,6 @@ class SavuFiltersWindowModel(object):
         self.do_before = None
         self.execute = None
         self.do_after = None
-
-        @preparation.sio_client.on("status", namespace="/job_status")
-        def called_when_server_emits_event_status(output):
-            self.presenter.update_output_window(output)
 
     def register_filters(self, filters: Dict):
         """
@@ -185,36 +184,43 @@ class SavuFiltersWindowModel(object):
         file = self.PROCESS_LIST_DIR / f"pl_{self.stack.name}_{len(spl)}.nxs"
         savu_config_writer.save(spl, file, overwrite=True)
 
-        from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, RUN_URL
+        from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, JOB_SUBMIT_URL
         from requests_futures.sessions import FuturesSession
 
         session: FuturesSession = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
         files = {"process_list_file": file.read_bytes()}
-        data = {"process_list_name": self.stack.name, "data_dir": "/data"}
+        data = {"process_list_name": self.stack.name, "dataset": "/data"}
+
+        # TODO get QUEUE parameter somewhere from the GUI
+        # FIXME currently just sticking it into preview
+
         # send POST request (with progress updates..) to API
-        future: Future = session.post(f"{SERVER_URL}/{RUN_URL}", files=files, data=data)
+        future: Future = session.post(f"{SERVER_URL}/{JOB_SUBMIT_URL.format('preview')}", files=files, data=data)
 
         logger = getLogger(__name__)
         logger.info("Sent POST request and waiting for response")
-        # listen for end
         try:
+            # wait until the job startup process is finished
             response: Response = future.result()
-            content = json.loads(response.content)
-            if response.status_code == 200:
-                logger.info(content)
-                if preparation.sio_client:
-                    # TODO this queue should be determined from the response
-                    preparation.sio_client.emit("join",
-                                                json.dumps({
-                                                    "job": content["job_id"],
-                                                    "queue": "0"
-                                                }),
-                                                namespace=WS_JOB_STATUS_NAMESPACE)
+        except ConnectionError as e:
+            msg = f"Failed to connect to Savu backend. Error: {e}"
+            logger.error(msg)
+            raise RuntimeError(msg)
 
-            else:
-                logger.error(f"Error code: {response.status_code}, message: {content['message']}")
-        except ConnectionError:
-            raise ValueError("Failed to connect to Savu backend")
+        content_json = json.loads(response.content)
+        if response.status_code == 200:
+            try:
+                content = JobRunResponseContent(content_json["job"]["id"], content_json["queue"])
+            except TypeError as e:
+                msg = f"Could not parse content from remote server.\nContent: {response.content}\nError: {e}"
+                logger.error(msg)
+                raise RuntimeError(msg)
+
+            logger.info(content)
+            self.presenter.do_job_submission_success(content)
+        else:
+            logger.error(f"Error code: {response.status_code}, message: {content_json['message']}")
+            self.presenter.do_job_submission_failure(content_json)
 
         # reload changes? what do
         # TODO figure out how to get params like ROI later
@@ -236,9 +242,6 @@ class SavuFiltersWindowModel(object):
             description[param.name] = param.description
             if param.is_hidden:
                 hidden.append(param.name)
-
-        # data["in_datasets"] = ["tomo"]
-        # data["out_datasets"] = ["tomo"]
 
         return SAVUPluginListEntry(active=True,
                                    data=np.string_(json.dumps(data)),

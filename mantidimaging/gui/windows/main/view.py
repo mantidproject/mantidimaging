@@ -37,6 +37,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter = MainWindowPresenter(self)
 
         self.filters: Optional[FiltersWindowView] = None
+        self.savu_filters: Optional[SavuFiltersWindowView] = None
         self.cor_tilt: Optional[CORTiltWindowView] = None
         self.tomopy_recon: Optional[TomopyReconWindowView] = None
         self.save_dialogue: Optional[MWSaveDialog] = None
@@ -115,10 +116,15 @@ class MainWindowView(BaseMainWindowView):
             self.filters.raise_()
 
     def show_savu_filters_window(self):
-        try:
-            SavuFiltersWindowView(self).show()
-        except RuntimeError as e:
-            QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
+        if not self.savu_filters:
+            try:
+                self.savu_filters = SavuFiltersWindowView(self)
+                self.savu_filters.show()
+            except RuntimeError as e:
+                QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
+        else:
+            self.savu_filters.activateWindow()
+            self.savu_filters.raise_()
 
     def show_tomopy_recon_window(self):
         if not self.tomopy_recon:

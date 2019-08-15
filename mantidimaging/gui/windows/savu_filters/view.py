@@ -1,3 +1,6 @@
+import os
+from typing import TYPE_CHECKING
+
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -6,17 +9,23 @@ from matplotlib.figure import Figure
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.windows.filters.navigation_toolbar import FiltersWindowNavigationToolbar
+from mantidimaging.gui.windows.savu_filters.path_config import OUTPUT_REMOTE, OUTPUT_LOCAL
 from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
+from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main.view import MainWindowView
 
 
 class SavuFiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
     new_output = Qt.pyqtSignal(str)
+    savu_finished = Qt.pyqtSignal(str)
     info: QLabel
     description: QLabel
 
-    def __init__(self, main_window, cmap='Greys_r'):
+    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         """
         TODO add Show plugins directory button
         Use qt/python/mantidqt/utils/show_in_explorer.py from Mantid
@@ -25,13 +34,16 @@ class SavuFiltersWindowView(BaseMainWindowView):
         """
         super(SavuFiltersWindowView, self).__init__(main_window, 'gui/ui/savu_filters_window.ui')
 
-        self.presenter = SavuFiltersWindowPresenter(self, main_window)
-
+        self.remote_presenter = SavuFiltersRemotePresenter(self)
+        self.presenter = SavuFiltersWindowPresenter(self, main_window, self.remote_presenter)
+        self.main_window = main_window
         self.floating_output_window = QMainWindow(self)
         self.floating_output = QTextEdit(self.floating_output_window)
         self.floating_output_window.setCentralWidget(self.floating_output)
         self.floating_output_window.show()
-        self.new_output.connect(self.set_floating_output_text)
+        self.new_output.connect(self.append_output_text)
+
+        self.savu_finished.connect(self.load_savu_stack)
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
@@ -132,5 +144,22 @@ class SavuFiltersWindowView(BaseMainWindowView):
     def set_description(self, info, desc):
         self.info.setText("\n".join([info, desc]))
 
-    def set_floating_output_text(self, text):
+    def append_output_text(self, text):
         self.floating_output.setText(self.floating_output.toPlainText() + "\n" + text)
+
+    def clear_output_text(self):
+        self.floating_output.setText("")
+
+    def load_savu_stack(self, output: str):
+        # replace remote path with local
+        local_output = output.replace(OUTPUT_REMOTE, OUTPUT_LOCAL)
+        # navigate to the output folder TODO make this more robust somehow
+        local_output = os.path.join(local_output, os.listdir(local_output)[0], "TiffSaver-tomo")
+        kwargs = {'sample_path': local_output,
+                  'flat_path': '',
+                  'dark_path': '',
+                  'image_format': "tiff",
+                  'parallel_load': False,
+                  'indices': None,
+                  'custom_name': "apples"}
+        self.main_window.presenter.load_stack(kwargs)

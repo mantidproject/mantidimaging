@@ -1,6 +1,6 @@
 from enum import Enum
 from logging import getLogger
-from typing import List
+from typing import List, TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -12,8 +12,14 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals, get_parameters_from_stack
 from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel, CurrentFilterData
+from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
 from mantidimaging.gui.windows.stack_visualiser import SVParameters, StackVisualiserView
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
+    from mantidimaging.gui.windows.main.view import MainWindowView
 
 
 class Notification(Enum):
@@ -25,10 +31,13 @@ class Notification(Enum):
 
 
 class SavuFiltersWindowPresenter(BasePresenter):
-    def __init__(self, view, main_window):
+    def __init__(self, view: 'SavuFiltersWindowView',
+                 main_window: 'MainWindowView',
+                 remote_presenter: SavuFiltersRemotePresenter):
         super(SavuFiltersWindowPresenter, self).__init__(view)
 
         self.model = SavuFiltersWindowModel(self)
+        self.remote_presenter = remote_presenter
         self.main_window = main_window
 
         self.current_filter: CurrentFilterData = ()
@@ -125,6 +134,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
         return prop in self.model.auto_props.values() if self.model.auto_props is not None else False
 
     def do_apply_filter(self):
+        self.view.clear_output_text()
         self.model.do_apply_filter(self.current_filter)
 
     def do_update_previews(self, maintain_axes=True):
@@ -211,5 +221,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
         idx = max(min(idx, self.max_preview_image_idx), 0)
         self.set_preview_image_index(idx)
 
-    def update_output_window(self, text):
-        self.view.new_output.emit(text)
+    def do_job_submission_success(self, response_content: JobRunResponseContent):
+        self.remote_presenter.do_job_submission_success(response_content)
+
+    def do_job_submission_failure(self, response_content: dict):
+        raise NotImplementedError("TODO what do when job submission fails?!")

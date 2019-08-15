@@ -36,16 +36,18 @@ class MainWindowPresenter(BasePresenter):
         self.model.do_remove_stack(uuid)
         self.view.active_stacks_changed.emit()
 
-    def load_stack(self):
+    def load_stack(self, kwargs=None):
         log = getLogger(__name__)
 
-        kwargs = {'selected_file': self.view.load_dialogue.sample_file(),
-                  'sample_path': self.view.load_dialogue.sample_path_text(),
-                  'flat_path': self.view.load_dialogue.flat_path_text(),
-                  'dark_path': self.view.load_dialogue.dark_path_text(),
-                  'image_format': self.view.load_dialogue.image_format,
-                  'parallel_load': self.view.load_dialogue.parallel_load(),
-                  'indices': self.view.load_dialogue.indices(), 'custom_name': self.view.load_dialogue.window_title()}
+        if not kwargs:
+            kwargs = {'selected_file': self.view.load_dialogue.sample_file(),
+                      'sample_path': self.view.load_dialogue.sample_path_text(),
+                      'flat_path': self.view.load_dialogue.flat_path_text(),
+                      'dark_path': self.view.load_dialogue.dark_path_text(),
+                      'image_format': self.view.load_dialogue.image_format,
+                      'parallel_load': self.view.load_dialogue.parallel_load(),
+                      'indices': self.view.load_dialogue.indices(),
+                      'custom_name': self.view.load_dialogue.window_title()}
 
         if not kwargs['sample_path']:
             log.debug("No sample path provided, cannot load anything")
