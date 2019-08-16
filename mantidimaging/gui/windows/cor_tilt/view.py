@@ -142,6 +142,7 @@ class CORTiltWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
+        self.main_window.cor_tilt = None
 
     @property
     def point_model(self):

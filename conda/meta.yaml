@@ -17,12 +17,12 @@ source:
 
 requirements:
   build:
-    - python 3.7.3
+    - python =3.7.3
     - pip
     - setuptools
     - sphinx
   run:
-    - python 3.7.3
+    - python =3.7.3
     - pip
     - astropy >=3.2.1
     - scipy

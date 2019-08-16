@@ -85,7 +85,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
         self.do_update_previews(False)
 
     def handle_roi_selection(self, roi):
-        if roi and self.filter_uses_auto_property(SVParameters.ROI):
+        if roi:
+            # TODO used to check  and self.filter_uses_auto_property(SVParameters.ROI): but disabled for now
             self.view.auto_update_triggered.emit()
 
     def set_preview_image_index(self, image_idx):
