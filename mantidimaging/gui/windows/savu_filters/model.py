@@ -4,7 +4,7 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from functools import partial
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Optional, List, Tuple, TYPE_CHECKING
+from typing import Dict, Optional, List, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
@@ -18,9 +18,9 @@ from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunRespon
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.stack_visualiser import SavuFiltersWindowPresenter  # noqa:F401
+    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowPresenter  # noqa:F401
 
-CurrentFilterData = Tuple[SAVUPlugin, List[QWidget]]
+CurrentFilterData = Union[Tuple, Tuple[SAVUPlugin, List[QWidget]]]
 
 
 def ensure_tuple(val):
@@ -43,7 +43,10 @@ class SavuFiltersWindowModel(object):
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
 
-        request: Future = preparation.data
+        if preparation.data is not None:
+            request: Future = preparation.data
+        else:
+            raise RuntimeError("Could not retrieve any response object")
         try:
             response: Response = request.result(timeout=5)
             if response.status_code == 200:
