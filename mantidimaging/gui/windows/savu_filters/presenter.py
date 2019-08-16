@@ -15,11 +15,11 @@ from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel, CurrentFilterData
 from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
-from mantidimaging.gui.windows.stack_visualiser import SVParameters, StackVisualiserView
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
-    from mantidimaging.gui.windows.main.view import MainWindowView
+    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
 
 
 class Notification(Enum):
@@ -132,7 +132,10 @@ class SavuFiltersWindowPresenter(BasePresenter):
         # self.model.setup_filter(None)
 
     def filter_uses_auto_property(self, prop):
-        return prop in self.model.auto_props.values() if self.model.auto_props is not None else False
+        if self.model.parameters_from_stack is not None:
+            return prop in self.model.parameters_from_stack.values()
+        else:
+            return False
 
     def do_apply_filter(self):
         self.view.clear_output_text()
@@ -172,7 +175,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
                 # Generate sub-stack and run filter
                 progress.update(msg="Running preview filter")
-                exec_kwargs = get_parameters_from_stack(stack, self.model.auto_props)
+                exec_kwargs = get_parameters_from_stack(stack, self.model.parameters_from_stack)
 
                 filtered_image_data = None
                 try:

@@ -6,7 +6,7 @@ from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunRespon
 from mantidimaging.gui.windows.savu_filters.sio_model import SavuFiltersSIOModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
+    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView  # noqa:F401
 
 
 class SavuFiltersRemotePresenter(object):

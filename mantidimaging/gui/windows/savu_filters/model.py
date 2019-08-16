@@ -18,7 +18,7 @@ from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunRespon
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.stack_visualiser import SavuFiltersWindowPresenter
+    from mantidimaging.gui.windows.stack_visualiser import SavuFiltersWindowPresenter  # noqa:F401
 
 CurrentFilterData = Tuple[SAVUPlugin, List[QWidget]]
 
@@ -30,37 +30,38 @@ def ensure_tuple(val):
 class SavuFiltersWindowModel(object):
     PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
+    parameters_from_stack: Dict
+
     def __init__(self, presenter: 'SavuFiltersWindowPresenter'):
         super(SavuFiltersWindowModel, self).__init__()
         self.presenter: 'SavuFiltersWindowPresenter' = presenter
 
-        # TODO sort these out
-        self.auto_props, self.do_before, self.execute, self.do_after = [], [], [], []
+        self.do_before_wrapper = lambda: lambda: None
+        self.execute_wrapper = lambda: lambda _: None
+        self.do_after_wrapper = lambda: lambda *_: None
+
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
 
         request: Future = preparation.data
         try:
-            self.response: Response = request.result(timeout=5)
-            if self.response.status_code == 200:
-                self.response = json.loads(self.response.content)
+            response: Response = request.result(timeout=5)
+            if response.status_code == 200:
+                response_json: Dict = json.loads(response.content)
             else:
                 preparation.prepare_data()
                 raise ValueError(
-                    f"Did not get valid data from the Savu backend. Error code {self.response.status_code}")
+                    f"Did not get valid data from the Savu backend. Error code {response.status_code}")
         except ConnectionError:
             preparation.prepare_data()
             raise RuntimeError("Savu backend is not running. Cannot open GUI.")
             # try contacting the SAVU backend again
-        self.register_filters(self.response)
+        self.register_filters(response_json)
 
         self.preview_image_idx = 0
 
         # Execution info for current filter
         self.stack: Optional[StackVisualiserView] = None
-        self.do_before = None
-        self.execute = None
-        self.do_after = None
 
     def register_filters(self, filters: Dict):
         """
@@ -109,7 +110,9 @@ class SavuFiltersWindowModel(object):
         """
         # TODO need to manually add parameters necessary for the SAVU filters in auto_props
         # self.auto_props, self.do_before, self.execute, self.do_after = filter_details
-        self.auto_props, self.do_before, self.execute, self.do_after = [], [], [], []
+        # self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper,
+        # self.do_after_wrapper = [], [], [], []
+        pass
 
     def apply_filter(self, images, exec_kwargs):
         """
@@ -118,9 +121,9 @@ class SavuFiltersWindowModel(object):
         log = getLogger(__name__)
 
         # Generate the execute partial from filter registration
-        do_before_func = self.do_before() if self.do_before else lambda _: ()
-        do_after_func = self.do_after() if self.do_after else lambda *_: None
-        execute_func = self.execute()
+        do_before_func = self.do_before_wrapper() if self.do_before_wrapper else lambda _: ()
+        do_after_func = self.do_after_wrapper() if self.do_after_wrapper else lambda *_: None
+        execute_func = self.execute_wrapper()
 
         # Log execute function parameters
         log.info("Filter kwargs: {}".format(exec_kwargs))

@@ -15,7 +15,7 @@ from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPr
 from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main.view import MainWindowView
+    from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
 
 
 class SavuFiltersWindowView(BaseMainWindowView):

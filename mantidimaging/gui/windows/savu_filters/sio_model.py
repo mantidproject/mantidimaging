@@ -6,7 +6,7 @@ import socketio
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
+    from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter  # noqa: F401
 
 
 class SavuFiltersSIOModel(object):
@@ -30,8 +30,7 @@ class SavuFiltersSIOModel(object):
     def join(self, job_response: JobRunResponseContent):
         """
         Joins the room for this job
-        :param job_response: 
-        :return: 
+        :param job_response: Parsed response from the remote service
         """
         self.sio_client.emit("join",
                              json.dumps({
