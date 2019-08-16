@@ -1,7 +1,7 @@
 AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 install-run-requirements:
-	conda install --yes --only-deps -c $$UPLOAD_USER -c conda-forge  mantidimaging
+	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
 
 install-build-requirements:
 	conda install --yes --file deps/build-requirements.conda
@@ -19,10 +19,10 @@ build-conda-deps-package:
 	conda-build ./conda -c conda-forge
 
 build-conda-package-nightly: .remind-for-upload install-build-requirements
-	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label nightly
+	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
 
 build-conda-package-release: .remind-for-upload install-build-requirements
-	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS)
+	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda $(AUTHENTICATION_PARAMS)
 
 .remind-for-upload:
 	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
@@ -35,7 +35,7 @@ test:
 
 test_environment_name = test-env
 test-env:
-	conda create -n $(test_environment_name) -c conda-forge -c dtasev/label/deps mantidimaging
+	conda create -n $(test_environment_name) -c dtasev/label/deps mantidimaging
 	conda activate $(test_environment_name)
 	$(MAKE) install-dev-requirements
 

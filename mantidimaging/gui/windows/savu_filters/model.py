@@ -15,6 +15,7 @@ from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, 
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
 from mantidimaging.gui.windows.savu_filters import preparation
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
+from mantidimaging.gui.windows.savu_filters.path_config import INPUT_LOCAL
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
@@ -174,7 +175,7 @@ class SavuFiltersWindowModel(object):
         presenter = self.stack_presenter
         # TODO make & read from a config. This config should also be used to start the Docker service
         # the data path will be the root in the savu config, so it doesn't need to be part of the filepath
-        common_prefix = os.path.commonprefix(presenter.images.filenames).replace("/mnt/e/", "")
+        common_prefix = os.path.commonprefix(presenter.images.filenames).replace(INPUT_LOCAL, "")
         num_images = presenter.images.count()
 
         # save out nxs file

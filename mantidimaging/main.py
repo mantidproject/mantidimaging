@@ -29,7 +29,7 @@ def parse_args():
         type=str,
         default="DEBUG",
         help="Log verbosity level. "
-        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+             "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
@@ -37,7 +37,7 @@ def parse_args():
     return parser.parse_args()
 
 
-async def main():
+async def async_main():
     args = parse_args()
     # Print version number and exit
     if args.version:
@@ -57,5 +57,9 @@ async def main():
     gui.execute()
 
 
+def main():
+    asyncio.run(async_main())
+
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
