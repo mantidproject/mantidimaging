@@ -37,6 +37,7 @@ class SavuFiltersWindowModel(object):
         super(SavuFiltersWindowModel, self).__init__()
         self.presenter: 'SavuFiltersWindowPresenter' = presenter
 
+        self.parameters_from_stack = {}
         self.do_before_wrapper = lambda: lambda: None
         self.execute_wrapper = lambda: lambda _: None
         self.do_after_wrapper = lambda: lambda *_: None
