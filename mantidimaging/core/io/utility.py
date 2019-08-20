@@ -148,3 +148,7 @@ def _alphanum_key_split(path_str):
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
+
+
+def get_prefix(path: str, separator="_"):
+    return path[:path.rfind(separator)]

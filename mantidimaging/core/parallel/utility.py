@@ -30,7 +30,7 @@ def create_shared_array(shape, dtype=np.float32):
 
     size = ctypes.sizeof(ctype(1)) * length
 
-    LOG.debug(
+    LOG.info(
         'Requested shared array with shape={}, length={}, size={}, '
         'dtype={}'.format(
             shape, length, size, dtype))

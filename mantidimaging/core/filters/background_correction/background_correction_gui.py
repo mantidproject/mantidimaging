@@ -1,6 +1,6 @@
 import os
 from functools import partial
-from typing import Tuple, Callable, Optional, Dict
+from typing import Callable, Dict, Optional, Tuple
 
 from mantidimaging.core import io
 from mantidimaging.core.filters.background_correction import execute
@@ -16,20 +16,22 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
 
     def execute_wrapper() -> partial:
         flat_path = str(flatPath.text())
-        dark_path = str(darkPath.text())
         flat_extension = io.utility.get_file_extension(flat_path)
-        dark_extension = io.utility.get_file_extension(dark_path)
+        flat_prefix = io.utility.get_prefix(flat_path)
 
         flat_dir = os.path.dirname(flat_path)
-        dark_dir = os.path.dirname(dark_path)
 
-        images_flat_only = io.loader.load(flat_dir, in_format=flat_extension)
+        images_flat_only = io.loader.load(flat_dir, flat_prefix, flat_extension)
 
         # this will be put in the 'sample' attribute, because we load a single
         # volume
         flat = images_flat_only.sample.mean(axis=0)
 
-        images_dark_only = io.loader.load(dark_dir, in_format=dark_extension)
+        dark_path = str(darkPath.text())
+        dark_extension = io.utility.get_file_extension(dark_path)
+        dark_dir = os.path.dirname(dark_path)
+        dark_prefix = io.utility.get_prefix(dark_path)
+        images_dark_only = io.loader.load(dark_dir, dark_prefix, dark_extension)
 
         # this will be put in the 'sample' attribute, because we load a single
         # volume

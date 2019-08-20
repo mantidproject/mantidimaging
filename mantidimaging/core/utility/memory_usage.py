@@ -13,7 +13,8 @@ def get_memory_usage_linux(kb=False, mb=False):
         # silently fail
         import resource as res
     except ImportError:
-        log.warning('Resource monitoring is not available on Windows')
+        log.debug('Resource monitoring is not available on Windows.')
+        return 0, 0
 
     tuple_to_return = tuple()  # start with empty tuple
     if kb:

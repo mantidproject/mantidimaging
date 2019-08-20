@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument(
         "--log-level",
         type=str,
-        default="DEBUG",
+        default="INFO",
         help="Log verbosity level. "
              "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )

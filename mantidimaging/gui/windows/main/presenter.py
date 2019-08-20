@@ -41,9 +41,9 @@ class MainWindowPresenter(BasePresenter):
 
         if not kwargs:
             kwargs = {'selected_file': self.view.load_dialogue.sample_file(),
-                      'sample_path': self.view.load_dialogue.sample_path_text(),
-                      'flat_path': self.view.load_dialogue.flat_path_text(),
-                      'dark_path': self.view.load_dialogue.dark_path_text(),
+                      'sample_path': self.view.load_dialogue.sample_path_directory(),
+                      'flat_path': self.view.load_dialogue.flat_path_directory(),
+                      'dark_path': self.view.load_dialogue.dark_path_directory(),
                       'image_format': self.view.load_dialogue.image_format,
                       'parallel_load': self.view.load_dialogue.parallel_load(),
                       'indices': self.view.load_dialogue.indices(),

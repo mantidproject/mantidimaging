@@ -1,12 +1,12 @@
 import os
 from logging import getLogger
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton, QLineEdit
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget
 
 from mantidimaging.core.io.loader import read_in_shape
-from mantidimaging.core.io.utility import get_file_extension
+from mantidimaging.core.io.utility import get_file_extension, get_prefix
 from mantidimaging.core.utility import size_calculator
 from mantidimaging.gui.utility import (compile_ui, select_file)
 
@@ -39,6 +39,7 @@ class MWLoadDialog(Qt.QDialog):
 
         self.dark_widget.hide()
         self.flat_widget.hide()
+        self.dark_flat_button.hide()
         self.dark_flat_button.clicked.connect(self.toggle_flat_dark)
 
         # connect the calculation of expected memory to spinboxes
@@ -75,7 +76,10 @@ class MWLoadDialog(Qt.QDialog):
         self.image_format = get_file_extension(sample_filename)
 
         try:
-            self.last_shape = read_in_shape(self.sample_path_text(), in_format=self.image_format)
+            filename = self.sample_path_text()
+            dirname = self.sample_path_directory()
+            self.last_shape = read_in_shape(dirname, in_prefix=get_prefix(filename),
+                                            in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
             self.parent_view.presenter.show_error("Failed to read this file. See log for details.")
@@ -122,29 +126,35 @@ class MWLoadDialog(Qt.QDialog):
         """
         return os.path.basename(str(self.sample_path.text()))
 
-    def _get_path_text(self, field) -> str:
+    def _get_path_directory(self, field) -> str:
         """
         :return: The directory of the path as a Python string
         """
         return os.path.dirname(str(field.text()))
 
+    def sample_path_directory(self) -> str:
+        """
+        :return: The directory of the path as a Python string
+        """
+        return self._get_path_directory(self.sample_path)
+
     def sample_path_text(self) -> str:
         """
         :return: The directory of the path as a Python string
         """
-        return self._get_path_text(self.sample_path)
+        return str(self.sample_path.text())
 
-    def flat_path_text(self) -> str:
+    def flat_path_directory(self) -> str:
         """
         :return: The directory of the path as a Python string
         """
-        return self._get_path_text(self.flat_path)
+        return self._get_path_directory(self.flat_path)
 
-    def dark_path_text(self) -> str:
+    def dark_path_directory(self) -> str:
         """
         :return: The directory of the path as a Python string
         """
-        return self._get_path_text(self.dark_path)
+        return self._get_path_directory(self.dark_path)
 
     def parallel_load(self) -> bool:
         """
