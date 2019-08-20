@@ -147,7 +147,7 @@ class Progress(object):
 
     def add_progress_handler(self, handler):
         """
-        Adds a hander to receiver progress updates.
+        Adds a handler to receiver progress updates.
         :param handler: Instance of a progress handler
         """
         if not isinstance(handler, ProgressHandler):
@@ -175,14 +175,6 @@ class Progress(object):
             # Update progress history
             step_details = (time.clock(), self.current_step, msg)
             self.progress_history.append(step_details)
-
-        # Log progress
-        log = getLogger(__name__)
-        log.debug("Progress: %f, Step: %s (%d/%d)",
-                  self.completion(),
-                  step_details[2],
-                  step_details[1],
-                  self.end_step)
 
         # Process progress callbacks
         if len(self.progress_handlers) != 0:

@@ -97,8 +97,7 @@ class FiltersWindowPresenter(BasePresenter):
         filter_idx = self.view.filterSelector.currentIndex()
 
         # Get registration function for new filter
-        register_func = \
-            self.model.filter_registration_func(filter_idx)
+        register_func = self.model.filter_registration_func(filter_idx)
 
         # Register new filter (adding it's property widgets to the properties
         # layout)
@@ -159,8 +158,7 @@ class FiltersWindowPresenter(BasePresenter):
                     self.model.apply_filter(sub_images, exec_kwargs)
                     filtered_image_data = sub_images.sample[0]
                 except Exception as e:
-                    log.debug(
-                        "Error applying filter for preview: {}".format(e))
+                    log.debug("Error applying filter for preview: {}".format(e))
 
                 # Update image after
                 if filtered_image_data is not None:

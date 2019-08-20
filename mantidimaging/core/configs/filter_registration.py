@@ -46,4 +46,4 @@ def register_filters_on_cli(
     loaded_filters = import_items(filter_packages,
                                   ['execute', 'NAME', '_cli_register'])
 
-    register_into(loaded_filters, parser, _cli_register_into_parser)
+    register_into(parser, loaded_filters, _cli_register_into_parser)

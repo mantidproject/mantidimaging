@@ -1,7 +1,7 @@
 from typing import Tuple, TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QVBoxLayout, QDockWidget
+from PyQt5.QtWidgets import QVBoxLayout, QDockWidget, QAction, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -26,14 +26,17 @@ class StackVisualiserView(BaseMainWindowView):
     def __init__(self, parent: 'MainWindowView', dock: QDockWidget, images: Images):
         # enforce not showing a single image
         assert images.sample.ndim == 3, \
-            "Data does NOT have 3 dimensions! Dimensions found: \
-            {0}".format(images.sample.ndim)
+            "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.sample.ndim)
 
         # We set the main window as the parent, the effect is the same as
         # having no parent, the window will be inside the QDockWidget. If the
         # dock is set as a parent the window will be an independent floating
         # window
-        super(StackVisualiserView, self).__init__(parent, 'gui/ui/stack.ui')
+        super(StackVisualiserView, self).__init__(parent, None)
+        self.central_widget = QWidget(self)
+        self.layout = QVBoxLayout(self)
+        self.central_widget.setLayout(self.layout)
+        self.setCentralWidget(self.central_widget)
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title
@@ -46,6 +49,10 @@ class StackVisualiserView(BaseMainWindowView):
         self.presenter = StackVisualiserPresenter(self, images)
 
         self.image_view = ImageView(self)
+        self.actionCloseStack = QAction("Close window", self)
+        self.actionCloseStack.triggered.connect(self.close_view)
+        self.actionCloseStack.setShortcut("Ctrl+W")
+        self.dock.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.sample)
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
@@ -82,3 +89,6 @@ class StackVisualiserView(BaseMainWindowView):
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)
+
+    def close_view(self):
+        self.close()

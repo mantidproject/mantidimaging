@@ -1,0 +1,10 @@
+{
+  "python.formatting.provider": "yapf",
+  "python.formatting.autopep8Args": [
+    "--max-line-length=120"
+  ],
+  "python.formatting.blackArgs": [
+    "--line-length=120"
+  ],
+  "python.pythonPath": "/home/dtasev/apps/miniconda3/envs/test-env/bin/python",
+}

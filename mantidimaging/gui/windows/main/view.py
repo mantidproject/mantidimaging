@@ -3,30 +3,41 @@ from typing import Optional
 
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QAction
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
+from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
-from .load_dialog import MWLoadDialog
-from .presenter import MainWindowPresenter
-from .presenter import Notification as PresNotification
-from .save_dialog import MWSaveDialog
 
 
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
 
+    actionCorTilt: QAction
+    actionFilters: QAction
+    actionSavuFilters: QAction
+    actionTomopyRecon: QAction
+
+    load_dialogue: MWLoadDialog
+    save_dialogue: MWSaveDialog
+
     def __init__(self):
-        super(MainWindowView, self).__init__(None, 'gui/ui/main_window.ui')
+        super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("MantidImaging")
+        self.setWindowTitle("Mantid Imaging")
 
         self.presenter = MainWindowPresenter(self)
 
         self.filters: Optional[FiltersWindowView] = None
+        self.savu_filters: Optional[SavuFiltersWindowView] = None
         self.cor_tilt: Optional[CORTiltWindowView] = None
         self.tomopy_recon: Optional[TomopyReconWindowView] = None
         self.save_dialogue: Optional[MWSaveDialog] = None
@@ -40,12 +51,14 @@ class MainWindowView(BaseMainWindowView):
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
-        self.actionOnlineDocumentation.triggered.connect(
-            self.open_online_documentation)
+        self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
-        self.actionImageOperations.triggered.connect(self.show_filters_window)
+        self.actionFilters.triggered.connect(self.show_filters_window)
+        self.actionFilters.setShortcut("Ctrl+F")
+        self.actionSavuFilters.triggered.connect(self.show_savu_filters_window)
+        self.actionSavuFilters.setShortcut("Ctrl+Shift+F")
         self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
@@ -53,18 +66,23 @@ class MainWindowView(BaseMainWindowView):
     def update_shortcuts(self):
         self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)
 
-    def open_online_documentation(self):
-        url = QtCore.QUrl('https://mantidproject.github.io/mantidimaging/')
+    @staticmethod
+    def open_online_documentation():
+        url = QtCore.QUrl("https://mantidproject.github.io/mantidimaging/")
         QtGui.QDesktopServices.openUrl(url)
 
     def show_about(self):
         from mantidimaging import __version__ as version_no
+
         msg_box = QtWidgets.QMessageBox(self)
         msg_box.setWindowTitle("About MantidImaging")
         msg_box.setTextFormat(QtCore.Qt.RichText)
-        msg_box.setText('<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
-                        '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'
-                        .format(version_no))
+        msg_box.setText(
+            '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
+            '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(
+                version_no
+            )
+        )
         msg_box.show()
 
     def show_load_dialogue(self):
@@ -97,6 +115,17 @@ class MainWindowView(BaseMainWindowView):
             self.filters.activateWindow()
             self.filters.raise_()
 
+    def show_savu_filters_window(self):
+        if not self.savu_filters:
+            try:
+                self.savu_filters = SavuFiltersWindowView(self)
+                self.savu_filters.show()
+            except RuntimeError as e:
+                QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
+        else:
+            self.savu_filters.activateWindow()
+            self.savu_filters.raise_()
+
     def show_tomopy_recon_window(self):
         if not self.tomopy_recon:
             self.tomopy_recon = TomopyReconWindowView(self)
@@ -117,11 +146,7 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
-    def create_stack_window(self,
-                            stack,
-                            title,
-                            position=QtCore.Qt.TopDockWidgetArea,
-                            floating=False):
+    def create_stack_window(self, stack, title, position=QtCore.Qt.TopDockWidgetArea, floating=False):
         dock_widget = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
@@ -156,10 +181,8 @@ class MainWindowView(BaseMainWindowView):
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
             msg_box = QtWidgets.QMessageBox.question(
-                self,
-                "Quit",
-                "Are you sure you want to quit?",
-                defaultButton=QtWidgets.QMessageBox.No)
+                self, "Quit", "Are you sure you want to quit?", defaultButton=QtWidgets.QMessageBox.No
+            )
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:
@@ -173,3 +196,7 @@ class MainWindowView(BaseMainWindowView):
         else:
             # Ignore the close event, keeping window open
             event.ignore()
+
+    def uncaught_exception(self, user_error_msg, log_error_msg):
+        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
+        getLogger(__name__).error(log_error_msg)

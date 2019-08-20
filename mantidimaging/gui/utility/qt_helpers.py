@@ -3,8 +3,10 @@ Module containing helper functions relating to PyQt.
 """
 
 import os
+from typing import Tuple, Union
 
 from PyQt5 import Qt, uic
+from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
 
 from mantidimaging.core.utility import finder
 
@@ -45,8 +47,8 @@ def select_file(field, caption):
     :return: True: If a file has been selected, False otherwise
     """
     assert isinstance(field, Qt.QLineEdit), (
-            "The passed object is of type {0}. This function only works with "
-            "QLineEdit".format(type(field)))
+        "The passed object is of type {0}. This function only works with "
+        "QLineEdit".format(type(field)))
 
     selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
     # open file dialogue and set the text if file is selected
@@ -60,20 +62,26 @@ def select_file(field, caption):
 
 def select_directory(field, caption):
     assert isinstance(field, Qt.QLineEdit), (
-            "The passed object is of type {0}. This function only works with "
-            "QLineEdit".format(type(field)))
+        "The passed object is of type {0}. This function only works with "
+        "QLineEdit".format(type(field)))
 
     # open file dialogue and set the text if file is selected
     field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
 
 
-def add_property_to_form(label,
-                         dtype,
-                         default_value=None,
-                         valid_values=None,
-                         tooltip=None,
-                         on_change=None,
-                         form=None):
+def get_value_from_qwidget(widget: QWidget):
+    if isinstance(widget, QLineEdit):
+        return widget.text()
+    elif isinstance(widget, QSpinBox) or isinstance(widget, QDoubleSpinBox):
+        return widget.value()
+    elif isinstance(widget, QCheckBox):
+        return widget.isChecked()
+
+
+def add_property_to_form(label, dtype, default_value=None, valid_values=None, tooltip=None,
+                         on_change=None, form=None) -> Tuple[Union[QLabel, QLineEdit],
+                                                             Union[QPushButton, QLineEdit, QSpinBox,
+                                                                   QDoubleSpinBox, QCheckBox, QComboBox]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -89,63 +97,75 @@ def add_property_to_form(label,
     :param form: Form layout to optionally add the new widgets to
     """
     # By default assume the left hand side widget will be a label
-    left_widget = Qt.QLabel(label)
+    left_widget = QLabel(label)
     right_widget = None
 
-    def set_spin_box(box):
+    # sanitize default value
+    if isinstance(default_value, str) and default_value.lower() == "none":
+        default_value = None
+
+    def set_spin_box(box, cast_func):
         """
         Helper function to set default options on a spin box.
         """
         if valid_values:
             box.setMinimum(valid_values[0])
             box.setMaximum(valid_values[1])
-        if default_value:
-            box.setValue(default_value)
+        else:
+            box.setMinimum(0)
+            box.setMaximum(10000)
 
-    def assign_tooltip(widgets):
-        """
-        Helper function to assign tooltips to widgets.
-        """
-        if tooltip:
-            for w in widgets:
-                w.setToolTip(tooltip)
+        if default_value:
+            box.setValue(cast_func(default_value))
 
     # Set up data type dependant widgets
     if dtype == 'file':
         left_widget = Qt.QLineEdit()
         right_widget = Qt.QPushButton(label)
-        assign_tooltip([left_widget, right_widget])
         right_widget.clicked.connect(
-                lambda: select_file(left_widget, label))
+            lambda: select_file(left_widget, label))
         if on_change is not None:
             left_widget.textChanged.connect(lambda: on_change())
 
+    elif dtype == 'str' or dtype == 'tuple' or dtype == "NoneType" or dtype == "list":
+        # TODO for tuple with numbers add N combo boxes, N = number of tuple members
+        right_widget = Qt.QLineEdit()
+        right_widget.setToolTip(tooltip)
+        right_widget.setText(default_value)
+
+        if on_change is not None:
+            right_widget.textChanged.connect(lambda: on_change())
+
     elif dtype == 'int':
         right_widget = Qt.QSpinBox()
-        assign_tooltip([right_widget])
-        set_spin_box(right_widget)
+        set_spin_box(right_widget, int)
         if on_change is not None:
             right_widget.valueChanged[int].connect(lambda: on_change())
 
     elif dtype == 'float':
         right_widget = Qt.QDoubleSpinBox()
-        assign_tooltip([right_widget])
-        set_spin_box(right_widget)
+        set_spin_box(right_widget, float)
         if on_change is not None:
             right_widget.valueChanged[float].connect(lambda: on_change())
 
     elif dtype == 'bool':
         left_widget = None
         right_widget = Qt.QCheckBox(label)
-        assign_tooltip([right_widget])
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
+        elif isinstance(default_value, str):
+            right_widget.setChecked("True" == default_value)
+        elif default_value is None:
+            # have to pick something
+            right_widget.setChecked(False)
+        else:
+            raise ValueError(f"Cannot convert value {default_value} to a Boolean.")
+
         if on_change is not None:
             right_widget.stateChanged[int].connect(lambda: on_change())
 
-    elif dtype == 'list':
+    elif dtype == "choice":
         right_widget = Qt.QComboBox()
-        assign_tooltip([right_widget])
         if valid_values:
             right_widget.addItems(valid_values)
         if on_change is not None:
@@ -157,11 +177,18 @@ def add_property_to_form(label,
     else:
         raise ValueError("Unknown data type")
 
+    if tooltip:
+        if left_widget:
+            left_widget.setToolTip(tooltip)
+
+        if right_widget:
+            right_widget.setToolTip(tooltip)
+
     # Add to form layout
     if form is not None:
         form.addRow(left_widget, right_widget)
 
-    return (left_widget, right_widget)
+    return left_widget, right_widget
 
 
 def delete_all_widgets_from_layout(lo):

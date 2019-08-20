@@ -2,6 +2,7 @@ nose == 1.3.7
 nose-randomly == 1.2.6
 testfixtures == 6.10.0
 flake8 == 3.5.0
+flake8-mypy
 pylint == 1.8.2
 coverage == 4.5.0
 hazelnut == 0.4.1
@@ -9,3 +10,4 @@ gitpython == 2.1.12
 sphinx
 mock==3.0.5
 mypy
+yapf

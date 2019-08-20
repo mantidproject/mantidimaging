@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -39,7 +39,8 @@
     <property name="title">
      <string>Workflow</string>
     </property>
-    <addaction name="actionImageOperations"/>
+    <addaction name="actionFilters"/>
+    <addaction name="actionSavuFilters"/>
     <addaction name="actionCorTilt"/>
     <addaction name="actionTomopyRecon"/>
    </widget>
@@ -94,7 +95,7 @@
     <string>Manual Center of Rotation</string>
    </property>
   </action>
-  <action name="actionImageOperations">
+  <action name="actionFilters">
    <property name="text">
     <string>Image Operations</string>
    </property>
@@ -115,6 +116,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>About MantidImaging</string>
+   </property>
+  </action>
+  <action name="actionSavuFilters">
+   <property name="text">
+    <string>Savu Image Operations</string>
    </property>
   </action>
  </widget>

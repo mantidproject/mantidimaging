@@ -7,7 +7,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
-MAXIMUM_PIXEL_VALUE = 3
+MAXIMUM_PIXEL_VALUE = 1e9
 
 
 def _cli_register(parser):

@@ -1,21 +1,18 @@
 import os
 from functools import partial
+from typing import Tuple, Callable, Optional, Dict
 
 from mantidimaging.core import io
 from mantidimaging.core.filters.background_correction import execute
 from mantidimaging.core.utility import value_scaling
 
 
-def _gui_register(form, on_change):
+def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], Optional[Callable], Optional[Callable]]:
     from mantidimaging.gui.utility import add_property_to_form
 
-    flatPath, _ = add_property_to_form(
-        'Flat', 'file',
-        form=form, on_change=on_change)
+    flatPath, _ = add_property_to_form("Flat", "file", form=form, on_change=on_change)
 
-    darkPath, _ = add_property_to_form(
-        'Dark', 'file',
-        form=form, on_change=on_change)
+    darkPath, _ = add_property_to_form("Dark", "file", form=form, on_change=on_change)
 
     def execute_wrapper() -> partial:
         flat_path = str(flatPath.text())

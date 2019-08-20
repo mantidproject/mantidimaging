@@ -10,7 +10,7 @@ from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val,)
+    return val if isinstance(val, tuple) else (val, )
 
 
 class FiltersWindowModel(object):
@@ -49,23 +49,19 @@ class FiltersWindowModel(object):
 
         :param ignored_packages: List of ignore rules
         """
-        filter_packages = get_package_children(package_name, packages=True,
-                                               ignore=ignored_packages)
+        filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
 
         filter_packages = [p[1] for p in filter_packages]
 
-        loaded_filters = import_items(filter_packages,
-                                      ['execute', 'NAME', '_gui_register'])
+        loaded_filters = import_items(filter_packages, ['execute', 'NAME', '_gui_register'])
 
-        loaded_filters = filter(
-            lambda f: f.available() if hasattr(f, 'available') else True,
-            loaded_filters)
+        loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
         def register_filter(filter_list, module):
             filter_list.append((module.NAME, module._gui_register))
 
         self.filters = []
-        register_into(loaded_filters, self.filters, register_filter)
+        register_into(self.filters, loaded_filters, register_filter)
 
     @property
     def filter_names(self):
@@ -140,11 +136,8 @@ class FiltersWindowModel(object):
         do_after_func(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
-        images.record_parameters_in_metadata(
-            '{}.{}'.format(execute_func.func.__module__,
-                           execute_func.func.__name__),
-            *execute_func.args,
-            **all_kwargs)
+        images.record_parameters_in_metadata('{}.{}'.format(execute_func.func.__module__, execute_func.func.__name__),
+                                             *execute_func.args, **all_kwargs)
 
     def do_apply_filter(self):
         """

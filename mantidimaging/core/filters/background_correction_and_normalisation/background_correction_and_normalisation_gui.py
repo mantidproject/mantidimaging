@@ -1,12 +1,12 @@
 import os
 from functools import partial
+from typing import Tuple, Callable, Optional, Dict
 
 from mantidimaging.core import io
-
 from . import execute
 
 
-def _gui_register(form, on_change):
+def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], Optional[Callable], Optional[Callable]]:
     from mantidimaging.gui.windows.stack_visualiser import SVParameters
     from mantidimaging.gui.utility import add_property_to_form
 
@@ -43,4 +43,4 @@ def _gui_register(form, on_change):
 
         return par
 
-    return (params, None, custom_execute, None)
+    return params, None, custom_execute, None

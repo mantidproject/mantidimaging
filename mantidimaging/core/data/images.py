@@ -1,61 +1,75 @@
 import json
 import pprint
+from typing import List, Tuple, Optional, Any, Dict
 
 import numpy as np
 
-from . import const
 from mantidimaging import helper as h
+from . import const
 
 
 class Images(object):
-    def __init__(self, sample=None, flat=None, dark=None, filenames=None):
+    NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
-        self._sample = sample
-        self._flat = flat
-        self._dark = dark
+    def __init__(self, sample, flat=None, dark=None,
+                 sample_filenames: Optional[List[str]] = None,
+                 indices: Optional[Tuple[int, int, int]] = None,
+                 flat_filenames: Optional[List[str]] = None,
+                 dark_filenames: Optional[List[str]] = None):
+        """
 
-        self._filenames = filenames
+        :param sample: Images of the Sample/Projection data
+        :param flat: Images of the Flat data
+        :param dark: Images of the Dark data
+        :param sample_filenames: All filenames that were matched for loading
+        :param indices: Indices that were actually loaded
+        :param flat_filenames: All filenames that were matched for loading of Flat images
+        :param dark_filenames: All filenames that were matched for loading of Dark images
+        """
 
-        self.properties = {}
+        self.sample = sample
+        self.flat = flat
+        self.dark = dark
+        self.indices = indices
+
+        self._filenames = sample_filenames
+        self._flat_filenames = flat_filenames
+        self._dark_filenames = dark_filenames
+
+        self.properties: Dict[str, Any] = {}
 
     def __str__(self):
-        return \
-            'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
-                self.sample.shape if self.sample is not None else None,
-                self.flat.shape if self.flat is not None else None,
-                self.dark.shape if self.dark is not None else None,
-                len(self.properties))
+        return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
+            self.sample.shape if self.sample is not None else None,
+            self.flat.shape if self.flat is not None else None,
+            self.dark.shape if self.dark is not None else None,
+            len(self.properties))
+
+    def count(self) -> int:
+        return len(self._filenames) if self._filenames else 0
 
     @property
-    def sample(self):
-        return self._sample
-
-    @sample.setter
-    def sample(self, imgs):
-        self._sample = imgs
-
-    @property
-    def flat(self):
-        return self._flat
-
-    @flat.setter
-    def flat(self, imgs):
-        self._flat = imgs
-
-    @property
-    def dark(self):
-        return self._dark
-
-    @dark.setter
-    def dark(self, imgs):
-        self._dark = imgs
-
-    @property
-    def filenames(self):
+    def filenames(self) -> Optional[List[str]]:
         return self._filenames
 
+    def image_title(self, index: int) -> str:
+        """
+        Return the correct filename for the index. This uses the sample filenames
+
+        It uses the step in the indices to determine which file
+        from the list of all files is the one relevant to the provided index.
+
+        :param index: Index that will be mapped to the list of all filenames, using the loading step,
+                      to give the correct filename
+        :return:
+        """
+        if self._filenames and self.indices:
+            return self._filenames[index * self.indices[2]]
+        else:
+            return self.NO_FILENAME_IMAGE_TITLE_STRING.format(index)
+
     @property
-    def has_history(self):
+    def has_history(self) -> bool:
         return const.OPERATION_HISTORY in self.properties
 
     @property

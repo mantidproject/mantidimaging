@@ -3,7 +3,6 @@ from unittest import TestCase
 from mantidimaging.core.data import Images, const
 from mantidimaging.core.reconstruct import utility
 
-
 TEST_PARAMS_1 = {
     "operation_history": [
         {
@@ -17,7 +16,7 @@ TEST_PARAMS_1 = {
                 ]
             },
             "name":
-            "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+                "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
         },
         {
             "args": [],
@@ -37,11 +36,10 @@ TEST_PARAMS_1 = {
                 ]
             },
             "name":
-            "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+                "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
         }
     ]
 }
-
 
 TEST_PARAMS_2 = {
     "operation_history": [
@@ -56,11 +54,10 @@ TEST_PARAMS_2 = {
                 ]
             },
             "name":
-            "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+                "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
         }
     ]
 }
-
 
 TEST_PARAMS_3 = {
     'operation_history': [
@@ -127,7 +124,6 @@ TEST_PARAMS_3 = {
     ]
 }
 
-
 TEST_PARAMS_4 = {
     'operation_history': [
         {
@@ -175,48 +171,48 @@ TEST_PARAMS_5 = {
 class UtilityTest(TestCase):
 
     def test_get_crop_multiple(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_1
         roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 821)
 
     def test_get_crop_multiple_select_1(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_1
         roi_offset = utility.get_crop(imgs, 0, end=2)
         self.assertEquals(roi_offset, 61)
 
     def test_get_crop_multiple_select_2(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_1
         roi_offset = utility.get_crop(imgs, 0, start=2, end=3)
         self.assertEquals(roi_offset, 760)
 
     def test_get_crop_multiple_select_2_top(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_1
         roi_offset = utility.get_crop(imgs, 1, start=2, end=3)
         self.assertEquals(roi_offset, 316)
 
     def test_get_crop_single(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_2
         roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 61)
 
     def test_get_crop_no_hist(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = {"operation_history": []}
         roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 0)
 
     def test_get_crop_empty(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         roi_offset = utility.get_crop(imgs, 0)
         self.assertEquals(roi_offset, 0)
 
     def test_get_last_cor_tilt_find(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_3
         finding, idx = utility.get_last_cor_tilt_find(imgs)
 
@@ -229,13 +225,13 @@ class UtilityTest(TestCase):
         )
 
     def test_get_last_cor_tilt_find_empty(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         last_find, last_find_idx = utility.get_last_cor_tilt_find(imgs)
         self.assertIsNone(last_find)
         self.assertIsNone(last_find_idx)
 
     def test_get_cor_tilt_from_images(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_3
         cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
 
@@ -244,7 +240,7 @@ class UtilityTest(TestCase):
         self.assertAlmostEqual(m, 0.009657997234305727)
 
     def test_get_cor_tilt_from_images_subsequent_top_crop(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_4
         cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
 
@@ -253,7 +249,7 @@ class UtilityTest(TestCase):
         self.assertAlmostEqual(m, 1)
 
     def test_get_cor_tilt_from_images_empty(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
         self.assertEquals(cor, 0)
         self.assertEquals(tilt, 0.0)
@@ -266,7 +262,7 @@ class UtilityTest(TestCase):
         self.assertEquals(m, 0.0)
 
     def test_get_cor_tilt_from_images_no_cor_tilt_in_history(self):
-        imgs = Images()
+        imgs = Images([1, 2, 3])
         imgs.properties = TEST_PARAMS_5
         cor, tilt, m = utility.get_cor_tilt_from_images(imgs)
         self.assertEquals(cor, 0)

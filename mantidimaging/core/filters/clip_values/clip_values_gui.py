@@ -1,34 +1,35 @@
 from functools import partial
+from typing import Tuple, Callable, Optional, Dict
 
 from . import execute
 
 
-def _gui_register(form, on_change):
+def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], Optional[Callable], Optional[Callable]]:
     from mantidimaging.gui.utility import add_property_to_form
 
     value_range = (-10000000, 10000000)
 
     _, clip_min_field = add_property_to_form(
-            'Clip Min', 'float', valid_values=(value_range),
-            form=form, on_change=on_change)
+        'Clip Min', 'float', valid_values=(value_range),
+        form=form, on_change=on_change)
     clip_min_field.setDecimals(7)
 
     _, clip_max_field = add_property_to_form(
-            'Clip Max', 'float', valid_values=(value_range),
-            form=form, on_change=on_change)
+        'Clip Max', 'float', valid_values=(value_range),
+        form=form, on_change=on_change)
     clip_max_field.setDecimals(7)
 
     _, clip_min_new_value_field = add_property_to_form(
-            'Min Replacement Value', 'float', valid_values=(value_range),
-            form=form, on_change=on_change,
-            tooltip='The value that will be used to replace pixel values '
-                    'that fall below Clip Min.')
+        'Min Replacement Value', 'float', valid_values=(value_range),
+        form=form, on_change=on_change,
+        tooltip='The value that will be used to replace pixel values '
+                'that fall below Clip Min.')
 
     _, clip_max_new_value_field = add_property_to_form(
-            'Max Replacement Value', 'float', valid_values=(value_range),
-            form=form, on_change=on_change,
-            tooltip='The value that will be used to replace pixel values '
-                    'that are above Clip Max.')
+        'Max Replacement Value', 'float', valid_values=(value_range),
+        form=form, on_change=on_change,
+        tooltip='The value that will be used to replace pixel values '
+                'that are above Clip Max.')
 
     clip_min_new_value_field.setDecimals(7)
     clip_max_new_value_field.setDecimals(7)
@@ -40,11 +41,11 @@ def _gui_register(form, on_change):
 
     # using lambda we can pass in parameters
     clip_min_field.valueChanged.connect(
-            lambda: updateFieldOnValueChanged(
-                clip_min_field, clip_min_new_value_field))
+        lambda: updateFieldOnValueChanged(
+            clip_min_field, clip_min_new_value_field))
     clip_max_field.valueChanged.connect(
-            lambda: updateFieldOnValueChanged(
-                clip_max_field, clip_max_new_value_field))
+        lambda: updateFieldOnValueChanged(
+            clip_max_field, clip_max_new_value_field))
 
     def custom_execute():
         # When called it will read the values off the dialog's fields and
@@ -59,4 +60,4 @@ def _gui_register(form, on_change):
                        clip_min_new_value=clip_min_new_value,
                        clip_max_new_value=clip_max_new_value)
 
-    return (None, None, custom_execute, None)
+    return None, None, custom_execute, None

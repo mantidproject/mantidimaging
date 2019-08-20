@@ -28,8 +28,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._on_stack_load_done(task)
 
         # Expect error message
-        self.view.show_error_dialog.assert_called_once_with(
-            "Failed to load stack. See log for details.")
+        self.view.show_error_dialog.assert_called_once_with(self.presenter.LOAD_ERROR_STRING.format(task.error))
 
     def test_failed_attempt_to_save_shows_error(self):
         # Create a filed load async task
@@ -41,8 +40,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._on_save_done(task)
 
         # Expect error message
-        self.view.show_error_dialog.assert_called_once_with(
-            "Failed to save stack. See log for details.")
+        self.view.show_error_dialog.assert_called_once_with(self.presenter.SAVE_ERROR_STRING.format(task.error))
 
 
 if __name__ == '__main__':

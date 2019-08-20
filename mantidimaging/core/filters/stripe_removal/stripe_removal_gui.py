@@ -1,52 +1,53 @@
 from functools import partial
+from typing import Tuple, Callable, Optional, Dict
 
 from . import execute, wavelet_names
 
 
-def _gui_register(form, on_change):
+def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], Optional[Callable], Optional[Callable]]:
     from mantidimaging.gui.utility import add_property_to_form
 
     # Filter type option
     _, value_filter_type = add_property_to_form(
-            'Filter Type', 'list',
-            form=form, on_change=on_change)
+        'Filter Type', 'choice',
+        form=form, on_change=on_change)
 
     # Wavelet options
     _, value_wf_level = add_property_to_form(
-            'Level', 'int', valid_values=(0, 100),
-            form=form, on_change=on_change)
+        'Level', 'int', valid_values=(0, 100),
+        form=form, on_change=on_change)
 
     _, value_wf_wname = add_property_to_form(
-            'Wavelet Filter', 'list',
-            valid_values=wavelet_names(),
-            form=form, on_change=on_change)
+        'Wavelet Filter', 'choice',
+        valid_values=wavelet_names(),
+        form=form, on_change=on_change)
 
     _, value_wf_sigma = add_property_to_form(
-            'Sigma', 'float', 2.0, (0.0, 100.0),
-            form=form, on_change=on_change)
+        'Sigma', 'float', 2.0, (0.0, 100.0),
+        form=form, on_change=on_change)
 
     # Titarenko options
     _, value_ti_nblock = add_property_to_form(
-            'Number of Blocks', 'int', 0, (0, 100),
-            form=form, on_change=on_change)
+        'Number of Blocks', 'int', 0, (0, 100),
+        form=form, on_change=on_change)
 
     _, value_ti_alpha = add_property_to_form(
-            'Alpha', 'float', 1.5,
-            form=form, on_change=on_change)
+        'Alpha', 'float', 1.5,
+        form=form, on_change=on_change)
 
     # Smoothing filter options
     _, value_sf_size = add_property_to_form(
-            'Size', 'int', 5, (0, 100),
-            form=form, on_change=on_change)
+        'Size', 'int', 5, (0, 100),
+        form=form, on_change=on_change)
 
     filters = [
-            ('wavelet-fourier',
-                [value_wf_level, value_wf_wname, value_wf_sigma]),
-            ('titarenko',
-                [value_ti_nblock, value_ti_alpha]),
-            ('smoothing-filter',
-                [value_sf_size])
-            ]
+        ('wavelet-fourier',
+         [value_wf_level, value_wf_wname, value_wf_sigma]),
+        ('titarenko',
+         [value_ti_nblock, value_ti_alpha]),
+        ('smoothing-filter',
+         [value_sf_size])
+    ]
 
     def on_filter_type_change(name):
         for f in filters:
@@ -78,4 +79,4 @@ def _gui_register(form, on_change):
 
         return partial(execute, wf=wf, ti=ti, sf=sf)
 
-    return (None, None, custom_execute, None)
+    return None, None, custom_execute, None

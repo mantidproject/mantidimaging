@@ -8,9 +8,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-
 from .model import CORTiltWindowModel
-
 
 LOG = getLogger(__name__)
 
@@ -28,6 +26,7 @@ class Notification(Enum):
 
 
 class CORTiltWindowPresenter(BasePresenter):
+    ERROR_STRING = "COR/Tilt finding failed: {}"
 
     def __init__(self, view, main_window):
         super(CORTiltWindowPresenter, self).__init__(view)
@@ -62,8 +61,8 @@ class CORTiltWindowPresenter(BasePresenter):
     def set_stack_uuid(self, uuid):
         self.view.reset_image_recon_preview()
         self.set_stack(
-                self.main_window.get_stack_visualiser(uuid)
-                if uuid is not None else None)
+            self.main_window.get_stack_visualiser(uuid)
+            if uuid is not None else None)
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
@@ -92,18 +91,18 @@ class CORTiltWindowPresenter(BasePresenter):
 
     def do_update_previews(self):
         img_data = self.model.sample[self.model.preview_projection_idx] \
-                if self.model.sample is not None else None
+            if self.model.sample is not None else None
 
         self.view.update_image_preview(
-                img_data,
-                self.model.preview_slice_idx,
-                self.model.preview_tilt_line_data,
-                self.model.roi)
+            img_data,
+            self.model.preview_slice_idx,
+            self.model.preview_tilt_line_data,
+            self.model.roi)
 
         self.view.update_fit_plot(
-                self.model.model.slices,
-                self.model.model.cors,
-                self.model.preview_fit_y_data)
+            self.model.model.slices,
+            self.model.model.cors,
+            self.model.preview_fit_y_data)
 
     def do_preview_reconstruction(self, cor=None):
         data = None
@@ -112,11 +111,11 @@ class CORTiltWindowPresenter(BasePresenter):
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
             cor = self.model.model.get_cor_for_slice_from_regression(
-                    self.model.preview_slice_idx)
+                self.model.preview_slice_idx)
 
         if cor is not None:
             data = self.model.run_preview_recon(
-                    self.model.preview_slice_idx, cor)
+                self.model.preview_slice_idx, cor)
             self.view.update_image_recon_preview(data)
 
     def do_preview_reconstruction_set_cor(self):
@@ -133,9 +132,9 @@ class CORTiltWindowPresenter(BasePresenter):
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(
-                self.view,
-                data=self.model.sample,
-                slice_idx=slice_idx)
+            self.view,
+            data=self.model.sample,
+            slice_idx=slice_idx)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -202,13 +201,11 @@ class CORTiltWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.view.set_results(
-                    self.model.model.c,
-                    self.model.model.angle_rad,
-                    self.model.model.m)
+            self.view.set_results(self.model.model.c, self.model.model.angle_rad, self.model.model.m)
             self.view.show_results()
             self.notify(Notification.UPDATE_PREVIEWS)
             self.notify(Notification.PREVIEW_RECONSTRUCTION)
         else:
-            log.error("COR/Tilt finding failed: %s", str(task.error))
-            self.show_error("COR/Tilt finding failed. See log for details.")
+            msg = self.ERROR_STRING.format(task.error)
+            log.error(msg)
+            self.show_error(msg)

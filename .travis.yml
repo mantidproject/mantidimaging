@@ -8,7 +8,6 @@ env:
   - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
 
 install:
-  - sudo apt-get install xvfb libgl1-mesa-dri libgl1-mesa-glx xserver-common
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $MINICONDA_DIR
   - export PATH="$MINICONDA_DIR/bin:$PATH"
@@ -19,12 +18,12 @@ install:
   - conda info -a
   # set up the conda environment variables in this shell, for conda activate
   - source $MINICONDA_DIR/etc/profile.d/conda.sh
-
-  - conda config --add channels conda-forge
-  # add the dependencies label from mantidimaging's channel
-  - conda config --add channels $UPLOAD_USER/label/deps
-  - conda create -n $ENVIRONMENT_NAME --only-deps mantidimaging
+  # build a local package and install
+  - conda config --append channels conda-forge
+  - make build-conda-deps-package
+  - conda create -n $ENVIRONMENT_NAME -c conda-forge --use-local --only-deps mantidimaging
   - conda activate $ENVIRONMENT_NAME
+
   - pip install -r deps/dev-requirements.pip
 
 jobs:
@@ -60,7 +59,6 @@ jobs:
         # this prevent caching big packages like anaconda and conda-forge
         # that are only necessary for building the package
         - exit 0
-
 
     - stage: upload-unstable
       if: env(BUILD_PACKAGE) = true AND env(MANTIDIMAGING_BUILD_TYPE) = unstable

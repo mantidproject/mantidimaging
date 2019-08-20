@@ -3,10 +3,10 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.cor_tilt import (
-        run_auto_finding_on_images, update_image_operations)
+    run_auto_finding_on_images, update_image_operations)
 from mantidimaging.core.reconstruct import tomopy_reconstruct_preview
 from mantidimaging.core.utility.projection_angles import (
-        generate as generate_projection_angles)
+    generate as generate_projection_angles)
 
 LOG = getLogger(__name__)
 
@@ -59,7 +59,7 @@ class CORTiltWindowModel(object):
             image_shape = self.sample[0].shape
             self.roi = (0, 0, image_shape[1] - 1, image_shape[0] - 1)
             self.proj_angles = generate_projection_angles(
-                    360, self.sample.shape[0])
+                360, self.sample.shape[0])
 
     def update_roi_from_stack(self):
         self.model.clear_results()
@@ -89,12 +89,7 @@ class CORTiltWindowModel(object):
         if self.roi is None:
             raise ValueError('No region of interest is defined')
 
-        run_auto_finding_on_images(
-                self.images,
-                self.model,
-                self.roi,
-                self.projection_indices,
-                progress=progress)
+        run_auto_finding_on_images(self.images, self.model, self.roi, self.projection_indices, progress=progress)
 
         # Cache last result
         self.last_result = self.model.stack_properties
@@ -126,15 +121,15 @@ class CORTiltWindowModel(object):
 
         # Perform single slice reconstruction
         return tomopy_reconstruct_preview(
-               self.sample, slice_idx, cor, self.proj_angles)
+            self.sample, slice_idx, cor, self.proj_angles)
 
     @property
     def preview_tilt_line_data(self):
         return ([self.model.c, self.model.cors[-1]],
                 [self.model.slices[0], self.model.slices[-1]]) \
-                        if self.model.has_results else None
+            if self.model.has_results else None
 
     @property
     def preview_fit_y_data(self):
         return [self.model.m * s + self.model.c for s in self.model.slices] \
-                if self.model.has_results else None
+            if self.model.has_results else None

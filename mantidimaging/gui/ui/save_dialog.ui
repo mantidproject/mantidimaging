@@ -76,6 +76,9 @@
      </item>
      <item row="4" column="1" colspan="2">
       <widget class="QCheckBox" name="swapAxes">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Makes Sinograms from Projections. Z is the projection dimension. Y is the image height. X is the image width.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>Projections to Sinograms</string>
        </property>

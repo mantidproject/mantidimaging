@@ -10,9 +10,6 @@ notebooks/demoimages/
 # PyCharm project ignore
 .idea
 
-# VSCode cache
-.vscode
-
 # Tags created from the VSCode python extension
 tags
 
@@ -116,3 +113,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+*.code-workspace

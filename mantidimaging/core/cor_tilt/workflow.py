@@ -3,13 +3,7 @@ from mantidimaging.core.data import const
 from .auto import auto_find_cors
 
 
-def run_auto_finding_on_images(
-        images,
-        model,
-        roi,
-        projections=None,
-        cores=None,
-        progress=None):
+def run_auto_finding_on_images(images, model, roi, projections=None, cores=None, progress=None):
     """
     Performs automatic COR/Tilt finding on an image stack.
     """
@@ -23,5 +17,5 @@ def update_image_operations(images, model):
     Updates the image operation history with the results in the given model.
     """
     images.record_parameters_in_metadata(
-            const.OPERATION_NAME_COR_TILT_FINDING,
-            **model.stack_properties)
+        const.OPERATION_NAME_COR_TILT_FINDING,
+        **model.stack_properties)
