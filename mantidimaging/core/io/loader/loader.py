@@ -3,9 +3,8 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.io.loader import img_loader, stack_loader
+from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names)
 from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.core.io.utility import (
-        get_file_names, DEFAULT_IO_FILE_FORMAT)
 
 LOG = getLogger(__name__)
 
@@ -22,7 +21,7 @@ def _fitsread(filename):
     if len(image) < 1:
         raise RuntimeError(
             "Could not load at least one FITS image/table file from: {0}".
-            format(filename))
+                format(filename))
 
     # get the image data
     return image[0].data
@@ -78,7 +77,7 @@ def read_in_shape(input_path,
                   chunksize=None):
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     images = load(input_path, None, None, in_prefix, in_format,
-                  data_dtype, cores, chunksize, indices=[0, 1, 1])
+                  data_dtype, cores, chunksize, indices=[0, 1, 1], file_names=input_file_names)
 
     # construct and return the new shape
     return (len(input_file_names),) + images.sample.shape[1:]
@@ -110,7 +109,7 @@ def read_in_shape_from_config(config):
     chunksize = config.func.chunksize
 
     return read_in_shape(
-            input_path, in_prefix, in_format, data_dtype, cores, chunksize)
+        input_path, in_prefix, in_format, data_dtype, cores, chunksize)
 
 
 def load_from_config(config):
@@ -261,7 +260,7 @@ def load_sinogram(input_path=None,
 
     if in_format == 'nxs':
         raise NotImplementedError(
-                "This functionality is not yet implemented for NXS files")
+            "This functionality is not yet implemented for NXS files")
 
     input_file_names = get_file_names(input_path, in_format, in_prefix)
 
@@ -276,7 +275,7 @@ def load_sinogram(input_path=None,
 
     # allocate memory for a single sinogram
     output_data = pu.create_shared_array(
-            (1, num_images, img_shape[1]), dtype=dtype)
+        (1, num_images, img_shape[1]), dtype=dtype)
 
     LOG.info("Output data shape: {}".format(output_data.shape))
 

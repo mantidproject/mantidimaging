@@ -26,10 +26,8 @@ def get_file_extension(file):
     """
     if os.path.isdir(file):
         return None
-
-    # find the last dot in the file
-    just_after_dot_index = file.rfind('.') + 1
-    return file[just_after_dot_index:]
+    # [1] gets the extension, [1:] returns it without the dot
+    return os.path.splitext(file)[1][1:]
 
 
 def get_candidate_file_extensions(ext):
@@ -75,7 +73,7 @@ def get_file_names(path, img_format, prefix='', essential=True):
 
     path = os.path.abspath(os.path.expanduser(path))
     extensions = get_candidate_file_extensions(img_format)
-
+    files_match = []
     for ext in extensions:
         files_match = glob.glob(
             os.path.join(path, "{0}*.{1}".format(prefix, ext)))
@@ -83,16 +81,14 @@ def get_file_names(path, img_format, prefix='', essential=True):
         if len(files_match) > 0:
             break
 
-    if len(files_match) <= 0 and essential:
-        raise RuntimeError(
-            "Could not find any image files in '{0}' with extensions: "
-            "{1}".format(path, extensions))
+    if len(files_match) == 0 and essential:
+        raise RuntimeError(f"Could not find any image files in '{path}' with extensions: {extensions}")
 
     # This is a necessary step, otherwise the file order is not guaranteed to
     # be sequential and we get randomly ordered stack of names
     files_match.sort(key=_alphanum_key_split)
 
-    log.debug('Found files: {}'.format(files_match))
+    log.debug(f'Found {len(files_match)} files with common prefix: {os.path.commonprefix(files_match)}')
 
     return files_match
 
