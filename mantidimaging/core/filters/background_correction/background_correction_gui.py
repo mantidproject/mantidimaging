@@ -35,7 +35,7 @@ def _gui_register(form, on_change) -> Tuple[Optional[Dict], Optional[Callable], 
 
         LOG.debug(f"Loading image from widget text: '{text}', directory: '{directory}', "
                   f"prefix: '{prefix}', extension: '{extension}'")
-        images_flat_only = io.loader.load(directory, prefix, extension)
+        images_flat_only = io.loader.load(directory, in_prefix=prefix, in_format=extension)
         # this will be put in the 'sample' attribute, because we load a single
         # volume
         flat = images_flat_only.sample.mean(axis=0)

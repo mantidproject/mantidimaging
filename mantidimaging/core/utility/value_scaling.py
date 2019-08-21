@@ -1,7 +1,6 @@
 import numpy as np
 
-from mantidimaging.core.parallel import two_shared_mem as ptsm
-from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.parallel import two_shared_mem as ptsm, utility as pu
 
 
 def _calc_avg(data,
@@ -17,6 +16,9 @@ def create_factors(data, roi=None, cores=None, chunksize=None):
     """
     Calculate the scale factors as the mean of the ROI
     :param data: The data stack from which the scale factors will be calculated
+    :param roi: Region of interest for which the scale factors will be calculated
+    :param cores: Number of cores that will perform the calculation
+    :param chunksize: How many chunks of work each core will receive
     :return: The scale factor for each image.
     """
     img_num = data.shape[0]
@@ -34,8 +36,7 @@ def create_factors(data, roi=None, cores=None, chunksize=None):
         roi_right=roi[2] if roi else data[0].shape[1] - 1,
         roi_bottom=roi[3] if roi else data[0].shape[0] - 1)
 
-    data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial,
-                                       cores, chunksize,
+    data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize,
                                        "Calculating scale factor")
 
     return scale_factors

@@ -93,7 +93,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(PresNotification.SAVE)
 
     def execute_load(self):
-        self.presenter.notify(PresNotification.LOAD)
+        self.presenter.load_stack(self.load_dialogue.get_kwargs())
 
     def show_save_dialogue(self):
         self.save_dialogue = MWSaveDialog(self, self.stack_list())

@@ -1,6 +1,6 @@
 from functools import partial
 from logging import getLogger
-from typing import Dict, Callable, Optional
+from typing import Callable, Dict, Optional
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):

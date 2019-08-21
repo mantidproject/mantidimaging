@@ -122,8 +122,7 @@ def return_to_second(func, i, **kwargs):
     :param kwargs: kwargs to forward to the function func that will be executed
     :return: nothing is returned, as the data is replaced in place
     """
-    second_shared_data[i] = func(shared_data[i], second_shared_data[i],
-                                 **kwargs)
+    second_shared_data[i] = func(shared_data[i], second_shared_data[i], **kwargs)
 
 
 def create_partial(func, fwd_function=inplace, **kwargs):
@@ -224,9 +223,12 @@ def execute(data=None,
                                         num_steps=img_num,
                                         task_name=task_name)
 
-    indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(pool.imap(
-            partial_func, indices_list, chunksize=chunksize)):
+    if img_num == 1:
+        indices_list = [0]
+    else:
+        indices_list = range(img_num)
+
+    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
         progress.update()
 
     pool.close()

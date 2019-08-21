@@ -163,7 +163,7 @@ def load(input_path=None,
 
     :param in_prefix: Optional: Prefix for loaded files
 
-    :param img_format: Default:'fits', format for the input images
+    :param in_format: Default:'tiff', format for the input images
 
     :param dtype: Default:np.float32, data type for the input images
 

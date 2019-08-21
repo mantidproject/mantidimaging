@@ -6,9 +6,8 @@ import logging
 import os
 import sys
 import time
-
-from time import gmtime, strftime
 from logging import getLogger
+from time import gmtime, strftime
 
 import numpy as np
 
@@ -21,7 +20,7 @@ _time_start = None
 def initialise_logging(default_level=logging.DEBUG):
     global _log_formatter
     _log_formatter = logging.Formatter(
-            "%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+        "%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
 
     # Add a very verbose logging level
     logging.addLevelName(5, 'TRACE')
@@ -144,7 +143,7 @@ def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
     if not isinstance(to_check, expected_class):
         raise ValueError(
             "Invalid data type. It is not a Numpy ndarray: {0}".
-            format(to_check))
+                format(to_check))
 
     # the scripts are designed to work with a 3 dimensional dataset
     # in the case of 4 dimensional data, it's typically reduced to 3 dimensions
