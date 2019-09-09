@@ -20,8 +20,7 @@ def _fitsread(filename):
     image = fits.open(filename)
     if len(image) < 1:
         raise RuntimeError(
-            "Could not load at least one FITS image/table file from: {0}".
-                format(filename))
+            "Could not load at least one FITS image/table file from: {0}".format(filename))
 
     # get the image data
     return image[0].data
