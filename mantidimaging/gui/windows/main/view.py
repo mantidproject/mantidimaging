@@ -3,7 +3,7 @@ from typing import Optional
 
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QStatusBar
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
@@ -12,6 +12,7 @@ from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.savu_filters.preparation import BackgroundService
 from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
@@ -19,6 +20,7 @@ from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
+    backend_message = Qt.pyqtSignal(bytes)
 
     actionCorTilt: QAction
     actionFilters: QAction
@@ -27,6 +29,8 @@ class MainWindowView(BaseMainWindowView):
 
     load_dialogue: MWLoadDialog
     save_dialogue: MWSaveDialog
+
+    statusbar: QStatusBar
 
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
@@ -176,6 +180,7 @@ class MainWindowView(BaseMainWindowView):
         Handles a request to quit the application from the user.
         """
         should_close = True
+        self.backend_process.close()
 
         if self.presenter.have_active_stacks:
             # Show confirmation box asking if the user really wants to quit if
@@ -189,6 +194,7 @@ class MainWindowView(BaseMainWindowView):
             # Close all matplotlib PyPlot windows when exiting.
             getLogger(__name__).debug("Closing all PyPlot windows")
             matplotlib.pyplot.close("all")
+            self.backend_process.join()
 
             # Pass close event to parent
             super(MainWindowView, self).closeEvent(event)
@@ -200,3 +206,12 @@ class MainWindowView(BaseMainWindowView):
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
         getLogger(__name__).error(log_error_msg)
+
+    def set_background_service(self, process: BackgroundService):
+        self.backend_message.connect(self.print_backend_output)
+        self.backend_process = process
+        process.callback = lambda output: self.backend_message.emit(output)
+        # process.error_callback = lambda err_code, output: None
+
+    def print_backend_output(self, output: str):
+        print(output)
