@@ -3,7 +3,7 @@ from typing import Optional
 
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction, QLabel
+from PyQt5.QtWidgets import QAction, QLabel, QStatusBar
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -33,6 +33,8 @@ class MainWindowView(BaseMainWindowView):
 
     load_dialogue: MWLoadDialog
     save_dialogue: MWSaveDialog
+
+    statusbar: QStatusBar
 
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")

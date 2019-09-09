@@ -76,7 +76,6 @@ class BackgroundService(threading.Thread):
         if self.docker_id:
             subprocess.call(f'{self.docker_exe} kill {self.docker_id}', shell=True)
 
-
 def is_exe(fpath):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
@@ -87,6 +86,7 @@ def find_docker():
         "/snap/bin/docker",  # if installed via SNAP
         "/usr/bin/docker",  # if installed via apt
     ]
+
     for location in docker_locations:
         if is_exe(location):
             return location
