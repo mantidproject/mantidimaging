@@ -14,13 +14,12 @@ Widget used for displaying 2D or 3D data. Features:
 """
 import os
 from logging import getLogger
-from typing import Tuple, Optional, Callable
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QLabel
-from pyqtgraph import debug as debug, ROI, ViewBox, ImageItem, InfiniteLine, LinearRegionItem, QtCore
-from pyqtgraph import ptime as ptime
+from PyQt5.QtWidgets import QLabel, QMenu, QAction
+from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug as debug, ptime as ptime
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
 from pyqtgraph.graphicsItems.GradientEditorItem import addGradientListToDocstring
@@ -137,6 +136,8 @@ class ImageView(QtGui.QWidget):
 
         # implement a hover event, when the user hovers the mouse over the image
         self.imageItem.hoverEvent = self.image_hover_event
+        # implement a custom raiseContextMenu event
+        self.imageItem.raiseContextMenu = self.context_menu_event
         self.view.addItem(self.imageItem)
         self.currentIndex = 0
 
@@ -215,17 +216,17 @@ class ImageView(QtGui.QWidget):
         self.roiClicked()  # initialize roi plot to correct shape / visibility
 
     def setImage(
-        self,
-        img,
-        autoRange=True,
-        autoLevels=True,
-        levels=None,
-        axes=None,
-        xvals=None,
-        pos=None,
-        scale=None,
-        transform=None,
-        autoHistogramRange=True,
+            self,
+            img,
+            autoRange=True,
+            autoLevels=True,
+            levels=None,
+            axes=None,
+            xvals=None,
+            pos=None,
+            scale=None,
+            transform=None,
+            autoHistogramRange=True,
     ):
         """
         Set the image to be displayed in the widget.
@@ -819,3 +820,16 @@ class ImageView(QtGui.QWidget):
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
+
+    def context_menu_event(self, event):
+        print("RMB event:", event)
+        menu = QMenu(self)
+        action = QAction("Click me", menu)
+        action.triggered.connect(self.clickered)
+        menu.addAction(action)
+        pos = event.screenPos()
+        menu.popup(QtCore.QPoint(pos.x(), pos.y()))
+        event.accept()
+
+    def clickered(self):
+        print("menu action clicked")

@@ -1,7 +1,7 @@
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QVBoxLayout, QDockWidget, QAction, QWidget
+from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
