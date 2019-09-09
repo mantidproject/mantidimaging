@@ -142,8 +142,7 @@ def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
     # the data must be a np array, otherwise most functionality won't work
     if not isinstance(to_check, expected_class):
         raise ValueError(
-            "Invalid data type. It is not a Numpy ndarray: {0}".
-                format(to_check))
+            "Invalid data type. It is not a Numpy ndarray: {0}".format(to_check))
 
     # the scripts are designed to work with a 3 dimensional dataset
     # in the case of 4 dimensional data, it's typically reduced to 3 dimensions

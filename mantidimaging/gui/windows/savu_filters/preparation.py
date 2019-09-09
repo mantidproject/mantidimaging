@@ -37,4 +37,3 @@ async def prepare_data():
     except socketio.exceptions.ConnectionError as err:
         LOG.info(f"SAVU backend could not be connected.")
         LOG.debug(f"Could not connect to SAVU Socket IO, error: {err}")
-
