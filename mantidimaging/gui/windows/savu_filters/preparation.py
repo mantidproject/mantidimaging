@@ -1,4 +1,3 @@
-import atexit
 import os
 import subprocess
 import threading
@@ -24,20 +23,19 @@ class BackgroundService(threading.Thread):
         self.args = args
         self.callback = lambda output: None
         self.error_callback = lambda err_code, output: None
+        self.success_callback = lambda: None
         self.exit_code: int = -4444
         self.close_now = False
         self.docker_id = None
         self.close_intended = False
+        self.process: Optional[subprocess.Popen] = None
 
     def run(self) -> None:
         self.process = subprocess.Popen(self.args, bufsize=1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while self.process.poll() is None:
             output = self.process.stdout.readline()
             if b"* Serving Flask app " in output:
-                prepare_data()
-                docker_id = subprocess.check_output("docker ps | awk -F ' ' 'END {print $1}'", shell=True)
-                self.docker_id = docker_id.decode("utf-8")
-                atexit.register(subprocess.call, f'docker kill {self.docker_id}', shell=True)
+                self.success()
             if output == '' and self.process.poll() is not None:
                 break
             if output:
@@ -51,10 +49,16 @@ class BackgroundService(threading.Thread):
             else:
                 self.error_callback(self.exit_code, self.process.stdout.readlines())
 
+    def success(self):
+        prepare_data()
+        docker_id = subprocess.check_output("docker ps | awk -F ' ' 'END {print $1}'", shell=True)
+        self.docker_id = docker_id.decode("utf-8")
+
     def close(self):
         self.close_intended = True
-        subprocess.call(f'docker kill {self.docker_id}', shell=True)
         self.process.terminate()
+        subprocess.call(f'docker kill {self.docker_id}', shell=True)
+        sio_client.reconnection = False
         sio_client.disconnect()
 
 

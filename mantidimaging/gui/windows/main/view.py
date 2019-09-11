@@ -3,7 +3,7 @@ from typing import Optional
 
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction, QStatusBar
+from PyQt5.QtWidgets import QAction, QLabel
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
@@ -30,8 +30,6 @@ class MainWindowView(BaseMainWindowView):
     load_dialogue: MWLoadDialog
     save_dialogue: MWSaveDialog
 
-    statusbar: QStatusBar
-
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 
@@ -46,6 +44,10 @@ class MainWindowView(BaseMainWindowView):
         self.tomopy_recon: Optional[TomopyReconWindowView] = None
         self.save_dialogue: Optional[MWSaveDialog] = None
         self.load_dialogue: Optional[MWLoadDialog] = None
+
+        status_bar = self.statusBar()
+        self.status_bar_label = QLabel("", self)
+        status_bar.addPermanentWidget(self.status_bar_label)
 
         self.setup_shortcuts()
         self.update_shortcuts()
@@ -208,9 +210,12 @@ class MainWindowView(BaseMainWindowView):
         getLogger(__name__).error(log_error_msg)
 
     def set_background_service(self, process: BackgroundService):
+        if process.process and process.process.poll() is not None:
+            self.status_bar_label.setText("SAVU Backend: Starting")
         self.backend_message.connect(self.print_backend_output)
         self.backend_process = process
         process.callback = lambda output: self.backend_message.emit(output)
+        process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
         # process.error_callback = lambda err_code, output: None
 
     def print_backend_output(self, output: str):
