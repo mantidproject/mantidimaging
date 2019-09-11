@@ -34,8 +34,6 @@ class MainWindowView(BaseMainWindowView):
     load_dialogue: MWLoadDialog
     save_dialogue: MWSaveDialog
 
-    statusbar: QStatusBar
-
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 

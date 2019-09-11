@@ -1,4 +1,3 @@
-import atexit
 import os
 import subprocess
 import threading
@@ -64,6 +63,11 @@ class BackgroundService(threading.Thread):
     def success(self):
         prepare_data()
         docker_id = subprocess.check_output(self.docker_exe + " ps | awk -F ' ' 'END {print $1}'", shell=True)
+        self.docker_id = docker_id.decode("utf-8")
+
+    def success(self):
+        prepare_data()
+        docker_id = subprocess.check_output("docker ps | awk -F ' ' 'END {print $1}'", shell=True)
         self.docker_id = docker_id.decode("utf-8")
 
     def close(self):
