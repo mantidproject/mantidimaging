@@ -32,8 +32,7 @@ class MWLoadDialog(Qt.QDialog):
 
         self.parent_view = parent
 
-        self.sample_button.clicked.connect(
-            lambda: self.update_dialogue(select_file(self.sample_path, "Sample")))
+        self.sample_button.clicked.connect(lambda: self.update_dialogue(select_file(self.sample_path, "Sample")))
         self.dark_button.clicked.connect(lambda: select_file(self.dark_path, "Dark"))
         self.flat_button.clicked.connect(lambda: select_file(self.flat_path, "Flat"))
 
@@ -104,7 +103,6 @@ class MWLoadDialog(Qt.QDialog):
 
         # Enforce the maximum step (ensure a minimum of 1)
         self.index_step.setMaximum(max(number_of_images, 1))
-        self.index_step.setValue(number_of_images / 10)
 
     def update_expected_mem_usage(self):
         self.dtype = self.pixelBitDepth.currentText()
