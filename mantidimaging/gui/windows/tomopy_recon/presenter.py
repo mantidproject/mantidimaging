@@ -1,5 +1,6 @@
 from enum import Enum
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
@@ -9,6 +10,9 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from .model import TomopyReconWindowModel
 
 LOG = getLogger(__name__)
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 
 class Notification(Enum):
@@ -21,8 +25,9 @@ class Notification(Enum):
 
 class TomopyReconWindowPresenter(BasePresenter):
 
-    def __init__(self, view, main_window):
+    def __init__(self, view: 'TomopyReconWindowView', main_window):
         super(TomopyReconWindowPresenter, self).__init__(view)
+        self.view = view
         self.model = TomopyReconWindowModel()
         self.main_window = main_window
 
@@ -82,18 +87,24 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def prepare_reconstruction(self):
         self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
-
+        self.model.current_algorithm = self.view.get_algorithm_name()
+        self.model.current_filter = self.view.get_filter_name()
         self.model.generate_projection_angles(self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()
+        self._create_recon_task(self.model.reconstruct_slice, self._on_reconstruct_slice_done)
 
+    def do_reconstruct_volume(self):
+        self.prepare_reconstruction()
+        self._create_recon_task(self.model.reconstruct_volume, self._on_reconstruct_volume_done)
+
+    def _create_recon_task(self, task, on_complete):
         atd = AsyncTaskDialogView(self.view, auto_close=True)
         kwargs = {'progress': Progress()}
         kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.reconstruct_slice)
-        atd.presenter.set_on_complete(self._on_reconstruct_slice_done)
+        atd.presenter.set_task(task)
+        atd.presenter.set_on_complete(on_complete)
         atd.presenter.set_parameters(**kwargs)
         atd.presenter.do_start_processing()
 
@@ -104,18 +115,6 @@ class TomopyReconWindowPresenter(BasePresenter):
         else:
             LOG.error('Reconstruction failed: %s', str(task.error))
             self.show_error('Reconstruction failed. See log for details.')
-
-    def do_reconstruct_volume(self):
-        self.prepare_reconstruction()
-
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.reconstruct_volume)
-        atd.presenter.set_on_complete(self._on_reconstruct_volume_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
 
     def _on_reconstruct_volume_done(self, task):
         if task.was_successful():

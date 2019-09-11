@@ -1,16 +1,14 @@
-from logging import getLogger
 import concurrent.futures as cf
+from logging import getLogger
 
 import numpy as np
-
-from mantidimaging.core.utility.progress_reporting import Progress
 
 # This import is used to provide the available() function which is used to
 # check if the functionality of a module is available based on the presence of
 # optional libraries
 from mantidimaging.core.utility.optional_imports import (  # noqa: F401
-    safe_import,
-    tomopy_available as available)
+    safe_import)
+from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
@@ -40,11 +38,11 @@ def reconstruct_single_preview(sample,
         s = np.swapaxes(sample[:, [slice_idx], :], 0, 1)
 
         volume = tomopy.recon(
-                tomo=s,
-                sinogram_order=True,
-                theta=proj_angles,
-                center=cor,
-                algorithm='gridrec')
+            tomo=s,
+            sinogram_order=True,
+            theta=proj_angles,
+            center=cor,
+            algorithm='gridrec')
 
     return volume[0]
 
@@ -67,11 +65,11 @@ def reconstruct_single_preview_from_sinogram(sample,
     volume = [None]
     with progress:
         volume = tomopy.recon(
-                tomo=[sample],
-                sinogram_order=True,
-                theta=proj_angles,
-                center=cor,
-                algorithm='gridrec')
+            tomo=[sample],
+            sinogram_order=True,
+            theta=proj_angles,
+            center=cor,
+            algorithm='gridrec')
 
     return volume[0]
 
@@ -79,6 +77,9 @@ def reconstruct_single_preview_from_sinogram(sample,
 def reconstruct(sample,
                 cor=None,
                 proj_angles=None,
+                algorithm_name='gridrec',
+                filter_name='none',
+                images_are_sinograms=True,
                 ncores=None,
                 progress=None):
     """
@@ -87,12 +88,13 @@ def reconstruct(sample,
     :param sample: Array of sinogram images
     :param cor: Array of centre of rotation values
     :param proj_angles: Array of projection angles
+    :param algorithm_name: Name of the algorithm to be used for the reconstruction
     :param ncores: Number of CPU cores to execute on, defaults to all
     :param progress: Optional progress reporter
     :return: 3D image data for reconstructed volume
     """
     progress = Progress.ensure_instance(progress,
-                                        task_name='Tomopy reconstruction')
+                                        task_name='TomoPy reconstruction')
 
     if ncores is None:
         import multiprocessing
@@ -106,7 +108,7 @@ def reconstruct(sample,
 
         # Use a chunk size of 1 to process one sinogram per thread execution
         ncore, slcs = tomopy.util.mproc.get_ncore_slices(
-                axis_size, ncore, 1)
+            axis_size, ncore, 1)
 
         progress.add_estimated_steps(len(slcs))
 
@@ -129,14 +131,14 @@ def reconstruct(sample,
     volume = None
     with progress:
         volume = tomopy.recon(
-                ncore=ncores,
-                tomo=sample,
-                sinogram_order=True,
-                theta=proj_angles,
-                center=cor,
-                algorithm='gridrec')
+            ncore=ncores,
+            tomo=sample,
+            sinogram_order=images_are_sinograms,
+            theta=proj_angles,
+            center=cor,
+            algorithm=algorithm_name,
+            filter_name=filter_name)
 
-        LOG.info('Reconstructed 3D volume with shape: {0}'.format(
-            volume.shape))
+        LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
 
     return volume

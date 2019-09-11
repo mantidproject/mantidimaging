@@ -22,35 +22,20 @@
       </property>
       <widget class="QWidget" name="verticalLayoutWidget_2">
        <layout class="QVBoxLayout" name="paramsLayout">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
          <number>9</number>
         </property>
         <item>
          <layout class="QGridLayout" name="optionsLayout">
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="maxProjAngle">
-            <property name="maximum">
-             <double>9999.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>360.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="maxProjAngleLebsl">
-            <property name="text">
-             <string>Maximum projection angle</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="corLabel">
-            <property name="text">
-             <string>Rotation centre (at top of stack):</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="stackSelectorLabel">
             <property name="text">
@@ -61,15 +46,22 @@
           <item row="2" column="1">
            <widget class="StackSelectorWidgetView" name="stackSelector"/>
           </item>
+          <item row="6" column="1">
+           <widget class="QSpinBox" name="previewSlice"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="gradientLabel">
+            <property name="text">
+             <string>Rotation centre gradient:</string>
+            </property>
+           </widget>
+          </item>
           <item row="6" column="0">
            <widget class="QLabel" name="previewSliceLabel">
             <property name="text">
              <string>Preview slice:</string>
             </property>
            </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QSpinBox" name="previewSlice"/>
           </item>
           <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="cor">
@@ -78,13 +70,6 @@
             </property>
             <property name="singleStep">
              <double>10.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="gradientLabel">
-            <property name="text">
-             <string>Rotation centre gradient:</string>
             </property>
            </widget>
           </item>
@@ -102,6 +87,162 @@
             <property name="singleStep">
              <double>0.001000000000000</double>
             </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="maxProjAngleLebsl">
+            <property name="text">
+             <string>Maximum projection angle</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="corLabel">
+            <property name="text">
+             <string>Rotation centre (at top of stack):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="maxProjAngle">
+            <property name="maximum">
+             <double>9999.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QComboBox" name="algorithmName">
+            <item>
+             <property name="text">
+              <string>gridrec</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>fbp</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>art</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>bart</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>mlem</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>osem</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ospml_hybrid</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ospml_quad</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>pml_hybrid</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>pml_quad</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>sirt</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>tv</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>grad</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>tikh</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Algorithm:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Reconstruction filter:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QComboBox" name="filterName">
+            <item>
+             <property name="text">
+              <string>none</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>shepp</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>cosine</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>hann</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>hamming</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ramlak</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>parzen</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>butterworth</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>

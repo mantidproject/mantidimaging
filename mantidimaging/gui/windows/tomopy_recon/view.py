@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from PyQt5.QtWidgets import QComboBox, QCheckBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
@@ -14,6 +15,9 @@ if TYPE_CHECKING:
 
 
 class TomopyReconWindowView(BaseMainWindowView):
+    algorithmName: QComboBox
+    filterName: QComboBox
+    imagesAreSinograms: QCheckBox
 
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         super(TomopyReconWindowView, self).__init__(main_window, 'gui/ui/tomopy_recon_window.ui')
@@ -28,12 +32,8 @@ class TomopyReconWindowView(BaseMainWindowView):
             self.presenter.set_stack_uuid)
 
         # Handle reconstruct buttons
-        self.reconstructSlice.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.RECONSTRUCT_SLICE))
-        self.reconstructVolume.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.RECONSTRUCT_VOLUME))
+        self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_SLICE))
+        self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_VOLUME))
 
         # Handle preview slice selection
         self.previewSlice.valueChanged[int].connect(
@@ -140,3 +140,9 @@ class TomopyReconWindowView(BaseMainWindowView):
     @property
     def max_proj_angle(self):
         return self.maxProjAngle.value()
+
+    def get_algorithm_name(self):
+        return self.algorithmName.currentText()
+
+    def get_filter_name(self):
+        return self.filterName.currentText()
