@@ -19,8 +19,7 @@ _time_start = None
 
 def initialise_logging(default_level=logging.DEBUG):
     global _log_formatter
-    _log_formatter = logging.Formatter(
-        "%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
+    _log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
 
     # Add a very verbose logging level
     logging.addLevelName(5, 'TRACE')
@@ -98,24 +97,15 @@ def initialise(config, saver=None):
 
     log.info('Time now (run begin): ' + time.ctime(_time_start))
 
-    alg_hdr = ("\n"
-               "--------------------------\n"
-               "Tool/Algorithm\n"
-               "--------------------------\n")
+    alg_hdr = ("\n" "--------------------------\n" "Tool/Algorithm\n" "--------------------------\n")
     alg_hdr += str(config.func)
     log.info(alg_hdr)
 
-    preproc_hdr = ("\n"
-                   "--------------------------\n"
-                   "Filter parameters\n"
-                   "--------------------------\n")
+    preproc_hdr = ("\n" "--------------------------\n" "Filter parameters\n" "--------------------------\n")
     preproc_hdr += str(config.args)
     log.info(preproc_hdr)
 
-    cmd_hdr = ("\n"
-               "--------------------------\n"
-               "Command line\n"
-               "--------------------------\n")
+    cmd_hdr = ("\n" "--------------------------\n" "Command line\n" "--------------------------\n")
     cmd_hdr += config.cmd_line
     log.info(cmd_hdr)
 
@@ -126,8 +116,7 @@ def check_config_integrity(config):
     check_config_class(config)
 
     if not config.func.output_path:
-        logging.getLogger(__name__).warning(
-            "No output path specified, no output will be produced!")
+        logging.getLogger(__name__).warning("No output path specified, no output will be produced!")
 
 
 def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
@@ -141,17 +130,13 @@ def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
 
     # the data must be a np array, otherwise most functionality won't work
     if not isinstance(to_check, expected_class):
-        raise ValueError(
-            "Invalid data type. It is not a Numpy ndarray: {0}".
-                format(to_check))
+        raise ValueError("Invalid data type. It is not a Numpy ndarray: {0}".format(to_check))
 
     # the scripts are designed to work with a 3 dimensional dataset
     # in the case of 4 dimensional data, it's typically reduced to 3 dimensions
     # via the aggregate functionality
     if expected_dims != to_check.ndim:
-        raise ValueError(
-            "Invalid data format. It does not have 3 dimensions. "
-            "Shape: {0}".format(to_check.shape))
+        raise ValueError("Invalid data format. It does not have 3 dimensions. " "Shape: {0}".format(to_check.shape))
 
 
 def run_import_checks(config):

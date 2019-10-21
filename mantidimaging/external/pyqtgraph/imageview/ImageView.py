@@ -273,11 +273,9 @@ class ImageView(QtGui.QWidget):
         if not isinstance(img, np.ndarray):
             required = ["dtype", "max", "min", "ndim", "shape", "size"]
             if not all([hasattr(img, attr) for attr in required]):
-                raise TypeError(
-                    "Image must be NumPy array or any object "
-                    "that provides compatible attributes/methods:\n"
-                    "  %s" % str(required)
-                )
+                raise TypeError("Image must be NumPy array or any object "
+                                "that provides compatible attributes/methods:\n"
+                                "  %s" % str(required))
 
         self.image = img
         self.imageDisp = None
@@ -307,11 +305,8 @@ class ImageView(QtGui.QWidget):
             for i in range(len(axes)):
                 self.axes[axes[i]] = i
         else:
-            raise Exception(
-                "Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1}'\
-                    ' or ('t', 'x', 'y', 'c')"
-                % (str(axes))
-            )
+            raise Exception("Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1}'\
+                    ' or ('t', 'x', 'y', 'c')" % (str(axes)))
 
         for x in ["t", "x", "y", "c"]:
             self.axes[x] = self.axes.get(x, None)
@@ -642,7 +637,7 @@ class ImageView(QtGui.QWidget):
             (eind, end) = self.timeIndex(self.normRgn.lines[1])
             # print start, end, sind, eind
             n = image[sind:eind + 1].mean(axis=0)
-            n.shape = (1,) + n.shape
+            n.shape = (1, ) + n.shape
             if div:
                 norm /= n
             else:
@@ -823,4 +818,3 @@ class ImageView(QtGui.QWidget):
 
     def context_menu_event(self, event):
         raise NotImplementedError("This function should be replaced with the actual event")
-        

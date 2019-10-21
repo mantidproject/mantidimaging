@@ -19,9 +19,7 @@ def _fitsread(filename):
     import astropy.io.fits as fits
     image = fits.open(filename)
     if len(image) < 1:
-        raise RuntimeError(
-            "Could not load at least one FITS image/table file from: {0}".
-                format(filename))
+        raise RuntimeError("Could not load at least one FITS image/table file from: {0}".format(filename))
 
     # get the image data
     return image[0].data
@@ -76,11 +74,19 @@ def read_in_shape(input_path,
                   cores=None,
                   chunksize=None):
     input_file_names = get_file_names(input_path, in_format, in_prefix)
-    images = load(input_path, None, None, in_prefix, in_format,
-                  data_dtype, cores, chunksize, indices=[0, 1, 1], file_names=input_file_names)
+    images = load(input_path,
+                  None,
+                  None,
+                  in_prefix,
+                  in_format,
+                  data_dtype,
+                  cores,
+                  chunksize,
+                  indices=[0, 1, 1],
+                  file_names=input_file_names)
 
     # construct and return the new shape
-    return (len(input_file_names),) + images.sample.shape[1:]
+    return (len(input_file_names), ) + images.sample.shape[1:]
 
 
 def read_in_shape_from_config(config):
@@ -108,8 +114,7 @@ def read_in_shape_from_config(config):
     cores = config.func.cores
     chunksize = config.func.chunksize
 
-    return read_in_shape(
-        input_path, in_prefix, in_format, data_dtype, cores, chunksize)
+    return read_in_shape(input_path, in_prefix, in_format, data_dtype, cores, chunksize)
 
 
 def load_from_config(config):
@@ -134,9 +139,17 @@ def load_from_config(config):
     indices = config.func.indices
     construct_sinograms = config.func.construct_sinograms
 
-    return load(input_path, input_path_flat, input_path_dark, img_prefix,
-                img_format, data_dtype, cores, chunksize, parallel_load,
-                indices=indices, construct_sinograms=construct_sinograms)
+    return load(input_path,
+                input_path_flat,
+                input_path_dark,
+                img_prefix,
+                img_format,
+                data_dtype,
+                cores,
+                chunksize,
+                parallel_load,
+                indices=indices,
+                construct_sinograms=construct_sinograms)
 
 
 def load(input_path=None,
@@ -197,8 +210,7 @@ def load(input_path=None,
         raise ValueError("Image format {0} not supported!".format(in_format))
 
     if indices and len(indices) < 3:
-        raise ValueError(
-            "Indices at this point MUST have 3 elements: [start, stop, step]!")
+        raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if not file_names:
         input_file_names = get_file_names(input_path, in_format, in_prefix)
@@ -208,8 +220,7 @@ def load(input_path=None,
     if in_format in ['nxs']:
         # pass only the first filename as we only expect a stack
         input_file = input_file_names[0]
-        images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load",
-                                      cores, chunksize, parallel_load, indices,
+        images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load", cores, chunksize, parallel_load, indices,
                                       progress)
     else:
         if in_format in ['fits', 'fit']:
@@ -217,16 +228,13 @@ def load(input_path=None,
         else:
             load_func = _imread
 
-        images = img_loader.execute(
-            load_func, input_file_names, input_path_flat, input_path_dark,
-            in_format, dtype, cores, chunksize, parallel_load, indices,
-            construct_sinograms, progress)
+        images = img_loader.execute(load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype,
+                                    cores, chunksize, parallel_load, indices, construct_sinograms, progress)
 
     images.check_data_stack(images)
 
     # Search for and load metadata file
-    metadata_filename = get_file_names(input_path, 'json', in_prefix,
-                                       essential=False)
+    metadata_filename = get_file_names(input_path, 'json', in_prefix, essential=False)
     metadata_filename = metadata_filename[0] if metadata_filename else None
     if metadata_filename:
         with open(metadata_filename) as f:
@@ -252,15 +260,13 @@ def load_sinogram(input_path=None,
     The reason is because this function will have a lot slower performance than
     the normal load.
     """
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Sinogram Load')
+    progress = Progress.ensure_instance(progress, task_name='Sinogram Load')
 
     if in_format not in supported_formats():
         raise ValueError("Image format {0} not supported!".format(in_format))
 
     if in_format == 'nxs':
-        raise NotImplementedError(
-            "This functionality is not yet implemented for NXS files")
+        raise NotImplementedError("This functionality is not yet implemented for NXS files")
 
     input_file_names = get_file_names(input_path, in_format, in_prefix)
 
@@ -274,8 +280,7 @@ def load_sinogram(input_path=None,
     from mantidimaging.core.parallel import utility as pu
 
     # allocate memory for a single sinogram
-    output_data = pu.create_shared_array(
-        (1, num_images, img_shape[1]), dtype=dtype)
+    output_data = pu.create_shared_array((1, num_images, img_shape[1]), dtype=dtype)
 
     LOG.info("Output data shape: {}".format(output_data.shape))
 
@@ -286,7 +291,6 @@ def load_sinogram(input_path=None,
             loaded_image = _imread(input_file)
             output_data[0, idx, :] = loaded_image[:, sinogram_number]
 
-            progress.update(msg='Loading sinogram {} of {}'.format(
-                idx, num_images))
+            progress.update(msg='Loading sinogram {} of {}'.format(idx, num_images))
 
     return output_data

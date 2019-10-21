@@ -5,8 +5,8 @@ from typing import Optional
 import socketio
 from requests_futures.sessions import FuturesSession
 
-from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL,
-                                                            SERVER_WS_URL, WS_JOB_STATUS_NAMESPACE)
+from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
+                                                            WS_JOB_STATUS_NAMESPACE)
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
@@ -37,4 +37,3 @@ async def prepare_data():
     except socketio.exceptions.ConnectionError as err:
         LOG.info(f"SAVU backend could not be connected.")
         LOG.debug(f"Could not connect to SAVU Socket IO, error: {err}")
-
