@@ -136,8 +136,6 @@ class ImageView(QtGui.QWidget):
 
         # implement a hover event, when the user hovers the mouse over the image
         self.imageItem.hoverEvent = self.image_hover_event
-        # implement a custom raiseContextMenu event
-        self.imageItem.raiseContextMenu = self.context_menu_event
         self.view.addItem(self.imageItem)
         self.currentIndex = 0
 
@@ -815,6 +813,3 @@ class ImageView(QtGui.QWidget):
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
-
-    def context_menu_event(self, event):
-        raise NotImplementedError("This function should be replaced with the actual event")
