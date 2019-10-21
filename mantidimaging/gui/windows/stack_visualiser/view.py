@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, Tuple
 
+from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -15,7 +16,6 @@ if TYPE_CHECKING:
 
 class StackVisualiserView(BaseMainWindowView):
     # Signal that signifies when the ROI is updated. Used to update previews in Filter views
-    # TODO currently not emitted correctly (should use
     roi_updated = pyqtSignal(SensibleROI)
 
     image_view: ImageView
@@ -49,6 +49,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.presenter = StackVisualiserPresenter(self, images)
 
         self.image_view = ImageView(self)
+        self.image_view.context_menu_event = self.context_menu_event
         self.actionCloseStack = QAction("Close window", self)
         self.actionCloseStack.triggered.connect(self.close_view)
         self.actionCloseStack.setShortcut("Ctrl+W")
@@ -92,3 +93,16 @@ class StackVisualiserView(BaseMainWindowView):
 
     def close_view(self):
         self.close()
+
+    def context_menu_event(self, event):
+        print("RMB event:", event)
+        menu = QMenu(self)
+        action = QAction("Click me", menu)
+        action.triggered.connect(self.clickered)
+        menu.addAction(action)
+        pos = event.screenPos()
+        menu.popup(QtCore.QPoint(pos.x(), pos.y()))
+        event.accept()
+
+    def clickered(self):
+        print("menu action clicked")

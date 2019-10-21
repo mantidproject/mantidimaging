@@ -18,7 +18,7 @@ from typing import Callable, Optional, Tuple
 
 import numpy as np
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QLabel, QMenu, QAction
+from PyQt5.QtWidgets import QLabel
 from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug as debug, ptime as ptime
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
@@ -822,14 +822,5 @@ class ImageView(QtGui.QWidget):
         self.details.setText(msg)
 
     def context_menu_event(self, event):
-        print("RMB event:", event)
-        menu = QMenu(self)
-        action = QAction("Click me", menu)
-        action.triggered.connect(self.clickered)
-        menu.addAction(action)
-        pos = event.screenPos()
-        menu.popup(QtCore.QPoint(pos.x(), pos.y()))
-        event.accept()
-
-    def clickered(self):
-        print("menu action clicked")
+        raise NotImplementedError("This function should be replaced with the actual event")
+        
