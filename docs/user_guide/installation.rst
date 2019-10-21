@@ -12,15 +12,28 @@ have one on your machine.
 1. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
 2. Add needed channels to Anaconda
 
-  - :code:`conda config --prepend conda-forge`
-  - :code:`conda config --prepend anaconda`
-  - :code:`conda config --prepend defaults`
+  - :code:`conda config --prepend channels conda-forge`
+  - :code:`conda config --prepend channels anaconda`
+  - :code:`conda config --prepend channels defaults`
 
-3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c conda-forge -c dtasev mantidimaging`
+3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging`
 4. Activate the newly created environment: :code:`conda activate mantidimaging`
+5. Install additional :code:`pip` dependencies with :code:`pip install pip_requirements.txt` from the source folder.
 
-Running
--------
+  - If unavailable the packages are :code:`pip install python-engineio==3.9.3 h5py==2.9.0`
+
+
+Running the source
+------------------
+
+1. Activate the environment created in the installation step: :code:`conda activate mantidimaging`
+2. Run using one of the following commands:
+
+  - From the root of the repository run with :code:`python -m mantidimaging`
+
+
+Running the package
+-------------------
 
 1. Activate the environment created in the installation step: :code:`conda activate mantidimaging`
 2. Run using one of the following commands:
