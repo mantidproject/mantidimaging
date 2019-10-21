@@ -46,7 +46,7 @@ def get_package_children(package_name, packages=False, modules=False,
     # Ignore those that do not match the package/module selection criteria
     pkgs = filter(lambda p: p[2] and packages or not p[2] and modules, pkgs)
 
-    # Ignore moduels that we want to ignore
+    # Ignore modules that we want to ignore
     if ignore:
         pkgs = filter(lambda p: not any([m in p[1] for m in ignore]),
                       pkgs)
