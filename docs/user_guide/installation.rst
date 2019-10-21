@@ -12,9 +12,9 @@ have one on your machine.
 1. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
 2. Add needed channels to Anaconda
 
-  - :code:`conda config --prepend conda-forge`
-  - :code:`conda config --prepend anaconda`
-  - :code:`conda config --prepend defaults`
+  - :code:`conda config --prepend channels conda-forge`
+  - :code:`conda config --prepend channels anaconda`
+  - :code:`conda config --prepend channels defaults`
 
 3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c conda-forge -c dtasev mantidimaging`
 4. Activate the newly created environment: :code:`conda activate mantidimaging`
