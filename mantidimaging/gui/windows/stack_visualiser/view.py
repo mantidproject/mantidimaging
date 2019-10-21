@@ -109,6 +109,9 @@ class StackVisualiserView(BaseMainWindowView):
         input_window = QInputDialog()
         new_window_name, ok = input_window.getText(self,
                                                    "Change window name",
-                                                   "Name:")
+                                                   "Name:",
+                                                   text=self.name)
+
+
         if ok:
             self.name = new_window_name
