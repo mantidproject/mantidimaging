@@ -25,8 +25,6 @@ class RegistratorTest(unittest.TestCase):
         self.assertEquals(modules, [
             'mantidimaging.core.filters.background_correction',
             'mantidimaging.core.filters.background_correction.test',
-            'mantidimaging.core.filters.background_correction_and_normalisation',
-            'mantidimaging.core.filters.background_correction_and_normalisation.test',
             'mantidimaging.core.filters.circular_mask',
             'mantidimaging.core.filters.circular_mask.test',
             'mantidimaging.core.filters.clip_values',
@@ -68,7 +66,6 @@ class RegistratorTest(unittest.TestCase):
 
         self.assertEquals(modules, [
             'mantidimaging.core.filters.background_correction',
-            'mantidimaging.core.filters.background_correction_and_normalisation',
             'mantidimaging.core.filters.circular_mask',
             'mantidimaging.core.filters.clip_values',
             'mantidimaging.core.filters.crop_coords',
