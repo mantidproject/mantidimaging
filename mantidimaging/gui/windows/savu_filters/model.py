@@ -220,7 +220,7 @@ class SavuFiltersWindowModel(object):
             try:
                 content = JobRunResponseContent(content_json["job"]["id"], content_json["queue"])
             except TypeError as e:
-                msg = f"Could not parse content from remote server.\nContent: {response.content}\nError: {e}"
+                msg = f"Could not parse content from remote server.\nContent: {str(response.content)}\nError: {e}"
                 logger.error(msg)
                 raise RuntimeError(msg)
 
