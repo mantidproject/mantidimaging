@@ -3,7 +3,7 @@ from logging import getLogger
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
-import numpy as np
+from .model import SVModel
 
 
 class SVNotification(IntEnum):
@@ -26,6 +26,7 @@ class SVImageMode(IntEnum):
 class StackVisualiserPresenter(BasePresenter):
     def __init__(self, view, images: Images):
         super(StackVisualiserPresenter, self).__init__(view)
+        self.model = SVModel()
         self.images = images
         self._current_image_index = 0
         self.image_mode: SVImageMode = SVImageMode.NORMAL
@@ -71,7 +72,5 @@ class StackVisualiserPresenter(BasePresenter):
             self.image_mode = SVImageMode.NORMAL
 
         if self.image_mode is SVImageMode.AVERAGED and self.averaged_image is None:
-            self.averaged_image = np.divide(
-                np.sum(self.images.sample, axis=0),
-                self.images.sample.shape[0])
-        self.view.show_current_image()
+            self.averaged_image = self.model.create_averaged_image(self.images.sample)
+        self.set_displayed_image()
