@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Tuple
 
-from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog
 
@@ -111,7 +110,5 @@ class StackVisualiserView(BaseMainWindowView):
                                                    "Change window name",
                                                    "Name:",
                                                    text=self.name)
-
-
         if ok:
             self.name = new_window_name
