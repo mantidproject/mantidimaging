@@ -34,7 +34,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
     def test_notify_refresh_image(self):
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
-        self.view.show_current_image.assert_called_once_with()
+        self.view.image.assert_called_once_with()
 
 
 if __name__ == '__main__':

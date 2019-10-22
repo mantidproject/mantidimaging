@@ -36,12 +36,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.dock.setWindowTitle(title)
         self.assertEqual(title, self.view.name)
 
-    def test_show_current_image(self):
-        self.view.image_view = mock.Mock()
-        self.view.show_current_image()
-
-        self.view.image_view.setImage.assert_called_once_with(self.test_data.sample)
-
     def test_closeEvent_deletes_images(self):
         self.dock.setFloating = mock.Mock()
         self.dock.deleteLater = mock.Mock()
