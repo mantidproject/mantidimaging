@@ -35,7 +35,7 @@ class StackVisualiserPresenter(BasePresenter):
     def notify(self, signal):
         try:
             if signal == SVNotification.REFRESH_IMAGE:
-                self.set_displayed_image()
+                self.refresh_image()
             if signal == SVNotification.TOGGLE_IMAGE_MODE:
                 self.toggle_image_mode()
         except Exception as e:
@@ -48,12 +48,9 @@ class StackVisualiserPresenter(BasePresenter):
     def get_image(self, index):
         return self.images.sample[index]
 
-    def set_displayed_image(self):
-        if self.image_mode is SVImageMode.NORMAL:
-            to_display = self.images.sample
-        else:
-            to_display = self.averaged_image
-        self.view.image = to_display
+    def refresh_image(self):
+        self.view.image = self.averaged_image if self.image_mode is SVImageMode.AVERAGED \
+            else self.images.sample
 
     def get_parameter_value(self, parameter: SVParameters):
         """
@@ -75,4 +72,4 @@ class StackVisualiserPresenter(BasePresenter):
 
         if self.image_mode is SVImageMode.AVERAGED and self.averaged_image is None:
             self.averaged_image = self.model.create_averaged_image(self.images.sample)
-        self.set_displayed_image()
+        self.refresh_image()
