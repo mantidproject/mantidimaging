@@ -2,21 +2,7 @@ FROM ubuntu:18.04
 
 WORKDIR /opt/
 
-RUN apt update && apt install -y bzip2 wget && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh -b -f -p /opt/conda
-
-# Set up a user `developer` with sudo rights
-RUN export uid=1000 gid=1000 && \
-    mkdir -p /home/developer && \
-    mkdir -p /etc/sudoers.d/ && \
-    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
-    echo "developer:x:${uid}:" >> /etc/group && \
-    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
-    chmod 0440 /etc/sudoers.d/developer && \
-    chown ${uid}:${gid} -R /home/developer
-
-RUN /opt/conda/bin/conda install -c conda-forge tomopy -y
-
-RUN apt update && apt install -y git fontconfig \
+RUN apt update && apt install -y wget git fontconfig \
       libglib2.0-0 \
       libxrandr2 \
       libxss1 \
@@ -28,16 +14,46 @@ RUN apt update && apt install -y git fontconfig \
       libsm6 \
       qt5-default
 
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &&\
+    chmod +x Miniconda3-latest-Linux-x86_64.sh &&\
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+
+COPY deps/pip-requirements.txt deps/dev-requirements.pip /opt/mantidimaging-deps/
+
+RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
+    conda init &&\
+    conda config --set always_yes yes --set changeps1 no &&\
+    conda config --prepend channels conda-forge &&\
+    conda config --prepend channels anaconda &&\
+    conda config --prepend channels defaults &&\
+    conda install --only-deps -c dtasev mantidimaging && \
+    pip install -r /opt/mantidimaging-deps/pip-requirements.txt &&\
+    pip install -r /opt/mantidimaging-deps/dev-requirements.pip
+    # pip install PyQt5 python-engineio==3.9.3 h5py==2.9.0
+
 # RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo xserver-xorg-video-nvidia-390 nvidia-driver-390 dbus-x11
 # RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo nvidia-384
 RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo nvidia-driver-390
 
-# Move to being the user `developer`
-USER developer
-ENV HOME /home/developer
-WORKDIR /home/developer
+# Set up a user `developer` with sudo rights
+# RUN export uid=1000 gid=1000 && \
+#     mkdir -p /home/developer && \
+#     mkdir -p /etc/sudoers.d/ && \
+#     echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+#     echo "developer:x:${uid}:" >> /etc/group && \
+#     echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+#     chmod 0440 /etc/sudoers.d/developer && \
+#     chown ${uid}:${gid} -R /home/developer
 
-COPY mantidimaging mantidimaging
+RUN mkdir /opt/mantidimaging
 
-CMD ["/opt/conda/bin/python3", "-m", "mantidimaging"]
+# # Move to being the user `developer`
+# USER developer
+# ENV HOME /home/developer
+WORKDIR /opt/mantidimaging
+ENV MYPYPATH=/opt/mantidimaging
+
+CMD eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
+    python -m mantidimaging
+
 
