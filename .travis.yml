@@ -6,8 +6,7 @@ services:
   - docker
 
 env:
-  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment \
-  MANTIDIMAGING_DOCKER_RUN="docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging:ro -t dtasev/mantidimaging:travis-ci-2019.10"
+  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment MANTIDIMAGING_DOCKER_RUN="docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging -t dtasev/mantidimaging:travis-ci-2019.10"
 
 before_install:
   - docker pull dtasev/mantidimaging:travis-ci-2019.10
