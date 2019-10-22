@@ -17,7 +17,7 @@ def startup_checks():
     tomopy = safe_import("tomopy")
     if tomopy is not None:
         ver = tomopy.__version__
-        if "1.6" not in ver:
+        if "1.7" not in ver:
             raise RuntimeError("Unexpected TomoPy version {}, " "please update Conda environment".format(ver))
 
 

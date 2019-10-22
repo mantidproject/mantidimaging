@@ -27,7 +27,7 @@ requirements:
     - scikit-image
     - numpy >=1.16
     - matplotlib =2.2.3
-    - tomopy >=1.6.0
+    - tomopy =1.7.0
     - requests
     - requests-futures =1.0.0
     - python-socketio =4.3.0

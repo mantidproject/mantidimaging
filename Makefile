@@ -18,17 +18,24 @@ build-conda-deps-package:
 	# builds a local package without label or uploading
 	conda-build ./conda -c conda-forge
 
-build-conda-package-nightly: .remind-for-upload install-build-requirements
+build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
 
-build-conda-package-release: .remind-for-upload install-build-requirements
+build-conda-package-release: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda $(AUTHENTICATION_PARAMS)
 
-.remind-for-upload:
+build-docker-image: .remind-for-user
+	docker build --rm -t $$UPLOAD_USER/mantidimaging:travis-ci-2019.10 -f Dockerfile .
+
+.remind-current:
 	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
 	@echo "Current: $$(conda config --get anaconda_upload)"
-	@if [ -z "$$UPLOAD_USER" ]; then echo "UPLOAD_USER not set!"; exit 1; fi;
-	@if [ -z "$$ANACONDA_API_TOKEN" ]; then echo "UPLOAD_USER not set!"; exit 1; fi;
+
+.remind-for-user:
+	@if [ -z "$$UPLOAD_USER" ]; then echo "Environment variable UPLOAD_USER not set!"; exit 1; fi;
+
+.remind-for-anaconda-api:
+	@if [ -z "$$ANACONDA_API_TOKEN" ]; then echo "Environment variable ANACONDA_API_TOKEN not set!"; exit 1; fi;
 
 test:
 	nosetests

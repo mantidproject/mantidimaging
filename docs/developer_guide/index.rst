@@ -6,6 +6,7 @@ Developer Guide
    :caption: Contents:
 
    documentation
+   tests
    packaging
    release
    notebooks

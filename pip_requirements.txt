@@ -1,2 +1,0 @@
-h5py==2.9.0
-python-engineio==3.9.3
