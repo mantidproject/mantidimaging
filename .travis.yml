@@ -3,40 +3,21 @@ language: c
 dist: xenial
 services:
   - xvfb
+  - docker
 
 env:
-  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment
+  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment MANTIDIMAGING_DOCKER_RUN="docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging -t dtasev/mantidimaging:travis-ci-2019.10"
 
-install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  - bash miniconda.sh -b -p $MINICONDA_DIR
-  - export PATH="$MINICONDA_DIR/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-  # set up the conda environment variables in this shell, for conda activate
-  - source $MINICONDA_DIR/etc/profile.d/conda.sh
-  # build a local package and install
-  - conda config --prepend channels conda-forge
-  - conda config --prepend channels anaconda
-  - conda config --prepend channels defaults
-  - make build-conda-deps-package
-  - conda create -n $ENVIRONMENT_NAME --use-local --only-deps mantidimaging
-  - conda activate $ENVIRONMENT_NAME
-
-  - pip install -r deps/dev-requirements.pip
+before_install:
+  - docker pull dtasev/mantidimaging:travis-ci-2019.10
 
 jobs:
   include:
     - stage: test
       script:
-        - flake8
-        - [ $? -ne 0 ] && exit 1 # if the command does not exit with 0 fail the build
-        - make mypy
-        - [ $? -ne 0 ] && exit 1 # if the command does not exit with 0 fail the build
-        - nosetests --verbose
+        - $MANTIDIMAGING_DOCKER_RUN flake8
+        - $MANTIDIMAGING_DOCKER_RUN mypy --ignore-missing-imports mantidimaging
+        - $MANTIDIMAGING_DOCKER_RUN nosetests --xunit-file=/opt/result-report.xml
 
     - stage: upload-nightly
       if: branch = master AND env(TRAVIS_EVENT_TYPE) = cron
