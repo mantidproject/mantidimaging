@@ -36,9 +36,9 @@ jobs:
   include:
     - stage: test
       script:
-        - docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -t dtasev/mantidimaging:travis-ci-2019.10 flake8
-        - docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -t dtasev/mantidimaging:travis-ci-2019.10 make mypy
-        - docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -t dtasev/mantidimaging:travis-ci-2019.10 nosetests
+        - docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging:ro -t dtasev/mantidimaging:travis-ci-2019.10 flake8
+        - docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging:ro -t dtasev/mantidimaging:travis-ci-2019.10 make mypy
+        - docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging:ro -t dtasev/mantidimaging:travis-ci-2019.10 nosetests
         # - flake8
         # - [ $? -ne 0 ] && exit 1 # if the command does not exit with 0 fail the build
         # - make mypy
