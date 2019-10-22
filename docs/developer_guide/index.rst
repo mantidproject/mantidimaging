@@ -7,7 +7,7 @@ Developer Guide
 
    documentation
    tests
-   packaging
+   conda_packaging_and_docker_image
    release
    notebooks
    python_3x_performance_issues
