@@ -1,7 +1,7 @@
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QVBoxLayout, QDockWidget, QAction, QWidget
+from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 class StackVisualiserView(BaseMainWindowView):
     # Signal that signifies when the ROI is updated. Used to update previews in Filter views
-    # TODO currently not emitted correctly (should use
     roi_updated = pyqtSignal(SensibleROI)
 
     image_view: ImageView
@@ -49,6 +48,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.presenter = StackVisualiserPresenter(self, images)
 
         self.image_view = ImageView(self)
+        self.image_view.imageItem.menu = self.build_context_menu()
         self.actionCloseStack = QAction("Close window", self)
         self.actionCloseStack.triggered.connect(self.close_view)
         self.actionCloseStack.setShortcut("Ctrl+W")
@@ -60,6 +60,10 @@ class StackVisualiserView(BaseMainWindowView):
     @property
     def name(self):
         return self.dock.windowTitle()
+
+    @name.setter
+    def name(self, name: str):
+        self.dock.setWindowTitle(name)
 
     @property
     def current_roi(self) -> Tuple[int, int, int, int]:
@@ -92,3 +96,19 @@ class StackVisualiserView(BaseMainWindowView):
 
     def close_view(self):
         self.close()
+
+    def build_context_menu(self) -> QMenu:
+        menu = QMenu(self)
+        action = QAction("Change window name", menu)
+        action.triggered.connect(self.change_window_name_clicked)
+        menu.addAction(action)
+        return menu
+
+    def change_window_name_clicked(self):
+        input_window = QInputDialog()
+        new_window_name, ok = input_window.getText(self,
+                                                   "Change window name",
+                                                   "Name:",
+                                                   text=self.name)
+        if ok:
+            self.name = new_window_name

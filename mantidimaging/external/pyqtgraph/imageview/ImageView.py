@@ -14,13 +14,12 @@ Widget used for displaying 2D or 3D data. Features:
 """
 import os
 from logging import getLogger
-from typing import Tuple, Optional, Callable
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel
-from pyqtgraph import debug as debug, ROI, ViewBox, ImageItem, InfiniteLine, LinearRegionItem, QtCore
-from pyqtgraph import ptime as ptime
+from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug as debug, ptime as ptime
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
 from pyqtgraph.graphicsItems.GradientEditorItem import addGradientListToDocstring
@@ -215,17 +214,17 @@ class ImageView(QtGui.QWidget):
         self.roiClicked()  # initialize roi plot to correct shape / visibility
 
     def setImage(
-        self,
-        img,
-        autoRange=True,
-        autoLevels=True,
-        levels=None,
-        axes=None,
-        xvals=None,
-        pos=None,
-        scale=None,
-        transform=None,
-        autoHistogramRange=True,
+            self,
+            img,
+            autoRange=True,
+            autoLevels=True,
+            levels=None,
+            axes=None,
+            xvals=None,
+            pos=None,
+            scale=None,
+            transform=None,
+            autoHistogramRange=True,
     ):
         """
         Set the image to be displayed in the widget.
@@ -272,11 +271,9 @@ class ImageView(QtGui.QWidget):
         if not isinstance(img, np.ndarray):
             required = ["dtype", "max", "min", "ndim", "shape", "size"]
             if not all([hasattr(img, attr) for attr in required]):
-                raise TypeError(
-                    "Image must be NumPy array or any object "
-                    "that provides compatible attributes/methods:\n"
-                    "  %s" % str(required)
-                )
+                raise TypeError("Image must be NumPy array or any object "
+                                "that provides compatible attributes/methods:\n"
+                                "  %s" % str(required))
 
         self.image = img
         self.imageDisp = None
@@ -306,11 +303,8 @@ class ImageView(QtGui.QWidget):
             for i in range(len(axes)):
                 self.axes[axes[i]] = i
         else:
-            raise Exception(
-                "Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1}'\
-                    ' or ('t', 'x', 'y', 'c')"
-                % (str(axes))
-            )
+            raise Exception("Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1}'\
+                    ' or ('t', 'x', 'y', 'c')" % (str(axes)))
 
         for x in ["t", "x", "y", "c"]:
             self.axes[x] = self.axes.get(x, None)
@@ -641,7 +635,7 @@ class ImageView(QtGui.QWidget):
             (eind, end) = self.timeIndex(self.normRgn.lines[1])
             # print start, end, sind, eind
             n = image[sind:eind + 1].mean(axis=0)
-            n.shape = (1,) + n.shape
+            n.shape = (1, ) + n.shape
             if div:
                 norm /= n
             else:
