@@ -71,8 +71,13 @@ class StackVisualiserView(BaseMainWindowView):
         roi = SensibleROI.from_points(*self.image_view.get_roi())
         return roi.left, roi.top, roi.right, roi.bottom
 
-    def show_current_image(self):
-        self.image_view.setImage(self.presenter.get_image())
+    @property
+    def image(self):
+        return self.image_view.imageItem
+
+    @image.setter
+    def image(self, to_display):
+        self.image_view.setImage(to_display)
 
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed
