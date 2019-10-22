@@ -40,6 +40,7 @@ RUN mkdir /opt/mantidimaging
 
 WORKDIR /opt/mantidimaging
 ENV MYPYPATH=/opt/mantidimaging
+ENV PYTHONPATH=/opt/mantidimaging
 ENV PATH=/opt/miniconda/bin:/opt/miniconda/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 CMD eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
