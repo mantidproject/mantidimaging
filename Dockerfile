@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 WORKDIR /opt/
 
-RUN apt update && apt install -y wget git fontconfig \
+RUN apt-get update && apt-get install -y wget git fontconfig \
       libglib2.0-0 \
       libxrandr2 \
       libxss1 \
@@ -12,7 +12,9 @@ RUN apt update && apt install -y wget git fontconfig \
       libxi6 \
       libxtst6 \
       libsm6 \
-      qt5-default
+      qt5-default &&\
+      apt-get clean
+
 
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &&\
     chmod +x Miniconda3-latest-Linux-x86_64.sh &&\
@@ -28,12 +30,13 @@ RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
     conda config --prepend channels defaults &&\
     conda install --only-deps -c dtasev mantidimaging && \
     pip install -r /opt/mantidimaging-deps/pip-requirements.txt &&\
-    pip install -r /opt/mantidimaging-deps/dev-requirements.pip
+    pip install -r /opt/mantidimaging-deps/dev-requirements.pip &&\
+    conda clean --all
     # pip install PyQt5 python-engineio==3.9.3 h5py==2.9.0
 
 # RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo xserver-xorg-video-nvidia-390 nvidia-driver-390 dbus-x11
 # RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo nvidia-384
-RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo nvidia-driver-390
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y sudo nvidia-driver-390
 
 # Set up a user `developer` with sudo rights
 # RUN export uid=1000 gid=1000 && \
