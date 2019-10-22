@@ -70,6 +70,8 @@ class StackVisualiserPresenter(BasePresenter):
         else:
             self.image_mode = SVImageMode.NORMAL
 
-        if self.image_mode is SVImageMode.AVERAGED and self.averaged_image is None:
+        if self.image_mode is SVImageMode.AVERAGED and \
+                (self.averaged_image is None
+                 or self.averaged_image.shape != self.images.sample.shape[1:]):
             self.averaged_image = self.model.create_averaged_image(self.images.sample)
         self.refresh_image()
