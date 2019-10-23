@@ -141,8 +141,10 @@ class TomopyReconWindowView(BaseMainWindowView):
     def max_proj_angle(self):
         return self.maxProjAngle.value()
 
-    def get_algorithm_name(self):
+    @property
+    def algorithm_name(self):
         return self.algorithmName.currentText()
 
-    def get_filter_name(self):
+    @property
+    def filter_name(self):
         return self.filterName.currentText()

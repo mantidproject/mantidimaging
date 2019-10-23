@@ -87,8 +87,8 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def prepare_reconstruction(self):
         self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
-        self.model.current_algorithm = self.view.get_algorithm_name()
-        self.model.current_filter = self.view.get_filter_name()
+        self.model.current_algorithm = self.view.algorithm_name
+        self.model.current_filter = self.view.filter_name
         self.model.generate_projection_angles(self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
