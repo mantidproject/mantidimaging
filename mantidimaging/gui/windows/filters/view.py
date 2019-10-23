@@ -85,6 +85,7 @@ class FiltersWindowView(BaseMainWindowView):
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
         self.main_window.filters = None
+        self.presenter = None
 
     def show(self):
         super(FiltersWindowView, self).show()
