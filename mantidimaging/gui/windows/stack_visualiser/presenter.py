@@ -20,7 +20,7 @@ class SVParameters(IntEnum):
 
 class SVImageMode(IntEnum):
     NORMAL = 0
-    AVERAGED = 1
+    SUMMED = 1
 
 
 class StackVisualiserPresenter(BasePresenter):
@@ -30,7 +30,7 @@ class StackVisualiserPresenter(BasePresenter):
         self.images = images
         self._current_image_index = 0
         self.image_mode: SVImageMode = SVImageMode.NORMAL
-        self.averaged_image = None
+        self.summed_image = None
 
     def notify(self, signal):
         try:
@@ -49,7 +49,7 @@ class StackVisualiserPresenter(BasePresenter):
         return self.images.sample[index]
 
     def refresh_image(self):
-        self.view.image = self.averaged_image if self.image_mode is SVImageMode.AVERAGED \
+        self.view.image = self.summed_image if self.image_mode is SVImageMode.SUMMED \
             else self.images.sample
 
     def get_parameter_value(self, parameter: SVParameters):
@@ -66,12 +66,12 @@ class StackVisualiserPresenter(BasePresenter):
 
     def toggle_image_mode(self):
         if self.image_mode is SVImageMode.NORMAL:
-            self.image_mode = SVImageMode.AVERAGED
+            self.image_mode = SVImageMode.SUMMED
         else:
             self.image_mode = SVImageMode.NORMAL
 
-        if self.image_mode is SVImageMode.AVERAGED and \
-                (self.averaged_image is None
-                 or self.averaged_image.shape != self.images.sample.shape[1:]):
-            self.averaged_image = self.model.create_averaged_image(self.images.sample)
+        if self.image_mode is SVImageMode.SUMMED and \
+                (self.summed_image is None
+                 or self.summed_image.shape != self.images.sample.shape[1:]):
+            self.summed_image = self.model.sum_images(self.images.sample)
         self.refresh_image()

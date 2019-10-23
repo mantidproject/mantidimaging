@@ -6,5 +6,5 @@ class SVModel:
         pass
 
     @staticmethod
-    def create_averaged_image(images):
-        return np.mean(images, axis=0)
+    def sum_images(images):
+        return np.sum(images, axis=0)

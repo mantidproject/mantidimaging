@@ -41,7 +41,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
                       "Image should have been set as sample images")
 
     def test_notify_refresh_image_averaged_image_mode(self):
-        self.presenter.image_mode = SVImageMode.AVERAGED
+        self.presenter.image_mode = SVImageMode.SUMMED
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
         self.assertIs(self.view.image,
                       self.presenter.averaged_image,
