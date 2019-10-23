@@ -4,7 +4,8 @@ import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification, \
+    SVImageMode
 
 
 class StackVisualiserPresenterTest(unittest.TestCase):
@@ -32,9 +33,19 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.delete_data()
         self.assertIsNone(self.presenter.images, None)
 
-    def test_notify_refresh_image(self):
+    def test_notify_refresh_image_normal_image_mode(self):
+        self.presenter.image_mode = SVImageMode.NORMAL
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
-        self.view.show_current_image.assert_called_once_with()
+        self.assertIs(self.view.image,
+                      self.presenter.images.sample,
+                      "Image should have been set as sample images")
+
+    def test_notify_refresh_image_averaged_image_mode(self):
+        self.presenter.image_mode = SVImageMode.SUMMED
+        self.presenter.notify(SVNotification.REFRESH_IMAGE)
+        self.assertIs(self.view.image,
+                      self.presenter.summed_image,
+                      "Image should have been set as averaged image")
 
 
 if __name__ == '__main__':

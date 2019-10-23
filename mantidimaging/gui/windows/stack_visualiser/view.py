@@ -8,6 +8,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
+from .presenter import SVNotification
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -70,8 +71,13 @@ class StackVisualiserView(BaseMainWindowView):
         roi = SensibleROI.from_points(*self.image_view.get_roi())
         return roi.left, roi.top, roi.right, roi.bottom
 
-    def show_current_image(self):
-        self.image_view.setImage(self.presenter.images.sample)
+    @property
+    def image(self):
+        return self.image_view.imageItem
+
+    @image.setter
+    def image(self, to_display):
+        self.image_view.setImage(to_display)
 
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed
@@ -99,9 +105,12 @@ class StackVisualiserView(BaseMainWindowView):
 
     def build_context_menu(self) -> QMenu:
         menu = QMenu(self)
-        action = QAction("Change window name", menu)
-        action.triggered.connect(self.change_window_name_clicked)
-        menu.addAction(action)
+        change_name_action = QAction("Change window name", menu)
+        change_name_action.triggered.connect(self.change_window_name_clicked)
+        toggle_image_mode_action = QAction("Toggle show averaged image", menu)
+        toggle_image_mode_action.triggered.connect(
+            lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE))
+        menu.addActions([change_name_action, toggle_image_mode_action])
         return menu
 
     def change_window_name_clicked(self):
