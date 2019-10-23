@@ -44,7 +44,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.image_mode = SVImageMode.SUMMED
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
         self.assertIs(self.view.image,
-                      self.presenter.averaged_image,
+                      self.presenter.summed_image,
                       "Image should have been set as averaged image")
 
 
