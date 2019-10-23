@@ -22,6 +22,12 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
         self.view.cor_gradient = 0
         self.view.max_proj_angle = 360
 
+        # Widget attributes are not mocked by `create_autospec` but are required to exist
+        self.view.numIter = mock.MagicMock()
+        self.view.numIterLabel = mock.MagicMock()
+        self.view.filterName = mock.MagicMock()
+        self.view.filterNameLabel = mock.MagicMock()
+
         self.presenter = TomopyReconWindowPresenter(self.view, None)
 
         # Mock stack
