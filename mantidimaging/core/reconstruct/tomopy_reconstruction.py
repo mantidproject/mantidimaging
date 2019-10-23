@@ -128,17 +128,34 @@ def reconstruct(sample,
     from tomopy.recon import algorithm
     algorithm._dist_recon = monkey_patched_dist_recon
 
+    def recon_fun():
+        if filter_name:
+            return tomopy.recon(
+                ncore=ncores,
+                tomo=sample,
+                sinogram_order=images_are_sinograms,
+                theta=proj_angles,
+                center=cor,
+                algorithm=algorithm_name,
+                filter_name=filter_name)
+        else:
+            return tomopy.recon(
+                ncore=ncores,
+                tomo=sample,
+                sinogram_order=images_are_sinograms,
+                theta=proj_angles,
+                center=cor,
+                algorithm=algorithm_name)
+
     volume = None
     with progress:
-        volume = tomopy.recon(
-            ncore=ncores,
-            tomo=sample,
-            sinogram_order=images_are_sinograms,
-            theta=proj_angles,
-            center=cor,
-            algorithm=algorithm_name,
-            filter_name=filter_name)
+        volume = recon_fun()
 
         LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
 
     return volume
+
+
+def allowed_recon_kwargs():
+    from tomopy.recon.algorithm import allowed_recon_kwargs
+    return allowed_recon_kwargs

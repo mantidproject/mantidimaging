@@ -21,6 +21,7 @@ class Notification(Enum):
     PREVIEW_SLICE_PREVIOUS = 3
     RECONSTRUCT_SLICE = 4
     RECONSTRUCT_VOLUME = 5
+    ALGORITHM_CHANGED = 6
 
 
 class TomopyReconWindowPresenter(BasePresenter):
@@ -30,6 +31,7 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.view = view
         self.model = TomopyReconWindowModel()
         self.main_window = main_window
+        self.allowed_recon_kwargs = self.model.load_allowed_recon_kwargs()
 
     def notify(self, signal):
         try:
@@ -43,6 +45,8 @@ class TomopyReconWindowPresenter(BasePresenter):
                 self.do_reconstruct_slice()
             elif signal == Notification.RECONSTRUCT_VOLUME:
                 self.do_reconstruct_volume()
+            elif signal == Notification.ALGORITHM_CHANGED:
+                self.set_available_options()
 
         except Exception as e:
             self.show_error(e)
@@ -88,7 +92,7 @@ class TomopyReconWindowPresenter(BasePresenter):
     def prepare_reconstruction(self):
         self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
         self.model.current_algorithm = self.view.algorithm_name
-        self.model.current_filter = self.view.filter_name
+        self.model.current_filter = self.view.filter_name if self.view.filterName.isVisible() else None
         self.model.generate_projection_angles(self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
@@ -125,3 +129,11 @@ class TomopyReconWindowPresenter(BasePresenter):
         else:
             LOG.error('Reconstruction failed: %s', str(task.error))
             self.show_error('Reconstruction failed. See log for details.')
+
+    def set_available_options(self):
+        if 'filter_name' in self.allowed_recon_kwargs[self.view.algorithm_name]:
+            self.view.filterName.show()
+            self.view.filterNameLabel.show()
+        else:
+            self.view.filterName.hide()
+            self.view.filterNameLabel.hide()

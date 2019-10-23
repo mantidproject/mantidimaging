@@ -188,14 +188,14 @@
            </widget>
           </item>
           <item row="7" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="algorithmNameLabel">
             <property name="text">
              <string>Algorithm:</string>
             </property>
            </widget>
           </item>
           <item row="8" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="filterNameLabel">
             <property name="text">
              <string>Reconstruction filter:</string>
             </property>

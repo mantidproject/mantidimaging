@@ -2,7 +2,7 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging.core.reconstruct import tomopy_reconstruct
+from mantidimaging.core.reconstruct import tomopy_reconstruct, allowed_recon_kwargs
 from mantidimaging.core.utility.projection_angles import \
     generate as generate_projection_angles
 
@@ -63,3 +63,7 @@ class TomopyReconWindowModel(object):
             filter_name=self.current_filter,
             proj_angles=self.projection_angles,
             progress=progress)
+
+    @staticmethod
+    def load_allowed_recon_kwargs():
+        return allowed_recon_kwargs()

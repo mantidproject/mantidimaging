@@ -39,6 +39,8 @@ class TomopyReconWindowView(BaseMainWindowView):
         self.previewSlice.valueChanged[int].connect(
             self.presenter.set_preview_slice_idx)
 
+        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresNotification.ALGORITHM_CHANGED))
+
         def add_mpl_figure(layout, add_toolbar=False):
             figure = Figure()
             canvas = FigureCanvasQTAgg(figure)
