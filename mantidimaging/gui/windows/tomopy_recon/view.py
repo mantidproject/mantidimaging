@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QComboBox, QCheckBox
+from PyQt5.QtWidgets import QComboBox, QCheckBox, QSpinBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 class TomopyReconWindowView(BaseMainWindowView):
     algorithmName: QComboBox
     filterName: QComboBox
+    numIter: QSpinBox
     imagesAreSinograms: QCheckBox
 
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
@@ -66,6 +67,7 @@ class TomopyReconWindowView(BaseMainWindowView):
         self.recon_plot = self.recon_figure.add_subplot(111)
 
         self.stackSelector.subscribe_to_main_window(main_window)
+        self.presenter.notify(PresNotification.ALGORITHM_CHANGED)
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
@@ -149,4 +151,8 @@ class TomopyReconWindowView(BaseMainWindowView):
 
     @property
     def filter_name(self):
-        return self.filterName.currentText()
+        return self.filterName.currentText() if self.filterName.isVisible() else None
+
+    @property
+    def num_iter(self):
+        return self.numIter.value() if self.numIter.isVisible() else None

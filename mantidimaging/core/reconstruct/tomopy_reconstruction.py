@@ -79,6 +79,7 @@ def reconstruct(sample,
                 proj_angles=None,
                 algorithm_name='gridrec',
                 filter_name='none',
+                num_iter=1,
                 images_are_sinograms=True,
                 ncores=None,
                 progress=None):
@@ -89,6 +90,8 @@ def reconstruct(sample,
     :param cor: Array of centre of rotation values
     :param proj_angles: Array of projection angles
     :param algorithm_name: Name of the algorithm to be used for the reconstruction
+    :param filter_name: optional, name of the filter for analytic reconstruction
+    :param num_iter: optional, number of algorithm iterations to perform
     :param ncores: Number of CPU cores to execute on, defaults to all
     :param progress: Optional progress reporter
     :return: 3D image data for reconstructed volume
@@ -128,28 +131,24 @@ def reconstruct(sample,
     from tomopy.recon import algorithm
     algorithm._dist_recon = monkey_patched_dist_recon
 
-    def recon_fun():
-        if filter_name:
-            return tomopy.recon(
-                ncore=ncores,
-                tomo=sample,
-                sinogram_order=images_are_sinograms,
-                theta=proj_angles,
-                center=cor,
-                algorithm=algorithm_name,
-                filter_name=filter_name)
-        else:
-            return tomopy.recon(
-                ncore=ncores,
-                tomo=sample,
-                sinogram_order=images_are_sinograms,
-                theta=proj_angles,
-                center=cor,
-                algorithm=algorithm_name)
+    kwargs = {
+        'ncore': ncores,
+        'tomo': sample,
+        'sinogram_order': images_are_sinograms,
+        'theta': proj_angles,
+        'center': cor,
+        'algorithm': algorithm_name,
+    }
+
+    # `recon` will throw if unwanted args are passed, even if they are None
+    if filter_name:
+        kwargs['filter_name'] = filter_name
+    if num_iter:
+        kwargs['num_iter'] = num_iter
 
     volume = None
     with progress:
-        volume = recon_fun()
+        volume = tomopy.recon(**kwargs)
 
         LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
 

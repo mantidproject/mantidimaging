@@ -1,6 +1,6 @@
 from enum import Enum
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
@@ -13,6 +13,7 @@ LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
+    from PyQt5.QtWidgets import QWidget
 
 
 class Notification(Enum):
@@ -31,7 +32,11 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.view = view
         self.model = TomopyReconWindowModel()
         self.main_window = main_window
-        self.allowed_recon_kwargs = self.model.load_allowed_recon_kwargs()
+        self.allowed_recon_kwargs: Dict[str, List[str]] = self.model.load_allowed_recon_kwargs()
+        self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
+            'filter_name': [self.view.filterName, self.view.filterNameLabel],
+            'num_iter': [self.view.numIter, self.view.numIterLabel],
+        }
 
     def notify(self, signal):
         try:
@@ -92,7 +97,8 @@ class TomopyReconWindowPresenter(BasePresenter):
     def prepare_reconstruction(self):
         self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
         self.model.current_algorithm = self.view.algorithm_name
-        self.model.current_filter = self.view.filter_name if self.view.filterName.isVisible() else None
+        self.model.current_filter = self.view.filter_name
+        self.model.num_iter = self.view.num_iter
         self.model.generate_projection_angles(self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
@@ -131,9 +137,11 @@ class TomopyReconWindowPresenter(BasePresenter):
             self.show_error('Reconstruction failed. See log for details.')
 
     def set_available_options(self):
-        if 'filter_name' in self.allowed_recon_kwargs[self.view.algorithm_name]:
-            self.view.filterName.show()
-            self.view.filterNameLabel.show()
-        else:
-            self.view.filterName.hide()
-            self.view.filterNameLabel.hide()
+        allowed_args = self.allowed_recon_kwargs[self.view.algorithm_name]
+        for arg, widgets in self.restricted_arg_widgets.items():
+            if arg in allowed_args:
+                for widget in widgets:
+                    widget.show()
+            else:
+                for widget in widgets:
+                    widget.hide()

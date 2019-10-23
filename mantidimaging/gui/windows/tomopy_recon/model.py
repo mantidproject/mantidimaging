@@ -62,6 +62,7 @@ class TomopyReconWindowModel(object):
             algorithm_name=self.current_algorithm,
             filter_name=self.current_filter,
             proj_angles=self.projection_angles,
+            num_iter=self.num_iter,
             progress=progress)
 
     @staticmethod
