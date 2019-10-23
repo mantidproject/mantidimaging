@@ -11,6 +11,8 @@ from requests_futures.sessions import FuturesSession
 from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
                                                             WS_JOB_STATUS_NAMESPACE)
 
+from mantidimaging.core.configs.savu_backend_docker import backend_config, BackendOptions, optional_backend_config, OptionalBackendOptions
+
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
 
@@ -21,7 +23,7 @@ class BackgroundService(threading.Thread):
     def __init__(self, args: List):
         super().__init__()
         self.args = args
-        self.callback = lambda output: None
+        self.callback = lambda output: print(output)
         self.error_callback = lambda err_code, output: None
         self.success_callback = lambda: None
         self.exit_code: int = -4444
@@ -67,10 +69,11 @@ def is_exe(fpath):
 
 
 def find_docker():
-    docker_locations = ["docker",  # if in PATH
-                        "/snap/bin/docker",  # if installed via SNAP
-                        "/usr/bin/docker",  # if installed via apt
-                        ]
+    docker_locations = [
+        "docker",  # if in PATH
+        "/snap/bin/docker",  # if installed via SNAP
+        "/usr/bin/docker",  # if installed via apt
+    ]
     for location in docker_locations:
         if is_exe(location):
             return location
@@ -81,16 +84,32 @@ async def prepare_backend() -> BackgroundService:
     pargs = [
         docker_exe,
         "run",
-        "--runtime=nvidia",
         "--network=host",
-        "-v", "/home/dtasev/dev/hebi/api:/webservice",
-        "-v", "/mnt/e/:/data:ro",
-        "-v", "/mnt/e/savu_output:/output:rw",
-        "-v", "/home/dtasev/dev/savu:/savu_custom:ro",
-        "-e", "PUID=1000",
-        "-e", "PGID=1000",
-        "-i", "dtasev/hebi:dev",
+        # todo get these automatically with id -u id -g?
+        "-e",
+        "PUID=1000",
+        "-e",
+        "PGID=1000"
     ]
+
+    if optional_backend_config[OptionalBackendOptions.NVIDIA_RUNTIME]["active"]:
+        pargs.append(optional_backend_config[OptionalBackendOptions.NVIDIA_RUNTIME]["value"])
+
+    if optional_backend_config[OptionalBackendOptions.HEBI_SOURCE_DIR]["active"]:
+        pargs.append("-v")
+        pargs.append(f"{optional_backend_config[OptionalBackendOptions.HEBI_SOURCE_DIR]['value']}:/webservice")
+
+    if optional_backend_config[OptionalBackendOptions.SAVU_SOURCE_DIR]["active"]:
+        pargs.append("-v")
+        pargs.append(f"{optional_backend_config[OptionalBackendOptions.SAVU_SOURCE_DIR]['value']}:/savu_custom")
+
+    pargs.append("-v")
+    pargs.append(f"{backend_config[BackendOptions.DATA_SOURCE_DIR]['value']}:/data")
+    pargs.append("-v")
+    pargs.append(f"{backend_config[BackendOptions.OUTPUT_DIR]['value']}:/output")
+    pargs.append("-i")
+    pargs.append(backend_config[BackendOptions.IMAGE_NAME]["value"])
+
     LOG.debug(f"Starting DOCKER service with args: {pargs}")
     process = BackgroundService(pargs)
     process.start()
