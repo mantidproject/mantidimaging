@@ -1,6 +1,8 @@
+import atexit
 import os
 import subprocess
 import threading
+
 from concurrent.futures import Future, ProcessPoolExecutor
 from logging import getLogger
 from typing import Optional, List
@@ -11,7 +13,7 @@ from requests_futures.sessions import FuturesSession
 from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
                                                             WS_JOB_STATUS_NAMESPACE)
 
-from mantidimaging.core.configs.savu_backend_docker import backend_config, BackendOptions, optional_backend_config, OptionalBackendOptions
+from mantidimaging.core.configs.savu_backend_docker import backend_config, BackendOptions, dev_backend_config, DevBackendOptions
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
@@ -45,6 +47,7 @@ class BackgroundService(threading.Thread):
         self.exit_code = self.process.poll()
 
         if not self.close_intended and self.exit_code != 0:
+            # docker could not be started, try to connect to an already running container
             prepare_data()
             if sio_client is not None and sio_client.sid is not None:
                 LOG.info("Connected to SAVU Docker backend that was already running.")
@@ -80,6 +83,7 @@ def find_docker():
 
 
 async def prepare_backend() -> BackgroundService:
+
     docker_exe = find_docker()
     pargs = [
         docker_exe,
@@ -87,28 +91,32 @@ async def prepare_backend() -> BackgroundService:
         "--network=host",
         # todo get these automatically with id -u id -g?
         "-e",
-        "PUID=1000",
+        f"PUID={subprocess.check_output(['id','-u']).decode('utf-8').strip()}",
         "-e",
-        "PGID=1000"
+        f"PGID={subprocess.check_output(['id','-g']).decode('utf-8').strip()}",
     ]
 
-    if optional_backend_config[OptionalBackendOptions.NVIDIA_RUNTIME]["active"]:
-        pargs.append(optional_backend_config[OptionalBackendOptions.NVIDIA_RUNTIME]["value"])
+    if backend_config[BackendOptions.NVIDIA_RUNTIME]["active"]:
+        pargs.append(backend_config[BackendOptions.NVIDIA_RUNTIME]["value"])
 
-    if optional_backend_config[OptionalBackendOptions.HEBI_SOURCE_DIR]["active"]:
+    # if this is running in development mode, mount hebi and savu sources
+    if backend_config[BackendOptions.DEVELOPMENT]:
         pargs.append("-v")
-        pargs.append(f"{optional_backend_config[OptionalBackendOptions.HEBI_SOURCE_DIR]['value']}:/webservice")
+        pargs.append(f"{dev_backend_config[DevBackendOptions.HEBI_SOURCE_DIR]}:/webservice")
 
-    if optional_backend_config[OptionalBackendOptions.SAVU_SOURCE_DIR]["active"]:
         pargs.append("-v")
-        pargs.append(f"{optional_backend_config[OptionalBackendOptions.SAVU_SOURCE_DIR]['value']}:/savu_custom")
+        pargs.append(f"{dev_backend_config[DevBackendOptions.SAVU_SOURCE_DIR]}:/savu_custom")
 
     pargs.append("-v")
-    pargs.append(f"{backend_config[BackendOptions.DATA_SOURCE_DIR]['value']}:/data")
+    pargs.append(f"{backend_config[BackendOptions.DATA_SOURCE_DIR]}:/data")
     pargs.append("-v")
-    pargs.append(f"{backend_config[BackendOptions.OUTPUT_DIR]['value']}:/output")
-    pargs.append("-i")
-    pargs.append(backend_config[BackendOptions.IMAGE_NAME]["value"])
+    pargs.append(f"{backend_config[BackendOptions.OUTPUT_DIR]}:/output")
+
+    if backend_config[BackendOptions.DEVELOPMENT]:
+        pargs.append(f"{backend_config[BackendOptions.IMAGE_NAME]}:"
+                     f"{dev_backend_config[DevBackendOptions.DEVELOPMENT_LABEL]}")
+    else:
+        pargs.append(backend_config[BackendOptions.IMAGE_NAME])
 
     LOG.debug(f"Starting DOCKER service with args: {pargs}")
     process = BackgroundService(pargs)
@@ -137,6 +145,7 @@ def prepare_data():
 
     global sio_client
     sio_client = socketio.Client()
+    atexit.register(lambda sio: sio.disconnect(), sio_client)
 
     # make output from the communication libs a bit less verbose
     getLogger("engineio.client").setLevel("WARNING")
