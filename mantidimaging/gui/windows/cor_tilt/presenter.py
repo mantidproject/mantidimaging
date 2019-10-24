@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from enum import Enum
 from logging import getLogger
 
@@ -8,9 +9,12 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-from .model import CORTiltWindowModel
+from mantidimaging.gui.windows.cor_tilt.model import CORTiltWindowModel
 
 LOG = getLogger(__name__)
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.cor_tilt.view import CORTiltWindowView
 
 
 class Notification(Enum):
@@ -28,8 +32,9 @@ class Notification(Enum):
 class CORTiltWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
 
-    def __init__(self, view, main_window):
+    def __init__(self, view: 'CORTiltWindowView', main_window):
         super(CORTiltWindowPresenter, self).__init__(view)
+        self.view = view
         self.model = CORTiltWindowModel(self.view.point_model)
         self.main_window = main_window
 
@@ -60,9 +65,7 @@ class CORTiltWindowPresenter(BasePresenter):
 
     def set_stack_uuid(self, uuid):
         self.view.reset_image_recon_preview()
-        self.set_stack(
-            self.main_window.get_stack_visualiser(uuid)
-            if uuid is not None else None)
+        self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
@@ -74,6 +77,9 @@ class CORTiltWindowPresenter(BasePresenter):
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
         self.notify(Notification.UPDATE_PREVIEWS)
+
+    def set_row(self, row):
+        self.model.selected_row = row
 
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
@@ -93,16 +99,10 @@ class CORTiltWindowPresenter(BasePresenter):
         img_data = self.model.sample[self.model.preview_projection_idx] \
             if self.model.sample is not None else None
 
-        self.view.update_image_preview(
-            img_data,
-            self.model.preview_slice_idx,
-            self.model.preview_tilt_line_data,
-            self.model.roi)
+        self.view.update_image_preview(img_data, self.model.preview_slice_idx, self.model.preview_tilt_line_data,
+                                       self.model.roi)
 
-        self.view.update_fit_plot(
-            self.model.model.slices,
-            self.model.model.cors,
-            self.model.preview_fit_y_data)
+        self.view.update_fit_plot(self.model.model.slices, self.model.model.cors, self.model.preview_fit_y_data)
 
     def do_preview_reconstruction(self, cor=None):
         data = None
@@ -110,12 +110,10 @@ class CORTiltWindowPresenter(BasePresenter):
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
-            cor = self.model.model.get_cor_for_slice_from_regression(
-                self.model.preview_slice_idx)
+            cor = self.model.model.get_cor_for_slice_from_regression(self.model.preview_slice_idx)
 
         if cor is not None:
-            data = self.model.run_preview_recon(
-                self.model.preview_slice_idx, cor)
+            data = self.model.run_preview_recon(self.model.preview_slice_idx, cor)
             self.view.update_image_recon_preview(data)
 
     def do_preview_reconstruction_set_cor(self):
@@ -123,18 +121,15 @@ class CORTiltWindowPresenter(BasePresenter):
         self.do_preview_reconstruction(cor)
 
     def do_add_manual_cor_table_row(self):
-        idx = self.model.preview_slice_idx
-        cor = self.model.last_result[data_const.AUTO_COR_TILT][data_const.COR_TILT_ROTATION_CENTRE] if \
+        row = self.model.selected_row
+        cor = self.model.last_result[data_const.COR_TILT_ROTATION_CENTRE] if \
             self.model.last_result else 0
-        self.view.add_cor_table_row(idx, cor)
+        self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor)
 
     def do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogView(
-            self.view,
-            data=self.model.sample,
-            slice_idx=slice_idx)
+        dialog = CORInspectionDialogView(self.view, data=self.model.sample, slice_idx=slice_idx)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -155,8 +150,7 @@ class CORTiltWindowPresenter(BasePresenter):
             names = []
 
             # Add data line
-            lines.append(
-                ax.plot(self.model.model.slices, self.model.model.cors)[0])
+            lines.append(ax.plot(self.model.model.slices, self.model.model.cors)[0])
             names.append('Data')
 
             # Add fit line (if a fit has been performed)
