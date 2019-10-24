@@ -78,3 +78,12 @@ class CORTiltWindowModelTest(unittest.TestCase):
         data = self.model.preview_fit_y_data
 
         self.assertEquals(data, [3, 5, 7])
+
+    def test_set_all_cors(self):
+        set_to = 123.0
+        self.model.model.add_point(slice_idx=0, cor=0.0)
+        self.model.model.add_point(slice_idx=5, cor=10.0)
+        self.model.model.add_point(slice_idx=10, cor=100.0)
+        self.model.set_all_cors(set_to)
+        for [_, cor] in self.model.model._points:
+            self.assertEquals(cor, set_to)
