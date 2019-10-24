@@ -195,6 +195,7 @@ class ImageView(QtGui.QWidget):
         self.ui.normFrameCheck.clicked.connect(self.updateNorm)
         self.ui.normTimeRangeCheck.clicked.connect(self.updateNorm)
         self.playTimer.timeout.connect(self.timeout)
+        self.extend_roi_plot_mouse_press_handler()
 
         self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
         self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
@@ -818,3 +819,20 @@ class ImageView(QtGui.QWidget):
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
+
+    def extend_roi_plot_mouse_press_handler(self):
+        original_handler = self.ui.roiPlot.mousePressEvent
+
+        def extended_handler(ev):
+            if ev.button() == QtCore.Qt.LeftButton:
+                self.set_timeline_to_tick_nearest(ev.x())
+            original_handler(ev)
+
+        self.ui.roiPlot.mousePressEvent = lambda ev: extended_handler(ev)
+
+    def set_timeline_to_tick_nearest(self, x):
+        x_axis = self.getRoiPlot().getAxis('bottom')
+        frac_pos = (x - x_axis.x()) / x_axis.width()
+        view_range = self.getRoiPlot().viewRange()[0]
+        domain_pos = (view_range[1] - view_range[0]) * frac_pos
+        self.timeLine.setValue(np.round(view_range[0] + domain_pos))
