@@ -1,22 +1,24 @@
 from logging import getLogger
 
 import numpy as np
+from typing import Optional
 
-from mantidimaging.core.cor_tilt import (
-    run_auto_finding_on_images, update_image_operations)
+from mantidimaging.core.cor_tilt import (run_auto_finding_on_images, update_image_operations)
 from mantidimaging.core.reconstruct import tomopy_reconstruct_preview
-from mantidimaging.core.utility.projection_angles import (
-    generate as generate_projection_angles)
+from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
+
+from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel
+from mantidimaging.core.data import Images
 
 LOG = getLogger(__name__)
 
 
 class CORTiltWindowModel(object):
-
-    def __init__(self, model):
-        self.stack = None
+    def __init__(self, model: CorTiltPointQtModel):
+        self.stack: Optional[Images] = None
         self.preview_projection_idx = 0
         self.preview_slice_idx = 0
+        self.selected_row = 0
         self.roi = None
         self.projection_indices = None
         self.model = model
@@ -36,13 +38,11 @@ class CORTiltWindowModel(object):
 
     @property
     def num_projections(self):
-        s = self.sample
-        return s.shape[0] if s is not None else 0
+        return self.sample.shape[0] if self.sample is not None else 0
 
     @property
     def num_slices(self):
-        s = self.sample
-        return s.shape[1] if s is not None else 0
+        return self.sample.shape[1] if self.sample is not None else 0
 
     @property
     def cor_for_current_preview_slice(self):
@@ -58,8 +58,7 @@ class CORTiltWindowModel(object):
         if stack is not None:
             image_shape = self.sample[0].shape
             self.roi = (0, 0, image_shape[1] - 1, image_shape[0] - 1)
-            self.proj_angles = generate_projection_angles(
-                360, self.sample.shape[0])
+            self.proj_angles = generate_projection_angles(360, self.sample.shape[0])
 
     def update_roi_from_stack(self):
         self.model.clear_results()
@@ -120,8 +119,7 @@ class CORTiltWindowModel(object):
             raise ValueError('No sample to use for preview reconstruction')
 
         # Perform single slice reconstruction
-        return tomopy_reconstruct_preview(
-            self.sample, slice_idx, cor, self.proj_angles)
+        return tomopy_reconstruct_preview(self.sample, slice_idx, cor, self.proj_angles)
 
     @property
     def preview_tilt_line_data(self):

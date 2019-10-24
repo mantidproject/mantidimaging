@@ -1,18 +1,15 @@
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
-from mantidimaging.core.cor_tilt import (
-        CorTiltDataModel, Field, FIELD_NAMES)
+from mantidimaging.core.cor_tilt import (CorTiltDataModel, Field, FIELD_NAMES)
 
 
 class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     """
     Qt data model for COR/Tilt finding.
     """
-
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.beginResetModel()
-        super(CorTiltPointQtModel, self).populate_slice_indices(
-                begin, end, count, cor)
+        super(CorTiltPointQtModel, self).populate_slice_indices(begin, end, count, cor)
         self.endResetModel()
 
     def sort_points(self):
@@ -81,10 +78,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         return True
 
     def insertRows(self, row, count, parent=None):
-        self.beginInsertRows(
-                parent if parent is not None else QModelIndex(),
-                row,
-                row + count - 1)
+        self.beginInsertRows(parent if parent is not None else QModelIndex(), row, row + count - 1)
 
         for _ in range(count):
             self.add_point(row)
@@ -95,10 +89,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         if self.empty:
             return
 
-        self.beginRemoveRows(
-                parent if parent is not None else QModelIndex(),
-                row,
-                row + count - 1)
+        self.beginRemoveRows(parent if parent is not None else QModelIndex(), row, row + count - 1)
 
         for _ in range(count):
             self.remove_point(row)
@@ -109,23 +100,19 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         if self.empty:
             return
 
-        self.beginRemoveRows(
-                parent if parent else QModelIndex(),
-                0,
-                self.num_points - 1)
+        self.beginRemoveRows(parent if parent else QModelIndex(), 0, self.num_points - 1)
 
         self.clear_points()
 
         self.endRemoveRows()
 
-    def appendNewRow(self, slice_idx, cor=0):
+    def appendNewRow(self, row, slice_idx, cor=0):
         self.insertRows(self.num_points, 1)
 
-        self.setData(
-                self.index(self.num_points - 1, Field.SLICE_INDEX.value),
-                slice_idx)
+        self.setData(self.index(self.num_points - 1, Field.SLICE_INDEX.value), slice_idx)
 
-        self.set_cor_at_slice(slice_idx, cor)
+        # the data is added on the row _after_ the selected one
+        self.set_point(row + 1, cor=cor)
 
     def headerData(self, section, orientation, role):
         if orientation != Qt.Horizontal:

@@ -7,9 +7,9 @@ from matplotlib.figure import Figure
 from mantidimaging.core.cor_tilt import Field
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import NavigationToolbarSimple
-from .point_table_model import CorTiltPointQtModel
-from .presenter import CORTiltWindowPresenter
-from .presenter import Notification as PresNotification
+from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel
+from mantidimaging.gui.windows.cor_tilt.presenter import CORTiltWindowPresenter
+from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -123,6 +123,7 @@ class CORTiltWindowView(BaseMainWindowView):
             if item.isValid():
                 slice_idx = item.model().point(item.row())[
                     Field.SLICE_INDEX.value]
+                self.presenter.set_row(item.row())
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.presenter.notify(
                     PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
@@ -334,11 +335,11 @@ class CORTiltWindowView(BaseMainWindowView):
         enough_to_fit = self.tableView.model().num_points >= 2
         self.manualFitButton.setEnabled(enough_to_fit)
 
-    def add_cor_table_row(self, idx, cor):
+    def add_cor_table_row(self, row, slice_index, cor):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
-        self.tableView.model().appendNewRow(idx, cor)
+        self.tableView.model().appendNewRow(row, slice_index, cor)
 
     @property
     def slice_count(self):

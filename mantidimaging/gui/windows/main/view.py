@@ -54,12 +54,14 @@ class MainWindowView(BaseMainWindowView):
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
-        self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionFilters.setShortcut("Ctrl+F")
         self.actionSavuFilters.triggered.connect(self.show_savu_filters_window)
         self.actionSavuFilters.setShortcut("Ctrl+Shift+F")
+        self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
+        self.actionCorTilt.setShortcut("Ctrl+R")
         self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
+        self.actionTomopyRecon.setShortcut("Ctrl+Shfit+R")
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
@@ -80,9 +82,7 @@ class MainWindowView(BaseMainWindowView):
         msg_box.setText(
             '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
             '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(
-                version_no
-            )
-        )
+                version_no))
         msg_box.show()
 
     def show_load_dialogue(self):
@@ -159,9 +159,8 @@ class MainWindowView(BaseMainWindowView):
         dock_widget.setWidget(StackVisualiserView(self, dock_widget, stack))
 
         # proof of concept above
-        assert isinstance(
-            dock_widget.widget(), StackVisualiserView
-        ), "Widget inside dock_widget is not an StackVisualiserView!"
+        assert isinstance(dock_widget.widget(),
+                          StackVisualiserView), "Widget inside dock_widget is not an StackVisualiserView!"
 
         dock_widget.setFloating(floating)
 
@@ -180,9 +179,10 @@ class MainWindowView(BaseMainWindowView):
         if self.presenter.have_active_stacks:
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
-            msg_box = QtWidgets.QMessageBox.question(
-                self, "Quit", "Are you sure you want to quit?", defaultButton=QtWidgets.QMessageBox.No
-            )
+            msg_box = QtWidgets.QMessageBox.question(self,
+                                                     "Quit",
+                                                     "Are you sure you want to quit?",
+                                                     defaultButton=QtWidgets.QMessageBox.No)
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:
