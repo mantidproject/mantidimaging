@@ -27,6 +27,7 @@ class Notification(Enum):
     ADD_NEW_COR_TABLE_ROW = 7
     REFINE_SELECTED_COR = 8
     SHOW_COR_VS_SLICE_PLOT = 9
+    SET_ALL_ROW_VALUES = 10
 
 
 class CORTiltWindowPresenter(BasePresenter):
@@ -58,6 +59,8 @@ class CORTiltWindowPresenter(BasePresenter):
                 self.do_refine_selected_cor()
             elif signal == Notification.SHOW_COR_VS_SLICE_PLOT:
                 self.do_plot_cor_vs_slice_index()
+            elif signal == Notification.SET_ALL_ROW_VALUES:
+                self.set_all_row_values()
 
         except Exception as e:
             self.show_error(e)
@@ -203,3 +206,11 @@ class CORTiltWindowPresenter(BasePresenter):
             msg = self.ERROR_STRING.format(task.error)
             log.error(msg)
             self.show_error(msg)
+
+    def set_all_row_values(self):
+        if self.view.point_model.empty:
+            return
+
+        selected_cor = self.model.cor_for_current_preview_slice
+        for slice_idx in self.model.model.slices:
+            self.model.model.set_cor_at_slice(slice_idx, selected_cor)
