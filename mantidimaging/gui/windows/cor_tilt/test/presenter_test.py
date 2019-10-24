@@ -1,19 +1,15 @@
 import unittest
 
-import numpy as np
-
-from mantidimaging.core.data import Images
-
-from mantidimaging.gui.windows.cor_tilt import (
-    CORTiltWindowView, CORTiltWindowPresenter)
-from mantidimaging.gui.windows.stack_visualiser import (
-    StackVisualiserView, StackVisualiserPresenter)
-
 import mock
+import numpy as np
+from mantidimaging.core.data import Images
+from mantidimaging.core.data import const as data_const
+from mantidimaging.gui.windows.cor_tilt import CORTiltWindowPresenter, CORTiltWindowView
+from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
 
 
 class CORTiltWindowPresenterTest(unittest.TestCase):
-
     def setUp(self):
         # Mock view
         self.view = mock.create_autospec(CORTiltWindowView)
@@ -41,3 +37,20 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
 
         self.presenter.set_preview_projection_idx(5)
         self.assertEquals(self.presenter.model.preview_projection_idx, 5)
+
+    def test_do_add_manual_cor_table_row_no_last_result(self):
+        self.presenter.model.selected_row = 0
+        self.presenter.model.preview_slice_idx = 15
+        self.presenter.notify(PresNotification.ADD_NEW_COR_TABLE_ROW)
+        self.view.add_cor_table_row.assert_called_once_with(self.presenter.model.selected_row,
+                                                            self.presenter.model.preview_slice_idx, 0)
+
+    def test_do_add_manual_cor_table_row_with_last_result_cor(self):
+        self.presenter.model.selected_row = 0
+        self.presenter.model.preview_slice_idx = 15
+        self.presenter.model.last_result = {data_const.COR_TILT_ROTATION_CENTRE: 4141}
+
+        self.presenter.notify(PresNotification.ADD_NEW_COR_TABLE_ROW)
+        self.view.add_cor_table_row.assert_called_once_with(
+            self.presenter.model.selected_row, self.presenter.model.preview_slice_idx,
+            self.presenter.model.last_result[data_const.COR_TILT_ROTATION_CENTRE])
