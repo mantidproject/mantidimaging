@@ -9,6 +9,7 @@ from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
 from .presenter import SVNotification
+from .metadata_dialog import MetadataDialog
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -107,10 +108,15 @@ class StackVisualiserView(BaseMainWindowView):
         menu = QMenu(self)
         change_name_action = QAction("Change window name", menu)
         change_name_action.triggered.connect(self.change_window_name_clicked)
+
         toggle_image_mode_action = QAction("Toggle show averaged image", menu)
         toggle_image_mode_action.triggered.connect(
             lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE))
-        menu.addActions([change_name_action, toggle_image_mode_action])
+
+        show_metadata_action = QAction("Show image metadata", menu)
+        show_metadata_action.triggered.connect(self.show_image_metadata)
+
+        menu.addActions([change_name_action, toggle_image_mode_action, show_metadata_action])
         return menu
 
     def change_window_name_clicked(self):
@@ -121,3 +127,7 @@ class StackVisualiserView(BaseMainWindowView):
                                                    text=self.name)
         if ok:
             self.name = new_window_name
+
+    def show_image_metadata(self):
+        dialog = MetadataDialog(self, self.presenter.images)
+        dialog.show()
