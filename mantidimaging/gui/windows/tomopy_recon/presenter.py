@@ -1,5 +1,6 @@
 from enum import Enum
 from logging import getLogger
+from typing import TYPE_CHECKING, Dict, List
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
@@ -10,6 +11,10 @@ from .model import TomopyReconWindowModel
 
 LOG = getLogger(__name__)
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
+    from PyQt5.QtWidgets import QWidget
+
 
 class Notification(Enum):
     UPDATE_PROJECTION_PREVIEW = 1
@@ -17,14 +22,21 @@ class Notification(Enum):
     PREVIEW_SLICE_PREVIOUS = 3
     RECONSTRUCT_SLICE = 4
     RECONSTRUCT_VOLUME = 5
+    ALGORITHM_CHANGED = 6
 
 
 class TomopyReconWindowPresenter(BasePresenter):
 
-    def __init__(self, view, main_window):
+    def __init__(self, view: 'TomopyReconWindowView', main_window):
         super(TomopyReconWindowPresenter, self).__init__(view)
+        self.view = view
         self.model = TomopyReconWindowModel()
         self.main_window = main_window
+        self.allowed_recon_kwargs: Dict[str, List[str]] = self.model.load_allowed_recon_kwargs()
+        self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
+            'filter_name': [self.view.filterName, self.view.filterNameLabel],
+            'num_iter': [self.view.numIter, self.view.numIterLabel],
+        }
 
     def notify(self, signal):
         try:
@@ -38,6 +50,8 @@ class TomopyReconWindowPresenter(BasePresenter):
                 self.do_reconstruct_slice()
             elif signal == Notification.RECONSTRUCT_VOLUME:
                 self.do_reconstruct_volume()
+            elif signal == Notification.ALGORITHM_CHANGED:
+                self.set_available_options()
 
         except Exception as e:
             self.show_error(e)
@@ -82,18 +96,25 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def prepare_reconstruction(self):
         self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
-
+        self.model.current_algorithm = self.view.algorithm_name
+        self.model.current_filter = self.view.filter_name
+        self.model.num_iter = self.view.num_iter
         self.model.generate_projection_angles(self.view.max_proj_angle)
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()
+        self._create_recon_task(self.model.reconstruct_slice, self._on_reconstruct_slice_done)
 
+    def do_reconstruct_volume(self):
+        self.prepare_reconstruction()
+        self._create_recon_task(self.model.reconstruct_volume, self._on_reconstruct_volume_done)
+
+    def _create_recon_task(self, task, on_complete):
         atd = AsyncTaskDialogView(self.view, auto_close=True)
         kwargs = {'progress': Progress()}
         kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.reconstruct_slice)
-        atd.presenter.set_on_complete(self._on_reconstruct_slice_done)
+        atd.presenter.set_task(task)
+        atd.presenter.set_on_complete(on_complete)
         atd.presenter.set_parameters(**kwargs)
         atd.presenter.do_start_processing()
 
@@ -105,18 +126,6 @@ class TomopyReconWindowPresenter(BasePresenter):
             LOG.error('Reconstruction failed: %s', str(task.error))
             self.show_error('Reconstruction failed. See log for details.')
 
-    def do_reconstruct_volume(self):
-        self.prepare_reconstruction()
-
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.reconstruct_volume)
-        atd.presenter.set_on_complete(self._on_reconstruct_volume_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
-
     def _on_reconstruct_volume_done(self, task):
         if task.was_successful():
             volume_data = task.result
@@ -126,3 +135,13 @@ class TomopyReconWindowPresenter(BasePresenter):
         else:
             LOG.error('Reconstruction failed: %s', str(task.error))
             self.show_error('Reconstruction failed. See log for details.')
+
+    def set_available_options(self):
+        allowed_args = self.allowed_recon_kwargs[self.view.algorithm_name]
+        for arg, widgets in self.restricted_arg_widgets.items():
+            if arg in allowed_args:
+                for widget in widgets:
+                    widget.show()
+            else:
+                for widget in widgets:
+                    widget.hide()
