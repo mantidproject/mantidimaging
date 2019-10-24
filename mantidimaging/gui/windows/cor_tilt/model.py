@@ -48,6 +48,10 @@ class CORTiltWindowModel(object):
     def cor_for_current_preview_slice(self):
         return self.model.get_cor_for_slice(self.preview_slice_idx)
 
+    def set_all_cors(self, cor: float):
+        for slice_idx in self.model.slices:
+            self.model.set_cor_at_slice(slice_idx, cor)
+
     def initial_select_data(self, stack):
         self.model.clear_results()
 
