@@ -17,6 +17,7 @@ class TomopyReconWindowModel(object):
         self.preview_slice_idx = 0
         self.current_algorithm = "gridrec"
         self.current_filter = "none"
+        self.images_are_sinograms = True
 
         self.cors = None
         self.projection_angles = None
@@ -63,7 +64,8 @@ class TomopyReconWindowModel(object):
             filter_name=self.current_filter,
             proj_angles=self.projection_angles,
             num_iter=self.num_iter,
-            progress=progress)
+            progress=progress,
+            images_are_sinograms=self.images_are_sinograms)
 
     @staticmethod
     def load_allowed_recon_kwargs():

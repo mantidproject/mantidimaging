@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QComboBox, QCheckBox, QSpinBox
+from PyQt5.QtWidgets import QComboBox, QSpinBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
@@ -18,7 +18,6 @@ class TomopyReconWindowView(BaseMainWindowView):
     algorithmName: QComboBox
     filterName: QComboBox
     numIter: QSpinBox
-    imagesAreSinograms: QCheckBox
 
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         super(TomopyReconWindowView, self).__init__(main_window, 'gui/ui/tomopy_recon_window.ui')
@@ -156,3 +155,7 @@ class TomopyReconWindowView(BaseMainWindowView):
     @property
     def num_iter(self):
         return self.numIter.value() if self.numIter.isVisible() else None
+
+    @property
+    def images_are_sinograms(self):
+        return self.sinogramTypeRadio.isChecked()
