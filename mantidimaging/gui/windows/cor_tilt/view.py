@@ -111,6 +111,9 @@ class CORTiltWindowView(BaseMainWindowView):
         self.manualRefineCorButton.clicked.connect(
             lambda: self.presenter.notify(
                 PresNotification.REFINE_SELECTED_COR))
+        self.setAllButton.clicked.connect(
+            lambda: self.presenter.notify(
+                PresNotification.SET_ALL_ROW_VALUES))
         self.manualFitButton.clicked.connect(
             lambda: self.presenter.notify(
                 PresNotification.RUN_MANUAL))
@@ -128,9 +131,10 @@ class CORTiltWindowView(BaseMainWindowView):
                 self.presenter.notify(
                     PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
 
-            # Only allow the refine button to be clicked when a valid row is
-            # selected
-            self.manualRefineCorButton.setEnabled(item.isValid())
+            # Only allow buttons which act on selected row to be clicked when a valid
+            # row is selected
+            for button in [self.manualRefineCorButton, self.setAllButton, self.manualRemoveButton]:
+                button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(
             on_row_change)
