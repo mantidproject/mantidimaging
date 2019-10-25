@@ -8,3 +8,7 @@ class SVModel:
     @staticmethod
     def sum_images(images):
         return np.sum(images, axis=0)
+
+    @staticmethod
+    def swap_axes(images):
+        return np.swapaxes(images, 0, 1)
