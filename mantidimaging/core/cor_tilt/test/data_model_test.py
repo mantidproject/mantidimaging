@@ -91,8 +91,8 @@ class CorTiltDataModelTest(TestCase):
         m.linear_regression()
 
         self.assertTrue(m.has_results)
-        self.assertAlmostEqual(m.m, 0.1)
-        self.assertAlmostEqual(m.c, 5.0)
+        self.assertAlmostEqual(m.gradient, 0.1)
+        self.assertAlmostEqual(m.cor, 5.0)
 
     def test_linear_regression_data(self):
         m = CorTiltDataModel()
@@ -126,8 +126,8 @@ class CorTiltDataModelTest(TestCase):
         ]
         m.linear_regression()
 
-        self.assertAlmostEqual(m.m, 0.005292, places=6)
-        self.assertAlmostEqual(m.c, 1392.99, places=2)
+        self.assertAlmostEqual(m.gradient, 0.005292, places=6)
+        self.assertAlmostEqual(m.cor, 1392.99, places=2)
 
     def test_stack_properties(self):
         m = CorTiltDataModel()
@@ -140,8 +140,8 @@ class CorTiltDataModelTest(TestCase):
         d = m.stack_properties
         self.assertEqual(len(d), 5)
 
-        self.assertEqual(d['fitted_gradient'], m.m)
-        self.assertEqual(d['rotation_centre'], m.c)
+        self.assertEqual(d['fitted_gradient'], m.gradient)
+        self.assertEqual(d['rotation_centre'], m.cor)
         self.assertEqual(d['slice_indices'], m.slices)
         self.assertEqual(d['rotation_centres'], m.cors)
         self.assertTrue(isinstance(d['tilt_angle_rad'], float))
@@ -174,8 +174,8 @@ class CorTiltDataModelTest(TestCase):
         m.linear_regression()
 
         self.assertTrue(m.has_results)
-        self.assertAlmostEqual(m.m, 0.1)
-        self.assertAlmostEqual(m.c, 4.0)
+        self.assertAlmostEqual(m.gradient, 0.1)
+        self.assertAlmostEqual(m.cor, 4.0)
 
     def test_get_cor_for_slice(self):
         m = CorTiltDataModel()

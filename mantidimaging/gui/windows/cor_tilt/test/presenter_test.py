@@ -54,3 +54,17 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
         self.view.add_cor_table_row.assert_called_once_with(
             self.presenter.model.selected_row, self.presenter.model.preview_slice_idx,
             self.presenter.model.last_result[data_const.COR_TILT_ROTATION_CENTRE])
+
+    def test_do_preview_reconstruction(self):
+        self.presenter.model = mock.Mock()
+
+        self.presenter.model.get_cor_for_slice_from_regression.return_value = None
+        self.presenter.do_preview_reconstruction()
+        self.view.update_image_recon_preview.assert_not_called()
+
+        self.presenter.model.has_results = True
+        self.presenter.model.get_cor_for_slice_from_regression.return_value = 333
+        self.presenter.model.run_preview_recon.return_value = [1, 2, 3]
+        self.presenter.do_preview_reconstruction()
+        self.view.update_image_recon_preview.assert_called_once_with(
+            self.presenter.model.run_preview_recon.return_value)

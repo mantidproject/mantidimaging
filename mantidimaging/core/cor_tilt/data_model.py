@@ -8,7 +8,6 @@ from mantidimaging.core.data import const
 
 from .angles import cors_to_tilt_angle
 
-
 LOG = getLogger(__name__)
 
 
@@ -17,10 +16,7 @@ class Field(Enum):
     CENTRE_OF_ROTATION = 1
 
 
-FIELD_NAMES = {
-    Field.SLICE_INDEX: 'Slice Index',
-    Field.CENTRE_OF_ROTATION: 'COR'
-}
+FIELD_NAMES = {Field.SLICE_INDEX: 'Slice Index', Field.CENTRE_OF_ROTATION: 'COR'}
 
 
 class CorTiltDataModel(object):
@@ -28,24 +24,24 @@ class CorTiltDataModel(object):
     Data model for COR/Tilt finding from (slice index, centre of rotation) data
     pairs.
     """
+    _cached_gradient: float
+    _cached_cor: float
 
     def __init__(self):
         self._points = []
-        self._cached_m = None
-        self._cached_c = None
+        self._cached_gradient = 0.0
+        self._cached_cor = 0.0
 
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.clear_results()
 
-        self._points = [[int(idx), cor] for idx in np.linspace(
-            begin, end, count, dtype=int)]
+        self._points = [[int(idx), cor] for idx in np.linspace(begin, end, count, dtype=int)]
         LOG.debug('Populated slice indices: {}'.format(self.slices))
 
     def linear_regression(self):
-        LOG.debug('Running linear regression with {} points'.format(
-            self.num_points))
+        LOG.debug('Running linear regression with {} points'.format(self.num_points))
         result = sp.stats.linregress(self.slices, self.cors)
-        self._cached_m, self._cached_c = result[:2]
+        self._cached_gradient, self._cached_cor = result[:2]
 
     def add_point(self, idx=None, slice_idx=0, cor=0.0):
         self.clear_results()
@@ -83,8 +79,8 @@ class CorTiltDataModel(object):
         self.clear_results()
 
     def clear_results(self):
-        self._cached_m = None
-        self._cached_c = None
+        self._cached_gradient = 0.0
+        self._cached_cor = 0.0
 
     def point(self, idx):
         return self._points[idx] if idx < self.num_points else None
@@ -93,15 +89,14 @@ class CorTiltDataModel(object):
         self._points.sort(key=lambda p: p[Field.SLICE_INDEX.value])
 
     def get_cor_for_slice(self, slice_idx):
-        a = [p[Field.CENTRE_OF_ROTATION.value] for p in self._points if
-             p[Field.SLICE_INDEX.value] == slice_idx]
+        a = [p[Field.CENTRE_OF_ROTATION.value] for p in self._points if p[Field.SLICE_INDEX.value] == slice_idx]
         return a[0] if a else None
 
     def get_cor_for_slice_from_regression(self, slice_idx):
         if not self.has_results:
             return None
 
-        cor = (self.m * slice_idx) + self.c
+        cor = (self.gradient * slice_idx) + self.cor
         return cor
 
     @property
@@ -113,20 +108,20 @@ class CorTiltDataModel(object):
         return [float(p[Field.CENTRE_OF_ROTATION.value]) for p in self._points]
 
     @property
-    def m(self):
-        return self._cached_m
+    def gradient(self):
+        return self._cached_gradient
 
     @property
-    def c(self):
-        return self._cached_c
+    def cor(self):
+        return self._cached_cor
 
     @property
     def angle_rad(self):
-        return cors_to_tilt_angle(self.slices[-1], self.m)
+        return cors_to_tilt_angle(self.slices[-1], self.gradient)
 
     @property
     def has_results(self):
-        return self._cached_m is not None and self._cached_c is not None
+        return self._cached_gradient is not None and self._cached_cor is not None
 
     @property
     def empty(self):
@@ -139,8 +134,8 @@ class CorTiltDataModel(object):
     @property
     def stack_properties(self):
         return {
-            const.COR_TILT_ROTATION_CENTRE: float(self.c),
-            const.COR_TILT_FITTED_GRADIENT: float(self.m),
+            const.COR_TILT_ROTATION_CENTRE: float(self.cor),
+            const.COR_TILT_FITTED_GRADIENT: float(self.gradient),
             const.COR_TILT_TILT_ANGLE_RAD: float(self.angle_rad),
             const.COR_TILT_SLICE_INDICES: self.slices,
             const.COR_TILT_ROTATION_CENTRES: self.cors

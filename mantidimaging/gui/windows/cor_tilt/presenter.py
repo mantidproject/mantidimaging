@@ -105,15 +105,13 @@ class CORTiltWindowPresenter(BasePresenter):
         self.view.update_image_preview(img_data, self.model.preview_slice_idx, self.model.preview_tilt_line_data,
                                        self.model.roi)
 
-        self.view.update_fit_plot(self.model.model.slices, self.model.model.cors, self.model.preview_fit_y_data)
+        self.view.update_fit_plot(self.model.slices, self.model.cors, self.model.preview_fit_y_data)
 
     def do_preview_reconstruction(self, cor=None):
-        data = None
-
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
-            cor = self.model.model.get_cor_for_slice_from_regression(self.model.preview_slice_idx)
+            cor = self.model.get_cor_for_slice_from_regression()
 
         if cor is not None:
             data = self.model.run_preview_recon(self.model.preview_slice_idx, cor)
@@ -198,7 +196,7 @@ class CORTiltWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.view.set_results(self.model.model.c, self.model.model.angle_rad, self.model.model.m)
+            self.view.set_results(*self.model.get_results())
             self.view.show_results()
             self.notify(Notification.UPDATE_PREVIEWS)
             self.notify(Notification.PREVIEW_RECONSTRUCTION)
