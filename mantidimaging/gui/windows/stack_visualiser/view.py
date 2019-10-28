@@ -135,7 +135,7 @@ class StackVisualiserView(BaseMainWindowView):
         main_window = self.parent().parent()
         if ok:
             if new_window_name not in main_window.stack_names():
-                self.name = new_window_name
+                main_window.presenter.rename_stack_by_name(self.name, new_window_name)
             else:
                 error = QMessageBox(self)
                 error.setWindowTitle("Stack name conflict")
