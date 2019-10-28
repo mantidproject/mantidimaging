@@ -117,7 +117,7 @@ class StackVisualiserView(BaseMainWindowView):
         show_metadata_action = QAction("Show image metadata", menu)
         show_metadata_action.triggered.connect(self.show_image_metadata)
 
-        swap_axes_action = QAction("New stack with swapped axes", menu)
+        swap_axes_action = QAction("Create sinograms from stack", menu)
         swap_axes_action.triggered.connect(lambda: self.presenter.notify(SVNotification.SWAP_AXES))
 
         menu.addActions([change_name_action,
