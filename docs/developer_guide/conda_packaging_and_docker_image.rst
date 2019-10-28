@@ -66,7 +66,7 @@ If you want to push a package to the original repository please contact the Mant
 Building the Docker image
 -------------------------
 
-The Docker image is currently used as a setup for the Travis test environment. The configuration is stored in the :code:`Dockerfile`, and a :code:`make` helper command is provided for building it:
+The Docker image is currently used as a setup for the Travis test environment. The configuration is stored in the :code:`docker/Dockerfile`, and a :code:`make` helper command is provided for building it:
 
    1. :code:`make build-docker-image`
 

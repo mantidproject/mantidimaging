@@ -24,9 +24,6 @@ build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anacon
 build-conda-package-release: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
 	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda $(AUTHENTICATION_PARAMS)
 
-build-docker-image: .remind-for-user
-	docker build --rm -t $$UPLOAD_USER/mantidimaging:travis-ci-2019.10 -f Dockerfile .
-
 .remind-current:
 	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
 	@echo "Current: $$(conda config --get anaconda_upload)"
@@ -48,9 +45,3 @@ test-env:
 
 mypy:
 	python -m mypy --ignore-missing-imports mantidimaging
-
-docker-build:
-	sudo docker build --rm -t mantidimaging -f Dockerfile .
-
-docker-run:
-	sudo docker run -e DISPLAY -v $(HOME)/.Xauthority:/home/root/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -t mantidimaging

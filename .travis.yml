@@ -6,29 +6,25 @@ services:
   - docker
 
 env:
-  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment MANTIDIMAGING_DOCKER_RUN="docker run -e DISPLAY -v $HOME/.Xauthority:/home/developer/.Xauthority -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging -t dtasev/mantidimaging:travis-ci-2019.10"
+  - |
+    MINICONDA_DIR=$HOME/miniconda
+    ENVIRONMENT_DIR=$HOME/envs
+    ENVIRONMENT_NAME=test-environment
+    DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"
+    DOCKER_IMAGE="-t dtasev/mantidimaging"
 
 before_install:
-  - docker pull dtasev/mantidimaging:travis-ci-2019.10
+  - docker pull dtasev/mantidimaging
 
 jobs:
   include:
     - stage: test
       script:
-        - $MANTIDIMAGING_DOCKER_RUN flake8
-        - $MANTIDIMAGING_DOCKER_RUN mypy --ignore-missing-imports mantidimaging
-        - $MANTIDIMAGING_DOCKER_RUN nosetests --xunit-file=/opt/result-report.xml
+        - $DOCKER_RUN $DOCKER_IMAGE flake8
+        - $DOCKER_RUN $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
+        - $DOCKER_RUN $DOCKER_IMAGE nosetests --xunit-file=/opt/result-report.xml
 
     - stage: upload-nightly
       if: type = cron AND branch = master
       script:
-        - |
-          if [[ $UPLOAD_PACKAGE = "true" ]]; then
-            conda config --set anaconda_upload yes;
-          fi
-        - make build-conda-package-nightly
-        # stop caching from being ran for a package build
-        # this prevent caching big packages like anaconda and conda-forge
-        # that are only necessary for building the package
-        - exit 0
-
+        - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
