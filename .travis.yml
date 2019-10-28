@@ -20,7 +20,7 @@ jobs:
         - $MANTIDIMAGING_DOCKER_RUN nosetests --xunit-file=/opt/result-report.xml
 
     - stage: upload-nightly
-      if: branch = master AND env(TRAVIS_EVENT_TYPE) = cron
+      if: type = cron AND branch = master
       script:
         - |
           if [[ $UPLOAD_PACKAGE = "true" ]]; then
