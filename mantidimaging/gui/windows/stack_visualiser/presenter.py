@@ -85,5 +85,6 @@ class StackVisualiserPresenter(BasePresenter):
 
     def create_swapped_axis_stack(self):
         self.view.parent_create_stack(
-            Images(self.model.swap_axes(self.images.sample)),
+            Images(self.model.swap_axes(self.images.sample),
+                   properties=self.images.properties),
             f"{self.view.name}_inverted")

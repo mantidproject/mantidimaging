@@ -8,14 +8,15 @@ from mantidimaging import helper as h
 from . import const
 
 
-class Images(object):
+class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
     def __init__(self, sample, flat=None, dark=None,
                  sample_filenames: Optional[List[str]] = None,
                  indices: Optional[Tuple[int, int, int]] = None,
                  flat_filenames: Optional[List[str]] = None,
-                 dark_filenames: Optional[List[str]] = None):
+                 dark_filenames: Optional[List[str]] = None,
+                 properties: Optional[Dict[str, Any]] = None):
         """
 
         :param sample: Images of the Sample/Projection data
@@ -25,6 +26,7 @@ class Images(object):
         :param indices: Indices that were actually loaded
         :param flat_filenames: All filenames that were matched for loading of Flat images
         :param dark_filenames: All filenames that were matched for loading of Dark images
+        :param properties: Properties to copy when creating a new stack from an existing one
         """
 
         self.sample = sample
@@ -36,7 +38,7 @@ class Images(object):
         self._flat_filenames = flat_filenames
         self._dark_filenames = dark_filenames
 
-        self.properties: Dict[str, Any] = {}
+        self.properties: Dict[str, Any] = properties if properties else {}
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
