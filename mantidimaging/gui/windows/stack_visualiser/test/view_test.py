@@ -2,10 +2,11 @@ import unittest
 
 import mock
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDockWidget, QMainWindow
+from PyQt5.QtWidgets import QDockWidget
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
 
@@ -21,7 +22,7 @@ class StackVisualiserViewTest(unittest.TestCase):
 
     def setUp(self):
         # mock the view so it has the same methods
-        self.window = QMainWindow()
+        self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
 
         self.dock = QDockWidget()
