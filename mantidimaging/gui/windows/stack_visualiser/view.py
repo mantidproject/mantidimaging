@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog
+from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog, QMessageBox
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -132,8 +132,15 @@ class StackVisualiserView(BaseMainWindowView):
                                                    "Change window name",
                                                    "Name:",
                                                    text=self.name)
+        main_window = self.parent().parent()
         if ok:
-            self.name = new_window_name
+            if new_window_name not in main_window.stack_names():
+                self.name = new_window_name
+            else:
+                error = QMessageBox(self)
+                error.setWindowTitle("Stack name conflict")
+                error.setText(f"There is already a window named {new_window_name}")
+                error.exec()
 
     def show_image_metadata(self):
         dialog = MetadataDialog(self, self.presenter.images)
