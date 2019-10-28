@@ -6,12 +6,7 @@ services:
   - docker
 
 env:
-  - |
-    MINICONDA_DIR=$HOME/miniconda
-    ENVIRONMENT_DIR=$HOME/envs
-    ENVIRONMENT_NAME=test-environment
-    DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"
-    DOCKER_IMAGE="-t dtasev/mantidimaging"
+  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging" DOCKER_IMAGE="-t dtasev/mantidimaging"
 
 before_install:
   - docker pull dtasev/mantidimaging
