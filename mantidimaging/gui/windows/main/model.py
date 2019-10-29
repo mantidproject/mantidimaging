@@ -1,7 +1,7 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Dict
+from typing import Dict, List, Tuple
 
 from mantidimaging.core.io import loader, saver
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
@@ -59,7 +59,7 @@ class MainWindowModel(object):
 
         return name
 
-    def stack_list(self):
+    def stack_list(self) -> List[Tuple[uuid.UUID, str]]:
         stacks = []
         for stack_uuid, widget in self.active_stacks.items():
             # ask the widget for its current title
@@ -85,7 +85,7 @@ class MainWindowModel(object):
         getLogger(__name__).debug(
             "Active stacks {}".format(self.active_stacks))
 
-    def get_stack(self, stack_uuid):
+    def get_stack(self, stack_uuid: uuid.UUID):
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The QDockWidget that contains the Stack Visualiser.
@@ -93,6 +93,12 @@ class MainWindowModel(object):
                 get_stack_visualiser
         """
         return self.active_stacks[stack_uuid]
+
+    def get_stack_by_name(self, search_name: str):
+        for (id, name) in self.stack_list():
+            if name == search_name:
+                return self.get_stack(id)
+        return None
 
     def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
         """
