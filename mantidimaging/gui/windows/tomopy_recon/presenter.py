@@ -1,4 +1,3 @@
-from copy import deepcopy
 from enum import Enum
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List

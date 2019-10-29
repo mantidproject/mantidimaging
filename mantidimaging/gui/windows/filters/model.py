@@ -1,6 +1,6 @@
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Optional
+from typing import Callable, Dict, Tuple, TYPE_CHECKING
 
 import numpy as np
 
@@ -9,6 +9,9 @@ from mantidimaging.core.utility.registrator import get_package_children, import_
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QFormLayout  # noqa: F401
+
 
 def ensure_tuple(val):
     return val if isinstance(val, tuple) else (val,)
@@ -16,9 +19,9 @@ def ensure_tuple(val):
 
 class FiltersWindowModel(object):
     parameters_from_stack: Dict
-    do_before_wrapper: Callable[[], Optional[partial]]
-    execute_wrapper: Callable[[], partial]
-    do_after_wrapper: Callable[[], Optional[partial]]
+    do_before_wrapper: Callable[['FiltersWindowModel'], partial]
+    execute_wrapper: Callable[['FiltersWindowModel'], partial]
+    do_after_wrapper: Callable[['FiltersWindowModel'], partial]
 
     def __init__(self):
         super(FiltersWindowModel, self).__init__()
@@ -64,7 +67,7 @@ class FiltersWindowModel(object):
     def filter_names(self):
         return [f[0] for f in self.filters]
 
-    def filter_registration_func(self, filter_idx):
+    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Tuple]:
         """
         Gets the function used to register the GUI of a given filter.
 
