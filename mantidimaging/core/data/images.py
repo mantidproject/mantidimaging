@@ -1,5 +1,6 @@
 import json
 import pprint
+from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
 import numpy as np
@@ -38,7 +39,7 @@ class Images:
         self._flat_filenames = flat_filenames
         self._dark_filenames = dark_filenames
 
-        self.metadata: Dict[str, Any] = metadata if metadata else {}
+        self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(

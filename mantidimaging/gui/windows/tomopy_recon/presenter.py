@@ -133,7 +133,7 @@ class TomopyReconWindowPresenter(BasePresenter):
     def _on_reconstruct_volume_done(self, task):
         if task.was_successful():
             volume_data = task.result
-            volume_stack = Images(volume_data, metadata=deepcopy(self.stack_metadata))
+            volume_stack = Images(volume_data, metadata=self.stack_metadata)
             volume_stack.record_operation(const.OPERATION_NAME_TOMOPY_RECON, **self.model.recon_params)
             name = '{}_recon'.format(self.model.stack.name)
             self.main_window.presenter.create_new_stack(volume_stack, name)
