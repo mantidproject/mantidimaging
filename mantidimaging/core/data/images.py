@@ -81,8 +81,7 @@ class Images:
             const.OPERATION_ARGS:
                 [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS:
-                dict([(k, v if accepted_type(v) else None) for (k, v)
-                      in kwargs.items()])
+                {k: v for k, v in kwargs.items() if accepted_type(v)}
         })
 
     @staticmethod
