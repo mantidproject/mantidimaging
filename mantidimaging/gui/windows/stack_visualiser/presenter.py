@@ -1,14 +1,19 @@
 from enum import IntEnum
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+
 
 class SVNotification(IntEnum):
     REFRESH_IMAGE = 0
     TOGGLE_IMAGE_MODE = 1
+    SWAP_AXES = 2
 
 
 class SVParameters(IntEnum):
@@ -38,6 +43,8 @@ class StackVisualiserPresenter(BasePresenter):
                 self.refresh_image()
             if signal == SVNotification.TOGGLE_IMAGE_MODE:
                 self.toggle_image_mode()
+            if signal == SVNotification.SWAP_AXES:
+                self.create_swapped_axis_stack()
         except Exception as e:
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")
@@ -75,3 +82,8 @@ class StackVisualiserPresenter(BasePresenter):
                  or self.summed_image.shape != self.images.sample.shape[1:]):
             self.summed_image = self.model.sum_images(self.images.sample)
         self.refresh_image()
+
+    def create_swapped_axis_stack(self):
+        self.view.parent_create_stack(
+            Images(self.model.swap_axes(self.images.sample)),
+            f"{self.view.name}_inverted")

@@ -100,6 +100,7 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.model.current_filter = self.view.filter_name
         self.model.num_iter = self.view.num_iter
         self.model.generate_projection_angles(self.view.max_proj_angle)
+        self.model.images_are_sinograms = self.view.images_are_sinograms
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()

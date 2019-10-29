@@ -38,6 +38,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.layout = QVBoxLayout(self)
         self.central_widget.setLayout(self.layout)
         self.setCentralWidget(self.central_widget)
+        self.parent_create_stack = self.parent().presenter.create_new_stack
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title
@@ -116,7 +117,13 @@ class StackVisualiserView(BaseMainWindowView):
         show_metadata_action = QAction("Show image metadata", menu)
         show_metadata_action.triggered.connect(self.show_image_metadata)
 
-        menu.addActions([change_name_action, toggle_image_mode_action, show_metadata_action])
+        swap_axes_action = QAction("Create sinograms from stack", menu)
+        swap_axes_action.triggered.connect(lambda: self.presenter.notify(SVNotification.SWAP_AXES))
+
+        menu.addActions([change_name_action,
+                         toggle_image_mode_action,
+                         show_metadata_action,
+                         swap_axes_action])
         return menu
 
     def change_window_name_clicked(self):
