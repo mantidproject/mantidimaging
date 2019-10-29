@@ -1,8 +1,12 @@
+# This Dockerfile creates a developer image. It requires that the following things are mounted:
+# - Mantid Imaging source at /opt/mantidimaging.
+# It also requires the DISPLAY environment variable and sharing the X11 socket via
+# -v /tmp/.X11-unix:/tmp/.X11-unix:ro
 FROM ubuntu:18.04
 
 WORKDIR /opt/
 
-RUN apt-get update && apt-get install -y wget git fontconfig \
+RUN apt-get update && apt-get install -y make wget git fontconfig \
       libglib2.0-0 \
       libxrandr2 \
       libxss1 \
