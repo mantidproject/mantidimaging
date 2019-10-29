@@ -1,10 +1,12 @@
 from logging import getLogger
+from typing import Optional
 
 import numpy as np
 
 from mantidimaging.core.reconstruct import tomopy_reconstruct, allowed_recon_kwargs
 from mantidimaging.core.utility.projection_angles import \
     generate as generate_projection_angles
+from mantidimaging.core.data.images import Images
 
 LOG = getLogger(__name__)
 
@@ -28,7 +30,7 @@ class TomopyReconWindowModel(object):
             else None
 
     @property
-    def images(self):
+    def images(self) -> Optional[Images]:
         return self.stack.presenter.images if self.stack is not None else None
 
     def initial_select_data(self, stack):

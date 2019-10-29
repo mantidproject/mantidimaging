@@ -32,7 +32,7 @@ class WorkflowTest(TestCase):
         self.assertEquals(len(model.slices), 5)
         self.assertEquals(len(model.cors), 5)
 
-        auto_cor_tilt = images.properties['operation_history'][-1]
+        auto_cor_tilt = images.metadata['operation_history'][-1]
         self.assertEquals(auto_cor_tilt['name'], 'cor_tilt_finding')
 
         auto_cor_tilt_kwargs = auto_cor_tilt['kwargs']

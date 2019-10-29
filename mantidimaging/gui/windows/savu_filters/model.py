@@ -139,7 +139,7 @@ class SavuFiltersWindowModel(object):
             all_kwargs = execute_func.keywords.copy()
             all_kwargs.update(exec_kwargs)
 
-            images.record_parameters_in_metadata(
+            images.record_operation(
                 "{}.{}".format(execute_func.func.__module__, execute_func.func.__name__),
                 *execute_func.args,
                 **all_kwargs,

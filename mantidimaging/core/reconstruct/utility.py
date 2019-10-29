@@ -1,12 +1,12 @@
 from logging import getLogger
+from typing import Optional, Tuple, Dict, Any
 
-from mantidimaging.core.data import const
-
+from mantidimaging.core.data import const, Images
 
 LOG = getLogger(__name__)
 
 
-def get_last_cor_tilt_find(images):
+def get_last_cor_tilt_find(images: Images) -> Tuple[Optional[Dict[str, Any]], Optional[int]]:
     """
     Gets the properties from the last instance of COR/Tilt finding that was run
     on a given image stack.
@@ -15,7 +15,7 @@ def get_last_cor_tilt_find(images):
         return None, None
 
     # Copy the history and reverse it
-    history = images.properties[const.OPERATION_HISTORY][:]
+    history = images.metadata[const.OPERATION_HISTORY][:]
     history.reverse()
 
     # Iterate over history and find the first instance of COR/Tilt finding
@@ -27,7 +27,7 @@ def get_last_cor_tilt_find(images):
     return None, None
 
 
-def get_crop_operations(images, start=None, end=None):
+def get_crop_operations(images: Images, start=None, end=None):
     """
     Gets a list of crop operations that happened between two points in the
     image operation history.
@@ -35,7 +35,7 @@ def get_crop_operations(images, start=None, end=None):
     if not images.has_history:
         return []
 
-    history = images.properties[const.OPERATION_HISTORY][start:end]
+    history = images.metadata[const.OPERATION_HISTORY][start:end]
     crops = [e for e in history if const.OPERATION_NAME_CROP in
              e[const.OPERATION_NAME]]
     return crops
@@ -52,19 +52,19 @@ def get_crop(images, axis, start=None, end=None):
     return total_crop
 
 
-def get_cor_tilt_from_images(images):
+def get_cor_tilt_from_images(images: Images) -> Tuple[int, float, float]:
     """
     Gets rotation centre at top of image and gradient with which to calculate
     rotation centre arrays for reconstruction.
     """
     # If there is no stack history
     if not images or not images.has_history:
-        return (0, 0.0, 0.0)
+        return 0, 0.0, 0.0
 
     last_find, last_find_idx = get_last_cor_tilt_find(images)
     # If the stack history does not contain a COR/Tilt finding step
     if not last_find:
-        return (0, 0.0, 0.0)
+        return 0, 0.0, 0.0
 
     cor = last_find[const.COR_TILT_ROTATION_CENTRE]
     tilt = last_find[const.COR_TILT_TILT_ANGLE_RAD]
@@ -81,4 +81,4 @@ def get_cor_tilt_from_images(images):
     new_cor = (top * gradient) + cor
     LOG.debug('New COR corrected for top crop: {}'.format(new_cor))
 
-    return (new_cor, tilt, gradient)
+    return new_cor, tilt, gradient

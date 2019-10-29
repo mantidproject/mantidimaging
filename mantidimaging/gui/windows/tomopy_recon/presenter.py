@@ -37,7 +37,7 @@ class TomopyReconWindowPresenter(BasePresenter):
             'filter_name': [self.view.filterName, self.view.filterNameLabel],
             'num_iter': [self.view.numIter, self.view.numIterLabel],
         }
-        self.stack_properties = None
+        self.stack_metadata = None
 
     def notify(self, signal):
         try:
@@ -102,7 +102,7 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.model.num_iter = self.view.num_iter
         self.model.generate_projection_angles(self.view.max_proj_angle)
         self.model.images_are_sinograms = self.view.images_are_sinograms
-        self.stack_properties = self.model.images.properties
+        self.stack_metadata = self.model.images.metadata
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()
@@ -132,7 +132,7 @@ class TomopyReconWindowPresenter(BasePresenter):
     def _on_reconstruct_volume_done(self, task):
         if task.was_successful():
             volume_data = task.result
-            volume_stack = Images(volume_data, properties=self.stack_properties)
+            volume_stack = Images(volume_data, metadata=self.stack_metadata)
             name = '{}_recon'.format(self.model.stack.name)
             self.main_window.presenter.create_new_stack(volume_stack, name)
         else:

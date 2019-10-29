@@ -22,50 +22,16 @@ class ImagesTest(unittest.TestCase):
             'Image Stack: sample=(2, 64, 64), flat=None, dark=None, '
             '|properties|=0')
 
-    def test_serialise_metadata(self):
-        imgs = Images([1])
-        imgs.properties['a_bool'] = True
-        imgs.properties['a_string'] = 'yes'
-        imgs.properties['a_float'] = 3.65e-5
-        imgs.properties['a_int'] = 42
-        imgs.properties['a_arr'] = ['one', 'two', 'three']
-
-        def validate_str(s):
-            for k in imgs.properties.keys():
-                self.assertTrue(k in s)
-
-        s = imgs.metadata_saves()
-        validate_str(s)
-
-        f = StringIO()
-        imgs.metadata_save(f)
-        validate_str(f.getvalue())
-
     def test_parse_metadata_file(self):
         json_file = StringIO(
             '{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
             '"three"], "a_float": 3.65e-05, "a_bool": true}')
 
         imgs = Images([1])
-        imgs.metadata_load(json_file)
+        imgs.load_metadata(json_file)
 
         def validate_prop(k, v):
-            self.assertEquals(imgs.properties[k], v)
-
-        validate_prop('a_bool', True)
-        validate_prop('a_string', 'yes')
-        validate_prop('a_int', 42)
-        validate_prop('a_arr', ['one', 'two', 'three'])
-
-    def test_parse_metadata_str(self):
-        json_str = '{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", ' \
-                   '"three"], "a_float": 3.65e-05, "a_bool": true}'
-
-        imgs = Images([1])
-        imgs.metadata_loads(json_str)
-
-        def validate_prop(k, v):
-            self.assertEquals(imgs.properties[k], v)
+            self.assertEquals(imgs.metadata[k], v)
 
         validate_prop('a_bool', True)
         validate_prop('a_string', 'yes')
@@ -76,14 +42,14 @@ class ImagesTest(unittest.TestCase):
         imgs = Images([1])
         self.assertFalse(imgs.has_history)
 
-        imgs.record_parameters_in_metadata(
+        imgs.record_operation(
             'test_func',
             56, 9002, np.ndarray((800, 1024, 1024)), 'yes', False,
             this=765, that=495.0, roi=(1, 2, 3, 4))
 
         self.assertTrue(imgs.has_history)
 
-        self.assertEquals(imgs.properties, {
+        self.assertEquals(imgs.metadata, {
             'operation_history': [
                 {
                     'name': 'test_func',

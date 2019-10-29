@@ -3,6 +3,7 @@ from logging import getLogger
 from typing import Callable, Dict, Optional
 
 import numpy as np
+from mantidimaging.core.data import Images
 
 from mantidimaging.core.utility.registrator import get_package_children, import_items, register_into
 from mantidimaging.gui.utility import get_parameters_from_stack
@@ -92,7 +93,7 @@ class FiltersWindowModel(object):
         self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper, self.do_after_wrapper = \
             filter_specifics
 
-    def apply_filter(self, images, exec_kwargs):
+    def apply_filter(self, images: Images, exec_kwargs):
         """
         Applies the selected filter to a given image stack.
         """
@@ -136,8 +137,8 @@ class FiltersWindowModel(object):
         do_after_func(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
-        images.record_parameters_in_metadata('{}.{}'.format(execute_func.func.__module__, execute_func.func.__name__),
-                                             *execute_func.args, **all_kwargs)
+        images.record_operation('{}.{}'.format(execute_func.func.__module__, execute_func.func.__name__),
+                                *execute_func.args, **all_kwargs)
 
     def do_apply_filter(self):
         """
