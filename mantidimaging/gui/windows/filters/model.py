@@ -3,9 +3,9 @@ from logging import getLogger
 from typing import Callable, Dict, Optional
 
 import numpy as np
-from mantidimaging.core.data import Images
 
-from mantidimaging.core.utility.registrator import get_package_children, import_items, register_into
+from mantidimaging.core.data import Images
+from mantidimaging.core.utility.registrator import get_package_children, import_items
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
@@ -58,11 +58,7 @@ class FiltersWindowModel(object):
 
         loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
-        def register_filter(filter_list, module):
-            filter_list.append((module.NAME, module._gui_register))
-
-        self.filters = []
-        register_into(self.filters, loaded_filters, register_filter)
+        self.filters = [(f.NAME, f._gui_register) for f in loaded_filters]
 
     @property
     def filter_names(self):
