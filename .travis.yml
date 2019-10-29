@@ -20,6 +20,6 @@ jobs:
         - $DOCKER_RUN $DOCKER_IMAGE nosetests --xunit-file=/opt/result-report.xml
 
     - stage: upload-nightly
-      if: type = cron AND branch = master
+      if: type = cron
       script:
         - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
