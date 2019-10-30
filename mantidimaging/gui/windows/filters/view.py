@@ -1,13 +1,12 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
+from PyQt5.QtWidgets import QVBoxLayout
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, ViewBox
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
     delete_all_widgets_from_layout)
-from .navigation_toolbar import FiltersWindowNavigationToolbar
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
@@ -18,7 +17,9 @@ if TYPE_CHECKING:
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
-    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
+    previewsLayout: QVBoxLayout
+
+    def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
 
         self.main_window = main_window
@@ -37,37 +38,20 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
-        # Preview area
-        self.cmap = cmap
+        self.previews: GraphicsLayoutWidget = GraphicsLayoutWidget()
+        self.previewsLayout.addWidget(self.previews)
 
-        self.figure = Figure(tight_layout=True)
+        self.preview_image_before: ImageItem = ImageItem()
+        self.preview_image_before_vb: ViewBox = self.previews.addViewBox(invertY=True)
+        self.preview_image_before_vb.addItem(self.preview_image_before)
+        self.preview_histogram_before: PlotItem = self.previews.addPlot(title='Histogram Before')
 
-        self.canvas = FigureCanvasQTAgg(self.figure)
-        self.canvas.setParent(self)
+        self.previews.nextRow()
 
-        self.toolbar = FiltersWindowNavigationToolbar(self.canvas, self)
-        self.toolbar.filter_window = self
-
-        self.mplLayout.addWidget(self.toolbar)
-        self.mplLayout.addWidget(self.canvas)
-
-        def add_plot(num, title, **kwargs):
-            plt = self.figure.add_subplot(num, title=title, **kwargs)
-            return plt
-
-        self.preview_image_before = add_plot(221, 'Image Before')
-
-        self.preview_image_after = add_plot(223, 'Image After', sharex=self.preview_image_before,
-                                            sharey=self.preview_image_before)
-
-        self.preview_histogram_before = add_plot(222, 'Histogram Before')
-        self.preview_histogram_before.plot([], [])
-
-        self.preview_histogram_after = add_plot(
-            224, 'Histogram After',
-            sharex=self.preview_histogram_before,
-            sharey=self.preview_histogram_before)
-        self.preview_histogram_after.plot([], [])
+        self.preview_image_after: ImageItem = ImageItem()
+        self.preview_image_after_vb = self.previews.addViewBox(invertY=True)
+        self.preview_image_after_vb.addItem(self.preview_image_after)
+        self.preview_histogram_after: PlotItem = self.previews.addPlot(title='Histogram After')
 
         self.clear_preview_plots()
 
@@ -117,8 +101,7 @@ class FiltersWindowView(BaseMainWindowView):
         """
         Clears the plotted data from the preview images and plots.
         """
-        self.preview_image_before.cla()
-        self.preview_image_after.cla()
-
-        self.preview_histogram_before.lines[0].set_data([], [])
-        self.preview_histogram_after.lines[0].set_data([], [])
+        self.preview_image_before.setImage()
+        self.preview_image_after.setImage()
+        self.preview_histogram_before.clear()
+        self.preview_histogram_after.clear()

@@ -2,6 +2,7 @@ from enum import Enum
 from logging import getLogger
 
 import numpy as np
+from pyqtgraph import ImageItem, PlotItem
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.histogram import (
@@ -73,7 +74,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.set_preview_image_index(0)
             self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
 
-        self.do_update_previews(False)
+        self.do_update_previews()
 
     def handle_roi_selection(self, roi: SensibleROI):
         if roi and self.filter_uses_parameter(SVParameters.ROI):
@@ -112,7 +113,7 @@ class FiltersWindowPresenter(BasePresenter):
     def do_apply_filter(self):
         self.model.do_apply_filter()
 
-    def do_update_previews(self, maintain_axes=True):
+    def do_update_previews(self):
         log = getLogger(__name__)
 
         progress = Progress.ensure_instance()
@@ -132,14 +133,6 @@ class FiltersWindowPresenter(BasePresenter):
                 progress.add_estimated_steps(8)
 
                 before_image_data = stack.get_image(self.model.preview_image_idx)
-
-                if maintain_axes:
-                    # Record the image axis range from the existing preview
-                    # image
-                    image_axis_ranges = (
-                        self.view.preview_image_before.get_xlim(),
-                        self.view.preview_image_before.get_ylim()
-                    ) if self.view.preview_image_before.images else None
 
                 # Update image before
                 self._update_preview_image(
@@ -168,37 +161,22 @@ class FiltersWindowPresenter(BasePresenter):
                         self.view.preview_histogram_after,
                         progress)
 
-                if maintain_axes:
-                    # Set the axis range on the newly created image to keep
-                    # same zoom level/pan region
-                    if image_axis_ranges is not None:
-                        self.view.preview_image_before.set_xlim(
-                            image_axis_ranges[0])
-                        self.view.preview_image_before.set_ylim(
-                            image_axis_ranges[1])
-
             # Redraw
             progress.update(msg='Redraw canvas')
-            self.view.canvas.draw()
 
-    def _update_preview_image(self, image_data, image, histogram, progress):
+    def _update_preview_image(self, image_data: np.ndarray, image: ImageItem, histogram: PlotItem, progress):
         # Generate histogram data
         progress.update(msg='Generating histogram')
         center, hist, _ = generate_histogram_from_image(image_data)
 
         # Update image
         progress.update(msg='Updating image')
-        # TODO: ideally this should update the data without replotting but a
-        # valid image must exist to start with (which may not always happen)
-        # and this only works as long as the extents do not change.
-        image.cla()
-        image.imshow(image_data, cmap=self.view.cmap)
+        image.setImage(image_data)
 
         # Update histogram
         progress.update(msg='Updating histogram')
-        histogram.lines[0].set_data(center, hist)
-        histogram.relim()
-        histogram.autoscale()
+        histogram.clearPlots()
+        histogram.plot(hist)
 
     def do_scroll_preview(self, offset):
         idx = self.model.preview_image_idx + offset
