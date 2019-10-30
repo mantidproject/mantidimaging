@@ -19,7 +19,7 @@ from typing import Callable, Optional, Tuple
 import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel
-from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug as debug, ptime as ptime
+from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug, ptime
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
 from pyqtgraph.graphicsItems.GradientEditorItem import addGradientListToDocstring
