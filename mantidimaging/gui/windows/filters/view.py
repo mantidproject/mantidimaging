@@ -2,11 +2,12 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QVBoxLayout
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, ViewBox
+from pyqtgraph import ImageItem, PlotItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
     delete_all_widgets_from_layout)
+from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
@@ -18,13 +19,7 @@ class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     previewsLayout: QVBoxLayout
-    previews: GraphicsLayoutWidget
-    preview_image_before: ImageItem
-    preview_image_before_vb: ViewBox
-    preview_histogram_before: PlotItem
-    preview_image_after: ImageItem
-    preview_image_after_vb: ViewBox
-    preview_histogram_after: PlotItem
+    previews: FilterPreviews
 
     def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
@@ -45,30 +40,9 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
-        histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
-        self.previews = GraphicsLayoutWidget()
+        self.previews = FilterPreviews()
         self.previewsLayout.addWidget(self.previews)
-
-        self.previews.addLabel("Image before:")
-        self.previews.addLabel("Pixel values before:")
-        self.previews.nextRow()
-
-        self.preview_image_before = ImageItem()
-        self.preview_image_before_vb = self.previews.addViewBox(invertY=True)
-        self.preview_image_before_vb.addItem(self.preview_image_before)
-        self.preview_histogram_before = self.previews.addPlot(labels=histogram_axes_labels)
-
-        self.previews.nextRow()
-        self.previews.addLabel("Image after:")
-        self.previews.addLabel("Pixel values after:")
-        self.previews.nextRow()
-
-        self.preview_image_after = ImageItem()
-        self.preview_image_after_vb = self.previews.addViewBox(invertY=True)
-        self.preview_image_after_vb.addItem(self.preview_image_after)
-        self.preview_histogram_after = self.previews.addPlot(labels=histogram_axes_labels)
-
-        self.clear_preview_plots()
+        self.clear_previews()
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
@@ -112,11 +86,21 @@ class FiltersWindowView(BaseMainWindowView):
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
-    def clear_preview_plots(self):
-        """
-        Clears the plotted data from the preview images and plots.
-        """
-        self.preview_image_before.setImage()
-        self.preview_image_after.setImage()
-        self.preview_histogram_before.clear()
-        self.preview_histogram_after.clear()
+    def clear_previews(self):
+        self.previews.clear_items()
+
+    @property
+    def preview_image_before(self) -> ImageItem:
+        return self.previews.image_before
+
+    @property
+    def preview_image_after(self) -> ImageItem:
+        return self.previews.image_after
+
+    @property
+    def preview_histogram_before(self) -> PlotItem:
+        return self.previews.histogram_before
+
+    @property
+    def preview_histogram_after(self) -> PlotItem:
+        return self.previews.histogram_after
