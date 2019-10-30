@@ -18,6 +18,13 @@ class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     previewsLayout: QVBoxLayout
+    previews: GraphicsLayoutWidget
+    preview_image_before: ImageItem
+    preview_image_before_vb: ViewBox
+    preview_histogram_before: PlotItem
+    preview_image_after: ImageItem
+    preview_image_after_vb: ViewBox
+    preview_histogram_after: PlotItem
 
     def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
@@ -39,27 +46,27 @@ class FiltersWindowView(BaseMainWindowView):
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
         histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
-        self.previews: GraphicsLayoutWidget = GraphicsLayoutWidget()
+        self.previews = GraphicsLayoutWidget()
         self.previewsLayout.addWidget(self.previews)
 
         self.previews.addLabel("Image before:")
         self.previews.addLabel("Pixel values before:")
         self.previews.nextRow()
 
-        self.preview_image_before: ImageItem = ImageItem()
-        self.preview_image_before_vb: ViewBox = self.previews.addViewBox(invertY=True)
+        self.preview_image_before = ImageItem()
+        self.preview_image_before_vb = self.previews.addViewBox(invertY=True)
         self.preview_image_before_vb.addItem(self.preview_image_before)
-        self.preview_histogram_before: PlotItem = self.previews.addPlot(labels=histogram_axes_labels)
+        self.preview_histogram_before = self.previews.addPlot(labels=histogram_axes_labels)
 
         self.previews.nextRow()
         self.previews.addLabel("Image after:")
         self.previews.addLabel("Pixel values after:")
         self.previews.nextRow()
 
-        self.preview_image_after: ImageItem = ImageItem()
+        self.preview_image_after = ImageItem()
         self.preview_image_after_vb = self.previews.addViewBox(invertY=True)
         self.preview_image_after_vb.addItem(self.preview_image_after)
-        self.preview_histogram_after: PlotItem = self.previews.addPlot(labels=histogram_axes_labels)
+        self.preview_histogram_after = self.previews.addPlot(labels=histogram_axes_labels)
 
         self.clear_preview_plots()
 
