@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import minus_log
+from mantidimaging.core.filters.minus_log import MinusLogFilter
 
 
 class MinusLogTest(unittest.TestCase):
@@ -22,7 +20,7 @@ class MinusLogTest(unittest.TestCase):
     def test_no_execute(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = minus_log.execute(images, minus_log=False)
+        result = MinusLogFilter()._filter_func(images, minus_log=False)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -44,7 +42,7 @@ class MinusLogTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = minus_log.execute(images, minus_log=True)
+        result = MinusLogFilter()._filter_func(images, minus_log=True)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

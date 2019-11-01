@@ -5,6 +5,7 @@ import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.gui.windows.filters import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import (
     StackVisualiserView, StackVisualiserPresenter, SVParameters)
@@ -59,9 +60,10 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_do_apply_filter(self):
         self.model.stack = self.sv_presenter.view
 
-        execute = mock.Mock(return_value=partial(self.execute_mock))
+        execute = mock.MagicMock(return_value=partial(self.execute_mock))
+        execute.__name__ = "test"
 
-        self.model.setup_filter((None, None, execute, None))
+        self.model.setup_filter(0, execute)
         self.model.do_apply_filter()
 
         execute.assert_called_once()
@@ -71,14 +73,17 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
 
-        params = {
-            'roi': SVParameters.ROI
-        }
+        with mock.patch(
+                'mantidimaging.core.filters.base_filter.BaseFilter.params',
+                new_callable=mock.PropertyMock) as mock_params:
+            mock_params.return_value = {
+                'roi': SVParameters.ROI
+            }
 
-        self.model.setup_filter((params, None, execute, None))
-        self.model.do_apply_filter()
+            self.model.setup_filter(0, execute)
+            self.model.do_apply_filter()
 
-        execute.assert_called_once()
+            execute.assert_called_once()
 
     def test_do_apply_filter_pre_post_processing(self):
         self.model.stack = self.sv_presenter.view
@@ -87,14 +92,23 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         do_before = mock.MagicMock(return_value=partial(self.apply_before_mock))
         do_after = mock.MagicMock(return_value=partial(self.apply_after_mock))
+        self.model.setup_filter(0, execute)
+        self.model.selected_filter.do_before_func = do_before
+        self.model.selected_filter.do_after_func = do_after
 
-        self.model.setup_filter((None, do_before, execute, do_after))
         self.model.do_apply_filter()
-
         execute.assert_called_once()
 
         do_before.assert_called_once()
         do_after.assert_called_once()
+
+    def test_all_expected_filter_packages_loaded(self):
+        self.assertEqual(len(self.model.filters), 14, "Expected 14 filters")
+        for filter_obj in self.model.filters:
+            self.assert_(isinstance(filter_obj, BaseFilter))
+        self.assertEqual(
+            ["Minus Log", ],
+            self.model.filter_names)
 
 
 if __name__ == '__main__':

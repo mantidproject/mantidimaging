@@ -1,10 +1,11 @@
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING, List, Optional
 
 import numpy as np
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.utility.registrator import get_package_children, import_items
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
@@ -18,27 +19,26 @@ def ensure_tuple(val):
 
 
 class FiltersWindowModel(object):
-    parameters_from_stack: Dict
-    do_before_wrapper: Callable[['FiltersWindowModel'], partial]
-    execute_wrapper: Callable[['FiltersWindowModel'], partial]
-    do_after_wrapper: Callable[['FiltersWindowModel'], partial]
+    filters: List[BaseFilter]
+    selected_filter: BaseFilter
+    apply_filter_func: Optional[partial]
 
     def __init__(self):
         super(FiltersWindowModel, self).__init__()
 
         # Update the local filter registry
-        self.filters = None
-        self.register_filters('mantidimaging.core.filters', ignored_packages=['mantidimaging.core.filters.wip'])
+        self.filters = FiltersWindowModel.load_filter_packages(
+            'mantidimaging.core.filters', ignored_packages=['mantidimaging.core.filters.wip'])
 
         self.preview_image_idx = 0
 
         # Execution info for current filter
         self.stack = None
-        self.do_before_wrapper = lambda: lambda: None
-        self.execute_wrapper = lambda: lambda _: None
-        self.do_after_wrapper = lambda: lambda *_: None
+        self.selected_filter = self.filters[0]
+        self.apply_filter_func = None
 
-    def register_filters(self, package_name, ignored_packages=None):
+    @staticmethod
+    def load_filter_packages(package_name, ignored_packages=None) -> List[BaseFilter]:
         """
         Builds a local registry of filters.
 
@@ -54,22 +54,22 @@ class FiltersWindowModel(object):
         """
         filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
         filter_package_names = [p.name for p in filter_packages]
-        loaded_filters = import_items(filter_package_names, required_attributes=['execute', 'NAME', '_gui_register'])
+        loaded_filters = import_items(filter_package_names, required_attributes=['FILTER_CLASS'])
         loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
-        self.filters = [(f.NAME, f._gui_register) for f in loaded_filters]
+        return [f.FILTER_CLASS() for f in loaded_filters]
 
     @property
     def filter_names(self):
-        return [f[0] for f in self.filters]
+        return [f.filter_name for f in self.filters]
 
-    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Tuple]:
+    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Callable]:
         """
         Gets the function used to register the GUI of a given filter.
 
         :param filter_idx: Index of the filter in the registry
         """
-        return self.filters[filter_idx][1]
+        return self.filters[filter_idx].register_gui
 
     @property
     def stack_presenter(self):
@@ -81,32 +81,33 @@ class FiltersWindowModel(object):
             if self.stack_presenter is not None else 0
         return num_images
 
-    def setup_filter(self, filter_specifics):
-        """
-        Sets filter properties from result of registration function.
-        """
-        self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper, self.do_after_wrapper = \
-            filter_specifics
+    @property
+    def params_needed_from_stack(self):
+        return self.selected_filter.params
+
+    def setup_filter(self, filter_idx, apply_filter_func):
+        self.selected_filter = self.filters[filter_idx]
+        self.apply_filter_func = apply_filter_func
 
     def apply_filter(self, images: Images, exec_kwargs):
         """
         Applies the selected filter to a given image stack.
         """
+        assert self.apply_filter_func is not None
         log = getLogger(__name__)
 
         # Generate the execute partial from filter registration
-        do_before_func = self.do_before_wrapper() if self.do_before_wrapper else lambda _: ()
-        do_after_func = self.do_after_wrapper() if self.do_after_wrapper else lambda *_: None
-        execute_func: partial = self.execute_wrapper()
+        do_before_func = self.selected_filter.do_before_func
+        do_after_func = self.selected_filter.do_after_func
 
         # Log execute function parameters
-        log.info("Filter kwargs: {}".format(exec_kwargs))
+        log.info(f"Filter kwargs: {exec_kwargs}")
 
-        all_kwargs = execute_func.keywords.copy()
+        all_kwargs = self.apply_filter_func.keywords.copy()
 
-        if isinstance(execute_func, partial):
-            log.info("Filter partial args: {}".format(execute_func.args))
-            log.info("Filter partial kwargs: {}".format(execute_func.keywords))
+        if isinstance(self.apply_filter_func, partial):
+            log.info(f"Filter partial args: {self.apply_filter_func.args}")
+            log.info(f"Filter partial kwargs: {self.apply_filter_func.keywords}")
 
             all_kwargs.update(exec_kwargs)
 
@@ -115,7 +116,7 @@ class FiltersWindowModel(object):
         preproc_result = ensure_tuple(preproc_result)
 
         # Run filter
-        ret_val = execute_func(images.sample, **exec_kwargs)
+        ret_val = self.apply_filter_func(images.sample, **exec_kwargs)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):
@@ -126,14 +127,14 @@ class FiltersWindowModel(object):
             # Single Numpy arrays are assumed to be just the sample image
             images.sample = ret_val
         else:
-            log.debug('Unknown execute return value: {}'.format(type(ret_val)))
+            log.debug(f'Unknown execute return value: {type(ret_val)}')
 
         # Do postprocessing using return value of pre-processing as parameter
         do_after_func(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
-        images.record_operation('{}.{}'.format(execute_func.func.__module__, execute_func.func.__name__),
-                                *execute_func.args, **all_kwargs)
+        images.record_operation(f'{self.apply_filter_func.func.__module__}',
+                                *self.apply_filter_func.args, **all_kwargs)
 
     def do_apply_filter(self):
         """
@@ -143,7 +144,7 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        exec_kwargs = get_parameters_from_stack(self.stack_presenter, self.parameters_from_stack)
+        exec_kwargs = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
 
         self.apply_filter(self.stack_presenter.images, exec_kwargs)
 
