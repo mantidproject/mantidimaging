@@ -1,10 +1,11 @@
-from typing import TYPE_CHECKING, Callable, Dict
+from typing import TYPE_CHECKING, Callable, Dict, Any
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout
 
 
 class BaseFilter:
+    filter_name = "Unnamed filter"
     """
     The base class for filter algorithms, which should extend this class.
 
@@ -22,7 +23,10 @@ class BaseFilter:
         """
         self.raise_not_implemented("filter_func")
 
-    def register_gui(self, form: 'QFormLayout', on_change: Callable) -> Callable:
+    def execute(self, data, **kwargs):
+        self.raise_not_implemented("execute")
+
+    def register_gui(self, form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
         """
         Adds any required input widgets to the given form and creates and returns a closure for calling
         _filter_func with the arguments supplied in the inputs
@@ -32,7 +36,7 @@ class BaseFilter:
         :return: the function to be called by the filters model to execute the filter algorithm.
         """
         self.raise_not_implemented("register_gui")
-        return lambda: None
+        return {}
 
     def raise_not_implemented(self, function_name):
         raise NotImplementedError(f"Required method '{function_name}' not implemented for filter '{self.__class__}'")
@@ -45,14 +49,14 @@ class BaseFilter:
         """
         return {}
 
-    @property
-    def filter_name(self) -> str:
-        return "Unnamed filter"
+    @staticmethod
+    def do_before_wrapper():
+        return lambda _: None
 
     @staticmethod
-    def do_before_func(images):
-        pass
+    def do_after_wrapper():
+        return lambda *_: None
 
     @staticmethod
-    def do_after_func(images, *args):
-        pass
+    def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
+        return True

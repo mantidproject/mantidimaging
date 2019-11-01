@@ -1,5 +1,3 @@
-from functools import partial
-
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -38,9 +36,12 @@ class MinusLogFilter(BaseFilter):
 
         return data
 
+    def execute(self, data, **kwargs):
+        return self._filter_func(data, minus_log=True)
+
     def register_gui(self, form, on_change):
         # Not much here, this filter does one thing and one thing only.
-        return partial(self._filter_func, minus_log=True)
+        return {}
 
 
 def _cli_register(parser):

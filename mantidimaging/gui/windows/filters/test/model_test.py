@@ -54,6 +54,17 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertEqual(result_from_before,
                          self.APPLY_BEFORE_AFTER_MAGIC_NUMBER)
 
+    def setup_mocks(self, execute_mock, do_before_mock=None, do_after_mock=None):
+        self.model.setup_filter(0, {})
+        self.model.selected_filter.execute = execute_mock
+        self.model.selected_filter.validate_execute_kwargs = lambda _: True
+
+        if do_before_mock:
+            self.model.selected_filter.do_before_wrapper = do_before_mock
+
+        if do_after_mock:
+            self.model.selected_filter.do_after_wrapper = do_after_mock
+
     def test_filters_populated(self):
         self.assertTrue(len(self.model.filter_names) > 0)
 
@@ -61,17 +72,14 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
-        execute.__name__ = "test"
+        self.setup_mocks(execute)
 
-        self.model.setup_filter(0, execute)
         self.model.do_apply_filter()
 
         execute.assert_called_once()
 
     def test_do_apply_filter_with_roi(self):
         self.model.stack = self.sv_presenter.view
-
-        execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
 
         with mock.patch(
                 'mantidimaging.core.filters.base_filter.BaseFilter.params',
@@ -80,7 +88,8 @@ class FiltersWindowModelTest(unittest.TestCase):
                 'roi': SVParameters.ROI
             }
 
-            self.model.setup_filter(0, execute)
+            execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
+            self.setup_mocks(execute)
             self.model.do_apply_filter()
 
             execute.assert_called_once()
@@ -89,17 +98,14 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
-
         do_before = mock.MagicMock(return_value=partial(self.apply_before_mock))
         do_after = mock.MagicMock(return_value=partial(self.apply_after_mock))
-        self.model.setup_filter(0, execute)
-        self.model.selected_filter.do_before_func = do_before
-        self.model.selected_filter.do_after_func = do_after
+        self.setup_mocks(execute, do_before, do_after)
 
         self.model.do_apply_filter()
-        execute.assert_called_once()
 
         do_before.assert_called_once()
+        execute.assert_called_once()
         do_after.assert_called_once()
 
     def test_all_expected_filter_packages_loaded(self):

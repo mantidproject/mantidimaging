@@ -1,6 +1,5 @@
-from functools import partial
 from logging import getLogger
-from typing import Callable, TYPE_CHECKING, List, Optional
+from typing import Callable, TYPE_CHECKING, List, Any, Dict
 
 import numpy as np
 
@@ -21,7 +20,7 @@ def ensure_tuple(val):
 class FiltersWindowModel(object):
     filters: List[BaseFilter]
     selected_filter: BaseFilter
-    apply_filter_func: Optional[partial]
+    filter_widget_kwargs: Dict[str, Any]
 
     def __init__(self):
         super(FiltersWindowModel, self).__init__()
@@ -35,7 +34,7 @@ class FiltersWindowModel(object):
         # Execution info for current filter
         self.stack = None
         self.selected_filter = self.filters[0]
-        self.apply_filter_func = None
+        self.filter_widget_kwargs = None
 
     @staticmethod
     def load_filter_packages(package_name, ignored_packages=None) -> List[BaseFilter]:
@@ -63,7 +62,7 @@ class FiltersWindowModel(object):
     def filter_names(self):
         return [f.filter_name for f in self.filters]
 
-    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Callable]:
+    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Dict[str, Any]]:
         """
         Gets the function used to register the GUI of a given filter.
 
@@ -85,38 +84,37 @@ class FiltersWindowModel(object):
     def params_needed_from_stack(self):
         return self.selected_filter.params
 
-    def setup_filter(self, filter_idx, apply_filter_func):
+    def setup_filter(self, filter_idx, filter_widget_kwargs):
         self.selected_filter = self.filters[filter_idx]
-        self.apply_filter_func = apply_filter_func
+        self.filter_widget_kwargs = filter_widget_kwargs
 
     def apply_filter(self, images: Images, exec_kwargs):
         """
         Applies the selected filter to a given image stack.
         """
-        assert self.apply_filter_func is not None
         log = getLogger(__name__)
 
         # Generate the execute partial from filter registration
-        do_before_func = self.selected_filter.do_before_func
-        do_after_func = self.selected_filter.do_after_func
+        do_before = self.selected_filter.do_before_wrapper()
+        do_after = self.selected_filter.do_after_wrapper()
 
         # Log execute function parameters
         log.info(f"Filter kwargs: {exec_kwargs}")
 
-        all_kwargs = self.apply_filter_func.keywords.copy()
+        all_kwargs = self.filter_widget_kwargs.copy()
+        all_kwargs.update(exec_kwargs)
+        log.info(all_kwargs)
 
-        if isinstance(self.apply_filter_func, partial):
-            log.info(f"Filter partial args: {self.apply_filter_func.args}")
-            log.info(f"Filter partial kwargs: {self.apply_filter_func.keywords}")
-
-            all_kwargs.update(exec_kwargs)
+        # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
+        if not self.selected_filter.validate_execute_kwargs(all_kwargs):
+            raise ValueError("Not all required parameters specified")
 
         # Do pre-processing and save result
-        preproc_result = do_before_func(images.sample)
+        preproc_result = do_before(images.sample)
         preproc_result = ensure_tuple(preproc_result)
 
         # Run filter
-        ret_val = self.apply_filter_func(images.sample, **exec_kwargs)
+        ret_val = self.selected_filter.execute(images.sample, **all_kwargs)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):
@@ -130,11 +128,11 @@ class FiltersWindowModel(object):
             log.debug(f'Unknown execute return value: {type(ret_val)}')
 
         # Do postprocessing using return value of pre-processing as parameter
-        do_after_func(images.sample, *preproc_result)
+        do_after(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
-        images.record_operation(f'{self.apply_filter_func.func.__module__}',
-                                *self.apply_filter_func.args, **all_kwargs)
+        images.record_operation(f'{self.selected_filter.execute.__module__}',
+                                *[], **all_kwargs)
 
     def do_apply_filter(self):
         """

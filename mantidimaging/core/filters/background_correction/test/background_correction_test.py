@@ -5,7 +5,7 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 
-from mantidimaging.core.filters import background_correction
+from mantidimaging.core.filters.background_correction import BackgroundCorrectionFilter
 
 
 class BackgroundCorrectionTest(unittest.TestCase):
@@ -18,51 +18,51 @@ class BackgroundCorrectionTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(BackgroundCorrectionTest, self).__init__(*args, **kwargs)
 
-    def test_not_executed_empty_params(self):
+    def test_not__filter_funcd_empty_params(self):
         images, control = th.gen_img_shared_array_and_copy()
 
         # empty params
-        result = background_correction.execute(images)
+        result = BackgroundCorrectionFilter()._filter_func(images)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
-    def test_not_executed_no_dark(self):
+    def test_not__filter_funcd_no_dark(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
 
         # no dark
-        result = background_correction.execute(images, flat[0])
+        result = BackgroundCorrectionFilter()._filter_func(images, flat[0])
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
-    def test_not_executed_no_flat(self):
+    def test_not__filter_funcd_no_flat(self):
         images, control = th.gen_img_shared_array_and_copy()
         dark = th.gen_img_shared_array()[0]
 
         # no flat
-        result = background_correction.execute(images, None, dark[0])
+        result = BackgroundCorrectionFilter()._filter_func(images, None, dark[0])
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
-    def test_not_executed_bad_flat(self):
+    def test_not__filter_funcd_bad_flat(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 
         # bad flat
-        npt.assert_raises(ValueError, background_correction.execute, images,
+        npt.assert_raises(ValueError, BackgroundCorrectionFilter()._filter_func, images,
                           flat[0], dark)
 
-    def test_not_executed_bad_dark(self):
+    def test_not__filter_funcd_bad_dark(self):
         images, control = th.gen_img_shared_array_and_copy()
         flat = th.gen_img_shared_array()[0]
         dark = th.gen_img_shared_array()[0]
 
         # bad dark
-        npt.assert_raises(ValueError, background_correction.execute, images,
+        npt.assert_raises(ValueError, BackgroundCorrectionFilter()._filter_func, images,
                           flat, dark[0])
 
     def test_real_result(self):
@@ -83,7 +83,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         expected = np.full(sample.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = background_correction.execute(sample, flat, dark, clip_max=20)
+        result = BackgroundCorrectionFilter()._filter_func(sample, flat, dark, clip_max=20)
 
         npt.assert_almost_equal(result, expected, 7)
         npt.assert_almost_equal(sample, expected, 7)
@@ -104,7 +104,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # the resulting values from the calculation are above 3,
         # but clip_max should make them all equal to 3
-        result = background_correction.execute(sample, flat, dark, clip_max=3)
+        result = BackgroundCorrectionFilter()._filter_func(sample, flat, dark, clip_max=3)
 
         npt.assert_equal(result, expected)
         npt.assert_equal(sample, expected)
@@ -122,7 +122,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # the resulting values from above are below 300,
         # but clip min should make all values below 300, equal to 300
-        result = background_correction.execute(sample, flat, dark, clip_min=300)
+        result = BackgroundCorrectionFilter()._filter_func(sample, flat, dark, clip_min=300)
 
         npt.assert_equal(result, expected)
         npt.assert_equal(sample, expected)
