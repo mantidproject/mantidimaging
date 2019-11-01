@@ -50,15 +50,11 @@ class FiltersWindowModel(object):
 
         :param package_name: Name of the root package in which to search for
                              filters
-
         :param ignored_packages: List of ignore rules
         """
         filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
-
-        filter_packages = [p[1] for p in filter_packages]
-
-        loaded_filters = import_items(filter_packages, ['execute', 'NAME', '_gui_register'])
-
+        filter_package_names = [p.name for p in filter_packages]
+        loaded_filters = import_items(filter_package_names, required_attributes=['execute', 'NAME', '_gui_register'])
         loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
         self.filters = [(f.NAME, f._gui_register) for f in loaded_filters]
