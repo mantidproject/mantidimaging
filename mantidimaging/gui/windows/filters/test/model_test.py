@@ -56,7 +56,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
     def setup_mocks(self, execute_mock, do_before_mock=None, do_after_mock=None):
         self.model.setup_filter(0, {})
-        self.model.selected_filter.execute = execute_mock
+        self.model.selected_filter.execute_wrapper = lambda: execute_mock
         self.model.selected_filter.validate_execute_kwargs = lambda _: True
 
         if do_before_mock:
@@ -115,6 +115,21 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertEqual(
             ["Minus Log", ],
             self.model.filter_names)
+
+    def test_operation_recorded_in_image_history(self):
+        self.model.stack = self.sv_presenter.view
+        self.model.stack_presenter.images.metadata = {}
+
+        execute = mock.MagicMock(return_value=partial(self.execute_mock))
+        execute.args = ["arg"]
+        execute.keywords = {"kwarg": "kwarg"}
+        self.setup_mocks(execute)
+
+        self.model.do_apply_filter()
+        op_history = self.model.stack_presenter.images.metadata['operation_history']
+        self.assertEqual(len(op_history), 1, "One operation should have been recorded")
+        self.assertEqual(op_history[0]['args'], ['arg'])
+        self.assertEqual(op_history[0]['kwargs'], {"kwarg": "kwarg"})
 
 
 if __name__ == '__main__':

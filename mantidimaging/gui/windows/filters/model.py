@@ -1,3 +1,4 @@
+from functools import partial
 from logging import getLogger
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
 
@@ -88,7 +89,7 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_filter(self, images: Images, exec_kwargs):
+    def apply_filter(self, images: Images, stack_params: Dict[str, Any]):
         """
         Applies the selected filter to a given image stack.
         """
@@ -99,14 +100,12 @@ class FiltersWindowModel(object):
         do_after = self.selected_filter.do_after_wrapper()
 
         # Log execute function parameters
-        log.info(f"Filter kwargs: {exec_kwargs}")
+        log.info(f"Filter kwargs: {stack_params}")
 
-        all_kwargs = self.filter_widget_kwargs.copy()
-        all_kwargs.update(exec_kwargs)
-        log.info(all_kwargs)
+        input_kwarg_widgets = self.filter_widget_kwargs.copy()
 
         # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
-        if not self.selected_filter.validate_execute_kwargs(all_kwargs):
+        if not self.selected_filter.validate_execute_kwargs(input_kwarg_widgets):
             raise ValueError("Not all required parameters specified")
 
         # Do pre-processing and save result
@@ -114,7 +113,8 @@ class FiltersWindowModel(object):
         preproc_result = ensure_tuple(preproc_result)
 
         # Run filter
-        ret_val = self.selected_filter.execute(images.sample, **all_kwargs)
+        exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
+        ret_val = exec_func(images.sample, **stack_params)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):
@@ -131,8 +131,8 @@ class FiltersWindowModel(object):
         do_after(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
-        images.record_operation(f'{self.selected_filter.execute.__module__}',
-                                *[], **all_kwargs)
+        images.record_operation(f'{self.selected_filter.__module__}',
+                                *exec_func.args, **exec_func.keywords)
 
     def do_apply_filter(self):
         """
@@ -142,9 +142,9 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        exec_kwargs = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
+        stack_params = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
 
-        self.apply_filter(self.stack_presenter.images, exec_kwargs)
+        self.apply_filter(self.stack_presenter.images, stack_params)
 
         # Refresh the image in the stack visualiser
         self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)

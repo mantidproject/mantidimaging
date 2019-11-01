@@ -74,7 +74,7 @@ class BackgroundCorrectionFilter(BaseFilter):
             'dark_path_widget': dark_path_widget,
         }
 
-    def execute(self, images, flat_path_widget=None, dark_path_widget=None):
+    def execute_wrapper(self, flat_path_widget=None, dark_path_widget=None):
         log = getLogger(__name__)
 
         def get_average_image(text_widget: 'QLineEdit'):
@@ -93,7 +93,7 @@ class BackgroundCorrectionFilter(BaseFilter):
         flat = get_average_image(flat_path_widget)
         dark = get_average_image(dark_path_widget)
 
-        return partial(self._filter_func, images, flat=flat, dark=dark)
+        return partial(self._filter_func, flat=flat, dark=dark)
 
     @staticmethod
     def do_before_wrapper() -> partial:

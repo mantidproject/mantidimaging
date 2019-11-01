@@ -1,3 +1,4 @@
+from functools import partial
 from typing import TYPE_CHECKING, Callable, Dict, Any
 
 if TYPE_CHECKING:
@@ -23,8 +24,9 @@ class BaseFilter:
         """
         self.raise_not_implemented("filter_func")
 
-    def execute(self, data, **kwargs):
-        self.raise_not_implemented("execute")
+    def execute_wrapper(self, **kwargs) -> partial:
+        self.raise_not_implemented("execute_wrapper")
+        return partial(lambda: None)
 
     def register_gui(self, form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
         """
