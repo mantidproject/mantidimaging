@@ -1,5 +1,7 @@
+from copy import deepcopy
 from enum import Enum
 from logging import getLogger
+from typing import Any, Dict
 from uuid import UUID
 
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -48,6 +50,28 @@ class MainWindowPresenter(BasePresenter):
         if 'sample_path' not in kwargs or not kwargs['sample_path']:
             raise ValueError("No sample path provided, cannot load anything")
 
+        if 'staged_load' in kwargs and kwargs['staged_load']:
+            self.execute_staged_load(kwargs)
+        else:
+            self.start_async_task(kwargs, self.model.do_load_stack, self._on_stack_load_done)
+
+    def execute_staged_load(self, kwargs: Dict[str, Any]) -> None:
+        """
+        Starts a task to load a preview of the stack and another to load the stack with the original step size.
+
+        :param kwargs: the parameters to use for loading
+        """
+        # Set the 'preview' to load 1/10 of the images
+        preview_kwargs = deepcopy(kwargs)
+        indices = kwargs['indices']
+        preview_kwargs['indices'] = indices[0], indices[1], (indices[1] - indices[0]) // 10
+
+        if 'custom_name' not in preview_kwargs or not preview_kwargs['custom_name']:
+            preview_kwargs['custom_name'] = preview_kwargs['selected_file'].split(".")[0] + "_preview"
+        else:
+            preview_kwargs['custom_name'] += "_preview"
+
+        self.start_async_task(preview_kwargs, self.model.do_load_stack, self._on_stack_load_done)
         self.start_async_task(kwargs, self.model.do_load_stack, self._on_stack_load_done)
 
     def _on_stack_load_done(self, task):
