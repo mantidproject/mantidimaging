@@ -42,12 +42,11 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_stack(self, kwargs=None):
-        log = getLogger(__name__)
+    def load_stack(self):
+        kwargs = self.view.load_dialogue.get_kwargs()
 
-        if not kwargs['sample_path']:
-            log.debug("No sample path provided, cannot load anything")
-            return
+        if 'sample_path' not in kwargs or not kwargs['sample_path']:
+            raise ValueError("No sample path provided, cannot load anything")
 
         self.start_async_task(kwargs, self.model.do_load_stack, self._on_stack_load_done)
 
