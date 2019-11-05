@@ -131,6 +131,7 @@ class FiltersWindowModel(object):
         do_after(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
+        exec_func.keywords.update(stack_params)
         images.record_operation(f'{self.selected_filter.__module__}',
                                 *exec_func.args, **exec_func.keywords)
 
