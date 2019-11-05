@@ -98,7 +98,7 @@ def save(data,
         metadata_filename = os.path.join(output_dir, name_prefix + '.json')
         LOG.debug('Metadata filename: {}'.format(metadata_filename))
         with open(metadata_filename, 'w+') as f:
-            data.metadata_save(f)
+            data.save_metadata(f)
 
         data = data.sample
 

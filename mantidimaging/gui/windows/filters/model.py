@@ -1,12 +1,16 @@
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Optional
+from typing import Callable, Dict, Tuple, TYPE_CHECKING
 
 import numpy as np
 
-from mantidimaging.core.utility.registrator import get_package_children, import_items, register_into
+from mantidimaging.core.data import Images
+from mantidimaging.core.utility.registrator import get_package_children, import_items
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
+
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QFormLayout  # noqa: F401
 
 
 def ensure_tuple(val):
@@ -15,9 +19,9 @@ def ensure_tuple(val):
 
 class FiltersWindowModel(object):
     parameters_from_stack: Dict
-    do_before_wrapper: Callable[[], Optional[partial]]
-    execute_wrapper: Callable[[], partial]
-    do_after_wrapper: Callable[[], Optional[partial]]
+    do_before_wrapper: Callable[['FiltersWindowModel'], partial]
+    execute_wrapper: Callable[['FiltersWindowModel'], partial]
+    do_after_wrapper: Callable[['FiltersWindowModel'], partial]
 
     def __init__(self):
         super(FiltersWindowModel, self).__init__()
@@ -57,17 +61,13 @@ class FiltersWindowModel(object):
 
         loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
-        def register_filter(filter_list, module):
-            filter_list.append((module.NAME, module._gui_register))
-
-        self.filters = []
-        register_into(self.filters, loaded_filters, register_filter)
+        self.filters = [(f.NAME, f._gui_register) for f in loaded_filters]
 
     @property
     def filter_names(self):
         return [f[0] for f in self.filters]
 
-    def filter_registration_func(self, filter_idx):
+    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Tuple]:
         """
         Gets the function used to register the GUI of a given filter.
 
@@ -92,7 +92,7 @@ class FiltersWindowModel(object):
         self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper, self.do_after_wrapper = \
             filter_specifics
 
-    def apply_filter(self, images, exec_kwargs):
+    def apply_filter(self, images: Images, exec_kwargs):
         """
         Applies the selected filter to a given image stack.
         """
@@ -136,8 +136,8 @@ class FiltersWindowModel(object):
         do_after_func(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
-        images.record_parameters_in_metadata('{}.{}'.format(execute_func.func.__module__, execute_func.func.__name__),
-                                             *execute_func.args, **all_kwargs)
+        images.record_operation('{}.{}'.format(execute_func.func.__module__, execute_func.func.__name__),
+                                *execute_func.args, **all_kwargs)
 
     def do_apply_filter(self):
         """

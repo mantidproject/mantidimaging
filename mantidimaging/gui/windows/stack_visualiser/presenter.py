@@ -2,7 +2,7 @@ from enum import IntEnum
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import Images, const
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
 
@@ -84,6 +84,7 @@ class StackVisualiserPresenter(BasePresenter):
         self.refresh_image()
 
     def create_swapped_axis_stack(self):
-        self.view.parent_create_stack(
-            Images(self.model.swap_axes(self.images.sample)),
-            f"{self.view.name}_inverted")
+        new_stack = Images(self.model.swap_axes(self.images.sample),
+                           metadata=self.images.metadata)
+        new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP)
+        self.view.parent_create_stack(new_stack, f"{self.view.name}_inverted")

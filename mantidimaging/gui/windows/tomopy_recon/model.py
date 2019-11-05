@@ -1,10 +1,12 @@
 from logging import getLogger
+from typing import Optional, Dict, Any
 
 import numpy as np
 
 from mantidimaging.core.reconstruct import tomopy_reconstruct, allowed_recon_kwargs
 from mantidimaging.core.utility.projection_angles import \
     generate as generate_projection_angles
+from mantidimaging.core.data.images import Images
 
 LOG = getLogger(__name__)
 
@@ -18,9 +20,12 @@ class TomopyReconWindowModel(object):
         self.current_algorithm = "gridrec"
         self.current_filter = "none"
         self.images_are_sinograms = True
+        self.num_iter = None
 
         self.cors = None
         self.projection_angles = None
+
+        self.recon_params: Dict[str, Any] = {}
 
     @property
     def sample(self):
@@ -28,7 +33,7 @@ class TomopyReconWindowModel(object):
             else None
 
     @property
-    def images(self):
+    def images(self) -> Optional[Images]:
         return self.stack.presenter.images if self.stack is not None else None
 
     def initial_select_data(self, stack):
@@ -57,15 +62,18 @@ class TomopyReconWindowModel(object):
         return self._recon(self.sample, self.cors, progress)
 
     def _recon(self, data, cors, progress):
-        return tomopy_reconstruct(
-            sample=data,
-            cor=cors,
-            algorithm_name=self.current_algorithm,
-            filter_name=self.current_filter,
-            proj_angles=self.projection_angles,
-            num_iter=self.num_iter,
-            progress=progress,
-            images_are_sinograms=self.images_are_sinograms)
+        # Copy of kwargs kept for recording the operation (in the presenter)
+        # If args are added, they will need to be kept and used in the same way.
+        kwargs = {"sample": data,
+                  "cor": cors,
+                  "algorithm_name": self.current_algorithm,
+                  "filter_name": self.current_filter,
+                  "proj_angles": self.projection_angles,
+                  "num_iter": self.num_iter,
+                  "progress": progress,
+                  "images_are_sinograms": self.images_are_sinograms}
+        self.recon_params = kwargs
+        return tomopy_reconstruct(**kwargs)
 
     @staticmethod
     def load_allowed_recon_kwargs():

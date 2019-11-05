@@ -12,3 +12,7 @@ COR_TILT_ROTATION_CENTRES = 'rotation_centres'
 
 OPERATION_NAME_CROP = 'crop_coords'
 CROP_REGION_OF_INTEREST = 'region_of_interest'
+
+OPERATION_NAME_TOMOPY_RECON = "tomopy_recon"
+
+OPERATION_NAME_AXES_SWAP = "axes_swap"

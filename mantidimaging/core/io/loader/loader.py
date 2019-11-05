@@ -1,6 +1,7 @@
 from logging import getLogger
 
 import numpy as np
+from mantidimaging.core.data import Images
 
 from mantidimaging.core.io.loader import img_loader, stack_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names)
@@ -164,7 +165,7 @@ def load(input_path=None,
          file_names=None,
          indices=None,
          construct_sinograms=False,
-         progress=None):
+         progress=None) -> Images:
     """
     Loads a stack, including sample, white and dark images.
 
@@ -238,7 +239,7 @@ def load(input_path=None,
     metadata_filename = metadata_filename[0] if metadata_filename else None
     if metadata_filename:
         with open(metadata_filename) as f:
-            images.metadata_load(f)
+            images.load_metadata(f)
             LOG.debug('Loaded metadata from: {}'.format(metadata_filename))
     else:
         LOG.debug('No metadata file found')

@@ -18,7 +18,7 @@ class MetadataDialog(Qt.QDialog):
 
         metadataText = Qt.QTextEdit()
         metadataText.setReadOnly(True)
-        metadataText.setText(image.properties_pretty)
+        metadataText.setText(image.metadata_pretty)
 
         buttons = Qt.QDialogButtonBox(Qt.QDialogButtonBox.Ok)
         buttons.accepted.connect(self.accept)
