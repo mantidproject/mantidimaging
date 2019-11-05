@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.gaussian import GaussianFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import gaussian
 
 
 class GaussianTest(unittest.TestCase):
@@ -32,7 +30,7 @@ class GaussianTest(unittest.TestCase):
         mode = None
         order = None
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter()._filter_func(images, size, mode, order)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -44,7 +42,7 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter()._filter_func(images, size, mode, order)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -56,7 +54,7 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter()._filter_func(images, size, mode, order)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -69,7 +67,7 @@ class GaussianTest(unittest.TestCase):
         order = 1
 
         th.switch_mp_off()
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter()._filter_func(images, size, mode, order)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
@@ -95,7 +93,7 @@ class GaussianTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter()._filter_func(images, size, mode, order)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
