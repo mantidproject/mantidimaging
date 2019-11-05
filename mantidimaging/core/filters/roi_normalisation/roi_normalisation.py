@@ -139,9 +139,8 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
         max_avg = np.max(air_sums) / avg
         min_avg = np.min(air_sums) / avg
 
-        log.info("Normalization by air region. "
-                 "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
-            avg, max_avg, min_avg))
+        log.info(f"Normalization by air region. "
+                 f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data
 
@@ -176,8 +175,7 @@ def _execute_seq(data, air_region, progress):
         max_avg = np.max(air_sums) / avg
         min_avg = np.min(air_sums) / avg
 
-        log.info("Normalization by air region. "
-                 "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
-            avg, max_avg, min_avg))
+        log.info(f"Normalization by air region. "
+                 f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data

@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.cut_off import CutOffFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import cut_off
 
 
 class CutOffTest(unittest.TestCase):
@@ -24,7 +22,7 @@ class CutOffTest(unittest.TestCase):
         threshold = 0.5
 
         previous_max = images.max()
-        result = cut_off.execute(images, threshold=threshold)
+        result = CutOffFilter()._filter_func(images, threshold=threshold)
         new_max = images.max()
 
         th.assert_not_equals(result, control)
@@ -53,7 +51,7 @@ class CutOffTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = cut_off.execute(images, threshold=0.5)
+        result = CutOffFilter()._filter_func(images, threshold=0.5)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

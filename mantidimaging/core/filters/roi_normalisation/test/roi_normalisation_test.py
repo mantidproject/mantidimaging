@@ -4,8 +4,6 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.core.filters import roi_normalisation
 from mantidimaging.core.filters.roi_normalisation import RoiNormalisationFilter
 
 
