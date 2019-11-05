@@ -13,7 +13,7 @@ from mantidimaging.gui.utility import add_property_to_form
 
 class GaussianFilter(BaseFilter):
     filter_name = "Gaussian"
-    
+
     def _filter_func(self, data, size=None, mode=None, order=None, cores=None, chunksize=None):
         """
         :param data: Input data as a 3D numpy.ndarray

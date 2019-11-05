@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.median_filter import MedianFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import median_filter
 
 
 class MedianTest(unittest.TestCase):
@@ -25,7 +23,7 @@ class MedianTest(unittest.TestCase):
         size = None
         mode = None
 
-        result = median_filter.execute(images, size, mode)
+        result = MedianFilter()._filter_func(images, size, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -36,7 +34,7 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        result = median_filter.execute(images, size, mode)
+        result = MedianFilter()._filter_func(images, size, mode)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -50,7 +48,7 @@ class MedianTest(unittest.TestCase):
         mode = 'reflect'
 
         th.switch_mp_off()
-        result = median_filter.execute(images, size, mode)
+        result = MedianFilter()._filter_func(images, size, mode)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
@@ -77,7 +75,7 @@ class MedianTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = median_filter.execute(images, size, mode)
+        result = MedianFilter()._filter_func(images, size, mode)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

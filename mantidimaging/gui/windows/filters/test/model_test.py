@@ -109,7 +109,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         do_after.assert_called_once()
 
     def test_all_expected_filter_packages_loaded(self):
-        self.assertEqual(len(self.model.filters), 8, "Expected 14 filters")
+        self.assertEqual(len(self.model.filters), 9, "Expected 14 filters")
         for filter_obj in self.model.filters:
             self.assert_(isinstance(filter_obj, BaseFilter))
         self.assertEqual(['Background Correction',
@@ -118,6 +118,7 @@ class FiltersWindowModelTest(unittest.TestCase):
                           'Crop Coordinates',
                           'Intensity Cut Off',
                           'Gaussian',
+                          'Median',
                           'Minus Log',
                           'ROI Normalisation'],
                          self.model.filter_names, "Not all filters are named correctly")
