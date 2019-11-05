@@ -3,7 +3,7 @@ from logging import getLogger
 from typing import Dict, Optional, Tuple
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QCheckBox
 
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension, get_prefix
@@ -25,6 +25,7 @@ class MWLoadDialog(Qt.QDialog):
     dark_flat_button: QPushButton
     dark_widget: QWidget
     flat_widget: QWidget
+    staged_load: QCheckBox
 
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
@@ -186,4 +187,5 @@ class MWLoadDialog(Qt.QDialog):
                 'image_format': self.image_format,
                 'parallel_load': self.parallel_load(),
                 'indices': self.indices(),
-                'custom_name': self.window_title()}
+                'custom_name': self.window_title(),
+                'staged_load': self.staged_load.isChecked()}
