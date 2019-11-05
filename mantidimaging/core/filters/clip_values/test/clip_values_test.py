@@ -3,13 +3,11 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.clip_values import ClipValuesFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
-from mantidimaging.core.filters import clip_values
 
-
-class ClipValuesTest(unittest.TestCase):
+class ClipValuesFilterTest(unittest.TestCase):
     """
     Test clip values filter.
 
@@ -17,12 +15,12 @@ class ClipValuesTest(unittest.TestCase):
     """
 
     def __init__(self, *args, **kwargs):
-        super(ClipValuesTest, self).__init__(*args, **kwargs)
+        super(ClipValuesFilterTest, self).__init__(*args, **kwargs)
 
     def test_no_execute(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = clip_values.execute(images)
+        result = ClipValuesFilter()._filter_func(images)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -30,11 +28,11 @@ class ClipValuesTest(unittest.TestCase):
     def test_execute_min_only(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = clip_values.execute(images,
-                                     clip_min=0.2,
-                                     clip_max=None,
-                                     clip_min_new_value=0.1,
-                                     clip_max_new_value=None)
+        result = ClipValuesFilter()._filter_func(images,
+                                                 clip_min=0.2,
+                                                 clip_max=None,
+                                                 clip_min_new_value=0.1,
+                                                 clip_max_new_value=None)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -46,11 +44,11 @@ class ClipValuesTest(unittest.TestCase):
     def test_execute_max_only(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = clip_values.execute(images,
-                                     clip_min=None,
-                                     clip_max=0.8,
-                                     clip_min_new_value=None,
-                                     clip_max_new_value=0.9)
+        result = ClipValuesFilter()._filter_func(images,
+                                                 clip_min=None,
+                                                 clip_max=0.8,
+                                                 clip_min_new_value=None,
+                                                 clip_max_new_value=0.9)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -62,11 +60,11 @@ class ClipValuesTest(unittest.TestCase):
     def test_execute_min_max(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = clip_values.execute(images,
-                                     clip_min=0.2,
-                                     clip_max=0.8,
-                                     clip_min_new_value=0.1,
-                                     clip_max_new_value=0.9)
+        result = ClipValuesFilter()._filter_func(images,
+                                                 clip_min=0.2,
+                                                 clip_max=0.8,
+                                                 clip_min_new_value=0.1,
+                                                 clip_max_new_value=0.9)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -79,11 +77,11 @@ class ClipValuesTest(unittest.TestCase):
     def test_execute_min_max_no_new_values(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = clip_values.execute(images,
-                                     clip_min=0.2,
-                                     clip_max=0.8,
-                                     clip_min_new_value=None,
-                                     clip_max_new_value=None)
+        result = ClipValuesFilter()._filter_func(images,
+                                                 clip_min=0.2,
+                                                 clip_max=0.8,
+                                                 clip_min_new_value=None,
+                                                 clip_max_new_value=None)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -110,11 +108,11 @@ class ClipValuesTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = clip_values.execute(images,
-                                     clip_min=0.2,
-                                     clip_max=0.8,
-                                     clip_min_new_value=0.1,
-                                     clip_max_new_value=0.9)
+        result = ClipValuesFilter()._filter_func(images,
+                                                 clip_min=0.2,
+                                                 clip_max=0.8,
+                                                 clip_min_new_value=0.1,
+                                                 clip_max_new_value=0.9)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

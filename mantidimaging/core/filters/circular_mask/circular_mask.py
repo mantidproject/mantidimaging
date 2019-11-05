@@ -7,7 +7,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
-    
+
     def _filter_func(self, data, circular_mask_ratio=None, circular_mask_value=0.,
                      progress=None):
         """
