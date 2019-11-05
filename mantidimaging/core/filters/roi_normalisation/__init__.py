@@ -1,4 +1,3 @@
-NAME = 'ROI Normalisation'
+from .roi_normalisation import RoiNormalisationFilter, _cli_register  # noqa:F401
 
-from .roi_normalisation import execute, _cli_register  # noqa:F401
-from .roi_normalisation_gui import _gui_register  # noqa:F401  # noqa:F821
+FILTER_CLASS = RoiNormalisationFilter

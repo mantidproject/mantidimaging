@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 
 class BaseFilter:
-    filter_name = "Unnamed filter"
+    filter_name = "Unnamed Filter"
     """
     The base class for filter algorithms, which should extend this class.
 
@@ -44,7 +44,7 @@ class BaseFilter:
         raise NotImplementedError(f"Required method '{function_name}' not implemented for filter '{self.__class__}'")
 
     @property
-    def params(self) -> Dict[str, str]:
+    def params(self) -> Dict[str, Any]:
         """
         Any parameters required from the StackVisualizer ie. ROI
         :return: a map of parameters names

@@ -109,12 +109,16 @@ class FiltersWindowModelTest(unittest.TestCase):
         do_after.assert_called_once()
 
     def test_all_expected_filter_packages_loaded(self):
-        self.assertEqual(len(self.model.filters), 14, "Expected 14 filters")
+        self.assertEqual(len(self.model.filters), 6, "Expected 14 filters")
         for filter_obj in self.model.filters:
             self.assert_(isinstance(filter_obj, BaseFilter))
-        self.assertEqual(
-            ["Minus Log", ],
-            self.model.filter_names)
+        self.assertEqual(['Background Correction',
+                          'Circular Mask',
+                          'Clip Values',
+                          'Crop Coordinates',
+                          'Minus Log',
+                          'ROI Normalisation'],
+                         self.model.filter_names, "Not all filters are named correctly")
 
     def test_operation_recorded_in_image_history(self):
         self.model.stack = self.sv_presenter.view
