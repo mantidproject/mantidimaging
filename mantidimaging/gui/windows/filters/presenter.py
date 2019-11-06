@@ -1,12 +1,11 @@
 from enum import Enum
 from logging import getLogger
+from typing import Callable, Any
 
 import numpy as np
-from pyqtgraph import ImageItem, PlotItem
+from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.histogram import (
-    generate_histogram_from_image)
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -138,7 +137,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self._update_preview_image(
                     before_image_data,
                     self.view.preview_image_before,
-                    self.view.preview_histogram_before,
+                    self.view.previews.set_before_histogram,
                     progress)
 
                 # Generate sub-stack and run filter
@@ -158,16 +157,19 @@ class FiltersWindowPresenter(BasePresenter):
                     self._update_preview_image(
                         filtered_image_data,
                         self.view.preview_image_after,
-                        self.view.preview_histogram_after,
+                        self.view.previews.set_after_histogram,
                         progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
 
-    def _update_preview_image(self, image_data: np.ndarray, image: ImageItem, histogram: PlotItem, progress):
+    @staticmethod
+    def _update_preview_image(image_data: np.ndarray,
+                              image: ImageItem,
+                              redraw_histogram: Callable[[Any], None],
+                              progress):
         # Generate histogram data
         progress.update(msg='Generating histogram')
-        center, hist, _ = generate_histogram_from_image(image_data)
 
         # Update image
         progress.update(msg='Updating image')
@@ -175,8 +177,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Update histogram
         progress.update(msg='Updating histogram')
-        histogram.clearPlots()
-        histogram.plot(hist)
+        redraw_histogram(image.getHistogram())
 
     def do_scroll_preview(self, offset):
         idx = self.model.preview_image_idx + offset
