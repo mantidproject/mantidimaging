@@ -3,8 +3,7 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.core.filters import outliers
+from mantidimaging.core.filters.outliers import OutliersFilter
 
 
 class OutliersTest(unittest.TestCase):
@@ -24,7 +23,7 @@ class OutliersTest(unittest.TestCase):
         threshold = None
         radius = 8
 
-        result = outliers.execute(images, threshold, radius, cores=1)
+        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -35,7 +34,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0
 
-        result = outliers.execute(images, threshold, radius, cores=1)
+        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -46,7 +45,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = -42
 
-        result = outliers.execute(images, threshold, radius, cores=1)
+        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -58,7 +57,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 42
         radius = None
 
-        result = outliers.execute(images, threshold, radius, cores=1)
+        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -69,7 +68,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0.1
 
-        result = outliers.execute(images, threshold, radius, cores=1)
+        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
 
         th.assert_not_equals(result, control)
 
@@ -82,7 +81,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 0.1
         radius = 8
 
-        result = outliers.execute(images, threshold, radius, cores=1)
+        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
