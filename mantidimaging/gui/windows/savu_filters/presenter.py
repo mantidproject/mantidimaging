@@ -154,7 +154,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
             # If there is no stack then clear the preview area
             if stack is None:
-                self.view.clear_preview_plots()
+                self.view.clear_previews()
 
             else:
                 # Add the remaining steps for calculating the preview
