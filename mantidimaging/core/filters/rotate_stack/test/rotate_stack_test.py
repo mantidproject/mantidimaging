@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.rotate_stack import RotateFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import rotate_stack
 
 
 class RotateStackTest(unittest.TestCase):
@@ -24,7 +22,7 @@ class RotateStackTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
 
         # empty params
-        result = rotate_stack.execute(images, None)
+        result = RotateFilter()._filter_func(images, None)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -44,7 +42,7 @@ class RotateStackTest(unittest.TestCase):
         rotation = 1  # once clockwise
         images[:, 0, 0] = 42  # set all images at 0,0 to 42
 
-        result = rotate_stack.execute(images, rotation)
+        result = RotateFilter()._filter_func(images, rotation)
 
         w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)
@@ -72,7 +70,7 @@ class RotateStackTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = rotate_stack.execute(images, rotation)
+        result = RotateFilter()._filter_func(images, rotation)
 
         w = result.shape[2]
 

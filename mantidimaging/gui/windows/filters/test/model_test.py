@@ -120,7 +120,8 @@ class FiltersWindowModelTest(unittest.TestCase):
                                  'Remove Outliers',
                                  'Rebin',
                                  'Ring Removal',
-                                 'ROI Normalisation']
+                                 'ROI Normalisation',
+                                 'Rotate Stack']
         self.assertEqual(len(self.model.filters),
                          len(expected_filter_names),
                          f"Expected {len(expected_filter_names)} filters")
