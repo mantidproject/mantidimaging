@@ -119,6 +119,7 @@ class FiltersWindowModelTest(unittest.TestCase):
                                  'Minus Log',
                                  'Remove Outliers',
                                  'Rebin',
+                                 'Ring Removal',
                                  'ROI Normalisation']
         self.assertEqual(len(self.model.filters),
                          len(expected_filter_names),
