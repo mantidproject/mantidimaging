@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QVBoxLayout
-from pyqtgraph import ImageItem, PlotDataItem
+from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
@@ -96,11 +96,3 @@ class FiltersWindowView(BaseMainWindowView):
     @property
     def preview_image_after(self) -> ImageItem:
         return self.previews.image_after
-
-    @property
-    def preview_histogram_before(self) -> PlotDataItem:
-        return self.previews.histogram_plot_before
-
-    @property
-    def preview_histogram_after(self) -> PlotDataItem:
-        return self.previews.histogram_plot_after
