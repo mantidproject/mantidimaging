@@ -28,23 +28,23 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image before")
         self.nextRow()
 
-        self.image_before, self.image_before_vb = self.add_image_in_vb()
+        self.image_before, self.image_before_vb = self.add_image_in_vb(name="before")
 
         self.nextRow()
         self.addLabel("Image after")
         self.nextRow()
 
-        self.image_after, self.image_after_bv = self.add_image_in_vb()
+        self.image_after, self.image_after_bv = self.add_image_in_vb(name="after")
 
         self.nextRow()
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_difference, self.image_difference_vb = self.add_image_in_vb()
+        self.image_difference, self.image_difference_vb = self.add_image_in_vb(name="difference")
 
-    def add_image_in_vb(self):
+    def add_image_in_vb(self, name=None):
         im = ImageItem()
-        vb = self.addViewBox(invertY=True, lockAspect=True)
+        vb = self.addViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
         return im, vb
 
