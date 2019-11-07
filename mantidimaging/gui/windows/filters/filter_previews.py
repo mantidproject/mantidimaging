@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
 from numpy import ndarray
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem
 
 histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
 
@@ -18,10 +18,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         super(FilterPreviews, self).__init__(parent, **kwargs)
         self.before_histogram_data = None
         self.after_histogram_data = None
-        self.combined_histograms = True
         self.histogram = None
         self.before_histogram = None
         self.after_histogram = None
+
+        self.combined_histograms = True
+        self.histogram_legend_visible = False
 
         self.addLabel("Image before")
         self.nextRow()
@@ -87,9 +89,9 @@ class FilterPreviews(GraphicsLayoutWidget):
             before_plot = self.histogram.plot(*self.before_histogram_data, pen=(0, 0, 200))
             if self.after_histogram_data is not None:
                 after_plot = self.histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
-                legend = self.histogram.addLegend()
-                legend.addItem(before_plot, "Before")
-                legend.addItem(after_plot, "After")
+                self.create_histogram_legend(before_plot, after_plot)
+                if not self.histogram_legend_visible:
+                    self.histogram.legend.hide()
         elif self.after_histogram_data is not None:
             self.histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
 
@@ -104,6 +106,11 @@ class FilterPreviews(GraphicsLayoutWidget):
         if self.after_histogram_data is not None:
             self.after_histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
 
+    def create_histogram_legend(self, before_plot, after_plot):
+        legend = self.histogram.addLegend()
+        legend.addItem(before_plot, "Before")
+        legend.addItem(after_plot, "After")
+
     def set_before_histogram(self, data: Tuple[ndarray]):
         self.before_histogram_data = data
         self.redraw_histograms()
@@ -111,3 +118,9 @@ class FilterPreviews(GraphicsLayoutWidget):
     def set_after_histogram(self, data: Tuple[ndarray]):
         self.after_histogram_data = data
         self.redraw_histograms()
+
+    @property
+    def histogram_legend(self) -> Optional[LegendItem]:
+        if self.histogram and self.histogram.legend:
+            return self.histogram.legend
+        return None
