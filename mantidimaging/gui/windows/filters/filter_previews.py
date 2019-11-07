@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem
 from numpy import ndarray
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem
 
 histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
 
@@ -9,6 +9,7 @@ histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
 class FilterPreviews(GraphicsLayoutWidget):
     image_before: ImageItem
     image_after: ImageItem
+    image_diff: ImageItem
     histogram_before: Optional[PlotItem]
     histogram_after: Optional[PlotItem]
     histogram: Optional[PlotItem]
@@ -18,28 +19,37 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.before_histogram_data = None
         self.after_histogram_data = None
         self.combined_histograms = True
-
-        self.addLabel("Image before:")
-        self.nextRow()
-
-        self.image_before = ImageItem()
-        self.image_before_vb = self.addViewBox(invertY=True)
-        self.image_before_vb.addItem(self.image_before)
         self.histogram = None
         self.before_histogram = None
         self.after_histogram = None
 
-        self.nextRow()
-        self.addLabel("Image after:")
+        self.addLabel("Image before")
         self.nextRow()
 
-        self.image_after = ImageItem()
-        self.image_after_vb = self.addViewBox(invertY=True)
-        self.image_after_vb.addItem(self.image_after)
+        self.image_before, self.image_before_vb = self.add_image_in_vb()
+
+        self.nextRow()
+        self.addLabel("Image after")
+        self.nextRow()
+
+        self.image_after, self.image_after_bv = self.add_image_in_vb()
+
+        self.nextRow()
+        self.addLabel("Image difference")
+        self.nextRow()
+
+        self.image_difference, self.image_difference_vb = self.add_image_in_vb()
+
+    def add_image_in_vb(self):
+        im = ImageItem()
+        vb = self.addViewBox(invertY=True, lockAspect=True)
+        vb.addItem(im)
+        return im, vb
 
     def clear_items(self):
         self.image_before.setImage()
         self.image_after.setImage()
+        self.image_difference.setImage()
         self.delete_histograms()
 
     # There seems to be a bug with pyqtgraph.PlotDataItem.setData not forcing a redraw.
@@ -47,6 +57,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     def redraw_histograms(self):
         self.delete_histograms()
         self.delete_histogram_labels()
+
         if self.combined_histograms:
             self.draw_combined_histogram()
         else:
@@ -68,17 +79,23 @@ class FilterPreviews(GraphicsLayoutWidget):
             self.removeItem(label)
 
     def draw_combined_histogram(self):
-        self.histogram = self.addPlot(row=1, col=1, labels=histogram_axes_labels)
+        self.histogram = self.addPlot(row=1, col=1, labels=histogram_axes_labels, lockAspect=True)
         self.addLabel("Pixel values", row=0, col=1)
-        if self.before_histogram_data is not None:
-            self.histogram.plot(*self.before_histogram_data, pen=(0, 0, 200))
 
-        if self.after_histogram_data is not None:
+        # Plot any histogram that has data, and add a legend if both exist
+        if self.before_histogram_data is not None:
+            before_plot = self.histogram.plot(*self.before_histogram_data, pen=(0, 0, 200))
+            if self.after_histogram_data is not None:
+                after_plot = self.histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
+                legend = self.histogram.addLegend()
+                legend.addItem(before_plot, "Before")
+                legend.addItem(after_plot, "After")
+        elif self.after_histogram_data is not None:
             self.histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
 
     def draw_separate_histograms(self):
-        self.before_histogram = self.addPlot(row=1, col=1, labels=histogram_axes_labels)
-        self.after_histogram = self.addPlot(row=3, col=1, labels=histogram_axes_labels)
+        self.before_histogram = self.addPlot(row=1, col=1, labels=histogram_axes_labels, lockAspect=True)
+        self.after_histogram = self.addPlot(row=3, col=1, labels=histogram_axes_labels, lockAspect=True)
         self.addLabel("Pixel values before", row=0, col=1)
         self.addLabel("Pixel values after", row=2, col=1)
         if self.before_histogram_data is not None:

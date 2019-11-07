@@ -102,3 +102,7 @@ class FiltersWindowView(BaseMainWindowView):
     @property
     def preview_image_after(self) -> ImageItem:
         return self.previews.image_after
+
+    @property
+    def preview_image_difference(self) -> ImageItem:
+        return self.previews.image_difference

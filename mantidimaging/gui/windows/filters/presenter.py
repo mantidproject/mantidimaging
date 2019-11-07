@@ -1,6 +1,6 @@
 from enum import Enum
 from logging import getLogger
-from typing import Callable, Any
+from typing import Callable, Any, Optional
 
 import numpy as np
 from pyqtgraph import ImageItem
@@ -126,7 +126,6 @@ class FiltersWindowPresenter(BasePresenter):
             # If there is no stack then clear the preview area
             if stack is None:
                 self.view.clear_previews()
-
             else:
                 # Add the remaining steps for calculating the preview
                 progress.add_estimated_steps(8)
@@ -159,6 +158,11 @@ class FiltersWindowPresenter(BasePresenter):
                         self.view.preview_image_after,
                         self.view.previews.set_after_histogram,
                         progress)
+                    self._update_preview_image(
+                        np.subtract(filtered_image_data, before_image_data),
+                        self.view.preview_image_difference,
+                        None,
+                        progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
@@ -166,7 +170,7 @@ class FiltersWindowPresenter(BasePresenter):
     @staticmethod
     def _update_preview_image(image_data: np.ndarray,
                               image: ImageItem,
-                              redraw_histogram: Callable[[Any], None],
+                              redraw_histogram: Optional[Callable[[Any], None]],
                               progress):
         # Generate histogram data
         progress.update(msg='Generating histogram')
@@ -175,9 +179,10 @@ class FiltersWindowPresenter(BasePresenter):
         progress.update(msg='Updating image')
         image.setImage(image_data)
 
-        # Update histogram
-        progress.update(msg='Updating histogram')
-        redraw_histogram(image.getHistogram())
+        if redraw_histogram:
+            # Update histogram
+            progress.update(msg='Updating histogram')
+            redraw_histogram(image.getHistogram())
 
     def do_scroll_preview(self, offset):
         idx = self.model.preview_image_idx + offset
