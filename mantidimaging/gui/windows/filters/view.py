@@ -44,6 +44,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
 
+        self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
+
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
             self.presenter.set_preview_image_index)
@@ -88,6 +90,10 @@ class FiltersWindowView(BaseMainWindowView):
 
     def clear_previews(self):
         self.previews.clear_items()
+
+    def histogram_mode_changed(self):
+        self.previews.combined_histograms = self.combinedHistograms.isChecked()
+        self.previews.redraw_histograms()
 
     @property
     def preview_image_before(self) -> ImageItem:

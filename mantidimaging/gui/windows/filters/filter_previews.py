@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem
 from numpy import ndarray
@@ -9,15 +9,15 @@ histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
 class FilterPreviews(GraphicsLayoutWidget):
     image_before: ImageItem
     image_after: ImageItem
-    histogram_before: PlotItem
-    histogram_after: PlotItem
-    histogram: PlotItem
+    histogram_before: Optional[PlotItem]
+    histogram_after: Optional[PlotItem]
+    histogram: Optional[PlotItem]
 
     def __init__(self, parent=None, **kwargs):
         super(FilterPreviews, self).__init__(parent, **kwargs)
         self.before_histogram_data = None
         self.after_histogram_data = None
-        self.combined_histograms = False
+        self.combined_histograms = True
 
         self.addLabel("Image before:")
         self.nextRow()
