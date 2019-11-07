@@ -1,9 +1,25 @@
+from collections import namedtuple
 from typing import Tuple, Optional
 
 from numpy import ndarray
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem
 
 histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
+before_pen = (0, 0, 200)
+after_pen = (0, 200, 0)
+
+Coord = namedtuple('Coord', ['row', 'col'])
+histogram_coords = {
+    "before": Coord(1, 1),
+    "after": Coord(3, 1),
+    "combined": Coord(1, 1)
+}
+
+label_coords = {
+    "before": Coord(0, 1),
+    "after": Coord(2, 1),
+    "combined": Coord(0, 1)
+}
 
 
 class FilterPreviews(GraphicsLayoutWidget):
@@ -66,8 +82,8 @@ class FilterPreviews(GraphicsLayoutWidget):
             self.draw_separate_histograms()
 
     def delete_histograms(self):
-        histogram_coords = [(1, 1), (3, 1)]
-        histograms = (self.getItem(*coord) for coord in histogram_coords)
+        coords = set(c for c in histogram_coords.values())
+        histograms = (self.getItem(*coord) for coord in coords)
         for histogram in filter(lambda h: h is not None, histograms):
             self.removeItem(histogram)
         self.histogram = None
@@ -75,36 +91,41 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.after_histogram = None
 
     def delete_histogram_labels(self):
-        label_coords = [(0, 1), (2, 1)]
-        labels = (self.getItem(*coord) for coord in label_coords)
+        coords = set(c for c in label_coords.values())
+        labels = (self.getItem(*coord) for coord in coords)
         for label in filter(lambda h: h is not None, labels):
             self.removeItem(label)
 
     def draw_combined_histogram(self):
-        self.histogram = self.addPlot(row=1, col=1, labels=histogram_axes_labels, lockAspect=True)
+        self.histogram = self.addPlot(row=histogram_coords["combined"].row, col=histogram_coords["combined"].col,
+                                      labels=histogram_axes_labels, lockAspect=True)
         self.addLabel("Pixel values", row=0, col=1)
 
         # Plot any histogram that has data, and add a legend if both exist
         if self.before_histogram_data is not None:
-            before_plot = self.histogram.plot(*self.before_histogram_data, pen=(0, 0, 200))
+            before_plot = self.histogram.plot(*self.before_histogram_data, pen=before_pen)
             if self.after_histogram_data is not None:
-                after_plot = self.histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
+                after_plot = self.histogram.plot(*self.after_histogram_data, pen=after_pen)
                 self.create_histogram_legend(before_plot, after_plot)
                 if not self.histogram_legend_visible:
                     self.histogram.legend.hide()
         elif self.after_histogram_data is not None:
-            self.histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
+            self.histogram.plot(*self.after_histogram_data, pen=after_pen)
 
     def draw_separate_histograms(self):
-        self.before_histogram = self.addPlot(row=1, col=1, labels=histogram_axes_labels, lockAspect=True)
-        self.after_histogram = self.addPlot(row=3, col=1, labels=histogram_axes_labels, lockAspect=True)
-        self.addLabel("Pixel values before", row=0, col=1)
-        self.addLabel("Pixel values after", row=2, col=1)
+        hc = histogram_coords
+        self.before_histogram = self.addPlot(row=hc["before"].row, col=hc["before"].col,
+                                             labels=histogram_axes_labels, lockAspect=True)
+        self.after_histogram = self.addPlot(row=hc["after"].row, col=hc["after"].col,
+                                            labels=histogram_axes_labels, lockAspect=True)
+        lc = label_coords
+        self.addLabel("Pixel values before", row=lc["before"].row, col=lc["before"].col)
+        self.addLabel("Pixel values after", row=lc["after"].row, col=lc["after"].col)
         if self.before_histogram_data is not None:
-            self.before_histogram.plot(*self.before_histogram_data, pen=(0, 0, 200))
+            self.before_histogram.plot(*self.before_histogram_data, pen=before_pen)
 
         if self.after_histogram_data is not None:
-            self.after_histogram.plot(*self.after_histogram_data, pen=(0, 200, 0))
+            self.after_histogram.plot(*self.after_histogram_data, pen=after_pen)
 
     def create_histogram_legend(self, before_plot, after_plot):
         legend = self.histogram.addLegend()
