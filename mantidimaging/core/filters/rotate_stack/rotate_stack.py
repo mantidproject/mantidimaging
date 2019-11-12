@@ -67,7 +67,7 @@ class RotateFilter(BaseFilter):
         }
 
     def execute_wrapper(self, rotation_count=None):
-        return partial(self._filter_func, rotation_count=rotation_count.value())
+        return partial(self._filter_func, rotation=rotation_count.value())
 
 
 def _cli_register(parser):
