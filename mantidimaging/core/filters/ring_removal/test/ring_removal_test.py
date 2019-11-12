@@ -23,7 +23,7 @@ class RingRemovalTest(unittest.TestCase):
         # invalid threshold
         run_ring_removal = False
 
-        result = RingRemovalFilter()._filter_func(images, run_ring_removal, cores=1)
+        result = RingRemovalFilter._filter_func(images, run_ring_removal, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -37,7 +37,7 @@ class RingRemovalTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = RingRemovalFilter()._filter_func(images, run_ring_removal, cores=1)
+        result = RingRemovalFilter._filter_func(images, run_ring_removal, cores=1)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -52,7 +52,7 @@ class RingRemovalTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         images, _ = th.gen_img_shared_array_and_copy()
-        RingRemovalFilter().execute_wrapper()(images)
+        RingRemovalFilter.execute_wrapper()(images)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
-    def _filter_func(self, data, region_of_interest=None, flat=None, dark=None, progress=None):
+    @staticmethod
+    def _filter_func(data, region_of_interest=None, flat=None, dark=None, progress=None):
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -45,7 +46,8 @@ class CropCoordinatesFilter(BaseFilter):
                    execute_single(flat, region_of_interest, progress), \
                    execute_single(dark, region_of_interest, progress)
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         add_property_to_form(
@@ -53,14 +55,15 @@ class CropCoordinatesFilter(BaseFilter):
 
         return {}
 
-    @property
-    def params(self) -> Dict[str, Any]:
+    @staticmethod
+    def params() -> Dict[str, Any]:
         return {
             'region_of_interest': SVParameters.ROI
         }
 
-    def execute_wrapper(self, **kwargs) -> partial:
-        return partial(self._filter_func)
+    @staticmethod
+    def execute_wrapper(**kwargs) -> partial:
+        return partial(CropCoordinatesFilter._filter_func)
 
 
 def _cli_register(parser):

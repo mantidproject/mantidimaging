@@ -23,7 +23,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         # empty params
-        result = BackgroundCorrectionFilter()._filter_func(images)
+        result = BackgroundCorrectionFilter._filter_func(images)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -33,7 +33,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         flat = th.gen_img_shared_array()[0]
 
         # no dark
-        result = BackgroundCorrectionFilter()._filter_func(images, flat[0])
+        result = BackgroundCorrectionFilter._filter_func(images, flat[0])
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -43,7 +43,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # no flat
-        result = BackgroundCorrectionFilter()._filter_func(images, None, dark[0])
+        result = BackgroundCorrectionFilter._filter_func(images, None, dark[0])
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -54,7 +54,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad flat
-        npt.assert_raises(ValueError, BackgroundCorrectionFilter()._filter_func, images,
+        npt.assert_raises(ValueError, BackgroundCorrectionFilter._filter_func, images,
                           flat[0], dark)
 
     def test_not__filter_funcd_bad_dark(self):
@@ -63,7 +63,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad dark
-        npt.assert_raises(ValueError, BackgroundCorrectionFilter()._filter_func, images,
+        npt.assert_raises(ValueError, BackgroundCorrectionFilter._filter_func, images,
                           flat, dark[0])
 
     def test_real_result(self):
@@ -84,7 +84,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         expected = np.full(sample.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = BackgroundCorrectionFilter()._filter_func(sample, flat, dark, clip_max=20)
+        result = BackgroundCorrectionFilter._filter_func(sample, flat, dark, clip_max=20)
 
         npt.assert_almost_equal(result, expected, 7)
         npt.assert_almost_equal(sample, expected, 7)
@@ -105,7 +105,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # the resulting values from the calculation are above 3,
         # but clip_max should make them all equal to 3
-        result = BackgroundCorrectionFilter()._filter_func(sample, flat, dark, clip_max=3)
+        result = BackgroundCorrectionFilter._filter_func(sample, flat, dark, clip_max=3)
 
         npt.assert_equal(result, expected)
         npt.assert_equal(sample, expected)
@@ -123,7 +123,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # the resulting values from above are below 300,
         # but clip min should make all values below 300, equal to 300
-        result = BackgroundCorrectionFilter()._filter_func(sample, flat, dark, clip_min=300)
+        result = BackgroundCorrectionFilter._filter_func(sample, flat, dark, clip_min=300)
 
         npt.assert_equal(result, expected)
         npt.assert_equal(sample, expected)
@@ -136,7 +136,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         test_patch.return_value = None
-        execute_func = BackgroundCorrectionFilter().execute_wrapper(None, None)
+        execute_func = BackgroundCorrectionFilter.execute_wrapper(None, None)
 
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)

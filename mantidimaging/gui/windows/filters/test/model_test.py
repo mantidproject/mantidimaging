@@ -81,18 +81,14 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_do_apply_filter_with_roi(self):
         self.model.stack = self.sv_presenter.view
 
-        with mock.patch(
-                'mantidimaging.core.filters.base_filter.BaseFilter.params',
-                new_callable=mock.PropertyMock) as mock_params:
-            mock_params.return_value = {
-                'roi': SVParameters.ROI
-            }
+        execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
+        self.setup_mocks(execute)
+        self.model.selected_filter.params = lambda: {'roi': SVParameters.ROI}
+        self.model.do_apply_filter()
+        # Reset state, as the same model is used for all tests
+        self.model.selected_filter.params = lambda: {}
 
-            execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
-            self.setup_mocks(execute)
-            self.model.do_apply_filter()
-
-            execute.assert_called_once()
+        execute.assert_called_once()
 
     def test_do_apply_filter_pre_post_processing(self):
         self.model.stack = self.sv_presenter.view
@@ -126,8 +122,8 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertEqual(len(self.model.filters),
                          len(expected_filter_names),
                          f"Expected {len(expected_filter_names)} filters")
-        for filter_obj in self.model.filters:
-            self.assert_(isinstance(filter_obj, BaseFilter))
+        for filter_class in self.model.filters:
+            self.assert_(isinstance(filter_class(), BaseFilter))
         self.assertEqual(expected_filter_names,
                          self.model.filter_names, "Not all filters are named correctly")
 

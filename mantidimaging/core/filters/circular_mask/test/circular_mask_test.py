@@ -26,22 +26,22 @@ class CircularMaskTest(unittest.TestCase):
 
         ratio = 0
         mask_val = 0.
-        result = CircularMaskFilter()._filter_func(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
         ratio = 1
-        result = CircularMaskFilter()._filter_func(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
         ratio = -1
-        result = CircularMaskFilter()._filter_func(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
         ratio = None
-        result = CircularMaskFilter()._filter_func(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
@@ -50,7 +50,7 @@ class CircularMaskTest(unittest.TestCase):
 
         ratio = 0.001
 
-        result = CircularMaskFilter()._filter_func(images, ratio)
+        result = CircularMaskFilter._filter_func(images, ratio)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -59,7 +59,7 @@ class CircularMaskTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
         ratio = 0.994
 
-        result = CircularMaskFilter()._filter_func(images, ratio)
+        result = CircularMaskFilter._filter_func(images, ratio)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -84,7 +84,7 @@ class CircularMaskTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = CircularMaskFilter()._filter_func(images, ratio)
+        result = CircularMaskFilter._filter_func(images, ratio)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -102,7 +102,7 @@ class CircularMaskTest(unittest.TestCase):
         radius_field.value = mock.Mock(return_value=0)
         value_field = mock.Mock()
         value_field.value = mock.Mock(return_value=0)
-        execute_func = CircularMaskFilter().execute_wrapper(radius_field, value_field)
+        execute_func = CircularMaskFilter.execute_wrapper(radius_field, value_field)
 
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)

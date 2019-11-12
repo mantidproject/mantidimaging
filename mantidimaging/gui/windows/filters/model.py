@@ -57,7 +57,7 @@ class FiltersWindowModel(object):
         loaded_filters = import_items(filter_package_names, required_attributes=['FILTER_CLASS'])
         loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
-        return [f.FILTER_CLASS() for f in loaded_filters]
+        return [f.FILTER_CLASS for f in loaded_filters]
 
     @property
     def filter_names(self):
@@ -83,7 +83,7 @@ class FiltersWindowModel(object):
 
     @property
     def params_needed_from_stack(self):
-        return self.selected_filter.params
+        return self.selected_filter.params()
 
     def setup_filter(self, filter_idx, filter_widget_kwargs):
         self.selected_filter = self.filters[filter_idx]

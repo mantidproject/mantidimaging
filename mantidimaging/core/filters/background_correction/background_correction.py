@@ -24,8 +24,8 @@ MAXIMUM_PIXEL_VALUE = 1e9
 class BackgroundCorrectionFilter(BaseFilter):
     filter_name = 'Background Correction'
 
-    def _filter_func(self,
-                     data,
+    @staticmethod
+    def _filter_func(data,
                      flat=None,
                      dark=None,
                      clip_min=MINIMUM_PIXEL_VALUE,
@@ -63,7 +63,8 @@ class BackgroundCorrectionFilter(BaseFilter):
         h.check_data_stack(data)
         return data
 
-    def register_gui(self, form, on_change) -> Dict[str, Any]:
+    @staticmethod
+    def register_gui(form, on_change) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
         flat_path_widget, _ = add_property_to_form("Flat", "file", form=form, on_change=on_change)
@@ -74,11 +75,12 @@ class BackgroundCorrectionFilter(BaseFilter):
             'dark_path_widget': dark_path_widget,
         }
 
-    def execute_wrapper(self, flat_path_widget=None, dark_path_widget=None):
+    @staticmethod
+    def execute_wrapper(flat_path_widget=None, dark_path_widget=None):
         flat = get_average_image(flat_path_widget)
         dark = get_average_image(dark_path_widget)
 
-        return partial(self._filter_func, flat=flat, dark=dark)
+        return partial(BackgroundCorrectionFilter._filter_func, flat=flat, dark=dark)
 
     @staticmethod
     def do_before_wrapper() -> partial:

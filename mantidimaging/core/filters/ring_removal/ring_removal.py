@@ -9,8 +9,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class RingRemovalFilter(BaseFilter):
     filter_name = "Ring Removal"
 
-    def _filter_func(self,
-                     data,
+    @staticmethod
+    def _filter_func(data,
                      run_ring_removal=False,
                      center_x=None,
                      center_y=None,
@@ -65,7 +65,8 @@ class RingRemovalFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         range1 = (0, 1000000)
@@ -109,14 +110,15 @@ class RingRemovalFilter(BaseFilter):
             "rwidth": rwidth,
         }
 
-    def execute_wrapper(self, x_field=None,
+    @staticmethod
+    def execute_wrapper(x_field=None,
                         y_field=None,
                         thresh=None,
                         thresh_max=None,
                         thresh_min=None,
                         theta=None,
                         rwidth=None):
-        return partial(self._filter_func,
+        return partial(RingRemovalFilter._filter_func,
                        run_ring_removal=True,
                        center_x=x_field,
                        center_y=y_field,

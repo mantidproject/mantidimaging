@@ -8,8 +8,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
 
-    def _filter_func(self, data, circular_mask_ratio=None, circular_mask_value=0.,
-                     progress=None):
+    @staticmethod
+    def _filter_func(data, circular_mask_ratio=None, circular_mask_value=0., progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
@@ -37,7 +37,8 @@ class CircularMaskFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         _, radius_field = add_property_to_form(
@@ -53,8 +54,9 @@ class CircularMaskFilter(BaseFilter):
             'value_field': value_field
         }
 
-    def execute_wrapper(self, radius_field=None, value_field=None):
-        return partial(self._filter_func,
+    @staticmethod
+    def execute_wrapper(radius_field=None, value_field=None):
+        return partial(CircularMaskFilter._filter_func,
                        circular_mask_ratio=radius_field.value(),
                        circular_mask_value=value_field.value())
 

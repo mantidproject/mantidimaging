@@ -9,7 +9,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class CutOffFilter(BaseFilter):
     filter_name = 'Intensity Cut Off'
 
-    def _filter_func(self, data, threshold=None, progress=None):
+    @staticmethod
+    def _filter_func(data, threshold=None, progress=None):
         """
         Cut off values above threshold relative to the max pixels.
 
@@ -34,7 +35,8 @@ class CutOffFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         _, threshold_field = add_property_to_form(
@@ -46,8 +48,9 @@ class CutOffFilter(BaseFilter):
             'threshold_field': threshold_field
         }
 
-    def execute_wrapper(self, threshold_field):
-        return partial(self._filter_func, threshold=threshold_field.value())
+    @staticmethod
+    def execute_wrapper(threshold_field):
+        return partial(CutOffFilter._filter_func, threshold=threshold_field.value())
 
 
 def _cli_register(parser):

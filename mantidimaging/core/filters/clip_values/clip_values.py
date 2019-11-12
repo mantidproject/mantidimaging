@@ -7,8 +7,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class ClipValuesFilter(BaseFilter):
     filter_name = "Clip Values"
 
-    def _filter_func(self,
-                     data,
+    @staticmethod
+    def _filter_func(data,
                      clip_min=None,
                      clip_max=None,
                      clip_min_new_value=None,
@@ -60,7 +60,8 @@ class ClipValuesFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         value_range = (-10000000, 10000000)
@@ -110,8 +111,8 @@ class ClipValuesFilter(BaseFilter):
             "clip_max_new_value_field": clip_max_new_value_field
         }
 
-    def execute_wrapper(self,
-                        clip_min_field=None,
+    @staticmethod
+    def execute_wrapper(clip_min_field=None,
                         clip_max_field=None,
                         clip_min_new_value_field=None,
                         clip_max_new_value_field=None):
@@ -119,7 +120,7 @@ class ClipValuesFilter(BaseFilter):
         clip_max = clip_max_field.value()
         clip_min_new_value = clip_min_new_value_field.value()
         clip_max_new_value = clip_max_new_value_field.value()
-        return partial(self._filter_func,
+        return partial(ClipValuesFilter._filter_func,
                        clip_min=clip_min,
                        clip_max=clip_max,
                        clip_min_new_value=clip_min_new_value,

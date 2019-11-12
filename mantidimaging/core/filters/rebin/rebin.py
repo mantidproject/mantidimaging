@@ -13,7 +13,8 @@ from mantidimaging.gui.utility import add_property_to_form
 class RebinFilter(BaseFilter):
     filter_name = "Rebin"
 
-    def _filter_func(self, data, rebin_param=None, mode=None, cores=None, chunksize=None,
+    @staticmethod
+    def _filter_func(data, rebin_param=None, mode=None, cores=None, chunksize=None,
                      progress=None):
         """
         :param data: Sample data which is to be processed. Expected in radiograms
@@ -47,7 +48,8 @@ class RebinFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         # Rebin by uniform factor options
         _, factor = add_property_to_form(
             'Factor', 'float', 0.5, (0.0, 1.0),
@@ -111,7 +113,8 @@ class RebinFilter(BaseFilter):
             "mode_field": mode_field,
         }
 
-    def execute_wrapper(self, rebin_to_dimensions_radio=None, shape_x=None, shape_y=None,
+    @staticmethod
+    def execute_wrapper(rebin_to_dimensions_radio=None, shape_x=None, shape_y=None,
                         rebin_by_factor_radio=None, factor=None, mode_field=None):
         if rebin_to_dimensions_radio.isChecked():
             params = (shape_x.value(), shape_y.value())
@@ -120,7 +123,7 @@ class RebinFilter(BaseFilter):
         else:
             raise ValueError('Unknown bin dimension mode')
 
-        return partial(self._filter_func, mode=mode_field.currentText(), rebin_param=params)
+        return partial(RebinFilter._filter_func, mode=mode_field.currentText(), rebin_param=params)
 
 
 def _cli_register(parser):

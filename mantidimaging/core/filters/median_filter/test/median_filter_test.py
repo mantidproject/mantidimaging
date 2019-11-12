@@ -24,7 +24,7 @@ class MedianTest(unittest.TestCase):
         size = None
         mode = None
 
-        result = MedianFilter()._filter_func(images, size, mode)
+        result = MedianFilter._filter_func(images, size, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -35,7 +35,7 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        result = MedianFilter()._filter_func(images, size, mode)
+        result = MedianFilter._filter_func(images, size, mode)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -49,7 +49,7 @@ class MedianTest(unittest.TestCase):
         mode = 'reflect'
 
         th.switch_mp_off()
-        result = MedianFilter()._filter_func(images, size, mode)
+        result = MedianFilter._filter_func(images, size, mode)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
@@ -76,7 +76,7 @@ class MedianTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = MedianFilter()._filter_func(images, size, mode)
+        result = MedianFilter._filter_func(images, size, mode)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -94,7 +94,7 @@ class MedianTest(unittest.TestCase):
         size_field.value = mock.Mock(return_value=0)
         mode_field = mock.Mock()
         mode_field.currentText = mock.Mock(return_value=0)
-        execute_func = MedianFilter().execute_wrapper(size_field, mode_field)
+        execute_func = MedianFilter.execute_wrapper(size_field, mode_field)
 
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)

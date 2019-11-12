@@ -12,7 +12,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class RotateFilter(BaseFilter):
     filter_name = "Rotate Stack"
 
-    def _filter_func(self, data, rotation=None, flat=None, dark=None, cores=None, chunksize=None,
+    @staticmethod
+    def _filter_func(data, rotation=None, flat=None, dark=None, cores=None, chunksize=None,
                      progress=None):
         """
         Rotates a stack (sample, flat and dark images).
@@ -55,7 +56,8 @@ class RotateFilter(BaseFilter):
         else:
             return data, flat, dark
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         _, rotation_count = add_property_to_form(
@@ -66,8 +68,9 @@ class RotateFilter(BaseFilter):
             "rotation_count": rotation_count
         }
 
-    def execute_wrapper(self, rotation_count=None):
-        return partial(self._filter_func, rotation=rotation_count.value())
+    @staticmethod
+    def execute_wrapper(rotation_count=None):
+        return partial(RotateFilter._filter_func, rotation=rotation_count.value())
 
 
 def _cli_register(parser):

@@ -24,7 +24,7 @@ class OutliersTest(unittest.TestCase):
         threshold = None
         radius = 8
 
-        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -35,7 +35,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0
 
-        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -46,7 +46,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = -42
 
-        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -58,7 +58,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 42
         radius = None
 
-        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -69,7 +69,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0.1
 
-        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
 
         th.assert_not_equals(result, control)
 
@@ -82,7 +82,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 0.1
         radius = 8
 
-        result = OutliersFilter()._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
 
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 
@@ -99,7 +99,7 @@ class OutliersTest(unittest.TestCase):
         size_field.value = mock.Mock(return_value=0)
         mode_field = mock.Mock()
         mode_field.currentText = mock.Mock(return_value=0)
-        execute_func = OutliersFilter().execute_wrapper(diff_field, size_field, mode_field)
+        execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field)
 
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)

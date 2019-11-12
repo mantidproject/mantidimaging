@@ -16,7 +16,8 @@ from mantidimaging.gui.windows.stack_visualiser import SVParameters
 class RoiNormalisationFilter(BaseFilter):
     filter_name = "ROI Normalisation"
 
-    def _filter_func(self, data, air_region=None, cores=None, chunksize=None, progress=None):
+    @staticmethod
+    def _filter_func(data, air_region=None, cores=None, chunksize=None, progress=None):
         """
         Normalise by beam intensity.
 
@@ -52,15 +53,17 @@ class RoiNormalisationFilter(BaseFilter):
         h.check_data_stack(data)
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         add_property_to_form("Select ROI on stack visualiser.", "label", form=form, on_change=on_change)
         return {}
 
-    def execute_wrapper(self):
-        return partial(self._filter_func)
+    @staticmethod
+    def execute_wrapper():
+        return partial(RoiNormalisationFilter._filter_func)
 
-    @property
-    def params(self) -> Dict[str, Any]:
+    @staticmethod
+    def params() -> Dict[str, Any]:
         return {"air_region": SVParameters.ROI}
 
 

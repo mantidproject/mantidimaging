@@ -14,7 +14,8 @@ from mantidimaging.gui.utility import add_property_to_form
 class GaussianFilter(BaseFilter):
     filter_name = "Gaussian"
 
-    def _filter_func(self, data, size=None, mode=None, order=None, cores=None, chunksize=None):
+    @staticmethod
+    def _filter_func(data, size=None, mode=None, order=None, cores=None, chunksize=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -43,7 +44,8 @@ class GaussianFilter(BaseFilter):
         h.check_data_stack(data)
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         _, size_field = add_property_to_form(
             'Kernel Size', 'int', 3, (0, 1000),
             form=form, on_change=on_change)
@@ -62,8 +64,9 @@ class GaussianFilter(BaseFilter):
             'mode_field': mode_field
         }
 
-    def execute_wrapper(self, size_field=None, order_field=None, mode_field=None):
-        return partial(self._filter_func,
+    @staticmethod
+    def execute_wrapper(size_field=None, order_field=None, mode_field=None):
+        return partial(GaussianFilter._filter_func,
                        size=size_field.value(),
                        mode=mode_field.currentText(),
                        order=order_field.value())

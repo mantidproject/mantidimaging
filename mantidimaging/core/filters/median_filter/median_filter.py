@@ -18,7 +18,8 @@ if TYPE_CHECKING:
 class MedianFilter(BaseFilter):
     filter_name = "Median"
 
-    def _filter_func(self, data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
+    @staticmethod
+    def _filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -41,7 +42,8 @@ class MedianFilter(BaseFilter):
         h.check_data_stack(data)
         return data
 
-    def register_gui(self, form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
+    @staticmethod
+    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
         _, size_field = add_property_to_form(
             'Kernel Size', 'int', 3, (0, 1000),
             form=form, on_change=on_change)
@@ -55,8 +57,9 @@ class MedianFilter(BaseFilter):
             'mode_field': mode_field
         }
 
-    def execute_wrapper(self, size_field=None, mode_field=None):
-        return partial(self._filter_func,
+    @staticmethod
+    def execute_wrapper(size_field=None, mode_field=None):
+        return partial(MedianFilter._filter_func,
                        size=size_field.value(),
                        mode=mode_field.currentText())
 

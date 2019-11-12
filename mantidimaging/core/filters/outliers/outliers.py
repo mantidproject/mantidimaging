@@ -16,7 +16,8 @@ _default_mode = OUTLIERS_BRIGHT
 class OutliersFilter(BaseFilter):
     filter_name = "Remove Outliers"
 
-    def _filter_func(self, data, diff=None, radius=_default_radius, mode=_default_mode,
+    @staticmethod
+    def _filter_func(data, diff=None, radius=_default_radius, mode=_default_mode,
                      cores=None, progress=None):
         """
         Requires tomopy to be available.
@@ -54,7 +55,8 @@ class OutliersFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         _, diff_field = add_property_to_form(
             'Difference', 'int', 1, (-1000000, 1000000),
             form=form, on_change=on_change)
@@ -73,8 +75,9 @@ class OutliersFilter(BaseFilter):
             'mode_field': mode_field
         }
 
-    def execute_wrapper(self, diff_field=None, size_field=None, mode_field=None):
-        return partial(self._filter_func,
+    @staticmethod
+    def execute_wrapper(diff_field=None, size_field=None, mode_field=None):
+        return partial(OutliersFilter._filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
                        mode=mode_field.currentText())

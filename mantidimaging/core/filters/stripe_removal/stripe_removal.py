@@ -8,7 +8,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class StripeRemovalFilter(BaseFilter):
     filter_name = "Stripe Removal"
 
-    def _filter_func(self, data, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
+    @staticmethod
+    def _filter_func(data, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
         """
         Execute stripe removal filters.
 
@@ -72,7 +73,8 @@ class StripeRemovalFilter(BaseFilter):
 
         return data
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
         # Filter type option
@@ -138,7 +140,8 @@ class StripeRemovalFilter(BaseFilter):
             "value_sf_size": value_sf_size,
         }
 
-    def execute_wrapper(self, value_filter_type=None, value_wf_level=None, value_wf_wname=None, value_wf_sigma=None,
+    @staticmethod
+    def execute_wrapper(value_filter_type=None, value_wf_level=None, value_wf_wname=None, value_wf_sigma=None,
                         value_ti_nblock=None, value_ti_alpha=None, value_sf_size=None):
         filter_type = value_filter_type.currentText()
         wf = None
@@ -156,7 +159,7 @@ class StripeRemovalFilter(BaseFilter):
         elif filter_type == 'smoothing-filter':
             sf = {'size': value_sf_size.value()}
 
-        return partial(self._filter_func, wf=wf, ti=ti, sf=sf)
+        return partial(StripeRemovalFilter._filter_func, wf=wf, ti=ti, sf=sf)
 
 
 def _cli_register(parser):

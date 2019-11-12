@@ -23,7 +23,7 @@ class CutOffTest(unittest.TestCase):
         threshold = 0.5
 
         previous_max = images.max()
-        result = CutOffFilter()._filter_func(images, threshold=threshold)
+        result = CutOffFilter._filter_func(images, threshold=threshold)
         new_max = images.max()
 
         th.assert_not_equals(result, control)
@@ -52,7 +52,7 @@ class CutOffTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = CutOffFilter()._filter_func(images, threshold=0.5)
+        result = CutOffFilter._filter_func(images, threshold=0.5)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -68,7 +68,7 @@ class CutOffTest(unittest.TestCase):
         """
         threshold_field = mock.Mock()
         threshold_field.value = mock.Mock(return_value=0)
-        execute_func = CutOffFilter().execute_wrapper(threshold_field)
+        execute_func = CutOffFilter.execute_wrapper(threshold_field)
 
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)

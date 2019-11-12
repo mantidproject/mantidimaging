@@ -8,7 +8,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 class MinusLogFilter(BaseFilter):
     filter_name = "Minus Log"
 
-    def _filter_func(self, data, minus_log=True, progress=None):
+    @staticmethod
+    def _filter_func(data, minus_log=True, progress=None):
         """
         This filter should be used on transmission images (background corrected
         images).
@@ -38,10 +39,12 @@ class MinusLogFilter(BaseFilter):
 
         return data
 
-    def execute_wrapper(self, **kwargs):
-        return partial(self._filter_func, minus_log=True)
+    @staticmethod
+    def execute_wrapper(**kwargs):
+        return partial(MinusLogFilter._filter_func, minus_log=True)
 
-    def register_gui(self, form, on_change):
+    @staticmethod
+    def register_gui(form, on_change):
         # Not much here, this filter does one thing and one thing only.
         return {}
 
