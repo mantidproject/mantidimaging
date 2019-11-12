@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -60,6 +61,19 @@ class CutOffTest(unittest.TestCase):
         th.assert_not_equals(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        threshold_field = mock.Mock()
+        threshold_field.value = mock.Mock(return_value=0)
+        execute_func = CutOffFilter().execute_wrapper(threshold_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(threshold_field.value.call_count, 1)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -136,6 +137,19 @@ class StripeRemovalTest(unittest.TestCase):
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        value_filter_type = mock.Mock()
+        value_filter_type.currentText = mock.Mock(return_value="type")
+        execute_func = StripeRemovalFilter().execute_wrapper(value_filter_type)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(value_filter_type.currentText.call_count, 1)
 
 
 if __name__ == '__main__':

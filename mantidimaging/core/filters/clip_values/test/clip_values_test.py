@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -121,6 +122,22 @@ class ClipValuesFilterTest(unittest.TestCase):
         th.assert_not_equals(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        # All widget arguments can use identical mocks for this test
+        mocks = [mock.Mock() for _ in range(4)]
+        for mock_widget in mocks:
+            mock_widget.value = mock.Mock(return_value=0)
+        execute_func = ClipValuesFilter().execute_wrapper(*mocks)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        for mock_widget in mocks:
+            self.assertEqual(mock_widget.value.call_count, 1)
 
 
 if __name__ == '__main__':

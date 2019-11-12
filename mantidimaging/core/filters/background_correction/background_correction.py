@@ -75,21 +75,6 @@ class BackgroundCorrectionFilter(BaseFilter):
         }
 
     def execute_wrapper(self, flat_path_widget=None, dark_path_widget=None):
-        log = getLogger(__name__)
-
-        def get_average_image(text_widget: 'QLineEdit'):
-            text = str(text_widget.text())
-            prefix = io.utility.get_prefix(text)
-            extension = io.utility.get_file_extension(text)
-            directory = os.path.dirname(text)
-
-            log.debug(f"Loading image from widget text: '{text}', directory: '{directory}', "
-                      f"prefix: '{prefix}', extension: '{extension}'")
-            images_flat_only = io.loader.load(directory, in_prefix=prefix, in_format=extension)
-            # this will be put in the 'sample' attribute, because we load a single
-            # volume
-            return images_flat_only.sample.mean(axis=0)
-
         flat = get_average_image(flat_path_widget)
         dark = get_average_image(dark_path_widget)
 
@@ -211,3 +196,19 @@ def _execute_seq(data,
         np.clip(data, clip_min, clip_max, out=data)
 
     return data
+
+
+def get_average_image(text_widget: 'QLineEdit'):
+    log = getLogger(__name__)
+
+    text = str(text_widget.text())
+    prefix = io.utility.get_prefix(text)
+    extension = io.utility.get_file_extension(text)
+    directory = os.path.dirname(text)
+
+    log.debug(f"Loading image from widget text: '{text}', directory: '{directory}', "
+              f"prefix: '{prefix}', extension: '{extension}'")
+    images_flat_only = io.loader.load(directory, in_prefix=prefix, in_format=extension)
+    # this will be put in the 'sample' attribute, because we load a single
+    # volume
+    return images_flat_only.sample.mean(axis=0)

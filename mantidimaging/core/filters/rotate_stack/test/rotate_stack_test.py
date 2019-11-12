@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -82,6 +83,18 @@ class RotateStackTest(unittest.TestCase):
 
         npt.assert_equal(result, images)
 
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        rotation_count = mock.Mock()
+        rotation_count.value = mock.Mock(return_value=0)
+        execute_func = RotateFilter().execute_wrapper(rotation_count)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(rotation_count.value.call_count, 1)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -139,6 +140,13 @@ class CropCoordsTest(unittest.TestCase):
 
         # TODO: in-place data test
         # npt.assert_equal(images.shape, expected_shape)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images, _ = th.gen_img_shared_array_and_copy()
+        CropCoordinatesFilter().execute_wrapper()(images)
 
 
 if __name__ == '__main__':

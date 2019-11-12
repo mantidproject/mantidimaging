@@ -47,6 +47,13 @@ class RingRemovalTest(unittest.TestCase):
 
         npt.assert_equal(result, images)
 
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images, _ = th.gen_img_shared_array_and_copy()
+        RingRemovalFilter().execute_wrapper()(images)
+
 
 if __name__ == '__main__':
     unittest.main()

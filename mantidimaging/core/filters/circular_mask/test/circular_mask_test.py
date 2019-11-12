@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -92,6 +93,22 @@ class CircularMaskTest(unittest.TestCase):
         th.assert_not_equals(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        radius_field = mock.Mock()
+        radius_field.value = mock.Mock(return_value=0)
+        value_field = mock.Mock()
+        value_field.value = mock.Mock(return_value=0)
+        execute_func = CircularMaskFilter().execute_wrapper(radius_field, value_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(radius_field.value.call_count, 1)
+        self.assertEqual(value_field.value.call_count, 1)
 
 
 if __name__ == '__main__':

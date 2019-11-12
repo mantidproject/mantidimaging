@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
@@ -100,6 +101,25 @@ class GaussianTest(unittest.TestCase):
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        size_field = mock.Mock()
+        size_field.value = mock.Mock(return_value=0)
+        mode_field = mock.Mock()
+        mode_field.currentText = mock.Mock(return_value=0)
+        order_field = mock.Mock()
+        order_field.value = mock.Mock(return_value=0)
+        execute_func = GaussianFilter().execute_wrapper(size_field, order_field, mode_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(size_field.value.call_count, 1)
+        self.assertEqual(mode_field.currentText.call_count, 1)
+        self.assertEqual(order_field.value.call_count, 1)
 
 
 if __name__ == '__main__':
