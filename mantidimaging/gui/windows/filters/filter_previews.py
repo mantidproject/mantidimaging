@@ -10,15 +10,15 @@ after_pen = (0, 200, 0)
 
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = {
-    "before": Coord(1, 1),
+    "before": Coord(3, 0),
     "after": Coord(3, 1),
-    "combined": Coord(1, 1)
+    "combined": Coord(3, 0)
 }
 
 label_coords = {
-    "before": Coord(0, 1),
+    "before": Coord(2, 0),
     "after": Coord(2, 1),
-    "combined": Coord(0, 1)
+    "combined": Coord(2, 1)
 }
 
 
@@ -42,20 +42,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.histogram_legend_visible = False
 
         self.addLabel("Image before")
-        self.nextRow()
-
-        self.image_before, self.image_before_vb = self.add_image_in_vb(name="before")
-
-        self.nextRow()
         self.addLabel("Image after")
-        self.nextRow()
-
-        self.image_after, self.image_after_bv = self.add_image_in_vb(name="after")
-
-        self.nextRow()
         self.addLabel("Image difference")
         self.nextRow()
 
+        self.image_before, self.image_before_vb = self.add_image_in_vb(name="before")
+        self.image_after, self.image_after_bv = self.add_image_in_vb(name="after")
         self.image_difference, self.image_difference_vb = self.add_image_in_vb(name="difference")
 
     def add_image_in_vb(self, name=None):
@@ -98,8 +90,8 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def draw_combined_histogram(self):
         self.histogram = self.addPlot(row=histogram_coords["combined"].row, col=histogram_coords["combined"].col,
-                                      labels=histogram_axes_labels, lockAspect=True)
-        self.addLabel("Pixel values", row=0, col=1)
+                                      labels=histogram_axes_labels, lockAspect=True, colspan=3)
+        self.addLabel("Pixel values", row=label_coords["combined"].row, col=label_coords["combined"].col)
 
         # Plot any histogram that has data, and add a legend if both exist
         if self.before_histogram_data is not None:
