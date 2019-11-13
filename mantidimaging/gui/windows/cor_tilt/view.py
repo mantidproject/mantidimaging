@@ -4,10 +4,9 @@ from PyQt5.QtWidgets import QAbstractItemView
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from mantidimaging.core.cor_tilt import Field
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import NavigationToolbarSimple
-from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel
+from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel, Column
 from mantidimaging.gui.windows.cor_tilt.presenter import CORTiltWindowPresenter
 from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
 
@@ -83,10 +82,10 @@ class CORTiltWindowView(BaseMainWindowView):
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
-            if tl == br and tl.column() == Field.CENTRE_OF_ROTATION.value:
+            if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(
-                    mdl.index(tl.row(), Field.SLICE_INDEX.value))
+                    mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.handle_cor_manually_changed(slice_idx)
 
         self.tableView.model().rowsRemoved.connect(

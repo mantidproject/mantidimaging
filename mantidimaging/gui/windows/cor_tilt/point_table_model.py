@@ -1,7 +1,17 @@
+from enum import Enum
+
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
-from mantidimaging.core.cor_tilt import (CorTiltDataModel, Field, FIELD_NAMES)
+from mantidimaging.core.cor_tilt import CorTiltDataModel
 from mantidimaging.core.cor_tilt.data_model import Point
+
+
+class Column(Enum):
+    SLICE_INDEX = 0
+    CENTRE_OF_ROTATION = 1
+
+
+COLUMN_NAMES = {Column.SLICE_INDEX: 'Slice Index', Column.CENTRE_OF_ROTATION: 'COR'}
 
 
 class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
@@ -23,7 +33,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.dataChanged.emit(self.index(idx, 0), self.index(idx, 1))
 
     def columnCount(self, parent=None):
-        return len(Field)
+        return len(Column)
 
     def rowCount(self, parent):
         if parent.isValid():
@@ -40,15 +50,18 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
             return None
 
         col = index.column()
+        col_field = Column(col)
 
         if role == Qt.DisplayRole:
-            return self._points[index.row()][col]
+            if col_field == Column.SLICE_INDEX:
+                return self._points[index.row()].slice_index
+            if col_field == Column.CENTRE_OF_ROTATION:
+                return self._points[index.row()].cor
 
         elif role == Qt.ToolTipRole:
-            col_field = Field(col)
-            if col_field == Field.SLICE_INDEX:
+            if col_field == Column.SLICE_INDEX:
                 return 'Slice index (y coordinate of projection)'
-            elif col_field == Field.CENTRE_OF_ROTATION:
+            elif col_field == Column.CENTRE_OF_ROTATION:
                 return 'Centre of rotation for specific slice'
             return ''
 
@@ -58,14 +71,13 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
         self.clear_results()
 
-        col = index.column()
-        col_field = Field(col)
+        col_field = Column(index.column())
 
         try:
             original_point = self._points[index.row()]
-            if col_field == Field.SLICE_INDEX:
+            if col_field == Column.SLICE_INDEX:
                 self._points[index.row()] = Point(int(val), original_point.cor)
-            elif col_field == Field.CENTRE_OF_ROTATION:
+            elif col_field == Column.CENTRE_OF_ROTATION:
                 self._points[index.row()] = Point(original_point.slice_index, float(val))
         except ValueError:
             return False
@@ -107,7 +119,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     def appendNewRow(self, row, slice_idx, cor=0):
         self.insertRows(self.num_points, 1)
 
-        self.setData(self.index(self.num_points - 1, Field.SLICE_INDEX.value), slice_idx)
+        self.setData(self.index(self.num_points - 1, Column.SLICE_INDEX.value), slice_idx)
 
         # the data is added on the row _after_ the selected one
         self.set_point(row + 1, cor=cor)
@@ -119,4 +131,4 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         if role != Qt.DisplayRole:
             return None
 
-        return FIELD_NAMES[Field(section)]
+        return COLUMN_NAMES[Column(section)]

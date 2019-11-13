@@ -1,5 +1,4 @@
 from collections import namedtuple
-from enum import Enum
 from logging import getLogger
 from typing import Optional, List
 
@@ -12,12 +11,6 @@ from .angles import cors_to_tilt_angle
 LOG = getLogger(__name__)
 
 
-class Field(Enum):
-    SLICE_INDEX = 0
-    CENTRE_OF_ROTATION = 1
-
-
-FIELD_NAMES = {Field.SLICE_INDEX: 'Slice Index', Field.CENTRE_OF_ROTATION: 'COR'}
 Point = namedtuple('Point', ['slice_idx', 'cor'])
 
 

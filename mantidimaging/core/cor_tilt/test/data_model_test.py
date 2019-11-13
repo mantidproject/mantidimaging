@@ -1,14 +1,14 @@
 from unittest import TestCase
 
-from mantidimaging.core.cor_tilt import (
-        CorTiltDataModel, Field, FIELD_NAMES)
+from mantidimaging.core.cor_tilt import CorTiltDataModel
 from mantidimaging.core.cor_tilt.data_model import Point
+from mantidimaging.gui.windows.cor_tilt import Column, COLUMN_NAMES
 
 
 class CorTiltDataModelTest(TestCase):
 
     def test_field_defs_sanity(self):
-        self.assertEquals(len(Field), len(FIELD_NAMES))
+        self.assertEquals(len(Column), len(COLUMN_NAMES))
 
     def test_init(self):
         m = CorTiltDataModel()
