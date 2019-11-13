@@ -134,13 +134,13 @@ class CORTiltWindowModel(object):
 
     @property
     def preview_tilt_line_data(self):
-        return ([self.data_model.cor, self.data_model.cors[-1]],
-                [self.data_model.slices[0], self.data_model.slices[-1]]) if self.data_model.has_results else None
+        return ([self.data_model.cor, self.cors[-1]],
+                [self.slices[0], self.slices[-1]]) if self.data_model.has_results else None
 
     @property
     def preview_fit_y_data(self):
         return [self.data_model.gradient * slice_idx + self.data_model.cor
-                for slice_idx in self.data_model.slices] if self.data_model.has_results else None
+                for slice_idx in self.slices] if self.data_model.has_results else None
 
     @property
     def cors(self):

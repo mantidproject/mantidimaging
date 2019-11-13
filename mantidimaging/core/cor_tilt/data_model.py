@@ -1,12 +1,12 @@
+from collections import namedtuple
 from enum import Enum
 from logging import getLogger
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
 import scipy as sp
 
 from mantidimaging.core.data import const
-
 from .angles import cors_to_tilt_angle
 
 LOG = getLogger(__name__)
@@ -18,15 +18,17 @@ class Field(Enum):
 
 
 FIELD_NAMES = {Field.SLICE_INDEX: 'Slice Index', Field.CENTRE_OF_ROTATION: 'COR'}
+Point = namedtuple('Point', ['slice_idx', 'cor'])
 
 
-class CorTiltDataModel(object):
+class CorTiltDataModel:
     """
     Data model for COR/Tilt finding from (slice index, centre of rotation) data
     pairs.
     """
     _cached_gradient: Optional[float]
     _cached_cor: Optional[float]
+    _points: List[Point]
 
     def __init__(self):
         self._points = []
@@ -36,7 +38,7 @@ class CorTiltDataModel(object):
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.clear_results()
 
-        self._points = [[int(idx), cor] for idx in np.linspace(begin, end, count, dtype=int)]
+        self._points = [Point(int(idx), cor) for idx in np.linspace(begin, end, count, dtype=int)]
         LOG.debug('Populated slice indices: {}'.format(self.slices))
 
     def linear_regression(self):
@@ -47,22 +49,22 @@ class CorTiltDataModel(object):
         self.clear_results()
 
         if idx is None:
-            self._points.append([slice_idx, cor])
+            self._points.append(Point(slice_idx, cor))
         else:
-            self._points.insert(idx, [slice_idx, cor])
+            self._points.insert(idx, Point(slice_idx, cor))
 
     def set_point(self, idx, slice_idx=None, cor=None):
         self.clear_results()
 
         if slice_idx is not None:
-            self._points[idx][Field.SLICE_INDEX.value] = int(slice_idx)
+            self._points[idx] = Point(int(slice_idx), self._points[idx].cor)
 
         if cor is not None:
-            self._points[idx][Field.CENTRE_OF_ROTATION.value] = float(cor)
+            self._points[idx] = Point(self._points[idx].slice_idx, float(cor))
 
     def _get_data_idx_from_slice_idx(self, slice_idx):
         for i, p in enumerate(self._points):
-            if int(p[Field.SLICE_INDEX.value]) == slice_idx:
+            if int(p.slice_idx) == slice_idx:       # TODO: Remove int
                 return i
         return None
 
@@ -86,10 +88,10 @@ class CorTiltDataModel(object):
         return self._points[idx] if idx < self.num_points else None
 
     def sort_points(self):
-        self._points.sort(key=lambda p: p[Field.SLICE_INDEX.value])
+        self._points.sort(key=lambda p: p.slice_idx)
 
     def get_cor_for_slice(self, slice_idx):
-        a = [p[Field.CENTRE_OF_ROTATION.value] for p in self._points if p[Field.SLICE_INDEX.value] == slice_idx]
+        a = [p.cor for p in self._points if p.slice_idx == slice_idx]
         return a[0] if a else None
 
     def get_cor_for_slice_from_regression(self, slice_idx):
@@ -101,11 +103,11 @@ class CorTiltDataModel(object):
 
     @property
     def slices(self):
-        return [int(p[Field.SLICE_INDEX.value]) for p in self._points]
+        return [int(p.slice_idx) for p in self._points]         # TODO: remove int
 
     @property
     def cors(self):
-        return [float(p[Field.CENTRE_OF_ROTATION.value]) for p in self._points]
+        return [float(p.cor) for p in self._points]
 
     @property
     def gradient(self):

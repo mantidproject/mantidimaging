@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 from mantidimaging.core.cor_tilt import (CorTiltDataModel, Field, FIELD_NAMES)
+from mantidimaging.core.cor_tilt.data_model import Point
 
 
 class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
@@ -60,19 +61,16 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         col = index.column()
         col_field = Field(col)
 
-        proper_value = None
         try:
+            original_point = self._points[index.row()]
             if col_field == Field.SLICE_INDEX:
-                proper_value = int(val)
+                self._points[index.row()] = Point(int(val), original_point.cor)
             elif col_field == Field.CENTRE_OF_ROTATION:
-                proper_value = float(val)
+                self._points[index.row()] = Point(original_point.slice_index, float(val))
         except ValueError:
             return False
 
-        self._points[index.row()][col] = proper_value
-
         self.dataChanged.emit(index, index)
-
         self.sort_points()
 
         return True

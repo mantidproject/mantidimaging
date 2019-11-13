@@ -1,13 +1,12 @@
 import unittest
 
+import mock
 import numpy as np
 
+from mantidimaging.core.cor_tilt.data_model import Point
 from mantidimaging.core.data import Images
-
 from mantidimaging.gui.windows.cor_tilt import (CORTiltWindowModel, CorTiltPointQtModel)
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
-
-import mock
 
 
 class CORTiltWindowModelTest(unittest.TestCase):
@@ -48,7 +47,7 @@ class CORTiltWindowModelTest(unittest.TestCase):
         self.assertEquals(self.model.num_points, 0)
 
     def test_tilt_line_data(self):
-        self.model.data_model._points = [[50, 1], [40, 2], [30, 3], [20, 4]]
+        self.model.data_model._points = [Point(50, 1), Point(40, 2), Point(30, 3), Point(20, 4)]
         self.model.data_model._cached_cor = 1
         self.model.data_model._cached_gradient = 2
 
@@ -57,7 +56,7 @@ class CORTiltWindowModelTest(unittest.TestCase):
         self.assertEquals(data, ([1, 4], [50, 20]))
 
     def test_fit_y_data(self):
-        self.model.data_model._points = [[1, 0.0], [2, 0.0], [3, 0.0]]
+        self.model.data_model._points = [Point(1, 0.0), Point(2, 0.0), Point(3, 0.0)]
         self.model.data_model._cached_cor = 1
         self.model.data_model._cached_gradient = 2
 

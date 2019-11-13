@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from mantidimaging.core.cor_tilt import (
         CorTiltDataModel, Field, FIELD_NAMES)
+from mantidimaging.core.cor_tilt.data_model import Point
 
 
 class CorTiltDataModelTest(TestCase):
@@ -97,32 +98,32 @@ class CorTiltDataModelTest(TestCase):
     def test_linear_regression_data(self):
         m = CorTiltDataModel()
         m._points = [
-            [1409, 1401],
-            [1386, 1400],
-            [1363, 1400],
-            [1340, 1401],
-            [1317, 1400],
-            [1294, 1399],
-            [1271, 1398],
-            [1248, 1400],
-            [1225, 1398],
-            [1202, 1400],
-            [1179, 1399],
-            [1156, 1399],
-            [1133, 1400],
-            [1110, 1402],
-            [1087, 1398],
-            [1064, 1398],
-            [1041, 1397],
-            [1018, 1399],
-            [995, 1398],
-            [972, 1401],
-            [949, 1397],
-            [926, 1398],
-            [903, 1398],
-            [880, 1398],
-            [857, 1396],
-            [834, 1397]
+            Point(1409, 1401),
+            Point(1386, 1400),
+            Point(1363, 1400),
+            Point(1340, 1401),
+            Point(1317, 1400),
+            Point(1294, 1399),
+            Point(1271, 1398),
+            Point(1248, 1400),
+            Point(1225, 1398),
+            Point(1202, 1400),
+            Point(1179, 1399),
+            Point(1156, 1399),
+            Point(1133, 1400),
+            Point(1110, 1402),
+            Point(1087, 1398),
+            Point(1064, 1398),
+            Point(1041, 1397),
+            Point(1018, 1399),
+            Point(995, 1398),
+            Point(972, 1401),
+            Point(949, 1397),
+            Point(926, 1398),
+            Point(903, 1398),
+            Point(880, 1398),
+            Point(857, 1396),
+            Point(834, 1397),
         ]
         m.linear_regression()
 
