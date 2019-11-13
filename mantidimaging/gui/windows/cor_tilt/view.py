@@ -26,14 +26,7 @@ class CORTiltWindowView(BaseMainWindowView):
 
         self.cmap = cmap
 
-        # Handle calculate button click
-        self.autoCalculateButton.clicked.connect(lambda: self.presenter.notify(PresNotification.RUN_AUTOMATIC))
-
-        # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-
-        # Handle stack cropping
-        self.setRoi.clicked.connect(lambda: self.presenter.notify(PresNotification.CROP_TO_ROI))
 
         # Handle preview image selection
         self.previewProjectionIndex.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
@@ -105,18 +98,17 @@ class CORTiltWindowView(BaseMainWindowView):
             self.tableView.model().removeAllRows)
         self.manualRemoveButton.clicked.connect(
             self.tableView.removeSelectedRows)
-        self.manualAddButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.ADD_NEW_COR_TABLE_ROW))
-        self.manualRefineCorButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.REFINE_SELECTED_COR))
-        self.setAllButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.SET_ALL_ROW_VALUES))
-        self.manualFitButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.RUN_MANUAL))
+
+        click_notifications = {
+            self.manualAddButton: PresNotification.ADD_NEW_COR_TABLE_ROW,
+            self.manualRefineCorButton: PresNotification.REFINE_SELECTED_COR,
+            self.setAllButton: PresNotification.SET_ALL_ROW_VALUES,
+            self.manualFitButton: PresNotification.RUN_MANUAL,
+            self.setRoi: PresNotification.CROP_TO_ROI,
+            self.autoCalculateButton: PresNotification.RUN_AUTOMATIC,
+        }
+        for btn, notification in click_notifications.items():
+            btn.clicked.connect(lambda: self.presenter.notify(notification))
 
         def on_row_change(item, _):
             """
