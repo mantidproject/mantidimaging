@@ -1,5 +1,6 @@
 from enum import Enum
 from logging import getLogger
+from typing import Optional
 
 import numpy as np
 import scipy as sp
@@ -24,13 +25,13 @@ class CorTiltDataModel(object):
     Data model for COR/Tilt finding from (slice index, centre of rotation) data
     pairs.
     """
-    _cached_gradient: float
-    _cached_cor: float
+    _cached_gradient: Optional[float]
+    _cached_cor: Optional[float]
 
     def __init__(self):
         self._points = []
-        self._cached_gradient = 0.0
-        self._cached_cor = 0.0
+        self._cached_gradient = None
+        self._cached_cor = None
 
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.clear_results()
@@ -40,8 +41,7 @@ class CorTiltDataModel(object):
 
     def linear_regression(self):
         LOG.debug('Running linear regression with {} points'.format(self.num_points))
-        result = sp.stats.linregress(self.slices, self.cors)
-        self._cached_gradient, self._cached_cor = result[:2]
+        self._cached_gradient, self._cached_cor, *_ = sp.stats.linregress(self.slices, self.cors)
 
     def add_point(self, idx=None, slice_idx=0, cor=0.0):
         self.clear_results()
@@ -79,8 +79,8 @@ class CorTiltDataModel(object):
         self.clear_results()
 
     def clear_results(self):
-        self._cached_gradient = 0.0
-        self._cached_cor = 0.0
+        self._cached_gradient = None
+        self._cached_cor = None
 
     def point(self, idx):
         return self._points[idx] if idx < self.num_points else None
