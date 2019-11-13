@@ -14,8 +14,7 @@ Point = namedtuple('Point', ['slice_index', 'cor'])
 
 class CorTiltDataModel:
     """
-    Data model for COR/Tilt finding from (slice index, centre of rotation) data
-    pairs.
+    Model for finding COR/Tilt from (slice index, centre of rotation) data points
     """
     _cached_gradient: Optional[float]
     _cached_cor: Optional[float]

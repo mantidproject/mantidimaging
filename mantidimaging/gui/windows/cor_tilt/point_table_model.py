@@ -16,7 +16,10 @@ COLUMN_NAMES = {Column.SLICE_INDEX: 'Slice Index', Column.CENTRE_OF_ROTATION: 'C
 
 class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     """
-    Qt data model for COR/Tilt finding.
+    Model of the slice/cor point data in the cor/tilt view's tableView.
+
+    This class handles GUI interaction with the tableView  whilst CorTiltDataModel provides
+    methods for calculating cor and gradient from the stored values.
     """
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.beginResetModel()
