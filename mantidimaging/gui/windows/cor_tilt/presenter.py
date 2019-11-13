@@ -5,10 +5,9 @@ from logging import getLogger
 import matplotlib.pyplot as plt
 
 from mantidimaging.core.data import const as data_const
-from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.windows.cor_tilt.model import CORTiltWindowModel
 
 LOG = getLogger(__name__)
@@ -173,24 +172,10 @@ class CORTiltWindowPresenter(BasePresenter):
         self.model.calculate_slices(self.view.slice_count)
         self.model.calculate_projections(self.view.projection_count)
 
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.run_finding_automatic)
-        atd.presenter.set_on_complete(self._on_finding_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        start_async_task_view(self.view, self.model.run_finding_automatic, self._on_finding_done)
 
     def do_execute_manual(self):
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.run_finding_manual)
-        atd.presenter.set_on_complete(self._on_finding_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        start_async_task_view(self.view, self.model.run_finding_manual, self._on_finding_done)
 
     def _on_finding_done(self, task):
         log = getLogger(__name__)

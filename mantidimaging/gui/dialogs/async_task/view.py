@@ -1,3 +1,5 @@
+from mantidimaging.core.utility.progress_reporting import Progress
+
 from mantidimaging.gui.mvp_base import BaseDialogView
 
 from .presenter import AsyncTaskDialogPresenter
@@ -46,3 +48,17 @@ class AsyncTaskDialogView(BaseDialogView):
 
         # Update progress bar
         self.progressBar.setValue(progress * 1000)
+
+
+def start_async_task_view(parent, task, on_complete, kwargs=None):
+    atd = AsyncTaskDialogView(parent, auto_close=True)
+    if not kwargs:
+        kwargs = {'progress': Progress()}
+    else:
+        kwargs['progress'] = Progress()
+    kwargs['progress'].add_progress_handler(atd.presenter)
+
+    atd.presenter.set_task(task)
+    atd.presenter.set_on_complete(on_complete)
+    atd.presenter.set_parameters(**kwargs)
+    atd.presenter.do_start_processing()
