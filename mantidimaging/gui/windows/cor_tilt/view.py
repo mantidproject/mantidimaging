@@ -115,7 +115,7 @@ class CORTiltWindowView(BaseMainWindowView):
             in the manual COR table.
             """
             if item.isValid():
-                slice_idx = item.model().point(item.row()).slice_idx
+                slice_idx = item.model().point(item.row()).slice_index
                 self.presenter.set_row(item.row())
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.presenter.notify(

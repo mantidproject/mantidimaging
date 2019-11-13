@@ -9,9 +9,7 @@ from mantidimaging.core.data import const
 from .angles import cors_to_tilt_angle
 
 LOG = getLogger(__name__)
-
-
-Point = namedtuple('Point', ['slice_idx', 'cor'])
+Point = namedtuple('Point', ['slice_index', 'cor'])
 
 
 class CorTiltDataModel:
@@ -53,11 +51,11 @@ class CorTiltDataModel:
             self._points[idx] = Point(int(slice_idx), self._points[idx].cor)
 
         if cor is not None:
-            self._points[idx] = Point(self._points[idx].slice_idx, float(cor))
+            self._points[idx] = Point(self._points[idx].slice_index, float(cor))
 
     def _get_data_idx_from_slice_idx(self, slice_idx):
         for i, p in enumerate(self._points):
-            if int(p.slice_idx) == slice_idx:       # TODO: Remove int
+            if p.slice_index == slice_idx:
                 return i
         return None
 
@@ -81,10 +79,10 @@ class CorTiltDataModel:
         return self._points[idx] if idx < self.num_points else None
 
     def sort_points(self):
-        self._points.sort(key=lambda p: p.slice_idx)
+        self._points.sort(key=lambda p: p.slice_index)
 
     def get_cor_for_slice(self, slice_idx):
-        a = [p.cor for p in self._points if p.slice_idx == slice_idx]
+        a = [p.cor for p in self._points if p.slice_index == slice_idx]
         return a[0] if a else None
 
     def get_cor_for_slice_from_regression(self, slice_idx):
@@ -96,7 +94,7 @@ class CorTiltDataModel:
 
     @property
     def slices(self):
-        return [int(p.slice_idx) for p in self._points]         # TODO: remove int
+        return [p.slice_index for p in self._points]
 
     @property
     def cors(self):
