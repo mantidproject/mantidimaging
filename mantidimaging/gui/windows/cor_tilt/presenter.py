@@ -136,13 +136,13 @@ class CORTiltWindowPresenter(BasePresenter):
         if res == CORInspectionDialogView.Accepted:
             new_cor = dialog.optimal_rotation_centre
             LOG.debug('New optimal rotation centre: {}'.format(new_cor))
-            self.model.model.set_cor_at_slice(slice_idx, new_cor)
+            self.model.data_model.set_cor_at_slice(slice_idx, new_cor)
 
         # Update reconstruction preview with new COR
         self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
 
     def do_plot_cor_vs_slice_index(self):
-        if self.model.model.num_points > 1:
+        if self.model.data_model.num_points > 1:
             fig = plt.figure()
             ax = fig.add_subplot(111)
 
@@ -150,13 +150,13 @@ class CORTiltWindowPresenter(BasePresenter):
             names = []
 
             # Add data line
-            lines.append(ax.plot(self.model.model.slices, self.model.model.cors)[0])
+            lines.append(ax.plot(self.model.data_model.slices, self.model.data_model.cors)[0])
             names.append('Data')
 
             # Add fit line (if a fit has been performed)
             fit_data = self.model.preview_fit_y_data
             if fit_data is not None:
-                lines.append(ax.plot(self.model.model.slices, fit_data)[0])
+                lines.append(ax.plot(self.model.data_model.slices, fit_data)[0])
                 names.append('Fit')
 
             # Add legend
