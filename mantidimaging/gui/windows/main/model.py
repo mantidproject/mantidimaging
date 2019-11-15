@@ -2,10 +2,13 @@ import os
 import uuid
 from collections import namedtuple
 from logging import getLogger
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING, Any
 
 from mantidimaging.core.io import loader, saver
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
+if TYPE_CHECKING:
+    from Qt import QDockWidget
 
 StackId = namedtuple('StackId', ['id', 'name'])
 
@@ -68,17 +71,15 @@ class MainWindowModel(object):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def stack_names(self):
+    def stack_names(self) -> List[str]:
         return [stack.name for stack in self.stack_list]
 
-    def add_stack(self, stack_visualiser, dock_widget):
-        # generate unique ID for this stack
+    def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: 'QDockWidget'):
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
-        getLogger(__name__).debug(
-            "Active stacks {}".format(self.active_stacks))
+        getLogger(__name__).debug(f"Active stacks: {self.active_stacks}")
 
-    def get_stack(self, stack_uuid: uuid.UUID):
+    def get_stack(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The QDockWidget that contains the Stack Visualiser.
@@ -87,7 +88,7 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def get_stack_by_name(self, search_name: str):
+    def get_stack_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
         for stack_id in self.stack_list:
             if stack_id.name == search_name:
                 return self.get_stack(stack_id.id)
@@ -103,7 +104,7 @@ class MainWindowModel(object):
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 
-    def do_remove_stack(self, stack_uuid) -> None:
+    def do_remove_stack(self, stack_uuid: uuid.UUID) -> None:
         """
         Removes the stack from the active_stacks dictionary.
 
@@ -112,5 +113,5 @@ class MainWindowModel(object):
         del self.active_stacks[stack_uuid]
 
     @property
-    def have_active_stacks(self):
+    def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0

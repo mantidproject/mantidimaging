@@ -34,11 +34,11 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")
 
-    def remove_stack(self, uuid):
+    def remove_stack(self, uuid: UUID):
         self.model.do_remove_stack(uuid)
         self.view.active_stacks_changed.emit()
 
-    def rename_stack_by_name(self, old_name, new_name):
+    def rename_stack_by_name(self, old_name: str, new_name: str):
         dock = self.model.get_stack_by_name(old_name)
         if dock:
             dock.setWindowTitle(new_name)

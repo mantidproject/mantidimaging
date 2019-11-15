@@ -4,8 +4,8 @@ from typing import Optional
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QAction
-from mantidimaging.core.data import Images
 
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
@@ -149,7 +149,11 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
-    def create_stack_window(self, stack: Images, title, position=QtCore.Qt.TopDockWidgetArea, floating=False):
+    def create_stack_window(self,
+                            stack: Images,
+                            title: str,
+                            position=QtCore.Qt.TopDockWidgetArea,
+                            floating=False) -> Qt.QDockWidget:
         dock_widget = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
@@ -169,7 +173,7 @@ class MainWindowView(BaseMainWindowView):
 
         return dock_widget
 
-    def remove_stack(self, obj):
+    def remove_stack(self, obj: StackVisualiserView):
         getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)
         self.presenter.remove_stack(obj.uuid)
 
