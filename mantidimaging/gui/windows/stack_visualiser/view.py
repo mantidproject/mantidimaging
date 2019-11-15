@@ -146,7 +146,7 @@ class StackVisualiserView(BaseMainWindowView):
                                                    "Name:",
                                                    text=self.name)
         if ok:
-            if new_window_name not in self.main_window.stack_names():
+            if new_window_name not in self.main_window.stack_names:
                 self.main_window.presenter.rename_stack_by_name(self.name, new_window_name)
             else:
                 error = QMessageBox(self)

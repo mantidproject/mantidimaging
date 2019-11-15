@@ -5,6 +5,7 @@ from typing import Any, Dict
 from uuid import UUID
 
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import MainWindowModel
 
@@ -90,7 +91,7 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg)
 
-    def create_new_stack(self, data, title):
+    def create_new_stack(self, data: Images, title: str):
         title = self.model.create_name(title)
         dock_widget = self.view.create_stack_window(data, title=title)
         stack_visualiser = dock_widget.widget()
@@ -112,14 +113,13 @@ class MainWindowPresenter(BasePresenter):
         if not task.was_successful():
             self._handle_task_error(self.SAVE_ERROR_STRING, log, task)
 
+    @property
     def stack_list(self):
-        return self.model.stack_list()
+        return self.model.stack_list
 
-    def stack_uuids(self):
-        return self.model.stack_uuids()
-
+    @property
     def stack_names(self):
-        return self.model.stack_names()
+        return self.model.stack_names
 
     def get_stack_visualiser(self, stack_uuid: UUID):
         return self.model.get_stack_visualiser(stack_uuid)

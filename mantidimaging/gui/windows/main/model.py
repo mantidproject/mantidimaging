@@ -1,10 +1,13 @@
 import os
 import uuid
+from collections import namedtuple
 from logging import getLogger
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Any, Optional
 
 from mantidimaging.core.io import loader, saver
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
+StackId = namedtuple('StackId', ['id', 'name'])
 
 
 class MainWindowModel(object):
@@ -51,7 +54,7 @@ class MainWindowModel(object):
 
         # Avoid duplicate names
         name = filename
-        current_names = self.stack_names()
+        current_names = self.stack_names
         num = 1
         while name in current_names:
             num += 1
@@ -59,24 +62,14 @@ class MainWindowModel(object):
 
         return name
 
-    def stack_list(self) -> List[Tuple[uuid.UUID, str]]:
-        stacks = []
-        for stack_uuid, widget in self.active_stacks.items():
-            # ask the widget for its current title
-            current_name = widget.windowTitle()
-            # append the UUID and user friendly name
-            stacks.append((stack_uuid, current_name))
+    @property
+    def stack_list(self) -> List[StackId]:
+        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
+        return sorted(stacks, key=lambda x: x.name)
 
-        # sort by user friendly name
-        return sorted(stacks, key=lambda x: x[1])
-
-    def stack_uuids(self):
-        return list(zip(*self.stack_list()))[0] if self.active_stacks else []
-
+    @property
     def stack_names(self):
-        # unpacks the tuple and only gives the correctly sorted human readable
-        # names
-        return list(zip(*self.stack_list()))[1] if self.active_stacks else []
+        return [stack.name for stack in self.stack_list]
 
     def add_stack(self, stack_visualiser, dock_widget):
         # generate unique ID for this stack
@@ -95,9 +88,9 @@ class MainWindowModel(object):
         return self.active_stacks[stack_uuid]
 
     def get_stack_by_name(self, search_name: str):
-        for (id, name) in self.stack_list():
-            if name == search_name:
-                return self.get_stack(id)
+        for stack_id in self.stack_list:
+            if stack_id.name == search_name:
+                return self.get_stack(stack_id.id)
         return None
 
     def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
