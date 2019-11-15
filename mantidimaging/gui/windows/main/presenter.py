@@ -64,7 +64,7 @@ class MainWindowPresenter(BasePresenter):
         # Set the 'preview' to load 1/10 of the images
         preview_kwargs = deepcopy(kwargs)
         indices = kwargs['indices']
-        preview_kwargs['indices'] = indices[0], indices[1], (indices[1] - indices[0]) // 10
+        preview_kwargs['indices'] = indices.start, indices.end, (indices.end - indices.start) // 10
 
         if 'custom_name' not in preview_kwargs or not preview_kwargs['custom_name']:
             preview_kwargs['custom_name'] = preview_kwargs['selected_file'].split(".")[0] + "_preview"
@@ -98,13 +98,12 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_stack(stack_visualiser, dock_widget)
         self.view.active_stacks_changed.emit()
 
-    def save(self, indices=None):
+    def save(self):
         kwargs = {'stack_uuid': self.view.save_dialogue.selected_stack,
                   'output_dir': self.view.save_dialogue.save_path(),
                   'name_prefix': self.view.save_dialogue.name_prefix(),
                   'image_format': self.view.save_dialogue.image_format(),
-                  'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes(),
-                  'indices': indices}
+                  'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes()}
         start_async_task_view(self.view, self.model.do_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task):
