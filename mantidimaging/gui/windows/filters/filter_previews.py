@@ -4,6 +4,8 @@ from typing import Tuple, Optional
 from numpy import ndarray
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem
 
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+
 histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
 before_pen = (0, 0, 200)
 after_pen = (0, 200, 0)
@@ -49,6 +51,15 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before, self.image_before_vb = self.add_image_in_vb(name="before")
         self.image_after, self.image_after_bv = self.add_image_in_vb(name="after")
         self.image_difference, self.image_difference_vb = self.add_image_in_vb(name="difference")
+
+        for img in self.image_before, self.image_after, self.image_difference:
+            img.hoverEvent = lambda ev: self.mouse_over(ev, CloseEnoughPoint(ev.pos()))
+
+        self.img_hover_text = {
+            self.image_before: "Before: {}",
+            self.image_after: "After: {}",
+            self.image_difference: "Difference: {}",
+        }
 
     def add_image_in_vb(self, name=None):
         im = ImageItem()
@@ -137,3 +148,11 @@ class FilterPreviews(GraphicsLayoutWidget):
         if self.histogram and self.histogram.legend:
             return self.histogram.legend
         return None
+
+    def mouse_over(self, ev, pos):
+        outs = []
+        for img in self.image_before, self.image_after, self.image_difference:
+            if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
+                pixel_value = img.image[pos.y, pos.x]
+                outs.append(self.img_hover_text[img].format(pixel_value))
+        print(", ".join(outs))
