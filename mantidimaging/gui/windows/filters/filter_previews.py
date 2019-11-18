@@ -13,15 +13,15 @@ after_pen = (0, 200, 0)
 
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = {
-    "before": Coord(3, 0),
-    "after": Coord(3, 1),
-    "combined": Coord(3, 0)
+    "before": Coord(4, 0),
+    "after": Coord(4, 1),
+    "combined": Coord(4, 0)
 }
 
 label_coords = {
-    "before": Coord(2, 0),
-    "after": Coord(2, 1),
-    "combined": Coord(2, 1)
+    "before": Coord(3, 0),
+    "after": Coord(3, 1),
+    "combined": Coord(3, 1)
 }
 
 
@@ -58,8 +58,18 @@ class FilterPreviews(GraphicsLayoutWidget):
         image_layout.addItem(self.image_before_vb)
         image_layout.addItem(self.image_after_vb)
         image_layout.addItem(self.image_difference_vb)
-
         self.addItem(image_layout, colspan=3)
+        self.nextRow()
+
+        before_details = self.addLabel("")
+        after_details = self.addLabel("")
+        difference_details = self.addLabel("")
+
+        self.display_formatted_detail = {
+            self.image_before: lambda val: before_details.setText(f"Before: {val:.2f}"),
+            self.image_after: lambda val: after_details.setText(f"After: {val:.2f}"),
+            self.image_difference: lambda val: difference_details.setText(f"Difference: {val:.2f}"),
+        }
 
         for img in self.image_before, self.image_after, self.image_difference:
             img.hoverEvent = lambda ev: self.mouse_over(ev, CloseEnoughPoint(ev.pos()))
@@ -163,5 +173,4 @@ class FilterPreviews(GraphicsLayoutWidget):
         for img in self.image_before, self.image_after, self.image_difference:
             if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
-                outs.append(self.img_hover_text[img].format(pixel_value))
-        print(", ".join(outs))
+                self.display_formatted_detail[img](pixel_value)
