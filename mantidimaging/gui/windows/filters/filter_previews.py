@@ -177,3 +177,14 @@ class FilterPreviews(GraphicsLayoutWidget):
             if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
                 self.display_formatted_detail[img](pixel_value)
+
+    def link_all_views(self):
+        for view1, view2 in zip([self.image_before_vb, self.image_after_vb],
+                                [self.image_after_vb, self.image_difference_vb]):
+            view1.linkView(ViewBox.XAxis, view2)
+            view1.linkView(ViewBox.YAxis, view2)
+
+    def unlink_all_views(self):
+        for view in self.image_before_vb, self.image_after_vb, self.image_difference_vb:
+            view.linkView(ViewBox.XAxis, None)
+            view.linkView(ViewBox.YAxis, None)
