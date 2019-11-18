@@ -44,6 +44,7 @@ class ImagesTest(unittest.TestCase):
 
         imgs.record_operation(
             'test_func',
+            'A pretty name',
             56, 9002, np.ndarray((800, 1024, 1024)), 'yes', False,
             this=765, that=495.0, roi=(1, 2, 3, 4))
 
@@ -53,12 +54,13 @@ class ImagesTest(unittest.TestCase):
             'operation_history': [
                 {
                     'name': 'test_func',
+                    'display_name': 'A pretty name',
                     'args': [56, 9002, None, 'yes', False],
                     'kwargs': {
                         'this': 765,
                         'that': 495.0,
                         'roi': (1, 2, 3, 4)
-                    }
+                    },
                 }
             ]
         })

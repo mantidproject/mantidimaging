@@ -1,7 +1,8 @@
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem
 
-from mantidimaging.core.data import Images, const
+from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
 
 
 class MetadataDialog(Qt.QDialog):
@@ -37,7 +38,11 @@ class MetadataDialog(Qt.QDialog):
         main_widget.setHeaderLabel("Operation history")
         for i, op in enumerate(metadata[const.OPERATION_HISTORY]):
             operation_item = QTreeWidgetItem(main_widget)
-            operation_item.setText(0, op[const.OPERATION_NAME])
+            if const.OPERATION_DISPLAY_NAME in op and op[const.OPERATION_DISPLAY_NAME]:
+                operation_item.setText(0, op[const.OPERATION_DISPLAY_NAME])
+            else:
+                operation_item.setText(0, op[const.OPERATION_NAME])
+
             main_widget.insertTopLevelItem(i, operation_item)
 
             if op[const.OPERATION_ARGS]:
