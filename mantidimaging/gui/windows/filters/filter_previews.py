@@ -1,8 +1,9 @@
 from collections import namedtuple
 from typing import Tuple, Optional
 
+from PyQt5.QtWidgets import QGraphicsLinearLayout
 from numpy import ndarray
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
@@ -48,9 +49,17 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_before, self.image_before_vb = self.add_image_in_vb(name="before")
-        self.image_after, self.image_after_bv = self.add_image_in_vb(name="after")
-        self.image_difference, self.image_difference_vb = self.add_image_in_vb(name="difference")
+        self.image_before, self.image_before_vb = self.image_in_vb(name="before")
+        self.image_after, self.image_after_vb = self.image_in_vb(name="after")
+        self.image_difference, self.image_difference_vb = self.image_in_vb(name="difference")
+
+        # Ensure images resize equally
+        image_layout = QGraphicsLinearLayout()
+        image_layout.addItem(self.image_before_vb)
+        image_layout.addItem(self.image_after_vb)
+        image_layout.addItem(self.image_difference_vb)
+
+        self.addItem(image_layout, colspan=3)
 
         for img in self.image_before, self.image_after, self.image_difference:
             img.hoverEvent = lambda ev: self.mouse_over(ev, CloseEnoughPoint(ev.pos()))
@@ -61,9 +70,9 @@ class FilterPreviews(GraphicsLayoutWidget):
             self.image_difference: "Difference: {}",
         }
 
-    def add_image_in_vb(self, name=None):
+    def image_in_vb(self, name=None):
         im = ImageItem()
-        vb = self.addViewBox(invertY=True, lockAspect=True, name=name)
+        vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
         return im, vb
 
