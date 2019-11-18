@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QVBoxLayout
-from pyqtgraph import ImageItem, PlotItem
+from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
@@ -43,6 +43,9 @@ class FiltersWindowView(BaseMainWindowView):
         self.previews = FilterPreviews()
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
+
+        self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
+        self.showHistogramLegend.stateChanged.connect(self.histogram_legend_vis_changed)
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
@@ -89,6 +92,19 @@ class FiltersWindowView(BaseMainWindowView):
     def clear_previews(self):
         self.previews.clear_items()
 
+    def histogram_mode_changed(self):
+        self.previews.combined_histograms = self.combinedHistograms.isChecked()
+        self.previews.redraw_histograms()
+
+    def histogram_legend_vis_changed(self):
+        self.previews.histogram_legend_visible = self.showHistogramLegend.isChecked()
+        legend = self.previews.histogram_legend
+        if legend:
+            if self.showHistogramLegend.isChecked():
+                legend.show()
+            else:
+                legend.hide()
+
     @property
     def preview_image_before(self) -> ImageItem:
         return self.previews.image_before
@@ -98,9 +114,5 @@ class FiltersWindowView(BaseMainWindowView):
         return self.previews.image_after
 
     @property
-    def preview_histogram_before(self) -> PlotItem:
-        return self.previews.histogram_before
-
-    @property
-    def preview_histogram_after(self) -> PlotItem:
-        return self.previews.histogram_after
+    def preview_image_difference(self) -> ImageItem:
+        return self.previews.image_difference

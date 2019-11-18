@@ -1,9 +1,9 @@
 import numpy as np
 
-HISTOGRAM_BIN_SIZE = 2048
+DEFAULT_NUM_BINS = 2048
 
 
-def generate_histogram_from_image(image_data, bin_size=HISTOGRAM_BIN_SIZE):
-    histogram, bins = np.histogram(image_data.flatten(), bin_size)
+def generate_histogram_from_image(image_data, num_bins=DEFAULT_NUM_BINS):
+    histogram, bins = np.histogram(image_data.flatten(), num_bins)
     center = (bins[:-1] + bins[1:]) / 2
-    return (center, histogram, bins)
+    return center, histogram, bins
