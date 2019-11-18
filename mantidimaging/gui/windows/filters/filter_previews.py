@@ -72,7 +72,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         }
 
         for img in self.image_before, self.image_after, self.image_difference:
-            img.hoverEvent = lambda ev: self.mouse_over(ev, CloseEnoughPoint(ev.pos()))
+            img.hoverEvent = lambda ev: self.mouse_over(ev)
 
         self.img_hover_text = {
             self.image_before: "Before: {}",
@@ -168,8 +168,11 @@ class FilterPreviews(GraphicsLayoutWidget):
             return self.histogram.legend
         return None
 
-    def mouse_over(self, ev, pos):
-        outs = []
+    def mouse_over(self, ev):
+        # Ignore events triggered by leaving window or right clicking
+        if ev.exit:
+            return
+        pos = CloseEnoughPoint(ev.pos())
         for img in self.image_before, self.image_after, self.image_difference:
             if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
