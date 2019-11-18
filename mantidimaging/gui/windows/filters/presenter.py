@@ -158,11 +158,13 @@ class FiltersWindowPresenter(BasePresenter):
                         self.view.preview_image_after,
                         self.view.previews.set_after_histogram,
                         progress)
-                    self._update_preview_image(
-                        np.subtract(filtered_image_data, before_image_data),
-                        self.view.preview_image_difference,
-                        None,
-                        progress)
+
+                    if filtered_image_data.shape == before_image_data.shape:
+                        self._update_preview_image(
+                            np.subtract(filtered_image_data, before_image_data),
+                            self.view.preview_image_difference,
+                            None,
+                            progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
