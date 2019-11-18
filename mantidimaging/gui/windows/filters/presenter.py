@@ -102,13 +102,13 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        self.model.setup_filter(
-            register_func(self.view.filterPropertiesLayout,
-                          self.view.auto_update_triggered.emit))
+        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout,
+                                             self.view.auto_update_triggered.emit)
+        self.model.setup_filter(filter_idx, filter_widget_kwargs)
 
     def filter_uses_parameter(self, parameter):
-        return parameter in self.model.parameters_from_stack.values() if \
-            self.model.parameters_from_stack is not None else False
+        return parameter in self.model.params_needed_from_stack.values() if \
+            self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
         self.model.do_apply_filter()
@@ -143,7 +143,7 @@ class FiltersWindowPresenter(BasePresenter):
 
                 # Generate sub-stack and run filter
                 progress.update(msg='Running preview filter')
-                exec_kwargs = get_parameters_from_stack(stack, self.model.parameters_from_stack)
+                exec_kwargs = get_parameters_from_stack(stack, self.model.params_needed_from_stack)
 
                 filtered_image_data = None
                 try:

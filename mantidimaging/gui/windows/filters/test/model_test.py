@@ -5,6 +5,7 @@ import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.gui.windows.filters import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import (
     StackVisualiserView, StackVisualiserPresenter, SVParameters)
@@ -53,15 +54,26 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertEqual(result_from_before,
                          self.APPLY_BEFORE_AFTER_MAGIC_NUMBER)
 
+    def setup_mocks(self, execute_mock, do_before_mock=None, do_after_mock=None):
+        self.model.setup_filter(0, {})
+        self.model.selected_filter.execute_wrapper = lambda: execute_mock
+        self.model.selected_filter.validate_execute_kwargs = lambda _: True
+
+        if do_before_mock:
+            self.model.selected_filter.do_before_wrapper = do_before_mock
+
+        if do_after_mock:
+            self.model.selected_filter.do_after_wrapper = do_after_mock
+
     def test_filters_populated(self):
         self.assertTrue(len(self.model.filter_names) > 0)
 
     def test_do_apply_filter(self):
         self.model.stack = self.sv_presenter.view
 
-        execute = mock.Mock(return_value=partial(self.execute_mock))
+        execute = mock.MagicMock(return_value=partial(self.execute_mock))
+        self.setup_mocks(execute)
 
-        self.model.setup_filter((None, None, execute, None))
         self.model.do_apply_filter()
 
         execute.assert_called_once()
@@ -70,13 +82,11 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
-
-        params = {
-            'roi': SVParameters.ROI
-        }
-
-        self.model.setup_filter((params, None, execute, None))
+        self.setup_mocks(execute)
+        self.model.selected_filter.params = lambda: {'roi': SVParameters.ROI}
         self.model.do_apply_filter()
+        # Reset state, as the same model is used for all tests
+        self.model.selected_filter.params = lambda: {}
 
         execute.assert_called_once()
 
@@ -84,17 +94,53 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
-
         do_before = mock.MagicMock(return_value=partial(self.apply_before_mock))
         do_after = mock.MagicMock(return_value=partial(self.apply_after_mock))
+        self.setup_mocks(execute, do_before, do_after)
 
-        self.model.setup_filter((None, do_before, execute, do_after))
         self.model.do_apply_filter()
 
-        execute.assert_called_once()
-
         do_before.assert_called_once()
+        execute.assert_called_once()
         do_after.assert_called_once()
+
+    def test_all_expected_filter_packages_loaded(self):
+        expected_filter_names = ['Background Correction',
+                                 'Circular Mask',
+                                 'Clip Values',
+                                 'Crop Coordinates',
+                                 'Intensity Cut Off',
+                                 'Gaussian',
+                                 'Median',
+                                 'Minus Log',
+                                 'Remove Outliers',
+                                 'Rebin',
+                                 'Ring Removal',
+                                 'ROI Normalisation',
+                                 'Rotate Stack',
+                                 'Stripe Removal']
+        self.assertEqual(len(self.model.filters),
+                         len(expected_filter_names),
+                         f"Expected {len(expected_filter_names)} filters")
+        for filter_class in self.model.filters:
+            self.assert_(isinstance(filter_class(), BaseFilter))
+        self.assertEqual(expected_filter_names,
+                         self.model.filter_names, "Not all filters are named correctly")
+
+    def test_operation_recorded_in_image_history(self):
+        self.model.stack = self.sv_presenter.view
+        self.model.stack_presenter.images.metadata = {}
+
+        execute = mock.MagicMock(return_value=partial(self.execute_mock))
+        execute.args = ["arg"]
+        execute.keywords = {"kwarg": "kwarg"}
+        self.setup_mocks(execute)
+
+        self.model.do_apply_filter()
+        op_history = self.model.stack_presenter.images.metadata['operation_history']
+        self.assertEqual(len(op_history), 1, "One operation should have been recorded")
+        self.assertEqual(op_history[0]['args'], ['arg'])
+        self.assertEqual(op_history[0]['kwargs'], {"kwarg": "kwarg"})
 
 
 if __name__ == '__main__':

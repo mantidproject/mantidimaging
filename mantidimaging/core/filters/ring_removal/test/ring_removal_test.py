@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.ring_removal import RingRemovalFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import ring_removal
 
 
 class RingRemovalTest(unittest.TestCase):
@@ -25,7 +23,7 @@ class RingRemovalTest(unittest.TestCase):
         # invalid threshold
         run_ring_removal = False
 
-        result = ring_removal.execute(images, run_ring_removal, cores=1)
+        result = RingRemovalFilter._filter_func(images, run_ring_removal, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -39,7 +37,7 @@ class RingRemovalTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = ring_removal.execute(images, run_ring_removal, cores=1)
+        result = RingRemovalFilter._filter_func(images, run_ring_removal, cores=1)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -48,6 +46,13 @@ class RingRemovalTest(unittest.TestCase):
         npt.assert_equal(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images, _ = th.gen_img_shared_array_and_copy()
+        RingRemovalFilter.execute_wrapper()(images)
 
 
 if __name__ == '__main__':

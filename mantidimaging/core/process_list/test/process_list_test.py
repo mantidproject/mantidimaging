@@ -1,13 +1,12 @@
 import os
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
 from mantidimaging.core import process_list
-from mantidimaging.core.filters import median_filter
+from mantidimaging.core.filters.median_filter import MedianFilter
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
 PACKAGE_LOCATION_STRING = 'mantidimaging.core.filters.median_filter'
-FUNC_NAME = 'execute'
+FUNC_NAME = '_filter_func'
 
 
 class ProcessListTest(FileOutputtingTestCase):
@@ -15,9 +14,9 @@ class ProcessListTest(FileOutputtingTestCase):
         super(ProcessListTest, self).setUp()
 
         self.pl = process_list.ProcessList()
-        self.pl.store(median_filter.execute, 3)
-        self.pl.store(median_filter.execute, size=55)
-        self.pl.store(median_filter.execute, 11, mode='test')
+        self.pl.store(MedianFilter()._filter_func, 3)
+        self.pl.store(MedianFilter()._filter_func, size=55)
+        self.pl.store(MedianFilter()._filter_func, 11, mode='test')
 
     def tearDown(self):
         super(ProcessListTest, self).tearDown()
@@ -25,9 +24,9 @@ class ProcessListTest(FileOutputtingTestCase):
         self.pl = None
 
     def test_store(self):
-        self.pl.store(median_filter.execute, 3)
-        self.pl.store(median_filter.execute, 1)
-        self.pl.store(median_filter.execute, 2)
+        self.pl.store(MedianFilter()._filter_func, 3)
+        self.pl.store(MedianFilter()._filter_func, 1)
+        self.pl.store(MedianFilter()._filter_func, 2)
 
         # 3 from setup and 3 from here
         self.assertEquals(len(self.pl), 6)
@@ -75,19 +74,19 @@ class ProcessListTest(FileOutputtingTestCase):
 
     def test_fail_store(self):
         self.assertRaises(AssertionError, self.pl.store,
-                          median_filter.execute, 3, not_existing_kwarg=3)
+                          MedianFilter()._filter_func, 3, not_existing_kwarg=3)
 
     def test_from_string_fail(self):
         input_string = "some arbitrary string here"
         self.assertRaises(ValueError, self.pl.from_string, input_string)
 
     def test_from_string(self):
-        input_string = "mantidimaging/core/filters/median_filter execute (3, 'reflect') {'cores': 3}"
+        input_string = "mantidimaging/core/filters/median_filter MedianFilter._filter_func (3, 'reflect') {'cores': 3}"
         # empty the pre-setup list
         self.pl._list = []
         self.pl.from_string(input_string)
         exp_package = 'mantidimaging/core/filters/median_filter'
-        exp_func = 'execute'
+        exp_func = 'MedianFilter._filter_func'
         exp_args = (3, 'reflect')
         exp_kwargs = {'cores': 3}
 
@@ -99,12 +98,13 @@ class ProcessListTest(FileOutputtingTestCase):
     def test_from_string_multiple(self):
         REPS = 3
         # duplicate the string
-        input_string = "mantidimaging/core/filters/median_filter execute (3, 'reflect') {'cores': 3};" * REPS
+        input_string = "mantidimaging/core/filters/median_filter "\
+                       "MedianFilter._filter_func (3, 'reflect') {'cores': 3};" * REPS
         # empty the pre-setup list
         self.pl._list = []
         self.pl.from_string(input_string)
         exp_package = 'mantidimaging/core/filters/median_filter'
-        exp_func = 'execute'
+        exp_func = 'MedianFilter._filter_func'
         exp_args = (3, 'reflect')
         exp_kwargs = {'cores': 3}
 

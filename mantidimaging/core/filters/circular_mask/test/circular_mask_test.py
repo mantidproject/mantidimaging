@@ -1,12 +1,11 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.circular_mask import CircularMaskFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import circular_mask
 
 
 class CircularMaskTest(unittest.TestCase):
@@ -27,22 +26,22 @@ class CircularMaskTest(unittest.TestCase):
 
         ratio = 0
         mask_val = 0.
-        result = circular_mask.execute(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
         ratio = 1
-        result = circular_mask.execute(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
         ratio = -1
-        result = circular_mask.execute(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
         ratio = None
-        result = circular_mask.execute(images, ratio, mask_val)
+        result = CircularMaskFilter._filter_func(images, ratio, mask_val)
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
 
@@ -51,7 +50,7 @@ class CircularMaskTest(unittest.TestCase):
 
         ratio = 0.001
 
-        result = circular_mask.execute(images, ratio)
+        result = CircularMaskFilter._filter_func(images, ratio)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -60,7 +59,7 @@ class CircularMaskTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
         ratio = 0.994
 
-        result = circular_mask.execute(images, ratio)
+        result = CircularMaskFilter._filter_func(images, ratio)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -85,7 +84,7 @@ class CircularMaskTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = circular_mask.execute(images, ratio)
+        result = CircularMaskFilter._filter_func(images, ratio)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -94,6 +93,22 @@ class CircularMaskTest(unittest.TestCase):
         th.assert_not_equals(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        radius_field = mock.Mock()
+        radius_field.value = mock.Mock(return_value=0)
+        value_field = mock.Mock()
+        value_field.value = mock.Mock(return_value=0)
+        execute_func = CircularMaskFilter.execute_wrapper(radius_field, value_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(radius_field.value.call_count, 1)
+        self.assertEqual(value_field.value.call_count, 1)
 
 
 if __name__ == '__main__':

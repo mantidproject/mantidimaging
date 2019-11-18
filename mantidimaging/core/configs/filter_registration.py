@@ -22,7 +22,7 @@ def _cli_register_into_parser(parser, module):
                    parameter, and the module will be registered into that
                    group.
     """
-    group = parser.add_argument_group('{} options'.format(module.NAME))
+    group = parser.add_argument_group(f'{module.FILTER_CLASS.filter_name} options')
     module._cli_register(group)
 
 
@@ -40,10 +40,6 @@ def register_filters_on_cli(
     """
     filter_packages = get_package_children(package_name, packages=True,
                                            ignore=ignored_packages)
-
     filter_packages = [p[1] for p in filter_packages]
-
-    loaded_filters = import_items(filter_packages,
-                                  ['execute', 'NAME', '_cli_register'])
-
+    loaded_filters = import_items(filter_packages, required_attributes=['FILTER_CLASS'])
     register_into(parser, loaded_filters, _cli_register_into_parser)
