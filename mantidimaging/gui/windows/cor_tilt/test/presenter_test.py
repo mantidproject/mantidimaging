@@ -2,6 +2,7 @@ import unittest
 
 import mock
 import numpy as np
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.data import const as data_const
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowPresenter, CORTiltWindowView
@@ -54,3 +55,26 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
         self.view.add_cor_table_row.assert_called_once_with(
             self.presenter.model.selected_row, self.presenter.model.preview_slice_idx,
             self.presenter.model.last_result[data_const.COR_TILT_ROTATION_CENTRE])
+
+    def test_do_preview_reconstruction(self):
+        self.presenter.model = mock.Mock()
+
+        self.presenter.model.get_cor_for_slice_from_regression.return_value = None
+        self.presenter.do_preview_reconstruction()
+        self.view.update_image_recon_preview.assert_not_called()
+
+        self.presenter.model.has_results = True
+        self.presenter.model.get_cor_for_slice_from_regression.return_value = 333
+        self.presenter.model.run_preview_recon.return_value = [1, 2, 3]
+        self.presenter.do_preview_reconstruction()
+        self.view.update_image_recon_preview.assert_called_once_with(
+            self.presenter.model.run_preview_recon.return_value)
+
+    # Test that calls to do_plot_cor_vs_slice_index at least mostly work
+    def test_do_plot(self):
+        type(self.presenter.model.data_model).num_points = mock.PropertyMock(return_value=3)
+
+        # Cause plotting to fail so that window does not appear during tests
+        type(self.presenter.model.data_model).slices = mock.PropertyMock(return_value=None)
+        with self.assertRaises(ValueError):
+            self.presenter.do_plot_cor_vs_slice_index()

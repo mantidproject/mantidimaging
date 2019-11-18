@@ -5,10 +5,9 @@ from logging import getLogger
 import matplotlib.pyplot as plt
 
 from mantidimaging.core.data import const as data_const
-from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.windows.cor_tilt.model import CORTiltWindowModel
 
 LOG = getLogger(__name__)
@@ -105,15 +104,13 @@ class CORTiltWindowPresenter(BasePresenter):
         self.view.update_image_preview(img_data, self.model.preview_slice_idx, self.model.preview_tilt_line_data,
                                        self.model.roi)
 
-        self.view.update_fit_plot(self.model.model.slices, self.model.model.cors, self.model.preview_fit_y_data)
+        self.view.update_fit_plot(self.model.slices, self.model.cors, self.model.preview_fit_y_data)
 
     def do_preview_reconstruction(self, cor=None):
-        data = None
-
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
-            cor = self.model.model.get_cor_for_slice_from_regression(self.model.preview_slice_idx)
+            cor = self.model.get_cor_for_slice_from_regression()
 
         if cor is not None:
             data = self.model.run_preview_recon(self.model.preview_slice_idx, cor)
@@ -139,13 +136,13 @@ class CORTiltWindowPresenter(BasePresenter):
         if res == CORInspectionDialogView.Accepted:
             new_cor = dialog.optimal_rotation_centre
             LOG.debug('New optimal rotation centre: {}'.format(new_cor))
-            self.model.model.set_cor_at_slice(slice_idx, new_cor)
+            self.model.data_model.set_cor_at_slice(slice_idx, new_cor)
 
         # Update reconstruction preview with new COR
         self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
 
     def do_plot_cor_vs_slice_index(self):
-        if self.model.model.num_points > 1:
+        if self.model.data_model.num_points > 1:
             fig = plt.figure()
             ax = fig.add_subplot(111)
 
@@ -153,13 +150,13 @@ class CORTiltWindowPresenter(BasePresenter):
             names = []
 
             # Add data line
-            lines.append(ax.plot(self.model.model.slices, self.model.model.cors)[0])
+            lines.append(ax.plot(self.model.data_model.slices, self.model.data_model.cors)[0])
             names.append('Data')
 
             # Add fit line (if a fit has been performed)
             fit_data = self.model.preview_fit_y_data
             if fit_data is not None:
-                lines.append(ax.plot(self.model.model.slices, fit_data)[0])
+                lines.append(ax.plot(self.model.data_model.slices, fit_data)[0])
                 names.append('Fit')
 
             # Add legend
@@ -175,30 +172,16 @@ class CORTiltWindowPresenter(BasePresenter):
         self.model.calculate_slices(self.view.slice_count)
         self.model.calculate_projections(self.view.projection_count)
 
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.run_finding_automatic)
-        atd.presenter.set_on_complete(self._on_finding_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        start_async_task_view(self.view, self.model.run_finding_automatic, self._on_finding_done)
 
     def do_execute_manual(self):
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-
-        atd.presenter.set_task(self.model.run_finding_manual)
-        atd.presenter.set_on_complete(self._on_finding_done)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        start_async_task_view(self.view, self.model.run_finding_manual, self._on_finding_done)
 
     def _on_finding_done(self, task):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.view.set_results(self.model.model.c, self.model.model.angle_rad, self.model.model.m)
+            self.view.set_results(*self.model.get_results())
             self.view.show_results()
             self.notify(Notification.UPDATE_PREVIEWS)
             self.notify(Notification.PREVIEW_RECONSTRUCTION)

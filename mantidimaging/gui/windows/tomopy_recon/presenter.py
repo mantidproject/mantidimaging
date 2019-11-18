@@ -4,9 +4,8 @@ from typing import TYPE_CHECKING, Dict, List
 
 from mantidimaging.core.data import const, Images
 from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
-from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from .model import TomopyReconWindowModel
 
 LOG = getLogger(__name__)
@@ -106,20 +105,11 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()
-        self._create_recon_task(self.model.reconstruct_slice, self._on_reconstruct_slice_done)
+        start_async_task_view(self.view, self.model.reconstruct_slice, self._on_reconstruct_slice_done)
 
     def do_reconstruct_volume(self):
         self.prepare_reconstruction()
-        self._create_recon_task(self.model.reconstruct_volume, self._on_reconstruct_volume_done)
-
-    def _create_recon_task(self, task, on_complete):
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs = {'progress': Progress()}
-        kwargs['progress'].add_progress_handler(atd.presenter)
-        atd.presenter.set_task(task)
-        atd.presenter.set_on_complete(on_complete)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        start_async_task_view(self.view, self.model.reconstruct_volume, self._on_reconstruct_volume_done)
 
     def _on_reconstruct_slice_done(self, task):
         if task.was_successful():

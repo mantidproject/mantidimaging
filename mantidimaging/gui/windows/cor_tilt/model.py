@@ -14,19 +14,22 @@ LOG = getLogger(__name__)
 
 
 class CORTiltWindowModel(object):
-    def __init__(self, model: CorTiltPointQtModel):
+    def __init__(self, data_model: CorTiltPointQtModel):
         self.stack: Optional[Images] = None
         self.preview_projection_idx = 0
         self.preview_slice_idx = 0
         self.selected_row = 0
         self.roi = None
         self.projection_indices = None
-        self.model = model
+        self.data_model = data_model
         self.last_result = None
 
     @property
     def has_results(self):
-        return self.model.has_results
+        return self.data_model.has_results
+
+    def get_results(self):
+        return self.data_model.cor, self.data_model.angle_rad, self.data_model.gradient
 
     @property
     def sample(self):
@@ -45,15 +48,19 @@ class CORTiltWindowModel(object):
         return self.sample.shape[1] if self.sample is not None else 0
 
     @property
+    def num_points(self):
+        return self.data_model.num_points
+
+    @property
     def cor_for_current_preview_slice(self):
-        return self.model.get_cor_for_slice(self.preview_slice_idx)
+        return self.data_model.get_cor_for_slice(self.preview_slice_idx)
 
     def set_all_cors(self, cor: float):
-        for slice_idx in self.model.slices:
-            self.model.set_cor_at_slice(slice_idx, cor)
+        for slice_idx in self.data_model.slices:
+            self.data_model.set_cor_at_slice(slice_idx, cor)
 
     def initial_select_data(self, stack):
-        self.model.clear_results()
+        self.data_model.clear_results()
 
         self.stack = stack
         self.preview_projection_idx = 0
@@ -65,18 +72,18 @@ class CORTiltWindowModel(object):
             self.proj_angles = generate_projection_angles(360, self.sample.shape[0])
 
     def update_roi_from_stack(self):
-        self.model.clear_results()
+        self.data_model.clear_results()
         self.roi = self.stack.current_roi if self.stack else None
 
     def calculate_slices(self, count):
-        self.model.clear_results()
+        self.data_model.clear_results()
         if self.roi is not None:
             lower = self.roi[1]
             upper = self.roi[3]
-            self.model.populate_slice_indices(lower, upper, count)
+            self.data_model.populate_slice_indices(lower, upper, count)
 
     def calculate_projections(self, count):
-        self.model.clear_results()
+        self.data_model.clear_results()
         if self.sample is not None:
             sample_proj_count = self.sample.shape[0]
             downsample_proj_count = min(sample_proj_count, count)
@@ -92,10 +99,10 @@ class CORTiltWindowModel(object):
         if self.roi is None:
             raise ValueError('No region of interest is defined')
 
-        run_auto_finding_on_images(self.images, self.model, self.roi, self.projection_indices, progress=progress)
+        run_auto_finding_on_images(self.images, self.data_model, self.roi, self.projection_indices, progress=progress)
 
         # Cache last result
-        self.last_result = self.model.stack_properties
+        self.last_result = self.data_model.stack_properties
 
         # Async task needs a non-None result of some sort
         return True
@@ -108,11 +115,11 @@ class CORTiltWindowModel(object):
         if self.roi is None:
             raise ValueError('No region of interest is defined')
 
-        self.model.linear_regression()
-        update_image_operations(self.images, self.model)
+        self.data_model.linear_regression()
+        update_image_operations(self.images, self.data_model)
 
         # Cache last result
-        self.last_result = self.model.stack_properties
+        self.last_result = self.data_model.stack_properties
 
         # Async task needs a non-None result of some sort
         return True
@@ -127,11 +134,21 @@ class CORTiltWindowModel(object):
 
     @property
     def preview_tilt_line_data(self):
-        return ([self.model.c, self.model.cors[-1]],
-                [self.model.slices[0], self.model.slices[-1]]) \
-            if self.model.has_results else None
+        return ([self.data_model.cor, self.cors[-1]],
+                [self.slices[0], self.slices[-1]]) if self.data_model.has_results else None
 
     @property
     def preview_fit_y_data(self):
-        return [self.model.m * s + self.model.c for s in self.model.slices] \
-            if self.model.has_results else None
+        return [self.data_model.gradient * slice_idx + self.data_model.cor
+                for slice_idx in self.slices] if self.data_model.has_results else None
+
+    @property
+    def cors(self):
+        return self.data_model.cors
+
+    @property
+    def slices(self):
+        return self.data_model.slices
+
+    def get_cor_for_slice_from_regression(self):
+        return self.data_model.get_cor_for_slice_from_regression(self.preview_slice_idx)
