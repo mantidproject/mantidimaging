@@ -130,12 +130,11 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         npt.assert_equal(result, sample)
 
-    @mock.patch(f'{BackgroundCorrectionFilter.__module__ + ".get_average_image"}')
-    def test_execute_wrapper_return_is_runnable(self, test_patch):
+    @mock.patch(f'{BackgroundCorrectionFilter.__module__ + ".get_average_image"}', mock.MagicMock(return_value=None))
+    def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        test_patch.return_value = None
         execute_func = BackgroundCorrectionFilter.execute_wrapper(None, None)
 
         images, _ = th.gen_img_shared_array_and_copy()
