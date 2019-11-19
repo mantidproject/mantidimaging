@@ -13,7 +13,7 @@ from requests_futures.sessions import FuturesSession
 from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
                                                             WS_JOB_STATUS_NAMESPACE)
 
-from mantidimaging.core.configs.savu_backend_docker import backend_config, BackendOptions, dev_backend_config, DevBackendOptions
+from mantidimaging.core.configs.savu_backend_docker import BackendConfig, DevelopmentBackendConfig
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
@@ -89,34 +89,32 @@ async def prepare_backend() -> BackgroundService:
         docker_exe,
         "run",
         "--network=host",
-        # todo get these automatically with id -u id -g?
         "-e",
         f"PUID={subprocess.check_output(['id','-u']).decode('utf-8').strip()}",
         "-e",
         f"PGID={subprocess.check_output(['id','-g']).decode('utf-8').strip()}",
     ]
 
-    if backend_config[BackendOptions.NVIDIA_RUNTIME]["active"]:
-        pargs.append(backend_config[BackendOptions.NVIDIA_RUNTIME]["value"])
+    if BackendConfig.NVIDIA_RUNTIME["active"]:
+        pargs.append(BackendConfig.NVIDIA_RUNTIME["value"])
 
     # if this is running in development mode, mount hebi and savu sources
-    if backend_config[BackendOptions.DEVELOPMENT]:
+    if BackendConfig.DEVELOPMENT:
         pargs.append("-v")
-        pargs.append(f"{dev_backend_config[DevBackendOptions.HEBI_SOURCE_DIR]}:/webservice")
+        pargs.append(f"{DevelopmentBackendConfig.HEBI_SOURCE_DIR}:/webservice")
 
         pargs.append("-v")
-        pargs.append(f"{dev_backend_config[DevBackendOptions.SAVU_SOURCE_DIR]}:/savu_custom")
+        pargs.append(f"{DevelopmentBackendConfig.SAVU_SOURCE_DIR}:/savu_custom")
 
     pargs.append("-v")
-    pargs.append(f"{backend_config[BackendOptions.DATA_SOURCE_DIR]}:/data")
+    pargs.append(f"{BackendConfig.DATA_SOURCE_DIR}:/data")
     pargs.append("-v")
-    pargs.append(f"{backend_config[BackendOptions.OUTPUT_DIR]}:/output")
+    pargs.append(f"{BackendConfig.OUTPUT_DIR}:/output")
 
-    if backend_config[BackendOptions.DEVELOPMENT]:
-        pargs.append(f"{backend_config[BackendOptions.IMAGE_NAME]}:"
-                     f"{dev_backend_config[DevBackendOptions.DEVELOPMENT_LABEL]}")
+    if BackendConfig.DEVELOPMENT:
+        pargs.append(f"{BackendConfig.IMAGE_NAME}:{DevelopmentBackendConfig.DEVELOPMENT_LABEL}")
     else:
-        pargs.append(backend_config[BackendOptions.IMAGE_NAME])
+        pargs.append(BackendConfig.IMAGE_NAME)
 
     LOG.debug(f"Starting DOCKER service with args: {pargs}")
     process = BackgroundService(pargs)
