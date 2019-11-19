@@ -18,6 +18,8 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 
+LOG = getLogger(__file__)
+
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
     backend_message = Qt.pyqtSignal(bytes)
@@ -86,9 +88,7 @@ class MainWindowView(BaseMainWindowView):
         msg_box.setText(
             '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
             '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(
-                version_no
-            )
-        )
+                version_no))
         msg_box.show()
 
     def show_load_dialogue(self):
@@ -165,9 +165,8 @@ class MainWindowView(BaseMainWindowView):
         dock_widget.setWidget(StackVisualiserView(self, dock_widget, stack))
 
         # proof of concept above
-        assert isinstance(
-            dock_widget.widget(), StackVisualiserView
-        ), "Widget inside dock_widget is not an StackVisualiserView!"
+        assert isinstance(dock_widget.widget(),
+                          StackVisualiserView), "Widget inside dock_widget is not an StackVisualiserView!"
 
         dock_widget.setFloating(floating)
 
@@ -187,9 +186,10 @@ class MainWindowView(BaseMainWindowView):
         if self.presenter.have_active_stacks:
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
-            msg_box = QtWidgets.QMessageBox.question(
-                self, "Quit", "Are you sure you want to quit?", defaultButton=QtWidgets.QMessageBox.No
-            )
+            msg_box = QtWidgets.QMessageBox.question(self,
+                                                     "Quit",
+                                                     "Are you sure you want to quit?",
+                                                     defaultButton=QtWidgets.QMessageBox.No)
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:
@@ -209,6 +209,13 @@ class MainWindowView(BaseMainWindowView):
         QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
         getLogger(__name__).error(log_error_msg)
 
+    def print_backend_output(self, output: bytes):
+        getLogger(__name__).debug(output)
+
+    def error_callback(self, err_code, output):
+        self.status_bar_label.setText("SAVU Backend: Error")
+        getLogger(__name__).error("".join([out.decode("utf-8") for out in output]))
+
     def set_background_service(self, process: BackgroundService):
         if process.process and process.process.poll() is not None:
             self.status_bar_label.setText("SAVU Backend: Starting")
@@ -216,7 +223,5 @@ class MainWindowView(BaseMainWindowView):
         self.backend_process = process
         process.callback = lambda output: self.backend_message.emit(output)
         process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
-        # process.error_callback = lambda err_code, output: None
+        process.error_callback = self.error_callback
 
-    def print_backend_output(self, output: str):
-        print(output)

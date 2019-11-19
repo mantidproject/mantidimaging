@@ -17,6 +17,8 @@ def execute(docker_backend: BackgroundService):
     application_window = MainWindowView()
     application_window.set_background_service(docker_backend)
 
+    docker_backend.start()
+
     sys.excepthook = lambda exc_type, exc_value, exc_traceback: application_window.uncaught_exception(
         "".join(traceback.format_exception_only(exc_type, exc_value)),
         "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))

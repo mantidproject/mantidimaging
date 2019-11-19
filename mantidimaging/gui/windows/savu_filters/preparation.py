@@ -22,12 +22,13 @@ LOG = getLogger(__name__)
 
 
 class BackgroundService(threading.Thread):
-    def __init__(self, args: List):
+    def __init__(self, docker_exe, args: List):
         super().__init__()
+        self.docker_exe = docker_exe
         self.args = args
-        self.callback = lambda output: print(output)
-        self.error_callback = lambda err_code, output: None
-        self.success_callback = lambda: None
+        self.callback = lambda output: LOG.debug(output)
+        self.error_callback = lambda err_code, output: LOG.debug(f"BackgroundService error: {output}")
+        self.success_callback = lambda: LOG.debug("BackgroundService success.")
         self.exit_code: int = -4444
         self.close_now = False
         self.docker_id = None
@@ -45,14 +46,21 @@ class BackgroundService(threading.Thread):
             if output:
                 self.callback(output)
         self.exit_code = self.process.poll()
+        self.determine_run_outcome()
 
-        if not self.close_intended and self.exit_code != 0:
+    def determine_run_outcome(self) -> int:
+        if self.close_intended and self.exit_code == 0:
+            self.success_callback()
+        else:
             # docker could not be started, try to connect to an already running container
             prepare_data()
             if sio_client is not None and sio_client.sid is not None:
                 LOG.info("Connected to SAVU Docker backend that was already running.")
+                self.success_callback()
             else:
-                self.error_callback(self.exit_code, self.process.stdout.readlines())
+                self.error_callback(self.exit_code, self.process.stderr.readlines())
+
+        return self.exit_code
 
     def success(self):
         prepare_data()
@@ -62,7 +70,7 @@ class BackgroundService(threading.Thread):
     def close(self):
         self.close_intended = True
         self.process.terminate()
-        subprocess.call(f'docker kill {self.docker_id}', shell=True)
+        subprocess.call(f'{self.docker_exe} kill {self.docker_id}', shell=True)
         sio_client.reconnection = False
         sio_client.disconnect()
 
@@ -85,7 +93,7 @@ def find_docker():
 async def prepare_backend() -> BackgroundService:
 
     docker_exe = find_docker()
-    pargs = [
+    docker_args = [
         docker_exe,
         "run",
         "--network=host",
@@ -96,29 +104,31 @@ async def prepare_backend() -> BackgroundService:
     ]
 
     if RemoteConfig.NVIDIA_RUNTIME["active"]:
-        pargs.append(RemoteConfig.NVIDIA_RUNTIME["value"])
+        docker_args.append(RemoteConfig.NVIDIA_RUNTIME["value"])
 
     # if running in development mode, mount hebi and savu sources
     if RemoteConfig.DEVELOPMENT:
-        pargs.append("-v")
-        pargs.append(f"{DevelopmentRemoteConfig.HEBI_SOURCE_DIR}:{RemoteConstants.HEBI_SOURCE_DIR}")
+        docker_args.append("-v")
+        docker_args.append(f"{DevelopmentRemoteConfig.HEBI_SOURCE_DIR}:{RemoteConstants.HEBI_SOURCE_DIR}")
 
-        pargs.append("-v")
-        pargs.append(f"{DevelopmentRemoteConfig.SAVU_SOURCE_DIR}:{RemoteConstants.SAVU_SOURCE_DIR}")
+        docker_args.append("-v")
+        docker_args.append(f"{DevelopmentRemoteConfig.SAVU_SOURCE_DIR}:{RemoteConstants.SAVU_SOURCE_DIR}")
 
-    pargs.append("-v")
-    pargs.append(f"{RemoteConfig.LOCAL_DATA_DIR}:{RemoteConstants.DATA_DIR}")
-    pargs.append("-v")
-    pargs.append(f"{RemoteConfig.LOCAL_OUTPUT_DIR}:{RemoteConstants.OUTPUT_DIR}")
+    docker_args.append("-v")
+    docker_args.append(f"{RemoteConfig.LOCAL_DATA_DIR}:{RemoteConstants.DATA_DIR}")
+    docker_args.append("-v")
+    docker_args.append(f"{RemoteConfig.LOCAL_OUTPUT_DIR}:{RemoteConstants.OUTPUT_DIR}")
+
+    docker_args.append("-t")
 
     if RemoteConfig.DEVELOPMENT:
-        pargs.append(f"{RemoteConfig.IMAGE_NAME}:{DevelopmentRemoteConfig.DEVELOPMENT_LABEL}")
+        docker_args.append(f"{RemoteConfig.IMAGE_NAME}:{DevelopmentRemoteConfig.DEVELOPMENT_LABEL}")
     else:
-        pargs.append(RemoteConfig.IMAGE_NAME)
+        docker_args.append(RemoteConfig.IMAGE_NAME)
 
-    LOG.debug(f"Starting DOCKER service with args: {' '.join(pargs)}")
-    process = BackgroundService(pargs)
-    process.start()
+    docker_args = list(map(lambda arg: arg.replace("~", os.path.expanduser("~")) if "~" in arg else arg, docker_args))
+    LOG.debug(f"Starting DOCKER service with args: {' '.join(docker_args)}")
+    process = BackgroundService(docker_exe, docker_args)
     return process
 
 
