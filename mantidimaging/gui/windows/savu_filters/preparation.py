@@ -48,6 +48,7 @@ class BackgroundService(threading.Thread):
                 self.success()
                 break
         self.exit_code = self.process.poll()
+        self.determine_run_outcome()
 
         if not self.exit_code:
             self.success_callback()
