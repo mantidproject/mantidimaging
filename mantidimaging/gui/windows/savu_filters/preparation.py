@@ -13,7 +13,7 @@ from requests_futures.sessions import FuturesSession
 from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
                                                             WS_JOB_STATUS_NAMESPACE)
 
-from mantidimaging.core.configs.savu_backend_docker import BackendConfig, DevelopmentBackendConfig
+from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, DevelopmentRemoteConfig, RemoteConstants
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
@@ -95,28 +95,28 @@ async def prepare_backend() -> BackgroundService:
         f"PGID={subprocess.check_output(['id','-g']).decode('utf-8').strip()}",
     ]
 
-    if BackendConfig.NVIDIA_RUNTIME["active"]:
-        pargs.append(BackendConfig.NVIDIA_RUNTIME["value"])
+    if RemoteConfig.NVIDIA_RUNTIME["active"]:
+        pargs.append(RemoteConfig.NVIDIA_RUNTIME["value"])
 
-    # if this is running in development mode, mount hebi and savu sources
-    if BackendConfig.DEVELOPMENT:
+    # if running in development mode, mount hebi and savu sources
+    if RemoteConfig.DEVELOPMENT:
         pargs.append("-v")
-        pargs.append(f"{DevelopmentBackendConfig.HEBI_SOURCE_DIR}:/webservice")
+        pargs.append(f"{DevelopmentRemoteConfig.HEBI_SOURCE_DIR}:{RemoteConstants.HEBI_SOURCE_DIR}")
 
         pargs.append("-v")
-        pargs.append(f"{DevelopmentBackendConfig.SAVU_SOURCE_DIR}:/savu_custom")
+        pargs.append(f"{DevelopmentRemoteConfig.SAVU_SOURCE_DIR}:{RemoteConstants.SAVU_SOURCE_DIR}")
 
     pargs.append("-v")
-    pargs.append(f"{BackendConfig.DATA_SOURCE_DIR}:/data")
+    pargs.append(f"{RemoteConfig.LOCAL_DATA_DIR}:{RemoteConstants.DATA_DIR}")
     pargs.append("-v")
-    pargs.append(f"{BackendConfig.OUTPUT_DIR}:/output")
+    pargs.append(f"{RemoteConfig.LOCAL_OUTPUT_DIR}:{RemoteConstants.OUTPUT_DIR}")
 
-    if BackendConfig.DEVELOPMENT:
-        pargs.append(f"{BackendConfig.IMAGE_NAME}:{DevelopmentBackendConfig.DEVELOPMENT_LABEL}")
+    if RemoteConfig.DEVELOPMENT:
+        pargs.append(f"{RemoteConfig.IMAGE_NAME}:{DevelopmentRemoteConfig.DEVELOPMENT_LABEL}")
     else:
-        pargs.append(BackendConfig.IMAGE_NAME)
+        pargs.append(RemoteConfig.IMAGE_NAME)
 
-    LOG.debug(f"Starting DOCKER service with args: {pargs}")
+    LOG.debug(f"Starting DOCKER service with args: {' '.join(pargs)}")
     process = BackgroundService(pargs)
     process.start()
     return process

@@ -6,10 +6,10 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
+from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.windows.filters.navigation_toolbar import FiltersWindowNavigationToolbar
-from mantidimaging.gui.windows.savu_filters.path_config import OUTPUT_REMOTE, OUTPUT_LOCAL
 from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
 from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
@@ -152,15 +152,18 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.floating_output.setText("")
 
     def load_savu_stack(self, output: str):
-        # replace remote path with local
-        local_output = output.replace(OUTPUT_REMOTE, OUTPUT_LOCAL)
-        # navigate to the output folder TODO make this more robust somehow
+        # replace remote output with the local output path equivalent
+        local_output = output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR)
+        # navigate to the first folder - that should be the folder created by the output plugin
+        # TODO make more robust somehow, get output folder from Savu through Hebi?
         local_output = os.path.join(local_output, os.listdir(local_output)[0], "TiffSaver-tomo")
-        kwargs = {'sample_path': local_output,
-                  'flat_path': '',
-                  'dark_path': '',
-                  'image_format': "tiff",
-                  'parallel_load': False,
-                  'indices': None,
-                  'custom_name': "apples"}
+        kwargs = {
+            'sample_path': local_output,
+            'flat_path': '',
+            'dark_path': '',
+            'image_format': "tiff",
+            'parallel_load': False,
+            'indices': None,
+            'custom_name': "apples"
+        }
         self.main_window.presenter.load_stack(kwargs)
