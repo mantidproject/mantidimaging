@@ -4,7 +4,7 @@ class RemoteConfig:
     IMAGE_NAME = "dtasev/hebi"
     NVIDIA_RUNTIME = {
         "value": "--runtime=nvidia",
-        "active": True
+        "active": False
     }
     DEVELOPMENT = False
 
