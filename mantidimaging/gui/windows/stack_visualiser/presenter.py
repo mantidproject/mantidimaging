@@ -1,13 +1,10 @@
 from enum import IntEnum
 from logging import getLogger
-from typing import TYPE_CHECKING
 
-from mantidimaging.core.data import Images, const
+from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
-
-if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
 class SVNotification(IntEnum):

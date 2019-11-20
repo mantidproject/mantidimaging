@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from mantidimaging.core.data import Images, const
+from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct import utility
 
 TEST_PARAMS_1 = {

@@ -4,7 +4,7 @@ from logging import getLogger
 
 import matplotlib.pyplot as plt
 
-from mantidimaging.core.data import const as data_const
+from mantidimaging.core.operation_history import const as data_const
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.dialogs.async_task import start_async_task_view

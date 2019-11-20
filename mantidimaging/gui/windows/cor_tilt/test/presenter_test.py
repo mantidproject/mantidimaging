@@ -4,7 +4,7 @@ import mock
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data import const as data_const
+from mantidimaging.core.operation_history import const as data_const
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowPresenter, CORTiltWindowView
 from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView

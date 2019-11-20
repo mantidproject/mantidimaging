@@ -6,7 +6,7 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
-from mantidimaging.core.utility.registrator import get_package_children, import_items
+from mantidimaging.core.filters.loader import load_filter_packages
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
@@ -27,8 +27,7 @@ class FiltersWindowModel(object):
         super(FiltersWindowModel, self).__init__()
 
         # Update the local filter registry
-        self.filters = FiltersWindowModel.load_filter_packages(
-            'mantidimaging.core.filters', ignored_packages=['mantidimaging.core.filters.wip'])
+        self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
 
         self.preview_image_idx = 0
 
@@ -36,28 +35,6 @@ class FiltersWindowModel(object):
         self.stack = None
         self.selected_filter = self.filters[0]
         self.filter_widget_kwargs = None
-
-    @staticmethod
-    def load_filter_packages(package_name, ignored_packages=None) -> List[BaseFilter]:
-        """
-        Builds a local registry of filters.
-
-        Filter name is used to initially populate the combo box for filter
-        selection.
-
-        The _gui_register function is then used to setup the filter specific
-        properties and the execution mode.
-
-        :param package_name: Name of the root package in which to search for
-                             filters
-        :param ignored_packages: List of ignore rules
-        """
-        filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
-        filter_package_names = [p.name for p in filter_packages]
-        loaded_filters = import_items(filter_package_names, required_attributes=['FILTER_CLASS'])
-        loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
-
-        return [f.FILTER_CLASS for f in loaded_filters]
 
     @property
     def filter_names(self):
@@ -132,7 +109,7 @@ class FiltersWindowModel(object):
 
         # store the executed filter in history if it all executed successfully
         exec_func.keywords.update(stack_params)
-        images.record_operation(f'{self.selected_filter.__module__}',
+        images.record_operation(f"{self.selected_filter.__name__}",      # type: ignore
                                 *exec_func.args, **exec_func.keywords)
 
     def do_apply_filter(self):

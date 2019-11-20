@@ -6,7 +6,7 @@ from typing import List, Tuple, Optional, Any, Dict
 import numpy as np
 
 from mantidimaging import helper as h
-from . import const
+from mantidimaging.core.operation_history import const
 
 
 class Images:

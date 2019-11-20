@@ -1,7 +1,8 @@
 from logging import getLogger
 from typing import Optional, Tuple, Dict, Any
 
-from mantidimaging.core.data import const, Images
+from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
 
 LOG = getLogger(__name__)
 

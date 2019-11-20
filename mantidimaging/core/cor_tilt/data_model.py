@@ -5,7 +5,7 @@ from typing import Optional, List
 import numpy as np
 import scipy as sp
 
-from mantidimaging.core.data import const
+from mantidimaging.core.operation_history import const
 from .angles import cors_to_tilt_angle
 
 LOG = getLogger(__name__)
