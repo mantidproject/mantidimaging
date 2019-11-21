@@ -56,10 +56,8 @@ class FiltersWindowModelTest(unittest.TestCase):
 
     def setup_mocks(self, execute_mock, do_before_mock=None, do_after_mock=None):
         f = self.model.selected_filter
-        orig_exec, orig_validate, orig_before, orig_after = f.execute_wrapper, \
-                                                            f.validate_execute_kwargs, \
-                                                            f.do_before_wrapper, \
-                                                            f.do_after_wrapper
+        orig_exec, orig_validate, orig_before, orig_after = \
+            f.execute_wrapper, f.validate_execute_kwargs, f.do_before_wrapper, f.do_after_wrapper
         self.model.setup_filter(0, {})
         f.execute_wrapper = lambda: execute_mock
         f.validate_execute_kwargs = lambda _: True
