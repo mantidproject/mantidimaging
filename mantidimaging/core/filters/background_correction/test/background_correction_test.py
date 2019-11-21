@@ -135,8 +135,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        execute_func = BackgroundCorrectionFilter.execute_wrapper(None, None)
-
+        execute_func = BackgroundCorrectionFilter.execute_wrapper(flat_path_widget=None, dark_path_widget=None)
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)
 
