@@ -167,7 +167,7 @@ def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
                                output_shape=resized_shape[1:])
 
         resized_data = pem.execute(
-            data, f, cores, chunksize, "Rebinning", output_data=resized_data)
+            data, f, cores, chunksize, "Rebinning", output_data=resized_data, progress=progress)
 
     return resized_data
 
