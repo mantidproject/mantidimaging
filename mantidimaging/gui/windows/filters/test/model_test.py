@@ -99,7 +99,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.selected_filter.params = lambda: {'roi': SVParameters.ROI}
         self.model.do_apply_filter()
         # Reset state, as the same model is used for all tests
-        self.model.selected_filter.params = lambda: {}
+        self.model.selected_filter.sv_params = lambda: {}
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()

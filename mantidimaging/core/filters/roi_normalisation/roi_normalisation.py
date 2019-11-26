@@ -63,7 +63,7 @@ class RoiNormalisationFilter(BaseFilter):
         return partial(RoiNormalisationFilter._filter_func)
 
     @staticmethod
-    def params() -> Dict[str, Any]:
+    def sv_params() -> Dict[str, Any]:
         return {"air_region": SVParameters.ROI}
 
 
