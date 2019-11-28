@@ -151,15 +151,18 @@ class FiltersWindowPresenter(BasePresenter):
                 except Exception as e:
                     log.debug("Error applying filter for preview: {}".format(e))
 
-                # Update image after
+                # Update image after and difference
                 if filtered_image_data is not None:
                     self._update_preview_image(
                         filtered_image_data,
                         self.view.preview_image_after,
                         self.view.previews.set_after_histogram,
                         progress)
+
+                    diff = np.subtract(filtered_image_data, before_image_data) \
+                        if filtered_image_data.shape == before_image_data.shape else None
                     self._update_preview_image(
-                        np.subtract(filtered_image_data, before_image_data),
+                        diff,
                         self.view.preview_image_difference,
                         None,
                         progress)
@@ -168,7 +171,7 @@ class FiltersWindowPresenter(BasePresenter):
             progress.update(msg='Redraw canvas')
 
     @staticmethod
-    def _update_preview_image(image_data: np.ndarray,
+    def _update_preview_image(image_data: Optional[np.ndarray],
                               image: ImageItem,
                               redraw_histogram: Optional[Callable[[Any], None]],
                               progress):
@@ -177,6 +180,9 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Update image
         progress.update(msg='Updating image')
+        # ImageItem cannot be cleared with setImage(None) if it already has an image, must clear 'manually'
+        if image_data is None:
+            image.image = None
         image.setImage(image_data)
 
         if redraw_histogram:
