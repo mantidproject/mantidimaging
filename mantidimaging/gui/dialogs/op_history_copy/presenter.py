@@ -37,5 +37,6 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
         pass
 
     def apply_ops(self):
-        result = self.model.apply_ops(self.operations, self.view.selected_op_indices)
+        selected_ops = (op for op, selected in zip(self.operations, self.view.selected_op_indices) if selected)
+        result = self.model.apply_ops(selected_ops)
         self.main_window.create_new_stack(Images(result), "A result")

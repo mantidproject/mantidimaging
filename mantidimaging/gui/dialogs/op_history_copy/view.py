@@ -20,11 +20,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
         self.previewsLayout.addWidget(self.previews)
         self.applyButton.clicked.connect(lambda: self.presenter.notify(Notification.APPLY_OPS))
 
-        self.op_checks = []
-
     def display_op_history(self, operations: Iterable[ImageOperation]):
-        # Clear the operations container
-        self.op_checks = []
         layout = self.operationsContainer.layout()
         while layout.count():
             row = layout.takeAt(0)
@@ -34,10 +30,10 @@ class OpHistoryCopyDialogView(BaseDialogView):
         for op in operations:
             row, check = self.build_operation_row(op)
             check.stateChanged.connect(lambda: self.presenter.notify(Notification.SELECTED_OPS_CHANGED))
-            self.op_checks.append(check)
             layout.addWidget(row)
 
-    def build_operation_row(self, operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
+    @staticmethod
+    def build_operation_row(operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
         # TODO: layout nicely
         parent = QWidget()
         layout = QHBoxLayout(parent)
