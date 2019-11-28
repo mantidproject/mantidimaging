@@ -70,7 +70,7 @@ class Images:
     def save_metadata(self, f):
         json.dump(self.metadata, f)
 
-    def record_operation(self, func_name: str, *args, **kwargs):
+    def record_operation(self, func_name: str, display_name=None, *args, **kwargs):
         if const.OPERATION_HISTORY not in self.metadata:
             self.metadata[const.OPERATION_HISTORY] = []
 
@@ -82,7 +82,8 @@ class Images:
             const.OPERATION_ARGS:
                 [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS:
-                {k: v for k, v in kwargs.items() if accepted_type(v)}
+                {k: v for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_DISPLAY_NAME: display_name
         })
 
     @staticmethod
