@@ -107,7 +107,9 @@ class CORTiltWindowView(BaseMainWindowView):
             self.autoCalculateButton: PresNotification.RUN_AUTOMATIC,
         }
         for btn, notification in click_notifications.items():
-            btn.clicked.connect(lambda: self.presenter.notify(notification))
+            def bind(c_notification):
+                btn.clicked.connect(lambda: self.presenter.notify(c_notification))
+            bind(notification)
 
         def on_row_change(item, _):
             """
