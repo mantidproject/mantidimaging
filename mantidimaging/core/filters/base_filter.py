@@ -2,7 +2,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Callable, Dict, Any
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget
+    from PyQt5.QtWidgets import QFormLayout, QWidget    # noqa: F401
 
 
 class BaseFilter:
