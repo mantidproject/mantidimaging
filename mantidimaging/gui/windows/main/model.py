@@ -1,7 +1,7 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Any, Optional
 
 from mantidimaging.core.io import loader, saver
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
@@ -106,6 +106,9 @@ class MainWindowModel(object):
         :return The Stack Visualiser widget that contains the data.
         """
         return self.active_stacks[stack_uuid].widget()
+
+    def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
+        return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 
     def do_remove_stack(self, stack_uuid) -> None:
         """

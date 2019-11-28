@@ -146,6 +146,9 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
+    def get_stack_history(self, stack_uuid):
+        return self.presenter.get_stack_history(stack_uuid)
+
     def create_stack_window(self, stack, title, position=QtCore.Qt.TopDockWidgetArea, floating=False):
         dock_widget = Qt.QDockWidget(title, self)
 
@@ -200,3 +203,6 @@ class MainWindowView(BaseMainWindowView):
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
         getLogger(__name__).error(log_error_msg)
+
+    def create_new_stack(self, data, title):
+        self.presenter.create_new_stack(data, title)

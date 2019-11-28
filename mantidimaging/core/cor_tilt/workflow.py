@@ -1,4 +1,5 @@
-from mantidimaging.core.data import const, Images
+from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
 
 from .auto import auto_find_cors
 

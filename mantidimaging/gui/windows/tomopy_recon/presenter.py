@@ -2,7 +2,8 @@ from enum import Enum
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List
 
-from mantidimaging.core.data import const, Images
+from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
@@ -125,7 +126,7 @@ class TomopyReconWindowPresenter(BasePresenter):
             volume_stack = Images(volume_data, metadata=self.stack_metadata)
             volume_stack.record_operation(const.OPERATION_NAME_TOMOPY_RECON, **self.model.recon_params)
             name = '{}_recon'.format(self.model.stack.name)
-            self.main_window.presenter.create_new_stack(volume_stack, name)
+            self.main_window.create_new_stack(volume_stack, name)
         else:
             LOG.error('Reconstruction failed: %s', str(task.error))
             self.show_error('Reconstruction failed. See log for details.')
