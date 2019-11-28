@@ -35,7 +35,7 @@ class StackSelectorWidgetPresenter(BasePresenter):
             self.view.clear()
 
             # Get all the new stacks
-            stack_list: List[Tuple[UUID, str]] = self.view.main_window.stack_list()
+            stack_list: List[Tuple[UUID, str]] = self.view.main_window.stack_list
             self.stack_uuids, user_friendly_names = \
                 zip(*stack_list) if stack_list else (None, [])
             self.view.addItems(user_friendly_names)

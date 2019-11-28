@@ -5,6 +5,7 @@ import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QAction
 
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
@@ -66,7 +67,7 @@ class MainWindowView(BaseMainWindowView):
         self.active_stacks_changed.connect(self.update_shortcuts)
 
     def update_shortcuts(self):
-        self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)
+        self.actionSave.setEnabled(len(self.presenter.stack_names) > 0)
 
     @staticmethod
     def open_online_documentation():
@@ -96,7 +97,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(PresNotification.LOAD)
 
     def show_save_dialogue(self):
-        self.save_dialogue = MWSaveDialog(self, self.stack_list())
+        self.save_dialogue = MWSaveDialog(self, self.stack_list)
         self.save_dialogue.show()
 
     def show_cor_tilt_window(self):
@@ -134,14 +135,13 @@ class MainWindowView(BaseMainWindowView):
             self.tomopy_recon.activateWindow()
             self.tomopy_recon.raise_()
 
+    @property
     def stack_list(self):
-        return self.presenter.stack_list()
+        return self.presenter.stack_list
 
+    @property
     def stack_names(self):
-        return self.presenter.stack_names()
-
-    def stack_uuids(self):
-        return self.presenter.stack_uuids()
+        return self.presenter.stack_names
 
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
@@ -149,7 +149,11 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
-    def create_stack_window(self, stack, title, position=QtCore.Qt.TopDockWidgetArea, floating=False):
+    def create_stack_window(self,
+                            stack: Images,
+                            title: str,
+                            position=QtCore.Qt.TopDockWidgetArea,
+                            floating=False) -> Qt.QDockWidget:
         dock_widget = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
@@ -169,7 +173,7 @@ class MainWindowView(BaseMainWindowView):
 
         return dock_widget
 
-    def remove_stack(self, obj):
+    def remove_stack(self, obj: StackVisualiserView):
         getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)
         self.presenter.remove_stack(obj.uuid)
 

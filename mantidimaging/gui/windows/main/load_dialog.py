@@ -1,6 +1,7 @@
 import os
+from collections import namedtuple
 from logging import getLogger
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Any
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QCheckBox
@@ -9,6 +10,8 @@ from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension, get_prefix
 from mantidimaging.core.utility import size_calculator
 from mantidimaging.gui.utility import (compile_ui, select_file)
+
+ImageLoadIndices = namedtuple('ImageLoadIndices', ['start', 'end', 'step'])
 
 
 class MWLoadDialog(Qt.QDialog):
@@ -161,10 +164,11 @@ class MWLoadDialog(Qt.QDialog):
         """
         return self.parallelLoad.isChecked()
 
-    def indices(self) -> Tuple[int, int, int]:
-        return (self.index_start.value(),
-                self.index_end.value(),
-                self.index_step.value())
+    @property
+    def indices(self) -> ImageLoadIndices:
+        return ImageLoadIndices(self.index_start.value(),
+                                self.index_end.value(),
+                                self.index_step.value())
 
     def window_title(self) -> Optional[str]:
         user_text = self.stackName.text()
@@ -180,12 +184,12 @@ class MWLoadDialog(Qt.QDialog):
     #     self.dark_widget.setHidden(not self.dark_widget.isHidden())
     #     self.flat_widget.setHidden(not self.flat_widget.isHidden())
 
-    def get_kwargs(self) -> Dict:
+    def get_kwargs(self) -> Dict[str, Any]:
         return {'selected_file': self.sample_file(),
                 'sample_path': self.sample_path_directory(),
                 'in_prefix': get_prefix(self.sample_path_text()),
                 'image_format': self.image_format,
                 'parallel_load': self.parallel_load(),
-                'indices': self.indices(),
+                'indices': self.indices,
                 'custom_name': self.window_title(),
                 'staged_load': self.staged_load.isChecked()}

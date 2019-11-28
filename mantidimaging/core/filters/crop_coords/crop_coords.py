@@ -56,7 +56,7 @@ class CropCoordinatesFilter(BaseFilter):
         return {}
 
     @staticmethod
-    def params() -> Dict[str, Any]:
+    def sv_params() -> Dict[str, Any]:
         return {
             'region_of_interest': SVParameters.ROI
         }

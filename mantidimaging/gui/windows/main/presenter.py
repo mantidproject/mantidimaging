@@ -5,6 +5,7 @@ from typing import Any, Dict
 from uuid import UUID
 
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import MainWindowModel
 
@@ -33,11 +34,11 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e)
             getLogger(__name__).exception("Notification handler failed")
 
-    def remove_stack(self, uuid):
+    def remove_stack(self, uuid: UUID):
         self.model.do_remove_stack(uuid)
         self.view.active_stacks_changed.emit()
 
-    def rename_stack_by_name(self, old_name, new_name):
+    def rename_stack_by_name(self, old_name: str, new_name: str):
         dock = self.model.get_stack_by_name(old_name)
         if dock:
             dock.setWindowTitle(new_name)
@@ -63,7 +64,7 @@ class MainWindowPresenter(BasePresenter):
         # Set the 'preview' to load 1/10 of the images
         preview_kwargs = deepcopy(kwargs)
         indices = kwargs['indices']
-        preview_kwargs['indices'] = indices[0], indices[1], (indices[1] - indices[0]) // 10
+        preview_kwargs['indices'] = indices.start, indices.end, (indices.end - indices.start) // 10
 
         if 'custom_name' not in preview_kwargs or not preview_kwargs['custom_name']:
             preview_kwargs['custom_name'] = preview_kwargs['selected_file'].split(".")[0] + "_preview"
@@ -90,20 +91,19 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg)
 
-    def create_new_stack(self, data, title):
+    def create_new_stack(self, data: Images, title: str):
         title = self.model.create_name(title)
         dock_widget = self.view.create_stack_window(data, title=title)
         stack_visualiser = dock_widget.widget()
         self.model.add_stack(stack_visualiser, dock_widget)
         self.view.active_stacks_changed.emit()
 
-    def save(self, indices=None):
+    def save(self):
         kwargs = {'stack_uuid': self.view.save_dialogue.selected_stack,
                   'output_dir': self.view.save_dialogue.save_path(),
                   'name_prefix': self.view.save_dialogue.name_prefix(),
                   'image_format': self.view.save_dialogue.image_format(),
-                  'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes(),
-                  'indices': indices}
+                  'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes()}
         start_async_task_view(self.view, self.model.do_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task):
@@ -112,14 +112,13 @@ class MainWindowPresenter(BasePresenter):
         if not task.was_successful():
             self._handle_task_error(self.SAVE_ERROR_STRING, log, task)
 
+    @property
     def stack_list(self):
-        return self.model.stack_list()
+        return self.model.stack_list
 
-    def stack_uuids(self):
-        return self.model.stack_uuids()
-
+    @property
     def stack_names(self):
-        return self.model.stack_names()
+        return self.model.stack_names
 
     def get_stack_visualiser(self, stack_uuid: UUID):
         return self.model.get_stack_visualiser(stack_uuid)

@@ -1,10 +1,16 @@
 import os
 import uuid
+from collections import namedtuple
 from logging import getLogger
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING, Any
 
 from mantidimaging.core.io import loader, saver
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
+if TYPE_CHECKING:
+    from Qt import QDockWidget
+
+StackId = namedtuple('StackId', ['id', 'name'])
 
 
 class MainWindowModel(object):
@@ -28,7 +34,7 @@ class MainWindowModel(object):
         return images
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format,
-                  overwrite, swap_axes, indices, progress):
+                  overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
         saver.save(
             data=svp.images,
@@ -37,7 +43,6 @@ class MainWindowModel(object):
             swap_axes=swap_axes,
             overwrite_all=overwrite,
             out_format=image_format,
-            indices=indices,
             progress=progress)
 
         return True
@@ -51,7 +56,7 @@ class MainWindowModel(object):
 
         # Avoid duplicate names
         name = filename
-        current_names = self.stack_names()
+        current_names = self.stack_names
         num = 1
         while name in current_names:
             num += 1
@@ -59,33 +64,21 @@ class MainWindowModel(object):
 
         return name
 
-    def stack_list(self) -> List[Tuple[uuid.UUID, str]]:
-        stacks = []
-        for stack_uuid, widget in self.active_stacks.items():
-            # ask the widget for its current title
-            current_name = widget.windowTitle()
-            # append the UUID and user friendly name
-            stacks.append((stack_uuid, current_name))
+    @property
+    def stack_list(self) -> List[StackId]:
+        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
+        return sorted(stacks, key=lambda x: x.name)
 
-        # sort by user friendly name
-        return sorted(stacks, key=lambda x: x[1])
+    @property
+    def stack_names(self) -> List[str]:
+        return [stack.name for stack in self.stack_list]
 
-    def stack_uuids(self):
-        return list(zip(*self.stack_list()))[0] if self.active_stacks else []
-
-    def stack_names(self):
-        # unpacks the tuple and only gives the correctly sorted human readable
-        # names
-        return list(zip(*self.stack_list()))[1] if self.active_stacks else []
-
-    def add_stack(self, stack_visualiser, dock_widget):
-        # generate unique ID for this stack
+    def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: 'QDockWidget'):
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
-        getLogger(__name__).debug(
-            "Active stacks {}".format(self.active_stacks))
+        getLogger(__name__).debug(f"Active stacks: {self.active_stacks}")
 
-    def get_stack(self, stack_uuid: uuid.UUID):
+    def get_stack(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The QDockWidget that contains the Stack Visualiser.
@@ -94,10 +87,10 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def get_stack_by_name(self, search_name: str):
-        for (id, name) in self.stack_list():
-            if name == search_name:
-                return self.get_stack(id)
+    def get_stack_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
+        for stack_id in self.stack_list:
+            if stack_id.name == search_name:
+                return self.get_stack(stack_id.id)
         return None
 
     def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
@@ -110,7 +103,7 @@ class MainWindowModel(object):
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 
-    def do_remove_stack(self, stack_uuid) -> None:
+    def do_remove_stack(self, stack_uuid: uuid.UUID) -> None:
         """
         Removes the stack from the active_stacks dictionary.
 
@@ -119,5 +112,5 @@ class MainWindowModel(object):
         del self.active_stacks[stack_uuid]
 
     @property
-    def have_active_stacks(self):
+    def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0

@@ -60,7 +60,7 @@ class FiltersWindowModel(object):
 
     @property
     def params_needed_from_stack(self):
-        return self.selected_filter.params()
+        return self.selected_filter.sv_params()
 
     def setup_filter(self, filter_idx, filter_widget_kwargs):
         self.selected_filter = self.filters[filter_idx]

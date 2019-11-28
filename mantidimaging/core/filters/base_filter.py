@@ -2,7 +2,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Callable, Dict, Any
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout
+    from PyQt5.QtWidgets import QFormLayout, QWidget    # noqa: F401
 
 
 class BaseFilter:
@@ -10,7 +10,8 @@ class BaseFilter:
     """
     The base class for filter algorithms, which should extend this class.
 
-    All of this classes methods should be overridden, except params and the func_wrappers, which are optional.
+    All of this classes methods must be overridden, except sv_params and the do_before and do_after wrappers
+    which are optional.
     """
 
     @staticmethod
@@ -18,7 +19,7 @@ class BaseFilter:
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
         The body of this function does not need to include pre and post processing steps - these should be
-        included in the do_before_func_wrapper and do_after_func_wrapper, respectively.
+        included in the do_before_wrapper and do_after_wrapper, respectively.
 
         :param data: the image data to apply the filter to
         :param kwargs: any additional arguments which the specific filter uses
@@ -28,14 +29,22 @@ class BaseFilter:
 
     @staticmethod
     def execute_wrapper(**kwargs) -> partial:
+        """
+        Should construct a partial call to _filter_func using values taken from the widgets passed to this function
+        as kwargs.
+        :param kwargs: widgets which contain values required for _filter_func.
+        :return: a partial call to _filter_func using parameters taken from the input widgets.
+        """
         raise_not_implemented("execute_wrapper")
         return partial(lambda: None)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
+    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, 'QWidget']:
         """
-        Adds any required input widgets to the given form and creates and returns a closure for calling
-        _filter_func with the arguments supplied in the inputs
+        Adds any required input widgets to the given form and returns references to them.
+
+        The return values should be in a dict which can be unpacked as kwargs for a call to
+        the filters `execute_wrapper`.
 
         :param form: the layout to create input widgets in
         :param on_change: the filter view action to be bound to all created inputs
@@ -45,7 +54,7 @@ class BaseFilter:
         return {}
 
     @staticmethod
-    def params() -> Dict[str, Any]:
+    def sv_params() -> Dict[str, Any]:
         """
         Any parameters required from the StackVisualizer ie. ROI
         :return: a map of parameters names
