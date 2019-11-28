@@ -145,9 +145,10 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
         execute.args = ["arg"]
         execute.keywords = {"kwarg": "kwarg"}
-        self.setup_mocks(execute)
+        originals = self.setup_mocks(execute)
 
         self.model.do_apply_filter()
+        self.reset_filter_model(*originals)
 
         op_history = self.model.stack_presenter.images.metadata['operation_history']
         self.assertEqual(len(op_history), 1, "One operation should have been recorded")
