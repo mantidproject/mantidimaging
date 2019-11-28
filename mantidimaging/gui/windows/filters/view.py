@@ -46,6 +46,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_vis_changed)
+        self.linkImages.stateChanged.connect(self.link_images_changed)
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
@@ -104,6 +105,12 @@ class FiltersWindowView(BaseMainWindowView):
                 legend.show()
             else:
                 legend.hide()
+
+    def link_images_changed(self):
+        if self.linkImages.isChecked():
+            self.previews.link_all_views()
+        else:
+            self.previews.unlink_all_views()
 
     @property
     def preview_image_before(self) -> ImageItem:

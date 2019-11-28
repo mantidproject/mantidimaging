@@ -1,8 +1,11 @@
 from collections import namedtuple
 from typing import Tuple, Optional
 
+from PyQt5.QtWidgets import QGraphicsLinearLayout
 from numpy import ndarray
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox
+
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
 before_pen = (0, 0, 200)
@@ -10,15 +13,15 @@ after_pen = (0, 200, 0)
 
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = {
-    "before": Coord(3, 0),
-    "after": Coord(3, 1),
-    "combined": Coord(3, 0)
+    "before": Coord(4, 0),
+    "after": Coord(4, 1),
+    "combined": Coord(4, 0)
 }
 
 label_coords = {
-    "before": Coord(2, 0),
-    "after": Coord(2, 1),
-    "combined": Coord(2, 1)
+    "before": Coord(3, 0),
+    "after": Coord(3, 1),
+    "combined": Coord(3, 1)
 }
 
 
@@ -46,13 +49,40 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_before, self.image_before_vb = self.add_image_in_vb(name="before")
-        self.image_after, self.image_after_bv = self.add_image_in_vb(name="after")
-        self.image_difference, self.image_difference_vb = self.add_image_in_vb(name="difference")
+        self.image_before, self.image_before_vb = self.image_in_vb(name="before")
+        self.image_after, self.image_after_vb = self.image_in_vb(name="after")
+        self.image_difference, self.image_difference_vb = self.image_in_vb(name="difference")
 
-    def add_image_in_vb(self, name=None):
+        # Ensure images resize equally
+        image_layout = QGraphicsLinearLayout()
+        image_layout.addItem(self.image_before_vb)
+        image_layout.addItem(self.image_after_vb)
+        image_layout.addItem(self.image_difference_vb)
+        self.addItem(image_layout, colspan=3)
+        self.nextRow()
+
+        before_details = self.addLabel("")
+        after_details = self.addLabel("")
+        difference_details = self.addLabel("")
+
+        self.display_formatted_detail = {
+            self.image_before: lambda val: before_details.setText(f"Before: {val:.2f}"),
+            self.image_after: lambda val: after_details.setText(f"After: {val:.2f}"),
+            self.image_difference: lambda val: difference_details.setText(f"Difference: {val:.2f}"),
+        }
+
+        for img in self.image_before, self.image_after, self.image_difference:
+            img.hoverEvent = lambda ev: self.mouse_over(ev)
+
+        self.img_hover_text = {
+            self.image_before: "Before: {}",
+            self.image_after: "After: {}",
+            self.image_difference: "Difference: {}",
+        }
+
+    def image_in_vb(self, name=None):
         im = ImageItem()
-        vb = self.addViewBox(invertY=True, lockAspect=True, name=name)
+        vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
         return im, vb
 
@@ -137,3 +167,24 @@ class FilterPreviews(GraphicsLayoutWidget):
         if self.histogram and self.histogram.legend:
             return self.histogram.legend
         return None
+
+    def mouse_over(self, ev):
+        # Ignore events triggered by leaving window or right clicking
+        if ev.exit:
+            return
+        pos = CloseEnoughPoint(ev.pos())
+        for img in self.image_before, self.image_after, self.image_difference:
+            if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
+                pixel_value = img.image[pos.y, pos.x]
+                self.display_formatted_detail[img](pixel_value)
+
+    def link_all_views(self):
+        for view1, view2 in zip([self.image_before_vb, self.image_after_vb],
+                                [self.image_after_vb, self.image_difference_vb]):
+            view1.linkView(ViewBox.XAxis, view2)
+            view1.linkView(ViewBox.YAxis, view2)
+
+    def unlink_all_views(self):
+        for view in self.image_before_vb, self.image_after_vb, self.image_difference_vb:
+            view.linkView(ViewBox.XAxis, None)
+            view.linkView(ViewBox.YAxis, None)
