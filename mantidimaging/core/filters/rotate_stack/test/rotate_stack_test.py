@@ -1,12 +1,11 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.rotate_stack import RotateFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import rotate_stack
 
 
 class RotateStackTest(unittest.TestCase):
@@ -24,7 +23,7 @@ class RotateStackTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
 
         # empty params
-        result = rotate_stack.execute(images, None)
+        result = RotateFilter._filter_func(images, None)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -44,7 +43,7 @@ class RotateStackTest(unittest.TestCase):
         rotation = 1  # once clockwise
         images[:, 0, 0] = 42  # set all images at 0,0 to 42
 
-        result = rotate_stack.execute(images, rotation)
+        result = RotateFilter._filter_func(images, rotation)
 
         w = result.shape[2]
         npt.assert_equal(result[:, 0, w - 1], 42.0)
@@ -72,7 +71,7 @@ class RotateStackTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = rotate_stack.execute(images, rotation)
+        result = RotateFilter._filter_func(images, rotation)
 
         w = result.shape[2]
 
@@ -83,6 +82,19 @@ class RotateStackTest(unittest.TestCase):
         npt.assert_equal(images[:, 0, w - 1], 42.0)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        rotation_count = mock.Mock()
+        rotation_count.value = mock.Mock(return_value=0)
+        execute_func = RotateFilter.execute_wrapper(rotation_count)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(rotation_count.value.call_count, 1)
 
 
 if __name__ == '__main__':

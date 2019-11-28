@@ -51,8 +51,7 @@ class TomopyReconWindowModel(object):
     def generate_projection_angles(self, max_angle):
         if self.stack is not None:
             num_radiograms = self.sample.shape[1]
-            self.projection_angles = \
-                generate_projection_angles(max_angle, num_radiograms)
+            self.projection_angles = generate_projection_angles(max_angle, num_radiograms)
 
     def reconstruct_slice(self, progress):
         data = np.asarray([self.sample[self.preview_slice_idx]])

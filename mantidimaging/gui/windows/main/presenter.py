@@ -4,8 +4,7 @@ from logging import getLogger
 from typing import Any, Dict
 from uuid import UUID
 
-from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogView
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import MainWindowModel
 
@@ -53,7 +52,7 @@ class MainWindowPresenter(BasePresenter):
         if 'staged_load' in kwargs and kwargs['staged_load']:
             self.execute_staged_load(kwargs)
         else:
-            self.start_async_task(kwargs, self.model.do_load_stack, self._on_stack_load_done)
+            start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, kwargs)
 
     def execute_staged_load(self, kwargs: Dict[str, Any]) -> None:
         """
@@ -71,8 +70,8 @@ class MainWindowPresenter(BasePresenter):
         else:
             preview_kwargs['custom_name'] += "_preview"
 
-        self.start_async_task(preview_kwargs, self.model.do_load_stack, self._on_stack_load_done)
-        self.start_async_task(kwargs, self.model.do_load_stack, self._on_stack_load_done)
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, preview_kwargs)
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, kwargs)
 
     def _on_stack_load_done(self, task):
         log = getLogger(__name__)
@@ -105,17 +104,7 @@ class MainWindowPresenter(BasePresenter):
                   'image_format': self.view.save_dialogue.image_format(),
                   'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes(),
                   'indices': indices}
-
-        self.start_async_task(kwargs, self.model.do_saving, self._on_save_done)
-
-    def start_async_task(self, kwargs, task, on_complete):
-        atd = AsyncTaskDialogView(self.view, auto_close=True)
-        kwargs['progress'] = Progress()
-        kwargs['progress'].add_progress_handler(atd.presenter)
-        atd.presenter.set_task(task)
-        atd.presenter.set_on_complete(on_complete)
-        atd.presenter.set_parameters(**kwargs)
-        atd.presenter.do_start_processing()
+        start_async_task_view(self.view, self.model.do_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task):
         log = getLogger(__name__)
@@ -134,6 +123,9 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack_visualiser(self, stack_uuid: UUID):
         return self.model.get_stack_visualiser(stack_uuid)
+
+    def get_stack_history(self, stack_uuid: UUID):
+        return self.model.get_stack_history(stack_uuid)
 
     @property
     def have_active_stacks(self):

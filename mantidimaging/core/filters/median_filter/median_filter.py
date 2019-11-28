@@ -1,20 +1,76 @@
+from functools import partial
 from logging import getLogger
+from typing import Callable, Dict, Any, TYPE_CHECKING
 
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
+from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.utility import add_property_to_form
+
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QFormLayout
+
+
+class MedianFilter(BaseFilter):
+    filter_name = "Median"
+
+    @staticmethod
+    def _filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
+        """
+        :param data: Input data as a 3D numpy.ndarray
+        :param size: Size of the kernel
+        :param mode: The mode with which to handle the endges.
+                     One of [reflect, constant, nearest, mirror, wrap].
+        :param cores: The number of cores that will be used to process the data.
+        :param chunksize: The number of chunks that each worker will receive.
+
+        :return: Returns the processed data
+
+        """
+        h.check_data_stack(data)
+
+        if size and size > 1:
+            if pu.multiprocessing_available():
+                data = _execute_par(data, size, mode, cores, chunksize, progress)
+            else:
+                data = _execute_seq(data, size, mode, progress)
+
+        h.check_data_stack(data)
+        return data
+
+    @staticmethod
+    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
+        _, size_field = add_property_to_form(
+            'Kernel Size', 'int', 3, (0, 1000),
+            form=form, on_change=on_change)
+
+        _, mode_field = add_property_to_form(
+            'Mode', 'choice', valid_values=modes(),
+            form=form, on_change=on_change)
+
+        return {
+            'size_field': size_field,
+            'mode_field': mode_field
+        }
+
+    @staticmethod
+    def execute_wrapper(size_field=None, mode_field=None):
+        return partial(MedianFilter._filter_func,
+                       size=size_field.value(),
+                       mode=mode_field.currentText())
 
 
 def _cli_register(parser):
     default_size = None
     size_help = "Apply median filter (2d) on \
                  reconstructed volume with the given kernel size."
-    mode_help = "Default: %(default)s\n"\
-        "Mode of median filter which determines how the array \
-         borders are handled."
+    mode_help = "Default: %(default)s\n" \
+                "Mode of median filter which determines how the array \
+                 borders are handled."
 
     parser.add_argument(
         "--median-size",
@@ -36,35 +92,6 @@ def _cli_register(parser):
 
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
-
-
-def execute(data, size, mode=modes()[0], cores=None, chunksize=None,
-            progress=None):
-    """
-    :param data: Input data as a 3D numpy.ndarray
-
-    :param size: Size of the kernel
-
-    :param mode: The mode with which to handle the endges.
-                 One of [reflect, constant, nearest, mirror, wrap].
-
-    :param cores: The number of cores that will be used to process the data.
-
-    :param chunksize: The number of chunks that each worker will receive.
-
-    :return: Returns the processed data
-
-    """
-    h.check_data_stack(data)
-
-    if size and size > 1:
-        if pu.multiprocessing_available():
-            data = _execute_par(data, size, mode, cores, chunksize, progress)
-        else:
-            data = _execute_seq(data, size, mode, progress)
-
-    h.check_data_stack(data)
-    return data
 
 
 def _execute_seq(data, size, mode, progress=None):

@@ -1,11 +1,70 @@
+from functools import partial
 from logging import getLogger
+from typing import Dict, Any
 
 import numpy as np
 
 from mantidimaging import helper as h
+from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.windows.stack_visualiser import SVParameters
+
+
+class RoiNormalisationFilter(BaseFilter):
+    filter_name = "ROI Normalisation"
+
+    @staticmethod
+    def _filter_func(data, air_region=None, cores=None, chunksize=None, progress=None):
+        """
+        Normalise by beam intensity.
+
+        This does NOT do any checks if the Air Region is out of bounds!
+        If the Air Region is out of bounds, the crop will fail at runtime.
+        If the Air Region is in bounds, but has overlapping coordinates
+        the crop give back a 0 shape of the coordinates that were wrong.
+
+        :param data: Sample data which is to be processed. Expected in radiograms
+
+        :param air_region: The order is - Left Top Right Bottom. The air region
+                           from which sums will be calculated and all images will
+                           be normalised.
+
+        :param cores: The number of cores that will be used to process the data.
+
+        :param chunksize: The number of chunks that each worker will receive.
+
+        :returns: Filtered data (stack of images)
+        """
+        h.check_data_stack(data)
+
+        # just get data reference
+        if air_region:
+            # sanity check for the regions
+            assert all(isinstance(region, int) for region in
+                       air_region), "The air region coordinates are not integers!"
+            if pu.multiprocessing_available():
+                data = _execute_par(data, air_region, cores, chunksize, progress)
+            else:
+                data = _execute_seq(data, air_region, progress)
+
+        h.check_data_stack(data)
+        return data
+
+    @staticmethod
+    def register_gui(form, on_change):
+        add_property_to_form("Select ROI on stack visualiser.", "label", form=form, on_change=on_change)
+        return {}
+
+    @staticmethod
+    def execute_wrapper():
+        return partial(RoiNormalisationFilter._filter_func)
+
+    @staticmethod
+    def params() -> Dict[str, Any]:
+        return {"air_region": SVParameters.ROI}
 
 
 def _cli_register(parser):
@@ -16,49 +75,12 @@ def _cli_register(parser):
         nargs='*',
         type=str,
         help="Air region /region for normalisation. The selection is a "
-        "rectangle and expected order is - Left Top Right Bottom.\n"
-        "For best results the region selected should not be blocked by "
-        "any object in the Tomography.\n"
-        "Example: --air-region 150 234 23 22")
+             "rectangle and expected order is - Left Top Right Bottom.\n"
+             "For best results the region selected should not be blocked by "
+             "any object in the Tomography.\n"
+             "Example: --air-region 150 234 23 22")
 
     return parser
-
-
-def execute(data, air_region, cores=None, chunksize=None, progress=None):
-    """
-    Normalise by beam intensity.
-
-    This does NOT do any checks if the Air Region is out of bounds!
-    If the Air Region is out of bounds, the crop will fail at runtime.
-    If the Air Region is in bounds, but has overlapping coordinates
-    the crop give back a 0 shape of the coordinates that were wrong.
-
-    :param data: Sample data which is to be processed. Expected in radiograms
-
-    :param air_region: The order is - Left Top Right Bottom. The air region
-                       from which sums will be calculated and all images will
-                       be normalised.
-
-    :param cores: The number of cores that will be used to process the data.
-
-    :param chunksize: The number of chunks that each worker will receive.
-
-    :returns: Filtered data (stack of images)
-    """
-    h.check_data_stack(data)
-
-    # just get data reference
-    if air_region:
-        # sanity check for the regions
-        assert all(isinstance(region, int) for region in
-                   air_region), "The air region coordinates are not integers!"
-        if pu.multiprocessing_available():
-            data = _execute_par(data, air_region, cores, chunksize, progress)
-        else:
-            data = _execute_seq(data, air_region, progress)
-
-    h.check_data_stack(data)
-    return data
 
 
 def _calc_sum(data,
@@ -120,9 +142,8 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
         max_avg = np.max(air_sums) / avg
         min_avg = np.min(air_sums) / avg
 
-        log.info("Normalization by air region. "
-                 "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
-                     avg, max_avg, min_avg))
+        log.info(f"Normalization by air region. "
+                 f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data
 
@@ -157,8 +178,7 @@ def _execute_seq(data, air_region, progress):
         max_avg = np.max(air_sums) / avg
         min_avg = np.min(air_sums) / avg
 
-        log.info("Normalization by air region. "
-                 "Average: {0}, max ratio: {1}, min ratio: {2}.".format(
-                     avg, max_avg, min_avg))
+        log.info(f"Normalization by air region. "
+                 f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data

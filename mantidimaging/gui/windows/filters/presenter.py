@@ -101,13 +101,13 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        self.model.setup_filter(
-            register_func(self.view.filterPropertiesLayout,
-                          self.view.auto_update_triggered.emit))
+        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout,
+                                             self.view.auto_update_triggered.emit)
+        self.model.setup_filter(filter_idx, filter_widget_kwargs)
 
     def filter_uses_parameter(self, parameter):
-        return parameter in self.model.parameters_from_stack.values() if \
-            self.model.parameters_from_stack is not None else False
+        return parameter in self.model.params_needed_from_stack.values() if \
+            self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
         self.model.do_apply_filter()
@@ -141,7 +141,7 @@ class FiltersWindowPresenter(BasePresenter):
 
                 # Generate sub-stack and run filter
                 progress.update(msg='Running preview filter')
-                exec_kwargs = get_parameters_from_stack(stack, self.model.parameters_from_stack)
+                exec_kwargs = get_parameters_from_stack(stack, self.model.params_needed_from_stack)
 
                 filtered_image_data = None
                 try:
@@ -151,7 +151,7 @@ class FiltersWindowPresenter(BasePresenter):
                 except Exception as e:
                     log.debug("Error applying filter for preview: {}".format(e))
 
-                # Update image after
+                # Update image after and difference
                 if filtered_image_data is not None:
                     self._update_preview_image(
                         filtered_image_data,
@@ -159,18 +159,19 @@ class FiltersWindowPresenter(BasePresenter):
                         self.view.previews.set_after_histogram,
                         progress)
 
-                    if filtered_image_data.shape == before_image_data.shape:
-                        self._update_preview_image(
-                            np.subtract(filtered_image_data, before_image_data),
-                            self.view.preview_image_difference,
-                            None,
-                            progress)
+                    diff = np.subtract(filtered_image_data, before_image_data) \
+                        if filtered_image_data.shape == before_image_data.shape else None
+                    self._update_preview_image(
+                        diff,
+                        self.view.preview_image_difference,
+                        None,
+                        progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
 
     @staticmethod
-    def _update_preview_image(image_data: np.ndarray,
+    def _update_preview_image(image_data: Optional[np.ndarray],
                               image: ImageItem,
                               redraw_histogram: Optional[Callable[[Any], None]],
                               progress):
@@ -179,6 +180,9 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Update image
         progress.update(msg='Updating image')
+        # ImageItem cannot be cleared with setImage(None) if it already has an image, must clear 'manually'
+        if image_data is None:
+            image.image = None
         image.setImage(image_data)
 
         if redraw_histogram:

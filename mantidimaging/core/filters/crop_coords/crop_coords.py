@@ -1,5 +1,69 @@
+from functools import partial
+from typing import Dict, Any
+
+from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
+
 from mantidimaging import helper as h
+from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.utility.progress_reporting import Progress
+
+
+class CropCoordinatesFilter(BaseFilter):
+    filter_name = "Crop Coordinates"
+
+    @staticmethod
+    def _filter_func(data, region_of_interest=None, flat=None, dark=None, progress=None):
+        """
+        Execute the Crop Coordinates by Region of Interest filter.
+        This does NOT do any checks if the Region of interest is out of bounds!
+
+        If the region of interest is out of bounds, the crop will **FAIL** at
+        runtime.
+
+        If the region of interest is in bounds, but has overlapping coordinates
+        the crop give back a 0 shape of the coordinates that were wrong.
+
+        :param data: Input data as a 3D numpy.ndarray
+
+        :param region_of_interest: Crop original images using these coordinates.
+                                   The selection is a rectangle and expected order
+                                   is - Left Top Right Bottom.
+
+        :param flat: The average flat image to be cropped
+
+        :param dark: The average dark image to be cropped
+
+        :return: The processed 3D numpy.ndarray
+        """
+
+        h.check_data_stack(data)
+
+        # execute only for sample, if no flat and dark images are provided
+        if data is not None and (flat is None or dark is None):
+            return execute_single(data, region_of_interest, progress), None, None
+        else:  # crop all and return as tuple
+            return execute_single(data, region_of_interest, progress), \
+                   execute_single(flat, region_of_interest, progress), \
+                   execute_single(dark, region_of_interest, progress)
+
+    @staticmethod
+    def register_gui(form, on_change):
+        from mantidimaging.gui.utility import add_property_to_form
+
+        add_property_to_form(
+            'Select ROI on stack visualiser.', 'label', form=form)
+
+        return {}
+
+    @staticmethod
+    def params() -> Dict[str, Any]:
+        return {
+            'region_of_interest': SVParameters.ROI
+        }
+
+    @staticmethod
+    def execute_wrapper(**kwargs) -> partial:
+        return partial(CropCoordinatesFilter._filter_func)
 
 
 def _cli_register(parser):
@@ -10,46 +74,11 @@ def _cli_register(parser):
         required=False,
         type=str,
         help="Crop original images using these coordinates. The selection is a"
-        " rectangle and expected order is - Left Top Right Bottom.\n"
-        "If not given, the whole images are used.\n"
-        "Example: --region-of-interest 150 234 23 22.")
+             " rectangle and expected order is - Left Top Right Bottom.\n"
+             "If not given, the whole images are used.\n"
+             "Example: --region-of-interest 150 234 23 22.")
 
     return parser
-
-
-def execute(data, region_of_interest, flat=None, dark=None, progress=None):
-    """
-    Execute the Crop Coordinates by Region of Interest filter.
-    This does NOT do any checks if the Region of interest is out of bounds!
-
-    If the region of interest is out of bounds, the crop will **FAIL** at
-    runtime.
-
-    If the region of interest is in bounds, but has overlapping coordinates
-    the crop give back a 0 shape of the coordinates that were wrong.
-
-    :param data: Input data as a 3D numpy.ndarray
-
-    :param region_of_interest: Crop original images using these coordinates.
-                               The selection is a rectangle and expected order
-                               is - Left Top Right Bottom.
-
-    :param flat: The average flat image to be cropped
-
-    :param dark: The average dark image to be cropped
-
-    :return: The processed 3D numpy.ndarray
-    """
-
-    h.check_data_stack(data)
-
-    # execute only for sample, if no flat and dark images are provided
-    if data is not None and (flat is None or dark is None):
-        return execute_single(data, region_of_interest, progress), None, None
-    else:  # crop all and return as tuple
-        return execute_single(data, region_of_interest, progress), \
-            execute_single(flat, region_of_interest, progress), \
-            execute_single(dark, region_of_interest, progress)
 
 
 def execute_single(data, region_of_interest, progress=None):

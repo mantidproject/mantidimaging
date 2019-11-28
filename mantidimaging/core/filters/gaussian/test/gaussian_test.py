@@ -1,12 +1,11 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.gaussian import GaussianFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import gaussian
 
 
 class GaussianTest(unittest.TestCase):
@@ -32,7 +31,7 @@ class GaussianTest(unittest.TestCase):
         mode = None
         order = None
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter._filter_func(images, size, mode, order)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -44,7 +43,7 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter._filter_func(images, size, mode, order)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -56,7 +55,7 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter._filter_func(images, size, mode, order)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -69,7 +68,7 @@ class GaussianTest(unittest.TestCase):
         order = 1
 
         th.switch_mp_off()
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter._filter_func(images, size, mode, order)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
@@ -95,13 +94,32 @@ class GaussianTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = gaussian.execute(images, size, mode, order)
+        result = GaussianFilter._filter_func(images, size, mode, order)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        size_field = mock.Mock()
+        size_field.value = mock.Mock(return_value=0)
+        mode_field = mock.Mock()
+        mode_field.currentText = mock.Mock(return_value=0)
+        order_field = mock.Mock()
+        order_field.value = mock.Mock(return_value=0)
+        execute_func = GaussianFilter.execute_wrapper(size_field, order_field, mode_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(size_field.value.call_count, 1)
+        self.assertEqual(mode_field.currentText.call_count, 1)
+        self.assertEqual(order_field.value.call_count, 1)
 
 
 if __name__ == '__main__':

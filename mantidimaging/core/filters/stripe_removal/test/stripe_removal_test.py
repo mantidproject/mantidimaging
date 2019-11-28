@@ -1,12 +1,11 @@
 import unittest
+from unittest import mock
 
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.stripe_removal import StripeRemovalFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import stripe_removal
 
 
 class StripeRemovalTest(unittest.TestCase):
@@ -26,7 +25,7 @@ class StripeRemovalTest(unittest.TestCase):
         ti = None
         sf = None
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -38,7 +37,7 @@ class StripeRemovalTest(unittest.TestCase):
         ti = None
         sf = None
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         th.assert_not_equals(result, control)
 
@@ -48,7 +47,7 @@ class StripeRemovalTest(unittest.TestCase):
         wf = {"level": 1}
         ti = None
         sf = None
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
         th.assert_not_equals(result, control)
 
     def test_executed_ti(self):
@@ -58,7 +57,7 @@ class StripeRemovalTest(unittest.TestCase):
         ti = ['nblock=2']
         sf = None
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         th.assert_not_equals(result, control)
 
@@ -68,7 +67,7 @@ class StripeRemovalTest(unittest.TestCase):
         wf = None
         ti = {"nblock": 2}
         sf = None
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
         th.assert_not_equals(result, control)
 
     def test_executed_sf(self):
@@ -78,7 +77,7 @@ class StripeRemovalTest(unittest.TestCase):
         ti = None
         sf = ['size=5']
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         th.assert_not_equals(result, control)
 
@@ -88,7 +87,7 @@ class StripeRemovalTest(unittest.TestCase):
         wf = None
         ti = None
         sf = {"size": 5}
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
         th.assert_not_equals(result, control)
 
     def test_memory_executed_wf(self):
@@ -100,7 +99,7 @@ class StripeRemovalTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -116,7 +115,7 @@ class StripeRemovalTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
@@ -132,12 +131,25 @@ class StripeRemovalTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = stripe_removal.execute(images, wf, ti, sf)
+        result = StripeRemovalFilter._filter_func(images, wf, ti, sf)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        value_filter_type = mock.Mock()
+        value_filter_type.currentText = mock.Mock(return_value="type")
+        execute_func = StripeRemovalFilter.execute_wrapper(value_filter_type)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(value_filter_type.currentText.call_count, 1)
 
 
 if __name__ == '__main__':
