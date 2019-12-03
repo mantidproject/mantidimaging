@@ -77,21 +77,32 @@ class FiltersWindowModelTest(unittest.TestCase):
         f.do_before_wrapper = before
         f.do_after_wrapper = after
 
+    @staticmethod
+    def run_without_gui(task, on_complete):
+        task()
+        on_complete(None)
+
     def test_filters_populated(self):
         self.assertTrue(len(self.model.filter_names) > 0)
 
-    def test_do_apply_filter(self):
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
+    def test_do_apply_filter(self, mocked_notify, mocked_start_view):
+        mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
         originals = self.setup_mocks(execute)
-
         self.model.do_apply_filter()
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
+        mocked_notify.assert_called_once()
 
-    def test_do_apply_filter_with_roi(self):
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
+    def test_do_apply_filter_with_roi(self, mocked_notify, mocked_start_view):
+        mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
@@ -103,8 +114,12 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
+        mocked_notify.assert_called_once()
 
-    def test_do_apply_filter_pre_post_processing(self):
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
+    def test_do_apply_filter_pre_post_processing(self, mocked_notify, mocked_start_view):
+        mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
         self.model.stack = self.sv_presenter.view
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
@@ -118,6 +133,28 @@ class FiltersWindowModelTest(unittest.TestCase):
         do_before.assert_called_once()
         execute.assert_called_once()
         do_after.assert_called_once()
+        mocked_notify.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
+    def test_operation_recorded_in_image_history(self, mocked_notify, mocked_start_view):
+        mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
+        self.model.stack = self.sv_presenter.view
+        self.model.stack_presenter.images.metadata = {}
+
+        execute = mock.MagicMock(return_value=partial(self.execute_mock))
+        execute.args = ["arg"]
+        execute.keywords = {"kwarg": "kwarg"}
+        originals = self.setup_mocks(execute)
+
+        self.model.do_apply_filter()
+        self.reset_filter_model(*originals)
+
+        op_history = self.model.stack_presenter.images.metadata['operation_history']
+        self.assertEqual(len(op_history), 1, "One operation should have been recorded")
+        self.assertEqual(op_history[0]['args'], ['arg'])
+        self.assertEqual(op_history[0]['kwargs'], {"kwarg": "kwarg"})
+        mocked_notify.assert_called_once()
 
     def test_all_expected_filter_packages_loaded(self):
         expected_filter_names = ['Background Correction',
@@ -141,22 +178,6 @@ class FiltersWindowModelTest(unittest.TestCase):
             self.assert_(isinstance(filter_class(), BaseFilter))
         self.assertEqual(expected_filter_names,
                          self.model.filter_names, "Not all filters are named correctly")
-
-    def test_operation_recorded_in_image_history(self):
-        self.model.stack = self.sv_presenter.view
-        self.model.stack_presenter.images.metadata = {}
-
-        execute = mock.MagicMock(return_value=partial(self.execute_mock))
-        execute.args = ["arg"]
-        execute.keywords = {"kwarg": "kwarg"}
-        originals = self.setup_mocks(execute)
-
-        self.model.do_apply_filter()
-        op_history = self.model.stack_presenter.images.metadata['operation_history']
-        self.reset_filter_model(*originals)
-        self.assertEqual(len(op_history), 1, "One operation should have been recorded")
-        self.assertEqual(op_history[0]['args'], ['arg'])
-        self.assertEqual(op_history[0]['kwargs'], {"kwarg": "kwarg"})
 
 
 if __name__ == '__main__':

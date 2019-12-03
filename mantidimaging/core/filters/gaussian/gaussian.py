@@ -15,7 +15,7 @@ class GaussianFilter(BaseFilter):
     filter_name = "Gaussian"
 
     @staticmethod
-    def _filter_func(data, size=None, mode=None, order=None, cores=None, chunksize=None):
+    def _filter_func(data, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -37,9 +37,9 @@ class GaussianFilter(BaseFilter):
 
         if size and size > 1:
             if pu.multiprocessing_available():
-                data = _execute_par(data, size, mode, order, cores, chunksize)
+                data = _execute_par(data, size, mode, order, cores, chunksize, progress)
             else:
-                data = _execute_seq(data, size, mode, order)
+                data = _execute_seq(data, size, mode, order, progress)
 
         h.check_data_stack(data)
         return data
@@ -153,7 +153,7 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None,
              "filter size/width: {1}.".format(data.dtype, size))
 
     progress.update()
-    data = psm.execute(data, f, cores, chunksize, "Gaussian")
+    data = psm.execute(data, f, cores, chunksize, "Gaussian", progress)
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "

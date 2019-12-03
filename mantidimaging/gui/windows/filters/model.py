@@ -7,6 +7,7 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.filters.loader import load_filter_packages
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
@@ -66,17 +67,15 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_filter(self, images: Images, stack_params: Dict[str, Any]):
+    def apply_filter(self, images: Images, stack_params: Dict[str, Any], progress=None):
         """
         Applies the selected filter to a given image stack.
         """
         log = getLogger(__name__)
 
-        # Generate the execute partial from filter registration
         do_before = self.selected_filter.do_before_wrapper()
         do_after = self.selected_filter.do_after_wrapper()
 
-        # Log execute function parameters
         log.info(f"Filter kwargs: {stack_params}")
 
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
@@ -91,6 +90,7 @@ class FiltersWindowModel(object):
 
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
+        exec_func.keywords["progress"] = progress
         ret_val = exec_func(images.sample, **stack_params)
 
         # Handle the return value from the algorithm dialog
@@ -122,8 +122,8 @@ class FiltersWindowModel(object):
 
         # Get auto parameters
         stack_params = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
+        apply_func = partial(self.apply_filter, self.stack_presenter.images, stack_params)
 
-        self.apply_filter(self.stack_presenter.images, stack_params)
-
-        # Refresh the image in the stack visualiser
-        self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
+        start_async_task_view(self.stack_presenter.view,
+                              apply_func,
+                              lambda _: self.stack_presenter.notify(SVNotification.REFRESH_IMAGE))
