@@ -36,9 +36,11 @@ How everything is connected:
 
 To apply a 'savu filter' to an image stack:
  - |process_list_built|
- - Submits a job to hebi with the pl and path to the input data.
- - Hebi validates everything and starts savu as a subprocess.
- - Once savu completes, hebi sends a message to imaging's ws client.
+ - Submits a job to hebi with the process list, and a path to the input data.
+ - Hebi validates everything. If there is a problem, responds with 400.
+ - Otherwise, hebi starts a savu subprocess to run the process list on the input and responds to imaging with a 200.
+ - Imaging joins a 'room' in hebi via websocket. Each room corresponds to a job.
+ - When savu completes a job, hebi sends a message to all clients in the matching room.
  - Imaging then loads an image stack from the folder savu wrote it's output to.
 
 .. |container_setup| replace:: A hebi container, which extends a savu container, runs locally. It is either started as a separate process, or automatically_ when the GUI starts up, as a subprocess.
