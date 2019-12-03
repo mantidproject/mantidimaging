@@ -60,16 +60,16 @@
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="stackLabel">
+         <widget class="QLabel" name="stackTargetLabel">
           <property name="text">
-           <string>Stack:</string>
+           <string>Apply to:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="StackSelectorWidgetView" name="stackSelector"/>
+         <widget class="StackSelectorWidgetView" name="stackTargetSelector"/>
         </item>
-        <item row="1" column="0" colspan="2">
+        <item row="2" column="0" colspan="2">
          <widget class="QGroupBox" name="operationsContainer">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -90,7 +90,7 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="3" column="0" colspan="2">
          <widget class="QGroupBox" name="previewPropertiesContainer">
           <property name="title">
            <string>Preview</string>
@@ -141,6 +141,16 @@
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="stackSourceLabel">
+          <property name="text">
+           <string>Operations from:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="StackSelectorWidgetView" name="stackSourceSelector"/>
         </item>
        </layout>
       </item>

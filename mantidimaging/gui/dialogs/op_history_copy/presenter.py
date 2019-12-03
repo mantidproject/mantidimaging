@@ -1,11 +1,14 @@
 from enum import Enum
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.operation_history.operations import ImageOperation, deserialize_metadata
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import OpHistoryCopyDialogModel
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView
 
 
 class Notification(Enum):
@@ -15,8 +18,10 @@ class Notification(Enum):
 
 class OpHistoryCopyDialogPresenter(BasePresenter):
     operations: List[ImageOperation]
+    main_window: 'MainWindowView'
 
     def __init__(self, view, images: Images, main_window):
+
         super(OpHistoryCopyDialogPresenter, self).__init__(view)
         self.model = OpHistoryCopyDialogModel(images)
         self.main_window = main_window
@@ -28,7 +33,10 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
         elif signal == Notification.APPLY_OPS:
             self.apply_ops()
 
-    def set_stack_uuid(self, uuid):
+    def set_target_stack(self, uuid):
+        self.model.images = self.main_window.get_stack_visualiser(uuid).presenter.images
+
+    def set_source_stack(self, uuid):
         history_to_apply = self.main_window.get_stack_history(uuid)
         self.operations = deserialize_metadata(history_to_apply)
         self.display_op_history()

@@ -14,8 +14,10 @@ class OpHistoryCopyDialogView(BaseDialogView):
     def __init__(self, parent, images, main_window):
         super(OpHistoryCopyDialogView, self).__init__(parent, "gui/ui/op_history_copy_dialog.ui")
         self.presenter = OpHistoryCopyDialogPresenter(self, images, main_window)
-        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-        self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackTargetSelector.stack_selected_uuid.connect(self.presenter.set_target_stack)
+        self.stackSourceSelector.stack_selected_uuid.connect(self.presenter.set_source_stack)
+        self.stackSourceSelector.subscribe_to_main_window(main_window)
+        self.stackTargetSelector.subscribe_to_main_window(main_window)
         self.previews = FilterPreviews()
         self.previewsLayout.addWidget(self.previews)
         self.applyButton.clicked.connect(lambda: self.presenter.notify(Notification.APPLY_OPS))
