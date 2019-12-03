@@ -36,18 +36,17 @@ class OpHistoryCopyDialogView(BaseDialogView):
 
     @staticmethod
     def build_operation_row(operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
-        # TODO: layout nicely
         parent = QWidget()
         parent_layout = QGridLayout(parent)
         parent.setLayout(parent_layout)
 
         check = QCheckBox(parent=parent, checked=True)
-        check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         parent_layout.addWidget(check, 0, 0)
 
-        foo = QLabel(operation.display_name)
-        foo.setStyleSheet('font-weight: bold')
-        parent_layout.addWidget(foo, 0, 1)
+        op_name_label = QLabel(operation.display_name)
+        op_name_label.setStyleSheet('font-weight: bold')
+        parent_layout.addWidget(op_name_label, 0, 1)
         row_num = 1
         for arg in operation.filter_args:
             parent_layout.addWidget(QLabel(arg), row_num, 1)
