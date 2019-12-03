@@ -1,6 +1,6 @@
 from typing import Iterable, Tuple
 
-from PyQt5.QtWidgets import QCheckBox, QHBoxLayout, QLabel, QGroupBox, QWidget
+from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QGridLayout
 
 from mantidimaging.core.operation_history.operations import ImageOperation
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -38,12 +38,24 @@ class OpHistoryCopyDialogView(BaseDialogView):
     def build_operation_row(operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
         # TODO: layout nicely
         parent = QWidget()
-        layout = QHBoxLayout(parent)
-        parent.setLayout(layout)
+        parent_layout = QGridLayout(parent)
+        parent.setLayout(parent_layout)
 
         check = QCheckBox(parent=parent, checked=True)
-        layout.addWidget(check)
-        layout.addWidget(QLabel(operation.friendly_name))
+        check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        parent_layout.addWidget(check, 0, 0)
+
+        foo = QLabel(operation.display_name)
+        foo.setStyleSheet('font-weight: bold')
+        parent_layout.addWidget(foo, 0, 1)
+        row_num = 1
+        for arg in operation.filter_args:
+            parent_layout.addWidget(QLabel(arg), row_num, 1)
+            row_num += 1
+
+        for k, v in operation.filter_kwargs.items():
+            parent_layout.addWidget(QLabel(f"{k}: {v}"), row_num, 1)
+            row_num += 1
 
         return parent, check
 
