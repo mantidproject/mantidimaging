@@ -1,7 +1,9 @@
 from enum import Enum
+from typing import List
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.operation_history.operations import deserialize_metadata
+from mantidimaging.core.operation_history import const
+from mantidimaging.core.operation_history.operations import ImageOperation, deserialize_metadata
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import OpHistoryCopyDialogModel
 
@@ -12,11 +14,13 @@ class Notification(Enum):
 
 
 class OpHistoryCopyDialogPresenter(BasePresenter):
-    def __init__(self, view, images, main_window):
+    operations: List[ImageOperation]
+
+    def __init__(self, view, images: Images, main_window):
         super(OpHistoryCopyDialogPresenter, self).__init__(view)
         self.model = OpHistoryCopyDialogModel(images)
         self.main_window = main_window
-        self.operations = None
+        self.operations = []
 
     def notify(self, signal: Notification):
         if signal == Notification.SELECTED_OPS_CHANGED:
@@ -37,6 +41,12 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
         pass
 
     def apply_ops(self):
-        selected_ops = (op for op, selected in zip(self.operations, self.view.selected_op_indices) if selected)
+        selected_ops = [op for op, selected in zip(self.operations, self.view.selected_op_indices) if selected]
         result = self.model.apply_ops(selected_ops)
-        self.main_window.create_new_stack(Images(result), "A result")
+
+        # Copy history and append new operations
+        history = self.model.images.metadata.copy()
+        for op in selected_ops:
+            history[const.OPERATION_HISTORY].append(op.serialize())
+
+        self.main_window.create_new_stack(Images(result, metadata=history), "A result")

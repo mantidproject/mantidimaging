@@ -27,8 +27,16 @@ class ImageOperation:
         return ImageOperation(
             filter_name=metadata_entry[const.OPERATION_NAME],
             filter_args=metadata_entry[const.OPERATION_ARGS],
-            filter_kwargs=metadata_entry[const.OPERATION_KEYWORD_ARGS], )
-        # Waiting for #388 display_name=op_history[const.OPERATION_DISPLAY_NAME],
+            filter_kwargs=metadata_entry[const.OPERATION_KEYWORD_ARGS],
+            display_name=metadata_entry.get(const.OPERATION_DISPLAY_NAME))
+
+    def serialize(self) -> Dict[str, Any]:
+        return {
+            const.OPERATION_NAME: self.filter_class_name,
+            const.OPERATION_ARGS: self.filter_args,
+            const.OPERATION_KEYWORD_ARGS: self.filter_kwargs,
+            const.OPERATION_DISPLAY_NAME: self.display_name,
+        }
 
     def __str__(self):
         return f"{self.display_name if self.display_name else self.filter_class_name}, " \
