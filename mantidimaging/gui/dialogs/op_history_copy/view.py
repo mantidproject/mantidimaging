@@ -1,6 +1,6 @@
 from typing import Iterable, Tuple
 
-from PyQt5.QtWidgets import QCheckBox, QHBoxLayout, QLabel, QGroupBox, QWidget
+from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QGridLayout
 
 from mantidimaging.core.operation_history.operations import ImageOperation
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -14,17 +14,15 @@ class OpHistoryCopyDialogView(BaseDialogView):
     def __init__(self, parent, images, main_window):
         super(OpHistoryCopyDialogView, self).__init__(parent, "gui/ui/op_history_copy_dialog.ui")
         self.presenter = OpHistoryCopyDialogPresenter(self, images, main_window)
-        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-        self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackTargetSelector.stack_selected_uuid.connect(self.presenter.set_target_stack)
+        self.stackSourceSelector.stack_selected_uuid.connect(self.presenter.set_source_stack)
+        self.stackSourceSelector.subscribe_to_main_window(main_window)
+        self.stackTargetSelector.subscribe_to_main_window(main_window)
         self.previews = FilterPreviews()
         self.previewsLayout.addWidget(self.previews)
         self.applyButton.clicked.connect(lambda: self.presenter.notify(Notification.APPLY_OPS))
 
-        self.op_checks = []
-
     def display_op_history(self, operations: Iterable[ImageOperation]):
-        # Clear the operations container
-        self.op_checks = []
         layout = self.operationsContainer.layout()
         while layout.count():
             row = layout.takeAt(0)
@@ -34,18 +32,29 @@ class OpHistoryCopyDialogView(BaseDialogView):
         for op in operations:
             row, check = self.build_operation_row(op)
             check.stateChanged.connect(lambda: self.presenter.notify(Notification.SELECTED_OPS_CHANGED))
-            self.op_checks.append(check)
             layout.addWidget(row)
 
-    def build_operation_row(self, operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
-        # TODO: layout nicely
+    @staticmethod
+    def build_operation_row(operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
         parent = QWidget()
-        layout = QHBoxLayout(parent)
-        parent.setLayout(layout)
+        parent_layout = QGridLayout(parent)
+        parent.setLayout(parent_layout)
 
         check = QCheckBox(parent=parent, checked=True)
-        layout.addWidget(check)
-        layout.addWidget(QLabel(operation.friendly_name))
+        check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        parent_layout.addWidget(check, 0, 0)
+
+        op_name_label = QLabel(operation.display_name)
+        op_name_label.setStyleSheet('font-weight: bold')
+        parent_layout.addWidget(op_name_label, 0, 1)
+        row_num = 1
+        for arg in operation.filter_args:
+            parent_layout.addWidget(QLabel(arg), row_num, 1)
+            row_num += 1
+
+        for k, v in operation.filter_kwargs.items():
+            parent_layout.addWidget(QLabel(f"{k}: {v}"), row_num, 1)
+            row_num += 1
 
         return parent, check
 
