@@ -173,11 +173,7 @@ class SavuFiltersWindowModel(object):
         if not self.stack:
             raise ValueError("No stack selected")
 
-        presenter = self.stack_presenter
-        # TODO make & read from a config. This config should also be used to start the Docker service
-        # the data path will be the root in the savu config, so it doesn't need to be part of the filepath
-        common_prefix = os.path.commonprefix(presenter.images.filenames).replace(RemoteConfig.LOCAL_DATA_DIR, "")
-        num_images = presenter.images.count()
+        dataset, prefix = self.calc_relative_paths()
 
         # save out nxs file
         # Currently ignoring 'preview' parameter (see #398), it should be self.stack_presenter.images.indices
@@ -197,7 +193,7 @@ class SavuFiltersWindowModel(object):
 
         session: FuturesSession = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
         files = {"process_list_file": file.read_bytes()}
-        data = {"process_list_name": self.stack.name, "dataset": "/data"}
+        data = {"process_list_name": self.stack.name, "dataset": dataset}
 
         # TODO get QUEUE parameter somewhere from the GUI
         # FIXME currently just sticking it into preview
@@ -258,3 +254,20 @@ class SavuFiltersWindowModel(object):
                                    id=np.string_(plugin.id),
                                    name=np.string_(plugin.name),
                                    user=np.string_("[]"))
+
+    def calc_relative_paths(self) -> Tuple[str, str]:
+        """
+        Work out the paths to the selected stack as required by hebi/savu.
+
+        The selected stack must be in LOCAL_DATA_DIR
+        :return: A tuple of (dataset_path, prefix) where dataset_path is
+                 <remote_data_dir>/<subdirectory_path_to_dataset> and prefix
+                 is the common prefix of the filenames in that folder.
+        """
+        file_paths = self.stack_presenter.images.filenames
+        file_names = [path.split(os.sep)[-1] for path in file_paths]
+        common_prefix = os.path.commonprefix(file_names)
+        return file_paths[0] \
+            .replace(RemoteConfig.LOCAL_DATA_DIR, RemoteConstants.DATA_DIR) \
+            .replace(file_names[0], "") \
+            .rstrip(os.sep), common_prefix
