@@ -180,8 +180,8 @@ class SavuFiltersWindowModel(object):
         num_images = presenter.images.count()
 
         # save out nxs file
-        spl = SAVUPluginList(common_prefix, num_images, preview=presenter.images.indices)
-
+        # Currently ignoring 'preview' parameter (see #398), it should be self.stack_presenter.images.indices
+        spl = SAVUPluginList(prefix, self.stack_presenter.images.count())
         plugin = self._create_plugin_entry_from(current_filter)
         spl.add_plugin(plugin)
 
