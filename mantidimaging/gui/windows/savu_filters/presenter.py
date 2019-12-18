@@ -5,6 +5,7 @@ from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
+from requests import Response
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.histogram import generate_histogram_from_image
@@ -228,5 +229,5 @@ class SavuFiltersWindowPresenter(BasePresenter):
     def do_job_submission_success(self, response_content: JobRunResponseContent):
         self.remote_presenter.do_job_submission_success(response_content)
 
-    def do_job_submission_failure(self, response_content: dict):
-        raise NotImplementedError("TODO what do when job submission fails?!")
+    def do_job_submission_failure(self, error_response: Response):
+        raise NotImplementedError(f"(Unhandled) error response from hebi:\n{error_response.reason}")

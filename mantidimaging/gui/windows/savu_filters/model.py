@@ -211,8 +211,8 @@ class SavuFiltersWindowModel(object):
             logger.error(msg)
             raise RuntimeError(msg)
 
-        content_json = json.loads(response.content)
-        if response.status_code == 200:
+        if response.ok:
+            content_json = response.json()
             try:
                 content = JobRunResponseContent(content_json["job"]["id"], content_json["queue"])
             except TypeError as e:
@@ -223,8 +223,8 @@ class SavuFiltersWindowModel(object):
             logger.info(content)
             self.presenter.do_job_submission_success(content)
         else:
-            logger.error(f"Error code: {response.status_code}, message: {content_json['message']}")
-            self.presenter.do_job_submission_failure(content_json)
+            logger.error(f"Error code: {response.status_code}, message: {response.content}")
+            self.presenter.do_job_submission_failure(response)
 
         # reload changes? what do
         # TODO figure out how to get params like ROI later
