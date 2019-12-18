@@ -181,7 +181,6 @@ class MainWindowView(BaseMainWindowView):
         Handles a request to quit the application from the user.
         """
         should_close = True
-        self.backend_process.close()
 
         if self.presenter.have_active_stacks:
             # Show confirmation box asking if the user really wants to quit if
@@ -196,6 +195,7 @@ class MainWindowView(BaseMainWindowView):
             # Close all matplotlib PyPlot windows when exiting.
             getLogger(__name__).debug("Closing all PyPlot windows")
             matplotlib.pyplot.close("all")
+            self.backend_process.close()
             self.backend_process.join()
 
             # Pass close event to parent

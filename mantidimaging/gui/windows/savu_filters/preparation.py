@@ -29,27 +29,30 @@ class BackgroundService(threading.Thread):
         self.callback = lambda output: LOG.debug(output)
         self.error_callback = lambda err_code, output: LOG.debug(f"BackgroundService error: {output}")
         self.success_callback = lambda: LOG.debug("BackgroundService success.")
-        self.exit_code: int = -4444
-        self.close_now = False
+        self.exit_code: Optional[int] = None
         self.docker_id = None
-        self.close_intended = False
         self.process: Optional[subprocess.Popen] = None
 
     def run(self) -> None:
+        """
+        Attempt to start the docker subprocess.
+
+        If successful, docker_id will hold the container's id, otherwise exit_code holds dockers exit code.
+        Failures are most likely caused by an incorrect hebi image, or something already running on the same port.
+        """
         self.process = subprocess.Popen(self.args, bufsize=1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while self.process.poll() is None:
             output = self.process.stdout.readline()
-            if b"* Serving Flask app " in output:
-                self.success()
-            if output == '' and self.process.poll() is not None:
-                break
             if output:
                 self.callback(output)
+            if b"* Running on " in output:
+                self.success()
+                break
         self.exit_code = self.process.poll()
         self.determine_run_outcome()
 
     def determine_run_outcome(self) -> int:
-        if self.close_intended and self.exit_code == 0:
+        if not self.exit_code:
             self.success_callback()
         else:
             # docker could not be started, try to connect to an already running container
@@ -64,15 +67,18 @@ class BackgroundService(threading.Thread):
 
     def success(self):
         prepare_data()
-        docker_id = subprocess.check_output("docker ps | awk -F ' ' 'END {print $1}'", shell=True)
+        docker_id = subprocess.check_output(self.docker_exe + " ps | awk -F ' ' 'END {print $1}'", shell=True)
         self.docker_id = docker_id.decode("utf-8")
 
     def close(self):
-        self.close_intended = True
-        self.process.terminate()
-        subprocess.call(f'{self.docker_exe} kill {self.docker_id}', shell=True)
+        """
+        Shut down the subprocess and, if we started it, kill the hebi container.
+        """
         sio_client.reconnection = False
         sio_client.disconnect()
+        self.process.terminate()
+        if self.docker_id:
+            subprocess.call(f'{self.docker_exe} kill {self.docker_id}', shell=True)
 
 
 def is_exe(fpath):
@@ -126,7 +132,7 @@ async def prepare_backend() -> BackgroundService:
     else:
         docker_args.append(RemoteConfig.IMAGE_NAME)
 
-    docker_args = list(map(lambda arg: arg.replace("~", os.path.expanduser("~")) if "~" in arg else arg, docker_args))
+    docker_args = list(map(lambda arg: arg.replace("~", os.path.expanduser("~")), docker_args))
     LOG.debug(f"Starting DOCKER service with args: {' '.join(docker_args)}")
     process = BackgroundService(docker_exe, docker_args)
     return process

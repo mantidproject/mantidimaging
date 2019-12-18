@@ -153,7 +153,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
     def load_savu_stack(self, output: str):
         # replace remote output with the local output path equivalent
-        local_output = output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR)
+        local_output = os.path.expanduser(output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR))
         # navigate to the first folder - that should be the folder created by the output plugin
         # TODO make more robust somehow, get output folder from Savu through Hebi?
         local_output = os.path.join(local_output, os.listdir(local_output)[0], "TiffSaver-tomo")
@@ -164,6 +164,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'image_format': "tiff",
             'parallel_load': False,
             'indices': None,
-            'custom_name': "apples"
+            'custom_name': "apples",
+            'in_prefix': '',
         }
         self.main_window.presenter.load_stack(kwargs)
