@@ -68,7 +68,7 @@ class BackgroundService(threading.Thread):
 
     def success(self):
         prepare_data()
-        docker_id = subprocess.check_output("docker ps | awk -F ' ' 'END {print $1}'", shell=True)
+        docker_id = subprocess.check_output(self.docker_exe + " ps | awk -F ' ' 'END {print $1}'", shell=True)
         self.docker_id = docker_id.decode("utf-8")
 
     def close(self):
@@ -80,6 +80,7 @@ class BackgroundService(threading.Thread):
         self.process.terminate()
         if self.docker_id:
             subprocess.call(f'{self.docker_exe} kill {self.docker_id}', shell=True)
+
 
 def is_exe(fpath):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
