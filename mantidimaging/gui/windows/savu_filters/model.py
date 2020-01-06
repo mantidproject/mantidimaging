@@ -223,7 +223,7 @@ class SavuFiltersWindowModel(object):
             logger.info(content)
             self.presenter.do_job_submission_success(content)
         else:
-            logger.error(f"Error code: {response.status_code}, message: {response.content}")
+            logger.error(f"Error code: {response.status_code}, message: {response.content!r}")
             self.presenter.do_job_submission_failure(response)
 
         # reload changes? what do

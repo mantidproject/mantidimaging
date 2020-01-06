@@ -20,6 +20,7 @@ from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 LOG = getLogger(__file__)
 
+
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
     backend_message = Qt.pyqtSignal(bytes)
@@ -224,4 +225,3 @@ class MainWindowView(BaseMainWindowView):
         process.callback = lambda output: self.backend_message.emit(output)
         process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
         process.error_callback = self.error_callback
-

@@ -49,9 +49,7 @@ class BackgroundService(threading.Thread):
                 self.success()
                 break
         self.exit_code = self.process.poll()
-        self.determine_run_outcome()
 
-    def determine_run_outcome(self) -> int:
         if not self.exit_code:
             self.success_callback()
         else:
@@ -62,8 +60,6 @@ class BackgroundService(threading.Thread):
                 self.success_callback()
             else:
                 self.error_callback(self.exit_code, self.process.stderr.readlines())
-
-        return self.exit_code
 
     def success(self):
         prepare_data()
