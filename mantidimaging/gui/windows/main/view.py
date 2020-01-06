@@ -21,6 +21,7 @@ from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 LOG = getLogger(__file__)
 
+
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
     backend_message = Qt.pyqtSignal(bytes)
