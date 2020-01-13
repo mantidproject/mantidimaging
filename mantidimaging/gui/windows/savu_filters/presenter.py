@@ -85,6 +85,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
             stack.roi_updated.connect(self.handle_roi_selection)
             self.view.reset_indices_inputs(self.model.image_shape)
 
+        self.model.stack = stack
+
     def handle_roi_selection(self, roi):
         if roi:
             # TODO used to check  and self.filter_uses_auto_property(SVParameters.ROI): but disabled for now

@@ -48,9 +48,15 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.handle_filter_selection()
 
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
+<<<<<<< HEAD
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
         self.applyListButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_LIST))
         self.confirmPluginButton.clicked.connect(lambda: self.presenter.notify(PresNotification.CONFIRM_PLUGIN))
+=======
+
+        # Handle apply filter
+        self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+>>>>>>> Removed preview pane from savu filter window
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
