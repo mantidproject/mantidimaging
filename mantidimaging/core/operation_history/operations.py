@@ -55,8 +55,8 @@ def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
         for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
     }
     # TODO: Reconstruction function. Requires reworking cor/proj_angle arguments a little
-    funcs = {
+    fixed_funcs = {
         const.OPERATION_NAME_AXES_SWAP: lambda img: np.swapaxes(img, 0, 1),
     }
-    funcs.update(filter_funcs)
-    return (op.to_partial(funcs) for op in filter_ops)
+    filter_funcs.update(fixed_funcs)
+    return (op.to_partial(filter_funcs) for op in filter_ops)
