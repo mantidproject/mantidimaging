@@ -58,5 +58,5 @@ def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
     fixed_funcs = {
         const.OPERATION_NAME_AXES_SWAP: lambda img: np.swapaxes(img, 0, 1),
     }
-    filter_funcs.update(fixed_funcs)
+    fixed_funcs.update(filter_funcs)
     return (op.to_partial(filter_funcs) for op in filter_ops)
