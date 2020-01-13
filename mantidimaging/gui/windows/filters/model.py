@@ -109,7 +109,7 @@ class FiltersWindowModel(object):
 
         # store the executed filter in history if it all executed successfully
         exec_func.keywords.update(stack_params)
-        images.record_operation(self.selected_filter.__module__,
+        images.record_operation(self.selected_filter.__name__,
                                 self.selected_filter.filter_name,
                                 *exec_func.args, **exec_func.keywords)
 

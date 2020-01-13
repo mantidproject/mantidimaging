@@ -53,7 +53,10 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
         result = self.model.apply_ops(selected_ops)
 
         # Copy history and append new operations
-        history = self.model.images.metadata.copy()
+        history = self.model.images.metadata.copy() if self.model.images.metadata else {}
+        if const.OPERATION_HISTORY not in history:
+            history[const.OPERATION_HISTORY] = []
+
         for op in selected_ops:
             history[const.OPERATION_HISTORY].append(op.serialize())
 
