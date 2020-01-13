@@ -9,7 +9,7 @@ from . import const
 
 class ImageOperation:
     """
-    A deserialized representation of an item in a stacks operation_history
+    A deserialized representation of an item in a stack's operation_history
     """
 
     def __init__(self, filter_name, filter_args, filter_kwargs, display_name=None):
@@ -23,7 +23,7 @@ class ImageOperation:
         return partial(fn, **self.filter_kwargs)
 
     @staticmethod
-    def deserialize(metadata_entry: Dict[str, Any]) -> 'ImageOperation':
+    def from_serialized(metadata_entry: Dict[str, Any]) -> 'ImageOperation':
         return ImageOperation(
             filter_name=metadata_entry[const.OPERATION_NAME],
             filter_args=metadata_entry[const.OPERATION_ARGS],
@@ -43,13 +43,9 @@ class ImageOperation:
                f"args: {self.filter_args}, " \
                f"kwargs: {self.filter_kwargs}"
 
-    @property
-    def friendly_name(self):
-        return self.display_name if self.display_name else self.filter_class_name
-
 
 def deserialize_metadata(metadata: Dict[str, Any]) -> List[ImageOperation]:
-    return [ImageOperation.deserialize(entry) for entry in metadata[const.OPERATION_HISTORY]] \
+    return [ImageOperation.from_serialized(entry) for entry in metadata[const.OPERATION_HISTORY]] \
         if const.OPERATION_HISTORY in metadata else []
 
 
