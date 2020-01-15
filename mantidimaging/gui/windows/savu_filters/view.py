@@ -96,4 +96,4 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'custom_name': "apples",
             'in_prefix': '',
         }
-        self.main_window.presenter.load_stack(kwargs)
+        self.main_window.presenter.load_stack(**kwargs)

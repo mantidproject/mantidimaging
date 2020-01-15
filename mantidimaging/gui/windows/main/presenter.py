@@ -44,8 +44,8 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_stack(self):
-        kwargs = self.view.load_dialogue.get_kwargs()
+    def load_stack(self, **kwargs):
+        kwargs = kwargs if kwargs else self.view.load_dialogue.get_kwargs()
 
         if 'sample_path' not in kwargs or not kwargs['sample_path']:
             raise ValueError("No sample path provided, cannot load anything")
