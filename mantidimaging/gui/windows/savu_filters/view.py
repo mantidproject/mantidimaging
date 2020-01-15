@@ -56,7 +56,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
-        self.main_window.filters = None
+        self.main_window.savu_filters = None
 
     def show(self):
         super(SavuFiltersWindowView, self).show()
