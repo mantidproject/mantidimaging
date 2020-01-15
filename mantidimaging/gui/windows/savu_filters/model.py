@@ -180,6 +180,7 @@ class SavuFiltersWindowModel(object):
         spl = SAVUPluginList(prefix, self.stack_presenter.images.count())
         plugin = self._create_plugin_entry_from(current_filter)
         spl.add_plugin(plugin)
+        spl.finalize()
 
         # makes sure the directories exists, they are created recursively
         # if they already exist, nothing is done
