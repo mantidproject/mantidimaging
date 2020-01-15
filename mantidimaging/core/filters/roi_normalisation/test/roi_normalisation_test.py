@@ -4,8 +4,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.core.filters import roi_normalisation
+from mantidimaging.core.filters.roi_normalisation import RoiNormalisationFilter
 
 
 class ROINormalisationTest(unittest.TestCase):
@@ -22,7 +21,7 @@ class ROINormalisationTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         air = None
-        result = roi_normalisation.execute(images, air)
+        result = RoiNormalisationFilter._filter_func(images, air)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -32,7 +31,7 @@ class ROINormalisationTest(unittest.TestCase):
 
         images = np.arange(100).reshape(10, 10)
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, roi_normalisation.execute, images,
+        npt.assert_raises(ValueError, RoiNormalisationFilter._filter_func, images,
                           air)
 
     def test_executed_par(self):
@@ -47,12 +46,19 @@ class ROINormalisationTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         air = [3, 3, 4, 4]
-        result = roi_normalisation.execute(images, air)
+        result = RoiNormalisationFilter._filter_func(images, air)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
 
         npt.assert_equal(result, images)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images, _ = th.gen_img_shared_array_and_copy()
+        RoiNormalisationFilter.execute_wrapper()(images)
 
 
 if __name__ == '__main__':

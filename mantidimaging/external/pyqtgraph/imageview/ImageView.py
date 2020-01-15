@@ -19,7 +19,7 @@ from typing import Callable, Optional, Tuple
 import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel
-from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug as debug, ptime as ptime
+from pyqtgraph import ImageItem, InfiniteLine, LinearRegionItem, QtCore, ROI, ViewBox, debug, ptime
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 from pyqtgraph.SignalProxy import SignalProxy
 from pyqtgraph.graphicsItems.GradientEditorItem import addGradientListToDocstring
@@ -195,6 +195,7 @@ class ImageView(QtGui.QWidget):
         self.ui.normFrameCheck.clicked.connect(self.updateNorm)
         self.ui.normTimeRangeCheck.clicked.connect(self.updateNorm)
         self.playTimer.timeout.connect(self.timeout)
+        self.extend_roi_plot_mouse_press_handler()
 
         self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
         self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
@@ -547,16 +548,16 @@ class ImageView(QtGui.QWidget):
         return "t" in self.axes and self.axes["t"] is not None
 
     def roiClicked(self):
-        showRoiPlot = False
+        show_roi_plot = False
         if self.ui.roiBtn.isChecked():
-            showRoiPlot = True
             self.roi.show()
-            # self.ui.roiPlot.show()
-            self.ui.roiPlot.setMouseEnabled(True, True)
-            self.ui.splitter.setSizes([self.height() * 0.6, self.height() * 0.4])
-            self.roiCurve.show()
-            self.roiChanged()
-            self.ui.roiPlot.showAxis("left")
+            if self.image.ndim == 3:
+                show_roi_plot = True
+                self.ui.roiPlot.setMouseEnabled(True, True)
+                self.ui.splitter.setSizes([self.height() * 0.6, self.height() * 0.4])
+                self.roiCurve.show()
+                self.roiChanged()
+                self.ui.roiPlot.showAxis("left")
         else:
             self.roi.hide()
             self.ui.roiPlot.setMouseEnabled(False, False)
@@ -565,7 +566,7 @@ class ImageView(QtGui.QWidget):
             self.roiString = None
 
         if self.hasTimeAxis():
-            showRoiPlot = True
+            show_roi_plot = True
             mn = self.tVals.min()
             mx = self.tVals.max()
             self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
@@ -578,7 +579,7 @@ class ImageView(QtGui.QWidget):
             self.timeLine.hide()
             # self.ui.roiPlot.hide()
 
-        self.ui.roiPlot.setVisible(showRoiPlot)
+        self.ui.roiPlot.setVisible(show_roi_plot)
 
     def roiChanged(self):
         if self.image is None:
@@ -590,12 +591,12 @@ class ImageView(QtGui.QWidget):
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
         self.roiString = f"({left}, {top}, {right}, {bottom})"
-        data = self.image[:, left:right, top:bottom]
-
-        if data is not None:
-            while data.ndim > 1:
-                data = data.mean(axis=1)
-            self.roiCurve.setData(y=data, x=self.tVals)
+        if self.image.ndim == 3:
+            data = self.image[:, left:right, top:bottom]
+            if data is not None:
+                while data.ndim > 1:
+                    data = data.mean(axis=1)
+                self.roiCurve.setData(y=data, x=self.tVals)
 
         if self.roi_changed_callback:
             self.roi_changed_callback(SensibleROI(left, top, right, bottom))
@@ -635,7 +636,7 @@ class ImageView(QtGui.QWidget):
             (eind, end) = self.timeIndex(self.normRgn.lines[1])
             # print start, end, sind, eind
             n = image[sind:eind + 1].mean(axis=0)
-            n.shape = (1, ) + n.shape
+            n.shape = (1,) + n.shape
             if div:
                 norm /= n
             else:
@@ -809,7 +810,29 @@ class ImageView(QtGui.QWidget):
         if event.exit:
             return
         pt = CloseEnoughPoint(event.pos())
-        msg = f"x={pt.x}, y={pt.y}, z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]}"
+        msg = f"x={pt.x}, y={pt.y}, "
+        if self.image.ndim == 3:
+            msg += f"z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]}"
+        else:
+            msg += f"value={self.image[pt.y, pt.x]}"
+
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
+
+    def extend_roi_plot_mouse_press_handler(self):
+        original_handler = self.ui.roiPlot.mousePressEvent
+
+        def extended_handler(ev):
+            if ev.button() == QtCore.Qt.LeftButton:
+                self.set_timeline_to_tick_nearest(ev.x())
+            original_handler(ev)
+
+        self.ui.roiPlot.mousePressEvent = lambda ev: extended_handler(ev)
+
+    def set_timeline_to_tick_nearest(self, x):
+        x_axis = self.getRoiPlot().getAxis('bottom')
+        frac_pos = (x - x_axis.x()) / x_axis.width()
+        view_range = self.getRoiPlot().viewRange()[0]
+        domain_pos = (view_range[1] - view_range[0]) * frac_pos
+        self.timeLine.setValue(np.round(view_range[0] + domain_pos))

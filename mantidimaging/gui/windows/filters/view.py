@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
+from PyQt5.QtWidgets import QVBoxLayout
+from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (
     delete_all_widgets_from_layout)
-from .navigation_toolbar import FiltersWindowNavigationToolbar
+from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
@@ -18,7 +18,10 @@ if TYPE_CHECKING:
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
-    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
+    previewsLayout: QVBoxLayout
+    previews: FilterPreviews
+
+    def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
 
         self.main_window = main_window
@@ -37,39 +40,13 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
-        # Preview area
-        self.cmap = cmap
+        self.previews = FilterPreviews()
+        self.previewsLayout.addWidget(self.previews)
+        self.clear_previews()
 
-        self.figure = Figure(tight_layout=True)
-
-        self.canvas = FigureCanvasQTAgg(self.figure)
-        self.canvas.setParent(self)
-
-        self.toolbar = FiltersWindowNavigationToolbar(self.canvas, self)
-        self.toolbar.filter_window = self
-
-        self.mplLayout.addWidget(self.toolbar)
-        self.mplLayout.addWidget(self.canvas)
-
-        def add_plot(num, title, **kwargs):
-            plt = self.figure.add_subplot(num, title=title, **kwargs)
-            return plt
-
-        self.preview_image_before = add_plot(221, 'Image Before')
-
-        self.preview_image_after = add_plot(223, 'Image After', sharex=self.preview_image_before,
-                                            sharey=self.preview_image_before)
-
-        self.preview_histogram_before = add_plot(222, 'Histogram Before')
-        self.preview_histogram_before.plot([], [])
-
-        self.preview_histogram_after = add_plot(
-            224, 'Histogram After',
-            sharex=self.preview_histogram_before,
-            sharey=self.preview_histogram_before)
-        self.preview_histogram_after.plot([], [])
-
-        self.clear_preview_plots()
+        self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
+        self.showHistogramLegend.stateChanged.connect(self.histogram_legend_vis_changed)
+        self.linkImages.stateChanged.connect(self.link_images_changed)
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(
@@ -85,6 +62,7 @@ class FiltersWindowView(BaseMainWindowView):
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
         self.main_window.filters = None
+        self.presenter = None
 
     def show(self):
         super(FiltersWindowView, self).show()
@@ -112,12 +90,36 @@ class FiltersWindowView(BaseMainWindowView):
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
-    def clear_preview_plots(self):
-        """
-        Clears the plotted data from the preview images and plots.
-        """
-        self.preview_image_before.cla()
-        self.preview_image_after.cla()
+    def clear_previews(self):
+        self.previews.clear_items()
 
-        self.preview_histogram_before.lines[0].set_data([], [])
-        self.preview_histogram_after.lines[0].set_data([], [])
+    def histogram_mode_changed(self):
+        self.previews.combined_histograms = self.combinedHistograms.isChecked()
+        self.previews.redraw_histograms()
+
+    def histogram_legend_vis_changed(self):
+        self.previews.histogram_legend_visible = self.showHistogramLegend.isChecked()
+        legend = self.previews.histogram_legend
+        if legend:
+            if self.showHistogramLegend.isChecked():
+                legend.show()
+            else:
+                legend.hide()
+
+    def link_images_changed(self):
+        if self.linkImages.isChecked():
+            self.previews.link_all_views()
+        else:
+            self.previews.unlink_all_views()
+
+    @property
+    def preview_image_before(self) -> ImageItem:
+        return self.previews.image_before
+
+    @property
+    def preview_image_after(self) -> ImageItem:
+        return self.previews.image_after
+
+    @property
+    def preview_image_difference(self) -> ImageItem:
+        return self.previews.image_difference

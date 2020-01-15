@@ -4,12 +4,11 @@ from PyQt5.QtWidgets import QAbstractItemView
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from mantidimaging.core.cor_tilt import Field
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import NavigationToolbarSimple
-from .point_table_model import CorTiltPointQtModel
-from .presenter import CORTiltWindowPresenter
-from .presenter import Notification as PresNotification
+from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel, Column
+from mantidimaging.gui.windows.cor_tilt.presenter import CORTiltWindowPresenter
+from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -26,14 +25,7 @@ class CORTiltWindowView(BaseMainWindowView):
 
         self.cmap = cmap
 
-        # Handle calculate button click
-        self.autoCalculateButton.clicked.connect(lambda: self.presenter.notify(PresNotification.RUN_AUTOMATIC))
-
-        # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-
-        # Handle stack cropping
-        self.setRoi.clicked.connect(lambda: self.presenter.notify(PresNotification.CROP_TO_ROI))
 
         # Handle preview image selection
         self.previewProjectionIndex.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
@@ -90,10 +82,10 @@ class CORTiltWindowView(BaseMainWindowView):
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
-            if tl == br and tl.column() == Field.CENTRE_OF_ROTATION.value:
+            if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(
-                    mdl.index(tl.row(), Field.SLICE_INDEX.value))
+                    mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.handle_cor_manually_changed(slice_idx)
 
         self.tableView.model().rowsRemoved.connect(
@@ -105,15 +97,19 @@ class CORTiltWindowView(BaseMainWindowView):
             self.tableView.model().removeAllRows)
         self.manualRemoveButton.clicked.connect(
             self.tableView.removeSelectedRows)
-        self.manualAddButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.ADD_NEW_COR_TABLE_ROW))
-        self.manualRefineCorButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.REFINE_SELECTED_COR))
-        self.manualFitButton.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.RUN_MANUAL))
+
+        click_notifications = {
+            self.manualAddButton: PresNotification.ADD_NEW_COR_TABLE_ROW,
+            self.manualRefineCorButton: PresNotification.REFINE_SELECTED_COR,
+            self.setAllButton: PresNotification.SET_ALL_ROW_VALUES,
+            self.manualFitButton: PresNotification.RUN_MANUAL,
+            self.setRoi: PresNotification.CROP_TO_ROI,
+            self.autoCalculateButton: PresNotification.RUN_AUTOMATIC,
+        }
+        for btn, notification in click_notifications.items():
+            def bind(c_notification):
+                btn.clicked.connect(lambda: self.presenter.notify(c_notification))
+            bind(notification)
 
         def on_row_change(item, _):
             """
@@ -121,15 +117,16 @@ class CORTiltWindowView(BaseMainWindowView):
             in the manual COR table.
             """
             if item.isValid():
-                slice_idx = item.model().point(item.row())[
-                    Field.SLICE_INDEX.value]
+                slice_idx = item.model().point(item.row()).slice_index
+                self.presenter.set_row(item.row())
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.presenter.notify(
                     PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
 
-            # Only allow the refine button to be clicked when a valid row is
-            # selected
-            self.manualRefineCorButton.setEnabled(item.isValid())
+            # Only allow buttons which act on selected row to be clicked when a valid
+            # row is selected
+            for button in [self.manualRefineCorButton, self.setAllButton, self.manualRemoveButton]:
+                button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(
             on_row_change)
@@ -334,11 +331,11 @@ class CORTiltWindowView(BaseMainWindowView):
         enough_to_fit = self.tableView.model().num_points >= 2
         self.manualFitButton.setEnabled(enough_to_fit)
 
-    def add_cor_table_row(self, idx, cor):
+    def add_cor_table_row(self, row, slice_index, cor):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
-        self.tableView.model().appendNewRow(idx, cor)
+        self.tableView.model().appendNewRow(row, slice_index, cor)
 
     @property
     def slice_count(self):

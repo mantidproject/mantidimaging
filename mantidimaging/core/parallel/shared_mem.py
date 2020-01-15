@@ -161,8 +161,7 @@ def execute(data=None,
                                         task_name=task_name)
 
     indices_list = pu.generate_indices(img_num)
-    for _ in enumerate(pool.imap(
-            partial_func, indices_list, chunksize=chunksize)):
+    for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
         progress.update()
 
     pool.close()

@@ -522,7 +522,7 @@ class IOTest(FileOutputtingTestCase):
         # Create dummy image stack
         sample = th.gen_img_shared_array_with_val(42.)
         images = Images(sample)
-        images.properties['message'] = 'hello, world!'
+        images.metadata['message'] = 'hello, world!'
 
         # Save image stack
         save(images, self.output_directory)
@@ -531,7 +531,7 @@ class IOTest(FileOutputtingTestCase):
         loaded_images = loader.load(self.output_directory)
 
         # Ensure properties have been preserved
-        self.assertEquals(loaded_images.properties, images.properties)
+        self.assertEquals(loaded_images.metadata, images.metadata)
 
 
 if __name__ == '__main__':

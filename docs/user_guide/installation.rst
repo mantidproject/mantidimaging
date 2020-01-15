@@ -1,3 +1,5 @@
+.. _Installation:
+
 Installation
 ============
 Installing
@@ -18,9 +20,9 @@ have one on your machine.
 
 3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging`
 4. Activate the newly created environment: :code:`conda activate mantidimaging`
-5. Install additional :code:`pip` dependencies with :code:`pip install pip_requirements.txt` from the source folder.
+5. Install additional :code:`pip` dependencies with :code:`pip install deps/pip-requirements.txt` from the source folder.
 
-  - If unavailable the packages are :code:`pip install python-engineio==3.9.3 h5py==2.9.0`
+  - If unavailable the packages are :code:`pip install python-engineio==3.9.3 h5py==2.9.0 PyQt5`
 
 
 Running the source

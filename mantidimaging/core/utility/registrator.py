@@ -2,6 +2,9 @@ import importlib
 import os
 import pkgutil
 import sys
+from typing import List, Iterator, Optional
+
+from typed_ast._ast3 import Module
 
 
 def find_package_path(package_str):
@@ -23,56 +26,50 @@ def find_package_path(package_str):
     raise RuntimeError("Cannot find path for package {}".format(package_str))
 
 
-def get_package_children(package_name, packages=False, modules=False,
-                         ignore=None):
+def get_package_children(package_name, packages=False, modules=False, ignore=None) -> Iterator[pkgutil.ModuleInfo]:
     """
     Gets a list of names of child packages or modules found under a given
     package.
 
-    :param package: The package to search within
-
+    :param package_name: The package to search within
     :param packages: Set to True to return packages
-
     :param modules: Set to True to return modules
-
     :param ignore: List of explicitly matching modules to ignore
 
     :return: Iterator over matching modules
     """
     # Walk the children (packages and modules) of the provided root package
-    pkgs = pkgutil.walk_packages([find_package_path(package_name)],
-                                 prefix=package_name + '.')
+    pkgs: Iterator[pkgutil.ModuleInfo] = pkgutil.walk_packages([find_package_path(package_name)],
+                                                               prefix=package_name + '.')
 
     # Ignore those that do not match the package/module selection criteria
-    pkgs = filter(lambda p: p[2] and packages or not p[2] and modules, pkgs)
+    pkgs = filter(lambda p: p.ispkg and packages or not p.ispkg and modules, pkgs)
 
-    # Ignore moduels that we want to ignore
+    # Ignore modules whose names contain anything from 'ignore'
     if ignore:
-        pkgs = filter(lambda p: not any([m in p[1] for m in ignore]),
-                      pkgs)
+        pkgs = filter(lambda p: not any([m in p.name for m in ignore]), pkgs)
 
     return pkgs
 
 
-def import_items(names, required_attributes=None):
+def import_items(names: List[str], required_attributes: Optional[List[str]] = None) -> Iterator[Module]:
     """
     Imports a list of packages/modules and filters out those that do not have a
     specified required list of attributes.
 
     :param names: List of package/module names to import
-
     :param required_attributes: Optional list of attributes that must be
                                 present on each individual module
 
     :return: List of imported packages/modules
     """
-    imported = [importlib.import_module(n) for n in names]
+    imported: Iterator[Module] = (importlib.import_module(n) for n in names)
 
     # Filter out those that do not contain all the required attributes
     if required_attributes:
         imported = filter(
-                lambda i: all([hasattr(i, a) for a in required_attributes]),
-                imported)
+            lambda i: all([hasattr(i, a) for a in required_attributes]),    # type: ignore
+            imported)
 
     return imported
 

@@ -1,13 +1,16 @@
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog
+from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog, QMessageBox
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
+from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
+from .presenter import SVNotification
+from .metadata_dialog import MetadataDialog
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -36,6 +39,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.layout = QVBoxLayout(self)
         self.central_widget.setLayout(self.layout)
         self.setCentralWidget(self.central_widget)
+        self.parent_create_stack = self.parent().create_new_stack
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title
@@ -70,8 +74,17 @@ class StackVisualiserView(BaseMainWindowView):
         roi = SensibleROI.from_points(*self.image_view.get_roi())
         return roi.left, roi.top, roi.right, roi.bottom
 
-    def show_current_image(self):
-        self.image_view.setImage(self.presenter.images.sample)
+    @property
+    def image(self):
+        return self.image_view.imageItem
+
+    @image.setter
+    def image(self, to_display):
+        self.image_view.setImage(to_display)
+
+    @property
+    def main_window(self):
+        return self.parent().parent()
 
     def closeEvent(self, event):
         # this removes all references to the data, allowing it to be GC'ed
@@ -99,9 +112,31 @@ class StackVisualiserView(BaseMainWindowView):
 
     def build_context_menu(self) -> QMenu:
         menu = QMenu(self)
-        action = QAction("Change window name", menu)
-        action.triggered.connect(self.change_window_name_clicked)
-        menu.addAction(action)
+
+        def action(text):
+            return QAction(text, menu)
+
+        change_name_action = action("Change window name")
+        change_name_action.triggered.connect(self.change_window_name_clicked)
+
+        toggle_image_mode_action = action("Toggle show averaged image")
+        toggle_image_mode_action.triggered.connect(
+            lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE))
+
+        show_metadata_action = action("Show image metadata")
+        show_metadata_action.triggered.connect(self.show_image_metadata)
+
+        swap_axes_action = action("Create sinograms from stack")
+        swap_axes_action.triggered.connect(lambda: self.presenter.notify(SVNotification.SWAP_AXES))
+
+        history_copy_action = action("Apply history from another stack")
+        history_copy_action.triggered.connect(self.show_op_history_copy_dialog)
+
+        menu.addActions([change_name_action,
+                         toggle_image_mode_action,
+                         show_metadata_action,
+                         swap_axes_action,
+                         history_copy_action])
         return menu
 
     def change_window_name_clicked(self):
@@ -111,4 +146,18 @@ class StackVisualiserView(BaseMainWindowView):
                                                    "Name:",
                                                    text=self.name)
         if ok:
-            self.name = new_window_name
+            if new_window_name not in self.main_window.stack_names:
+                self.main_window.presenter.rename_stack_by_name(self.name, new_window_name)
+            else:
+                error = QMessageBox(self)
+                error.setWindowTitle("Stack name conflict")
+                error.setText(f"There is already a window named {new_window_name}")
+                error.exec()
+
+    def show_image_metadata(self):
+        dialog = MetadataDialog(self, self.presenter.images)
+        dialog.show()
+
+    def show_op_history_copy_dialog(self):
+        dialog = OpHistoryCopyDialogView(self, self.presenter.images, self.main_window)
+        dialog.show()

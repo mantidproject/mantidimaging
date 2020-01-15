@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import crop_coords
 
 
 class CropCoordsTest(unittest.TestCase):
@@ -25,7 +23,7 @@ class CropCoordsTest(unittest.TestCase):
         dark = th.shared_deepcopy(images)[0]
         roi = [1, 1, 5, 5]
 
-        r_sample, r_flat, r_dark = crop_coords.execute(images, roi, flat, dark)
+        r_sample, r_flat, r_dark = CropCoordinatesFilter._filter_func(images, roi, flat, dark)
 
         expected_shape_sample = (10, 4, 4)
         expected_shape_flat_dark = (4, 4)
@@ -46,7 +44,7 @@ class CropCoordsTest(unittest.TestCase):
         dark = None
         roi = [1, 1, 5, 5]
 
-        r_sample, r_flat, r_dark = crop_coords.execute(images, roi, flat, dark)
+        r_sample, r_flat, r_dark = CropCoordinatesFilter._filter_func(images, roi, flat, dark)
 
         expected_shape_sample = (10, 4, 4)
 
@@ -66,7 +64,7 @@ class CropCoordsTest(unittest.TestCase):
         dark = th.shared_deepcopy(images)[0]
         roi = [1, 1, 5, 5]
 
-        r_sample, r_flat, r_dark = crop_coords.execute(images, roi, flat, dark)
+        r_sample, r_flat, r_dark = CropCoordinatesFilter._filter_func(images, roi, flat, dark)
 
         expected_shape_sample = (10, 4, 4)
 
@@ -84,7 +82,7 @@ class CropCoordsTest(unittest.TestCase):
 
         images, control = th.gen_img_shared_array_and_copy()
         roi = [1, 1, 5, 5]
-        result = crop_coords.execute(images, roi)[0]
+        result = CropCoordinatesFilter._filter_func(images, roi)[0]
         expected_shape = (10, 4, 4)
 
         npt.assert_equal(result.shape, expected_shape)
@@ -98,7 +96,7 @@ class CropCoordsTest(unittest.TestCase):
 
         # not executed because no Sample is provided
         roi = [1, 2, 5, 1]
-        npt.assert_raises(ValueError, crop_coords.execute, None, roi)
+        npt.assert_raises(ValueError, CropCoordinatesFilter._filter_func, None, roi)
 
     def test_not_executed_no_roi(self):
         # images that will be put through testing
@@ -107,7 +105,7 @@ class CropCoordsTest(unittest.TestCase):
         # not executed because no Region of interest is provided
         roi = None
 
-        result = crop_coords.execute(images, roi)[0]
+        result = CropCoordinatesFilter._filter_func(images, roi)[0]
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -130,7 +128,7 @@ class CropCoordsTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(mb=True)[0]
 
-        result = crop_coords.execute(images, roi)[0]
+        result = CropCoordinatesFilter._filter_func(images, roi)[0]
 
         self.assertLess(
             get_memory_usage_linux(mb=True)[0], cached_memory * 1.1)
@@ -141,6 +139,13 @@ class CropCoordsTest(unittest.TestCase):
 
         # TODO: in-place data test
         # npt.assert_equal(images.shape, expected_shape)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images, _ = th.gen_img_shared_array_and_copy()
+        CropCoordinatesFilter.execute_wrapper()(images)
 
 
 if __name__ == '__main__':

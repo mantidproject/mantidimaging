@@ -1,12 +1,9 @@
-from typing import TypeVar, List, Union
-
-T = TypeVar("T")
+from typing import List, Union
 
 
 class CloseEnoughPoint:
     """
-    This point is close enough to the real positions, as it rounds
-    up to integers so that actual pixel values can be used
+    Rounds down point values to the closest integers so it can be used as a pixel coordinate
     """
     __slots__ = ("y", "x")
     y: int
@@ -15,3 +12,6 @@ class CloseEnoughPoint:
     def __init__(self, points: List[Union[int, float]]):
         self.y = int(points[1])
         self.x = int(points[0])
+
+    def __str__(self):
+        return f"({self.x}, {self.y})"

@@ -5,6 +5,7 @@ import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QAction, QLabel
 
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
@@ -63,17 +64,19 @@ class MainWindowView(BaseMainWindowView):
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
-        self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionFilters.setShortcut("Ctrl+F")
         self.actionSavuFilters.triggered.connect(self.show_savu_filters_window)
         self.actionSavuFilters.setShortcut("Ctrl+Shift+F")
+        self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
+        self.actionCorTilt.setShortcut("Ctrl+R")
         self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
+        self.actionTomopyRecon.setShortcut("Ctrl+Shfit+R")
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
     def update_shortcuts(self):
-        self.actionSave.setEnabled(len(self.presenter.stack_names()) > 0)
+        self.actionSave.setEnabled(len(self.presenter.stack_names) > 0)
 
     @staticmethod
     def open_online_documentation():
@@ -100,10 +103,10 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(PresNotification.SAVE)
 
     def execute_load(self):
-        self.presenter.load_stack(self.load_dialogue.get_kwargs())
+        self.presenter.notify(PresNotification.LOAD)
 
     def show_save_dialogue(self):
-        self.save_dialogue = MWSaveDialog(self, self.stack_list())
+        self.save_dialogue = MWSaveDialog(self, self.stack_list)
         self.save_dialogue.show()
 
     def show_cor_tilt_window(self):
@@ -141,19 +144,25 @@ class MainWindowView(BaseMainWindowView):
             self.tomopy_recon.activateWindow()
             self.tomopy_recon.raise_()
 
+    @property
     def stack_list(self):
-        return self.presenter.stack_list()
+        return self.presenter.stack_list
 
+    @property
     def stack_names(self):
-        return self.presenter.stack_names()
-
-    def stack_uuids(self):
-        return self.presenter.stack_uuids()
+        return self.presenter.stack_names
 
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
-    def create_stack_window(self, stack, title, position=QtCore.Qt.TopDockWidgetArea, floating=False):
+    def get_stack_history(self, stack_uuid):
+        return self.presenter.get_stack_history(stack_uuid)
+
+    def create_stack_window(self,
+                            stack: Images,
+                            title: str,
+                            position=QtCore.Qt.TopDockWidgetArea,
+                            floating=False) -> Qt.QDockWidget:
         dock_widget = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
@@ -173,7 +182,7 @@ class MainWindowView(BaseMainWindowView):
 
         return dock_widget
 
-    def remove_stack(self, obj):
+    def remove_stack(self, obj: StackVisualiserView):
         getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)
         self.presenter.remove_stack(obj.uuid)
 
@@ -225,3 +234,6 @@ class MainWindowView(BaseMainWindowView):
         process.callback = lambda output: self.backend_message.emit(output)
         process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
         process.error_callback = self.error_callback
+        
+    def create_new_stack(self, data, title):
+        self.presenter.create_new_stack(data, title)

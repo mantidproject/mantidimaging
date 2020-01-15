@@ -1,11 +1,11 @@
 from enum import Enum
 from logging import getLogger
+from typing import Callable, Any, Optional
 
 import numpy as np
+from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.histogram import (
-    generate_histogram_from_image)
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -73,7 +73,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.set_preview_image_index(0)
             self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
 
-        self.do_update_previews(False)
+        self.do_update_previews()
 
     def handle_roi_selection(self, roi: SensibleROI):
         if roi and self.filter_uses_parameter(SVParameters.ROI):
@@ -101,18 +101,18 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        self.model.setup_filter(
-            register_func(self.view.filterPropertiesLayout,
-                          self.view.auto_update_triggered.emit))
+        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout,
+                                             self.view.auto_update_triggered.emit)
+        self.model.setup_filter(filter_idx, filter_widget_kwargs)
 
     def filter_uses_parameter(self, parameter):
-        return parameter in self.model.parameters_from_stack.values() if \
-            self.model.parameters_from_stack is not None else False
+        return parameter in self.model.params_needed_from_stack.values() if \
+            self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
         self.model.do_apply_filter()
 
-    def do_update_previews(self, maintain_axes=True):
+    def do_update_previews(self):
         log = getLogger(__name__)
 
         progress = Progress.ensure_instance()
@@ -125,32 +125,23 @@ class FiltersWindowPresenter(BasePresenter):
 
             # If there is no stack then clear the preview area
             if stack is None:
-                self.view.clear_preview_plots()
-
+                self.view.clear_previews()
             else:
                 # Add the remaining steps for calculating the preview
                 progress.add_estimated_steps(8)
 
                 before_image_data = stack.get_image(self.model.preview_image_idx)
 
-                if maintain_axes:
-                    # Record the image axis range from the existing preview
-                    # image
-                    image_axis_ranges = (
-                        self.view.preview_image_before.get_xlim(),
-                        self.view.preview_image_before.get_ylim()
-                    ) if self.view.preview_image_before.images else None
-
                 # Update image before
                 self._update_preview_image(
                     before_image_data,
                     self.view.preview_image_before,
-                    self.view.preview_histogram_before,
+                    self.view.previews.set_before_histogram,
                     progress)
 
                 # Generate sub-stack and run filter
                 progress.update(msg='Running preview filter')
-                exec_kwargs = get_parameters_from_stack(stack, self.model.parameters_from_stack)
+                exec_kwargs = get_parameters_from_stack(stack, self.model.params_needed_from_stack)
 
                 filtered_image_data = None
                 try:
@@ -160,45 +151,44 @@ class FiltersWindowPresenter(BasePresenter):
                 except Exception as e:
                     log.debug("Error applying filter for preview: {}".format(e))
 
-                # Update image after
+                # Update image after and difference
                 if filtered_image_data is not None:
                     self._update_preview_image(
                         filtered_image_data,
                         self.view.preview_image_after,
-                        self.view.preview_histogram_after,
+                        self.view.previews.set_after_histogram,
                         progress)
 
-                if maintain_axes:
-                    # Set the axis range on the newly created image to keep
-                    # same zoom level/pan region
-                    if image_axis_ranges is not None:
-                        self.view.preview_image_before.set_xlim(
-                            image_axis_ranges[0])
-                        self.view.preview_image_before.set_ylim(
-                            image_axis_ranges[1])
+                    diff = np.subtract(filtered_image_data, before_image_data) \
+                        if filtered_image_data.shape == before_image_data.shape else None
+                    self._update_preview_image(
+                        diff,
+                        self.view.preview_image_difference,
+                        None,
+                        progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
-            self.view.canvas.draw()
 
-    def _update_preview_image(self, image_data, image, histogram, progress):
+    @staticmethod
+    def _update_preview_image(image_data: Optional[np.ndarray],
+                              image: ImageItem,
+                              redraw_histogram: Optional[Callable[[Any], None]],
+                              progress):
         # Generate histogram data
         progress.update(msg='Generating histogram')
-        center, hist, _ = generate_histogram_from_image(image_data)
 
         # Update image
         progress.update(msg='Updating image')
-        # TODO: ideally this should update the data without replotting but a
-        # valid image must exist to start with (which may not always happen)
-        # and this only works as long as the extents do not change.
-        image.cla()
-        image.imshow(image_data, cmap=self.view.cmap)
+        # ImageItem cannot be cleared with setImage(None) if it already has an image, must clear 'manually'
+        if image_data is None:
+            image.image = None
+        image.setImage(image_data)
 
-        # Update histogram
-        progress.update(msg='Updating histogram')
-        histogram.lines[0].set_data(center, hist)
-        histogram.relim()
-        histogram.autoscale()
+        if redraw_histogram:
+            # Update histogram
+            progress.update(msg='Updating histogram')
+            redraw_histogram(image.getHistogram())
 
     def do_scroll_preview(self, offset):
         idx = self.model.preview_image_idx + offset

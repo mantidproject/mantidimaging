@@ -1,13 +1,12 @@
 import unittest
+from unittest import mock
 
 import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
+from mantidimaging.core.filters.rebin import RebinFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
-from mantidimaging.core.filters import rebin
 
 
 class RebinTest(unittest.TestCase):
@@ -26,7 +25,7 @@ class RebinTest(unittest.TestCase):
         val = None
         mode = 'nearest'
 
-        result = rebin.execute(images, val, mode)
+        result = RebinFilter._filter_func(images, val, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -37,7 +36,7 @@ class RebinTest(unittest.TestCase):
         mode = 'nearest'
         val = -1
 
-        result = rebin.execute(images, val, mode)
+        result = RebinFilter._filter_func(images, val, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -48,7 +47,7 @@ class RebinTest(unittest.TestCase):
         mode = 'nearest'
         val = 0
 
-        result = rebin.execute(images, val, mode)
+        result = RebinFilter._filter_func(images, val, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -81,7 +80,7 @@ class RebinTest(unittest.TestCase):
         expected_x = int(images.shape[1] * val)
         expected_y = int(images.shape[2] * val)
 
-        result = rebin.execute(images, val, mode)
+        result = RebinFilter._filter_func(images, val, mode)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
@@ -124,7 +123,7 @@ class RebinTest(unittest.TestCase):
         expected_x = int(val[0])
         expected_y = int(val[1])
 
-        result = rebin.execute(images, rebin_param=val, mode=mode)
+        result = RebinFilter._filter_func(images, rebin_param=val, mode=mode)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
@@ -149,7 +148,7 @@ class RebinTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = rebin.execute(images, val, mode)
+        result = RebinFilter._filter_func(images, val, mode)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 2)
@@ -160,6 +159,31 @@ class RebinTest(unittest.TestCase):
         # TODO: in-place data test
         # npt.assert_equal(images.shape[1], expected_x)
         # npt.assert_equal(images.shape[2], expected_y)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        rebin_to_dimensions_radio = mock.Mock()
+        rebin_to_dimensions_radio.isChecked = mock.Mock(return_value=False)
+        rebin_by_factor_radio = mock.Mock()
+        rebin_by_factor_radio.isChecked = mock.Mock(return_value=True)
+        factor = mock.Mock()
+        factor.value = mock.Mock(return_value=0)
+        mode_field = mock.Mock()
+        mode_field.currentText = mock.Mock(return_value=0)
+        execute_func = RebinFilter.execute_wrapper(rebin_to_dimensions_radio=rebin_to_dimensions_radio,
+                                                   rebin_by_factor_radio=rebin_by_factor_radio,
+                                                   factor=factor,
+                                                   mode_field=mode_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
+        execute_func(images)
+
+        self.assertEqual(rebin_to_dimensions_radio.isChecked.call_count, 1)
+        self.assertEqual(rebin_by_factor_radio.isChecked.call_count, 1)
+        self.assertEqual(factor.value.call_count, 1)
+        self.assertEqual(mode_field.currentText.call_count, 1)
 
 
 if __name__ == '__main__':

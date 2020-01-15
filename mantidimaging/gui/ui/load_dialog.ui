@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>362</height>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,16 +40,7 @@
      <item>
       <widget class="QWidget" name="flat_widget" native="true">
        <layout class="QHBoxLayout" name="flatLayout">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -68,16 +59,7 @@
      <item>
       <widget class="QWidget" name="dark_widget" native="true">
        <layout class="QHBoxLayout" name="darkLayout">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -187,6 +169,28 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item alignment="Qt::AlignRight">
+      <widget class="QCheckBox" name="staged_load">
+       <property name="cursor">
+        <cursorShape>ArrowCursor</cursorShape>
+       </property>
+       <property name="toolTip">
+        <string>Simultaneously load a preview and the full stack. Useful for quickly working with large stacks.</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Staged load</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

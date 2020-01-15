@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from PyQt5.QtWidgets import QComboBox, QSpinBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
@@ -14,6 +15,9 @@ if TYPE_CHECKING:
 
 
 class TomopyReconWindowView(BaseMainWindowView):
+    algorithmName: QComboBox
+    filterName: QComboBox
+    numIter: QSpinBox
 
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         super(TomopyReconWindowView, self).__init__(main_window, 'gui/ui/tomopy_recon_window.ui')
@@ -28,16 +32,14 @@ class TomopyReconWindowView(BaseMainWindowView):
             self.presenter.set_stack_uuid)
 
         # Handle reconstruct buttons
-        self.reconstructSlice.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.RECONSTRUCT_SLICE))
-        self.reconstructVolume.clicked.connect(
-            lambda: self.presenter.notify(
-                PresNotification.RECONSTRUCT_VOLUME))
+        self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_SLICE))
+        self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_VOLUME))
 
         # Handle preview slice selection
         self.previewSlice.valueChanged[int].connect(
             self.presenter.set_preview_slice_idx)
+
+        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresNotification.ALGORITHM_CHANGED))
 
         def add_mpl_figure(layout, add_toolbar=False):
             figure = Figure()
@@ -64,6 +66,7 @@ class TomopyReconWindowView(BaseMainWindowView):
         self.recon_plot = self.recon_figure.add_subplot(111)
 
         self.stackSelector.subscribe_to_main_window(main_window)
+        self.presenter.notify(PresNotification.ALGORITHM_CHANGED)
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
@@ -140,3 +143,19 @@ class TomopyReconWindowView(BaseMainWindowView):
     @property
     def max_proj_angle(self):
         return self.maxProjAngle.value()
+
+    @property
+    def algorithm_name(self):
+        return self.algorithmName.currentText()
+
+    @property
+    def filter_name(self):
+        return self.filterName.currentText() if self.filterName.isVisible() else None
+
+    @property
+    def num_iter(self):
+        return self.numIter.value() if self.numIter.isVisible() else None
+
+    @property
+    def images_are_sinograms(self):
+        return self.sinogramTypeRadio.isChecked()
