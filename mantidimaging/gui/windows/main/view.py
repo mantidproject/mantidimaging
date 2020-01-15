@@ -234,6 +234,6 @@ class MainWindowView(BaseMainWindowView):
         process.callback = lambda output: self.backend_message.emit(output)
         process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
         process.error_callback = self.error_callback
-        
+
     def create_new_stack(self, data, title):
         self.presenter.create_new_stack(data, title)
