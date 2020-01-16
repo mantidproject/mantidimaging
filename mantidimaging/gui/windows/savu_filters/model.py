@@ -1,3 +1,4 @@
+import ast
 import json
 import os
 from concurrent.futures import Future, ProcessPoolExecutor
@@ -109,6 +110,10 @@ class SavuFiltersWindowModel(object):
         num_images = self.stack_presenter.images.sample.shape[0] if self.stack_presenter is not None else 0
         return num_images
 
+    @property
+    def image_shape(self):
+        return self.stack_presenter.images.sample.shape
+
     def setup_filter(self, filter_details):
         """
         Sets filter properties from result of registration function.
@@ -166,18 +171,20 @@ class SavuFiltersWindowModel(object):
         # Do postprocessing using return value of preprocessing as parameter
         do_after_func(images.sample, *preproc_res)
 
-    def do_apply_filter(self, current_filter: CurrentFilterData):
+    def do_apply_filter(self, current_filter: CurrentFilterData, indices):
         """
         Applies the selected filter to the selected stack.
         """
         if not self.stack:
             raise ValueError("No stack selected")
 
+        if indices[0] >= indices[1]:
+            raise ValueError("Invalid indices, start must be less than end")
+
         dataset, prefix = self.calc_relative_paths()
 
         # save out nxs file
-        # Currently ignoring 'preview' parameter (see #398), it should be self.stack_presenter.images.indices
-        spl = SAVUPluginList(prefix, self.stack_presenter.images.count())
+        spl = SAVUPluginList(prefix, self.stack_presenter.images.count(), indices)
         plugin = self._create_plugin_entry_from(current_filter)
         spl.add_plugin(plugin)
         spl.finalize()
@@ -243,7 +250,16 @@ class SavuFiltersWindowModel(object):
         description = {}
         hidden = []
         for index, param in enumerate(plugin.visible_parameters()):
-            data[param.name] = get_value_from_qwidget(current_filter[1][index])
+            val = get_value_from_qwidget(current_filter[1][index])
+            if param.type == "list" or param.type == "tuple" and val:
+                try:
+                    val = ast.literal_eval(val)
+                except SyntaxError:
+                    raise RuntimeError(f"Invalid format for {param.name} parameter")
+                except ValueError:
+                    raise RuntimeError(f"Invalid value for {param.name} parameter")
+
+            data[param.name] = val
             description[param.name] = param.description
             if param.is_hidden:
                 hidden.append(param.name)

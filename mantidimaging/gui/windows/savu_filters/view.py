@@ -2,7 +2,7 @@ import os
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit
+from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit, QSpinBox
 
 from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -20,6 +20,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
     savu_finished = Qt.pyqtSignal(str)
     info: QLabel
     description: QLabel
+    startInput: QSpinBox
+    endInput: QSpinBox
 
     def __init__(self, main_window: 'MainWindowView'):
         """
@@ -97,3 +99,10 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'in_prefix': '',
         }
         self.main_window.presenter.load_stack(**kwargs)
+
+    def reset_indices_inputs(self, image_indices):
+        self.startInput.setMaximum(image_indices[0])
+        self.endInput.setMaximum(image_indices[0])
+        self.stepInput.setMaximum(image_indices[0])
+        self.startInput.setValue(0)
+        self.endInput.setValue(image_indices[0])

@@ -54,11 +54,12 @@ class SavuFiltersWindowPresenter(BasePresenter):
         if self.model.stack:
             self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
 
+        self.model.stack = stack
+
         # Connect ROI update signal to newly selected stack
         if stack:
             stack.roi_updated.connect(self.handle_roi_selection)
-
-        self.model.stack = stack
+            self.view.reset_indices_inputs(self.model.image_shape)
 
     def handle_roi_selection(self, roi):
         if roi:
@@ -101,7 +102,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
     def do_apply_filter(self):
         self.view.clear_output_text()
-        self.model.do_apply_filter(self.current_filter)
+        indices = [self.view.startInput.value(), self.view.endInput.value(), self.view.stepInput.value()]
+        self.model.do_apply_filter(self.current_filter, indices)
 
     def do_job_submission_success(self, response_content: JobRunResponseContent):
         self.remote_presenter.do_job_submission_success(response_content)
