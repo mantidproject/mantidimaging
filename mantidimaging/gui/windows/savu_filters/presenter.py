@@ -10,6 +10,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel, CurrentFilterData
+from mantidimaging.gui.windows.savu_filters.process_list.view import ProcessListView
 from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
@@ -21,6 +22,8 @@ if TYPE_CHECKING:
 class Notification(Enum):
     REGISTER_ACTIVE_FILTER = auto()
     APPLY_FILTER = auto()
+    APPLY_LIST = auto()
+    ADD_PLUGIN = auto()
 
 
 class SavuFiltersWindowPresenter(BasePresenter):
@@ -33,6 +36,9 @@ class SavuFiltersWindowPresenter(BasePresenter):
         self.remote_presenter = remote_presenter
         self.main_window = main_window
 
+        self.process_list_view = ProcessListView(self.view)
+        self.view.processListLayout.insertWidget(0, self.process_list_view)
+
         self.current_filter: CurrentFilterData = ()
 
     def notify(self, signal):
@@ -41,6 +47,10 @@ class SavuFiltersWindowPresenter(BasePresenter):
                 self.do_register_active_filter()
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
+            elif signal == Notification.APPLY_LIST:
+                self.apply_list()
+            elif signal == Notification.ADD_PLUGIN:
+                self.add_plugin()
 
         except Exception as e:
             self.show_error(e)
@@ -105,8 +115,18 @@ class SavuFiltersWindowPresenter(BasePresenter):
         indices = [self.view.startInput.value(), self.view.endInput.value(), self.view.stepInput.value()]
         self.model.do_apply_filter(self.current_filter, indices)
 
+    def apply_list(self):
+        self.view.clear_output_text()
+        entries = self.process_list_view.plugin_entries
+        indices = [self.view.startInput.value(), self.view.endInput.value(), self.view.stepInput.value()]
+        self.model.apply_process_list(entries, indices)
+
     def do_job_submission_success(self, response_content: JobRunResponseContent):
         self.remote_presenter.do_job_submission_success(response_content)
 
     def do_job_submission_failure(self, error_response: Response):
         raise NotImplementedError(f"(Unhandled) error response from hebi:\n{error_response.reason}")
+
+    def add_plugin(self):
+        entry = SavuFiltersWindowModel.create_plugin_entry_from(self.current_filter)
+        self.process_list_view.add_plugin(entry)

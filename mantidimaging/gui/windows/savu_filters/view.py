@@ -39,8 +39,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.floating_output = QTextEdit(self.floating_output_window)
         self.floating_output_window.setCentralWidget(self.floating_output)
         self.floating_output_window.show()
-        self.new_output.connect(self.append_output_text)
 
+        self.new_output.connect(self.append_output_text)
         self.savu_finished.connect(self.load_savu_stack)
 
         # Populate list of filters and handle filter selection
@@ -48,11 +48,10 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
         self.handle_filter_selection()
 
-        # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-
-        # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.applyListButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_LIST))
+        self.addPluginToListButton.clicked.connect(lambda: self.presenter.notify(PresNotification.ADD_PLUGIN))
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
