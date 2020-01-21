@@ -131,6 +131,9 @@ class SavuFiltersWindowModel(object):
         self.apply_process_list([plugin], indices)
 
     def apply_process_list(self, plugin_entries: List[SAVUPluginListEntry], indices):
+        if not plugin_entries:
+            raise ValueError("No plugins selected")
+
         if not self.stack:
             raise ValueError("No stack selected")
 
