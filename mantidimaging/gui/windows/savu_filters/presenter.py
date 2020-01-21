@@ -29,7 +29,7 @@ class Notification(Enum):
 
 
 class Mode(Enum):
-    """To determine if a new plugin is being configured, or one in the process list is being edited
+    """To determine if a new plugin is being configured, or one in the process list is being edited.
 
     The presenter is initially in ADDING mode. When the parameters of a plugin are loaded from the process list,
     it switches to EDITING mode. If a new filter is selected from the dropdown, or the
