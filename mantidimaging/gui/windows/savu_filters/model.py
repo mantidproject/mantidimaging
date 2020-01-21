@@ -138,10 +138,10 @@ class SavuFiltersWindowModel(object):
             raise ValueError("Invalid indices, start must be less than end")
 
         dataset = self._get_dataset_path()
-        pl_path = self.save_process_list(plugin_entries)
+        pl_path = self.save_process_list(plugin_entries, indices)
         self.do_apply_process_list(pl_path, dataset)
 
-    def save_process_list(self, plugin_entries: List[SAVUPluginListEntry], indices):
+    def save_process_list(self, plugin_entries: List[SAVUPluginListEntry], indices, name: Optional[str] = None):
         prefix = self._get_file_prefix()
 
         # save out nxs file
@@ -154,7 +154,12 @@ class SavuFiltersWindowModel(object):
         # if they already exist, nothing is done
         self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
 
-        file = self.PROCESS_LIST_DIR / f"pl_{self.stack.name}_{len(spl)}.nxs"
+        if name is None:
+            name = f"pl_{self.stack.name}_{len(spl)}.nxs" if self.stack else "pl_unnamed"
+        elif not name.endswith(".nxs"):
+            name = name + ".nxs"
+
+        file = self.PROCESS_LIST_DIR / name
         savu_config_writer.save(spl, file, overwrite=True)
         return file
 
@@ -222,7 +227,7 @@ class SavuFiltersWindowModel(object):
         # self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
 
     @staticmethod
-    def create_plugin_entry_from(current_filter: CurrentFilterData):
+    def create_plugin_entry_from(current_filter: CurrentFilterData) -> SAVUPluginListEntry:
         plugin = current_filter[0]
         data = {}
         description = {}
@@ -249,4 +254,3 @@ class SavuFiltersWindowModel(object):
                                    id=np.string_(plugin.id),
                                    name=np.string_(plugin.name),
                                    user=np.string_("[]"))
-

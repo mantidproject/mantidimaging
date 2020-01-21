@@ -1,6 +1,8 @@
 from enum import Enum, auto
 from typing import TYPE_CHECKING
 
+from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginListEntry
+
 from .model import ProcessListModel
 
 if TYPE_CHECKING:
@@ -17,7 +19,7 @@ class ProcessListPresenter:
         self.view = view
         self.model = ProcessListModel()
 
-    def notify(self, signal):
+    def notify(self, signal: Notification):
         if signal == Notification.CHANGE_ORDER:
             self.change_order(self.view.order_change_request)
             self.view.order_change_request = None
@@ -38,3 +40,9 @@ class ProcessListPresenter:
     def remove_plugin(self, index):
         self.view.remove_plugin(index)
         self.model.plugins.pop(index)
+
+    def edit_plugin(self, index):
+        pass
+
+    def overwrite_plugin(self, index: int, entry: SAVUPluginListEntry):
+        self.model.plugins[index] = entry

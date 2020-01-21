@@ -1,3 +1,4 @@
+import json
 from enum import Enum, auto
 from logging import getLogger
 from typing import List, TYPE_CHECKING
@@ -7,7 +8,8 @@ from PyQt5.QtWidgets import QWidget
 from requests import Response
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.utility import add_property_to_form, BlockQtSignals
+from mantidimaging.gui.utility.qt_helpers import delete_all_widgets_from_layout
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel, CurrentFilterData
 from mantidimaging.gui.windows.savu_filters.process_list.view import ProcessListView
@@ -23,7 +25,17 @@ class Notification(Enum):
     REGISTER_ACTIVE_FILTER = auto()
     APPLY_FILTER = auto()
     APPLY_LIST = auto()
-    ADD_PLUGIN = auto()
+    CONFIRM_PLUGIN = auto()
+
+
+class Mode(Enum):
+    """To determine if a new plugin is being configured, or one in the process list is being edited
+
+    The presenter is initially in ADDING mode. When the parameters of a plugin are loaded from the process list,
+    it switches to EDITING mode. If a new filter is selected from the dropdown, or the
+    """
+    ADDING = auto()
+    EDITING = auto()
 
 
 class SavuFiltersWindowPresenter(BasePresenter):
@@ -38,8 +50,10 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
         self.process_list_view = ProcessListView(self.view)
         self.view.processListLayout.insertWidget(0, self.process_list_view)
+        self.process_list_view.plugin_change_request.connect(self.load_plugin_from_list)
 
         self.current_filter: CurrentFilterData = ()
+        self.mode: Mode = Mode.ADDING
 
     def notify(self, signal):
         try:
@@ -49,8 +63,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
                 self.do_apply_filter()
             elif signal == Notification.APPLY_LIST:
                 self.apply_list()
-            elif signal == Notification.ADD_PLUGIN:
-                self.add_plugin()
+            elif signal == Notification.CONFIRM_PLUGIN:
+                self.confirm_plugin()
 
         except Exception as e:
             self.show_error(e)
@@ -77,19 +91,24 @@ class SavuFiltersWindowPresenter(BasePresenter):
             self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
-        # clear the fields of the previous filter
-
+        self.set_mode(Mode.ADDING)
         filter_idx = self.view.filterSelector.currentIndex()
+        self.load_filter(filter_idx)
 
+    def load_filter(self, filter_idx, plugin_parameters=None):
+        delete_all_widgets_from_layout(self.view.filterPropertiesLayout)
         savu_filter = self.model.filter(filter_idx)
 
         parameters_widgets: List[QWidget] = []
-        for parameters in savu_filter.visible_parameters():
+        for parameter in savu_filter.visible_parameters():
+            value = plugin_parameters.get(parameter.name, parameter.value) if plugin_parameters \
+                else parameter.value
+
             label, widget = add_property_to_form(
-                parameters.name,
-                parameters.type,
-                parameters.value,
-                tooltip=parameters.description,
+                parameter.name,
+                parameter.type,
+                value,
+                tooltip=parameter.description,
                 form=self.view.filterPropertiesLayout,
             )
             parameters_widgets.append(widget)
@@ -127,6 +146,24 @@ class SavuFiltersWindowPresenter(BasePresenter):
     def do_job_submission_failure(self, error_response: Response):
         raise NotImplementedError(f"(Unhandled) error response from hebi:\n{error_response.reason}")
 
-    def add_plugin(self):
+    def confirm_plugin(self):
         entry = SavuFiltersWindowModel.create_plugin_entry_from(self.current_filter)
-        self.process_list_view.add_plugin(entry)
+        if self.mode == Mode.ADDING:
+            self.process_list_view.add_plugin(entry)
+        elif self.mode == Mode.EDITING:
+            self.process_list_view.save_edited_plugin(entry)
+
+    def load_plugin_from_list(self):
+        self.set_mode(Mode.EDITING)
+        to_load = self.process_list_view.plugin_to_edit
+        filter_idx = [f.name for f in self.model.filters].index(to_load.name.decode('utf-8'))
+        parameters = {k: str(v) for k, v in json.loads(to_load.data).items()}
+        with BlockQtSignals([self.view.filterSelector]):
+            self.view.filterSelector.setCurrentIndex(filter_idx)
+            self.load_filter(filter_idx, parameters)
+
+    def set_mode(self, mode: Mode):
+        self.mode = mode
+        message = "Add To Process List" if mode == Mode.ADDING else \
+            f"Confirm Changes To Filter {self.process_list_view.to_edit + 1}"  # type: ignore
+        self.view.confirmPluginButton.setText(message)

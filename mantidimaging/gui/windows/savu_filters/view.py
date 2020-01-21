@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit, QSpinBox
 
 from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
 from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
@@ -51,7 +50,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
         self.applyListButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_LIST))
-        self.addPluginToListButton.clicked.connect(lambda: self.presenter.notify(PresNotification.ADD_PLUGIN))
+        self.confirmPluginButton.clicked.connect(lambda: self.presenter.notify(PresNotification.CONFIRM_PLUGIN))
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
@@ -63,13 +62,6 @@ class SavuFiltersWindowView(BaseMainWindowView):
         super(SavuFiltersWindowView, self).show()
 
     def handle_filter_selection(self):
-        """
-        Handle selection of a filter from the drop down list.
-        """
-        # Remove all existing items from the properties layout
-        delete_all_widgets_from_layout(self.filterPropertiesLayout)
-
-        # Do registration of new filter
         self.presenter.notify(PresNotification.REGISTER_ACTIVE_FILTER)
 
     def set_description(self, info, desc):

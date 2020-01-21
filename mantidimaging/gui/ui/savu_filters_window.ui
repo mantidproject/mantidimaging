@@ -218,7 +218,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="addPluginToListButton">
+         <widget class="QPushButton" name="confirmPluginButton">
           <property name="text">
            <string>Add To Process List</string>
           </property>
