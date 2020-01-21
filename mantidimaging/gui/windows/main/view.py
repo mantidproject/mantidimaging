@@ -71,7 +71,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
         self.actionCorTilt.setShortcut("Ctrl+R")
         self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
-        self.actionTomopyRecon.setShortcut("Ctrl+Shfit+R")
+        self.actionTomopyRecon.setShortcut("Ctrl+Shift+R")
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
