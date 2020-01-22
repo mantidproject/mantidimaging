@@ -24,10 +24,6 @@ if TYPE_CHECKING:
 CurrentFilterData = Union[Tuple, Tuple[SAVUPlugin, List[QWidget]]]
 
 
-def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val,)
-
-
 class SavuFiltersWindowModel(object):
     PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
@@ -38,9 +34,6 @@ class SavuFiltersWindowModel(object):
         self.presenter: 'SavuFiltersWindowPresenter' = presenter
 
         self.parameters_from_stack = {}
-        self.do_before_wrapper = lambda: lambda: None
-        self.execute_wrapper = lambda: lambda _: None
-        self.do_after_wrapper = lambda: lambda *_: None
 
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
@@ -103,11 +96,6 @@ class SavuFiltersWindowModel(object):
     @property
     def stack_presenter(self):
         return self.stack.presenter if self.stack else None
-
-    @property
-    def num_images_in_stack(self):
-        num_images = self.stack_presenter.images.sample.shape[0] if self.stack_presenter is not None else 0
-        return num_images
 
     @property
     def image_shape(self):
