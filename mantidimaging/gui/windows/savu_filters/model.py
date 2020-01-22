@@ -146,7 +146,7 @@ class SavuFiltersWindowModel(object):
         self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
 
         if name is None:
-            name = f"pl_{self.stack.name}_{len(spl)}.nxs" if self.stack else "pl_unnamed"
+            name = f"pl_{self.stack.name}_{len(spl)}.nxs" if self.stack else "pl_unnamed.nxs"
         elif not name.endswith(".nxs"):
             name = name + ".nxs"
 
