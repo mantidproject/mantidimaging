@@ -15,7 +15,7 @@ class GaussianFilter(BaseFilter):
     filter_name = "Gaussian"
 
     @staticmethod
-    def _filter_func(data, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -66,7 +66,7 @@ class GaussianFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(size_field=None, order_field=None, mode_field=None):
-        return partial(GaussianFilter._filter_func,
+        return partial(GaussianFilter.filter_func,
                        size=size_field.value(),
                        mode=mode_field.currentText(),
                        order=order_field.value())

@@ -31,7 +31,7 @@ class GaussianTest(unittest.TestCase):
         mode = None
         order = None
 
-        result = GaussianFilter._filter_func(images, size, mode, order)
+        result = GaussianFilter.filter_func(images, size, mode, order)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -43,7 +43,7 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        result = GaussianFilter._filter_func(images, size, mode, order)
+        result = GaussianFilter.filter_func(images, size, mode, order)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -55,7 +55,7 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        result = GaussianFilter._filter_func(images, size, mode, order)
+        result = GaussianFilter.filter_func(images, size, mode, order)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -68,7 +68,7 @@ class GaussianTest(unittest.TestCase):
         order = 1
 
         th.switch_mp_off()
-        result = GaussianFilter._filter_func(images, size, mode, order)
+        result = GaussianFilter.filter_func(images, size, mode, order)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
@@ -94,7 +94,7 @@ class GaussianTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = GaussianFilter._filter_func(images, size, mode, order)
+        result = GaussianFilter.filter_func(images, size, mode, order)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

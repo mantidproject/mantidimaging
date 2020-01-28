@@ -13,8 +13,8 @@ class RotateFilter(BaseFilter):
     filter_name = "Rotate Stack"
 
     @staticmethod
-    def _filter_func(data, rotation=None, flat=None, dark=None, cores=None, chunksize=None,
-                     progress=None):
+    def filter_func(data, rotation=None, flat=None, dark=None, cores=None, chunksize=None,
+                    progress=None):
         """
         Rotates a stack (sample, flat and dark images).
 
@@ -70,7 +70,7 @@ class RotateFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(rotation_count=None):
-        return partial(RotateFilter._filter_func, rotation=rotation_count.value())
+        return partial(RotateFilter.filter_func, rotation=rotation_count.value())
 
 
 def _cli_register(parser):

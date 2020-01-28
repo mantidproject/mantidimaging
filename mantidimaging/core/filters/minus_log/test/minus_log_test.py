@@ -20,7 +20,7 @@ class MinusLogTest(unittest.TestCase):
     def test_no_execute(self):
         images, control = th.gen_img_shared_array_and_copy()
 
-        result = MinusLogFilter._filter_func(images, minus_log=False)
+        result = MinusLogFilter.filter_func(images, minus_log=False)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -42,7 +42,7 @@ class MinusLogTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = MinusLogFilter._filter_func(images, minus_log=True)
+        result = MinusLogFilter.filter_func(images, minus_log=True)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)

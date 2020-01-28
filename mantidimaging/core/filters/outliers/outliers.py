@@ -17,8 +17,8 @@ class OutliersFilter(BaseFilter):
     filter_name = "Remove Outliers"
 
     @staticmethod
-    def _filter_func(data, diff=None, radius=_default_radius, mode=_default_mode,
-                     cores=None, progress=None):
+    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode,
+                    cores=None, progress=None):
         """
         Requires tomopy to be available.
 
@@ -77,7 +77,7 @@ class OutliersFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(diff_field=None, size_field=None, mode_field=None):
-        return partial(OutliersFilter._filter_func,
+        return partial(OutliersFilter.filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
                        mode=mode_field.currentText())

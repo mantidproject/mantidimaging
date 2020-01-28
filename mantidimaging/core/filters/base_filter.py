@@ -15,7 +15,7 @@ class BaseFilter:
     """
 
     @staticmethod
-    def _filter_func(data, **kwargs):
+    def filter_func(data, **kwargs):
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
         The body of this function does not need to include pre and post processing steps - these should be

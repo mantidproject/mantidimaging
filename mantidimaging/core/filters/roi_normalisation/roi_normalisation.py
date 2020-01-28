@@ -17,7 +17,7 @@ class RoiNormalisationFilter(BaseFilter):
     filter_name = "ROI Normalisation"
 
     @staticmethod
-    def _filter_func(data, air_region=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data, air_region=None, cores=None, chunksize=None, progress=None):
         """
         Normalise by beam intensity.
 
@@ -60,7 +60,7 @@ class RoiNormalisationFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper():
-        return partial(RoiNormalisationFilter._filter_func)
+        return partial(RoiNormalisationFilter.filter_func)
 
     @staticmethod
     def sv_params() -> Dict[str, Any]:

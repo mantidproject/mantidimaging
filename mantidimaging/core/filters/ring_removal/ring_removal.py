@@ -10,18 +10,18 @@ class RingRemovalFilter(BaseFilter):
     filter_name = "Ring Removal"
 
     @staticmethod
-    def _filter_func(data,
-                     run_ring_removal=False,
-                     center_x=None,
-                     center_y=None,
-                     thresh=300.0,
-                     thresh_max=300.0,
-                     thresh_min=-100.0,
-                     theta_min=30,
-                     rwidth=30,
-                     cores=None,
-                     chunksize=None,
-                     progress=None):
+    def filter_func(data,
+                    run_ring_removal=False,
+                    center_x=None,
+                    center_y=None,
+                    thresh=300.0,
+                    thresh_max=300.0,
+                    thresh_min=-100.0,
+                    theta_min=30,
+                    rwidth=30,
+                    cores=None,
+                    chunksize=None,
+                    progress=None):
         """
         Removal of ring artifacts in reconstructed volume.
 
@@ -118,7 +118,7 @@ class RingRemovalFilter(BaseFilter):
                         thresh_min=None,
                         theta=None,
                         rwidth=None):
-        return partial(RingRemovalFilter._filter_func,
+        return partial(RingRemovalFilter.filter_func,
                        run_ring_removal=True,
                        center_x=x_field,
                        center_y=y_field,

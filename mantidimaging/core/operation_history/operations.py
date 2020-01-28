@@ -51,7 +51,7 @@ def deserialize_metadata(metadata: Dict[str, Any]) -> List[ImageOperation]:
 
 def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
     filter_funcs = {
-        f.__name__: f._filter_func  # type: ignore
+        f.__name__: f.filter_func  # type: ignore
         for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
     }
     # TODO: Reconstruction function. Requires reworking cor/proj_angle arguments a little

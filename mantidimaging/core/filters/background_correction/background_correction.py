@@ -25,14 +25,14 @@ class BackgroundCorrectionFilter(BaseFilter):
     filter_name = 'Background Correction'
 
     @staticmethod
-    def _filter_func(data,
-                     flat=None,
-                     dark=None,
-                     clip_min=MINIMUM_PIXEL_VALUE,
-                     clip_max=MAXIMUM_PIXEL_VALUE,
-                     cores=None,
-                     chunksize=None,
-                     progress=None):
+    def filter_func(data,
+                    flat=None,
+                    dark=None,
+                    clip_min=MINIMUM_PIXEL_VALUE,
+                    clip_max=MAXIMUM_PIXEL_VALUE,
+                    cores=None,
+                    chunksize=None,
+                    progress=None):
         """
         Do background correction with flat and dark images.
 
@@ -80,7 +80,7 @@ class BackgroundCorrectionFilter(BaseFilter):
         flat = get_average_image(flat_path_widget)
         dark = get_average_image(dark_path_widget)
 
-        return partial(BackgroundCorrectionFilter._filter_func, flat=flat, dark=dark)
+        return partial(BackgroundCorrectionFilter.filter_func, flat=flat, dark=dark)
 
     @staticmethod
     def do_before_wrapper() -> partial:

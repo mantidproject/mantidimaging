@@ -36,13 +36,13 @@ class ExecutorTest(TestCase):
         # copy the expected data values
         self.init_data[:] = self.expected_data
 
-        self.expected_data = MedianFilter()._filter_func(self.expected_data, *args)
+        self.expected_data = MedianFilter().filter_func(self.expected_data, *args)
 
         # sanity check
         th.assert_not_equals(self.init_data, self.expected_data)
 
         self.pl = process_list.ProcessList()
-        self.pl.store(MedianFilter()._filter_func, MEDIAN_SIZE)
+        self.pl.store(MedianFilter().filter_func, MEDIAN_SIZE)
 
     def test_execute(self):
         self.do_set_up(MEDIAN_SIZE)

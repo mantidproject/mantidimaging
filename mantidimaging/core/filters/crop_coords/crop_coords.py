@@ -12,7 +12,7 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def _filter_func(data, region_of_interest=None, flat=None, dark=None, progress=None):
+    def filter_func(data, region_of_interest=None, flat=None, dark=None, progress=None):
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -63,7 +63,7 @@ class CropCoordinatesFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(**kwargs) -> partial:
-        return partial(CropCoordinatesFilter._filter_func)
+        return partial(CropCoordinatesFilter.filter_func)
 
 
 def _cli_register(parser):

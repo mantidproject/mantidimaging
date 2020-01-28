@@ -10,7 +10,7 @@ class CutOffFilter(BaseFilter):
     filter_name = 'Intensity Cut Off'
 
     @staticmethod
-    def _filter_func(data, threshold=None, progress=None):
+    def filter_func(data, threshold=None, progress=None):
         """
         Cut off values above threshold relative to the max pixels.
 
@@ -50,7 +50,7 @@ class CutOffFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(threshold_field):
-        return partial(CutOffFilter._filter_func, threshold=threshold_field.value())
+        return partial(CutOffFilter.filter_func, threshold=threshold_field.value())
 
 
 def _cli_register(parser):

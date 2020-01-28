@@ -14,8 +14,8 @@ class RebinFilter(BaseFilter):
     filter_name = "Rebin"
 
     @staticmethod
-    def _filter_func(data, rebin_param=None, mode=None, cores=None, chunksize=None,
-                     progress=None):
+    def filter_func(data, rebin_param=None, mode=None, cores=None, chunksize=None,
+                    progress=None):
         """
         :param data: Sample data which is to be processed. Expected in radiograms
         :param rebin_param: int, float or tuple
@@ -123,7 +123,7 @@ class RebinFilter(BaseFilter):
         else:
             raise ValueError('Unknown bin dimension mode')
 
-        return partial(RebinFilter._filter_func, mode=mode_field.currentText(), rebin_param=params)
+        return partial(RebinFilter.filter_func, mode=mode_field.currentText(), rebin_param=params)
 
 
 def _cli_register(parser):
