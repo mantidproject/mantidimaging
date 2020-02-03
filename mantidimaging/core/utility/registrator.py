@@ -4,8 +4,6 @@ import pkgutil
 import sys
 from typing import List, Iterator, Optional
 
-from typed_ast._ast3 import Module
-
 
 def find_package_path(package_str):
     """
@@ -52,7 +50,7 @@ def get_package_children(package_name, packages=False, modules=False, ignore=Non
     return pkgs
 
 
-def import_items(names: List[str], required_attributes: Optional[List[str]] = None) -> Iterator[Module]:
+def import_items(names: List[str], required_attributes: Optional[List[str]] = None) -> Iterator[object]:
     """
     Imports a list of packages/modules and filters out those that do not have a
     specified required list of attributes.
