@@ -50,7 +50,7 @@ def get_package_children(package_name, packages=False, modules=False, ignore=Non
     return pkgs
 
 
-def import_items(names: List[str], required_attributes: Optional[List[str]] = None) -> Iterator[object]:
+def import_items(names: List[str], required_attributes: Optional[List[str]] = None):
     """
     Imports a list of packages/modules and filters out those that do not have a
     specified required list of attributes.
@@ -61,13 +61,12 @@ def import_items(names: List[str], required_attributes: Optional[List[str]] = No
 
     :return: List of imported packages/modules
     """
-    imported: Iterator[Module] = (importlib.import_module(n) for n in names)
+    imported = (importlib.import_module(n) for n in names)
 
     # Filter out those that do not contain all the required attributes
     if required_attributes:
-        imported = filter(
-            lambda i: all([hasattr(i, a) for a in required_attributes]),    # type: ignore
-            imported)
+        imported = filter(  # type: ignore
+            lambda i: all([hasattr(i, a) for a in required_attributes]), imported)  # type: ignore
 
     return imported
 

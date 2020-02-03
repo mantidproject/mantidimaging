@@ -18,7 +18,7 @@ have one on your machine.
   - :code:`conda config --prepend channels anaconda`
   - :code:`conda config --prepend channels defaults`
 
-3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging`
+3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging python=3.7`
 4. Activate the newly created environment: :code:`conda activate mantidimaging`
 5. Install additional :code:`pip` dependencies with :code:`pip install deps/pip-requirements.txt` from the source folder.
 
