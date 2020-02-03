@@ -3,7 +3,7 @@ from typing import Optional
 
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QLabel
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -13,13 +13,18 @@ from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.savu_filters.preparation import BackgroundService
 from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 
+LOG = getLogger(__file__)
+
+
 class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
+    backend_message = Qt.pyqtSignal(bytes)
 
     actionCorTilt: QAction
     actionFilters: QAction
@@ -43,6 +48,10 @@ class MainWindowView(BaseMainWindowView):
         self.tomopy_recon: Optional[TomopyReconWindowView] = None
         self.save_dialogue: Optional[MWSaveDialog] = None
         self.load_dialogue: Optional[MWLoadDialog] = None
+
+        status_bar = self.statusBar()
+        self.status_bar_label = QLabel("", self)
+        status_bar.addPermanentWidget(self.status_bar_label)
 
         self.setup_shortcuts()
         self.update_shortcuts()
@@ -196,6 +205,8 @@ class MainWindowView(BaseMainWindowView):
             # Close all matplotlib PyPlot windows when exiting.
             getLogger(__name__).debug("Closing all PyPlot windows")
             matplotlib.pyplot.close("all")
+            self.backend_process.close()
+            self.backend_process.join()
 
             # Pass close event to parent
             super(MainWindowView, self).closeEvent(event)
@@ -207,6 +218,22 @@ class MainWindowView(BaseMainWindowView):
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
         getLogger(__name__).error(log_error_msg)
+
+    def print_backend_output(self, output: bytes):
+        getLogger(__name__).debug(output)
+
+    def error_callback(self, err_code, output):
+        self.status_bar_label.setText("SAVU Backend: Error")
+        getLogger(__name__).error("".join([out.decode("utf-8") for out in output]))
+
+    def set_background_service(self, process: BackgroundService):
+        if process.process and process.process.poll() is not None:
+            self.status_bar_label.setText("SAVU Backend: Starting")
+        self.backend_message.connect(self.print_backend_output)
+        self.backend_process = process
+        process.callback = lambda output: self.backend_message.emit(output)
+        process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
+        process.error_callback = self.error_callback
 
     def create_new_stack(self, data, title):
         self.presenter.create_new_stack(data, title)

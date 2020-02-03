@@ -6,7 +6,7 @@ import warnings
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.optional_imports import safe_import
-from mantidimaging.gui.windows.savu_filters.preparation import prepare_data
+from mantidimaging.gui.windows.savu_filters.preparation import prepare_backend
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -50,11 +50,11 @@ async def async_main():
 
     startup_checks()
 
-    await prepare_data()
+    process = await prepare_backend()
 
     from mantidimaging import gui
 
-    gui.execute()
+    gui.execute(process)
 
 
 def main():

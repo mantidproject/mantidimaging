@@ -31,16 +31,7 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <property name="leftMargin">
-         <number>9</number>
-        </property>
-        <property name="topMargin">
-         <number>9</number>
-        </property>
-        <property name="rightMargin">
-         <number>9</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>9</number>
         </property>
         <item>
@@ -202,9 +193,6 @@
          </layout>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_2">
-       <layout class="QVBoxLayout" name="mplLayout"/>
       </widget>
      </widget>
     </item>

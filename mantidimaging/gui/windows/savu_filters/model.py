@@ -10,12 +10,12 @@ import numpy as np
 from PyQt5.QtWidgets import QWidget
 from requests import Response
 
+from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.core.io import savu_config_writer
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, SAVUPluginListEntry, SAVUPlugin
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
 from mantidimaging.gui.windows.savu_filters import preparation
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
-from mantidimaging.gui.windows.savu_filters.path_config import INPUT_LOCAL
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
@@ -173,15 +173,11 @@ class SavuFiltersWindowModel(object):
         if not self.stack:
             raise ValueError("No stack selected")
 
-        presenter = self.stack_presenter
-        # TODO make & read from a config. This config should also be used to start the Docker service
-        # the data path will be the root in the savu config, so it doesn't need to be part of the filepath
-        common_prefix = os.path.commonprefix(presenter.images.filenames).replace(INPUT_LOCAL, "")
-        num_images = presenter.images.count()
+        dataset, prefix = self.calc_relative_paths()
 
         # save out nxs file
-        spl = SAVUPluginList(common_prefix, num_images, preview=presenter.images.indices)
-
+        # Currently ignoring 'preview' parameter (see #398), it should be self.stack_presenter.images.indices
+        spl = SAVUPluginList(prefix, self.stack_presenter.images.count())
         plugin = self._create_plugin_entry_from(current_filter)
         spl.add_plugin(plugin)
 
@@ -197,7 +193,7 @@ class SavuFiltersWindowModel(object):
 
         session: FuturesSession = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
         files = {"process_list_file": file.read_bytes()}
-        data = {"process_list_name": self.stack.name, "dataset": "/data"}
+        data = {"process_list_name": self.stack.name, "dataset": dataset}
 
         # TODO get QUEUE parameter somewhere from the GUI
         # FIXME currently just sticking it into preview
@@ -215,8 +211,8 @@ class SavuFiltersWindowModel(object):
             logger.error(msg)
             raise RuntimeError(msg)
 
-        content_json = json.loads(response.content)
-        if response.status_code == 200:
+        if response.ok:
+            content_json = response.json()
             try:
                 content = JobRunResponseContent(content_json["job"]["id"], content_json["queue"])
             except TypeError as e:
@@ -227,8 +223,8 @@ class SavuFiltersWindowModel(object):
             logger.info(content)
             self.presenter.do_job_submission_success(content)
         else:
-            logger.error(f"Error code: {response.status_code}, message: {content_json['message']}")
-            self.presenter.do_job_submission_failure(content_json)
+            logger.error(f"Error code: {response.status_code}, message: {response.content!r}")
+            self.presenter.do_job_submission_failure(response)
 
         # reload changes? what do
         # TODO figure out how to get params like ROI later
@@ -258,3 +254,20 @@ class SavuFiltersWindowModel(object):
                                    id=np.string_(plugin.id),
                                    name=np.string_(plugin.name),
                                    user=np.string_("[]"))
+
+    def calc_relative_paths(self) -> Tuple[str, str]:
+        """
+        Work out the paths to the selected stack as required by hebi/savu.
+
+        The selected stack must be in LOCAL_DATA_DIR
+        :return: A tuple of (dataset_path, prefix) where dataset_path is
+                 <remote_data_dir>/<subdirectory_path_to_dataset> and prefix
+                 is the common prefix of the filenames in that folder.
+        """
+        file_paths = self.stack_presenter.images.filenames
+        file_names = [path.split(os.sep)[-1] for path in file_paths]
+        common_prefix = os.path.commonprefix(file_names)
+        return file_paths[0] \
+            .replace(RemoteConfig.LOCAL_DATA_DIR, RemoteConstants.DATA_DIR) \
+            .replace(file_names[0], "") \
+            .rstrip(os.sep), common_prefix
