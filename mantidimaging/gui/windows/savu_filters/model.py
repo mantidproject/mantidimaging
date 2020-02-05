@@ -1,7 +1,7 @@
+import ast
 import json
 import os
 from concurrent.futures import Future, ProcessPoolExecutor
-from functools import partial
 from logging import getLogger
 from pathlib import Path
 from typing import Dict, Optional, List, Tuple, TYPE_CHECKING, Union
@@ -24,10 +24,6 @@ if TYPE_CHECKING:
 CurrentFilterData = Union[Tuple, Tuple[SAVUPlugin, List[QWidget]]]
 
 
-def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val,)
-
-
 class SavuFiltersWindowModel(object):
     PROCESS_LIST_DIR = Path("~/mantidimaging/process_lists").expanduser()
 
@@ -38,9 +34,6 @@ class SavuFiltersWindowModel(object):
         self.presenter: 'SavuFiltersWindowPresenter' = presenter
 
         self.parameters_from_stack = {}
-        self.do_before_wrapper = lambda: lambda: None
-        self.execute_wrapper = lambda: lambda _: None
-        self.do_after_wrapper = lambda: lambda *_: None
 
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
@@ -105,9 +98,8 @@ class SavuFiltersWindowModel(object):
         return self.stack.presenter if self.stack else None
 
     @property
-    def num_images_in_stack(self):
-        num_images = self.stack_presenter.images.sample.shape[0] if self.stack_presenter is not None else 0
-        return num_images
+    def image_shape(self):
+        return self.stack_presenter.images.sample.shape
 
     def setup_filter(self, filter_details):
         """
@@ -119,81 +111,70 @@ class SavuFiltersWindowModel(object):
         # self.do_after_wrapper = [], [], [], []
         pass
 
-    def apply_filter(self, images, exec_kwargs):
-        """
-        Applies the selected filter to a given image stack.
-        """
-        log = getLogger(__name__)
-
-        # Generate the execute partial from filter registration
-        do_before_func = self.do_before_wrapper() if self.do_before_wrapper else lambda _: ()
-        do_after_func = self.do_after_wrapper() if self.do_after_wrapper else lambda *_: None
-        execute_func = self.execute_wrapper()
-
-        # Log execute function parameters
-        log.info("Filter kwargs: {}".format(exec_kwargs))
-        if isinstance(execute_func, partial):
-            log.info("Filter partial args: {}".format(execute_func.args))
-            log.info("Filter partial kwargs: {}".format(execute_func.keywords))
-
-            all_kwargs = execute_func.keywords.copy()
-            all_kwargs.update(exec_kwargs)
-
-            images.record_operation(
-                "{}.{}".format(execute_func.func.__module__, execute_func.func.__name__),
-                *execute_func.args,
-                **all_kwargs,
-            )
-
-        # Do preprocessing and save result
-        preproc_res = do_before_func(images.sample)
-        preproc_res = ensure_tuple(preproc_res)
-
-        # Run filter
-        ret_val = execute_func(images.sample, **exec_kwargs)
-
-        # Handle the return value from the algorithm dialog
-        if isinstance(ret_val, tuple):
-            # Tuples are assumed to be three elements containing sample, flat
-            # and dark images
-            images.sample, images.flat, images.dark = ret_val
-        elif isinstance(ret_val, np.ndarray):
-            # Single Numpy arrays are assumed to be just the sample image
-            images.sample = ret_val
-        else:
-            log.debug("Unknown execute return value: {}".format(type(ret_val)))
-
-        # Do postprocessing using return value of preprocessing as parameter
-        do_after_func(images.sample, *preproc_res)
-
-    def do_apply_filter(self, current_filter: CurrentFilterData):
+    def do_apply_filter(self, current_filter: CurrentFilterData, indices):
         """
         Applies the selected filter to the selected stack.
         """
+        plugin = SavuFiltersWindowModel.create_plugin_entry_from(current_filter)
+        self.apply_process_list([plugin], indices)
+
+    def apply_process_list(self, plugin_entries: List[SAVUPluginListEntry], indices):
+        if not plugin_entries:
+            raise ValueError("No plugins selected")
+
         if not self.stack:
             raise ValueError("No stack selected")
 
-        dataset, prefix = self.calc_relative_paths()
+        if indices[0] >= indices[1]:
+            raise ValueError("Invalid indices, start must be less than end")
+
+        dataset = self._get_dataset_path()
+        pl_path = self.save_process_list(plugin_entries, indices)
+        self.do_apply_process_list(pl_path, dataset)
+
+    def save_process_list(self, plugin_entries: List[SAVUPluginListEntry], indices, name: Optional[str] = None):
+        prefix = self._get_file_prefix()
 
         # save out nxs file
-        # Currently ignoring 'preview' parameter (see #398), it should be self.stack_presenter.images.indices
-        spl = SAVUPluginList(prefix, self.stack_presenter.images.count())
-        plugin = self._create_plugin_entry_from(current_filter)
-        spl.add_plugin(plugin)
+        spl = SAVUPluginList(prefix, self.stack_presenter.images.count(), indices)
+        for plugin in plugin_entries:
+            spl.add_plugin(plugin)
+        spl.finalize()
 
         # makes sure the directories exists, they are created recursively
         # if they already exist, nothing is done
         self.PROCESS_LIST_DIR.mkdir(parents=True, exist_ok=True)
 
-        file = self.PROCESS_LIST_DIR / f"pl_{self.stack.name}_{len(spl)}.nxs"
-        savu_config_writer.save(spl, file, overwrite=True)
+        if name is None:
+            name = f"pl_{self.stack.name}_{len(spl)}.nxs" if self.stack else "pl_unnamed.nxs"
+        elif not name.endswith(".nxs"):
+            name = name + ".nxs"
 
+        file = self.PROCESS_LIST_DIR / name
+        savu_config_writer.save(spl, file, overwrite=True)
+        return file
+
+    def _get_file_prefix(self):
+        file_paths = self.stack_presenter.images.filenames
+        file_names = [path.split(os.sep)[-1] for path in file_paths]
+        common_prefix = os.path.commonprefix(file_names)
+        return common_prefix
+
+    def _get_dataset_path(self):
+        file_paths = self.stack_presenter.images.filenames
+        file_names = [path.split(os.sep)[-1] for path in file_paths]
+        return file_paths[0] \
+            .replace(RemoteConfig.LOCAL_DATA_DIR, RemoteConstants.DATA_DIR) \
+            .replace(file_names[0], "") \
+            .rstrip(os.sep)
+
+    def do_apply_process_list(self, pl_path, dataset_path):
         from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, JOB_SUBMIT_URL
         from requests_futures.sessions import FuturesSession
 
         session: FuturesSession = FuturesSession(executor=ProcessPoolExecutor(max_workers=1))
-        files = {"process_list_file": file.read_bytes()}
-        data = {"process_list_name": self.stack.name, "dataset": dataset}
+        files = {"process_list_file": pl_path.read_bytes()}
+        data = {"process_list_name": self.stack.name, "dataset": dataset_path}
 
         # TODO get QUEUE parameter somewhere from the GUI
         # FIXME currently just sticking it into preview
@@ -236,13 +217,23 @@ class SavuFiltersWindowModel(object):
         # Refresh the image in the stack visualiser
         # self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
 
-    def _create_plugin_entry_from(self, current_filter: CurrentFilterData):
+    @staticmethod
+    def create_plugin_entry_from(current_filter: CurrentFilterData) -> SAVUPluginListEntry:
         plugin = current_filter[0]
         data = {}
         description = {}
         hidden = []
         for index, param in enumerate(plugin.visible_parameters()):
-            data[param.name] = get_value_from_qwidget(current_filter[1][index])
+            val = get_value_from_qwidget(current_filter[1][index])
+            if param.type == "list" or param.type == "tuple" and val:
+                try:
+                    val = ast.literal_eval(val)
+                except SyntaxError:
+                    raise RuntimeError(f"Invalid format for {param.name} parameter")
+                except ValueError:
+                    raise RuntimeError(f"Invalid value for {param.name} parameter")
+
+            data[param.name] = val
             description[param.name] = param.description
             if param.is_hidden:
                 hidden.append(param.name)
@@ -254,20 +245,3 @@ class SavuFiltersWindowModel(object):
                                    id=np.string_(plugin.id),
                                    name=np.string_(plugin.name),
                                    user=np.string_("[]"))
-
-    def calc_relative_paths(self) -> Tuple[str, str]:
-        """
-        Work out the paths to the selected stack as required by hebi/savu.
-
-        The selected stack must be in LOCAL_DATA_DIR
-        :return: A tuple of (dataset_path, prefix) where dataset_path is
-                 <remote_data_dir>/<subdirectory_path_to_dataset> and prefix
-                 is the common prefix of the filenames in that folder.
-        """
-        file_paths = self.stack_presenter.images.filenames
-        file_names = [path.split(os.sep)[-1] for path in file_paths]
-        common_prefix = os.path.commonprefix(file_names)
-        return file_paths[0] \
-            .replace(RemoteConfig.LOCAL_DATA_DIR, RemoteConstants.DATA_DIR) \
-            .replace(file_names[0], "") \
-            .rstrip(os.sep), common_prefix

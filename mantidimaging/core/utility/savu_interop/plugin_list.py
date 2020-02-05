@@ -45,8 +45,7 @@ class SAVUPlugin(object):
         """
         for param in self.parameters:
             if not param.is_hidden and \
-                    not param.name == "in_datasets" and \
-                    not param.name == "out_datasets":
+                    param.name not in ["in_datasets", "out_datasets", "preview"]:
                 yield param
 
 
@@ -75,14 +74,14 @@ class SAVUPluginList:
     # Savu has these spaces in there, they can't be removed or it won't properly load
     PLUGIN_INDEX_FMT = "   {} "
 
-    def __init__(self, data_prefix, num_images, preview=""):
+    def __init__(self, data_prefix, num_images, preview=None):
+        # preview is in format: [<indices start:end:step>, <rows start:end:step>, <columns start:end:step>]
         self.prepend_plugins: List[SAVUPluginListEntry] = [
-            # preview is in format: [<indices start:end:step>, <rows start:end:step>, <columns start:end:step>]
             SAVUPluginListEntry(active=True,
                                 data=np.string_(
                                     f'{{"data_prefix": "{data_prefix}", "flat_prefix": null, "dark_prefix": null, '
                                     f'"angles": "np.linspace(0, 360, {num_images})", '
-                                    f'"frame_dim": 0, "preview": "{preview}",'
+                                    f'"frame_dim": 0, "preview": ["{preview[0]}:{preview[1]}:{preview[2]}", ":", ":"],'
                                     f'"dataset_name": "tomo"}}'),
                                 desc=np.string_(
                                     '{"data_prefix": "A file prefix for the data file.", "flat_prefix": "A file prefix '
@@ -99,22 +98,32 @@ class SAVUPluginList:
 
         self.plugins: List[SAVUPluginListEntry] = []
 
-        self.append_plugins: List[SAVUPluginListEntry] = [
-            SAVUPluginListEntry(active=True,
-                                data=np.string_(
-                                    '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "VOLUME_XZ"}'),
-                                desc=np.string_(
-                                    '{"in_datasets": "The name of the dataset to save.", "out_datasets": "Hidden, '
-                                    'dummy out_datasets entry.", "prefix": "Override the default output tiff file '
-                                    'prefix.", "pattern": "How to slice the data."}'),
-                                hide=np.string_('["out_datasets"]'),
-                                id=np.string_('savu.plugins.savers.tiff_saver'),
-                                name=np.string_('TiffSaver'),
-                                user=np.string_('[]'))
-        ]
+        self.append_plugins: List[SAVUPluginListEntry] = []
 
     def add_plugin(self, plugin: SAVUPluginListEntry):
         self.plugins.append(plugin)
+
+    def finalize(self):
+        """
+        Append a saver plugin to the list. This should be called as a final method before saving the SPL.
+
+        This is not included in the constructor as the pattern of the data tob e saved is dependent on intermediate
+        plugins, which are added later, and entries are immutable.
+        """
+        pattern = "VOLUME_XZ" if b"recon" in self.plugins[-1].id else "PROJECTION"
+        self.append_plugins.append(
+            SAVUPluginListEntry(
+                active=True,
+                data=np.string_(
+                    '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "' + pattern + '"}'),
+                desc=np.string_(
+                    '{"in_datasets": "The name of the dataset to save.", "out_datasets": "Hidden, '
+                    'dummy out_datasets entry.", "prefix": "Override the default output tiff file '
+                    'prefix.", "pattern": "How to slice the data."}'),
+                hide=np.string_('["out_datasets"]'),
+                id=np.string_('savu.plugins.savers.tiff_saver'),
+                name=np.string_('TiffSaver'),
+                user=np.string_('[]')))
 
     def __len__(self):
         return len(self.prepend_plugins) + len(self.plugins) + len(self.append_plugins)

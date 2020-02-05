@@ -2,11 +2,10 @@ import os
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit
+from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit, QSpinBox
 
 from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
 from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
@@ -20,6 +19,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
     savu_finished = Qt.pyqtSignal(str)
     info: QLabel
     description: QLabel
+    startInput: QSpinBox
+    endInput: QSpinBox
 
     def __init__(self, main_window: 'MainWindowView'):
         """
@@ -37,8 +38,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.floating_output = QTextEdit(self.floating_output_window)
         self.floating_output_window.setCentralWidget(self.floating_output)
         self.floating_output_window.show()
-        self.new_output.connect(self.append_output_text)
 
+        self.new_output.connect(self.append_output_text)
         self.savu_finished.connect(self.load_savu_stack)
 
         # Populate list of filters and handle filter selection
@@ -46,11 +47,10 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
         self.handle_filter_selection()
 
-        # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-
-        # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.applyListButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_LIST))
+        self.confirmPluginButton.clicked.connect(lambda: self.presenter.notify(PresNotification.CONFIRM_PLUGIN))
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
@@ -62,13 +62,6 @@ class SavuFiltersWindowView(BaseMainWindowView):
         super(SavuFiltersWindowView, self).show()
 
     def handle_filter_selection(self):
-        """
-        Handle selection of a filter from the drop down list.
-        """
-        # Remove all existing items from the properties layout
-        delete_all_widgets_from_layout(self.filterPropertiesLayout)
-
-        # Do registration of new filter
         self.presenter.notify(PresNotification.REGISTER_ACTIVE_FILTER)
 
     def set_description(self, info, desc):
@@ -97,3 +90,10 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'in_prefix': '',
         }
         self.main_window.presenter.load_stack(**kwargs)
+
+    def reset_indices_inputs(self, image_indices):
+        self.startInput.setMaximum(image_indices[0])
+        self.endInput.setMaximum(image_indices[0])
+        self.stepInput.setMaximum(image_indices[0])
+        self.startInput.setValue(0)
+        self.endInput.setValue(image_indices[0])
