@@ -39,8 +39,8 @@ class Mode(Enum):
 
 
 class SavuFiltersWindowPresenter(BasePresenter):
-    def __init__(self, view: 'SavuFiltersWindowView',
-                 main_window: 'MainWindowView',
+
+    def __init__(self, view: 'SavuFiltersWindowView', main_window: 'MainWindowView',
                  remote_presenter: SavuFiltersRemotePresenter):
         super(SavuFiltersWindowPresenter, self).__init__(view)
 
@@ -144,7 +144,10 @@ class SavuFiltersWindowPresenter(BasePresenter):
         self.remote_presenter.do_job_submission_success(response_content)
 
     def do_job_submission_failure(self, error_response: Response):
-        raise NotImplementedError(f"(Unhandled) error response from hebi:\n{error_response.reason}")
+        er = json.loads(error_response.text)
+        msg = f"Error response from hebi:\n{error_response.status_code}: {error_response.reason}\n{er['message']}"
+        self.view.append_output_text(msg)
+        raise NotImplementedError(msg)
 
     def confirm_plugin(self):
         entry = SavuFiltersWindowModel.create_plugin_entry_from(self.current_filter)
