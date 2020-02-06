@@ -28,16 +28,14 @@ class TomopyReconWindowView(BaseMainWindowView):
         self.cmap = cmap
 
         # Handle stack selection
-        self.stackSelector.stack_selected_uuid.connect(
-            self.presenter.set_stack_uuid)
+        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
         # Handle reconstruct buttons
         self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_SLICE))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_VOLUME))
 
         # Handle preview slice selection
-        self.previewSlice.valueChanged[int].connect(
-            self.presenter.set_preview_slice_idx)
+        self.previewSlice.valueChanged[int].connect(self.presenter.set_preview_slice_idx)
 
         self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresNotification.ALGORITHM_CHANGED))
 
@@ -55,10 +53,8 @@ class TomopyReconWindowView(BaseMainWindowView):
         self.proj_figure, self.proj_canvas = \
             add_mpl_figure(self.projectionLayout)
         self.proj_plot = self.proj_figure.add_subplot(111)
-        self.proj_canvas.mpl_connect(
-            'button_press_event', self.proj_on_button_press)
-        self.proj_canvas.mpl_connect(
-            'scroll_event', self.proj_handle_scroll_wheel)
+        self.proj_canvas.mpl_connect('button_press_event', self.proj_on_button_press)
+        self.proj_canvas.mpl_connect('scroll_event', self.proj_handle_scroll_wheel)
 
         # Reconstructed slice image
         self.recon_figure, self.recon_canvas = \
@@ -82,9 +78,7 @@ class TomopyReconWindowView(BaseMainWindowView):
         elif event.button == 'down':
             self.presenter.notify(PresNotification.PREVIEW_SLICE_PREVIOUS)
 
-    def update_projection_preview(self,
-                                  proj_image_data=None,
-                                  indicated_slice=None):
+    def update_projection_preview(self, proj_image_data=None, indicated_slice=None):
         self.proj_plot.cla()
 
         if proj_image_data is not None:
@@ -94,17 +88,13 @@ class TomopyReconWindowView(BaseMainWindowView):
             if indicated_slice is not None:
                 # Plot the slice indicator
                 x_max = proj_image_data.shape[1] - 1
-                self.proj_plot.plot(
-                    [0, x_max], [indicated_slice, indicated_slice],
-                    c='y')
+                self.proj_plot.plot([0, x_max], [indicated_slice, indicated_slice], c='y')
 
         self.proj_canvas.draw()
 
     def update_recon_preview(self, recon_image_data=None):
         # Record the image axis range from the existing preview image
-        image_axis_ranges = (
-            self.recon_plot.get_xlim(), self.recon_plot.get_ylim()
-        ) if self.recon_plot.images else None
+        image_axis_ranges = (self.recon_plot.get_xlim(), self.recon_plot.get_ylim()) if self.recon_plot.images else None
 
         self.recon_plot.cla()
 
@@ -155,7 +145,3 @@ class TomopyReconWindowView(BaseMainWindowView):
     @property
     def num_iter(self):
         return self.numIter.value() if self.numIter.isVisible() else None
-
-    @property
-    def images_are_sinograms(self):
-        return self.sinogramTypeRadio.isChecked()
