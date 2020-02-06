@@ -1,3 +1,4 @@
+import atexit
 import os
 import subprocess
 import threading
@@ -21,6 +22,7 @@ LOG = getLogger(__name__)
 
 
 class BackgroundService(threading.Thread):
+
     def __init__(self, docker_exe, args: List):
         super().__init__()
         self.docker_exe = docker_exe
@@ -59,11 +61,6 @@ class BackgroundService(threading.Thread):
                 self.success_callback()
             else:
                 self.error_callback(self.exit_code, self.process.stderr.readlines())
-
-    def success(self):
-        prepare_data()
-        docker_id = subprocess.check_output(self.docker_exe + " ps | awk -F ' ' 'END {print $1}'", shell=True)
-        self.docker_id = docker_id.decode("utf-8")
 
     def success(self):
         prepare_data()
