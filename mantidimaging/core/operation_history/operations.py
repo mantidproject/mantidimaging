@@ -25,11 +25,10 @@ class ImageOperation:
 
     @staticmethod
     def from_serialized(metadata_entry: Dict[str, Any]) -> 'ImageOperation':
-        return ImageOperation(
-            filter_name=metadata_entry[const.OPERATION_NAME],
-            filter_args=metadata_entry[const.OPERATION_ARGS],
-            filter_kwargs=metadata_entry[const.OPERATION_KEYWORD_ARGS],
-            display_name=metadata_entry[const.OPERATION_DISPLAY_NAME])
+        return ImageOperation(filter_name=metadata_entry[const.OPERATION_NAME],
+                              filter_args=metadata_entry[const.OPERATION_ARGS],
+                              filter_kwargs=metadata_entry[const.OPERATION_KEYWORD_ARGS],
+                              display_name=metadata_entry[const.OPERATION_DISPLAY_NAME])
 
     def serialize(self) -> Dict[str, Any]:
         return {
@@ -52,8 +51,7 @@ def deserialize_metadata(metadata: Dict[str, Any]) -> List[ImageOperation]:
 
 def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
     filter_funcs: Dict[str, Callable] = {
-        f.__name__: f.filter_func  # type: ignore
-        for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
+        f.__module__: f.filter_func for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
     }
     fixed_funcs = {
         const.OPERATION_NAME_AXES_SWAP: lambda img, **_: np.swapaxes(img, 0, 1),
