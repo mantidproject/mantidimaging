@@ -19,7 +19,6 @@ class TomopyReconWindowModel(object):
         self.preview_slice_idx = 0
         self.current_algorithm = "gridrec"
         self.current_filter = "none"
-        self.images_are_sinograms = True
         self.num_iter = None
 
         self.cors = None
@@ -63,14 +62,15 @@ class TomopyReconWindowModel(object):
     def _recon(self, data, cors, progress):
         # Copy of kwargs kept for recording the operation (in the presenter)
         # If args are added, they will need to be kept and used in the same way.
-        kwargs = {"sample": data,
-                  "cor": cors,
-                  "algorithm_name": self.current_algorithm,
-                  "filter_name": self.current_filter,
-                  "proj_angles": self.projection_angles,
-                  "num_iter": self.num_iter,
-                  "progress": progress,
-                  "images_are_sinograms": self.images_are_sinograms}
+        kwargs = {
+            "sample": data,
+            "cor": cors,
+            "algorithm_name": self.current_algorithm,
+            "filter_name": self.current_filter,
+            "proj_angles": self.projection_angles,
+            "num_iter": self.num_iter,
+            "progress": progress,
+        }
         self.recon_params = kwargs
         return tomopy_reconstruct(**kwargs)
 

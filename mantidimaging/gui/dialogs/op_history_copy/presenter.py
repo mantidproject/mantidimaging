@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Iterable, Any, Dict
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
@@ -51,10 +51,15 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
     def apply_ops(self):
         selected_ops = [op for op, selected in zip(self.operations, self.view.selected_op_indices) if selected]
         result = self.model.apply_ops(selected_ops)
+        history = self.history_with_new_ops(selected_ops)
+        self.main_window.create_new_stack(Images(result, metadata=history), "A result")
 
-        # Copy history and append new operations
-        history = self.model.images.metadata.copy()
-        for op in selected_ops:
+    def history_with_new_ops(self, applied_ops: Iterable[ImageOperation]) -> Dict[str, Any]:
+        history = self.model.images.metadata.copy() if self.model.images.metadata else {}
+        if const.OPERATION_HISTORY not in history:
+            history[const.OPERATION_HISTORY] = []
+
+        for op in applied_ops:
             history[const.OPERATION_HISTORY].append(op.serialize())
 
-        self.main_window.create_new_stack(Images(result, metadata=history), "A result")
+        return history

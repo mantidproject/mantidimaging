@@ -59,9 +59,7 @@ class TomopyReconWindowPresenter(BasePresenter):
             LOG.exception("Notification handler failed")
 
     def set_stack_uuid(self, uuid):
-        self.set_stack(
-            self.main_window.get_stack_visualiser(uuid)
-            if uuid is not None else None)
+        self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
@@ -91,9 +89,7 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def do_update_previews(self):
         proj = self.model.projection
-        self.view.update_projection_preview(
-            proj[0] if proj is not None else None,
-            self.model.preview_slice_idx)
+        self.view.update_projection_preview(proj[0] if proj is not None else None, self.model.preview_slice_idx)
 
     def prepare_reconstruction(self):
         self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
@@ -101,7 +97,6 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.model.current_filter = self.view.filter_name
         self.model.num_iter = self.view.num_iter
         self.model.generate_projection_angles(self.view.max_proj_angle)
-        self.model.images_are_sinograms = self.view.images_are_sinograms
         self.stack_metadata = self.model.images.metadata
 
     def do_reconstruct_slice(self):

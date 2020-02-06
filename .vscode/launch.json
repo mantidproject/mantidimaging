@@ -16,5 +16,18 @@
         "PTVSD_DEBUG": 1
       }
     },
+    {
+      "name": "Mantid Imaging Attach",
+      "type": "python",
+      "request": "attach",
+      "port": 9955,
+      "host": "localhost",
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "."
+        }
+      ]
+    },
   ]
 }

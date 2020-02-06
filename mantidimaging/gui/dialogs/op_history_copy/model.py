@@ -9,7 +9,6 @@ class OpHistoryCopyDialogModel:
         self.images: Images = images
 
     def apply_ops(self, ops: Iterable[ImageOperation]):
-        # TODO: Preserve + append stack history - here and/or presenter?
         to_apply = ops_to_partials(ops)
         image = self.images.sample
         for op in to_apply:

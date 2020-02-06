@@ -6,6 +6,7 @@ import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.base_filter import BaseFilter
+from mantidimaging.core.operation_history import const
 from mantidimaging.gui.windows.filters import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import (
     StackVisualiserView, StackVisualiserPresenter, SVParameters)
@@ -152,8 +153,10 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         op_history = self.model.stack_presenter.images.metadata['operation_history']
         self.assertEqual(len(op_history), 1, "One operation should have been recorded")
-        self.assertEqual(op_history[0]['args'], ['arg'])
-        self.assertEqual(op_history[0]['kwargs'], {"kwarg": "kwarg"})
+        self.assertEqual(op_history[0][const.OPERATION_ARGS], ['arg'])
+        self.assertEqual(op_history[0][const.OPERATION_KEYWORD_ARGS], {"kwarg": "kwarg"})
+        # Recorded operation should not be a qualified module name.
+        self.assertNotIn(".", op_history[0][const.OPERATION_NAME])
         mocked_notify.assert_called_once()
 
     def test_all_expected_filter_packages_loaded(self):
@@ -175,7 +178,7 @@ class FiltersWindowModelTest(unittest.TestCase):
                          len(expected_filter_names),
                          f"Expected {len(expected_filter_names)} filters")
         for filter_class in self.model.filters:
-            self.assert_(isinstance(filter_class(), BaseFilter))
+            self.assertIsInstance(filter_class(), BaseFilter)
         self.assertEqual(expected_filter_names,
                          self.model.filter_names, "Not all filters are named correctly")
 

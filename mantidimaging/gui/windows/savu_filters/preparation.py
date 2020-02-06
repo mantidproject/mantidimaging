@@ -22,6 +22,7 @@ LOG = getLogger(__name__)
 
 
 class BackgroundService(threading.Thread):
+
     def __init__(self, docker_exe, args: List):
         super().__init__()
         self.docker_exe = docker_exe
@@ -87,6 +88,7 @@ def find_docker():
         "/snap/bin/docker",  # if installed via SNAP
         "/usr/bin/docker",  # if installed via apt
     ]
+
     for location in docker_locations:
         if is_exe(location):
             return location
