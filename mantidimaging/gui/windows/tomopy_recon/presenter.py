@@ -9,8 +9,6 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from .model import TomopyReconWindowModel
 
-from functools import partial
-
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:

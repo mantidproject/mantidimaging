@@ -18,7 +18,6 @@ from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
-
 LOG = getLogger(__file__)
 
 
