@@ -109,9 +109,11 @@ class FiltersWindowModel(object):
 
         # store the executed filter in history if it all executed successfully
         exec_func.keywords.update(stack_params)
-        images.record_operation(self.selected_filter.__name__,  # type: ignore
-                                self.selected_filter.filter_name,
-                                *exec_func.args, **exec_func.keywords)
+        images.record_operation(
+            self.selected_filter.__name__,  # type: ignore
+            self.selected_filter.filter_name,
+            *exec_func.args,
+            **exec_func.keywords)
 
     def do_apply_filter(self):
         """
@@ -124,6 +126,5 @@ class FiltersWindowModel(object):
         stack_params = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
         apply_func = partial(self.apply_filter, self.stack_presenter.images, stack_params)
 
-        start_async_task_view(self.stack_presenter.view,
-                              apply_func,
+        start_async_task_view(self.stack_presenter.view, apply_func,
                               lambda _: self.stack_presenter.notify(SVNotification.REFRESH_IMAGE))
