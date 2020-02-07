@@ -8,6 +8,7 @@ from mantidimaging import helper as h
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
@@ -43,8 +44,7 @@ class RoiNormalisationFilter(BaseFilter):
         # just get data reference
         if air_region:
             # sanity check for the regions
-            assert all(isinstance(region, int) for region in
-                       air_region), "The air region coordinates are not integers!"
+            assert all(isinstance(region, int) for region in air_region), "The air region coordinates are not integers!"
             if pu.multiprocessing_available():
                 data = _execute_par(data, air_region, cores, chunksize, progress)
             else:
@@ -63,32 +63,34 @@ class RoiNormalisationFilter(BaseFilter):
         return partial(RoiNormalisationFilter.filter_func)
 
     @staticmethod
+    def do_before_wrapper() -> partial:
+        return partial(value_scaling.create_factors)
+
+    @staticmethod
+    def do_after_wrapper() -> partial:
+        return partial(value_scaling.apply_factor)
+
+    @staticmethod
     def sv_params() -> Dict[str, Any]:
         return {"air_region": SVParameters.ROI}
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "-A",
-        "--air-region",
-        required=False,
-        nargs='*',
-        type=str,
-        help="Air region /region for normalisation. The selection is a "
-             "rectangle and expected order is - Left Top Right Bottom.\n"
-             "For best results the region selected should not be blocked by "
-             "any object in the Tomography.\n"
-             "Example: --air-region 150 234 23 22")
+    parser.add_argument("-A",
+                        "--air-region",
+                        required=False,
+                        nargs='*',
+                        type=str,
+                        help="Air region /region for normalisation. The selection is a "
+                        "rectangle and expected order is - Left Top Right Bottom.\n"
+                        "For best results the region selected should not be blocked by "
+                        "any object in the Tomography.\n"
+                        "Example: --air-region 150 234 23 22")
 
     return parser
 
 
-def _calc_sum(data,
-              air_sums,
-              air_left=None,
-              air_top=None,
-              air_right=None,
-              air_bottom=None):
+def _calc_sum(data, air_sums, air_left=None, air_top=None, air_right=None, air_bottom=None):
     # here we can use ndarray.sum or ndarray.mean
     # ndarray.mean makes the values with a nice int16 range
     # (0-65535, BUT NOT int16 TYPE! They remain floats!)
@@ -102,8 +104,7 @@ def _divide_by_air_sum(data=None, air_sums=None):
 
 
 def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='ROI Normalisation')
+    progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
     log = getLogger(__name__)
 
     left = air_region[0]
@@ -121,36 +122,30 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
         # turn into a 1D array, from the 3D that is returned
         air_sums = air_sums.reshape(img_num)
 
-        calc_sums_partial = ptsm.create_partial(
-            _calc_sum,
-            fwd_function=ptsm.return_to_second,
-            air_left=left,
-            air_top=top,
-            air_right=right,
-            air_bottom=bottom)
+        calc_sums_partial = ptsm.create_partial(_calc_sum,
+                                                fwd_function=ptsm.return_to_second,
+                                                air_left=left,
+                                                air_top=top,
+                                                air_right=right,
+                                                air_bottom=bottom)
 
-        data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores,
-                                      chunksize, "Calculating air sums")
+        data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores, chunksize, "Calculating air sums")
 
-        air_sums_partial = ptsm.create_partial(
-            _divide_by_air_sum, fwd_function=ptsm.inplace)
+        air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
 
-        data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores,
-                                      chunksize, "Norm by Air Sums")
+        data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores, chunksize, "Norm by Air Sums")
 
         avg = np.average(air_sums)
         max_avg = np.max(air_sums) / avg
         min_avg = np.min(air_sums) / avg
 
-        log.info(f"Normalization by air region. "
-                 f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
+        log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data
 
 
 def _execute_seq(data, air_region, progress):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='ROI Normalisation')
+    progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
     log = getLogger(__name__)
 
     left = air_region[0]
@@ -178,7 +173,6 @@ def _execute_seq(data, air_region, progress):
         max_avg = np.max(air_sums) / avg
         min_avg = np.min(air_sums) / avg
 
-        log.info(f"Normalization by air region. "
-                 f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
+        log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data
