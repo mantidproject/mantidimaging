@@ -1,11 +1,15 @@
 from functools import partial
-from typing import List, Any, Dict, Callable, Iterable
+from logging import getLogger
+from typing import Any, Callable, Dict, Iterable, List, Optional
 
 import numpy as np
 
 from mantidimaging.core.filters.loader import load_filter_packages
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowModel
+
 from . import const
+
+MODULE_NOT_FOUND = "Could not find module with name '{}'"
 
 
 class ImageOperation:
@@ -13,15 +17,24 @@ class ImageOperation:
     A deserialized representation of an item in a stack's operation_history
     """
 
-    def __init__(self, filter_name, filter_args, filter_kwargs, display_name=None):
-        self.filter_name: str = filter_name
-        self.filter_args: List[Any] = filter_args
-        self.filter_kwargs: Dict[str, Any] = filter_kwargs
-        self.display_name: str = display_name
+    def __init__(self,
+                 filter_name: str,
+                 filter_args: List[Any],
+                 filter_kwargs: Dict[str, Any],
+                 display_name: Optional[str] = None):
+        self.filter_name = filter_name
+        self.filter_args = filter_args
+        self.filter_kwargs = filter_kwargs
+        self.display_name = display_name
 
     def to_partial(self, filter_funcs: Dict[str, Callable]) -> partial:
-        fn = filter_funcs[self.filter_name]
-        return partial(fn, **self.filter_kwargs)
+        try:
+            fn = filter_funcs[self.filter_name]
+            return partial(fn, **self.filter_kwargs)
+        except KeyError:
+            msg = MODULE_NOT_FOUND.format(self.filter_name)
+            getLogger(__name__).error(msg)
+            raise KeyError(msg)
 
     @staticmethod
     def from_serialized(metadata_entry: Dict[str, Any]) -> 'ImageOperation':
