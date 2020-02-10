@@ -14,7 +14,7 @@
         "PYTHONPATH": "${workspaceFolder}",
         "DISPLAY": ":1",
         "PTVSD_DEBUG": 1
-      }
+      },
     },
     {
       "name": "Mantid Imaging Attach",
@@ -22,12 +22,18 @@
       "request": "attach",
       "port": 9955,
       "host": "localhost",
+      "showReturnValue": true,
       "pathMappings": [
         {
           "localRoot": "${workspaceFolder}",
           "remoteRoot": "."
         }
-      ]
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "debug",
+        "order": 1
+      }
     },
   ]
 }

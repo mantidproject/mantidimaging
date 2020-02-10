@@ -8,4 +8,9 @@
   ],
   "python.pythonPath": "/home/dtasev/miniconda3/envs/test-env/bin/python",
   "python.linting.mypyEnabled": true,
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
 }
