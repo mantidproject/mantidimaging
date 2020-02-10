@@ -1,16 +1,19 @@
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QMenu, QInputDialog, QMessageBox
+from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
-from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
+from mantidimaging.gui.dialogs.op_history_copy.view import \
+    OpHistoryCopyDialogView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
-from .presenter import SVNotification
+from mantidimaging.gui.windows.stack_visualiser.presenter import \
+    StackVisualiserPresenter
+
 from .metadata_dialog import MetadataDialog
+from .presenter import SVNotification
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -111,28 +114,20 @@ class StackVisualiserView(BaseMainWindowView):
         self.close()
 
     def build_context_menu(self) -> QMenu:
+        actions = [
+            ("Change window name", self.change_window_name_clicked),
+            ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
+            ("Show image metadata", self.show_image_metadata),
+            ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+            ("Apply history from another stack", self.show_op_history_copy_dialog),
+        ]
+
         menu = QMenu(self)
 
-        def action(text):
-            return QAction(text, menu)
-
-        change_name_action = action("Change window name")
-        change_name_action.triggered.connect(self.change_window_name_clicked)
-
-        toggle_image_mode_action = action("Toggle show averaged image")
-        toggle_image_mode_action.triggered.connect(lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE))
-
-        show_history = action("Show history")
-        show_history.triggered.connect(self.show_image_metadata)
-
-        swap_axes_action = action("Create sinograms")
-        swap_axes_action.triggered.connect(lambda: self.presenter.notify(SVNotification.SWAP_AXES))
-
-        history_copy_action = action("Apply history from another stack")
-        history_copy_action.triggered.connect(self.show_op_history_copy_dialog)
-
-        menu.addActions(
-            [change_name_action, toggle_image_mode_action, show_history, swap_axes_action, history_copy_action])
+        for (menu_text, func) in actions:
+            action = QAction(menu_text, menu)
+            action.triggered.connect(func)
+            menu.addAction(action)
 
         return menu
 
