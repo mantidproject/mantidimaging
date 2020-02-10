@@ -1,12 +1,14 @@
 from functools import partial
-from typing import TYPE_CHECKING, Callable, Dict, Any
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget    # noqa: F401
+    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
 
 
 class BaseFilter:
     filter_name = "Unnamed Filter"
+    __name__ = "BaseFilter"
+
     """
     The base class for filter algorithms, which should extend this class.
 

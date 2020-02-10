@@ -1,6 +1,5 @@
 import unittest
 
-from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import operations
 from mantidimaging.core.operation_history.operations import (MODULE_NOT_FOUND, ImageOperation)
 
@@ -18,5 +17,5 @@ class OperationHistoryTest(unittest.TestCase):
         fake_module_name = "NonExistingFilter12"
         in_ops = [ImageOperation(fake_module_name, [], {})]
         ops = operations.ops_to_partials(in_ops)
-        with self.assertRaisesRegex(KeyError, MODULE_NOT_FOUND.format(fake_module_name)) as ctx:
+        with self.assertRaisesRegex(KeyError, MODULE_NOT_FOUND.format(fake_module_name)):
             list(ops)
