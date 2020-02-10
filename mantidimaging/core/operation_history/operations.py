@@ -51,7 +51,7 @@ def deserialize_metadata(metadata: Dict[str, Any]) -> List[ImageOperation]:
 
 def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
     filter_funcs: Dict[str, Callable] = {
-        f.__module__: f.filter_func for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
+        f.__name__: f.filter_func for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
     }
     fixed_funcs = {
         const.OPERATION_NAME_AXES_SWAP: lambda img, **_: np.swapaxes(img, 0, 1),
