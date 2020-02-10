@@ -21,7 +21,7 @@ class ROINormalisationTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         air = None
-        result = RoiNormalisationFilter._filter_func(images, air)
+        result = RoiNormalisationFilter.filter_func(images, air)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -31,7 +31,7 @@ class ROINormalisationTest(unittest.TestCase):
 
         images = np.arange(100).reshape(10, 10)
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, RoiNormalisationFilter._filter_func, images,
+        npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images,
                           air)
 
     def test_executed_par(self):
@@ -46,7 +46,7 @@ class ROINormalisationTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         air = [3, 3, 4, 4]
-        result = RoiNormalisationFilter._filter_func(images, air)
+        result = RoiNormalisationFilter.filter_func(images, air)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)

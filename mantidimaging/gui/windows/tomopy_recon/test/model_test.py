@@ -33,13 +33,3 @@ class TomopyReconWindowModelTest(unittest.TestCase):
     def test_projection_generate(self):
         self.assertIsNotNone(self.model.projection)
         self.assertEquals(self.model.projection.shape, (10, 128, 128))
-
-    def test_generate_cors(self):
-        self.assertIsNone(self.model.cors)
-        self.model.generate_cors(500, 0)
-        self.assertEquals(self.model.cors.shape, (128, ))
-
-    def test_generate_projection_angles(self):
-        self.assertIsNone(self.model.projection_angles)
-        self.model.generate_projection_angles(360)
-        self.assertEquals(self.model.projection_angles.shape, (10, ))

@@ -9,7 +9,7 @@ class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
 
     @staticmethod
-    def _filter_func(data, circular_mask_ratio=None, circular_mask_value=0., progress=None):
+    def filter_func(data, circular_mask_ratio=None, circular_mask_value=0., progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
@@ -56,7 +56,7 @@ class CircularMaskFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(radius_field=None, value_field=None):
-        return partial(CircularMaskFilter._filter_func,
+        return partial(CircularMaskFilter.filter_func,
                        circular_mask_ratio=radius_field.value(),
                        circular_mask_value=value_field.value())
 

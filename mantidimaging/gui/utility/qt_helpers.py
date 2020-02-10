@@ -35,8 +35,7 @@ class BlockQtSignals(object):
 
 
 def compile_ui(ui_file, qt_obj=None):
-    base_path = os.path.join(
-        finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+    base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
     return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
 
 
@@ -46,9 +45,8 @@ def select_file(field, caption):
     :param caption: Title of the file browser window that will be opened
     :return: True: If a file has been selected, False otherwise
     """
-    assert isinstance(field, Qt.QLineEdit), (
-        "The passed object is of type {0}. This function only works with "
-        "QLineEdit".format(type(field)))
+    assert isinstance(field, Qt.QLineEdit), ("The passed object is of type {0}. This function only works with "
+                                             "QLineEdit".format(type(field)))
 
     selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
     # open file dialogue and set the text if file is selected
@@ -61,9 +59,8 @@ def select_file(field, caption):
 
 
 def select_directory(field, caption):
-    assert isinstance(field, Qt.QLineEdit), (
-        "The passed object is of type {0}. This function only works with "
-        "QLineEdit".format(type(field)))
+    assert isinstance(field, Qt.QLineEdit), ("The passed object is of type {0}. This function only works with "
+                                             "QLineEdit".format(type(field)))
 
     # open file dialogue and set the text if file is selected
     field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
@@ -78,10 +75,15 @@ def get_value_from_qwidget(widget: QWidget):
         return widget.isChecked()
 
 
-def add_property_to_form(label, dtype, default_value=None, valid_values=None, tooltip=None,
-                         on_change=None, form=None) -> Tuple[Union[QLabel, QLineEdit],
-                                                             Union[QPushButton, QLineEdit, QSpinBox,
-                                                                   QDoubleSpinBox, QCheckBox, QComboBox]]:
+def add_property_to_form(
+    label,
+    dtype,
+    default_value=None,
+    valid_values=None,
+    tooltip=None,
+    on_change=None,
+    form=None
+) -> Tuple[Union[QLabel, QLineEdit], Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -122,8 +124,7 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
     if dtype == 'file':
         left_widget = Qt.QLineEdit()
         right_widget = Qt.QPushButton(label)
-        right_widget.clicked.connect(
-            lambda: select_file(left_widget, label))
+        right_widget.clicked.connect(lambda: select_file(left_widget, label))
         if on_change is not None:
             left_widget.textChanged.connect(lambda: on_change())
 
@@ -134,19 +135,19 @@ def add_property_to_form(label, dtype, default_value=None, valid_values=None, to
         right_widget.setText(default_value)
 
         if on_change is not None:
-            right_widget.textChanged.connect(lambda: on_change())
+            right_widget.editingFinished.connect(lambda: on_change())
 
     elif dtype == 'int':
         right_widget = Qt.QSpinBox()
         set_spin_box(right_widget, int)
         if on_change is not None:
-            right_widget.valueChanged[int].connect(lambda: on_change())
+            right_widget.editingFinished.connect(lambda: on_change())
 
     elif dtype == 'float':
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
         if on_change is not None:
-            right_widget.valueChanged[float].connect(lambda: on_change())
+            right_widget.editingFinished.connect(lambda: on_change())
 
     elif dtype == 'bool':
         left_widget = None

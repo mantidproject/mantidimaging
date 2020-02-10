@@ -25,7 +25,7 @@ class RebinTest(unittest.TestCase):
         val = None
         mode = 'nearest'
 
-        result = RebinFilter._filter_func(images, val, mode)
+        result = RebinFilter.filter_func(images, val, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -36,7 +36,7 @@ class RebinTest(unittest.TestCase):
         mode = 'nearest'
         val = -1
 
-        result = RebinFilter._filter_func(images, val, mode)
+        result = RebinFilter.filter_func(images, val, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -47,7 +47,7 @@ class RebinTest(unittest.TestCase):
         mode = 'nearest'
         val = 0
 
-        result = RebinFilter._filter_func(images, val, mode)
+        result = RebinFilter.filter_func(images, val, mode)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -80,7 +80,7 @@ class RebinTest(unittest.TestCase):
         expected_x = int(images.shape[1] * val)
         expected_y = int(images.shape[2] * val)
 
-        result = RebinFilter._filter_func(images, val, mode)
+        result = RebinFilter.filter_func(images, val, mode)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
@@ -123,7 +123,7 @@ class RebinTest(unittest.TestCase):
         expected_x = int(val[0])
         expected_y = int(val[1])
 
-        result = RebinFilter._filter_func(images, rebin_param=val, mode=mode)
+        result = RebinFilter.filter_func(images, rebin_param=val, mode=mode)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)
@@ -148,7 +148,7 @@ class RebinTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = RebinFilter._filter_func(images, val, mode)
+        result = RebinFilter.filter_func(images, val, mode)
 
         self.assertLess(
             get_memory_usage_linux(kb=True)[0], cached_memory * 2)

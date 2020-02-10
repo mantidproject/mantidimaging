@@ -19,4 +19,5 @@ def update_image_operations(images: Images, model):
     """
     images.record_operation(
         const.OPERATION_NAME_COR_TILT_FINDING,
+        display_name="Calculated COR/Tilt",
         **model.stack_properties)

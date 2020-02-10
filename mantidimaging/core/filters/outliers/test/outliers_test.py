@@ -24,7 +24,7 @@ class OutliersTest(unittest.TestCase):
         threshold = None
         radius = 8
 
-        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -35,7 +35,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0
 
-        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -46,7 +46,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = -42
 
-        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -58,7 +58,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 42
         radius = None
 
-        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)
@@ -69,7 +69,7 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0.1
 
-        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
         th.assert_not_equals(result, control)
 
@@ -82,7 +82,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 0.1
         radius = 8
 
-        result = OutliersFilter._filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
         npt.assert_raises(AssertionError, npt.assert_equal, result, control)
 

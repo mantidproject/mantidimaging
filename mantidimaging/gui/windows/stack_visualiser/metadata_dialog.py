@@ -36,26 +36,27 @@ class MetadataDialog(Qt.QDialog):
         """
         main_widget = QTreeWidget()
         main_widget.setHeaderLabel("Operation history")
-        for i, op in enumerate(metadata[const.OPERATION_HISTORY]):
-            operation_item = QTreeWidgetItem(main_widget)
-            if const.OPERATION_DISPLAY_NAME in op and op[const.OPERATION_DISPLAY_NAME]:
-                operation_item.setText(0, op[const.OPERATION_DISPLAY_NAME])
-            else:
-                operation_item.setText(0, op[const.OPERATION_NAME])
+        if len(metadata) != 0:
+            for i, op in enumerate(metadata[const.OPERATION_HISTORY]):
+                operation_item = QTreeWidgetItem(main_widget)
+                if const.OPERATION_DISPLAY_NAME in op and op[const.OPERATION_DISPLAY_NAME]:
+                    operation_item.setText(0, op[const.OPERATION_DISPLAY_NAME])
+                else:
+                    operation_item.setText(0, op[const.OPERATION_NAME])
 
-            main_widget.insertTopLevelItem(i, operation_item)
+                main_widget.insertTopLevelItem(i, operation_item)
 
-            if op[const.OPERATION_ARGS]:
-                args_item = QTreeWidgetItem(operation_item)
-                args_item.setText(0, f"Positional arguments: {', '.join(op[const.OPERATION_ARGS])}")
+                if op[const.OPERATION_ARGS]:
+                    args_item = QTreeWidgetItem(operation_item)
+                    args_item.setText(0, f"Positional arguments: {', '.join(op[const.OPERATION_ARGS])}")
 
-            if op[const.OPERATION_KEYWORD_ARGS]:
-                kwargs_list_item = QTreeWidgetItem(operation_item)
-                kwargs_list_item.setText(0, "Keyword arguments")
-                # Note: Items must be added to the tree before they can expanded.
-                # Nodes are added as they are created so these can be expanded by default
-                kwargs_list_item.setExpanded(True)
-                for kw, val in op[const.OPERATION_KEYWORD_ARGS].items():
-                    kwargs_item = QTreeWidgetItem(kwargs_list_item)
-                    kwargs_item.setText(0, f"{kw}: {val}")
+                if op[const.OPERATION_KEYWORD_ARGS]:
+                    kwargs_list_item = QTreeWidgetItem(operation_item)
+                    kwargs_list_item.setText(0, "Keyword arguments")
+                    # Note: Items must be added to the tree before they can expanded.
+                    # Nodes are added as they are created so these can be expanded by default
+                    kwargs_list_item.setExpanded(True)
+                    for kw, val in op[const.OPERATION_KEYWORD_ARGS].items():
+                        kwargs_item = QTreeWidgetItem(kwargs_list_item)
+                        kwargs_item.setText(0, f"{kw}: {val}")
         return main_widget

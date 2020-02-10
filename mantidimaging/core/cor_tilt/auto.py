@@ -73,3 +73,7 @@ def auto_find_cors(stack, roi, model, projections=None, cores=None,
         # Populate results in model
         for idx, cor in enumerate(cors):
             model.set_point(idx, cor=cor)
+
+
+def generate_cors(cor, gradient, num_images):
+    return (np.arange(0, num_images, 1) * gradient) + cor

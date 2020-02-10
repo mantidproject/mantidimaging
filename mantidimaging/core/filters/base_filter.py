@@ -1,12 +1,14 @@
 from functools import partial
-from typing import TYPE_CHECKING, Callable, Dict, Any
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget    # noqa: F401
+    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
 
 
 class BaseFilter:
     filter_name = "Unnamed Filter"
+    __name__ = "BaseFilter"
+
     """
     The base class for filter algorithms, which should extend this class.
 
@@ -15,7 +17,7 @@ class BaseFilter:
     """
 
     @staticmethod
-    def _filter_func(data, **kwargs):
+    def filter_func(data, **kwargs):
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
         The body of this function does not need to include pre and post processing steps - these should be

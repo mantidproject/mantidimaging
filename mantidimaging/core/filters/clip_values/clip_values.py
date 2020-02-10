@@ -8,12 +8,12 @@ class ClipValuesFilter(BaseFilter):
     filter_name = "Clip Values"
 
     @staticmethod
-    def _filter_func(data,
-                     clip_min=None,
-                     clip_max=None,
-                     clip_min_new_value=None,
-                     clip_max_new_value=None,
-                     progress=None):
+    def filter_func(data,
+                    clip_min=None,
+                    clip_max=None,
+                    clip_min_new_value=None,
+                    clip_max_new_value=None,
+                    progress=None):
         """
         Clip values below the min and above the max pixels.
 
@@ -120,7 +120,7 @@ class ClipValuesFilter(BaseFilter):
         clip_max = clip_max_field.value()
         clip_min_new_value = clip_min_new_value_field.value()
         clip_max_new_value = clip_max_new_value_field.value()
-        return partial(ClipValuesFilter._filter_func,
+        return partial(ClipValuesFilter.filter_func,
                        clip_min=clip_min,
                        clip_max=clip_max,
                        clip_min_new_value=clip_min_new_value,

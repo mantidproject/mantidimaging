@@ -3,6 +3,7 @@ from typing import Optional, Dict, Any
 
 import numpy as np
 
+from mantidimaging.core.cor_tilt.auto import generate_cors
 from mantidimaging.core.reconstruct import tomopy_reconstruct, allowed_recon_kwargs
 from mantidimaging.core.utility.projection_angles import \
     generate as generate_projection_angles
@@ -20,9 +21,9 @@ class TomopyReconWindowModel(object):
         self.current_algorithm = "gridrec"
         self.current_filter = "none"
         self.num_iter = None
-
-        self.cors = None
-        self.projection_angles = None
+        self.rotation_centre = None
+        self.cor_gradient = None
+        self.max_proj_angle = None
 
         self.recon_params: Dict[str, Any] = {}
 
@@ -41,38 +42,43 @@ class TomopyReconWindowModel(object):
         self.projection = self.sample.swapaxes(0, 1) \
             if stack is not None else None
 
-    def generate_cors(self, cor, gradient):
-        if self.stack is not None:
-            num_slices = self.sample.shape[0]
-            self.cors = (np.arange(0, num_slices, 1) * gradient) + cor
-            LOG.debug('Generated CORs: {}'.format(self.cors))
-
-    def generate_projection_angles(self, max_angle):
-        if self.stack is not None:
-            num_radiograms = self.sample.shape[1]
-            self.projection_angles = generate_projection_angles(max_angle, num_radiograms)
-
     def reconstruct_slice(self, progress):
         data = np.asarray([self.sample[self.preview_slice_idx]])
-        return self._recon(data, self.cors[self.preview_slice_idx], progress)
+        return self.do_recon(data, progress, **self._load_kwargs())
 
     def reconstruct_volume(self, progress):
-        return self._recon(self.sample, self.cors, progress)
+        return self.do_recon(self.sample, progress, **self._load_kwargs())
 
-    def _recon(self, data, cors, progress):
+    def _load_kwargs(self):
         # Copy of kwargs kept for recording the operation (in the presenter)
         # If args are added, they will need to be kept and used in the same way.
         kwargs = {
-            "sample": data,
-            "cor": cors,
+            "rotation_centre": self.rotation_centre,
+            "gradient": self.cor_gradient,
             "algorithm_name": self.current_algorithm,
             "filter_name": self.current_filter,
-            "proj_angles": self.projection_angles,
+            "max_proj_angle": self.max_proj_angle,
             "num_iter": self.num_iter,
-            "progress": progress,
         }
         self.recon_params = kwargs
-        return tomopy_reconstruct(**kwargs)
+        return kwargs
+
+    @staticmethod
+    def do_recon(data, progress=None, **kwargs):
+        if data is None or not data.shape[0] > 0:
+            raise RuntimeError("No data provided to reconstruct from")
+
+        # Some kwargs required by tomopy are arrays, which are not recorded in op history as they can be large.
+        # To be able to replay reconstructions from op history, we instead record the values required to calculate
+        # the arrays (rotation_centre + gradient -> cor, max_proj_angle -> proj_angles) in the stack's operation
+        # history, and do the array calculation here.
+        just_copy = ["algorithm_name", "filter_name", "num_iter", "images_are_sinograms"]
+        calculated_kwargs = {k: kwargs[k] for k in just_copy if k in kwargs}
+        calculated_kwargs.update({
+            "cor": generate_cors(kwargs["rotation_centre"], kwargs["gradient"], data.shape[0]),
+            "proj_angles": generate_projection_angles(kwargs["max_proj_angle"], data.shape[0]),
+        })
+        return tomopy_reconstruct(sample=data, progress=progress, **calculated_kwargs)
 
     @staticmethod
     def load_allowed_recon_kwargs():

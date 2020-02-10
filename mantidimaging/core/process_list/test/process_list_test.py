@@ -6,7 +6,7 @@ from mantidimaging.core.filters.median_filter import MedianFilter
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
 PACKAGE_LOCATION_STRING = 'mantidimaging.core.filters.median_filter'
-FUNC_NAME = '_filter_func'
+FUNC_NAME = 'filter_func'
 
 
 class ProcessListTest(FileOutputtingTestCase):
@@ -14,9 +14,9 @@ class ProcessListTest(FileOutputtingTestCase):
         super(ProcessListTest, self).setUp()
 
         self.pl = process_list.ProcessList()
-        self.pl.store(MedianFilter()._filter_func, 3)
-        self.pl.store(MedianFilter()._filter_func, size=55)
-        self.pl.store(MedianFilter()._filter_func, 11, mode='test')
+        self.pl.store(MedianFilter().filter_func, 3)
+        self.pl.store(MedianFilter().filter_func, size=55)
+        self.pl.store(MedianFilter().filter_func, 11, mode='test')
 
     def tearDown(self):
         super(ProcessListTest, self).tearDown()
@@ -24,9 +24,9 @@ class ProcessListTest(FileOutputtingTestCase):
         self.pl = None
 
     def test_store(self):
-        self.pl.store(MedianFilter()._filter_func, 3)
-        self.pl.store(MedianFilter()._filter_func, 1)
-        self.pl.store(MedianFilter()._filter_func, 2)
+        self.pl.store(MedianFilter().filter_func, 3)
+        self.pl.store(MedianFilter().filter_func, 1)
+        self.pl.store(MedianFilter().filter_func, 2)
 
         # 3 from setup and 3 from here
         self.assertEquals(len(self.pl), 6)
@@ -74,7 +74,7 @@ class ProcessListTest(FileOutputtingTestCase):
 
     def test_fail_store(self):
         self.assertRaises(AssertionError, self.pl.store,
-                          MedianFilter()._filter_func, 3, not_existing_kwarg=3)
+                          MedianFilter().filter_func, 3, not_existing_kwarg=3)
 
     def test_from_string_fail(self):
         input_string = "some arbitrary string here"

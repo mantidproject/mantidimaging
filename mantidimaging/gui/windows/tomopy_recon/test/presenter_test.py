@@ -47,13 +47,15 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
     def test_prepare_recon(self):
         self.presenter.set_stack(self.stack)
 
-        self.assertIsNone(self.presenter.model.cors)
-        self.assertIsNone(self.presenter.model.projection_angles)
+        self.assertIsNone(self.presenter.model.rotation_centre)
+        self.assertIsNone(self.presenter.model.cor_gradient)
+        self.assertIsNone(self.presenter.model.max_proj_angle)
 
         self.presenter.prepare_reconstruction()
 
-        self.assertIsNotNone(self.presenter.model.cors)
-        self.assertIsNotNone(self.presenter.model.projection_angles)
+        self.assertIsNotNone(self.presenter.model.rotation_centre)
+        self.assertIsNotNone(self.presenter.model.cor_gradient)
+        self.assertIsNotNone(self.presenter.model.max_proj_angle)
 
     def test_set_preview_slice_index(self):
         self.presenter.set_stack(self.stack)

@@ -19,7 +19,7 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
 
     @staticmethod
-    def _filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
+    def filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -59,7 +59,7 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(size_field=None, mode_field=None):
-        return partial(MedianFilter._filter_func,
+        return partial(MedianFilter.filter_func,
                        size=size_field.value(),
                        mode=mode_field.currentText())
 

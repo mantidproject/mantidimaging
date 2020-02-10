@@ -9,7 +9,7 @@ class StripeRemovalFilter(BaseFilter):
     filter_name = "Stripe Removal"
 
     @staticmethod
-    def _filter_func(data, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
         """
         Execute stripe removal filters.
 
@@ -159,7 +159,7 @@ class StripeRemovalFilter(BaseFilter):
         elif filter_type == 'smoothing-filter':
             sf = {'size': value_sf_size.value()}
 
-        return partial(StripeRemovalFilter._filter_func, wf=wf, ti=ti, sf=sf)
+        return partial(StripeRemovalFilter.filter_func, wf=wf, ti=ti, sf=sf)
 
 
 def _cli_register(parser):

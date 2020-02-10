@@ -92,11 +92,12 @@ class TomopyReconWindowPresenter(BasePresenter):
         self.view.update_projection_preview(proj[0] if proj is not None else None, self.model.preview_slice_idx)
 
     def prepare_reconstruction(self):
-        self.model.generate_cors(self.view.rotation_centre, self.view.cor_gradient)
+        self.model.rotation_centre = self.view.rotation_centre
+        self.model.cor_gradient = self.view.cor_gradient
         self.model.current_algorithm = self.view.algorithm_name
         self.model.current_filter = self.view.filter_name
         self.model.num_iter = self.view.num_iter
-        self.model.generate_projection_angles(self.view.max_proj_angle)
+        self.model.max_proj_angle = self.view.max_proj_angle
         self.stack_metadata = self.model.images.metadata
 
     def do_reconstruct_slice(self):
@@ -119,7 +120,11 @@ class TomopyReconWindowPresenter(BasePresenter):
         if task.was_successful():
             volume_data = task.result
             volume_stack = Images(volume_data, metadata=self.stack_metadata)
-            volume_stack.record_operation(const.OPERATION_NAME_TOMOPY_RECON, **self.model.recon_params)
+            print(f"Before:\n{volume_stack.metadata}")
+            volume_stack.record_operation(const.OPERATION_NAME_TOMOPY_RECON,
+                                          display_name="Tomopy Reconstruction",
+                                          **self.model.recon_params)
+            print(f"After:\n{volume_stack.metadata}")
             name = '{}_recon'.format(self.model.stack.name)
             self.main_window.create_new_stack(volume_stack, name)
         else:

@@ -9,7 +9,7 @@ class MinusLogFilter(BaseFilter):
     filter_name = "Minus Log"
 
     @staticmethod
-    def _filter_func(data, minus_log=True, progress=None):
+    def filter_func(data, minus_log=True, progress=None):
         """
         This filter should be used on transmission images (background corrected
         images).
@@ -41,7 +41,7 @@ class MinusLogFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(**kwargs):
-        return partial(MinusLogFilter._filter_func, minus_log=True)
+        return partial(MinusLogFilter.filter_func, minus_log=True)
 
     @staticmethod
     def register_gui(form, on_change):
