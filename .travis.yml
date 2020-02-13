@@ -13,6 +13,11 @@ before_install:
 
 jobs:
   include:
+    - stage: update-docker-image
+      # if: type = cron
+      script:
+        - cd docker && make build-docker-image
+
     - stage: test
       script:
         - $DOCKER_RUN $DOCKER_IMAGE flake8
@@ -22,4 +27,4 @@ jobs:
     - stage: upload-nightly
       if: type = cron
       script:
-        - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
+        - $DOCKER_RUN -e GIT_DESCRIBE_NUMBER -e GIT_DESCRIBE_TAG -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
