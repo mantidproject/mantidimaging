@@ -1,5 +1,10 @@
 language: c
 
+# Makes Travis clone the full repo so that the conda package can get the
+# correct string from git describe and correctly label the package
+git:
+  depth: false
+
 dist: xenial
 services:
   - xvfb
@@ -22,4 +27,4 @@ jobs:
     - stage: upload-nightly
       if: type = cron
       script:
-        - $DOCKER_RUN -e GIT_DESCRIBE_NUMBER -e GIT_DESCRIBE_TAG -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
+        - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
