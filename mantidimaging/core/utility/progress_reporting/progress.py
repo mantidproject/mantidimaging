@@ -1,27 +1,22 @@
-import time
 import threading
-
+import time
 from logging import getLogger
 
-from mantidimaging.core.utility.memory_usage import (
-        get_memory_usage_linux_str)
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
 
 class ProgressHandler(object):
-
     def __init__(self):
         self.progress = None
 
     def progress_update(self):
-        raise NotImplementedError(
-                "Need to implement this method in the child class")
+        raise NotImplementedError("Need to implement this method in the child class")
 
 
 class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
     """
-
     @staticmethod
     def ensure_instance(p=None, *args, **kwargs):
         """
@@ -68,9 +63,7 @@ class Progress(object):
         self.update(0, 'init')
 
         # Log initial memory usage
-        getLogger(__name__).debug(
-                "Memory usage before execution: %s",
-                get_memory_usage_linux_str())
+        getLogger(__name__).debug("Memory usage before execution: %s", get_memory_usage_linux_str())
 
     def __str__(self):
         return 'Progress(\n{})'.format('\n'.join(self.progress_history))
@@ -151,8 +144,7 @@ class Progress(object):
         :param handler: Instance of a progress handler
         """
         if not isinstance(handler, ProgressHandler):
-            raise ValueError(
-                    "Progress handlers must be of type ProgressHandler")
+            raise ValueError("Progress handlers must be of type ProgressHandler")
 
         self.progress_handlers.append(handler)
         handler.progress = self
@@ -207,8 +199,7 @@ class Progress(object):
         """
         log = getLogger(__name__)
 
-        self.update(force_continue=True,
-                    msg=self.cancel_msg if self.should_cancel else msg)
+        self.update(force_continue=True, msg=self.cancel_msg if self.should_cancel else msg)
 
         if not self.should_cancel:
             self.complete = True
@@ -216,5 +207,4 @@ class Progress(object):
 
         # Log elapsed time and final memory usage
         log.info("Elapsed time: %d sec.", self.execution_time())
-        log.debug("Memory usage after execution: %s",
-                  get_memory_usage_linux_str())
+        log.debug("Memory usage after execution: %s", get_memory_usage_linux_str())

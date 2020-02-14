@@ -14,8 +14,7 @@ class RebinFilter(BaseFilter):
     filter_name = "Rebin"
 
     @staticmethod
-    def filter_func(data, rebin_param=None, mode=None, cores=None, chunksize=None,
-                    progress=None):
+    def filter_func(data, rebin_param=None, mode=None, cores=None, chunksize=None, progress=None):
         """
         :param data: Sample data which is to be processed. Expected in radiograms
         :param rebin_param: int, float or tuple
@@ -41,8 +40,7 @@ class RebinFilter(BaseFilter):
 
         if param_valid:
             if pu.multiprocessing_available():
-                data = _execute_par(data, rebin_param, mode, cores, chunksize,
-                                    progress)
+                data = _execute_par(data, rebin_param, mode, cores, chunksize, progress)
             else:
                 data = _execute_seq(data, rebin_param, mode, progress)
 
@@ -51,22 +49,14 @@ class RebinFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change):
         # Rebin by uniform factor options
-        _, factor = add_property_to_form(
-            'Factor', 'float', 0.5, (0.0, 1.0),
-            on_change=on_change)
+        _, factor = add_property_to_form('Factor', 'float', 0.5, (0.0, 1.0), on_change=on_change)
         factor.setSingleStep(0.05)
 
         # Rebin to target shape options
         shape_range = (0, 9999)
 
-        _, shape_x = add_property_to_form(
-            'X', 'int',
-            valid_values=shape_range,
-            on_change=on_change)
-        _, shape_y = add_property_to_form(
-            'Y', 'int',
-            valid_values=shape_range,
-            on_change=on_change)
+        _, shape_x = add_property_to_form('X', 'int', valid_values=shape_range, on_change=on_change)
+        _, shape_y = add_property_to_form('Y', 'int', valid_values=shape_range, on_change=on_change)
 
         from PyQt5 import Qt
         shape_fields = Qt.QHBoxLayout()
@@ -114,8 +104,12 @@ class RebinFilter(BaseFilter):
         }
 
     @staticmethod
-    def execute_wrapper(rebin_to_dimensions_radio=None, shape_x=None, shape_y=None,
-                        rebin_by_factor_radio=None, factor=None, mode_field=None):
+    def execute_wrapper(rebin_to_dimensions_radio=None,
+                        shape_x=None,
+                        shape_y=None,
+                        rebin_by_factor_radio=None,
+                        factor=None,
+                        mode_field=None):
         if rebin_to_dimensions_radio.isChecked():
             params = (shape_x.value(), shape_y.value())
         elif rebin_by_factor_radio.isChecked():
@@ -127,23 +121,21 @@ class RebinFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--rebin",
-        required=False,
-        type=float,
-        help="Rebin factor by which the images will be rebinned. "
-             "This could be any positive float number.\n"
-             "If not specified no scaling will be done.")
+    parser.add_argument("--rebin",
+                        required=False,
+                        type=float,
+                        help="Rebin factor by which the images will be rebinned. "
+                        "This could be any positive float number.\n"
+                        "If not specified no scaling will be done.")
 
-    parser.add_argument(
-        "--rebin-mode",
-        required=False,
-        type=str,
-        default=modes()[0],
-        choices=modes(),
-        help="Default: %(default)s\n"
-             "Specify which interpolation mode will be used for the scaling of the "
-             "image.")
+    parser.add_argument("--rebin-mode",
+                        required=False,
+                        type=str,
+                        default=modes()[0],
+                        choices=modes(),
+                        help="Default: %(default)s\n"
+                        "Specify which interpolation mode will be used for the scaling of the "
+                        "image.")
 
     return parser
 
@@ -152,42 +144,34 @@ def modes():
     return ['nearest', 'lanczos', 'bilinear', 'bicubic', 'cubic']
 
 
-def _execute_par(data, rebin_param, mode, cores=None, chunksize=None,
-                 progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Rebin')
+def _execute_par(data, rebin_param, mode, cores=None, chunksize=None, progress=None):
+    progress = Progress.ensure_instance(progress, task_name='Rebin')
 
-    resized_data, resized_shape = _create_reshaped_array(
-        data.shape, data.dtype, rebin_param)
+    resized_data, resized_shape = _create_reshaped_array(data.shape, data.dtype, rebin_param)
 
     with progress:
-        progress.update(msg="Starting PARALLEL image rebinning.")
+        progress.update(msg="Applying rebin.")
 
-        f = pem.create_partial(skimage.transform.resize,
-                               output_shape=resized_shape[1:])
+        f = pem.create_partial(skimage.transform.resize, output_shape=resized_shape[1:])
 
-        resized_data = pem.execute(
-            data, f, cores, chunksize, "Rebinning", output_data=resized_data, progress=progress)
+        resized_data = pem.execute(data, f, cores, chunksize, "Rebin", output_data=resized_data, progress=progress)
 
     return resized_data
 
 
 def _execute_seq(data, rebin_param, mode, progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Rebin')
+    progress = Progress.ensure_instance(progress, task_name='Rebin')
 
     with progress:
         progress.update(msg="Starting image rebinning.")
 
-        resized_data, resized_shape = _create_reshaped_array(
-            data.shape, data.dtype, rebin_param)
+        resized_data, resized_shape = _create_reshaped_array(data.shape, data.dtype, rebin_param)
 
         num_images = resized_data.shape[0]
         progress.add_estimated_steps(num_images)
 
         for idx in range(num_images):
-            resized_data[idx] = skimage.transform.resize(
-                data[idx], resized_shape[1:])
+            resized_data[idx] = skimage.transform.resize(data[idx], resized_shape[1:])
             progress.update()
 
     return resized_data

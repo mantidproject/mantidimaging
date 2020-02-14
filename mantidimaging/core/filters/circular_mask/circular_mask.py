@@ -25,15 +25,11 @@ class CircularMaskFilter(BaseFilter):
             tomopy = importer.do_importing('tomopy')
 
             with progress:
-                progress.update(msg="Circular mask")
+                progress.update(msg="Applying circular mask.")
 
                 # for some reason this doesn't like the ncore param, even though
                 # it's in the official tomopy docs
-                tomopy.circ_mask(
-                    arr=data,
-                    axis=0,
-                    ratio=circular_mask_ratio,
-                    val=circular_mask_value)
+                tomopy.circ_mask(arr=data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value)
 
         return data
 
@@ -41,18 +37,15 @@ class CircularMaskFilter(BaseFilter):
     def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, radius_field = add_property_to_form(
-            'Radius', 'float', 0.95, (0.0, 1.0),
-            form=form, on_change=on_change)
+        _, radius_field = add_property_to_form('Radius', 'float', 0.95, (0.0, 1.0), form=form, on_change=on_change)
 
-        _, value_field = add_property_to_form(
-            'Set to value', 'float', 0, (-10000, 10000),
-            form=form, on_change=on_change)
+        _, value_field = add_property_to_form('Set to value',
+                                              'float',
+                                              0, (-10000, 10000),
+                                              form=form,
+                                              on_change=on_change)
 
-        return {
-            'radius_field': radius_field,
-            'value_field': value_field
-        }
+        return {'radius_field': radius_field, 'value_field': value_field}
 
     @staticmethod
     def execute_wrapper(radius_field=None, value_field=None):
@@ -62,23 +55,21 @@ class CircularMaskFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--circular-mask",
-        required=False,
-        type=float,
-        default=None,
-        help="Radius of the circular mask to apply on the "
-             "reconstructed volume.\n"
-             "It is given in range [0,1) relative to the size of the "
-             "smaller dimension/edge "
-             "of the slices.\nEmpty or zero implies no masking.")
+    parser.add_argument("--circular-mask",
+                        required=False,
+                        type=float,
+                        default=None,
+                        help="Radius of the circular mask to apply on the "
+                        "reconstructed volume.\n"
+                        "It is given in range [0,1) relative to the size of the "
+                        "smaller dimension/edge "
+                        "of the slices.\nEmpty or zero implies no masking.")
 
-    parser.add_argument(
-        "--circular-mask-val",
-        required=False,
-        type=float,
-        default=0.0,
-        help="Default: %(default)s. "
-             "The value that the pixels in the mask will be set to.")
+    parser.add_argument("--circular-mask-val",
+                        required=False,
+                        type=float,
+                        default=0.0,
+                        help="Default: %(default)s. "
+                        "The value that the pixels in the mask will be set to.")
 
     return parser
