@@ -1,7 +1,7 @@
 import os
 from functools import partial
 from logging import getLogger
-from typing import TYPE_CHECKING, Dict, Any
+from typing import TYPE_CHECKING, Any, Dict
 
 import numpy as np
 
@@ -47,16 +47,13 @@ class BackgroundCorrectionFilter(BaseFilter):
         """
         h.check_data_stack(data)
 
-        if flat is not None and dark is not None and isinstance(
-                flat, np.ndarray) and isinstance(dark, np.ndarray):
+        if flat is not None and dark is not None and isinstance(flat, np.ndarray) and isinstance(dark, np.ndarray):
             if 2 != flat.ndim or 2 != dark.ndim:
-                raise ValueError(
-                    f"Incorrect shape of the flat image ({flat.shape}) or dark image ({dark.shape}) \
+                raise ValueError(f"Incorrect shape of the flat image ({flat.shape}) or dark image ({dark.shape}) \
                     which should match the shape of the sample images ({data[0].shape})")
 
             if pu.multiprocessing_available():
-                _execute_par(data, flat, dark, clip_min, clip_max, cores,
-                             chunksize, progress)
+                _execute_par(data, flat, dark, clip_min, clip_max, cores, chunksize, progress)
             else:
                 _execute_seq(data, flat, dark, clip_min, clip_max, progress)
 
@@ -139,11 +136,10 @@ def _execute_par(data,
                     np.subtract(data, dark, out=data), norm_divide, out=data)
     Subtract then divide (par) - 55s
     """
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Background Correction')
+    progress = Progress.ensure_instance(progress, task_name='Background Correction')
 
     with progress:
-        progress.update(msg="PARALLEL normalization by flat/dark images")
+        progress.update(msg=f"Applying background correction.")
 
         norm_divide = pu.create_shared_array((1, data.shape[1], data.shape[2]))
         # remove a dimension, I found this to be the easiest way to do it
@@ -157,13 +153,11 @@ def _execute_par(data,
 
         # subtract the dark from all images
         f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
-        data, dark = ptsm.execute(
-            data, dark, f, cores, chunksize, "Subtract Dark")
+        data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark")
 
         # divide the data by (flat - dark)
         f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
-        data, norm_divide = ptsm.execute(
-            data, norm_divide, f, cores, chunksize, "Norm by Flat")
+        data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, "Norm by Flat")
 
         # After scaling back the values some images will have pixels with big
         # negative values -25626262 which throws off contrast adjustments.
@@ -176,14 +170,8 @@ def _execute_par(data,
     return data
 
 
-def _execute_seq(data,
-                 flat=None,
-                 dark=None,
-                 clip_min=MINIMUM_PIXEL_VALUE,
-                 clip_max=MAXIMUM_PIXEL_VALUE,
-                 progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Background Correction')
+def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, progress=None):
+    progress = Progress.ensure_instance(progress, task_name='Background Correction')
 
     with progress:
         progress.update(msg="Normalization by flat/dark images")

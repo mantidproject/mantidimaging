@@ -9,8 +9,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import (
-    BlockQtSignals, get_parameters_from_stack)
+from mantidimaging.gui.utility import (BlockQtSignals, get_parameters_from_stack)
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
 from .model import FiltersWindowModel
 
@@ -24,7 +23,6 @@ class Notification(Enum):
 
 
 class FiltersWindowPresenter(BasePresenter):
-
     def __init__(self, view, main_window):
         super(FiltersWindowPresenter, self).__init__(view)
 
@@ -53,9 +51,7 @@ class FiltersWindowPresenter(BasePresenter):
         return max(self.model.num_images_in_stack - 1, 0)
 
     def set_stack_uuid(self, uuid):
-        self.set_stack(
-            self.main_window.get_stack_visualiser(uuid)
-            if uuid is not None else None)
+        self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
 
     def set_stack(self, stack):
         # Disconnect ROI update signal from previous stack
@@ -101,8 +97,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Register new filter (adding it's property widgets to the properties
         # layout)
-        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout,
-                                             self.view.auto_update_triggered.emit)
+        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit)
         self.model.setup_filter(filter_idx, filter_widget_kwargs)
 
     def filter_uses_parameter(self, parameter):
@@ -110,6 +105,8 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
+        # progress = Progress.ensure_instance()
+        # progress.task_name = 'Filter'
         self.model.do_apply_filter()
 
     def do_update_previews(self):
@@ -133,11 +130,8 @@ class FiltersWindowPresenter(BasePresenter):
                 before_image_data = stack.get_image(self.model.preview_image_idx)
 
                 # Update image before
-                self._update_preview_image(
-                    before_image_data,
-                    self.view.preview_image_before,
-                    self.view.previews.set_before_histogram,
-                    progress)
+                self._update_preview_image(before_image_data, self.view.preview_image_before,
+                                           self.view.previews.set_before_histogram, progress)
 
                 # Generate sub-stack and run filter
                 progress.update(msg='Running preview filter')
@@ -153,28 +147,19 @@ class FiltersWindowPresenter(BasePresenter):
 
                 # Update image after and difference
                 if filtered_image_data is not None:
-                    self._update_preview_image(
-                        filtered_image_data,
-                        self.view.preview_image_after,
-                        self.view.previews.set_after_histogram,
-                        progress)
+                    self._update_preview_image(filtered_image_data, self.view.preview_image_after,
+                                               self.view.previews.set_after_histogram, progress)
 
                     diff = np.subtract(filtered_image_data, before_image_data) \
                         if filtered_image_data.shape == before_image_data.shape else None
-                    self._update_preview_image(
-                        diff,
-                        self.view.preview_image_difference,
-                        None,
-                        progress)
+                    self._update_preview_image(diff, self.view.preview_image_difference, None, progress)
 
             # Redraw
             progress.update(msg='Redraw canvas')
 
     @staticmethod
-    def _update_preview_image(image_data: Optional[np.ndarray],
-                              image: ImageItem,
-                              redraw_histogram: Optional[Callable[[Any], None]],
-                              progress):
+    def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem,
+                              redraw_histogram: Optional[Callable[[Any], None]], progress):
         # Generate histogram data
         progress.update(msg='Generating histogram')
 

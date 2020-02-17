@@ -22,13 +22,7 @@ def create_partial(func, **kwargs):
     return partial(func, **kwargs)
 
 
-def execute(data=None,
-            partial_func=None,
-            cores=None,
-            chunksize=None,
-            name="Progress",
-            output_data=None,
-            progress=None):
+def execute(data=None, partial_func=None, cores=None, chunksize=None, name="Progress", output_data=None, progress=None):
     """
     Executes a function in parallel, but does not share the memory between
     processes.
@@ -75,17 +69,15 @@ def execute(data=None,
         output_data = data
 
     pool = Pool(cores)
-    img_num = output_data.shape[0]
 
     task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress,
-                                        num_steps=img_num,
-                                        task_name=task_name)
+
+    progress = Progress.ensure_instance(progress, task_name=task_name)
+    progress.set_estimated_steps(output_data.shape[0])
 
     # passing the data triggers a copy-on-write in the child process, even if
     # it only reads the data
-    for i, res_data in enumerate(
-            pool.imap(partial_func, data, chunksize=chunksize)):
+    for i, res_data in enumerate(pool.imap(partial_func, data, chunksize=chunksize)):
         output_data[i] = res_data[:]
         progress.update()
 
