@@ -32,6 +32,7 @@ jobs:
     - stage: test
       name: Test
       script:
+        - $DOCKER_RUN -t $DOCKER_IMAGE yapf --parallel --diff --recursive .
         - $DOCKER_RUN -t $DOCKER_IMAGE flake8
         - $DOCKER_RUN -t $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
         - $DOCKER_RUN -t $DOCKER_IMAGE nosetests
@@ -41,10 +42,10 @@ jobs:
       # if: type = cron # disabled for testing in PR
       env: DOCKER_IMAGE="dtasev/mantidimaging:abseil"
       script:
-        - docker pull $DOCKER_IMAGE
-        - $DOCKER_RUN -t $DOCKER_IMAGE flake8
-        - $DOCKER_RUN -t $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
-        - $DOCKER_RUN -t $DOCKER_IMAGE nosetests
+        - $DOCKER_RUN $DOCKER_IMAGE yapf --parallel --diff --recursive .
+        - $DOCKER_RUN $DOCKER_IMAGE flake8
+        - $DOCKER_RUN $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
+        - $DOCKER_RUN $DOCKER_IMAGE nosetests
 
     - stage: upload-nightly
       if: type = cron
