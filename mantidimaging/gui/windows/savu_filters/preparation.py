@@ -2,18 +2,18 @@ import atexit
 import os
 import subprocess
 import threading
-
 from concurrent.futures import Future, ProcessPoolExecutor
 from logging import getLogger
-from typing import Optional, List
+from typing import List, Optional
 
 import socketio
 from requests_futures.sessions import FuturesSession
 
-from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
-                                                            WS_JOB_STATUS_NAMESPACE)
-
-from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, DevelopmentRemoteConfig, RemoteConstants
+from mantidimaging.core.configs.savu_backend_docker import (
+    DevelopmentRemoteConfig, RemoteConfig, RemoteConstants)
+from mantidimaging.core.utility.savu_interop.webapi import (
+    PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
+    WS_JOB_STATUS_NAMESPACE)
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
@@ -32,6 +32,8 @@ class BackgroundService(threading.Thread):
         self.exit_code: Optional[int] = None
         self.docker_id = None
         self.process: Optional[subprocess.Popen] = None
+        # explains why the background service failed to do something, e.g. start
+        self.failure_reason: Optional[str] = None
 
     def run(self) -> None:
         """
@@ -40,6 +42,9 @@ class BackgroundService(threading.Thread):
         If successful, docker_id will hold the container's id, otherwise exit_code holds dockers exit code.
         Failures are most likely caused by an incorrect hebi image, or something already running on the same port.
         """
+        if self.process is None:
+            return
+
         self.process = subprocess.Popen(self.args, bufsize=1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while self.process.poll() is None:
             output = self.process.stdout.readline()
@@ -70,6 +75,10 @@ class BackgroundService(threading.Thread):
         """
         Shut down the subprocess and, if we started it, kill the hebi container.
         """
+        if self.process is None and sio_client is None:
+            # nothing to close, the docker backend never started
+            return
+
         sio_client.reconnection = False
         sio_client.disconnect()
         self.process.terminate()
@@ -92,10 +101,19 @@ def find_docker():
         if is_exe(location):
             return location
 
+    raise RuntimeError(
+        f"Could not find a docker executable in any of '{', '.join(docker_locations)}'. Starting without Docker (no Savu filters)"
+    )
+
 
 async def prepare_backend() -> BackgroundService:
+    try:
+        docker_exe = find_docker()
+    except RuntimeError as e:
+        process = BackgroundService(None, [])
+        process.failure_reason = str(e)
+        return process
 
-    docker_exe = find_docker()
     docker_args = [
         docker_exe,
         "run",

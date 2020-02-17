@@ -196,7 +196,7 @@ class MainWindowView(BaseMainWindowView):
             # they have data loaded
             msg_box = QtWidgets.QMessageBox.question(self,
                                                      "Quit",
-                                                     "Are you sure you want to quit?",
+                                                     "Are you sure you want to quit with loaded data?",
                                                      defaultButton=QtWidgets.QMessageBox.No)
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
@@ -225,14 +225,18 @@ class MainWindowView(BaseMainWindowView):
         self.status_bar_label.setText("SAVU Backend: Error")
         getLogger(__name__).error("".join([out.decode("utf-8") for out in output]))
 
-    def set_background_service(self, process: BackgroundService):
-        if process.process and process.process.poll() is not None:
+    def set_background_service(self, docker_backend: BackgroundService):
+        if docker_backend.process and docker_backend.process.poll() is not None:
             self.status_bar_label.setText("SAVU Backend: Starting")
-        self.backend_message.connect(self.print_backend_output)
-        self.backend_process = process
-        process.callback = lambda output: self.backend_message.emit(output)
-        process.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
-        process.error_callback = self.error_callback
+            self.backend_message.connect(self.print_backend_output)
+            docker_backend.callback = lambda output: self.backend_message.emit(output)
+            docker_backend.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
+            docker_backend.error_callback = self.error_callback
+        else:
+            getLogger(__name__).error(docker_backend.failure_reason)
+            self.status_bar_label.setText("SAVU Backend: Unable to start")
+
+        self.backend_process = docker_backend
 
     def create_new_stack(self, data, title):
         self.presenter.create_new_stack(data, title)
