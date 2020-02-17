@@ -4,23 +4,19 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 
-
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowModel
-from mantidimaging.gui.windows.stack_visualiser import (
-        StackVisualiserView, StackVisualiserPresenter)
+from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
 
 import mock
 
 
 class TomopyReconWindowModelTest(unittest.TestCase):
-
     def setUp(self):
         self.model = TomopyReconWindowModel()
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
-        data = Images(
-                sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        data = Images(sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.stack.presenter = StackVisualiserPresenter(self.stack, data)
 
         self.model.initial_select_data(self.stack)

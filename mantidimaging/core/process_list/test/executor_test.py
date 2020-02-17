@@ -58,6 +58,5 @@ class ExecutorTest(TestCase):
 
     def test_execute_new(self):
         self.do_set_up(MEDIAN_SIZE, MEDIAN_MODE)
-        process_list.execute(self.pl.next(), self.init_data,
-                             MEDIAN_SIZE, MEDIAN_MODE)
+        process_list.execute(self.pl.next(), self.init_data, MEDIAN_SIZE, MEDIAN_MODE)
         npt.assert_equal(self.init_data, self.expected_data)

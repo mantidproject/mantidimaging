@@ -14,7 +14,6 @@ class ClipValuesFilterTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(ClipValuesFilterTest, self).__init__(*args, **kwargs)
 
@@ -115,8 +114,7 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=0.1,
                                                 clip_max_new_value=0.9)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)

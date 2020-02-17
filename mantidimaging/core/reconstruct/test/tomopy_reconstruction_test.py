@@ -6,7 +6,6 @@ from mantidimaging.core.reconstruct import tomopy_reconstruct
 
 
 class TomopyReconstructionTest(TestCase):
-
     def test_basic(self):
         num_sinograms = 50
         num_projections = 10

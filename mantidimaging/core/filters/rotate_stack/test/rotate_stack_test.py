@@ -14,7 +14,6 @@ class RotateStackTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(RotateStackTest, self).__init__(*args, **kwargs)
 
@@ -75,8 +74,7 @@ class RotateStackTest(unittest.TestCase):
 
         w = result.shape[2]
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         npt.assert_equal(result[:, 0, w - 1], 42.0)
         npt.assert_equal(images[:, 0, w - 1], 42.0)

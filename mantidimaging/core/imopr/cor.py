@@ -23,31 +23,23 @@ def execute(sample, flat, dark, config, indices):
     # developer note: we are processing sinograms,
     # but we need the number of radiograms
     num_radiograms = sample.shape[1]
-    proj_angles = projection_angles.generate(config.func.max_angle,
-                                             num_radiograms)
+    proj_angles = projection_angles.generate(config.func.max_angle, num_radiograms)
 
     initial_guess = config.func.cors if config.func.cors is not None else None
 
     num_slices = sample.shape[0]
     cors = new_cor_array(num_slices)
     i1, i2, step = config.func.indices
-    for i, actual_slice_index in zip(
-            range(num_slices), range(i1, i2, step)):
+    for i, actual_slice_index in zip(range(num_slices), range(i1, i2, step)):
         log.info("Running COR for index {}".format(actual_slice_index))
-        cor = tool.find_center(
-            tomo=sample,
-            theta=proj_angles,
-            sinogram_order=True,
-            ind=i,
-            init=initial_guess)
+        cor = tool.find_center(tomo=sample, theta=proj_angles, sinogram_order=True, ind=i, init=initial_guess)
         log.info(cor)
         cors[i] = (actual_slice_index, cor[0])
 
     # Save COR data if output directory is provided
     saver = Saver(config)
     if saver.should_save_output():
-        saver.make_dirs_if_needed(
-                saver.get_output_path(), saver._overwrite_all)
+        saver.make_dirs_if_needed(saver.get_output_path(), saver._overwrite_all)
         out_filename = os.path.join(saver.get_output_path(), 'cors.txt')
         save_cors_to_file(out_filename, cors)
 

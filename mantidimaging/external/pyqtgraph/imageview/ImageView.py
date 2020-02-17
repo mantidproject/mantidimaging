@@ -215,17 +215,17 @@ class ImageView(QtGui.QWidget):
         self.roiClicked()  # initialize roi plot to correct shape / visibility
 
     def setImage(
-            self,
-            img,
-            autoRange=True,
-            autoLevels=True,
-            levels=None,
-            axes=None,
-            xvals=None,
-            pos=None,
-            scale=None,
-            transform=None,
-            autoHistogramRange=True,
+        self,
+        img,
+        autoRange=True,
+        autoLevels=True,
+        levels=None,
+        axes=None,
+        xvals=None,
+        pos=None,
+        scale=None,
+        transform=None,
+        autoHistogramRange=True,
     ):
         """
         Set the image to be displayed in the widget.
@@ -636,7 +636,7 @@ class ImageView(QtGui.QWidget):
             (eind, end) = self.timeIndex(self.normRgn.lines[1])
             # print start, end, sind, eind
             n = image[sind:eind + 1].mean(axis=0)
-            n.shape = (1,) + n.shape
+            n.shape = (1, ) + n.shape
             if div:
                 norm /= n
             else:

@@ -14,7 +14,6 @@ class CircularMaskTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(CircularMaskTest, self).__init__(*args, **kwargs)
 
@@ -86,8 +85,7 @@ class CircularMaskTest(unittest.TestCase):
 
         result = CircularMaskFilter.filter_func(images, ratio)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)

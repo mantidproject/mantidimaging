@@ -24,8 +24,7 @@ class ExamplePresenterTest(unittest.TestCase):
         self.view.get_value = mock.Mock(return_value=5)
 
         # notify the presenter, as the view would do IRL
-        self.presenter.notify(
-            example_presenter.Notification.RESET_VALUE_CLICKED)
+        self.presenter.notify(example_presenter.Notification.RESET_VALUE_CLICKED)
 
         # expect a SINGLE call, if called 0 times or twice it will fail
         self.view.set_value.assert_called_once_with(5)

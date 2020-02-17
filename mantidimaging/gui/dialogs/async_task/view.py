@@ -10,8 +10,7 @@ if TYPE_CHECKING:
 
 class AsyncTaskDialogView(BaseDialogView):
     def __init__(self, parent: 'Qt.QMainWindow', auto_close=False):
-        super(AsyncTaskDialogView, self).__init__(
-                parent, 'gui/ui/async_task_dialog.ui')
+        super(AsyncTaskDialogView, self).__init__(parent, 'gui/ui/async_task_dialog.ui')
 
         self.parent_view = parent
         self.presenter = AsyncTaskDialogPresenter(self)

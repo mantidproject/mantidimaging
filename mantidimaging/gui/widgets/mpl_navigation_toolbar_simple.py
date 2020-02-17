@@ -8,4 +8,4 @@ class NavigationToolbarSimple(NavigationToolbar2QT):
         ('Home', 'Reset original view', 'home', 'home'),
         ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'),
         ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'),
-      )
+    )

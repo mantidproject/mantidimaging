@@ -20,7 +20,6 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
-
     def __init__(self, *args, **kwargs):
         super(GaussianTest, self).__init__(*args, **kwargs)
 
@@ -96,8 +95,7 @@ class GaussianTest(unittest.TestCase):
 
         result = GaussianFilter.filter_func(images, size, mode, order)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)

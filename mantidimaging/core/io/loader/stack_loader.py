@@ -26,9 +26,7 @@ def do_stack_load_seq(data, new_data, img_shape, name, progress):
     :param name: Name for the loading bar
     :return: the loaded data
     """
-    progress = Progress.ensure_instance(progress,
-                                        num_steps=img_shape[0],
-                                        task_name=name)
+    progress = Progress.ensure_instance(progress, num_steps=img_shape[0], task_name=name)
 
     num_images = img_shape[0]
     progress.add_estimated_steps(num_images)
@@ -93,8 +91,7 @@ def execute(load_func,
     data = pu.create_shared_array(img_shape, dtype=dtype)
 
     if parallel_load:
-        data = do_stack_load_par(
-                data, new_data, cores, chunksize, name, progress)
+        data = do_stack_load_par(data, new_data, cores, chunksize, name, progress)
     else:
         # we could just move with data[:] = new_data[:] but then we don't get
         # loading bar information, and I doubt there's any performance gain

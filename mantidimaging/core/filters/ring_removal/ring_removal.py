@@ -41,8 +41,7 @@ class RingRemovalFilter(BaseFilter):
                        Maximum width of the rings to be filtered in pixels
         :returns: Filtered data
         """
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Ring Removal')
+        progress = Progress.ensure_instance(progress, task_name='Ring Removal')
 
         tp = safe_import('tomopy.misc.corr')
 
@@ -51,17 +50,16 @@ class RingRemovalFilter(BaseFilter):
 
             with progress:
                 progress.update(msg="Ring Removal")
-                data = tp.remove_ring(
-                    data,
-                    center_x=center_x,
-                    center_y=center_y,
-                    thresh=thresh,
-                    thresh_max=thresh_max,
-                    thresh_min=thresh_min,
-                    theta_min=theta_min,
-                    rwidth=rwidth,
-                    ncore=cores,
-                    nchunk=chunksize)
+                data = tp.remove_ring(data,
+                                      center_x=center_x,
+                                      center_y=center_y,
+                                      thresh=thresh,
+                                      thresh_max=thresh_max,
+                                      thresh_min=thresh_min,
+                                      theta_min=theta_min,
+                                      rwidth=rwidth,
+                                      ncore=cores,
+                                      nchunk=chunksize)
 
         return data
 
@@ -72,33 +70,27 @@ class RingRemovalFilter(BaseFilter):
         range1 = (0, 1000000)
         range2 = (-1000000, 1000000)
 
-        _, x_field = add_property_to_form(
-            'Abcissa X', 'int', valid_values=range1,
-            form=form, on_change=on_change)
+        _, x_field = add_property_to_form('Abcissa X', 'int', valid_values=range1, form=form, on_change=on_change)
 
-        _, y_field = add_property_to_form(
-            'Ordinate Y', 'int', valid_values=range1,
-            form=form, on_change=on_change)
+        _, y_field = add_property_to_form('Ordinate Y', 'int', valid_values=range1, form=form, on_change=on_change)
 
-        _, thresh = add_property_to_form(
-            'Threshold', 'float', valid_values=range2,
-            form=form, on_change=on_change)
+        _, thresh = add_property_to_form('Threshold', 'float', valid_values=range2, form=form, on_change=on_change)
 
-        _, thresh_min = add_property_to_form(
-            'Threshold Min', 'float', valid_values=range2,
-            form=form, on_change=on_change)
+        _, thresh_min = add_property_to_form('Threshold Min',
+                                             'float',
+                                             valid_values=range2,
+                                             form=form,
+                                             on_change=on_change)
 
-        _, thresh_max = add_property_to_form(
-            'Threshold Max', 'float', valid_values=range2,
-            form=form, on_change=on_change)
+        _, thresh_max = add_property_to_form('Threshold Max',
+                                             'float',
+                                             valid_values=range2,
+                                             form=form,
+                                             on_change=on_change)
 
-        _, theta = add_property_to_form(
-            'Theta', 'int', valid_values=(-1000, 1000),
-            form=form, on_change=on_change)
+        _, theta = add_property_to_form('Theta', 'int', valid_values=(-1000, 1000), form=form, on_change=on_change)
 
-        _, rwidth = add_property_to_form(
-            'RWidth', 'int', valid_values=range2,
-            form=form, on_change=on_change)
+        _, rwidth = add_property_to_form('RWidth', 'int', valid_values=range2, form=form, on_change=on_change)
 
         return {
             "x_field": x_field,
@@ -130,51 +122,37 @@ class RingRemovalFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--ring-removal",
-        required=False,
-        action='store_true',
-        help='Perform Ring Removal on the post processed data.')
+    parser.add_argument("--ring-removal",
+                        required=False,
+                        action='store_true',
+                        help='Perform Ring Removal on the post processed data.')
 
-    parser.add_argument(
-        "--ring-removal-x",
-        type=int,
-        required=False,
-        help='Abscissa location of center of rotation')
+    parser.add_argument("--ring-removal-x", type=int, required=False, help='Abscissa location of center of rotation')
 
-    parser.add_argument(
-        "--ring-removal-y",
-        type=int,
-        required=False,
-        help='Ordinate location of center of rotation')
+    parser.add_argument("--ring-removal-y", type=int, required=False, help='Ordinate location of center of rotation')
 
-    parser.add_argument(
-        "--ring-removal-thresh",
-        type=float,
-        required=False,
-        help='Maximum value of an offset due to a ring artifact')
+    parser.add_argument("--ring-removal-thresh",
+                        type=float,
+                        required=False,
+                        help='Maximum value of an offset due to a ring artifact')
 
-    parser.add_argument(
-        "--ring-removal-thresh-max",
-        type=float,
-        required=False,
-        help='Max value for portion of image to filter')
+    parser.add_argument("--ring-removal-thresh-max",
+                        type=float,
+                        required=False,
+                        help='Max value for portion of image to filter')
 
-    parser.add_argument(
-        "--ring-removal-thresh-min",
-        type=float,
-        required=False,
-        help='Min value for portion of image to filter')
+    parser.add_argument("--ring-removal-thresh-min",
+                        type=float,
+                        required=False,
+                        help='Min value for portion of image to filter')
 
-    parser.add_argument(
-        "--ring-removal-theta-min",
-        type=int,
-        required=False,
-        help='Minimum angle in degrees (int) to be considered ring artifact')
+    parser.add_argument("--ring-removal-theta-min",
+                        type=int,
+                        required=False,
+                        help='Minimum angle in degrees (int) to be considered ring artifact')
 
-    parser.add_argument(
-        "--ring-removal-rwidth",
-        type=int,
-        required=False,
-        help='Maximum width of the rings to be filtered in pixels')
+    parser.add_argument("--ring-removal-rwidth",
+                        type=int,
+                        required=False,
+                        help='Maximum width of the rings to be filtered in pixels')
     return parser

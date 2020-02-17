@@ -44,7 +44,7 @@ def save(spl: SAVUPluginList, file: Path, overwrite=False):
             for attr in dir(plugin):
                 # the shape=(1,) is needed because SAVU uses [:] to access the data,
                 # and that fails to slice it, unless the shape is manually specified
-                group.create_dataset(attr, shape=(1,), data=getattr(plugin, attr))
+                group.create_dataset(attr, shape=(1, ), data=getattr(plugin, attr))
 
 
 def _add_citation_group(framework_group: h5py.Group, dataclass: Type[Citation]):
@@ -61,4 +61,4 @@ if __name__ == "__main__":
     pl = SAVUPluginList("Flower_WhiteBeam/pp3_cropped/image_", 1143)
     path = Path("~/dev/hebi/output/").expanduser()
     path.mkdir(parents=True, exist_ok=True)
-    mnuhef = save(pl, path/"testfile", overwrite=True)
+    mnuhef = save(pl, path / "testfile", overwrite=True)

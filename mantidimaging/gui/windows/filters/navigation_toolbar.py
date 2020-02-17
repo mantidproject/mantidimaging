@@ -19,20 +19,16 @@ class FiltersWindowNavigationToolbar(NavigationToolbar2QT):
         (None, None, None, None),
         ('Save', 'Save the figure', 'filesave', 'save_figure'),
         (None, None, None, None),
-        ('Previous Slice', 'Scroll to the previous image in the stack',
-         'back', 'scroll_stack_back'),
-        ('Next Slice', 'Scroll to the next image in the stack', 'forward',
-         'scroll_stack_forward'),
+        ('Previous Slice', 'Scroll to the previous image in the stack', 'back', 'scroll_stack_back'),
+        ('Next Slice', 'Scroll to the next image in the stack', 'forward', 'scroll_stack_forward'),
     )
 
     filter_window: Optional['FiltersWindowView'] = None
 
     def scroll_stack_back(self):
         if self.filter_window:
-            self.filter_window.presenter.notify(
-                Notification.SCROLL_PREVIEW_DOWN)
+            self.filter_window.presenter.notify(Notification.SCROLL_PREVIEW_DOWN)
 
     def scroll_stack_forward(self):
         if self.filter_window:
-            self.filter_window.presenter.notify(
-                Notification.SCROLL_PREVIEW_UP)
+            self.filter_window.presenter.notify(Notification.SCROLL_PREVIEW_UP)

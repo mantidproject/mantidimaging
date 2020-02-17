@@ -7,7 +7,6 @@ from mantidimaging.gui.mvp_base import BaseDialogView, BaseMainWindowView, BaseP
 
 
 class MainWindowPresenterTest(unittest.TestCase):
-
     def test_default_notify_method_raises_exception(self):
         view = mock.create_autospec(BaseMainWindowView)
         presenter = BasePresenter(view)
@@ -39,10 +38,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         with LogCapture() as lc:
             presenter.show_error("test message")
 
-        lc.check(
-            ('mantidimaging.gui.mvp_base.presenter', 'ERROR',
-             'Presenter error: test message')
-        )
+        lc.check(('mantidimaging.gui.mvp_base.presenter', 'ERROR', 'Presenter error: test message'))
 
 
 if __name__ == '__main__':

@@ -27,20 +27,14 @@ class IOTest(FileOutputtingTestCase):
     def create_saver(self):
         return Saver(self.config)
 
-    def assert_files_exist(self,
-                           base_name,
-                           file_format,
-                           stack=True,
-                           num_images=1,
-                           indices=None):
+    def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
 
         if not stack:
             # this way we account for only selected indices in the filenames
             if not indices:
                 indices = [0, num_images, 1]
 
-            filenames = generate_names(
-                base_name, indices, num_images, out_format=file_format)
+            filenames = generate_names(base_name, indices, num_images, out_format=file_format)
 
             for f in filenames:
                 self.assertTrue(os.path.isfile(f))
@@ -53,36 +47,28 @@ class IOTest(FileOutputtingTestCase):
         self.do_preproc('fits', parallel=True)
 
     def test_preproc_fits_par_loader_indices_4_5(self):
-        self.do_preproc(
-            'fits', parallel=True, loader_indices=[4, 5, 1], expected_len=1)
+        self.do_preproc('fits', parallel=True, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_fits_par_loader_indices_0_7(self):
-        self.do_preproc(
-            'fits', parallel=True, loader_indices=[0, 7, 1], expected_len=7)
+        self.do_preproc('fits', parallel=True, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_fits_par_loader_indices_3_9(self):
-        self.do_preproc(
-            'fits', parallel=True, loader_indices=[3, 9, 1], expected_len=6)
+        self.do_preproc('fits', parallel=True, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_fits_par_loader_indices_5_9(self):
-        self.do_preproc(
-            'fits', parallel=True, loader_indices=[5, 9, 1], expected_len=4)
+        self.do_preproc('fits', parallel=True, loader_indices=[5, 9, 1], expected_len=4)
 
     def test_preproc_fits_par_saver_indices_0_5(self):
-        self.do_preproc(
-            'fits', parallel=True, saver_indices=[0, 5, 1], expected_len=5)
+        self.do_preproc('fits', parallel=True, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_fits_par_saver_indices_0_2(self):
-        self.do_preproc(
-            'fits', parallel=True, saver_indices=[0, 2, 1], expected_len=2)
+        self.do_preproc('fits', parallel=True, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_fits_par_saver_indices_3_10(self):
-        self.do_preproc(
-            'fits', parallel=True, saver_indices=[3, 10, 1], expected_len=7)
+        self.do_preproc('fits', parallel=True, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_fits_par_saver_indices_7_10(self):
-        self.do_preproc(
-            'fits', parallel=True, saver_indices=[7, 10, 1], expected_len=3)
+        self.do_preproc('fits', parallel=True, saver_indices=[7, 10, 1], expected_len=3)
 
     # fits sequential
     def test_preproc_fits_seq(self):
@@ -90,73 +76,57 @@ class IOTest(FileOutputtingTestCase):
 
     # fits sequential loader indices
     def test_preproc_fits_seq_loader_indices_4_5(self):
-        self.do_preproc(
-            'fits', parallel=False, loader_indices=[4, 5, 1], expected_len=1)
+        self.do_preproc('fits', parallel=False, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_fits_seq_loader_indices_0_7(self):
-        self.do_preproc(
-            'fits', parallel=False, loader_indices=[0, 7, 1], expected_len=7)
+        self.do_preproc('fits', parallel=False, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_fits_seq_loader_indices_3_9(self):
-        self.do_preproc(
-            'fits', parallel=False, loader_indices=[3, 9, 1], expected_len=6)
+        self.do_preproc('fits', parallel=False, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_fits_seq_loader_indices_5_9(self):
-        self.do_preproc(
-            'fits', parallel=False, loader_indices=[5, 9, 1], expected_len=4)
+        self.do_preproc('fits', parallel=False, loader_indices=[5, 9, 1], expected_len=4)
 
     # fits sequential saver indices
     def test_preproc_fits_seq_saver_indices_0_5(self):
-        self.do_preproc(
-            'fits', parallel=False, saver_indices=[0, 5, 1], expected_len=5)
+        self.do_preproc('fits', parallel=False, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_fits_seq_saver_indices_0_2(self):
-        self.do_preproc(
-            'fits', parallel=False, saver_indices=[0, 2, 1], expected_len=2)
+        self.do_preproc('fits', parallel=False, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_fits_seq_saver_indices_3_10(self):
-        self.do_preproc(
-            'fits', parallel=False, saver_indices=[3, 10, 1], expected_len=7)
+        self.do_preproc('fits', parallel=False, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_fits_seq_saver_indices_7_10(self):
-        self.do_preproc(
-            'fits', parallel=False, saver_indices=[7, 10, 1], expected_len=3)
+        self.do_preproc('fits', parallel=False, saver_indices=[7, 10, 1], expected_len=3)
 
     # tiff tests
     def test_preproc_tiff_par(self):
         self.do_preproc('tiff', parallel=True)
 
     def test_preproc_tiff_par_loader_indices_4_5(self):
-        self.do_preproc(
-            'tiff', parallel=True, loader_indices=[4, 5, 1], expected_len=1)
+        self.do_preproc('tiff', parallel=True, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_tiff_par_loader_indices_0_7(self):
-        self.do_preproc(
-            'tiff', parallel=True, loader_indices=[0, 7, 1], expected_len=7)
+        self.do_preproc('tiff', parallel=True, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_tiff_par_loader_indices_3_9(self):
-        self.do_preproc(
-            'tiff', parallel=True, loader_indices=[3, 9, 1], expected_len=6)
+        self.do_preproc('tiff', parallel=True, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_tiff_par_loader_indices_5_9(self):
-        self.do_preproc(
-            'tiff', parallel=True, loader_indices=[5, 9, 1], expected_len=4)
+        self.do_preproc('tiff', parallel=True, loader_indices=[5, 9, 1], expected_len=4)
 
     def test_preproc_tiff_par_saver_indices_0_5(self):
-        self.do_preproc(
-            'tiff', parallel=True, saver_indices=[0, 5, 1], expected_len=5)
+        self.do_preproc('tiff', parallel=True, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_tiff_par_saver_indices_0_2(self):
-        self.do_preproc(
-            'tiff', parallel=True, saver_indices=[0, 2, 1], expected_len=2)
+        self.do_preproc('tiff', parallel=True, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_tiff_par_saver_indices_3_10(self):
-        self.do_preproc(
-            'tiff', parallel=True, saver_indices=[3, 10, 1], expected_len=7)
+        self.do_preproc('tiff', parallel=True, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_tiff_par_saver_indices_7_10(self):
-        self.do_preproc(
-            'tiff', parallel=True, saver_indices=[7, 10, 1], expected_len=3)
+        self.do_preproc('tiff', parallel=True, saver_indices=[7, 10, 1], expected_len=3)
 
     # tiff sequential
     def test_preproc_tiff_seq(self):
@@ -164,47 +134,34 @@ class IOTest(FileOutputtingTestCase):
 
     # tiff sequential loader indices
     def test_preproc_tiff_seq_loader_indices_4_5(self):
-        self.do_preproc(
-            'tiff', parallel=False, loader_indices=[4, 5, 1], expected_len=1)
+        self.do_preproc('tiff', parallel=False, loader_indices=[4, 5, 1], expected_len=1)
 
     def test_preproc_tiff_seq_loader_indices_0_7(self):
-        self.do_preproc(
-            'tiff', parallel=False, loader_indices=[0, 7, 1], expected_len=7)
+        self.do_preproc('tiff', parallel=False, loader_indices=[0, 7, 1], expected_len=7)
 
     def test_preproc_tiff_seq_loader_indices_3_9(self):
-        self.do_preproc(
-            'tiff', parallel=False, loader_indices=[3, 9, 1], expected_len=6)
+        self.do_preproc('tiff', parallel=False, loader_indices=[3, 9, 1], expected_len=6)
 
     def test_preproc_tiff_seq_loader_indices_5_9(self):
-        self.do_preproc(
-            'tiff', parallel=False, loader_indices=[5, 9, 1], expected_len=4)
+        self.do_preproc('tiff', parallel=False, loader_indices=[5, 9, 1], expected_len=4)
 
     # tiff sequential saver indices
     def test_preproc_tiff_seq_saver_indices_0_5(self):
-        self.do_preproc(
-            'tiff', parallel=False, saver_indices=[0, 5, 1], expected_len=5)
+        self.do_preproc('tiff', parallel=False, saver_indices=[0, 5, 1], expected_len=5)
 
     def test_preproc_tiff_seq_saver_indices_0_2(self):
-        self.do_preproc(
-            'tiff', parallel=False, saver_indices=[0, 2, 1], expected_len=2)
+        self.do_preproc('tiff', parallel=False, saver_indices=[0, 2, 1], expected_len=2)
 
     def test_preproc_tiff_seq_saver_indices_3_10(self):
-        self.do_preproc(
-            'tiff', parallel=False, saver_indices=[3, 10, 1], expected_len=7)
+        self.do_preproc('tiff', parallel=False, saver_indices=[3, 10, 1], expected_len=7)
 
     def test_preproc_tiff_seq_saver_indices_7_10(self):
-        self.do_preproc(
-            'tiff', parallel=False, saver_indices=[7, 10, 1], expected_len=3)
+        self.do_preproc('tiff', parallel=False, saver_indices=[7, 10, 1], expected_len=3)
 
-    def do_preproc(self,
-                   img_format,
-                   parallel=False,
-                   loader_indices=None,
-                   expected_len=None,
-                   saver_indices=None):
+    def do_preproc(self, img_format, parallel=False, loader_indices=None, expected_len=None, saver_indices=None):
         expected_images = th.gen_img_shared_array_with_val(42.)
         saver = self.create_saver()
-        saver._output_path = self. output_directory
+        saver._output_path = self.output_directory
         saver._out_format = img_format
         saver._save_preproc = True
         saver._swap_axes = False
@@ -223,10 +180,8 @@ class IOTest(FileOutputtingTestCase):
         # create the same path as the saved out preproc images
         preproc_output_path = saver._output_path + '/pre_processed/'
 
-        self.assert_files_exist(os.path.join(preproc_output_path,
-                                             'out_preproc_image'),
-                                saver._out_format, data_as_stack,
-                                expected_images.shape[0], saver_indices)
+        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'), saver._out_format,
+                                data_as_stack, expected_images.shape[0], saver_indices)
 
         # this does not load any flats or darks as they were not saved out
         loaded_images = loader.load(preproc_output_path,
@@ -252,29 +207,21 @@ class IOTest(FileOutputtingTestCase):
         self.do_preproc_nxs(parallel=False)
 
     def test_save_nxs_seq_indices_0_4(self):
-        self.do_preproc_nxs(
-            parallel=False, loader_indices=[0, 4, 1], expected_len=4)
+        self.do_preproc_nxs(parallel=False, loader_indices=[0, 4, 1], expected_len=4)
 
     def test_save_nxs_seq_indices_5_9(self):
-        self.do_preproc_nxs(
-            parallel=False, loader_indices=[5, 9, 1], expected_len=4)
+        self.do_preproc_nxs(parallel=False, loader_indices=[5, 9, 1], expected_len=4)
 
     def test_save_nxs_par(self):
         self.do_preproc_nxs(parallel=True)
 
     def test_save_nxs_par_indices_6_7(self):
-        self.do_preproc_nxs(
-            parallel=False, loader_indices=[6, 7, 1], expected_len=1)
+        self.do_preproc_nxs(parallel=False, loader_indices=[6, 7, 1], expected_len=1)
 
     def test_save_nxs_par_indices_3_4(self):
-        self.do_preproc_nxs(
-            parallel=False, loader_indices=[3, 4, 1], expected_len=1)
+        self.do_preproc_nxs(parallel=False, loader_indices=[3, 4, 1], expected_len=1)
 
-    def do_preproc_nxs(self,
-                       save_out_img_format='nxs',
-                       parallel=False,
-                       loader_indices=None,
-                       expected_len=None):
+    def do_preproc_nxs(self, save_out_img_format='nxs', parallel=False, loader_indices=None, expected_len=None):
         """
         There are no tests with saver indices, because
         this only saves out one file,
@@ -292,13 +239,10 @@ class IOTest(FileOutputtingTestCase):
         saver.save_preproc_images(expected_images)
 
         # create the same path as the saved out preproc images
-        preproc_output_path = os.path.join(
-            saver._output_path, 'pre_processed/')
+        preproc_output_path = os.path.join(saver._output_path, 'pre_processed/')
 
-        self.assert_files_exist(os.path.join(preproc_output_path,
-                                             'out_preproc_image'),
-                                saver._out_format, data_as_stack,
-                                expected_images.shape[0])
+        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'), saver._out_format,
+                                data_as_stack, expected_images.shape[0])
 
         # this does not load any flats or darks as they were not saved out!
         # this is a race condition versus the saving from the saver
@@ -325,10 +269,8 @@ class IOTest(FileOutputtingTestCase):
 
         npt.assert_equal(images.sample, expected_images)
 
-        self.assert_files_exist(os.path.join(preproc_output_path,
-                                             'out_preproc_image'),
-                                saver._out_format, data_as_stack,
-                                expected_images.shape[0])
+        self.assert_files_exist(os.path.join(preproc_output_path, 'out_preproc_image'), saver._out_format,
+                                data_as_stack, expected_images.shape[0])
 
     def test_do_recon_fits(self):
         self.do_recon(img_format='fits', horiz_slices=False)
@@ -343,12 +285,10 @@ class IOTest(FileOutputtingTestCase):
         self.do_recon(img_format='tiff', horiz_slices=True)
 
     def test_do_recon_fits_indices_0_8(self):
-        self.do_recon(
-            img_format='fits', horiz_slices=False, saver_indices=[0, 8, 1])
+        self.do_recon(img_format='fits', horiz_slices=False, saver_indices=[0, 8, 1])
 
     def test_do_recon_tiff_indices_0_4(self):
-        self.do_recon(
-            img_format='tiff', horiz_slices=False, saver_indices=[0, 4, 1])
+        self.do_recon(img_format='tiff', horiz_slices=False, saver_indices=[0, 4, 1])
 
     def do_recon(self, img_format, horiz_slices=False, saver_indices=None):
         """
@@ -366,19 +306,14 @@ class IOTest(FileOutputtingTestCase):
 
         saver.save_recon_output(images)
 
-        recon_output_path = os.path.join(
-            saver._output_path, 'reconstructed/')
+        recon_output_path = os.path.join(saver._output_path, 'reconstructed/')
 
-        self.assert_files_exist(os.path.join(recon_output_path, 'recon_slice'),
-                                saver._out_format, data_as_stack,
+        self.assert_files_exist(os.path.join(recon_output_path, 'recon_slice'), saver._out_format, data_as_stack,
                                 images.shape[0], saver_indices)
 
         if horiz_slices:
-            self.assert_files_exist(
-                os.path.join(recon_output_path,
-                             'horiz_slices/recon_horiz'),
-                saver._out_format, data_as_stack, images.shape[1],
-                saver_indices)
+            self.assert_files_exist(os.path.join(recon_output_path, 'horiz_slices/recon_horiz'), saver._out_format,
+                                    data_as_stack, images.shape[1], saver_indices)
 
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
@@ -414,33 +349,26 @@ class IOTest(FileOutputtingTestCase):
         saver.save_preproc_images(dark)
 
         # create the same path as the saved out preproc images
-        sample_output_path = os.path.join(
-            saver._output_path, 'pre_processed')
-        flat_output_path = os.path.join(
-            saver._output_path, 'imgIOTest_flat')
-        dark_output_path = os.path.join(
-            saver._output_path, 'imgIOTest_dark')
+        sample_output_path = os.path.join(saver._output_path, 'pre_processed')
+        flat_output_path = os.path.join(saver._output_path, 'imgIOTest_flat')
+        dark_output_path = os.path.join(saver._output_path, 'imgIOTest_dark')
 
-        self.assert_files_exist(os.path.join(sample_output_path,
-                                             'out_preproc_image'),
-                                saver._out_format, data_as_stack,
-                                images.shape[0], loader_indices or
-                                saver_indices)
+        self.assert_files_exist(os.path.join(sample_output_path, 'out_preproc_image'), saver._out_format, data_as_stack,
+                                images.shape[0], loader_indices or saver_indices)
 
-        self.assert_files_exist(
-            os.path.join(flat_output_path,
-                         'out_preproc_image'), saver._out_format,
-            data_as_stack, flat.shape[0], loader_indices or saver_indices)
+        self.assert_files_exist(os.path.join(flat_output_path, 'out_preproc_image'), saver._out_format, data_as_stack,
+                                flat.shape[0], loader_indices or saver_indices)
 
-        self.assert_files_exist(
-            os.path.join(dark_output_path,
-                         'out_preproc_image'), saver._out_format,
-            data_as_stack, dark.shape[0], loader_indices or saver_indices)
+        self.assert_files_exist(os.path.join(dark_output_path, 'out_preproc_image'), saver._out_format, data_as_stack,
+                                dark.shape[0], loader_indices or saver_indices)
 
-        loaded_images = loader.load(
-                sample_output_path, flat_output_path, dark_output_path,
-                in_format=saver._out_format, cores=1, parallel_load=parallel,
-                indices=loader_indices)
+        loaded_images = loader.load(sample_output_path,
+                                    flat_output_path,
+                                    dark_output_path,
+                                    in_format=saver._out_format,
+                                    cores=1,
+                                    parallel_load=parallel,
+                                    indices=loader_indices)
 
         if loader_indices:
             assert len(loaded_images.sample) == expected_len, \
@@ -469,8 +397,7 @@ class IOTest(FileOutputtingTestCase):
         saver._swap_axes = False
 
         config = ReconstructionConfig.empty_init()
-        config.func.input_path = os.path.join(
-            saver._output_path, saver._preproc_dir)
+        config.func.input_path = os.path.join(saver._output_path, saver._preproc_dir)
         config.func.in_format = saver._out_format
         saver.save_preproc_images(images)
 
@@ -488,8 +415,7 @@ class IOTest(FileOutputtingTestCase):
         saver._swap_axes = False
 
         config = ReconstructionConfig.empty_init()
-        config.func.input_path = os.path.join(
-            saver._output_path, saver._preproc_dir)
+        config.func.input_path = os.path.join(saver._output_path, saver._preproc_dir)
         config.func.in_format = saver._out_format
         saver.save_preproc_images(images)
 
@@ -508,8 +434,7 @@ class IOTest(FileOutputtingTestCase):
         saver._swap_axes = False
 
         config = ReconstructionConfig.empty_init()
-        config.func.input_path = os.path.join(
-            saver._output_path, saver._preproc_dir)
+        config.func.input_path = os.path.join(saver._output_path, saver._preproc_dir)
         config.func.in_format = saver._out_format
         saver.save_preproc_images(images)
 

@@ -15,7 +15,6 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
-
     def __init__(self, q_objects):
         from PyQt5 import Qt
         for obj in q_objects:

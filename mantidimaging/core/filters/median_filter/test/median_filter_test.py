@@ -14,7 +14,6 @@ class MedianTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(MedianTest, self).__init__(*args, **kwargs)
 
@@ -78,8 +77,7 @@ class MedianTest(unittest.TestCase):
 
         result = MedianFilter.filter_func(images, size, mode)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)

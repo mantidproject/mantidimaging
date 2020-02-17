@@ -4,7 +4,6 @@ from mantidimaging.gui.dialogs.async_task.task import TaskWorkerThread
 
 
 class TaskWorkerThreadTest(unittest.TestCase):
-
     def test_basic_happy_case(self):
         def f(a, b):
             return a + b

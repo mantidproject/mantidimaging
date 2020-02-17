@@ -146,13 +146,7 @@ def create_partial(func, fwd_function=inplace, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(data=None,
-            second_data=None,
-            partial_func=None,
-            cores=None,
-            chunksize=None,
-            name="Progress",
-            progress=None):
+def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, name="Progress", progress=None):
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -219,9 +213,7 @@ def execute(data=None,
     img_num = data.shape[0]
 
     task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress,
-                                        num_steps=img_num,
-                                        task_name=task_name)
+    progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
 
     if img_num == 1:
         indices_list = [0]

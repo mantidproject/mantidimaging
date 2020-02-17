@@ -13,7 +13,6 @@ class ROINormalisationTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(ROINormalisationTest, self).__init__(*args, **kwargs)
 
@@ -31,8 +30,7 @@ class ROINormalisationTest(unittest.TestCase):
 
         images = np.arange(100).reshape(10, 10)
         air = [3, 3, 4, 4]
-        npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images,
-                          air)
+        npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images, air)
 
     def test_executed_par(self):
         self.do_execute()

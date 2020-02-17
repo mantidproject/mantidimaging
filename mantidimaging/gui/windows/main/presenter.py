@@ -99,11 +99,14 @@ class MainWindowPresenter(BasePresenter):
         self.view.active_stacks_changed.emit()
 
     def save(self):
-        kwargs = {'stack_uuid': self.view.save_dialogue.selected_stack,
-                  'output_dir': self.view.save_dialogue.save_path(),
-                  'name_prefix': self.view.save_dialogue.name_prefix(),
-                  'image_format': self.view.save_dialogue.image_format(),
-                  'overwrite': self.view.save_dialogue.overwrite(), 'swap_axes': self.view.save_dialogue.swap_axes()}
+        kwargs = {
+            'stack_uuid': self.view.save_dialogue.selected_stack,
+            'output_dir': self.view.save_dialogue.save_path(),
+            'name_prefix': self.view.save_dialogue.name_prefix(),
+            'image_format': self.view.save_dialogue.image_format(),
+            'overwrite': self.view.save_dialogue.overwrite(),
+            'swap_axes': self.view.save_dialogue.swap_axes()
+        }
         start_async_task_view(self.view, self.model.do_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task):

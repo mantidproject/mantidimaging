@@ -12,4 +12,4 @@ class TomopyReconNavigationToolbar(NavigationToolbar2QT):
         ('Subplots', 'Configure subplots', 'subplots', 'configure_subplots'),
         (None, None, None, None),
         ('Save', 'Save the figure', 'filesave', 'save_figure'),
-      )
+    )

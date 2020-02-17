@@ -15,13 +15,11 @@ class ConvertTest(FileOutputtingTestCase):
     This test actually tests the saver and loader modules too, but
     it isn't focussed on them
     """
-
     def __init__(self, *args, **kwargs):
         super(ConvertTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from mantidimaging.core.configs.recon_config import (
-                ReconstructionConfig)
+        from mantidimaging.core.configs.recon_config import (ReconstructionConfig)
         self.config = ReconstructionConfig.empty_init()
         self.config.func.log_level = logging.CRITICAL
 
@@ -30,18 +28,10 @@ class ConvertTest(FileOutputtingTestCase):
         return Saver(self.config)
 
     def test_convert_fits_fits_nostack(self):
-        self.do_convert(
-            img_format='fits',
-            convert_format='fits',
-            stack=False,
-            parallel=False)
+        self.do_convert(img_format='fits', convert_format='fits', stack=False, parallel=False)
 
     def test_convert_fits_tiff_nostack(self):
-        self.do_convert(
-            img_format='fits',
-            convert_format='tiff',
-            stack=False,
-            parallel=False)
+        self.do_convert(img_format='fits', convert_format='tiff', stack=False, parallel=False)
 
     def do_convert(self, img_format, convert_format, stack, parallel=False):
         # this just converts between the formats, but not NXS!
@@ -73,22 +63,17 @@ class ConvertTest(FileOutputtingTestCase):
         # load them back
         # compare data to original
         # this odes not load any flats or darks as they were not saved out
-        loaded_images = loader.load(
-            converted_output_path,
-            in_format=convert_format,
-            parallel_load=parallel)
+        loaded_images = loader.load(converted_output_path, in_format=convert_format, parallel_load=parallel)
 
         npt.assert_equal(loaded_images.sample, expected_images)
 
     def test_convert_fits_nxs_stack(self):
         # NXS is only supported for stack
-        self.do_convert_to_nxs(
-            img_format='fits', convert_format='nxs', stack=True)
+        self.do_convert_to_nxs(img_format='fits', convert_format='nxs', stack=True)
 
     def test_convert_tiff_nxs_stack(self):
         # NXS is only supported for stack
-        self.do_convert_to_nxs(
-            img_format='tiff', convert_format='nxs', stack=True)
+        self.do_convert_to_nxs(img_format='tiff', convert_format='nxs', stack=True)
 
     def do_convert_to_nxs(self, img_format, convert_format, stack):
         # this saves out different formats to a nxs stack
@@ -120,20 +105,15 @@ class ConvertTest(FileOutputtingTestCase):
         # load them back
         # compare data to original
         # this odes not load any flats or darks as they were not saved out
-        loaded_images = loader.load(
-            converted_output_path,
-            in_format=convert_format,
-            parallel_load=parallel)
+        loaded_images = loader.load(converted_output_path, in_format=convert_format, parallel_load=parallel)
 
         npt.assert_equal(loaded_images.sample, expected_images)
 
     def test_convert_nxs_fits_nostack(self):
-        self.do_convert_from_nxs(
-            img_format='nxs', convert_format='fits', stack=False)
+        self.do_convert_from_nxs(img_format='nxs', convert_format='fits', stack=False)
 
     def test_convert_nxs_tiff_nostack(self):
-        self.do_convert_from_nxs(
-            img_format='nxs', convert_format='tiff', stack=False)
+        self.do_convert_from_nxs(img_format='nxs', convert_format='tiff', stack=False)
 
     def do_convert_from_nxs(self, img_format, convert_format, stack):
         # this saves out a nexus stack and then loads it in different formats
@@ -167,9 +147,7 @@ class ConvertTest(FileOutputtingTestCase):
 
         # load them back and compare data to original
         # this does not load any flats or darks as they were not saved out
-        loaded_images = loader.load(converted_output_path,
-                                    in_format=convert_format,
-                                    parallel_load=parallel)
+        loaded_images = loader.load(converted_output_path, in_format=convert_format, parallel_load=parallel)
 
         npt.assert_equal(loaded_images.sample, expected_images)
 

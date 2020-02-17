@@ -3,8 +3,7 @@ import tempfile
 import unittest
 import numpy.testing as npt
 
-from mantidimaging.core.imopr.utility import (
-        new_cor_array, save_cors_to_file, load_cors_from_file)
+from mantidimaging.core.imopr.utility import (new_cor_array, save_cors_to_file, load_cors_from_file)
 
 
 class ImoprTest(unittest.TestCase):
@@ -12,13 +11,8 @@ class ImoprTest(unittest.TestCase):
         super(ImoprTest, self).__init__(*args, **kwargs)
 
     def test_save_cor_file(self):
-        expected = (
-                '# slice_index cor\n' +
-                '0 0.000000\n' +
-                '2 5.500000\n' +
-                '4 11.000000\n' +
-                '6 16.500000\n' +
-                '8 22.000000\n')
+        expected = ('# slice_index cor\n' + '0 0.000000\n' + '2 5.500000\n' + '4 11.000000\n' + '6 16.500000\n' +
+                    '8 22.000000\n')
 
         cors = new_cor_array(5)
         for i in range(5):
@@ -35,12 +29,7 @@ class ImoprTest(unittest.TestCase):
                 self.assertEqual(text, expected)
 
     def test_load_cor_file(self):
-        text_data = (
-                '0 0.000000\n' +
-                '2 5.500000\n' +
-                '4 11.000000\n' +
-                '6 16.500000\n' +
-                '8 22.000000\n')
+        text_data = ('0 0.000000\n' + '2 5.500000\n' + '4 11.000000\n' + '6 16.500000\n' + '8 22.000000\n')
 
         expected = new_cor_array(5)
         for i in range(5):
@@ -72,7 +61,7 @@ class ImoprTest(unittest.TestCase):
 
             cors = load_cors_from_file(filename)
 
-            self.assertEquals(cors.shape, (1,))
+            self.assertEquals(cors.shape, (1, ))
             npt.assert_array_equal(cors, expected)
 
 

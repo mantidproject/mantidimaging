@@ -21,14 +21,4 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import (  # noqa: F401
-        aggregate,
-        configs,
-        configurations,
-        convert,
-        filters,
-        io,
-        imopr,
-        parallel,
-        process_list,
-        tools,
-        utility)
+    aggregate, configs, configurations, convert, filters, io, imopr, parallel, process_list, tools, utility)

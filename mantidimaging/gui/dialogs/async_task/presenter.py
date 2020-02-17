@@ -55,5 +55,4 @@ class AsyncTaskDialogPresenter(Qt.QObject, ProgressHandler):
 
     def progress_update(self):
         msg = self.progress.last_status_message()
-        self.progress_updated.emit(self.progress.completion(),
-                                   msg if msg is not None else '')
+        self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')

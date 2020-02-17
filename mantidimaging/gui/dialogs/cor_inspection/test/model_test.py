@@ -3,25 +3,23 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.gui.dialogs.cor_inspection import (
-        CORInspectionDialogModel, ImageType)
+from mantidimaging.gui.dialogs.cor_inspection import (CORInspectionDialogModel, ImageType)
 
 
 class CORInspectionDialogModelTest(unittest.TestCase):
-
     def test_construct_from_sinogram(self):
         sino = np.ones(shape=(128, 64), dtype=np.float32)
         m = CORInspectionDialogModel(sino)
         npt.assert_equal(m.sino, sino)
         self.assertEquals(m.cor_extents, (0, 63))
-        self.assertEquals(m.proj_angles.shape, (128,))
+        self.assertEquals(m.proj_angles.shape, (128, ))
 
     def test_construct_from_projections(self):
         proj = np.ones(shape=(128, 64, 64), dtype=np.float32)
         m = CORInspectionDialogModel(proj, slice_idx=5)
         self.assertEquals(m.sino.shape, (128, 64))
         self.assertEquals(m.cor_extents, (0, 63))
-        self.assertEquals(m.proj_angles.shape, (128,))
+        self.assertEquals(m.proj_angles.shape, (128, ))
 
     def test_construct_from_sinogram_defaults(self):
         sino = np.ones(shape=(128, 64), dtype=np.float32)

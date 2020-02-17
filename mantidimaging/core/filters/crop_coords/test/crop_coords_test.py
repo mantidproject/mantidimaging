@@ -13,7 +13,6 @@ class CropCoordsTest(unittest.TestCase):
 
     Tests return value only.
     """
-
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 
@@ -130,8 +129,7 @@ class CropCoordsTest(unittest.TestCase):
 
         result = CropCoordinatesFilter.filter_func(images, roi)[0]
 
-        self.assertLess(
-            get_memory_usage_linux(mb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(mb=True)[0], cached_memory * 1.1)
 
         expected_shape = (10, 4, 4)
 

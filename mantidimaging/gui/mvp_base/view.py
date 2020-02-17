@@ -8,7 +8,6 @@ LOG = getLogger(__name__)
 
 
 class BaseMainWindowView(Qt.QMainWindow):
-
     def __init__(self, parent, ui_file=None):
         super(BaseMainWindowView, self).__init__(parent)
 
@@ -37,7 +36,6 @@ class BaseMainWindowView(Qt.QMainWindow):
 
 
 class BaseDialogView(Qt.QDialog):
-
     def __init__(self, parent, ui_file=None):
         super(BaseDialogView, self).__init__(parent)
 

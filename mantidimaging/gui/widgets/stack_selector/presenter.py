@@ -12,7 +12,6 @@ class Notification(Enum):
 
 
 class StackSelectorWidgetPresenter(BasePresenter):
-
     def __init__(self, view):
         super(StackSelectorWidgetPresenter, self).__init__(view)
 

@@ -2,7 +2,6 @@ from logging import getLogger
 
 import numpy as np
 
-
 LOG = getLogger(__name__)
 
 
@@ -30,10 +29,7 @@ def create_shared_array(shape, dtype=np.float32):
 
     size = ctypes.sizeof(ctype(1)) * length
 
-    LOG.info(
-        'Requested shared array with shape={}, length={}, size={}, '
-        'dtype={}'.format(
-            shape, length, size, dtype))
+    LOG.info('Requested shared array with shape={}, length={}, size={}, ' 'dtype={}'.format(shape, length, size, dtype))
 
     arena = heap.Arena(size)
     mem = memoryview(arena.buffer)

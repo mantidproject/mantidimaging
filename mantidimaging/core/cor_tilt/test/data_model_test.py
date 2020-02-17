@@ -6,7 +6,6 @@ from mantidimaging.gui.windows.cor_tilt import Column, COLUMN_NAMES
 
 
 class CorTiltDataModelTest(TestCase):
-
     def test_field_defs_sanity(self):
         self.assertEquals(len(Column), len(COLUMN_NAMES))
 

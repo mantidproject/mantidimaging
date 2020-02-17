@@ -23,12 +23,11 @@ def execute(config):
     images = loader.load_from_config(config)
 
     # save out in the main output directory
-    saver.save(
-        images.sample,
-        output_dir,
-        config.func.convert_prefix,
-        config.func.swap_axes,
-        image_out_format,
-        zfill_len=0,
-        indices=config.func.indices,
-        overwrite_all=config.func.overwrite_all)
+    saver.save(images.sample,
+               output_dir,
+               config.func.convert_prefix,
+               config.func.swap_axes,
+               image_out_format,
+               zfill_len=0,
+               indices=config.func.indices,
+               overwrite_all=config.func.overwrite_all)

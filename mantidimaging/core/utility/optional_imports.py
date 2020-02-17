@@ -21,13 +21,11 @@ def safe_import(name):
         module = importlib.import_module(name)
 
     except ImportError:
-        warnings.warn(
-                'Failed to import optional module "{}"'.format(name))
+        warnings.warn('Failed to import optional module "{}"'.format(name))
 
         o = StringIO()
         traceback.print_stack(file=o)
-        getLogger(__name__).debug(
-                'Module import stack trace: {}'.format(o.getvalue()))
+        getLogger(__name__).debug('Module import stack trace: {}'.format(o.getvalue()))
 
         module = None
 

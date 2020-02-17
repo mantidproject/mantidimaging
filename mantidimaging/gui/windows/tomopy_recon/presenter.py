@@ -26,7 +26,6 @@ class Notification(Enum):
 
 
 class TomopyReconWindowPresenter(BasePresenter):
-
     def __init__(self, view: 'TomopyReconWindowView', main_window):
         super(TomopyReconWindowPresenter, self).__init__(view)
         self.view = view

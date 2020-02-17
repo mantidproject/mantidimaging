@@ -32,12 +32,11 @@ class AstraTool(AbstractTool):
     """
     Uses TomoPy's integration of Astra
     """
-
     @staticmethod
     def tool_supported_methods():
         return [
-            'FP', 'FP_CUDA', 'BP', 'BP_CUDA', 'FBP', 'FBP_CUDA', 'SIRT',
-            'SIRT_CUDA', 'SART', 'SART_CUDA', 'CGLS', 'CGLS_CUDA'
+            'FP', 'FP_CUDA', 'BP', 'BP_CUDA', 'FBP', 'FBP_CUDA', 'SIRT', 'SIRT_CUDA', 'SART', 'SART_CUDA', 'CGLS',
+            'CGLS_CUDA'
         ]
 
     @staticmethod
@@ -46,9 +45,7 @@ class AstraTool(AbstractTool):
         ALGORITHM = algorithm.upper()
 
         if ALGORITHM not in AstraTool.tool_supported_methods():
-            raise ValueError(
-                "The selected algorithm {0} is not supported by Astra.".format(
-                    ALGORITHM))
+            raise ValueError("The selected algorithm {0} is not supported by Astra.".format(ALGORITHM))
 
     def __init__(self):
         AbstractTool.__init__(self)
@@ -61,24 +58,17 @@ class AstraTool(AbstractTool):
         try:
             import astra
         except ImportError as exc:
-            raise ImportError(
-                "Cannot find and import the astra toolbox package: {0}".format(
-                    exc))
+            raise ImportError("Cannot find and import the astra toolbox package: {0}".format(exc))
 
         min_astra_version = 1.8
         astra_version = float(astra.__version__)
-        if isinstance(astra_version,
-                      float) and astra_version >= min_astra_version:
-            getLogger(__name__).info(
-                    "Imported astra successfully. Version: {0}".format(
-                        astra_version))
+        if isinstance(astra_version, float) and astra_version >= min_astra_version:
+            getLogger(__name__).info("Imported astra successfully. Version: {0}".format(astra_version))
         else:
-            raise RuntimeError(
-                "Could not find the required version of astra. "
-                "Found version: {0}".format(astra_version))
+            raise RuntimeError("Could not find the required version of astra. "
+                               "Found version: {0}".format(astra_version))
 
-        getLogger(__name__).info("Astra using CUDA: {0}".format(
-            astra.astra.use_cuda()))
+        getLogger(__name__).info("Astra using CUDA: {0}".format(astra.astra.use_cuda()))
         return astra
 
     def run_reconstruct(self, data, config, proj_angles=None, **kwargs):
@@ -106,26 +96,21 @@ class AstraTool(AbstractTool):
         :return: 3D numpy.ndarray containing the reconstructed data
         """
         if proj_angles is None:
-            proj_angles = projection_angles.generate(config.func.max_angle,
-                                                     data.shape[1])
+            proj_angles = projection_angles.generate(config.func.max_angle, data.shape[1])
 
         getLogger(__name__).debug(len(proj_angles))
 
         detector_spacing_x = 0.55
         detector_spacing_y = 0.55
 
-        assert (detector_spacing_x > 0) and (
-            detector_spacing_y > 0
-        ), "Det spacing must be positive or Astra will crash"
+        assert (detector_spacing_x > 0) and (detector_spacing_y > 0), "Det spacing must be positive or Astra will crash"
 
-        projections_geometry = self._astra.create_proj_geom(
-            'parallel3d', detector_spacing_x, detector_spacing_y,
-            data.shape[0], data.shape[2], proj_angles)
+        projections_geometry = self._astra.create_proj_geom('parallel3d', detector_spacing_x, detector_spacing_y,
+                                                            data.shape[0], data.shape[2], proj_angles)
 
         getLogger(__name__).debug(projections_geometry)
 
-        sinogram_id = self._astra.data3d.create('-sino', projections_geometry,
-                                                data)
+        sinogram_id = self._astra.data3d.create('-sino', projections_geometry, data)
         # d = self._astra.data3d.get(sinogram_id)
         recon_volume_geometry = self._astra.create_vol_geom(data.shape)
         recon_id = self._astra.data3d.create('-vol', recon_volume_geometry)

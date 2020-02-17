@@ -5,172 +5,105 @@ from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct import utility
 
 TEST_PARAMS_1 = {
-    "operation_history": [
-        {
-            "args": [],
-            "kwargs": {
-                "region_of_interest": [
-                    61,
-                    31,
-                    2025,
-                    1730
-                ]
-            },
-            "name":
-                "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+    "operation_history": [{
+        "args": [],
+        "kwargs": {
+            "region_of_interest": [61, 31, 2025, 1730]
         },
-        {
-            "args": [],
-            "kwargs": {
-                "threshold": 0.75
-            },
-            "name": "mantidimaging.core.filters.cut_off.cut_off.execute"
+        "name": "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+    }, {
+        "args": [],
+        "kwargs": {
+            "threshold": 0.75
         },
-        {
-            "args": [],
-            "kwargs": {
-                "region_of_interest": [
-                    760,
-                    316,
-                    1939,
-                    1687
-                ]
-            },
-            "name":
-                "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
-        }
-    ]
+        "name": "mantidimaging.core.filters.cut_off.cut_off.execute"
+    }, {
+        "args": [],
+        "kwargs": {
+            "region_of_interest": [760, 316, 1939, 1687]
+        },
+        "name": "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+    }]
 }
 
 TEST_PARAMS_2 = {
-    "operation_history": [
-        {
-            "args": [],
-            "kwargs": {
-                "region_of_interest": [
-                    61,
-                    31,
-                    2025,
-                    1730
-                ]
-            },
-            "name":
-                "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
-        }
-    ]
+    "operation_history": [{
+        "args": [],
+        "kwargs": {
+            "region_of_interest": [61, 31, 2025, 1730]
+        },
+        "name": "mantidimaging.core.filters.crop_coords.crop_coords.execute_single"
+    }]
 }
 
 TEST_PARAMS_3 = {
-    'operation_history': [
-        {
-            'args': [],
-            'kwargs': {'threshold': 0.22},
-            'name': 'mantidimaging.core.filters.cut_off.cut_off.execute'
+    'operation_history': [{
+        'args': [],
+        'kwargs': {
+            'threshold': 0.22
         },
-        {
-            'args': [],
-            'kwargs': {
-                'region_of_interest': [
-                    72,
-                    697,
-                    2038,
-                    1578
-                ]
-            },
-            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        'name': 'mantidimaging.core.filters.cut_off.cut_off.execute'
+    }, {
+        'args': [],
+        'kwargs': {
+            'region_of_interest': [72, 697, 2038, 1578]
         },
-        {
-            'args': [],
-            'kwargs': {
-                'region_of_interest': [
-                    705,
-                    22,
-                    1944,
-                    845
-                ]
-            },
-            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+        'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+    }, {
+        'args': [],
+        'kwargs': {
+            'region_of_interest': [705, 22, 1944, 845]
         },
-        {
-            'args': [],
-            'kwargs': {
-                'fitted_gradient': 0.009657997234305727,
-                'rotation_centre': 617.2297924368454,
-                'rotation_centres': [
-                    619.0,
-                    620.171875,
-                    624.078125
-                ],
-                'slice_indices': [
-                    143,
-                    376,
-                    678
-                ],
-                'tilt_angle_rad': 0.009657696961729184
-            },
-            'name': 'cor_tilt_finding'
+        'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+    }, {
+        'args': [],
+        'kwargs': {
+            'fitted_gradient': 0.009657997234305727,
+            'rotation_centre': 617.2297924368454,
+            'rotation_centres': [619.0, 620.171875, 624.078125],
+            'slice_indices': [143, 376, 678],
+            'tilt_angle_rad': 0.009657696961729184
         },
-        {
-            'args': [],
-            'kwargs': {
-                'region_of_interest': [
-                    14,
-                    0,
-                    1191,
-                    249
-                ]
-            },
-            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
-        }
-    ]
+        'name': 'cor_tilt_finding'
+    }, {
+        'args': [],
+        'kwargs': {
+            'region_of_interest': [14, 0, 1191, 249]
+        },
+        'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+    }]
 }
 
 TEST_PARAMS_4 = {
-    'operation_history': [
-        {
-            'args': [],
-            'kwargs': {
-                'fitted_gradient': 1,
-                'rotation_centre': 50,
-                'tilt_angle_rad': 0
-            },
-            'name': 'cor_tilt_finding'
+    'operation_history': [{
+        'args': [],
+        'kwargs': {
+            'fitted_gradient': 1,
+            'rotation_centre': 50,
+            'tilt_angle_rad': 0
         },
-        {
-            'args': [],
-            'kwargs': {
-                'region_of_interest': [
-                    0,
-                    20,
-                    100,
-                    100
-                ]
-            },
-            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
-        }
-    ]
+        'name': 'cor_tilt_finding'
+    }, {
+        'args': [],
+        'kwargs': {
+            'region_of_interest': [0, 20, 100, 100]
+        },
+        'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+    }]
 }
 
 TEST_PARAMS_5 = {
-    'operation_history': [
-        {
-            'args': [],
-            'kwargs': {
-                'region_of_interest': [
-                    0,
-                    20,
-                    100,
-                    100
-                ]
-            },
-            'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
-        }
-    ]
+    'operation_history': [{
+        'args': [],
+        'kwargs': {
+            'region_of_interest': [0, 20, 100, 100]
+        },
+        'name': 'mantidimaging.core.filters.crop_coords.crop_coords.execute_single'
+    }]
 }
 
 
 class UtilityTest(TestCase):
-
     def test_get_crop_multiple(self):
         imgs = Images([1, 2, 3])
         imgs.metadata = TEST_PARAMS_1
@@ -220,10 +153,7 @@ class UtilityTest(TestCase):
         self.assertIsNotNone(finding)
         self.assertEquals(idx, 3)
 
-        self.assertEquals(
-            finding,
-            imgs.metadata[const.OPERATION_HISTORY][idx]['kwargs']
-        )
+        self.assertEquals(finding, imgs.metadata[const.OPERATION_HISTORY][idx]['kwargs'])
 
     def test_get_last_cor_tilt_find_empty(self):
         imgs = Images([1, 2, 3])

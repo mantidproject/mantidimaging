@@ -37,8 +37,7 @@ def get_crop_operations(images: Images, start=None, end=None):
         return []
 
     history = images.metadata[const.OPERATION_HISTORY][start:end]
-    crops = [e for e in history if const.OPERATION_NAME_CROP in
-             e[const.OPERATION_NAME]]
+    crops = [e for e in history if const.OPERATION_NAME_CROP in e[const.OPERATION_NAME]]
     return crops
 
 

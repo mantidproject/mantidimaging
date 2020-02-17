@@ -21,6 +21,4 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import (  # noqa: F401
-        importer,
-        tomopy_tool,
-        astra_tool)
+    importer, tomopy_tool, astra_tool)

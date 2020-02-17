@@ -24,7 +24,7 @@ APP_NAME = 'APPLICATION_NAME'
 
 
 def downloadFile(srcName, dstName, jobId):
-    url, token = getToken();
+    url, token = getToken()
 
     x509Flag, keypemfile, certpemfile = checkX509PEMCert(url)
 
@@ -57,7 +57,7 @@ def downloadFile(srcName, dstName, jobId):
 
 
 def downloadJobFiles(jobId, dstPath, dFile):
-    url, token = getToken();
+    url, token = getToken()
 
     x509Flag, keypemfile, certpemfile = checkX509PEMCert(url)
 
@@ -133,7 +133,7 @@ def uploadUtil(dstPath, dFile, jobId):
 
 
 def uploadJobFiles(jobId, dstPath, dFile):
-    url, token = getToken();
+    url, token = getToken()
 
     x509Flag, keypemfile, certpemfile = checkX509PEMCert(url)
 
@@ -150,9 +150,12 @@ def uploadJobFiles(jobId, dstPath, dFile):
     status, body = encode_body_upfile(boundary, dstPath, dFile)
     if status == 'error':
         print body
-    headers = {'Content-Type': 'multipart/mixed; boundary=' + boundary,
-               'Accept': 'text/plain;', 'Cookie': token,
-               'Content-Length': str(len(body))}
+    headers = {
+        'Content-Type': 'multipart/mixed; boundary=' + boundary,
+        'Accept': 'text/plain;',
+        'Cookie': token,
+        'Content-Length': str(len(body))
+    }
     url_upfile = url + 'webservice/pacclient/upfile/' + jobId
     print "uploadjobfiles , jobid: ", jobId
     print "url_upfile: ", url_upfile
@@ -268,10 +271,7 @@ def logon(url, username, password):
 
 def logon_scarf(username, password):
     url = 'https://portal.scarf.rl.ac.uk/cgi-bin/token.py'
-    params = urllib.urlencode({
-        'username': username,
-        'password': password
-    })
+    params = urllib.urlencode({'username': username, 'password': password})
     response = urllib2.urlopen(url, params).read()
     if "https://portal.scarf.rl.ac.uk" in response:
         url_token = response.splitlines()
@@ -547,9 +547,12 @@ def submitJob(jobDict):
         return 'error', "The profile Inputfile section or inputfile param format is wrong\nsee the help."
     if "Submit job failed" in body:
         return 'error', body
-    headers = {'Content-Type': 'multipart/mixed; boundary=' + boundary,
-               'Accept': 'text/xml,application/xml;', 'Cookie': token,
-               'Content-Length': str(len(body))}
+    headers = {
+        'Content-Type': 'multipart/mixed; boundary=' + boundary,
+        'Accept': 'text/xml,application/xml;',
+        'Cookie': token,
+        'Content-Length': str(len(body))
+    }
     url_submit = url + 'webservice/pacclient/submitapp'
 
     print " ================== BODY: ==================="
@@ -621,9 +624,12 @@ def doUserCmd(userCmd):
         http.add_certificate(keypemfile, certpemfile, '')
 
     body = '<UserCmd><cmd>%s</cmd></UserCmd>' % (userCmd)
-    headers = {'Content-Type': 'application/xml',
-               'Accept': 'text/xml;', 'Cookie': token,
-               'Content-Length': str(len(body))}
+    headers = {
+        'Content-Type': 'application/xml',
+        'Accept': 'text/xml;',
+        'Cookie': token,
+        'Content-Length': str(len(body))
+    }
 
     url_usercmd = url + 'webservice/pacclient/userCmd'
     try:
@@ -753,38 +759,26 @@ def encode_body(boundary, appName, params, inputFiles):
     boundary2 = '_Part_1_701508.1145579811786'
 
     def encode_appname():
-        return ('--' + boundary,
-                'Content-Disposition: form-data; name="AppName"',
-                'Content-ID: <AppName>',
-                '', appName)
+        return ('--' + boundary, 'Content-Disposition: form-data; name="AppName"', 'Content-ID: <AppName>', '', appName)
 
     def encode_paramshead():
-        return ('--' + boundary,
-                'Content-Disposition: form-data; name="data"',
-                'Content-Type: multipart/mixed; boundary=' + boundary2,
-                'Content-ID: <data>', '')
+        return ('--' + boundary, 'Content-Disposition: form-data; name="data"',
+                'Content-Type: multipart/mixed; boundary=' + boundary2, 'Content-ID: <data>', '')
 
     def encode_param(param_name):
-        return ('--' + boundary2,
-                'Content-Disposition: form-data; name="%s"' % param_name,
-                'Content-Type: application/xml; charset=US-ASCII',
-                'Content-Transfer-Encoding: 8bit',
-                '', '<AppParam><id>%s</id><value>%s</value><type></type></AppParam>' % (param_name, params[param_name]))
+        return ('--' + boundary2, 'Content-Disposition: form-data; name="%s"' % param_name,
+                'Content-Type: application/xml; charset=US-ASCII', 'Content-Transfer-Encoding: 8bit', '',
+                '<AppParam><id>%s</id><value>%s</value><type></type></AppParam>' % (param_name, params[param_name]))
 
     def encode_fileparam(param_name, param_value):
-        return ('--' + boundary2,
-                'Content-Disposition: form-data; name="%s"' % param_name,
-                'Content-Type: application/xml; charset=US-ASCII',
-                'Content-Transfer-Encoding: 8bit',
-                '', '<AppParam><id>%s</id><value>%s</value><type>file</type></AppParam>' % (param_name, param_value))
+        return ('--' + boundary2, 'Content-Disposition: form-data; name="%s"' % param_name,
+                'Content-Type: application/xml; charset=US-ASCII', 'Content-Transfer-Encoding: 8bit', '',
+                '<AppParam><id>%s</id><value>%s</value><type>file</type></AppParam>' % (param_name, param_value))
 
     def encode_file(filepath, filename):
-        return ('--' + boundary,
-                'Content-Disposition: form-data; name="%s"; filename="%s"' % (filename, filename),
-                'Content-Type: application/octet-stream',
-                'Content-Transfer-Encoding: UTF-8',
-                'Content-ID: <%s>' % filename,
-                '', open(filepath, 'rb').read())
+        return ('--' + boundary, 'Content-Disposition: form-data; name="%s"; filename="%s"' % (filename, filename),
+                'Content-Type: application/octet-stream', 'Content-Transfer-Encoding: UTF-8',
+                'Content-ID: <%s>' % filename, '', open(filepath, 'rb').read())
 
     lines = []
     upType = ''
@@ -833,18 +827,12 @@ def encode_body_upfile(boundary, dir, filelist):
     slash = getFileSeparator()
 
     def encode_dir():
-        return ('--' + boundary,
-                'Content-Disposition: form-data; name="DirName"',
-                'Content-ID: <DirName>',
-                '', dir)
+        return ('--' + boundary, 'Content-Disposition: form-data; name="DirName"', 'Content-ID: <DirName>', '', dir)
 
     def encode_file(filepath, filename):
-        return ('--' + boundary,
-                'Content-Disposition: form-data; name="%s"; filename="%s"' % (filename, filename),
-                'Content-Type: application/octet-stream',
-                'Content-Transfer-Encoding: UTF-8',
-                'Content-ID: <%s>' % filename,
-                '', open(filepath, 'rb').read())
+        return ('--' + boundary, 'Content-Disposition: form-data; name="%s"; filename="%s"' % (filename, filename),
+                'Content-Type: application/octet-stream', 'Content-Transfer-Encoding: UTF-8',
+                'Content-ID: <%s>' % filename, '', open(filepath, 'rb').read())
 
     lines = []
     lines.extend(encode_dir())
@@ -868,7 +856,7 @@ def checkX509PEMCert(url):
         return False, '', ''
 
     # Get the current path for key/cert files
-    cwdPath = os.getcwd() + getFileSeparator();
+    cwdPath = os.getcwd() + getFileSeparator()
 
     # Create the variables of key/cert files absolute path
     keypemfile = cwdPath + '.key.pem'

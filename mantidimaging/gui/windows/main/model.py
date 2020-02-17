@@ -19,31 +19,35 @@ class MainWindowModel(object):
 
         self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
-    def do_load_stack(self, sample_path, image_format, parallel_load, indices,
-                      progress, in_prefix, flat_path=None, dark_path=None):
-        images = loader.load(
-            sample_path,
-            flat_path,
-            dark_path,
-            in_prefix=in_prefix,
-            in_format=image_format,
-            parallel_load=parallel_load,
-            indices=indices,
-            progress=progress)
+    def do_load_stack(self,
+                      sample_path,
+                      image_format,
+                      parallel_load,
+                      indices,
+                      progress,
+                      in_prefix,
+                      flat_path=None,
+                      dark_path=None):
+        images = loader.load(sample_path,
+                             flat_path,
+                             dark_path,
+                             in_prefix=in_prefix,
+                             in_format=image_format,
+                             parallel_load=parallel_load,
+                             indices=indices,
+                             progress=progress)
 
         return images
 
-    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format,
-                  overwrite, swap_axes, progress):
+    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
-        saver.save(
-            data=svp.images,
-            output_dir=output_dir,
-            name_prefix=name_prefix,
-            swap_axes=swap_axes,
-            overwrite_all=overwrite,
-            out_format=image_format,
-            progress=progress)
+        saver.save(data=svp.images,
+                   output_dir=output_dir,
+                   name_prefix=name_prefix,
+                   swap_axes=swap_axes,
+                   overwrite_all=overwrite,
+                   out_format=image_format,
+                   progress=progress)
 
         return True
 

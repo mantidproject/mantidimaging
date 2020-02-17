@@ -81,8 +81,7 @@ class MWLoadDialog(Qt.QDialog):
         try:
             filename = self.sample_path_text()
             dirname = self.sample_path_directory()
-            self.last_shape = read_in_shape(dirname, in_prefix=get_prefix(filename),
-                                            in_format=self.image_format)
+            self.last_shape = read_in_shape(dirname, in_prefix=get_prefix(filename), in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
             self.parent_view.presenter.show_error("Failed to read this file. See log for details.")
@@ -111,16 +110,14 @@ class MWLoadDialog(Qt.QDialog):
     def update_expected_mem_usage(self):
         self.dtype = self.pixelBitDepth.currentText()
 
-        num_images = size_calculator.number_of_images_from_indices(
-            self.index_start.value(),
-            self.index_end.value(),
-            self.index_step.value())
+        num_images = size_calculator.number_of_images_from_indices(self.index_start.value(), self.index_end.value(),
+                                                                   self.index_step.value())
 
         single_mem = size_calculator.to_MB(size_calculator.single_size(self.last_shape, axis=0), dtype=self.dtype)
 
         exp_mem = round(single_mem * num_images, 2)
-        self.expectedResourcesLabel.setText(
-            "{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1], self.last_shape[2], exp_mem))
+        self.expectedResourcesLabel.setText("{0}x{1}x{2}: {3} MB".format(num_images, self.last_shape[1],
+                                                                         self.last_shape[2], exp_mem))
 
     def sample_file(self) -> str:
         """
@@ -166,9 +163,7 @@ class MWLoadDialog(Qt.QDialog):
 
     @property
     def indices(self) -> ImageLoadIndices:
-        return ImageLoadIndices(self.index_start.value(),
-                                self.index_end.value(),
-                                self.index_step.value())
+        return ImageLoadIndices(self.index_start.value(), self.index_end.value(), self.index_step.value())
 
     def window_title(self) -> Optional[str]:
         user_text = self.stackName.text()
@@ -185,11 +180,13 @@ class MWLoadDialog(Qt.QDialog):
     #     self.flat_widget.setHidden(not self.flat_widget.isHidden())
 
     def get_kwargs(self) -> Dict[str, Any]:
-        return {'selected_file': self.sample_file(),
-                'sample_path': self.sample_path_directory(),
-                'in_prefix': get_prefix(self.sample_path_text()),
-                'image_format': self.image_format,
-                'parallel_load': self.parallel_load(),
-                'indices': self.indices,
-                'custom_name': self.window_title(),
-                'staged_load': self.staged_load.isChecked()}
+        return {
+            'selected_file': self.sample_file(),
+            'sample_path': self.sample_path_directory(),
+            'in_prefix': get_prefix(self.sample_path_text()),
+            'image_format': self.image_format,
+            'parallel_load': self.parallel_load(),
+            'indices': self.indices,
+            'custom_name': self.window_title(),
+            'staged_load': self.staged_load.isChecked()
+        }

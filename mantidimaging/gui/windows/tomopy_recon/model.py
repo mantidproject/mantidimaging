@@ -13,7 +13,6 @@ LOG = getLogger(__name__)
 
 
 class TomopyReconWindowModel(object):
-
     def __init__(self):
         self.stack = None
         self.projection = None

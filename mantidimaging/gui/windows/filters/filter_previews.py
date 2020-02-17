@@ -12,17 +12,9 @@ before_pen = (0, 0, 200)
 after_pen = (0, 200, 0)
 
 Coord = namedtuple('Coord', ['row', 'col'])
-histogram_coords = {
-    "before": Coord(4, 0),
-    "after": Coord(4, 1),
-    "combined": Coord(4, 0)
-}
+histogram_coords = {"before": Coord(4, 0), "after": Coord(4, 1), "combined": Coord(4, 0)}
 
-label_coords = {
-    "before": Coord(3, 0),
-    "after": Coord(3, 1),
-    "combined": Coord(3, 1)
-}
+label_coords = {"before": Coord(3, 0), "after": Coord(3, 1), "combined": Coord(3, 1)}
 
 
 class FilterPreviews(GraphicsLayoutWidget):
@@ -119,8 +111,11 @@ class FilterPreviews(GraphicsLayoutWidget):
             self.removeItem(label)
 
     def draw_combined_histogram(self):
-        self.histogram = self.addPlot(row=histogram_coords["combined"].row, col=histogram_coords["combined"].col,
-                                      labels=histogram_axes_labels, lockAspect=True, colspan=3)
+        self.histogram = self.addPlot(row=histogram_coords["combined"].row,
+                                      col=histogram_coords["combined"].col,
+                                      labels=histogram_axes_labels,
+                                      lockAspect=True,
+                                      colspan=3)
         self.addLabel("Pixel values", row=label_coords["combined"].row, col=label_coords["combined"].col)
 
         # Plot any histogram that has data, and add a legend if both exist
@@ -136,10 +131,14 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def draw_separate_histograms(self):
         hc = histogram_coords
-        self.before_histogram = self.addPlot(row=hc["before"].row, col=hc["before"].col,
-                                             labels=histogram_axes_labels, lockAspect=True)
-        self.after_histogram = self.addPlot(row=hc["after"].row, col=hc["after"].col,
-                                            labels=histogram_axes_labels, lockAspect=True)
+        self.before_histogram = self.addPlot(row=hc["before"].row,
+                                             col=hc["before"].col,
+                                             labels=histogram_axes_labels,
+                                             lockAspect=True)
+        self.after_histogram = self.addPlot(row=hc["after"].row,
+                                            col=hc["after"].col,
+                                            labels=histogram_axes_labels,
+                                            lockAspect=True)
         lc = label_coords
         self.addLabel("Pixel values before", row=lc["before"].row, col=lc["before"].col)
         self.addLabel("Pixel values after", row=lc["after"].row, col=lc["after"].col)

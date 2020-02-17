@@ -8,22 +8,18 @@ from argparse import ArgumentParser
 
 import ssl
 
-PACPASSFILE='.pacpass'
+PACPASSFILE = '.pacpass'
 
 parser = ArgumentParser()
 
-parser.add_argument("-u",  dest="federalid",
-                    help="Your federal id", metavar="Federal ID",required=True)
+parser.add_argument("-u", dest="federalid", help="Your federal id", metavar="Federal ID", required=True)
 
 args = parser.parse_args()
 
-username=(args.federalid)
+username = (args.federalid)
 password = getpass.getpass()
 url = 'https://portal.scarf.rl.ac.uk/cgi-bin/token.py'
-params = urllib.urlencode({
-  'username': username,
-  'password': password
-})
+params = urllib.urlencode({'username': username, 'password': password})
 
 # This is needed from Python 2.7.9, but not supported in <=2.7.8
 # Context with old default behavior: don't do certificate validation
@@ -38,9 +34,9 @@ params = urllib.urlencode({
 response = urllib2.urlopen(url, params).read()
 
 if "https://portal.scarf.rl.ac.uk" in response:
-        url_token = response.splitlines()
-        pac_api.saveToken(url_token[0], url_token[1])
-        print "You have now successfully logged onto PAC"
+    url_token = response.splitlines()
+    pac_api.saveToken(url_token[0], url_token[1])
+    print "You have now successfully logged onto PAC"
 else:
-        print response
-        print response
+    print response
+    print response
