@@ -50,11 +50,15 @@ async def async_main():
 
     startup_checks()
 
-    process = await prepare_backend()
+    try:
+        docker_backend = await prepare_backend()
+    except RuntimeError as e:
+        logging.getLogger(__name__).error(e)
+        docker_backend = None
 
     from mantidimaging import gui
 
-    gui.execute(process)
+    gui.execute(docker_backend)
 
 
 def main():
