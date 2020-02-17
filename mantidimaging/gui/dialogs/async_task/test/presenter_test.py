@@ -3,15 +3,14 @@ import unittest
 
 import mock
 
-from mantidimaging.gui.dialogs.async_task import (
-    AsyncTaskDialogPresenter, AsyncTaskDialogView)
-from mantidimaging.gui.dialogs.async_task.presenter import (
-    Notification)
+from mantidimaging.gui.dialogs.async_task import (AsyncTaskDialogPresenter, AsyncTaskDialogView)
+from mantidimaging.gui.dialogs.async_task.presenter import Notification
 
 
 class AsyncTaskDialogPresenterTest(unittest.TestCase):
 
     def test_basic_happy_case(self):
+
         def f(a, b):
             time.sleep(0.1)
             return a + b

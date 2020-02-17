@@ -22,7 +22,7 @@ jobs:
       script:
         - $DOCKER_RUN $DOCKER_IMAGE flake8
         - $DOCKER_RUN $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
-        - $DOCKER_RUN $DOCKER_IMAGE nosetests --xunit-file=/opt/result-report.xml
+        - $DOCKER_RUN $DOCKER_IMAGE nosetests
 
     - stage: upload-nightly
       if: type = cron

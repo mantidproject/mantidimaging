@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import Callable
 
 from PyQt5 import Qt, QtCore
 
@@ -16,7 +17,7 @@ class AsyncTaskDialogModel(Qt.QObject):
         self.task = TaskWorkerThread()
         self.task.finished.connect(self._on_task_exit)
 
-        self.on_complete_function = None
+        self.on_complete_function: Callable = lambda: None
 
     def do_execute_async(self):
         """

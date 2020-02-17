@@ -105,8 +105,6 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
-        # progress = Progress.ensure_instance()
-        # progress.task_name = 'Filter'
         self.model.do_apply_filter()
 
     def do_update_previews(self):
