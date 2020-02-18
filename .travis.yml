@@ -11,12 +11,12 @@ services:
   - docker
 
 env:
-  >-\n
-   MINICONDA_DIR=$HOME/miniconda\n
-   ENVIRONMENT_DIR=$HOME/envs\n
-   ENVIRONMENT_NAME=test-environment\n
-   DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"\n
-   DOCKER_IMAGE="-t dtasev/mantidimaging"\n
+  >-
+   MINICONDA_DIR=$HOME/miniconda
+   ENVIRONMENT_DIR=$HOME/envs
+   ENVIRONMENT_NAME=test-environment
+   DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"
+   DOCKER_IMAGE="-t dtasev/mantidimaging"
    ABSEIL_DOCKER_IMAGE="-t dtasev/mantidimaging:abseil"
 
 before_install:
