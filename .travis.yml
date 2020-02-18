@@ -11,12 +11,21 @@ services:
   - docker
 
 env:
-  - MINICONDA_DIR=$HOME/miniconda ENVIRONMENT_DIR=$HOME/envs ENVIRONMENT_NAME=test-environment DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging" DOCKER_IMAGE="-t dtasev/mantidimaging"
+  >-\n
+   MINICONDA_DIR=$HOME/miniconda\n
+   ENVIRONMENT_DIR=$HOME/envs\n
+   ENVIRONMENT_NAME=test-environment\n
+   DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"\n
+   DOCKER_IMAGE="-t dtasev/mantidimaging"\n
+   ABSEIL_DOCKER_IMAGE="-t dtasev/mantidimaging:abseil"
 
 before_install:
   - docker pull dtasev/mantidimaging
 
 jobs:
+  fast_finish: true
+  allow_failures:
+    - env: CAN_FAIL=true
   include:
     - stage: test
       script:
@@ -28,3 +37,11 @@ jobs:
       if: type = cron
       script:
         - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
+
+    - stage: test-abseil
+      # if: type = cron # disabled for testing in PR
+      env: CAN_FAIL=true
+      script:
+        - $DOCKER_RUN $ABSEIL_DOCKER_IMAGE flake8
+        - $DOCKER_RUN $ABSEIL_DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
+        - $DOCKER_RUN $ABSEIL_DOCKER_IMAGE nosetests
