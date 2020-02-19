@@ -29,17 +29,14 @@ jobs:
     - env: CAN_FAIL=true
   include:
     - stage: test
+      name: Test
       script:
         - $DOCKER_RUN -t $DOCKER_IMAGE flake8
         - $DOCKER_RUN -t $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
         - $DOCKER_RUN -t $DOCKER_IMAGE nosetests
 
-    - stage: upload-nightly
-      if: type = cron
-      script:
-        - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN -t $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
-
-    - stage: test-abseil
+    - stage: test
+      name: Test Abseil
       # if: type = cron # disabled for testing in PR
       env: >-
             CAN_FAIL=true
@@ -49,3 +46,8 @@ jobs:
         - $DOCKER_RUN -t $DOCKER_IMAGE flake8
         - $DOCKER_RUN -t $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
         - $DOCKER_RUN -t $DOCKER_IMAGE nosetests
+
+    - stage: upload-nightly
+      if: type = cron
+      script:
+        - $DOCKER_RUN -e UPLOAD_USER -e ANACONDA_API_TOKEN -t $DOCKER_IMAGE /bin/bash -c "conda config --set anaconda_upload yes && make build-conda-package-nightly"
