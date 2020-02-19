@@ -22,11 +22,12 @@ env:
 
 before_script:
   - docker pull $DOCKER_IMAGE
+  - docker run $DOCKER_IMAGE conda list
 
 jobs:
   fast_finish: true
   allow_failures:
-    - env: CAN_FAIL=true
+    - env: DOCKER_IMAGE="dtasev/mantidimaging:abseil"
   include:
     - stage: test
       name: Test
@@ -38,9 +39,7 @@ jobs:
     - stage: test
       name: Test Abseil
       # if: type = cron # disabled for testing in PR
-      env: >-
-            CAN_FAIL=true
-            DOCKER_IMAGE="dtasev/mantidimaging:abseil"
+      env: DOCKER_IMAGE="dtasev/mantidimaging:abseil"
       script:
         - docker pull $DOCKER_IMAGE
         - $DOCKER_RUN -t $DOCKER_IMAGE flake8
