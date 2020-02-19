@@ -22,7 +22,6 @@ LOG = getLogger(__name__)
 
 
 class BackgroundService(threading.Thread):
-
     def __init__(self, docker_exe, args: List):
         super().__init__()
         self.docker_exe = docker_exe

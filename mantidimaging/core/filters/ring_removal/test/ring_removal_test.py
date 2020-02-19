@@ -13,7 +13,6 @@ class RingRemovalTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(RingRemovalTest, self).__init__(*args, **kwargs)
 
@@ -39,8 +38,7 @@ class RingRemovalTest(unittest.TestCase):
 
         result = RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         npt.assert_equal(result, control)
         npt.assert_equal(images, control)

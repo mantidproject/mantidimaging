@@ -8,18 +8,15 @@ from mantidimaging.core.utility import projection_angles
 
 def sanity_checks(config):
     if not config.func.output_path:
-        raise ValueError(
-            "The flag -o/--output-path MUST be passed for this COR mode!")
+        raise ValueError("The flag -o/--output-path MUST be passed for this COR mode!")
 
     if not len(config.func.indices) == 3:
-        raise ValueError(
-            "You need to provide input in the format:\n"
-            "--indices <start> <stop> <step> --imopr <cors_start> <cors_end> "
-            "<cors_step> corwrite: --indices 100 200 14 --imopr 5 50 7 "
-            "corwrite\n"
-            "To load and reconstruct every 14 indices from 100 to 200, with "
-            "COR from 5 to 50, incrementing by 7."
-        )
+        raise ValueError("You need to provide input in the format:\n"
+                         "--indices <start> <stop> <step> --imopr <cors_start> <cors_end> "
+                         "<cors_step> corwrite: --indices 100 200 14 --imopr 5 50 7 "
+                         "corwrite\n"
+                         "To load and reconstruct every 14 indices from 100 to 200, with "
+                         "COR from 5 to 50, incrementing by 7.")
 
 
 def execute(sample, flat, dark, config, indices):
@@ -32,9 +29,7 @@ def execute(sample, flat, dark, config, indices):
     """
     log = getLogger(__name__)
 
-    log.info(
-        "Running IMOPR with action COR using tomopy write_center. "
-        "This works ONLY with sinograms!")
+    log.info("Running IMOPR with action COR using tomopy write_center. " "This works ONLY with sinograms!")
 
     tool = timed_import(config)
 
@@ -42,27 +37,22 @@ def execute(sample, flat, dark, config, indices):
     # developer note: we are processing sinograms,
     # but we need the number of radiograms
     num_radiograms = sample.shape[1]
-    proj_angles = projection_angles.generate(config.func.max_angle,
-                                             num_radiograms)
+    proj_angles = projection_angles.generate(config.func.max_angle, num_radiograms)
 
     i1, i2, step = config.func.indices
     log.info(indices)
-    for i, actual_slice_index in zip(
-            range(sample.shape[0]), range(i1, i2, step)):
+    for i, actual_slice_index in zip(range(sample.shape[0]), range(i1, i2, step)):
 
-        angle_output_path = os.path.join(config.func.output_path,
-                                         str(actual_slice_index))
+        angle_output_path = os.path.join(config.func.output_path, str(actual_slice_index))
 
-        log.info("Starting writing CORs for slice {0} in {1}".format(
-            actual_slice_index, angle_output_path))
+        log.info("Starting writing CORs for slice {0} in {1}".format(actual_slice_index, angle_output_path))
 
-        tool._tomopy.write_center(
-            tomo=sample,
-            theta=proj_angles,
-            dpath=angle_output_path,
-            ind=i,
-            sinogram_order=True,
-            cen_range=indices[0:])
+        tool._tomopy.write_center(tomo=sample,
+                                  theta=proj_angles,
+                                  dpath=angle_output_path,
+                                  ind=i,
+                                  sinogram_order=True,
+                                  cen_range=indices[0:])
 
     log.info("Finished writing CORs in", config.func.output_path)
 

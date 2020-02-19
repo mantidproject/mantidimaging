@@ -8,9 +8,8 @@ from mantidimaging.core.utility import cor_interpolate, size_calculator
 
 
 def _print_expected_memory_usage(data_shape, dtype):
-    getLogger(__name__).info(
-        "Predicted memory usage for data: {0} MB".format(
-            size_calculator.full_size_MB(data_shape, 0, dtype)))
+    getLogger(__name__).info("Predicted memory usage for data: {0} MB".format(
+        size_calculator.full_size_MB(data_shape, 0, dtype)))
 
 
 def initialise_run(config):
@@ -26,8 +25,7 @@ def initialise_run(config):
     # create directory, or throw if not empty and no --overwrite-all
     # we get the output path from the saver, because
     # that expands variables and gets the absolute path
-    saver.make_dirs_if_needed(saver_class.get_output_path(),
-                              saver_class._overwrite_all)
+    saver.make_dirs_if_needed(saver_class.get_output_path(), saver_class._overwrite_all)
 
     data_shape = loader.read_in_shape_from_config(config)
 
@@ -55,13 +53,11 @@ def execute(config):
 
     images = loader.load_from_config(config)
 
-    sample, flat, dark = default_filtering.execute(
-            config, images.sample, images.flat, images.dark)
+    sample, flat, dark = default_filtering.execute(config, images.sample, images.flat, images.dark)
 
     if not config.func.reconstruction:
         saver_class.save_preproc_images(sample)
-        getLogger(__name__).info("Skipping reconstruction because no "
-                                 "--reconstruction flag was passed.")
+        getLogger(__name__).info("Skipping reconstruction because no " "--reconstruction flag was passed.")
         return sample
 
     cors = config.func.cors
@@ -70,8 +66,7 @@ def execute(config):
     if len(cors) != sample.shape[0]:
         # interpolate the CORs
         cor_slices = config.func.cor_slices
-        config.func.cors = cor_interpolate.execute(sample.shape[0],
-                                                   cor_slices, cors)
+        config.func.cors = cor_interpolate.execute(sample.shape[0], cor_slices, cors)
 
     sample = tool.run_reconstruct(sample, config)
 

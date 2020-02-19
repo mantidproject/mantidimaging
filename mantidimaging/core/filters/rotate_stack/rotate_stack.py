@@ -13,8 +13,7 @@ class RotateFilter(BaseFilter):
     filter_name = "Rotate Stack"
 
     @staticmethod
-    def filter_func(data, rotation=None, flat=None, dark=None, cores=None, chunksize=None,
-                    progress=None):
+    def filter_func(data, rotation=None, flat=None, dark=None, cores=None, chunksize=None, progress=None):
         """
         Rotates a stack (sample, flat and dark images).
 
@@ -60,13 +59,13 @@ class RotateFilter(BaseFilter):
     def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, rotation_count = add_property_to_form(
-            'Number of rotations', 'int', 1, (0, 99),
-            form=form, on_change=on_change)
+        _, rotation_count = add_property_to_form('Number of rotations',
+                                                 'int',
+                                                 1, (0, 99),
+                                                 form=form,
+                                                 on_change=on_change)
 
-        return {
-            "rotation_count": rotation_count
-        }
+        return {"rotation_count": rotation_count}
 
     @staticmethod
     def execute_wrapper(rotation_count=None):
@@ -74,14 +73,13 @@ class RotateFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "-r",
-        "--rotation",
-        required=False,
-        type=int,
-        help="Rotate images by 90 degrees a number of times.\n"
-             "The rotation is clockwise unless a negative number is given "
-             "which indicates rotation counterclockwise.")
+    parser.add_argument("-r",
+                        "--rotation",
+                        required=False,
+                        type=int,
+                        help="Rotate images by 90 degrees a number of times.\n"
+                        "The rotation is clockwise unless a negative number is given "
+                        "which indicates rotation counterclockwise.")
 
     return parser
 
@@ -95,12 +93,11 @@ def _rotate_image(data, rotation=None):
 
 
 def _execute_seq(data, rotation, progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Rotate Stack')
+    progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:
         progress.update(msg=f"Starting rotation step ({rotation * 90} degrees clockwise), "
-                            f"data type: {data.dtype}...")
+                        f"data type: {data.dtype}...")
 
         img_count = data.shape[0]
         progress.add_estimated_steps(img_count)
@@ -112,17 +109,14 @@ def _execute_seq(data, rotation, progress=None):
 
 
 def _execute_par(data, rotation, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Rotate Stack')
+    progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:
         progress.update(msg=f"Starting PARALLEL rotation step ({rotation * 90} degrees "
-                            f"clockwise), data type: {data.dtype}...")
+                        f"clockwise), data type: {data.dtype}...")
 
-        f = psm.create_partial(
-            _rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
+        f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
 
-        data = psm.execute(
-            data, f, cores=cores, chunksize=chunksize, name="Rotation")
+        data = psm.execute(data, f, cores=cores, chunksize=chunksize, name="Rotation")
 
     return data

@@ -44,24 +44,15 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
-        _, size_field = add_property_to_form(
-            'Kernel Size', 'int', 3, (0, 1000),
-            form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Kernel Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form(
-            'Mode', 'choice', valid_values=modes(),
-            form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
 
-        return {
-            'size_field': size_field,
-            'mode_field': mode_field
-        }
+        return {'size_field': size_field, 'mode_field': mode_field}
 
     @staticmethod
     def execute_wrapper(size_field=None, mode_field=None):
-        return partial(MedianFilter.filter_func,
-                       size=size_field.value(),
-                       mode=mode_field.currentText())
+        return partial(MedianFilter.filter_func, size=size_field.value(), mode=mode_field.currentText())
 
 
 def _cli_register(parser):
@@ -72,20 +63,9 @@ def _cli_register(parser):
                 "Mode of median filter which determines how the array \
                  borders are handled."
 
-    parser.add_argument(
-        "--median-size",
-        type=int,
-        required=False,
-        default=default_size,
-        help=size_help)
+    parser.add_argument("--median-size", type=int, required=False, default=default_size, help=size_help)
 
-    parser.add_argument(
-        "--median-mode",
-        type=str,
-        required=False,
-        default=modes()[0],
-        choices=modes(),
-        help=mode_help)
+    parser.add_argument("--median-mode", type=str, required=False, default=modes()[0], choices=modes(), help=mode_help)
 
     return parser
 
@@ -96,13 +76,10 @@ def modes():
 
 def _execute_seq(data, size, mode, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress,
-                                        num_steps=data.shape[0],
-                                        task_name='Median filter')
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Median filter')
 
     with progress:
-        log.info("Median filter, with pixel data type: {0}, filter "
-                 "size/width: {1}.".format(data.dtype, size))
+        log.info("Median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
 
         progress.add_estimated_steps(data.shape[0])
         for idx in range(0, data.shape[0]):
@@ -117,11 +94,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
     progress = Progress.ensure_instance(progress, task_name='Median filter')
 
     # create the partial function to forward the parameters
-    f = psm.create_partial(
-        scipy_ndimage.median_filter,
-        fwd_func=psm.return_fwd_func,
-        size=size,
-        mode=mode)
+    f = psm.create_partial(scipy_ndimage.median_filter, fwd_func=psm.return_fwd_func, size=size, mode=mode)
 
     with progress:
         log.info("PARALLEL median filter, with pixel data type: {0}, filter "

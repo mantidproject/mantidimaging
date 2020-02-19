@@ -5,11 +5,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--mcp-corrections",
-        required=False,
-        action='store_true',
-        help="Do MCP Corrections.")
+    parser.add_argument("--mcp-corrections", required=False, action='store_true', help="Do MCP Corrections.")
 
     return parser
 
@@ -26,8 +22,7 @@ def execute(data, cores=None, chunksize=None, progress=None):
                              "NO CODE FOR SHIFTING THE CHIPS IS CURRENTLY "
                              "IMPLEMENTED!")
 
-    progress = Progress.ensure_instance(progress,
-                                        task_name='MCP Corrections')
+    progress = Progress.ensure_instance(progress, task_name='MCP Corrections')
 
     fool_my_own_sanity_check(data)
 

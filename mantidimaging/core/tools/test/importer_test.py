@@ -7,8 +7,7 @@ class ImporterTest(unittest.TestCase):
         super(ImporterTest, self).__init__(*args, **kwargs)
 
         # force silent outputs
-        from mantidimaging.core.configs.recon_config import (
-                ReconstructionConfig)
+        from mantidimaging.core.configs.recon_config import (ReconstructionConfig)
         self.config = ReconstructionConfig.empty_init()
         self.config.func.log_level = logging.CRITICAL
 

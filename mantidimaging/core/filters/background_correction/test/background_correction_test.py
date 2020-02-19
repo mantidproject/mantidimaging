@@ -15,7 +15,6 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(BackgroundCorrectionTest, self).__init__(*args, **kwargs)
 
@@ -54,8 +53,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad flat
-        npt.assert_raises(ValueError, BackgroundCorrectionFilter.filter_func, images,
-                          flat[0], dark)
+        npt.assert_raises(ValueError, BackgroundCorrectionFilter.filter_func, images, flat[0], dark)
 
     def test_not__filter_funcd_bad_dark(self):
         images, control = th.gen_img_shared_array_and_copy()
@@ -63,8 +61,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad dark
-        npt.assert_raises(ValueError, BackgroundCorrectionFilter.filter_func, images,
-                          flat, dark[0])
+        npt.assert_raises(ValueError, BackgroundCorrectionFilter.filter_func, images, flat, dark[0])
 
     def test_real_result(self):
         th.switch_mp_off()
@@ -76,10 +73,8 @@ class BackgroundCorrectionTest(unittest.TestCase):
         # below the np.clip in background_correction
         # the operation is (sample - dark) / (flat - dark)
         sample = th.gen_img_shared_array_with_val(26.)
-        flat = th.gen_img_shared_array_with_val(
-            7., shape=(1, sample.shape[1], sample.shape[2]))[0]
-        dark = th.gen_img_shared_array_with_val(
-            6., shape=(1, sample.shape[1], sample.shape[2]))[0]
+        flat = th.gen_img_shared_array_with_val(7., shape=(1, sample.shape[1], sample.shape[2]))[0]
+        dark = th.gen_img_shared_array_with_val(6., shape=(1, sample.shape[1], sample.shape[2]))[0]
 
         expected = np.full(sample.shape, 20.)
 

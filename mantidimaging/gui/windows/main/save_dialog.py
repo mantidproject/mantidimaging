@@ -10,11 +10,9 @@ class MWSaveDialog(Qt.QDialog):
         super(MWSaveDialog, self).__init__(parent)
         compile_ui('gui/ui/save_dialog.ui', self)
 
-        self.browseButton.clicked.connect(
-            lambda: select_directory(self.savePath, "Browse"))
+        self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
 
-        self.buttonBox.button(Qt.QDialogButtonBox.SaveAll).clicked.connect(
-            self.save_all)
+        self.buttonBox.button(Qt.QDialogButtonBox.SaveAll).clicked.connect(self.save_all)
 
         # dynamically add all the supported formats
         formats = supported_formats()

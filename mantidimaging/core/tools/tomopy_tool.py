@@ -36,16 +36,14 @@ class TomoPyTool(AbstractTool):
     @staticmethod
     def tool_supported_methods():
         return [
-            'art', 'bart', 'fbp', 'gridrec', 'mlem', 'osem', 'ospml_hybrid',
-            'ospml_quad', 'pml_hybrid', 'pml_quad', 'sirt'
+            'art', 'bart', 'fbp', 'gridrec', 'mlem', 'osem', 'ospml_hybrid', 'ospml_quad', 'pml_hybrid', 'pml_quad',
+            'sirt'
         ]
 
     @staticmethod
     def check_algorithm_compatibility(algorithm):
         if algorithm not in TomoPyTool.tool_supported_methods():
-            raise ValueError(
-                "The selected algorithm {0} is not supported by TomoPy.".
-                format(algorithm))
+            raise ValueError("The selected algorithm {0} is not supported by TomoPy.".format(algorithm))
 
     def __init__(self):
         AbstractTool.__init__(self)
@@ -72,14 +70,11 @@ class TomoPyTool(AbstractTool):
             import tomopy.misc
 
         except ImportError as exc:
-            raise ImportError(
-                "Could not import the tomopy package and its subpackages. "
-                "Details: {0}".format(exc))
+            raise ImportError("Could not import the tomopy package and its subpackages. " "Details: {0}".format(exc))
 
         return tomopy
 
-    def run_reconstruct(self, sample, config, proj_angles=None, progress=None,
-                        **kwargs):
+    def run_reconstruct(self, sample, config, proj_angles=None, progress=None, **kwargs):
         """
         Run a reconstruction with TomoPy, using the CPU algorithms they
         provide.
@@ -110,8 +105,7 @@ class TomoPyTool(AbstractTool):
 
         if proj_angles is None:
             num_radiograms = sample.shape[1]
-            proj_angles = projection_angles.generate(config.func.max_angle,
-                                                     num_radiograms)
+            proj_angles = projection_angles.generate(config.func.max_angle, num_radiograms)
 
         alg = config.func.algorithm
         num_iter = config.func.num_iter
@@ -129,29 +123,25 @@ class TomoPyTool(AbstractTool):
             if iterative_algorithm:  # run the iterative algorithms
                 progress.update(msg="Iterative method with TomoPy")
                 log.info("Avg Center of Rotation: {0}, Algorithm: {1}, number "
-                         "of iterations: {2}...".format(
-                             np.mean(cors), alg, num_iter))
+                         "of iterations: {2}...".format(np.mean(cors), alg, num_iter))
 
                 kwargs = dict(kwargs, num_iter=num_iter)
             else:  # run the non-iterative algorithms
                 progress.update(msg="Non-iterative method with TomoPy")
                 log.info("Mean COR: {0}, Number of CORs provided {1}, "
-                         "Algorithm: {2}...".format(
-                             np.mean(cors), len(cors), alg))
+                         "Algorithm: {2}...".format(np.mean(cors), len(cors), alg))
 
             # TODO need to expose the filters to CLI
             # filter_name='parzen',
             # filter_par=[5.],
-            recon = self._tomopy.recon(
-                tomo=sample,
-                theta=proj_angles,
-                center=cors,
-                ncore=cores,
-                algorithm=alg,
-                sinogram_order=True,
-                **kwargs)
+            recon = self._tomopy.recon(tomo=sample,
+                                       theta=proj_angles,
+                                       center=cors,
+                                       ncore=cores,
+                                       algorithm=alg,
+                                       sinogram_order=True,
+                                       **kwargs)
 
-        log.info("Reconstructed 3D volume. Shape: {0}, and pixel data type: "
-                 "{1}.".format(recon.shape, recon.dtype))
+        log.info("Reconstructed 3D volume. Shape: {0}, and pixel data type: " "{1}.".format(recon.shape, recon.dtype))
 
         return recon

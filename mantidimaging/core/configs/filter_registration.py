@@ -1,8 +1,4 @@
-from mantidimaging.core.utility.registrator import (
-        get_package_children,
-        import_items,
-        register_into
-    )
+from mantidimaging.core.utility.registrator import (get_package_children, import_items, register_into)
 
 
 def _cli_register_into_parser(parser, module):
@@ -26,9 +22,9 @@ def _cli_register_into_parser(parser, module):
     module._cli_register(group)
 
 
-def register_filters_on_cli(
-        parser, package_name='mantidimaging.core.filters',
-        ignored_packages=['mantidimaging.core.filters.wip']):
+def register_filters_on_cli(parser,
+                            package_name='mantidimaging.core.filters',
+                            ignored_packages=['mantidimaging.core.filters.wip']):
     """
     Registers filter modules into the CLI.
 
@@ -38,8 +34,7 @@ def register_filters_on_cli(
 
     :param ignored_packages: Optional list of packages/modules to ignore
     """
-    filter_packages = get_package_children(package_name, packages=True,
-                                           ignore=ignored_packages)
+    filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
     filter_packages = [p[1] for p in filter_packages]
     loaded_filters = import_items(filter_packages, required_attributes=['FILTER_CLASS'])
     register_into(parser, loaded_filters, _cli_register_into_parser)

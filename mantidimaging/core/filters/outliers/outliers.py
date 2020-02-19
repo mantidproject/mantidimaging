@@ -17,8 +17,7 @@ class OutliersFilter(BaseFilter):
     filter_name = "Remove Outliers"
 
     @staticmethod
-    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode,
-                    cores=None, progress=None):
+    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode, cores=None, progress=None):
         """
         Requires tomopy to be available.
 
@@ -31,13 +30,11 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Outliers')
+        progress = Progress.ensure_instance(progress, task_name='Outliers')
 
         if diff and radius and diff > 0 and radius > 0:
             with progress:
-                progress.update(msg="Applying outliers with threshold: {0} and "
-                                    "radius {1}".format(diff, radius))
+                progress.update(msg="Applying outliers with threshold: {0} and " "radius {1}".format(diff, radius))
 
                 # we flip the histogram horizontally, this makes the darkest pixels
                 # the brightest
@@ -46,8 +43,7 @@ class OutliersFilter(BaseFilter):
 
                 tomopy = importer.do_importing('tomopy')
 
-                data = tomopy.misc.corr.remove_outlier(
-                    data, diff, radius, ncore=cores)
+                data = tomopy.misc.corr.remove_outlier(data, diff, radius, ncore=cores)
 
                 # reverse the inversion
                 if mode == OUTLIERS_DARK:
@@ -57,23 +53,17 @@ class OutliersFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change):
-        _, diff_field = add_property_to_form(
-            'Difference', 'int', 1, (-1000000, 1000000),
-            form=form, on_change=on_change)
+        _, diff_field = add_property_to_form('Difference',
+                                             'int',
+                                             1, (-1000000, 1000000),
+                                             form=form,
+                                             on_change=on_change)
 
-        _, size_field = add_property_to_form(
-            'Size', 'int', 3, (0, 1000),
-            form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form(
-            'Mode', 'choice', valid_values=modes(),
-            form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
 
-        return {
-            'diff_field': diff_field,
-            'size_field': size_field,
-            'mode_field': mode_field
-        }
+        return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field}
 
     @staticmethod
     def execute_wrapper(diff_field=None, size_field=None, mode_field=None):
@@ -84,29 +74,26 @@ class OutliersFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--outliers",
-        required=False,
-        type=float,
-        help="Pixel difference above which to crop bright pixels.")
+    parser.add_argument("--outliers",
+                        required=False,
+                        type=float,
+                        help="Pixel difference above which to crop bright pixels.")
 
-    parser.add_argument(
-        "--outliers-radius",
-        default=_default_radius,
-        required=False,
-        type=int,
-        help="Default: %(default)s. "
-             "Radius for the median filter to determine the outlier.")
+    parser.add_argument("--outliers-radius",
+                        default=_default_radius,
+                        required=False,
+                        type=int,
+                        help="Default: %(default)s. "
+                        "Radius for the median filter to determine the outlier.")
 
-    parser.add_argument(
-        "--outliers-mode",
-        default=_default_mode,
-        required=False,
-        type=str,
-        help="Default: %(default)s. "
-             "Crop bright or dark pixels.\n"
-             "Cropping dark pixels is more expensive. "
-             "It will invert the image before and after removing the outliers")
+    parser.add_argument("--outliers-mode",
+                        default=_default_mode,
+                        required=False,
+                        type=str,
+                        help="Default: %(default)s. "
+                        "Crop bright or dark pixels.\n"
+                        "Cropping dark pixels is more expensive. "
+                        "It will invert the image before and after removing the outliers")
 
     return parser
 

@@ -18,8 +18,7 @@ _DOCK_OPTS |= Qt.QMainWindow.AllowNestedDocks
 _DOCK_OPTS |= Qt.QMainWindow.AllowTabbedDocks
 
 _DOCK_COUNT = 0
-_DOCK_POSITIONS = (QtCore.Qt.LeftDockWidgetArea, QtCore.Qt.TopDockWidgetArea,
-                   QtCore.Qt.RightDockWidgetArea,
+_DOCK_POSITIONS = (QtCore.Qt.LeftDockWidgetArea, QtCore.Qt.TopDockWidgetArea, QtCore.Qt.RightDockWidgetArea,
                    QtCore.Qt.BottomDockWidgetArea)
 
 

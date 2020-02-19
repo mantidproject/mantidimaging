@@ -21,12 +21,4 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import (  # noqa: F401
-        cor,
-        corpc,
-        corvo,
-        corwrite,
-        imopr,
-        opr,
-        recon,
-        sinogram,
-        visualiser)
+    cor, corpc, corvo, corwrite, imopr, opr, recon, sinogram, visualiser)

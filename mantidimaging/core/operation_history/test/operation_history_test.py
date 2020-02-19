@@ -5,7 +5,6 @@ from mantidimaging.core.operation_history.operations import (MODULE_NOT_FOUND, I
 
 
 class OperationHistoryTest(unittest.TestCase):
-
     def test_finds_modules(self):
         in_ops = [ImageOperation("RebinFilter", [], {}), ImageOperation("MedianFilter", [], {})]
         ops = operations.ops_to_partials(in_ops)

@@ -26,8 +26,7 @@ class CutOffFilter(BaseFilter):
                 dmin = np.amin(data)
                 dmax = np.amax(data)
 
-                progress.update(msg=f"Applying cut-off with level: {threshold}, min value "
-                                    f"{dmin}, max value {dmax}")
+                progress.update(msg=f"Applying cut-off with level: {threshold}, min value " f"{dmin}, max value {dmax}")
 
                 rel_cut_off = dmin + threshold * (dmax - dmin)
 
@@ -39,14 +38,14 @@ class CutOffFilter(BaseFilter):
     def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, threshold_field = add_property_to_form(
-            'Threshold', 'float', 0.95, (0.0, 1.0),
-            form=form, on_change=on_change)
+        _, threshold_field = add_property_to_form('Threshold',
+                                                  'float',
+                                                  0.95, (0.0, 1.0),
+                                                  form=form,
+                                                  on_change=on_change)
         threshold_field.setSingleStep(0.05)
 
-        return {
-            'threshold_field': threshold_field
-        }
+        return {'threshold_field': threshold_field}
 
     @staticmethod
     def execute_wrapper(threshold_field):
@@ -54,13 +53,12 @@ class CutOffFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--cut-off",
-        required=False,
-        type=float,
-        default=None,
-        help="Cut off values above threshold relative to the max pixels. "
-             "The threshold must be in range 0 < threshold < 1. "
-             "Example: --cut-off 0.95")
+    parser.add_argument("--cut-off",
+                        required=False,
+                        type=float,
+                        default=None,
+                        help="Cut off values above threshold relative to the max pixels. "
+                        "The threshold must be in range 0 < threshold < 1. "
+                        "Example: --cut-off 0.95")
 
     return parser

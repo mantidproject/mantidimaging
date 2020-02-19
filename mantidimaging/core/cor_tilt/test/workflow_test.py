@@ -2,13 +2,11 @@ from unittest import TestCase
 
 import numpy as np
 
-from mantidimaging.core.cor_tilt import (
-        CorTiltDataModel, run_auto_finding_on_images)
+from mantidimaging.core.cor_tilt import (CorTiltDataModel, run_auto_finding_on_images)
 from mantidimaging.core.data import Images
 
 
 class WorkflowTest(TestCase):
-
     def test_run_auto_cor_tilt_on_images(self):
         num_projections = 8
         dim_y = 128
@@ -37,13 +35,8 @@ class WorkflowTest(TestCase):
 
         auto_cor_tilt_kwargs = auto_cor_tilt['kwargs']
         print(auto_cor_tilt)
-        self.assertAlmostEqual(
-                auto_cor_tilt_kwargs['rotation_centre'], model.cor)
-        self.assertAlmostEqual(
-                auto_cor_tilt_kwargs['fitted_gradient'], model.gradient)
-        self.assertAlmostEqual(
-                auto_cor_tilt_kwargs['tilt_angle_rad'], model.angle_rad)
-        self.assertTrue(isinstance(
-            auto_cor_tilt_kwargs['slice_indices'], list))
-        self.assertTrue(isinstance(
-            auto_cor_tilt_kwargs['rotation_centres'], list))
+        self.assertAlmostEqual(auto_cor_tilt_kwargs['rotation_centre'], model.cor)
+        self.assertAlmostEqual(auto_cor_tilt_kwargs['fitted_gradient'], model.gradient)
+        self.assertAlmostEqual(auto_cor_tilt_kwargs['tilt_angle_rad'], model.angle_rad)
+        self.assertTrue(isinstance(auto_cor_tilt_kwargs['slice_indices'], list))
+        self.assertTrue(isinstance(auto_cor_tilt_kwargs['rotation_centres'], list))

@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QTableView
 
 
 class RemovableRowTableView(QTableView):
-
     def keyPressEvent(self, e):
         super(RemovableRowTableView, self).keyPressEvent(e)
 

@@ -74,16 +74,9 @@ class StackVisualiser(object):
         axcolor = 'lightgoldenrodyellow'
 
         # add the axis for the slider
-        self.slider_axis = self.fig.add_axes(
-            [0.25, 0.1, 0.5, 0.03], axisbg=axcolor)
+        self.slider_axis = self.fig.add_axes([0.25, 0.1, 0.5, 0.03], axisbg=axcolor)
 
-        self.slider = Slider(
-            self.slider_axis,
-            'Slices',
-            0,
-            cube.shape[axis] - 1,
-            valinit=0,
-            valfmt='%i')
+        self.slider = Slider(self.slider_axis, 'Slices', 0, cube.shape[axis] - 1, valinit=0, valfmt='%i')
 
         self.slider.on_changed(self.update)
         plt.show(block)
@@ -113,10 +106,7 @@ class StackVisualiser(object):
 
     def update(self, val):
         ind = int(self.slider.val)
-        s = [
-            slice(ind, ind + 1) if i == self.axis else slice(None)
-            for i in range(3)
-        ]
+        s = [slice(ind, ind + 1) if i == self.axis else slice(None) for i in range(3)]
         im = self.cube[s].squeeze()
         self.image.set_data(im)
         self.fig.canvas.draw()

@@ -56,7 +56,7 @@ def execute_back(entry, *args, **kwargs):
     func = entry[1]
     # assume the first parameter is the input data, and append the rest at the
     # end
-    args = (args[0],) + entry[2] + args[1:]
+    args = (args[0], ) + entry[2] + args[1:]
     kwargs.update(entry[3])
     to_call = getattr(package, func)
     return to_call(*args, **kwargs)

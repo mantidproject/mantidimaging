@@ -14,11 +14,7 @@ LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
 
 
-def reconstruct_single_preview(sample,
-                               slice_idx,
-                               cor,
-                               proj_angles,
-                               progress=None):
+def reconstruct_single_preview(sample, slice_idx, cor, proj_angles, progress=None):
     """
     Performs a preview of a single slice/sinogram from a 3D volume provided as
     a stack of projections.
@@ -30,27 +26,18 @@ def reconstruct_single_preview(sample,
     :param progress: Optional progress reporter
     :return: 2D image data for reconstructed slice
     """
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Tomopy reconstruction')
+    progress = Progress.ensure_instance(progress, task_name='Tomopy reconstruction')
 
     volume = [None]
     with progress:
         s = np.swapaxes(sample[:, [slice_idx], :], 0, 1)
 
-        volume = tomopy.recon(
-            tomo=s,
-            sinogram_order=True,
-            theta=proj_angles,
-            center=cor,
-            algorithm='gridrec')
+        volume = tomopy.recon(tomo=s, sinogram_order=True, theta=proj_angles, center=cor, algorithm='gridrec')
 
     return volume[0]
 
 
-def reconstruct_single_preview_from_sinogram(sample,
-                                             cor,
-                                             proj_angles,
-                                             progress=None):
+def reconstruct_single_preview_from_sinogram(sample, cor, proj_angles, progress=None):
     """
 
     :param sample: 2D sinogram data
@@ -59,17 +46,11 @@ def reconstruct_single_preview_from_sinogram(sample,
     :param progress: Optional progress reporter
     :return: 2D image data for reconstructed slice
     """
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Tomopy reconstruction')
+    progress = Progress.ensure_instance(progress, task_name='Tomopy reconstruction')
 
     volume = [None]
     with progress:
-        volume = tomopy.recon(
-            tomo=[sample],
-            sinogram_order=True,
-            theta=proj_angles,
-            center=cor,
-            algorithm='gridrec')
+        volume = tomopy.recon(tomo=[sample], sinogram_order=True, theta=proj_angles, center=cor, algorithm='gridrec')
 
     return volume[0]
 
@@ -96,8 +77,7 @@ def reconstruct(sample,
     :param progress: Optional progress reporter
     :return: 3D image data for reconstructed volume
     """
-    progress = Progress.ensure_instance(progress,
-                                        task_name='TomoPy reconstruction')
+    progress = Progress.ensure_instance(progress, task_name='TomoPy reconstruction')
 
     if ncores is None:
         import multiprocessing
@@ -105,13 +85,11 @@ def reconstruct(sample,
 
     # Use a custom version of this function and monkey patch it to Tomopy to
     # facilitate fine grained progress reporting
-    def monkey_patched_dist_recon(tomo, center, recon, algorithm, args, kwargs,
-                                  ncore, nchunk):
+    def monkey_patched_dist_recon(tomo, center, recon, algorithm, args, kwargs, ncore, nchunk):
         axis_size = recon.shape[0]
 
         # Use a chunk size of 1 to process one sinogram per thread execution
-        ncore, slcs = tomopy.util.mproc.get_ncore_slices(
-            axis_size, ncore, 1)
+        ncore, slcs = tomopy.util.mproc.get_ncore_slices(axis_size, ncore, 1)
 
         progress.add_estimated_steps(len(slcs))
 
@@ -122,8 +100,7 @@ def reconstruct(sample,
         else:
             with cf.ThreadPoolExecutor(ncore) as e:
                 for slc in slcs:
-                    f = e.submit(algorithm, tomo[slc], center[slc], recon[slc],
-                                 *args, **kwargs)
+                    f = e.submit(algorithm, tomo[slc], center[slc], recon[slc], *args, **kwargs)
                     f.add_done_callback(lambda _: progress.update())
 
         return recon

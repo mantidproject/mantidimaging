@@ -35,7 +35,7 @@ class ProcessListTest(FileOutputtingTestCase):
         func_tuple = self.pl.next()
         self.assertEqual(func_tuple[0], PACKAGE_LOCATION_STRING)
         self.assertEqual(func_tuple[1], FUNC_NAME)
-        self.assertEqual(func_tuple[2], (3,))
+        self.assertEqual(func_tuple[2], (3, ))
         self.assertEqual(func_tuple[3], {})
 
         func_tuple = self.pl.next()
@@ -47,14 +47,13 @@ class ProcessListTest(FileOutputtingTestCase):
         func_tuple = self.pl.next()
         self.assertEqual(func_tuple[0], PACKAGE_LOCATION_STRING)
         self.assertEqual(func_tuple[1], FUNC_NAME)
-        self.assertEqual(func_tuple[2], (11,))
+        self.assertEqual(func_tuple[2], (11, ))
         self.assertEqual(func_tuple[3], {'mode': 'test'})
 
     def test_save(self):
         filename = os.path.join(self.output_directory, 'test_process_list.txt')
         self.pl.save(filename)
-        th.assert_files_exist(
-            self, filename, file_extension='', file_extension_separator='')
+        th.assert_files_exist(self, filename, file_extension='', file_extension_separator='')
 
     def test_load(self):
         filename = os.path.join(self.output_directory, 'test_process_list.txt')
@@ -73,8 +72,7 @@ class ProcessListTest(FileOutputtingTestCase):
         self.assertEqual(self.pl, new_pl)
 
     def test_fail_store(self):
-        self.assertRaises(AssertionError, self.pl.store,
-                          MedianFilter().filter_func, 3, not_existing_kwarg=3)
+        self.assertRaises(AssertionError, self.pl.store, MedianFilter().filter_func, 3, not_existing_kwarg=3)
 
     def test_from_string_fail(self):
         input_string = "some arbitrary string here"

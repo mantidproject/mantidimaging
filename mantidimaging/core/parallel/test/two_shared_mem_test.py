@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
 from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 def add_inplace(first_shared, second_shared, add_arg):
@@ -37,8 +35,7 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace, add_arg=5)
+        f = ptsm.create_partial(add_inplace, fwd_function=ptsm.inplace, add_arg=5)
 
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Inplace test")
@@ -62,8 +59,7 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
+        f = ptsm.create_partial(add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Second 2D test")
@@ -85,8 +81,7 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
+        f = ptsm.create_partial(return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to first test")
@@ -108,8 +103,7 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
+        f = ptsm.create_partial(return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to second test")
@@ -117,8 +111,6 @@ class TwoSharedMemTest(unittest.TestCase):
         # compare results
         npt.assert_equal(res2, expected)
         npt.assert_equal(res1, orig_img)
-
-# ------------------------- FAIL CASES -----------------------
 
     def test_fail_with_normal_array_fwd_func_inplace(self):
         # create data as normal nd array
@@ -167,8 +159,7 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
+        f = ptsm.create_partial(add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Fail Second 2D test")
@@ -194,12 +185,10 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
+        f = ptsm.create_partial(return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
-        res1, res2 = ptsm.execute(
-            img, img2nd, f, name="Fail Return to first test")
+        res1, res2 = ptsm.execute(img, img2nd, f, name="Fail Return to first test")
 
         # compare results
         npt.assert_equal(res1, img)
@@ -225,19 +214,15 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
+        f = ptsm.create_partial(return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
-        res1, res2 = ptsm.execute(
-            img, img2nd, f, name="Fail Return to second test")
+        res1, res2 = ptsm.execute(img, img2nd, f, name="Fail Return to second test")
 
         # compare results
         npt.assert_equal(res1, img)
         npt.assert_equal(res2, img2nd)
         th.assert_not_equals(res2, expected)
-
-# ------------------------- MEMORY TESTS -----------------------
 
     def test_memory_fwd_func_inplace(self):
         # create data as shared array
@@ -252,14 +237,12 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace, add_arg=5)
+        f = ptsm.create_partial(add_inplace, fwd_function=ptsm.inplace, add_arg=5)
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
         ptsm.execute(img, img2nd, f, name="Inplace test")
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(img, expected)
         npt.assert_equal(img2nd, orig_2nd)
@@ -279,14 +262,12 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
+        f = ptsm.create_partial(add_inplace, fwd_function=ptsm.inplace_second_2d, add_arg=5)
 
         # execute parallel
         cached_memory = get_memory_usage_linux(kb=True)[0]
         ptsm.execute(img, img2nd, f, name="Second 2D test")
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(img, expected)
         npt.assert_equal(img2nd, orig_2nd[0])
@@ -304,14 +285,12 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
+        f = ptsm.create_partial(return_from_func, fwd_function=ptsm.return_to_first, add_arg=5)
 
         # execute parallel
         cached_memory = get_memory_usage_linux(kb=True)[0]
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to first test")
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(res1, expected)
         npt.assert_equal(res2, orig_2nd)
@@ -329,14 +308,12 @@ class TwoSharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = ptsm.create_partial(
-            return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
+        f = ptsm.create_partial(return_from_func, fwd_function=ptsm.return_to_second, add_arg=5)
 
         # execute parallel
         cached_memory = get_memory_usage_linux(kb=True)[0]
         res1, res2 = ptsm.execute(img, img2nd, f, name="Return to second test")
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
         # compare results
         npt.assert_equal(res2, expected)
         npt.assert_equal(res1, orig_img)

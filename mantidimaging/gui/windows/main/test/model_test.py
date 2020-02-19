@@ -31,10 +31,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_create_name_multiple_duplicate_stacks_loaded(self):
         with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
-            mock_stack_list.return_value = [
-                StackId('aaa', 'test'),
-                StackId('aaa', 'test_2'),
-                StackId('aaa', 'test_3')]
+            mock_stack_list.return_value = [StackId('aaa', 'test'), StackId('aaa', 'test_2'), StackId('aaa', 'test_3')]
             self.assertEquals(self.model.create_name("test"), "test_4")
 
     def test_create_name_strips_extension(self):

@@ -9,7 +9,6 @@ from mantidimaging.core.parallel import utility as pu
 
 
 class UtilityTest(unittest.TestCase):
-
     def test_shared_memory_is_freed(self):
         mapped_before = MemInfo().get('Mapped')
 

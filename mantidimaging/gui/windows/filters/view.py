@@ -5,8 +5,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import (
-    delete_all_widgets_from_layout)
+from mantidimaging.gui.utility import (delete_all_widgets_from_layout)
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
@@ -29,8 +28,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
-        self.filterSelector.currentIndexChanged[int].connect(
-            self.handle_filter_selection)
+        self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
         self.handle_filter_selection(0)
 
         # Handle stack selection
@@ -49,13 +47,11 @@ class FiltersWindowView(BaseMainWindowView):
         self.linkImages.stateChanged.connect(self.link_images_changed)
 
         # Handle preview index selection
-        self.previewImageIndex.valueChanged[int].connect(
-            self.presenter.set_preview_image_index)
+        self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)
 
         # Preview update triggers
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
-        self.updatePreviewButton.clicked.connect(
-            lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
+        self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
         self.stackSelector.subscribe_to_main_window(main_window)
 

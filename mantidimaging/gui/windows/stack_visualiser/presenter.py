@@ -26,7 +26,6 @@ class SVImageMode(IntEnum):
 
 
 class StackVisualiserPresenter(BasePresenter):
-
     def __init__(self, view, images: Images):
         super(StackVisualiserPresenter, self).__init__(view)
         self.model = SVModel()

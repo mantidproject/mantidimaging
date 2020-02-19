@@ -9,8 +9,7 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.configs.functional_config import FunctionalConfig
-from mantidimaging.core.configs.filter_registration import (
-        register_filters_on_cli)
+from mantidimaging.core.configs.filter_registration import (register_filters_on_cli)
 
 
 def grab_full_config(default_args=None):
@@ -24,10 +23,9 @@ def grab_full_config(default_args=None):
     # intentionally not importing with the whole module sometimes we don't want
     # to process the sys.argv arguments
 
-    parser = argparse.ArgumentParser(
-        description="Run image processing and tomographic reconstruction via "
-                    "third party tools",
-        formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description="Run image processing and tomographic reconstruction via "
+                                     "third party tools",
+                                     formatter_class=RawTextHelpFormatter)
 
     # this sets up the arguments in the parser, with defaults from the Config
     # file
@@ -55,7 +53,6 @@ class ReconstructionConfig(object):
     """
     Full configuration (pre-proc + tool/algorithm + post-proc.
     """
-
     def __init__(self, functional_config, args, special_args=True):
         """
         :param functional_config: The functional config,
@@ -64,9 +61,8 @@ class ReconstructionConfig(object):
         :param funsafe: If funsafe the special arguments check will be skipped
         """
         # just some sanity checks
-        assert isinstance(
-            functional_config, FunctionalConfig
-        ), "Functional config is invalid type. The script might be corrupted."
+        assert isinstance(functional_config,
+                          FunctionalConfig), "Functional config is invalid type. The script might be corrupted."
 
         self.func = functional_config
         self.args = args
@@ -80,36 +76,28 @@ class ReconstructionConfig(object):
 
         if self.args.region_of_interest:
             if len(self.args.region_of_interest) != 4:
-                raise ValueError(
-                    "Not enough arguments provided for the Region of Interest!"
-                    " Expecting 4, but found {0}: {1}".format(
-                        len(self.args.region_of_interest),
-                        self.args.region_of_interest))
+                raise ValueError("Not enough arguments provided for the Region of Interest!"
+                                 " Expecting 4, but found {0}: {1}".format(len(self.args.region_of_interest),
+                                                                           self.args.region_of_interest))
 
-            self.args.region_of_interest = [
-                int(val) for val in self.args.region_of_interest
-            ]
+            self.args.region_of_interest = [int(val) for val in self.args.region_of_interest]
 
         if self.args.air_region:
             if len(self.args.air_region) != 4:
-                raise ValueError(
-                    "Not enough arguments provided for the Air Region "
-                    "Normalisation! Expecting 4, but found {0}: {1}"
-                    .format(len(self.args.air_region), self.args.air_region))
+                raise ValueError("Not enough arguments provided for the Air Region "
+                                 "Normalisation! Expecting 4, but found {0}: {1}".format(
+                                     len(self.args.air_region), self.args.air_region))
 
             self.args.air_region = [int(val) for val in self.args.air_region]
 
-        if (self.func.save_preproc or self.func.convert or
-                self.func.aggregate) and not self.func.output_path:
-            raise ValueError(
-                "An option was specified that requires an output directory, "
-                "but no output directory was given!\n"
-                "The options that require output directory are:\n"
-                "-s/--save-preproc, --convert, --aggregate")
+        if (self.func.save_preproc or self.func.convert or self.func.aggregate) and not self.func.output_path:
+            raise ValueError("An option was specified that requires an output directory, "
+                             "but no output directory was given!\n"
+                             "The options that require output directory are:\n"
+                             "-s/--save-preproc, --convert, --aggregate")
 
         if self.func.cors is None and self.func.reconstruction:
-            raise ValueError("If running a reconstruction a Center of "
-                             "Rotation MUST be provided")
+            raise ValueError("If running a reconstruction a Center of " "Rotation MUST be provided")
 
         if self.func.cors and os.path.exists(self.func.cors[0]):
             # If the provided cors is a filename then load COR from file
@@ -135,10 +123,8 @@ class ReconstructionConfig(object):
             len_cors = len(self.func.cors)
             len_cor_slices = len(self.func.cor_slices)
             if len_cors != len_cor_slices:
-                raise ValueError(
-                    "Centers of Rotation (len {0}) doesn't match length of "
-                    "Slice Indices (len {1})!".format(len_cors,
-                                                      len_cor_slices))
+                raise ValueError("Centers of Rotation (len {0}) doesn't match length of "
+                                 "Slice Indices (len {1})!".format(len_cors, len_cor_slices))
 
         log.debug("CORs: {}".format(self.func.cors))
         log.debug("COR slices: {}".format(self.func.cor_slices))
@@ -165,18 +151,14 @@ class ReconstructionConfig(object):
                 self.func.indices = [0, self.func.indices[0], 1]
             elif len(self.func.indices) == 2:
                 # only add the step
-                self.func.indices = [
-                    self.func.indices[0], self.func.indices[1], 1
-                ]
+                self.func.indices = [self.func.indices[0], self.func.indices[1], 1]
             elif len(self.func.indices) > 3:
-                raise ValueError(
-                    "Invalid amount of indices provided! Please use one of "
-                    "the formats --indices <end_idx>, --indices <start_idx> "
-                    "<end_idx>, --indices <start_idx> <end_idx> <step>")
+                raise ValueError("Invalid amount of indices provided! Please use one of "
+                                 "the formats --indices <end_idx>, --indices <start_idx> "
+                                 "<end_idx>, --indices <start_idx> <end_idx> <step>")
 
         if self.func.split and not self.func.max_memory:
-            raise ValueError("The --split flag was passed, but no "
-                             "--max-memory was specified!")
+            raise ValueError("The --split flag was passed, but no " "--max-memory was specified!")
 
         # float16, uint16 data types produce exceptions
         # > float 16 - scipy median filter does not support it
@@ -227,5 +209,4 @@ class ReconstructionConfig(object):
         # update the configs
         functional_args._update(fake_args)
 
-        return ReconstructionConfig(
-                functional_args, fake_args, special_args=False)
+        return ReconstructionConfig(functional_args, fake_args, special_args=False)

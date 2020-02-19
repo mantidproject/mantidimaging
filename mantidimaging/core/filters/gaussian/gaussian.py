@@ -46,23 +46,13 @@ class GaussianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change):
-        _, size_field = add_property_to_form(
-            'Kernel Size', 'int', 3, (0, 1000),
-            form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Kernel Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
 
-        _, order_field = add_property_to_form(
-            'Order', 'int', 0, (0, 3),
-            form=form, on_change=on_change)
+        _, order_field = add_property_to_form('Order', 'int', 0, (0, 3), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form(
-            'Mode', 'choice', valid_values=modes(),
-            form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
 
-        return {
-            'size_field': size_field,
-            'order_field': order_field,
-            'mode_field': mode_field
-        }
+        return {'size_field': size_field, 'order_field': order_field, 'mode_field': mode_field}
 
     @staticmethod
     def execute_wrapper(size_field=None, order_field=None, mode_field=None):
@@ -75,35 +65,32 @@ class GaussianFilter(BaseFilter):
 def _cli_register(parser):
     default_size = None
     default_order = 0
-    parser.add_argument(
-        "--gaussian-size",
-        required=False,
-        type=float,
-        default=default_size,
-        help="Apply gaussian filter (2d) on reconstructed volume with the "
-             "given window size.")
+    parser.add_argument("--gaussian-size",
+                        required=False,
+                        type=float,
+                        default=default_size,
+                        help="Apply gaussian filter (2d) on reconstructed volume with the "
+                        "given window size.")
 
-    parser.add_argument(
-        "--gaussian-mode",
-        type=str,
-        required=False,
-        default=modes()[0],
-        choices=modes(),
-        help="Default: %(default)s\nMode of gaussian filter which determines "
-             "how the array borders are handled.(pre processing).")
+    parser.add_argument("--gaussian-mode",
+                        type=str,
+                        required=False,
+                        default=modes()[0],
+                        choices=modes(),
+                        help="Default: %(default)s\nMode of gaussian filter which determines "
+                        "how the array borders are handled.(pre processing).")
 
-    parser.add_argument(
-        "--gaussian-order",
-        required=False,
-        type=int,
-        default=default_order,
-        help="Default: %(default)d\nThe order of the filter along each axis "
-             "is given as a sequence of integers, \n"
-             "or as a single number. An order of 0 corresponds to "
-             "convolution with a Gaussian kernel.\n"
-             "An order of 1, 2, or 3 corresponds to convolution "
-             "with the first, second or third derivatives of a Gaussian.\n"
-             "Higher order derivatives are not implemented.")
+    parser.add_argument("--gaussian-order",
+                        required=False,
+                        type=int,
+                        default=default_order,
+                        help="Default: %(default)d\nThe order of the filter along each axis "
+                        "is given as a sequence of integers, \n"
+                        "or as a single number. An order of 0 corresponds to "
+                        "convolution with a Gaussian kernel.\n"
+                        "An order of 1, 2, or 3 corresponds to convolution "
+                        "with the first, second or third derivatives of a Gaussian.\n"
+                        "Higher order derivatives are not implemented.")
 
     return parser
 
@@ -114,9 +101,7 @@ def modes():
 
 def _execute_seq(data, size, mode, order, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress,
-                                        num_steps=data.shape[0],
-                                        task_name='Gaussian filter')
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Gaussian filter')
 
     # Sequential CPU version of the Gaussian filter
     log.info("Starting  gaussian filter, with pixel data type: {0}, "
@@ -124,30 +109,25 @@ def _execute_seq(data, size, mode, order, progress=None):
 
     for idx in range(0, data.shape[0]):
         progress.update()
-        data[idx] = scipy_ndimage.gaussian_filter(
-            data[idx], size, mode=mode, order=order)
+        data[idx] = scipy_ndimage.gaussian_filter(data[idx], size, mode=mode, order=order)
 
     progress.mark_complete()
-    log.info("Finished gaussian filter, with pixel data type: {0}, "
-             "filter size/width: {1}.".format(data.dtype, size))
+    log.info("Finished gaussian filter, with pixel data type: {0}, " "filter size/width: {1}.".format(data.dtype, size))
 
     return data
 
 
-def _execute_par(data, size, mode, order, cores=None, chunksize=None,
-                 progress=None):
+def _execute_par(data, size, mode, order, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Gaussian filter')
+    progress = Progress.ensure_instance(progress, task_name='Gaussian filter')
 
     # Parallel CPU version of the Gaussian filter
     # create the partial function to forward the parameters
-    f = psm.create_partial(
-        scipy_ndimage.gaussian_filter,
-        fwd_func=psm.return_fwd_func,
-        sigma=size,
-        mode=mode,
-        order=order)
+    f = psm.create_partial(scipy_ndimage.gaussian_filter,
+                           fwd_func=psm.return_fwd_func,
+                           sigma=size,
+                           mode=mode,
+                           order=order)
 
     log.info("Starting PARALLEL gaussian filter, with pixel data type: {0}, "
              "filter size/width: {1}.".format(data.dtype, size))

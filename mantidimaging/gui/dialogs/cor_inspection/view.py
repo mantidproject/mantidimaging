@@ -5,15 +5,12 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.widgets import NavigationToolbarSimple
 
-from .presenter import (
-        CORInspectionDialogPresenter,
-        Notification as PresNotification)
+from .presenter import (CORInspectionDialogPresenter, Notification as PresNotification)
 
 
 class CORInspectionDialogView(BaseDialogView):
     def __init__(self, parent, cmap='Greys_r', **args):
-        super(CORInspectionDialogView, self).__init__(
-                parent, 'gui/ui/cor_inspection_dialog.ui')
+        super(CORInspectionDialogView, self).__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
 
         self.presenter = CORInspectionDialogPresenter(self, **args)
         self.cmap = cmap
@@ -26,28 +23,19 @@ class CORInspectionDialogView(BaseDialogView):
         self.image_canvas = FigureCanvasQTAgg(self.image_figure)
         self.image_canvas.setParent(self)
         self.imagePlotLayout.addWidget(self.image_canvas)
-        self.image_plots = self.image_figure.subplots(
-                1, 3, sharex=True, sharey=True)
+        self.image_plots = self.image_figure.subplots(1, 3, sharex=True, sharey=True)
 
         # Common image toolbar (attached to centre image)
         self.plot_toolbar = NavigationToolbarSimple(self.image_canvas, self)
         self.plotToolbarLayout.addWidget(self.plot_toolbar)
 
         # Handle best image selection
-        self.lessButton.pressed.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.IMAGE_CLICKED_LESS))
-        self.currentButton.pressed.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.IMAGE_CLICKED_CURRENT))
-        self.moreButton.pressed.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.IMAGE_CLICKED_MORE))
+        self.lessButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_LESS))
+        self.currentButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_CURRENT))
+        self.moreButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_MORE))
 
         # Handle parameter updates
-        self.step.valueChanged.connect(
-                lambda: self.presenter.notify(
-                    PresNotification.UPDATE_PARAMETERS_FROM_UI))
+        self.step.valueChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PARAMETERS_FROM_UI))
 
         self._image_cache = [None, None, None]
 

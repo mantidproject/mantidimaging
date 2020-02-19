@@ -45,3 +45,6 @@ test-env:
 
 mypy:
 	python -m mypy --ignore-missing-imports mantidimaging
+
+yapf:
+	yapf --parallel --diff --recursive .

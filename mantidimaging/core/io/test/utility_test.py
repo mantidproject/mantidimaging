@@ -17,17 +17,11 @@ class UtilityTest(FileOutputtingTestCase):
         self.config.func.log_level = logging.CRITICAL
 
     def test_get_candidate_file_extensions(self):
-        self.assertEquals(
-                ['tif', 'tiff'],
-                utility.get_candidate_file_extensions('tif'))
+        self.assertEquals(['tif', 'tiff'], utility.get_candidate_file_extensions('tif'))
 
-        self.assertEquals(
-                ['tiff', 'tif'],
-                utility.get_candidate_file_extensions('tiff'))
+        self.assertEquals(['tiff', 'tif'], utility.get_candidate_file_extensions('tiff'))
 
-        self.assertEquals(
-                ['png'],
-                utility.get_candidate_file_extensions('png'))
+        self.assertEquals(['png'], utility.get_candidate_file_extensions('png'))
 
     def test_get_file_names(self):
         # Create test file with .tiff extension

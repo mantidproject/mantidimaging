@@ -25,12 +25,11 @@ def execute(sample, flat, dark, config, indices):
 
     i1, i2 = handle_indices(indices)
 
-    sample = tool.run_reconstruct(
-        sample[i1:i2, :, :],
-        config,
-        config.helper,
-        sinogram_order=True,
-        proj_angles=proj_angles)
+    sample = tool.run_reconstruct(sample[i1:i2, :, :],
+                                  config,
+                                  config.helper,
+                                  sinogram_order=True,
+                                  proj_angles=proj_angles)
 
     show_3d(sample, 0, block=True)
 

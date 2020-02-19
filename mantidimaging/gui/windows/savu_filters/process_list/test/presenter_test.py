@@ -6,7 +6,6 @@ import numpy as np
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginListEntry
 from mantidimaging.gui.windows.savu_filters.process_list import ProcessListView, ProcessListPresenter
 
-
 PLUGIN_NAME = "TestPlugin"
 
 
@@ -17,8 +16,10 @@ class ProcessListPresenterTest(unittest.TestCase):
 
     @staticmethod
     def _test_plugin():
-        return SAVUPluginListEntry(True, *[np.string_() for _ in range(4)],
-                                   name=np.string_(PLUGIN_NAME), user=np.string_())
+        return SAVUPluginListEntry(True,
+                                   *[np.string_() for _ in range(4)],
+                                   name=np.string_(PLUGIN_NAME),
+                                   user=np.string_())
 
     def test_add_plugin(self):
         plugin = self._test_plugin()

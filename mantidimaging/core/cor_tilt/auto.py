@@ -10,7 +10,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 # check if the functionality of a module is available based on the presence of
 # optional libraries
 from mantidimaging.core.utility.optional_imports import (  # noqa: F401
-        safe_import, tomopy_available as available)
+    safe_import, tomopy_available as available)
 
 tomopy = safe_import('tomopy')
 
@@ -18,19 +18,17 @@ LOG = getLogger(__name__)
 
 
 def find_cor_at_slice(slice_idx, sample_data):
-    return tomopy.find_center_vo(
-          tomo=sample_data,
-          ind=slice_idx,
-          ratio=1.0,
-          smin=0,
-          smax=200,
-          srad=10.0,
-          step=2.0,
-          drop=0)
+    return tomopy.find_center_vo(tomo=sample_data,
+                                 ind=slice_idx,
+                                 ratio=1.0,
+                                 smin=0,
+                                 smax=200,
+                                 srad=10.0,
+                                 step=2.0,
+                                 drop=0)
 
 
-def auto_find_cors(stack, roi, model, projections=None, cores=None,
-                   progress=None):
+def auto_find_cors(stack, roi, model, projections=None, cores=None, progress=None):
     if model.empty:
         raise ValueError('No points in model to calculate')
 
@@ -52,16 +50,13 @@ def auto_find_cors(stack, roi, model, projections=None, cores=None,
         LOG.debug("Cropped data shape: {}".format(cropped_data.shape))
 
         if np.any([v == 0 for v in cropped_data.shape]):
-            raise ValueError('At least one axis has zero length, this '
-                             'will produce no usable results')
+            raise ValueError('At least one axis has zero length, this ' 'will produce no usable results')
 
         # Obtain COR for each desired slice of ROI
-        cors = pu.create_shared_array((len(model.slices),), np.int32)
+        cors = pu.create_shared_array((len(model.slices), ), np.int32)
         np.copyto(cors, np.arange(len(model.slices), dtype=int))
 
-        f = psm.create_partial(find_cor_at_slice,
-                               fwd_func=psm.return_fwd_func,
-                               sample_data=cropped_data)
+        f = psm.create_partial(find_cor_at_slice, fwd_func=psm.return_fwd_func, sample_data=cropped_data)
 
         progress.update(msg="Rotation centre finding")
         psm.execute(cors, f, cores=cores, progress=progress)

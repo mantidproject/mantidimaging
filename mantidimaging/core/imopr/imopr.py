@@ -6,9 +6,8 @@ from mantidimaging.core.io import loader
 
 def get_available_operators():
     return [
-        'recon', 'sino', 'show', 'vis', 'cor', 'corvo', 'corpc', 'corwrite',
-        'sum', '+', 'subtract', 'sub', '-', 'divide', 'div', '/', 'multiply',
-        'mul', '*', 'mean', 'avg', 'x'
+        'recon', 'sino', 'show', 'vis', 'cor', 'corvo', 'corpc', 'corwrite', 'sum', '+', 'subtract', 'sub', '-',
+        'divide', 'div', '/', 'multiply', 'mul', '*', 'mean', 'avg', 'x'
     ]
 
 
@@ -66,12 +65,9 @@ def execute(config):
 
     images = loader.load_from_config(config)
 
-    getLogger(__name__).info(
-            "Data shape {0}".format(images.sample.shape))
+    getLogger(__name__).info("Data shape {0}".format(images.sample.shape))
 
-    return module.execute(
-            images.sample, images.flat, images.dark,
-            config, indices)
+    return module.execute(images.sample, images.flat, images.dark, config, indices)
 
 
 def get_function(module_name):

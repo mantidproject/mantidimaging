@@ -21,6 +21,4 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import (  # noqa: F401
-        default_filtering,
-        default_run,
-        process_list_run)
+    default_filtering, default_run, process_list_run)

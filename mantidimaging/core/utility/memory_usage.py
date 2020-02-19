@@ -18,11 +18,10 @@ def get_memory_usage_linux(kb=False, mb=False):
 
     tuple_to_return = tuple()  # start with empty tuple
     if kb:
-        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss),)
+        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss), )
 
     if mb:
-        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) /
-                            1024,)
+        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024, )
     return tuple_to_return
 
 

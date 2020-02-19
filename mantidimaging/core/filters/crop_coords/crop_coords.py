@@ -50,16 +50,13 @@ class CropCoordinatesFilter(BaseFilter):
     def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
-        add_property_to_form(
-            'Select ROI on stack visualiser.', 'label', form=form)
+        add_property_to_form('Select ROI on stack visualiser.', 'label', form=form)
 
         return {}
 
     @staticmethod
     def sv_params() -> Dict[str, Any]:
-        return {
-            'region_of_interest': SVParameters.ROI
-        }
+        return {'region_of_interest': SVParameters.ROI}
 
     @staticmethod
     def execute_wrapper(**kwargs) -> partial:
@@ -67,16 +64,15 @@ class CropCoordinatesFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "-R",
-        "--region-of-interest",
-        nargs='*',
-        required=False,
-        type=str,
-        help="Crop original images using these coordinates. The selection is a"
-             " rectangle and expected order is - Left Top Right Bottom.\n"
-             "If not given, the whole images are used.\n"
-             "Example: --region-of-interest 150 234 23 22.")
+    parser.add_argument("-R",
+                        "--region-of-interest",
+                        nargs='*',
+                        required=False,
+                        type=str,
+                        help="Crop original images using these coordinates. The selection is a"
+                        " rectangle and expected order is - Left Top Right Bottom.\n"
+                        "If not given, the whole images are used.\n"
+                        "Example: --region-of-interest 150 234 23 22.")
 
     return parser
 
@@ -92,8 +88,7 @@ def execute_single(data, region_of_interest, progress=None):
                        region in region_of_interest), \
                 "The region of interest coordinates are not integers!"
 
-            progress.update(msg="Cropping with coordinates: {0}.".format(
-                region_of_interest))
+            progress.update(msg="Cropping with coordinates: {0}.".format(region_of_interest))
 
             left = region_of_interest[0]
             top = region_of_interest[1]

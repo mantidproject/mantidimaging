@@ -38,9 +38,7 @@ def do_importing(tool, alg='fbp'):
     :return: the tool reference
     """
     if not isinstance(tool, str):
-        raise TypeError(
-            "The name of a reconstruction tool is required as a string. "
-            "Got: {0}".format(tool))
+        raise TypeError("The name of a reconstruction tool is required as a string. " "Got: {0}".format(tool))
     if 'tomopy' == tool:
         from mantidimaging.core.tools.tomopy_tool import TomoPyTool
         TomoPyTool.check_algorithm_compatibility(alg)

@@ -43,8 +43,7 @@ class ExclusiveMemTest(unittest.TestCase):
 
         img = esm.execute(img, f, name="Exclusive mem test")
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         npt.assert_equal(img, expected)
 

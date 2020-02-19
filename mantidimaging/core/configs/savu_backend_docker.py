@@ -2,10 +2,7 @@ class RemoteConfig:
     LOCAL_DATA_DIR = "/mnt/e"
     LOCAL_OUTPUT_DIR = "~/output"
     IMAGE_NAME = "dtasev/hebi"
-    NVIDIA_RUNTIME = {
-        "value": "--runtime=nvidia",
-        "active": False
-    }
+    NVIDIA_RUNTIME = {"value": "--runtime=nvidia", "active": False}
     DEVELOPMENT = False
 
 

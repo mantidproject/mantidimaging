@@ -33,8 +33,7 @@ def _do_reconstruction(sample, config, pl):
     if len(cors) != sample.shape[0]:
         # interpolate the CORs
         cor_slices = config.func.cor_slices
-        config.func.cors = cor_interpolate.execute(
-                sample.shape[0], cor_slices, cors)
+        config.func.cors = cor_interpolate.execute(sample.shape[0], cor_slices, cors)
 
     while not pl.is_over():
         process_list.execute(next(pl), sample, config)

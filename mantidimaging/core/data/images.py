@@ -12,7 +12,10 @@ from mantidimaging.core.operation_history import const
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
-    def __init__(self, sample, flat=None, dark=None,
+    def __init__(self,
+                 sample,
+                 flat=None,
+                 dark=None,
                  sample_filenames: Optional[List[str]] = None,
                  indices: Optional[Tuple[int, int, int]] = None,
                  flat_filenames: Optional[List[str]] = None,
@@ -43,10 +46,8 @@ class Images:
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
-            self.sample.shape if self.sample is not None else None,
-            self.flat.shape if self.flat is not None else None,
-            self.dark.shape if self.dark is not None else None,
-            len(self.metadata))
+            self.sample.shape if self.sample is not None else None, self.flat.shape if self.flat is not None else None,
+            self.dark.shape if self.dark is not None else None, len(self.metadata))
 
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
@@ -78,12 +79,13 @@ class Images:
             return type(o) in [str, int, float, bool, tuple, list]
 
         self.metadata[const.OPERATION_HISTORY].append({
-            const.OPERATION_NAME: func_name,
-            const.OPERATION_ARGS:
-                [a if accepted_type(a) else None for a in args],
-            const.OPERATION_KEYWORD_ARGS:
-                {k: v for k, v in kwargs.items() if accepted_type(v)},
-            const.OPERATION_DISPLAY_NAME: display_name
+            const.OPERATION_NAME:
+            func_name,
+            const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
+            const.OPERATION_KEYWORD_ARGS: {k: v
+                                           for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_DISPLAY_NAME:
+            display_name
         })
 
     @staticmethod

@@ -15,7 +15,6 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
-
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
@@ -150,8 +149,7 @@ class RebinTest(unittest.TestCase):
 
         result = RebinFilter.filter_func(images, val, mode)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 2)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 2)
 
         npt.assert_equal(result.shape[1], expected_x)
         npt.assert_equal(result.shape[2], expected_y)

@@ -6,6 +6,7 @@ pydevd = importlib.import_module("pydevd")
 LOG = getLogger(__name__)
 
 if pydevd is None:
+
     def reload(module):
         LOG.debug("Not reloading module as pydevd is not available")
         return module

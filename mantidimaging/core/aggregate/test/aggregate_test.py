@@ -37,10 +37,7 @@ class AggregateTest(FileOutputtingTestCase):
     def test_aggregate_single_folder_avg_tif(self):
         self.do_aggregate_single_folder('tif', 'tif', 'avg')
 
-    def do_aggregate_single_folder(self,
-                                   img_format,
-                                   convert_format,
-                                   mode='sum'):
+    def do_aggregate_single_folder(self, img_format, convert_format, mode='sum'):
         # this just converts between the formats, but not NXS!
         # create some images
         images = th.gen_img_shared_array()
@@ -61,11 +58,7 @@ class AggregateTest(FileOutputtingTestCase):
             saver._out_format = img_format
             saver._data_as_stack = stack
             # do the actual saving out, directories will be created here
-            saver.save(
-                images,
-                angle_path,
-                'out_angle',
-                out_format=saver._out_format)
+            saver.save(images, angle_path, 'out_angle', out_format=saver._out_format)
 
         # aggregate them
         conf = self.config
@@ -76,8 +69,7 @@ class AggregateTest(FileOutputtingTestCase):
         conf.func.input_path = aggregate_path
         conf.func.in_format = saver._out_format
         conf.func.out_format = convert_format
-        aggregate_output_path = os.path.join(self.output_directory,
-                                             'aggregated')
+        aggregate_output_path = os.path.join(self.output_directory, 'aggregated')
         conf.func.output_path = aggregate_output_path
         # because we need to write in the same folder
         conf.func.overwrite_all = True
@@ -87,10 +79,7 @@ class AggregateTest(FileOutputtingTestCase):
         # load them back
         # compare data to original
         # this does not load any flats or darks as they were not saved out
-        images = loader.load(
-            aggregate_output_path,
-            in_format=saver._out_format,
-            parallel_load=parallel)
+        images = loader.load(aggregate_output_path, in_format=saver._out_format, parallel_load=parallel)
 
         for i in images.sample:
             npt.assert_equal(i, expected)
@@ -107,10 +96,7 @@ class AggregateTest(FileOutputtingTestCase):
     def test_aggregate_not_single_folder_avg_tif(self):
         self.do_aggregate_not_single_folder('tif', 'tif', 'avg')
 
-    def do_aggregate_not_single_folder(self,
-                                       img_format,
-                                       convert_format,
-                                       mode='sum'):
+    def do_aggregate_not_single_folder(self, img_format, convert_format, mode='sum'):
         # this just converts between the formats, but not NXS!
         # create some images
         images = th.gen_img_shared_array()
@@ -134,12 +120,7 @@ class AggregateTest(FileOutputtingTestCase):
             saver._data_as_stack = stack
             saver._overwrite_all = True
             # do the actual saving out, directories will be created here
-            saver.save(
-                images,
-                angle_paths[i],
-                'out_angle',
-                swap_axes=False,
-                out_format=saver._out_format)
+            saver.save(images, angle_paths[i], 'out_angle', swap_axes=False, out_format=saver._out_format)
 
         # aggregate them
         conf = self.config
@@ -150,8 +131,7 @@ class AggregateTest(FileOutputtingTestCase):
         conf.func.input_path = aggregate_path
         conf.func.in_format = saver._out_format
         conf.func.out_format = convert_format
-        aggregate_output_path = os.path.join(self.output_directory,
-                                             'aggregated')
+        aggregate_output_path = os.path.join(self.output_directory, 'aggregated')
         conf.func.output_path = aggregate_output_path
         conf.func.overwrite_all = True
         conf.func.convert_prefix = 'aggregated'
@@ -161,13 +141,9 @@ class AggregateTest(FileOutputtingTestCase):
         # compare data to original
         # this does not load any flats or darks as they were not saved out
         for i in range(aggregate_angles):
-            angle_path = os.path.join(self.output_directory,
-                                      'aggregated/angle_' + mode + str(i))
+            angle_path = os.path.join(self.output_directory, 'aggregated/angle_' + mode + str(i))
 
-            images = loader.load(
-                angle_path,
-                in_format=saver._out_format,
-                parallel_load=parallel)
+            images = loader.load(angle_path, in_format=saver._out_format, parallel_load=parallel)
 
             for i in images.sample:
                 npt.assert_equal(i, expected)

@@ -48,18 +48,15 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
                        This should be traversed two elements at a time.
               - step: The step between each index in the split list.
     """
-    assert axis < len(
-        shape), "The required axis is outside the shape of the data!"
+    assert axis < len(shape), "The required axis is outside the shape of the data!"
 
     # length will be the shape across the axis we're traversing
     length = shape[axis]
 
     # decorate the functions to avoid repeating parameters
-    calculate_full_size = partial(
-        size_calculator.full_size_MB, axis=axis, dtype=dtype)
+    calculate_full_size = partial(size_calculator.full_size_MB, axis=axis, dtype=dtype)
 
-    calculate_ratio = partial(_calculate_ratio, max_memory=max_memory,
-                              reconstruction=reconstruction)
+    calculate_ratio = partial(_calculate_ratio, max_memory=max_memory, reconstruction=reconstruction)
 
     full_size = calculate_full_size(shape)
 
@@ -71,8 +68,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
     if number_of_indice_splits <= 1:
         number_of_indice_splits += 1
 
-    split, step = np.linspace(
-        0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
+    split, step = np.linspace(0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
 
     # build the new shape around the axis we're traversing
     # if we're traversing along axis 0, with a shape (15,300,400)
@@ -82,11 +78,9 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         (int(step),) + shape[axis + 1:]
 
     while calculate_ratio(calculate_full_size(new_shape)) > max_ratio:
-        getLogger(__name__).info(
-                calculate_ratio(calculate_full_size(new_shape)))
+        getLogger(__name__).info(calculate_ratio(calculate_full_size(new_shape)))
 
-        split, step = np.linspace(
-            0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
+        split, step = np.linspace(0, length, number_of_indice_splits, dtype=np.int32, retstep=True)
 
         new_shape = shape[:axis] + (int(step), ) + shape[axis + 1:]
 
@@ -94,8 +88,7 @@ def execute(shape, axis, dtype, max_memory, max_ratio=1, reconstruction=True):
         # acceptable this means we split the data in 2, 3, 4 runs
         number_of_indice_splits += 1
 
-    getLogger(__name__).info(
-            "Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
-                step, calculate_ratio(calculate_full_size(new_shape)), split))
+    getLogger(__name__).info("Data step: {0}, with a ratio to memory: {1}, indices: {2}".format(
+        step, calculate_ratio(calculate_full_size(new_shape)), split))
 
     return split, step

@@ -7,7 +7,6 @@ from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogModel
 
 
 class AsyncTaskDialogModelTest(unittest.TestCase):
-
     def test_basic_happy_case(self):
         def f(a, b):
             time.sleep(0.1)

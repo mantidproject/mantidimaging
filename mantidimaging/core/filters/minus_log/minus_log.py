@@ -21,8 +21,7 @@ class MinusLogFilter(BaseFilter):
 
         :return: Inverted image
         """
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Minus Log')
+        progress = Progress.ensure_instance(progress, task_name='Minus Log')
 
         if minus_log:
             # import early to check if tomopy is available
@@ -50,11 +49,10 @@ class MinusLogFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "-log",
-        "--minus-log",
-        required=False,
-        action='store_true',
-        help="Calculate the -log of the sample data.")
+    parser.add_argument("-log",
+                        "--minus-log",
+                        required=False,
+                        action='store_true',
+                        help="Calculate the -log of the sample data.")
 
     return parser

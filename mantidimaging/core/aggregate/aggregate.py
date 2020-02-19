@@ -60,37 +60,29 @@ def execute(config):
     if len(energy_levels) == 0:
         energies_label = ''
     else:
-        energies_label = str(selected_indices[0]) + '_' + str(
-            selected_indices[len(selected_indices) - 1])
+        energies_label = str(selected_indices[0]) + '_' + str(selected_indices[len(selected_indices) - 1])
 
     # get the angle folders
     selected_angles = config.func.aggregate_angles
-    angle_folders, selected_angles = get_angle_folders(input_path, img_format,
-                                                       selected_angles)
-    getLogger(__name__).info(
-            'Applying aggregating method {0} on angles: {1}'.format(
-                agg_method, angle_folders))
+    angle_folders, selected_angles = get_angle_folders(input_path, img_format, selected_angles)
+    getLogger(__name__).info('Applying aggregating method {0} on angles: {1}'.format(agg_method, angle_folders))
 
     # generate the file names in each angle folder
-    angle_image_paths = get_image_files_paths(input_path, angle_folders,
-                                              img_format, selected_indices)
+    angle_image_paths = get_image_files_paths(input_path, angle_folders, img_format, selected_indices)
 
     # create an enumerator for easy looping over the image paths for each angle
     # this will make tuples like: (angle_number, list_of_all_files)
     # TODO check if this is necessary, because get_angle_folders should remove
     # ALL angles except the selected one, so the start=.. would be unnecessary
     if selected_angles:
-        angle_image_paths = enumerate(
-            angle_image_paths, start=selected_angles[0])
+        angle_image_paths = enumerate(angle_image_paths, start=selected_angles[0])
     else:
         angle_image_paths = enumerate(angle_image_paths)
 
-    do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
-                   single_folder, config)
+    do_aggregating(angle_image_paths, img_format, agg_method, energies_label, single_folder, config)
 
 
-def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
-                   single_folder, config, progress=None):
+def do_aggregating(angle_image_paths, img_format, agg_method, energies_label, single_folder, config, progress=None):
     """
     :param angle_image_paths: Enumerated generator that contains pairs of
                               (angle number, list of all files for angle)
@@ -112,13 +104,10 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
     for angle, image_paths in angle_image_paths:
         with progress:
             # load all the images from angle, [0] to get the sample path data
-            progress.update(msg="Aggregating data for angle {0} from path {1}"
-                                .format(angle,
-                                        os.path.dirname(image_paths[0])))
+            progress.update(
+                msg="Aggregating data for angle {0} from path {1}".format(angle, os.path.dirname(image_paths[0])))
 
-            images = loader.load(file_names=image_paths,
-                                 in_format=img_format,
-                                 parallel_load=parallel_load)
+            images = loader.load(file_names=image_paths, in_format=img_format, parallel_load=parallel_load)
 
             images = images.sample
             # sum or average them
@@ -127,26 +116,22 @@ def do_aggregating(angle_image_paths, img_format, agg_method, energies_label,
             else:
                 aggregated_images = images.mean(axis=0, dtype=np.float32)
 
-        custom_index, name, name_postfix, subdir = create_name(
-            DEFAULT_AGGREGATE_PREFIX, agg_method, angle, energies_label,
-            single_folder)
+        custom_index, name, name_postfix, subdir = create_name(DEFAULT_AGGREGATE_PREFIX, agg_method, angle,
+                                                               energies_label, single_folder)
 
-        s.save_single_image(
-            aggregated_images,
-            subdir=subdir,
-            name=name,
-            custom_index=custom_index,
-            name_postfix=name_postfix,
-            use_preproc_folder=False)
+        s.save_single_image(aggregated_images,
+                            subdir=subdir,
+                            name=name,
+                            custom_index=custom_index,
+                            name_postfix=name_postfix,
+                            use_preproc_folder=False)
 
 
 def create_name(prefix, agg_method, angle, energies_label, single_folder):
     if not single_folder:
-        return create_name_multiple_files(
-                prefix, agg_method, angle, energies_label)
+        return create_name_multiple_files(prefix, agg_method, angle, energies_label)
     else:
-        return create_name_single_folder(
-                prefix, agg_method, angle, energies_label)
+        return create_name_single_folder(prefix, agg_method, angle, energies_label)
 
 
 def create_name_single_folder(prefix, agg_method, angle, energies_label):
@@ -167,8 +152,7 @@ def create_name_multiple_files(prefix, agg_method, angle, energies_label):
 
 def do_sanity_checks(output_path, agg_method, commands):
     if not output_path:
-        raise ValueError("The flag -o/--output-path MUST be passed for this "
-                         "IMOPR COR mode!")
+        raise ValueError("The flag -o/--output-path MUST be passed for this " "IMOPR COR mode!")
 
     agg_methods = ['sum', 'avg']
     if agg_method not in agg_methods:
@@ -177,14 +161,12 @@ def do_sanity_checks(output_path, agg_method, commands):
 
     # the length of energy levels must be an even number
     if len(commands) % 2 != 0:
-        raise ValueError(
-            "The length of energy levels must be an even number, the submission format is \
+        raise ValueError("The length of energy levels must be an even number, the submission format is \
             --aggregate <start> <end>... <method:{sum, avg}>: "
-            "--aggregate 1 100 101 200 201 300 sum")
+                         "--aggregate 1 100 101 200 201 300 sum")
 
 
-def get_image_files_paths(input_path, angle_folders, img_format,
-                          selected_indices):
+def get_image_files_paths(input_path, angle_folders, img_format, selected_indices):
     angle_image_paths = []
     for folder in angle_folders:
         angle_fullpath = os.path.join(input_path, folder)
@@ -215,9 +197,7 @@ def get_indices_for_energy_levels(energy_levels):
         selected_indices.append(expand_index_range(energy_levels[i:i + 2]))
 
     # flatten the list
-    selected_indices = [
-        indices for sublist in selected_indices for indices in sublist
-    ]
+    selected_indices = [indices for sublist in selected_indices for indices in sublist]
     return selected_indices
 
 
@@ -233,8 +213,7 @@ def get_angle_folders(input_path, img_format, selected_angles):
         try:
             angle_folders = [angle_folders[i] for i in selected_folders]
         except IndexError:
-            raise IndexError(
-                "The selected angles are not present in the input directory!")
+            raise IndexError("The selected angles are not present in the input directory!")
     return angle_folders, selected_folders
 
 

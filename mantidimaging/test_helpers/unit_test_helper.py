@@ -64,9 +64,7 @@ def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
 
     :param numpy_ndarray2: The right side of the comparison
     """
-    npt.assert_raises(AssertionError,
-                      npt.assert_equal,
-                      numpy_ndarray1, numpy_ndarray2)
+    npt.assert_raises(AssertionError, npt.assert_equal, numpy_ndarray1, numpy_ndarray2)
 
 
 def deepcopy(source):
@@ -84,8 +82,7 @@ def shared_deepcopy(source):
 def debug(switch=True):
     if switch:
         import pydevd
-        pydevd.settrace(
-            'localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
 
 
 def vsdebug():
@@ -122,9 +119,7 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def assert_files_exist(cls, base_name, file_extension,
-                       file_extension_separator='.', single_file=True,
-                       num_images=1):
+def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
     """
     Asserts that a file exists.
 
@@ -137,16 +132,13 @@ def assert_files_exist(cls, base_name, file_extension,
     :param single_file: Are we looking for a 'stack' of images
     """
     import unittest
-    assert isinstance(
-        cls, unittest.TestCase
-    ), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
+    assert isinstance(cls, unittest.TestCase), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
 
     if not single_file:
         # generate a list of filenames with 000000 numbers appended
         filenames = []
         for i in range(num_images):
-            filenames.append(base_name + str(i) +
-                             file_extension_separator + file_extension)
+            filenames.append(base_name + str(i) + file_extension_separator + file_extension)
 
         for f in filenames:
             cls.assertTrue(os.path.isfile(f))

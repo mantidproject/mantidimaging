@@ -90,12 +90,7 @@ def create_partial(func, fwd_func=return_fwd_func, **kwargs):
     return partial(fwd_func, func, **kwargs)
 
 
-def execute(data=None,
-            partial_func=None,
-            cores=None,
-            chunksize=None,
-            name="Progress",
-            progress=None):
+def execute(data=None, partial_func=None, cores=None, chunksize=None, name="Progress", progress=None):
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -156,9 +151,7 @@ def execute(data=None,
     img_num = shared_data.shape[0]
 
     task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress,
-                                        num_steps=img_num,
-                                        task_name=task_name)
+    progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
 
     indices_list = pu.generate_indices(img_num)
     for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):

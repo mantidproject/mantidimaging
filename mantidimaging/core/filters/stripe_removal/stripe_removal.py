@@ -52,8 +52,7 @@ class StripeRemovalFilter(BaseFilter):
 
         :return: Processed data
         """
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Stripe Removal')
+        progress = Progress.ensure_instance(progress, task_name='Stripe Removal')
 
         # get the first one, the rest will be processed
         msg = "Starting removal of stripes/ring artifacts using method '{0}'..."
@@ -78,46 +77,33 @@ class StripeRemovalFilter(BaseFilter):
         from mantidimaging.gui.utility import add_property_to_form
 
         # Filter type option
-        _, value_filter_type = add_property_to_form(
-            'Filter Type', 'choice',
-            form=form, on_change=on_change)
+        _, value_filter_type = add_property_to_form('Filter Type', 'choice', form=form, on_change=on_change)
 
         # Wavelet options
-        _, value_wf_level = add_property_to_form(
-            'Level', 'int', valid_values=(0, 100),
-            form=form, on_change=on_change)
+        _, value_wf_level = add_property_to_form('Level', 'int', valid_values=(0, 100), form=form, on_change=on_change)
 
-        _, value_wf_wname = add_property_to_form(
-            'Wavelet Filter', 'choice',
-            valid_values=wavelet_names(),
-            form=form, on_change=on_change)
+        _, value_wf_wname = add_property_to_form('Wavelet Filter',
+                                                 'choice',
+                                                 valid_values=wavelet_names(),
+                                                 form=form,
+                                                 on_change=on_change)
 
-        _, value_wf_sigma = add_property_to_form(
-            'Sigma', 'float', 2.0, (0.0, 100.0),
-            form=form, on_change=on_change)
+        _, value_wf_sigma = add_property_to_form('Sigma', 'float', 2.0, (0.0, 100.0), form=form, on_change=on_change)
 
         # Titarenko options
-        _, value_ti_nblock = add_property_to_form(
-            'Number of Blocks', 'int', 0, (0, 100),
-            form=form, on_change=on_change)
+        _, value_ti_nblock = add_property_to_form('Number of Blocks',
+                                                  'int',
+                                                  0, (0, 100),
+                                                  form=form,
+                                                  on_change=on_change)
 
-        _, value_ti_alpha = add_property_to_form(
-            'Alpha', 'float', 1.5,
-            form=form, on_change=on_change)
+        _, value_ti_alpha = add_property_to_form('Alpha', 'float', 1.5, form=form, on_change=on_change)
 
         # Smoothing filter options
-        _, value_sf_size = add_property_to_form(
-            'Size', 'int', 5, (0, 100),
-            form=form, on_change=on_change)
+        _, value_sf_size = add_property_to_form('Size', 'int', 5, (0, 100), form=form, on_change=on_change)
 
-        filters = [
-            ('wavelet-fourier',
-             [value_wf_level, value_wf_wname, value_wf_sigma]),
-            ('titarenko',
-             [value_ti_nblock, value_ti_alpha]),
-            ('smoothing-filter',
-             [value_sf_size])
-        ]
+        filters = [('wavelet-fourier', [value_wf_level, value_wf_wname, value_wf_sigma]),
+                   ('titarenko', [value_ti_nblock, value_ti_alpha]), ('smoothing-filter', [value_sf_size])]
 
         def on_filter_type_change(name):
             for f in filters:
@@ -141,21 +127,27 @@ class StripeRemovalFilter(BaseFilter):
         }
 
     @staticmethod
-    def execute_wrapper(value_filter_type=None, value_wf_level=None, value_wf_wname=None, value_wf_sigma=None,
-                        value_ti_nblock=None, value_ti_alpha=None, value_sf_size=None):
+    def execute_wrapper(value_filter_type=None,
+                        value_wf_level=None,
+                        value_wf_wname=None,
+                        value_wf_sigma=None,
+                        value_ti_nblock=None,
+                        value_ti_alpha=None,
+                        value_sf_size=None):
         filter_type = value_filter_type.currentText()
         wf = None
         ti = None
         sf = None
 
         if filter_type == 'wavelett-fourier':
-            wf = {'level': value_wf_level.value(),
-                  'wname': value_wf_wname.currentText(),
-                  'sigma': value_wf_sigma.value(),
-                  'pad': False}
+            wf = {
+                'level': value_wf_level.value(),
+                'wname': value_wf_wname.currentText(),
+                'sigma': value_wf_sigma.value(),
+                'pad': False
+            }
         elif filter_type == 'titarenko':
-            ti = {'nblock': value_ti_nblock.value(),
-                  'alpha': value_ti_alpha.value()}
+            ti = {'nblock': value_ti_nblock.value(), 'alpha': value_ti_alpha.value()}
         elif filter_type == 'smoothing-filter':
             sf = {'size': value_sf_size.value()}
 
@@ -163,54 +155,47 @@ class StripeRemovalFilter(BaseFilter):
 
 
 def _cli_register(parser):
-    parser.add_argument(
-        "--stripe-removal-wf",
-        nargs='*',
-        required=False,
-        type=str,
-        help="Stripe removal using wavelett-fourier method. "
-             "Available parameters:\n"
-             "level (default: None, int, optional) "
-             "Number of discrete wavelet transform levels.\n"
-             "wname (default: 'db5', str, optional) "
-             "Type of the wavelet filter. 'haar', 'db5', 'sym5', etc.\n"
-             "sigma (default: 2, float, optional) "
-             "Damping parameter in Fourier space.\n"
-             "pad (default: True, bool, optional) "
-             "If True, extend the size of the sinogram by padding with zeros.")
+    parser.add_argument("--stripe-removal-wf",
+                        nargs='*',
+                        required=False,
+                        type=str,
+                        help="Stripe removal using wavelett-fourier method. "
+                        "Available parameters:\n"
+                        "level (default: None, int, optional) "
+                        "Number of discrete wavelet transform levels.\n"
+                        "wname (default: 'db5', str, optional) "
+                        "Type of the wavelet filter. 'haar', 'db5', 'sym5', etc.\n"
+                        "sigma (default: 2, float, optional) "
+                        "Damping parameter in Fourier space.\n"
+                        "pad (default: True, bool, optional) "
+                        "If True, extend the size of the sinogram by padding with zeros.")
 
-    parser.add_argument(
-        "--stripe-removal-ti",
-        nargs='*',
-        required=False,
-        type=str,
-        help="Stripe removal using Titarenko's approach. "
-             "Available parameters:\n"
-             "nblock (default: 0, int, optional) Number of blocks.\n"
-             "alpha (default: 1.5, float, optional) Damping factor.")
+    parser.add_argument("--stripe-removal-ti",
+                        nargs='*',
+                        required=False,
+                        type=str,
+                        help="Stripe removal using Titarenko's approach. "
+                        "Available parameters:\n"
+                        "nblock (default: 0, int, optional) Number of blocks.\n"
+                        "alpha (default: 1.5, float, optional) Damping factor.")
 
-    parser.add_argument(
-        "--stripe-removal-sf",
-        nargs='*',
-        required=False,
-        type=str,
-        help="Stripe removal using smoothing-filter method. "
-             "Available parameters:\n"
-             "size (default:5, int, optional) Size of the smoothing filter.")
+    parser.add_argument("--stripe-removal-sf",
+                        nargs='*',
+                        required=False,
+                        type=str,
+                        help="Stripe removal using smoothing-filter method. "
+                        "Available parameters:\n"
+                        "size (default:5, int, optional) Size of the smoothing filter.")
 
     return parser
 
 
 def methods():
-    return [
-        'wf', 'wavelet-fourier', 'ti', 'titarenko', 'sf', 'smoothing-filter'
-    ]
+    return ['wf', 'wavelet-fourier', 'ti', 'titarenko', 'sf', 'smoothing-filter']
 
 
 def wavelet_names():
-    return [
-        'haar', 'db5', 'sym5'
-    ]
+    return ['haar', 'db5', 'sym5']
 
 
 def _get_params(params):
@@ -224,13 +209,7 @@ def _wf(data, params, cores, chunksize):
     tomopy = importer.do_importing('tomopy')
 
     # creating a dictionary with all possible params for this func
-    kwargs = dict(
-        level=None,
-        wname=u'db5',
-        sigma=2,
-        pad=True,
-        ncore=cores,
-        nchunk=chunksize)
+    kwargs = dict(level=None, wname=u'db5', sigma=2, pad=True, ncore=cores, nchunk=chunksize)
 
     # process the input parameters
     params = _get_params(params)
@@ -238,14 +217,10 @@ def _wf(data, params, cores, chunksize):
     # dict.get returns a None if the keyword arg is not found
     # this means if the user hasn't passed anything that matches the string
     # then the default is used
-    kwargs['level'] = int(
-        params.get('level')) if params.get('level') else kwargs['level']
-    kwargs['wname'] = str(
-        params.get('wname')) if params.get('wname') else kwargs['wname']
-    kwargs['sigma'] = int(
-        params.get('sigma')) if params.get('sigma') else kwargs['sigma']
-    kwargs['pad'] = bool(
-        params.get('pad')) if params.get('pad') else kwargs['pad']
+    kwargs['level'] = int(params.get('level')) if params.get('level') else kwargs['level']
+    kwargs['wname'] = str(params.get('wname')) if params.get('wname') else kwargs['wname']
+    kwargs['sigma'] = int(params.get('sigma')) if params.get('sigma') else kwargs['sigma']
+    kwargs['pad'] = bool(params.get('pad')) if params.get('pad') else kwargs['pad']
 
     return tomopy.prep.stripe.remove_stripe_fw(data, **kwargs)
     # TODO find where this is from? iprep?
@@ -265,10 +240,8 @@ def _ti(data, params, cores, chunksize):
     # dict.get returns a None if the keyword arg is not found
     # this means if the user hasn't passed anything that matches the string
     # then the default is used
-    kwargs['nblock'] = int(
-        params.get('nblock')) if params.get('nblock') else kwargs['nblock']
-    kwargs['alpha'] = float(
-        params.get('alpha')) if params.get('alpha') else kwargs['alpha']
+    kwargs['nblock'] = int(params.get('nblock')) if params.get('nblock') else kwargs['nblock']
+    kwargs['alpha'] = float(params.get('alpha')) if params.get('alpha') else kwargs['alpha']
 
     return tomopy.prep.stripe.remove_stripe_ti(data, **kwargs)
 
@@ -285,6 +258,5 @@ def _sf(data, params, cores, chunksize):
     # dict.get returns a None if the keyword arg is not found
     # this means if the user hasn't passed anything that matches the string
     # then the default is used
-    kwargs['size'] = int(
-        params.get('size')) if params.get('size') else kwargs['size']
+    kwargs['size'] = int(params.get('size')) if params.get('size') else kwargs['size']
     return tomopy.prep.stripe.remove_stripe_sf(data, **kwargs)

@@ -8,14 +8,12 @@ if TYPE_CHECKING:
 class BaseFilter:
     filter_name = "Unnamed Filter"
     __name__ = "BaseFilter"
-
     """
     The base class for filter algorithms, which should extend this class.
 
     All of this classes methods must be overridden, except sv_params and the do_before and do_after wrappers
     which are optional.
     """
-
     @staticmethod
     def filter_func(data, **kwargs):
         """

@@ -7,7 +7,6 @@ class Window(Qt.QMainWindow):
     Super simple main window that shows how the mantidimaging GUI can be shown
     form another QApplication.
     """
-
     def __init__(self):
         super(Window, self).__init__()
 

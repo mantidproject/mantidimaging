@@ -21,8 +21,7 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import (  # noqa: F401
-        load_dialog,
-        save_dialog)
+    load_dialog, save_dialog)
 
 from .model import MainWindowModel  # noqa: F401
 from .view import MainWindowView  # noqa: F401

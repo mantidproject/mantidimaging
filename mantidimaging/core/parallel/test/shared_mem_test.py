@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
 from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 def add_inplace(first_shared, add_arg=3):
@@ -23,7 +21,7 @@ class SharedMemTest(unittest.TestCase):
 
     def test_fwd_func_inplace(self):
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -33,8 +31,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = psm.create_partial(
-            add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
+        f = psm.create_partial(add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         # execute parallel
         img = psm.execute(img, f, name="Inplace test")
@@ -44,7 +41,7 @@ class SharedMemTest(unittest.TestCase):
 
     def test_fwd_func(self):
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -54,16 +51,13 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = psm.create_partial(
-            return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
+        f = psm.create_partial(return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
 
         # execute parallel
         img = psm.execute(img, f, name="Fwd func test")
 
         # compare results
         npt.assert_equal(img, expected)
-
-# ------------------------- FAIL CASES -----------------------
 
     def test_fail_with_normal_array_fwd_func_inplace(self):
         # create data as normal nd array
@@ -79,8 +73,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = psm.create_partial(
-            add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
+        f = psm.create_partial(add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         # execute parallel
         res = psm.execute(img, f, name="Fail Inplace test")
@@ -102,8 +95,7 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = psm.create_partial(
-            return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
+        f = psm.create_partial(return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
 
         # execute parallel
         res = psm.execute(img, f, name="Fwd func test")
@@ -112,11 +104,9 @@ class SharedMemTest(unittest.TestCase):
         th.assert_not_equals(res, expected)
         npt.assert_equal(img, orig)
 
-# ------------------------- MEMORY TESTS -----------------------
-
     def test_memory_fwd_func_inplace(self):
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -126,15 +116,13 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = psm.create_partial(
-            add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
+        f = psm.create_partial(add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
         img = psm.execute(img, f, name="Inplace test")
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results
         npt.assert_equal(img, expected)
@@ -150,7 +138,7 @@ class SharedMemTest(unittest.TestCase):
         This will still capture if the data is doubled, which is the main goal.
         """
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -160,14 +148,12 @@ class SharedMemTest(unittest.TestCase):
         assert expected[6, 0, 1] != img[6, 0, 1]
 
         # create partial
-        f = psm.create_partial(
-            return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
+        f = psm.create_partial(return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
         img = psm.execute(img, f, name="Fwd func test")
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results
         npt.assert_equal(img, expected)

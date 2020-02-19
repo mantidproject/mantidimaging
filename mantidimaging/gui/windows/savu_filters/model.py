@@ -48,8 +48,7 @@ class SavuFiltersWindowModel(object):
                 response_json: Dict = json.loads(response.content)
             else:
                 preparation.prepare_data()
-                raise ValueError(
-                    f"Did not get valid data from the Savu backend. Error code {response.status_code}")
+                raise ValueError(f"Did not get valid data from the Savu backend. Error code {response.status_code}")
         except ConnectionError:
             preparation.prepare_data()
             raise RuntimeError("Savu backend is not running. Cannot open GUI.")

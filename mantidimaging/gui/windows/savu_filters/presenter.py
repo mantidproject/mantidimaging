@@ -39,7 +39,6 @@ class Mode(Enum):
 
 
 class SavuFiltersWindowPresenter(BasePresenter):
-
     def __init__(self, view: 'SavuFiltersWindowView', main_window: 'MainWindowView',
                  remote_presenter: SavuFiltersRemotePresenter):
         super(SavuFiltersWindowPresenter, self).__init__(view)

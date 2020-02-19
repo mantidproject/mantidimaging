@@ -8,8 +8,7 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.gui.windows.filters import FiltersWindowModel
-from mantidimaging.gui.windows.stack_visualiser import (
-    StackVisualiserView, StackVisualiserPresenter, SVParameters)
+from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter, SVParameters)
 
 
 class FiltersWindowModelTest(unittest.TestCase):
@@ -27,8 +26,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.sv_view = mock.create_autospec(StackVisualiserView)
         self.sv_view.current_roi = self.ROI_PARAMETER
 
-        self.sv_presenter = StackVisualiserPresenter(
-            self.sv_view, self.test_data)
+        self.sv_presenter = StackVisualiserPresenter(self.sv_view, self.test_data)
         self.sv_view.presenter = self.sv_presenter
 
         self.model = FiltersWindowModel()
@@ -52,8 +50,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
     def apply_after_mock(self, data, result_from_before):
         self.assertTrue(isinstance(data, np.ndarray))
-        self.assertEqual(result_from_before,
-                         self.APPLY_BEFORE_AFTER_MAGIC_NUMBER)
+        self.assertEqual(result_from_before, self.APPLY_BEFORE_AFTER_MAGIC_NUMBER)
 
     def setup_mocks(self, execute_mock, do_before_mock=None, do_after_mock=None):
         f = self.model.selected_filter
@@ -160,27 +157,16 @@ class FiltersWindowModelTest(unittest.TestCase):
         mocked_notify.assert_called_once()
 
     def test_all_expected_filter_packages_loaded(self):
-        expected_filter_names = ['Background Correction',
-                                 'Circular Mask',
-                                 'Clip Values',
-                                 'Crop Coordinates',
-                                 'Intensity Cut Off',
-                                 'Gaussian',
-                                 'Median',
-                                 'Minus Log',
-                                 'Remove Outliers',
-                                 'Rebin',
-                                 'Ring Removal',
-                                 'ROI Normalisation',
-                                 'Rotate Stack',
-                                 'Stripe Removal']
-        self.assertEqual(len(self.model.filters),
-                         len(expected_filter_names),
+        expected_filter_names = [
+            'Background Correction', 'Circular Mask', 'Clip Values', 'Crop Coordinates', 'Intensity Cut Off',
+            'Gaussian', 'Median', 'Minus Log', 'Remove Outliers', 'Rebin', 'Ring Removal', 'ROI Normalisation',
+            'Rotate Stack', 'Stripe Removal'
+        ]
+        self.assertEqual(len(self.model.filters), len(expected_filter_names),
                          f"Expected {len(expected_filter_names)} filters")
         for filter_class in self.model.filters:
             self.assertIsInstance(filter_class(), BaseFilter)
-        self.assertEqual(expected_filter_names,
-                         self.model.filter_names, "Not all filters are named correctly")
+        self.assertEqual(expected_filter_names, self.model.filter_names, "Not all filters are named correctly")
 
 
 if __name__ == '__main__':

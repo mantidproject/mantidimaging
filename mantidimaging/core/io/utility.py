@@ -7,10 +7,7 @@ from logging import getLogger
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
-SIMILAR_FILE_EXTENSIONS = (
-        ('tif', 'tiff'),
-        ('fit', 'fits')
-    )
+SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
 
 
 def get_file_extension(file):
@@ -75,8 +72,7 @@ def get_file_names(path, img_format, prefix='', essential=True):
     extensions = get_candidate_file_extensions(img_format)
     files_match = []
     for ext in extensions:
-        files_match = glob.glob(
-            os.path.join(path, "{0}*.{1}".format(prefix, ext)))
+        files_match = glob.glob(os.path.join(path, "{0}*.{1}".format(prefix, ext)))
 
         if len(files_match) > 0:
             break
@@ -135,10 +131,7 @@ def _alphanum_key_split(path_str):
     https://dave.st.germa.in/blog/2007/12/11/exception-handling-slow/
     """
     alpha_num_split_re = re.compile('([0-9]+)')
-    return [
-        int(c) if c.isdigit() else c
-        for c in alpha_num_split_re.split(path_str)
-    ]
+    return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
 if __name__ == '__main__':

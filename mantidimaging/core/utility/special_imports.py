@@ -21,8 +21,7 @@ def import_skimage_io():
         # This behaviour might need to be changed when switching to python 3
         skio.use_plugin('tifffile')
     except ImportError as exc:
-        raise ImportError(
-            "Could not find the package skimage, its subpackage "
-            "io and the pluging freeimage which are required to support "
-            "several image formats. Error details: {0}".format(exc))
+        raise ImportError("Could not find the package skimage, its subpackage "
+                          "io and the pluging freeimage which are required to support "
+                          "several image formats. Error details: {0}".format(exc))
     return skio

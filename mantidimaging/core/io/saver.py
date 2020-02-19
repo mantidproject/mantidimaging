@@ -44,8 +44,7 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
     # dset[-1] = dark[:]
 
     if projection_angles is not None:
-        rangle = nxs.create_dataset(
-            "tomography/rotation_angle", data=projection_angles)
+        rangle = nxs.create_dataset("tomography/rotation_angle", data=projection_angles)
         rangle[...] = projection_angles
 
 
@@ -86,8 +85,7 @@ def save(data,
                     Specify the start and end range of the indices
                     which will be used for the file names.
     """
-    progress = Progress.ensure_instance(progress,
-                                        task_name='Save')
+    progress = Progress.ensure_instance(progress, task_name='Save')
 
     # expand the path for plugins that don't do it themselves
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
@@ -118,19 +116,19 @@ def save(data,
         num_images = data.shape[0]
         progress.add_estimated_steps(num_images)
 
-        names = generate_names(name_prefix, indices, num_images, custom_idx,
-                               zfill_len, name_postfix, out_format)
+        names = generate_names(name_prefix, indices, num_images, custom_idx, zfill_len, name_postfix, out_format)
 
         with progress:
             for idx in range(num_images):
-                write_func(data[idx, :, :], os.path.join(
-                    output_dir, names[idx]), overwrite_all)
+                write_func(data[idx, :, :], os.path.join(output_dir, names[idx]), overwrite_all)
 
-                progress.update(msg='Image {} of {}'.format(
-                    idx, num_images))
+                progress.update(msg='Image {} of {}'.format(idx, num_images))
 
 
-def generate_names(name_prefix, indices, num_images, custom_idx=None,
+def generate_names(name_prefix,
+                   indices,
+                   num_images,
+                   custom_idx=None,
                    zfill_len=DEFAULT_ZFILL_LENGTH,
                    name_postfix=DEFAULT_NAME_POSTFIX,
                    out_format=DEFAULT_IO_FILE_FORMAT):
@@ -145,8 +143,7 @@ def generate_names(name_prefix, indices, num_images, custom_idx=None,
     names = []
     for idx in range(num_images):
         # create the file name, and use the format as extension
-        names.append(name_prefix + '_' + str(index).zfill(zfill_len) +
-                     name_postfix + "." + out_format)
+        names.append(name_prefix + '_' + str(index).zfill(zfill_len) + name_postfix + "." + out_format)
         index += increment
     return names
 
@@ -166,10 +163,8 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
     if not os.path.exists(path):
         os.makedirs(path)
     elif os.listdir(path) and not overwrite_all:
-        raise RuntimeError(
-            "The output directory is NOT empty:{0}\n. This can be "
-            "overridden with -w/--overwrite-all.".
-            format(path))
+        raise RuntimeError("The output directory is NOT empty:{0}\n. This can be "
+                           "overridden with -w/--overwrite-all.".format(path))
 
 
 class Saver(object):
@@ -183,7 +178,6 @@ class Saver(object):
     This class should always fail early before any
     expensive operations have been attempted.
     """
-
     @staticmethod
     def supported_formats():
         # reuse supported formats, they currently share them
@@ -193,8 +187,7 @@ class Saver(object):
     def __init__(self, config):
         self._output_path = config.func.output_path
         if self._output_path is not None:
-            self._output_path = os.path.abspath(
-                os.path.expanduser(self._output_path))
+            self._output_path = os.path.abspath(os.path.expanduser(self._output_path))
 
         self._out_format = config.func.out_format
         self._overwrite_all = config.func.overwrite_all
@@ -254,16 +247,12 @@ class Saver(object):
         assert data.ndim == 2, \
             "This should not be used with a 3D stack of images!"
 
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Save Image')
+        progress = Progress.ensure_instance(progress, task_name='Save Image')
 
         # reshape so that it works with the internals
         data = data.reshape(1, data.shape[0], data.shape[1])
         if self._output_path is None:
-            LOG.info(
-                "Not saving a single image, "
-                "because no output path is specified."
-            )
+            LOG.info("Not saving a single image, " "because no output path is specified.")
             return
 
         # using the config's output dir
@@ -278,20 +267,18 @@ class Saver(object):
             output_dir = os.path.abspath(output_dir)
 
         with progress:
-            progress.update(msg="Saving single image {0} dtype: {1}".format(
-                output_dir, data.dtype))
+            progress.update(msg="Saving single image {0} dtype: {1}".format(output_dir, data.dtype))
 
-            save(
-                data,
-                output_dir,
-                name,
-                swap_axes,
-                out_format=self._out_format,
-                overwrite_all=self._overwrite_all,
-                zfill_len=zfill_len,
-                name_postfix=name_postfix,
-                custom_idx=custom_index,
-                indices=self._indices)
+            save(data,
+                 output_dir,
+                 name,
+                 swap_axes,
+                 out_format=self._out_format,
+                 overwrite_all=self._overwrite_all,
+                 zfill_len=zfill_len,
+                 name_postfix=name_postfix,
+                 custom_idx=custom_index,
+                 indices=self._indices)
 
     def save_preproc_images(self, data, progress=None):
         """
@@ -301,19 +288,21 @@ class Saver(object):
 
         :param data: The pre-processed data that will be saved
         """
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Save Preprocessed')
+        progress = Progress.ensure_instance(progress, task_name='Save Preprocessed')
 
         if self._save_preproc and self._output_path is not None:
             preproc_dir = os.path.join(self._output_path, self._preproc_dir)
 
             with progress:
                 progress.update(msg="Saving all pre-processed images into {0} "
-                                    "dtype: {1}".format(
-                                        preproc_dir, data.dtype))
+                                "dtype: {1}".format(preproc_dir, data.dtype))
 
-                save(data, preproc_dir, 'out_preproc_image', self._swap_axes,
-                     self._out_format, self._overwrite_all,
+                save(data,
+                     preproc_dir,
+                     'out_preproc_image',
+                     self._swap_axes,
+                     self._out_format,
+                     self._overwrite_all,
                      indices=self._indices)
 
     def save_recon_output(self, data, progress=None):
@@ -329,35 +318,32 @@ class Saver(object):
 
         :param data: Reconstructed data volume that will be saved out.
         """
-        progress = Progress.ensure_instance(progress,
-                                            task_name='Save Reconstruction')
+        progress = Progress.ensure_instance(progress, task_name='Save Reconstruction')
 
         if self._output_path is None:
-            LOG.warning(
-                "Not saving reconstruction output, "
-                "because no output path is specified."
-            )
+            LOG.warning("Not saving reconstruction output, " "because no output path is specified.")
             return
 
         out_recon_dir = os.path.join(self._output_path, 'reconstructed')
 
         with progress:
             progress.update(msg="Starting saving slices of the reconstructed "
-                                "volume in: {0}...".format(out_recon_dir))
+                            "volume in: {0}...".format(out_recon_dir))
 
-            save(data, out_recon_dir, self._out_slices_prefix,
-                 self._swap_axes, self._out_format, self._overwrite_all,
+            save(data,
+                 out_recon_dir,
+                 self._out_slices_prefix,
+                 self._swap_axes,
+                 self._out_format,
+                 self._overwrite_all,
                  indices=self._indices)
 
             # Sideways slices:
             if self._save_horiz_slices:
-                out_horiz_dir = os.path.join(out_recon_dir,
-                                             self._out_horiz_slices_subdir)
+                out_horiz_dir = os.path.join(out_recon_dir, self._out_horiz_slices_subdir)
 
-                LOG.info(
-                    "Saving horizontal slices in: {0}".format(out_horiz_dir))
+                LOG.info("Saving horizontal slices in: {0}".format(out_horiz_dir))
 
                 # save out the horizontal slices by flipping the axes
-                save(data, out_horiz_dir, self._out_horiz_slices_prefix,
-                     not self._swap_axes, self._out_format,
+                save(data, out_horiz_dir, self._out_horiz_slices_prefix, not self._swap_axes, self._out_format,
                      self._overwrite_all)

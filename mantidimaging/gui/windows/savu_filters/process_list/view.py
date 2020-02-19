@@ -19,11 +19,9 @@ class ProcessListView(Qt.QGroupBox):
         self.setLayout(Qt.QVBoxLayout(self))
         self.processing_plugins_layout = Qt.QVBoxLayout()
 
-        self.layout().addWidget(
-            PluginDisplayWidget(parent=self, pos="First", plugin_name="ImageLoader", fixed=True))
+        self.layout().addWidget(PluginDisplayWidget(parent=self, pos="First", plugin_name="ImageLoader", fixed=True))
         self.layout().addLayout(self.processing_plugins_layout)
-        self.layout().addWidget(
-            PluginDisplayWidget(parent=self, pos="Last", plugin_name="TiffSaver", fixed=True))
+        self.layout().addWidget(PluginDisplayWidget(parent=self, pos="Last", plugin_name="TiffSaver", fixed=True))
 
         self.presenter: ProcessListPresenter = ProcessListPresenter(self)
         self.order_change_request: Optional[Tuple[int, int]] = None
@@ -114,7 +112,6 @@ class PluginDisplayWidget(Qt.QWidget):
     The plugin button fills the remaining space, which will be determined by the width of the largest
     name of any plugin in the parent layout.
     """
-
     def __init__(self, parent: Qt.QWidget, pos: Union[int, str], plugin_name: str, fixed: bool = False):
         super(Qt.QWidget, self).__init__(parent)
         self.setLayout(Qt.QHBoxLayout(self))

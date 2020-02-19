@@ -77,24 +77,24 @@ class SAVUPluginList:
     def __init__(self, data_prefix, num_images, preview=None):
         # preview is in format: [<indices start:end:step>, <rows start:end:step>, <columns start:end:step>]
         self.prepend_plugins: List[SAVUPluginListEntry] = [
-            SAVUPluginListEntry(active=True,
-                                data=np.string_(
-                                    f'{{"data_prefix": "{data_prefix}", "flat_prefix": null, "dark_prefix": null, '
-                                    f'"angles": "np.linspace(0, 360, {num_images})", '
-                                    f'"frame_dim": 0, "preview": ["{preview[0]}:{preview[1]}:{preview[2]}", ":", ":"],'
-                                    f'"dataset_name": "tomo"}}'),
-                                desc=np.string_(
-                                    '{"data_prefix": "A file prefix for the data file.", "flat_prefix": "A file prefix '
-                                    'for the flat field files, including the folder path if different from the data.", '
-                                    '"dark_prefix": "A file prefix for the dark field files, including the folder path '
-                                    'if different from the data.", "angles": "A python statement to be evaluated (e.g '
-                                    'np.linspace(0, 180, nAngles)) or a file.", "frame_dim": "Which dimension requires '
-                                    'stitching?", "preview": "A slice list of required frames.", "dataset_name": "The '
-                                    'name assigned to the dataset."}'),
-                                hide=np.string_('[]'),
-                                id=np.string_('savu.plugins.loaders.full_field_loaders.image_loader'),
-                                name=np.string_('ImageLoader'),
-                                user=np.string_('["preview"]'))]
+            SAVUPluginListEntry(
+                active=True,
+                data=np.string_(f'{{"data_prefix": "{data_prefix}", "flat_prefix": null, "dark_prefix": null, '
+                                f'"angles": "np.linspace(0, 360, {num_images})", '
+                                f'"frame_dim": 0, "preview": ["{preview[0]}:{preview[1]}:{preview[2]}", ":", ":"],'
+                                f'"dataset_name": "tomo"}}'),
+                desc=np.string_('{"data_prefix": "A file prefix for the data file.", "flat_prefix": "A file prefix '
+                                'for the flat field files, including the folder path if different from the data.", '
+                                '"dark_prefix": "A file prefix for the dark field files, including the folder path '
+                                'if different from the data.", "angles": "A python statement to be evaluated (e.g '
+                                'np.linspace(0, 180, nAngles)) or a file.", "frame_dim": "Which dimension requires '
+                                'stitching?", "preview": "A slice list of required frames.", "dataset_name": "The '
+                                'name assigned to the dataset."}'),
+                hide=np.string_('[]'),
+                id=np.string_('savu.plugins.loaders.full_field_loaders.image_loader'),
+                name=np.string_('ImageLoader'),
+                user=np.string_('["preview"]'))
+        ]
 
         self.plugins: List[SAVUPluginListEntry] = []
 
@@ -112,18 +112,17 @@ class SAVUPluginList:
         """
         pattern = "VOLUME_XZ" if b"recon" in self.plugins[-1].id else "PROJECTION"
         self.append_plugins.append(
-            SAVUPluginListEntry(
-                active=True,
-                data=np.string_(
-                    '{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "' + pattern + '"}'),
-                desc=np.string_(
-                    '{"in_datasets": "The name of the dataset to save.", "out_datasets": "Hidden, '
-                    'dummy out_datasets entry.", "prefix": "Override the default output tiff file '
-                    'prefix.", "pattern": "How to slice the data."}'),
-                hide=np.string_('["out_datasets"]'),
-                id=np.string_('savu.plugins.savers.tiff_saver'),
-                name=np.string_('TiffSaver'),
-                user=np.string_('[]')))
+            SAVUPluginListEntry(active=True,
+                                data=np.string_('{"in_datasets": [], "out_datasets": [], "prefix": null, "pattern": "' +
+                                                pattern + '"}'),
+                                desc=np.string_(
+                                    '{"in_datasets": "The name of the dataset to save.", "out_datasets": "Hidden, '
+                                    'dummy out_datasets entry.", "prefix": "Override the default output tiff file '
+                                    'prefix.", "pattern": "How to slice the data."}'),
+                                hide=np.string_('["out_datasets"]'),
+                                id=np.string_('savu.plugins.savers.tiff_saver'),
+                                name=np.string_('TiffSaver'),
+                                user=np.string_('[]')))
 
     def __len__(self):
         return len(self.prepend_plugins) + len(self.plugins) + len(self.append_plugins)

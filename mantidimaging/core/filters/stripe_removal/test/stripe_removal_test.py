@@ -14,7 +14,6 @@ class StripeRemovalTest(unittest.TestCase):
 
     Tests return value only.
     """
-
     def __init__(self, *args, **kwargs):
         super(StripeRemovalTest, self).__init__(*args, **kwargs)
 
@@ -101,8 +100,7 @@ class StripeRemovalTest(unittest.TestCase):
 
         result = StripeRemovalFilter.filter_func(images, wf, ti, sf)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
 
@@ -117,8 +115,7 @@ class StripeRemovalTest(unittest.TestCase):
 
         result = StripeRemovalFilter.filter_func(images, wf, ti, sf)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
 
@@ -133,8 +130,7 @@ class StripeRemovalTest(unittest.TestCase):
 
         result = StripeRemovalFilter.filter_func(images, wf, ti, sf)
 
-        self.assertLess(
-            get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
+        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         th.assert_not_equals(result, control)
 

@@ -2,13 +2,11 @@ from unittest import TestCase
 
 import numpy as np
 
-from mantidimaging.core.cor_tilt import (
-        CorTiltDataModel, auto_find_cors)
+from mantidimaging.core.cor_tilt import (CorTiltDataModel, auto_find_cors)
 from mantidimaging.core.data import Images
 
 
 class AutoTest(TestCase):
-
     def test_auto_find_cors(self):
         num_projections = 8
         dim_y = 64

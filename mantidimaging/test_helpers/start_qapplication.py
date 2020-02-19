@@ -43,7 +43,6 @@ def start_qapplication(cls):
     if it is not already started
     @param cls: Class being decorated
     """
-
     def do_nothing(_):
         pass
 
