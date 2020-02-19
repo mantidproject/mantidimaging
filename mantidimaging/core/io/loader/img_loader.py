@@ -73,7 +73,6 @@ def execute(load_func,
 
 
 class ImageLoader(object):
-
     def __init__(self,
                  load_func,
                  input_file_names,

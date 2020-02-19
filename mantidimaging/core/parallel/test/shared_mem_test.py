@@ -21,7 +21,7 @@ class SharedMemTest(unittest.TestCase):
 
     def test_fwd_func_inplace(self):
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -41,7 +41,7 @@ class SharedMemTest(unittest.TestCase):
 
     def test_fwd_func(self):
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -106,7 +106,7 @@ class SharedMemTest(unittest.TestCase):
 
     def test_memory_fwd_func_inplace(self):
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
@@ -138,7 +138,7 @@ class SharedMemTest(unittest.TestCase):
         This will still capture if the data is doubled, which is the main goal.
         """
         # create data as shared array
-        img, orig = th.gen_img_shared_array_and_copy()
+        img, _ = th.gen_img_shared_array_and_copy()
         add_arg = 5
 
         expected = img + add_arg
