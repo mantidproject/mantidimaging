@@ -20,8 +20,8 @@ env:
     - DOCKER_IMAGE="dtasev/mantidimaging"
 
 
-before_install:
-  - docker pull dtasev/mantidimaging
+before_script:
+  - docker pull $DOCKER_IMAGE
 
 jobs:
   fast_finish: true
