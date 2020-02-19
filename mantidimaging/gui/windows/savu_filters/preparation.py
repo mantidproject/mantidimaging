@@ -9,16 +9,15 @@ from typing import List, Optional
 import socketio
 from requests_futures.sessions import FuturesSession
 
-from mantidimaging.core.configs.savu_backend_docker import (
-    DevelopmentRemoteConfig, RemoteConfig, RemoteConstants)
-from mantidimaging.core.utility.savu_interop.webapi import (
-    PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
-    WS_JOB_STATUS_NAMESPACE)
+from mantidimaging.core.configs.savu_backend_docker import (DevelopmentRemoteConfig, RemoteConfig, RemoteConstants)
+from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
+                                                            WS_JOB_STATUS_NAMESPACE)
 
 data: Optional[Future] = None
 sio_client: Optional[socketio.Client] = None
 
 LOG = getLogger(__name__)
+NO_DOCKER_EXE_MESSAGE = "Could not find a docker executable in any of {}. Starting without Docker (no Savu filters)"
 
 
 class BackgroundService(threading.Thread):
@@ -30,7 +29,7 @@ class BackgroundService(threading.Thread):
         self.error_callback = lambda err_code, output: LOG.debug(f"BackgroundService error: {output}")
         self.success_callback = lambda: LOG.debug("BackgroundService success.")
         self.exit_code: Optional[int] = None
-        self.docker_id = None
+        self.docker_id: Optional[str] = None
         self.process: Optional[subprocess.Popen] = None
         # explains why the background service failed to do something, e.g. start
         self.failure_reason: Optional[str] = None
@@ -101,12 +100,10 @@ def find_docker():
         if is_exe(location):
             return location
 
-    raise RuntimeError(
-        f"Could not find a docker executable in any of '{', '.join(docker_locations)}'. Starting without Docker (no Savu filters)"
-    )
+    raise RuntimeError(NO_DOCKER_EXE_MESSAGE.format(', '.join(docker_locations)))
 
 
-async def prepare_backend() -> BackgroundService:
+def prepare_backend() -> BackgroundService:
     try:
         docker_exe = find_docker()
     except RuntimeError as e:
@@ -147,7 +144,6 @@ async def prepare_backend() -> BackgroundService:
     else:
         docker_args.append(RemoteConfig.IMAGE_NAME)
 
-    docker_args = list(map(lambda arg: arg.replace("~", os.path.expanduser("~")), docker_args))
     LOG.debug(f"Starting DOCKER service with args: {' '.join(docker_args)}")
     process = BackgroundService(docker_exe, docker_args)
     return process

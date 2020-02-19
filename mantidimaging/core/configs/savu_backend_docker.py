@@ -1,14 +1,17 @@
+import os
+
+
 class RemoteConfig:
     LOCAL_DATA_DIR = "/mnt/e"
-    LOCAL_OUTPUT_DIR = "~/output"
+    LOCAL_OUTPUT_DIR = os.path.expanduser("~/output")
     IMAGE_NAME = "dtasev/hebi"
     NVIDIA_RUNTIME = {"value": "--runtime=nvidia", "active": False}
     DEVELOPMENT = False
 
 
 class DevelopmentRemoteConfig:
-    HEBI_SOURCE_DIR = "~/dev/hebi/api"
-    SAVU_SOURCE_DIR = "~/dev/savu"
+    HEBI_SOURCE_DIR = os.path.expanduser("~/dev/hebi/api")
+    SAVU_SOURCE_DIR = os.path.expanduser("~/dev/savu")
     # the label of the development image that should be used
     DEVELOPMENT_LABEL = "dev"
 

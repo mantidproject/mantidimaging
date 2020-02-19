@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import asyncio
 import logging
 import warnings
 
@@ -37,7 +36,7 @@ def parse_args():
     return parser.parse_args()
 
 
-async def async_main():
+def main():
     args = parse_args()
     # Print version number and exit
     if args.version:
@@ -51,7 +50,7 @@ async def async_main():
     startup_checks()
 
     try:
-        docker_backend = await prepare_backend()
+        docker_backend = prepare_backend()
     except RuntimeError as e:
         logging.getLogger(__name__).error(e)
         docker_backend = None
@@ -59,10 +58,6 @@ async def async_main():
     from mantidimaging import gui
 
     gui.execute(docker_backend)
-
-
-def main():
-    asyncio.run(async_main())
 
 
 if __name__ == "__main__":
