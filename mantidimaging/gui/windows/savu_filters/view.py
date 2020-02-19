@@ -2,13 +2,16 @@ import os
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLabel, QMainWindow, QTextEdit, QSpinBox
+from PyQt5.QtWidgets import QLabel, QMainWindow, QSpinBox, QTextEdit
 
-from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
+from mantidimaging.core.configs.savu_backend_docker import (RemoteConfig, RemoteConstants)
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
-from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
-from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
+from mantidimaging.gui.windows.savu_filters.presenter import \
+    Notification as PresNotification
+from mantidimaging.gui.windows.savu_filters.presenter import \
+    SavuFiltersWindowPresenter
+from mantidimaging.gui.windows.savu_filters.remote_presenter import \
+    SavuFiltersRemotePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
@@ -75,7 +78,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
     def load_savu_stack(self, output: str):
         # replace remote output with the local output path equivalent
-        local_output = os.path.expanduser(output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR))
+        local_output = output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR)
         # navigate to the first folder - that should be the folder created by the output plugin
         # TODO make more robust somehow, get output folder from Savu through Hebi?
         local_output = os.path.join(local_output, os.listdir(local_output)[0], "TiffSaver-tomo")
