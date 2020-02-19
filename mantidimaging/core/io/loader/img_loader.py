@@ -7,13 +7,15 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.io.utility import get_file_names
-from mantidimaging.core.parallel import two_shared_mem as ptsm, utility as pu
+from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+
 from . import stack_loader
 
 
 def execute(load_func,
-            all_input_file_names,
+            all_input_filenames,
             input_path_flat,
             input_path_dark,
             img_format,
@@ -44,15 +46,15 @@ def execute(load_func,
     """
 
     # Assumed that all images have the same size and properties as the first.
-    first_sample_img = load_func(all_input_file_names[0])
+    first_sample_img = load_func(all_input_filenames[0])
 
-    chosen_input_file_names = all_input_file_names[indices[0]:indices[1]:indices[2]] if indices else all_input_file_names
+    chosen_input_filenames = all_input_filenames[indices[0]:indices[1]:indices[2]] if indices else all_input_filenames
 
     # get the shape of all images
     img_shape = first_sample_img.shape
 
     # forward all arguments to internal class for easy re-usage
-    il = ImageLoader(load_func, chosen_input_file_names, input_path_flat, input_path_dark, img_format, img_shape,
+    il = ImageLoader(load_func, chosen_input_filenames, input_path_flat, input_path_dark, img_format, img_shape,
                      data_dtype, cores, chunksize, parallel_load, indices, construct_sinograms, progress)
 
     # we load the flat and dark first, because if they fail we don't want to
@@ -61,16 +63,17 @@ def execute(load_func,
 
     dark_avg, dark_filenames = il.load_and_avg_data(input_path_dark, "Dark")
 
-    sample_data = il.load_sample_data(chosen_input_file_names)
+    sample_data = il.load_sample_data(chosen_input_filenames)
 
     # if this is true, then the loaded sample data was created via the stack_loader
     if isinstance(sample_data, Images):
         sample_data = sample_data.sample
 
-    return Images(sample_data, flat_avg, dark_avg, all_input_file_names, indices, flat_filenames, dark_filenames)
+    return Images(sample_data, flat_avg, dark_avg, all_input_filenames, indices, flat_filenames, dark_filenames)
 
 
 class ImageLoader(object):
+
     def __init__(self,
                  load_func,
                  input_file_names,

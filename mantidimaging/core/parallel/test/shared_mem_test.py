@@ -3,10 +3,8 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
-
 from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 def add_inplace(first_shared, add_arg=3):
@@ -61,8 +59,6 @@ class SharedMemTest(unittest.TestCase):
         # compare results
         npt.assert_equal(img, expected)
 
-# ------------------------- FAIL CASES -----------------------
-
     def test_fail_with_normal_array_fwd_func_inplace(self):
         # create data as normal nd array
         img = th.gen_img_numpy_rand()
@@ -107,9 +103,6 @@ class SharedMemTest(unittest.TestCase):
         # compare results
         th.assert_not_equals(res, expected)
         npt.assert_equal(img, orig)
-
-
-# ------------------------- MEMORY TESTS -----------------------
 
     def test_memory_fwd_func_inplace(self):
         # create data as shared array
@@ -164,6 +157,7 @@ class SharedMemTest(unittest.TestCase):
 
         # compare results
         npt.assert_equal(img, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
