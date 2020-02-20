@@ -5,7 +5,6 @@ import warnings
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.optional_imports import safe_import
-from mantidimaging.gui.windows.savu_filters.preparation import prepare_backend
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -49,15 +48,9 @@ def main():
 
     startup_checks()
 
-    try:
-        docker_backend = prepare_backend()
-    except RuntimeError as e:
-        logging.getLogger(__name__).error(e)
-        docker_backend = None
-
     from mantidimaging import gui
 
-    gui.execute(docker_backend)
+    gui.execute()
 
 
 if __name__ == "__main__":
