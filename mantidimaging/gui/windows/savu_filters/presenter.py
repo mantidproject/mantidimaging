@@ -43,8 +43,8 @@ class SavuFiltersWindowPresenter(BasePresenter):
                  remote_presenter: SavuFiltersRemotePresenter):
         super(SavuFiltersWindowPresenter, self).__init__(view)
 
-        self.model = SavuFiltersWindowModel(self)
         self.remote_presenter = remote_presenter
+        self.model = SavuFiltersWindowModel(self, self.remote_presenter.retrieve_plugins_json())
         self.main_window = main_window
 
         self.process_list_view = ProcessListView(self.view)

@@ -13,7 +13,6 @@ from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
-from mantidimaging.gui.windows.savu_filters.preparation import BackgroundService
 from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
@@ -204,8 +203,8 @@ class MainWindowView(BaseMainWindowView):
             # Close all matplotlib PyPlot windows when exiting.
             getLogger(__name__).debug("Closing all PyPlot windows")
             matplotlib.pyplot.close("all")
-            self.backend_process.close()
-            self.backend_process.join()
+            # self.backend_process.close()
+            # self.backend_process.join()
 
             # Pass close event to parent
             super(MainWindowView, self).closeEvent(event)
@@ -218,25 +217,25 @@ class MainWindowView(BaseMainWindowView):
         QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
         getLogger(__name__).error(log_error_msg)
 
-    def print_backend_output(self, output: bytes):
-        getLogger(__name__).debug(output)
-
-    def error_callback(self, err_code, output):
-        self.status_bar_label.setText("SAVU Backend: Error")
-        getLogger(__name__).error("".join([out.decode("utf-8") for out in output]))
-
-    def set_background_service(self, docker_backend: BackgroundService):
-        if docker_backend.process and docker_backend.process.poll() is not None:
-            self.status_bar_label.setText("SAVU Backend: Starting")
-            self.backend_message.connect(self.print_backend_output)
-            docker_backend.callback = lambda output: self.backend_message.emit(output)
-            docker_backend.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
-            docker_backend.error_callback = self.error_callback
-        else:
-            getLogger(__name__).error(docker_backend.failure_reason)
-            self.status_bar_label.setText("SAVU Backend: Unable to start")
-
-        self.backend_process = docker_backend
+    # def print_backend_output(self, output: bytes):
+    #     getLogger(__name__).debug(output)
+    #
+    # def error_callback(self, err_code, output):
+    #     self.status_bar_label.setText("SAVU Backend: Error")
+    #     getLogger(__name__).error("".join([out.decode("utf-8") for out in output]))
+    # def set_background_service(self):
+    #     if docker_backend.process and docker_backend.process.poll() is not None:
+    #         self.status_bar_label.setText("SAVU Backend: Starting")
+    #         self.backend_message.connect(self.print_backend_output)
+    #         docker_backend.callback = lambda output: self.backend_message.emit(output)
+    #         docker_backend.success_callback = lambda: self.status_bar_label.setText("SAVU Backend: OK")
+    #         docker_backend.error_callback = self.error_callback
+    #     else:
+    #         getLogger(__name__).error(docker_backend.failure_reason)
+    #         self.status_bar_label.setText("SAVU Backend: Unable to start")
+    #
+    #     self.backend_process = docker_backend
 
     def create_new_stack(self, data, title):
         self.presenter.create_new_stack(data, title)
+

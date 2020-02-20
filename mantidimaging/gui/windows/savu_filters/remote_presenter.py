@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from mantidimaging.core.utility.savu_interop.webapi import WS_JOB_STATUS_NAMESPACE
-from mantidimaging.gui.windows.savu_filters import preparation
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.savu_filters.sio_model import SavuFiltersSIOModel
 
@@ -12,7 +11,10 @@ if TYPE_CHECKING:
 class SavuFiltersRemotePresenter(object):
     def __init__(self, view: 'SavuFiltersWindowView'):
         self.view = view
-        self.sio_model = SavuFiltersSIOModel(self, preparation.sio_client, WS_JOB_STATUS_NAMESPACE)
+        self.sio_model = SavuFiltersSIOModel(self, WS_JOB_STATUS_NAMESPACE)
+
+    def retrieve_plugins_json(self):
+        return self.sio_model.retrieve_plugins_json()
 
     def do_job_submission_success(self, response_content: JobRunResponseContent):
         self.sio_model.join(response_content)

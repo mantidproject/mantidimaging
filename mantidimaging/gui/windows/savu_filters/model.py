@@ -8,13 +8,11 @@ from typing import Dict, Optional, List, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
-from requests import Response
 
 from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.core.io import savu_config_writer
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, SAVUPluginListEntry, SAVUPlugin
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
-from mantidimaging.gui.windows.savu_filters import preparation
 from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
@@ -29,7 +27,7 @@ class SavuFiltersWindowModel(object):
 
     parameters_from_stack: Dict
 
-    def __init__(self, presenter: 'SavuFiltersWindowPresenter'):
+    def __init__(self, presenter: 'SavuFiltersWindowPresenter', plugins_json: Dict):
         super(SavuFiltersWindowModel, self).__init__()
         self.presenter: 'SavuFiltersWindowPresenter' = presenter
 
@@ -38,22 +36,7 @@ class SavuFiltersWindowModel(object):
         # Update the local filter registry
         self.filters: List[SAVUPlugin] = []
 
-        if preparation.data is not None:
-            request: Future = preparation.data
-        else:
-            raise RuntimeError("Could not retrieve any response object")
-        try:
-            response: Response = request.result(timeout=5)
-            if response.status_code == 200:
-                response_json: Dict = json.loads(response.content)
-            else:
-                preparation.prepare_data()
-                raise ValueError(f"Did not get valid data from the Savu backend. Error code {response.status_code}")
-        except ConnectionError:
-            preparation.prepare_data()
-            raise RuntimeError("Savu backend is not running. Cannot open GUI.")
-            # try contacting the SAVU backend again
-        self.register_filters(response_json)
+        self.register_filters(plugins_json)
 
         self.preview_image_idx = 0
 
