@@ -17,6 +17,7 @@ class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
     """
+
     @staticmethod
     def ensure_instance(p=None, *args, **kwargs):
         """
