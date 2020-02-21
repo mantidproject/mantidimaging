@@ -90,8 +90,10 @@ class SavuFiltersWindowPresenter(BasePresenter):
         self.model.stack = stack
 
     def handle_roi_selection(self, roi):
-        if roi:
-            self.view.auto_update_triggered.emit()
+        # TODO used to check  and self.filter_uses_auto_property(SVParameters.ROI): but disabled for now
+        pass
+        # if roi:
+            # self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
         self.set_mode(Mode.ADDING)
