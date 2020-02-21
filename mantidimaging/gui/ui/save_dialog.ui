@@ -67,7 +67,7 @@
      <item row="3" column="1">
       <widget class="QCheckBox" name="overwriteAll">
        <property name="text">
-        <string>Overwrite</string>
+        <string>Overwrite on name conflict</string>
        </property>
        <property name="checked">
         <bool>false</bool>

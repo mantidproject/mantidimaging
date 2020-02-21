@@ -1,11 +1,12 @@
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
+
+from PyQt5 import Qt
+from PyQt5.QtCore import Qt as QtFlag
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
-from .presenter import AsyncTaskDialogPresenter
 
-if TYPE_CHECKING:
-    from PyQt5 import Qt
+from .presenter import AsyncTaskDialogPresenter
 
 
 class AsyncTaskDialogView(BaseDialogView):
@@ -14,7 +15,6 @@ class AsyncTaskDialogView(BaseDialogView):
 
         self.parent_view = parent
         self.presenter = AsyncTaskDialogPresenter(self)
-
         self.auto_close = auto_close
 
         self.progressBar.setMinimum(0)
