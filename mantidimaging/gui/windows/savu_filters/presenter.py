@@ -39,11 +39,11 @@ class Mode(Enum):
 
 
 class SavuFiltersWindowPresenter(BasePresenter):
-    def __init__(self, view: 'SavuFiltersWindowView', main_window: 'MainWindowView',
-                 remote_presenter: SavuFiltersRemotePresenter):
+    def __init__(self, view: 'SavuFiltersWindowView', main_window: 'MainWindowView'):
         super(SavuFiltersWindowPresenter, self).__init__(view)
 
-        self.remote_presenter = remote_presenter
+        # handles socketio events coming from the remote backend
+        self.remote_presenter = SavuFiltersRemotePresenter(view)
         self.model = SavuFiltersWindowModel(self, self.remote_presenter.retrieve_plugins_json())
         self.main_window = main_window
 
@@ -53,6 +53,9 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
         self.current_filter: CurrentFilterData = ()
         self.mode: Mode = Mode.ADDING
+
+    def disconnect(self):
+        self.remote_presenter.disconnect()
 
     def notify(self, signal):
         try:
@@ -88,7 +91,6 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
     def handle_roi_selection(self, roi):
         if roi:
-            # TODO used to check  and self.filter_uses_auto_property(SVParameters.ROI): but disabled for now
             self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):

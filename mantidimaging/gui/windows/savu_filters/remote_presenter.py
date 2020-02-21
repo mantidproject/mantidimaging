@@ -13,6 +13,9 @@ class SavuFiltersRemotePresenter(object):
         self.view = view
         self.sio_model = SavuFiltersSIOModel(self, WS_JOB_STATUS_NAMESPACE)
 
+    def disconnect(self):
+        self.sio_model.disconnect()
+
     def retrieve_plugins_json(self):
         return self.sio_model.retrieve_plugins_json()
 

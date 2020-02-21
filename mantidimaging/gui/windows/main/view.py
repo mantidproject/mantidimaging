@@ -203,8 +203,10 @@ class MainWindowView(BaseMainWindowView):
             # Close all matplotlib PyPlot windows when exiting.
             getLogger(__name__).debug("Closing all PyPlot windows")
             matplotlib.pyplot.close("all")
-            # self.backend_process.close()
-            # self.backend_process.join()
+
+            # allows to properly cleanup the socket IO connection
+            if self.savu_filters:
+                self.savu_filters.close()
 
             # Pass close event to parent
             super(MainWindowView, self).closeEvent(event)

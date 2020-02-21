@@ -29,6 +29,9 @@ class SavuFiltersSIOModel(object):
 
         self.job_response: Optional[JobRunResponseContent] = None
 
+    def disconnect(self):
+        self.client.disconnect()
+
     def retrieve_plugins_json(self):
         try:
             response: Response = self.client.request.result(timeout=5)
