@@ -34,8 +34,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         """
         super(SavuFiltersWindowView, self).__init__(main_window, 'gui/ui/savu_filters_window.ui')
 
-        self.remote_presenter = SavuFiltersRemotePresenter(self)
-        self.presenter = SavuFiltersWindowPresenter(self, main_window, self.remote_presenter)
+        self.presenter = SavuFiltersWindowPresenter(self, main_window)
         self.main_window = main_window
         self.floating_output_window = QMainWindow(self)
         self.floating_output = QTextEdit(self.floating_output_window)
@@ -59,6 +58,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
+        self.presenter.disconnect()
         self.main_window.savu_filters = None
 
     def show(self):

@@ -1,12 +1,10 @@
 import atexit
 import json
-from typing import Dict
-
-from requests import Response
 from concurrent.futures import Future, ProcessPoolExecutor
 from logging import getLogger
 
 import socketio
+from requests import Response
 from requests_futures.sessions import FuturesSession
 
 from mantidimaging.core.utility.savu_interop.webapi import (PLUGINS_WITH_DETAILS_URL, SERVER_URL, SERVER_WS_URL,
