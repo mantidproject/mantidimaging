@@ -213,7 +213,8 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     img_num = data.shape[0]
 
     task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
+    progress = Progress.ensure_instance(progress, task_name=task_name)
+    progress.set_estimated_steps(img_num)
 
     if img_num == 1:
         indices_list = [0]
