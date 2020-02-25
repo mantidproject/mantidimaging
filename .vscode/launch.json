@@ -35,5 +35,20 @@
         "order": 1
       }
     },
+    {
+      "name": "Python: Mantid Imaging",
+      "type": "python",
+      "request": "launch",
+      "module": "mantidimaging",
+      "args": [
+        "--log-level",
+        "DEBUG"
+      ],
+      "env": {
+        "DISPLAY": ":1.0",
+        "PYTHONPATH": "${workspaceFolder}",
+        "XDG_CURRENT_DESKTOP": "XFCE"
+      }
+    },
   ]
 }
