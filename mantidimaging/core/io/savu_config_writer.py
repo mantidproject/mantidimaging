@@ -8,8 +8,8 @@ from typing import Type
 import h5py
 import numpy as np
 
-from mantidimaging.core.utility.savu_interop.citations import Citation, HDF5Citation, SavuCitation, MPICitation, \
-    MantidImagingCitation
+from mantidimaging.core.utility.savu_interop.citations import (Citation, HDF5Citation, MantidImagingCitation,
+                                                               MPICitation, SavuCitation)
 from mantidimaging.core.utility.savu_interop.nxclasses import NXClasses
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList
 
@@ -55,10 +55,3 @@ def _add_citation_group(framework_group: h5py.Group, dataclass: Type[Citation]):
     group.create_dataset('description', data=np.string_(dataclass.description))
     group.create_dataset('doi', data=np.string_(dataclass.doi))
     group.create_dataset('endnote', data=np.string_(dataclass.endnote))
-
-
-if __name__ == "__main__":
-    pl = SAVUPluginList("Flower_WhiteBeam/pp3_cropped/image_", 1143)
-    path = Path("~/dev/hebi/output/").expanduser()
-    path.mkdir(parents=True, exist_ok=True)
-    mnuhef = save(pl, path / "testfile", overwrite=True)

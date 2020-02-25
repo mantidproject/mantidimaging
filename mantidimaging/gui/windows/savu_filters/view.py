@@ -41,7 +41,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.floating_output_window.setCentralWidget(self.floating_output)
         self.floating_output_window.show()
 
-        self.new_output.connect(self.append_output_text)
+        self.new_output.connect(self.show_output_text)
         self.savu_finished.connect(self.load_savu_stack)
 
         # Populate list of filters and handle filter selection
@@ -70,8 +70,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
     def set_description(self, info, desc):
         self.info.setText("\n".join([info, desc]))
 
-    def append_output_text(self, text):
-        self.floating_output.setText(self.floating_output.toPlainText() + "\n" + text)
+    def show_output_text(self, text):
+        self.floating_output.setText(text + "\n" + self.floating_output.toPlainText())
 
     def clear_output_text(self):
         self.floating_output.setText("")

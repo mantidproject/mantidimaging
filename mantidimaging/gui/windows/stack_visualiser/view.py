@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu,
+                             QMessageBox, QVBoxLayout, QWidget)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -117,7 +118,7 @@ class StackVisualiserView(BaseMainWindowView):
         actions = [
             ("Change window name", self.change_window_name_clicked),
             ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-            ("Show image metadata", self.show_image_metadata),
+            ("Show history", self.show_image_metadata),
             ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
             ("Apply history from another stack", self.show_op_history_copy_dialog),
         ]
