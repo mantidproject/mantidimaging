@@ -1,8 +1,17 @@
 import os
 
+# Name of the environment variable expected to contain
+# the name of the output directory. This is needed to
+# load the images back after processing remotely
+MANTIDIMAGING_OUTPUT_DIR_NAME = "MANTIDIMAGING_OUTPUT_DIR"
+
+
+def env(name, default):
+    return os.path.abspath(os.path.expanduser(os.environ.get(name, default)))
+
 
 class RemoteConfig:
-    LOCAL_OUTPUT_DIR = os.path.expanduser("/babylon/Public/Dimitar Tasev/output")
+    LOCAL_OUTPUT_DIR = env(MANTIDIMAGING_OUTPUT_DIR_NAME, "~/output")
 
 
 class RemoteConstants:
