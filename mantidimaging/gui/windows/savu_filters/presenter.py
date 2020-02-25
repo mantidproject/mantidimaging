@@ -1,19 +1,22 @@
 import json
 from enum import Enum, auto
 from logging import getLogger
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from uuid import UUID
 
 from PyQt5.QtWidgets import QWidget
 from requests import Response
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import add_property_to_form, BlockQtSignals
+from mantidimaging.gui.utility import BlockQtSignals, add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import delete_all_widgets_from_layout
-from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
-from mantidimaging.gui.windows.savu_filters.model import SavuFiltersWindowModel, CurrentFilterData
-from mantidimaging.gui.windows.savu_filters.process_list.view import ProcessListView
-from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
+from mantidimaging.gui.windows.savu_filters.job_run_response import \
+    JobRunResponseContent
+from mantidimaging.gui.windows.savu_filters.model import (CurrentFilterData, SavuFiltersWindowModel)
+from mantidimaging.gui.windows.savu_filters.process_list.view import \
+    ProcessListView
+from mantidimaging.gui.windows.savu_filters.remote_presenter import \
+    SavuFiltersRemotePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
@@ -93,7 +96,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
         # TODO used to check  and self.filter_uses_auto_property(SVParameters.ROI): but disabled for now
         pass
         # if roi:
-            # self.view.auto_update_triggered.emit()
+        # self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
         self.set_mode(Mode.ADDING)
@@ -151,7 +154,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
     def do_job_submission_failure(self, error_response: Response):
         er = json.loads(error_response.text)
         msg = f"Error response from hebi:\n{error_response.status_code}: {error_response.reason}\n{er['message']}"
-        self.view.append_output_text(msg)
+        self.view.show_output_text(msg)
         raise NotImplementedError(msg)
 
     def confirm_plugin(self):
