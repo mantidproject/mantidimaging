@@ -4,16 +4,20 @@ import os
 from concurrent.futures import Future, ProcessPoolExecutor
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Optional, List, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
+from requests import Response
 
-from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
+from mantidimaging.core.configs.savu_backend_docker import (RemoteConfig,
+                                                            RemoteConstants)
 from mantidimaging.core.io import savu_config_writer
-from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginList, SAVUPluginListEntry, SAVUPlugin
+from mantidimaging.core.utility.savu_interop.plugin_list import (
+    SAVUPlugin, SAVUPluginList, SAVUPluginListEntry)
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
-from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
+from mantidimaging.gui.windows.savu_filters.job_run_response import \
+    JobRunResponseContent
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
@@ -143,12 +147,11 @@ class SavuFiltersWindowModel(object):
         return common_prefix
 
     def _get_dataset_path(self):
-        file_paths = self.stack_presenter.images.filenames
-        file_names = [path.split(os.sep)[-1] for path in file_paths]
-        return file_paths[0] \
-            .replace(RemoteConfig.LOCAL_DATA_DIR, RemoteConstants.DATA_DIR) \
-            .replace(file_names[0], "") \
-            .rstrip(os.sep)
+        file_path = self.stack_presenter.images.filenames[0]
+        dirname = os.path.dirname(file_path)
+        # strip removes the start / so that join can combine the paths
+        # otherwise it picks the second one which is an absolute path
+        return os.path.join(RemoteConstants.OUTSIDE_MOUNT_DIR, dirname.strip("/"))
 
     def do_apply_process_list(self, pl_path, dataset_path):
         from mantidimaging.core.utility.savu_interop.webapi import SERVER_URL, JOB_SUBMIT_URL
