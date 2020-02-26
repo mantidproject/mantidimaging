@@ -1,7 +1,6 @@
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
 from PyQt5 import Qt
-from PyQt5.QtCore import Qt as QtFlag
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView

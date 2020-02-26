@@ -1,17 +1,14 @@
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu,
-                             QMessageBox, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
-from mantidimaging.gui.dialogs.op_history_copy.view import \
-    OpHistoryCopyDialogView
+from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.stack_visualiser.presenter import \
-    StackVisualiserPresenter
+from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
 
 from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification
