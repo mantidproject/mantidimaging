@@ -10,11 +10,9 @@ import numpy as np
 from PyQt5.QtWidgets import QWidget
 from requests import Response
 
-from mantidimaging.core.configs.savu_backend_docker import (RemoteConfig,
-                                                            RemoteConstants)
+from mantidimaging.core.configs.savu_backend_docker import RemoteConstants
 from mantidimaging.core.io import savu_config_writer
-from mantidimaging.core.utility.savu_interop.plugin_list import (
-    SAVUPlugin, SAVUPluginList, SAVUPluginListEntry)
+from mantidimaging.core.utility.savu_interop.plugin_list import (SAVUPlugin, SAVUPluginList, SAVUPluginListEntry)
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
 from mantidimaging.gui.windows.savu_filters.job_run_response import \
     JobRunResponseContent
@@ -191,16 +189,6 @@ class SavuFiltersWindowModel(object):
         else:
             logger.error(f"Error code: {response.status_code}, message: {response.content!r}")
             self.presenter.do_job_submission_failure(response)
-
-        # reload changes? what do
-        # TODO figure out how to get params like ROI later
-        # Get auto parameters
-        # exec_kwargs = get_auto_params_from_stack(self.stack_presenter, self.auto_props)
-        #
-        # self.apply_filter(self.stack_presenter.images, exec_kwargs)
-        #
-        # Refresh the image in the stack visualiser
-        # self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
 
     @staticmethod
     def create_plugin_entry_from(current_filter: CurrentFilterData) -> SAVUPluginListEntry:

@@ -10,8 +10,6 @@ from mantidimaging.gui.windows.savu_filters.presenter import \
     Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import \
     SavuFiltersWindowPresenter
-from mantidimaging.gui.windows.savu_filters.remote_presenter import \
-    SavuFiltersRemotePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
