@@ -7,9 +7,4 @@
     "--line-length=120"
   ],
   "python.linting.mypyEnabled": true,
-  "[python]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    }
-  },
 }
