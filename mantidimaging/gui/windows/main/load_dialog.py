@@ -4,7 +4,7 @@ from logging import getLogger
 from typing import Dict, Optional, Any
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QCheckBox
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QCheckBox, QComboBox
 
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension, get_prefix
@@ -30,6 +30,8 @@ class MWLoadDialog(Qt.QDialog):
     flat_widget: QWidget
     staged_load: QCheckBox
 
+    pixel_bit_depth: QComboBox
+
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
         compile_ui('gui/ui/load_dialog.ui', self)
@@ -49,7 +51,7 @@ class MWLoadDialog(Qt.QDialog):
         self.index_start.valueChanged.connect(self.update_expected_mem_usage)
         self.index_end.valueChanged.connect(self.update_expected_mem_usage)
         self.index_step.valueChanged.connect(self.update_expected_mem_usage)
-        self.pixelBitDepth.currentIndexChanged.connect(self.update_expected_mem_usage)
+        self.pixel_bit_depth.currentIndexChanged.connect(self.update_expected_mem_usage)
 
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
@@ -108,7 +110,7 @@ class MWLoadDialog(Qt.QDialog):
         self.index_step.setMaximum(max(number_of_images, 1))
 
     def update_expected_mem_usage(self):
-        self.dtype = self.pixelBitDepth.currentText()
+        self.dtype = self.pixel_bit_depth.currentText()
 
         num_images = size_calculator.number_of_images_from_indices(self.index_start.value(), self.index_end.value(),
                                                                    self.index_step.value())
@@ -188,5 +190,6 @@ class MWLoadDialog(Qt.QDialog):
             'parallel_load': self.parallel_load(),
             'indices': self.indices,
             'custom_name': self.window_title(),
-            'staged_load': self.staged_load.isChecked()
+            'staged_load': self.staged_load.isChecked(),
+            'dtype': self.pixel_bit_depth.currentText()
         }

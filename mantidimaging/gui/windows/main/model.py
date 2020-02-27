@@ -26,18 +26,18 @@ class MainWindowModel(object):
                       indices,
                       progress,
                       in_prefix,
+                      dtype,
                       flat_path=None,
                       dark_path=None):
-        images = loader.load(sample_path,
-                             flat_path,
-                             dark_path,
-                             in_prefix=in_prefix,
-                             in_format=image_format,
-                             parallel_load=parallel_load,
-                             indices=indices,
-                             progress=progress)
-
-        return images
+        return loader.load(sample_path,
+                           flat_path,
+                           dark_path,
+                           in_prefix=in_prefix,
+                           in_format=image_format,
+                           parallel_load=parallel_load,
+                           indices=indices,
+                           dtype=dtype,
+                           progress=progress)
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter

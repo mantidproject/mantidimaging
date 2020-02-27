@@ -1,11 +1,11 @@
-from typing import Callable
-
-from PyQt5 import Qt
+from typing import Callable, TYPE_CHECKING
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
-
 from .presenter import AsyncTaskDialogPresenter
+
+from PyQt5 import Qt
+from PyQt5.QtCore import Qt as QtFlag
 
 
 class AsyncTaskDialogView(BaseDialogView):

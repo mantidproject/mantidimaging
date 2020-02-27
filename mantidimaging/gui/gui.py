@@ -15,12 +15,6 @@ def execute():
     q_application = QApplication(sys.argv)
     application_window = MainWindowView()
 
-    # connect_to_backend()
-    #
-    # application_window.set_background_service(docker_backend)
-    #
-    # docker_backend.start()
-
     sys.excepthook = lambda exc_type, exc_value, exc_traceback: application_window.uncaught_exception(
         "".join(traceback.format_exception_only(exc_type, exc_value)), "".join(
             traceback.format_exception(exc_type, exc_value, exc_traceback)))

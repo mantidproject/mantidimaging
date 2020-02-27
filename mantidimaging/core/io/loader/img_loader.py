@@ -45,6 +45,9 @@ def execute(load_func,
 
     """
 
+    if not all_input_filenames:
+        raise RuntimeError("No filenames were provided.")
+
     # Assumed that all images have the same size and properties as the first.
     first_sample_img = load_func(all_input_filenames[0])
 

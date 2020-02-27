@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>397</height>
+    <height>425</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -235,31 +235,41 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="pixelBitDepth">
+      <widget class="QComboBox" name="pixel_bit_depth">
        <property name="editable">
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>4</number>
        </property>
        <item>
         <property name="text">
-         <string>8</string>
+         <string>uint8</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>16</string>
+         <string>uint16</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>32</string>
+         <string>int32</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>64</string>
+         <string>int64</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>float32</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>float64</string>
         </property>
        </item>
       </widget>

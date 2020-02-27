@@ -170,40 +170,27 @@ def load(input_path=None,
     Loads a stack, including sample, white and dark images.
 
     :param input_path: Path for the input data folder
-
     :param input_path_flat: Optional: Path for the input Flat images folder
-
     :param input_path_dark: Optional: Path for the input Dark images folder
-
     :param in_prefix: Optional: Prefix for loaded files
-
     :param in_format: Default:'tiff', format for the input images
-
     :param dtype: Default:np.float32, data type for the input images
-
     :param cores: Default:None (max available), cores to be used if
                   parallel_load is True
-
     :param chunksize: Default:None (auto calculated), chunk of work per worker
-
     :param parallel_load: Default: False, if set to true the loading of the
                           data will be done in parallel.
                           This could be faster depending on the IO system.
                           For local runs (with HDD) recommended setting is
                           False
-
     :param file_names: Use provided file names for loading
-
     :param indices: Specify which indices are loaded from the found files.
                     This **DOES NOT** check for the number in the image
                     filename, but removes all indices from the filenames list
                     that are not selected
-
     :param construct_sinograms: The loaded images will be used to construct the
                                 sinograms during loading
-
     :param progress: The progress reporting instance
-
     :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark
              were loaded, they will be None
     """
