@@ -15,17 +15,13 @@ def run_reconstruct(sample, config, proj_angles=None, **kwargs):
     It will create the tomopy tool object at runtime.
 
     :param sample: The sample image data as a 3D numpy.ndarray
-
     :param config: A ReconstructionConfig with all the necessary parameters
                    to run a reconstruction. The Centers of Rotation
                     must be interpolated independently!
-
     :param proj_angles: The projection angle for each slice.
                         If not provided equidistant angles will be generated
-
     :param kwargs: Any keyword arguments will be forwarded to the TomoPy
                    reconstruction function
-
     :return: The reconstructed volume
     """
     tool = TomoPyTool()

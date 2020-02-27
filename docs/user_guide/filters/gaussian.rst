@@ -7,6 +7,6 @@ Applies SciPy's Gaussian filter (:code:`scipy.ndimage.filters.gaussian_filter`)
 Python API
 ----------
 
-.. autofunction:: mantidimaging.core.filters.gaussian.execute
+.. autoclass:: mantidimaging.core.filters.gaussian.GaussianFilter
 
 .. _docs: https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html

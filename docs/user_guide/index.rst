@@ -10,3 +10,4 @@ User Guide
    gui/index
    filters/index
    python/index
+   savu/index

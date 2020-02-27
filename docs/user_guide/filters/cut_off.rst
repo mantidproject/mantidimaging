@@ -11,4 +11,4 @@ level is 0.95 then every pixel with an intensity value grater than 2.56
 Python API
 ----------
 
-.. autofunction:: mantidimaging.core.filters.cut_off.execute
+.. autoclass:: mantidimaging.core.filters.cut_off.CutOffFilter

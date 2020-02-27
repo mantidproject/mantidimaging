@@ -20,4 +20,4 @@ The workflow of this filter is:
 Python API
 ----------
 
-.. autofunction:: mantidimaging.core.filters.roi_normalisation.execute
+.. autoclass:: mantidimaging.core.filters.roi_normalisation.RoiNormalisationFilter
