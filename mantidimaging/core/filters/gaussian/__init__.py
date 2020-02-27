@@ -1,2 +1,2 @@
-from .gaussian import GaussianFilter, modes, _cli_register  # noqa:F401
+from .gaussian import GaussianFilter, modes  # noqa:F401
 FILTER_CLASS = GaussianFilter

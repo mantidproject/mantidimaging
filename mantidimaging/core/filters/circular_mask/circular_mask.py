@@ -52,24 +52,3 @@ class CircularMaskFilter(BaseFilter):
         return partial(CircularMaskFilter.filter_func,
                        circular_mask_ratio=radius_field.value(),
                        circular_mask_value=value_field.value())
-
-
-def _cli_register(parser):
-    parser.add_argument("--circular-mask",
-                        required=False,
-                        type=float,
-                        default=None,
-                        help="Radius of the circular mask to apply on the "
-                        "reconstructed volume.\n"
-                        "It is given in range [0,1) relative to the size of the "
-                        "smaller dimension/edge "
-                        "of the slices.\nEmpty or zero implies no masking.")
-
-    parser.add_argument("--circular-mask-val",
-                        required=False,
-                        type=float,
-                        default=0.0,
-                        help="Default: %(default)s. "
-                        "The value that the pixels in the mask will be set to.")
-
-    return parser

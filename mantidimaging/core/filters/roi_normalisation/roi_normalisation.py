@@ -75,21 +75,6 @@ class RoiNormalisationFilter(BaseFilter):
         return {"air_region": SVParameters.ROI}
 
 
-def _cli_register(parser):
-    parser.add_argument("-A",
-                        "--air-region",
-                        required=False,
-                        nargs='*',
-                        type=str,
-                        help="Air region /region for normalisation. The selection is a "
-                        "rectangle and expected order is - Left Top Right Bottom.\n"
-                        "For best results the region selected should not be blocked by "
-                        "any object in the Tomography.\n"
-                        "Example: --air-region 150 234 23 22")
-
-    return parser
-
-
 def _calc_sum(data, air_sums, air_left=None, air_top=None, air_right=None, air_bottom=None):
     # here we can use ndarray.sum or ndarray.mean
     # ndarray.mean makes the values with a nice int16 range

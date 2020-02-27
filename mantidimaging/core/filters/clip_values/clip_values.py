@@ -133,38 +133,3 @@ class ClipValuesFilter(BaseFilter):
                        clip_min_new_value=clip_min_new_value,
                        clip_max_new_value=clip_max_new_value)
 
-
-def _cli_register(parser):
-    parser.add_argument("--clip-min",
-                        required=False,
-                        type=float,
-                        default=None,
-                        help="Clip values from the image BELOW the specified amount. "
-                        "If not passed the minimum value in the volume will be taken")
-
-    parser.add_argument("--clip-min-new-value",
-                        required=False,
-                        type=float,
-                        default=None,
-                        help="The clipped values from --clip-min will be set to this new "
-                        "value. If this is not set the clipped values will be set to the "
-                        "--clip-min value. This allows to make noise values very far "
-                        "outliers, which can then be hidden in visualisation.")
-
-    parser.add_argument("--clip-max",
-                        required=False,
-                        type=float,
-                        default=None,
-                        help="Clip values from the image ABOVE the specified amount. "
-                        "If not passed the minimum value in the volume will be taken.")
-
-    parser.add_argument("--clip-max-new-value",
-                        required=False,
-                        type=float,
-                        default=None,
-                        help="The clipped values from --clip-max will be set to this new "
-                        "value. If this is not set the clipped values will be set to the "
-                        "--clip-max value. This allows to make noise values very far "
-                        "outliers, which can then be hidden in visualisation.")
-
-    return parser

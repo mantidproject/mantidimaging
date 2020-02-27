@@ -4,12 +4,6 @@ from mantidimaging import helper as h
 from mantidimaging.core.utility.progress_reporting import Progress
 
 
-def _cli_register(parser):
-    parser.add_argument("--mcp-corrections", required=False, action='store_true', help="Do MCP Corrections.")
-
-    return parser
-
-
 def fool_my_own_sanity_check(data):
     try:
         h.check_data_stack(data)

@@ -73,30 +73,5 @@ class OutliersFilter(BaseFilter):
                        mode=mode_field.currentText())
 
 
-def _cli_register(parser):
-    parser.add_argument("--outliers",
-                        required=False,
-                        type=float,
-                        help="Pixel difference above which to crop bright pixels.")
-
-    parser.add_argument("--outliers-radius",
-                        default=_default_radius,
-                        required=False,
-                        type=int,
-                        help="Default: %(default)s. "
-                        "Radius for the median filter to determine the outlier.")
-
-    parser.add_argument("--outliers-mode",
-                        default=_default_mode,
-                        required=False,
-                        type=str,
-                        help="Default: %(default)s. "
-                        "Crop bright or dark pixels.\n"
-                        "Cropping dark pixels is more expensive. "
-                        "It will invert the image before and after removing the outliers")
-
-    return parser
-
-
 def modes():
     return [OUTLIERS_BRIGHT, OUTLIERS_DARK]

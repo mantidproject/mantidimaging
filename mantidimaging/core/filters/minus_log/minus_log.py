@@ -46,13 +46,3 @@ class MinusLogFilter(BaseFilter):
     def register_gui(form, on_change):
         # Not much here, this filter does one thing and one thing only.
         return {}
-
-
-def _cli_register(parser):
-    parser.add_argument("-log",
-                        "--minus-log",
-                        required=False,
-                        action='store_true',
-                        help="Calculate the -log of the sample data.")
-
-    return parser

@@ -1,2 +1,2 @@
-from .ring_removal import RingRemovalFilter, _cli_register  # noqa:F401
+from .ring_removal import RingRemovalFilter  # noqa:F401
 FILTER_CLASS = RingRemovalFilter

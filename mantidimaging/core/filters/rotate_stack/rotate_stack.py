@@ -72,18 +72,6 @@ class RotateFilter(BaseFilter):
         return partial(RotateFilter.filter_func, rotation=rotation_count.value())
 
 
-def _cli_register(parser):
-    parser.add_argument("-r",
-                        "--rotation",
-                        required=False,
-                        type=int,
-                        help="Rotate images by 90 degrees a number of times.\n"
-                        "The rotation is clockwise unless a negative number is given "
-                        "which indicates rotation counterclockwise.")
-
-    return parser
-
-
 def _rotate_image_inplace(data, rotation=None):
     data[:, :] = np.rot90(data[:, :], rotation)
 

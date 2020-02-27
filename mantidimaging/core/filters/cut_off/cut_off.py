@@ -50,15 +50,3 @@ class CutOffFilter(BaseFilter):
     @staticmethod
     def execute_wrapper(threshold_field):
         return partial(CutOffFilter.filter_func, threshold=threshold_field.value())
-
-
-def _cli_register(parser):
-    parser.add_argument("--cut-off",
-                        required=False,
-                        type=float,
-                        default=None,
-                        help="Cut off values above threshold relative to the max pixels. "
-                        "The threshold must be in range 0 < threshold < 1. "
-                        "Example: --cut-off 0.95")
-
-    return parser

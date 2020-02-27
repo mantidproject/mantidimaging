@@ -63,20 +63,6 @@ class CropCoordinatesFilter(BaseFilter):
         return partial(CropCoordinatesFilter.filter_func)
 
 
-def _cli_register(parser):
-    parser.add_argument("-R",
-                        "--region-of-interest",
-                        nargs='*',
-                        required=False,
-                        type=str,
-                        help="Crop original images using these coordinates. The selection is a"
-                        " rectangle and expected order is - Left Top Right Bottom.\n"
-                        "If not given, the whole images are used.\n"
-                        "Example: --region-of-interest 150 234 23 22.")
-
-    return parser
-
-
 def execute_single(data, region_of_interest, progress=None):
     progress = Progress.ensure_instance(progress, task_name='Crop Coords')
 

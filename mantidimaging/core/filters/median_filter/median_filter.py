@@ -55,21 +55,6 @@ class MedianFilter(BaseFilter):
         return partial(MedianFilter.filter_func, size=size_field.value(), mode=mode_field.currentText())
 
 
-def _cli_register(parser):
-    default_size = None
-    size_help = "Apply median filter (2d) on \
-                 reconstructed volume with the given kernel size."
-    mode_help = "Default: %(default)s\n" \
-                "Mode of median filter which determines how the array \
-                 borders are handled."
-
-    parser.add_argument("--median-size", type=int, required=False, default=default_size, help=size_help)
-
-    parser.add_argument("--median-mode", type=str, required=False, default=modes()[0], choices=modes(), help=mode_help)
-
-    return parser
-
-
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 

@@ -154,42 +154,6 @@ class StripeRemovalFilter(BaseFilter):
         return partial(StripeRemovalFilter.filter_func, wf=wf, ti=ti, sf=sf)
 
 
-def _cli_register(parser):
-    parser.add_argument("--stripe-removal-wf",
-                        nargs='*',
-                        required=False,
-                        type=str,
-                        help="Stripe removal using wavelett-fourier method. "
-                        "Available parameters:\n"
-                        "level (default: None, int, optional) "
-                        "Number of discrete wavelet transform levels.\n"
-                        "wname (default: 'db5', str, optional) "
-                        "Type of the wavelet filter. 'haar', 'db5', 'sym5', etc.\n"
-                        "sigma (default: 2, float, optional) "
-                        "Damping parameter in Fourier space.\n"
-                        "pad (default: True, bool, optional) "
-                        "If True, extend the size of the sinogram by padding with zeros.")
-
-    parser.add_argument("--stripe-removal-ti",
-                        nargs='*',
-                        required=False,
-                        type=str,
-                        help="Stripe removal using Titarenko's approach. "
-                        "Available parameters:\n"
-                        "nblock (default: 0, int, optional) Number of blocks.\n"
-                        "alpha (default: 1.5, float, optional) Damping factor.")
-
-    parser.add_argument("--stripe-removal-sf",
-                        nargs='*',
-                        required=False,
-                        type=str,
-                        help="Stripe removal using smoothing-filter method. "
-                        "Available parameters:\n"
-                        "size (default:5, int, optional) Size of the smoothing filter.")
-
-    return parser
-
-
 def methods():
     return ['wf', 'wavelet-fourier', 'ti', 'titarenko', 'sf', 'smoothing-filter']
 

@@ -120,26 +120,6 @@ class RebinFilter(BaseFilter):
         return partial(RebinFilter.filter_func, mode=mode_field.currentText(), rebin_param=params)
 
 
-def _cli_register(parser):
-    parser.add_argument("--rebin",
-                        required=False,
-                        type=float,
-                        help="Rebin factor by which the images will be rebinned. "
-                        "This could be any positive float number.\n"
-                        "If not specified no scaling will be done.")
-
-    parser.add_argument("--rebin-mode",
-                        required=False,
-                        type=str,
-                        default=modes()[0],
-                        choices=modes(),
-                        help="Default: %(default)s\n"
-                        "Specify which interpolation mode will be used for the scaling of the "
-                        "image.")
-
-    return parser
-
-
 def modes():
     return ['nearest', 'lanczos', 'bilinear', 'bicubic', 'cubic']
 

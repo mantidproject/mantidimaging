@@ -95,13 +95,6 @@ class BackgroundCorrectionFilter(BaseFilter):
         return all([widget.text() for widget in kwargs.values()])
 
 
-def _cli_register(parser):
-    # this doesn't have anything to add,
-    # the options are added in the functional config,
-    # which should be moved to here TODO
-    return parser
-
-
 def _divide(data, norm_divide):
     np.true_divide(data, norm_divide, out=data)
 
