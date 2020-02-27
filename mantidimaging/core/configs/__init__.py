@@ -19,5 +19,3 @@
 #
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
-
-from . import functional_config, recon_config  # noqa: F401
