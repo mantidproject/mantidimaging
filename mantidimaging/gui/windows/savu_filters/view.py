@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLabel, QMainWindow, QSpinBox, QTextEdit
+from numpy import float32 as np_float32
 
 from mantidimaging.core.configs.savu_backend_docker import (RemoteConfig, RemoteConstants)
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -81,7 +82,8 @@ class SavuFiltersWindowView(BaseMainWindowView):
         # replace remote output with the local output path equivalent
         local_output = output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR)
         # navigate to the first folder - that should be the folder created by the output plugin
-        local_output = os.path.join(local_output, os.listdir(local_output)[0], "TiffSaver-tomo")
+        output_folder = os.listdir(local_output)[0]
+        local_output = os.path.join(local_output, output_folder, "TiffSaver-tomo")
         kwargs = {
             'sample_path': local_output,
             'flat_path': '',
@@ -90,7 +92,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'parallel_load': False,
             'indices': None,
             'dtype': np_float32,
-            'custom_name': "apples",
+            'custom_name': output_folder,
             'in_prefix': '',
         }
         self.main_window.presenter.load_stack(**kwargs)
