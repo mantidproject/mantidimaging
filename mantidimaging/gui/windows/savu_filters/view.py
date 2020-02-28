@@ -1,4 +1,5 @@
 import os
+from numpy import float32 as np_float32
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
@@ -10,6 +11,8 @@ from mantidimaging.gui.windows.savu_filters.presenter import \
     Notification as PresNotification
 from mantidimaging.gui.windows.savu_filters.presenter import \
     SavuFiltersWindowPresenter
+from mantidimaging.gui.windows.savu_filters.remote_presenter import \
+    SavuFiltersRemotePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
@@ -69,7 +72,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.info.setText("\n".join([info, desc]))
 
     def show_output_text(self, text):
-        self.floating_output.setText(text + "\n" + self.floating_output.toPlainText())
+        self.floating_output.setText("\n" + text + self.floating_output.toPlainText())
 
     def clear_output_text(self):
         self.floating_output.setText("")
@@ -78,7 +81,6 @@ class SavuFiltersWindowView(BaseMainWindowView):
         # replace remote output with the local output path equivalent
         local_output = output.replace(RemoteConstants.OUTPUT_DIR, RemoteConfig.LOCAL_OUTPUT_DIR)
         # navigate to the first folder - that should be the folder created by the output plugin
-        # TODO make more robust somehow, get output folder from Savu through Hebi?
         local_output = os.path.join(local_output, os.listdir(local_output)[0], "TiffSaver-tomo")
         kwargs = {
             'sample_path': local_output,
@@ -87,6 +89,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'image_format': "tiff",
             'parallel_load': False,
             'indices': None,
+            'dtype': np_float32,
             'custom_name': "apples",
             'in_prefix': '',
         }

@@ -49,7 +49,6 @@ class MainWindowModel(object):
                    out_format=image_format,
                    progress=progress)
         svp.images.filenames = filenames
-        print(f"New image filenames: {svp.images.filenames}")
         return True
 
     def create_name(self, filename):
