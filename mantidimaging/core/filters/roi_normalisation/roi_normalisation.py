@@ -114,11 +114,23 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
                                                 air_right=right,
                                                 air_bottom=bottom)
 
-        data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores, chunksize, "Calculating air sums")
+        data, air_sums = ptsm.execute(data,
+                                      air_sums,
+                                      calc_sums_partial,
+                                      cores,
+                                      chunksize,
+                                      "Calculating air sums",
+                                      progress=progress)
 
         air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
 
-        data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores, chunksize, "Norm by Air Sums")
+        data, air_sums = ptsm.execute(data,
+                                      air_sums,
+                                      air_sums_partial,
+                                      cores,
+                                      chunksize,
+                                      "Norm by Air Sums",
+                                      progress=progress)
 
         avg = np.average(air_sums)
         max_avg = np.max(air_sums) / avg
