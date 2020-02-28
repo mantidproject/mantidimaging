@@ -8,7 +8,7 @@ from mantidimaging.core.io import loader, saver
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from Qt import QDockWidget
+    from PyQt5.Qt import QDockWidget
 
 StackId = namedtuple('StackId', ['id', 'name'])
 
@@ -41,14 +41,15 @@ class MainWindowModel(object):
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
-        saver.save(data=svp.images,
+        filenames = saver.save(data=svp.images,
                    output_dir=output_dir,
                    name_prefix=name_prefix,
                    swap_axes=swap_axes,
                    overwrite_all=overwrite,
                    out_format=image_format,
                    progress=progress)
-
+        svp.images.filenames = filenames
+        print(f"New image filenames: {svp.images.filenames}")
         return True
 
     def create_name(self, filename):

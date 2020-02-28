@@ -1,12 +1,11 @@
-from logging import getLogger
-
 import os
+from logging import getLogger
+from typing import List, Union
 
 import numpy as np
 
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.data import Images
-
+from mantidimaging.core.utility.progress_reporting import Progress
 from .utility import DEFAULT_IO_FILE_FORMAT
 
 LOG = getLogger(__name__)
@@ -58,7 +57,7 @@ def save(data,
          zfill_len=DEFAULT_ZFILL_LENGTH,
          name_postfix=DEFAULT_NAME_POSTFIX,
          indices=None,
-         progress=None):
+         progress=None) -> Union[str, List[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -84,6 +83,7 @@ def save(data,
     :param indices: Only works if custom_idx is not specified.
                     Specify the start and end range of the indices
                     which will be used for the file names.
+    :return The filename/filenames of the saved data.
     """
     progress = Progress.ensure_instance(progress, task_name='Save')
 
@@ -106,6 +106,7 @@ def save(data,
     if out_format in ['nxs']:
         filename = os.path.join(output_dir, name_prefix + name_postfix)
         write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
+        return filename
     else:
         if out_format in ['fit', 'fits']:
             write_func = write_fits
@@ -118,11 +119,16 @@ def save(data,
 
         names = generate_names(name_prefix, indices, num_images, custom_idx, zfill_len, name_postfix, out_format)
 
+        for i in range(len(names)):
+            names[i] = os.path.join(output_dir, names[i])
+
         with progress:
             for idx in range(num_images):
-                write_func(data[idx, :, :], os.path.join(output_dir, names[idx]), overwrite_all)
+                write_func(data[idx, :, :], names[idx], overwrite_all)
 
                 progress.update(msg='Image {} of {}'.format(idx, num_images))
+
+        return names
 
 
 def generate_names(name_prefix,
@@ -178,6 +184,7 @@ class Saver(object):
     This class should always fail early before any
     expensive operations have been attempted.
     """
+
     @staticmethod
     def supported_formats():
         # reuse supported formats, they currently share them
@@ -295,7 +302,7 @@ class Saver(object):
 
             with progress:
                 progress.update(msg="Saving all pre-processed images into {0} "
-                                "dtype: {1}".format(preproc_dir, data.dtype))
+                                    "dtype: {1}".format(preproc_dir, data.dtype))
 
                 save(data,
                      preproc_dir,
@@ -328,7 +335,7 @@ class Saver(object):
 
         with progress:
             progress.update(msg="Starting saving slices of the reconstructed "
-                            "volume in: {0}...".format(out_recon_dir))
+                                "volume in: {0}...".format(out_recon_dir))
 
             save(data,
                  out_recon_dir,
