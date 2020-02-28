@@ -1,21 +1,23 @@
-from typing import Tuple
+import ctypes
 from logging import getLogger
+from multiprocessing import heap
+from typing import Union, Type
 
 import numpy as np
 
 LOG = getLogger(__name__)
 
+SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
+                    Type[ctypes.c_float], Type[ctypes.c_double]]
 
-def create_shared_array(shape, dtype: Tuple[str, np.dtype] = np.float32):
-    from multiprocessing import heap
-    import ctypes
 
-    ctype = ctypes.c_float  # default to numpy float32 / C type float
+def create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32):
+    ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
     if isinstance(dtype, np.uint8) or dtype == 'uint8':
-        ctype = ctypes.c_int8
+        ctype = ctypes.c_uint8
         dtype = np.uint8
     elif isinstance(dtype, np.uint16) or dtype == 'uint16':
-        ctype = ctypes.c_int16
+        ctype = ctypes.c_uint16
         dtype = np.uint16
     elif isinstance(dtype, np.int32) or dtype == 'int32':
         ctype = ctypes.c_int32
