@@ -146,11 +146,11 @@ def _execute_par(data,
 
         # subtract the dark from all images
         f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
-        data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark")
+        data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark", progress=progress)
 
         # divide the data by (flat - dark)
         f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
-        data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, "Norm by Flat")
+        data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, "Norm by Flat", progress=progress)
 
         # After scaling back the values some images will have pixels with big
         # negative values -25626262 which throws off contrast adjustments.
