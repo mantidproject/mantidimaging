@@ -147,7 +147,7 @@ def generate_names(name_prefix,
         increment = indices[2] if indices else 1
 
     names = []
-    for idx in range(num_images):
+    for _ in range(num_images):
         # create the file name, and use the format as extension
         names.append(name_prefix + '_' + str(index).zfill(zfill_len) + name_postfix + "." + out_format)
         index += increment

@@ -30,8 +30,13 @@ class MainWindowView(BaseMainWindowView):
     actionSavuFilters: QAction
     actionTomopyRecon: QAction
 
-    load_dialogue: MWLoadDialog
-    save_dialogue: MWSaveDialog
+    filters: Optional[FiltersWindowView] = None
+    savu_filters: Optional[SavuFiltersWindowView] = None
+    cor_tilt: Optional[CORTiltWindowView] = None
+    tomopy_recon: Optional[TomopyReconWindowView] = None
+
+    load_dialogue: Optional[MWLoadDialog] = None
+    save_dialogue: Optional[MWSaveDialog] = None
 
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
@@ -40,13 +45,6 @@ class MainWindowView(BaseMainWindowView):
         self.setWindowTitle("Mantid Imaging")
 
         self.presenter = MainWindowPresenter(self)
-
-        self.filters: Optional[FiltersWindowView] = None
-        self.savu_filters: Optional[SavuFiltersWindowView] = None
-        self.cor_tilt: Optional[CORTiltWindowView] = None
-        self.tomopy_recon: Optional[TomopyReconWindowView] = None
-        self.save_dialogue: Optional[MWSaveDialog] = None
-        self.load_dialogue: Optional[MWLoadDialog] = None
 
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
