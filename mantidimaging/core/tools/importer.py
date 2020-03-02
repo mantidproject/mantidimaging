@@ -1,6 +1,3 @@
-from mantidimaging.core.utility.progress_reporting import Progress
-
-
 def do_importing(tool, alg='fbp'):
     """
     The main importing function.
