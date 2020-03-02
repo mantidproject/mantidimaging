@@ -1,4 +1,3 @@
-import logging
 import os
 
 from mantidimaging.helper import initialise_logging
