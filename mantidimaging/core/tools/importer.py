@@ -1,27 +1,6 @@
 from mantidimaging.core.utility.progress_reporting import Progress
 
 
-def timed_import(config, progress=None):
-    """
-    Wraps the importing function in a timer.
-
-    This function should not be used from the filters as it will add a lot of
-    clutter to the stdout.
-
-    :param config: A ReconstructionConfig with all the necessary parameters to
-                   run a reconstruction.
-
-    :return: the imported tool
-    """
-    progress = Progress.ensure_instance(progress, task_name='Tool Importing')
-
-    with progress:
-        progress.update(msg="Importing tool {0}".format(config.func.tool))
-        tool = do_importing(config.func.tool, config.func.algorithm)
-
-    return tool
-
-
 def do_importing(tool, alg='fbp'):
     """
     The main importing function.

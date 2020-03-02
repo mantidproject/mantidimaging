@@ -13,5 +13,4 @@ Developer Guide
    notebooks
    python_3x_performance_issues
    parallelism
-   execution_splitter
    savu_hebi
