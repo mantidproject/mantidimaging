@@ -2,7 +2,6 @@ import logging
 import os
 
 from mantidimaging.helper import initialise_logging
-from mantidimaging.core.configs.recon_config import ReconstructionConfig
 from mantidimaging.core.io import utility
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
@@ -13,8 +12,6 @@ class UtilityTest(FileOutputtingTestCase):
 
         # force silent outputs
         initialise_logging()
-        self.config = ReconstructionConfig.empty_init()
-        self.config.func.log_level = logging.CRITICAL
 
     def test_get_candidate_file_extensions(self):
         self.assertEquals(['tif', 'tiff'], utility.get_candidate_file_extensions('tif'))
