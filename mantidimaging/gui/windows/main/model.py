@@ -42,12 +42,12 @@ class MainWindowModel(object):
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
         filenames = saver.save(data=svp.images,
-                   output_dir=output_dir,
-                   name_prefix=name_prefix,
-                   swap_axes=swap_axes,
-                   overwrite_all=overwrite,
-                   out_format=image_format,
-                   progress=progress)
+                               output_dir=output_dir,
+                               name_prefix=name_prefix,
+                               swap_axes=swap_axes,
+                               overwrite_all=overwrite,
+                               out_format=image_format,
+                               progress=progress)
         svp.images.filenames = filenames
         return True
 
