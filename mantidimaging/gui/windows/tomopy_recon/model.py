@@ -75,7 +75,7 @@ class TomopyReconWindowModel(object):
         calculated_kwargs = {k: kwargs[k] for k in just_copy if k in kwargs}
         calculated_kwargs.update({
             "cor": generate_cors(kwargs["rotation_centre"], kwargs["gradient"], data.shape[0]),
-            "proj_angles": generate_projection_angles(kwargs["max_proj_angle"], data.shape[0]),
+            "proj_angles": generate_projection_angles(kwargs["max_proj_angle"], data.shape[1]),
         })
         return tomopy_reconstruct(sample=data, progress=progress, **calculated_kwargs)
 
