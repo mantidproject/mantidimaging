@@ -115,7 +115,7 @@ def save(data,
             write_func = write_img
 
         num_images = data.shape[0]
-        progress.add_estimated_steps(num_images)
+        progress.set_estimated_steps(num_images)
 
         names = generate_names(name_prefix, indices, num_images, custom_idx, zfill_len, name_postfix, out_format)
 
