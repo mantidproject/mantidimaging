@@ -12,18 +12,6 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Mantid Imaging Debug",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/mantidimaging/main.py",
-      "console": "integratedTerminal",
-      "env": {
-        "PYTHONPATH": "${workspaceFolder}",
-        "DISPLAY": ":1",
-        "PTVSD_DEBUG": 1
-      },
-    },
-    {
       "name": "Mantid Imaging Attach",
       "type": "python",
       "request": "attach",
@@ -52,9 +40,9 @@
         "DEBUG"
       ],
       "env": {
-        "DISPLAY": ":1.0",
+        "DISPLAY": ":0",
         "PYTHONPATH": "${workspaceFolder}",
-        "XDG_CURRENT_DESKTOP": "XFCE"
+        "XDG_CURRENT_DESKTOP": "XFCE",
       }
     },
   ]
