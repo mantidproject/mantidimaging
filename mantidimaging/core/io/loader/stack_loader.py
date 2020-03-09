@@ -26,10 +26,8 @@ def do_stack_load_seq(data, new_data, img_shape, name, progress):
     :param name: Name for the loading bar
     :return: the loaded data
     """
-    progress = Progress.ensure_instance(progress, num_steps=img_shape[0], task_name=name)
-
     num_images = img_shape[0]
-    progress.add_estimated_steps(num_images)
+    progress = Progress.ensure_instance(progress, num_steps=num_images, task_name=name)
 
     with progress:
         for i in range(num_images):
