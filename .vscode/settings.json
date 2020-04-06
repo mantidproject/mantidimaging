@@ -4,7 +4,7 @@
   ],
   "python.linting.mypyEnabled": true,
   "python.sortImports.args": [
-    "--line-width=120k"
+    "--line-width=120"
   ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": true,
