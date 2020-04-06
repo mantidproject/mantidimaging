@@ -1,13 +1,9 @@
-import concurrent.futures as cf
 from logging import getLogger
 
 import numpy as np
 
-# This import is used to provide the available() function which is used to
-# check if the functionality of a module is available based on the presence of
-# optional libraries
-from mantidimaging.core.utility.optional_imports import (  # noqa: F401
-    safe_import)
+from mantidimaging.core.utility.optional_imports import \
+    safe_import  # noqa: F401
 from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
@@ -32,7 +28,11 @@ def reconstruct_single_preview(sample, slice_idx, cor, proj_angles, progress=Non
     with progress:
         s = np.swapaxes(sample[:, [slice_idx], :], 0, 1)
 
-        volume = tomopy.recon(tomo=s, sinogram_order=True, theta=proj_angles, center=cor, algorithm='gridrec',
+        volume = tomopy.recon(tomo=s,
+                              sinogram_order=True,
+                              theta=proj_angles,
+                              center=cor,
+                              algorithm='gridrec',
                               filter_name='shepp')
 
     return volume[0]
@@ -40,7 +40,6 @@ def reconstruct_single_preview(sample, slice_idx, cor, proj_angles, progress=Non
 
 def reconstruct_single_preview_from_sinogram(sample, cor, proj_angles, progress=None):
     """
-
     :param sample: 2D sinogram data
     :param cor: Centre of rotation value
     :param proj_angles: Array of projection angles
@@ -51,7 +50,11 @@ def reconstruct_single_preview_from_sinogram(sample, cor, proj_angles, progress=
 
     volume = [None]
     with progress:
-        volume = tomopy.recon(tomo=[sample], sinogram_order=True, theta=proj_angles, center=cor, algorithm='gridrec',
+        volume = tomopy.recon(tomo=[sample],
+                              sinogram_order=True,
+                              theta=proj_angles,
+                              center=cor,
+                              algorithm='gridrec',
                               filter_name='shepp')
 
     return volume[0]

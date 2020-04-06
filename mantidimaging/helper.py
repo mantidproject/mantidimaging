@@ -120,6 +120,9 @@ def check_config_integrity(config):
 
 
 def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
+    """
+    Make sure the data has expected dimensions and class.
+    """
     if data is None:
         raise ValueError("Data is a None type.")
 
@@ -128,13 +131,9 @@ def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
     else:
         to_check = data.sample
 
-    # the data must be a np array, otherwise most functionality won't work
     if not isinstance(to_check, expected_class):
         raise ValueError("Invalid data type. It is not a Numpy ndarray: {0}".format(to_check))
 
-    # the scripts are designed to work with a 3 dimensional dataset
-    # in the case of 4 dimensional data, it's typically reduced to 3 dimensions
-    # via the aggregate functionality
     if expected_dims != to_check.ndim:
         raise ValueError("Invalid data format. It does not have 3 dimensions. " "Shape: {0}".format(to_check.shape))
 
