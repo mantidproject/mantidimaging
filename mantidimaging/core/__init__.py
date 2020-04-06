@@ -20,5 +20,4 @@
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from . import (  # noqa: F401
-    aggregate, configs, filters, io, parallel, tools, utility)
+from . import configs, filters, io, parallel, tools, utility  # noqa: F401

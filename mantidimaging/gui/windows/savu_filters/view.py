@@ -1,19 +1,14 @@
 import os
-from numpy import float32 as np_float32
 from typing import TYPE_CHECKING
 
+from numpy import float32 as np_float32
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLabel, QMainWindow, QSpinBox, QTextEdit
-from numpy import float32 as np_float32
 
-from mantidimaging.core.configs.savu_backend_docker import (RemoteConfig, RemoteConstants)
+from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.savu_filters.presenter import \
-    Notification as PresNotification
-from mantidimaging.gui.windows.savu_filters.presenter import \
-    SavuFiltersWindowPresenter
-from mantidimaging.gui.windows.savu_filters.remote_presenter import \
-    SavuFiltersRemotePresenter
+from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
