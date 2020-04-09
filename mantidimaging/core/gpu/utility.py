@@ -3,6 +3,7 @@ from typing import List
 
 MAX_CUPY_MEMORY = 0.8
 FREE_MEMORY_FACTOR = 0.8
+MAX_GPU_SLICES = 100
 
 try:
     import cupy as cp
@@ -26,7 +27,23 @@ def gpu_available():
     return CUPY_INSTALLED
 
 
-def allocate_gpu_memory():
+def _synchronise():
+    cp.cuda.Stream.null.synchronize()
+    cp.cuda.runtime.deviceSynchronize()
+
+
+def _free_memory_pool(arrays=[]):
+    """
+    Delete the existing GPU arrays and free blocks.
+    """
+    _synchronise()
+    if arrays:
+        arrays.clear()
+    _synchronise()
+    mempool.free_all_blocks()
+
+
+def _allocate_gpu_memory():
     with cp.cuda.Device(0):
         mempool.set_limit(fraction=MAX_CUPY_MEMORY)
 
@@ -91,17 +108,97 @@ def create_dim_block_and_grid_args(data):
     return block_size, grid_size
 
 
-def create_padded_array(arr, pad_size, scipy_mode):
+def _create_padded_array(data, pad_size, scipy_mode):
 
     pad_mode = EQUIVALENT_PAD_MODE[scipy_mode]
 
-    if arr.ndim == 2:
+    if data.ndim == 2:
         return np.pad(
-            arr, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=pad_mode
+            data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=pad_mode
         )
     else:
         return np.pad(
-            arr,
+            data,
             pad_width=((0, 0), (pad_size, pad_size), (pad_size, pad_size)),
             mode=pad_mode,
         )
+
+
+def _replace_gpu_array_contents(
+    gpu_array, cpu_array, stream=cp.cuda.Stream(non_blocking=True)
+):
+    gpu_array.set(cpu_array, stream)
+
+
+def median_filter(data, size, mode, progress):
+
+    # Synchronize and free memory before making an assessment about available space
+    _free_memory_pool()
+
+    # Compute the pad size
+    pad_size = _get_padding_value(size)
+    n_images = data.shape[0]
+
+    # Set the maxim,um number of images that will be on the GPU at a time
+    if n_images > MAX_GPU_SLICES:
+        slice_limit = MAX_GPU_SLICES
+    else:
+        # If the number of images is smaller than the slice limit, use that instead
+        slice_limit = n_images
+
+    result = np.empty_like(data)
+
+    cpu_padded_slices = [
+        _create_padded_array(data_slice, pad_size) for data_slice in data
+    ]
+    streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
+
+    gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(
+        data[:slice_limit], streams
+    )
+    gpu_padded_data = _send_arrays_to_gpu_with_pinned_memory(
+        cpu_padded_slices[:slice_limit], streams
+    )
+
+    for i in range(n_images):
+
+        # Synchronise and use the current stream
+        streams[i % slice_limit].synchronize()
+        streams[i % slice_limit].use()
+
+        # Overwrite the contents of the GPu arrays
+        _replace_gpu_array_contents(
+            gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit]
+        )
+        _replace_gpu_array_contents(
+            gpu_padded_data[i % slice_limit],
+            cpu_padded_slices[i],
+            streams[i % slice_limit],
+        )
+
+        # Synchronise the current stream to ensure that the overwriting is complete
+        streams[i % slice_limit].synchronize()
+
+        # Perform a median filter on the individual image
+        cupy_two_dim_median_filter(
+            gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit], size
+        )
+
+        # Synchronise to ensure that the GPU median filter has completed
+        streams[i % slice_limit].synchronize()
+
+        # Transfer the GPU result to a CPU array
+        result[i][:] = gpu_data_slices[i % slice_limit].get(streams[i % slice_limit])
+
+        progress.update()
+
+    progres.mark_complete()
+
+    # Free memory once the operation is complete
+    free_memory_pool(gpu_data_slices + gpu_padded_data)
+
+    return result
+
+
+def _get_padding_value(self, filter_size):
+    return filter_size // 2
