@@ -113,5 +113,19 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
     return data
 
 
-def _execute_gpu(data, size, mode):
-    pass
+def _execute_gpu(data, size, mode, progress=None):
+    log = getLogger(__name__)
+    progress = Progress.ensure_instance(
+        progress, num_steps=data.shape[0], task_name="Median filter"
+    )
+
+    with progress:
+        log.info(
+            "GPU median filter, with pixel data type: {0}, filter "
+            "size/width: {1}.".format(data.dtype, size)
+        )
+
+        progress.add_estimated_steps(data.shape[0])
+        data = gpu.median_filter(data, size, mode, progress)
+
+    return data
