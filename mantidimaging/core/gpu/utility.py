@@ -13,6 +13,14 @@ try:
 except ImportError:
     CUPY_INSTALLED = False
 
+EQUIVALENT_PAD_MODE = {
+    "reflect": "symmetric",
+    "constant": "constant",
+    "nearest": "edge",
+    "mirror": "reflect",
+    "wrap": "wrap",
+}
+
 
 def gpu_available():
     return CUPY_INSTALLED
@@ -59,7 +67,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams=None):
         return gpu_arrays
 
     except cp.cuda.memory.OutOfMemoryError:
-        print("Out of memory...")
+        print("GPU is out of memory...")
         return []
 
 
@@ -81,3 +89,19 @@ def create_dim_block_and_grid_args(data):
     block_size = tuple(N for _ in range(data.ndim))
     grid_size = tuple(shape // N for shape in data.shape)
     return block_size, grid_size
+
+
+def create_padded_array(arr, pad_size, scipy_mode):
+
+    pad_mode = EQUIVALENT_PAD_MODE[scipy_mode]
+
+    if arr.ndim == 2:
+        return np.pad(
+            arr, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=pad_mode
+        )
+    else:
+        return np.pad(
+            arr,
+            pad_width=((0, 0), (pad_size, pad_size), (pad_size, pad_size)),
+            mode=pad_mode,
+        )
