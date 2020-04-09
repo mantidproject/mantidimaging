@@ -1,4 +1,5 @@
 import numpy as np
+from typing import List
 
 MAX_CUPY_MEMORY = 0.8
 FREE_MEMORY_FACTOR = 0.8
@@ -34,6 +35,34 @@ def _create_pinned_memory(cpu_array):
     return src
 
 
+def _send_single_array_to_gpu(cpu_array, stream=cp.cuda.Stream(non_blocking=True)):
+    pinned_memory = _create_pinned_memory(cpu_array.copy())
+    gpu_array = cp.empty(pinned_memory.shape, dtype=cpu_array.dtype)
+    gpu_array.set(pinned_memory, stream=stream)
+    return gpu_array
+
+
+def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams=None):
+    """
+    Transfer the arrays to the GPU using pinned memory. This takes either a single numpy array or a list of numpy arrays as arguments.
+    """
+    try:
+
+        if not isinstance(cpu_arrays, List):
+            return _send_single_array_to_gpu(cpu_arrays, streams)
+
+        gpu_arrays = []
+
+        for i in range(len(cpu_arrays)):
+            gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
+
+        return gpu_arrays
+
+    except cp.cuda.memory.OutOfMemoryError:
+        print("Out of memory...")
+        return []
+
+
 def get_free_bytes():
     free_bytes = mempool.free_bytes()
     if free_bytes > 0:
@@ -45,7 +74,7 @@ def create_dim_block_and_grid_args(data):
     """
     Create the block and grid arguments that are passed to the cupy. These determine how the array
     is broken up.
-    :param data: The numpy array that will be processed using the GPU.
+    :param data: The array that will be processed using the GPU.
     :return
     """
     N = 10
