@@ -6,7 +6,7 @@ Installing
 ----------
 
 The simplest way to install the toolkit is via the packages_ published to Anaconda Cloud, this
-can be done with an existing Amaconda or Miniconda distribution if you already
+can be done with an existing Anaconda or Miniconda distribution if you already
 have one on your machine.
 
 .. _packages: https://anaconda.org/dtasev/mantidimaging/
@@ -14,15 +14,18 @@ have one on your machine.
 1. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
 2. Add needed channels to Anaconda
 
-  - :code:`conda config --prepend channels conda-forge`
-  - :code:`conda config --prepend channels anaconda`
   - :code:`conda config --prepend channels defaults`
+  - :code:`conda config --prepend channels conda-forge`
 
-3. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging python=3.7`
-4. Activate the newly created environment: :code:`conda activate mantidimaging`
-5. Install additional :code:`pip` dependencies with :code:`pip install deps/pip-requirements.txt` from the source folder.
+3. Make sure the channel priority is flexible
 
-  - If unavailable the packages are :code:`pip install python-engineio==3.9.3 h5py==2.9.0 PyQt5`
+  - :code:`conda config --set channel_priority flexible`
+
+4. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging python=3.7`
+5. Activate the newly created environment: :code:`conda activate mantidimaging`
+6. Install additional :code:`pip` dependencies with :code:`pip install deps/pip-requirements.txt` from the source folder.
+
+  - If the source is unavailable, the packages are :code:`pip install PyQt5==5.13.2`
 
 
 Running the source
