@@ -39,3 +39,16 @@ def get_free_bytes():
     if free_bytes > 0:
         return free_bytes * FREE_MEMORY_FACTOR
     return mempool.get_limit() * FREE_MEMORY_FACTOR
+
+
+def create_dim_block_and_grid_args(data):
+    """
+    Create the block and grid arguments that are passed to the cupy. These determine how the array
+    is broken up.
+    :param data: The numpy array that will be processed using the GPU.
+    :return
+    """
+    N = 10
+    block_size = tuple(N for _ in range(data.ndim))
+    grid_size = tuple(shape // N for shape in data.shape)
+    return block_size, grid_size
