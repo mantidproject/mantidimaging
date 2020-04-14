@@ -16,8 +16,10 @@ try:
     with cp.cuda.Device(0):
         mempool.set_limit(fraction=MAX_CUPY_MEMORY)
 
+    print("Imported cupy.")
 
 except ImportError:
+    print("Unable to import cupy.")
     CUPY_INSTALLED = False
 
 EQUIVALENT_PAD_MODE = {
@@ -156,6 +158,7 @@ class CudaExecuter:
         filter_size = 3
         test_array_size = 10
         padded_array_size = test_array_size + (filter_size // 2)
+
         test_data = cp.random.uniform(
             low=0, high=5, size=(test_array_size, test_array_size)
         ).astype(dtype)
