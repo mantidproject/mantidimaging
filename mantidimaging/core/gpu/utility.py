@@ -41,7 +41,8 @@ def gpu_available():
 
 def _load_cuda_kernel(dtype):
     """
-    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of float with double if the dtype is float64.
+    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of float with double if the dtype is
+    float64.
     :return: The CUDA kernel in string format.
     """
     cuda_kernel = ""
@@ -89,7 +90,8 @@ def _send_single_array_to_gpu(cpu_array, stream):
 
 def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams=None):
     """
-    Transfer the arrays to the GPU using pinned memory. This takes either a single numpy array or a list of numpy arrays as arguments.
+    Transfer the arrays to the GPU using pinned memory. This takes either a single numpy array or a list of numpy
+    arrays as arguments.
     """
     try:
         gpu_arrays = []
