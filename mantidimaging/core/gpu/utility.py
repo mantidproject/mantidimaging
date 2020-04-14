@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 MAX_CUPY_MEMORY = 0.8
@@ -44,7 +45,7 @@ def _load_cuda_kernel(dtype):
     :return: The CUDA kernel in string format.
     """
     cuda_kernel = ""
-    with open(KERNEL_FILENAME, "r") as f:
+    with open(os.path.join(os.path.dirname(__file__), KERNEL_FILENAME), "r") as f:
         cuda_kernel += f.read()
     if dtype == "float64":
         return cuda_kernel.replace("float", "double")
@@ -138,7 +139,7 @@ def _replace_gpu_array_contents(
     gpu_array.set(cpu_array, stream)
 
 
-def _get_padding_value(self, filter_size):
+def _get_padding_value(filter_size):
     return filter_size // 2
 
 
@@ -154,10 +155,10 @@ class CudaExecuter:
 
         self._warm_up(dtype)
 
-    def _warm_up(dtype):
+    def _warm_up(self, dtype):
         filter_size = 3
         test_array_size = 10
-        padded_array_size = test_array_size + (filter_size // 2)
+        padded_array_size = test_array_size + _get_padding_value(filter_size)
 
         test_data = cp.random.uniform(
             low=0, high=5, size=(test_array_size, test_array_size)
@@ -165,7 +166,7 @@ class CudaExecuter:
         test_padding = cp.random.uniform(
             low=0, high=5, size=(padded_array_size, padded_array_size)
         ).astype(dtype)
-        _cuda_single_image_median_filter(test_data, test_padding, filter_size)
+        self._cuda_single_image_median_filter(test_data, test_padding, filter_size)
 
     def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size):
         block_size, grid_size = _create_block_and_grid_args(input_data)
@@ -200,7 +201,7 @@ class CudaExecuter:
         result = np.empty_like(data)
 
         cpu_padded_slices = [
-            _create_padded_array(data_slice, pad_size) for data_slice in data
+            _create_padded_array(data_slice, pad_size, mode) for data_slice in data
         ]
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
