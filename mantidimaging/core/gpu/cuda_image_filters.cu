@@ -70,9 +70,10 @@ __global__ void image_stack_median_filter(float *data_array,
       find_neighbour_median(padded_array, id_img * padded_img_size,
                             padded_img_width, id_x, id_y, filter_size);
 }
-__global__ void two_dim_median_filter(float *data_array,
-                                      const float *padded_array, const int X,
-                                      const int Y, const int filter_size) {
+__global__ void two_dimensional_median_filter(float *data_array,
+                                              const float *padded_array,
+                                              const int X, const int Y,
+                                              const int filter_size) {
   unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -85,11 +86,11 @@ __global__ void two_dim_median_filter(float *data_array,
   data_array[index] = find_neighbour_median(padded_array, 0, padded_img_width,
                                             id_x, id_y, filter_size);
 }
-__global__ void two_dim_remove_light_outliers(float *data_array,
-                                              const float *padded_array,
-                                              const int X, const int Y,
-                                              const int filter_size,
-                                              const float diff) {
+__global__ void two_dimensional_remove_light_outliers(float *data_array,
+                                                      const float *padded_array,
+                                                      const int X, const int Y,
+                                                      const int filter_size,
+                                                      const float diff) {
   unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -105,11 +106,11 @@ __global__ void two_dim_remove_light_outliers(float *data_array,
   if (data_array[index] - median >= diff)
     data_array[index] = median;
 }
-__global__ void two_dim_remove_dark_outliers(float *data_array,
-                                             const float *padded_array,
-                                             const int X, const int Y,
-                                             const int filter_size,
-                                             const float diff) {
+__global__ void two_dimensional_remove_dark_outliers(float *data_array,
+                                                     const float *padded_array,
+                                                     const int X, const int Y,
+                                                     const int filter_size,
+                                                     const float diff) {
   unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
 
