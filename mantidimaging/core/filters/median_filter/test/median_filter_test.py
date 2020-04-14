@@ -14,6 +14,7 @@ class MedianTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(MedianTest, self).__init__(*args, **kwargs)
 
@@ -32,9 +33,11 @@ class MedianTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
-        mode = 'reflect'
+        mode = "reflect"
 
+        th.switch_gpu_off()
         result = MedianFilter.filter_func(images, size, mode)
+        th.switch_gpu_on()
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -45,10 +48,12 @@ class MedianTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
-        mode = 'reflect'
+        mode = "reflect"
 
         th.switch_mp_off()
+        th.switch_gpu_off()
         result = MedianFilter.filter_func(images, size, mode)
+        th.switch_gpu_on()
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
@@ -71,7 +76,7 @@ class MedianTest(unittest.TestCase):
         """
         images, control = th.gen_img_shared_array_and_copy()
         size = 3
-        mode = 'reflect'
+        mode = "reflect"
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
@@ -101,5 +106,5 @@ class MedianTest(unittest.TestCase):
         self.assertEqual(mode_field.currentText.call_count, 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

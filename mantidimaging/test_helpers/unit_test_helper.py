@@ -6,6 +6,7 @@ import numpy.testing as npt
 from six import StringIO
 
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.gpu import utility as gpu
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)
@@ -32,6 +33,7 @@ def gen_img_shared_array(shape=g_shape, dtype=np.float32):
 
 def generate_images_class_random_shared_array(shape=g_shape):
     from mantidimaging.core.data import Images
+
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     # move the data in the shared array
@@ -47,7 +49,7 @@ def gen_empty_shared_array(shape=g_shape):
     return d
 
 
-def gen_img_shared_array_with_val(val=1., shape=g_shape):
+def gen_img_shared_array_with_val(val=1.0, shape=g_shape):
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
     # move the data in the shared array
@@ -69,12 +71,14 @@ def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
 
 def deepcopy(source):
     from copy import deepcopy
+
     return deepcopy(source)
 
 
 def shared_deepcopy(source):
     d = pu.create_shared_array(source.shape)
     from copy import deepcopy
+
     d[:] = deepcopy(source)[:]
     return d
 
@@ -82,12 +86,16 @@ def shared_deepcopy(source):
 def debug(switch=True):
     if switch:
         import pydevd
-        pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
+
+        pydevd.settrace(
+            "localhost", port=59003, stdoutToServer=True, stderrToServer=True
+        )
 
 
 def vsdebug():
     import ptvsd
-    ptvsd.enable_attach("my_secret", address=('0.0.0.0', 59003))
+
+    ptvsd.enable_attach("my_secret", address=("0.0.0.0", 59003))
     print("Waiting for remote debugger at localhost:59003")
     # Enable the below line of code only if you want the application to wait
     # untill the debugger has attached to it
@@ -119,7 +127,24 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
+def switch_gpu_off():
+    global backup_gpu_avail
+    backup_gpu_avail = gpu.CUPY_INSTALLED = False
+    gpu.CUPY_INSTALLED = False
+
+
+def switch_gpu_on():
+    gpu.CUPY_INSTALLED = backup_gpu_avail
+
+
+def assert_files_exist(
+    cls,
+    base_name,
+    file_extension,
+    file_extension_separator=".",
+    single_file=True,
+    num_images=1,
+):
     """
     Asserts that a file exists.
 
@@ -132,13 +157,18 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
     :param single_file: Are we looking for a 'stack' of images
     """
     import unittest
-    assert isinstance(cls, unittest.TestCase), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
+
+    assert isinstance(
+        cls, unittest.TestCase
+    ), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
 
     if not single_file:
         # generate a list of filenames with 000000 numbers appended
         filenames = []
         for i in range(num_images):
-            filenames.append(base_name + str(i) + file_extension_separator + file_extension)
+            filenames.append(
+                base_name + str(i) + file_extension_separator + file_extension
+            )
 
         for f in filenames:
             cls.assertTrue(os.path.isfile(f))
