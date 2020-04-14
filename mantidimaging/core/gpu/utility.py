@@ -10,6 +10,9 @@ try:
 
     mempool = cp.get_default_memory_pool()
 
+    with cp.cuda.Device(0):
+        mempool.set_limit(fraction=MAX_CUPY_MEMORY)
+
     CUPY_INSTALLED = True
 except ImportError:
     CUPY_INSTALLED = False
@@ -41,11 +44,6 @@ def _free_memory_pool(arrays=[]):
         arrays.clear()
     _synchronise()
     mempool.free_all_blocks()
-
-
-def _allocate_gpu_memory():
-    with cp.cuda.Device(0):
-        mempool.set_limit(fraction=MAX_CUPY_MEMORY)
 
 
 def _create_pinned_memory(cpu_array):
@@ -192,10 +190,10 @@ def median_filter(data, size, mode, progress):
 
         progress.update()
 
-    progres.mark_complete()
+    progress.mark_complete()
 
     # Free memory once the operation is complete
-    free_memory_pool(gpu_data_slices + gpu_padded_data)
+    _free_memory_pool(gpu_data_slices + gpu_padded_data)
 
     return result
 
