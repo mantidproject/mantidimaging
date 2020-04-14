@@ -119,6 +119,8 @@ def _execute_gpu(data, size, mode, progress=None):
         progress, num_steps=data.shape[0], task_name="Median filter"
     )
 
+    cuda = gpu.CudaExecuter(data.dtype)
+
     with progress:
         log.info(
             "GPU median filter, with pixel data type: {0}, filter "
@@ -126,6 +128,6 @@ def _execute_gpu(data, size, mode, progress=None):
         )
 
         progress.add_estimated_steps(data.shape[0])
-        data = gpu.median_filter(data, size, mode, progress)
+        data = cuda.median_filter(data, size, mode, progress)
 
     return data
