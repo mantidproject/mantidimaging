@@ -14,8 +14,8 @@ __device__ float print_neighbour_elements(const float *padded_array,
       printf("%.3f ", padded_array[index_offset + (i * padded_img_width) + j]);
   printf("\n");
 }
-__device__ float find_median_in_one_dim_array(float *neighb_array,
-                                              const int N) {
+__device__ float find_median_in_neighbour_array(float *neighb_array,
+                                                const int N) {
   int i, j;
   float key;
 
@@ -48,7 +48,8 @@ __device__ float find_neighbour_median(const float *padded_array,
     }
   }
 
-  return find_median_in_one_dim_array(neighb_array, filter_size * filter_size);
+  return find_median_in_neighbour_array(neighb_array,
+                                        filter_size * filter_size);
 }
 __global__ void image_stack_median_filter(float *data_array,
                                           const float *padded_array,
@@ -107,7 +108,7 @@ __global__ void three_dim_async_median_filter(float *data_array,
     }
   }
 
-  data_array[index] = find_median_in_one_dim_array(
+  data_array[index] = find_median_in_neighbour_array(
       neighb_array, filter_size * filter_size * filter_size);
 }
 __global__ void two_dim_remove_light_outliers(float *data_array,
