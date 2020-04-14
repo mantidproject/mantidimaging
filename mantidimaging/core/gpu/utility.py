@@ -138,9 +138,7 @@ def _create_padded_array(data, pad_size, scipy_mode):
         )
 
 
-def _replace_gpu_array_contents(
-    gpu_array, cpu_array, stream=cp.cuda.Stream(non_blocking=True)
-):
+def _replace_gpu_array_contents(gpu_array, cpu_array, stream):
     gpu_array.set(cpu_array, stream)
 
 
