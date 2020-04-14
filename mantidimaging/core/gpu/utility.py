@@ -205,7 +205,7 @@ class CudaExecuter:
 
         result = np.empty_like(data)
 
-        cpu_padded_slices = [
+        cpu_padded_images = [
             _create_padded_array(data_slice, pad_size, mode) for data_slice in data
         ]
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
@@ -214,7 +214,7 @@ class CudaExecuter:
             data[:slice_limit], streams
         )
         gpu_padded_data = _send_arrays_to_gpu_with_pinned_memory(
-            cpu_padded_slices[:slice_limit], streams
+            cpu_padded_images[:slice_limit], streams
         )
 
         for i in range(n_images):
@@ -229,7 +229,7 @@ class CudaExecuter:
             )
             _replace_gpu_array_contents(
                 gpu_padded_data[i % slice_limit],
-                cpu_padded_slices[i],
+                cpu_padded_images[i],
                 streams[i % slice_limit],
             )
 
@@ -256,4 +256,5 @@ class CudaExecuter:
         # Free memory once the operation is complete
         _free_memory_pool(gpu_data_slices + gpu_padded_data)
 
+        data[:] = result
         return result

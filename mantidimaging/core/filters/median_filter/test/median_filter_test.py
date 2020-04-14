@@ -6,6 +6,7 @@ import numpy.testing as npt
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.median_filter import MedianFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
+from mantidimaging.core.gpu import utility as gpu
 
 
 class MedianTest(unittest.TestCase):
@@ -104,6 +105,23 @@ class MedianTest(unittest.TestCase):
 
         self.assertEqual(size_field.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
+
+    @unittest.skipIf(
+        not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed"
+    )
+    def test_cuda_result_matches_expected(self):
+
+        images, control = th.gen_img_shared_array_and_copy()
+
+        size = 3
+        mode = "reflect"
+
+        result = MedianFilter.filter_func(images, size, mode)
+
+        th.assert_not_equals(result, control)
+        th.assert_not_equals(images, control)
+
+        npt.assert_equal(result, images)
 
 
 if __name__ == "__main__":
