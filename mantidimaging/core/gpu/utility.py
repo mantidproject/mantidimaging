@@ -80,7 +80,7 @@ def _create_pinned_memory(cpu_array):
     return src
 
 
-def _send_single_array_to_gpu(cpu_array, stream=cp.cuda.Stream(non_blocking=True)):
+def _send_single_array_to_gpu(cpu_array, stream):
     pinned_memory = _create_pinned_memory(cpu_array.copy())
     gpu_array = cp.empty(pinned_memory.shape, dtype=cpu_array.dtype)
     gpu_array.set(pinned_memory, stream=stream)
@@ -93,6 +93,11 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams=None):
     """
     try:
         gpu_arrays = []
+
+        if streams is None:
+            streams = [
+                cp.cuda.Stream(non_blocking=True) for _ in range(len(cpu_arrays))
+            ]
 
         for i in range(len(cpu_arrays)):
             gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
