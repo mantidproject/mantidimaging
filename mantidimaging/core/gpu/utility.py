@@ -203,8 +203,6 @@ class CudaExecuter:
             # If the number of images is smaller than the slice limit, use that instead
             slice_limit = n_images
 
-        result = np.empty_like(data)
-
         cpu_padded_images = [
             _create_padded_array(data_slice, pad_size, mode) for data_slice in data
         ]
@@ -245,9 +243,7 @@ class CudaExecuter:
             streams[i % slice_limit].synchronize()
 
             # Transfer the GPU result to a CPU array
-            result[i][:] = gpu_data_slices[i % slice_limit].get(
-                streams[i % slice_limit]
-            )
+            data[i][:] = gpu_data_slices[i % slice_limit].get(streams[i % slice_limit])
 
             progress.update()
 
@@ -256,5 +252,4 @@ class CudaExecuter:
         # Free memory once the operation is complete
         _free_memory_pool(gpu_data_slices + gpu_padded_data)
 
-        data[:] = result
-        return result
+        return data
