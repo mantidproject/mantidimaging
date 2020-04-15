@@ -45,6 +45,23 @@ class MedianTest(unittest.TestCase):
 
         npt.assert_equal(result, images)
 
+    @unittest.skipIf(
+        not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed"
+    )
+    def test_executed_no_helper_gpu(self):
+
+        images, control = th.gen_img_shared_array_and_copy()
+
+        size = 3
+        mode = "reflect"
+
+        result = MedianFilter.filter_func(images, size, mode)
+
+        th.assert_not_equals(result, control)
+        th.assert_not_equals(images, control)
+
+        npt.assert_equal(result, images)
+
     def test_executed_no_helper_seq(self):
         images, control = th.gen_img_shared_array_and_copy()
 
@@ -105,23 +122,6 @@ class MedianTest(unittest.TestCase):
 
         self.assertEqual(size_field.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
-
-    @unittest.skipIf(
-        not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed"
-    )
-    def test_cuda_result_matches_expected(self):
-
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = "reflect"
-
-        result = MedianFilter.filter_func(images, size, mode)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
 
 if __name__ == "__main__":
