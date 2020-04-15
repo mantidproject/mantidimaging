@@ -37,7 +37,7 @@ class MedianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            if gpu.gpu_available():
+            if gpu.gpu_available() and data.ndim > 2:
                 data = _execute_gpu(data, size, mode)
             elif pu.multiprocessing_available():
                 data = _execute_par(data, size, mode, cores, chunksize, progress)
