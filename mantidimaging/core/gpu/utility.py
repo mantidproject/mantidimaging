@@ -6,7 +6,6 @@ FREE_MEMORY_FACTOR = 0.8
 MAX_GPU_SLICES = 100
 KERNEL_FILENAME = "cuda_image_filters.cu"
 
-
 try:
     import cupy as cp
 
@@ -94,9 +93,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams=None):
         gpu_arrays = []
 
         if streams is None:
-            streams = [
-                cp.cuda.Stream(non_blocking=True) for _ in range(len(cpu_arrays))
-            ]
+            streams = [cp.cuda.Stream(non_blocking=True) for _ in range(len(cpu_arrays))]
 
         for i in range(len(cpu_arrays)):
             gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
@@ -126,9 +123,7 @@ def _create_padded_array(data, pad_size, scipy_mode):
     pad_mode = EQUIVALENT_PAD_MODE[scipy_mode]
 
     if data.ndim == 2:
-        return np.pad(
-            data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=pad_mode
-        )
+        return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=pad_mode)
     else:
         return np.pad(
             data,
@@ -151,9 +146,7 @@ class CudaExecuter:
         # Load the CUDA kernel through cupy
         loaded_from_source = _load_cuda_kernel(dtype)
         median_filter_module = cp.RawModule(code=loaded_from_source)
-        self.single_image_median_filter = median_filter_module.get_function(
-            "two_dimensional_median_filter"
-        )
+        self.single_image_median_filter = median_filter_module.get_function("two_dimensional_median_filter")
 
         self._warm_up(dtype)
 
@@ -162,12 +155,8 @@ class CudaExecuter:
         test_array_size = 10
         padded_array_size = test_array_size + _get_padding_value(filter_size)
 
-        test_data = cp.random.uniform(
-            low=0, high=5, size=(test_array_size, test_array_size)
-        ).astype(dtype)
-        test_padding = cp.random.uniform(
-            low=0, high=5, size=(padded_array_size, padded_array_size)
-        ).astype(dtype)
+        test_data = cp.random.uniform(low=0, high=5, size=(test_array_size, test_array_size)).astype(dtype)
+        test_padding = cp.random.uniform(low=0, high=5, size=(padded_array_size, padded_array_size)).astype(dtype)
         self._cuda_single_image_median_filter(test_data, test_padding, filter_size)
 
     def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size):
@@ -200,17 +189,11 @@ class CudaExecuter:
             # If the number of images is smaller than the slice limit, use that instead
             slice_limit = n_images
 
-        cpu_padded_images = [
-            _create_padded_array(data_slice, pad_size, mode) for data_slice in data
-        ]
+        cpu_padded_images = [_create_padded_array(data_slice, pad_size, mode) for data_slice in data]
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
-        gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(
-            data[:slice_limit], streams
-        )
-        gpu_padded_data = _send_arrays_to_gpu_with_pinned_memory(
-            cpu_padded_images[:slice_limit], streams
-        )
+        gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(data[:slice_limit], streams)
+        gpu_padded_data = _send_arrays_to_gpu_with_pinned_memory(cpu_padded_images[:slice_limit], streams)
 
         for i in range(n_images):
 
@@ -219,9 +202,7 @@ class CudaExecuter:
             streams[i % slice_limit].use()
 
             # Overwrite the contents of the GPu arrays
-            _replace_gpu_array_contents(
-                gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit]
-            )
+            _replace_gpu_array_contents(gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit])
             _replace_gpu_array_contents(
                 gpu_padded_data[i % slice_limit],
                 cpu_padded_images[i],
@@ -232,9 +213,8 @@ class CudaExecuter:
             streams[i % slice_limit].synchronize()
 
             # Perform a median filter on the individual image
-            self._cuda_single_image_median_filter(
-                gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit], size
-            )
+            self._cuda_single_image_median_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
+                                                  size)
 
             # Synchronise to ensure that the GPU median filter has completed
             streams[i % slice_limit].synchronize()

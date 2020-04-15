@@ -15,7 +15,6 @@ class MedianTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(MedianTest, self).__init__(*args, **kwargs)
 
@@ -45,9 +44,7 @@ class MedianTest(unittest.TestCase):
 
         npt.assert_equal(result, images)
 
-    @unittest.skipIf(
-        not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed"
-    )
+    @unittest.skipIf(not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed")
     def test_executed_no_helper_gpu(self):
 
         images, control = th.gen_img_shared_array_and_copy()
