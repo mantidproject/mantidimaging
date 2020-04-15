@@ -87,9 +87,7 @@ def debug(switch=True):
     if switch:
         import pydevd
 
-        pydevd.settrace(
-            "localhost", port=59003, stdoutToServer=True, stderrToServer=True
-        )
+        pydevd.settrace("localhost", port=59003, stdoutToServer=True, stderrToServer=True)
 
 
 def vsdebug():
@@ -158,17 +156,13 @@ def assert_files_exist(
     """
     import unittest
 
-    assert isinstance(
-        cls, unittest.TestCase
-    ), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
+    assert isinstance(cls, unittest.TestCase), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
 
     if not single_file:
         # generate a list of filenames with 000000 numbers appended
         filenames = []
         for i in range(num_images):
-            filenames.append(
-                base_name + str(i) + file_extension_separator + file_extension
-            )
+            filenames.append(base_name + str(i) + file_extension_separator + file_extension)
 
         for f in filenames:
             cls.assertTrue(os.path.isfile(f))
