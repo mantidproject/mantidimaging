@@ -17,10 +17,7 @@ try:
     with cp.cuda.Device(0):
         mempool.set_limit(fraction=MAX_CUPY_MEMORY)
 
-    print("Imported cupy.")
-
 except ImportError:
-    print("Unable to import cupy.")
     CUPY_INSTALLED = False
 
 EQUIVALENT_PAD_MODE = {
