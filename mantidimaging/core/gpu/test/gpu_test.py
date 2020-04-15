@@ -24,31 +24,30 @@ class GPUTest(unittest.TestCase):
     def test_numpy_pad_modes_match_scipy_median_modes(self):
 
         for mode in modes():
+            with self.subTest(mode=mode):
 
-            images = th.gen_img_shared_array_and_copy()[0]
+                images = th.gen_img_shared_array_and_copy()[0]
 
-            size = 3
-            th.switch_gpu_off()
-            cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-            th.switch_gpu_on()
-            gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                size = 3
+                th.switch_gpu_off()
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                th.switch_gpu_on()
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
-            with self.subTest():
                 npt.assert_equal(gpu_result, cpu_result)
 
     def test_gpu_result_matches_cpu_result_for_different_filter_sizes(self):
 
         for size in [5, 7, 9]:
+            with self.subTest(size=size):
+                images = th.gen_img_shared_array_and_copy()[0]
 
-            images = th.gen_img_shared_array_and_copy()[0]
+                mode = "reflect"
+                th.switch_gpu_off()
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                th.switch_gpu_on()
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
-            mode = "reflect"
-            th.switch_gpu_off()
-            cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-            th.switch_gpu_on()
-            gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-
-            with self.subTest():
                 npt.assert_equal(gpu_result, cpu_result)
 
 
