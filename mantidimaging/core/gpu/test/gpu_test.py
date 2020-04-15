@@ -7,7 +7,6 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.median_filter import MedianFilter, modes
 from mantidimaging.core.gpu import utility as gpu
 
-
 GPU_NOT_AVAIL = not gpu.gpu_available()
 GPU_SKIP_REASON = "Skip GPU tests if cupy isn't installed."
 
@@ -18,7 +17,6 @@ class GPUTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
 
