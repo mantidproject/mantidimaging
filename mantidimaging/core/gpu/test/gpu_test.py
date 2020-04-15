@@ -1,5 +1,6 @@
 import unittest
 
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -52,6 +53,22 @@ class GPUTest(unittest.TestCase):
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_gpu_result_matches_cpu_result_for_larger_images(self):
+
+        N = 1000
+        size = 3
+        mode = "reflect"
+
+        images = np.random.uniform(low=0.0, high=100.0, size=(5, N, N))
+
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+        th.switch_gpu_off()
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+        th.switch_gpu_on()
+
+        npt.assert_almost_equal(gpu_result, cpu_result)
 
 
 if __name__ == "__main__":
