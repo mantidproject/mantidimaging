@@ -20,9 +20,7 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
 
     @staticmethod
-    def filter_func(
-        data, size=None, mode="reflect", cores=None, chunksize=None, progress=None
-    ):
+    def filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -49,13 +47,9 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: "QFormLayout", on_change: Callable) -> Dict[str, Any]:
-        _, size_field = add_property_to_form(
-            "Kernel Size", "int", 3, (0, 1000), form=form, on_change=on_change
-        )
+        _, size_field = add_property_to_form("Kernel Size", "int", 3, (0, 1000), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form(
-            "Mode", "choice", valid_values=modes(), form=form, on_change=on_change
-        )
+        _, mode_field = add_property_to_form("Mode", "choice", valid_values=modes(), form=form, on_change=on_change)
 
         return {"size_field": size_field, "mode_field": mode_field}
 
@@ -74,15 +68,10 @@ def modes():
 
 def _execute_seq(data, size, mode, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(
-        progress, num_steps=data.shape[0], task_name="Median filter"
-    )
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter")
 
     with progress:
-        log.info(
-            "Median filter, with pixel data type: {0}, filter "
-            "size/width: {1}.".format(data.dtype, size)
-        )
+        log.info("Median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
 
         progress.add_estimated_steps(data.shape[0])
         for idx in range(0, data.shape[0]):
@@ -97,15 +86,11 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
     progress = Progress.ensure_instance(progress, task_name="Median filter")
 
     # create the partial function to forward the parameters
-    f = psm.create_partial(
-        scipy_ndimage.median_filter, fwd_func=psm.return_fwd_func, size=size, mode=mode
-    )
+    f = psm.create_partial(scipy_ndimage.median_filter, fwd_func=psm.return_fwd_func, size=size, mode=mode)
 
     with progress:
-        log.info(
-            "PARALLEL median filter, with pixel data type: {0}, filter "
-            "size/width: {1}.".format(data.dtype, size)
-        )
+        log.info("PARALLEL median filter, with pixel data type: {0}, filter "
+                 "size/width: {1}.".format(data.dtype, size))
 
         progress.update()
         data = psm.execute(data, f, cores, chunksize, "Median Filter", progress)
@@ -115,17 +100,12 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
 
 def _execute_gpu(data, size, mode, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(
-        progress, num_steps=data.shape[0], task_name="Median filter"
-    )
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter")
 
     cuda = gpu.CudaExecuter(data.dtype)
 
     with progress:
-        log.info(
-            "GPU median filter, with pixel data type: {0}, filter "
-            "size/width: {1}.".format(data.dtype, size)
-        )
+        log.info("GPU median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
 
         progress.add_estimated_steps(data.shape[0])
         data = cuda.median_filter(data, size, mode, progress)
