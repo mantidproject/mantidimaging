@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-MAX_CUPY_MEMORY = 0.8
+MAX_CUPY_MEMORY_FRACTION = 0.8
 FREE_MEMORY_FACTOR = 0.8
 MAX_GPU_SLICES = 100
 KERNEL_FILENAME = "cuda_image_filters.cu"
@@ -14,7 +14,7 @@ try:
     # Initialise the memory pool
     mempool = cp.get_default_memory_pool()
     with cp.cuda.Device(0):
-        mempool.set_limit(fraction=MAX_CUPY_MEMORY)
+        mempool.set_limit(fraction=MAX_CUPY_MEMORY_FRACTION)
 
 except ImportError:
     CUPY_INSTALLED = False
@@ -37,14 +37,15 @@ def gpu_available():
 
 def _load_cuda_kernel(dtype):
     """
-    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of float with double if the dtype is
+    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of 'float' with 'double' if the dtype is
     float64.
+    :param dtype: The data type of the array that is going to be processed.
     :return: The CUDA kernel in string format.
     """
     cuda_kernel = ""
     with open(os.path.join(os.path.dirname(__file__), KERNEL_FILENAME), "r") as f:
         cuda_kernel += f.read()
-    if dtype == "float64":
+    if "float64" in str(dtype):
         return cuda_kernel.replace("float", "double")
     return cuda_kernel
 
@@ -71,7 +72,7 @@ def _free_memory_pool(arrays=[]):
 def _create_pinned_memory(cpu_array):
     """
     Use pinned memory in order to store a numpy array on the GPU.
-    :param cpu_array: The numpy array.
+    :param cpu_array: The numpy array to be transferred to the GPU.
     :return: src
     """
     mem = cp.cuda.alloc_pinned_memory(cpu_array.nbytes)
@@ -83,6 +84,8 @@ def _create_pinned_memory(cpu_array):
 def _send_single_array_to_gpu(cpu_array, stream):
     """
     Sends a single array to the GPU using pinned memory and a stream.
+    :param cpu_array: The numpy array to be transferred to the GPU.
+    :param stream: The stream used to mediate the transfer.
     """
     pinned_memory = _create_pinned_memory(cpu_array.copy())
     gpu_array = cp.empty(pinned_memory.shape, dtype=cpu_array.dtype)
@@ -92,10 +95,14 @@ def _send_single_array_to_gpu(cpu_array, stream):
 
 def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
     """
-    Transfer the arrays to the GPU using pinned memory.
+    Transfer the arrays to the GPU using pinned memory. Raises an error if the GPU runs out of memory.
+    :param cpu_arrays: A list of numpy arrays to be transferred to the GPU.
+    :param streams: A list of streams used to mediate the transfers. Needs to have the same length as the cpu_arrays
+    list.
     """
+    gpu_arrays = []
+
     try:
-        gpu_arrays = []
 
         for i in range(len(cpu_arrays)):
             gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
@@ -104,6 +111,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
 
     except cp.cuda.memory.OutOfMemoryError:
         print("GPU is out of memory...")
+        _free_memory_pool(gpu_arrays)
         return []
 
 
@@ -112,38 +120,40 @@ def _create_block_and_grid_args(data):
     Create the block and grid arguments that are passed to the cupy. These determine how the array
     is broken up.
     :param data: The array that will be processed using the GPU.
-    :return: block_size and grid_size
+    :return: block_size and grid_size that are passed to the CUDA kernel.
     """
     N = 10
     block_size = tuple(N for _ in range(data.ndim))
-    grid_size = tuple(shape // N for shape in data.shape)
+    grid_size = tuple(shape // N if shape > N else 1 for shape in data.shape)
     return block_size, grid_size
 
 
-def _create_padded_array(data, pad_size, scipy_mode):
+def _create_padded_array(data, filter_size, scipy_mode):
     """
     Creates the padded array on the CPU for the median filter.
+    :param data: The data array to be padded.
+    :param filter_size: The size of the filter that will be applied to the data array.
+    :param scipy_mode: The desired mode for the scipy median filter.
     """
-    pad_mode = EQUIVALENT_PAD_MODE[scipy_mode]
-
-    if data.ndim == 2:
-        return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=pad_mode)
-    else:
-        return np.pad(
-            data,
-            pad_width=((0, 0), (pad_size, pad_size), (pad_size, pad_size)),
-            mode=pad_mode,
-        )
+    # Use the 'mode' argument that is ordinarily given to 'scipy' and determine its numpy.pad equivalent.
+    pad_size = _get_padding_value(filter_size)
+    return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=EQUIVALENT_PAD_MODE[scipy_mode])
 
 
 def _replace_gpu_array_contents(gpu_array, cpu_array, stream):
     """
     Overwrites the contents of an existing GPU array with a given CPU array.
+    :param gpu_array: The GPU array to be overwritten.
+    :param cpu_array: The CPU array that should be used to overwrite the GPU array.
+    :param stream: The stream to mediate the transfer.
     """
     gpu_array.set(cpu_array, stream)
 
 
 def _get_padding_value(filter_size):
+    """
+    Determine the padding value by using the filter size.
+    """
     return filter_size // 2
 
 
@@ -155,11 +165,12 @@ class CudaExecuter:
         median_filter_module = cp.RawModule(code=loaded_from_source)
         self.single_image_median_filter = median_filter_module.get_function("two_dimensional_median_filter")
 
+        # Warm up the CUDA functions
         self._warm_up(dtype)
 
     def _warm_up(self, dtype):
         """
-        Runs the median filter on a small test array in order to allow it to compile.
+        Runs the median filter on a small test array in order to allow it to compile then deleted the GPU arrays.
         """
         filter_size = 3
         test_array_size = 10
@@ -185,23 +196,21 @@ class CudaExecuter:
             ),
         )
 
-    def median_filter(self, data, size, mode, progress):
+    def median_filter(self, data, filter_size, mode, progress):
 
         # Synchronize and free memory before making an assessment about available space
         _free_memory_pool()
 
-        # Compute the pad size
-        pad_size = _get_padding_value(size)
         n_images = data.shape[0]
 
-        # Set the maxim,um number of images that will be on the GPU at a time
+        # Set the maximum number of images that will be on the GPU at a time
         if n_images > MAX_GPU_SLICES:
             slice_limit = MAX_GPU_SLICES
         else:
             # If the number of images is smaller than the slice limit, use that instead
             slice_limit = n_images
 
-        cpu_padded_images = [_create_padded_array(data_slice, pad_size, mode) for data_slice in data]
+        cpu_padded_images = [_create_padded_array(data_slice, filter_size, mode) for data_slice in data]
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
         gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(data[:slice_limit], streams)
@@ -226,7 +235,7 @@ class CudaExecuter:
 
             # Apply the median filter on the individual image
             self._cuda_single_image_median_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
-                                                  size)
+                                                  filter_size)
 
             # Synchronise to ensure that the GPU median filter has completed
             streams[i % slice_limit].synchronize()
