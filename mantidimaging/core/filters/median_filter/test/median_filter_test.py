@@ -8,6 +8,8 @@ from mantidimaging.core.filters.median_filter import MedianFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.core.gpu import utility as gpu
 
+GPU_UTIL_LOC = "mantidimaging.core.gpu.utility.gpu_available"
+
 
 class MedianTest(unittest.TestCase):
     """
@@ -35,9 +37,8 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        th.switch_gpu_off()
-        result = MedianFilter.filter_func(images, size, mode)
-        th.switch_gpu_on()
+        with mock.patch(GPU_UTIL_LOC, return_value=False):
+            result = MedianFilter.filter_func(images, size, mode)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -66,9 +67,8 @@ class MedianTest(unittest.TestCase):
         mode = "reflect"
 
         th.switch_mp_off()
-        th.switch_gpu_off()
-        result = MedianFilter.filter_func(images, size, mode)
-        th.switch_gpu_on()
+        with mock.patch(GPU_UTIL_LOC, return_value=False):
+            result = MedianFilter.filter_func(images, size, mode)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)

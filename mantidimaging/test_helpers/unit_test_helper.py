@@ -125,16 +125,6 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def switch_gpu_off():
-    global backup_gpu_avail
-    backup_gpu_avail = gpu.CUPY_INSTALLED = False
-    gpu.CUPY_INSTALLED = False
-
-
-def switch_gpu_on():
-    gpu.CUPY_INSTALLED = backup_gpu_avail
-
-
 def assert_files_exist(
     cls,
     base_name,
