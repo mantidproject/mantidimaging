@@ -6,7 +6,6 @@ import numpy.testing as npt
 from six import StringIO
 
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.gpu import utility as gpu
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)
