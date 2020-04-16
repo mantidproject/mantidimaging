@@ -1,7 +1,5 @@
 import unittest
-from unittest import mock
 
-import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -21,6 +19,7 @@ class GPUTest(unittest.TestCase):
     """
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
+        self.cuda = gpu.CudaExecuter("float32")
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
@@ -29,14 +28,13 @@ class GPUTest(unittest.TestCase):
         for mode in modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array_and_copy()[0]
+                images = th.gen_img_shared_array()
 
-                gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
 
-                with mock.patch(GPU_UTILITY_LOC, return_value=False):
-                    th.switch_mp_off()
-                    cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-                    th.switch_mp_on()
+                th.switch_mp_off()
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                th.switch_mp_on()
 
                 npt.assert_almost_equal(gpu_result[0], cpu_result[0])
 
@@ -47,32 +45,30 @@ class GPUTest(unittest.TestCase):
         for size in [5, 7, 9]:
             with self.subTest(size=size):
 
-                images = th.gen_img_shared_array_and_copy()[0]
+                images = th.gen_img_shared_array()
 
-                gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
 
-                with mock.patch(GPU_UTILITY_LOC, return_value=False):
-                    th.switch_mp_off()
-                    cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-                    th.switch_mp_on()
+                th.switch_mp_off()
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                th.switch_mp_on()
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
 
-    @unittest.skipIf(True, reason=GPU_SKIP_REASON)
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_larger_images(self):
 
-        N = 200
+        N = 120
         size = 3
         mode = "reflect"
 
-        images = np.random.uniform(low=0.0, high=100.0, size=(5, N, N)).astype("float32")
+        images = th.gen_img_shared_array(shape=(5, N, N))
 
-        gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
 
-        with mock.patch(GPU_UTILITY_LOC, return_value=False):
-            th.switch_mp_off()
-            cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-            th.switch_mp_on()
+        th.switch_mp_off()
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+        th.switch_mp_on()
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
