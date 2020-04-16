@@ -29,25 +29,18 @@ class GPUTest(unittest.TestCase):
         for mode in modes():
             with self.subTest(mode=mode):
 
-                np.random.seed(10)
+                images = th.gen_img_shared_array_and_copy()[0]
 
-                # images = th.gen_img_shared_array_and_copy()[0]
-                images = np.random.uniform(low=0.0, high=10.0, size=(2, 3, 3))
-                gpu_images = images.copy()
-                cpu_images = images.copy()
-
-                gpu_result = MedianFilter.filter_func(gpu_images, size, mode)
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
                 with mock.patch(GPU_UTILITY_LOC, return_value=False):
                     th.switch_mp_off()
-                    cpu_result = MedianFilter.filter_func(cpu_images, size, mode)
+                    cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
                     th.switch_mp_on()
-                    print(cpu_result == images)
-                    print(images)
 
                 npt.assert_almost_equal(gpu_result[0], cpu_result[0])
 
-    @unittest.skipIf(True, reason=GPU_SKIP_REASON)
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_different_filter_sizes(self):
 
         mode = "reflect"
@@ -59,7 +52,9 @@ class GPUTest(unittest.TestCase):
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
                 with mock.patch(GPU_UTILITY_LOC, return_value=False):
+                    th.switch_mp_off()
                     cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+                    th.switch_mp_on()
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -75,7 +70,9 @@ class GPUTest(unittest.TestCase):
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
         with mock.patch(GPU_UTILITY_LOC, return_value=False):
+            th.switch_mp_off()
             cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+            th.switch_mp_on()
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
