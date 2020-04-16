@@ -37,8 +37,8 @@ def gpu_available():
 
 def _load_cuda_kernel(dtype):
     """
-    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of 'float' with 'double' if the dtype is
-    float64.
+    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of 'float' with 'double' if the dtype
+    is float64.
     :param dtype: The data type of the array that is going to be processed.
     :return: The CUDA kernel in string format.
     """
