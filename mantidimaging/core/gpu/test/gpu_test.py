@@ -61,11 +61,11 @@ class GPUTest(unittest.TestCase):
     @unittest.skipIf(True, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_larger_images(self):
 
-        N = 1000
+        N = 200
         size = 3
         mode = "reflect"
 
-        images = np.random.uniform(low=0.0, high=100.0, size=(5, N, N))
+        images = np.random.uniform(low=0.0, high=100.0, size=(5, N, N)).astype("float32")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode)
 
