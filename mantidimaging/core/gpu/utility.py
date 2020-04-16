@@ -50,13 +50,16 @@ def _load_cuda_kernel(dtype):
 
 
 def _synchronise():
+    """
+    Calls the cupy synchronise methods.
+    """
     cp.cuda.Stream.null.synchronize()
     cp.cuda.runtime.deviceSynchronize()
 
 
 def _free_memory_pool(arrays=[]):
     """
-    Delete the existing GPU arrays and free blocks.
+    Delete the existing GPU arrays and frees blocks.
     """
     _synchronise()
     if arrays:
@@ -78,22 +81,21 @@ def _create_pinned_memory(cpu_array):
 
 
 def _send_single_array_to_gpu(cpu_array, stream):
+    """
+    Sends a single array to the GPU using pinned memory and a stream.
+    """
     pinned_memory = _create_pinned_memory(cpu_array.copy())
     gpu_array = cp.empty(pinned_memory.shape, dtype=cpu_array.dtype)
     gpu_array.set(pinned_memory, stream=stream)
     return gpu_array
 
 
-def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams=None):
+def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
     """
-    Transfer the arrays to the GPU using pinned memory. This takes either a single numpy array or a list of numpy
-    arrays as arguments.
+    Transfer the arrays to the GPU using pinned memory.
     """
     try:
         gpu_arrays = []
-
-        if streams is None:
-            streams = [cp.cuda.Stream(non_blocking=True) for _ in range(len(cpu_arrays))]
 
         for i in range(len(cpu_arrays)):
             gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
@@ -119,7 +121,9 @@ def _create_block_and_grid_args(data):
 
 
 def _create_padded_array(data, pad_size, scipy_mode):
-
+    """
+    Creates the padded array on the CPU for the median filter.
+    """
     pad_mode = EQUIVALENT_PAD_MODE[scipy_mode]
 
     if data.ndim == 2:
@@ -133,6 +137,9 @@ def _create_padded_array(data, pad_size, scipy_mode):
 
 
 def _replace_gpu_array_contents(gpu_array, cpu_array, stream):
+    """
+    Overwrites the contents of an existing GPU array with a given CPU array.
+    """
     gpu_array.set(cpu_array, stream)
 
 
@@ -151,6 +158,9 @@ class CudaExecuter:
         self._warm_up(dtype)
 
     def _warm_up(self, dtype):
+        """
+        Runs the median filter on a small test array in order to allow it to compile.
+        """
         filter_size = 3
         test_array_size = 10
         padded_array_size = test_array_size + _get_padding_value(filter_size)
@@ -158,6 +168,8 @@ class CudaExecuter:
         test_data = cp.random.uniform(low=0, high=5, size=(test_array_size, test_array_size)).astype(dtype)
         test_padding = cp.random.uniform(low=0, high=5, size=(padded_array_size, padded_array_size)).astype(dtype)
         self._cuda_single_image_median_filter(test_data, test_padding, filter_size)
+
+        _free_memory_pool([test_data, test_padding])
 
     def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size):
         block_size, grid_size = _create_block_and_grid_args(input_data)
@@ -201,7 +213,7 @@ class CudaExecuter:
             streams[i % slice_limit].synchronize()
             streams[i % slice_limit].use()
 
-            # Overwrite the contents of the GPu arrays
+            # Overwrite the contents of the GPU arrays
             _replace_gpu_array_contents(gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit])
             _replace_gpu_array_contents(
                 gpu_padded_data[i % slice_limit],
@@ -212,7 +224,7 @@ class CudaExecuter:
             # Synchronise the current stream to ensure that the overwriting is complete
             streams[i % slice_limit].synchronize()
 
-            # Perform a median filter on the individual image
+            # Apply the median filter on the individual image
             self._cuda_single_image_median_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
                                                   size)
 
