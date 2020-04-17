@@ -19,7 +19,8 @@ class GPUTest(unittest.TestCase):
     """
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
-        self.cuda = gpu.CudaExecuter("float32")
+        if not GPU_NOT_AVAIL:
+            self.cuda = gpu.CudaExecuter("float32")
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
@@ -58,11 +59,11 @@ class GPUTest(unittest.TestCase):
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_larger_images(self):
 
-        N = 120
+        N = 1500
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array(shape=(5, N, N))
+        images = th.gen_img_shared_array(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
 
