@@ -116,7 +116,7 @@ def _create_block_and_grid_args(data):
     """
     N = 10
     block_size = tuple(N for _ in range(data.ndim))
-    grid_size = tuple((shape // N) + 1 for shape in data.shape)
+    grid_size = tuple((shape // N) + 1 if shape % N != 0 else (shape // N) for shape in data.shape)
     return block_size, grid_size
 
 
