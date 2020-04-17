@@ -63,7 +63,7 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array(shape=(20, N, N))
+        images = th.gen_img_shared_array(shape=(500, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
 

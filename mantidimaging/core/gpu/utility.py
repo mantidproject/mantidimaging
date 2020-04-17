@@ -233,11 +233,10 @@ class CudaExecuter:
         for i in range(n_images):
 
             # Synchronise and use the current stream
-            streams[i % slice_limit].synchronize()
             streams[i % slice_limit].use()
 
             # Overwrite the contents of the GPU arrays
-            if i > slice_limit:
+            if i >= slice_limit:
                 _replace_gpu_array_contents(gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit])
                 _replace_gpu_array_contents(
                     gpu_padded_data[i % slice_limit],
