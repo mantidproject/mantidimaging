@@ -46,8 +46,10 @@ __device__ float find_neighbour_median(const float *padded_array,
     }
   }
 
-  return find_median_in_neighbour_array(neighbour_array,
-                                        filter_size * filter_size);
+  float median = find_median_in_neighbour_array(neighbour_array,
+                                                filter_size * filter_size);
+  free(neighbour_array);
+  return median;
 }
 __global__ void two_dimensional_median_filter(float *data_array,
                                               const float *padded_array,
