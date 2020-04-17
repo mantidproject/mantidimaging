@@ -16,6 +16,8 @@ try:
     with cp.cuda.Device(0):
         mempool.set_limit(fraction=MAX_CUPY_MEMORY_FRACTION)
 
+    # TODO: Check that doubling an array works
+
 except ImportError:
     CUPY_INSTALLED = False
 
@@ -221,6 +223,7 @@ class CudaExecuter:
             slice_limit = n_images
 
         cpu_padded_images = [_create_padded_array(data_slice, filter_size, mode) for data_slice in data]
+
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
         # Send the data arrays and padded arrays to the GPU in slices
@@ -234,12 +237,13 @@ class CudaExecuter:
             streams[i % slice_limit].use()
 
             # Overwrite the contents of the GPU arrays
-            _replace_gpu_array_contents(gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit])
-            _replace_gpu_array_contents(
-                gpu_padded_data[i % slice_limit],
-                cpu_padded_images[i],
-                streams[i % slice_limit],
-            )
+            if i > slice_limit:
+                _replace_gpu_array_contents(gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit])
+                _replace_gpu_array_contents(
+                    gpu_padded_data[i % slice_limit],
+                    cpu_padded_images[i],
+                    streams[i % slice_limit],
+                )
 
             # Synchronise the current stream to ensure that the overwriting is complete
             streams[i % slice_limit].synchronize()
