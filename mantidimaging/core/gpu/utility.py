@@ -1,6 +1,8 @@
 import os
 import numpy as np
 
+from logging import getLogger
+
 MAX_CUPY_MEMORY_FRACTION = 0.8
 FREE_MEMORY_FACTOR = 0.8
 MAX_GPU_SLICES = 100
@@ -112,6 +114,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
         return gpu_arrays
 
     except cp.cuda.memory.OutOfMemoryError:
+        getLogger(__name__).error("Unable to send arrays to GPU. Median filter not performed.")
         _free_memory_pool(gpu_arrays)
         return []
 
