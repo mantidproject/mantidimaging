@@ -6,8 +6,16 @@ FREE_MEMORY_FACTOR = 0.8
 MAX_GPU_SLICES = 100
 KERNEL_FILENAME = "cuda_image_filters.cu"
 
+
+def _import_cupy():
+    import cupy
+    return cupy
+
+
+CUPY_INSTALLED = False
+
 try:
-    import cupy as cp
+    cp = _import_cupy()
 
     CUPY_INSTALLED = True
 
@@ -18,8 +26,8 @@ try:
 
     # TODO: Check that doubling an array works
 
-except ImportError:
-    CUPY_INSTALLED = False
+except ModuleNotFoundError:
+    pass
 
 EQUIVALENT_PAD_MODE = {
     "reflect": "symmetric",
