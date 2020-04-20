@@ -93,7 +93,7 @@ class GPUTest(unittest.TestCase):
     def test_image_slicing_works(self):
 
         N = 30
-        n_images = 1000
+        n_images = gpu.MAX_GPU_SLICES * 3
         size = 3
         mode = "reflect"
 
