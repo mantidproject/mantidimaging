@@ -123,17 +123,15 @@ class GPUTest(unittest.TestCase):
 
         import cupy as cp
 
-        N = 200
-        n_images = 2000
-        size = 3
-        mode = "reflect"
+        N = 20
+        n_images = 2
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
-                MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+                gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(n_images)])
 
         mock_free_gpu.assert_called()
 
