@@ -118,6 +118,25 @@ class GPUTest(unittest.TestCase):
 
         npt.assert_equal(gpu_result, images)
 
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_gpu_running_out_of_memory_causes_free_memory_to_be_called(self):
+
+        import cupy as cp
+
+        N = 200
+        n_images = 2000
+        size = 3
+        mode = "reflect"
+
+        images = th.gen_img_shared_array(shape=(n_images, N, N))
+
+        with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
+                        side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
+            with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
+                MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+
+        mock_free_gpu.assert_called()
+
 
 if __name__ == "__main__":
     unittest.main()
