@@ -112,7 +112,6 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
         return gpu_arrays
 
     except cp.cuda.memory.OutOfMemoryError:
-        print("GPU is out of memory...")
         _free_memory_pool(gpu_arrays)
         return []
 
@@ -237,6 +236,11 @@ class CudaExecuter:
         # Send the data arrays and padded arrays to the GPU in slices
         gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(data[:slice_limit], streams)
         gpu_padded_data = _send_arrays_to_gpu_with_pinned_memory(cpu_padded_images[:slice_limit], streams)
+
+        # Return if the data transfer was not successful
+        if not gpu_data_slices or not gpu_padded_data:
+            print("Out of memory.")
+            return data
 
         for i in range(n_images):
 

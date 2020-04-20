@@ -1,5 +1,6 @@
 import unittest
 
+from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -98,6 +99,24 @@ class GPUTest(unittest.TestCase):
         cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_array_input_unchanged_when_gpu_runs_out_of_memory(self):
+
+        import cupy as cp
+
+        N = 200
+        n_images = 2000
+        size = 3
+        mode = "reflect"
+
+        images = th.gen_img_shared_array(shape=(n_images, N, N))
+
+        with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
+                        side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
+            gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+
+        npt.assert_equal(gpu_result, images)
 
 
 if __name__ == "__main__":
