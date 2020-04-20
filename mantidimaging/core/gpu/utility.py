@@ -19,14 +19,19 @@ CUPY_INSTALLED = False
 try:
     cp = _import_cupy()
 
-    CUPY_INSTALLED = True
+    try:
+        # Check that cupy was installed properly. If it is properly installed, then basic array multiplication will work without getting an exception.
+        a = cp.array([1])
+        a * 2
+        CUPY_INSTALLED = True
+
+    except cp.cuda.compiler.CompileException:
+        pass
 
     # Initialise the memory pool
     mempool = cp.get_default_memory_pool()
     with cp.cuda.Device(0):
         mempool.set_limit(fraction=MAX_CUPY_MEMORY_FRACTION)
-
-    # TODO: Check that doubling an array works
 
 except ModuleNotFoundError:
     pass
