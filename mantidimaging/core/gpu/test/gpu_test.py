@@ -89,6 +89,24 @@ class GPUTest(unittest.TestCase):
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_image_slicing_works(self):
+
+        N = 30
+        n_images = 1000
+        size = 3
+        mode = "reflect"
+
+        images = th.gen_img_shared_array(shape=(n_images, N, N))
+
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+
+        th.switch_mp_off()
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+        th.switch_mp_on()
+
+        npt.assert_almost_equal(gpu_result, cpu_result)
+
 
 if __name__ == "__main__":
     unittest.main()
