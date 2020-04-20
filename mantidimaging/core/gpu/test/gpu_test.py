@@ -59,13 +59,29 @@ class GPUTest(unittest.TestCase):
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_larger_images(self):
 
-        N = 1500
+        N = 1200
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array(shape=(500, N, N))
+        images = th.gen_img_shared_array(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+
+        th.switch_mp_off()
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
+        th.switch_mp_on()
+
+        npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_double_is_used_in_cuda_for_float_64_arrays(self):
+
+        size = 3
+        mode = "reflect"
+        images = th.gen_img_shared_array(dtype="float64")
+        cuda = gpu.CudaExecuter("float64")
+
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, cuda)
 
         th.switch_mp_off()
         cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
