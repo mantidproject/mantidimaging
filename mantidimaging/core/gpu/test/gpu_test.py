@@ -22,6 +22,13 @@ class GPUTest(unittest.TestCase):
         if not GPU_NOT_AVAIL:
             self.cuda = gpu.CudaExecuter("float32")
 
+    @staticmethod
+    def run_serial(data, size, mode):
+        th.switch_mp_off()
+        cpu_result = MedianFilter.filter_func(data, size, mode)
+        th.switch_mp_on()
+        return cpu_result
+
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
 
@@ -32,10 +39,7 @@ class GPUTest(unittest.TestCase):
                 images = th.gen_img_shared_array()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
-
-                th.switch_mp_off()
-                cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-                th.switch_mp_on()
+                cpu_result = self.run_serial(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result[0], cpu_result[0])
 
@@ -49,10 +53,7 @@ class GPUTest(unittest.TestCase):
                 images = th.gen_img_shared_array()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
-
-                th.switch_mp_off()
-                cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-                th.switch_mp_on()
+                cpu_result = self.run_serial(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -66,10 +67,7 @@ class GPUTest(unittest.TestCase):
         images = th.gen_img_shared_array(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
-
-        th.switch_mp_off()
-        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-        th.switch_mp_on()
+        cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -82,10 +80,7 @@ class GPUTest(unittest.TestCase):
         cuda = gpu.CudaExecuter("float64")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, cuda)
-
-        th.switch_mp_off()
-        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-        th.switch_mp_on()
+        cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -100,10 +95,7 @@ class GPUTest(unittest.TestCase):
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
-
-        th.switch_mp_off()
-        cpu_result = MedianFilter.filter_func(images.copy(), size, mode)
-        th.switch_mp_on()
+        cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
