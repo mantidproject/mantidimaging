@@ -10,6 +10,7 @@ from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.core.gpu import utility as gpu
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout
@@ -34,8 +35,8 @@ class MedianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            if cuda is not None and data.ndim > 2:
-                data = _execute_gpu(data, size, mode, cuda, progress)
+            if gpu.gpu_available() and data.ndim > 2:
+                data = _execute_gpu(data, size, mode, progress)
             elif pu.multiprocessing_available():
                 data = _execute_par(data, size, mode, cores, chunksize, progress)
             else:
@@ -97,9 +98,10 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
     return data
 
 
-def _execute_gpu(data, size, mode, cuda, progress=None):
+def _execute_gpu(data, size, mode, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter")
+    cuda = gpu.CudaExecuter(data.dtype)
 
     with progress:
         log.info("GPU median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
