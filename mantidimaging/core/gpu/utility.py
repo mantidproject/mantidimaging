@@ -12,9 +12,16 @@ except ModuleNotFoundError:
     CUPY_NOT_IMPORTED = True
 
 MAX_CUPY_MEMORY_FRACTION = 0.8
-FREE_MEMORY_FACTOR = 0.8
 MAX_GPU_SLICES = 100
 KERNEL_FILENAME = "cuda_image_filters.cu"
+
+EQUIVALENT_PAD_MODE = {
+    "reflect": "symmetric",
+    "constant": "constant",
+    "nearest": "edge",
+    "mirror": "reflect",
+    "wrap": "wrap",
+}
 
 
 def _cupy_on_system():
@@ -40,15 +47,6 @@ def _cupy_installed_correctly():
 
     except cp.cuda.compiler.CompileException:
         return False
-
-
-EQUIVALENT_PAD_MODE = {
-    "reflect": "symmetric",
-    "constant": "constant",
-    "nearest": "edge",
-    "mirror": "reflect",
-    "wrap": "wrap",
-}
 
 
 def gpu_available():
