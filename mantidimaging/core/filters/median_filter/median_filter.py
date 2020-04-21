@@ -20,7 +20,7 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
 
     @staticmethod
-    def filter_func(data, size=None, mode="reflect", cuda=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -46,12 +46,12 @@ class MedianFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form: "QFormLayout", on_change: Callable) -> Dict[str, Any]:
-        _, size_field = add_property_to_form("Kernel Size", "int", 3, (0, 1000), form=form, on_change=on_change)
+    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
+        _, size_field = add_property_to_form('Kernel Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form("Mode", "choice", valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
 
-        return {"size_field": size_field, "mode_field": mode_field}
+        return {'size_field': size_field, 'mode_field': mode_field}
 
     @staticmethod
     def execute_wrapper(size_field=None, mode_field=None):
@@ -63,12 +63,12 @@ class MedianFilter(BaseFilter):
 
 
 def modes():
-    return ["reflect", "constant", "nearest", "mirror", "wrap"]
+    return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
 def _execute_seq(data, size, mode, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter")
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Median filter')
 
     with progress:
         log.info("Median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
