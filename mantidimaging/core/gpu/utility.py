@@ -25,10 +25,16 @@ EQUIVALENT_PAD_MODE = {
 
 
 def _cupy_on_system():
+    """
+    :return: True if cupy is installed on the system, False otherwise.
+    """
     return not CUPY_NOT_IMPORTED
 
 
 def _cupy_installed_correctly():
+    """
+    :return: True if cupy is able to run on the system, False otherwise.
+    """
     try:
         # Check that cupy was installed properly. If it is properly installed, then basic array multiplication will
         # work without getting an exception.
@@ -36,10 +42,11 @@ def _cupy_installed_correctly():
         b = cp.array([1])
         cp.add(a, b)
 
-        # Initialise the memory pool
+        # Initialise the memory pool if the above works
         with cp.cuda.Device(0):
             mempool.set_limit(fraction=MAX_CUPY_MEMORY_FRACTION)
 
+        # Delete arrays. Cupy should then clear the space.
         del a
         del b
 
@@ -51,7 +58,7 @@ def _cupy_installed_correctly():
 
 def gpu_available():
     """
-    Returns True if cupy is installed, False otherwise.
+    :return: True if cupy is installed AND working, False otherwise.
     """
     return _cupy_on_system() and _cupy_installed_correctly()
 
@@ -73,7 +80,7 @@ def _load_cuda_kernel(dtype):
 
 def _free_memory_pool(arrays=[]):
     """
-    Delete the existing GPU arrays and frees blocks.
+    Delete any given GPU arrays and instruct the memory pool to free unused blocks.
     """
     if arrays:
         arrays.clear()
@@ -110,7 +117,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
     Transfer the arrays to the GPU using pinned memory. Raises an error if the GPU runs out of memory.
     :param cpu_arrays: A list of numpy arrays to be transferred to the GPU.
     :param streams: A list of streams used to mediate the transfers. Needs to have the same length as the cpu_arrays
-    list.
+                    list.
     :return: A list of GPU arrays.
     """
     gpu_arrays = []
@@ -227,6 +234,8 @@ class CudaExecuter:
         :param filter_size: The filter size.
         :param mode: The mode for the filter. Determines how the edge value are managed.
         :param progress: An object for displaying the filter progress.
+        :return: The data array with the median filter applied to it provided the GPU didn't run out of space,
+                 otherwise it returns the unaltered input array.
         """
 
         # Try to free memory
@@ -251,12 +260,11 @@ class CudaExecuter:
 
         # Return if the data transfer was not successful
         if not gpu_data_slices or not gpu_padded_data:
-            print("Out of memory.")
             return data
 
         for i in range(n_images):
 
-            # Synchronise and use the current stream
+            # Use the current stream
             streams[i % slice_limit].use()
 
             # Overwrite the contents of the GPU arrays
