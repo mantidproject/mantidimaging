@@ -83,7 +83,7 @@ def _execute_seq(data, size, mode, progress=None):
 
 def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, task_name="Median filter")
+    progress = Progress.ensure_instance(progress, task_name='Median filter')
 
     # create the partial function to forward the parameters
     f = psm.create_partial(scipy_ndimage.median_filter, fwd_func=psm.return_fwd_func, size=size, mode=mode)
