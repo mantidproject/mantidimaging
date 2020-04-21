@@ -121,5 +121,5 @@ class MedianTest(unittest.TestCase):
         self.assertEqual(mode_field.currentText.call_count, 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
