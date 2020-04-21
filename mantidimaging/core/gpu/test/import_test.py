@@ -2,6 +2,9 @@ import unittest
 
 from unittest import mock
 
+from mantidimaging.core.gpu import utility as gpu
+GPU_NOT_AVAIL = not gpu.gpu_available()
+
 
 class GPUImportTest(unittest.TestCase):
     @unittest.skip("I don't know how to mock a failed import.")
@@ -11,6 +14,7 @@ class GPUImportTest(unittest.TestCase):
             from mantidimaging.core.gpu import utility
             assert not utility.gpu_available()
 
+    @unittest.skipIf(GPU_NOT_AVAIL, reason="Can't run GPU tests without cupy installed.")
     def test_gpu_available_returns_false_when_cupy_isnt_installed_properly(self):
 
         import cupy
