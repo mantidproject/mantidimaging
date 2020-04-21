@@ -32,7 +32,6 @@ def gen_img_shared_array(shape=g_shape, dtype=np.float32):
 
 def generate_images_class_random_shared_array(shape=g_shape):
     from mantidimaging.core.data import Images
-
     d = pu.create_shared_array(shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     # move the data in the shared array
@@ -48,7 +47,7 @@ def gen_empty_shared_array(shape=g_shape):
     return d
 
 
-def gen_img_shared_array_with_val(val=1.0, shape=g_shape):
+def gen_img_shared_array_with_val(val=1., shape=g_shape):
     d = pu.create_shared_array(shape)
     n = np.full(shape, val)
     # move the data in the shared array
@@ -70,14 +69,12 @@ def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
 
 def deepcopy(source):
     from copy import deepcopy
-
     return deepcopy(source)
 
 
 def shared_deepcopy(source):
     d = pu.create_shared_array(source.shape)
     from copy import deepcopy
-
     d[:] = deepcopy(source)[:]
     return d
 
@@ -85,13 +82,11 @@ def shared_deepcopy(source):
 def debug(switch=True):
     if switch:
         import pydevd
-
         pydevd.settrace("localhost", port=59003, stdoutToServer=True, stderrToServer=True)
 
 
 def vsdebug():
     import ptvsd
-
     ptvsd.enable_attach("my_secret", address=("0.0.0.0", 59003))
     print("Waiting for remote debugger at localhost:59003")
     # Enable the below line of code only if you want the application to wait
@@ -144,7 +139,6 @@ def assert_files_exist(
     :param single_file: Are we looking for a 'stack' of images
     """
     import unittest
-
     assert isinstance(cls, unittest.TestCase), "Work only if class is unittest.TestCase, it uses self.assertTrue!"
 
     if not single_file:
