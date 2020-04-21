@@ -35,7 +35,7 @@ class MedianTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
-        mode = "reflect"
+        mode = 'reflect'
 
         with mock.patch(GPU_UTIL_LOC, return_value=False):
             result = MedianFilter.filter_func(images, size, mode)
@@ -51,7 +51,7 @@ class MedianTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
-        mode = "reflect"
+        mode = 'reflect'
 
         result = MedianFilter.filter_func(images, size, mode)
 
@@ -64,7 +64,7 @@ class MedianTest(unittest.TestCase):
         images, control = th.gen_img_shared_array_and_copy()
 
         size = 3
-        mode = "reflect"
+        mode = 'reflect'
 
         th.switch_mp_off()
         with mock.patch(GPU_UTIL_LOC, return_value=False):
@@ -91,7 +91,7 @@ class MedianTest(unittest.TestCase):
         """
         images, control = th.gen_img_shared_array_and_copy()
         size = 3
-        mode = "reflect"
+        mode = 'reflect'
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
