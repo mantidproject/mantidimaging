@@ -82,12 +82,12 @@ def shared_deepcopy(source):
 def debug(switch=True):
     if switch:
         import pydevd
-        pydevd.settrace("localhost", port=59003, stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace('localhost', port=59003, stdoutToServer=True, stderrToServer=True)
 
 
 def vsdebug():
     import ptvsd
-    ptvsd.enable_attach("my_secret", address=("0.0.0.0", 59003))
+    ptvsd.enable_attach("my_secret", address=('0.0.0.0', 59003))
     print("Waiting for remote debugger at localhost:59003")
     # Enable the below line of code only if you want the application to wait
     # untill the debugger has attached to it
@@ -119,14 +119,7 @@ def switch_mp_on():
     pu.multiprocessing_available = backup_mp_avail
 
 
-def assert_files_exist(
-    cls,
-    base_name,
-    file_extension,
-    file_extension_separator=".",
-    single_file=True,
-    num_images=1,
-):
+def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
     """
     Asserts that a file exists.
 
