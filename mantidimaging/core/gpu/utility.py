@@ -23,7 +23,8 @@ def _cupy_on_system():
 
 def _cupy_installed_correctly():
     try:
-        # Check that cupy was installed properly. If it is properly installed, then basic array multiplication will work without getting an exception.
+        # Check that cupy was installed properly. If it is properly installed, then basic array multiplication will
+        # work without getting an exception.
         a = cp.array([1])
         b = cp.array([1])
         cp.add(a, b)
