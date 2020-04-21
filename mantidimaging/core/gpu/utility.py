@@ -3,38 +3,43 @@ import numpy as np
 
 from logging import getLogger
 
+CUPY_NOT_IMPORTED = False
+
+try:
+    import cupy as cp
+    mempool = cp.get_default_memory_pool()
+except ModuleNotFoundError:
+    CUPY_NOT_IMPORTED = True
+
 MAX_CUPY_MEMORY_FRACTION = 0.8
 FREE_MEMORY_FACTOR = 0.8
 MAX_GPU_SLICES = 100
 KERNEL_FILENAME = "cuda_image_filters.cu"
 
 
-def _import_cupy():
-    import cupy
-    return cupy
+def _cupy_on_system():
+    return not CUPY_NOT_IMPORTED
 
 
-CUPY_INSTALLED = False
-
-try:
-    cp = _import_cupy()
-
+def _cupy_installed_correctly():
     try:
         # Check that cupy was installed properly. If it is properly installed, then basic array multiplication will work without getting an exception.
         a = cp.array([1])
-        a * 2
-        CUPY_INSTALLED = True
+        b = cp.array([1])
+        cp.add(a, b)
+
+        # Initialise the memory pool
+        with cp.cuda.Device(0):
+            mempool.set_limit(fraction=MAX_CUPY_MEMORY_FRACTION)
+
+        del a
+        del b
+
+        return True
 
     except cp.cuda.compiler.CompileException:
-        pass
+        return False
 
-    # Initialise the memory pool
-    mempool = cp.get_default_memory_pool()
-    with cp.cuda.Device(0):
-        mempool.set_limit(fraction=MAX_CUPY_MEMORY_FRACTION)
-
-except ModuleNotFoundError:
-    pass
 
 EQUIVALENT_PAD_MODE = {
     "reflect": "symmetric",
@@ -49,7 +54,7 @@ def gpu_available():
     """
     Returns True if cupy is installed, False otherwise.
     """
-    return CUPY_INSTALLED
+    return _cupy_on_system() and _cupy_installed_correctly()
 
 
 def _load_cuda_kernel(dtype):
