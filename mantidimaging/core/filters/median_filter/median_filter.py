@@ -55,11 +55,7 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(size_field=None, mode_field=None):
-        return partial(
-            MedianFilter.filter_func,
-            size=size_field.value(),
-            mode=mode_field.currentText(),
-        )
+        return partial(MedianFilter.filter_func, size=size_field.value(), mode=mode_field.currentText())
 
 
 def modes():
