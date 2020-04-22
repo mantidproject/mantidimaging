@@ -135,7 +135,6 @@ class GPUTest(unittest.TestCase):
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
-        # Mock the GPU running out of memory
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             gpu_result = MedianFilter.filter_func(images, size, mode, self.cuda)
@@ -154,7 +153,6 @@ class GPUTest(unittest.TestCase):
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
-        # Mock the GPU running out of memory
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
