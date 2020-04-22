@@ -25,14 +25,22 @@ class GPUTest(unittest.TestCase):
 
     @staticmethod
     def run_serial(data, size, mode):
-        th.switch_mp_off()
-        cpu_result = MedianFilter.filter_func(data, size, mode)
-        th.switch_mp_on()
+        """
+        Run the median filter in serial.
+        """
+
+        with mock.patch("mantidimaging.core.gpu.utility.gpu_available", return_value=False):
+            th.switch_mp_off()
+            cpu_result = MedianFilter.filter_func(data, size, mode)
+            th.switch_mp_on()
         return cpu_result
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
-
+        """
+        Run the median filter on the GPU and CPU with the different scipy modes. Check that the results match.
+        Should demonstrate that the arguments passed to numpy pad are the correct equivalents to the scipy modes.
+        """
         size = 3
         for mode in modes():
             with self.subTest(mode=mode):
@@ -46,7 +54,9 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_different_filter_sizes(self):
-
+        """
+        Run the median filter on the CPU and GPU with different filter sizes. Check that the results match.
+        """
         mode = "reflect"
         for size in [5, 7, 9]:
             with self.subTest(size=size):
@@ -60,7 +70,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_larger_images(self):
-
+        """
+        Run the median filter on the CPU and GPU with a larger image size. Check that the results match. This test may
+        reveal issues such as the grid and dimension size arguments going wrong.
+        """
         N = 1200
         size = 3
         mode = "reflect"
@@ -74,7 +87,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_double_is_used_in_cuda_for_float_64_arrays(self):
-
+        """
+        Run the median filter on the CPU and GPU with a float64 array. This demonstrates that replacing instances of
+        'float' with 'double' in the CUDA file is doing the right thing.
+        """
         size = 3
         mode = "reflect"
         images = th.gen_img_shared_array(dtype="float64")
@@ -87,11 +103,16 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_image_slicing_works(self):
-
+        """
+        Run the median filter on the CPU and GPU with an image stack that is larger than the limit permitted on the GPU.
+        This demonstrates that the algorithm for slicing the stack and overwriting GPU arrays is working correctly.
+        """
         N = 30
-        n_images = gpu.MAX_GPU_SLICES * 3
         size = 3
         mode = "reflect"
+
+        # Make the number of images in the stack exceed the maximum number of GPU-stored images
+        n_images = gpu.MAX_GPU_SLICES * 3
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
@@ -102,7 +123,9 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_array_input_unchanged_when_gpu_runs_out_of_memory(self):
-
+        """
+        Mock the GPU running out of memory. Check that this leaves the input array to be unchanged.
+        """
         import cupy as cp
 
         N = 200
@@ -112,15 +135,18 @@ class GPUTest(unittest.TestCase):
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
+        # Mock the GPU running out of memory
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
-            gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+            gpu_result = MedianFilter.filter_func(images, size, mode, self.cuda)
 
         npt.assert_equal(gpu_result, images)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_running_out_of_memory_causes_free_memory_to_be_called(self):
-
+        """
+        Mock the GPU running out of memory. Check that this causes the free memory block function to be called.
+        """
         import cupy as cp
 
         N = 20
@@ -128,6 +154,7 @@ class GPUTest(unittest.TestCase):
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
+        # Mock the GPU running out of memory
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
