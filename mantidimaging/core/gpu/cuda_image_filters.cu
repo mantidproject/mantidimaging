@@ -29,7 +29,8 @@ __device__ void print_neighbour_elements_in_two_dimensional_array(
   printf("\n");
 }
 /**
-  Insertion sorts a one dimensional array and returns its median.
+  Insertion sorts a 1D array and returns its median.
+  Helper function for the 2D median and 2D remove outlier filters.
 
   @param array     The float array.
   @param N         The size of the array.
@@ -62,7 +63,7 @@ __device__ float find_median_in_neighbour_array(float *neighbour_array,
   @param id_x                The x index of the current pixel.
   @param id_y                The y index of the current pixel.
   @param filter_size         The size of the filter.
-  @return                    The median of the pixel neighbourhood.
+  @return                    The median of the pixel's neighbourhood.
  */
 __device__ float find_neighbour_median(const float *padded_array,
                                        const int padded_img_width,
@@ -119,7 +120,7 @@ __global__ void two_dimensional_median_filter(float *data_array,
   @param Y                The width of the image.
   @param filter_size      The size of the filter.
   @param diff             The difference required to replace the original pixel
-  value with the median.
+                          value with the median.
  */
 __global__ void two_dimensional_remove_light_outliers(float *data_array,
                                                       const float *padded_array,
@@ -151,7 +152,7 @@ __global__ void two_dimensional_remove_light_outliers(float *data_array,
   @param Y                The width of the image.
   @param filter_size      The size of the filter.
   @param diff             The difference required to replace the original pixel
-  value with the median.
+                          value with the median.
  */
 __global__ void two_dimensional_remove_dark_outliers(float *data_array,
                                                      const float *padded_array,
