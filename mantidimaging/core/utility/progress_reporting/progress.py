@@ -129,7 +129,7 @@ class Progress(object):
         """
         Sets the number of steps this task is expected to take to complete.
         """
-        self.end_step = num_steps + 1
+        self.end_step = num_steps
 
     def add_estimated_steps(self, num_steps):
         """
