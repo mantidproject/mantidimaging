@@ -202,19 +202,19 @@ class CudaExecuter:
 
         test_data = cp.random.uniform(low=0, high=5, size=(test_array_size, test_array_size)).astype(dtype)
         test_padding = cp.random.uniform(low=0, high=5, size=(padded_array_size, padded_array_size)).astype(dtype)
-        self._cuda_single_image_median_filter(test_data, test_padding, filter_size)
+        block_size, grid_size = _create_block_and_grid_args(test_data[0])
+        self._cuda_single_image_median_filter(test_data, test_padding, filter_size, grid_size, block_size)
 
         # Clear the test arrays
         _free_memory_pool([test_data, test_padding])
 
-    def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size):
+    def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size, grid_size, block_size):
         """
         Run the median filter on a single 2D image using CUDA.
         :param input_data: A 2D GPU data array.
         :param padded_data: The corresponding padded GPU array.
         :param filter_size: The size of the filter.
         """
-        block_size, grid_size = _create_block_and_grid_args(input_data)
         self.single_image_median_filter(
             grid_size,
             block_size,
@@ -262,6 +262,8 @@ class CudaExecuter:
         if not gpu_data_slices or not gpu_padded_data:
             return data
 
+        block_size, grid_size = _create_block_and_grid_args(gpu_data_slices[0])
+
         for i in range(n_images):
 
             # Use the current stream
@@ -281,7 +283,7 @@ class CudaExecuter:
 
             # Apply the median filter on the individual image
             self._cuda_single_image_median_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
-                                                  filter_size)
+                                                  filter_size, grid_size, block_size)
 
             # Synchronise to ensure that the GPU median filter has completed
             streams[i % slice_limit].synchronize()
