@@ -15,24 +15,25 @@ source:
 
 requirements:
   build:
-    - python =3.7.3
+    - python
     - pip
     - setuptools
     - sphinx
   run:
-    - python =3.7.3
+    - python
     - pip
-    - astropy >=3.2.1
+    - astropy
     - scipy
     - scikit-image
-    - numpy >=1.16
+    - numpy
     - matplotlib =2.2.3
-    - tomopy =1.7.0
+    - tomopy
     - requests
-    - requests-futures =1.0.0
-    - python-socketio =4.3.0
+    - requests-futures
+    - python-socketio
     - h5py
     - pyqt
+    # version locked due to source changes in mantidimaging/external
     - pyqtgraph =0.10
 
 build:

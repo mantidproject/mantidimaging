@@ -2,7 +2,6 @@ AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 install-conda-env:
 	conda config --prepend channels conda-forge
-	conda config --prepend channels anaconda
 	conda config --prepend channels defaults
 	conda create -n mantidimaging -c dtasev mantidimaging python=3.7
 	conda activate mantidimaging
@@ -12,27 +11,26 @@ install-run-requirements:
 	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
 
 install-build-requirements:
+	@echo "Installing packages required for starting the build process"
 	conda install --yes --file deps/build-requirements.conda
 
 install-dev-requirements:
 	pip install --yes -r deps/dev-requirements.pip
 
-build-conda-package: install-build-requirements
+build-conda-package: .remind-current install-build-requirements
 	# intended for local usage, does not install build requirements
-	conda-build ./conda -c conda-forge $(AUTHENTICATION_PARAMS) --label unstable
-
-build-conda-deps-package:
-	conda install conda-build
-	# builds a local package without label or uploading
-	conda-build ./conda -c conda-forge
+	conda-build ./conda --label unstable
 
 build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
-	MANTIDIMAGING_BUILD_TYPE='nightly' conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
+	conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
 
 build-conda-package-release: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
-	MANTIDIMAGING_BUILD_TYPE='' conda-build ./conda $(AUTHENTICATION_PARAMS)
+	conda-build ./conda $(AUTHENTICATION_PARAMS)
 
 .remind-current:
+	@echo "Make sure the correct channels are added in \`conda config --get channels\`"
+	@echo "Currently the required channels are \`conda-forge\` and \`defaults\`"
+	@echo "Current: $$(conda config --get channels)"
 	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
 	@echo "Current: $$(conda config --get anaconda_upload)"
 

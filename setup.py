@@ -5,7 +5,7 @@ import os
 import subprocess
 from distutils.core import Command
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 from sphinx.setup_command import BuildDoc
 
 THIS_PATH = os.path.dirname(__file__)
@@ -135,9 +135,8 @@ setup(
     install_requires=[
         "matplotlib",
         "PyQt5",
-        "requests_futures==1.0.0",
-        "h5py==2.9.0",
-        "numpy==1.16.4",
-        "python-socketio==4.3.1",
+        "h5py",
+        "numpy",
+        "python-socketio",
     ],
 )
