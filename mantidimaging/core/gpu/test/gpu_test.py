@@ -20,19 +20,15 @@ class GPUTest(unittest.TestCase):
     """
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
-        if not GPU_NOT_AVAIL:
-            self.cuda = gpu.CudaExecuter("float32")
 
     @staticmethod
     def run_serial(data, size, mode):
         """
         Run the median filter in serial.
         """
-
-        with mock.patch("mantidimaging.core.gpu.utility.gpu_available", return_value=False):
-            th.switch_mp_off()
-            cpu_result = MedianFilter.filter_func(data, size, mode)
-            th.switch_mp_on()
+        th.switch_mp_off()
+        cpu_result = MedianFilter.filter_func(data, size, mode)
+        th.switch_mp_on()
         return cpu_result
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
@@ -47,7 +43,7 @@ class GPUTest(unittest.TestCase):
 
                 images = th.gen_img_shared_array()
 
-                gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
                 cpu_result = self.run_serial(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result[0], cpu_result[0])
@@ -63,7 +59,7 @@ class GPUTest(unittest.TestCase):
 
                 images = th.gen_img_shared_array()
 
-                gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+                gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
                 cpu_result = self.run_serial(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
@@ -80,7 +76,7 @@ class GPUTest(unittest.TestCase):
 
         images = th.gen_img_shared_array(shape=(20, N, N))
 
-        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
@@ -94,9 +90,8 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
         images = th.gen_img_shared_array(dtype="float64")
-        cuda = gpu.CudaExecuter("float64")
 
-        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, cuda)
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
@@ -116,7 +111,7 @@ class GPUTest(unittest.TestCase):
 
         images = th.gen_img_shared_array(shape=(n_images, N, N))
 
-        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, self.cuda)
+        gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
@@ -137,7 +132,7 @@ class GPUTest(unittest.TestCase):
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
-            gpu_result = MedianFilter.filter_func(images, size, mode, self.cuda)
+            gpu_result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
 
         npt.assert_equal(gpu_result, images)
 
