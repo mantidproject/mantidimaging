@@ -20,7 +20,7 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
 
     @staticmethod
-    def filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None):
+    def filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -35,7 +35,7 @@ class MedianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            if gpu.gpu_available() and data.ndim > 2:
+            if not force_cpu:
                 data = _execute_gpu(data, size, mode, progress)
             elif pu.multiprocessing_available():
                 data = _execute_par(data, size, mode, cores, chunksize, progress)
