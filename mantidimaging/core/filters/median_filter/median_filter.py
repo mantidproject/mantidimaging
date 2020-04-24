@@ -51,7 +51,14 @@ class MedianFilter(BaseFilter):
 
         _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
 
-        return {'size_field': size_field, 'mode_field': mode_field}
+        _, gpu_field = add_property_to_form('Use GPU',
+                                            'bool',
+                                            default_value=False,
+                                            tooltip='Run the median filter on the GPU',
+                                            form=form,
+                                            on_change=on_change)
+
+        return {'size_field': size_field, 'mode_field': mode_field, 'gpu_field': gpu_field}
 
     @staticmethod
     def execute_wrapper(size_field=None, mode_field=None):
