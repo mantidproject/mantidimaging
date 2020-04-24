@@ -37,8 +37,7 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        with mock.patch(GPU_UTIL_LOC, return_value=False):
-            result = MedianFilter.filter_func(images, size, mode)
+        result = MedianFilter.filter_func(images, size, mode)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -53,7 +52,7 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        result = MedianFilter.filter_func(images, size, mode)
+        result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
 
         th.assert_not_equals(result, control)
         th.assert_not_equals(images, control)
@@ -67,8 +66,7 @@ class MedianTest(unittest.TestCase):
         mode = 'reflect'
 
         th.switch_mp_off()
-        with mock.patch(GPU_UTIL_LOC, return_value=False):
-            result = MedianFilter.filter_func(images, size, mode)
+        result = MedianFilter.filter_func(images, size, mode)
         th.switch_mp_on()
 
         th.assert_not_equals(result, control)
