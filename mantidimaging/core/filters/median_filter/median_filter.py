@@ -96,7 +96,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
 
 def _execute_gpu(data, size, mode, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter")
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter GPU")
     cuda = gpu.CudaExecuter(data.dtype)
 
     with progress:
