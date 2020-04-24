@@ -102,7 +102,6 @@ def _execute_gpu(data, size, mode, progress=None):
     with progress:
         log.info("GPU median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
 
-        progress.add_estimated_steps(data.shape[0])
         data = cuda.median_filter(data, size, mode, progress)
 
     return data
