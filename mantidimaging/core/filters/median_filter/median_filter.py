@@ -58,11 +58,14 @@ class MedianFilter(BaseFilter):
                                             form=form,
                                             on_change=on_change)
 
-        return {'size_field': size_field, 'mode_field': mode_field, 'gpu_field': gpu_field}
+        return {'size_field': size_field, 'mode_field': mode_field, 'use_gpu_field': gpu_field}
 
     @staticmethod
-    def execute_wrapper(size_field=None, mode_field=None):
-        return partial(MedianFilter.filter_func, size=size_field.value(), mode=mode_field.currentText())
+    def execute_wrapper(size_field=None, mode_field=None, use_gpu_field=None):
+        return partial(MedianFilter.filter_func,
+                       size=size_field.value(),
+                       mode=mode_field.currentText(),
+                       force_cpu=not use_gpu_field.isChecked())
 
 
 def modes():
