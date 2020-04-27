@@ -110,7 +110,9 @@ class MedianTest(unittest.TestCase):
         size_field.value = mock.Mock(return_value=0)
         mode_field = mock.Mock()
         mode_field.currentText = mock.Mock(return_value=0)
-        execute_func = MedianFilter.execute_wrapper(size_field, mode_field)
+        use_gpu_field = mock.Mock()
+        use_gpu_field.isChecked = mock.Mock(return_value=False)
+        execute_func = MedianFilter.execute_wrapper(size_field, mode_field, use_gpu_field)
 
         images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)
