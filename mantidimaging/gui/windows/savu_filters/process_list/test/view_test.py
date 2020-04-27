@@ -1,19 +1,17 @@
-import sys
-import unittest
+# import sys
+# import unittest
 
 # from PyQt5 import Qt
 
 # from mantidimaging.gui.windows.savu_filters.process_list import ProcessListView
 
-app = Qt.QApplication(sys.argv)
-PLUGIN_NAME_1 = "TestPlugin"
-PLUGIN_NAME_2 = "TestPlugin2"
+# app = Qt.QApplication(sys.argv)
+# PLUGIN_NAME_1 = "TestPlugin"
+# PLUGIN_NAME_2 = "TestPlugin2"
 
-
-def display_is_available():
-    import os
-    return os.environ.get("DISPLAY", None) is not None
-
+# def display_is_available():
+#     import os
+#     return os.environ.get("DISPLAY", None) is not None
 
 # @unittest.skipIf(display_is_available, "Display could not be found. This test needs it to run successfully.")
 # class ProcessListViewTest(unittest.TestCase):
