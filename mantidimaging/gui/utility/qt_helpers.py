@@ -149,8 +149,6 @@ def add_property_to_form(
             right_widget.editingFinished.connect(lambda: on_change())
 
     elif dtype == 'bool':
-        # left_widget = None
-        # left_widget.text(label)
         right_widget = Qt.QCheckBox()
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
