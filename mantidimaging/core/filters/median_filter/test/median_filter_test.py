@@ -119,6 +119,7 @@ class MedianTest(unittest.TestCase):
 
         self.assertEqual(size_field.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
+        self.assertEqual(use_gpu_field.isChecked.call_count, 1)
 
 
 if __name__ == '__main__':
