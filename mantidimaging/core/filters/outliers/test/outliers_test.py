@@ -42,9 +42,14 @@ class OutliersTest(unittest.TestCase):
         axis_field.value = mock.Mock(return_value=0)
         dim_field = mock.Mock()
         dim_field.currentText = mock.Mock(return_value=DIM_2D)
-        execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field, axis_field, dim_field)
+        use_gpu_field = mock.Mock()
+        use_gpu_field.isChecked = mock.Mock(return_value=False)
 
         images = th.generate_images()
+        execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field, axis_field, dim_field,
+                                                      use_gpu_field)
+
+        images, _ = th.gen_img_shared_array_and_copy()
         execute_func(images)
 
         self.assertEqual(diff_field.value.call_count, 1)
@@ -52,6 +57,7 @@ class OutliersTest(unittest.TestCase):
         self.assertEqual(mode_field.currentText.call_count, 1)
         self.assertEqual(axis_field.value.call_count, 1)
         self.assertEqual(dim_field.currentText.call_count, 1)
+        self.assertEqual(use_gpu_field.isChecked.call_count, 1)
 
 
 if __name__ == '__main__':

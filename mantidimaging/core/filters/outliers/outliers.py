@@ -3,6 +3,7 @@ from functools import partial
 import numpy as np
 
 from mantidimaging.core.filters.base_filter import BaseFilter
+from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.parallel import utility
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -29,7 +30,8 @@ class OutliersFilter(BaseFilter):
                     axis=0,
                     type=_default_dim,
                     cores=None,
-                    progress=None):
+                    progress=None,
+                    force_cpu=True):
         """
         Requires tomopy to be available.
 
@@ -47,26 +49,10 @@ class OutliersFilter(BaseFilter):
             cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
-            with progress:
-                progress.update(msg="Applying outliers with threshold: {0} and " "radius {1}".format(diff, radius))
-
-                sample = data.data
-                # By default tomopy only clears bright outliers.
-                # As a workaround inverting the image makes the dark outliers the brightest
-                if mode == OUTLIERS_DARK:
-                    np.negative(sample, out=sample)
-
-                tomopy = importer.do_importing('tomopy')
-                if type == "2D":
-                    tomopy.misc.corr.remove_outlier(sample, diff, radius, axis, ncore=cores, out=sample)
-                else:
-                    tomopy.misc.corr.remove_outlier1d(sample, diff, radius, axis, ncore=cores, out=sample)
-                progress.update()
-
-                # reverse the inversion
-                if mode == OUTLIERS_DARK:
-                    np.negative(sample, out=sample)
-
+            if force_cpu:
+                data = _execute_cpu(data, diff, radius, mode, axis, cores, progress)
+            else:
+                data = _execute_gpu(data, diff, radius, mode, cores, progress)
         return data
 
     @staticmethod
@@ -85,23 +71,31 @@ class OutliersFilter(BaseFilter):
         _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 2), form=form, on_change=on_change)
 
         _, dim_field = add_property_to_form('Dims', Type.CHOICE, valid_values=dims(), form=form, on_change=on_change)
+        _, gpu_field = add_property_to_form('Use GPU', 'bool', default_value=False, form=form, on_change=on_change)
 
         return {
             'diff_field': diff_field,
             'size_field': size_field,
             'mode_field': mode_field,
             'axis_field': axis_field,
-            'dim_field': dim_field
+            'dim_field': dim_field,
+            'gpu_field': gpu_field
         }
 
     @staticmethod
-    def execute_wrapper(diff_field=None, size_field=None, mode_field=None, axis_field=None, dim_field=None):
+    def execute_wrapper(diff_field=None,
+                        size_field=None,
+                        mode_field=None,
+                        axis_field=None,
+                        dim_field=None,
+                        gpu_field=None):
         return partial(OutliersFilter.filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
                        mode=mode_field.currentText(),
                        axis=axis_field.value(),
-                       type=dim_field.currentText())
+                       type=dim_field.currentText(),
+                       force_cpu=not gpu_field.isChecked())
 
 
 def modes():
@@ -110,3 +104,39 @@ def modes():
 
 def dims():
     return [DIM_2D, DIM_1D]
+
+
+def _execute_cpu(data, diff, radius, mode, axis, cores, progress):
+    with progress:
+        progress.update(msg="Applying outliers with threshold: {0} and " "radius {1}".format(diff, radius))
+
+        sample = data.data
+        # By default tomopy only clears bright outliers.
+        # As a workaround inverting the image makes the dark outliers the brightest
+        if mode == OUTLIERS_DARK:
+            np.negative(sample, out=sample)
+
+        tomopy = importer.do_importing('tomopy')
+        if type == "2D":
+            tomopy.misc.corr.remove_outlier(sample, diff, radius, axis, ncore=cores, out=sample)
+        else:
+            tomopy.misc.corr.remove_outlier1d(sample, diff, radius, axis, ncore=cores, out=sample)
+        progress.update()
+
+        # reverse the inversion
+        if mode == OUTLIERS_DARK:
+            np.negative(sample, out=sample)
+
+    return data
+
+
+def _execute_gpu(data, diff, radius, mode, progress):
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Remove outlier GPU")
+    cuda = gpu.CudaExecuter(data.dtype)
+
+    with progress:
+        progress.update(msg="Applying GPU outliers with threshold: {0} and " "radius {1}".format(diff, radius))
+        sample = data.sample
+        sample[:] = cuda.remove_outlier(sample, diff, radius, mode, progress)
+
+    return data
