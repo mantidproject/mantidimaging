@@ -18,7 +18,7 @@ class Progress(object):
     Class used to perform basic progress monitoring and reporting.
     """
     @staticmethod
-    def ensure_instance(p=None, *args, **kwargs):
+    def ensure_instance(p=None, *args, num_steps=None, **kwargs):
         """
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.
@@ -27,6 +27,9 @@ class Progress(object):
             p = Progress(*args, **kwargs)
             from .console_progress_bar import ConsoleProgressBar
             p.add_progress_handler(ConsoleProgressBar())
+
+        if p and num_steps:
+            p.set_estimated_steps(num_steps)
 
         return p
 
