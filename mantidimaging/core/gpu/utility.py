@@ -192,6 +192,10 @@ def _create_padded_image_stack(data, filter_size, padding_mode):
     return [_create_padded_array(data_slice, filter_size, padding_mode) for data_slice in data]
 
 
+def _create_stream_list(n_streams):
+    return [cp.cuda.Stream(non_blocking=True) for _ in range(n_streams)]
+
+
 class CudaExecuter:
     def __init__(self, dtype):
 
@@ -260,7 +264,7 @@ class CudaExecuter:
 
         cpu_padded_images = _create_padded_image_stack(data, filter_size, mode)
 
-        streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
+        streams = _create_stream_list(slice_limit)
 
         # Send the data arrays and padded arrays to the GPU in slices
         gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(data[:slice_limit], streams)
@@ -329,7 +333,7 @@ class CudaExecuter:
 
         cpu_padded_images = _create_padded_image_stack(data, filter_size, OUTLIER_PADDING_MODE)
 
-        streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
+        streams = _create_stream_list(slice_limit)
 
         # Send the data arrays and padded arrays to the GPU in slices
         gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(data[:slice_limit], streams)
