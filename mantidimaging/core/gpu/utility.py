@@ -203,6 +203,10 @@ class CudaExecuter:
         loaded_from_source = _load_cuda_kernel(dtype)
         median_filter_module = cp.RawModule(code=loaded_from_source)
         self.single_image_median_filter = median_filter_module.get_function("two_dimensional_median_filter")
+        self.single_image_remove_light_outlier_filter = median_filter_module.get_function(
+            "two_dimensional_remove_light_outliers")
+        self.single_image_remove_dark_outlier_filter = median_filter_module.get_function(
+            "two_dimensional_remove_dark_outliers")
 
         # Warm up the CUDA functions
         self._warm_up(dtype)
@@ -220,6 +224,10 @@ class CudaExecuter:
         test_padding = cp.random.uniform(low=0, high=5, size=(padded_array_size, padded_array_size)).astype(dtype)
         block_size, grid_size = _create_block_and_grid_args(test_data[0])
         self._cuda_single_image_median_filter(test_data, test_padding, filter_size, grid_size, block_size)
+
+        diff = 2.5
+        self._cuda_single_image_remove_light_outlier(test_data, test_padding, filter_size, diff, grid_size, block_size)
+        self._cuda_single_image_remove_dark_outlier(test_data, test_padding, filter_size, diff, grid_size, block_size)
 
         # Clear the test arrays
         _free_memory_pool([test_data, test_padding])
@@ -242,6 +250,29 @@ class CudaExecuter:
                 filter_size,
             ),
         )
+
+    def _cuda_single_image_remove_light_outlier(self, input_data, padded_data, filter_size, diff, grid_size,
+                                                block_size):
+
+        self.single_image_remove_light_outlier_filter(grid_size, block_size, (
+            input_data,
+            padded_data,
+            input_data.shape[0],
+            input_data.shape[1],
+            filter_size,
+            diff,
+        ))
+
+    def _cuda_single_image_remove_dark_outlier(self, input_data, padded_data, filter_size, diff, grid_size, block_size):
+
+        self.single_image_remove_dark_outlier_filter(grid_size, block_size, (
+            input_data,
+            padded_data,
+            input_data.shape[0],
+            input_data.shape[1],
+            filter_size,
+            diff,
+        ))
 
     def median_filter(self, data, filter_size, mode, progress):
         """
