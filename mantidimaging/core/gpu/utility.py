@@ -188,6 +188,10 @@ def _get_slice_limit(n_images):
     return n_images
 
 
+def _create_padded_image_stack(data, filter_size, padding_mode):
+    return [_create_padded_array(data_slice, filter_size, padding_mode) for data_slice in data]
+
+
 class CudaExecuter:
     def __init__(self, dtype):
 
@@ -254,7 +258,7 @@ class CudaExecuter:
         # Set the maximum number of images that will be on the GPU at a time
         slice_limit = _get_slice_limit(n_images)
 
-        cpu_padded_images = [_create_padded_array(data_slice, filter_size, mode) for data_slice in data]
+        cpu_padded_images = _create_padded_image_stack(data, filter_size, mode)
 
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
@@ -323,7 +327,7 @@ class CudaExecuter:
         # Set the maximum number of images that will be on the GPU at a time
         slice_limit = _get_slice_limit(n_images)
 
-        cpu_padded_images = [_create_padded_array(data_slice, filter_size, OUTLIER_PADDING_MODE) for data_slice in data]
+        cpu_padded_images = _create_padded_image_stack(data, filter_size, OUTLIER_PADDING_MODE)
 
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
