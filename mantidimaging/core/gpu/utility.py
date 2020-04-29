@@ -23,6 +23,8 @@ EQUIVALENT_PAD_MODE = {
     "wrap": "wrap",
 }
 
+OUTLIER_PADDING_MODE = "symmetric"
+
 
 def _cupy_on_system():
     """
@@ -180,6 +182,12 @@ def _get_padding_value(filter_size):
     return filter_size // 2
 
 
+def _get_slice_limit(n_images):
+    if n_images > MAX_GPU_SLICES:
+        return MAX_GPU_SLICES
+    return n_images
+
+
 class CudaExecuter:
     def __init__(self, dtype):
 
@@ -244,13 +252,78 @@ class CudaExecuter:
         n_images = data.shape[0]
 
         # Set the maximum number of images that will be on the GPU at a time
-        if n_images > MAX_GPU_SLICES:
-            slice_limit = MAX_GPU_SLICES
-        else:
-            # If the number of images is smaller than the slice limit, use that instead
-            slice_limit = n_images
+        slice_limit = _get_slice_limit(n_images)
 
         cpu_padded_images = [_create_padded_array(data_slice, filter_size, mode) for data_slice in data]
+
+        streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
+
+        # Send the data arrays and padded arrays to the GPU in slices
+        gpu_data_slices = _send_arrays_to_gpu_with_pinned_memory(data[:slice_limit], streams)
+        gpu_padded_data = _send_arrays_to_gpu_with_pinned_memory(cpu_padded_images[:slice_limit], streams)
+
+        # Return if the data transfer was not successful
+        if not gpu_data_slices or not gpu_padded_data:
+            return data
+
+        block_size, grid_size = _create_block_and_grid_args(gpu_data_slices[0])
+
+        for i in range(n_images):
+
+            # Use the current stream
+            streams[i % slice_limit].use()
+
+            # Overwrite the contents of the GPU arrays
+            if i >= slice_limit:
+                _replace_gpu_array_contents(gpu_data_slices[i % slice_limit], data[i], streams[i % slice_limit])
+                _replace_gpu_array_contents(
+                    gpu_padded_data[i % slice_limit],
+                    cpu_padded_images[i],
+                    streams[i % slice_limit],
+                )
+
+            # Synchronise the current stream to ensure that the overwriting is complete
+            streams[i % slice_limit].synchronize()
+
+            # Apply the median filter on the individual image
+            self._cuda_single_image_median_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
+                                                  filter_size, grid_size, block_size)
+
+            # Synchronise to ensure that the GPU median filter has completed
+            streams[i % slice_limit].synchronize()
+
+            # Transfer the GPU result to a CPU array
+            data[i][:] = gpu_data_slices[i % slice_limit].get(streams[i % slice_limit])
+
+            progress.update()
+
+        progress.mark_complete()
+
+        # Free memory once the operation is complete
+        _free_memory_pool(gpu_data_slices + gpu_padded_data)
+
+        return data
+
+    def remove_outlier(self, data, diff, filter_size, mode, progress):
+        """
+        Runs the remove outlier filter on a stack of 2D images asynchronously.
+        :param data: The CPU data array containing a stack of 2D images.
+        :param filter_size: The filter size.
+        :param mode: The mode for the filter. Determines if light or dark outliers are removed.
+        :param progress: An object for displaying the filter progress.
+        :return: The data array with the remove outlier filter applied to it provided the GPU didn't run out of space,
+                 otherwise it returns the unaltered input array.
+        """
+
+        # Try to free memory
+        _free_memory_pool()
+
+        n_images = data.shape[0]
+
+        # Set the maximum number of images that will be on the GPU at a time
+        slice_limit = _get_slice_limit(n_images)
+
+        cpu_padded_images = [_create_padded_array(data_slice, filter_size, OUTLIER_PADDING_MODE) for data_slice in data]
 
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 
