@@ -9,6 +9,7 @@ from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.gpu import utility as gpu
 
 OUTLIERS_DARK = 'dark'
 OUTLIERS_BRIGHT = 'bright'

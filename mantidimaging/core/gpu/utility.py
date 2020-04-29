@@ -23,7 +23,7 @@ EQUIVALENT_PAD_MODE = {
     "wrap": "wrap",
 }
 
-OUTLIER_PADDING_MODE = "symmetric"
+OUTLIER_PADDING_MODE = "reflect"
 
 
 def _cupy_on_system():

@@ -4,7 +4,10 @@ from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.filters.median_filter import MedianFilter, modes
+from mantidimaging.core.filters.median_filter import MedianFilter
+from mantidimaging.core.filters.median_filter import modes as median_modes
+from mantidimaging.core.filters.outliers import OutliersFilter
+from mantidimaging.core.filters.outliers import modes as outlier_modes
 from mantidimaging.core.gpu import utility as gpu
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
@@ -22,13 +25,21 @@ class GPUTest(unittest.TestCase):
         super(GPUTest, self).__init__(*args, **kwargs)
 
     @staticmethod
-    def run_serial(data, size, mode):
+    def run_serial_median_filter(data, size, mode):
         """
         Run the median filter in serial.
         """
         th.switch_mp_off()
         cpu_result = MedianFilter.filter_func(data, size, mode)
         th.switch_mp_on()
+        return cpu_result
+
+    @staticmethod
+    def run_cpu_remove_outlier_filter(data, size, diff, mode):
+        """
+        Run the remove outlier filter on the CPU.
+        """
+        cpu_result = OutliersFilter.filter_func(data, diff, size, mode)
         return cpu_result
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
@@ -38,13 +49,13 @@ class GPUTest(unittest.TestCase):
         Should demonstrate that the arguments passed to numpy pad are the correct equivalents to the scipy modes.
         """
         size = 3
-        for mode in modes():
+        for mode in median_modes():
             with self.subTest(mode=mode):
 
                 images = th.generate_shared_array()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-                cpu_result = self.run_serial(images.copy(), size, mode)
+                cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result[0], cpu_result[0])
 
@@ -60,7 +71,7 @@ class GPUTest(unittest.TestCase):
                 images = th.generate_shared_array()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-                cpu_result = self.run_serial(images.copy(), size, mode)
+                cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -77,7 +88,7 @@ class GPUTest(unittest.TestCase):
         images = th.generate_shared_array(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial(images.copy(), size, mode)
+        cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -92,7 +103,7 @@ class GPUTest(unittest.TestCase):
         images = th.generate_shared_array(dtype="float64")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial(images.copy(), size, mode)
+        cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -112,7 +123,7 @@ class GPUTest(unittest.TestCase):
         images = th.generate_shared_array(shape=(n_images, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial(images.copy(), size, mode)
+        cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
 
         npt.assert_almost_equal(gpu_result, cpu_result)
 
@@ -154,6 +165,22 @@ class GPUTest(unittest.TestCase):
                 gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(n_images)])
 
         mock_free_gpu.assert_called()
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_gpu_remove_outlier_matches_cpu_remove_outlier(self):
+
+        diff = 2.5
+        radius = 3
+
+        for mode in outlier_modes():
+            with self.subTest(mode=mode):
+
+                images = th.gen_img_shared_array()
+
+                gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+
+                npt.assert_almost_equal(gpu_result, cpu_result)
 
 
 if __name__ == "__main__":
