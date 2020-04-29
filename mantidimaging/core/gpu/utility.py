@@ -213,7 +213,8 @@ class CudaExecuter:
 
     def _warm_up(self, dtype):
         """
-        Runs the median filter on a small test array in order to allow it to compile then deleted the GPU arrays.
+        Runs the median and remove outlier filters on a small test array in order to allow it to compile then deleted
+        the GPU arrays.
         :param dtype: The data type of the input array.
         """
         filter_size = 3
