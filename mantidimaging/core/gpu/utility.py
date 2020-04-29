@@ -403,7 +403,7 @@ class CudaExecuter:
             cuda_single_image_remove_outlier_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
                                                     filter_size, diff, grid_size, block_size)
 
-            # Synchronise to ensure that the GPU median filter has completed
+            # Synchronise to ensure that the GPU remove outlier filter has completed
             streams[i % slice_limit].synchronize()
 
             # Transfer the GPU result to a CPU array
