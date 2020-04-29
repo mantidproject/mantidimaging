@@ -377,6 +377,11 @@ class CudaExecuter:
 
         block_size, grid_size = _create_block_and_grid_args(gpu_data_slices[0])
 
+        if mode == "light":
+            cuda_single_image_remove_outlier_filter = self._cuda_single_image_remove_light_outlier
+        else:
+            cuda_single_image_remove_outlier_filter = self._cuda_single_image_remove_dark_outlier
+
         for i in range(n_images):
 
             # Use the current stream
@@ -395,8 +400,8 @@ class CudaExecuter:
             streams[i % slice_limit].synchronize()
 
             # Apply the median filter on the individual image
-            self._cuda_single_image_median_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
-                                                  filter_size, grid_size, block_size)
+            cuda_single_image_remove_outlier_filter(gpu_data_slices[i % slice_limit], gpu_padded_data[i % slice_limit],
+                                                    filter_size, diff, grid_size, block_size)
 
             # Synchronise to ensure that the GPU median filter has completed
             streams[i % slice_limit].synchronize()
