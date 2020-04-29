@@ -23,7 +23,7 @@ EQUIVALENT_PAD_MODE = {
     "wrap": "wrap",
 }
 
-OUTLIER_PADDING_MODE = "reflect"
+OUTLIER_PADDING_MODE = "symmetric"
 
 
 def _cupy_on_system():
@@ -150,7 +150,7 @@ def _create_block_and_grid_args(data):
     return block_size, grid_size
 
 
-def _create_padded_array(data, filter_size, scipy_mode):
+def _create_padded_array(data, filter_size, padding_mode):
     """
     Creates the padded array on the CPU for the median filter.
     :param data: The data array to be padded.
@@ -160,7 +160,7 @@ def _create_padded_array(data, filter_size, scipy_mode):
     """
     # Use the 'mode' argument that is ordinarily given to 'scipy' and determine its numpy.pad equivalent.
     pad_size = _get_padding_value(filter_size)
-    return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=EQUIVALENT_PAD_MODE[scipy_mode])
+    return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=padding_mode)
 
 
 def _replace_gpu_array_contents(gpu_array, cpu_array, stream):
@@ -294,7 +294,7 @@ class CudaExecuter:
         # Set the maximum number of images that will be on the GPU at a time
         slice_limit = _get_slice_limit(n_images)
 
-        cpu_padded_images = _create_padded_image_stack(data, filter_size, mode)
+        cpu_padded_images = _create_padded_image_stack(data, filter_size, EQUIVALENT_PAD_MODE[mode])
 
         streams = _create_stream_list(slice_limit)
 
