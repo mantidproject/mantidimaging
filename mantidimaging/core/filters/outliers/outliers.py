@@ -50,10 +50,10 @@ class OutliersFilter(BaseFilter):
             cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
-            if force_cpu:
-                data = _execute_cpu(data, diff, radius, mode, axis, cores, progress)
+            if not force_cpu and gpu.gpu_available():
+                return _execute_gpu(data, diff, radius, mode, progress)
             else:
-                data = _execute_gpu(data, diff, radius, mode, cores, progress)
+                return _execute_cpu(data, diff, radius, mode, cores, progress)
         return data
 
     @staticmethod

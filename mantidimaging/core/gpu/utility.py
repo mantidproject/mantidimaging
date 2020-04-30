@@ -203,8 +203,8 @@ class CudaExecuter:
         loaded_from_source = _load_cuda_kernel(dtype)
         median_filter_module = cp.RawModule(code=loaded_from_source)
         self.single_image_median_filter = median_filter_module.get_function("two_dimensional_median_filter")
-        self.single_image_remove_light_outlier_filter = median_filter_module.get_function(
-            "two_dimensional_remove_light_outliers")
+        self.single_image_remove_bright_outlier_filter = median_filter_module.get_function(
+            "two_dimensional_remove_bright_outliers")
         self.single_image_remove_dark_outlier_filter = median_filter_module.get_function(
             "two_dimensional_remove_dark_outliers")
 
@@ -226,8 +226,8 @@ class CudaExecuter:
         block_size, grid_size = _create_block_and_grid_args(test_data[0])
         self._cuda_single_image_median_filter(test_data, test_padding, filter_size, grid_size, block_size)
 
-        diff = 2.5
-        self._cuda_single_image_remove_light_outlier(test_data, test_padding, filter_size, diff, grid_size, block_size)
+        diff = 0.5
+        self._cuda_single_image_remove_bright_outlier(test_data, test_padding, filter_size, diff, grid_size, block_size)
         self._cuda_single_image_remove_dark_outlier(test_data, test_padding, filter_size, diff, grid_size, block_size)
 
         # Clear the test arrays
@@ -252,16 +252,16 @@ class CudaExecuter:
             ),
         )
 
-    def _cuda_single_image_remove_light_outlier(self, input_data, padded_data, filter_size, diff, grid_size,
-                                                block_size):
+    def _cuda_single_image_remove_bright_outlier(self, input_data, padded_data, filter_size, diff, grid_size,
+                                                 block_size):
 
-        self.single_image_remove_light_outlier_filter(grid_size, block_size, (
+        self.single_image_remove_bright_outlier_filter(grid_size, block_size, (
             input_data,
             padded_data,
             input_data.shape[0],
             input_data.shape[1],
             filter_size,
-            diff,
+            np.single(diff),
         ))
 
     def _cuda_single_image_remove_dark_outlier(self, input_data, padded_data, filter_size, diff, grid_size, block_size):
@@ -272,7 +272,7 @@ class CudaExecuter:
             input_data.shape[0],
             input_data.shape[1],
             filter_size,
-            diff,
+            np.single(diff),
         ))
 
     def median_filter(self, data, filter_size, mode, progress):
@@ -349,7 +349,7 @@ class CudaExecuter:
         Runs the remove outlier filter on a stack of 2D images asynchronously.
         :param data: The CPU data array containing a stack of 2D images.
         :param filter_size: The filter size.
-        :param mode: The mode for the filter. Determines if light or dark outliers are removed.
+        :param mode: The mode for the filter. Determines if bright or dark outliers are removed.
         :param progress: An object for displaying the filter progress.
         :return: The data array with the remove outlier filter applied to it provided the GPU didn't run out of space,
                  otherwise it returns the unaltered input array.
@@ -377,8 +377,8 @@ class CudaExecuter:
 
         block_size, grid_size = _create_block_and_grid_args(gpu_data_slices[0])
 
-        if mode == "light":
-            cuda_single_image_remove_outlier_filter = self._cuda_single_image_remove_light_outlier
+        if mode == "bright":
+            cuda_single_image_remove_outlier_filter = self._cuda_single_image_remove_bright_outlier
         else:
             cuda_single_image_remove_outlier_filter = self._cuda_single_image_remove_dark_outlier
 
