@@ -24,6 +24,7 @@ class GPUTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
         self.filter_sizes = [5, 7, 9]
+        self.big = 1200
 
     @staticmethod
     def run_serial_median_filter(data, size, mode):
@@ -74,11 +75,10 @@ class GPUTest(unittest.TestCase):
         Run the median filter on the CPU and GPU with a larger image size. Check that the results match. This test may
         reveal issues such as the grid and dimension size arguments going wrong.
         """
-        N = 1200
         size = 3
         mode = "reflect"
 
-        images = th.generate_shared_array(shape=(20, N, N))
+        images = th.gen_img_shared_array(shape=(20, self.big, self.big))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
@@ -206,6 +206,22 @@ class GPUTest(unittest.TestCase):
                     cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
                     npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_gpu_remove_outlier_matches_cpu_remove_outlier_for_larger_image_sizes(self):
+
+        diff = 0.5
+        radius = 3
+
+        for mode in outlier_modes():
+            with self.subTest(mode=mode):
+
+                images = th.gen_img_shared_array(shape=(20, self.big, self.big))
+
+                gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
+
+                npt.assert_almost_equal(gpu_result, cpu_result)
 
 
 if __name__ == "__main__":
