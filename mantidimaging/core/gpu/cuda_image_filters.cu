@@ -122,11 +122,9 @@ __global__ void two_dimensional_median_filter(float *data_array,
   @param diff             The difference required to replace the original pixel
                           value with the median.
  */
-__global__ void two_dimensional_remove_bright_outliers(float *data_array,
-                                                      const float *padded_array,
-                                                      const int X, const int Y,
-                                                      const int filter_size,
-                                                      const float diff) {
+__global__ void two_dimensional_remove_bright_outliers(
+    float *data_array, const float *padded_array, const int X, const int Y,
+    const int filter_size, const float diff) {
   unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
 
