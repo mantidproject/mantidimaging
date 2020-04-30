@@ -34,14 +34,6 @@ class GPUTest(unittest.TestCase):
         th.switch_mp_on()
         return cpu_result
 
-    @staticmethod
-    def run_cpu_remove_outlier_filter(data, size, diff, mode):
-        """
-        Run the remove outlier filter on the CPU.
-        """
-        cpu_result = OutliersFilter.filter_func(data, diff, size, mode)
-        return cpu_result
-
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
         """
@@ -167,7 +159,23 @@ class GPUTest(unittest.TestCase):
         mock_free_gpu.assert_called()
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_gpu_remove_outlier_matches_cpu_remove_outlier(self):
+    def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_smaller_than_one(self):
+
+        diff = 0.5
+        radius = 3
+
+        for mode in outlier_modes():
+            with self.subTest(mode=mode):
+
+                images = th.gen_img_shared_array()
+
+                gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
+
+                npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_greater_than_one(self):
 
         diff = 2.5
         radius = 3
@@ -178,7 +186,7 @@ class GPUTest(unittest.TestCase):
                 images = th.gen_img_shared_array()
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
-                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
 
