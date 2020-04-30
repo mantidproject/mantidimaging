@@ -25,6 +25,11 @@ EQUIVALENT_PAD_MODE = {
 
 OUTLIER_PADDING_MODE = "symmetric"
 
+DIFF_CONVERSION = {
+    np.dtype('float32'): np.single,
+    np.dtype('float64'): np.double,
+}
+
 
 def _cupy_on_system():
     """
@@ -196,6 +201,10 @@ def _create_stream_list(n_streams):
     return [cp.cuda.Stream(non_blocking=True) for _ in range(n_streams)]
 
 
+def _convert_diff(diff, dtype):
+    return DIFF_CONVERSION[dtype](diff)
+
+
 class CudaExecuter:
     def __init__(self, dtype):
 
@@ -261,7 +270,7 @@ class CudaExecuter:
             input_data.shape[0],
             input_data.shape[1],
             filter_size,
-            np.single(diff),
+            _convert_diff(diff, input_data.dtype),
         ))
 
     def _cuda_single_image_remove_dark_outlier(self, input_data, padded_data, filter_size, diff, grid_size, block_size):
@@ -272,7 +281,7 @@ class CudaExecuter:
             input_data.shape[0],
             input_data.shape[1],
             filter_size,
-            np.single(diff),
+            _convert_diff(diff, input_data.dtype),
         ))
 
     def median_filter(self, data, filter_size, mode, progress):

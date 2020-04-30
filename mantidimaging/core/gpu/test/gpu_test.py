@@ -37,7 +37,7 @@ class GPUTest(unittest.TestCase):
         return cpu_result
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_numpy_pad_modes_match_scipy_median_modes(self):
+    def test_numpy_pad_modes_match_scipy_median_modes_in_median_filter(self):
         """
         Run the median filter on the GPU and CPU with the different scipy modes. Check that the results match.
         Should demonstrate that the arguments passed to numpy pad are the correct equivalents to the scipy modes.
@@ -54,7 +54,7 @@ class GPUTest(unittest.TestCase):
                 npt.assert_almost_equal(gpu_result[0], cpu_result[0])
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_gpu_result_matches_cpu_result_for_different_filter_sizes(self):
+    def test_gpu_median_matches_cpu_median_for_different_filter_sizes(self):
         """
         Run the median filter on the CPU and GPU with different filter sizes. Check that the results match.
         """
@@ -70,7 +70,7 @@ class GPUTest(unittest.TestCase):
                 npt.assert_almost_equal(gpu_result, cpu_result)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_gpu_result_matches_cpu_result_for_larger_images(self):
+    def test_gpu_median_matches_cpu_median_for_larger_images(self):
         """
         Run the median filter on the CPU and GPU with a larger image size. Check that the results match. This test may
         reveal issues such as the grid and dimension size arguments going wrong.
@@ -86,7 +86,7 @@ class GPUTest(unittest.TestCase):
         npt.assert_almost_equal(gpu_result, cpu_result)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_double_is_used_in_cuda_for_float_64_arrays(self):
+    def test_double_is_used_in_median_for_float_64_arrays(self):
         """
         Run the median filter on the CPU and GPU with a float64 array. This demonstrates that replacing instances of
         'float' with 'double' in the CUDA file is doing the right thing.
@@ -101,7 +101,7 @@ class GPUTest(unittest.TestCase):
         npt.assert_almost_equal(gpu_result, cpu_result)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_image_slicing_works(self):
+    def test_median_image_slicing_works(self):
         """
         Run the median filter on the CPU and GPU with an image stack that is larger than the limit permitted on the GPU.
         This demonstrates that the algorithm for slicing the stack and overwriting GPU arrays is working correctly.
@@ -121,7 +121,7 @@ class GPUTest(unittest.TestCase):
         npt.assert_almost_equal(gpu_result, cpu_result)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_array_input_unchanged_when_gpu_runs_out_of_memory(self):
+    def test_median_array_input_unchanged_when_gpu_runs_out_of_memory(self):
         """
         Mock the GPU running out of memory. Check that this leaves the input array to be unchanged.
         """
@@ -217,6 +217,22 @@ class GPUTest(unittest.TestCase):
             with self.subTest(mode=mode):
 
                 images = th.gen_img_shared_array(shape=(20, self.big, self.big))
+
+                gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
+
+                npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_double_is_used_in_remove_outlier_for_float_64_arrays(self):
+
+        diff = 0.5
+        radius = 3
+
+        for mode in outlier_modes():
+            with self.subTest(mode=mode):
+
+                images = th.gen_img_shared_array(dtype="float64")
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
