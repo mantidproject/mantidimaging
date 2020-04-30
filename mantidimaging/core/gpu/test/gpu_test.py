@@ -127,16 +127,14 @@ class GPUTest(unittest.TestCase):
         """
         import cupy as cp
 
-        N = 200
-        n_images = 2000
         size = 3
         mode = "reflect"
 
-        images = th.generate_shared_array(shape=(n_images, N, N))
+        images = th.gen_img_shared_array()
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
-            gpu_result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
+            gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
 
         npt.assert_equal(gpu_result, images)
 
@@ -147,17 +145,14 @@ class GPUTest(unittest.TestCase):
         """
         import cupy as cp
 
-        N = 20
-        n_images = 2
-
-        images = th.generate_shared_array(shape=(n_images, N, N))
+        images = th.gen_img_shared_array()
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
-                gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(n_images)])
+                gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(images.shape[0])])
 
-        mock_free_gpu.assert_called()
+        mock_free_gpu.assert_called_once()
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_smaller_than_one(self):
@@ -238,6 +233,45 @@ class GPUTest(unittest.TestCase):
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_outlier_image_slicing_works(self):
+
+        diff = 0.5
+        radius = 3
+        N = 30
+
+        # Make the number of images in the stack exceed the maximum number of GPU-stored images
+        n_images = gpu.MAX_GPU_SLICES * 3
+
+        for mode in outlier_modes():
+            with self.subTest(mode=mode):
+
+                images = th.gen_img_shared_array(shape=(n_images, N, N))
+
+                gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
+
+                npt.assert_almost_equal(gpu_result, cpu_result)
+
+    @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
+    def test_outlier_array_input_unchanged_when_gpu_runs_out_of_memory(self):
+
+        import cupy as cp
+
+        diff = 0.5
+        radius = 3
+
+        for mode in outlier_modes():
+            with self.subTest(mode=mode):
+
+                images = th.gen_img_shared_array()
+
+                with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
+                                side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
+                    gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+
+                npt.assert_almost_equal(gpu_result, images)
 
 
 if __name__ == "__main__":
