@@ -137,7 +137,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
         return gpu_arrays
 
     except cp.cuda.memory.OutOfMemoryError:
-        getLogger(__name__).error("Unable to send arrays to GPU. Median filter not performed.")
+        getLogger(__name__).error("Unable to send arrays to GPU. Image filter not performed.")
         _free_memory_pool(gpu_arrays)
         return []
 
