@@ -14,3 +14,4 @@ Developer Guide
    python_3x_performance_issues
    parallelism
    savu_hebi
+   gpu_mode
