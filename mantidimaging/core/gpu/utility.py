@@ -15,7 +15,7 @@ MAX_CUPY_MEMORY_FRACTION = 0.8
 MAX_GPU_SLICES = 100
 KERNEL_FILENAME = "cuda_image_filters.cu"
 
-EQUIVALENT_PAD_MODE = {
+EQUIVALENT_MEDIAN_PAD_MODE = {
     "reflect": "symmetric",
     "constant": "constant",
     "nearest": "edge",
@@ -244,7 +244,7 @@ class CudaExecuter:
 
     def _warm_up(self, dtype):
         """
-        Runs the median and remove outlier filters on a small test array in order to allow it to compile then deleted
+        Runs the median and remove outlier filters on a small test array in order to allow it to compile then deletes
         the GPU arrays.
         :param dtype: The data type of the input array.
         """
@@ -343,7 +343,7 @@ class CudaExecuter:
         # Set the maximum number of images that will be on the GPU at a time
         slice_limit = _get_slice_limit(n_images)
 
-        cpu_padded_images = _create_padded_image_stack(data, filter_size, EQUIVALENT_PAD_MODE[mode])
+        cpu_padded_images = _create_padded_image_stack(data, filter_size, EQUIVALENT_MEDIAN_PAD_MODE[mode])
 
         streams = _create_stream_list(slice_limit)
 
