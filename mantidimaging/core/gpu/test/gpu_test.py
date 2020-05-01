@@ -17,9 +17,7 @@ GPU_UTILITY_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
 class GPUTest(unittest.TestCase):
     """
-    Test median filter.
-
-    Tests return value and in-place modified data.
+    Test behaviour of median and remove outlier filters and GPU-related helper functions.
     """
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
@@ -156,8 +154,11 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_smaller_than_one(self):
-
-        diff = 0.5
+        """
+        Test that the results of the GPU and CPU remove outlier filters match when diff is smaller than one. We would
+        expect this to cause a change.
+        """
+        diff = 0.1
         radius = 3
 
         for mode in outlier_modes():
@@ -172,7 +173,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_greater_than_one(self):
-
+        """
+        Test that the results of the GPU and CPU remove outlier filters match when the diff is greater than one. We
+        would expect this to leave the array unchanged.
+        """
         diff = 2.5
         radius = 3
 
@@ -185,10 +189,13 @@ class GPUTest(unittest.TestCase):
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
                 npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result, images)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_for_different_filter_sizes(self):
-
+        """
+        Test that the results of the GPU and CPU remove outlier filters match for different filter sizes.
+        """
         diff = 0.5
 
         for mode in outlier_modes():
@@ -204,7 +211,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_for_larger_image_sizes(self):
-
+        """
+        Test that the results of the CPU and GPU remove outlier filters match for a larger image size. Should this test
+        fail it may indicate that the block and dim sizes are not being set correctly.
+        """
         diff = 0.5
         radius = 3
 
@@ -220,7 +230,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_double_is_used_in_remove_outlier_for_float_64_arrays(self):
-
+        """
+        Test that the remove outlier filter also works for float64. This requires changing the CUDA kernel before
+        loading it with cupy.
+        """
         diff = 0.5
         radius = 3
 
@@ -236,7 +249,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_outlier_image_slicing_works(self):
-
+        """
+        Test that the image slicing works for the remove outlier filter by creating an image stack that is larger than
+        the maximum number of images that can be stored on the GPU.
+        """
         diff = 0.5
         radius = 3
         N = 30
@@ -256,6 +272,10 @@ class GPUTest(unittest.TestCase):
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_outlier_array_input_unchanged_when_gpu_runs_out_of_memory(self):
+        """
+        Test that the input arrays are unchanged when the remove outliers filter is unable to tranfer arrays to the
+        GPU.
+        """
 
         import cupy as cp
 
