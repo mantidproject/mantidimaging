@@ -45,6 +45,7 @@ only be used on a stack of 2D images.
 ################
 
 .. code-block:: C
+
    int something = 3;
    float something = 2;
 
@@ -75,7 +76,7 @@ Development Pitfalls
 --------------------
 
 The filter was only peformed on part of the array or the filter works on small arrays then gets the wrong result for larger arrays.
-#########################################################
+###################################################################################################################################
 This may mean that the grid and dimension arguments do not account for the
 entire array.
 
@@ -96,7 +97,7 @@ Further Work
 ------------
 
 Intelligent management of :code:`OutOfMemoryError`
-#################################################
+##################################################
 Presently, the median and remove outlier GPU filters give up when this
 error is encoutered. In the future, it may be worth finding a way to
 reattempt the operation under different conditions so as to not fill the
