@@ -46,13 +46,47 @@ only be used on a stack of 2D images.
 
 .. code-block:: C
 
-   int something = 3;
-   float something = 2;
+    __global__ void two_dimensional_median_filter(float *data_array,
+                                                  const float *padded_array,
+                                                  const int X, const int Y,
+                                                  const int filter_size) {
+      unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
+      unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
+
+      if ((id_x >= X) || (id_y >= Y))
+        return;
+
+      unsigned int index = (id_x * Y) + id_y;
+      unsigned int padded_img_width = Y + filter_size - 1;
+
+      data_array[index] = find_neighbour_median(padded_array, padded_img_width,
+                                                id_x, id_y, filter_size);
+    }
 
 
 2D Remove Outlier Filter
 ########################
 
+.. code-block:: C
+
+    __global__ void two_dimensional_remove_bright_outliers(
+        float *data_array, const float *padded_array, const int X, const int Y,
+        const int filter_size, const float diff) {
+      unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
+      unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
+
+      if ((id_x >= X) || (id_y >= Y))
+        return;
+
+      unsigned int index = (id_x * Y) + id_y;
+      unsigned int padded_img_width = Y + filter_size - 1;
+
+      float median = find_neighbour_median(padded_array, padded_img_width, id_x,
+                                           id_y, filter_size);
+
+      if (data_array[index] - median >= diff)
+        data_array[index] = median;
+    }
 
 Slicing algorithm
 #################
