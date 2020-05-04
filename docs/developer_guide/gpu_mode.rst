@@ -38,8 +38,8 @@ Median Filter
 -------------
 
 .. code-block:: C
- int something = 3;
- float something = 2;
+   int something = 3;
+   float something = 2;
 
 
 Remove Outlier Filter
