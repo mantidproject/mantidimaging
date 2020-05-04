@@ -34,6 +34,21 @@ or float64 in numpy. If you want to change this, you can start by editing the
 :code:`_load_cuda_kernel` function to enable the CUDA code to recognise other
 data types.
 
+Median Filter
+-------------
+
+code-block:: C
+
+int something = 3;
+float something = 2;
+
+..
+
+Remove Outlier Filter
+---------------------
+
+
+
 Creating GPU Algorithms - Tips and Tricks
 -----------------------------------------
 
