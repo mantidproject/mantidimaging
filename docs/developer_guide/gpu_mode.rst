@@ -37,32 +37,41 @@ data types.
 Creating GPU Algorithms - Tips and Tricks
 -----------------------------------------
 
+Warming-up functions
+####################
+
 Upon creating a working CUDA function, it is advisable to run it on a smaller
 array prior to running it with real data. In the case of the median and remove
 outlier filters this takes place in the :code:`_warm_up` function in the
 :code:`CudaExecuter` class which is called from the initialiser.
 
-TODO: CUDA function example.
+CUDA function example
+#####################
 
-TODO: Iterating through 2D and 3D arrays.
+Block and grid arguments
+************************
 
-TODO: Block and grid arguments.
+Iterating through 2D and 3D arrays
+**********************************
 
-TODO: Slicing algorithm.
+Slicing algorithm
+#################
 
 Development Pitfalls
 --------------------
 
-1) The filter was only peformed on part of the array or the filter works on
-small arrays then gets the wrong result for larger arrays.
+The filter was only peformed on part of the array or the filter works on small arrays then gets the wrong result for larger arrays.
+#########################################################
 This may mean that the grid and dimension arguments do not account for the
 entire array.
 
-2) Float parameters become 0 in CUDA.
+Float parameters become 0 in CUDA
+####################################
 This indicates the value was not converted to a numpy :code:`float` or
 :code:`single` prior to being passed to the kernel.
 
-3) :code:`cupy` objects appear to forget what they are.
+:code:`cupy` objects appear to forget what they area
+#######################################################
 If you find calling :code:`stream.sychronize` or some other method results in an
 error because this is not part of the Stream class, it may due to having
 created an array in CUDA and failing to free it. As the number of un-freed
