@@ -19,7 +19,7 @@ This means that if a speed improvement is observed for a filter size of 3,
 filter sizes greater than 3 will produce an even larger speed improvement.
 
 Current GPU Configuration / Limitations
------------------------------------------
+---------------------------------------
 
 To minimise the occurence of memory problems, the
 :code:`MAX_CUPY_MEMORY_FRACTION` has been sent to 0.8. This means that
@@ -34,18 +34,27 @@ or float64 in numpy. If you want to change this, you can start by editing the
 :code:`_load_cuda_kernel` function to enable the CUDA code to recognise other
 data types.
 
-Median Filter
--------------
+Filter Overview
+---------------
+
+Both the median and remove outlier filters work by using an insertion sort
+to obtain the median value of the neighbouring pixels in a 2D image. They can
+only be used on a stack of 2D images.
+
+2D Median Filter
+################
 
 .. code-block:: C
    int something = 3;
    float something = 2;
 
 
-Remove Outlier Filter
----------------------
+2D Remove Outlier Filter
+########################
 
 
+Slicing algorithm
+#################
 
 Creating GPU Algorithms - Tips and Tricks
 -----------------------------------------
@@ -58,17 +67,9 @@ array prior to running it with real data. In the case of the median and remove
 outlier filters this takes place in the :code:`_warm_up` function in the
 :code:`CudaExecuter` class which is called from the initialiser.
 
-CUDA function example
-#####################
-
 Block and grid arguments
 ************************
 
-Iterating through 2D and 3D arrays
-**********************************
-
-Slicing algorithm
-#################
 
 Development Pitfalls
 --------------------
@@ -79,12 +80,12 @@ This may mean that the grid and dimension arguments do not account for the
 entire array.
 
 Float parameters become 0 in CUDA
-####################################
+#################################
 This indicates the value was not converted to a numpy :code:`float` or
 :code:`single` prior to being passed to the kernel.
 
 :code:`cupy` objects appear to forget what they area
-#######################################################
+####################################################
 If you find calling :code:`stream.sychronize` or some other method results in an
 error because this is not part of the Stream class, it may due to having
 created an array in CUDA and failing to free it. As the number of un-freed
