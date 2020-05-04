@@ -18,7 +18,7 @@ increases the number of floating point operations required to obtain a result.
 This means that if a speed improvement is observed for a filter size of 3,
 filter sizes greater than 3 will produce an even larger speed improvement.
 
-Current GPU Configuration and Limitations
+Current GPU Configuration / Limitations
 -----------------------------------------
 
 To minimise the occurence of memory problems, the
@@ -53,8 +53,6 @@ TODO: Slicing algorithm.
 Development Pitfalls
 --------------------
 
-A summary of some of the issues you might encouter when writing GPU code.
-
 1) The filter was only peformed on part of the array or the filter works on
 small arrays then gets the wrong result for larger arrays.
 This may mean that the grid and dimension arguments do not account for the
@@ -74,10 +72,11 @@ behaviour.
 Further Work
 ------------
 
-- Intelligent management of OutOfMemoryError
-Presently, the median and remove outlier GPU filters give up when this
-error is encoutered. In the future, it may be worth finding a way to
-reattempt the operation under different conditions so as to not fill the GPU.
+- Intelligent management of :code:`OutOfMemoryError`
+    Presently, the median and remove outlier GPU filters give up when this
+    error is encoutered. In the future, it may be worth finding a way to
+    reattempt the operation under different conditions so as to not fill the
+    GPU.
 
 - Avoid repeated warm-up compilation
 The program works by creating a :code:`CudaExecuter` each time one of the
