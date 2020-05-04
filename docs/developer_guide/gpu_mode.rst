@@ -39,7 +39,8 @@ Filter Overview
 
 Both the median and remove outlier filters work by using an insertion sort
 to obtain the median value of the neighbouring pixels in a 2D image. They can
-only be used on a stack of 2D images.
+only be used on a stack of 2D images with each image being passed to the
+functions individually.
 
 2D Median Filter
 ################
