@@ -72,13 +72,13 @@ behaviour.
 Further Work
 ------------
 
-- Intelligent management of :code:`OutOfMemoryError`
+- Intelligent management of :code:`OutOfMemoryError`  
   Presently, the median and remove outlier GPU filters give up when this
   error is encoutered. In the future, it may be worth finding a way to
   reattempt the operation under different conditions so as to not fill the
   GPU.
 
-- Avoid repeated warm-up compilation
+- Avoid repeated warm-up compilation  
   The program works by creating a :code:`CudaExecuter` each time one of the
   GPU-compatible filters is performed which required repeated warm-up compilation
   even when the filters are run for different images with the same float
