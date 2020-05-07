@@ -14,8 +14,8 @@ or float64 in numpy. If you want to change this, you can start by editing the
 :code:`_load_cuda_kernel` function to enable the CUDA code to recognise other
 data types.
 
-CUDA Filter Overview
---------------------
+CUDA Function Overview
+----------------------
 
 Both the median and remove outlier filters work by using an insertion sort
 to obtain the median value of the neighbouring pixels in a 2D image. They can
@@ -118,8 +118,7 @@ to the GPU and sends the first L padded images to the GPU. If the number of
 images in the stack falls below the hard-coded :code:`GPU_SLICE_LIMIT` then the
 entire image stack is sent to the GPU.
 
-In the case where L is smaller than the size of the stack, the following
-algorithm is performed:
+The algorithm is illustrated in the following psuedocode:
 
 .. code-block::
 
