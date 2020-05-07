@@ -1,23 +1,3 @@
-GPU Notes
-=============
-
-The Median and Remove Outlier filters have the option of being run on the GPU.
-This works by having the :code:`cupy` library import the CUDA module so that
-Python is able to compile it, run it, and retrieve the results. Transferring
-data to and from the GPU is quite time-consuming, so the degree of speed 
-improvement you observe (or don't observe) depends on:
-
-- the size of the data
-- the float precision
-- the number of floating point operations that the algorithm has to perform
-
-Depending on these factors, the cost of data transfer may outweigh the GPU
-processing improvement in which case you're better off using the CPU. In the
-case of the median and remove outlier filters, using a larger filter size
-increases the number of floating point operations required to obtain a result.
-This means that if a speed improvement is observed for a filter size of 3,
-filter sizes greater than 3 will produce an even larger speed improvement.
-
 Current GPU Configuration / Limitations
 ---------------------------------------
 
@@ -120,8 +100,8 @@ Float parameters become 0 in CUDA
 This indicates the value was not converted to a numpy :code:`float` or
 :code:`single` prior to being passed to the kernel.
 
-:code:`cupy` objects appear to forget what they area
-####################################################
+:code:`cupy` objects appear to forget what they are
+###################################################
 If you find calling :code:`stream.sychronize` or some other method results in an
 error because this is not part of the Stream class, it may due to having
 created an array in CUDA and failing to free it. As the number of un-freed
