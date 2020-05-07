@@ -67,7 +67,6 @@ the padded image.
 
       data_array[index] = find_neighbour_median(padded_array, padded_img_width,
                                                 id_x, id_y, filter_size);
-    }
 
 Finally, a helper method is called for finding the median value of a pixel in a
 2D image. The result overwrites one of the pixels in the array. The helper
@@ -98,26 +97,16 @@ The entire function is shown below:
 2D Remove Outlier Filter
 ########################
 
+The remove outlier filters work in a similar way to the median filters. Upon
+finding the median, rather than place this in the array right away, a check is
+carried out to see if the original value is much higher or much lower than the
+median based on the value of the :code:`diff` argument. The original value is
+only overwritten if the condition is true.
+
 .. code-block:: C
-
-    __global__ void two_dimensional_remove_bright_outliers(
-        float *data_array, const float *padded_array, const int X, const int Y,
-        const int filter_size, const float diff) {
-      unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
-      unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
-
-      if ((id_x >= X) || (id_y >= Y))
-        return;
-
-      unsigned int index = (id_x * Y) + id_y;
-      unsigned int padded_img_width = Y + filter_size - 1;
-
-      float median = find_neighbour_median(padded_array, padded_img_width, id_x,
-                                           id_y, filter_size);
 
       if (data_array[index] - median >= diff)
         data_array[index] = median;
-    }
 
 Slicing algorithm
 #################

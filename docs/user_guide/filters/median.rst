@@ -4,7 +4,7 @@ Median
 Applies SciPy's median filter (:code:`scipy.ndimage.filters.median_filter`)
 (docs_).
 
-There is the option to run the median filter on the GPU. For more information see :doc:`GPU Mode <../gpu_mode.rst>`.
+There is the option to run the median filter on the GPU. For more information see :doc:`GPU Mode <gpu_mode.rst>`.
 
 Python API
 ----------
