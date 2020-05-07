@@ -123,10 +123,32 @@ algorithm is performed:
 
 .. code-block::
 
-    Function ImagingFilter(ImageStack[][][], FilterSize, Args)
+    **Function** ImagingFilter(ImageStack[][][], FilterSize, Args)
 
         N = |ImageStack|
         L = GetSliceLimit(N)
+
+        Streams[] = CreateStreams(N)
+
+        PaddedImageStack = CreatePaddedImages(ImageStack, FilterSize)
+
+        GPUImages[][][] = SendDataToGPU(First L Elements of ImageStack, Streams)
+        GPUPaddedImages[][][] = SendDataToGPU(First L Elements of
+        PaddedImageStack, Streams)
+
+        BlockSize, GridSize = GetBlockAndGridSizes(N)
+
+        **For** i in N:
+
+            **Use** Streams[i]
+
+                **If** i >= L:
+                    Overwrite GPUImages[i][][] with ImageStack[i][][]
+                    Overwrite GPUPaddedImages[i][][] with
+                    PaddedImageStack[i][][]
+
+                **Synchronise** Streams[i]
+
 
 Creating GPU Algorithms - Tips and Tricks
 -----------------------------------------
