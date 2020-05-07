@@ -1,6 +1,10 @@
 GPU Mode
 =============
 
+.. important::
+
+    The GPU mode will only work if :code:`cupy` is installed and working on your system.
+
 The Median and Remove Outlier filters have the option of being run on the GPU.
 This works by having the :code:`cupy` library import the CUDA module so that
 Python can be used to compile it, run it, and retrieve the results. Transferring
