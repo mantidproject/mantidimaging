@@ -10,7 +10,7 @@ Removes bright or dark spots (outliers) from an image (or stack of images).
 This uses the TomoPy implementation (:code:`tomopy.misc.corr.remove_outlier`)
 (docs_).
 
-There is the option to run the outlier filter on the GPU. For more information see :doc:`GPU Mode <gpu_mode.rst>`.
+There is the option to run the outlier filter on the GPU. For more information see :doc:`gpu_mode.rst`.
 
 Python API
 ----------
