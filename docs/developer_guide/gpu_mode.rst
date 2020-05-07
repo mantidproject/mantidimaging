@@ -31,6 +31,57 @@ functions individually.
                                                   const float *padded_array,
                                                   const int X, const int Y,
                                                   const int filter_size) {
+
+
+The arguments passed to the median filter are the original 2D image array, the
+padded data array, the X and Y dimensions of the original image array, and the
+filter size. All arguments besides the original data array are required to be
+constant.
+
+The :code:`__global__` header indicates that this function can be called from
+the CPU.
+
+.. code-block:: C
+
+      unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
+      unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
+
+      if ((id_x >= X) || (id_y >= Y))
+        return;
+
+The program begins by obtaining the :code:`id_x` and :code:`id_y` values that
+determine pixel for which the median will be found. If this is outside the
+boundaries of the array then the function returns without doing anything.
+
+.. code-block:: C
+
+      unsigned int index = (id_x * Y) + id_y;
+      unsigned int padded_img_width = Y + filter_size - 1;
+
+
+If the :code:`id_x` and :code:`id_y` values are valid, then the program
+translates this to an index in the unravelled array and calculates the width of
+the padded image.
+
+.. code-block:: C
+
+      data_array[index] = find_neighbour_median(padded_array, padded_img_width,
+                                                id_x, id_y, filter_size);
+    }
+
+Finally, a helper method is called for finding the median value of a pixel in a
+2D image. The result overwrites one of the pixels in the array. The helper
+methods have the `__device__` keyword in their header as they are called solely
+from the GPU.
+
+The entire function is shown below:
+
+.. code-block:: C
+
+    __global__ void two_dimensional_median_filter(float *data_array,
+                                                  const float *padded_array,
+                                                  const int X, const int Y,
+                                                  const int filter_size) {
       unsigned int id_x = blockIdx.x * blockDim.x + threadIdx.x;
       unsigned int id_y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -43,7 +94,6 @@ functions individually.
       data_array[index] = find_neighbour_median(padded_array, padded_img_width,
                                                 id_x, id_y, filter_size);
     }
-
 
 2D Remove Outlier Filter
 ########################
