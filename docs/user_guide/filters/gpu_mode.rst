@@ -1,4 +1,4 @@
-GPU Notes
+GPU Mode
 =============
 
 The Median and Remove Outlier filters have the option of being run on the GPU.
