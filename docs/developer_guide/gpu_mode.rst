@@ -14,8 +14,8 @@ or float64 in numpy. If you want to change this, you can start by editing the
 :code:`_load_cuda_kernel` function to enable the CUDA code to recognise other
 data types.
 
-Filter Overview
----------------
+CUDA Filter Overview
+--------------------
 
 Both the median and remove outlier filters work by using an insertion sort
 to obtain the median value of the neighbouring pixels in a 2D image. They can
@@ -53,11 +53,12 @@ The program begins by obtaining the :code:`id_x` and :code:`id_y` values that
 determine pixel for which the median will be found. If this is outside the
 boundaries of the array then the function returns without doing anything.
 
+The block and grid sizes are set in the Python code. This is discussed `here`.
+
 .. code-block:: C
 
       unsigned int index = (id_x * Y) + id_y;
       unsigned int padded_img_width = Y + filter_size - 1;
-
 
 If the :code:`id_x` and :code:`id_y` values are valid, then the program
 translates this to an index in the unravelled array and calculates the width of
@@ -73,7 +74,7 @@ Finally, a helper method is called for finding the median value of a pixel in a
 methods have the `__device__` keyword in their header as they are called solely
 from the GPU.
 
-The entire function is shown below:
+The complete function is shown below:
 
 .. code-block:: C
 
@@ -108,8 +109,21 @@ only overwritten if the condition is true.
       if (data_array[index] - median >= diff)
         data_array[index] = median;
 
-Slicing algorithm
-#################
+Slicing Algorithm
+-----------------
+
+The Python code determines how many images will be on the GPU at once. Upon
+finding the "slice limit" N, the program sends the first N images from the stack
+to the GPU and sends the first N padded images to the GPU. If the number of
+images in the stack falls below the hard-coded :code:`GPU_SLICE_LIMIT` then the
+entire image stack is sent to the GPU.
+
+In the case where N is smaller than the size of the stack, the following
+algorithm is performed:
+
+.. code-block::
+
+    Fake code fake code fake code
 
 Creating GPU Algorithms - Tips and Tricks
 -----------------------------------------
