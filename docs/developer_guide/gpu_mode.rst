@@ -113,17 +113,20 @@ Slicing Algorithm
 -----------------
 
 The Python code determines how many images will be on the GPU at once. Upon
-finding the "slice limit" N, the program sends the first N images from the stack
-to the GPU and sends the first N padded images to the GPU. If the number of
+finding the "slice limit" L, the program sends the first L images from the stack
+to the GPU and sends the first L padded images to the GPU. If the number of
 images in the stack falls below the hard-coded :code:`GPU_SLICE_LIMIT` then the
 entire image stack is sent to the GPU.
 
-In the case where N is smaller than the size of the stack, the following
+In the case where L is smaller than the size of the stack, the following
 algorithm is performed:
 
 .. code-block::
 
-    Fake code fake code fake code
+    Function ImagingFilter(ImageStack[][][], FilterSize, Args)
+
+        N = |ImageStack|
+        L = GetSliceLimit(N)
 
 Creating GPU Algorithms - Tips and Tricks
 -----------------------------------------
