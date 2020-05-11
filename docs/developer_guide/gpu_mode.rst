@@ -19,10 +19,10 @@ Current GPU Configuration / Limitations
 - The function simply returns without having made any changes to the input array
   if :code:`cupy` encouters an :code:`OutOfMemoryError`.
 
-Creating GPU Algorithms - Tips and Tricks
-*****************************************
+Creating and Using GPU Algorithms
+*********************************
 
-Block and grid dimensions
+Block and Grid Dimensions
 =========================
 
 Block and grid dimensions are used to determine how work is partitioned on a
@@ -36,7 +36,7 @@ the following formulas.
 *N* is presently hard-coded as 10. *X*, *Y*, and *Z* denote the dimensions of
 the input array being processed on the GPU.
 
-Importing CUDA kernels in cupy
+Importing CUDA Kernels in Cupy
 ==============================
 
 Once defined, CUDA functions can be used from Python in the following way
@@ -61,7 +61,7 @@ where :code:`loaded_from_source` contains a CUDA kernel in the form of a Python
 string. Note that the first arguments are the grid size and block size, with the
 actual CUDA function arguments being given last in a tuple.
 
-Warming-up functions
+Warming-up Functions
 ====================
 
 Upon creating a working CUDA function, it is advisable to run it on a smaller
@@ -235,14 +235,14 @@ behaviour.
 Further Work
 ************
 
-Intelligent management of :code:`OutOfMemoryError`
+Intelligent Management of :code:`OutOfMemoryError`
 ==================================================
 Presently, the median and remove outlier GPU filters give up when this
 error is encoutered. In the future, it may be worth finding a way to
 reattempt the operation under different conditions so as to not fill the
 GPU.
 
-Intelligent management of maximum number of GPU slices
+Intelligent Management of Maximum Number of GPU Slices
 ======================================================
 Ideally, the number of images on a stack that are transferred to a GPU would
 depend on their size and the capacity of the GPU being used
