@@ -10,9 +10,55 @@ the GPU at any one time. This is currently set to 100 and does not take image
 size or precision into account.
 
 The median and outlier GPU operations only work for input arrays of type float32
-or float64 in numpy. If you want to change this, you can start by editing the
-:code:`_load_cuda_kernel` function to enable the CUDA code to recognise other
-data types.
+or float64 in numpy.
+
+Creating GPU Algorithms - Tips and Tricks
+-----------------------------------------
+
+Block and grid dimensions
+*************************
+
+Block and grid dimensions are used to determine how work is partitioned on a
+GPU. These are set in the :code:`_create_block_and_grid_args` using the following
+formulas.
+
+.. math::
+    N = 10
+    \textrm{Block size} = (N,N,N)
+    \textrm{Grid size} = (\ceil{x})
+
+Importing CUDA kernels in cupy
+##############################
+
+CUDA functions can be used from Python in the following way
+
+.. code-block:: Python
+
+    imaging_filter_module = cp.RawModule(code=loaded_from_source)
+    single_image_median_filter = imaging_filter_module.get_function("two_dimensional_median_filter")
+    single_image_median_filter(
+        grid_size,
+        block_size,
+        (
+            input_data,
+            padded_data,
+            input_data.shape[0],
+            input_data.shape[1],
+            filter_size,
+        ),
+    )
+
+where :code:`loaded_from_source` contains a CUDA kernel in the form of a Python
+string. Note that the first arguments are the grid size and block size with the
+actual CUDA function arguments being 
+
+Warming-up functions
+####################
+
+Upon creating a working CUDA function, it is advisable to run it on a smaller
+array prior to running it with real data. In the case of the median and remove
+outlier filters this takes place in the :code:`_warm_up` function in the
+:code:`CudaExecuter` class which is called from the initialiser.
 
 CUDA Function Overview
 ----------------------
@@ -20,7 +66,7 @@ CUDA Function Overview
 Both the median and remove outlier filters work by using an insertion sort
 to obtain the median value of the neighbouring pixels in a 2D image. They can
 only be used on a stack of 2D images with each image being passed to the
-functions individually.
+functions individually. This allows for asynchronous execution.
 
 2D Median Filter
 ################
@@ -34,9 +80,9 @@ functions individually.
 
 
 The arguments passed to the median filter are the original 2D image array, the
-padded data array, the X and Y dimensions of the original image array, and the
+padded image array, the X and Y dimensions of the original image array, and the
 filter size. All arguments besides the original data array are required to be
-constant.
+constant as the original data array is the only value that is overwritten.
 
 The :code:`__global__` header indicates that this function can be called from
 the CPU.
@@ -53,15 +99,13 @@ The program begins by obtaining the :code:`id_x` and :code:`id_y` values that
 determine pixel for which the median will be found. If this is outside the
 boundaries of the array then the function returns without doing anything.
 
-The block and grid sizes are set in the Python code. This is discussed `here`.
-
 .. code-block:: C
 
       unsigned int index = (id_x * Y) + id_y;
       unsigned int padded_img_width = Y + filter_size - 1;
 
-If the :code:`id_x` and :code:`id_y` values are valid, then the program
-translates this to an index in the unravelled array and calculates the width of
+If the :code:`id_x` and :code:`id_y` values are acceptable, then the program
+translates this to an index in the row-major array and calculates the width of
 the padded image.
 
 .. code-block:: C
@@ -104,18 +148,13 @@ carried out to see if the original value is much higher or much lower than the
 median based on the value of the :code:`diff` argument. The original value is
 only overwritten if the condition is true.
 
-.. code-block:: C
-
-      if (data_array[index] - median >= diff)
-        data_array[index] = median;
-
 Slicing Algorithm
 -----------------
 
-The Python code determines how many images will be on the GPU at once. Upon
+The Python code determines how many images from the stack will be on the GPU at once. Upon
 finding the "slice limit" L, the program sends the first L images from the stack
-to the GPU and sends the first L padded images to the GPU. If the number of
-images in the stack falls below the hard-coded :code:`GPU_SLICE_LIMIT` then the
+and the first L padded images to the GPU. If the number of
+images in the stack N falls below the hard-coded :code:`GPU_SLICE_LIMIT` then the
 entire image stack is sent to the GPU.
 
 The algorithm is illustrated in the following psuedocode:
@@ -155,21 +194,12 @@ The algorithm is illustrated in the following psuedocode:
 
             Overwrite ImageStack[i][][] with GPUImageStack[i][][]
 
-
-Creating GPU Algorithms - Tips and Tricks
------------------------------------------
-
-Warming-up functions
-####################
-
-Upon creating a working CUDA function, it is advisable to run it on a smaller
-array prior to running it with real data. In the case of the median and remove
-outlier filters this takes place in the :code:`_warm_up` function in the
-:code:`CudaExecuter` class which is called from the initialiser.
-
-Block and grid arguments
-************************
-
+In essence, the data is processed as if it were on a ferris wheel consisting of
+L cabins where the images are the N people who form the queue. The cabins
+represent the limit of images on the GPU and the streams allocated to those
+images. A person in the queue entering a cabin is a transfer from CPU to GPU
+while a person exiting a cabin at the end of their ride is a transfer from GPU
+to CPU. If N > L then at least one of the cabins will be used more than once.
 
 Development Pitfalls
 --------------------
