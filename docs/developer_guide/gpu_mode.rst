@@ -4,17 +4,20 @@ GPU Notes
 Current GPU Configuration / Limitations
 ***************************************
 
-To minimise the occurence of memory problems, the
-:code:`MAX_CUPY_MEMORY_FRACTION` has been sent to 0.8. This means that
-:code:`cupy` will assume it has access to no more than 80% of the GPU memory.
-
-The :code:`MAX_GPU_SLICES` variable determines how many images are stored on
-the GPU at any one time. This is currently set to 100 and does not take image
-dimensions or precision into account. Consequently, it is not the most efficient
-solution but does at least work for managing asynchronous execution.
-
-The median and outlier GPU operations only work for input arrays of type float32
-or float64 in numpy.
+- To minimise the occurence of memory problems, the
+  :code:`MAX_CUPY_MEMORY_FRACTION` has been set to 0.8. This means that
+  :code:`cupy` will assume it has access to no more than 80% of the GPU memory.
+- The :code:`MAX_GPU_SLICES` variable determines how many images are stored on
+  the GPU at any one time. This is currently set to 100 and does not take image
+  dimensions or precision into account. This is not the most efficient solution
+  but does at least work for managing asynchronous execution.
+- The median and outlier GPU operations only work for input arrays of type
+  float32 or float64 in numpy.
+- The :code:`cupy` functions are recompiled every time the GPU filters are used.
+- The GPU checkbox is visible and enabled regardless of whether :code:`cupy` is
+  installed and working on the system.
+- The function simply returns without having made any changes to the input array
+  if :code:`cupy` encouters an :code:`OutOfMemoryError`.
 
 Creating GPU Algorithms - Tips and Tricks
 *****************************************
@@ -30,8 +33,8 @@ the following formulas.
     \textrm{Block size} = (N,N,N) \\
     \textrm{Grid size} = (\left\lceil{\frac{X}{N}}\right\rceil,\left\lceil{\frac{Y}{N}}\right\rceil,\left\lceil{\frac{Z}{N}}\right\rceil)
 
-N is presently hard-coded as 10. X, Y, and Z denote the dimensions of the input
-array being processed on the GPU.
+*N* is presently hard-coded as 10. *X*, *Y*, and *Z* denote the dimensions of
+the input array being processed on the GPU.
 
 Importing CUDA kernels in cupy
 ==============================
@@ -55,8 +58,8 @@ Once defined, CUDA functions can be used from Python in the following way
     )
 
 where :code:`loaded_from_source` contains a CUDA kernel in the form of a Python
-string. Note that the first arguments are the grid size and block size with the
-actual CUDA function arguments being 
+string. Note that the first arguments are the grid size and block size, with the
+actual CUDA function arguments being given last in a tuple.
 
 Warming-up functions
 ====================
@@ -64,7 +67,7 @@ Warming-up functions
 Upon creating a working CUDA function, it is advisable to run it on a smaller
 array prior to running it with real data. In the case of the median and remove
 outlier filters this takes place in the :code:`_warm_up` function in the
-:code:`CudaExecuter` class which is called from the initialiser.
+:code:`CudaExecuter` class. This is called from the initialiser.
 
 CUDA Function Overview
 **********************
@@ -85,12 +88,12 @@ functions individually. This allows for asynchronous execution.
                                                   const int filter_size) {
 
 
-The arguments passed to the median filter are the original 2D image array, the
-padded image array, the X and Y dimensions of the original image array, and the
-filter size. All arguments besides the original data array are required to be
-constant as the original data array is the only value that is overwritten.
+The arguments passed to the median filter are a single 2D image array from the
+stack, the padded image array, the *X* and *Y* dimensions of the image array,
+and the filter size. All arguments besides the original data array are required
+to be constant as the original data array is the only value that is overwritten.
 
-The :code:`__global__` header indicates that this function can be called from
+The :code:`__global__` keyword indicates that this function can be called from
 the CPU.
 
 .. code-block:: C
@@ -120,9 +123,9 @@ the padded image.
                                                 id_x, id_y, filter_size);
 
 Finally, a helper method is called for finding the median value of a pixel in a
-2D image. The result overwrites one of the pixels in the array. The helper
-methods have the :code:`__device__` keyword in their header as they are called
-solely from the GPU.
+2D image. The result overwrites the pixel in the array located at :code:`index`.
+The helper methods have the :code:`__device__` keyword in their header as they
+are called solely from the GPU.
 
 The complete function is shown below:
 
@@ -148,20 +151,20 @@ The complete function is shown below:
 2D Remove Outlier Filter
 ========================
 
-The remove outlier filters work in a similar way to the median filters. Upon
+The remove outlier filters work in a similar way to the median filter. Upon
 finding the median, rather than place this in the array right away, a check is
 carried out to see if the original value is much higher or much lower than the
 median based on the value of the :code:`diff` argument. The original value is
-only overwritten if the condition is true.
+only overwritten if this condition is true.
 
 Slicing Algorithm
 *****************
 
-The Python code determines how many images from the stack will be on the GPU at once. Upon
-finding the "slice limit" L, the program sends the first L images from the stack
-and the first L padded images to the GPU. If the number of
-images in the stack N falls below the hard-coded :code:`GPU_SLICE_LIMIT` then the
-entire image stack is sent to the GPU.
+The Python code determines how many images from the stack will be on the GPU
+at once. Upon finding the "slice limit" *L*, the program sends the first L
+images from the stack and the first L padded images to the GPU. If the number of
+images in the stack *N* falls below the hard-coded :code:`GPU_SLICE_LIMIT` then
+the entire image stack is sent to the GPU.
 
 The algorithm is illustrated in the following psuedocode:
 
@@ -201,18 +204,19 @@ The algorithm is illustrated in the following psuedocode:
             Overwrite ImageStack[i][][] with GPUImageStack[i][][]
 
 In essence, the data is processed as if it were on a ferris wheel consisting of
-L cabins where the images are the N people who form the queue. The cabins
+*L* cabins where the images are the *N* people who form the queue. The cabins
 represent the limit of images on the GPU and the streams allocated to those
 images. A person in the queue entering a cabin is a transfer from CPU to GPU
 while a person exiting a cabin at the end of their ride is a transfer from GPU
-to CPU. If N > L then at least one of the cabins will be used more than once.
+to CPU. If *N* > *L* then at least one of the cabins will be used more than
+once.
 
 Development Pitfalls
 ********************
 
 The filter was only peformed on part of the array or the filter works on small arrays then gets the wrong result for larger arrays
 ==================================================================================================================================
-This may mean that the grid and dimension arguments do not account for the
+This may mean that the grid and dimension sizes do not account for the
 entire array.
 
 Float parameters become 0 in CUDA
@@ -237,13 +241,6 @@ Presently, the median and remove outlier GPU filters give up when this
 error is encoutered. In the future, it may be worth finding a way to
 reattempt the operation under different conditions so as to not fill the
 GPU.
-
-Avoid repeated warm-up compilation
-==================================
-The program works by creating a :code:`CudaExecuter` each time one of the
-GPU-compatible filters is performed which required repeated warm-up compilation
-even when the filters are run for different images with the same float
-precision.
 
 Intelligent management of maximum number of GPU slices
 ======================================================
