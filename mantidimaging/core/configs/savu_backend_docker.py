@@ -11,7 +11,7 @@ def env(name, default):
 
 
 class RemoteConfig:
-    LOCAL_OUTPUT_DIR = env(MANTIDIMAGING_OUTPUT_DIR_NAME, "~/output")
+    LOCAL_OUTPUT_DIR = env(MANTIDIMAGING_OUTPUT_DIR_NAME, "~/savu-output")
 
 
 class RemoteConstants:
