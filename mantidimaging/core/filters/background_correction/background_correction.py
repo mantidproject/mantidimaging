@@ -134,7 +134,7 @@ def _execute_par(data,
     with progress:
         progress.update(msg=f"Applying background correction.")
 
-        norm_divide = pu.create_shared_array((1, data.shape[1], data.shape[2]))
+        norm_divide = pu.create_shared_array("array", (1, data.shape[1], data.shape[2]))
         # remove a dimension, I found this to be the easiest way to do it
         norm_divide = norm_divide.reshape(data.shape[1], data.shape[2])
 

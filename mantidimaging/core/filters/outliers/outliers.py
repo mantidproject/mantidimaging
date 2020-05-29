@@ -30,7 +30,7 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        progress = Progress.ensure_instance(progress, task_name='Outliers')
+        progress = Progress.ensure_instance(progress, task_name='Outliers', num_steps=2)
 
         if diff and radius and diff > 0 and radius > 0:
             with progress:
@@ -38,16 +38,17 @@ class OutliersFilter(BaseFilter):
 
                 # we flip the histogram horizontally, this makes the darkest pixels
                 # the brightest
-                if mode == OUTLIERS_DARK:
-                    np.negative(data, out=data)
+                # if mode == OUTLIERS_DARK:
+                #     np.negative(data, out=data)
 
                 tomopy = importer.do_importing('tomopy')
 
                 data = tomopy.misc.corr.remove_outlier(data, diff, radius, ncore=cores)
+                progress.update("Finished")
 
                 # reverse the inversion
-                if mode == OUTLIERS_DARK:
-                    np.negative(data, out=data)
+                # if mode == OUTLIERS_DARK:
+                #     np.negative(data, out=data)
 
         return data
 

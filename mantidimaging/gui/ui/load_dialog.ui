@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>425</height>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,13 +29,6 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="dark_flat_button">
-       <property name="text">
-        <string>Dark &amp;&amp; Flat?</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QWidget" name="flat_widget" native="true">
@@ -220,13 +213,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="parallelLoad">
-       <property name="text">
-        <string>Parallel Load</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -240,26 +226,11 @@
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <item>
         <property name="text">
-         <string>uint8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>uint16</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>int32</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>int64</string>
+         <string>float16</string>
         </property>
        </item>
        <item>

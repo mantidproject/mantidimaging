@@ -7,7 +7,7 @@ import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.operation_history import const
-
+from mantidimaging.core.parallel import utility as pu
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
@@ -51,6 +51,12 @@ class Images:
 
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
+
+    def free_memory(self):
+        pu.delete_shared_array(f"{self._filenames[0]}-Sample")
+        self.sample = None
+        # pu.delete_shared_array(f"{self._filenames[0]}-Flat")
+        # pu.delete_shared_array(f"{self._filenames[0]}-Dark")
 
     @property
     def filenames(self) -> Optional[List[str]]:

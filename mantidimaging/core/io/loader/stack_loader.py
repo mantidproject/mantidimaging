@@ -1,5 +1,4 @@
 from mantidimaging.core.data import Images
-from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -37,21 +36,7 @@ def do_stack_load_seq(data, new_data, img_shape, name, progress):
     return data
 
 
-def do_stack_load_par(data, new_data, cores, chunksize, name, progress):
-    f = ptsm.create_partial(parallel_move_data, fwd_function=ptsm.inplace)
-    ptsm.execute(new_data, data, f, cores, chunksize, name, progress)
-    return data
-
-
-def execute(load_func,
-            file_name,
-            dtype,
-            name,
-            cores=None,
-            chunksize=None,
-            parallel_load=False,
-            indices=None,
-            progress=None):
+def execute(load_func, file_name, dtype, name, indices=None, progress=None):
     """
     Load a single image FILE that is expected to be a stack of images.
 
@@ -66,16 +51,6 @@ def execute(load_func,
 
     :param dtype: data type for the output numpy array
 
-    :param cores: Default:1, cores to be used if parallel_load is True
-
-    :param chunksize: chunk of work per worker
-
-    :param parallel_load: Default: False, if set to true the loading of the
-                          data will be done in parallel.
-                          This could be faster depending on the IO
-                          system.
-                          For local HDD runs the recommended setting is False
-
     :return: stack of images as a 3-elements tuple: numpy array with sample
              images, white image, and dark image.
     """
@@ -86,14 +61,11 @@ def execute(load_func,
         new_data = new_data[indices[0]:indices[1]:indices[2]]
 
     img_shape = new_data.shape
-    data = pu.create_shared_array(img_shape, dtype=dtype)
+    data = pu.create_shared_array("array", img_shape, dtype=dtype)
 
-    if parallel_load:
-        data = do_stack_load_par(data, new_data, cores, chunksize, name, progress)
-    else:
-        # we could just move with data[:] = new_data[:] but then we don't get
-        # loading bar information, and I doubt there's any performance gain
-        data = do_stack_load_seq(data, new_data, img_shape, name, progress)
+    # we could just move with data[:] = new_data[:] but then we don't get
+    # loading bar information, and I doubt there's any performance gain
+    data = do_stack_load_seq(data, new_data, img_shape, name, progress)
 
     # Nexus doesn't load flat/dark images yet, if the functionality is
     # requested it should be changed here

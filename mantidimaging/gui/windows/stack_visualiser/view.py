@@ -9,7 +9,6 @@ from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
-
 from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification
 
@@ -88,22 +87,31 @@ class StackVisualiserView(BaseMainWindowView):
         return self.parent().parent()
 
     def closeEvent(self, event):
+        msgbox = QMessageBox(QMessageBox.Information, "Closing image view", "Freeing image memory")
+        msgbox.show()
+
+        # the image view renderer itself holds a reference to the sample data
+        # make sure to clear that first, so that freeing the memory in the presenter
+        self.image_view.clear()
+        self.image_view.close()
+
         # this removes all references to the data, allowing it to be GC'ed
         # otherwise there is a hanging reference
         self.presenter.delete_data()
+
+        # this could happen if run without a parent through see(..)
+        if not isinstance(self.window(), QDockWidget):
+            self.window().remove_stack(self)  # refers to MainWindow
 
         # setting floating to false makes window() to return the MainWindow
         # because the window will be docked in, however we delete it
         # immediately after so no visible change occurs
         self.dock.setFloating(False)
 
-        # this could happen if run without a parent through see(..)
-        if not isinstance(self.window(), QDockWidget):
-            self.window().remove_stack(self)  # refers to MainWindow
-
         self.deleteLater()
         # refers to the QDockWidget within which the stack is contained
         self.dock.deleteLater()
+        msgbox.close()
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)

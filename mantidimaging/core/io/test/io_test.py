@@ -1,15 +1,13 @@
 import os
 import unittest
 
-import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-
-from mantidimaging.helper import initialise_logging
 from mantidimaging.core.data import Images
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
+from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
 
@@ -163,7 +161,7 @@ class IOTest(FileOutputtingTestCase):
         # saver indices only affects the enumeration of the data
         if saver_indices:
             # crop the original images to make sure the tests is correct
-            expected_images =\
+            expected_images = \
                 expected_images[saver_indices[0]:saver_indices[1]]
 
         # saver.save_preproc_images(expected_images)
@@ -173,11 +171,7 @@ class IOTest(FileOutputtingTestCase):
                                 data_as_stack, expected_images.shape[0], saver_indices)
 
         # this does not load any flats or darks as they were not saved out
-        loaded_images = loader.load(self.output_directory,
-                                    in_format=img_format,
-                                    cores=1,
-                                    parallel_load=parallel,
-                                    indices=loader_indices)
+        loaded_images = loader.load(self.output_directory, in_format=img_format, indices=loader_indices)
 
         if loader_indices:
             assert len(loaded_images.sample) == expected_len, \
@@ -212,7 +206,6 @@ class IOTest(FileOutputtingTestCase):
 
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
-                                       parallel=False,
                                        loader_indices=None,
                                        expected_len=None,
                                        saver_indices=None):
@@ -252,8 +245,6 @@ class IOTest(FileOutputtingTestCase):
                                     flat_dir,
                                     dark_dir,
                                     in_format=img_format,
-                                    cores=1,
-                                    parallel_load=parallel,
                                     indices=loader_indices)
 
         if loader_indices:
@@ -261,7 +252,7 @@ class IOTest(FileOutputtingTestCase):
                 "The length of the loaded data doesn't " \
                 "match the expected length: {0}, " \
                 "Got: {1}".format(
-                        expected_len, len(loaded_images.sample))
+                    expected_len, len(loaded_images.sample))
 
             # crop the original images to make sure the tests is correct
             images = images[loader_indices[0]:loader_indices[1]]
@@ -271,37 +262,6 @@ class IOTest(FileOutputtingTestCase):
         # averaged out when loaded! The initial images are only 3s
         npt.assert_equal(loaded_images.flat, flat[0])
         npt.assert_equal(loaded_images.dark, dark[0])
-
-    def test_construct_sinograms(self):
-        images = th.gen_img_shared_array_with_val(42.)
-        exp_sinograms = np.swapaxes(images, 0, 1)
-
-        saver.save(images, self.output_directory, 'tiff')
-
-        loaded_images = loader.load(self.output_directory, in_prefix='tiff', construct_sinograms=True)
-
-        npt.assert_equal(exp_sinograms, loaded_images.sample)
-
-    def test_save_sinograms(self):
-        images = th.gen_img_shared_array_with_val(42.)
-        exp_sinograms = np.swapaxes(images, 0, 1)
-
-        saver.save(images, self.output_directory, 'tiff', swap_axes=True)
-
-        loaded_images = loader.load(self.output_directory, in_prefix='tiff')
-
-        npt.assert_equal(exp_sinograms, loaded_images.sample)
-
-    def test_sinograms_round_trip(self):
-        images = th.gen_img_shared_array_with_val(42.)
-
-        saver.save(images, self.output_directory, 'tiff', swap_axes=True)
-
-        loaded_images = loader.load(self.output_directory, in_prefix='tiff', construct_sinograms=True)
-
-        # the axes should have been flipped to sinograms from save
-        # and then flipped back from normal during loading
-        npt.assert_equal(images, loaded_images.sample)
 
     def test_metadata_round_trip(self):
         # Create dummy image stack

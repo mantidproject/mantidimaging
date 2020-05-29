@@ -1,5 +1,5 @@
 {
-  "python.formatting.autopep8Args": [
+  "python.linting.flake8Args": [
     "--max-line-length=120"
   ],
   "python.linting.mypyEnabled": true,

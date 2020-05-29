@@ -84,7 +84,6 @@ class SavuFiltersWindowView(BaseMainWindowView):
             'flat_path': '',
             'dark_path': '',
             'image_format': "tiff",
-            'parallel_load': False,
             'indices': None,
             'dtype': np_float32,
             'custom_name': output_folder,
