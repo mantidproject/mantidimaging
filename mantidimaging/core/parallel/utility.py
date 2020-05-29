@@ -1,18 +1,19 @@
+import atexit
 import ctypes
 import os
+import uuid
 from contextlib import contextmanager
 from logging import getLogger
 from typing import Union, Type
 
 import SharedArray as sa
 import numpy as np
-import atexit
-
 
 LOG = getLogger(__name__)
 
 SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
                     Type[ctypes.c_float], Type[ctypes.c_double]]
+
 
 def free_all():
     for arr in sa.list():
@@ -20,6 +21,7 @@ def free_all():
 
 
 atexit.register(free_all)
+
 
 def _format_name(name):
     return os.path.basename(name)
@@ -29,7 +31,10 @@ def delete_shared_array(name):
     sa.delete(f"shm://{_format_name(name)}")
 
 
-def create_shared_array(name, shape, dtype: Union[str, np.dtype] = np.float32):
+DTYPE_TYPES = Union[str, np.dtype, int]
+
+
+def create_shared_array(name, shape, dtype: DTYPE_TYPES = np.float32):
     """
     :param name: Name used for the shared memory file by which this memory chunk will be identified
     """
@@ -37,14 +42,16 @@ def create_shared_array(name, shape, dtype: Union[str, np.dtype] = np.float32):
     LOG.info(f"Requested shared array with name='{formatted_name}', shape={shape}, dtype={dtype}")
     return sa.create(f"shm://{formatted_name}", shape, dtype)
 
+
 @contextmanager
-def temp_shared_array(shape, dtype):
-    temp_name = "temp_array"
+def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32):
+    temp_name = str(uuid.uuid4())
     array = create_shared_array(temp_name, shape, dtype)
     try:
         yield array
     finally:
         delete_shared_array(temp_name)
+
 
 def multiprocessing_available():
     try:

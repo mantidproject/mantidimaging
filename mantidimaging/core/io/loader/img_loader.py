@@ -53,7 +53,7 @@ def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, ind
     dark_avg, dark_filenames = il.load_and_avg_data(dark_path, "Dark")
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    return Images(sample_data, flat_avg, dark_avg, sample_path, indices, flat_filenames, dark_filenames)
+    return Images(sample_data, flat_avg, dark_avg, chosen_input_filenames, indices, flat_filenames, dark_filenames)
 
 
 class ImageLoader(object):
