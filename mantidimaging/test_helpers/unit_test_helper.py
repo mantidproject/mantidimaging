@@ -22,7 +22,7 @@ def gen_img_shared_array_and_copy(shape=g_shape):
 
 
 def gen_img_shared_array(shape=g_shape, dtype=np.float32):
-    d = pu.create_shared_array(shape, dtype)
+    d = pu.create_shared_array("array", shape, dtype)
     n = np.random.rand(shape[0], shape[1], shape[2])
     # move the data in the shared array
     d[:] = n[:]
@@ -32,7 +32,7 @@ def gen_img_shared_array(shape=g_shape, dtype=np.float32):
 
 def generate_images_class_random_shared_array(shape=g_shape):
     from mantidimaging.core.data import Images
-    d = pu.create_shared_array(shape)
+    d = pu.create_shared_array("array", shape)
     n = np.random.rand(shape[0], shape[1], shape[2])
     # move the data in the shared array
     d[:] = n[:]
@@ -43,12 +43,12 @@ def generate_images_class_random_shared_array(shape=g_shape):
 
 
 def gen_empty_shared_array(shape=g_shape):
-    d = pu.create_shared_array(shape)
+    d = pu.create_shared_array("array", shape)
     return d
 
 
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    d = pu.create_shared_array(shape)
+    d = pu.create_shared_array("array", shape)
     n = np.full(shape, val)
     # move the data in the shared array
     d[:] = n[:]
@@ -73,7 +73,7 @@ def deepcopy(source):
 
 
 def shared_deepcopy(source):
-    d = pu.create_shared_array(source.shape)
+    d = pu.create_shared_array("array", source.shape)
     from copy import deepcopy
     d[:] = deepcopy(source)[:]
     return d

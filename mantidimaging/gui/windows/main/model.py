@@ -22,7 +22,6 @@ class MainWindowModel(object):
     def do_load_stack(self,
                       sample_path,
                       image_format,
-                      parallel_load,
                       indices,
                       progress,
                       in_prefix,
@@ -34,7 +33,6 @@ class MainWindowModel(object):
                            dark_path,
                            in_prefix=in_prefix,
                            in_format=image_format,
-                           parallel_load=parallel_load,
                            indices=indices,
                            dtype=dtype,
                            progress=progress)

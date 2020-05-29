@@ -1,55 +1,50 @@
 import ctypes
+import os
+from contextlib import contextmanager
 from logging import getLogger
-from multiprocessing import heap
 from typing import Union, Type
 
+import SharedArray as sa
 import numpy as np
+import atexit
+
 
 LOG = getLogger(__name__)
 
 SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
                     Type[ctypes.c_float], Type[ctypes.c_double]]
 
+def free_all():
+    for arr in sa.list():
+        sa.delete(arr.name.decode("utf-8"))
 
-def create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32):
-    ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
-    if isinstance(dtype, np.uint8) or dtype == 'uint8':
-        ctype = ctypes.c_uint8
-        dtype = np.uint8
-    elif isinstance(dtype, np.uint16) or dtype == 'uint16':
-        ctype = ctypes.c_uint16
-        dtype = np.uint16
-    elif isinstance(dtype, np.int32) or dtype == 'int32':
-        ctype = ctypes.c_int32
-        dtype = np.int32
-    elif isinstance(dtype, np.int64) or dtype == 'int64':
-        ctype = ctypes.c_int64
-        dtype = np.int64
-    elif isinstance(dtype, np.float32) or dtype == 'float32':
-        ctype = ctypes.c_float
-        dtype = np.float32
-    elif isinstance(dtype, np.float64) or dtype == 'float64':
-        ctype = ctypes.c_double
-        dtype = np.float64
 
-    length = 1
-    for axis_length in shape:
-        length *= axis_length
+atexit.register(free_all)
 
-    size = ctypes.sizeof(ctype(1)) * length
+def _format_name(name):
+    return os.path.basename(name)
 
-    LOG.info('Requested shared array with shape={}, length={}, size={}, ' 'dtype={}'.format(shape, length, size, dtype))
 
-    arena = heap.Arena(size)
-    mem = memoryview(arena.buffer)
+def delete_shared_array(name):
+    sa.delete(f"shm://{_format_name(name)}")
 
-    array_type = ctype * length
-    array = array_type.from_buffer(mem)
 
-    data = np.frombuffer(array, dtype=dtype)
+def create_shared_array(name, shape, dtype: Union[str, np.dtype] = np.float32):
+    """
+    :param name: Name used for the shared memory file by which this memory chunk will be identified
+    """
+    formatted_name = _format_name(name)
+    LOG.info(f"Requested shared array with name='{formatted_name}', shape={shape}, dtype={dtype}")
+    return sa.create(f"shm://{formatted_name}", shape, dtype)
 
-    return data.reshape(shape)
-
+@contextmanager
+def temp_shared_array(shape, dtype):
+    temp_name = "temp_array"
+    array = create_shared_array(temp_name, shape, dtype)
+    try:
+        yield array
+    finally:
+        delete_shared_array(temp_name)
 
 def multiprocessing_available():
     try:

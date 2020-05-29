@@ -53,22 +53,21 @@ def auto_find_cors(stack, roi, model, projections=None, cores=None, progress=Non
             raise ValueError('At least one axis has zero length, this ' 'will produce no usable results')
 
         # Obtain COR for each desired slice of ROI
-        cors = pu.create_shared_array((len(model.slices), ), np.int32)
-        np.copyto(cors, np.arange(len(model.slices), dtype=int))
+        with pu.temp_shared_array((len(model.slices),), np.int32) as cors:
+            np.copyto(cors, np.arange(len(model.slices), dtype=int))
 
-        f = psm.create_partial(find_cor_at_slice, fwd_func=psm.return_fwd_func, sample_data=cropped_data)
+            f = psm.create_partial(find_cor_at_slice, fwd_func=psm.return_fwd_func, sample_data=cropped_data)
 
-        progress.update(msg="Rotation centre finding")
-        psm.execute(cors, f, cores=cores, progress=progress)
-        LOG.debug('CORs: {}'.format(cors))
+            progress.update(msg="Rotation centre finding")
+            psm.execute(cors, f, cores=cores, progress=progress)
+            LOG.debug('CORs: {}'.format(cors))
 
-        # Correct for left hand ROI bound
-        cors += roi[0]
+            # Correct for left hand ROI bound
+            cors += roi[0]
 
-        # Populate results in model
-        for idx, cor in enumerate(cors):
-            model.set_point(idx, cor=cor)
-
+            # Populate results in model
+            for idx, cor in enumerate(cors):
+                model.set_point(idx, cor=cor)
 
 def generate_cors(cor, gradient, num_images):
     return (np.arange(0, num_images, 1) * gradient) + cor

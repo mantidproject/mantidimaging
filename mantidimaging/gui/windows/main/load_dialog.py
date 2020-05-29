@@ -42,11 +42,6 @@ class MWLoadDialog(Qt.QDialog):
         self.dark_button.clicked.connect(lambda: select_file(self.dark_path, "Dark"))
         self.flat_button.clicked.connect(lambda: select_file(self.flat_path, "Flat"))
 
-        self.dark_widget.hide()
-        self.flat_widget.hide()
-        self.dark_flat_button.hide()
-        # self.dark_flat_button.clicked.connect(self.toggle_flat_dark)
-
         # connect the calculation of expected memory to spinboxes
         self.index_start.valueChanged.connect(self.update_expected_mem_usage)
         self.index_end.valueChanged.connect(self.update_expected_mem_usage)
@@ -157,12 +152,6 @@ class MWLoadDialog(Qt.QDialog):
         """
         return self._get_path_directory(self.dark_path)
 
-    def parallel_load(self) -> bool:
-        """
-        :return: True if load should be in parallel, else False
-        """
-        return self.parallelLoad.isChecked()
-
     @property
     def indices(self) -> ImageLoadIndices:
         return ImageLoadIndices(self.index_start.value(), self.index_end.value(), self.index_step.value())
@@ -177,17 +166,12 @@ class MWLoadDialog(Qt.QDialog):
     def _set_preview_step(self):
         self.index_step.setValue(self.last_shape[0] / 10)
 
-    # def toggle_flat_dark(self):
-    #     self.dark_widget.setHidden(not self.dark_widget.isHidden())
-    #     self.flat_widget.setHidden(not self.flat_widget.isHidden())
-
     def get_kwargs(self) -> Dict[str, Any]:
         return {
             'selected_file': self.sample_file(),
             'sample_path': self.sample_path_directory(),
             'in_prefix': get_prefix(self.sample_path_text()),
             'image_format': self.image_format,
-            'parallel_load': self.parallel_load(),
             'indices': self.indices,
             'custom_name': self.window_title(),
             'staged_load': self.staged_load.isChecked(),

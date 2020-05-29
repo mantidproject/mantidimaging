@@ -25,6 +25,7 @@ requirements:
     - astropy
     - scipy
     - scikit-image
+    - sharedarray
     - numpy
     - matplotlib =2.2.3
     - tomopy

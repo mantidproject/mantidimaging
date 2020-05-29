@@ -102,7 +102,7 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
 
         # initialise same number of air sums
         img_num = data.shape[0]
-        air_sums = pu.create_shared_array((img_num, 1, 1))
+        air_sums = pu.create_shared_array("array", (img_num, 1, 1))
 
         # turn into a 1D array, from the 3D that is returned
         air_sums = air_sums.reshape(img_num)
