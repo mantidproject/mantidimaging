@@ -1,5 +1,6 @@
 import os
 import sys
+from contextlib import contextmanager
 
 import numpy as np
 import numpy.testing as npt
@@ -16,18 +17,15 @@ def gen_img_numpy_rand(shape=g_shape):
 
 
 def gen_img_shared_array_and_copy(shape=g_shape):
-    arr = gen_img_shared_array(shape)
-    copy = shared_deepcopy(arr)
-    return arr, copy
+    with gen_img_shared_array(shape) as arr:
+        copy = np.copy(arr)
+        return arr, copy
 
 
 def gen_img_shared_array(shape=g_shape, dtype=np.float32):
-    d = pu.create_shared_array("array", shape, dtype)
-    n = np.random.rand(shape[0], shape[1], shape[2])
-    # move the data in the shared array
-    d[:] = n[:]
-
-    return d
+    with pu.temp_shared_array(shape, dtype) as generated_array:
+        np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]))
+        return generated_array
 
 
 def generate_images_class_random_shared_array(shape=g_shape):
@@ -43,17 +41,16 @@ def generate_images_class_random_shared_array(shape=g_shape):
 
 
 def gen_empty_shared_array(shape=g_shape):
-    d = pu.create_shared_array("array", shape)
-    return d
+    with pu.temp_shared_array(shape) as d:
+        return d
 
 
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    d = pu.create_shared_array("array", shape)
-    n = np.full(shape, val)
-    # move the data in the shared array
-    d[:] = n[:]
-
-    return d
+    with pu.temp_shared_array(shape) as d:
+        n = np.full(shape, val)
+        # move the data in the shared array
+        d[:] = n[:]
+        return d
 
 
 def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
@@ -70,13 +67,6 @@ def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
 def deepcopy(source):
     from copy import deepcopy
     return deepcopy(source)
-
-
-def shared_deepcopy(source):
-    d = pu.create_shared_array("array", source.shape)
-    from copy import deepcopy
-    d[:] = deepcopy(source)[:]
-    return d
 
 
 def debug(switch=True):

@@ -2,6 +2,7 @@ import numpy as np
 
 from mantidimaging.core.parallel import two_shared_mem as ptsm, utility as pu
 
+SCALE_FACTOR_ARRAY_NAME="scale-factors-name"
 
 def _calc_avg(data, roi_sums, roi_top=None, roi_left=None, roi_right=None, roi_bottom=None):
     return data[roi_top:roi_bottom, roi_left:roi_right].mean()
@@ -17,7 +18,7 @@ def create_factors(data, roi=None, cores=None, chunksize=None):
     :return: The scale factor for each image.
     """
     img_num = data.shape[0]
-    scale_factors = pu.create_shared_array("array", (img_num, 1, 1))
+    scale_factors = pu.create_shared_array(SCALE_FACTOR_ARRAY_NAME, (img_num, 1, 1))
 
     # turn into a 1D array, from the 3D that is returned
     scale_factors = scale_factors.reshape(img_num)
@@ -54,6 +55,8 @@ def apply_factor(data, scale_factors, cores=None, chunksize=None):
     # contrast the same as from the region of interest
     data, scale_factors = ptsm.execute(data, [scale_factors.mean()], scale_up_partial, cores, chunksize,
                                        "Applying scale factor")
+
+    pu.delete_shared_array(SCALE_FACTOR_ARRAY_NAME)
 
     return data
 

@@ -134,31 +134,31 @@ def _execute_par(data,
     with progress:
         progress.update(msg=f"Applying background correction.")
 
-        norm_divide = pu.create_shared_array("array", (1, data.shape[1], data.shape[2]))
-        # remove a dimension, I found this to be the easiest way to do it
-        norm_divide = norm_divide.reshape(data.shape[1], data.shape[2])
+        with pu.temp_shared_array((1, data.shape[1], data.shape[2]), data.dtype) as norm_divide:
+            # remove a dimension, I found this to be the easiest way to do it
+            norm_divide = norm_divide.reshape(data.shape[1], data.shape[2])
 
-        # subtract dark from flat and copy into shared array with [:]
-        norm_divide[:] = np.subtract(flat, dark)
+            # subtract dark from flat and copy into shared array with [:]
+            norm_divide[:] = np.subtract(flat, dark)
 
-        # prevent divide-by-zero issues, and negative pixels make no sense
-        norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
+            # prevent divide-by-zero issues, and negative pixels make no sense
+            norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
 
-        # subtract the dark from all images
-        f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
-        data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark", progress=progress)
+            # subtract the dark from all images
+            f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
+            data, dark = ptsm.execute(data, dark, f, cores, chunksize, "Subtract Dark", progress=progress)
 
-        # divide the data by (flat - dark)
-        f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
-        data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, "Norm by Flat", progress=progress)
+            # divide the data by (flat - dark)
+            f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
+            data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, "Norm by Flat", progress=progress)
 
-        # After scaling back the values some images will have pixels with big
-        # negative values -25626262 which throws off contrast adjustments.
-        # This will crop those negative pixels out, and set them to nearly
-        # zero.
-        # The negative values will also get scaled back after this in
-        # value_scaling which will increase their values further!
-        np.clip(data, clip_min, clip_max, out=data)
+            # After scaling back the values some images will have pixels with big
+            # negative values -25626262 which throws off contrast adjustments.
+            # This will crop those negative pixels out, and set them to nearly
+            # zero.
+            # The negative values will also get scaled back after this in
+            # value_scaling which will increase their values further!
+            np.clip(data, clip_min, clip_max, out=data)
 
     return data
 

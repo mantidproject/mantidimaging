@@ -102,41 +102,40 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
 
         # initialise same number of air sums
         img_num = data.shape[0]
-        air_sums = pu.create_shared_array("array", (img_num, 1, 1))
+        with pu.temp_shared_array((img_num, 1, 1), data.dtype) as air_sums:
+            # turn into a 1D array, from the 3D that is returned
+            air_sums = air_sums.reshape(img_num)
 
-        # turn into a 1D array, from the 3D that is returned
-        air_sums = air_sums.reshape(img_num)
+            calc_sums_partial = ptsm.create_partial(_calc_sum,
+                                                    fwd_function=ptsm.return_to_second,
+                                                    air_left=left,
+                                                    air_top=top,
+                                                    air_right=right,
+                                                    air_bottom=bottom)
 
-        calc_sums_partial = ptsm.create_partial(_calc_sum,
-                                                fwd_function=ptsm.return_to_second,
-                                                air_left=left,
-                                                air_top=top,
-                                                air_right=right,
-                                                air_bottom=bottom)
+            data, air_sums = ptsm.execute(data,
+                                          air_sums,
+                                          calc_sums_partial,
+                                          cores,
+                                          chunksize,
+                                          "Calculating air sums",
+                                          progress=progress)
 
-        data, air_sums = ptsm.execute(data,
-                                      air_sums,
-                                      calc_sums_partial,
-                                      cores,
-                                      chunksize,
-                                      "Calculating air sums",
-                                      progress=progress)
+            air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
 
-        air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
+            data, air_sums = ptsm.execute(data,
+                                          air_sums,
+                                          air_sums_partial,
+                                          cores,
+                                          chunksize,
+                                          "Norm by Air Sums",
+                                          progress=progress)
 
-        data, air_sums = ptsm.execute(data,
-                                      air_sums,
-                                      air_sums_partial,
-                                      cores,
-                                      chunksize,
-                                      "Norm by Air Sums",
-                                      progress=progress)
+            avg = np.average(air_sums)
+            max_avg = np.max(air_sums) / avg
+            min_avg = np.min(air_sums) / avg
 
-        avg = np.average(air_sums)
-        max_avg = np.max(air_sums) / avg
-        min_avg = np.min(air_sums) / avg
-
-        log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
+            log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
     return data
 
