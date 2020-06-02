@@ -1,6 +1,5 @@
 import os
 import sys
-from contextlib import contextmanager
 
 import numpy as np
 import numpy.testing as npt
@@ -17,9 +16,9 @@ def gen_img_numpy_rand(shape=g_shape):
 
 
 def gen_img_shared_array_and_copy(shape=g_shape):
-    with gen_img_shared_array(shape) as arr:
-        copy = np.copy(arr)
-        return arr, copy
+    arr = gen_img_shared_array(shape)
+    copy = np.copy(arr)
+    return arr, copy
 
 
 def gen_img_shared_array(shape=g_shape, dtype=np.float32):
@@ -30,13 +29,17 @@ def gen_img_shared_array(shape=g_shape, dtype=np.float32):
 
 def generate_images_class_random_shared_array(shape=g_shape):
     from mantidimaging.core.data import Images
-    d = pu.create_shared_array("array", shape)
-    n = np.random.rand(shape[0], shape[1], shape[2])
+    name = "test-array-{}"
+    fake_filenames = []
+    for i in range(g_shape[0]):
+        fake_filenames.append(name.format(i))
+    d = pu.create_shared_array(f"{fake_filenames[0]}-Sample", shape)
+    n = np.random.rand(*shape)
     # move the data in the shared array
     d[:] = n[:]
 
     images = Images(d)
-
+    images.filenames = fake_filenames
     return images
 
 
@@ -156,3 +159,9 @@ class IgnoreOutputStreams(object):
         # Restore the default streams
         sys.stdout = self.stdout
         sys.stderr = self.stderr
+
+
+def shared_deepcopy(images):
+    with pu.temp_shared_array(images.shape) as copy:
+        np.copyto(copy, images)
+        return copy

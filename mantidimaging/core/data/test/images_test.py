@@ -61,3 +61,7 @@ class ImagesTest(unittest.TestCase):
                     },
                 }]
             })
+
+    def test_free_memory(self):
+        self.skipTest("Not implemented")
+        # create some images and free the memory

@@ -8,7 +8,7 @@ from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 def add_inplace(first_shared, add_arg=3):
-    first_shared[:] = first_shared[:] + add_arg
+    first_shared[:] += add_arg
 
 
 def return_from_func(first_shared, add_arg):

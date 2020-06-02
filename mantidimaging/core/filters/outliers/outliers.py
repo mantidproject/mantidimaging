@@ -44,7 +44,7 @@ class OutliersFilter(BaseFilter):
                 tomopy = importer.do_importing('tomopy')
 
                 data = tomopy.misc.corr.remove_outlier(data, diff, radius, ncore=cores)
-                progress.update("Finished")
+                progress.update()
 
                 # reverse the inversion
                 # if mode == OUTLIERS_DARK:

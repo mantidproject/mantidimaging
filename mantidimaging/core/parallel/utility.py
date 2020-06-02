@@ -22,16 +22,19 @@ def free_all():
 
 atexit.register(free_all)
 
+DTYPE_TYPES = Union[str, np.dtype, int]
+
 
 def _format_name(name):
     return os.path.basename(name)
 
 
-def delete_shared_array(name):
-    sa.delete(f"shm://{_format_name(name)}")
-
-
-DTYPE_TYPES = Union[str, np.dtype, int]
+def delete_shared_array(name, silent_failure=False):
+    try:
+        sa.delete(f"shm://{_format_name(name)}")
+    except FileNotFoundError as e:
+        if not silent_failure:
+            raise e
 
 
 def create_shared_array(name, shape, dtype: DTYPE_TYPES = np.float32):
