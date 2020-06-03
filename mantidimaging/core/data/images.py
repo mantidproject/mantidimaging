@@ -5,9 +5,9 @@ from typing import List, Tuple, Optional, Any, Dict
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
+
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
@@ -53,10 +53,17 @@ class Images:
         return len(self._filenames) if self._filenames else 0
 
     def free_memory(self):
-        pu.delete_shared_array(f"{self._filenames[0]}-Sample")
-        self.sample = None
+        self.free_sample()
         # pu.delete_shared_array(f"{self._filenames[0]}-Flat")
         # pu.delete_shared_array(f"{self._filenames[0]}-Dark")
+
+    def free_sample(self):
+        pu.delete_shared_array(self.sample_name)
+        self.sample = None
+
+    @property
+    def sample_name(self):
+        return f"{self._filenames[0]}-Sample"
 
     @property
     def filenames(self) -> Optional[List[str]]:
@@ -91,14 +98,10 @@ class Images:
 
         self.metadata[const.OPERATION_HISTORY].append({
             const.OPERATION_NAME:
-            func_name,
+                func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS: {k: v
                                            for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-            display_name
+                display_name
         })
-
-    @staticmethod
-    def check_data_stack(data, expected_dims=3, expected_class=np.ndarray):
-        h.check_data_stack(data, expected_dims, expected_class)

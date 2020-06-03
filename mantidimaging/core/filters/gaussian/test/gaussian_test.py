@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-import numpy.testing as npt
+import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.gaussian import GaussianFilter
@@ -20,58 +20,32 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
+
     def __init__(self, *args, **kwargs):
         super(GaussianTest, self).__init__(*args, **kwargs)
 
     def test_not_executed(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         size = None
         mode = None
         order = None
 
+        original = np.copy(images.sample[0])
         result = GaussianFilter.filter_func(images, size, mode, order)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
+        th.assert_not_equals(result.sample, original)
 
     def test_executed_parallel(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         size = 3
         mode = 'reflect'
         order = 1
 
+        original = np.copy(images.sample[0])
         result = GaussianFilter.filter_func(images, size, mode, order)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-    def test_executed_no_helper_parallel(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-        order = 1
-
-        result = GaussianFilter.filter_func(images, size, mode, order)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-    def test_executed_no_helper_seq(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        size = 3
-        mode = 'reflect'
-        order = 1
-
-        th.switch_mp_off()
-        result = GaussianFilter.filter_func(images, size, mode, order)
-        th.switch_mp_on()
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
+        th.assert_not_equals(result.sample, original)
 
     def test_memory_change_acceptable(self):
         """
@@ -86,7 +60,7 @@ class GaussianTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         size = 3
         mode = 'reflect'
         order = 1
@@ -96,9 +70,6 @@ class GaussianTest(unittest.TestCase):
         result = GaussianFilter.filter_func(images, size, mode, order)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -112,7 +83,7 @@ class GaussianTest(unittest.TestCase):
         order_field.value = mock.Mock(return_value=0)
         execute_func = GaussianFilter.execute_wrapper(size_field, order_field, mode_field)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
         self.assertEqual(size_field.value.call_count, 1)

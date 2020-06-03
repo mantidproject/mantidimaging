@@ -1,12 +1,12 @@
 import unittest
 from unittest import mock
 
-import numpy.testing as npt
+import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.median_filter import MedianFilter
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.core.gpu import utility as gpu
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 GPU_UTIL_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
@@ -17,62 +17,56 @@ class MedianTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(MedianTest, self).__init__(*args, **kwargs)
 
     def test_not_executed(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         size = None
         mode = None
 
+        original = np.copy(images.sample[0])
         result = MedianFilter.filter_func(images, size, mode)
 
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
+        th.assert_not_equals(result.sample, original)
 
     def test_executed_no_helper_parallel(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         size = 3
         mode = 'reflect'
 
+        original = np.copy(images.sample[0])
         result = MedianFilter.filter_func(images, size, mode)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        th.assert_not_equals(result.sample, original)
 
     @unittest.skipIf(not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed")
     def test_executed_no_helper_gpu(self):
-
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         size = 3
         mode = 'reflect'
 
+        original = np.copy(images.sample[0])
         result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        th.assert_not_equals(result.sample, original)
 
     def test_executed_no_helper_seq(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         size = 3
         mode = 'reflect'
 
+        original = np.copy(images.sample[0])
         th.switch_mp_off()
         result = MedianFilter.filter_func(images, size, mode)
         th.switch_mp_on()
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        th.assert_not_equals(result.sample, original)
 
     def test_memory_change_acceptable(self):
         """
@@ -87,20 +81,15 @@ class MedianTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         size = 3
         mode = 'reflect'
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = MedianFilter.filter_func(images, size, mode)
+        MedianFilter.filter_func(images, size, mode)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -114,7 +103,7 @@ class MedianTest(unittest.TestCase):
         use_gpu_field.isChecked = mock.Mock(return_value=False)
         execute_func = MedianFilter.execute_wrapper(size_field, mode_field, use_gpu_field)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
         self.assertEqual(size_field.value.call_count, 1)

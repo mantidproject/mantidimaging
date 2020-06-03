@@ -7,6 +7,7 @@ import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core import io
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
@@ -32,7 +33,7 @@ class BackgroundCorrectionFilter(BaseFilter):
                     clip_max=MAXIMUM_PIXEL_VALUE,
                     cores=None,
                     chunksize=None,
-                    progress=None):
+                    progress=None)->Images:
         """
         Do background correction with flat and dark images.
 
@@ -50,12 +51,12 @@ class BackgroundCorrectionFilter(BaseFilter):
         if flat is not None and dark is not None and isinstance(flat, np.ndarray) and isinstance(dark, np.ndarray):
             if 2 != flat.ndim or 2 != dark.ndim:
                 raise ValueError(f"Incorrect shape of the flat image ({flat.shape}) or dark image ({dark.shape}) \
-                    which should match the shape of the sample images ({data[0].shape})")
+                    which should match the shape of the sample images ({data.sample.shape})")
 
             if pu.multiprocessing_available():
-                _execute_par(data, flat, dark, clip_min, clip_max, cores, chunksize, progress)
+                _execute_par(data.sample, flat, dark, clip_min, clip_max, cores, chunksize, progress)
             else:
-                _execute_seq(data, flat, dark, clip_min, clip_max, progress)
+                _execute_seq(data.sample, flat, dark, clip_min, clip_max, progress)
 
         h.check_data_stack(data)
         return data

@@ -13,21 +13,20 @@ class ROINormalisationTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(ROINormalisationTest, self).__init__(*args, **kwargs)
 
     def test_not_executed_empty_params(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         air = None
-        result = RoiNormalisationFilter.filter_func(images, air)
 
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
+        original = np.copy(images.sample[0])
+        result = RoiNormalisationFilter.filter_func(images, air)
+        npt.assert_equal(result.sample[0], original)
 
     def test_not_executed_invalid_shape(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
         images = np.arange(100).reshape(10, 10)
         air = [3, 3, 4, 4]
         npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images, air)
@@ -41,21 +40,19 @@ class ROINormalisationTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
+        original = np.copy(images.sample[0])
         air = [3, 3, 4, 4]
         result = RoiNormalisationFilter.filter_func(images, air)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        th.assert_not_equals(result.sample[0], original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         RoiNormalisationFilter.execute_wrapper()(images)
 
 

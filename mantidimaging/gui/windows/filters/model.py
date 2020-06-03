@@ -91,7 +91,7 @@ class FiltersWindowModel(object):
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
-        ret_val = exec_func(images.sample, **stack_params)
+        ret_val = exec_func(images, **stack_params)
 
         # Handle the return value from the algorithm dialog
         if isinstance(ret_val, tuple):

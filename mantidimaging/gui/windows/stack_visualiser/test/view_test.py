@@ -5,6 +5,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDockWidget
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
@@ -13,12 +14,16 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class StackVisualiserViewTest(unittest.TestCase):
+    test_data: Images
+
     def __init__(self, *args, **kwargs):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
-    @classmethod
-    def setUpClass(cls):
-        cls.test_data = th.generate_images_class_random_shared_array()
+    def tearDown(self) -> None:
+        try:
+            self.test_data.free_memory()
+        except FileNotFoundError:
+            pass
 
     def setUp(self):
         # mock the view so it has the same methods
@@ -28,6 +33,7 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.dock = QDockWidget()
         self.dock.setWindowTitle("Potatoes")
 
+        self.test_data = th.generate_images_class_random_shared_array(automatic_free=False)
         self.view = StackVisualiserView(self.window, self.dock, self.test_data)
         self.dock.setWidget(self.view)
         self.window.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dock)

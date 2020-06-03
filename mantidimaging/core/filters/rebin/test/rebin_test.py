@@ -15,41 +15,29 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
-    def test_not_executed_rebin_none(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        val = None
-        mode = 'nearest'
-
-        result = RebinFilter.filter_func(images, val, mode)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
     def test_not_executed_rebin_negative(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
-        mode = 'nearest'
+        mode = 'reflect'
         val = -1
 
         result = RebinFilter.filter_func(images, val, mode)
 
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
+        npt.assert_equal(result, images)
 
     def test_not_executed_rebin_zero(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
-        mode = 'nearest'
+        mode = 'reflect'
         val = 0
 
         result = RebinFilter.filter_func(images, val, mode)
 
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
+        npt.assert_equal(result, images)
 
     def test_executed_uniform_par_2(self):
         self.do_execute_uniform(2.0)
@@ -73,23 +61,20 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute_uniform(self, val=2.0, dtype=np.float32):
-        images = th.gen_img_shared_array(dtype=dtype)
-        mode = 'nearest'
+        images = th.generate_images_class_random_shared_array(dtype=dtype, automatic_free=False)
+        mode = 'reflect'
 
-        expected_x = int(images.shape[1] * val)
-        expected_y = int(images.shape[2] * val)
+        expected_x = int(images.sample.shape[1] * val)
+        expected_y = int(images.sample.shape[2] * val)
 
         result = RebinFilter.filter_func(images, val, mode)
 
-        npt.assert_equal(result.shape[1], expected_x)
-        npt.assert_equal(result.shape[2], expected_y)
+        npt.assert_equal(result.sample.shape[1], expected_x)
+        npt.assert_equal(result.sample.shape[2], expected_y)
 
-        self.assertEquals(images.dtype, dtype)
-        self.assertEquals(result.dtype, dtype)
-
-        # TODO: in-place data test
-        # npt.assert_equal(images.shape[1], expected_x)
-        # npt.assert_equal(images.shape[2], expected_y)
+        self.assertEquals(images.sample.dtype, dtype)
+        self.assertEquals(result.sample.dtype, dtype)
+        images.free_memory()
 
     def test_executed_xy_par_128_256(self):
         self.do_execute_xy((128, 256))
@@ -116,34 +101,32 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute_xy(self, val=(512, 512)):
-        images = th.gen_img_shared_array()
-        mode = 'nearest'
+        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        mode = 'reflect'
 
         expected_x = int(val[0])
         expected_y = int(val[1])
 
         result = RebinFilter.filter_func(images, rebin_param=val, mode=mode)
 
-        npt.assert_equal(result.shape[1], expected_x)
-        npt.assert_equal(result.shape[2], expected_y)
+        npt.assert_equal(result.sample.shape[1], expected_x)
+        npt.assert_equal(result.sample.shape[2], expected_y)
 
-        # TODO: in-place data test
-        # npt.assert_equal(images.shape[1], expected_x)
-        # npt.assert_equal(images.shape[2], expected_y)
+        images.free_memory()
 
     def test_memory_change_acceptable(self):
         """
         This filter will increase the memory usage as it has to allocate memory
         for the new resized shape
         """
-        images = th.gen_img_shared_array()
+        images = th.generate_images_class_random_shared_array(automatic_free=False)
 
-        mode = 'nearest'
+        mode = 'reflect'
         # This about doubles the memory. Value found from running the test
         val = 100.
 
-        expected_x = int(images.shape[1] * val)
-        expected_y = int(images.shape[2] * val)
+        expected_x = int(images.sample.shape[1] * val)
+        expected_y = int(images.sample.shape[2] * val)
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
@@ -151,12 +134,10 @@ class RebinTest(unittest.TestCase):
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 2)
 
-        npt.assert_equal(result.shape[1], expected_x)
-        npt.assert_equal(result.shape[2], expected_y)
+        npt.assert_equal(result.sample.shape[1], expected_x)
+        npt.assert_equal(result.sample.shape[2], expected_y)
 
-        # TODO: in-place data test
-        # npt.assert_equal(images.shape[1], expected_x)
-        # npt.assert_equal(images.shape[2], expected_y)
+        images.free_memory()
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -175,8 +156,9 @@ class RebinTest(unittest.TestCase):
                                                    factor=factor,
                                                    mode_field=mode_field)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array(automatic_free=False)
         execute_func(images)
+        images.free_memory()
 
         self.assertEqual(rebin_to_dimensions_radio.isChecked.call_count, 1)
         self.assertEqual(rebin_by_factor_radio.isChecked.call_count, 1)

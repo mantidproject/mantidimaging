@@ -2,6 +2,7 @@ from logging import getLogger
 
 import numpy as np
 
+from mantidimaging import helper
 from mantidimaging.core.data import Images
 from mantidimaging.core.io.loader import img_loader, stack_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names)
@@ -138,7 +139,7 @@ def load(input_path=None,
         images = img_loader.execute(load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype,
                                     indices, progress)
 
-    images.check_data_stack(images)
+    helper.check_data_stack(images)
 
     # Search for and load metadata file
     metadata_filename = get_file_names(input_path, 'json', in_prefix, essential=False)

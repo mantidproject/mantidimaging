@@ -37,18 +37,34 @@ def delete_shared_array(name, silent_failure=False):
             raise e
 
 
-def create_shared_array(name, shape, dtype: DTYPE_TYPES = np.float32):
+#
+# class ProxyAttributes:
+#     def __init__(self, managed_object):
+#         self.managed_object = managed_object
+#         for attr in filter(lambda x: x not in ["__class__"], dir(self.managed_object)):
+#             setattr(self, attr, getattr(self.managed_object, attr))
+#
+#     def __getattr__(self, item):
+#         if item == "name":
+#             return "apple"
+#         else:
+#             return getattr(self.managed_object, item)
+#     def __repr__(self):
+#         return repr(self.managed_object)
+
+def create_shared_array(name, shape, dtype: DTYPE_TYPES = np.float32)->np.ndarray:
     """
     :param name: Name used for the shared memory file by which this memory chunk will be identified
     """
     formatted_name = _format_name(name)
     LOG.info(f"Requested shared array with name='{formatted_name}', shape={shape}, dtype={dtype}")
-    return sa.create(f"shm://{formatted_name}", shape, dtype)
+    memory_file_name = f"shm://{formatted_name}"
+    return sa.create(memory_file_name, shape, dtype)
 
 
 @contextmanager
-def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32):
-    temp_name = str(uuid.uuid4())
+def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None)->np.ndarray:
+    temp_name = str(uuid.uuid4()) if not force_name else force_name
     array = create_shared_array(temp_name, shape, dtype)
     try:
         yield array
