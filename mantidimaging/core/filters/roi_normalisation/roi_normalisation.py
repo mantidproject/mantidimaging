@@ -46,9 +46,9 @@ class RoiNormalisationFilter(BaseFilter):
             # sanity check for the regions
             assert all(isinstance(region, int) for region in air_region), "The air region coordinates are not integers!"
             if pu.multiprocessing_available():
-                data = _execute_par(data, air_region, cores, chunksize, progress)
+                _execute_par(data.sample, air_region, cores, chunksize, progress)
             else:
-                data = _execute_seq(data, air_region, progress)
+                _execute_seq(data.sample, air_region, progress)
 
         h.check_data_stack(data)
         return data
@@ -137,8 +137,6 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
 
             log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
-    return data
-
 
 def _execute_seq(data, air_region, progress):
     progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
@@ -170,5 +168,3 @@ def _execute_seq(data, air_region, progress):
         min_avg = np.min(air_sums) / avg
 
         log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
-
-    return data

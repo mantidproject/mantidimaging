@@ -4,6 +4,7 @@ from logging import getLogger
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
@@ -15,7 +16,7 @@ class GaussianFilter(BaseFilter):
     filter_name = "Gaussian"
 
     @staticmethod
-    def filter_func(data, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: Images, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -37,9 +38,9 @@ class GaussianFilter(BaseFilter):
 
         if size and size > 1:
             if pu.multiprocessing_available():
-                data = _execute_par(data, size, mode, order, cores, chunksize, progress)
+                _execute_par(data.sample, size, mode, order, cores, chunksize, progress)
             else:
-                data = _execute_seq(data, size, mode, order, progress)
+                _execute_seq(data.sample, size, mode, order, progress)
 
         h.check_data_stack(data)
         return data
@@ -81,8 +82,6 @@ def _execute_seq(data, size, mode, order, progress=None):
     progress.mark_complete()
     log.info("Finished gaussian filter, with pixel data type: {0}, " "filter size/width: {1}.".format(data.dtype, size))
 
-    return data
-
 
 def _execute_par(data, size, mode, order, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
@@ -105,5 +104,3 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None, progress=N
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "
              "filter size/width: {1}.".format(data.dtype, size))
-
-    return data

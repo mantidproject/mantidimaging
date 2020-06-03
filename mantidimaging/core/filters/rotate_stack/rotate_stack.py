@@ -3,6 +3,7 @@ from functools import partial
 import numpy as np
 
 from mantidimaging import helper as h
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
@@ -13,7 +14,7 @@ class RotateFilter(BaseFilter):
     filter_name = "Rotate Stack"
 
     @staticmethod
-    def filter_func(data, rotation=None, flat=None, dark=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: Images, rotation=None, flat=None, dark=None, cores=None, chunksize=None, progress=None):
         """
         Rotates a stack (sample, flat and dark images).
 
@@ -39,9 +40,9 @@ class RotateFilter(BaseFilter):
             clockwise_rotations = 4 - rotation
 
             if pu.multiprocessing_available():
-                _execute_par(data, clockwise_rotations, cores, chunksize)
+                _execute_par(data.sample, clockwise_rotations, cores, chunksize)
             else:
-                _execute_seq(data, clockwise_rotations)
+                _execute_seq(data.sample, clockwise_rotations)
 
             if flat is not None:
                 flat = _rotate_image(flat, clockwise_rotations)
@@ -85,7 +86,7 @@ def _execute_seq(data, rotation, progress=None):
 
     with progress:
         progress.update(msg=f"Starting rotation step ({rotation * 90} degrees clockwise), "
-                        f"data type: {data.dtype}...")
+                            f"data type: {data.dtype}...")
 
         img_count = data.shape[0]
         progress.add_estimated_steps(img_count)
@@ -101,7 +102,7 @@ def _execute_par(data, rotation, cores=None, chunksize=None, progress=None):
 
     with progress:
         progress.update(msg=f"Starting PARALLEL rotation step ({rotation * 90} degrees "
-                        f"clockwise), data type: {data.dtype}...")
+                            f"clockwise), data type: {data.dtype}...")
 
         f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
 

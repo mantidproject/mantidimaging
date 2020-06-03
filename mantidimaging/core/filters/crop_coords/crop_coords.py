@@ -1,18 +1,22 @@
 from functools import partial
-from typing import Dict, Any
+from typing import Dict, Any, Tuple, Optional
 
-from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
+import numpy as np
 
 from mantidimaging import helper as h
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
+from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 
 class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(data, region_of_interest=None, flat=None, dark=None, progress=None):
+    def filter_func(data: Images, roi, flat=None, dark=None, progress=None) -> Tuple[
+        Images, Optional[np.ndarray], Optional[np.ndarray]]:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -25,7 +29,7 @@ class CropCoordinatesFilter(BaseFilter):
 
         :param data: Input data as a 3D numpy.ndarray
 
-        :param region_of_interest: Crop original images using these coordinates.
+        :param roi: Crop original images using these coordinates.
                                    The selection is a rectangle and expected order
                                    is - Left Top Right Bottom.
 
@@ -38,13 +42,17 @@ class CropCoordinatesFilter(BaseFilter):
 
         h.check_data_stack(data)
 
-        # execute only for sample, if no flat and dark images are provided
-        if data is not None and (flat is None or dark is None):
-            return execute_single(data, region_of_interest, progress), None, None
+        sample = data.sample
+        sample_name = data.sample_name
+        shape = (sample.shape[0], roi[2] - roi[0], roi[3] - roi[1])
+        data.free_sample()
+        output = pu.create_shared_array(sample_name, shape, sample.dtype)
+        data.sample = execute_single(sample, roi, progress, out=output)
+
+        if flat is None or dark is None:
+            return data, None, None  # TODO is this still needed?
         else:  # crop all and return as tuple
-            return execute_single(data, region_of_interest, progress), \
-                   execute_single(flat, region_of_interest, progress), \
-                   execute_single(dark, region_of_interest, progress)
+            return data, execute_single(flat, roi, progress), execute_single(dark, roi, progress)
 
     @staticmethod
     def register_gui(form, on_change):
@@ -63,27 +71,27 @@ class CropCoordinatesFilter(BaseFilter):
         return partial(CropCoordinatesFilter.filter_func)
 
 
-def execute_single(data, region_of_interest, progress=None):
+def execute_single(data, roi, progress=None, out=None):
     progress = Progress.ensure_instance(progress, task_name='Crop Coords')
 
-    if region_of_interest:
+    if roi:
         progress.add_estimated_steps(1)
 
         with progress:
             assert all(isinstance(region, int) for
-                       region in region_of_interest), \
+                       region in roi), \
                 "The region of interest coordinates are not integers!"
 
-            progress.update(msg="Cropping with coordinates: {0}.".format(region_of_interest))
+            progress.update(msg="Cropping with coordinates: {0}.".format(roi))
 
-            left = region_of_interest[0]
-            top = region_of_interest[1]
-            right = region_of_interest[2]
-            bottom = region_of_interest[3]
+            left = roi[0]
+            top = roi[1]
+            right = roi[2]
+            bottom = roi[3]
 
+            output = out if out is not None else data
             if data.ndim == 2:
-                data = data[top:bottom, left:right]
+                output = data[top:bottom, left:right]
             elif data.ndim == 3:
-                data = data[:, top:bottom, left:right]
-
-    return data
+                output = data[:, top:bottom, left:right]
+    return output

@@ -14,18 +14,9 @@ class RotateStackTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(RotateStackTest, self).__init__(*args, **kwargs)
-
-    def test_not_executed(self):
-        # only works on square images
-        images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
-
-        # empty params
-        result = RotateFilter.filter_func(images, None)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
 
     def test_executed_par(self):
         self.do_execute()
@@ -37,18 +28,14 @@ class RotateStackTest(unittest.TestCase):
 
     def do_execute(self):
         # only works on square images
-        images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
+        images = th.generate_images_class_random_shared_array((10, 10, 10))
 
         rotation = 1  # once clockwise
-        images[:, 0, 0] = 42  # set all images at 0,0 to 42
+        images.sample[:, 0, :] = 42
 
         result = RotateFilter.filter_func(images, rotation)
 
-        w = result.shape[2]
-        npt.assert_equal(result[:, 0, w - 1], 42.0)
-        npt.assert_equal(images[:, 0, w - 1], 42.0)
-
-        npt.assert_equal(result, images)
+        npt.assert_equal(result.sample[:, :, -1], 42)
 
     def test_memory_change_acceptable(self):
         """
@@ -64,22 +51,15 @@ class RotateStackTest(unittest.TestCase):
         This will still capture if the data is doubled, which is the main goal.
         """
         # only works on square images
-        images, control = th.gen_img_shared_array_and_copy((10, 10, 10))
+        images = th.generate_images_class_random_shared_array((10, 10, 10))
         rotation = 1  # once clockwise
-        images[:, 0, 0] = 42  # set all images at 0,0 to 42
+        images.sample[:, 0, 0] = 42  # set all images at 0,0 to 42
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = RotateFilter.filter_func(images, rotation)
-
-        w = result.shape[2]
+        RotateFilter.filter_func(images, rotation)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-        npt.assert_equal(result[:, 0, w - 1], 42.0)
-        npt.assert_equal(images[:, 0, w - 1], 42.0)
-
-        npt.assert_equal(result, images)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -89,7 +69,7 @@ class RotateStackTest(unittest.TestCase):
         rotation_count.value = mock.Mock(return_value=0)
         execute_func = RotateFilter.execute_wrapper(rotation_count)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
         self.assertEqual(rotation_count.value.call_count, 1)

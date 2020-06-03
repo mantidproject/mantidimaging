@@ -1,44 +1,55 @@
 import os
 import sys
+from typing import Tuple
 
 import numpy as np
 import numpy.testing as npt
 from six import StringIO
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)
 
 
-def gen_img_numpy_rand(shape=g_shape):
+def gen_img_numpy_rand(shape=g_shape) -> np.ndarray:
     return np.random.rand(*shape)
 
 
-def gen_img_shared_array_and_copy(shape=g_shape):
+def gen_img_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarray]:
     arr = gen_img_shared_array(shape)
     copy = np.copy(arr)
     return arr, copy
 
 
-def gen_img_shared_array(shape=g_shape, dtype=np.float32):
+def gen_img_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
     with pu.temp_shared_array(shape, dtype) as generated_array:
-        np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]))
+        np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]).astype(dtype))
         return generated_array
 
 
-def generate_images_class_random_shared_array(shape=g_shape):
-    from mantidimaging.core.data import Images
+def generate_images_class_random_shared_array(shape=g_shape, dtype=np.float32, automatic_free=True) -> Images:
     name = "test-array-{}"
     fake_filenames = []
     for i in range(g_shape[0]):
         fake_filenames.append(name.format(i))
-    d = pu.create_shared_array(f"{fake_filenames[0]}-Sample", shape)
+
+    array_name = f"{fake_filenames[0]}-Sample"
+    if automatic_free:
+        with pu.temp_shared_array(shape, dtype, force_name=array_name) as d:
+            return _set_random_data(d, shape, fake_filenames)
+    else:
+        d = pu.create_shared_array(array_name, shape, dtype)
+        return _set_random_data(d, shape, fake_filenames)
+
+
+def _set_random_data(data, shape, fake_filenames):
     n = np.random.rand(*shape)
     # move the data in the shared array
-    d[:] = n[:]
+    data[:] = n[:]
 
-    images = Images(d)
+    images = Images(data)
     images.filenames = fake_filenames
     return images
 
@@ -161,7 +172,7 @@ class IgnoreOutputStreams(object):
         sys.stderr = self.stderr
 
 
-def shared_deepcopy(images):
-    with pu.temp_shared_array(images.shape) as copy:
-        np.copyto(copy, images)
+def shared_deepcopy(images: Images) -> np.ndarray:
+    with pu.temp_shared_array(images.sample.shape) as copy:
+        np.copyto(copy, images.sample)
         return copy

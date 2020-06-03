@@ -5,12 +5,13 @@ from typing import Callable, Dict, Any, TYPE_CHECKING
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
+from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
-from mantidimaging.core.gpu import utility as gpu
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout
@@ -20,7 +21,7 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
 
     @staticmethod
-    def filter_func(data, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
+    def filter_func(data: Images, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -36,11 +37,11 @@ class MedianFilter(BaseFilter):
 
         if size and size > 1:
             if not force_cpu:
-                data = _execute_gpu(data, size, mode, progress)
+                data = _execute_gpu(data.sample, size, mode, progress)
             elif pu.multiprocessing_available():
-                data = _execute_par(data, size, mode, cores, chunksize, progress)
+                _execute_par(data.sample, size, mode, cores, chunksize, progress)
             else:
-                data = _execute_seq(data, size, mode, progress)
+                _execute_seq(data.sample, size, mode, progress)
 
         h.check_data_stack(data)
         return data

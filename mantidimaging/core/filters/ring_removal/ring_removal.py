@@ -1,6 +1,7 @@
 from functools import partial
 
 from mantidimaging import helper as h
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -10,7 +11,7 @@ class RingRemovalFilter(BaseFilter):
     filter_name = "Ring Removal"
 
     @staticmethod
-    def filter_func(data,
+    def filter_func(data: Images,
                     run_ring_removal=False,
                     center_x=None,
                     center_y=None,
@@ -50,16 +51,16 @@ class RingRemovalFilter(BaseFilter):
 
             with progress:
                 progress.update(msg="Ring Removal")
-                data = tp.remove_ring(data,
-                                      center_x=center_x,
-                                      center_y=center_y,
-                                      thresh=thresh,
-                                      thresh_max=thresh_max,
-                                      thresh_min=thresh_min,
-                                      theta_min=theta_min,
-                                      rwidth=rwidth,
-                                      ncore=cores,
-                                      nchunk=chunksize)
+                data.sample = tp.remove_ring(data.sample,
+                                             center_x=center_x,
+                                             center_y=center_y,
+                                             thresh=thresh,
+                                             thresh_max=thresh_max,
+                                             thresh_min=thresh_min,
+                                             theta_min=theta_min,
+                                             rwidth=rwidth,
+                                             ncore=cores,
+                                             nchunk=chunksize)
 
         return data
 
