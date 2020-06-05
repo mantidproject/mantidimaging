@@ -29,12 +29,12 @@ class MinusLogFilter(BaseFilter):
 
             with progress:
                 progress.update(msg="Calculating -log on the sample data")
-
+                sample = data.sample
                 # this check prevents division by 0 errors from the minus_log
-                data[data == 0] = 1e-6
+                sample[sample == 0] = 1e-6
 
                 # the operation is done in place
-                tomopy.prep.normalize.minus_log(data, out=data)
+                tomopy.prep.normalize.minus_log(sample, out=sample)
 
         return data
 

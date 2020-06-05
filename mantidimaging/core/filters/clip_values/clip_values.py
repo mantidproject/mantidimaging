@@ -1,5 +1,7 @@
 from functools import partial
 
+from mantidimaging.core.data import Images
+
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -13,7 +15,7 @@ class ClipValuesFilter(BaseFilter):
                     clip_max=None,
                     clip_min_new_value=None,
                     clip_max_new_value=None,
-                    progress=None):
+                    progress=None) -> Images:
         """
         Clip values below the min and above the max pixels.
 
@@ -35,27 +37,27 @@ class ClipValuesFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray.
         """
-        progress = Progress.ensure_instance(progress, task_name='Clipping Values.')
+        progress = Progress.ensure_instance(progress, num_steps=2, task_name='Clipping Values.')
 
         # we're using is not None because if the value specified is 0.0 that
         # evaluates to false
         if clip_min is not None or clip_max is not None:
             with progress:
-                clip_min = clip_min if clip_min is not None else data.min()
-                clip_max = clip_max if clip_max is not None else data.max()
+                sample = data.sample
+                progress.update(msg="Determining clip min and clip max")
+                clip_min = clip_min if clip_min is not None else sample.min()
+                clip_max = clip_max if clip_max is not None else sample.max()
 
-                clip_min_new_value = clip_min_new_value \
-                    if clip_min_new_value is not None else clip_min
+                clip_min_new_value = clip_min_new_value if clip_min_new_value is not None else clip_min
 
-                clip_max_new_value = clip_max_new_value \
-                    if clip_max_new_value is not None else clip_max
+                clip_max_new_value = clip_max_new_value if clip_max_new_value is not None else clip_max
 
-                progress.update(msg="Clipping data with values min {0} and max " "{1}.".format(clip_min, clip_max))
+                progress.update(msg=f"Clipping data with values min {clip_min} and max {clip_max}.")
 
                 # this is the fastest way to clip the values, np.clip does not do
                 # the clipping in place and ends up copying the data
-                data[data < clip_min] = clip_min_new_value
-                data[data > clip_max] = clip_max_new_value
+                sample[sample < clip_min] = clip_min_new_value
+                sample[sample > clip_max] = clip_max_new_value
 
         return data
 
@@ -86,7 +88,7 @@ class ClipValuesFilter(BaseFilter):
             form=form,
             on_change=on_change,
             tooltip='The value that will be used to replace pixel values '
-            'that fall below Clip Min.')
+                    'that fall below Clip Min.')
 
         _, clip_max_new_value_field = add_property_to_form(
             'Max Replacement Value',
@@ -95,7 +97,7 @@ class ClipValuesFilter(BaseFilter):
             form=form,
             on_change=on_change,
             tooltip='The value that will be used to replace pixel values '
-            'that are above Clip Max.')
+                    'that are above Clip Max.')
 
         clip_min_new_value_field.setDecimals(7)
         clip_max_new_value_field.setDecimals(7)

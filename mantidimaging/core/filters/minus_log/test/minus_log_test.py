@@ -1,10 +1,11 @@
 import unittest
 
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 from mantidimaging.core.filters.minus_log import MinusLogFilter
+from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 class MinusLogTest(unittest.TestCase):
@@ -13,16 +14,17 @@ class MinusLogTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(MinusLogTest, self).__init__(*args, **kwargs)
 
     def test_no_execute(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
+        sample = np.copy(images.sample)
         result = MinusLogFilter.filter_func(images, minus_log=False)
 
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
+        npt.assert_equal(result.sample, sample)
 
     def test_memory_change_acceptable(self):
         """

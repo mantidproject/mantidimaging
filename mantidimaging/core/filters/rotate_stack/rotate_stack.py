@@ -60,9 +60,9 @@ class RotateFilter(BaseFilter):
     def register_gui(form, on_change):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, rotation_count = add_property_to_form('Number of rotations',
+        _, rotation_count = add_property_to_form('Number of rotations clockwise',
                                                  'int',
-                                                 1, (0, 99),
+                                                 1, (1, 3),
                                                  form=form,
                                                  on_change=on_change)
 

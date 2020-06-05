@@ -63,7 +63,10 @@ class Images:
 
     @property
     def sample_name(self):
-        return f"{self._filenames[0]}-Sample"
+        if self._filenames is not None:
+            return f"{self._filenames[0]}-Sample"
+        else:
+            return None
 
     @property
     def filenames(self) -> Optional[List[str]]:

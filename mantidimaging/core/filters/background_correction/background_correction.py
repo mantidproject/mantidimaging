@@ -33,7 +33,7 @@ class BackgroundCorrectionFilter(BaseFilter):
                     clip_max=MAXIMUM_PIXEL_VALUE,
                     cores=None,
                     chunksize=None,
-                    progress=None)->Images:
+                    progress=None) -> Images:
         """
         Do background correction with flat and dark images.
 
@@ -195,4 +195,6 @@ def get_average_image(text_widget: 'QLineEdit'):
     images_flat_only = io.loader.load(directory, in_prefix=prefix, in_format=extension)
     # this will be put in the 'sample' attribute, because we load a single
     # volume
-    return images_flat_only.sample.mean(axis=0)
+    mean_image = images_flat_only.sample.mean(axis=0)
+    images_flat_only.free_memory()
+    return mean_image

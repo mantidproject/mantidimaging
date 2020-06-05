@@ -4,7 +4,7 @@ import os
 import uuid
 from contextlib import contextmanager
 from logging import getLogger
-from typing import Union, Type
+from typing import Union, Type, Optional, Tuple
 
 import SharedArray as sa
 import numpy as np
@@ -37,33 +37,37 @@ def delete_shared_array(name, silent_failure=False):
             raise e
 
 
-#
-# class ProxyAttributes:
-#     def __init__(self, managed_object):
-#         self.managed_object = managed_object
-#         for attr in filter(lambda x: x not in ["__class__"], dir(self.managed_object)):
-#             setattr(self, attr, getattr(self.managed_object, attr))
-#
-#     def __getattr__(self, item):
-#         if item == "name":
-#             return "apple"
-#         else:
-#             return getattr(self.managed_object, item)
-#     def __repr__(self):
-#         return repr(self.managed_object)
-
-def create_shared_array(name, shape, dtype: DTYPE_TYPES = np.float32)->np.ndarray:
+def create_array(name: Optional[str], shape: Tuple[int, int, int], dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
     """
+
+    :param name: Name of the shared memory array. If None, a non-shared array will be created
+    :param shape: Shape of the array
+    :param dtype: Dtype of the array
+    :return: The created Numpy array
+    """
+    if name is not None:
+        return create_shared_array(name, shape, dtype)
+    else:
+        # if the name provided is None, then allocate an array only visible to this process
+        return np.zeros(shape, dtype)
+
+
+def create_shared_array(name: Optional[str], shape: Tuple[int, int, int],
+                        dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
+    """
+    :param dtype:
+    :param shape:
     :param name: Name used for the shared memory file by which this memory chunk will be identified
     """
     formatted_name = _format_name(name)
     LOG.info(f"Requested shared array with name='{formatted_name}', shape={shape}, dtype={dtype}")
     memory_file_name = f"shm://{formatted_name}"
-    return sa.create(memory_file_name, shape, dtype)
+    arr = sa.create(memory_file_name, shape, dtype)
+    return arr
 
 
 @contextmanager
-def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None)->np.ndarray:
+def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None) -> np.ndarray:
     temp_name = str(uuid.uuid4()) if not force_name else force_name
     array = create_shared_array(temp_name, shape, dtype)
     try:

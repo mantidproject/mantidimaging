@@ -38,17 +38,17 @@ class OutliersFilter(BaseFilter):
 
                 # we flip the histogram horizontally, this makes the darkest pixels
                 # the brightest
-                # if mode == OUTLIERS_DARK:
-                #     np.negative(data, out=data)
+                if mode == OUTLIERS_DARK:
+                    np.negative(data, out=data)
 
                 tomopy = importer.do_importing('tomopy')
-
-                data = tomopy.misc.corr.remove_outlier(data, diff, radius, ncore=cores)
+                sample = data.sample
+                tomopy.misc.corr.remove_outlier(sample, diff, radius, ncore=cores, out=sample)
                 progress.update()
 
                 # reverse the inversion
-                # if mode == OUTLIERS_DARK:
-                #     np.negative(data, out=data)
+                if mode == OUTLIERS_DARK:
+                    np.negative(data, out=data)
 
         return data
 

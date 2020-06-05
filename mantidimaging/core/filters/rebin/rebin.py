@@ -1,4 +1,5 @@
 from functools import partial
+from typing import Optional
 
 import numpy
 import skimage.transform
@@ -13,6 +14,10 @@ from mantidimaging.gui.utility import add_property_to_form
 
 
 class RebinFilter(BaseFilter):
+    """
+    This filter temporarily increases memory usage, while the image is being rebinned.
+    The memory usage will be lowered after the filter has finished executing.
+    """
     filter_name = "Rebin"
 
     @staticmethod
@@ -39,10 +44,14 @@ class RebinFilter(BaseFilter):
 
         if param_valid:
             sample = data.sample
-            sample_name = data.sample_name
-            data.free_sample()
+            if data.sample_name is not None:
+                sample_name = data.sample_name
+                data.free_sample()
+            else:
+                sample_name = None
             empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
-            if pu.multiprocessing_available():
+            progress = Progress.ensure_instance(progress, num_steps=sample.shape[0], task_name='Rebin')
+            if pu.multiprocessing_available() and sample_name is not None:
                 rebinned = _execute_par(sample, empty_resized_data, mode, cores, chunksize, progress)
             else:
                 rebinned = _execute_seq(sample, empty_resized_data, mode, progress)
@@ -129,21 +138,14 @@ def modes():
 
 
 def _execute_par(data: numpy.ndarray, resized_data, mode, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress, task_name='Rebin')
-
     with progress:
         progress.update(msg="Applying rebin.")
-
         f = pem.create_partial(skimage.transform.resize, mode=mode, output_shape=resized_data.shape[1:])
-
         resized_data = pem.execute(data, f, cores, chunksize, "Rebin", output_data=resized_data, progress=progress)
-
     return resized_data
 
 
 def _execute_seq(data: numpy.ndarray, resized_data, mode, progress=None):
-    progress = Progress.ensure_instance(progress, task_name='Rebin')
-
     with progress:
         progress.update(msg="Starting image rebinning.")
 
@@ -157,7 +159,7 @@ def _execute_seq(data: numpy.ndarray, resized_data, mode, progress=None):
     return resized_data
 
 
-def _create_reshaped_array(old_shape, dtype, rebin_param, sample_name):
+def _create_reshaped_array(old_shape, dtype, rebin_param, sample_name: Optional[str]):
     num_images = old_shape[0]
 
     # use SciPy's calculation to find the expected dimensions
@@ -171,6 +173,6 @@ def _create_reshaped_array(old_shape, dtype, rebin_param, sample_name):
 
     # allocate memory for images with new dimensions
     shape = (num_images, expected_dimy, expected_dimx)
-    data = pu.create_shared_array(sample_name, shape, dtype)
+    data = pu.create_array(sample_name, shape, dtype)
 
     return data

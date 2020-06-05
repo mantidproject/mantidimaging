@@ -6,7 +6,6 @@ import numpy as np
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (BlockQtSignals, get_parameters_from_stack)
@@ -105,72 +104,48 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
+        self.view.clear_previews()
         self.model.do_apply_filter()
 
     def do_update_previews(self):
         log = getLogger(__name__)
+        stack = self.model.stack_presenter
 
-        progress = Progress.ensure_instance()
-        progress.task_name = 'Filter preview'
-        progress.add_estimated_steps(1)
+        self.view.clear_previews()
+        if stack is not None:
+            before_image_data = stack.get_image(self.model.preview_image_idx)
+            # Update image before
+            self._update_preview_image(before_image_data, self.view.preview_image_before,
+                                       self.view.previews.set_before_histogram)
 
-        with progress:
-            progress.update(msg='Getting stack')
-            stack = self.model.stack_presenter
+            # Generate sub-stack and run filter
+            exec_kwargs = get_parameters_from_stack(stack, self.model.params_needed_from_stack)
 
-            # If there is no stack then clear the preview area
-            if stack is None:
-                self.view.clear_previews()
-            else:
-                # Add the remaining steps for calculating the preview
-                progress.add_estimated_steps(8)
+            filtered_image_data = None
+            try:
+                sub_images = Images(np.asarray([before_image_data]))
+                self.model.apply_filter(sub_images, exec_kwargs)
+                filtered_image_data = sub_images.sample[0]
+            except Exception as e:
+                log.debug("Error applying filter for preview: {}".format(e))
 
-                before_image_data = stack.get_image(self.model.preview_image_idx)
+            # Update image after and difference
+            if filtered_image_data is not None:
+                self._update_preview_image(filtered_image_data, self.view.preview_image_after,
+                                           self.view.previews.set_after_histogram)
 
-                # Update image before
-                self._update_preview_image(before_image_data, self.view.preview_image_before,
-                                           self.view.previews.set_before_histogram, progress)
-
-                # Generate sub-stack and run filter
-                progress.update(msg='Running preview filter')
-                exec_kwargs = get_parameters_from_stack(stack, self.model.params_needed_from_stack)
-
-                filtered_image_data = None
-                try:
-                    sub_images = Images(np.asarray([before_image_data]))
-                    self.model.apply_filter(sub_images, exec_kwargs)
-                    filtered_image_data = sub_images.sample[0]
-                except Exception as e:
-                    log.debug("Error applying filter for preview: {}".format(e))
-
-                # Update image after and difference
-                if filtered_image_data is not None:
-                    self._update_preview_image(filtered_image_data, self.view.preview_image_after,
-                                               self.view.previews.set_after_histogram, progress)
-
-                    diff = np.subtract(filtered_image_data, before_image_data) \
-                        if filtered_image_data.shape == before_image_data.shape else None
-                    self._update_preview_image(diff, self.view.preview_image_difference, None, progress)
-
-            # Redraw
-            progress.update(msg='Redraw canvas')
+                diff = np.subtract(filtered_image_data, before_image_data) \
+                    if filtered_image_data.shape == before_image_data.shape else None
+                self._update_preview_image(diff, self.view.preview_image_difference, None)
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem,
-                              redraw_histogram: Optional[Callable[[Any], None]], progress):
-        # Generate histogram data
-        progress.update(msg='Generating histogram')
-
-        # Update image
-        progress.update(msg='Updating image')
-        # ImageItem cannot be cleared with setImage(None) if it already has an image, must clear 'manually'
-        if image_data is None:
-            image.image = None
+                              redraw_histogram: Optional[Callable[[Any], None]]):
+        image.clear()
         image.setImage(image_data)
 
         if redraw_histogram:
             # Update histogram
-            progress.update(msg='Updating histogram')
             redraw_histogram(image.getHistogram())
 
     def do_scroll_preview(self, offset):
