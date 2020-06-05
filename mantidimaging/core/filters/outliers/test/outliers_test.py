@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-import numpy.testing as npt
+import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.outliers import OutliersFilter
@@ -13,80 +13,20 @@ class OutliersTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     def __init__(self, *args, **kwargs):
         super(OutliersTest, self).__init__(*args, **kwargs)
 
-    def test_not_executed_no_threshold(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        # invalid thresholds
-        threshold = None
-        radius = 8
-
-        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-    def test_not_executed_bad_threshold(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        radius = 8
-        threshold = 0
-
-        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-    def test_not_executed_bad_threshold2(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        radius = 8
-        threshold = -42
-
-        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-    def test_not_executed_no_radius(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        radius = 8
-        threshold = 42
-        radius = None
-
-        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
     def test_executed(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         radius = 8
         threshold = 0.1
 
+        sample = np.copy(images.sample)
         result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
-        th.assert_not_equals(result, control)
-
-        # TODO: in-place data test
-        # th.assert_not_equals(images, control)
-
-    def test_executed_no_helper(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        threshold = 0.1
-        radius = 8
-
-        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
-
-        npt.assert_raises(AssertionError, npt.assert_equal, result, control)
-
-        # TODO: in-place data test
-        # npt.assert_raises(AssertionError, npt.assert_equal, images, control)
+        th.assert_not_equals(result.sample, sample)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -100,7 +40,7 @@ class OutliersTest(unittest.TestCase):
         mode_field.currentText = mock.Mock(return_value=0)
         execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
         self.assertEqual(diff_field.value.call_count, 1)

@@ -79,9 +79,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         return im, vb
 
     def clear_items(self):
-        self.image_before.setImage()
-        self.image_after.setImage()
-        self.image_difference.setImage()
+        self.image_before.clear()
+        self.image_after.clear()
+        self.image_difference.clear()
         self.delete_histograms()
 
     # There seems to be a bug with pyqtgraph.PlotDataItem.setData not forcing a redraw.

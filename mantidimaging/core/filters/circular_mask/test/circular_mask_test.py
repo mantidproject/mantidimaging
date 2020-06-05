@@ -14,56 +14,21 @@ class CircularMaskTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(CircularMaskTest, self).__init__(*args, **kwargs)
 
-    def test_not_executed(self):
-        # Check that the filter is not executed when:
-        #     - no ratio is provided
-        #     - 0 < ratio < 1 is false
-        images, control = th.gen_img_shared_array_and_copy()
-
-        ratio = 0
-        mask_val = 0.
-        result = CircularMaskFilter.filter_func(images, ratio, mask_val)
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-        ratio = 1
-        result = CircularMaskFilter.filter_func(images, ratio, mask_val)
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-        ratio = -1
-        result = CircularMaskFilter.filter_func(images, ratio, mask_val)
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-        ratio = None
-        result = CircularMaskFilter.filter_func(images, ratio, mask_val)
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
     def test_executed(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
-        ratio = 0.001
+        ratio = 0.1
 
-        result = CircularMaskFilter.filter_func(images, ratio)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        # reset the input images
-        images, control = th.gen_img_shared_array_and_copy()
-        ratio = 0.994
+        self.assertNotEqual(images.sample[0, 0, 0], 0)
+        self.assertNotEqual(images.sample[0, 0, -1], 0)
 
         result = CircularMaskFilter.filter_func(images, ratio)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        self.assertEqual(result.sample[0, 0, 0], 0)
+        self.assertEqual(result.sample[0, 0, -1], 0)
 
     def test_memory_change_acceptable(self):
         """

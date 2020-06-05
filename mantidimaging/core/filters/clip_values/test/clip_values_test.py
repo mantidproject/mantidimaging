@@ -1,5 +1,6 @@
 import unittest
 from unittest import mock
+import numpy as np
 
 import numpy.testing as npt
 
@@ -14,19 +15,12 @@ class ClipValuesFilterTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(ClipValuesFilterTest, self).__init__(*args, **kwargs)
 
-    def test_no_execute(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
-        result = ClipValuesFilter().filter_func(images)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
     def test_execute_min_only(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=0.2,
@@ -34,15 +28,10 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=0.1,
                                                 clip_max_new_value=None)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
-
-        npt.assert_approx_equal(result.min(), 0.1)
+        npt.assert_approx_equal(result.sample.min(), 0.1)
 
     def test_execute_max_only(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=None,
@@ -50,15 +39,10 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=None,
                                                 clip_max_new_value=0.9)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
-
-        npt.assert_approx_equal(result.max(), 0.9)
+        npt.assert_approx_equal(result.sample.max(), 0.9)
 
     def test_execute_min_max(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=0.2,
@@ -66,30 +50,19 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=0.1,
                                                 clip_max_new_value=0.9)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
-
-        npt.assert_approx_equal(result.min(), 0.1)
-        npt.assert_approx_equal(result.max(), 0.9)
+        npt.assert_approx_equal(result.sample.min(), 0.1)
+        npt.assert_approx_equal(result.sample.max(), 0.9)
 
     def test_execute_min_max_no_new_values(self):
-        images, control = th.gen_img_shared_array_and_copy()
-
+        images = th.generate_images_class_random_shared_array()
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=0.2,
                                                 clip_max=0.8,
                                                 clip_min_new_value=None,
                                                 clip_max_new_value=None)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
-
-        npt.assert_approx_equal(result.min(), 0.2)
-        npt.assert_approx_equal(result.max(), 0.8)
+        npt.assert_approx_equal(result.sample.min(), 0.2)
+        npt.assert_approx_equal(result.sample.max(), 0.8)
 
     def test_memory_change_acceptable(self):
         """
@@ -104,7 +77,7 @@ class ClipValuesFilterTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
@@ -116,11 +89,6 @@ class ClipValuesFilterTest(unittest.TestCase):
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
-
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
@@ -131,7 +99,7 @@ class ClipValuesFilterTest(unittest.TestCase):
             mock_widget.value = mock.Mock(return_value=0)
         execute_func = ClipValuesFilter().execute_wrapper(*mocks)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
         for mock_widget in mocks:

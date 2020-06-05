@@ -29,7 +29,7 @@ class RingRemovalTest(unittest.TestCase):
         npt.assert_equal(result.sample[0], original)
 
     def test_memory_change_acceptable(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         # invalid threshold
         run_ring_removal = False
 
@@ -38,11 +38,6 @@ class RingRemovalTest(unittest.TestCase):
         result = RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-        npt.assert_equal(result, control)
-        npt.assert_equal(images, control)
-
-        npt.assert_equal(result, images)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

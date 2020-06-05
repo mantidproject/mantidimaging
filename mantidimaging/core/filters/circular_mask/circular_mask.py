@@ -9,7 +9,7 @@ class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
 
     @staticmethod
-    def filter_func(data, circular_mask_ratio=None, circular_mask_value=0., progress=None):
+    def filter_func(data, circular_mask_ratio, circular_mask_value=0., progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
@@ -19,7 +19,7 @@ class CircularMaskFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        progress = Progress.ensure_instance(progress, task_name='Circular Mask')
+        progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
 
         if circular_mask_ratio and 0 < circular_mask_ratio < 1:
             tomopy = importer.do_importing('tomopy')
@@ -29,7 +29,7 @@ class CircularMaskFilter(BaseFilter):
 
                 # for some reason this doesn't like the ncore param, even though
                 # it's in the official tomopy docs
-                tomopy.circ_mask(arr=data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value)
+                tomopy.circ_mask(arr=data.sample, axis=0, ratio=circular_mask_ratio, val=circular_mask_value)
 
         return data
 

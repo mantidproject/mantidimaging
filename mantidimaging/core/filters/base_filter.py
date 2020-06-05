@@ -1,6 +1,8 @@
 from functools import partial
 from typing import TYPE_CHECKING, Any, Callable, Dict
 
+from mantidimaging.core.data import Images
+
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
 
@@ -14,8 +16,9 @@ class BaseFilter:
     All of this classes methods must be overridden, except sv_params and the do_before and do_after wrappers
     which are optional.
     """
+
     @staticmethod
-    def filter_func(data, *args, **kwargs):
+    def filter_func(data:Images, arg, **kwargs) -> Images:
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
         The body of this function does not need to include pre and post processing steps - these should be

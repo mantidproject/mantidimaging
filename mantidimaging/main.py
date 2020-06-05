@@ -4,6 +4,7 @@ import logging
 import warnings
 
 from mantidimaging import helper as h
+from mantidimaging.core.parallel import utility
 from mantidimaging.core.utility.optional_imports import safe_import
 
 formatwarning_orig = warnings.formatwarning
@@ -27,7 +28,7 @@ def parse_args():
         type=str,
         default="INFO",
         help="Log verbosity level. "
-        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+             "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
@@ -45,11 +46,10 @@ def main():
         return
 
     h.initialise_logging(logging.getLevelName(args.log_level))
-
     startup_checks()
+    utility.free_all()
 
     from mantidimaging import gui
-
     gui.execute()
 
 

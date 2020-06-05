@@ -23,14 +23,15 @@ class CutOffFilter(BaseFilter):
 
         if threshold and threshold > 0.0:
             with progress:
-                dmin = np.amin(data)
-                dmax = np.amax(data)
+                sample = data.sample
+                dmin = np.amin(sample)
+                dmax = np.amax(sample)
 
                 progress.update(msg=f"Applying cut-off with level: {threshold}, min value " f"{dmin}, max value {dmax}")
 
                 rel_cut_off = dmin + threshold * (dmax - dmin)
 
-                np.minimum(data, rel_cut_off, out=data)
+                np.minimum(sample, rel_cut_off, out=sample)
 
         return data
 

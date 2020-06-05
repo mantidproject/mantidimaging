@@ -2,8 +2,6 @@ from functools import partial
 from logging import getLogger
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
 
-import numpy as np
-
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.filters.loader import load_filter_packages
@@ -16,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):
@@ -85,27 +83,16 @@ class FiltersWindowModel(object):
             raise ValueError("Not all required parameters specified")
 
         # Do pre-processing and save result
-        preproc_result = do_before(images.sample)
+        preproc_result = do_before(images.sample, progress=progress)
         preproc_result = ensure_tuple(preproc_result)
 
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
-        ret_val = exec_func(images, **stack_params)
-
-        # Handle the return value from the algorithm dialog
-        if isinstance(ret_val, tuple):
-            # Tuples are assumed to be three elements containing sample, flat
-            # and dark images
-            images.sample, images.flat, images.dark = ret_val
-        elif isinstance(ret_val, np.ndarray):
-            # Single Numpy arrays are assumed to be just the sample image
-            images.sample = ret_val
-        else:
-            log.debug(f'Unknown execute return value: {type(ret_val)}')
+        exec_func(images, **stack_params)
 
         # Do postprocessing using return value of pre-processing as parameter
-        do_after(images.sample, *preproc_result)
+        do_after(images.sample, *preproc_result, progress=progress)
 
         # store the executed filter in history if it all executed successfully
         exec_func.keywords.update(stack_params)
