@@ -128,7 +128,6 @@ def reconstruct(sample,
     if num_iter:
         kwargs['num_iter'] = num_iter if num_iter else 1
 
-    volume = None
     with progress:
         volume = tomopy.recon(**kwargs)
 

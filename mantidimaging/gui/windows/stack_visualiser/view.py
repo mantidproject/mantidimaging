@@ -1,7 +1,8 @@
+from contextlib import contextmanager
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget, QApplication)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -87,31 +88,28 @@ class StackVisualiserView(BaseMainWindowView):
         return self.parent().parent()
 
     def closeEvent(self, event):
-        msgbox = QMessageBox(QMessageBox.Information, "Closing image view", "Freeing image memory")
-        msgbox.show()
+        with self.operation_in_progress("Closing image view", "Freeing image memory"):
+            # the image view renderer itself holds a reference to the sample data
+            # make sure to clear that first, so that freeing the memory in the presenter
+            self.image_view.clear()
+            self.image_view.close()
 
-        # the image view renderer itself holds a reference to the sample data
-        # make sure to clear that first, so that freeing the memory in the presenter
-        self.image_view.clear()
-        self.image_view.close()
+            # this removes all references to the data, allowing it to be GC'ed
+            # otherwise there is a hanging reference
+            self.presenter.delete_data()
 
-        # this removes all references to the data, allowing it to be GC'ed
-        # otherwise there is a hanging reference
-        self.presenter.delete_data()
+            # this could happen if run without a parent through see(..)
+            if not isinstance(self.window(), QDockWidget):
+                self.window().remove_stack(self)  # refers to MainWindow
 
-        # this could happen if run without a parent through see(..)
-        if not isinstance(self.window(), QDockWidget):
-            self.window().remove_stack(self)  # refers to MainWindow
+            # setting floating to false makes window() to return the MainWindow
+            # because the window will be docked in, however we delete it
+            # immediately after so no visible change occurs
+            self.dock.setFloating(False)
 
-        # setting floating to false makes window() to return the MainWindow
-        # because the window will be docked in, however we delete it
-        # immediately after so no visible change occurs
-        self.dock.setFloating(False)
-
-        self.deleteLater()
-        # refers to the QDockWidget within which the stack is contained
-        self.dock.deleteLater()
-        msgbox.close()
+            self.deleteLater()
+            # refers to the QDockWidget within which the stack is contained
+            self.dock.deleteLater()
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)
@@ -156,3 +154,13 @@ class StackVisualiserView(BaseMainWindowView):
     def show_op_history_copy_dialog(self):
         dialog = OpHistoryCopyDialogView(self, self.presenter.images, self.main_window)
         dialog.show()
+
+    @contextmanager
+    def operation_in_progress(self, title, message):
+        msgbox = None
+        try:
+            msgbox = QMessageBox(QMessageBox.Information, title, message)
+            msgbox.show()
+            yield
+        finally:
+            msgbox.close()

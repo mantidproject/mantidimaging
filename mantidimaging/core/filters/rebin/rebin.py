@@ -51,7 +51,7 @@ class RebinFilter(BaseFilter):
                 sample_name = None
             empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
             progress = Progress.ensure_instance(progress, num_steps=sample.shape[0], task_name='Rebin')
-            if pu.multiprocessing_available() and sample_name is not None:
+            if pu.multiprocessing_available() and sample_name is not None and False:
                 rebinned = _execute_par(sample, empty_resized_data, mode, cores, chunksize, progress)
             else:
                 rebinned = _execute_seq(sample, empty_resized_data, mode, progress)

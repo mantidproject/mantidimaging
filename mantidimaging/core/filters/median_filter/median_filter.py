@@ -38,7 +38,7 @@ class MedianFilter(BaseFilter):
         if size and size > 1:
             if not force_cpu:
                 data = _execute_gpu(data.sample, size, mode, progress)
-            elif pu.multiprocessing_available():
+            elif pu.multiprocessing_necessary(data.sample.shape, cores):
                 _execute_par(data.sample, size, mode, cores, chunksize, progress)
             else:
                 _execute_seq(data.sample, size, mode, progress)

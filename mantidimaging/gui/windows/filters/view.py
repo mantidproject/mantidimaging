@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout, QCheckBox
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
+    linkImages: QCheckBox
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
 
@@ -45,6 +46,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_vis_changed)
         self.linkImages.stateChanged.connect(self.link_images_changed)
+        self.linkImages.setChecked(True)
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)

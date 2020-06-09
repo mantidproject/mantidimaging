@@ -11,7 +11,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
 
 if TYPE_CHECKING:
@@ -22,8 +21,8 @@ MINIMUM_PIXEL_VALUE = 1e-9
 MAXIMUM_PIXEL_VALUE = 1e9
 
 
-class BackgroundCorrectionFilter(BaseFilter):
-    filter_name = 'Background Correction'
+class FlatFieldFilter(BaseFilter):
+    filter_name = 'Flat-fielding'
 
     @staticmethod
     def filter_func(data,
@@ -78,15 +77,7 @@ class BackgroundCorrectionFilter(BaseFilter):
         flat = get_average_image(flat_path_widget)
         dark = get_average_image(dark_path_widget)
 
-        return partial(BackgroundCorrectionFilter.filter_func, flat=flat, dark=dark)
-
-    @staticmethod
-    def do_before_wrapper() -> partial:
-        return partial(value_scaling.create_factors)
-
-    @staticmethod
-    def do_after_wrapper() -> partial:
-        return partial(value_scaling.apply_factor)
+        return partial(FlatFieldFilter.filter_func, flat=flat, dark=dark)
 
     @staticmethod
     def validate_execute_kwargs(kwargs):
