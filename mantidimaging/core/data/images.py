@@ -20,7 +20,8 @@ class Images:
                  indices: Optional[Tuple[int, int, int]] = None,
                  flat_filenames: Optional[List[str]] = None,
                  dark_filenames: Optional[List[str]] = None,
-                 metadata: Optional[Dict[str, Any]] = None):
+                 metadata: Optional[Dict[str, Any]] = None,
+                 sinograms=False):
         """
 
         :param sample: Images of the Sample/Projection data
@@ -43,6 +44,7 @@ class Images:
         self._dark_filenames = dark_filenames
 
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
+        self.sinograms = sinograms
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
@@ -58,7 +60,9 @@ class Images:
         # pu.delete_shared_array(f"{self._filenames[0]}-Dark")
 
     def free_sample(self):
-        pu.delete_shared_array(self.sample_name)
+        sample_name = self.sample_name
+        if sample_name is not None:
+            pu.delete_shared_array(self.sample_name)
         self.sample = None
 
     @property
@@ -108,3 +112,17 @@ class Images:
             const.OPERATION_DISPLAY_NAME:
             display_name
         })
+
+    def copy(self):
+        import uuid
+        from copy import deepcopy
+        sample_name = f"{uuid.uuid4()}"
+        # flat_name = f"{uuid.uuid4()}-Flat"
+        # dark_name = f"{uuid.uuid4()}-Dark"
+        sinogram_shape = (self.sample.shape[1], self.sample.shape[0], self.sample.shape[2])
+        sample_copy = pu.create_shared_array(f"{sample_name}-Sample", sinogram_shape, self.sample.dtype)
+        sample_copy[:] = np.swapaxes(self.sample, 0, 1)
+
+        images = Images(sample_copy, sample_filenames=[sample_name], indices=deepcopy(self.indices),
+                        metadata=deepcopy(self.metadata), sinograms=deepcopy(self.sinograms))
+        return images

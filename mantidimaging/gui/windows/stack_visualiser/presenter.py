@@ -1,10 +1,14 @@
 from enum import IntEnum
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
+
+if TYPE_CHECKING:
+    from .view import StackVisualiserView
 
 
 class SVNotification(IntEnum):
@@ -26,7 +30,9 @@ class SVImageMode(IntEnum):
 
 
 class StackVisualiserPresenter(BasePresenter):
-    def __init__(self, view, images: Images):
+    view: 'StackVisualiserView'
+
+    def __init__(self, view: 'StackVisualiserView', images: Images):
         super(StackVisualiserPresenter, self).__init__(view)
         self.model = SVModel()
         self.images = images
@@ -81,6 +87,8 @@ class StackVisualiserPresenter(BasePresenter):
         self.refresh_image()
 
     def create_swapped_axis_stack(self):
-        new_stack = Images(self.model.swap_axes(self.images.sample), metadata=self.images.metadata)
-        new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
-        self.view.parent_create_stack(new_stack, f"{self.view.name}_sino")
+        with self.view.operation_in_progress("Creating sinograms, copying data, this may take a while",
+                                             "The data is being copied, this may take a while."):
+            new_stack = self.images.copy()
+            new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
+            self.view.parent_create_stack(new_stack, f"{self.view.name}_sino")

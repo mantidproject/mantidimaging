@@ -113,7 +113,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.view.clear_previews()
         if stack is not None:
-            before_image_data = stack.get_image(self.model.preview_image_idx)
+            before_image_data = np.copy(stack.get_image(self.model.preview_image_idx))
             # Update image before
             self._update_preview_image(before_image_data, self.view.preview_image_before,
                                        self.view.previews.set_before_histogram)
@@ -134,7 +134,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self._update_preview_image(filtered_image_data, self.view.preview_image_after,
                                            self.view.previews.set_after_histogram)
 
-                diff = np.subtract(filtered_image_data, before_image_data) \
+                diff = np.negative(np.subtract(filtered_image_data, before_image_data)) \
                     if filtered_image_data.shape == before_image_data.shape else None
                 self._update_preview_image(diff, self.view.preview_image_difference, None)
 

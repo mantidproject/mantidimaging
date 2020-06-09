@@ -16,4 +16,4 @@ prevent bad values from causing issues with later filtering.
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.background_correction.BackgroundCorrectionFilter
+.. autoclass:: mantidimaging.core.filters.flat_fielding.FlatFieldingFilter

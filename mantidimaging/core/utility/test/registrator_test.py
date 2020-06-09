@@ -20,7 +20,7 @@ class RegistratorTest(unittest.TestCase):
         modules = list([m[1] for m in modules])
 
         self.assertEquals(modules, [
-            'mantidimaging.core.filters.background_correction', 'mantidimaging.core.filters.background_correction.test',
+            'mantidimaging.core.filters.flat_fielding', 'mantidimaging.core.filters.flat_fielding.test',
             'mantidimaging.core.filters.circular_mask', 'mantidimaging.core.filters.circular_mask.test',
             'mantidimaging.core.filters.clip_values', 'mantidimaging.core.filters.clip_values.test',
             'mantidimaging.core.filters.crop_coords', 'mantidimaging.core.filters.crop_coords.test',
@@ -45,7 +45,7 @@ class RegistratorTest(unittest.TestCase):
         modules = list([m[1] for m in modules])
 
         self.assertEquals(modules, [
-            'mantidimaging.core.filters.background_correction', 'mantidimaging.core.filters.circular_mask',
+            'mantidimaging.core.filters.flat_fielding', 'mantidimaging.core.filters.circular_mask',
             'mantidimaging.core.filters.clip_values', 'mantidimaging.core.filters.crop_coords',
             'mantidimaging.core.filters.cut_off', 'mantidimaging.core.filters.gaussian',
             'mantidimaging.core.filters.median_filter', 'mantidimaging.core.filters.minus_log',

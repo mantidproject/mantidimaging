@@ -3,6 +3,7 @@ from functools import partial
 import numpy as np
 
 from mantidimaging.core.filters.base_filter import BaseFilter
+from mantidimaging.core.parallel import utility
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
@@ -31,6 +32,8 @@ class OutliersFilter(BaseFilter):
         :return: The processed 3D numpy.ndarray
         """
         progress = Progress.ensure_instance(progress, task_name='Outliers', num_steps=2)
+        if not utility.multiprocessing_necessary(data.sample.shape, cores):
+            cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
             with progress:
@@ -38,17 +41,17 @@ class OutliersFilter(BaseFilter):
 
                 # we flip the histogram horizontally, this makes the darkest pixels
                 # the brightest
+                sample = data.sample
                 if mode == OUTLIERS_DARK:
-                    np.negative(data, out=data)
+                    np.negative(sample, out=sample)
 
                 tomopy = importer.do_importing('tomopy')
-                sample = data.sample
                 tomopy.misc.corr.remove_outlier(sample, diff, radius, ncore=cores, out=sample)
                 progress.update()
 
                 # reverse the inversion
                 if mode == OUTLIERS_DARK:
-                    np.negative(data, out=data)
+                    np.negative(sample, out=sample)
 
         return data
 

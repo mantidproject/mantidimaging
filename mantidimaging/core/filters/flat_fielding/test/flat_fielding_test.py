@@ -5,7 +5,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.filters.background_correction import BackgroundCorrectionFilter
+from mantidimaging.core.filters.flat_fielding import FlatFieldFilter
 
 
 class BackgroundCorrectionTest(unittest.TestCase):
@@ -24,7 +24,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         images = th.generate_images_class_random_shared_array()
 
         # empty params
-        result = BackgroundCorrectionFilter.filter_func(images)
+        result = FlatFieldFilter.filter_func(images)
 
         npt.assert_equal(result.sample, images.sample)
 
@@ -36,7 +36,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         flat = th.gen_img_shared_array()[0]
 
         # no dark
-        result = BackgroundCorrectionFilter.filter_func(images, flat[0])
+        result = FlatFieldFilter.filter_func(images, flat[0])
 
         npt.assert_equal(result.sample, images.sample)
 
@@ -48,7 +48,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # no flat
-        result = BackgroundCorrectionFilter.filter_func(images, None, dark[0])
+        result = FlatFieldFilter.filter_func(images, None, dark[0])
 
         npt.assert_equal(result.sample, images.sample)
 
@@ -61,7 +61,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad flat
-        npt.assert_raises(ValueError, BackgroundCorrectionFilter.filter_func, images, flat[0], dark)
+        npt.assert_raises(ValueError, FlatFieldFilter.filter_func, images, flat[0], dark)
 
     def test_not_executed_bad_dark(self):
         """
@@ -72,7 +72,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         dark = th.gen_img_shared_array()[0]
 
         # bad dark
-        npt.assert_raises(ValueError, BackgroundCorrectionFilter.filter_func, images, flat, dark[0])
+        npt.assert_raises(ValueError, FlatFieldFilter.filter_func, images, flat, dark[0])
 
     def test_real_result(self):
         th.switch_mp_off()
@@ -81,7 +81,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
     def do_real_result(self):
         # the calculation here was designed on purpose to have a value
-        # below the np.clip in background_correction
+        # below the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
         images = th.generate_images_class_random_shared_array()
         images.sample[:] = 26.
@@ -91,13 +91,13 @@ class BackgroundCorrectionTest(unittest.TestCase):
         expected = np.full(images.sample.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = BackgroundCorrectionFilter.filter_func(images, flat, dark, clip_max=20)
+        result = FlatFieldFilter.filter_func(images, flat, dark, clip_max=20)
 
         npt.assert_almost_equal(result.sample, expected, 7)
 
     def test_clip_max_works(self):
         # the calculation here was designed on purpose to have a value
-        # ABOVE the np.clip in background_correction
+        # ABOVE the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
         images = th.generate_images_class_random_shared_array()
         images.sample[:] = 846.
@@ -109,7 +109,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # the resulting values from the calculation are above 3,
         # but clip_max should make them all equal to 3
-        result = BackgroundCorrectionFilter.filter_func(images, flat, dark, clip_max=3)
+        result = FlatFieldFilter.filter_func(images, flat, dark, clip_max=3)
 
         npt.assert_equal(result.sample, expected)
         npt.assert_equal(images.sample, expected)
@@ -127,19 +127,19 @@ class BackgroundCorrectionTest(unittest.TestCase):
 
         # the resulting values from above are below 300,
         # but clip min should make all values below 300, equal to 300
-        result = BackgroundCorrectionFilter.filter_func(images, flat, dark, clip_min=300)
+        result = FlatFieldFilter.filter_func(images, flat, dark, clip_min=300)
 
         npt.assert_equal(result.sample, expected)
         npt.assert_equal(images.sample, expected)
 
         npt.assert_equal(result.sample, images.sample)
 
-    @mock.patch(f'{BackgroundCorrectionFilter.__module__ + ".get_average_image"}', mock.MagicMock(return_value=None))
+    @mock.patch(f'{FlatFieldFilter.__module__ + ".get_average_image"}', mock.MagicMock(return_value=None))
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        execute_func = BackgroundCorrectionFilter.execute_wrapper(flat_path_widget=None, dark_path_widget=None)
+        execute_func = FlatFieldFilter.execute_wrapper(flat_path_widget=None, dark_path_widget=None)
         images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
