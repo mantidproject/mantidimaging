@@ -49,8 +49,8 @@ def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, ind
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    flat_avg, flat_filenames, flat_mfname = il.load_data(flat_path, "Flat")
-    dark_avg, dark_filenames, dark_mfname = il.load_data(dark_path, "Dark")
+    flat_avg, flat_filenames, flat_mfname = il.load_data(flat_path)
+    dark_avg, dark_filenames, dark_mfname = il.load_data(dark_path)
     sample_data, sample_mfname = il.load_sample_data(chosen_input_filenames)
 
     return Images(sample_data, flat_avg, dark_avg, chosen_input_filenames, indices, flat_filenames, dark_filenames,
@@ -71,7 +71,7 @@ class ImageLoader(object):
     def load_sample_data(self, input_file_names):
         # determine what the loaded data was
         if len(self.img_shape) == 2:
-            memory_file_name = pu.create_shared_name(input_file_names[0], "Sample")
+            memory_file_name = pu.create_shared_name(input_file_names[0])
             # the loaded file was a single image
             sample_data = self.load_files(input_file_names, memory_file_name), memory_file_name
         elif len(self.img_shape) == 3:
@@ -87,11 +87,11 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_data(self, file_path, name=None) -> Union[Tuple[np.ndarray, List[str], str], Tuple[None, None, None]]:
+    def load_data(self, file_path) -> Union[Tuple[np.ndarray, List[str], str], Tuple[None, None, None]]:
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
-            memory_file_name = pu.create_shared_name(file_names[0], name)
-            return self.load_files(file_names, name), file_names, memory_file_name
+            memory_file_name = pu.create_shared_name(file_names[0])
+            return self.load_files(file_names, memory_file_name), file_names, memory_file_name
         return None, None, None
 
     def _do_files_load_seq(self, data, files, name):

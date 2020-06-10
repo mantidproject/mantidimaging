@@ -25,9 +25,9 @@ atexit.register(free_all)
 DTYPE_TYPES = Union[str, np.dtype, int]
 
 
-def create_shared_name(file_name, data_name) -> str:
+def create_shared_name(file_name) -> str:
     import uuid
-    return f"{uuid.uuid4()}-{os.path.basename(file_name)}-{data_name if data_name is not None else ''}"
+    return f"{uuid.uuid4()}-{os.path.basename(file_name)}"
 
 
 def delete_shared_array(name, silent_failure=False):
