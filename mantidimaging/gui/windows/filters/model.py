@@ -83,7 +83,7 @@ class FiltersWindowModel(object):
             raise ValueError("Not all required parameters specified")
 
         # Do pre-processing and save result
-        preproc_result = do_before(images.sample, progress=progress)
+        preproc_result = do_before(images.sample)
         preproc_result = ensure_tuple(preproc_result)
 
         # Run filter
@@ -92,7 +92,7 @@ class FiltersWindowModel(object):
         exec_func(images, **stack_params)
 
         # Do postprocessing using return value of pre-processing as parameter
-        do_after(images.sample, *preproc_result, progress=progress)
+        do_after(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
         exec_func.keywords.update(stack_params)
