@@ -1,13 +1,17 @@
-from copy import deepcopy
 from enum import Enum
 from logging import getLogger
-from typing import Any, Dict
+from typing import TYPE_CHECKING
 from uuid import UUID
 
-from mantidimaging.gui.dialogs.async_task import start_async_task_view
+from PyQt5.QtWidgets import QDockWidget
+
 from mantidimaging.core.data import Images
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import MainWindowModel
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView
 
 
 class Notification(Enum):
@@ -18,6 +22,8 @@ class Notification(Enum):
 class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
     SAVE_ERROR_STRING = "Failed to save stack. Error: {}"
+
+    view: 'MainWindowView'
 
     def __init__(self, view):
         super(MainWindowPresenter, self).__init__(view)
@@ -50,28 +56,6 @@ class MainWindowPresenter(BasePresenter):
         if 'sample_path' not in kwargs or not kwargs['sample_path']:
             raise ValueError("No sample path provided, cannot load anything")
 
-        if 'staged_load' in kwargs and kwargs['staged_load']:
-            self.execute_staged_load(kwargs)
-        else:
-            start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, kwargs)
-
-    def execute_staged_load(self, kwargs: Dict[str, Any]) -> None:
-        """
-        Starts a task to load a preview of the stack and another to load the stack with the original step size.
-
-        :param kwargs: the parameters to use for loading
-        """
-        # Set the 'preview' to load 1/10 of the images
-        preview_kwargs = deepcopy(kwargs)
-        indices = kwargs['indices']
-        preview_kwargs['indices'] = indices.start, indices.end, (indices.end - indices.start) // 10
-
-        if 'custom_name' not in preview_kwargs or not preview_kwargs['custom_name']:
-            preview_kwargs['custom_name'] = preview_kwargs['selected_file'].split(".")[0] + "_preview"
-        else:
-            preview_kwargs['custom_name'] += "_preview"
-
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, preview_kwargs)
         start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, kwargs)
 
     def _on_stack_load_done(self, task):
@@ -91,11 +75,27 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg)
 
-    def create_new_stack(self, data: Images, title: str):
+    def create_new_stack(self, images: Images, title: str):
         title = self.model.create_name(title)
-        dock_widget = self.view.create_stack_window(data, title=title)
-        stack_visualiser = dock_widget.widget()
-        self.model.add_stack(stack_visualiser, dock_widget)
+
+        def add_stack(images, title) -> QDockWidget:
+            dock = self.view.create_stack_window(images, title=title)
+            stack_visualiser = dock.widget()
+            self.model.add_stack(stack_visualiser, dock)
+            return dock
+
+        sample_dock = add_stack(images, title)
+        if images.flat is not None:
+            # doesn't pass the memory file - closing this stack will not free the memory
+            flat_dock = add_stack(Images(images.flat, sample_filenames=images.flat_filenames),
+                                  title=f"{title}-Flat")
+            self.view.tabifyDockWidget(sample_dock, flat_dock)
+
+        if images.dark is not None:
+            # doesn't pass the memory file - closing this stack will not free the memory
+            dark_dock = add_stack(Images(images.dark, sample_filenames=images.dark_filenames),
+                                  title=f"{title}-Dark")
+            self.view.tabifyDockWidget(sample_dock, dark_dock)
         self.view.active_stacks_changed.emit()
 
     def save(self):

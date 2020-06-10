@@ -4,6 +4,7 @@ import os
 import re
 
 from logging import getLogger
+from typing import List
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
@@ -48,7 +49,7 @@ def get_candidate_file_extensions(ext):
     return [ext] + candidates
 
 
-def get_file_names(path, img_format, prefix='', essential=True):
+def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
     """
     Get all file names in a directory with a specific format.
     :param path: The path to be checked.
@@ -136,6 +137,7 @@ def _alphanum_key_split(path_str):
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()
 
 

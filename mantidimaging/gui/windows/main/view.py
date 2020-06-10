@@ -160,24 +160,24 @@ class MainWindowView(BaseMainWindowView):
                             title: str,
                             position=QtCore.Qt.TopDockWidgetArea,
                             floating=False) -> Qt.QDockWidget:
-        dock_widget = Qt.QDockWidget(title, self)
+        dock = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
-        self.setCentralWidget(dock_widget)
+        self.setCentralWidget(dock)
 
         # add the dock widget into the main window
-        self.addDockWidget(position, dock_widget)
+        self.addDockWidget(position, dock)
 
         # we can get the stack visualiser widget with dock_widget.widget
-        dock_widget.setWidget(StackVisualiserView(self, dock_widget, stack))
+        dock.setWidget(StackVisualiserView(self, dock, stack))
 
         # proof of concept above
-        assert isinstance(dock_widget.widget(),
+        assert isinstance(dock.widget(),
                           StackVisualiserView), "Widget inside dock_widget is not an StackVisualiserView!"
 
-        dock_widget.setFloating(floating)
+        dock.setFloating(floating)
 
-        return dock_widget
+        return dock
 
     def remove_stack(self, obj: StackVisualiserView):
         getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)

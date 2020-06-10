@@ -163,28 +163,6 @@
        </item>
       </layout>
      </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QCheckBox" name="staged_load">
-       <property name="cursor">
-        <cursorShape>ArrowCursor</cursorShape>
-       </property>
-       <property name="toolTip">
-        <string>Simultaneously load a preview and the full stack. Useful for quickly working with large stacks.</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Staged load</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>

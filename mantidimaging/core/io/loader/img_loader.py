@@ -49,11 +49,14 @@ def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, ind
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    flat_avg, flat_filenames = il.load_and_avg_data(flat_path, "Flat")
-    dark_avg, dark_filenames = il.load_and_avg_data(dark_path, "Dark")
-    sample_data = il.load_sample_data(chosen_input_filenames)
+    flat_avg, flat_filenames, flat_mfname = il.load_data(flat_path, "Flat")
+    dark_avg, dark_filenames, dark_mfname = il.load_data(dark_path, "Dark")
+    sample_data, sample_mfname = il.load_sample_data(chosen_input_filenames)
 
-    return Images(sample_data, flat_avg, dark_avg, chosen_input_filenames, indices, flat_filenames, dark_filenames)
+    return Images(sample_data, flat_avg, dark_avg, chosen_input_filenames, indices, flat_filenames, dark_filenames,
+                  sample_memory_file_name=sample_mfname,
+                  flat_memory_file_name=flat_mfname,
+                  dark_memory_file_name=dark_mfname)
 
 
 class ImageLoader(object):
@@ -68,8 +71,9 @@ class ImageLoader(object):
     def load_sample_data(self, input_file_names):
         # determine what the loaded data was
         if len(self.img_shape) == 2:
+            memory_file_name = pu.create_shared_name(input_file_names[0], "Sample")
             # the loaded file was a single image
-            sample_data = self.load_files(input_file_names, "Sample")
+            sample_data = self.load_files(input_file_names, memory_file_name), memory_file_name
         elif len(self.img_shape) == 3:
             # the loaded file was a file containing a stack of images
             sample_data = stack_loader.execute(self.load_func,
@@ -83,12 +87,12 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_and_avg_data(self, file_path, name=None) -> Union[Tuple[np.ndarray, List[str]], Tuple[None, None]]:
+    def load_data(self, file_path, name=None) -> Union[Tuple[np.ndarray, List[str], str], Tuple[None, None, None]]:
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
-            data = self.load_files(file_names, name)
-            return _get_data_average(data), file_names
-        return None, None
+            memory_file_name = pu.create_shared_name(file_names[0], name)
+            return self.load_files(file_names, name), file_names, memory_file_name
+        return None, None, None
 
     def _do_files_load_seq(self, data, files, name):
         num_images = len(files)
@@ -109,13 +113,13 @@ class ImageLoader(object):
 
         return data
 
-    def load_files(self, files, name=None):
+    def load_files(self, files, memory_name=None) -> np.ndarray:
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         num_images = len(files)
         shape = (num_images, self.img_shape[0], self.img_shape[1])
-        data = pu.create_shared_array(name=f"{files[0]}-{name}", shape=shape, dtype=self.data_dtype)
-        return self._do_files_load_seq(data, files, name)
+        data = pu.create_shared_array(memory_name, shape, self.data_dtype)
+        return self._do_files_load_seq(data, files, memory_name)
 
 
 def _get_data_average(data):
