@@ -85,22 +85,25 @@ class MWLoadDialog(Qt.QDialog):
             self.last_shape = (0, 0, 0)
 
         sample_dirname = Path(dirname)
-        expected_flat_path = sample_dirname / ".." / "Flat_After"
-        try:
-            flat_path_filenames = get_file_names(expected_flat_path.absolute(), self.image_format)
-            self.flat_path.setText(flat_path_filenames[0])
-        except Exception as e:
-            getLogger(__name__).info(f"Could not find flat files in {expected_flat_path.absolute()}")
-
-        expected_dark_path = sample_dirname / ".." / "Dark_Before"
-        try:
-            dark_path_filenames = get_file_names(expected_dark_path.absolute(), self.image_format)
-            self.dark_path.setText(dark_path_filenames[0])
-        except Exception as e:
-            getLogger(__name__).info(f"Could not find dark files in {expected_dark_path.absolute()}")
+        self.flat_path.setText(self._find_images(sample_dirname, "Flat"))
+        self.dark_path.setText(self._find_images(sample_dirname, "Dark"))
 
         self.update_indices(self.last_shape[0])
         self.update_expected_mem_usage()
+
+    def _find_images(self, sample_dirname: Path, type: str) -> str:
+        expected_path = sample_dirname / ".." / f"{type}_After"
+        try:
+            path_filenames = get_file_names(expected_path.absolute(), self.image_format)
+            return path_filenames[0]
+        except Exception as e:
+            getLogger(__name__).info(f"Could not find {type} files in {expected_path.absolute()}")
+            expected_path = sample_dirname / ".." / f"{type}_Before"
+            try:
+                path_filenames = get_file_names(expected_path.absolute(), self.image_format)
+                return path_filenames[0]
+            except Exception as e:
+                getLogger(__name__).info(f"Could not find {type} files in {expected_path.absolute()}")
 
     def update_indices(self, number_of_images):
         """
