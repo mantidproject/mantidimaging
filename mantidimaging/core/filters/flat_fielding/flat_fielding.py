@@ -26,7 +26,7 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def filter_func(data,
-                    flat=None,
+                    flat,
                     dark=None,
                     clip_min=MINIMUM_PIXEL_VALUE,
                     clip_max=MAXIMUM_PIXEL_VALUE,
@@ -52,7 +52,7 @@ class FlatFieldFilter(BaseFilter):
                 raise ValueError(f"Incorrect shape of the flat image ({flat.shape}) or dark image ({dark.shape}) \
                     which should match the shape of the sample images ({data.sample.shape})")
 
-            if pu.multiprocessing_available():
+            if pu.multiprocessing_necessary(data.sample.shape, cores):
                 _execute_par(data.sample, flat, dark, clip_min, clip_max, cores, chunksize, progress)
             else:
                 _execute_seq(data.sample, flat, dark, clip_min, clip_max, progress)
@@ -63,9 +63,10 @@ class FlatFieldFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
-
-        flat_path_widget, _ = add_property_to_form("Flat", "file", form=form, on_change=on_change)
-        dark_path_widget, _ = add_property_to_form("Dark", "file", form=form, on_change=on_change)
+        # FIXME figure out how to get access to the available stacks
+        # look for the filter window stack selector, and copy it basically
+        flat_path_widget, _ = add_property_to_form("Flat", "stack", form=form, on_change=on_change)
+        dark_path_widget, _ = add_property_to_form("Dark", "stack", form=form, on_change=on_change)
 
         return {
             'flat_path_widget': flat_path_widget,

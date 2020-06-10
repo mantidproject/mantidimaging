@@ -25,13 +25,14 @@ atexit.register(free_all)
 DTYPE_TYPES = Union[str, np.dtype, int]
 
 
-def _format_name(name):
-    return os.path.basename(name)
+def create_shared_name(file_name, data_name) -> str:
+    import uuid
+    return f"{uuid.uuid4()}-{os.path.basename(file_name)}-{data_name if data_name is not None else ''}"
 
 
 def delete_shared_array(name, silent_failure=False):
     try:
-        sa.delete(f"shm://{_format_name(name)}")
+        sa.delete(f"shm://{name}")
     except FileNotFoundError as e:
         if not silent_failure:
             raise e
@@ -60,9 +61,8 @@ def create_shared_array(name: Optional[str],
     :param shape:
     :param name: Name used for the shared memory file by which this memory chunk will be identified
     """
-    formatted_name = _format_name(name)
-    LOG.info(f"Requested shared array with name='{formatted_name}', shape={shape}, dtype={dtype}")
-    memory_file_name = f"shm://{formatted_name}"
+    LOG.info(f"Requested shared array with name='{name}', shape={shape}, dtype={dtype}")
+    memory_file_name = f"shm://{name}"
     arr = sa.create(memory_file_name, shape, dtype)
     return arr
 

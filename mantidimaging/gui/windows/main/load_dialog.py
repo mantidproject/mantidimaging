@@ -1,13 +1,14 @@
 import os
 from collections import namedtuple
 from logging import getLogger
+from pathlib import Path
 from typing import Dict, Optional, Any
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QCheckBox, QComboBox
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QComboBox
 
 from mantidimaging.core.io.loader import read_in_shape
-from mantidimaging.core.io.utility import get_file_extension, get_prefix
+from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
 from mantidimaging.core.utility import size_calculator
 from mantidimaging.gui.utility import (compile_ui, select_file)
 
@@ -28,7 +29,6 @@ class MWLoadDialog(Qt.QDialog):
     dark_flat_button: QPushButton
     dark_widget: QWidget
     flat_widget: QWidget
-    staged_load: QCheckBox
 
     pixel_bit_depth: QComboBox
 
@@ -75,14 +75,29 @@ class MWLoadDialog(Qt.QDialog):
         sample_filename = self.sample_file()
         self.image_format = get_file_extension(sample_filename)
 
+        filename = self.sample_path_text()
+        dirname = self.sample_path_directory()
         try:
-            filename = self.sample_path_text()
-            dirname = self.sample_path_directory()
             self.last_shape = read_in_shape(dirname, in_prefix=get_prefix(filename), in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
             self.parent_view.presenter.show_error("Failed to read this file. See log for details.")
             self.last_shape = (0, 0, 0)
+
+        sample_dirname = Path(dirname)
+        expected_flat_path = sample_dirname / ".." / "Flat_After"
+        try:
+            flat_path_filenames = get_file_names(expected_flat_path.absolute(), self.image_format)
+            self.flat_path.setText(flat_path_filenames[0])
+        except Exception as e:
+            getLogger(__name__).info(f"Could not find flat files in {expected_flat_path.absolute()}")
+
+        expected_dark_path = sample_dirname / ".." / "Dark_Before"
+        try:
+            dark_path_filenames = get_file_names(expected_dark_path.absolute(), self.image_format)
+            self.dark_path.setText(dark_path_filenames[0])
+        except Exception as e:
+            getLogger(__name__).info(f"Could not find dark files in {expected_dark_path.absolute()}")
 
         self.update_indices(self.last_shape[0])
         self.update_expected_mem_usage()
@@ -170,10 +185,11 @@ class MWLoadDialog(Qt.QDialog):
         return {
             'selected_file': self.sample_file(),
             'sample_path': self.sample_path_directory(),
+            'flat_path': self.flat_path_directory(),
+            'dark_path': self.dark_path_directory(),
             'in_prefix': get_prefix(self.sample_path_text()),
             'image_format': self.image_format,
             'indices': self.indices,
             'custom_name': self.window_title(),
-            'staged_load': self.staged_load.isChecked(),
             'dtype': self.pixel_bit_depth.currentText()
         }

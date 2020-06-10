@@ -21,7 +21,10 @@ class Images:
                  flat_filenames: Optional[List[str]] = None,
                  dark_filenames: Optional[List[str]] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 sinograms=False):
+                 sinograms=False,
+                 sample_memory_file_name=None,
+                 flat_memory_file_name=None,
+                 dark_memory_file_name=None):
         """
 
         :param sample: Images of the Sample/Projection data
@@ -40,11 +43,15 @@ class Images:
         self.indices = indices
 
         self._filenames = sample_filenames
-        self._flat_filenames = flat_filenames
-        self._dark_filenames = dark_filenames
+        self.flat_filenames = flat_filenames
+        self.dark_filenames = dark_filenames
 
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self.sinograms = sinograms
+
+        self.sample_memory_file_name = sample_memory_file_name
+        self.flat_memory_file_name = flat_memory_file_name
+        self.dark_memory_file_name = dark_memory_file_name
 
     def __str__(self):
         return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
@@ -56,21 +63,23 @@ class Images:
 
     def free_memory(self):
         self.free_sample()
-        # pu.delete_shared_array(f"{self._filenames[0]}-Flat")
-        # pu.delete_shared_array(f"{self._filenames[0]}-Dark")
+        self.free_flat()
+        self.free_dark()
 
     def free_sample(self):
-        sample_name = self.sample_name
-        if sample_name is not None:
-            pu.delete_shared_array(self.sample_name)
+        if self.sample_memory_file_name is not None:
+            pu.delete_shared_array(self.sample_memory_file_name)
         self.sample = None
 
-    @property
-    def sample_name(self):
-        if self._filenames is not None:
-            return f"{self._filenames[0]}-Sample"
-        else:
-            return None
+    def free_flat(self):
+        if self.flat_memory_file_name is not None:
+            pu.delete_shared_array(self.flat_memory_file_name)
+        self.flat = None
+
+    def free_dark(self):
+        if self.dark_memory_file_name is not None:
+            pu.delete_shared_array(self.dark_memory_file_name)
+        self.dark = None
 
     @property
     def filenames(self) -> Optional[List[str]]:
