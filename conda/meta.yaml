@@ -27,6 +27,7 @@ requirements:
     - scikit-image
     - sharedarray
     - numpy
+    # version locked due to v3 being incompatible
     - matplotlib =2.2.3
     - tomopy
     - requests
