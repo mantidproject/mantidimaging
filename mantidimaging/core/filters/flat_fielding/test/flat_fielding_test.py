@@ -139,7 +139,7 @@ class BackgroundCorrectionTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        execute_func = FlatFieldFilter.execute_wrapper(flat_path_widget=None, dark_path_widget=None)
+        execute_func = FlatFieldFilter.execute_wrapper(flat_widget=None, dark_widget=None)
         images = th.generate_images_class_random_shared_array()
         execute_func(images)
 

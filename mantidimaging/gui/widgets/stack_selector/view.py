@@ -1,14 +1,20 @@
+from typing import TYPE_CHECKING
+
 from PyQt5 import Qt
 
 from .presenter import (StackSelectorWidgetPresenter, Notification)
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView
+
 
 class StackSelectorWidgetView(Qt.QComboBox):
-
     stacks_updated = Qt.pyqtSignal()
 
     stack_selected_int = Qt.pyqtSignal(int)
     stack_selected_uuid = Qt.pyqtSignal('PyQt_PyObject')
+
+    main_window: 'MainWindowView'
 
     def __init__(self, parent):
         super(StackSelectorWidgetView, self).__init__(parent)
@@ -17,7 +23,7 @@ class StackSelectorWidgetView(Qt.QComboBox):
 
         self.currentIndexChanged[int].connect(self.presenter.handle_selection)
 
-    def subscribe_to_main_window(self, main_window):
+    def subscribe_to_main_window(self, main_window: 'MainWindowView'):
         self.main_window = main_window
 
         # Initial population of stack list
@@ -41,3 +47,6 @@ class StackSelectorWidgetView(Qt.QComboBox):
         Handle a change in loaded stacks.
         """
         self.presenter.notify(Notification.RELOAD_STACKS)
+
+    def current(self):
+        return self.presenter.current_stack

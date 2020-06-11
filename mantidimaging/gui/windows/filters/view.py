@@ -6,6 +6,7 @@ from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (delete_all_widgets_from_layout)
+from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
@@ -20,6 +21,7 @@ class FiltersWindowView(BaseMainWindowView):
     linkImages: QCheckBox
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
+    stackSelector: StackSelectorWidgetView
 
     def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
@@ -44,7 +46,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.clear_previews()
 
         self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
-        self.showHistogramLegend.stateChanged.connect(self.histogram_legend_vis_changed)
+        self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)
         self.linkImages.stateChanged.connect(self.link_images_changed)
         self.linkImages.setChecked(True)
 
@@ -95,7 +97,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.previews.combined_histograms = self.combinedHistograms.isChecked()
         self.previews.redraw_histograms()
 
-    def histogram_legend_vis_changed(self):
+    def histogram_legend_is_changed(self):
         self.previews.histogram_legend_visible = self.showHistogramLegend.isChecked()
         legend = self.previews.histogram_legend
         if legend:

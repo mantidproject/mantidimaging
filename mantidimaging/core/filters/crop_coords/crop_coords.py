@@ -61,7 +61,7 @@ class CropCoordinatesFilter(BaseFilter):
             return data, execute_single(flat, roi, progress), execute_single(dark, roi, progress)
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         add_property_to_form('Select ROI on stack visualiser.', 'label', form=form)

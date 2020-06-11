@@ -43,7 +43,7 @@ class CircularMaskFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         _, radius_field = add_property_to_form('Radius', 'float', 0.95, (0.0, 1.0), form=form, on_change=on_change)

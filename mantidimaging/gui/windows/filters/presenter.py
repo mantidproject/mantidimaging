@@ -1,6 +1,7 @@
 from enum import Enum
 from logging import getLogger
 from typing import Callable, Any, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from pyqtgraph import ImageItem
@@ -12,6 +13,10 @@ from mantidimaging.gui.utility import (BlockQtSignals, get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
 from .model import FiltersWindowModel
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.filters import FiltersWindowView
+
 
 class Notification(Enum):
     REGISTER_ACTIVE_FILTER = 1
@@ -22,7 +27,7 @@ class Notification(Enum):
 
 
 class FiltersWindowPresenter(BasePresenter):
-    def __init__(self, view, main_window):
+    def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
         super(FiltersWindowPresenter, self).__init__(view)
 
         self.model = FiltersWindowModel()
@@ -94,9 +99,10 @@ class FiltersWindowPresenter(BasePresenter):
         # Get registration function for new filter
         register_func = self.model.filter_registration_func(filter_idx)
 
-        # Register new filter (adding it's property widgets to the properties
-        # layout)
-        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit)
+        # Register new filter (adding it's property widgets to the properties layout)
+        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout,
+                                             self.view.auto_update_triggered.emit,
+                                             self.view)
         self.model.setup_filter(filter_idx, filter_widget_kwargs)
 
     def filter_uses_parameter(self, parameter):
@@ -134,7 +140,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self._update_preview_image(filtered_image_data, self.view.preview_image_after,
                                            self.view.previews.set_after_histogram)
 
-                diff = np.negative(np.subtract(filtered_image_data, before_image_data)) \
+                diff = np.subtract(filtered_image_data, before_image_data) \
                     if filtered_image_data.shape == before_image_data.shape else None
                 self._update_preview_image(diff, self.view.preview_image_difference, None)
 

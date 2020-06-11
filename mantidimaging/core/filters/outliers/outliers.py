@@ -56,7 +56,7 @@ class OutliersFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         _, diff_field = add_property_to_form('Difference',
                                              'int',
                                              1, (-1000000, 1000000),

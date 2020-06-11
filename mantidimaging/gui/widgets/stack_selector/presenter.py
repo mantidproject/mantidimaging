@@ -16,6 +16,7 @@ class StackSelectorWidgetPresenter(BasePresenter):
         super(StackSelectorWidgetPresenter, self).__init__(view)
 
         self.stack_uuids = []
+        self.current_stack = None
 
     def notify(self, signal):
         try:
@@ -55,4 +56,5 @@ class StackSelectorWidgetPresenter(BasePresenter):
         self.view.stack_selected_int.emit(index)
 
         uuid = self.stack_uuids[index] if self.stack_uuids else None
+        self.current_stack = uuid
         self.view.stack_selected_uuid.emit(uuid)

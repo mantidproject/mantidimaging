@@ -46,7 +46,7 @@ class GaussianFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         _, size_field = add_property_to_form('Kernel Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
 
         _, order_field = add_property_to_form('Order', 'int', 0, (0, 3), form=form, on_change=on_change)

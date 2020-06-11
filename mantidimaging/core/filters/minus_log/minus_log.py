@@ -45,6 +45,6 @@ class MinusLogFilter(BaseFilter):
         return partial(MinusLogFilter.filter_func, minus_log=True)
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         # Not much here, this filter does one thing and one thing only.
         return {}

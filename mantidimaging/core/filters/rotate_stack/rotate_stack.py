@@ -57,7 +57,7 @@ class RotateFilter(BaseFilter):
             return data, flat, dark
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         _, rotation_count = add_property_to_form('Number of rotations clockwise',

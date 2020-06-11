@@ -15,6 +15,7 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
+
     def __init__(self, q_objects):
         from PyQt5 import Qt
         for obj in q_objects:
@@ -75,15 +76,16 @@ def get_value_from_qwidget(widget: QWidget):
 
 
 def add_property_to_form(
-    label,
-    dtype,
-    default_value=None,
-    valid_values=None,
-    tooltip=None,
-    on_change=None,
-    form=None
-) -> Tuple[Union[QLabel, QLineEdit], Optional[Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox,
-                                                    QComboBox]]]:
+        label,
+        dtype,
+        default_value=None,
+        valid_values=None,
+        tooltip=None,
+        on_change=None,
+        form=None,
+        filters_view=None) -> Tuple[
+    Union[QLabel, QLineEdit],
+    Optional[Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox]]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -120,7 +122,6 @@ def add_property_to_form(
         if default_value:
             box.setValue(cast_func(default_value))
 
-    # Set up data type dependant widgets
     if dtype == 'file':
         left_widget = Qt.QLineEdit()
         right_widget = Qt.QPushButton(label)
@@ -173,6 +174,11 @@ def add_property_to_form(
 
     elif dtype == 'label':
         pass
+
+    elif dtype == 'stack':
+        from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+        right_widget = StackSelectorWidgetView(filters_view)
+
     else:
         raise ValueError("Unknown data type")
 
