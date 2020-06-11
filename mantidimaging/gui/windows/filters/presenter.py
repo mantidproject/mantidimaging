@@ -27,10 +27,12 @@ class Notification(Enum):
 
 
 class FiltersWindowPresenter(BasePresenter):
+    view: 'FiltersWindowView'
+
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
         super(FiltersWindowPresenter, self).__init__(view)
 
-        self.model = FiltersWindowModel()
+        self.model = FiltersWindowModel(self)
         self.main_window = main_window
 
     def notify(self, signal):
@@ -133,15 +135,22 @@ class FiltersWindowPresenter(BasePresenter):
                 self.model.apply_filter(sub_images, exec_kwargs)
                 filtered_image_data = sub_images.sample[0]
             except Exception as e:
-                log.debug("Error applying filter for preview: {}".format(e))
+                msg = f"Error applying filter for preview: {e}"
+                log.error(msg)
+                self.show_error(msg)
 
             # Update image after and difference
             if filtered_image_data is not None:
                 self._update_preview_image(filtered_image_data, self.view.preview_image_after,
                                            self.view.previews.set_after_histogram)
 
-                diff = np.subtract(filtered_image_data, before_image_data) \
-                    if filtered_image_data.shape == before_image_data.shape else None
+                if filtered_image_data.shape == before_image_data.shape:
+                    diff = np.subtract(filtered_image_data, before_image_data)
+                    if self.view.invertDifference.isChecked():
+                        diff = np.negative(diff, out=diff)
+                else:
+                    diff = None
+
                 self._update_preview_image(diff, self.view.preview_image_difference, None)
 
     @staticmethod

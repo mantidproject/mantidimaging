@@ -6,12 +6,13 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.filters.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
-from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401
+    from mantidimaging.gui.windows.filters import FiltersWindowPresenter
 
 
 def ensure_tuple(val):
@@ -23,9 +24,10 @@ class FiltersWindowModel(object):
     selected_filter: BaseFilter
     filter_widget_kwargs: Dict[str, Any]
 
-    def __init__(self):
+    def __init__(self, presenter: 'FiltersWindowPresenter'):
         super(FiltersWindowModel, self).__init__()
 
+        self.presenter = presenter
         # Update the local filter registry
         self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
 
@@ -41,7 +43,7 @@ class FiltersWindowModel(object):
         return [f.filter_name for f in self.filters]
 
     def filter_registration_func(self, filter_idx: int) -> Callable[
-        ['QFormLayout', Callable, BasePresenter], Dict[str, Any]]:
+        ['QFormLayout', Callable, BaseMainWindowView], Dict[str, Any]]:
         """
         Gets the function used to register the GUI of a given filter.
 
@@ -103,5 +105,8 @@ class FiltersWindowModel(object):
         stack_params = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
         apply_func = partial(self.apply_filter, self.stack_presenter.images, stack_params)
 
-        start_async_task_view(self.stack_presenter.view, apply_func,
-                              lambda _: self.stack_presenter.notify(SVNotification.REFRESH_IMAGE))
+        def post_filter(_):
+            self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
+            self.presenter.do_update_previews()
+
+        start_async_task_view(self.stack_presenter.view, apply_func, post_filter)

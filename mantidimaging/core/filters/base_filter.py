@@ -7,7 +7,7 @@ from mantidimaging.core.data import Images
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
-    from mantidimaging.gui.mvp_base import BasePresenter
+    from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 
 class BaseFilter:
@@ -45,7 +45,7 @@ class BaseFilter:
         return partial(lambda: None)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
         """
         Adds any required input widgets to the given form and returns references to them.
 

@@ -31,7 +31,7 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        progress = Progress.ensure_instance(progress, task_name='Outliers', num_steps=2)
+        progress = Progress.ensure_instance(progress, task_name='Outliers', num_steps=3)
         if not utility.multiprocessing_necessary(data.sample.shape, cores):
             cores = 1
 
@@ -58,8 +58,8 @@ class OutliersFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change, view):
         _, diff_field = add_property_to_form('Difference',
-                                             'int',
-                                             1, (-1000000, 1000000),
+                                             'float',
+                                             1, valid_values=(-1000000, 1000000),
                                              form=form,
                                              on_change=on_change)
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>980</width>
     <height>600</height>
    </rect>
   </property>
@@ -132,6 +132,24 @@
             </layout>
            </widget>
           </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="error_text">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="error_icon">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </item>
         <item>
@@ -143,7 +161,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>25</width>
               <height>20</height>
              </size>
             </property>
@@ -179,7 +197,7 @@
              <string>Show/hide legend of combined histogram</string>
             </property>
             <property name="text">
-             <string>Show Legend</string>
+             <string>Legend</string>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -221,6 +239,19 @@
             </property>
             <property name="checked">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignTop">
+           <widget class="QCheckBox" name="invertDifference">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Invert difference</string>
             </property>
            </widget>
           </item>
