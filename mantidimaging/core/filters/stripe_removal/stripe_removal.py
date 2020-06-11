@@ -73,7 +73,7 @@ class StripeRemovalFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         # Filter type option

@@ -6,6 +6,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.filters.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
+from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import get_parameters_from_stack
 from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
@@ -33,13 +34,14 @@ class FiltersWindowModel(object):
         # Execution info for current filter
         self.stack = None
         self.selected_filter = self.filters[0]
-        self.filter_widget_kwargs = None
+        self.filter_widget_kwargs = {}
 
     @property
     def filter_names(self):
         return [f.filter_name for f in self.filters]
 
-    def filter_registration_func(self, filter_idx: int) -> Callable[['QFormLayout', Callable], Dict[str, Any]]:
+    def filter_registration_func(self, filter_idx: int) -> Callable[
+        ['QFormLayout', Callable, BasePresenter], Dict[str, Any]]:
         """
         Gets the function used to register the GUI of a given filter.
 
@@ -53,8 +55,7 @@ class FiltersWindowModel(object):
 
     @property
     def num_images_in_stack(self):
-        num_images = self.stack_presenter.images.sample.shape[0] \
-            if self.stack_presenter is not None else 0
+        num_images = self.stack_presenter.images.sample.shape[0] if self.stack_presenter is not None else 0
         return num_images
 
     @property
@@ -70,10 +71,6 @@ class FiltersWindowModel(object):
         Applies the selected filter to a given image stack.
         """
         log = getLogger(__name__)
-
-        do_before = self.selected_filter.do_before_wrapper()
-        do_after = self.selected_filter.do_after_wrapper()
-
         log.info(f"Filter kwargs: {stack_params}")
 
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
@@ -82,17 +79,10 @@ class FiltersWindowModel(object):
         if not self.selected_filter.validate_execute_kwargs(input_kwarg_widgets):
             raise ValueError("Not all required parameters specified")
 
-        # Do pre-processing and save result
-        preproc_result = do_before(images.sample)
-        preproc_result = ensure_tuple(preproc_result)
-
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
         exec_func(images, **stack_params)
-
-        # Do postprocessing using return value of pre-processing as parameter
-        do_after(images.sample, *preproc_result)
 
         # store the executed filter in history if it all executed successfully
         exec_func.keywords.update(stack_params)

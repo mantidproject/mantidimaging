@@ -47,7 +47,7 @@ class MedianFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, Any]:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
         _, size_field = add_property_to_form('Kernel Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
 
         _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)

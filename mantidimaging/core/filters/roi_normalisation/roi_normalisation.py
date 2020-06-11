@@ -54,7 +54,7 @@ class RoiNormalisationFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         add_property_to_form("Select ROI on stack visualiser.", "label", form=form, on_change=on_change)
         return {}
 

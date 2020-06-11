@@ -62,7 +62,7 @@ class MainWindowModel(object):
         num = 1
         while name in current_names:
             num += 1
-            name = filename + '_{}'.format(num)
+            name = f"{filename}_{num}"
 
         return name
 

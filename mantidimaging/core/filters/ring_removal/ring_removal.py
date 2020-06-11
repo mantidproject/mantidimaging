@@ -67,7 +67,7 @@ class RingRemovalFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         range1 = (0, 1000000)

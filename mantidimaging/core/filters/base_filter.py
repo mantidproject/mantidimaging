@@ -7,6 +7,7 @@ from mantidimaging.core.data import Images
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
+    from mantidimaging.gui.mvp_base import BasePresenter
 
 
 class BaseFilter:
@@ -44,13 +45,14 @@ class BaseFilter:
         return partial(lambda: None)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable) -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, 'QWidget']:
         """
         Adds any required input widgets to the given form and returns references to them.
 
         The return values should be in a dict which can be unpacked as kwargs for a call to
         the filters `execute_wrapper`.
 
+        :param view:
         :param form: the layout to create input widgets in
         :param on_change: the filter view action to be bound to all created inputs
         :return: the widgets bound as kwargs which are needed to call execute_wrapper

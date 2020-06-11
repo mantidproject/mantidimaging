@@ -61,7 +61,7 @@ class ClipValuesFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         value_range = (-10000000, 10000000)

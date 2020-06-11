@@ -1,9 +1,10 @@
 import os
 from functools import partial
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Dict
+from typing import Any, Dict
 
 import numpy as np
+from PyQt5.QtWidgets import QLineEdit, QComboBox
 
 from mantidimaging import helper as h
 from mantidimaging.core import io
@@ -12,9 +13,8 @@ from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
-
-if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QLineEdit
+from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.windows.filters import FiltersWindowView
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
@@ -25,9 +25,9 @@ class FlatFieldFilter(BaseFilter):
     filter_name = 'Flat-fielding'
 
     @staticmethod
-    def filter_func(data,
-                    flat,
-                    dark=None,
+    def filter_func(data: Images,
+                    flat: Images,
+                    dark: Images = None,
                     clip_min=MINIMUM_PIXEL_VALUE,
                     clip_max=MAXIMUM_PIXEL_VALUE,
                     cores=None,
@@ -47,45 +47,62 @@ class FlatFieldFilter(BaseFilter):
         """
         h.check_data_stack(data)
 
-        if flat is not None and dark is not None and isinstance(flat, np.ndarray) and isinstance(dark, np.ndarray):
-            if 2 != flat.ndim or 2 != dark.ndim:
-                raise ValueError(f"Incorrect shape of the flat image ({flat.shape}) or dark image ({dark.shape}) \
+        if flat is not None and dark is not None:
+            flat_avg = flat.sample.mean(axis=0)
+            dark_avg = dark.sample.mean(axis=0)
+            if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
+                raise ValueError(f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
                     which should match the shape of the sample images ({data.sample.shape})")
 
             if pu.multiprocessing_necessary(data.sample.shape, cores):
-                _execute_par(data.sample, flat, dark, clip_min, clip_max, cores, chunksize, progress)
+                _execute_par(data.sample, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
             else:
-                _execute_seq(data.sample, flat, dark, clip_min, clip_max, progress)
+                _execute_seq(data.sample, flat_avg, dark_avg, clip_min, clip_max, progress)
 
         h.check_data_stack(data)
         return data
 
     @staticmethod
-    def register_gui(form, on_change) -> Dict[str, Any]:
+    def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
-        # FIXME figure out how to get access to the available stacks
-        # look for the filter window stack selector, and copy it basically
-        flat_path_widget, _ = add_property_to_form("Flat", "stack", form=form, on_change=on_change)
-        dark_path_widget, _ = add_property_to_form("Dark", "stack", form=form, on_change=on_change)
+
+        def try_to_select_relevant_stack(name: str, widget: QComboBox) -> None:
+            for i in range(widget.count()):
+                if name.lower() in widget.itemText(i).lower():
+                    widget.setCurrentIndex(i)
+                    break
+
+        _, flat_widget = add_property_to_form("Flat", "stack", form=form, filters_view=view, on_change=on_change)
+        _, dark_widget = add_property_to_form("Dark", "stack", form=form, filters_view=view, on_change=on_change)
+
+        flat_widget.subscribe_to_main_window(view.main_window)
+        try_to_select_relevant_stack("Flat", flat_widget)
+
+        dark_widget.subscribe_to_main_window(view.main_window)
+        try_to_select_relevant_stack("Dark", dark_widget)
 
         return {
-            'flat_path_widget': flat_path_widget,
-            'dark_path_widget': dark_path_widget,
+            'flat_widget': flat_widget,
+            'dark_widget': dark_widget,
         }
 
     @staticmethod
-    def execute_wrapper(flat_path_widget=None, dark_path_widget=None):
-        flat = get_average_image(flat_path_widget)
-        dark = get_average_image(dark_path_widget)
-
-        return partial(FlatFieldFilter.filter_func, flat=flat, dark=dark)
+    def execute_wrapper(flat_widget: StackSelectorWidgetView = None,
+                        dark_widget: StackSelectorWidgetView = None):
+        flat_stack = flat_widget.main_window.get_stack_visualiser(flat_widget.current())
+        flat_images = flat_stack.presenter.images
+        dark_stack = dark_widget.main_window.get_stack_visualiser(dark_widget.current())
+        dark_images = dark_stack.presenter.images
+        return partial(FlatFieldFilter.filter_func, flat=flat_images, dark=dark_images)
 
     @staticmethod
     def validate_execute_kwargs(kwargs):
         # Validate something is in both path text inputs
-        if 'flat_path_widget' not in kwargs or 'dark_path_widget' not in kwargs:
+        if 'flat_widget' not in kwargs or 'dark_widget' not in kwargs:
             return False
-        return all([widget.text() for widget in kwargs.values()])
+        assert isinstance(kwargs["flat_widget"], StackSelectorWidgetView)
+        assert isinstance(kwargs["dark_widget"], StackSelectorWidgetView)
+        return True
 
 
 def _divide(data, norm_divide):

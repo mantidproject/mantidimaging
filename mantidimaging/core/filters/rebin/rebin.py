@@ -44,14 +44,14 @@ class RebinFilter(BaseFilter):
 
         if param_valid:
             sample = data.sample
-            if data.sample_name is not None:
-                sample_name = data.sample_name
+            if data.sample_memory_file_name is not None:
+                sample_name = data.sample_memory_file_name
                 data.free_sample()
             else:
                 sample_name = None
             empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
             progress = Progress.ensure_instance(progress, num_steps=sample.shape[0], task_name='Rebin')
-            if pu.multiprocessing_available() and sample_name is not None and False:
+            if pu.multiprocessing_necessary(data.sample.shape, cores) and sample_name is not None:
                 rebinned = _execute_par(sample, empty_resized_data, mode, cores, chunksize, progress)
             else:
                 rebinned = _execute_seq(sample, empty_resized_data, mode, progress)
@@ -60,7 +60,7 @@ class RebinFilter(BaseFilter):
         return data
 
     @staticmethod
-    def register_gui(form, on_change):
+    def register_gui(form, on_change, view):
         # Rebin by uniform factor options
         _, factor = add_property_to_form('Factor', 'float', 0.5, (0.0, 1.0), on_change=on_change)
         factor.setSingleStep(0.05)
