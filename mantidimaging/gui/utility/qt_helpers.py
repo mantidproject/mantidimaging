@@ -178,6 +178,8 @@ def add_property_to_form(
     elif dtype == 'stack':
         from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
         right_widget = StackSelectorWidgetView(filters_view)
+        if on_change is not None:
+            right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
     else:
         raise ValueError("Unknown data type")

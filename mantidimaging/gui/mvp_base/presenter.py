@@ -1,8 +1,14 @@
 from logging import getLogger
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 
 class BasePresenter(object):
-    def __init__(self, view):
+    view: 'BaseMainWindowView'
+
+    def __init__(self, view: 'BaseMainWindowView'):
         self.view = view
 
     def notify(self, signal):

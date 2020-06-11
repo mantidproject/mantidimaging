@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QCheckBox
+from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -19,9 +19,16 @@ class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     linkImages: QCheckBox
+    invertDifference: QCheckBox
+    showHistogramLegend: QCheckBox
+    combinedHistograms: QCheckBox
+
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
     stackSelector: StackSelectorWidgetView
+
+    error_label: QLabel
+    error_icon: QLabel
 
     def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
@@ -49,6 +56,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)
         self.linkImages.stateChanged.connect(self.link_images_changed)
         self.linkImages.setChecked(True)
+        self.invertDifference.stateChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)
@@ -123,3 +131,7 @@ class FiltersWindowView(BaseMainWindowView):
     @property
     def preview_image_difference(self) -> ImageItem:
         return self.previews.image_difference
+
+    def show_error_dialog(self, msg=""):
+        self.error_icon.setPixmap(QApplication.style().SP_MessageBoxCritical)
+        self.error_label.setText(msg)

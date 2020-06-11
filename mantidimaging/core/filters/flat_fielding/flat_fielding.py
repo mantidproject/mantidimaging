@@ -54,6 +54,12 @@ class FlatFieldFilter(BaseFilter):
                 raise ValueError(f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
                     which should match the shape of the sample images ({data.sample.shape})")
 
+            if not data.sample.shape[1:] == flat_avg.shape == dark_avg.shape:
+                raise ValueError(f"Not all images are the expected shape: {data.sample.shape[1:]}, instead "
+                                 f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
+
+            progress = Progress.ensure_instance(progress, num_steps=data.sample.shape[0],
+                                                task_name='Background Correction')
             if pu.multiprocessing_necessary(data.sample.shape, cores):
                 _execute_par(data.sample, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
             else:
@@ -139,8 +145,6 @@ def _execute_par(data,
                     np.subtract(data, dark, out=data), norm_divide, out=data)
     Subtract then divide (par) - 55s
     """
-    progress = Progress.ensure_instance(progress, task_name='Background Correction')
-
     with progress:
         progress.update(msg="Applying background correction.")
 
@@ -174,8 +178,6 @@ def _execute_par(data,
 
 
 def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, progress=None):
-    progress = Progress.ensure_instance(progress, task_name='Background Correction')
-
     with progress:
         progress.update(msg="Normalization by flat/dark images")
 
