@@ -35,7 +35,7 @@ RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
     conda config --prepend channels conda-forge &&\
     conda config --prepend channels anaconda &&\
     conda config --prepend channels defaults &&\
-    conda install --only-deps -c dtasev mantidimaging && \
+    conda install --only-deps -c dtasev/label/unstable mantidimaging && \
     pip install -r /opt/mantidimaging-deps/pip-requirements.txt &&\
     pip install -r /opt/mantidimaging-deps/dev-requirements.pip &&\
     conda clean --all
@@ -49,5 +49,4 @@ ENV PATH=/opt/miniconda/bin:/opt/miniconda/condabin:/usr/local/sbin:/usr/local/b
 
 CMD eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
     python -m mantidimaging
-
 
