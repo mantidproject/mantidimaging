@@ -17,7 +17,7 @@ env:
     - ENVIRONMENT_NAME=test-environment
     - DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"
   jobs:
-    - DOCKER_IMAGE="dtasev/mantidimaging"
+    - DOCKER_IMAGE="dtasev/mantidimaging:travis-ci-8903f91c"
 
 
 before_script:
