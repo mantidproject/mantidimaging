@@ -133,7 +133,7 @@ def _execute_par(data,
     progress = Progress.ensure_instance(progress, task_name='Background Correction')
 
     with progress:
-        progress.update(msg=f"Applying background correction.")
+        progress.update(msg="Applying background correction.")
 
         with pu.temp_shared_array((1, data.shape[1], data.shape[2]), data.dtype) as norm_divide:
             # remove a dimension, I found this to be the easiest way to do it
