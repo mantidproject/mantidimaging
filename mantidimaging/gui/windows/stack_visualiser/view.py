@@ -47,7 +47,7 @@ class StackVisualiserView(BaseMainWindowView):
         # Swap out the dock close event with our own provided close event. This
         # is needed to manually delete the data reference, otherwise it is left
         # hanging in the presenter
-        dock.closeEvent = self.closeEvent
+        setattr(dock, 'closeEvent', self.closeEvent)
 
         self.presenter = StackVisualiserPresenter(self, images)
 

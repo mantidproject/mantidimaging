@@ -1,5 +1,7 @@
 from functools import partial
-from typing import TYPE_CHECKING, Any, Callable, Dict
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple, Union
+
+import numpy as np
 
 from mantidimaging.core.data import Images
 
@@ -17,7 +19,7 @@ class BaseFilter:
     which are optional.
     """
     @staticmethod
-    def filter_func(data: Images, arg, **kwargs) -> Images:
+    def filter_func(data: Images) -> Union[Images, Tuple[Images, Optional[np.ndarray], Optional[np.ndarray]]]:
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
         The body of this function does not need to include pre and post processing steps - these should be
@@ -28,6 +30,7 @@ class BaseFilter:
         :return: the image data after applying the filter
         """
         raise_not_implemented("filter_func")
+        return Images(np.asarray([]))
 
     @staticmethod
     def execute_wrapper(**kwargs) -> partial:

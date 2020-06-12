@@ -25,9 +25,9 @@ class OpHistoryCopyDialogView(BaseDialogView):
     def display_op_history(self, operations: Iterable[ImageOperation]):
         layout = self.operationsContainer.layout()
         while layout.count():
-            row = layout.takeAt(0)
-            if row.widget():
-                row.widget().deleteLater()
+            first_row = layout.takeAt(0)
+            if first_row.widget():
+                first_row.widget().deleteLater()
 
         for op in operations:
             row, check = self.build_operation_row(op)
@@ -40,7 +40,8 @@ class OpHistoryCopyDialogView(BaseDialogView):
         parent_layout = QGridLayout(parent)
         parent.setLayout(parent_layout)
 
-        check = QCheckBox(parent=parent, checked=True)
+        check = QCheckBox(parent)
+        check.setChecked(True)
         check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         parent_layout.addWidget(check, 0, 0)
 
