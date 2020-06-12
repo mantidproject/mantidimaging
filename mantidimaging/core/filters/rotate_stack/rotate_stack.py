@@ -86,7 +86,7 @@ def _execute_seq(data, rotation, progress=None):
 
     with progress:
         progress.update(msg=f"Starting rotation step ({rotation * 90} degrees clockwise), "
-                            f"data type: {data.dtype}...")
+                        f"data type: {data.dtype}...")
 
         img_count = data.shape[0]
         progress.add_estimated_steps(img_count)
@@ -102,7 +102,7 @@ def _execute_par(data, rotation, cores=None, chunksize=None, progress=None):
 
     with progress:
         progress.update(msg=f"Starting PARALLEL rotation step ({rotation * 90} degrees "
-                            f"clockwise), data type: {data.dtype}...")
+                        f"clockwise), data type: {data.dtype}...")
 
         f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
 

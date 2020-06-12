@@ -14,7 +14,6 @@ class StripeRemovalTest(unittest.TestCase):
 
     Tests return value only.
     """
-
     def __init__(self, *args, **kwargs):
         super(StripeRemovalTest, self).__init__(*args, **kwargs)
 

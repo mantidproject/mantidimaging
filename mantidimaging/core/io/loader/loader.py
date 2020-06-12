@@ -68,10 +68,7 @@ def supported_formats():
     return avail_list
 
 
-def read_in_shape(input_path,
-                  in_prefix='',
-                  in_format=DEFAULT_IO_FILE_FORMAT,
-                  data_dtype=np.float32):
+def read_in_shape(input_path, in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32):
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     images = load(input_path,
                   None,
@@ -83,7 +80,7 @@ def read_in_shape(input_path,
                   file_names=input_file_names)
 
     # construct and return the new shape
-    shape = (len(input_file_names),) + images.sample.shape[1:]
+    shape = (len(input_file_names), ) + images.sample.shape[1:]
     images.free_memory()
     return shape
 

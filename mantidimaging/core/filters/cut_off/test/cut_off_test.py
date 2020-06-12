@@ -14,7 +14,6 @@ class CutOffTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-
     def __init__(self, *args, **kwargs):
         super(CutOffTest, self).__init__(*args, **kwargs)
 
@@ -27,7 +26,7 @@ class CutOffTest(unittest.TestCase):
         new_max = images.sample.max()
 
         self.assertTrue(new_max < previous_max, "New maximum value should be less than maximum value "
-                                                "before processing")
+                        "before processing")
 
     def test_memory_change_acceptable(self):
         """

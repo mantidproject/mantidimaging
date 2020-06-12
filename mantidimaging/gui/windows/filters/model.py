@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val,)
+    return val if isinstance(val, tuple) else (val, )
 
 
 class FiltersWindowModel(object):

@@ -15,8 +15,11 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(data: Images, roi, flat=None, dark=None, progress=None) -> Tuple[
-        Images, Optional[np.ndarray], Optional[np.ndarray]]:
+    def filter_func(data: Images,
+                    roi,
+                    flat=None,
+                    dark=None,
+                    progress=None) -> Tuple[Images, Optional[np.ndarray], Optional[np.ndarray]]:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!

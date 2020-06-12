@@ -88,7 +88,7 @@ class ClipValuesFilter(BaseFilter):
             form=form,
             on_change=on_change,
             tooltip='The value that will be used to replace pixel values '
-                    'that fall below Clip Min.')
+            'that fall below Clip Min.')
 
         _, clip_max_new_value_field = add_property_to_form(
             'Max Replacement Value',
@@ -97,7 +97,7 @@ class ClipValuesFilter(BaseFilter):
             form=form,
             on_change=on_change,
             tooltip='The value that will be used to replace pixel values '
-                    'that are above Clip Max.')
+            'that are above Clip Max.')
 
         clip_min_new_value_field.setDecimals(7)
         clip_max_new_value_field.setDecimals(7)

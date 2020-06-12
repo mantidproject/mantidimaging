@@ -52,7 +52,8 @@ def create_array(name: Optional[str], shape: Tuple[int, int, int], dtype: DTYPE_
         return np.zeros(shape, dtype)
 
 
-def create_shared_array(name: Optional[str], shape: Tuple[int, int, int],
+def create_shared_array(name: Optional[str],
+                        shape: Tuple[int, int, int],
                         dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
     """
     :param dtype:
