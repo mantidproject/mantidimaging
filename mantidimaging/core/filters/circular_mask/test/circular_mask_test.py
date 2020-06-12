@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-import numpy.testing as npt
+import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.circular_mask import CircularMaskFilter
@@ -21,7 +21,7 @@ class CircularMaskTest(unittest.TestCase):
     def test_executed(self):
         images = th.generate_images_class_random_shared_array()
 
-        ratio = 0.1
+        ratio = 0.9
 
         self.assertNotEqual(images.sample[0, 0, 0], 0)
         self.assertNotEqual(images.sample[0, 0, -1], 0)
@@ -43,19 +43,16 @@ class CircularMaskTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images, control = th.gen_img_shared_array_and_copy()
-        ratio = 0.001
-
+        images = th.generate_images_class_random_shared_array()
+        ratio = 0.9
+        original = np.copy(images.sample)
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = CircularMaskFilter.filter_func(images, ratio)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        th.assert_not_equals(result.sample, original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -67,7 +64,7 @@ class CircularMaskTest(unittest.TestCase):
         value_field.value = mock.Mock(return_value=0)
         execute_func = CircularMaskFilter.execute_wrapper(radius_field, value_field)
 
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         execute_func(images)
 
         self.assertEqual(radius_field.value.call_count, 1)

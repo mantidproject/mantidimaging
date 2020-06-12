@@ -1,5 +1,7 @@
 from functools import partial
 
+from mantidimaging.core.data import Images
+
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -9,7 +11,7 @@ class MinusLogFilter(BaseFilter):
     filter_name = "Minus Log"
 
     @staticmethod
-    def filter_func(data, minus_log=True, progress=None):
+    def filter_func(data: Images, minus_log=True, progress=None):
         """
         This filter should be used on transmission images (background corrected
         images).

@@ -67,15 +67,17 @@ def gen_img_shared_array_with_val(val=1., shape=g_shape):
         return d
 
 
-def assert_not_equals(numpy_ndarray1, numpy_ndarray2):
+def assert_not_equals(one: np.ndarray, two: np.ndarray):
     """
     Assert equality for numpy ndarrays using the numpy testing library.
 
-    :param numpy_ndarray1: The left side of the comparison
+    :param one: The left side of the comparison
 
-    :param numpy_ndarray2: The right side of the comparison
+    :param two: The right side of the comparison
     """
-    npt.assert_raises(AssertionError, npt.assert_equal, numpy_ndarray1, numpy_ndarray2)
+    assert isinstance(one, np.ndarray)
+    assert isinstance(two, np.ndarray)
+    npt.assert_raises(AssertionError, npt.assert_equal, one, two)
 
 
 def deepcopy(source):

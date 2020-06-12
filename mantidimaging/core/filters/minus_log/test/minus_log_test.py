@@ -39,24 +39,21 @@ class MinusLogTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images, control = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
+        original = np.copy(images.sample)
 
         result = MinusLogFilter.filter_func(images, minus_log=True)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-        th.assert_not_equals(result, control)
-        th.assert_not_equals(images, control)
-
-        npt.assert_equal(result, images)
+        th.assert_not_equals(result.sample, original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images_class_random_shared_array()
         MinusLogFilter.execute_wrapper()(images)
 
 
