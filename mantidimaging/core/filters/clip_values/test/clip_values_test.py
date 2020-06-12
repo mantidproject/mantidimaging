@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-import numpy as np
 
 import numpy.testing as npt
 
@@ -80,11 +79,11 @@ class ClipValuesFilterTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = ClipValuesFilter().filter_func(images,
-                                                clip_min=0.2,
-                                                clip_max=0.8,
-                                                clip_min_new_value=0.1,
-                                                clip_max_new_value=0.9)
+        ClipValuesFilter().filter_func(images,
+                                       clip_min=0.2,
+                                       clip_max=0.8,
+                                       clip_min_new_value=0.1,
+                                       clip_max_new_value=0.9)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 

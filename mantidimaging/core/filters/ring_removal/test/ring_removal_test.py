@@ -34,7 +34,7 @@ class RingRemovalTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
+        RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 

@@ -66,7 +66,7 @@ class GaussianTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
-        result = GaussianFilter.filter_func(images, size, mode, order)
+        GaussianFilter.filter_func(images, size, mode, order)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
