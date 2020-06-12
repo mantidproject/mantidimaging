@@ -1,7 +1,6 @@
 from functools import partial
 
 from mantidimaging.core.data import Images
-
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.utility.progress_reporting import Progress
 

@@ -3,7 +3,7 @@ Module containing helper functions relating to PyQt.
 """
 
 import os
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 from PyQt5 import Qt, uic
 from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
@@ -82,7 +82,8 @@ def add_property_to_form(
     tooltip=None,
     on_change=None,
     form=None
-) -> Tuple[Union[QLabel, QLineEdit], Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox]]:
+) -> Tuple[Union[QLabel, QLineEdit], Optional[Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox,
+                                                    QComboBox]]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -172,7 +173,6 @@ def add_property_to_form(
 
     elif dtype == 'label':
         pass
-
     else:
         raise ValueError("Unknown data type")
 

@@ -16,7 +16,7 @@ class CropCoordinatesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(data: Images,
-                    roi,
+                    roi=None,
                     flat=None,
                     dark=None,
                     progress=None) -> Tuple[Images, Optional[np.ndarray], Optional[np.ndarray]]:
@@ -42,6 +42,9 @@ class CropCoordinatesFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
+
+        if roi is None:
+            roi = [0, 0, 50, 50]
 
         h.check_data_stack(data)
 

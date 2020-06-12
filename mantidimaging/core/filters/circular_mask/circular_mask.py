@@ -1,8 +1,6 @@
 from functools import partial
 
-from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.data import Images
-
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -12,7 +10,11 @@ class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
 
     @staticmethod
-    def filter_func(data: Images, circular_mask_ratio, circular_mask_value=0., cores=None, progress=None):
+    def filter_func(data: Images,
+                    circular_mask_ratio=0.95,
+                    circular_mask_value=0.,
+                    cores=None,
+                    progress=None) -> Images:
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.

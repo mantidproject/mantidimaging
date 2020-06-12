@@ -21,7 +21,7 @@ class RebinFilter(BaseFilter):
     filter_name = "Rebin"
 
     @staticmethod
-    def filter_func(data: Images, rebin_param, mode=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: Images, rebin_param=0.5, mode=None, cores=None, chunksize=None, progress=None) -> Images:
         """
         :param data: Sample data which is to be processed. Expects radiograms
         :param rebin_param: int, float or tuple
