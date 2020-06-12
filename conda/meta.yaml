@@ -28,8 +28,9 @@ requirements:
     - sharedarray
     - numpy
     # version locked due to v3 being incompatible
-    - matplotlib =2.2.3
-    - tomopy
+    - matplotlib=2.2.3
+    # version locked to prevent conda installing 1.5 and wrong OpenCV version
+    - tomopy=1.7.1
     - requests
     - requests-futures
     - python-socketio
