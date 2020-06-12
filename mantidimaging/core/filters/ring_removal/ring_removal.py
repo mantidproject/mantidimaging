@@ -61,7 +61,8 @@ class RingRemovalFilter(BaseFilter):
                                theta_min=theta_min,
                                rwidth=rwidth,
                                ncore=cores,
-                               nchunk=chunksize, out=sample)
+                               nchunk=chunksize,
+                               out=sample)
 
         return data
 

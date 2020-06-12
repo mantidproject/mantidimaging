@@ -94,12 +94,7 @@ class IOTest(FileOutputtingTestCase):
     def test_preproc_tiff_seq_saver_indices_7_10(self):
         self.do_preproc('tiff', saver_indices=[7, 10, 1], expected_len=3)
 
-    def do_preproc(self,
-                   img_format,
-                   loader_indices=None,
-                   expected_len=None,
-                   saver_indices=None,
-                   data_as_stack=False):
+    def do_preproc(self, img_format, loader_indices=None, expected_len=None, saver_indices=None, data_as_stack=False):
         expected_images = th.gen_img_shared_array_with_val(42.)
 
         # saver indices only affects the enumeration of the data

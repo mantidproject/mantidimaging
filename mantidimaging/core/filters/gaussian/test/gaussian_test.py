@@ -20,7 +20,6 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
-
     def __init__(self, *args, **kwargs):
         super(GaussianTest, self).__init__(*args, **kwargs)
 

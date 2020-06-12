@@ -13,7 +13,6 @@ class CropCoordsTest(unittest.TestCase):
 
     Tests return value only.
     """
-
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 

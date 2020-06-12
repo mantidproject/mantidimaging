@@ -12,7 +12,7 @@ class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
 
     @staticmethod
-    def filter_func(data:Images, circular_mask_ratio, circular_mask_value=0., cores=None, progress=None):
+    def filter_func(data: Images, circular_mask_ratio, circular_mask_value=0., cores=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
@@ -32,7 +32,11 @@ class CircularMaskFilter(BaseFilter):
 
                 # for some reason this doesn't like the ncore param, even though
                 # it's in the official tomopy docs
-                tomopy.circ_mask(arr=data.sample, axis=0, ratio=circular_mask_ratio, val=circular_mask_value, ncore=cores)
+                tomopy.circ_mask(arr=data.sample,
+                                 axis=0,
+                                 ratio=circular_mask_ratio,
+                                 val=circular_mask_value,
+                                 ncore=cores)
 
         return data
 
