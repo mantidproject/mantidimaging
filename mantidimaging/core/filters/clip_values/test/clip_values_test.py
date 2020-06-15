@@ -18,7 +18,7 @@ class ClipValuesFilterTest(unittest.TestCase):
         super(ClipValuesFilterTest, self).__init__(*args, **kwargs)
 
     def test_execute_min_only(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=0.2,
@@ -29,7 +29,7 @@ class ClipValuesFilterTest(unittest.TestCase):
         npt.assert_approx_equal(result.sample.min(), 0.1)
 
     def test_execute_max_only(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=None,
@@ -40,7 +40,7 @@ class ClipValuesFilterTest(unittest.TestCase):
         npt.assert_approx_equal(result.sample.max(), 0.9)
 
     def test_execute_min_max(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=0.2,
@@ -52,7 +52,7 @@ class ClipValuesFilterTest(unittest.TestCase):
         npt.assert_approx_equal(result.sample.max(), 0.9)
 
     def test_execute_min_max_no_new_values(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         result = ClipValuesFilter().filter_func(images,
                                                 clip_min=0.2,
                                                 clip_max=0.8,
@@ -75,7 +75,7 @@ class ClipValuesFilterTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
@@ -97,7 +97,7 @@ class ClipValuesFilterTest(unittest.TestCase):
             mock_widget.value = mock.Mock(return_value=0)
         execute_func = ClipValuesFilter().execute_wrapper(*mocks)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         for mock_widget in mocks:

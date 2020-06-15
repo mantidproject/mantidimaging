@@ -27,7 +27,7 @@ class RotateStackTest(unittest.TestCase):
 
     def do_execute(self):
         # only works on square images
-        images = th.generate_images_class_random_shared_array((10, 10, 10))
+        images = th.generate_images((10, 10, 10))
 
         rotation = 1  # once clockwise
         images.sample[:, 0, :] = 42
@@ -50,7 +50,7 @@ class RotateStackTest(unittest.TestCase):
         This will still capture if the data is doubled, which is the main goal.
         """
         # only works on square images
-        images = th.generate_images_class_random_shared_array((10, 10, 10))
+        images = th.generate_images((10, 10, 10))
         rotation = 1  # once clockwise
         images.sample[:, 0, 0] = 42  # set all images at 0,0 to 42
 
@@ -68,7 +68,7 @@ class RotateStackTest(unittest.TestCase):
         rotation_count.value = mock.Mock(return_value=0)
         execute_func = RotateFilter.execute_wrapper(rotation_count)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(rotation_count.value.call_count, 1)

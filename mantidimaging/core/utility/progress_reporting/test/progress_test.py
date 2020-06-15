@@ -29,6 +29,14 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(len(p.progress_history), 3)
         self.assertEquals(p.completion(), 1.0)
 
+    def test_set_steps_resets_current_step(self):
+        p = Progress(num_steps=2)
+        p.update(steps=1)
+        self.assertEquals(p.current_step, 1)
+        p.set_estimated_steps(10)
+        self.assertEquals(p.current_step, 0)
+        self.assertEquals(p.end_step, 10)
+
     def test_multi_step(self):
         # Default to estimating a single step
         p = Progress(num_steps=2)
@@ -44,26 +52,26 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(p.completion(), 0.5)
 
         # First step to execute may decide that more steps are required
-        p.set_estimated_steps(10)
+        p.add_estimated_steps(10)
 
-        self.assertEquals(p.end_step, 10)
+        self.assertEquals(p.end_step, 12)
         self.assertEquals(len(p.progress_history), 2)
-        self.assertEquals(p.completion(), 0.1)
+        self.assertEquals(p.completion(), 0.083)
 
         p.update(steps=2, msg="Do two things")
 
         self.assertEquals(len(p.progress_history), 3)
-        self.assertEquals(p.completion(), 0.3)
+        self.assertEquals(p.completion(), 0.25)
 
         p.update(steps=2, msg="Do two more things")
 
         self.assertEquals(len(p.progress_history), 4)
-        self.assertEquals(p.completion(), 0.5)
+        self.assertEquals(p.completion(), 0.417)
 
         p.update(steps=3, msg="Do three things")
 
         self.assertEquals(len(p.progress_history), 5)
-        self.assertEquals(p.completion(), 0.8)
+        self.assertEquals(p.completion(), 0.667)
 
         p.mark_complete()
 
@@ -85,16 +93,16 @@ class ProgressTest(unittest.TestCase):
         self.assertEquals(p.completion(), 0.5)
 
         # First step to execute may decide that more steps are required
-        p.set_estimated_steps(10)
+        p.add_estimated_steps(10)
 
-        self.assertEquals(p.end_step, 10)
+        self.assertEquals(p.end_step, 12)
         self.assertEquals(len(p.progress_history), 2)
-        self.assertEquals(p.completion(), 0.1)
+        self.assertEquals(p.completion(), 0.083)
 
         p.update(steps=2, msg="Do two things")
 
         self.assertEquals(len(p.progress_history), 3)
-        self.assertEquals(p.completion(), 0.3)
+        self.assertEquals(p.completion(), 0.25)
 
         # Finish early
         p.mark_complete()

@@ -17,7 +17,7 @@ class ROINormalisationTest(unittest.TestCase):
         super(ROINormalisationTest, self).__init__(*args, **kwargs)
 
     def test_not_executed_empty_params(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         air = None
 
@@ -39,7 +39,7 @@ class ROINormalisationTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         original = np.copy(images.sample[0])
         air = [3, 3, 4, 4]
@@ -51,7 +51,7 @@ class ROINormalisationTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         RoiNormalisationFilter.execute_wrapper()(images)
 
 

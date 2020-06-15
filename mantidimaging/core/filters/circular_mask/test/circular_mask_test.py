@@ -18,7 +18,7 @@ class CircularMaskTest(unittest.TestCase):
         super(CircularMaskTest, self).__init__(*args, **kwargs)
 
     def test_executed(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         ratio = 0.9
 
@@ -42,7 +42,7 @@ class CircularMaskTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         ratio = 0.9
         original = np.copy(images.sample)
         cached_memory = get_memory_usage_linux(kb=True)[0]
@@ -63,7 +63,7 @@ class CircularMaskTest(unittest.TestCase):
         value_field.value = mock.Mock(return_value=0)
         execute_func = CircularMaskFilter.execute_wrapper(radius_field, value_field)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(radius_field.value.call_count, 1)

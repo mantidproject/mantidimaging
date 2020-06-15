@@ -18,7 +18,7 @@ class RingRemovalTest(unittest.TestCase):
         super(RingRemovalTest, self).__init__(*args, **kwargs)
 
     def test_not_executed(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         # invalid threshold
         run_ring_removal = False
@@ -28,7 +28,7 @@ class RingRemovalTest(unittest.TestCase):
         npt.assert_equal(result.sample[0], original)
 
     def test_memory_change_acceptable(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         # invalid threshold
         run_ring_removal = False
 
@@ -42,7 +42,7 @@ class RingRemovalTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         RingRemovalFilter.execute_wrapper()(images)
 
 

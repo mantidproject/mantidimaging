@@ -18,7 +18,7 @@ class StripeRemovalTest(unittest.TestCase):
         super(StripeRemovalTest, self).__init__(*args, **kwargs)
 
     def test_not_executed(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = None
         sf = None
@@ -29,7 +29,7 @@ class StripeRemovalTest(unittest.TestCase):
         npt.assert_equal(images, control)
 
     def test_executed_wf(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = ["level=1"]
         ti = None
         sf = None
@@ -39,7 +39,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_executed_wf_dict(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = {"level": 1}
         ti = None
         sf = None
@@ -47,7 +47,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_executed_ti(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = ['nblock=2']
         sf = None
@@ -57,7 +57,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_executed_ti_dict(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = {"nblock": 2}
         sf = None
@@ -65,7 +65,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_executed_sf(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = None
         sf = ['size=5']
@@ -75,7 +75,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_executed_sf_dict(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = None
         sf = {"size": 5}
@@ -83,7 +83,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_memory_executed_wf(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = ["level=1"]
         ti = None
         sf = None
@@ -97,7 +97,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_memory_executed_ti(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = ['nblock=2']
         sf = None
@@ -111,7 +111,7 @@ class StripeRemovalTest(unittest.TestCase):
         th.assert_not_equals(result, control)
 
     def test_memory_executed_sf(self):
-        images, control = th.gen_img_shared_array_and_copy()
+        images, control = th.generate_shared_array_and_copy()
         wf = None
         ti = None
         sf = ['size=5']
@@ -132,7 +132,7 @@ class StripeRemovalTest(unittest.TestCase):
         value_filter_type.currentText = mock.Mock(return_value="type")
         execute_func = StripeRemovalFilter.execute_wrapper(value_filter_type)
 
-        images = th.gen_img_shared_array()
+        images = th.generate_shared_array()
         execute_func(images)
 
         self.assertEqual(value_filter_type.currentText.call_count, 1)

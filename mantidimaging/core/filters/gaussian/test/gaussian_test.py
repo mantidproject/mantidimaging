@@ -24,7 +24,7 @@ class GaussianTest(unittest.TestCase):
         super(GaussianTest, self).__init__(*args, **kwargs)
 
     def test_not_executed(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         size = None
         mode = None
@@ -35,7 +35,7 @@ class GaussianTest(unittest.TestCase):
         th.assert_not_equals(result.sample, original)
 
     def test_executed_parallel(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         size = 3
         mode = 'reflect'
@@ -59,7 +59,7 @@ class GaussianTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         size = 3
         mode = 'reflect'
         order = 1
@@ -82,7 +82,7 @@ class GaussianTest(unittest.TestCase):
         order_field.value = mock.Mock(return_value=0)
         execute_func = GaussianFilter.execute_wrapper(size_field, order_field, mode_field)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(size_field.value.call_count, 1)

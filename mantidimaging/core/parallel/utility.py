@@ -67,11 +67,6 @@ def create_shared_array(name: Optional[str],
     return arr
 
 
-def copy_shared_images(images, name: Optional[str], shape: Tuple[int, int, int],
-                       dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
-    pass
-
-
 @contextmanager
 def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None) -> np.ndarray:
     temp_name = str(uuid.uuid4()) if not force_name else force_name

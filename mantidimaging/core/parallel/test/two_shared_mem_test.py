@@ -24,8 +24,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_fwd_func_inplace(self):
         # create data as shared array
-        img = th.gen_img_shared_array()
-        img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
+        img = th.generate_shared_array()
+        img2nd, orig_2nd = th.generate_shared_array_and_copy()
 
         # make sure it hasnt changed the original array
         expected = img + img2nd + 5
@@ -46,8 +46,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_fwd_func_second_2d(self):
         # create data as shared array
-        img = th.gen_img_shared_array()
-        img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
+        img = th.generate_shared_array()
+        img2nd, orig_2nd = th.generate_shared_array_and_copy()
 
         img2nd = img2nd[0]
 
@@ -70,8 +70,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_return_to_first(self):
         # create data as shared array
-        img = th.gen_img_shared_array()
-        img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
+        img = th.generate_shared_array()
+        img2nd, orig_2nd = th.generate_shared_array_and_copy()
 
         # make sure it hasnt changed the original array
         expected = img + img2nd + 5
@@ -92,8 +92,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_return_to_second(self):
         # create data as shared array
-        img, orig_img = th.gen_img_shared_array_and_copy()
-        img2nd = th.gen_img_shared_array()
+        img, orig_img = th.generate_shared_array_and_copy()
+        img2nd = th.generate_shared_array()
 
         # make sure it hasnt changed the original array
         expected = img + img2nd + 5
@@ -226,8 +226,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_memory_fwd_func_inplace(self):
         # create data as shared array
-        img = th.gen_img_shared_array()
-        img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
+        img = th.generate_shared_array()
+        img2nd, orig_2nd = th.generate_shared_array_and_copy()
 
         # make sure it hasnt changed the original array
         expected = img + img2nd + 5
@@ -249,8 +249,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_memory_fwd_func_second_2d(self):
         # create data as shared array
-        img = th.gen_img_shared_array()
-        img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
+        img = th.generate_shared_array()
+        img2nd, orig_2nd = th.generate_shared_array_and_copy()
 
         img2nd = img2nd[0]
 
@@ -274,8 +274,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_memory_return_to_first(self):
         # create data as shared array
-        img = th.gen_img_shared_array()
-        img2nd, orig_2nd = th.gen_img_shared_array_and_copy()
+        img = th.generate_shared_array()
+        img2nd, orig_2nd = th.generate_shared_array_and_copy()
 
         # make sure it hasnt changed the original array
         expected = img + img2nd + 5
@@ -297,8 +297,8 @@ class TwoSharedMemTest(unittest.TestCase):
 
     def test_memory_return_to_second(self):
         # create data as shared array
-        img, orig_img = th.gen_img_shared_array_and_copy()
-        img2nd = th.gen_img_shared_array()
+        img, orig_img = th.generate_shared_array_and_copy()
+        img2nd = th.generate_shared_array()
 
         # make sure it hasnt changed the original array
         expected = img + img2nd + 5

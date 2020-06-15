@@ -18,7 +18,7 @@ class MinusLogTest(unittest.TestCase):
         super(MinusLogTest, self).__init__(*args, **kwargs)
 
     def test_no_execute(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         sample = np.copy(images.sample)
         result = MinusLogFilter.filter_func(images, minus_log=False)
@@ -38,7 +38,7 @@ class MinusLogTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
         original = np.copy(images.sample)
@@ -52,7 +52,7 @@ class MinusLogTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         MinusLogFilter.execute_wrapper()(images)
 
 

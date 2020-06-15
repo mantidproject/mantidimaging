@@ -1,5 +1,6 @@
 import unittest
 
+import SharedArray as sa
 import mock
 import numpy.testing as npt
 
@@ -16,7 +17,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         super(StackVisualiserPresenterTest, self).__init__(*args, **kwargs)
 
     def setUp(self):
-        self.test_data = th.generate_images_class_random_shared_array(automatic_free=False)
+        self.test_data = th.generate_images(automatic_free=False)
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
@@ -27,6 +28,10 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         except FileNotFoundError:
             # the test has deleted the data manually
             pass
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert len(sa.list()) == 0, f"Not all shared arrays have been freed. Leftover: {sa.list()}"
 
     def test_get_image(self):
         index = 3

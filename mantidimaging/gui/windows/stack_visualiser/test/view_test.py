@@ -33,7 +33,7 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.dock = QDockWidget()
         self.dock.setWindowTitle("Potatoes")
 
-        self.test_data = th.generate_images_class_random_shared_array(automatic_free=False)
+        self.test_data = th.generate_images(automatic_free=False)
         self.view = StackVisualiserView(self.window, self.dock, self.test_data)
         self.dock.setWidget(self.view)
         self.window.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dock)

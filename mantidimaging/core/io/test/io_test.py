@@ -18,6 +18,10 @@ class IOTest(FileOutputtingTestCase):
         # force silent outputs
         initialise_logging()
 
+    def tearDown(self):
+        import SharedArray as sa
+        assert len(sa.list()) == 0
+
     def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
 
         if not stack:
@@ -124,17 +128,6 @@ class IOTest(FileOutputtingTestCase):
         npt.assert_equal(loaded_images.sample, expected_images)
         loaded_images.free_memory()
 
-    # def test_save_nxs_seq(self):
-    #     # self.do_preproc_nxs(parallel=False)
-    #     self.do_preproc('nxs', data_as_stack=True)
-    #
-    # def test_save_nxs_seq_indices_0_4(self):
-    #     # self.do_preproc_nxs(parallel=False, loader_indices=[0, 4, 1], expected_len=4)
-    #     self.do_preproc('nxs', data_as_stack=True, loader_indices=[0, 4, 1], expected_len=4)
-    #
-    # def test_save_nxs_seq_indices_5_9(self):
-    #     self.do_preproc('nxs', data_as_stack=True, loader_indices=[5, 9, 1], expected_len=4)
-
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
                                        loader_indices=None,
@@ -149,7 +142,6 @@ class IOTest(FileOutputtingTestCase):
 
         # this only affects enumeration
         saver._indices = saver_indices
-        data_as_stack = False
 
         # saver indices only affects the enumeration of the data
         if saver_indices:
@@ -163,14 +155,15 @@ class IOTest(FileOutputtingTestCase):
         dark_dir = os.path.join(self.output_directory, "imgIOTest_dark")
         saver.save(dark, dark_dir, out_format=img_format)
 
-        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
-                                data_as_stack, images.shape[0])
+        data_as_stack = False
+        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX),
+                                img_format, data_as_stack, images.shape[0])
 
-        self.assert_files_exist(os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
-                                flat.shape[0])
+        self.assert_files_exist(os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX),
+                                img_format, data_as_stack, flat.shape[0])
 
-        self.assert_files_exist(os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
-                                dark.shape[0])
+        self.assert_files_exist(os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX),
+                                img_format, data_as_stack, dark.shape[0])
 
         loaded_images = loader.load(self.output_directory,
                                     flat_dir,
@@ -191,8 +184,8 @@ class IOTest(FileOutputtingTestCase):
         npt.assert_equal(loaded_images.sample, images)
         # we only check the first image because they will be
         # averaged out when loaded! The initial images are only 3s
-        npt.assert_equal(loaded_images.flat, flat[0])
-        npt.assert_equal(loaded_images.dark, dark[0])
+        npt.assert_equal(loaded_images.flat, flat)
+        npt.assert_equal(loaded_images.dark, dark)
 
         loaded_images.free_memory()
 
@@ -210,6 +203,8 @@ class IOTest(FileOutputtingTestCase):
 
         # Ensure properties have been preserved
         self.assertEquals(loaded_images.metadata, images.metadata)
+
+        loaded_images.free_memory()
 
 
 if __name__ == '__main__':

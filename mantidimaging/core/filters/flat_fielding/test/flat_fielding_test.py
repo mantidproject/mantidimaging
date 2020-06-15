@@ -1,78 +1,31 @@
 import unittest
+from typing import Tuple
 from unittest import mock
 
 import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.flat_fielding import FlatFieldFilter
 
 
-class BackgroundCorrectionTest(unittest.TestCase):
+class FlatFieldingTest(unittest.TestCase):
     """
     Test background correction filter.
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
-        super(BackgroundCorrectionTest, self).__init__(*args, **kwargs)
+        super(FlatFieldingTest, self).__init__(*args, **kwargs)
 
-    def test_not_executed_empty_params(self):
-        """
-        Test filter doesn't execute with no parameters
-        """
-        images = th.generate_images_class_random_shared_array()
+    def _make_images(self) -> Tuple[Images, Images, Images]:
+        images = th.generate_images()
 
-        # empty params
-        result = FlatFieldFilter.filter_func(images)
-
-        npt.assert_equal(result.sample, images.sample)
-
-    def test_not_executed_no_dark(self):
-        """
-        Test filter doesn't execute with no dark images provided
-        """
-        images = th.generate_images_class_random_shared_array()
-        flat = th.gen_img_shared_array()[0]
-
-        # no dark
-        result = FlatFieldFilter.filter_func(images, flat[0])
-
-        npt.assert_equal(result.sample, images.sample)
-
-    def test_not_executed_no_flat(self):
-        """
-        Test filter doesn't execute with no flat images provided
-        """
-        images = th.generate_images_class_random_shared_array()
-        dark = th.gen_img_shared_array()[0]
-
-        # no flat
-        result = FlatFieldFilter.filter_func(images, None, dark[0])
-
-        npt.assert_equal(result.sample, images.sample)
-
-    def test_not_executed_bad_flat(self):
-        """
-        Test filter doesn't execute when flat is incorrect type
-        """
-        images = th.generate_images_class_random_shared_array()
-        flat = th.gen_img_shared_array()[0]
-        dark = th.gen_img_shared_array()[0]
-
-        # bad flat
-        npt.assert_raises(ValueError, FlatFieldFilter.filter_func, images, flat[0], dark)
-
-    def test_not_executed_bad_dark(self):
-        """
-        Test filter doesn't execute when dark is incorrect type
-        """
-        images = th.generate_images_class_random_shared_array()
-        flat = th.gen_img_shared_array()[0]
-        dark = th.gen_img_shared_array()[0]
-
-        # bad dark
-        npt.assert_raises(ValueError, FlatFieldFilter.filter_func, images, flat, dark[0])
+        flat = th.generate_images()
+        dark = th.generate_images()
+        return images, flat, dark
 
     def test_real_result(self):
         th.switch_mp_off()
@@ -83,10 +36,10 @@ class BackgroundCorrectionTest(unittest.TestCase):
         # the calculation here was designed on purpose to have a value
         # below the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
-        images = th.generate_images_class_random_shared_array()
+        images, flat, dark = self._make_images()
         images.sample[:] = 26.
-        flat = th.gen_img_shared_array_with_val(7., shape=(1, images.sample.shape[1], images.sample.shape[2]))[0]
-        dark = th.gen_img_shared_array_with_val(6., shape=(1, images.sample.shape[1], images.sample.shape[2]))[0]
+        flat.sample[:] = 7.
+        dark.sample[:] = 6.
 
         expected = np.full(images.sample.shape, 20.)
 
@@ -99,12 +52,10 @@ class BackgroundCorrectionTest(unittest.TestCase):
         # the calculation here was designed on purpose to have a value
         # ABOVE the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
-        images = th.generate_images_class_random_shared_array()
+        images, flat, dark = self._make_images()
         images.sample[:] = 846.
-        flat = th.gen_img_shared_array()[0]
-        flat[:] = 42.
-        dark = th.gen_img_shared_array()[0]
-        dark[:] = 6.
+        flat.sample[:] = 42.
+        dark.sample[:] = 6.
         expected = np.full(images.sample.shape, 3.)
 
         # the resulting values from the calculation are above 3,
@@ -117,12 +68,10 @@ class BackgroundCorrectionTest(unittest.TestCase):
         npt.assert_equal(result.sample, images.sample)
 
     def test_clip_min_works(self):
-        images = th.generate_images_class_random_shared_array()
+        images, flat, dark = self._make_images()
         images.sample[:] = 846.
-        flat = th.gen_img_shared_array()[0]
-        flat[:] = 42.
-        dark = th.gen_img_shared_array()[0]
-        dark[:] = 6.
+        flat.sample[:] = 42.
+        dark.sample[:] = 6.
         expected = np.full(images.sample.shape, 300.)
 
         # the resulting values from above are below 300,
@@ -139,8 +88,16 @@ class BackgroundCorrectionTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        execute_func = FlatFieldFilter.execute_wrapper(flat_widget=None, dark_widget=None)
-        images = th.generate_images_class_random_shared_array()
+        fake_presenter = mock.MagicMock()
+        fake_presenter.presenter.images = th.generate_images()
+        flat_widget = mock.Mock()
+        flat_widget.main_window.get_stack_visualiser = mock.Mock()
+        flat_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        dark_widget = mock.Mock()
+        dark_widget.main_window.get_stack_visualiser = mock.Mock()
+        dark_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        execute_func = FlatFieldFilter.execute_wrapper(flat_widget, dark_widget)
+        images = th.generate_images()
         execute_func(images)
 
 

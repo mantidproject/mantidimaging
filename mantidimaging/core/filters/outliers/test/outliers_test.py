@@ -17,7 +17,7 @@ class OutliersTest(unittest.TestCase):
         super(OutliersTest, self).__init__(*args, **kwargs)
 
     def test_executed(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         radius = 8
         threshold = 0.1
@@ -39,7 +39,7 @@ class OutliersTest(unittest.TestCase):
         mode_field.currentText = mock.Mock(return_value=0)
         execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(diff_field.value.call_count, 1)
