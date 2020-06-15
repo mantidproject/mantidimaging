@@ -129,9 +129,9 @@ class Images:
         # flat_name = f"{uuid.uuid4()}-Flat"
         # dark_name = f"{uuid.uuid4()}-Dark"
         sinogram_shape = (self.sample.shape[1], self.sample.shape[0], self.sample.shape[2])
-        sample_copy = pu.create_shared_array(f"{sample_name}-Sample", sinogram_shape, self.sample.dtype)
+        sample_copy = pu.create_shared_array(f"{sample_name}", sinogram_shape, self.sample.dtype)
         sample_copy[:] = np.swapaxes(self.sample, 0, 1)
 
-        images = Images(sample_copy, sample_filenames=[sample_name], indices=deepcopy(self.indices),
+        images = Images(sample_copy, sample_memory_file_name=sample_name, indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata), sinograms=deepcopy(self.sinograms))
         return images
