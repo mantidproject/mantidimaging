@@ -96,7 +96,7 @@
   </action>
   <action name="actionFilters">
    <property name="text">
-    <string>Image Operations</string>
+    <string>Filters</string>
    </property>
   </action>
   <action name="actionOnlineDocumentation">
@@ -119,7 +119,7 @@
   </action>
   <action name="actionSavuFilters">
    <property name="text">
-    <string>Savu Image Operations</string>
+    <string>Savu Filters</string>
    </property>
   </action>
  </widget>
