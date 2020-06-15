@@ -17,6 +17,7 @@ class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
     """
+
     @staticmethod
     def ensure_instance(p=None, *args, num_steps=None, **kwargs):
         """
@@ -132,6 +133,7 @@ class Progress(object):
         """
         Sets the number of steps this task is expected to take to complete.
         """
+        self.current_step = 0
         self.end_step = num_steps
 
     def add_estimated_steps(self, num_steps):
