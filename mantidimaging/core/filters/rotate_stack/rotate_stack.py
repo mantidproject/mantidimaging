@@ -8,6 +8,7 @@ from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RotateFilter(BaseFilter):
@@ -61,7 +62,7 @@ class RotateFilter(BaseFilter):
         from mantidimaging.gui.utility import add_property_to_form
 
         _, rotation_count = add_property_to_form('Number of rotations clockwise',
-                                                 'int',
+                                                 Type.INT,
                                                  1, (1, 3),
                                                  form=form,
                                                  on_change=on_change)

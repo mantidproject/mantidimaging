@@ -1,5 +1,5 @@
 from functools import partial
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
 import numpy as np
 
@@ -20,7 +20,7 @@ class BaseFilter:
     which are optional.
     """
     @staticmethod
-    def filter_func(data: Images) -> Union[Images, Tuple[Images, Optional[np.ndarray], Optional[np.ndarray]]]:
+    def filter_func(data: Images) -> Images:
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
         The body of this function does not need to include pre and post processing steps - these should be
@@ -34,7 +34,7 @@ class BaseFilter:
         return Images(np.asarray([]))
 
     @staticmethod
-    def execute_wrapper(**kwargs) -> partial:
+    def execute_wrapper(args) -> partial:  # type: ignore
         """
         Should construct a partial call to _filter_func using values taken from the widgets passed to this function
         as kwargs.

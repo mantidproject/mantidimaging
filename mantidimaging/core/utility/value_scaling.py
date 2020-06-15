@@ -24,7 +24,7 @@ def create_factors(data: np.ndarray, roi=None, cores=None, chunksize=None, progr
     with progress:
         img_num = data.shape[0]
         # make sure to clean up if for some reason the scale factor array still exists
-        with pu.temp_shared_array((img_num,1,1)) as scale_factors:
+        with pu.temp_shared_array((img_num, 1, 1)) as scale_factors:
             # turn into a 1D array, from the 3D that is returned
             scale_factors = scale_factors.reshape(img_num)
 

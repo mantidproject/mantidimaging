@@ -156,14 +156,14 @@ class IOTest(FileOutputtingTestCase):
         saver.save(dark, dark_dir, out_format=img_format)
 
         data_as_stack = False
-        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX),
-                                img_format, data_as_stack, images.shape[0])
+        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
+                                data_as_stack, images.shape[0])
 
-        self.assert_files_exist(os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX),
-                                img_format, data_as_stack, flat.shape[0])
+        self.assert_files_exist(os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
+                                flat.shape[0])
 
-        self.assert_files_exist(os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX),
-                                img_format, data_as_stack, dark.shape[0])
+        self.assert_files_exist(os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
+                                dark.shape[0])
 
         loaded_images = loader.load(self.output_directory,
                                     flat_dir,

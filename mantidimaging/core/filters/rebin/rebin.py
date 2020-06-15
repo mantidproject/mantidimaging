@@ -11,6 +11,7 @@ from mantidimaging.core.parallel import exclusive_mem as pem
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RebinFilter(BaseFilter):
@@ -44,6 +45,7 @@ class RebinFilter(BaseFilter):
 
         if param_valid:
             sample = data.sample
+            sample_name: Optional[str]
             if data.sample_memory_file_name is not None:
                 sample_name = data.sample_memory_file_name
                 data.free_sample()
@@ -68,8 +70,8 @@ class RebinFilter(BaseFilter):
         # Rebin to target shape options
         shape_range = (0, 9999)
 
-        _, shape_x = add_property_to_form('X', 'int', valid_values=shape_range, on_change=on_change)
-        _, shape_y = add_property_to_form('Y', 'int', valid_values=shape_range, on_change=on_change)
+        _, shape_x = add_property_to_form('X', Type.INT, valid_values=shape_range, on_change=on_change)
+        _, shape_y = add_property_to_form('Y', Type.int, valid_values=shape_range, on_change=on_change)
 
         from PyQt5 import Qt
         shape_fields = Qt.QHBoxLayout()

@@ -5,6 +5,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RingRemovalFilter(BaseFilter):
@@ -73,27 +74,27 @@ class RingRemovalFilter(BaseFilter):
         range1 = (0, 1000000)
         range2 = (-1000000, 1000000)
 
-        _, x_field = add_property_to_form('Abcissa X', 'int', valid_values=range1, form=form, on_change=on_change)
+        _, x_field = add_property_to_form('Abcissa X', Type.INT, valid_values=range1, form=form, on_change=on_change)
 
-        _, y_field = add_property_to_form('Ordinate Y', 'int', valid_values=range1, form=form, on_change=on_change)
+        _, y_field = add_property_to_form('Ordinate Y', Type.INT, valid_values=range1, form=form, on_change=on_change)
 
-        _, thresh = add_property_to_form('Threshold', 'float', valid_values=range2, form=form, on_change=on_change)
+        _, thresh = add_property_to_form('Threshold', Type.FLOAT, valid_values=range2, form=form, on_change=on_change)
 
         _, thresh_min = add_property_to_form('Threshold Min',
-                                             'float',
+                                             Type.FLOAT,
                                              valid_values=range2,
                                              form=form,
                                              on_change=on_change)
 
         _, thresh_max = add_property_to_form('Threshold Max',
-                                             'float',
+                                             Type.FLOAT,
                                              valid_values=range2,
                                              form=form,
                                              on_change=on_change)
 
-        _, theta = add_property_to_form('Theta', 'int', valid_values=(-1000, 1000), form=form, on_change=on_change)
+        _, theta = add_property_to_form('Theta', Type.INT, valid_values=(-1000, 1000), form=form, on_change=on_change)
 
-        _, rwidth = add_property_to_form('RWidth', 'int', valid_values=range2, form=form, on_change=on_change)
+        _, rwidth = add_property_to_form('RWidth', Type.INT, valid_values=range2, form=form, on_change=on_change)
 
         return {
             "x_field": x_field,

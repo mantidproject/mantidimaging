@@ -42,8 +42,8 @@ class FiltersWindowModel(object):
     def filter_names(self):
         return [f.filter_name for f in self.filters]
 
-    def filter_registration_func(self, filter_idx: int) -> Callable[
-        ['QFormLayout', Callable, BaseMainWindowView], Dict[str, Any]]:
+    def filter_registration_func(
+            self, filter_idx: int) -> Callable[['QFormLayout', Callable, BaseMainWindowView], Dict[str, Any]]:
         """
         Gets the function used to register the GUI of a given filter.
 

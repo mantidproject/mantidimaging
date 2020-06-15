@@ -11,7 +11,6 @@ class RegistratorTest(unittest.TestCase):
     If any filters are added or removed, or if the structure of that package is
     changed then this test will need to be adjusted accordingly.
     """
-
     def __init__(self, *args, **kwargs):
         super(RegistratorTest, self).__init__(*args, **kwargs)
 
