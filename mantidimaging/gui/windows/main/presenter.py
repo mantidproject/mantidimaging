@@ -86,13 +86,13 @@ class MainWindowPresenter(BasePresenter):
             return dock
 
         sample_dock = add_stack(images, title)
-        if images.flat is not None:
+        if images.flat is not None and images.flat_filenames is not None:
             # doesn't pass the memory file - closing this stack will not free the memory
             flat_dock = add_stack(Images(images.flat, sample_filenames=images.flat_filenames),
                                   title=f"{self.model.create_name(os.path.basename(images.flat_filenames[0]))}")
             self.view.tabifyDockWidget(sample_dock, flat_dock)
 
-        if images.dark is not None:
+        if images.dark is not None and images.dark_filenames is not None:
             # doesn't pass the memory file - closing this stack will not free the memory
             dark_dock = add_stack(Images(images.dark, sample_filenames=images.dark_filenames),
                                   title=f"{self.model.create_name(os.path.basename(images.dark_filenames[0]))}")

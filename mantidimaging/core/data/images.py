@@ -21,10 +21,10 @@ class Images:
                  flat_filenames: Optional[List[str]] = None,
                  dark_filenames: Optional[List[str]] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 sinograms=False,
-                 sample_memory_file_name=None,
-                 flat_memory_file_name=None,
-                 dark_memory_file_name=None):
+                 sinograms: bool = False,
+                 sample_memory_file_name: Optional[str] = None,
+                 flat_memory_file_name: Optional[str] = None,
+                 dark_memory_file_name: Optional[str] = None):
         """
 
         :param sample: Images of the Sample/Projection data
@@ -132,6 +132,9 @@ class Images:
         sample_copy = pu.create_shared_array(f"{sample_name}", sinogram_shape, self.sample.dtype)
         sample_copy[:] = np.swapaxes(self.sample, 0, 1)
 
-        images = Images(sample_copy, sample_memory_file_name=sample_name, indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata), sinograms=deepcopy(self.sinograms))
+        images = Images(sample_copy,
+                        sample_memory_file_name=sample_name,
+                        indices=deepcopy(self.indices),
+                        metadata=deepcopy(self.metadata),
+                        sinograms=deepcopy(self.sinograms))
         return images

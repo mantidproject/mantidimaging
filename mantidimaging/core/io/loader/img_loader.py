@@ -1,7 +1,7 @@
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
-from typing import List, Tuple, Union
+from typing import Tuple, Optional, List
 
 import numpy as np
 
@@ -53,7 +53,13 @@ def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, ind
     dark_avg, dark_filenames, dark_mfname = il.load_data(dark_path)
     sample_data, sample_mfname = il.load_sample_data(chosen_input_filenames)
 
-    return Images(sample_data, flat_avg, dark_avg, chosen_input_filenames, indices, flat_filenames, dark_filenames,
+    return Images(sample_data,
+                  flat_avg,
+                  dark_avg,
+                  chosen_input_filenames,
+                  indices,
+                  flat_filenames,
+                  dark_filenames,
                   sample_memory_file_name=sample_mfname,
                   flat_memory_file_name=flat_mfname,
                   dark_memory_file_name=dark_mfname)
@@ -87,7 +93,7 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_data(self, file_path) -> Union[Tuple[np.ndarray, List[str], str], Tuple[None, None, None]]:
+    def load_data(self, file_path) -> Tuple[Optional[np.ndarray], Optional[List[str]], Optional[str]]:
         if file_path:
             file_names = get_file_names(file_path, self.img_format)
             memory_file_name = pu.create_shared_name(file_names[0])

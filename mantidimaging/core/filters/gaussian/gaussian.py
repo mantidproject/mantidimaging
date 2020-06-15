@@ -10,6 +10,7 @@ from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class GaussianFilter(BaseFilter):
@@ -47,11 +48,11 @@ class GaussianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change, view):
-        _, size_field = add_property_to_form('Kernel Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Kernel Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
-        _, order_field = add_property_to_form('Order', 'int', 0, (0, 3), form=form, on_change=on_change)
+        _, order_field = add_property_to_form('Order', Type.INT, 0, (0, 3), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
 
         return {'size_field': size_field, 'order_field': order_field, 'mode_field': mode_field}
 

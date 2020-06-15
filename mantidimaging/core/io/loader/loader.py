@@ -139,8 +139,8 @@ def load(input_path=None,
     helper.check_data_stack(images)
 
     # Search for and load metadata file
-    metadata_filename = get_file_names(input_path, 'json', in_prefix, essential=False)
-    metadata_filename = metadata_filename[0] if metadata_filename else None
+    metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)
+    metadata_filename = metadata_found_filenames[0] if metadata_found_filenames else None
     if metadata_filename:
         with open(metadata_filename) as f:
             images.load_metadata(f)

@@ -3,6 +3,7 @@ from functools import partial
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class StripeRemovalFilter(BaseFilter):
@@ -80,27 +81,31 @@ class StripeRemovalFilter(BaseFilter):
         _, value_filter_type = add_property_to_form('Filter Type', 'choice', form=form, on_change=on_change)
 
         # Wavelet options
-        _, value_wf_level = add_property_to_form('Level', 'int', valid_values=(0, 100), form=form, on_change=on_change)
+        _, value_wf_level = add_property_to_form('Level',
+                                                 Type.INT,
+                                                 valid_values=(0, 100),
+                                                 form=form,
+                                                 on_change=on_change)
 
         _, value_wf_wname = add_property_to_form('Wavelet Filter',
-                                                 'choice',
+                                                 Type.CHOICE,
                                                  valid_values=wavelet_names(),
                                                  form=form,
                                                  on_change=on_change)
 
-        _, value_wf_sigma = add_property_to_form('Sigma', 'float', 2.0, (0.0, 100.0), form=form, on_change=on_change)
+        _, value_wf_sigma = add_property_to_form('Sigma', Type.FLOAT, 2.0, (0.0, 100.0), form=form, on_change=on_change)
 
         # Titarenko options
         _, value_ti_nblock = add_property_to_form('Number of Blocks',
-                                                  'int',
+                                                  Type.INT,
                                                   0, (0, 100),
                                                   form=form,
                                                   on_change=on_change)
 
-        _, value_ti_alpha = add_property_to_form('Alpha', 'float', 1.5, form=form, on_change=on_change)
+        _, value_ti_alpha = add_property_to_form('Alpha', Type.FLOAT, 1.5, form=form, on_change=on_change)
 
         # Smoothing filter options
-        _, value_sf_size = add_property_to_form('Size', 'int', 5, (0, 100), form=form, on_change=on_change)
+        _, value_sf_size = add_property_to_form('Size', Type.INT, 5, (0, 100), form=form, on_change=on_change)
 
         filters = [('wavelet-fourier', [value_wf_level, value_wf_wname, value_wf_sigma]),
                    ('titarenko', [value_ti_nblock, value_ti_alpha]), ('smoothing-filter', [value_sf_size])]

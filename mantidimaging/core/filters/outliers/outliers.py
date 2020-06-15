@@ -7,6 +7,7 @@ from mantidimaging.core.parallel import utility
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.utility.qt_helpers import Type
 
 OUTLIERS_DARK = 'dark'
 OUTLIERS_BRIGHT = 'bright'
@@ -59,13 +60,14 @@ class OutliersFilter(BaseFilter):
     def register_gui(form, on_change, view):
         _, diff_field = add_property_to_form('Difference',
                                              'float',
-                                             1, valid_values=(-1000000, 1000000),
+                                             1,
+                                             valid_values=(-1000000, 1000000),
                                              form=form,
                                              on_change=on_change)
 
-        _, size_field = add_property_to_form('Size', 'int', 3, (0, 1000), form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form('Mode', 'choice', valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
 
         return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field}
 

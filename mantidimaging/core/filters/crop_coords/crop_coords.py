@@ -1,7 +1,5 @@
 from functools import partial
-from typing import Dict, Any, Tuple, Optional
-
-import numpy as np
+from typing import Dict, Any
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -15,11 +13,7 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(data: Images,
-                    roi=None,
-                    flat=None,
-                    dark=None,
-                    progress=None) -> Tuple[Images, Optional[np.ndarray], Optional[np.ndarray]]:
+    def filter_func(data: Images, roi=None, progress=None) -> Images:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -36,10 +30,6 @@ class CropCoordinatesFilter(BaseFilter):
                                    The selection is a rectangle and expected order
                                    is - Left Top Right Bottom.
 
-        :param flat: The average flat image to be cropped
-
-        :param dark: The average dark image to be cropped
-
         :return: The processed 3D numpy.ndarray
         """
 
@@ -55,10 +45,7 @@ class CropCoordinatesFilter(BaseFilter):
         output = pu.create_shared_array(sample_name, shape, sample.dtype)
         data.sample = execute_single(sample, roi, progress, out=output)
 
-        if flat is None or dark is None:
-            return data, None, None  # TODO is this still needed?
-        else:  # crop all and return as tuple
-            return data, execute_single(flat, roi, progress), execute_single(dark, roi, progress)
+        return data
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -73,7 +60,7 @@ class CropCoordinatesFilter(BaseFilter):
         return {'region_of_interest': SVParameters.ROI}
 
     @staticmethod
-    def execute_wrapper(**kwargs) -> partial:
+    def execute_wrapper(*args) -> partial:
         return partial(CropCoordinatesFilter.filter_func)
 
 

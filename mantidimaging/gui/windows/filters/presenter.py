@@ -102,8 +102,7 @@ class FiltersWindowPresenter(BasePresenter):
         register_func = self.model.filter_registration_func(filter_idx)
 
         # Register new filter (adding it's property widgets to the properties layout)
-        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout,
-                                             self.view.auto_update_triggered.emit,
+        filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
         self.model.setup_filter(filter_idx, filter_widget_kwargs)
 

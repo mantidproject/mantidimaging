@@ -96,14 +96,15 @@ class MWLoadDialog(Qt.QDialog):
         try:
             path_filenames = get_file_names(expected_path.absolute(), self.image_format)
             return path_filenames[0]
-        except Exception as e:
+        except RuntimeError:
             getLogger(__name__).info(f"Could not find {type} files in {expected_path.absolute()}")
             expected_path = sample_dirname / ".." / f"{type}_Before"
             try:
                 path_filenames = get_file_names(expected_path.absolute(), self.image_format)
                 return path_filenames[0]
-            except Exception as e:
+            except RuntimeError:
                 getLogger(__name__).info(f"Could not find {type} files in {expected_path.absolute()}")
+        return ""
 
     def update_indices(self, number_of_images):
         """

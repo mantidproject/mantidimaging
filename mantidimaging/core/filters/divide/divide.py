@@ -1,19 +1,22 @@
 from functools import partial
-from typing import Union, Callable, Dict, Any
+from typing import Union, Callable, Dict, Any, TYPE_CHECKING
 
-from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
+from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.gui.mvp_base import BasePresenter
 
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QWidget
+
 
 class DivideFilter(BaseFilter):
     filter_name = "Divide"
 
     @staticmethod
-    def filter_func(data: Images, value: Union[int, float], progress=None) -> Images:
+    def filter_func(data: Images, value: Union[int, float] = 0e7, progress=None) -> Images:
         h.check_data_stack(data)
         if value != 0e7 or value != -0e7:
             data.sample /= value

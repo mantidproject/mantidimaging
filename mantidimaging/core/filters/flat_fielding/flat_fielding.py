@@ -4,7 +4,7 @@ from logging import getLogger
 from typing import Any, Dict
 
 import numpy as np
-from PyQt5.QtWidgets import QLineEdit, QComboBox
+from PyQt5.QtWidgets import QLineEdit
 
 from mantidimaging import helper as h
 from mantidimaging.core import io
@@ -13,6 +13,7 @@ from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from mantidimaging.gui.windows.filters import FiltersWindowView
 
@@ -26,7 +27,7 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def filter_func(data: Images,
-                    flat: Images,
+                    flat: Images = None,
                     dark: Images = None,
                     clip_min=MINIMUM_PIXEL_VALUE,
                     clip_max=MAXIMUM_PIXEL_VALUE,
@@ -51,14 +52,16 @@ class FlatFieldFilter(BaseFilter):
             flat_avg = flat.sample.mean(axis=0)
             dark_avg = dark.sample.mean(axis=0)
             if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
-                raise ValueError(f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
+                raise ValueError(
+                    f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
                     which should match the shape of the sample images ({data.sample.shape})")
 
             if not data.sample.shape[1:] == flat_avg.shape == dark_avg.shape:
                 raise ValueError(f"Not all images are the expected shape: {data.sample.shape[1:]}, instead "
                                  f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
-            progress = Progress.ensure_instance(progress, num_steps=data.sample.shape[0],
+            progress = Progress.ensure_instance(progress,
+                                                num_steps=data.sample.shape[0],
                                                 task_name='Background Correction')
             if pu.multiprocessing_necessary(data.sample.shape, cores):
                 _execute_par(data.sample, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
@@ -72,14 +75,16 @@ class FlatFieldFilter(BaseFilter):
     def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
-        def try_to_select_relevant_stack(name: str, widget: QComboBox) -> None:
+        def try_to_select_relevant_stack(name: str, widget: StackSelectorWidgetView) -> None:
             for i in range(widget.count()):
                 if name.lower() in widget.itemText(i).lower():
                     widget.setCurrentIndex(i)
                     break
 
-        _, flat_widget = add_property_to_form("Flat", "stack", form=form, filters_view=view, on_change=on_change)
-        _, dark_widget = add_property_to_form("Dark", "stack", form=form, filters_view=view, on_change=on_change)
+        _, flat_widget = add_property_to_form("Flat", Type.STACK, form=form, filters_view=view, on_change=on_change)
+        _, dark_widget = add_property_to_form("Dark", Type.STACK, form=form, filters_view=view, on_change=on_change)
+        assert isinstance(flat_widget, StackSelectorWidgetView)
+        assert isinstance(dark_widget, StackSelectorWidgetView)
 
         flat_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Flat", flat_widget)
@@ -93,8 +98,8 @@ class FlatFieldFilter(BaseFilter):
         }
 
     @staticmethod
-    def execute_wrapper(flat_widget: StackSelectorWidgetView = None,
-                        dark_widget: StackSelectorWidgetView = None):
+    def execute_wrapper(  # type: ignore
+            flat_widget: StackSelectorWidgetView, dark_widget: StackSelectorWidgetView) -> partial:
         flat_stack = flat_widget.main_window.get_stack_visualiser(flat_widget.current())
         flat_images = flat_stack.presenter.images
         dark_stack = dark_widget.main_window.get_stack_visualiser(dark_widget.current())

@@ -3,19 +3,22 @@ Module containing helper functions relating to PyQt.
 """
 
 import os
-from typing import Tuple, Union, Optional
+from enum import IntEnum, auto
+from typing import Tuple, Union, TYPE_CHECKING
 
 from PyQt5 import Qt, uic
 from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
 
 from mantidimaging.core.utility import finder
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+
 
 class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
-
     def __init__(self, q_objects):
         from PyQt5 import Qt
         for obj in q_objects:
@@ -75,17 +78,30 @@ def get_value_from_qwidget(widget: QWidget):
         return widget.isChecked()
 
 
-def add_property_to_form(
-        label,
-        dtype,
-        default_value=None,
-        valid_values=None,
-        tooltip=None,
-        on_change=None,
-        form=None,
-        filters_view=None) -> Tuple[
-    Union[QLabel, QLineEdit],
-    Optional[Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox]]]:
+ReturnTypes = Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, 'StackSelectorWidgetView']
+
+
+class Type(IntEnum):
+    STR = auto()
+    TUPLE = auto()
+    NONETYPE = auto()
+    LIST = auto()
+    FLOAT = auto()
+    INT = auto()
+    CHOICE = auto()
+    BOOL = auto()
+    LABEL = auto()
+    STACK = auto()
+
+
+def add_property_to_form(label,
+                         dtype,
+                         default_value=None,
+                         valid_values=None,
+                         tooltip=None,
+                         on_change=None,
+                         form=None,
+                         filters_view=None) -> Tuple[Union[QLabel, QLineEdit], ReturnTypes]:
     """
     Adds a property to the algorithm dialog.
 
@@ -122,14 +138,8 @@ def add_property_to_form(
         if default_value:
             box.setValue(cast_func(default_value))
 
-    if dtype == 'file':
-        left_widget = Qt.QLineEdit()
-        right_widget = Qt.QPushButton(label)
-        right_widget.clicked.connect(lambda: select_file(left_widget, label))
-        if on_change is not None:
-            left_widget.textChanged.connect(lambda: on_change())
-
-    elif dtype == 'str' or dtype == 'tuple' or dtype == "NoneType" or dtype == "list":
+    # some of these are used dynamically by Savu Filters GUI and will not show up in a grep
+    if dtype == 'str' or dtype == 'tuple' or dtype == "NoneType" or dtype == "list":
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
         right_widget = Qt.QLineEdit()
         right_widget.setToolTip(tooltip)
@@ -138,19 +148,19 @@ def add_property_to_form(
         if on_change is not None:
             right_widget.editingFinished.connect(lambda: on_change())
 
-    elif dtype == 'int':
+    elif dtype == 'int' or dtype == Type.INT:
         right_widget = Qt.QSpinBox()
         set_spin_box(right_widget, int)
         if on_change is not None:
             right_widget.editingFinished.connect(lambda: on_change())
 
-    elif dtype == 'float':
+    elif dtype == 'float' or dtype == Type.FLOAT:
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
         if on_change is not None:
             right_widget.editingFinished.connect(lambda: on_change())
 
-    elif dtype == 'bool':
+    elif dtype == 'bool' or dtype == Type.BOOL:
         right_widget = Qt.QCheckBox()
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
@@ -165,7 +175,7 @@ def add_property_to_form(
         if on_change is not None:
             right_widget.stateChanged[int].connect(lambda: on_change())
 
-    elif dtype == "choice":
+    elif dtype == "choice" or dtype == Type.CHOICE:
         right_widget = Qt.QComboBox()
         if valid_values:
             right_widget.addItems(valid_values)
@@ -175,7 +185,7 @@ def add_property_to_form(
     elif dtype == 'label':
         pass
 
-    elif dtype == 'stack':
+    elif dtype == 'stack' or dtype == Type.STACK:
         from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
         right_widget = StackSelectorWidgetView(filters_view)
         if on_change is not None:
