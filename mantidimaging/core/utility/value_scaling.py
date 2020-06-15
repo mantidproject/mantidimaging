@@ -24,24 +24,22 @@ def create_factors(data: np.ndarray, roi=None, cores=None, chunksize=None, progr
     with progress:
         img_num = data.shape[0]
         # make sure to clean up if for some reason the scale factor array still exists
-        pu.delete_shared_array(SCALE_FACTOR_ARRAY_NAME, silent_failure=True)
-        scale_factors = pu.create_shared_array(SCALE_FACTOR_ARRAY_NAME, (img_num, 1, 1))
+        with pu.temp_shared_array((img_num,1,1)) as scale_factors:
+            # turn into a 1D array, from the 3D that is returned
+            scale_factors = scale_factors.reshape(img_num)
 
-        # turn into a 1D array, from the 3D that is returned
-        scale_factors = scale_factors.reshape(img_num)
+            # calculate the scale factor from original image
+            calc_sums_partial = ptsm.create_partial(_calc_avg,
+                                                    fwd_function=ptsm.return_to_second,
+                                                    roi_left=roi[0] if roi else 0,
+                                                    roi_top=roi[1] if roi else 0,
+                                                    roi_right=roi[2] if roi else data[0].shape[1] - 1,
+                                                    roi_bottom=roi[3] if roi else data[0].shape[0] - 1)
 
-        # calculate the scale factor from original image
-        calc_sums_partial = ptsm.create_partial(_calc_avg,
-                                                fwd_function=ptsm.return_to_second,
-                                                roi_left=roi[0] if roi else 0,
-                                                roi_top=roi[1] if roi else 0,
-                                                roi_right=roi[2] if roi else data[0].shape[1] - 1,
-                                                roi_bottom=roi[3] if roi else data[0].shape[0] - 1)
+            data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize,
+                                               "Calculating scale factor")
 
-        data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize,
-                                           "Calculating scale factor")
-
-    return scale_factors
+        return scale_factors
 
 
 def _scale_inplace(data, scale):
@@ -64,7 +62,5 @@ def apply_factor(data: np.ndarray, scale_factors, cores=None, chunksize=None, pr
         # contrast the same as from the region of interest
         data, scale_factors = ptsm.execute(data, [scale_factors.mean()], scale_up_partial, cores, chunksize,
                                            "Applying scale factor", progress)
-
-        pu.delete_shared_array(SCALE_FACTOR_ARRAY_NAME)
 
     return data

@@ -19,7 +19,7 @@ class RebinTest(unittest.TestCase):
         super(RebinTest, self).__init__(*args, **kwargs)
 
     def test_not_executed_rebin_negative(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         mode = 'reflect'
         val = -1
@@ -29,7 +29,7 @@ class RebinTest(unittest.TestCase):
         npt.assert_equal(result, images)
 
     def test_not_executed_rebin_zero(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         mode = 'reflect'
         val = 0
@@ -60,7 +60,7 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute_uniform(self, val=2.0, dtype=np.float32):
-        images = th.generate_images_class_random_shared_array(dtype=dtype, automatic_free=False)
+        images = th.generate_images(dtype=dtype, automatic_free=False)
         mode = 'reflect'
 
         expected_x = int(images.sample.shape[1] * val)
@@ -100,7 +100,7 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute_xy(self, val=(512, 512)):
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         mode = 'reflect'
 
         expected_x = int(val[0])
@@ -118,7 +118,7 @@ class RebinTest(unittest.TestCase):
         This filter will increase the memory usage as it has to allocate memory
         for the new resized shape
         """
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
 
         mode = 'reflect'
         # This about doubles the memory. Value found from running the test
@@ -155,7 +155,7 @@ class RebinTest(unittest.TestCase):
                                                    factor=factor,
                                                    mode_field=mode_field)
 
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         execute_func(images)
         images.free_memory()
 

@@ -17,40 +17,37 @@ def gen_img_numpy_rand(shape=g_shape) -> np.ndarray:
     return np.random.rand(*shape)
 
 
-def gen_img_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarray]:
-    arr = gen_img_shared_array(shape)
+def generate_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarray]:
+    arr = generate_shared_array(shape)
     copy = np.copy(arr)
     return arr, copy
 
 
-def gen_img_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
+def generate_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
     with pu.temp_shared_array(shape, dtype) as generated_array:
         np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]).astype(dtype))
         return generated_array
 
 
-def generate_images_class_random_shared_array(shape=g_shape, dtype=np.float32, automatic_free=True) -> Images:
-    name = "test-array-{}"
-    fake_filenames = []
-    for i in range(g_shape[0]):
-        fake_filenames.append(name.format(i))
-
-    array_name = f"{fake_filenames[0]}-Sample"
+def generate_images(shape=g_shape, dtype=np.float32, automatic_free=True) -> Images:
+    import inspect
+    import uuid
+    array_name = f"{str(uuid.uuid4())}{inspect.stack()[1].function}"
     if automatic_free:
         with pu.temp_shared_array(shape, dtype, force_name=array_name) as d:
-            return _set_random_data(d, shape, fake_filenames)
+            return _set_random_data(d, shape, array_name)
     else:
         d = pu.create_shared_array(array_name, shape, dtype)
-        return _set_random_data(d, shape, fake_filenames)
+        return _set_random_data(d, shape, array_name)
 
 
-def _set_random_data(data, shape, fake_filenames):
+def _set_random_data(data, shape, array_name):
     n = np.random.rand(*shape)
     # move the data in the shared array
     data[:] = n[:]
 
     images = Images(data)
-    images.filenames = fake_filenames
+    images.sample_memory_file_name = array_name
     return images
 
 

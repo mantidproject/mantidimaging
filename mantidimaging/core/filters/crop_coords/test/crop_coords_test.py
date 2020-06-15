@@ -13,11 +13,16 @@ class CropCoordsTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 
+    def tearDown(self):
+        import SharedArray as sa
+        assert len(sa.list()) == 0
+
     def test_executed_with_flat_and_dark(self):
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         flat = th.shared_deepcopy(images)[0]
         dark = th.shared_deepcopy(images)[0]
         roi = [1, 1, 5, 5]
@@ -37,7 +42,7 @@ class CropCoordsTest(unittest.TestCase):
         """
         The filter will execute but BOTH flat and dark will be None!
         """
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         flat = th.shared_deepcopy(images)[0]
         dark = None
         roi = [1, 1, 5, 5]
@@ -55,7 +60,7 @@ class CropCoordsTest(unittest.TestCase):
         """
         The filter will execute but BOTH flat and dark will be None!
         """
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         flat = None
         dark = th.shared_deepcopy(images)[0]
         roi = [1, 1, 5, 5]
@@ -76,7 +81,7 @@ class CropCoordsTest(unittest.TestCase):
         #   - no flat or dark images are provided
 
         roi = [1, 1, 5, 5]
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         # store a reference here so it doesn't get freed inside the filter execute
         sample = images.sample
         result = CropCoordinatesFilter.filter_func(images, roi)[0]
@@ -100,7 +105,7 @@ class CropCoordsTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         roi = [1, 1, 5, 5]
 
         cached_memory = get_memory_usage_linux(mb=True)[0]
@@ -118,7 +123,7 @@ class CropCoordsTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images_class_random_shared_array(automatic_free=False)
+        images = th.generate_images(automatic_free=False)
         CropCoordinatesFilter.execute_wrapper()(images, [1, 1, 5, 5])
         images.free_memory()
 

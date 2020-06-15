@@ -21,7 +21,7 @@ class MedianTest(unittest.TestCase):
         super(MedianTest, self).__init__(*args, **kwargs)
 
     def test_not_executed(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         size = None
         mode = None
@@ -32,7 +32,7 @@ class MedianTest(unittest.TestCase):
         th.assert_not_equals(result.sample, original)
 
     def test_executed_no_helper_parallel(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         size = 3
         mode = 'reflect'
@@ -44,7 +44,7 @@ class MedianTest(unittest.TestCase):
 
     @unittest.skipIf(not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed")
     def test_executed_no_helper_gpu(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         size = 3
         mode = 'reflect'
@@ -55,7 +55,7 @@ class MedianTest(unittest.TestCase):
         th.assert_not_equals(result.sample, original)
 
     def test_executed_no_helper_seq(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         size = 3
         mode = 'reflect'
@@ -80,7 +80,7 @@ class MedianTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         size = 3
         mode = 'reflect'
 
@@ -102,7 +102,7 @@ class MedianTest(unittest.TestCase):
         use_gpu_field.isChecked = mock.Mock(return_value=False)
         execute_func = MedianFilter.execute_wrapper(size_field, mode_field, use_gpu_field)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(size_field.value.call_count, 1)

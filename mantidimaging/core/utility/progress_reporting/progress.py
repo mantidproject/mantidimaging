@@ -170,7 +170,7 @@ class Progress(object):
                 self.end_step = self.current_step + 1
 
             # Update progress history
-            step_details = (time.clock(), self.current_step, msg)
+            step_details = (time.process_time(), self.current_step, msg)
             self.progress_history.append(step_details)
 
         # Process progress callbacks

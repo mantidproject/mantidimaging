@@ -41,7 +41,7 @@ class GPUTest(unittest.TestCase):
         for mode in modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array()
+                images = th.generate_shared_array()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
                 cpu_result = self.run_serial(images.copy(), size, mode)
@@ -57,7 +57,7 @@ class GPUTest(unittest.TestCase):
         for size in [5, 7, 9]:
             with self.subTest(size=size):
 
-                images = th.gen_img_shared_array()
+                images = th.generate_shared_array()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
                 cpu_result = self.run_serial(images.copy(), size, mode)
@@ -74,7 +74,7 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array(shape=(20, N, N))
+        images = th.generate_shared_array(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
@@ -89,7 +89,7 @@ class GPUTest(unittest.TestCase):
         """
         size = 3
         mode = "reflect"
-        images = th.gen_img_shared_array(dtype="float64")
+        images = th.generate_shared_array(dtype="float64")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
@@ -109,7 +109,7 @@ class GPUTest(unittest.TestCase):
         # Make the number of images in the stack exceed the maximum number of GPU-stored images
         n_images = gpu.MAX_GPU_SLICES * 3
 
-        images = th.gen_img_shared_array(shape=(n_images, N, N))
+        images = th.generate_shared_array(shape=(n_images, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
@@ -128,7 +128,7 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array(shape=(n_images, N, N))
+        images = th.generate_shared_array(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
@@ -146,7 +146,7 @@ class GPUTest(unittest.TestCase):
         N = 20
         n_images = 2
 
-        images = th.gen_img_shared_array(shape=(n_images, N, N))
+        images = th.generate_shared_array(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):

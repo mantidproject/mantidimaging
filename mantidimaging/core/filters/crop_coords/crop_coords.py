@@ -49,7 +49,7 @@ class CropCoordinatesFilter(BaseFilter):
         h.check_data_stack(data)
 
         sample = data.sample
-        sample_name = data.sample_name
+        sample_name = data.sample_memory_file_name
         shape = (sample.shape[0], roi[2] - roi[0], roi[3] - roi[1])
         data.free_sample()
         output = pu.create_shared_array(sample_name, shape, sample.dtype)

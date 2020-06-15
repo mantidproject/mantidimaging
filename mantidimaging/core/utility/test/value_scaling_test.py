@@ -12,8 +12,13 @@ class ValueScalingTest(unittest.TestCase):
 
         self.alg = value_scaling
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        import SharedArray as sa
+        assert len(sa.list()) == 0, f"Not all shared arrays have been freed. Leftover: {sa.list()}"
+
     def test_create_factors_no_roi(self):
-        images = th.gen_img_shared_array()
+        images = th.generate_images().sample
         expected_factors = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
 
         # make then with increasing values
@@ -29,7 +34,7 @@ class ValueScalingTest(unittest.TestCase):
         npt.assert_equal(expected_factors, result)
 
     def test_create_factors(self):
-        images = th.gen_img_shared_array()
+        images = th.generate_images().sample
         expected_factors = [5.5, 5.5, 5.5, 5.5, 5.5, 5.5, 5.5, 5.5, 5.5, 5.5]
         # make then with increasing values
         for z in range(images.shape[0]):
@@ -44,7 +49,7 @@ class ValueScalingTest(unittest.TestCase):
         npt.assert_equal(expected_factors, result)
 
     def test_apply_factors(self):
-        images = th.gen_img_shared_array()
+        images = th.generate_images().sample
         images[:] = 2
         roi = [4, 4, 8, 8]
         result = self.alg.create_factors(images, roi, cores=1)

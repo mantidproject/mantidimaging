@@ -16,7 +16,7 @@ class CutOffTest(unittest.TestCase):
         super(CutOffTest, self).__init__(*args, **kwargs)
 
     def test_execute(self):
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         threshold = 0.5
 
         previous_max = images.sample.max()
@@ -39,7 +39,7 @@ class CutOffTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
@@ -55,7 +55,7 @@ class CutOffTest(unittest.TestCase):
         threshold_field.value = mock.Mock(return_value=0)
         execute_func = CutOffFilter.execute_wrapper(threshold_field)
 
-        images = th.generate_images_class_random_shared_array()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(threshold_field.value.call_count, 1)
