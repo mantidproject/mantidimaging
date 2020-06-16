@@ -83,12 +83,14 @@ class FlatFieldFilter(BaseFilter):
 
         _, flat_widget = add_property_to_form("Flat", Type.STACK, form=form, filters_view=view, on_change=on_change)
         _, dark_widget = add_property_to_form("Dark", Type.STACK, form=form, filters_view=view, on_change=on_change)
-        assert isinstance(flat_widget, StackSelectorWidgetView)
-        assert isinstance(dark_widget, StackSelectorWidgetView)
 
+        assert isinstance(flat_widget, StackSelectorWidgetView)
+        flat_widget.setMaximumWidth(250)
         flat_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Flat", flat_widget)
 
+        assert isinstance(dark_widget, StackSelectorWidgetView)
+        dark_widget.setMaximumWidth(250)
         dark_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Dark", dark_widget)
 
