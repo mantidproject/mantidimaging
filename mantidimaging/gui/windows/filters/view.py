@@ -27,8 +27,8 @@ class FiltersWindowView(BaseMainWindowView):
     previews: FilterPreviews
     stackSelector: StackSelectorWidgetView
 
-    error_label: QLabel
     error_icon: QLabel
+    error_text: QLabel
 
     def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
@@ -133,5 +133,11 @@ class FiltersWindowView(BaseMainWindowView):
         return self.previews.image_difference
 
     def show_error_dialog(self, msg=""):
-        self.error_icon.setPixmap(QApplication.style().SP_MessageBoxCritical)
-        self.error_label.setText(msg)
+        self.error_text.show()
+        self.error_icon.setPixmap(QApplication.style().standardPixmap(QApplication.style().SP_MessageBoxCritical))
+        self.error_text.setText(msg)
+
+    def clear_error_dialog(self):
+        self.error_icon.clear()
+        self.error_text.clear()
+        self.error_text.hide()

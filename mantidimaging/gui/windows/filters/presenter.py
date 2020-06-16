@@ -105,6 +105,7 @@ class FiltersWindowPresenter(BasePresenter):
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
         self.model.setup_filter(filter_idx, filter_widget_kwargs)
+        self.view.clear_error_dialog()
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
