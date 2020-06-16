@@ -55,7 +55,7 @@ class CropCoordsTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(mb=True)[0]
 
-        result = CropCoordinatesFilter.filter_func(images, roi)[0]
+        result = CropCoordinatesFilter.filter_func(images, roi)
 
         self.assertLess(get_memory_usage_linux(mb=True)[0], cached_memory * 1.1)
 
