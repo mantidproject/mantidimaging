@@ -2,11 +2,13 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
+from pyqtgraph import Point
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
+from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView, PlotROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
@@ -119,6 +121,8 @@ class StackVisualiserView(BaseMainWindowView):
 
     def build_context_menu(self) -> QMenu:
         actions = [
+            ("Set ROI", self.set_roi),
+            ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
             ("Change window name", self.change_window_name_clicked),
             ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
             ("Show history", self.show_image_metadata),
@@ -134,6 +138,20 @@ class StackVisualiserView(BaseMainWindowView):
             menu.addAction(action)
 
         return menu
+
+    def set_roi(self):
+        roi, accepted = QInputDialog.getText(self, "Manual ROI",
+                                             "Enter ROI in order left, top, right, bottom, with commas in-between each number",
+                                             text="0, 0, 50, 50")
+        if accepted:
+            roi = [int(r.strip()) for r in roi.split(",")]
+            self.image_view.roi.setSize((roi[2], roi[3]))
+            self.image_view.roi.setPos((roi[0],roi[1]))
+            self.image_view.roiChanged()
+
+    def copy_roi_to_clipboard(self):
+        pos, size = self.image_view.get_roi()
+        QGuiApplication.clipboard().setText(f"{pos.x}, {pos.y}, {size.x}, {size.y}")
 
     def change_window_name_clicked(self):
         input_window = QInputDialog()

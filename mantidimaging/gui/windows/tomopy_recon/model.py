@@ -4,10 +4,10 @@ from typing import Optional, Dict, Any
 import numpy as np
 
 from mantidimaging.core.cor_tilt.auto import generate_cors
+from mantidimaging.core.data.images import Images
 from mantidimaging.core.reconstruct import tomopy_reconstruct, allowed_recon_kwargs
 from mantidimaging.core.utility.projection_angles import \
     generate as generate_projection_angles
-from mantidimaging.core.data.images import Images
 
 LOG = getLogger(__name__)
 
@@ -27,7 +27,7 @@ class TomopyReconWindowModel(object):
         self.recon_params: Dict[str, Any] = {}
 
     @property
-    def sample(self):
+    def sample(self) -> Optional[np.ndarray]:
         return self.stack.presenter.images.sample if self.stack is not None else None
 
     @property
@@ -37,15 +37,19 @@ class TomopyReconWindowModel(object):
     def initial_select_data(self, stack):
         self.stack = stack
 
-        self.projection = self.sample.swapaxes(0, 1) \
-            if stack is not None else None
-
     def reconstruct_slice(self, progress):
-        data = np.asarray([self.sample[self.preview_slice_idx]])
-        return self.do_recon(data, progress, **self._load_kwargs())
+        images = self.images
+        if images is not None:
+            if images.sinograms is False:
+                data = np.asarray([np.swapaxes(images.sample[:, self.preview_slice_idx, :], 0, 1)])
+            else:
+                data = np.asarray([images.sample[self.preview_slice_idx]])
+            return self.do_recon(data, progress, **self._load_kwargs())
 
     def reconstruct_volume(self, progress):
-        return self.do_recon(self.sample, progress, **self._load_kwargs())
+        kwargs = self._load_kwargs()
+        kwargs["images_are_sinograms"] = self.images.sinograms
+        return self.do_recon(self.sample, progress, **kwargs)
 
     def _load_kwargs(self):
         # Copy of kwargs kept for recording the operation (in the presenter)

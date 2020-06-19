@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from mantidimaging.core.cor_tilt import CorTiltDataModel
 from mantidimaging.core.cor_tilt.data_model import Point
-from mantidimaging.gui.windows.cor_tilt import Column, COLUMN_NAMES
+from mantidimaging.gui.windows.recon import Column, COLUMN_NAMES
 
 
 class CorTiltDataModelTest(TestCase):

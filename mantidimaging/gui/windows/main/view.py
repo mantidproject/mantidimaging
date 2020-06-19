@@ -3,20 +3,18 @@ from typing import Optional
 
 import matplotlib
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction, QLabel
+from PyQt5.QtWidgets import QAction, QLabel, QInputDialog
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.cor_tilt import CORTiltWindowView
 from mantidimaging.gui.windows.filters import FiltersWindowView
 from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import \
-    Notification as PresNotification
+from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
-from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
 
 LOG = getLogger(__file__)
 
@@ -25,18 +23,18 @@ class MainWindowView(BaseMainWindowView):
     active_stacks_changed = Qt.pyqtSignal()
     backend_message = Qt.pyqtSignal(bytes)
 
-    actionCorTilt: QAction
+    actionRecon: QAction
     actionFilters: QAction
     actionSavuFilters: QAction
-    actionTomopyRecon: QAction
 
     filters: Optional[FiltersWindowView] = None
     savu_filters: Optional[SavuFiltersWindowView] = None
-    cor_tilt: Optional[CORTiltWindowView] = None
-    tomopy_recon: Optional[TomopyReconWindowView] = None
+    recon: Optional[ReconstructWindowView] = None
 
     load_dialogue: Optional[MWLoadDialog] = None
     save_dialogue: Optional[MWSaveDialog] = None
+
+    actionDebug_Me: QAction
 
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
@@ -62,15 +60,12 @@ class MainWindowView(BaseMainWindowView):
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
-        self.actionFilters.setShortcut("Ctrl+F")
         self.actionSavuFilters.triggered.connect(self.show_savu_filters_window)
-        self.actionSavuFilters.setShortcut("Ctrl+Shift+F")
-        self.actionCorTilt.triggered.connect(self.show_cor_tilt_window)
-        self.actionCorTilt.setShortcut("Ctrl+R")
-        self.actionTomopyRecon.triggered.connect(self.show_tomopy_recon_window)
-        self.actionTomopyRecon.setShortcut("Ctrl+Shift+R")
+        self.actionRecon.triggered.connect(self.show_recon_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
+
+        self.actionDebug_Me.triggered.connect(self.attach_debugger)
 
     def update_shortcuts(self):
         self.actionSave.setEnabled(len(self.presenter.stack_names) > 0)
@@ -106,13 +101,13 @@ class MainWindowView(BaseMainWindowView):
         self.save_dialogue = MWSaveDialog(self, self.stack_list)
         self.save_dialogue.show()
 
-    def show_cor_tilt_window(self):
-        if not self.cor_tilt:
-            self.cor_tilt = CORTiltWindowView(self)
-            self.cor_tilt.show()
+    def show_recon_window(self):
+        if not self.recon:
+            self.recon = ReconstructWindowView(self)
+            self.recon.show()
         else:
-            self.cor_tilt.activateWindow()
-            self.cor_tilt.raise_()
+            self.recon.activateWindow()
+            self.recon.raise_()
 
     def show_filters_window(self):
         if not self.filters:
@@ -132,14 +127,6 @@ class MainWindowView(BaseMainWindowView):
         else:
             self.savu_filters.activateWindow()
             self.savu_filters.raise_()
-
-    def show_tomopy_recon_window(self):
-        if not self.tomopy_recon:
-            self.tomopy_recon = TomopyReconWindowView(self)
-            self.tomopy_recon.show()
-        else:
-            self.tomopy_recon.activateWindow()
-            self.tomopy_recon.raise_()
 
     @property
     def stack_list(self):
@@ -220,3 +207,8 @@ class MainWindowView(BaseMainWindowView):
 
     def create_new_stack(self, data, title):
         self.presenter.create_new_stack(data, title)
+
+    def attach_debugger(self):
+        port = QInputDialog.getInt(self, "Debug port", "Get PyCharm debug listen port", value=25252)[0]
+        import pydevd_pycharm
+        pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)

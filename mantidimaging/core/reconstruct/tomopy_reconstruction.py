@@ -10,7 +10,7 @@ LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
 
 
-def reconstruct_single_preview(sample, slice_idx, cor, proj_angles, progress=None):
+def reconstruct_single_preview(sample, slice_idx, cor, proj_angles, algorithm, recon_filter, progress=None):
     """
     Performs a preview of a single slice/sinogram from a 3D volume provided as
     a stack of projections.
@@ -24,16 +24,16 @@ def reconstruct_single_preview(sample, slice_idx, cor, proj_angles, progress=Non
     """
     progress = Progress.ensure_instance(progress, task_name='Tomopy reconstruction')
 
-    volume = [None]
     with progress:
+        # TODO check if the images are sinograms first
         s = np.swapaxes(sample[:, [slice_idx], :], 0, 1)
 
         volume = tomopy.recon(tomo=s,
                               sinogram_order=True,
                               theta=proj_angles,
                               center=cor,
-                              algorithm='gridrec',
-                              filter_name='shepp')
+                              algorithm=algorithm,
+                              filter_name=recon_filter)
 
     return volume[0]
 
@@ -50,10 +50,7 @@ def reconstruct_single_preview_from_sinogram(sample, cor, proj_angles, progress=
 
     volume = [None]
     with progress:
-        volume = tomopy.recon(tomo=[sample],
-                              sinogram_order=True,
-                              theta=proj_angles,
-                              center=cor,
+        volume = tomopy.recon(tomo=[sample], sinogram_order=True, theta=proj_angles, center=cor,
                               algorithm='gridrec',
                               filter_name='shepp')
 

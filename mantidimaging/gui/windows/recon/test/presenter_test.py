@@ -5,17 +5,17 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const as data_const
-from mantidimaging.gui.windows.cor_tilt import CORTiltWindowPresenter, CORTiltWindowView
-from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
+from mantidimaging.gui.windows.recon.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
 
 
 class CORTiltWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         # Mock view
-        self.view = mock.create_autospec(CORTiltWindowView)
+        self.view = mock.create_autospec(ReconstructWindowView)
 
-        self.presenter = CORTiltWindowPresenter(self.view, None)
+        self.presenter = ReconstructWindowPresenter(self.view, None)
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)

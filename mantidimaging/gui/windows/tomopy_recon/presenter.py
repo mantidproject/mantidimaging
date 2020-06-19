@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, Dict, List
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct.utility import get_cor_tilt_from_images
-from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
+from mantidimaging.gui.mvp_base import BasePresenter
 from .model import TomopyReconWindowModel
 
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowView
+    from ..recon import ReconstructWindowView
     from PyQt5.QtWidgets import QWidget
 
 
@@ -25,9 +25,11 @@ class Notification(Enum):
     ALGORITHM_CHANGED = 6
 
 
-class TomopyReconWindowPresenter(BasePresenter):
-    def __init__(self, view: 'TomopyReconWindowView', main_window):
-        super(TomopyReconWindowPresenter, self).__init__(view)
+class ReconstructTabPresenter(BasePresenter):
+    view: 'ReconstructWindowView'
+
+    def __init__(self, view: 'ReconstructWindowView', main_window):
+        super(ReconstructTabPresenter, self).__init__(view)
         self.view = view
         self.model = TomopyReconWindowModel()
         self.main_window = main_window
@@ -63,20 +65,19 @@ class TomopyReconWindowPresenter(BasePresenter):
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
 
-        self.view.set_preview_slice_idx(0)
-        if self.model.sample is not None:
-            self.view.set_preview_slice_max_idx(self.model.sample.shape[0] - 1)
+        # self.view.set_preview_slice_idx(0)
+        # if self.model.sample is not None:
+        #     self.view.set_preview_slice_max_idx(self.model.sample.shape[0] - 1)
 
         # Update projection preview
-        self.notify(Notification.UPDATE_PROJECTION_PREVIEW)
+        # self.notify(Notification.UPDATE_PROJECTION_PREVIEW)
 
         # Remove existing reconstructed preview
-        self.view.update_recon_preview(None)
+        # self.view.update_recon_preview(None)
 
         # Pre-populate COR and tilt options
-        cor, _, m = get_cor_tilt_from_images(self.model.images)
-        self.view.rotation_centre = cor
-        self.view.cor_gradient = m
+        # self.view.rotation_centre = cor
+        # self.view.cor_gradient = m
 
     def set_preview_slice_idx(self, idx):
         max_idx = \
@@ -92,12 +93,12 @@ class TomopyReconWindowPresenter(BasePresenter):
 
     def prepare_reconstruction(self):
         self.model.rotation_centre = self.view.rotation_centre
-        self.model.cor_gradient = self.view.cor_gradient
+        self.model.cor_gradient = self.view.tilt
         self.model.current_algorithm = self.view.algorithm_name
         self.model.current_filter = self.view.filter_name
         self.model.num_iter = self.view.num_iter
         self.model.max_proj_angle = self.view.max_proj_angle
-        self.stack_metadata = self.model.images.metadata
+        self.stack_metadata = self.view.presenter.model.images.metadata
 
     def do_reconstruct_slice(self):
         self.prepare_reconstruction()
@@ -110,7 +111,7 @@ class TomopyReconWindowPresenter(BasePresenter):
     def _on_reconstruct_slice_done(self, task):
         if task.was_successful():
             slice_data = task.result
-            self.view.update_recon_preview(slice_data[0])
+            self.view.update_image_recon_preview(slice_data[0])
         else:
             LOG.error('Reconstruction failed: %s', str(task.error))
             self.show_error('Reconstruction failed. See log for details.')

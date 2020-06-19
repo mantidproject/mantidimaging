@@ -4,7 +4,7 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 
-from mantidimaging.gui.windows.tomopy_recon import (TomopyReconWindowView, TomopyReconWindowPresenter)
+from mantidimaging.gui.windows.tomopy_recon import (ReconstructTabView, ReconstructTabPresenter)
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
 
 import mock
@@ -13,9 +13,9 @@ import mock
 class TomopyReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         # Mock view
-        self.view = mock.create_autospec(TomopyReconWindowView)
+        self.view = mock.create_autospec(ReconstructTabView)
         self.view.rotation_centre = 500
-        self.view.cor_gradient = 0
+        self.view.tilt = 0
         self.view.max_proj_angle = 360
 
         # Widget attributes are not mocked by `create_autospec` but are required to exist
@@ -24,7 +24,7 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
         self.view.filterName = mock.MagicMock()
         self.view.filterNameLabel = mock.MagicMock()
 
-        self.presenter = TomopyReconWindowPresenter(self.view, None)
+        self.presenter = ReconstructTabPresenter(self.view, None)
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
@@ -37,19 +37,19 @@ class TomopyReconWindowPresenterTest(unittest.TestCase):
         self.view.update_projection_preview.assert_called_once()
         self.view.update_recon_preview.assert_called_once_with(None)
         self.assertEquals(self.view.rotation_centre, 0)
-        self.assertEquals(self.view.cor_gradient, 0.0)
+        self.assertEquals(self.view.tilt, 0.0)
 
     def test_prepare_recon(self):
         self.presenter.set_stack(self.stack)
 
         self.assertIsNone(self.presenter.model.rotation_centre)
-        self.assertIsNone(self.presenter.model.cor_gradient)
+        self.assertIsNone(self.presenter.model.tilt)
         self.assertIsNone(self.presenter.model.max_proj_angle)
 
         self.presenter.prepare_reconstruction()
 
         self.assertIsNotNone(self.presenter.model.rotation_centre)
-        self.assertIsNotNone(self.presenter.model.cor_gradient)
+        self.assertIsNotNone(self.presenter.model.tilt)
         self.assertIsNotNone(self.presenter.model.max_proj_angle)
 
     def test_set_preview_slice_index(self):

@@ -1,41 +1,44 @@
-from typing import TYPE_CHECKING
-from enum import Enum
+from enum import Enum, auto
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 
 from mantidimaging.core.operation_history import const as data_const
+from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.dialogs.async_task import start_async_task_view
-from mantidimaging.gui.windows.cor_tilt.model import CORTiltWindowModel
+from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.cor_tilt.view import CORTiltWindowView
+    from mantidimaging.gui.windows.recon.view import ReconstructWindowView
 
 
 class Notification(Enum):
-    CROP_TO_ROI = 1
-    UPDATE_PREVIEWS = 2
-    RUN_AUTOMATIC = 3
-    RUN_MANUAL = 4
-    PREVIEW_RECONSTRUCTION = 5
-    PREVIEW_RECONSTRUCTION_SET_COR = 6
-    ADD_NEW_COR_TABLE_ROW = 7
-    REFINE_SELECTED_COR = 8
-    SHOW_COR_VS_SLICE_PLOT = 9
-    SET_ALL_ROW_VALUES = 10
+    CROP_TO_ROI = auto()
+    UPDATE_PREVIEWS = auto()
+    RUN_AUTOMATIC = auto()
+    RUN_MANUAL = auto()
+    PREVIEW_RECONSTRUCTION = auto()
+    PREVIEW_RECONSTRUCTION_SET_COR = auto()
+    ADD_NEW_COR_TABLE_ROW = auto()
+    REFINE_SELECTED_COR = auto()
+    SHOW_COR_VS_SLICE_PLOT = auto()
+    SET_ALL_ROW_VALUES = auto()
+    ALGORITHM_CHANGED = auto()
+    RECONSTRUCT_VOLUME = auto()
 
 
-class CORTiltWindowPresenter(BasePresenter):
+class ReconstructWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
+    view: 'ReconstructWindowView'
 
-    def __init__(self, view: 'CORTiltWindowView', main_window):
-        super(CORTiltWindowPresenter, self).__init__(view)
+    def __init__(self, view: 'ReconstructWindowView', main_window):
+        super(ReconstructWindowPresenter, self).__init__(view)
         self.view = view
-        self.model = CORTiltWindowModel(self.view.point_model)
+        self.model = ReconstructWindowModel(self.view.point_model)
         self.main_window = main_window
 
     def notify(self, signal):
@@ -48,7 +51,7 @@ class CORTiltWindowPresenter(BasePresenter):
                 self.do_execute_automatic()
             elif signal == Notification.RUN_MANUAL:
                 self.do_execute_manual()
-            elif signal == Notification.PREVIEW_RECONSTRUCTION:
+            elif signal == Notification.PREVIEW_RECONSTRUCTION or signal == Notification.ALGORITHM_CHANGED:
                 self.do_preview_reconstruction()
             elif signal == Notification.PREVIEW_RECONSTRUCTION_SET_COR:
                 self.do_preview_reconstruction_set_cor()
@@ -60,6 +63,9 @@ class CORTiltWindowPresenter(BasePresenter):
                 self.do_plot_cor_vs_slice_index()
             elif signal == Notification.SET_ALL_ROW_VALUES:
                 self.change_all_rows_to_selected_cor()
+            elif signal == Notification.RECONSTRUCT_VOLUME:
+                raise NotImplementedError("TODO")
+
 
         except Exception as e:
             self.show_error(e)
@@ -71,7 +77,7 @@ class CORTiltWindowPresenter(BasePresenter):
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
-        self.view.set_results(0, 0, 0)
+        self.view.set_results(0, 0)
         self.view.set_num_projections(self.model.num_projections)
         self.view.set_num_slices(self.model.num_slices)
         self.notify(Notification.UPDATE_PREVIEWS)
@@ -94,14 +100,16 @@ class CORTiltWindowPresenter(BasePresenter):
 
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
-        self.view.set_results(0, 0, 0)
+        self.view.set_results(0, 0)
         self.notify(Notification.UPDATE_PREVIEWS)
 
     def do_update_previews(self):
         img_data = self.model.sample[self.model.preview_projection_idx] \
             if self.model.sample is not None else None
 
-        self.view.update_image_preview(img_data, self.model.preview_slice_idx, self.model.preview_tilt_line_data,
+        self.view.update_image_preview(img_data,
+                                       self.model.preview_slice_idx,
+                                       self.model.preview_tilt_line_data,
                                        self.model.roi)
 
         self.view.update_fit_plot(self.model.slices, self.model.cors, self.model.preview_fit_y_data)
@@ -113,7 +121,8 @@ class CORTiltWindowPresenter(BasePresenter):
             cor = self.model.get_cor_for_slice_from_regression()
 
         if cor is not None:
-            data = self.model.run_preview_recon(self.model.preview_slice_idx, cor)
+            data = self.model.run_preview_recon(self.model.preview_slice_idx, cor,
+                                                self.view.algorithm_name, self.view.filter_name)
             self.view.update_image_recon_preview(data)
 
     def do_preview_reconstruction_set_cor(self):

@@ -1,19 +1,18 @@
 from logging import getLogger
+from typing import Optional, Tuple
 
 import numpy as np
-from typing import Optional
 
 from mantidimaging.core.cor_tilt import (run_auto_finding_on_images, update_image_operations)
+from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct import tomopy_reconstruct_preview
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
-
-from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel
-from mantidimaging.core.data import Images
+from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
 LOG = getLogger(__name__)
 
 
-class CORTiltWindowModel(object):
+class ReconstructWindowModel(object):
     def __init__(self, data_model: CorTiltPointQtModel):
         self.stack: Optional[Images] = None
         self.preview_projection_idx = 0
@@ -28,8 +27,8 @@ class CORTiltWindowModel(object):
     def has_results(self):
         return self.data_model.has_results
 
-    def get_results(self):
-        return self.data_model.cor, self.data_model.angle_rad, self.data_model.gradient
+    def get_results(self) -> Tuple[Optional[float], Optional[float]]:
+        return self.data_model.cor, self.data_model.angle_rad
 
     @property
     def sample(self):
@@ -124,13 +123,13 @@ class CORTiltWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor):
+    def run_preview_recon(self, slice_idx, cor, algorithm, recon_filter):
         # Ensure we have some sample data
         if self.sample is None:
             raise ValueError('No sample to use for preview reconstruction')
 
         # Perform single slice reconstruction
-        return tomopy_reconstruct_preview(self.sample, slice_idx, cor, self.proj_angles)
+        return tomopy_reconstruct_preview(self.sample, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
 
     @property
     def preview_tilt_line_data(self):

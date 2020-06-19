@@ -5,13 +5,13 @@ import numpy as np
 
 from mantidimaging.core.cor_tilt.data_model import Point
 from mantidimaging.core.data import Images
-from mantidimaging.gui.windows.cor_tilt import (CORTiltWindowModel, CorTiltPointQtModel)
+from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
 
 
 class CORTiltWindowModelTest(unittest.TestCase):
     def setUp(self):
-        self.model = CORTiltWindowModel(CorTiltPointQtModel())
+        self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
@@ -21,7 +21,7 @@ class CORTiltWindowModelTest(unittest.TestCase):
         self.model.initial_select_data(self.stack)
 
     def test_empty_init(self):
-        m = CORTiltWindowModel(CorTiltPointQtModel())
+        m = ReconstructWindowModel(CorTiltPointQtModel())
         self.assertIsNone(m.stack)
         self.assertIsNone(m.sample)
         self.assertIsNone(m.last_result)

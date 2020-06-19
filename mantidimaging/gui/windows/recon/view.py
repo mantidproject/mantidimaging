@@ -1,25 +1,37 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QAbstractItemView
+from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import NavigationToolbarSimple
-from mantidimaging.gui.windows.cor_tilt.point_table_model import CorTiltPointQtModel, Column
-from mantidimaging.gui.windows.cor_tilt.presenter import CORTiltWindowPresenter
-from mantidimaging.gui.windows.cor_tilt.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
+from mantidimaging.gui.windows.recon.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
 
 
-class CORTiltWindowView(BaseMainWindowView):
+class ReconstructWindowView(BaseMainWindowView):
+    inputTab: QWidget
+    resultTab: QWidget
+    reconTab: QWidget
+
+    # part of the Reconstruct tab
+    algorithmName: QComboBox
+    filterName: QComboBox
+    numIter: QSpinBox
+    maxProjAngle: QDoubleSpinBox
+    resultCor: QDoubleSpinBox
+    resultTilt: QDoubleSpinBox
+
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
-        super(CORTiltWindowView, self).__init__(main_window, 'gui/ui/cor_tilt_window.ui')
+        super().__init__(main_window, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
-        self.presenter = CORTiltWindowPresenter(self, main_window)
+        self.presenter = ReconstructWindowPresenter(self, main_window)
 
         self.cmap = cmap
 
@@ -43,14 +55,13 @@ class CORTiltWindowView(BaseMainWindowView):
             return figure, canvas, toolbar
 
         # Image plot
-        self.image_figure, self.image_canvas, _ = \
-            add_mpl_figure(self.imageLayout)
+        self.image_figure, self.image_canvas, _ = add_mpl_figure(self.imageLayout)
         self.image_plot = self.image_figure.add_subplot(111)
         self.image_canvas.mpl_connect('button_press_event', self.preview_image_on_button_press)
 
         # Reconstruction preview plot
-        self.recon_figure, self.recon_canvas, self.recon_toolbar = \
-            add_mpl_figure(self.reconPreviewLayout, NavigationToolbarSimple)
+        self.recon_figure, self.recon_canvas, self.recon_toolbar = add_mpl_figure(self.reconPreviewLayout,
+                                                                                  NavigationToolbarSimple)
         self.recon_plot = self.recon_figure.add_subplot(111)
         self.recon_image = None
 
@@ -93,7 +104,6 @@ class CORTiltWindowView(BaseMainWindowView):
             self.autoCalculateButton: PresNotification.RUN_AUTOMATIC,
         }
         for btn, notification in click_notifications.items():
-
             def bind(c_notification):
                 btn.clicked.connect(lambda: self.presenter.notify(c_notification))
 
@@ -119,13 +129,20 @@ class CORTiltWindowView(BaseMainWindowView):
 
         # Update initial UI state
         self.on_table_row_count_change()
-        self.set_results(0, 0, 0)
+        self.set_results(0, 0)
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
+        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresNotification.ALGORITHM_CHANGED))
+        # Handle reconstruct buttons
+        self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresNotification.PREVIEW_RECONSTRUCTION))
+        self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_VOLUME))
+
+        self.presenter.notify(PresNotification.ALGORITHM_CHANGED)
+
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
-        self.main_window.cor_tilt = None
+        self.main_window.recon = None
 
     @property
     def point_model(self):
@@ -134,13 +151,12 @@ class CORTiltWindowView(BaseMainWindowView):
             self.tableView.setModel(mdl)
         return self.tableView.model()
 
-    def set_results(self, cor, tilt, gradient):
+    def set_results(self, cor, tilt):
         """
         Sets the numerical COR and tilt angle results.
         """
-        self.resultCor.setValue(cor)
-        self.resultTilt.setValue(tilt)
-        self.resultGradient.setValue(gradient)
+        self.rotation_centre = cor
+        self.tilt = tilt
 
     def update_image_preview(self, image_data, preview_slice_index, tilt_line_points=None, roi=None):
         """
@@ -330,3 +346,35 @@ class CORTiltWindowView(BaseMainWindowView):
         finding.
         """
         return self.projectionCount.value()
+
+    @property
+    def rotation_centre(self):
+        return self.resultCor.value()
+
+    @rotation_centre.setter
+    def rotation_centre(self, value):
+        self.resultCor.setValue(value)
+
+    @property
+    def tilt(self):
+        return self.resultTilt.value()
+
+    @tilt.setter
+    def tilt(self, value):
+        self.resultTilt.setValue(value)
+
+    @property
+    def max_proj_angle(self):
+        return self.maxProjAngle.value()
+
+    @property
+    def algorithm_name(self):
+        return self.algorithmName.currentText()
+
+    @property
+    def filter_name(self):
+        return self.filterName.currentText()
+
+    @property
+    def num_iter(self):
+        return self.numIter.value() if self.numIter.isVisible() else None

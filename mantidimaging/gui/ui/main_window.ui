@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -40,9 +40,8 @@
      <string>Workflow</string>
     </property>
     <addaction name="actionFilters"/>
+    <addaction name="actionRecon"/>
     <addaction name="actionSavuFilters"/>
-    <addaction name="actionCorTilt"/>
-    <addaction name="actionTomopyRecon"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -50,6 +49,7 @@
     </property>
     <addaction name="actionOnlineDocumentation"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionDebug_Me"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuWorkflow"/>
@@ -84,9 +84,12 @@
     <string>Tomopy</string>
    </property>
   </action>
-  <action name="actionCorTilt">
+  <action name="actionRecon">
    <property name="text">
-    <string>Find COR and Tilt</string>
+    <string>Reconstruct</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionManual_Center_of_Rotation">
@@ -97,6 +100,9 @@
   <action name="actionFilters">
    <property name="text">
     <string>Filters</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="actionOnlineDocumentation">
@@ -119,7 +125,18 @@
   </action>
   <action name="actionSavuFilters">
    <property name="text">
-    <string>Savu Filters</string>
+    <string>Savu GUI</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F</string>
+   </property>
+  </action>
+  <action name="actionDebug_Me">
+   <property name="text">
+    <string>Debug Me</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>
