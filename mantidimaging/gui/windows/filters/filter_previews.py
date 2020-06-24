@@ -7,7 +7,7 @@ from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, Vie
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
-histogram_axes_labels = {'left': 'Frequency', 'bottom': 'Value'}
+histogram_axes_labels = {'left': 'Count', 'bottom': 'Bin'}
 before_pen = (0, 0, 200)
 after_pen = (0, 200, 0)
 
@@ -65,12 +65,6 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         for img in self.image_before, self.image_after, self.image_difference:
             img.hoverEvent = lambda ev: self.mouse_over(ev)
-
-        self.img_hover_text = {
-            self.image_before: "Before: {}",
-            self.image_after: "After: {}",
-            self.image_difference: "Difference: {}",
-        }
 
     def image_in_vb(self, name=None):
         im = ImageItem()

@@ -5,7 +5,9 @@ import numpy as np
 
 from mantidimaging.core.cor_tilt import (run_auto_finding_on_images, update_image_operations)
 from mantidimaging.core.data import Images
-from mantidimaging.core.reconstruct import tomopy_reconstruct_preview
+from mantidimaging.core.reconstruct import allowed_recon_kwargs
+from mantidimaging.core.reconstruct.astra_recon import reconstruct_single_preview
+from mantidimaging.core.utility.cor_holder import ScalarCoR
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
@@ -52,11 +54,11 @@ class ReconstructWindowModel(object):
 
     @property
     def cor_for_current_preview_slice(self):
-        return self.data_model.get_cor_for_slice(self.preview_slice_idx)
+        return ScalarCoR(self.data_model.get_cor_for_slice(self.preview_slice_idx))
 
-    def set_all_cors(self, cor: float):
+    def set_all_cors(self, cor: ScalarCoR):
         for slice_idx in self.data_model.slices:
-            self.data_model.set_cor_at_slice(slice_idx, cor)
+            self.data_model.set_cor_at_slice(slice_idx, cor.value)
 
     def initial_select_data(self, stack):
         self.data_model.clear_results()
@@ -79,6 +81,10 @@ class ReconstructWindowModel(object):
         if self.roi is not None:
             lower = self.roi[1]
             upper = self.roi[3]
+            # move the bounds by 20% as the ends of the image are usually empty
+            # or contain unimportant information
+            lower = lower * 1.2 if lower != 0 else 0.2 * self.sample.shape[1]
+            upper = upper - upper * 0.2
             self.data_model.populate_slice_indices(lower, upper, count)
 
     def calculate_projections(self, count):
@@ -87,7 +93,7 @@ class ReconstructWindowModel(object):
             sample_proj_count = self.sample.shape[0]
             downsample_proj_count = min(sample_proj_count, count)
             self.projection_indices = \
-                np.linspace(0, sample_proj_count - 1, downsample_proj_count,
+                np.linspace(int(sample_proj_count * 0.1), sample_proj_count - 1, downsample_proj_count,
                             dtype=int)
 
     def run_finding_automatic(self, progress):
@@ -123,13 +129,14 @@ class ReconstructWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor, algorithm, recon_filter):
+    def run_preview_recon(self, slice_idx, cor: ScalarCoR, algorithm, recon_filter):
         # Ensure we have some sample data
         if self.sample is None:
             raise ValueError('No sample to use for preview reconstruction')
 
         # Perform single slice reconstruction
-        return tomopy_reconstruct_preview(self.sample, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
+        return reconstruct_single_preview(self.images, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
+        # return tomopy_reconstruct_preview(self.sample, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
 
     @property
     def preview_tilt_line_data(self):
@@ -149,5 +156,9 @@ class ReconstructWindowModel(object):
     def slices(self):
         return self.data_model.slices
 
-    def get_cor_for_slice_from_regression(self):
-        return self.data_model.get_cor_for_slice_from_regression(self.preview_slice_idx)
+    def get_cor_for_slice_from_regression(self) -> ScalarCoR:
+        return ScalarCoR(self.data_model.get_cor_for_slice_from_regression(self.preview_slice_idx))
+
+    @staticmethod
+    def load_allowed_recon_kwargs():
+        return allowed_recon_kwargs()

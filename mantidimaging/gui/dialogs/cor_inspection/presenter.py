@@ -1,11 +1,15 @@
-from logging import getLogger
 from enum import Enum
+from logging import getLogger
+from typing import TYPE_CHECKING
+
 from PyQt5 import Qt
 
 from mantidimaging.gui.mvp_base import BasePresenter
-
 from .model import CORInspectionDialogModel
 from .types import ImageType
+
+if TYPE_CHECKING:
+    from .pyqtview import CORInspectionDialogViewPyqt
 
 LOG = getLogger(__name__)
 
@@ -22,21 +26,23 @@ class Notification(Enum):
 class CORInspectionDialogPresenter(BasePresenter):
     progress_updated = Qt.pyqtSignal(float, str)
 
-    def __init__(self, view, **args):
+    view: 'CORInspectionDialogViewPyqt'
+
+    def __init__(self, view, data, slice_index, initial_cor, initial_step):
         super(CORInspectionDialogPresenter, self).__init__(view)
 
-        self.model = CORInspectionDialogModel(**args)
+        self.model = CORInspectionDialogModel(data, slice_index, initial_cor, initial_step)
 
     def notify(self, signal):
         try:
             if signal == Notification.IMAGE_CLICKED_LESS:
                 self.on_select_image(ImageType.LESS)
-            elif signal == Notification.IMAGE_CLICKED_CURRENT:
-                self.on_select_image(ImageType.CURRENT)
             elif signal == Notification.IMAGE_CLICKED_MORE:
                 self.on_select_image(ImageType.MORE)
+            elif signal == Notification.IMAGE_CLICKED_CURRENT:
+                self.on_select_image(ImageType.CURRENT)
             elif signal == Notification.FULL_UPDATE:
-                self.do_full_ui_update()
+                self.do_refresh()
             elif signal == Notification.UPDATE_PARAMETERS_FROM_UI:
                 self.do_update_ui_parameters()
             elif signal == Notification.LOADED:
@@ -56,10 +62,18 @@ class CORInspectionDialogPresenter(BasePresenter):
         # Adjust COR step
         self.model.adjust_cor(img)
 
-        # Update UI
-        self.notify(Notification.FULL_UPDATE)
+        if img != ImageType.CURRENT:
+            # Update UI
+            self.notify(Notification.FULL_UPDATE)
+        else:
+            self.view.step_size = self.model.cor_step
 
-    def do_full_ui_update(self):
+            # Images
+            for i in [ImageType.LESS, ImageType.MORE]:
+                title = 'COR: {}'.format(self.model.cor(i))
+                self.view.set_image(i, self.model.recon_preview(i), title)
+
+    def do_refresh(self):
         # Parameters
         self.view.step_size = self.model.cor_step
 
@@ -67,8 +81,6 @@ class CORInspectionDialogPresenter(BasePresenter):
         for i in ImageType:
             title = 'COR: {}'.format(self.model.cor(i))
             self.view.set_image(i, self.model.recon_preview(i), title)
-
-        self.view.image_canvas_draw()
 
     def do_update_ui_parameters(self):
         self.model.cor_step = self.view.step_size

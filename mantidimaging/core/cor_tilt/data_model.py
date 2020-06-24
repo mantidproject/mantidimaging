@@ -7,6 +7,7 @@ import scipy as sp
 
 from mantidimaging.core.operation_history import const
 from .angles import cors_to_tilt_angle
+from ..utility.cor_holder import ScalarCoR
 
 LOG = getLogger(__name__)
 Point = namedtuple('Point', ['slice_index', 'cor'])
@@ -58,7 +59,7 @@ class CorTiltDataModel:
                 return i
         return None
 
-    def set_cor_at_slice(self, slice_idx, cor):
+    def set_cor_at_slice(self, slice_idx, cor: float):
         data_idx = self._get_data_idx_from_slice_idx(slice_idx)
         self.set_point(data_idx, cor=cor)
 

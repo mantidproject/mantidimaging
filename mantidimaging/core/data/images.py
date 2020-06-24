@@ -114,12 +114,12 @@ class Images:
 
         self.metadata[const.OPERATION_HISTORY].append({
             const.OPERATION_NAME:
-            func_name,
+                func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS: {k: v
                                            for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-            display_name
+                display_name
         })
 
     def copy(self):
@@ -138,3 +138,14 @@ class Images:
                         metadata=deepcopy(self.metadata),
                         sinograms=deepcopy(self.sinograms))
         return images
+
+    @property
+    def width(self):
+        if not self.sinograms:
+            return self.sample.shape[1]
+        else:
+            return self.sample.shape[0]
+
+    @property
+    def height(self):
+        return self.sample[2]

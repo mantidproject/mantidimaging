@@ -1,6 +1,8 @@
 from functools import partial
 from typing import Dict, Any
 
+import numpy as np
+
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
@@ -13,7 +15,7 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(data: Images, roi=None, progress=None) -> Images:
+    def filter_func(data: Images, region_of_interest=None, progress=None) -> Images:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -26,24 +28,29 @@ class CropCoordinatesFilter(BaseFilter):
 
         :param data: Input data as a 3D numpy.ndarray
 
-        :param roi: Crop original images using these coordinates.
+        :param region_of_interest: Crop original images using these coordinates.
                                    The selection is a rectangle and expected order
                                    is - Left Top Right Bottom.
 
         :return: The processed 3D numpy.ndarray
         """
 
-        if roi is None:
-            roi = [0, 0, 50, 50]
+        if region_of_interest is None:
+            region_of_interest = [0, 0, 50, 50]
 
         h.check_data_stack(data)
 
         sample = data.sample
+        shape = (sample.shape[0],
+                 region_of_interest[2] - region_of_interest[0],
+                 region_of_interest[3] - region_of_interest[1])
         sample_name = data.sample_memory_file_name
-        shape = (sample.shape[0], roi[2] - roi[0], roi[3] - roi[1])
-        data.free_sample()
-        output = pu.create_shared_array(sample_name, shape, sample.dtype)
-        data.sample = execute_single(sample, roi, progress, out=output)
+        if sample_name is not None:
+            data.free_sample()
+            output = pu.create_shared_array(sample_name, shape, sample.dtype)
+        else:
+            output = np.zeros(shape, sample.dtype)
+        data.sample = execute_single(sample, region_of_interest, progress, out=output)
 
         return data
 
@@ -82,7 +89,7 @@ def execute_single(data, roi, progress=None, out=None):
             right = roi[2]
             bottom = roi[3]
 
-            output = out if out is not None else data
+            output = out[:] if out is not None else data[:]
             if data.ndim == 2:
                 output = data[top:bottom, left:right]
             elif data.ndim == 3:

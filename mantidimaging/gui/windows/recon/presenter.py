@@ -1,12 +1,14 @@
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List
 
 import matplotlib.pyplot as plt
+from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.operation_history import const as data_const
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
+from mantidimaging.gui.dialogs.cor_inspection.pyqtview import CORInspectionDialogViewPyqt
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
@@ -29,6 +31,8 @@ class Notification(Enum):
     SET_ALL_ROW_VALUES = auto()
     ALGORITHM_CHANGED = auto()
     RECONSTRUCT_VOLUME = auto()
+    CLEAR_ALL_CORS = auto()
+    REMOVE_SELECTED_COR = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -39,34 +43,21 @@ class ReconstructWindowPresenter(BasePresenter):
         super(ReconstructWindowPresenter, self).__init__(view)
         self.view = view
         self.model = ReconstructWindowModel(self.view.point_model)
+        self.allowed_recon_kwargs: Dict[str, List[str]] = self.model.load_allowed_recon_kwargs()
+        self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
+            'filter_name': [self.view.filterName, self.view.filterNameLabel],
+            'num_iter': [self.view.numIter, self.view.numIterLabel],
+        }
         self.main_window = main_window
 
     def notify(self, signal):
         try:
-            if signal == Notification.CROP_TO_ROI:
-                self.do_crop_to_roi()
-            elif signal == Notification.UPDATE_PREVIEWS:
-                self.do_update_previews()
-            elif signal == Notification.RUN_AUTOMATIC:
-                self.do_execute_automatic()
-            elif signal == Notification.RUN_MANUAL:
-                self.do_execute_manual()
-            elif signal == Notification.PREVIEW_RECONSTRUCTION or signal == Notification.ALGORITHM_CHANGED:
-                self.do_preview_reconstruction()
+            if signal == Notification.PREVIEW_RECONSTRUCTION:
+                self.do_reconstruct_slice()
             elif signal == Notification.PREVIEW_RECONSTRUCTION_SET_COR:
                 self.do_preview_reconstruction_set_cor()
-            elif signal == Notification.ADD_NEW_COR_TABLE_ROW:
-                self.do_add_manual_cor_table_row()
-            elif signal == Notification.REFINE_SELECTED_COR:
-                self.do_refine_selected_cor()
             elif signal == Notification.SHOW_COR_VS_SLICE_PLOT:
                 self.do_plot_cor_vs_slice_index()
-            elif signal == Notification.SET_ALL_ROW_VALUES:
-                self.change_all_rows_to_selected_cor()
-            elif signal == Notification.RECONSTRUCT_VOLUME:
-                raise NotImplementedError("TODO")
-
-
         except Exception as e:
             self.show_error(e)
             LOG.exception("Notification handler failed")
@@ -80,19 +71,19 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.set_results(0, 0)
         self.view.set_num_projections(self.model.num_projections)
         self.view.set_num_slices(self.model.num_slices)
-        self.notify(Notification.UPDATE_PREVIEWS)
+        self.do_update_previews()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
-        self.notify(Notification.UPDATE_PREVIEWS)
+        self.do_update_previews()
 
     def set_row(self, row):
         self.model.selected_row = row
 
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
-        self.notify(Notification.UPDATE_PREVIEWS)
-        self.notify(Notification.PREVIEW_RECONSTRUCTION)
+        self.do_update_previews()
+        self.do_reconstruct_slice()
 
     def handle_cor_manually_changed(self, slice_idx):
         if slice_idx == self.model.preview_slice_idx:
@@ -101,7 +92,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
         self.view.set_results(0, 0)
-        self.notify(Notification.UPDATE_PREVIEWS)
+        self.do_update_previews()
 
     def do_update_previews(self):
         img_data = self.model.sample[self.model.preview_projection_idx] \
@@ -114,7 +105,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.view.update_fit_plot(self.model.slices, self.model.cors, self.model.preview_fit_y_data)
 
-    def do_preview_reconstruction(self, cor=None):
+    def do_reconstruct_slice(self, cor=None):
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
@@ -127,9 +118,9 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_preview_reconstruction_set_cor(self):
         cor = self.model.cor_for_current_preview_slice
-        self.do_preview_reconstruction(cor)
+        self.do_reconstruct_slice(cor)
 
-    def do_add_manual_cor_table_row(self):
+    def do_add_cor(self):
         row = self.model.selected_row
         cor = self.model.last_result[data_const.COR_TILT_ROTATION_CENTRE] if \
             self.model.last_result else 0
@@ -138,7 +129,8 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogView(self.view, data=self.model.sample, slice_idx=slice_idx)
+        dialog = CORInspectionDialogViewPyqt(self.view, self.model.sample, slice_idx, self.model.last_result[
+            data_const.COR_TILT_ROTATION_CENTRE] if self.model.last_result else 0)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -146,9 +138,9 @@ class ReconstructWindowPresenter(BasePresenter):
             new_cor = dialog.optimal_rotation_centre
             LOG.debug('New optimal rotation centre: {}'.format(new_cor))
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor)
-
-        # Update reconstruction preview with new COR
-        self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
+            self.model.last_result[data_const.COR_TILT_ROTATION_CENTRE] = new_cor
+            # Update reconstruction preview with new COR
+            self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
 
     def do_plot_cor_vs_slice_index(self):
         if self.model.data_model.num_points > 1:
@@ -177,13 +169,13 @@ class ReconstructWindowPresenter(BasePresenter):
 
             plt.show()
 
-    def do_execute_automatic(self):
+    def do_auto_find(self):
         self.model.calculate_slices(self.view.slice_count)
         self.model.calculate_projections(self.view.projection_count)
 
         start_async_task_view(self.view, self.model.run_finding_automatic, self._on_finding_done)
 
-    def do_execute_manual(self):
+    def do_cor_fit(self):
         start_async_task_view(self.view, self.model.run_finding_manual, self._on_finding_done)
 
     def _on_finding_done(self, task):
@@ -192,14 +184,33 @@ class ReconstructWindowPresenter(BasePresenter):
         if task.was_successful():
             self.view.set_results(*self.model.get_results())
             self.view.show_results()
-            self.notify(Notification.UPDATE_PREVIEWS)
-            self.notify(Notification.PREVIEW_RECONSTRUCTION)
+            self.do_update_previews()
+            self.do_reconstruct_slice()
         else:
             msg = self.ERROR_STRING.format(task.error)
             log.error(msg)
             self.show_error(msg)
 
-    def change_all_rows_to_selected_cor(self):
+    def do_set_all_row_values(self):
         if self.view.point_model.empty:
             return
         self.model.set_all_cors(self.model.cor_for_current_preview_slice)
+
+    def do_algorithm_changed(self):
+        allowed_args = self.allowed_recon_kwargs[self.view.algorithm_name]
+        for arg, widgets in self.restricted_arg_widgets.items():
+            if arg in allowed_args:
+                for widget in widgets:
+                    widget.show()
+            else:
+                for widget in widgets:
+                    widget.hide()
+
+    def do_clear_all_cors(self):
+        self.view.clear_cor_table()
+
+    def do_remove_selected_cor(self):
+        self.view.remove_selected_cor()
+
+    def do_reconstruct_volume(self):
+        raise NotImplementedError("TODO")

@@ -28,14 +28,14 @@ class CORInspectionDialogView(BaseDialogView):
         # Common image toolbar (attached to centre image)
         self.plot_toolbar = NavigationToolbarSimple(self.image_canvas, self)
         self.plotToolbarLayout.addWidget(self.plot_toolbar)
-
-        # Handle best image selection
-        self.lessButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_LESS))
-        self.currentButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_CURRENT))
-        self.moreButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_MORE))
+        #
+        # # Handle best image selection
+        # self.lessButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_LESS))
+        # self.currentButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_CURRENT))
+        # self.moreButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_MORE))
 
         # Handle parameter updates
-        self.step.valueChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PARAMETERS_FROM_UI))
+        # self.step.valueChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PARAMETERS_FROM_UI))
 
         self._image_cache = [None, None, None]
 

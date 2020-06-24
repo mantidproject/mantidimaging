@@ -5,7 +5,6 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 import numpy as np
 
 from mantidimaging.core.filters.loader import load_filter_packages
-from mantidimaging.gui.windows.tomopy_recon import TomopyReconWindowModel
 
 from . import const
 
@@ -68,7 +67,7 @@ def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
     }
     fixed_funcs = {
         const.OPERATION_NAME_AXES_SWAP: lambda img, **_: np.swapaxes(img, 0, 1),
-        const.OPERATION_NAME_TOMOPY_RECON: lambda img, **kwargs: TomopyReconWindowModel.do_recon(img, **kwargs),
+        # const.OPERATION_NAME_TOMOPY_RECON: lambda img, **kwargs: TomopyReconWindowModel.do_recon(img, **kwargs),
     }
     filter_funcs.update(fixed_funcs)
     return (op.to_partial(filter_funcs) for op in filter_ops)

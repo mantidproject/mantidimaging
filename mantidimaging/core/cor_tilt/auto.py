@@ -4,13 +4,12 @@ import numpy as np
 
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.progress_reporting import Progress
-
 # This import is used to provide the available() function which is used to
 # check if the functionality of a module is available based on the presence of
 # optional libraries
 from mantidimaging.core.utility.optional_imports import (  # noqa: F401
     safe_import, tomopy_available as available)
+from mantidimaging.core.utility.progress_reporting import Progress
 
 tomopy = safe_import('tomopy')
 
@@ -18,14 +17,8 @@ LOG = getLogger(__name__)
 
 
 def find_cor_at_slice(slice_idx, sample_data):
-    return tomopy.find_center_vo(tomo=sample_data,
-                                 ind=slice_idx,
-                                 ratio=1.0,
-                                 smin=0,
-                                 smax=200,
-                                 srad=10.0,
-                                 step=2.0,
-                                 drop=0)
+    return tomopy.find_center_vo(tomo=sample_data, ind=slice_idx, ratio=1.0,
+                                 smin=0, smax=200, srad=10.0, step=2.0, drop=0)
 
 
 def auto_find_cors(stack, roi, model, projections=None, cores=None, progress=None):
@@ -53,7 +46,7 @@ def auto_find_cors(stack, roi, model, projections=None, cores=None, progress=Non
             raise ValueError('At least one axis has zero length, this ' 'will produce no usable results')
 
         # Obtain COR for each desired slice of ROI
-        with pu.temp_shared_array((len(model.slices), ), np.int32) as cors:
+        with pu.temp_shared_array((len(model.slices),), np.int32) as cors:
             np.copyto(cors, np.arange(len(model.slices), dtype=int))
 
             f = psm.create_partial(find_cor_at_slice, fwd_func=psm.return_fwd_func, sample_data=cropped_data)

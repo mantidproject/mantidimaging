@@ -19,6 +19,7 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
+
     def __init__(self, q_objects):
         from PyQt5 import Qt
         for obj in q_objects:
@@ -50,8 +51,10 @@ def select_file(field, caption):
     """
     assert isinstance(field, Qt.QLineEdit), ("The passed object is of type {0}. This function only works with "
                                              "QLineEdit".format(type(field)))
-
-    selected_file = Qt.QFileDialog.getOpenFileName(caption=caption)[0]
+    images_filter = "Images (*.png *.jpg *.tif *.tiff *.fit *.fits)"
+    selected_file = Qt.QFileDialog.getOpenFileName(caption=caption,
+                                                   filter=f"{images_filter};;All (*.*)",
+                                                   initialFilter=images_filter)[0]
     # open file dialogue and set the text if file is selected
     if selected_file:
         field.setText(selected_file)

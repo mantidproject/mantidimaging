@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox
+from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
@@ -16,7 +16,17 @@ if TYPE_CHECKING:
 
 class ReconstructWindowView(BaseMainWindowView):
     inputTab: QWidget
+    setRoiBtn: QPushButton
+    autoCalculateBtn: QPushButton
+    corFindingMethod: QComboBox
+
     resultTab: QWidget
+    addBtn: QPushButton
+    refineCorBtn: QPushButton
+    clearAllBtn: QPushButton
+    removeBtn: QPushButton
+    fitBtn: QPushButton
+
     reconTab: QWidget
 
     # part of the Reconstruct tab
@@ -26,6 +36,8 @@ class ReconstructWindowView(BaseMainWindowView):
     maxProjAngle: QDoubleSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
+    reconstructSlice: QPushButton
+    reconstructVolume: QPushButton
 
     def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
@@ -83,31 +95,26 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
-            self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
+            self.presenter.do_update_previews()
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.handle_cor_manually_changed(slice_idx)
 
-        self.tableView.model().rowsRemoved.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
+        self.tableView.model().rowsRemoved.connect(lambda: self.presenter.do_update_previews())
         self.tableView.model().dataChanged.connect(on_data_change)
 
-        self.manualClearAllButton.clicked.connect(self.tableView.model().removeAllRows)
-        self.manualRemoveButton.clicked.connect(self.tableView.removeSelectedRows)
+        self.autoCalculateBtn.clicked.connect(lambda: self.presenter.do_auto_find())
 
-        click_notifications = {
-            self.manualAddButton: PresNotification.ADD_NEW_COR_TABLE_ROW,
-            self.manualRefineCorButton: PresNotification.REFINE_SELECTED_COR,
-            self.setAllButton: PresNotification.SET_ALL_ROW_VALUES,
-            self.manualFitButton: PresNotification.RUN_MANUAL,
-            self.setRoi: PresNotification.CROP_TO_ROI,
-            self.autoCalculateButton: PresNotification.RUN_AUTOMATIC,
-        }
-        for btn, notification in click_notifications.items():
-            def bind(c_notification):
-                btn.clicked.connect(lambda: self.presenter.notify(c_notification))
-
-            bind(notification)
+        self.clearAllBtn.clicked.connect(lambda: self.presenter.do_clear_all_cors())
+        self.removeBtn.clicked.connect(lambda: self.presenter.do_remove_selected_cor())
+        self.addBtn.clicked.connect(lambda: self.presenter.do_add_cor())
+        self.refineCorBtn.clicked.connect(lambda: self.presenter.do_refine_selected_cor())
+        self.setAllButton.clicked.connect(lambda: self.presenter.do_set_all_row_values())
+        self.fitBtn.clicked.connect(lambda: self.presenter.do_cor_fit())
+        self.setRoiBtn.clicked.connect(lambda: self.presenter.do_crop_to_roi())
+        self.reconstructSlice.clicked.connect(lambda: self.presenter.do_reconstruct_slice())
+        self.reconstructVolume.clicked.connect(lambda: self.presenter.do_reconstruct_volume())
 
         def on_row_change(item, _):
             """
@@ -122,7 +129,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
-            for button in [self.manualRefineCorButton, self.setAllButton, self.manualRemoveButton]:
+            for button in [self.refineCorBtn, self.setAllButton, self.removeBtn]:
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
@@ -133,12 +140,14 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
-        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresNotification.ALGORITHM_CHANGED))
-        # Handle reconstruct buttons
-        self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresNotification.PREVIEW_RECONSTRUCTION))
-        self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresNotification.RECONSTRUCT_VOLUME))
+        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.do_algorithm_changed())
+        self.presenter.do_algorithm_changed()
 
-        self.presenter.notify(PresNotification.ALGORITHM_CHANGED)
+    def remove_selected_cor(self):
+        return self.tableView.removeSelectedRows()
+
+    def clear_cor_table(self):
+        return self.tableView.model().removeAllRows()
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
@@ -314,16 +323,16 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         # Disable clear buttons when there are no rows in the table
         empty = self.tableView.model().empty
-        self.manualRemoveButton.setEnabled(not empty)
-        self.manualClearAllButton.setEnabled(not empty)
+        self.removeBtn.setEnabled(not empty)
+        self.clearAllBtn.setEnabled(not empty)
 
         # Update previews when no data is left
         if empty:
-            self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
+            self.presenter.do_update_previews()
 
         # Disable fit button when there are less than 2 rows (points)
         enough_to_fit = self.tableView.model().num_points >= 2
-        self.manualFitButton.setEnabled(enough_to_fit)
+        self.fitBtn.setEnabled(enough_to_fit)
 
     def add_cor_table_row(self, row, slice_index, cor):
         """

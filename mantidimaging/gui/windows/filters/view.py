@@ -48,7 +48,7 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
 
-        self.previews = FilterPreviews()
+        self.previews = FilterPreviews(self)
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
 
@@ -135,7 +135,7 @@ class FiltersWindowView(BaseMainWindowView):
     def show_error_dialog(self, msg=""):
         self.error_text.show()
         self.error_icon.setPixmap(QApplication.style().standardPixmap(QApplication.style().SP_MessageBoxCritical))
-        self.error_text.setText(msg)
+        self.error_text.setText(str(msg))
 
     def clear_error_dialog(self):
         self.error_icon.clear()

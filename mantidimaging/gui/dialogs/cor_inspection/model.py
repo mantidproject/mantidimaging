@@ -11,7 +11,7 @@ LOG = getLogger(__name__)
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, data, slice_idx=None, initial_cor=None, initial_step=50, max_angle=360):
+    def __init__(self, data, slice_idx, initial_cor, initial_step=50, max_angle=360):
         # Extract the sinogram
         if slice_idx is None:
             self.sino = data
@@ -21,8 +21,7 @@ class CORInspectionDialogModel(object):
         LOG.debug('Sinogram shape: {}'.format(self.sino.shape))
 
         # Initial parameters
-        self.centre_cor = self.cor_extents[1] / 2 if \
-            initial_cor is None else initial_cor
+        self.centre_cor = initial_cor
         self.cor_step = initial_step
 
         # Cache projection angles
@@ -62,4 +61,4 @@ class CORInspectionDialogModel(object):
 
     @property
     def cor_extents(self):
-        return (0, self.sino.shape[1] - 1)
+        return 0, self.sino.shape[1] - 1
