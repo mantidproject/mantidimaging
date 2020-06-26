@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton
+from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.widgets import NavigationToolbarSimple
+from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
 from mantidimaging.gui.windows.recon.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 
 class ReconstructWindowView(BaseMainWindowView):
+    imageLayout: QVBoxLayout
     inputTab: QWidget
     setRoiBtn: QPushButton
     autoCalculateBtn: QPushButton
@@ -56,33 +57,8 @@ class ReconstructWindowView(BaseMainWindowView):
         # Handle calculation parameters
         self.projectionCountReset.clicked.connect(self.reset_projection_count)
 
-        def add_mpl_figure(layout, toolbar=None):
-            figure = Figure()
-            canvas = FigureCanvasQTAgg(figure)
-            canvas.setParent(self)
-            if toolbar is not None:
-                toolbar = toolbar(canvas, self)
-                layout.addWidget(toolbar)
-            layout.addWidget(canvas)
-            return figure, canvas, toolbar
-
-        # Image plot
-        self.image_figure, self.image_canvas, _ = add_mpl_figure(self.imageLayout)
-        self.image_plot = self.image_figure.add_subplot(111)
-        self.image_canvas.mpl_connect('button_press_event', self.preview_image_on_button_press)
-
-        # Reconstruction preview plot
-        self.recon_figure, self.recon_canvas, self.recon_toolbar = add_mpl_figure(self.reconPreviewLayout,
-                                                                                  NavigationToolbarSimple)
-        self.recon_plot = self.recon_figure.add_subplot(111)
-        self.recon_image = None
-
-        # Linear fit plot
-        self.fit_figure, self.fit_canvas, _ = add_mpl_figure(self.fitLayout)
-        self.fit_plot = self.fit_figure.add_subplot(111)
-        self.update_fit_plot(None, None, None)
-        self.fit_canvas.mpl_connect('button_press_event', self.handle_fit_plot_button_press)
-        self.fit_canvas.setToolTip('Double click to open a larger plot (requires at least ' '2 points)')
+        self.image_view = ReconImagesView(self)
+        self.imageLayout.addWidget(self.image_view)
 
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
@@ -99,7 +75,7 @@ class ReconstructWindowView(BaseMainWindowView):
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
-                self.presenter.handle_cor_manually_changed(slice_idx)
+                self.presenter.do_preview_reconstruction_set_cor(slice_idx)
 
         self.tableView.model().rowsRemoved.connect(lambda: self.presenter.do_update_previews())
         self.tableView.model().dataChanged.connect(on_data_change)
@@ -167,6 +143,16 @@ class ReconstructWindowView(BaseMainWindowView):
         self.rotation_centre = cor
         self.tilt = tilt
 
+    def preview_image_on_button_press(self, event):
+        """
+        Handles mouse button presses on the preview projection image.
+
+        Used to set the preview slice when a user clicks on a given part of the
+        image.
+        """
+        if event.button == 1 and event.ydata is not None:
+            self.presenter.set_preview_slice_idx(int(event.ydata))
+
     def update_image_preview(self, image_data, preview_slice_index, tilt_line_points=None, roi=None):
         """
         Updates the preview projection image and associated annotations.
@@ -182,38 +168,10 @@ class ReconstructWindowView(BaseMainWindowView):
                                  line
         :param roi: Region of interest to crop the image to
         """
-        self.image_plot.cla()
 
         self.previewSliceIndex.setValue(preview_slice_index)
 
-        # Plot image
-        if image_data is not None:
-            self.image_plot.imshow(image_data, cmap=self.cmap)
-
-            # Plot preview slice line
-            x_max = image_data.shape[1] - 1
-            self.image_plot.plot([0, x_max], [preview_slice_index, preview_slice_index], c='y')
-
-        # Plot tilt line
-        if tilt_line_points is not None:
-            self.image_plot.plot(*tilt_line_points, lw=1, c='r')
-
-        # Set zoom level to ROI
-        if roi is not None:
-            self.image_plot.set_xlim((roi[0], roi[2]))
-            self.image_plot.set_ylim((roi[3], roi[1]))
-
-        self.image_canvas.draw()
-
-    def preview_image_on_button_press(self, event):
-        """
-        Handles mouse button presses on the preview projection image.
-
-        Used to set the preview slice when a user clicks on a given part of the
-        image.
-        """
-        if event.button == 1 and event.ydata is not None:
-            self.presenter.set_preview_slice_idx(int(event.ydata))
+        self.image_view.update_projection(image_data, preview_slice_index, tilt_line_points, roi)
 
     def update_image_recon_preview(self, image_data):
         """
@@ -221,52 +179,43 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         # Plot image
         if image_data is not None:
-            # Cache image
-            # Saves time when drawing and maintains image extents
-            if self.recon_image is None:
-                self.recon_image = self.recon_plot.imshow(image_data, cmap=self.cmap)
-            else:
-                self.recon_image.set_data(image_data)
-                self.recon_image.autoscale()
-
-        self.recon_canvas.draw()
+            self.image_view.update_recon(image_data)
 
     def reset_image_recon_preview(self):
         """
         Resets the recon preview image, forcing a complete redraw next time it
         is updated.
         """
-        self.recon_plot.cla()
-        self.recon_image = None
+        self.image_view.clear_recon()
 
-    def update_fit_plot(self, x_axis, cor_data, fit_data):
-        """
-        Updates the fit result preview plot with the data provided.
-
-        :param x_axis: Common x axis data (slice index)
-        :param cor_data: Centre of rotation determined per slice
-        :param fit_data: Result of linear fitting of per slice centre of
-                         rotation
-        """
-        self.fit_plot.cla()
-
-        # Plot COR data
-        if cor_data is not None:
-            self.fit_plot.plot(x_axis, cor_data)
-
-        # Plot fit
-        if fit_data is not None:
-            self.fit_plot.plot(x_axis, fit_data)
-
-        # Remove axes ticks to save screen space
-        self.fit_plot.set_xticks([])
-        self.fit_plot.set_yticks([])
-
-        # Use tight layout to reduce unused canvas space
-        # https://matplotlib.org/users/tight_layout_guide.html
-        self.fit_figure.tight_layout()
-
-        self.fit_canvas.draw()
+    # def update_fit_plot(self, x_axis, cor_data, fit_data):
+    #     """
+    #     Updates the fit result preview plot with the data provided.
+    #
+    #     :param x_axis: Common x axis data (slice index)
+    #     :param cor_data: Centre of rotation determined per slice
+    #     :param fit_data: Result of linear fitting of per slice centre of
+    #                      rotation
+    #     """
+    #     self.fit_plot.cla()
+    #
+    #     # Plot COR data
+    #     if cor_data is not None:
+    #         self.fit_plot.plot(x_axis, cor_data)
+    #
+    #     # Plot fit
+    #     if fit_data is not None:
+    #         self.fit_plot.plot(x_axis, fit_data)
+    #
+    #     # Remove axes ticks to save screen space
+    #     self.fit_plot.set_xticks([])
+    #     self.fit_plot.set_yticks([])
+    #
+    #     # Use tight layout to reduce unused canvas space
+    #     # https://matplotlib.org/users/tight_layout_guide.html
+    #     self.fit_figure.tight_layout()
+    #
+    #     self.fit_canvas.draw()
 
     def handle_fit_plot_button_press(self, event):
         """

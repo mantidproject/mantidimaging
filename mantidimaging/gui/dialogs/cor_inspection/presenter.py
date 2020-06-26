@@ -9,7 +9,7 @@ from .model import CORInspectionDialogModel
 from .types import ImageType
 
 if TYPE_CHECKING:
-    from .pyqtview import CORInspectionDialogViewPyqt
+    from .view import CORInspectionDialogView
 
 LOG = getLogger(__name__)
 
@@ -26,7 +26,7 @@ class Notification(Enum):
 class CORInspectionDialogPresenter(BasePresenter):
     progress_updated = Qt.pyqtSignal(float, str)
 
-    view: 'CORInspectionDialogViewPyqt'
+    view: 'CORInspectionDialogView'
 
     def __init__(self, view, data, slice_index, initial_cor, initial_step):
         super(CORInspectionDialogPresenter, self).__init__(view)
@@ -64,16 +64,13 @@ class CORInspectionDialogPresenter(BasePresenter):
 
         if img != ImageType.CURRENT:
             # Update UI
-            self.notify(Notification.FULL_UPDATE)
+            self.do_refresh()
         else:
-            self.view.step_size = self.model.cor_step
+            self.do_refresh([ImageType.LESS, ImageType.MORE])
 
-            # Images
-            for i in [ImageType.LESS, ImageType.MORE]:
-                title = 'COR: {}'.format(self.model.cor(i))
-                self.view.set_image(i, self.model.recon_preview(i), title)
-
-    def do_refresh(self):
+    def do_refresh(self, images=None):
+        if images is None:
+            images = ImageType
         # Parameters
         self.view.step_size = self.model.cor_step
 

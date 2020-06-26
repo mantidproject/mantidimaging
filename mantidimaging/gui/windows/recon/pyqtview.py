@@ -40,3 +40,50 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Handle calculation parameters
         self.projectionCountReset.clicked.connect(self.reset_projection_count)
+    @property
+    def slice_count(self):
+        """
+        The number of slices/sinograms the user has selected for automatic
+        COR/Tilt finding.
+        """
+        return self.sliceCount.value()
+
+    @property
+    def projection_count(self):
+        """
+        The number of projections the user has selected for automatic COR/Tilt
+        finding.
+        """
+        return self.projectionCount.value()
+
+    @property
+    def rotation_centre(self):
+        return self.resultCor.value()
+
+    @rotation_centre.setter
+    def rotation_centre(self, value):
+        self.resultCor.setValue(value)
+
+    @property
+    def tilt(self):
+        return self.resultTilt.value()
+
+    @tilt.setter
+    def tilt(self, value):
+        self.resultTilt.setValue(value)
+
+    @property
+    def max_proj_angle(self):
+        return self.maxProjAngle.value()
+
+    @property
+    def algorithm_name(self):
+        return self.algorithmName.currentText()
+
+    @property
+    def filter_name(self):
+        return self.filterName.currentText()
+
+    @property
+    def num_iter(self):
+        return self.numIter.value() if self.numIter.isVisible() else None

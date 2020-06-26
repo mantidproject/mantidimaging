@@ -10,7 +10,5 @@ class OpHistoryCopyDialogModel:
 
     def apply_ops(self, ops: Iterable[ImageOperation]):
         to_apply = ops_to_partials(ops)
-        image = self.images.sample
         for op in to_apply:
-            image = op(image)
-        return image
+            op(self.images)

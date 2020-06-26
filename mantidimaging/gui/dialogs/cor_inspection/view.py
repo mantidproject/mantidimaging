@@ -1,67 +1,38 @@
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
+import numpy as np
+from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
 
+from mantidimaging.gui.dialogs.cor_inspection.presenter import CORInspectionDialogPresenter
+from mantidimaging.gui.dialogs.cor_inspection.recon_slice_view import CompareSlicesView
+from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 from mantidimaging.gui.mvp_base import BaseDialogView
-from mantidimaging.gui.utility import BlockQtSignals
-from mantidimaging.gui.widgets import NavigationToolbarSimple
-
-from .presenter import (CORInspectionDialogPresenter, Notification as PresNotification)
+from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 
 
 class CORInspectionDialogView(BaseDialogView):
-    def __init__(self, parent, cmap='Greys_r', **args):
-        super(CORInspectionDialogView, self).__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
+    lessButton: QPushButton
+    currentButton: QPushButton
+    moreButton: QPushButton
+    step: QDoubleSpinBox
 
-        self.presenter = CORInspectionDialogPresenter(self, **args)
-        self.cmap = cmap
+    def __init__(self, parent, data, slice_index, initial_cor, initial_step=50):
+        super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
+        self.presenter = CORInspectionDialogPresenter(self, data, slice_index, initial_cor, initial_step)
 
-        # Completed button action
+        self.step.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+        self.lessButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.LESS))
+        self.currentButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.CURRENT))
+        self.moreButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.MORE))
+
         self.finishButton.clicked.connect(self.accept)
 
-        # Image canvas
-        self.image_figure = Figure(tight_layout=True)
-        self.image_canvas = FigureCanvasQTAgg(self.image_figure)
-        self.image_canvas.setParent(self)
+        self.image_canvas = CompareSlicesView(self)
         self.imagePlotLayout.addWidget(self.image_canvas)
-        self.image_plots = self.image_figure.subplots(1, 3, sharex=True, sharey=True)
 
-        # Common image toolbar (attached to centre image)
-        self.plot_toolbar = NavigationToolbarSimple(self.image_canvas, self)
-        self.plotToolbarLayout.addWidget(self.plot_toolbar)
-        #
-        # # Handle best image selection
-        # self.lessButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_LESS))
-        # self.currentButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_CURRENT))
-        # self.moreButton.pressed.connect(lambda: self.presenter.notify(PresNotification.IMAGE_CLICKED_MORE))
+        self.presenter.do_refresh()
+        self.image_canvas.current_hist.imageChanged(autoLevel=True, autoRange=True)
 
-        # Handle parameter updates
-        # self.step.valueChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PARAMETERS_FROM_UI))
-
-        self._image_cache = [None, None, None]
-
-        # Ensure initial state
-        self.presenter.notify(PresNotification.LOADED)
-
-    def set_image(self, image_type, data, title):
-        """
-        Sets the image displayed in a given position and it's title.
-        """
-        plot = self.image_plots[image_type.value]
-        image = self._image_cache[image_type.value]
-
-        # Cache the image object so that subsequent plots only have to replace
-        # the data
-        if image is None:
-            self._image_cache[image_type.value] = \
-                    plot.imshow(data, cmap=self.cmap)
-        else:
-            image.set_data(data)
-            image.autoscale()
-
-        plot.set_title(title)
-
-    def image_canvas_draw(self):
-        self.image_canvas.draw()
+    def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
+        self.image_canvas.set_image(image_type, recon_data, title)
 
     def set_maximum_cor(self, cor):
         """

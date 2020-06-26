@@ -7,8 +7,7 @@ from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.operation_history import const as data_const
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
-from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
-from mantidimaging.gui.dialogs.cor_inspection.pyqtview import CORInspectionDialogViewPyqt
+from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
@@ -54,8 +53,6 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             if signal == Notification.PREVIEW_RECONSTRUCTION:
                 self.do_reconstruct_slice()
-            elif signal == Notification.PREVIEW_RECONSTRUCTION_SET_COR:
-                self.do_preview_reconstruction_set_cor()
             elif signal == Notification.SHOW_COR_VS_SLICE_PLOT:
                 self.do_plot_cor_vs_slice_index()
         except Exception as e:
@@ -85,10 +82,6 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_previews()
         self.do_reconstruct_slice()
 
-    def handle_cor_manually_changed(self, slice_idx):
-        if slice_idx == self.model.preview_slice_idx:
-            self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
-
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
         self.view.set_results(0, 0)
@@ -103,22 +96,24 @@ class ReconstructWindowPresenter(BasePresenter):
                                        self.model.preview_tilt_line_data,
                                        self.model.roi)
 
-        self.view.update_fit_plot(self.model.slices, self.model.cors, self.model.preview_fit_y_data)
+        # self.view.update_fit_plot(self.model.slices, self.model.cors, self.model.preview_fit_y_data)
 
-    def do_reconstruct_slice(self, cor=None):
+    def do_reconstruct_slice(self, cor=None, slice_idx=None):
+        if slice_idx is None:
+            slice_idx = self.model.preview_slice_idx
+
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
             cor = self.model.get_cor_for_slice_from_regression()
 
         if cor is not None:
-            data = self.model.run_preview_recon(self.model.preview_slice_idx, cor,
-                                                self.view.algorithm_name, self.view.filter_name)
+            data = self.model.run_preview_recon(slice_idx, cor, self.view.algorithm_name, self.view.filter_name)
             self.view.update_image_recon_preview(data)
 
-    def do_preview_reconstruction_set_cor(self):
+    def do_preview_reconstruction_set_cor(self, slice_idx):
         cor = self.model.cor_for_current_preview_slice
-        self.do_reconstruct_slice(cor)
+        self.do_reconstruct_slice(cor, slice_idx)
 
     def do_add_cor(self):
         row = self.model.selected_row
@@ -129,7 +124,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogViewPyqt(self.view, self.model.sample, slice_idx, self.model.last_result[
+        dialog = CORInspectionDialogView(self.view, self.model.sample, slice_idx, self.model.last_result[
             data_const.COR_TILT_ROTATION_CENTRE] if self.model.last_result else 0)
 
         res = dialog.exec()
