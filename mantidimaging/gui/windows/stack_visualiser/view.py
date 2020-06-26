@@ -1,19 +1,18 @@
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, Tuple
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
-from pyqtgraph import Point
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView, PlotROI
+from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
 from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification
+from ...utility.common import operation_in_progress
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -90,7 +89,7 @@ class StackVisualiserView(BaseMainWindowView):
         return self.parent().parent()
 
     def closeEvent(self, event):
-        with self.operation_in_progress("Closing image view", "Freeing image memory"):
+        with operation_in_progress("Closing image view", "Freeing image memory"):
             # the image view renderer itself holds a reference to the sample data
             # make sure to clear that first, so that freeing the memory in the presenter
             self.image_view.clear()
@@ -146,7 +145,7 @@ class StackVisualiserView(BaseMainWindowView):
         if accepted:
             roi = [int(r.strip()) for r in roi.split(",")]
             self.image_view.roi.setSize((roi[2], roi[3]))
-            self.image_view.roi.setPos((roi[0],roi[1]))
+            self.image_view.roi.setPos((roi[0], roi[1]))
             self.image_view.roiChanged()
 
     def copy_roi_to_clipboard(self):
@@ -172,13 +171,3 @@ class StackVisualiserView(BaseMainWindowView):
     def show_op_history_copy_dialog(self):
         dialog = OpHistoryCopyDialogView(self, self.presenter.images, self.main_window)
         dialog.show()
-
-    @contextmanager
-    def operation_in_progress(self, title, message):
-        msgbox = None
-        try:
-            msgbox = QMessageBox(QMessageBox.Information, title, message)
-            msgbox.show()
-            yield
-        finally:
-            msgbox.close()

@@ -62,7 +62,10 @@ class CorTiltDataModel:
 
     def set_cor_at_slice(self, slice_idx, cor: float):
         data_idx = self._get_data_idx_from_slice_idx(slice_idx)
-        self.set_point(data_idx, cor=cor)
+        if data_idx is None:
+            self.add_point(None, slice_idx, cor)
+        else:
+            self.set_point(data_idx, cor=cor)
 
     def remove_point(self, idx):
         self.clear_results()
@@ -82,7 +85,7 @@ class CorTiltDataModel:
     def sort_points(self):
         self._points.sort(key=lambda p: p.slice_index)
 
-    def get_cor_for_slice(self, slice_idx)->Optional[ScalarCoR]:
+    def get_cor_for_slice(self, slice_idx) -> Optional[ScalarCoR]:
         a = [p.cor for p in self._points if p.slice_index == slice_idx]
         return a[0] if a else None
 

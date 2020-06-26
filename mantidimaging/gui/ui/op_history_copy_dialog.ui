@@ -26,25 +26,35 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="stackTargetLabel">
            <property name="text">
             <string>Apply to:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="2" column="1">
           <widget class="StackSelectorWidgetView" name="stackTargetSelector"/>
          </item>
-         <item row="1" column="0">
+         <item row="0" column="1">
+          <widget class="StackSelectorWidgetView" name="stackSourceSelector"/>
+         </item>
+         <item row="0" column="0">
           <widget class="QLabel" name="stackSourceLabel">
            <property name="text">
-            <string>Operations from:</string>
+            <string>From:</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="StackSelectorWidgetView" name="stackSourceSelector"/>
+         <item row="3" column="0" colspan="2">
+          <widget class="QCheckBox" name="_copy">
+           <property name="text">
+            <string>Duplicate data before applying operations</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -57,7 +67,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Operations:</string>
+          <string/>
          </property>
          <property name="checkable">
           <bool>false</bool>

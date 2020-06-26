@@ -1,26 +1,29 @@
 from typing import Iterable, Tuple
 
-from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QGridLayout
+from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QGridLayout, QPushButton
 
 from mantidimaging.core.operation_history.operations import ImageOperation
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.filters.filter_previews import FilterPreviews
-from .presenter import OpHistoryCopyDialogPresenter, Notification
+from .presenter import OpHistoryCopyDialogPresenter
 
 
 class OpHistoryCopyDialogView(BaseDialogView):
     operationsContainer: QGroupBox
+    _copy: QCheckBox
+    applyButton: QPushButton
 
     def __init__(self, parent, images, main_window):
         super(OpHistoryCopyDialogView, self).__init__(parent, "gui/ui/op_history_copy_dialog.ui")
         self.presenter = OpHistoryCopyDialogPresenter(self, images, main_window)
+
         self.stackTargetSelector.stack_selected_uuid.connect(self.presenter.set_target_stack)
         self.stackSourceSelector.stack_selected_uuid.connect(self.presenter.set_source_stack)
         self.stackSourceSelector.subscribe_to_main_window(main_window)
         self.stackTargetSelector.subscribe_to_main_window(main_window)
         self.previews = FilterPreviews()
         self.previewsLayout.addWidget(self.previews)
-        self.applyButton.clicked.connect(lambda: self.presenter.notify(Notification.APPLY_OPS))
+        self.applyButton.clicked.connect(lambda: self.presenter.do_apply_ops())
 
     def display_op_history(self, operations: Iterable[ImageOperation]):
         layout = self.operationsContainer.layout()
@@ -31,7 +34,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
 
         for op in operations:
             row, check = self.build_operation_row(op)
-            check.stateChanged.connect(lambda: self.presenter.notify(Notification.SELECTED_OPS_CHANGED))
+            check.stateChanged.connect(lambda: self.presenter.do_selected_ops_changed())
             layout.addWidget(row)
 
     @staticmethod
@@ -67,3 +70,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
             check = row.layout().itemAt(0).widget()
             check_states.append(check.isChecked())
         return check_states
+
+    @property
+    def copy(self) -> bool:
+        return self._copy.isChecked()

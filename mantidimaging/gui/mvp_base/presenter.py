@@ -1,12 +1,12 @@
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.mvp_base import BaseMainWindowView
+    from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView
 
 
 class BasePresenter(object):
-    view: 'BaseMainWindowView'
+    view: Union['BaseMainWindowView', 'BaseDialogView']
 
     def __init__(self, view: 'BaseMainWindowView'):
         self.view = view

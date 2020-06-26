@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import List, TYPE_CHECKING, Iterable, Any, Dict
 
 from mantidimaging.core.data import Images
@@ -6,32 +5,24 @@ from mantidimaging.core.operation_history import const
 from mantidimaging.core.operation_history.operations import ImageOperation, deserialize_metadata
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import OpHistoryCopyDialogModel
+from ...utility.common import operation_in_progress
 
 if TYPE_CHECKING:
+    from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogView
     from mantidimaging.gui.windows.main import MainWindowView
-
-
-class Notification(Enum):
-    SELECTED_OPS_CHANGED = 0
-    APPLY_OPS = 1
 
 
 class OpHistoryCopyDialogPresenter(BasePresenter):
     operations: List[ImageOperation]
     main_window: 'MainWindowView'
+    view: 'OpHistoryCopyDialogView'
 
     def __init__(self, view, images: Images, main_window):
-
         super(OpHistoryCopyDialogPresenter, self).__init__(view)
+        self.view = view
         self.model = OpHistoryCopyDialogModel(images)
         self.main_window = main_window
         self.operations = []
-
-    def notify(self, signal: Notification):
-        if signal == Notification.SELECTED_OPS_CHANGED:
-            self.selected_ops_changed()
-        elif signal == Notification.APPLY_OPS:
-            self.apply_ops()
 
     def set_target_stack(self, uuid):
         self.model.images = self.main_window.get_stack_visualiser(uuid).presenter.images
@@ -44,15 +35,18 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
     def display_op_history(self):
         self.view.display_op_history(self.operations)
 
-    def selected_ops_changed(self):
+    def do_selected_ops_changed(self):
         # TODO: previews
         pass
 
-    def apply_ops(self):
+    def do_apply_ops(self):
         selected_ops = [op for op, selected in zip(self.operations, self.view.selected_op_indices) if selected]
-        result = self.model.apply_ops(selected_ops)
-        history = self.history_with_new_ops(selected_ops)
-        self.main_window.create_new_stack(Images(result, metadata=history), "Result")
+        with operation_in_progress(f"{'Copying and ' if self.view.copy else ' '}Applying operations", '', self.view):
+            result = self.model.apply_ops(selected_ops, self.view.copy)
+            history = self.history_with_new_ops(selected_ops)
+            result.metadata = history
+        if self.view.copy:
+            self.main_window.create_new_stack(result, "Result")
 
     def history_with_new_ops(self, applied_ops: Iterable[ImageOperation]) -> Dict[str, Any]:
         history = self.model.images.metadata.copy() if self.model.images.metadata else {}

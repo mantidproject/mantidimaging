@@ -122,15 +122,18 @@ class Images:
                 display_name
         })
 
-    def copy(self):
+    def copy(self, flip_axes=False):
         import uuid
         from copy import deepcopy
         sample_name = f"{uuid.uuid4()}"
         # flat_name = f"{uuid.uuid4()}-Flat"
         # dark_name = f"{uuid.uuid4()}-Dark"
-        sinogram_shape = (self.sample.shape[1], self.sample.shape[0], self.sample.shape[2])
-        sample_copy = pu.create_shared_array(f"{sample_name}", sinogram_shape, self.sample.dtype)
-        sample_copy[:] = np.swapaxes(self.sample, 0, 1)
+        shape = (self.sample.shape[1], self.sample.shape[0], self.sample.shape[2]) if flip_axes else self.sample.shape
+        sample_copy = pu.create_shared_array(f"{sample_name}", shape, self.sample.dtype)
+        if flip_axes:
+            sample_copy[:] = np.swapaxes(self.sample, 0, 1)
+        else:
+            sample_copy[:] = self.sample[:]
 
         images = Images(sample_copy,
                         sample_memory_file_name=sample_name,
