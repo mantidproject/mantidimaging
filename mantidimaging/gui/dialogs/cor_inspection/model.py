@@ -3,15 +3,15 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.reconstruct import (tomopy_reconstruct_preview_from_sinogram)
+from mantidimaging.core.utility.cor_holder import ScalarCoR
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
-
 from .types import ImageType
 
 LOG = getLogger(__name__)
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, data, slice_idx, initial_cor, initial_step=50, max_angle=360):
+    def __init__(self, data, slice_idx, initial_cor: ScalarCoR, initial_step=50, max_angle=360):
         # Extract the sinogram
         if slice_idx is None:
             self.sino = data
@@ -21,7 +21,7 @@ class CORInspectionDialogModel(object):
         LOG.debug('Sinogram shape: {}'.format(self.sino.shape))
 
         # Initial parameters
-        self.centre_cor = initial_cor
+        self.centre_cor = initial_cor.value
         self.cor_step = initial_step
 
         # Cache projection angles

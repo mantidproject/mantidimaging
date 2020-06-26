@@ -1,4 +1,5 @@
 from logging import getLogger
+from math import pi
 
 import numpy as np
 
@@ -16,9 +17,11 @@ tomopy = safe_import('tomopy')
 LOG = getLogger(__name__)
 
 
-def find_cor_at_slice(slice_idx, sample_data):
-    return tomopy.find_center_vo(tomo=sample_data, ind=slice_idx, ratio=1.0,
-                                 smin=0, smax=200, srad=10.0, step=2.0, drop=0)
+def find_cor_at_slice(sample_data, slice_idx):
+    # return tomopy.find_center_vo(tomo=sample_data, ind=slice_idx, ratio=1.0,
+    #                              smin=0, smax=200, srad=10.0, step=2.0, drop=0)
+    return tomopy.find_center(sample_data, np.linspace(0, pi, sample_data.shape[0]), slice_idx,
+                              init=sample_data.shape[1] // 2)
 
 
 def auto_find_cors(stack, roi, model, projections=None, cores=None, progress=None):

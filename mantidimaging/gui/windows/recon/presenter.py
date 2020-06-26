@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Dict, List
 import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QWidget
 
-from mantidimaging.core.operation_history import const as data_const
+from mantidimaging.core.utility.cor_holder import ScalarCoR
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -62,12 +62,15 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_stack_uuid(self, uuid):
         self.view.reset_image_recon_preview()
         self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
+        # find a cor for the middle
+        slice_idx, cor = self.model.find_initial_cor()
+        self.view.add_cor_table_row(0, slice_idx, cor.value)
+        # self.view.add_cor_table_row(0, first_slice_to_recon, initial_cor)
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
         self.view.set_results(0, 0)
-        self.view.set_num_projections(self.model.num_projections)
-        self.view.set_num_slices(self.model.num_slices)
+        self.set_preview_slice_idx(1024)
         self.do_update_previews()
 
     def set_preview_projection_idx(self, idx):
@@ -111,21 +114,21 @@ class ReconstructWindowPresenter(BasePresenter):
             data = self.model.run_preview_recon(slice_idx, cor, self.view.algorithm_name, self.view.filter_name)
             self.view.update_image_recon_preview(data)
 
-    def do_preview_reconstruction_set_cor(self, slice_idx):
-        cor = self.model.cor_for_current_preview_slice
+    def do_user_click_recon(self, slice_idx):
+        self.model.preview_slice_idx = slice_idx
+
+        cor = self.model.last_cor
         self.do_reconstruct_slice(cor, slice_idx)
 
-    def do_add_cor(self):
-        row = self.model.selected_row
-        cor = self.model.last_result[data_const.COR_TILT_ROTATION_CENTRE] if \
-            self.model.last_result else 0
-        self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor)
+    # def do_add_cor(self):
+    #     row = self.model.selected_row
+    #     cor = self.model.last_cor
+    #     self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
 
     def do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogView(self.view, self.model.sample, slice_idx, self.model.last_result[
-            data_const.COR_TILT_ROTATION_CENTRE] if self.model.last_result else 0)
+        dialog = CORInspectionDialogView(self.view, self.model.sample, slice_idx, self.model.last_cor)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -133,7 +136,7 @@ class ReconstructWindowPresenter(BasePresenter):
             new_cor = dialog.optimal_rotation_centre
             LOG.debug('New optimal rotation centre: {}'.format(new_cor))
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor)
-            self.model.last_result[data_const.COR_TILT_ROTATION_CENTRE] = new_cor
+            self.model.last_cor = ScalarCoR(new_cor)
             # Update reconstruction preview with new COR
             self.notify(Notification.PREVIEW_RECONSTRUCTION_SET_COR)
 
@@ -164,11 +167,9 @@ class ReconstructWindowPresenter(BasePresenter):
 
             plt.show()
 
-    def do_auto_find(self):
-        self.model.calculate_slices(self.view.slice_count)
-        self.model.calculate_projections(self.view.projection_count)
-
-        start_async_task_view(self.view, self.model.run_finding_automatic, self._on_finding_done)
+    # def initial_cor(self):
+    #     # start_async_task_view(self.view, self.model.run_finding_automatic, self._on_finding_done)
+    #     start_async_task_view(self.view, self.model.initial_cor, self._on_finding_done)
 
     def do_cor_fit(self):
         start_async_task_view(self.view, self.model.run_finding_manual, self._on_finding_done)
@@ -209,3 +210,6 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_reconstruct_volume(self):
         raise NotImplementedError("TODO")
+
+    def find_initial_cor(self):
+        self.model.find_initial_cor()

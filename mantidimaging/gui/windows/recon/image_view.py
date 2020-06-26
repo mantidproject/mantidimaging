@@ -64,7 +64,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
-        self.parent.presenter.do_preview_reconstruction_set_cor(CloseEnoughPoint(ev.pos()).y)
+        self.parent.presenter.do_user_click_recon(CloseEnoughPoint(ev.pos()).y)
 
     def clear_recon(self):
         self.recon.clear()

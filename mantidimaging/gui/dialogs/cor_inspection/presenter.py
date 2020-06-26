@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 
+from mantidimaging.core.utility.cor_holder import ScalarCoR
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import CORInspectionDialogModel
 from .types import ImageType
@@ -28,7 +29,7 @@ class CORInspectionDialogPresenter(BasePresenter):
 
     view: 'CORInspectionDialogView'
 
-    def __init__(self, view, data, slice_index, initial_cor, initial_step):
+    def __init__(self, view, data, slice_index, initial_cor:ScalarCoR, initial_step):
         super(CORInspectionDialogPresenter, self).__init__(view)
 
         self.model = CORInspectionDialogModel(data, slice_index, initial_cor, initial_step)

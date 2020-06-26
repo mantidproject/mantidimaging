@@ -1,22 +1,28 @@
 from logging import getLogger
 from typing import Optional, Tuple
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-from mantidimaging.core.cor_tilt import (run_auto_finding_on_images, update_image_operations)
-from mantidimaging.core.data import Images
+from mantidimaging.core.cor_tilt import (update_image_operations)
+from mantidimaging.core.cor_tilt.auto import find_cor_at_slice
 from mantidimaging.core.reconstruct import allowed_recon_kwargs
 from mantidimaging.core.reconstruct.astra_recon import reconstruct_single_preview
 from mantidimaging.core.utility.cor_holder import ScalarCoR
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
 LOG = getLogger(__name__)
 
 
 class ReconstructWindowModel(object):
+    proj_angles: Optional[np.ndarray]
+
     def __init__(self, data_model: CorTiltPointQtModel):
-        self.stack: Optional[Images] = None
+        self.stack: Optional['StackVisualiserView'] = None
         self.preview_projection_idx = 0
         self.preview_slice_idx = 0
         self.selected_row = 0
@@ -24,6 +30,7 @@ class ReconstructWindowModel(object):
         self.projection_indices = None
         self.data_model = data_model
         self.last_result = None
+        self.last_cor = ScalarCoR(0)
 
     @property
     def has_results(self):
@@ -54,7 +61,7 @@ class ReconstructWindowModel(object):
 
     @property
     def cor_for_current_preview_slice(self):
-        return ScalarCoR(self.data_model.get_cor_for_slice(self.preview_slice_idx))
+        return self.data_model.get_cor_for_slice(self.preview_slice_idx)
 
     def set_all_cors(self, cor: ScalarCoR):
         for slice_idx in self.data_model.slices:
@@ -96,21 +103,29 @@ class ReconstructWindowModel(object):
                 np.linspace(int(sample_proj_count * 0.1), sample_proj_count - 1, downsample_proj_count,
                             dtype=int)
 
-    def run_finding_automatic(self, progress):
-        # Ensure we have some sample data
-        if self.stack is None:
-            raise ValueError('No image stack is provided')
+    # def run_finding_automatic(self, progress):
+    #     # Ensure we have some sample data
+    #     if self.stack is None:
+    #         raise ValueError('No image stack is provided')
+    #
+    #     if self.roi is None:
+    #         raise ValueError('No region of interest is defined')
+    #
+    #     run_auto_finding_on_images(self.images, self.data_model, self.roi, self.projection_indices, progress=progress)
+    #
+    #     # Cache last result
+    #     self.last_result = self.data_model.stack_properties
+    #
+    #     # Async task needs a non-None result of some sort
+    #     return True
+    # def find_cor_for(self, ):
+    def find_initial_cor(self) -> [int, ScalarCoR]:
+        if self.sample is not None:
+            first_slice_to_recon = self.sample.shape[1] // 2
+            cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon))
+            self.last_cor = cor
 
-        if self.roi is None:
-            raise ValueError('No region of interest is defined')
-
-        run_auto_finding_on_images(self.images, self.data_model, self.roi, self.projection_indices, progress=progress)
-
-        # Cache last result
-        self.last_result = self.data_model.stack_properties
-
-        # Async task needs a non-None result of some sort
-        return True
+            return first_slice_to_recon, cor
 
     def run_finding_manual(self, progress):
         # Ensure we have some sample data

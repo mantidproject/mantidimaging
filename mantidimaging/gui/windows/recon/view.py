@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
 from mantidimaging.gui.windows.recon.presenter import Notification as PresNotification
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class ReconstructWindowView(BaseMainWindowView):
+    tableView: RemovableRowTableView
     imageLayout: QVBoxLayout
     inputTab: QWidget
     setRoiBtn: QPushButton
@@ -40,13 +40,11 @@ class ReconstructWindowView(BaseMainWindowView):
     reconstructSlice: QPushButton
     reconstructVolume: QPushButton
 
-    def __init__(self, main_window: 'MainWindowView', cmap='Greys_r'):
+    def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
-
-        self.cmap = cmap
 
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
@@ -55,7 +53,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.previewSliceIndex.valueChanged[int].connect(self.presenter.set_preview_slice_idx)
 
         # Handle calculation parameters
-        self.projectionCountReset.clicked.connect(self.reset_projection_count)
+        # self.projectionCountReset.clicked.connect(self.reset_projection_count)
 
         self.image_view = ReconImagesView(self)
         self.imageLayout.addWidget(self.image_view)
@@ -75,16 +73,14 @@ class ReconstructWindowView(BaseMainWindowView):
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
-                self.presenter.do_preview_reconstruction_set_cor(slice_idx)
+                self.presenter.do_user_click_recon(slice_idx)
 
         self.tableView.model().rowsRemoved.connect(lambda: self.presenter.do_update_previews())
         self.tableView.model().dataChanged.connect(on_data_change)
 
-        self.autoCalculateBtn.clicked.connect(lambda: self.presenter.do_auto_find())
-
         self.clearAllBtn.clicked.connect(lambda: self.presenter.do_clear_all_cors())
         self.removeBtn.clicked.connect(lambda: self.presenter.do_remove_selected_cor())
-        self.addBtn.clicked.connect(lambda: self.presenter.do_add_cor())
+        # self.addBtn.clicked.connect(lambda: self.presenter.do_add_cor())
         self.refineCorBtn.clicked.connect(lambda: self.presenter.do_refine_selected_cor())
         self.setAllButton.clicked.connect(lambda: self.presenter.do_set_all_row_values())
         self.fitBtn.clicked.connect(lambda: self.presenter.do_cor_fit())
@@ -228,32 +224,33 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.dblclick:
             self.presenter.notify(PresNotification.SHOW_COR_VS_SLICE_PLOT)
 
-    def set_num_projections(self, count):
-        """
-        Set the number of projections in the input dataset.
-        """
-        # Preview image control
-        self.previewProjectionIndex.setValue(0)
-        self.previewProjectionIndex.setMaximum(max(count - 1, 0))
+    #
+    # def set_num_projections(self, count):
+    #     """
+    #     Set the number of projections in the input dataset.
+    #     """
+    #     # Preview image control
+    #     self.previewProjectionIndex.setValue(0)
+    #     self.previewProjectionIndex.setMaximum(max(count - 1, 0))
+    #
+    #     # Projection downsample control
+    #     self.projectionCount.setMaximum(count)
+    #     self.projectionCount.setValue(int(count * 0.1))
 
-        # Projection downsample control
-        self.projectionCount.setMaximum(count)
-        self.projectionCount.setValue(int(count * 0.1))
+    # def set_num_slices(self, count):
+    #     """
+    #     Sets the number of slices (projection Y axis size) of the full input
+    #     image.
+    #     """
+    #     # Preview image control
+    #     self.previewSliceIndex.setValue(0)
+    #     self.previewSliceIndex.setMaximum(max(count - 1, 0))
 
-    def set_num_slices(self, count):
-        """
-        Sets the number of slices (projection Y axis size) of the full input
-        image.
-        """
-        # Preview image control
-        self.previewSliceIndex.setValue(0)
-        self.previewSliceIndex.setMaximum(max(count - 1, 0))
-
-    def reset_projection_count(self):
-        """
-        Resets the number of projections to the maximum available.
-        """
-        self.projectionCount.setValue(self.projectionCount.maximum())
+    # def reset_projection_count(self):
+    #     """
+    #     Resets the number of projections to the maximum available.
+    #     """
+    #     self.projectionCount.setValue(self.projectionCount.maximum())
 
     def show_results(self):
         """
@@ -283,27 +280,11 @@ class ReconstructWindowView(BaseMainWindowView):
         enough_to_fit = self.tableView.model().num_points >= 2
         self.fitBtn.setEnabled(enough_to_fit)
 
-    def add_cor_table_row(self, row, slice_index, cor):
+    def add_cor_table_row(self, row: int, slice_index: int, cor: float):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
         self.tableView.model().appendNewRow(row, slice_index, cor)
-
-    @property
-    def slice_count(self):
-        """
-        The number of slices/sinograms the user has selected for automatic
-        COR/Tilt finding.
-        """
-        return self.sliceCount.value()
-
-    @property
-    def projection_count(self):
-        """
-        The number of projections the user has selected for automatic COR/Tilt
-        finding.
-        """
-        return self.projectionCount.value()
 
     @property
     def rotation_centre(self):
