@@ -18,7 +18,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
         self.slice_line = InfiniteLine(pos=1024, angle=0, movable=True)
         self.projection_vb.addItem(self.slice_line)
-        self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=((255, 0, 0, 255)), movable=True)
+        self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
         image_layout = QGraphicsGridLayout()
         image_layout.addItem(self.projection_vb, 0, 0)

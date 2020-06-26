@@ -120,8 +120,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_user_click_recon(self, slice_idx):
         self.model.preview_slice_idx = slice_idx
-        cor = self.model.last_cor
-        self.do_reconstruct_slice(cor, slice_idx)
+        self.do_reconstruct_slice(slice_idx=slice_idx)
 
     def do_add_cor(self):
         row = self.model.selected_row
