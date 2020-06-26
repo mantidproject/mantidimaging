@@ -61,36 +61,35 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def set_stack_uuid(self, uuid):
         self.view.reset_image_recon_preview()
+        self.view.clear_cor_table()
         self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
         # find a cor for the middle
-        slice_idx, cor = self.model.find_initial_cor()
-        self.view.add_cor_table_row(0, slice_idx, cor.value)
-        # self.view.add_cor_table_row(0, first_slice_to_recon, initial_cor)
+        self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
+        self.do_reconstruct_slice()
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
         self.view.set_results(0, 0)
-        self.set_preview_slice_idx(1024)
-        self.do_update_previews()
+        self.do_update_projection()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
-        self.do_update_previews()
+        self.do_update_projection()
 
     def set_row(self, row):
         self.model.selected_row = row
 
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
-        self.do_update_previews()
+        self.do_update_projection()
         self.do_reconstruct_slice()
 
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
         self.view.set_results(0, 0)
-        self.do_update_previews()
+        self.do_update_projection()
 
-    def do_update_previews(self):
+    def do_update_projection(self):
         img_data = self.model.sample[self.model.preview_projection_idx] \
             if self.model.sample is not None else None
 
@@ -109,6 +108,8 @@ class ReconstructWindowPresenter(BasePresenter):
         # the COR for the selected preview slice
         if self.model.has_results and cor is None:
             cor = self.model.get_cor_for_slice_from_regression()
+        elif self.model.last_cor is not None:
+            cor = self.model.last_cor
 
         if cor is not None:
             data = self.model.run_preview_recon(slice_idx, cor, self.view.algorithm_name, self.view.filter_name)
@@ -120,10 +121,10 @@ class ReconstructWindowPresenter(BasePresenter):
         cor = self.model.last_cor
         self.do_reconstruct_slice(cor, slice_idx)
 
-    # def do_add_cor(self):
-    #     row = self.model.selected_row
-    #     cor = self.model.last_cor
-    #     self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
+    def do_add_cor(self):
+        row = self.model.selected_row
+        cor = self.model.last_cor
+        self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
 
     def do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
@@ -180,7 +181,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if task.was_successful():
             self.view.set_results(*self.model.get_results())
             self.view.show_results()
-            self.do_update_previews()
+            self.do_update_projection()
             self.do_reconstruct_slice()
         else:
             msg = self.ERROR_STRING.format(task.error)

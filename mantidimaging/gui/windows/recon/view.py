@@ -69,18 +69,18 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
-            self.presenter.do_update_previews()
+            self.presenter.do_update_projection()
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.do_user_click_recon(slice_idx)
 
-        self.tableView.model().rowsRemoved.connect(lambda: self.presenter.do_update_previews())
+        self.tableView.model().rowsRemoved.connect(lambda: self.presenter.do_update_projection())
         self.tableView.model().dataChanged.connect(on_data_change)
 
         self.clearAllBtn.clicked.connect(lambda: self.presenter.do_clear_all_cors())
         self.removeBtn.clicked.connect(lambda: self.presenter.do_remove_selected_cor())
-        # self.addBtn.clicked.connect(lambda: self.presenter.do_add_cor())
+        self.addBtn.clicked.connect(lambda: self.presenter.do_add_cor())
         self.refineCorBtn.clicked.connect(lambda: self.presenter.do_refine_selected_cor())
         self.setAllButton.clicked.connect(lambda: self.presenter.do_set_all_row_values())
         self.fitBtn.clicked.connect(lambda: self.presenter.do_cor_fit())
@@ -97,6 +97,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 slice_idx = item.model().point(item.row()).slice_index
                 self.presenter.set_row(item.row())
                 self.presenter.set_preview_slice_idx(slice_idx)
+                self.image_view.line.setPos(slice_idx)
                 self.presenter.notify(PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
 
             # Only allow buttons which act on selected row to be clicked when a valid
@@ -274,7 +275,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when no data is left
         if empty:
-            self.presenter.do_update_previews()
+            self.presenter.do_update_projection()
 
         # Disable fit button when there are less than 2 rows (points)
         enough_to_fit = self.tableView.model().num_points >= 2

@@ -30,7 +30,7 @@ class ReconstructWindowModel(object):
         self.projection_indices = None
         self.data_model = data_model
         self.last_result = None
-        self.last_cor = ScalarCoR(0)
+        self.last_cor = ScalarCoR(0.0)
 
     @property
     def has_results(self):
@@ -71,8 +71,10 @@ class ReconstructWindowModel(object):
         self.data_model.clear_results()
 
         self.stack = stack
+        slice_idx, _ = self.find_initial_cor()
+
         self.preview_projection_idx = 0
-        self.preview_slice_idx = 0
+        self.preview_slice_idx = slice_idx
 
         if stack is not None:
             image_shape = self.sample[0].shape
@@ -122,7 +124,7 @@ class ReconstructWindowModel(object):
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.sample is not None:
             first_slice_to_recon = self.sample.shape[1] // 2
-            cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon))
+            cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon)[0])
             self.last_cor = cor
 
             return first_slice_to_recon, cor

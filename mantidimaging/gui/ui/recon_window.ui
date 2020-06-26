@@ -108,7 +108,7 @@
                     <enum>QAbstractSpinBox::NoButtons</enum>
                    </property>
                    <property name="decimals">
-                    <number>0</number>
+                    <number>7</number>
                    </property>
                    <property name="maximum">
                     <double>99999.000000000000000</double>
@@ -140,7 +140,7 @@
                     <string/>
                    </property>
                    <property name="decimals">
-                    <number>6</number>
+                    <number>7</number>
                    </property>
                    <property name="minimum">
                     <double>-90.000000000000000</double>

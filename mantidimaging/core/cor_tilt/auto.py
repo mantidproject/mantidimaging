@@ -17,7 +17,7 @@ tomopy = safe_import('tomopy')
 LOG = getLogger(__name__)
 
 
-def find_cor_at_slice(sample_data, slice_idx):
+def find_cor_at_slice(sample_data, slice_idx) -> np.ndarray:
     # return tomopy.find_center_vo(tomo=sample_data, ind=slice_idx, ratio=1.0,
     #                              smin=0, smax=200, srad=10.0, step=2.0, drop=0)
     return tomopy.find_center(sample_data, np.linspace(0, pi, sample_data.shape[0]), slice_idx,

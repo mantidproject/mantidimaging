@@ -6,7 +6,6 @@ import numpy as np
 import scipy as sp
 
 from mantidimaging.core.operation_history import const
-from .angles import cors_to_tilt_angle
 from ..utility.cor_holder import ScalarCoR
 
 LOG = getLogger(__name__)
@@ -114,7 +113,7 @@ class CorTiltDataModel:
 
     @property
     def angle_rad(self):
-        return cors_to_tilt_angle(self.slices[-1], self.gradient)
+        return -np.rad2deg(np.arctan(self.gradient))
 
     @property
     def has_results(self):

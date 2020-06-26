@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Union
 
 import astra
 import numpy as np
@@ -13,7 +14,7 @@ def rotation_matrix2d(theta):
 
 
 # astra = safe_import('astra')
-def vec_geom_init2d(angles_rad, detector_spacing_x, center_rot_offset):
+def vec_geom_init2d(angles_rad: np.ndarray, detector_spacing_x: float, center_rot_offset: Union[float, np.ndarray]):
     s0 = [0.0, -1.0]  # source
     u0 = [detector_spacing_x, 0.0]  # detector coordinates
     vectors = np.zeros([angles_rad.size, 6])
@@ -32,7 +33,7 @@ def reconstruct_single_preview(images: Images, slice_idx, cor: ScalarCoR, proj_a
                                progress=None):
     sample = images.sample
     sino = np.swapaxes(sample, 0, 1)[slice_idx]
-    vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(images.width))
+    vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(images.width).value)
     vol_geom = astra.create_vol_geom(
         sample.shape[1:])  # doesn't change unless stack is cropped - gonna have to re-open gui
     proj_geom = astra.create_proj_geom('parallel_vec', sino.shape[1], vectors)

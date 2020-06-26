@@ -125,7 +125,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.setData(self.index(self.num_points - 1, Column.SLICE_INDEX.value), slice_idx)
 
         # the data is added on the row _after_ the selected one
-        self.set_point(row + 1 if self.num_points != 0 else row, cor=cor)
+        self.set_point(row + 1 if self.num_points != 1 else row, cor=cor)
 
     def headerData(self, section, orientation, role):
         if orientation != Qt.Horizontal:
