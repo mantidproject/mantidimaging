@@ -1,7 +1,7 @@
 import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
 
-from mantidimaging.core.utility.cor_holder import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.gui.dialogs.cor_inspection.presenter import CORInspectionDialogPresenter
 from mantidimaging.gui.dialogs.cor_inspection.recon_slice_view import CompareSlicesView
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType

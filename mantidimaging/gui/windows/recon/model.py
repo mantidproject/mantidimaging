@@ -8,7 +8,7 @@ from mantidimaging.core.cor_tilt import (update_image_operations)
 from mantidimaging.core.cor_tilt.auto import find_cor_at_slice
 from mantidimaging.core.reconstruct import allowed_recon_kwargs
 from mantidimaging.core.reconstruct.astra_recon import reconstruct_single_preview
-from mantidimaging.core.utility.cor_holder import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
@@ -44,7 +44,7 @@ class ReconstructWindowModel(object):
     def has_results(self):
         return self.data_model.has_results
 
-    def get_results(self) -> Tuple[Optional[float], Optional[float]]:
+    def get_results(self) -> Tuple[ScalarCoR, Degrees]:
         return self.data_model.cor, self.data_model.angle_in_degrees
 
     @property
@@ -141,7 +141,7 @@ class ReconstructWindowModel(object):
         first_slice_to_recon = self.sample.shape[1] // 2
         return first_slice_to_recon
 
-    def run_finding_manual(self, progress):
+    def do_fit(self, progress):
         # Ensure we have some sample data
         if self.stack is None:
             raise ValueError('No image stack is provided')

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 
-from mantidimaging.core.utility.cor_holder import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import CORInspectionDialogModel
 from .types import ImageType

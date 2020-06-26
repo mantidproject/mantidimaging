@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Dict, List
 import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QWidget
 
-from mantidimaging.core.utility.cor_holder import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -72,7 +72,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def set_stack(self, stack):
         self.model.initial_select_data(stack)
-        self.view.set_results(0, 0)
+        self.view.set_results(ScalarCoR(0.0), Degrees(0.0))
         self.do_update_projection()
 
     def set_preview_projection_idx(self, idx):
@@ -89,7 +89,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
-        self.view.set_results(0, 0)
+        self.view.set_results(ScalarCoR(0.0), Degrees(0.0))
         self.do_update_projection()
 
     def do_update_projection(self):
@@ -170,19 +170,14 @@ class ReconstructWindowPresenter(BasePresenter):
 
             plt.show()
 
-    # def initial_cor(self):
-    #     # start_async_task_view(self.view, self.model.run_finding_automatic, self._on_finding_done)
-    #     start_async_task_view(self.view, self.model.initial_cor, self._on_finding_done)
-
     def do_cor_fit(self):
-        start_async_task_view(self.view, self.model.run_finding_manual, self._on_finding_done)
+        start_async_task_view(self.view, self.model.do_fit, self._on_finding_done)
 
     def _on_finding_done(self, task):
         log = getLogger(__name__)
 
         if task.was_successful():
             self.view.set_results(*self.model.get_results())
-            self.view.show_results()
             self.do_update_projection()
             self.do_reconstruct_slice()
         else:

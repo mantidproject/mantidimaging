@@ -5,7 +5,7 @@ import astra
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.cor_holder import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
 def rotation_matrix2d(theta):

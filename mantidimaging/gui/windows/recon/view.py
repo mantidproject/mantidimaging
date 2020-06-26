@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
@@ -109,7 +110,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update initial UI state
         self.on_table_row_count_change()
-        self.set_results(0, 0)
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
@@ -133,12 +133,13 @@ class ReconstructWindowView(BaseMainWindowView):
             self.tableView.setModel(mdl)
         return self.tableView.model()
 
-    def set_results(self, cor, tilt):
+    def set_results(self, cor: ScalarCoR, tilt: Degrees):
         """
         Sets the numerical COR and tilt angle results.
         """
-        self.rotation_centre = cor
-        self.tilt = tilt
+        self.rotation_centre = cor.value
+        self.tilt = tilt.value
+        self.image_view.set_tilt(tilt)
 
     def preview_image_on_button_press(self, event):
         """
@@ -199,15 +200,6 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.dblclick:
             self.presenter.notify(PresNotification.SHOW_COR_VS_SLICE_PLOT)
 
-
-    def show_results(self):
-        """
-        Shows results after finding is complete.
-
-        Specifically switch to the "Results" tab.
-        """
-        self.tabWidget.setCurrentWidget(self.resultsTab)
-
     def on_table_row_count_change(self):
         """
         Called when rows have been added or removed from the point table.
@@ -265,4 +257,3 @@ class ReconstructWindowView(BaseMainWindowView):
     @property
     def num_iter(self):
         return self.numIter.value() if self.numIter.isVisible() else None
-

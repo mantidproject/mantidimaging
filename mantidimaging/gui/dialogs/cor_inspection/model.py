@@ -3,7 +3,7 @@ from logging import getLogger
 import numpy as np
 
 from mantidimaging.core.reconstruct import (tomopy_reconstruct_preview_from_sinogram)
-from mantidimaging.core.utility.cor_holder import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from .types import ImageType
 

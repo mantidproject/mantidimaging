@@ -4,10 +4,9 @@ from typing import Optional, List
 
 import numpy as np
 import scipy as sp
-from mantidimaging.core.cor_tilt import cors_to_tilt_angle
 
 from mantidimaging.core.operation_history import const
-from ..utility.cor_holder import ScalarCoR
+from ..utility.data_containers import ScalarCoR, Degrees
 
 LOG = getLogger(__name__)
 Point = namedtuple('Point', ['slice_index', 'cor'])
@@ -90,7 +89,7 @@ class CorTiltDataModel:
         if not self.has_results:
             return None
 
-        cor = (self.gradient * slice_idx) + self.cor
+        cor = (self.gradient * slice_idx) + self.cor.value
         return cor
 
     @property
@@ -102,17 +101,16 @@ class CorTiltDataModel:
         return [float(p.cor) for p in self._points]
 
     @property
-    def gradient(self):
+    def gradient(self) -> float:
         return self._cached_gradient
 
     @property
-    def cor(self):
-        return self._cached_cor
+    def cor(self) -> ScalarCoR:
+        return ScalarCoR(self._cached_cor)
 
     @property
-    def angle_in_degrees(self):
-        return -np.rad2deg(np.arctan(self.gradient))
-        # return cors_to_tilt_angle(self.slices[-1], self.gradient)
+    def angle_in_degrees(self) -> Degrees:
+        return Degrees(-np.rad2deg(np.arctan(self.gradient)))
 
     @property
     def has_results(self):
@@ -129,9 +127,9 @@ class CorTiltDataModel:
     @property
     def stack_properties(self):
         return {
-            const.COR_TILT_ROTATION_CENTRE: float(self.cor),
+            const.COR_TILT_ROTATION_CENTRE: float(self.cor.value),
             const.COR_TILT_FITTED_GRADIENT: float(self.gradient),
-            const.COR_TILT_TILT_ANGLE_RAD: float(self.angle_in_degrees),
+            const.COR_TILT_TILT_ANGLE_RAD: float(self.angle_in_degrees.value),
             const.COR_TILT_SLICE_INDICES: self.slices,
             const.COR_TILT_ROTATION_CENTRES: self.cors
         }

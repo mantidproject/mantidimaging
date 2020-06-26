@@ -137,7 +137,7 @@
                     <string/>
                    </property>
                    <property name="suffix">
-                    <string/>
+                    <string>°</string>
                    </property>
                    <property name="decimals">
                     <number>7</number>
