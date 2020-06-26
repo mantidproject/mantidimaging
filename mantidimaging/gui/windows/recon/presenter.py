@@ -62,7 +62,10 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_stack_uuid(self, uuid):
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
-        self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
+        stack = self.main_window.get_stack_visualiser(uuid) if uuid is not None else None
+        self.set_stack(stack)
+        if stack is not None:
+            self.view.reset_slice_and_tilt(self.model.get_initial_slice_index())
         # find a cor for the middle
         self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
         self.do_reconstruct_slice()
@@ -117,7 +120,6 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_user_click_recon(self, slice_idx):
         self.model.preview_slice_idx = slice_idx
-
         cor = self.model.last_cor
         self.do_reconstruct_slice(cor, slice_idx)
 
@@ -214,3 +216,6 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def find_initial_cor(self):
         self.model.find_initial_cor()
+
+    def set_last_cor(self, cor):
+        self.model.last_cor = ScalarCoR(cor)

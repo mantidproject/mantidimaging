@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
@@ -21,6 +22,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     This class handles GUI interaction with the tableView  whilst CorTiltDataModel provides
     methods for calculating cor and gradient from the stored values.
     """
+
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.beginResetModel()
         super(CorTiltPointQtModel, self).populate_slice_indices(begin, end, count, cor)
@@ -90,11 +92,11 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
         return True
 
-    def insertRows(self, row, count, parent=None):
+    def insertRows(self, row, count, parent=None, slice_idx: int = None, cor: float = None):
         self.beginInsertRows(parent if parent is not None else QModelIndex(), row, row + count - 1)
 
         for _ in range(count):
-            self.add_point(row)
+            self.add_point(row, slice_idx, cor)
 
         self.endInsertRows()
 
@@ -119,13 +121,13 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
         self.endRemoveRows()
 
-    def appendNewRow(self, row, slice_idx, cor=0):
-        self.insertRows(self.num_points, 1)
-
-        self.setData(self.index(self.num_points - 1, Column.SLICE_INDEX.value), slice_idx)
-
-        # the data is added on the row _after_ the selected one
-        self.set_point(row + 1 if self.num_points != 1 else row, cor=cor)
+    def appendNewRow(self, row: Optional[int], slice_idx: int, cor: float = 0.0):
+        self.insertRows(row, 1, slice_idx=slice_idx, cor=cor)
+        #
+        # row = row + 1 if row is not None else 0
+        # # the data is added on the row _after_ the selected one
+        self.set_point(row, slice_idx, cor)
+        self.sort_points()
 
     def headerData(self, section, orientation, role):
         if orientation != Qt.Horizontal:

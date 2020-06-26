@@ -111,8 +111,8 @@ class CorTiltDataModel:
 
     @property
     def angle_in_degrees(self):
-        # return -np.rad2deg(np.arctan(self.gradient))
-        return cors_to_tilt_angle(self.slices[-1], self.gradient)
+        return -np.rad2deg(np.arctan(self.gradient))
+        # return cors_to_tilt_angle(self.slices[-1], self.gradient)
 
     @property
     def has_results(self):

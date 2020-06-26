@@ -60,6 +60,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.actionCloseStack.setShortcut("Ctrl+W")
         self.dock.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.sample)
+        self.image_view.imageItem.setAutoDownsample(True)
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 

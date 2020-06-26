@@ -30,7 +30,15 @@ class ReconstructWindowModel(object):
         self.projection_indices = None
         self.data_model = data_model
         self.last_result = None
-        self.last_cor = ScalarCoR(0.0)
+        self._last_cor = ScalarCoR(0.0)
+
+    @property
+    def last_cor(self):
+        return self._last_cor
+
+    @last_cor.setter
+    def last_cor(self, value):
+        self._last_cor = value
 
     @property
     def has_results(self):
@@ -123,11 +131,15 @@ class ReconstructWindowModel(object):
     # def find_cor_for(self, ):
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.sample is not None:
-            first_slice_to_recon = self.sample.shape[1] // 2
+            first_slice_to_recon = self.get_initial_slice_index()
             cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon)[0])
             self.last_cor = cor
 
             return first_slice_to_recon, cor
+
+    def get_initial_slice_index(self):
+        first_slice_to_recon = self.sample.shape[1] // 2
+        return first_slice_to_recon
 
     def run_finding_manual(self, progress):
         # Ensure we have some sample data

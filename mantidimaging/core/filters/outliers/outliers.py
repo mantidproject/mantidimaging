@@ -58,13 +58,13 @@ class OutliersFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change, view):
-        diff_widget, diff_field = add_property_to_form('Difference',
+        _, diff_field = add_property_to_form('Difference',
                                              'float',
                                              1,
                                              valid_values=(-1000000, 1000000),
                                              form=form,
                                              on_change=on_change)
-        diff_widget.setDecimals(7)
+        diff_field.setDecimals(7)
 
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 

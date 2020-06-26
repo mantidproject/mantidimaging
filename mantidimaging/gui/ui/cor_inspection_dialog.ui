@@ -19,8 +19,8 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="mainLayout">
-     <item row="5" column="0">
-      <widget class="QPushButton" name="lessButton">
+     <item row="5" column="1">
+      <widget class="QPushButton" name="currentButton">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -32,8 +32,8 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QPushButton" name="currentButton">
+     <item row="5" column="0">
+      <widget class="QPushButton" name="lessButton">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -58,23 +58,10 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="3">
-      <layout class="QVBoxLayout" name="imagePlotLayout"/>
-     </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QPushButton" name="finishButton">
        <property name="text">
         <string>Finish</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QDoubleSpinBox" name="step">
-       <property name="prefix">
-        <string>step: </string>
-       </property>
-       <property name="decimals">
-        <number>3</number>
        </property>
       </widget>
      </item>
@@ -98,6 +85,39 @@
        </item>
       </layout>
      </item>
+     <item row="4" column="0" colspan="3">
+      <layout class="QVBoxLayout" name="imagePlotLayout"/>
+     </item>
+     <item row="7" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMaximumSize</enum>
+       </property>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Step:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="step">
+         <property name="prefix">
+          <string/>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
   </layout>
@@ -106,7 +126,6 @@
   <tabstop>lessButton</tabstop>
   <tabstop>currentButton</tabstop>
   <tabstop>moreButton</tabstop>
-  <tabstop>step</tabstop>
   <tabstop>finishButton</tabstop>
  </tabstops>
  <resources/>

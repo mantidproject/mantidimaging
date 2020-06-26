@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 
@@ -52,9 +52,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.previewProjectionIndex.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
         self.previewSliceIndex.valueChanged[int].connect(self.presenter.set_preview_slice_idx)
 
-        # Handle calculation parameters
-        # self.projectionCountReset.clicked.connect(self.reset_projection_count)
-
         self.image_view = ReconImagesView(self)
         self.imageLayout.addWidget(self.image_view)
 
@@ -94,10 +91,13 @@ class ReconstructWindowView(BaseMainWindowView):
             in the manual COR table.
             """
             if item.isValid():
-                slice_idx = item.model().point(item.row()).slice_index
+                row_data = item.model().point(item.row())
+                slice_idx = row_data.slice_index
+                cor = row_data.cor
                 self.presenter.set_row(item.row())
+                self.presenter.set_last_cor(cor)
                 self.presenter.set_preview_slice_idx(slice_idx)
-                self.image_view.line.setPos(slice_idx)
+                self.image_view.slice_line.setPos(slice_idx)
                 self.presenter.do_reconstruct_slice()
 
             # Only allow buttons which act on selected row to be clicked when a valid
@@ -185,34 +185,8 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         self.image_view.clear_recon()
 
-    # def update_fit_plot(self, x_axis, cor_data, fit_data):
-    #     """
-    #     Updates the fit result preview plot with the data provided.
-    #
-    #     :param x_axis: Common x axis data (slice index)
-    #     :param cor_data: Centre of rotation determined per slice
-    #     :param fit_data: Result of linear fitting of per slice centre of
-    #                      rotation
-    #     """
-    #     self.fit_plot.cla()
-    #
-    #     # Plot COR data
-    #     if cor_data is not None:
-    #         self.fit_plot.plot(x_axis, cor_data)
-    #
-    #     # Plot fit
-    #     if fit_data is not None:
-    #         self.fit_plot.plot(x_axis, fit_data)
-    #
-    #     # Remove axes ticks to save screen space
-    #     self.fit_plot.set_xticks([])
-    #     self.fit_plot.set_yticks([])
-    #
-    #     # Use tight layout to reduce unused canvas space
-    #     # https://matplotlib.org/users/tight_layout_guide.html
-    #     self.fit_figure.tight_layout()
-    #
-    #     self.fit_canvas.draw()
+    def reset_slice_and_tilt(self, slice_index):
+        self.image_view.reset_slice_and_tilt(slice_index)
 
     def handle_fit_plot_button_press(self, event):
         """
@@ -225,33 +199,6 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.dblclick:
             self.presenter.notify(PresNotification.SHOW_COR_VS_SLICE_PLOT)
 
-    #
-    # def set_num_projections(self, count):
-    #     """
-    #     Set the number of projections in the input dataset.
-    #     """
-    #     # Preview image control
-    #     self.previewProjectionIndex.setValue(0)
-    #     self.previewProjectionIndex.setMaximum(max(count - 1, 0))
-    #
-    #     # Projection downsample control
-    #     self.projectionCount.setMaximum(count)
-    #     self.projectionCount.setValue(int(count * 0.1))
-
-    # def set_num_slices(self, count):
-    #     """
-    #     Sets the number of slices (projection Y axis size) of the full input
-    #     image.
-    #     """
-    #     # Preview image control
-    #     self.previewSliceIndex.setValue(0)
-    #     self.previewSliceIndex.setMaximum(max(count - 1, 0))
-
-    # def reset_projection_count(self):
-    #     """
-    #     Resets the number of projections to the maximum available.
-    #     """
-    #     self.projectionCount.setValue(self.projectionCount.maximum())
 
     def show_results(self):
         """
@@ -281,7 +228,7 @@ class ReconstructWindowView(BaseMainWindowView):
         enough_to_fit = self.tableView.model().num_points >= 2
         self.fitBtn.setEnabled(enough_to_fit)
 
-    def add_cor_table_row(self, row: int, slice_index: int, cor: float):
+    def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
@@ -318,3 +265,4 @@ class ReconstructWindowView(BaseMainWindowView):
     @property
     def num_iter(self):
         return self.numIter.value() if self.numIter.isVisible() else None
+

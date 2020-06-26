@@ -13,8 +13,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.projection, self.projection_vb, self.projection_hist = self.image_in_vb("Projection")
         self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
 
-        self.line = InfiniteLine(pos=1024, angle=180, movable=True)
-        self.projection_vb.addItem(self.line)
+        self.slice_line = InfiniteLine(pos=1024, angle=180, movable=True)
+        self.projection_vb.addItem(self.slice_line)
+        self.tilt_line = InfiniteLine(pos=1024)
+        self.projection_vb.addItem(self.tilt_line)
 
         image_layout = QGraphicsGridLayout()
         image_layout.addItem(self.projection_vb, 0, 0)
@@ -34,7 +36,7 @@ class ReconImagesView(GraphicsLayoutWidget):
             self.recon: lambda val: recon_details.setText(f"Value: {val:.6f}")
         }
         self.projection.hoverEvent = lambda ev: self.mouse_over(ev, self.projection)
-        self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.line)
+        self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.recon.hoverEvent = lambda ev: self.mouse_over(ev, self.recon)
 
     @staticmethod
@@ -48,7 +50,7 @@ class ReconImagesView(GraphicsLayoutWidget):
     def update_projection(self, image_data, preview_slice_index, tilt_line_points, roi):
         self.projection.setImage(image_data)
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
-        self.line.setPos(preview_slice_index)
+        self.slice_line.setPos(preview_slice_index)
 
     def update_recon(self, image_data):
         self.recon.setImage(image_data)
@@ -69,3 +71,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def clear_recon(self):
         self.recon.clear()
+
+    def reset_slice_and_tilt(self, slice_index):
+        self.slice_line.setPos(slice_index)
+        self.projection_vb.removeItem(self.tilt_line)
