@@ -93,17 +93,25 @@ class MWLoadDialog(Qt.QDialog):
 
     def _find_images(self, sample_dirname: Path, type: str) -> str:
         expected_path = sample_dirname / ".." / f"{type}_After"
+        logger = getLogger(__name__)
         try:
             path_filenames = get_file_names(expected_path.absolute(), self.image_format)
             return path_filenames[0]
         except RuntimeError:
-            getLogger(__name__).info(f"Could not find {type} files in {expected_path.absolute()}")
+            logger.info(f"Could not find {type} files in {expected_path.absolute()}")
             expected_path = sample_dirname / ".." / f"{type}_Before"
             try:
                 path_filenames = get_file_names(expected_path.absolute(), self.image_format)
                 return path_filenames[0]
             except RuntimeError:
-                getLogger(__name__).info(f"Could not find {type} files in {expected_path.absolute()}")
+                logger.info(f"Could not find {type} files in {expected_path.absolute()}")
+        # look for files in the same directory
+        try:
+            path_filenames = get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}")
+            return path_filenames[0]
+        except RuntimeError:
+            logger.info(f"Could not find {type} files in {sample_dirname.absolute()}")
+
         return ""
 
     def update_indices(self, number_of_images):
@@ -153,23 +161,27 @@ class MWLoadDialog(Qt.QDialog):
         """
         return self._get_path_directory(self.sample_path)
 
+    @staticmethod
+    def _get_text(widget):
+        return str(widget.text())
+
     def sample_path_text(self) -> str:
         """
         :return: The directory of the path as a Python string
         """
-        return str(self.sample_path.text())
+        return self._get_text(self.sample_path)
 
-    def flat_path_directory(self) -> str:
+    def flat_path_text(self) -> str:
         """
         :return: The directory of the path as a Python string
         """
-        return self._get_path_directory(self.flat_path)
+        return self._get_text(self.flat_path)
 
-    def dark_path_directory(self) -> str:
+    def dark_path_text(self) -> str:
         """
         :return: The directory of the path as a Python string
         """
-        return self._get_path_directory(self.dark_path)
+        return self._get_text(self.dark_path)
 
     @property
     def indices(self) -> ImageLoadIndices:
@@ -189,8 +201,8 @@ class MWLoadDialog(Qt.QDialog):
         return {
             'selected_file': self.sample_file(),
             'sample_path': self.sample_path_directory(),
-            'flat_path': self.flat_path_directory(),
-            'dark_path': self.dark_path_directory(),
+            'flat_path': self.flat_path_text(),
+            'dark_path': self.dark_path_text(),
             'in_prefix': get_prefix(self.sample_path_text()),
             'image_format': self.image_format,
             'indices': self.indices,

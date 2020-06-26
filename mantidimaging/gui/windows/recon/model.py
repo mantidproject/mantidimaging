@@ -37,7 +37,7 @@ class ReconstructWindowModel(object):
         return self.data_model.has_results
 
     def get_results(self) -> Tuple[Optional[float], Optional[float]]:
-        return self.data_model.cor, self.data_model.angle_rad
+        return self.data_model.cor, self.data_model.angle_in_degrees
 
     @property
     def sample(self):

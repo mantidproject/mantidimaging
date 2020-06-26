@@ -1,12 +1,13 @@
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
+import os
 from typing import Tuple, Optional, List
 
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.io.utility import get_file_names
+from mantidimaging.core.io.utility import get_file_names, get_prefix
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from . import stack_loader
@@ -95,7 +96,7 @@ class ImageLoader(object):
 
     def load_data(self, file_path) -> Tuple[Optional[np.ndarray], Optional[List[str]], Optional[str]]:
         if file_path:
-            file_names = get_file_names(file_path, self.img_format)
+            file_names = get_file_names(os.path.dirname(file_path), self.img_format, get_prefix(file_path))
             memory_file_name = pu.create_shared_name(file_names[0])
             return self.load_files(file_names, memory_file_name), file_names, memory_file_name
         return None, None, None

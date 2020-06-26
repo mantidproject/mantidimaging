@@ -98,7 +98,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 self.presenter.set_row(item.row())
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.image_view.line.setPos(slice_idx)
-                self.presenter.notify(PresNotification.PREVIEW_RECONSTRUCTION_SET_COR)
+                self.presenter.do_reconstruct_slice()
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected

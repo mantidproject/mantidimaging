@@ -95,9 +95,11 @@ def load(input_path=None,
          indices=None,
          progress=None) -> Images:
     """
+
     Loads a stack, including sample, white and dark images.
 
     :param input_path: Path for the input data folder
+    TODO remove flat and dark loading, just load images
     :param input_path_flat: Optional: Path for the input Flat images folder
     :param input_path_dark: Optional: Path for the input Dark images folder
     :param in_prefix: Optional: Prefix for loaded files

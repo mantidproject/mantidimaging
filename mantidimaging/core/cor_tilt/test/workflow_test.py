@@ -26,7 +26,7 @@ class WorkflowTest(TestCase):
 
         self.assertTrue(isinstance(model.gradient, float))
         self.assertTrue(isinstance(model.cor, float))
-        self.assertTrue(isinstance(model.angle_rad, float))
+        self.assertTrue(isinstance(model.angle_in_degrees, float))
         self.assertEquals(len(model.slices), 5)
         self.assertEquals(len(model.cors), 5)
 
@@ -37,6 +37,6 @@ class WorkflowTest(TestCase):
         print(auto_cor_tilt)
         self.assertAlmostEqual(auto_cor_tilt_kwargs['rotation_centre'], model.cor)
         self.assertAlmostEqual(auto_cor_tilt_kwargs['fitted_gradient'], model.gradient)
-        self.assertAlmostEqual(auto_cor_tilt_kwargs['tilt_angle_rad'], model.angle_rad)
+        self.assertAlmostEqual(auto_cor_tilt_kwargs['tilt_angle_rad'], model.angle_in_degrees)
         self.assertTrue(isinstance(auto_cor_tilt_kwargs['slice_indices'], list))
         self.assertTrue(isinstance(auto_cor_tilt_kwargs['rotation_centres'], list))
