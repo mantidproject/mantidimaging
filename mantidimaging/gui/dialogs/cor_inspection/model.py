@@ -1,8 +1,7 @@
 from logging import getLogger
 
-import numpy as np
-
-from mantidimaging.core.reconstruct import (tomopy_reconstruct_preview_from_sinogram)
+from mantidimaging.core.data import Images
+from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from .types import ImageType
@@ -11,21 +10,20 @@ LOG = getLogger(__name__)
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, data, slice_idx, initial_cor: ScalarCoR, initial_step=50, max_angle=360):
-        # Extract the sinogram
-        if slice_idx is None:
-            self.sino = data
-        else:
-            LOG.debug('Extracting sinogram at index {}'.format(slice_idx))
-            self.sino = np.swapaxes(data, 0, 1)[slice_idx]
-        LOG.debug('Sinogram shape: {}'.format(self.sino.shape))
+    def __init__(self, data: Images, slice_idx: int, initial_cor: ScalarCoR, initial_step=50, max_angle=360,
+                 algorithm="FBP_CUDA", filter_name="ram-lak"):
+        self.data_shape = data.sample.shape
+        self.sino = data.sino(slice_idx)
 
         # Initial parameters
         self.centre_cor = initial_cor.value
         self.cor_step = initial_step
 
         # Cache projection angles
-        self.proj_angles = generate_projection_angles(max_angle, self.sino.shape[0])
+        self.proj_angles = generate_projection_angles(max_angle, self.data_shape[0])
+        self.algorithm = algorithm
+        self.reconstructor = get_reconstructor_for(algorithm)
+        self.filter = filter_name
 
     def adjust_cor(self, image):
         """
@@ -51,13 +49,10 @@ class CORInspectionDialogModel(object):
             return min(self.cor_extents[1], self.centre_cor + self.cor_step)
 
     def recon_preview(self, image):
-        cor = self.cor(image)
-        # TODO
-        # Only two images should need to be reconstructed per iteration
-        # (currently all three are).
-        # Look for a way to cache them after the iteration step has been
-        # finalised with scientists.
-        return tomopy_reconstruct_preview_from_sinogram(self.sino, cor, self.proj_angles)
+        cor = ScalarCoR(self.cor(image))
+        getLogger(__name__).info(f"Reconstructing with {type(self.reconstructor)}")
+        return self.reconstructor.single_sino(self.sino, self.data_shape, cor, self.proj_angles,
+                                              self.algorithm, self.filter)
 
     @property
     def cor_extents(self):

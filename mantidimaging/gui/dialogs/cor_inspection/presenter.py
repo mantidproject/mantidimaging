@@ -3,6 +3,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
+from mantidimaging.core.data import Images
 
 from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -29,8 +30,8 @@ class CORInspectionDialogPresenter(BasePresenter):
 
     view: 'CORInspectionDialogView'
 
-    def __init__(self, view, data, slice_index, initial_cor:ScalarCoR, initial_step):
-        super(CORInspectionDialogPresenter, self).__init__(view)
+    def __init__(self, view, data:Images, slice_index:int, initial_cor:ScalarCoR, initial_step):
+        super().__init__(view)
 
         self.model = CORInspectionDialogModel(data, slice_index, initial_cor, initial_step)
 
@@ -87,5 +88,5 @@ class CORInspectionDialogPresenter(BasePresenter):
         self.notify(Notification.FULL_UPDATE)
 
     @property
-    def optimal_rotation_centre(self):
-        return self.model.centre_cor
+    def optimal_rotation_centre(self)->ScalarCoR:
+        return ScalarCoR(self.model.centre_cor)

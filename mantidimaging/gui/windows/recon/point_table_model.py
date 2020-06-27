@@ -1,4 +1,5 @@
 from enum import Enum
+from logging import getLogger
 from typing import Optional
 
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
@@ -116,9 +117,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
             return
 
         self.beginRemoveRows(parent if parent else QModelIndex(), 0, self.num_points - 1)
-
         self.clear_points()
-
         self.endRemoveRows()
 
     def appendNewRow(self, row: Optional[int], slice_idx: int, cor: float = 0.0):

@@ -7,7 +7,6 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
-from mantidimaging.gui.windows.recon.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
@@ -38,7 +37,6 @@ class ReconstructWindowView(BaseMainWindowView):
     maxProjAngle: QDoubleSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
-    reconstructSlice: QPushButton
     reconstructVolume: QPushButton
 
     def __init__(self, main_window: 'MainWindowView'):
@@ -83,7 +81,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.setAllButton.clicked.connect(lambda: self.presenter.do_set_all_row_values())
         self.fitBtn.clicked.connect(lambda: self.presenter.do_cor_fit())
         self.setRoiBtn.clicked.connect(lambda: self.presenter.do_crop_to_roi())
-        self.reconstructSlice.clicked.connect(lambda: self.presenter.do_reconstruct_slice())
         self.reconstructVolume.clicked.connect(lambda: self.presenter.do_reconstruct_volume())
 
         def on_row_change(item, _):
@@ -188,17 +185,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def reset_slice_and_tilt(self, slice_index):
         self.image_view.reset_slice_and_tilt(slice_index)
-
-    def handle_fit_plot_button_press(self, event):
-        """
-        Handle mouse button presses on the fit plot preview.
-
-        Currently opens a larger version of the plot in a new window when the
-        plot is double (left) clicked.
-        """
-        # Double left click
-        if event.button == 1 and event.dblclick:
-            self.presenter.notify(PresNotification.SHOW_COR_VS_SLICE_PLOT)
 
     def on_table_row_count_change(self):
         """

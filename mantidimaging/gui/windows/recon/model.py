@@ -6,8 +6,9 @@ import numpy as np
 
 from mantidimaging.core.cor_tilt import (update_image_operations)
 from mantidimaging.core.cor_tilt.auto import find_cor_at_slice
-from mantidimaging.core.reconstruct import allowed_recon_kwargs
-from mantidimaging.core.reconstruct.astra_recon import reconstruct_single_preview
+from mantidimaging.core.reconstruct import get_reconstructor_for
+from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
+from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
@@ -158,14 +159,14 @@ class ReconstructWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor: ScalarCoR, algorithm, recon_filter):
+    def run_preview_recon(self, slice_idx, cor: ScalarCoR, algorithm: str, recon_filter: str):
         # Ensure we have some sample data
         if self.sample is None:
             raise ValueError('No sample to use for preview reconstruction')
 
         # Perform single slice reconstruction
-        return reconstruct_single_preview(self.images, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
-        # return tomopy_reconstruct_preview(self.sample, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
+        reconstructor = get_reconstructor_for(algorithm)
+        return reconstructor.single(self.images, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
 
     @property
     def preview_tilt_line_data(self):
@@ -174,7 +175,7 @@ class ReconstructWindowModel(object):
 
     @property
     def preview_fit_y_data(self):
-        return [self.data_model.gradient * slice_idx + self.data_model.cor
+        return [self.data_model.gradient * slice_idx + self.data_model.cor.value
                 for slice_idx in self.slices] if self.data_model.has_results else None
 
     @property
@@ -190,4 +191,21 @@ class ReconstructWindowModel(object):
 
     @staticmethod
     def load_allowed_recon_kwargs():
-        return allowed_recon_kwargs()
+        d = tomopy_allowed_kwargs()
+        d.update(astra_allowed_kwargs())
+        return d
+
+    def get_me_a_cor(self, cor=None):
+        if cor is not None:
+            # a cor has been passed in!
+            return cor
+
+        if self.has_results:
+            cor = self.get_cor_for_slice_from_regression()
+        elif self.last_cor is not None:
+            # otherwise just use the last cached CoR
+            cor = self.last_cor
+        return cor
+
+    def reset_selected_row(self):
+        self.selected_row = 0

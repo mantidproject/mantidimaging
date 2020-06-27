@@ -152,3 +152,14 @@ class Images:
     @property
     def height(self):
         return self.sample[2]
+
+    def sino(self, slice_idx) -> np.ndarray:
+        if not self.sinograms:
+            return np.swapaxes(self.sample, 0, 1)[slice_idx]
+        else:
+            return self.sample[slice_idx]
+    # def to_sino(self, deepcopy=False):
+    #     if not self.sinograms:
+    #         return np.swapaxes(self.sample, 0, 1)
+    #     else:
+    #         return self.sample

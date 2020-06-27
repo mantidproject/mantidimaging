@@ -1,3 +1,11 @@
-from .tomopy_reconstruction import (  # noqa: F401
-    reconstruct as tomopy_reconstruct, allowed_recon_kwargs, reconstruct_single_preview as tomopy_reconstruct_preview,
-    reconstruct_single_preview_from_sinogram as tomopy_reconstruct_preview_from_sinogram)
+from typing import Union
+
+from .astra_recon import AstraRecon
+from .tomopy_recon import TomopyRecon
+
+
+def get_reconstructor_for(algorithm: str) -> Union[AstraRecon, TomopyRecon]:
+    if algorithm == "gridrec":
+        return TomopyRecon()
+    else:
+        return AstraRecon()

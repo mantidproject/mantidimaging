@@ -310,6 +310,11 @@
                <widget class="QComboBox" name="filterName">
                 <item>
                  <property name="text">
+                  <string>ram-lak</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>shepp</string>
                  </property>
                 </item>
@@ -330,11 +335,6 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>ramlak</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
                   <string>parzen</string>
                  </property>
                 </item>
@@ -349,72 +349,17 @@
                <widget class="QComboBox" name="algorithmName">
                 <item>
                  <property name="text">
+                  <string>FBP_CUDA</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SIRT_CUDA</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>gridrec</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>fbp</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>art</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>bart</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>mlem</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>osem</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>ospml_hybrid</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>ospml_quad</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>pml_hybrid</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>pml_quad</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>sirt</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>tv</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>grad</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>tikh</string>
                  </property>
                 </item>
                </widget>
@@ -453,13 +398,6 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="reconButtonGroup">
-              <item>
-               <widget class="QPushButton" name="reconstructSlice">
-                <property name="text">
-                 <string>Reconstruct Slice</string>
-                </property>
-               </widget>
-              </item>
               <item>
                <widget class="QPushButton" name="reconstructVolume">
                 <property name="text">

@@ -1,6 +1,7 @@
 import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.gui.dialogs.cor_inspection.presenter import CORInspectionDialogPresenter
 from mantidimaging.gui.dialogs.cor_inspection.recon_slice_view import CompareSlicesView
@@ -15,7 +16,7 @@ class CORInspectionDialogView(BaseDialogView):
     moreButton: QPushButton
     step: QDoubleSpinBox
 
-    def __init__(self, parent, data, slice_index, initial_cor:ScalarCoR, initial_step=50):
+    def __init__(self, parent, data: Images, slice_index: int, initial_cor: ScalarCoR, initial_step=50):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
         self.presenter = CORInspectionDialogPresenter(self, data, slice_index, initial_cor, initial_step)
 
@@ -51,5 +52,5 @@ class CORInspectionDialogView(BaseDialogView):
             self.step.setValue(value)
 
     @property
-    def optimal_rotation_centre(self):
+    def optimal_rotation_centre(self) -> ScalarCoR:
         return self.presenter.optimal_rotation_centre
