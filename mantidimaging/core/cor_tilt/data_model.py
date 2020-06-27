@@ -1,12 +1,12 @@
 from collections import namedtuple
 from logging import getLogger
-from typing import Optional, List
+from typing import Optional, List, Iterator
 
 import numpy as np
 import scipy as sp
 
 from mantidimaging.core.operation_history import const
-from ..utility.data_containers import ScalarCoR, Degrees
+from ..utility.data_containers import ScalarCoR, Degrees, Slope
 
 LOG = getLogger(__name__)
 Point = namedtuple('Point', ['slice_index', 'cor'])
@@ -85,11 +85,11 @@ class CorTiltDataModel:
         a = [p.cor for p in self._points if p.slice_index == slice_idx]
         return a[0] if a else None
 
-    def get_cor_for_slice_from_regression(self, slice_idx):
+    def get_cor_from_regression(self, slice_idx):
         if not self.has_results:
             return None
 
-        cor = (self.gradient * slice_idx) + self.cor.value
+        cor = (self.gradient.value * slice_idx) + self.cor.value
         return cor
 
     @property
@@ -101,8 +101,8 @@ class CorTiltDataModel:
         return [float(p.cor) for p in self._points]
 
     @property
-    def gradient(self) -> float:
-        return self._cached_gradient
+    def gradient(self) -> Slope:
+        return Slope(self._cached_gradient)
 
     @property
     def cor(self) -> ScalarCoR:
@@ -110,7 +110,7 @@ class CorTiltDataModel:
 
     @property
     def angle_in_degrees(self) -> Degrees:
-        return Degrees(-np.rad2deg(np.arctan(self.gradient)))
+        return Degrees(-np.rad2deg(np.arctan(self.gradient.value)))
 
     @property
     def has_results(self):
@@ -128,8 +128,21 @@ class CorTiltDataModel:
     def stack_properties(self):
         return {
             const.COR_TILT_ROTATION_CENTRE: float(self.cor.value),
-            const.COR_TILT_FITTED_GRADIENT: float(self.gradient),
+            const.COR_TILT_FITTED_GRADIENT: float(self.gradient.value),
             const.COR_TILT_TILT_ANGLE_RAD: float(self.angle_in_degrees.value),
             const.COR_TILT_SLICE_INDICES: self.slices,
             const.COR_TILT_ROTATION_CENTRES: self.cors
         }
+
+    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
+        self._cached_cor = cor.value
+        # reverse the tilt calculation to get the slope of the regression back
+        self._cached_gradient = -np.tan(np.deg2rad(tilt.value))
+
+        for idx in range(len(self._points)):
+            current = self._points[idx]
+            self._points[idx] = Point(current.slice_index,
+                                      self.get_cor_from_regression(current.slice_index))
+
+    def iter_points(self) -> Iterator[Point]:
+        return iter(self._points)

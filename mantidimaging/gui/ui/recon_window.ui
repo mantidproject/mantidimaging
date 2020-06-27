@@ -101,6 +101,9 @@
                  </item>
                  <item row="1" column="1">
                   <widget class="QDoubleSpinBox" name="resultCor">
+                   <property name="toolTip">
+                    <string>Rotation centre at the TOP of the stack</string>
+                   </property>
                    <property name="readOnly">
                     <bool>false</bool>
                    </property>
@@ -150,8 +153,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1">
-                  <widget class="QPushButton" name="pushButton">
+                 <item row="4" column="1">
+                  <widget class="QPushButton" name="calculateCors">
                    <property name="toolTip">
                     <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                    </property>
@@ -160,6 +163,29 @@
                    </property>
                    <property name="text">
                     <string>Calculate CoRs for slice indices</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QDoubleSpinBox" name="resultSlope">
+                   <property name="buttonSymbols">
+                    <enum>QAbstractSpinBox::NoButtons</enum>
+                   </property>
+                   <property name="decimals">
+                    <number>7</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-1000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Slope:</string>
                    </property>
                   </widget>
                  </item>

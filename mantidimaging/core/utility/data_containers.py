@@ -36,3 +36,9 @@ class VectorCoR:
 class Degrees:
     __slots__ = 'value'
     value: float
+
+
+@dataclass
+class Slope:
+    __slots__ = 'value'
+    value: float

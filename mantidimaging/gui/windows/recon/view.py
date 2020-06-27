@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
@@ -16,10 +16,10 @@ if TYPE_CHECKING:
 class ReconstructWindowView(BaseMainWindowView):
     tableView: RemovableRowTableView
     imageLayout: QVBoxLayout
+
     inputTab: QWidget
     setRoiBtn: QPushButton
-    autoCalculateBtn: QPushButton
-    corFindingMethod: QComboBox
+    calculateCors: QPushButton
 
     resultTab: QWidget
     addBtn: QPushButton
@@ -37,6 +37,7 @@ class ReconstructWindowView(BaseMainWindowView):
     maxProjAngle: QDoubleSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
+    resultSlope: QDoubleSpinBox
     reconstructVolume: QPushButton
 
     def __init__(self, main_window: 'MainWindowView'):
@@ -59,9 +60,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
 
-        self.tableView.model().rowsInserted.connect(self.on_table_row_count_change)
-        self.tableView.model().rowsRemoved.connect(self.on_table_row_count_change)
-        self.tableView.model().modelReset.connect(self.on_table_row_count_change)
+        self.cor_table_model.rowsInserted.connect(self.on_table_row_count_change)
+        self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)
+        self.cor_table_model.modelReset.connect(self.on_table_row_count_change)
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
@@ -71,8 +72,8 @@ class ReconstructWindowView(BaseMainWindowView):
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.do_user_click_recon(slice_idx)
 
-        self.tableView.model().rowsRemoved.connect(lambda: self.presenter.do_update_projection())
-        self.tableView.model().dataChanged.connect(on_data_change)
+        self.cor_table_model.rowsRemoved.connect(lambda: self.presenter.do_update_projection())
+        self.cor_table_model.dataChanged.connect(on_data_change)
 
         self.clearAllBtn.clicked.connect(lambda: self.presenter.do_clear_all_cors())
         self.removeBtn.clicked.connect(lambda: self.presenter.do_remove_selected_cor())
@@ -81,6 +82,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.setAllButton.clicked.connect(lambda: self.presenter.do_set_all_row_values())
         self.fitBtn.clicked.connect(lambda: self.presenter.do_cor_fit())
         self.setRoiBtn.clicked.connect(lambda: self.presenter.do_crop_to_roi())
+        self.calculateCors.clicked.connect(lambda: self.presenter.do_calculate_cors_from_manual_tilt())
         self.reconstructVolume.clicked.connect(lambda: self.presenter.do_reconstruct_volume())
 
         def on_row_change(item, _):
@@ -124,18 +126,19 @@ class ReconstructWindowView(BaseMainWindowView):
         self.main_window.recon = None
 
     @property
-    def point_model(self):
+    def cor_table_model(self) -> CorTiltPointQtModel:
         if self.tableView.model() is None:
             mdl = CorTiltPointQtModel(self.tableView)
             self.tableView.setModel(mdl)
         return self.tableView.model()
 
-    def set_results(self, cor: ScalarCoR, tilt: Degrees):
+    def set_results(self, cor: ScalarCoR, tilt: Degrees, slope: Slope):
         """
         Sets the numerical COR and tilt angle results.
         """
         self.rotation_centre = cor.value
         self.tilt = tilt.value
+        self.slope = slope.value
         self.image_view.set_tilt(tilt)
 
     def preview_image_on_button_press(self, event):
@@ -217,7 +220,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.resultCor.value()
 
     @rotation_centre.setter
-    def rotation_centre(self, value):
+    def rotation_centre(self, value: float):
         self.resultCor.setValue(value)
 
     @property
@@ -225,8 +228,16 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.resultTilt.value()
 
     @tilt.setter
-    def tilt(self, value):
+    def tilt(self, value: float):
         self.resultTilt.setValue(value)
+
+    @property
+    def slope(self):
+        return self.resultSlope.value()
+
+    @slope.setter
+    def slope(self, value: float):
+        self.resultSlope.setValue(value)
 
     @property
     def max_proj_angle(self):
@@ -243,3 +254,6 @@ class ReconstructWindowView(BaseMainWindowView):
     @property
     def num_iter(self):
         return self.numIter.value() if self.numIter.isVisible() else None
+
+    def set_table_point(self, idx, slice_idx, cor):
+        self.cor_table_model.set_point(idx, slice_idx,cor )

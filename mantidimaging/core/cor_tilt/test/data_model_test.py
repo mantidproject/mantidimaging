@@ -197,9 +197,9 @@ class CorTiltDataModelTest(TestCase):
 
         m.linear_regression()
 
-        self.assertEquals(m.get_cor_for_slice_from_regression(0), 4.0)
-        self.assertEquals(m.get_cor_for_slice_from_regression(10), 5.0)
-        self.assertEquals(m.get_cor_for_slice_from_regression(50), 9.0)
+        self.assertEquals(m.get_cor_from_regression(0), 4.0)
+        self.assertEquals(m.get_cor_from_regression(10), 5.0)
+        self.assertEquals(m.get_cor_from_regression(50), 9.0)
 
     def test_get_data_idx_for_slice_idx(self):
         m = CorTiltDataModel()

@@ -1,5 +1,4 @@
 from enum import Enum
-from logging import getLogger
 from typing import Optional
 
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
@@ -39,7 +38,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.dataChanged.emit(self.index(idx, 0), self.index(idx, 1))
 
     def columnCount(self, parent=None):
-        return len(Column)
+        return 2
 
     def rowCount(self, parent):
         if parent.isValid():
@@ -136,3 +135,4 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
             return None
 
         return COLUMN_NAMES[Column(section)]
+

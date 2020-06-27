@@ -59,12 +59,12 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
     def test_do_preview_reconstruction(self):
         self.presenter.model = mock.Mock()
 
-        self.presenter.model.get_cor_for_slice_from_regression.return_value = None
+        self.presenter.model.get_cor_from_regression.return_value = None
         self.presenter.do_reconstruct_slice()
         self.view.update_image_recon_preview.assert_not_called()
 
         self.presenter.model.has_results = True
-        self.presenter.model.get_cor_for_slice_from_regression.return_value = 333
+        self.presenter.model.get_cor_from_regression.return_value = 333
         self.presenter.model.run_preview_recon.return_value = [1, 2, 3]
         self.presenter.do_reconstruct_slice()
         self.view.update_image_recon_preview.assert_called_once_with(

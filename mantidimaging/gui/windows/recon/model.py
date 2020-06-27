@@ -9,7 +9,7 @@ from mantidimaging.core.cor_tilt.auto import find_cor_at_slice
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
@@ -45,8 +45,8 @@ class ReconstructWindowModel(object):
     def has_results(self):
         return self.data_model.has_results
 
-    def get_results(self) -> Tuple[ScalarCoR, Degrees]:
-        return self.data_model.cor, self.data_model.angle_in_degrees
+    def get_results(self) -> Tuple[ScalarCoR, Degrees, Slope]:
+        return self.data_model.cor, self.data_model.angle_in_degrees, self.data_model.gradient
 
     @property
     def sample(self):
@@ -114,22 +114,7 @@ class ReconstructWindowModel(object):
                 np.linspace(int(sample_proj_count * 0.1), sample_proj_count - 1, downsample_proj_count,
                             dtype=int)
 
-    # def run_finding_automatic(self, progress):
-    #     # Ensure we have some sample data
-    #     if self.stack is None:
-    #         raise ValueError('No image stack is provided')
-    #
-    #     if self.roi is None:
-    #         raise ValueError('No region of interest is defined')
-    #
-    #     run_auto_finding_on_images(self.images, self.data_model, self.roi, self.projection_indices, progress=progress)
-    #
-    #     # Cache last result
-    #     self.last_result = self.data_model.stack_properties
-    #
-    #     # Async task needs a non-None result of some sort
-    #     return True
-    # def find_cor_for(self, ):
+
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.sample is not None:
             first_slice_to_recon = self.get_initial_slice_index()
@@ -186,9 +171,6 @@ class ReconstructWindowModel(object):
     def slices(self):
         return self.data_model.slices
 
-    def get_cor_for_slice_from_regression(self) -> ScalarCoR:
-        return ScalarCoR(self.data_model.get_cor_for_slice_from_regression(self.preview_slice_idx))
-
     @staticmethod
     def load_allowed_recon_kwargs():
         d = tomopy_allowed_kwargs()
@@ -207,5 +189,11 @@ class ReconstructWindowModel(object):
             cor = self.last_cor
         return cor
 
+    def get_cor_for_slice_from_regression(self) -> ScalarCoR:
+        return ScalarCoR(self.data_model.get_cor_from_regression(self.preview_slice_idx))
+
     def reset_selected_row(self):
         self.selected_row = 0
+
+    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
+        self.data_model.set_precalculated(cor, tilt)
