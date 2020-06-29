@@ -1,5 +1,6 @@
+from contextlib import contextmanager
 from enum import Enum
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 
 import astra
 import numpy as np
@@ -14,7 +15,7 @@ def rotation_matrix2d(theta):
 
 
 # astra = safe_import('astra')
-def vec_geom_init2d(angles_rad: np.ndarray, detector_spacing_x: float, center_rot_offset: Union[float, np.ndarray]):
+def vec_geom_init2d(angles_rad: np.ndarray, detector_spacing_x: float, center_rot_offset: Union[float, List[float]]):
     s0 = [0.0, -1.0]  # source
     u0 = [detector_spacing_x, 0.0]  # detector coordinates
     vectors = np.zeros([angles_rad.size, 6])
@@ -30,30 +31,37 @@ def vec_geom_init2d(angles_rad: np.ndarray, detector_spacing_x: float, center_ro
 
 
 class AstraRecon:
+
+    @staticmethod
+    @contextmanager
+    def _managed_recon(sino, cfg, proj_geom, vol_geom) -> int:
+        proj_id = None
+        sino_id = None
+        rec_id = None
+        alg_id = None
+        try:
+            proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
+            sino_id = astra.data2d.create('-sino', proj_geom, sino)
+            rec_id = astra.data2d.create('-vol', vol_geom)
+
+            cfg['ReconstructionDataId'] = rec_id
+            cfg['ProjectionDataId'] = sino_id
+            cfg['ProjectorId'] = proj_id
+
+            alg_id = astra.algorithm.create(cfg)
+            yield alg_id, rec_id
+        finally:
+            astra.algorithm.delete(alg_id)
+            astra.projector.delete(proj_id)
+            astra.data2d.delete(sino_id)
+            astra.data2d.delete(rec_id)
+
     @staticmethod
     def single(images: Images, slice_idx: int, cor: ScalarCoR, proj_angles: np.ndarray,
                algorithm: str, recon_filter: str, progress=None) -> np.ndarray:
         sample = images.sample
         sino = np.swapaxes(sample, 0, 1)[slice_idx]
-        vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(images.width).value)
-        vol_geom = astra.create_vol_geom(
-            sample.shape[1:])  # doesn't change unless stack is cropped - gonna have to re-open gui
-        proj_geom = astra.create_proj_geom('parallel_vec', sino.shape[1], vectors)
-        proj_id = astra.create_projector('cuda', proj_geom, vol_geom)  # no change
-        sino_id = astra.data2d.create('-sino', proj_geom, sino)
-        rec_id = astra.data2d.create('-vol', vol_geom)  # no change
-        cfg = astra.astra_dict(algorithm)
-        cfg['ReconstructionDataId'] = rec_id
-        cfg['ProjectionDataId'] = sino_id
-        cfg['FilterType'] = recon_filter
-        cfg['ProjectorId'] = proj_id
-        alg_id = astra.algorithm.create(cfg)
-        astra.algorithm.run(alg_id)
-        recon = astra.data2d.get(rec_id)
-        astra.data2d.delete(sino_id)
-        astra.data2d.delete(rec_id)
-        astra.projector.delete(proj_id)
-        return recon
+        return AstraRecon.single_sino(sino, sample.shape, cor, proj_angles, algorithm, recon_filter, progress)
 
     @staticmethod
     def single_sino(sino: np.ndarray, original_shape: Tuple[int, int, int],
@@ -72,36 +80,56 @@ class AstraRecon:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
         assert len(original_shape) == 3, "Original shape of the data must be 3D"
 
-        image_width = original_shape[1]
+        image_width = original_shape[2]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
-        # doesn't change unless stack is cropped - gonna have to re-open gui
-        vol_geom = astra.create_vol_geom(original_shape[1:])
+        vol_geom = astra.create_vol_geom(sino.shape)
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
-        proj_id = astra.create_projector('cuda', proj_geom, vol_geom)  # no change
-        sino_id = astra.data2d.create('-sino', proj_geom, sino)
-        rec_id = astra.data2d.create('-vol', vol_geom)  # no change
         cfg = astra.astra_dict(algorithm)
-        cfg['ReconstructionDataId'] = rec_id
-        cfg['ProjectionDataId'] = sino_id
         cfg['FilterType'] = recon_filter
-        cfg['ProjectorId'] = proj_id
-        alg_id = astra.algorithm.create(cfg)
-        astra.algorithm.run(alg_id)
-        recon = astra.data2d.get(rec_id)
+        with AstraRecon._managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
+            astra.algorithm.run(alg_id)
+            return astra.data2d.get(rec_id)
+
+    @staticmethod
+    def full(images: Images, cors: List[ScalarCoR], proj_angles: np.ndarray,
+             algorithm: str, filter_name: str, num_iter: int = 1,
+             images_are_sinograms=True, ncores=None, progress=None):
+        vol_geom = astra.create_vol_geom(images.sino(0).shape)
+        rec_id = astra.data2d.create('-vol', vol_geom)  # no change
+
+        vec_cors = [cor.to_vec(images.width).value for cor in cors]
+        vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[0])
+        proj_geom = astra.create_proj_geom('parallel_vec', images.width, vectors)
+        sino_id = astra.data2d.create('-sino', proj_geom)
+
+        cfg = astra.astra_dict(algorithm)
+        cfg['FilterType'] = filter_name
+        recon = []
+
+        progress.ensure_instance(progress, num_steps=images.height)
+        for i in range(images.height):
+            vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[i])
+            proj_geom = astra.create_proj_geom('parallel_vec', images.width, vectors)
+            proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
+            astra.data2d.store(sino_id, images.sino(i))
+            astra.data2d.change_geometry(sino_id, proj_geom)
+
+            cfg['ReconstructionDataId'] = rec_id
+            cfg['ProjectionDataId'] = sino_id
+            cfg['ProjectorId'] = proj_id
+
+            alg_id = astra.algorithm.create(cfg)
+            astra.algorithm.run(alg_id, iterations=num_iter)
+            recon.append(astra.data2d.get(rec_id))
+            progress.update(1, f"Reconstructed slice {i}")
+
+            astra.projector.delete(proj_id)
+            astra.algorithm.delete(alg_id)
+
         astra.data2d.delete(sino_id)
         astra.data2d.delete(rec_id)
-        astra.projector.delete(proj_id)
+
         return recon
-
-
-def dim3():
-    vectors = vec_geom_init3D(proj_angles, 1.0, 1.0, -0.012)
-    proj_geom = astra.create_proj_geom('parallel3d_vec', sinos.shape[0], sinos.shape[2], vectors)
-    vol_geom = astra.create_vol_geom(sinos.shape)
-
-    proj_id = astra.create_projector('cuda3d', proj_geom, vol_geom)
-    sinos_id = astra.data3d.create('-sino', proj_geom, sinos)
-    rec_id = astra.data3d.create('-vol', vol_geom)
 
 
 class AstraConfig:

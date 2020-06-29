@@ -143,14 +143,14 @@ class Images:
         return images
 
     @property
-    def width(self):
+    def height(self):
         if not self.sinograms:
             return self.sample.shape[1]
         else:
             return self.sample.shape[0]
 
     @property
-    def height(self):
+    def width(self):
         return self.sample[2]
 
     def sino(self, slice_idx) -> np.ndarray:

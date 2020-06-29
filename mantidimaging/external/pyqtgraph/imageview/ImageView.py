@@ -832,7 +832,7 @@ class ImageView(QtGui.QWidget):
 
     def set_timeline_to_tick_nearest(self, x):
         x_axis = self.getRoiPlot().getAxis('bottom')
-        frac_pos = (x - x_axis.x()) / x_axis.width()
+        frac_pos = (x - x_axis.x()) / x_axis.height()
         view_range = self.getRoiPlot().viewRange()[0]
         domain_pos = (view_range[1] - view_range[0]) * frac_pos
         self.timeLine.setValue(np.round(view_range[0] + domain_pos))
