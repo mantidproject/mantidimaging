@@ -73,9 +73,8 @@ class StackVisualiserView(BaseMainWindowView):
         self.dock.setWindowTitle(name)
 
     @property
-    def current_roi(self) -> Tuple[int, int, int, int]:
-        roi = SensibleROI.from_points(*self.image_view.get_roi())
-        return roi.left, roi.top, roi.right, roi.bottom
+    def current_roi(self) -> SensibleROI:
+        return SensibleROI.from_points(*self.image_view.get_roi())
 
     @property
     def image(self):

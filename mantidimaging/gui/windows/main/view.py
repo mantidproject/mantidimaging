@@ -142,11 +142,14 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
-    def create_stack_window(self,
-                            stack: Images,
-                            title: str,
-                            position=QtCore.Qt.TopDockWidgetArea,
-                            floating=False) -> Qt.QDockWidget:
+    def create_new_stack(self, images: Images, title: str):
+        self.presenter.create_new_stack(images, title)
+
+    def _create_stack_window(self,
+                             stack: Images,
+                             title: str,
+                             position=QtCore.Qt.TopDockWidgetArea,
+                             floating=False) -> Qt.QDockWidget:
         dock = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window

@@ -5,12 +5,13 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from mantidimaging.core.cor_tilt import (update_image_operations)
-from mantidimaging.core.cor_tilt.auto import find_cor_at_slice
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
 if TYPE_CHECKING:
@@ -27,7 +28,7 @@ class ReconstructWindowModel(object):
         self.preview_projection_idx = 0
         self.preview_slice_idx = 0
         self.selected_row = 0
-        self.roi = None
+        self._roi = None
         self.projection_indices = None
         self.data_model = data_model
         self.last_result = None
@@ -86,9 +87,9 @@ class ReconstructWindowModel(object):
         self.preview_slice_idx = slice_idx
 
         if stack is not None:
-            image_shape = self.sample[0].shape
-            self.roi = (0, 0, image_shape[1] - 1, image_shape[0] - 1)
-            self.proj_angles = generate_projection_angles(360, self.sample.shape[0])
+            image_shape = self.sample.shape
+            self.roi = SensibleROI(0, 0, image_shape[1], image_shape[2])
+            self.proj_angles = generate_projection_angles(360, image_shape[0])
 
     def update_roi_from_stack(self):
         self.data_model.clear_results()
@@ -97,8 +98,8 @@ class ReconstructWindowModel(object):
     def calculate_slices(self, count):
         self.data_model.clear_results()
         if self.roi is not None:
-            lower = self.roi[1]
-            upper = self.roi[3]
+            lower = self.roi.top
+            upper = self.roi.bottom
             # move the bounds by 20% as the ends of the image are usually empty
             # or contain unimportant information
             lower = lower * 1.2 if lower != 0 else 0.2 * self.sample.shape[1]
@@ -114,14 +115,17 @@ class ReconstructWindowModel(object):
                 np.linspace(int(sample_proj_count * 0.1), sample_proj_count - 1, downsample_proj_count,
                             dtype=int)
 
-
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.sample is not None:
             first_slice_to_recon = self.get_initial_slice_index()
-            cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon)[0])
+            # Getting the middle of the image is probably closer than Tomopy's CoR from what I've seen
+            # and certainly much faster. IF a better method is found it might be worth going to it instead
+            cor = ScalarCoR(self.images.width // 2)
+            # cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon)[0])
             self.last_cor = cor
 
             return first_slice_to_recon, cor
+        return 0, ScalarCoR(0)
 
     def get_initial_slice_index(self):
         first_slice_to_recon = self.sample.shape[1] // 2
@@ -153,15 +157,17 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(algorithm)
         return reconstructor.single(self.images, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
 
-    @property
-    def preview_tilt_line_data(self):
-        return ([self.data_model.cor, self.cors[-1]],
-                [self.slices[0], self.slices[-1]]) if self.data_model.has_results else None
+    def run_full_recon(self, algorithm: str, recon_filter: str, num_iter: int, progress: Progress):
+        reconstructor = get_reconstructor_for(algorithm)
+        # get the image height based on the current ROI
+        self.images.set_roi(self.roi)
+        return reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
+                                  self.proj_angles, algorithm, recon_filter, num_iter, progress)
 
     @property
-    def preview_fit_y_data(self):
-        return [self.data_model.gradient * slice_idx + self.data_model.cor.value
-                for slice_idx in self.slices] if self.data_model.has_results else None
+    def tilt_angle(self) -> Optional[Degrees]:
+        if self.data_model.has_results:
+            return self.data_model.angle_in_degrees
 
     @property
     def cors(self):
@@ -197,3 +203,11 @@ class ReconstructWindowModel(object):
 
     def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
         self.data_model.set_precalculated(cor, tilt)
+
+    @property
+    def roi(self) -> SensibleROI:
+        return self._roi
+
+    @roi.setter
+    def roi(self, value: SensibleROI):
+        self._roi = value

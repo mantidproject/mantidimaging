@@ -1,3 +1,11 @@
+"""
+Containers for data. They don't do much apart from storing the data,
+and optionally provide helpful operations.
+
+The biggest benefit is explicitly marking what the value represents (e.g. Degrees),
+and helps the type hints to tell you that you might be passing the wrong value (e.g. ScalarCoR to a VectorCoR),
+while they're both Float underneath and the value can be used, it just will produce nonsense.
+"""
 from dataclasses import dataclass
 
 

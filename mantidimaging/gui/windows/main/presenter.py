@@ -80,7 +80,7 @@ class MainWindowPresenter(BasePresenter):
         title = self.model.create_name(title)
 
         def add_stack(images, title) -> QDockWidget:
-            dock = self.view.create_stack_window(images, title=title)
+            dock = self.view._create_stack_window(images, title=title)
             stack_visualiser = dock.widget()
             self.model.add_stack(stack_visualiser, dock)
             return dock

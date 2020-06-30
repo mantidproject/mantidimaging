@@ -1,12 +1,14 @@
 from math import isnan
-from typing import Tuple
+from typing import Tuple, Optional
 
+import numpy
 from PyQt5.QtCore import QRect
 from PyQt5.QtWidgets import QGraphicsGridLayout
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class ReconImagesView(GraphicsLayoutWidget):
@@ -16,7 +18,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.projection, self.projection_vb, self.projection_hist = self.image_in_vb("Projection")
         self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
 
-        self.slice_line = InfiniteLine(pos=1024, angle=0, movable=True)
+        self.slice_line = InfiniteLine(pos=1024, angle=0)
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
@@ -29,9 +31,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         recon_details = LabelItem("Value")
         image_layout.addItem(projection_details, 1, 0, 1, 2)
         image_layout.addItem(recon_details, 1, 2, 1, 2)
-
         self.addItem(image_layout)
-        self.nextRow()
 
         self.display_formatted_detail = {
             self.projection: lambda val: projection_details.setText(f"Value: {val:.6f}"),
@@ -49,13 +49,15 @@ class ReconImagesView(GraphicsLayoutWidget):
         hist = HistogramLUTItem(im)
         return im, vb, hist
 
-    def update_projection(self, image_data, preview_slice_index, tilt_line_points, roi):
+    def update_projection(self, image_data: numpy.ndarray, preview_slice_index: int,
+                          tilt_angle: Optional[Degrees], roi: Optional[SensibleROI]):
         self.projection.setImage(image_data)
         if roi:
             self.projection.setRect(QRect(*roi))
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
-        # self.tilt_line.setAngle()
+        if tilt_angle:
+            self.set_tilt(tilt_angle)
 
     def update_recon(self, image_data):
         self.recon.setImage(image_data)
@@ -79,9 +81,17 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def reset_slice_and_tilt(self, slice_index):
         self.slice_line.setPos(slice_index)
+        self.hide_tilt()
+
+    def hide_tilt(self):
+        """
+        Hides the tilt line. This stops infinite zooming out loop that messes up the image view
+        (the line likes to be unbound when the degree isn't a multiple o 90 - and the tilt never is)
+        :return:
+        """
         self.projection_vb.removeItem(self.tilt_line)
 
     def set_tilt(self, tilt: Degrees):
-        if not isnan(tilt.value): # is isnan it means there is no tilt, i.e. the line is vertical
+        if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
             self.tilt_line.setAngle(90 + tilt.value)
         self.projection_vb.addItem(self.tilt_line)

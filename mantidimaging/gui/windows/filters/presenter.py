@@ -29,7 +29,7 @@ class Notification(Enum):
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
 
-    def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
+    def _None_init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
         super(FiltersWindowPresenter, self).__init__(view)
 
         self.model = FiltersWindowModel(self)
