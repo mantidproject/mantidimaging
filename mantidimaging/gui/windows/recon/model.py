@@ -71,7 +71,7 @@ class ReconstructWindowModel(object):
 
     @property
     def cor_for_current_preview_slice(self):
-        return self.data_model.get_cor_for_slice(self.preview_slice_idx)
+        return ScalarCoR(self.data_model.get_cor_for_slice(self.preview_slice_idx))
 
     def set_all_cors(self, cor: ScalarCoR):
         for slice_idx in self.data_model.slices:

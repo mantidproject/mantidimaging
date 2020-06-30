@@ -50,7 +50,6 @@ class CORInspectionDialogModel(object):
 
     def recon_preview(self, image):
         cor = ScalarCoR(self.cor(image))
-        getLogger(__name__).info(f"Reconstructing with {type(self.reconstructor)}")
         return self.reconstructor.single_sino(self.sino, self.data_shape, cor, self.proj_angles,
                                               self.algorithm, self.filter)
 

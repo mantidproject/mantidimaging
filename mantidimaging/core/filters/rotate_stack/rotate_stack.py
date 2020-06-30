@@ -1,6 +1,6 @@
 from functools import partial
 
-import numpy as np
+from skimage.transform import rotate
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -15,7 +15,7 @@ class RotateFilter(BaseFilter):
     filter_name = "Rotate Stack"
 
     @staticmethod
-    def filter_func(data: Images, rotation=None, flat=None, dark=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: Images, angle=None, flat=None, dark=None, cores=None, chunksize=None, progress=None):
         """
         Rotates a stack (sample, flat and dark images).
 
@@ -25,7 +25,7 @@ class RotateFilter(BaseFilter):
         separately to be pointing at the NON ROTATED image!
 
         :param data: stack of sample images
-        :param rotation: The rotation to be performed
+        :param angle: The rotation to be performed, in degrees
         :param flat: flat images average
         :param dark: dark images average
         :param cores: cores for parallel execution
@@ -35,20 +35,16 @@ class RotateFilter(BaseFilter):
         """
         h.check_data_stack(data)
 
-        if rotation:
-            # rot90 rotates counterclockwise; config.args.rotation rotates
-            # clockwise
-            clockwise_rotations = 4 - rotation
-
-            if pu.multiprocessing_available():
-                _execute_par(data.sample, clockwise_rotations, cores, chunksize)
+        if angle:
+            if pu.multiprocessing_necessary(data.sample.shape, cores):
+                _execute_par(data.sample, angle, cores, chunksize, progress)
             else:
-                _execute_seq(data.sample, clockwise_rotations)
+                _execute_seq(data.sample, angle, progress)
 
             if flat is not None:
-                flat = _rotate_image(flat, clockwise_rotations)
+                flat = _rotate_image(flat, angle)
             if dark is not None:
-                dark = _rotate_image(dark, clockwise_rotations)
+                dark = _rotate_image(dark, angle)
 
         h.check_data_stack(data)
 
@@ -61,52 +57,47 @@ class RotateFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, rotation_count = add_property_to_form('Number of rotations clockwise',
-                                                 Type.INT,
-                                                 1, (1, 3),
-                                                 form=form,
-                                                 on_change=on_change)
+        _, angle = add_property_to_form('Angle of rotation counter clockwise (degrees)',
+                                        Type.FLOAT,
+                                        0, (-180, 180),
+                                        form=form,
+                                        on_change=on_change)
 
-        return {"rotation_count": rotation_count}
+        return {"angle": angle}
 
     @staticmethod
-    def execute_wrapper(rotation_count=None):
-        return partial(RotateFilter.filter_func, rotation=rotation_count.value())
+    def execute_wrapper(angle=None):
+        return partial(RotateFilter.filter_func, angle=angle.value())
 
 
-def _rotate_image_inplace(data, rotation=None):
-    data[:, :] = np.rot90(data[:, :], rotation)
+def _rotate_image_inplace(data, angle=None):
+    data[:, :] = rotate(data[:, :], angle)
 
 
-def _rotate_image(data, rotation=None):
-    return np.rot90(data[:, :], rotation)
+def _rotate_image(data, angle=None):
+    return rotate(data[:, :], angle)
 
 
-def _execute_seq(data, rotation, progress=None):
-    progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
+def _execute_seq(data, angle: float, progress: Progress):
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Rotate Stack')
 
     with progress:
-        progress.update(msg=f"Starting rotation step ({rotation * 90} degrees clockwise), "
-                        f"data type: {data.dtype}...")
-
         img_count = data.shape[0]
         progress.add_estimated_steps(img_count)
         for idx in range(0, img_count):
-            data[idx] = _rotate_image(data[idx], rotation)
-            progress.update()
+            data[idx] = _rotate_image(data[idx], angle)
+            progress.update(1, f"Rotating by {angle}")
 
     return data
 
 
-def _execute_par(data, rotation, cores=None, chunksize=None, progress=None):
+def _execute_par(data, angle: float, cores: int, chunksize: int, progress: Progress):
     progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:
-        progress.update(msg=f"Starting PARALLEL rotation step ({rotation * 90} degrees "
-                        f"clockwise), data type: {data.dtype}...")
+        f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, angle=angle)
 
-        f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, rotation=rotation)
-
-        data = psm.execute(data, f, cores=cores, chunksize=chunksize, name="Rotation")
+        data = psm.execute(data, f, cores=cores, chunksize=chunksize, name="Rotation", progress=progress,
+                           msg=f"Rotating by {angle} degrees")
 
     return data

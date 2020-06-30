@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List
@@ -76,9 +77,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_add_cor()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
-
         except Exception as err:
-            self.show_error(str(err))
+            self.show_error(err, traceback.format_exc())
 
     def do_algorithm_changed(self):
         allowed_args = self.allowed_recon_kwargs[self.view.algorithm_name]

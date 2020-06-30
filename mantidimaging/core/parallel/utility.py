@@ -78,12 +78,6 @@ def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None) -
         delete_shared_array(temp_name)
 
 
-def create_shared_images(shape, dtype, name_suffix: Optional[str] = None) -> 'Images':
-    shared_name = f"{uuid.uuid4()}{f'-{name_suffix}' if name_suffix is not None else ''}"
-    arr = create_shared_array(shared_name, shape, dtype)
-    return Images(arr, sample_memory_file_name=shared_name)
-
-
 def multiprocessing_available():
     try:
         # ignore error about unused import

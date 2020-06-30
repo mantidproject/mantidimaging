@@ -45,7 +45,7 @@ class RoiNormalisationFilter(BaseFilter):
         if air_region:
             # sanity check for the regions
             assert all(isinstance(region, int) for region in air_region), "The air region coordinates are not integers!"
-            if pu.multiprocessing_available():
+            if pu.multiprocessing_necessary(data.sample.shape, cores):
                 _execute_par(data.sample, air_region, cores, chunksize, progress)
             else:
                 _execute_seq(data.sample, air_region, progress)

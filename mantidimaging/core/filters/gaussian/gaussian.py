@@ -38,7 +38,7 @@ class GaussianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            if pu.multiprocessing_available():
+            if pu.multiprocessing_necessary(data.sample.shape, cores):
                 _execute_par(data.sample, size, mode, order, cores, chunksize, progress)
             else:
                 _execute_seq(data.sample, size, mode, order, progress)
