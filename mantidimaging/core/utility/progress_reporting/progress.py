@@ -173,7 +173,7 @@ class Progress(object):
 
             # update progress history
             if self.current_step > 2:
-                steps_to_use = min(10, len(self.progress_history))
+                steps_to_use = min(50, len(self.progress_history))
                 # get all the times we're going to average
                 times = np.asarray([elem[0] for elem in self.progress_history[-1:-steps_to_use:-1]], dtype=np.float32)
                 # get the differences between them (in reverse, to avoid dealing with negative number)

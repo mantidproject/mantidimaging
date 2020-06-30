@@ -195,7 +195,6 @@ class ReconstructWindowPresenter(BasePresenter):
             self.show_error(msg)
 
     def _on_volume_recon_done(self, task):
-
         self.view.show_recon_volume(task.result)
 
     def do_set_all_row_values(self):
