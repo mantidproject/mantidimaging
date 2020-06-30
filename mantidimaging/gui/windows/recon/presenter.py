@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List
 
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
 class ReconstructWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
     view: 'ReconstructWindowView'
+    _ignore_stack_change: bool = False
 
     def __init__(self, view: 'ReconstructWindowView', main_window):
         super(ReconstructWindowPresenter, self).__init__(view)
@@ -41,9 +43,11 @@ class ReconstructWindowPresenter(BasePresenter):
                     widget.hide()
 
     def set_stack_uuid(self, uuid):
+        if self._ignore_stack_change:
+            return
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
-        stack = self.main_window.get_stack_visualiser(uuid) if uuid is not None else None
+        stack = self.view.get_stack_visualiser(uuid)
         self.set_stack(stack)
         if stack is not None:
             self.view.reset_slice_and_tilt(self.model.get_initial_slice_index())
@@ -79,14 +83,23 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.view.update_image_preview(img_data,
                                        self.model.preview_slice_idx,
-                                       self.model.preview_tilt_line_data,
+                                       self.model.tilt_angle,
                                        self.model.roi)
 
     def do_add_cor(self):
         row = self.model.selected_row
-        # TODO why7 doesn't add get one form the regression?!
+        # FIXME why doesn't add get one form the regression?!
         cor = self.model.get_me_a_cor()
         self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
+
+    def do_reconstruct_volume(self):
+        if not self.model.has_results:
+            raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
+
+        start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
+                              {'algorithm': self.view.algorithm_name,
+                               'recon_filter': self.view.filter_name,
+                               'num_iter': self.view.num_iter})
 
     def do_reconstruct_slice(self, cor=None, slice_idx=None):
         if slice_idx is None:
@@ -133,6 +146,18 @@ class ReconstructWindowPresenter(BasePresenter):
             log.error(msg)
             self.show_error(msg)
 
+    def _on_volume_recon_done(self, task):
+        # When reconstructing a new stack is added to the list,
+        # this triggers set_stack_uuid, but for some reason
+        # in that case only, that makes the tilt line go mad
+        # and start triggering infinite Qt transforms with null.
+        # To avoid figuring out why - we just stop the set_stack_uuid
+        # from executing after reconstruct volume.
+        # PS. Hiding, resetting or redrawing the tilt line and/or the
+        # projection image doesn't fix it
+        with self.ignore_stack_change():
+            self.view.show_recon_volume(task.result)
+
     def do_set_all_row_values(self):
         if self.view.cor_table_model.empty:
             return
@@ -145,12 +170,6 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_remove_selected_cor(self):
         self.view.remove_selected_cor()
 
-    def do_reconstruct_volume(self):
-        raise NotImplementedError("TODO")
-
-    def find_initial_cor(self):
-        self.model.find_initial_cor()
-
     def set_last_cor(self, cor):
         self.model.last_cor = ScalarCoR(cor)
 
@@ -162,3 +181,11 @@ class ReconstructWindowPresenter(BasePresenter):
         for idx, point in enumerate(self.model.data_model.iter_points()):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_reconstruct_slice()
+
+    @contextmanager
+    def ignore_stack_change(self):
+        try:
+            self._ignore_stack_change = True
+            yield
+        finally:
+            self._ignore_stack_change = False

@@ -85,12 +85,22 @@ class CorTiltDataModel:
         a = [p.cor for p in self._points if p.slice_index == slice_idx]
         return a[0] if a else None
 
-    def get_cor_from_regression(self, slice_idx):
-        if not self.has_results:
-            return None
-
+    def get_cor_from_regression(self, slice_idx) -> float:
         cor = (self.gradient.value * slice_idx) + self.cor.value
         return cor
+
+    def get_all_cors_from_regression(self, image_height) -> List[ScalarCoR]:
+        """
+
+        :param image_height: How many cors will be generated,
+                             this should be equal to the image height
+                             (i.e. number of sinograms that will be reconstructed)
+        :return: List of cors for every slice of the image height
+        """
+        cors = []
+        for i in range(image_height):
+            cors.append(ScalarCoR(self.get_cor_from_regression(i)))
+        return cors
 
     @property
     def slices(self):

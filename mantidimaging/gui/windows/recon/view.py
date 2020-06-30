@@ -2,7 +2,9 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
@@ -151,7 +153,8 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))
 
-    def update_image_preview(self, image_data, preview_slice_index, tilt_line_points=None, roi=None):
+    def update_image_preview(self, image_data, preview_slice_index: int, tilt_angle: Optional[Degrees],
+                             roi: Optional[SensibleROI] = None):
         """
         Updates the preview projection image and associated annotations.
 
@@ -162,14 +165,13 @@ class ReconstructWindowView(BaseMainWindowView):
         :param image_data: Projection image data (single/2D image)
         :param preview_slice_index: Y coordinate at which to draw the preview
                                     slice indicator
-        :param tilt_line_points: Tuple of (X, Y) data points for tilt preview
-                                 line
+        :param tilt_angle: Angle of the tilt line
         :param roi: Region of interest to crop the image to
         """
 
         self.previewSliceIndex.setValue(preview_slice_index)
 
-        self.image_view.update_projection(image_data, preview_slice_index, tilt_line_points, roi)
+        self.image_view.update_projection(image_data, preview_slice_index, tilt_angle, roi)
 
     def update_image_recon_preview(self, image_data):
         """
@@ -253,7 +255,17 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @property
     def num_iter(self):
-        return self.numIter.value() if self.numIter.isVisible() else None
+        return self.numIter.value() if self.numIter.isVisible() else 1
 
     def set_table_point(self, idx, slice_idx, cor):
-        self.cor_table_model.set_point(idx, slice_idx,cor )
+        self.cor_table_model.set_point(idx, slice_idx, cor)
+
+    def show_recon_volume(self, data: Images):
+        self.main_window.create_new_stack(data, "Recon")
+
+    def get_stack_visualiser(self, uuid):
+        if uuid is not None:
+            return self.main_window.get_stack_visualiser(uuid)
+
+    def hide_tilt(self):
+        self.image_view.hide_tilt()

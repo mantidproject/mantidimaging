@@ -14,3 +14,10 @@ class SensibleROI:
     @staticmethod
     def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> 'SensibleROI':
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
+
+    def __iter__(self):
+        """
+        Allows unpacking the ROI with `*roi`
+        :return: Iterable of all ROI parts
+        """
+        return iter((self.left, self.top, self.right, self.bottom))

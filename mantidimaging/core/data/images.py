@@ -1,5 +1,6 @@
 import json
 import pprint
+import uuid
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -7,10 +8,12 @@ import numpy as np
 
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
+    roi: Optional[SensibleROI] = None
 
     def __init__(self,
                  sample: np.ndarray,
@@ -37,7 +40,7 @@ class Images:
         :param metadata: Properties to copy when creating a new stack from an existing one
         """
 
-        self.sample = sample
+        self._sample = sample
         self.flat = flat
         self.dark = dark
         self.indices = indices
@@ -151,15 +154,40 @@ class Images:
 
     @property
     def width(self):
-        return self.sample[2]
+        return self.sample.shape[2]
 
     def sino(self, slice_idx) -> np.ndarray:
         if not self.sinograms:
             return np.swapaxes(self.sample, 0, 1)[slice_idx]
         else:
             return self.sample[slice_idx]
+
     # def to_sino(self, deepcopy=False):
     #     if not self.sinograms:
     #         return np.swapaxes(self.sample, 0, 1)
     #     else:
     #         return self.sample
+
+    @property
+    def sample(self) -> np.ndarray:
+        if self.roi is None:
+            return self._sample
+        else:
+            return self._sample[:, self.roi.top:self.roi.bottom, self.roi.left:self.roi.right]
+
+    @sample.setter
+    def sample(self, other: np.ndarray):
+        self._sample = other
+
+    def set_roi(self, roi: SensibleROI):
+        self.roi = roi
+
+    @property
+    def dtype(self):
+        return self._sample.dtype
+
+    @staticmethod
+    def create_shared_images(shape, dtype, name_suffix: Optional[str] = None):
+        shared_name = f"{uuid.uuid4()}{f'-{name_suffix}' if name_suffix is not None else ''}"
+        arr = pu.create_shared_array(shared_name, shape, dtype)
+        return Images(arr, sample_memory_file_name=shared_name)

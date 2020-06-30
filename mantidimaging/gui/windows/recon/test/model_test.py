@@ -51,18 +51,9 @@ class CORTiltWindowModelTest(unittest.TestCase):
         self.model.data_model._cached_cor = 1
         self.model.data_model._cached_gradient = 2
 
-        data = self.model.preview_tilt_line_data
+        data = self.model.tilt_angle
 
         self.assertEquals(data, ([1, 4], [50, 20]))
-
-    def test_fit_y_data(self):
-        self.model.data_model._points = [Point(1, 0.0), Point(2, 0.0), Point(3, 0.0)]
-        self.model.data_model._cached_cor = 1
-        self.model.data_model._cached_gradient = 2
-
-        data = self.model.preview_fit_y_data
-
-        self.assertEquals(data, [3, 5, 7])
 
     def test_set_all_cors(self):
         set_to = 123.0

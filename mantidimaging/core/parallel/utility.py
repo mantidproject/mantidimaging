@@ -40,6 +40,7 @@ def delete_shared_array(name, silent_failure=False):
 
 def create_array(name: Optional[str], shape: Tuple[int, int, int], dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
     """
+    Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
     :param name: Name of the shared memory array. If None, a non-shared array will be created
     :param shape: Shape of the array
@@ -53,7 +54,7 @@ def create_array(name: Optional[str], shape: Tuple[int, int, int], dtype: DTYPE_
         return np.zeros(shape, dtype)
 
 
-def create_shared_array(name: Optional[str],
+def create_shared_array(name: str,
                         shape: Tuple[int, int, int],
                         dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
     """
@@ -75,6 +76,12 @@ def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None) -
         yield array
     finally:
         delete_shared_array(temp_name)
+
+
+def create_shared_images(shape, dtype, name_suffix: Optional[str] = None) -> 'Images':
+    shared_name = f"{uuid.uuid4()}{f'-{name_suffix}' if name_suffix is not None else ''}"
+    arr = create_shared_array(shared_name, shape, dtype)
+    return Images(arr, sample_memory_file_name=shared_name)
 
 
 def multiprocessing_available():

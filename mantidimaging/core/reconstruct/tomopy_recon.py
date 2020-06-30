@@ -41,12 +41,14 @@ class TomopyRecon:
         return volume[0]
 
     @staticmethod
-    def single_sino(sample: np.ndarray, cor: ScalarCoR, proj_angles: np.ndarray, algorithm: str, filter: str,
-                    progress=None):
+    def single_sino(sample: np.ndarray, cor: ScalarCoR, proj_angles: np.ndarray,
+                    algorithm: str, filter: str, progress=None):
         """
         :param sample: 2D sinogram data
         :param cor: Centre of rotation value
         :param proj_angles: Array of projection angles
+        :param filter:
+        :param algorithm:
         :param progress: Optional progress reporter
         :return: 2D image data for reconstructed slice
         """

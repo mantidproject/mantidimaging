@@ -1,12 +1,14 @@
+import os
 from contextlib import contextmanager
 from enum import Enum
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Optional
 
 import astra
 import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR
+from mantidimaging.core.utility.progress_reporting import Progress
 
 
 def rotation_matrix2d(theta):
@@ -14,16 +16,12 @@ def rotation_matrix2d(theta):
                      [np.sin(theta), np.cos(theta)]])
 
 
-# astra = safe_import('astra')
-def vec_geom_init2d(angles_rad: np.ndarray, detector_spacing_x: float, center_rot_offset: Union[float, List[float]]):
+def vec_geom_init2d(angles_rad: np.ndarray, detector_spacing_x: float, center_rot_offset: Union[float]):
     s0 = [0.0, -1.0]  # source
     u0 = [detector_spacing_x, 0.0]  # detector coordinates
     vectors = np.zeros([angles_rad.size, 6])
     for i, theta in enumerate(angles_rad):
-        if np.ndim(center_rot_offset) == 0:
-            d0 = [center_rot_offset, 0.0]  # detector
-        else:
-            d0 = [center_rot_offset[i], 0.0]  # detector
+        d0 = [center_rot_offset, 0.0]  # detector
         vectors[i, 0:2] = np.dot(rotation_matrix2d(theta), s0)[:]  # ray position
         vectors[i, 2:4] = np.dot(rotation_matrix2d(theta), d0)[:]  # center of detector position
         vectors[i, 4:6] = np.dot(rotation_matrix2d(theta), u0)[:]  # detector pixel (0,0) to (0,1).
@@ -51,22 +49,26 @@ class AstraRecon:
             alg_id = astra.algorithm.create(cfg)
             yield alg_id, rec_id
         finally:
-            astra.algorithm.delete(alg_id)
-            astra.projector.delete(proj_id)
-            astra.data2d.delete(sino_id)
-            astra.data2d.delete(rec_id)
+            if alg_id:
+                astra.algorithm.delete(alg_id)
+            if proj_id:
+                astra.projector.delete(proj_id)
+            if sino_id:
+                astra.data2d.delete(sino_id)
+            if rec_id:
+                astra.data2d.delete(rec_id)
 
     @staticmethod
     def single(images: Images, slice_idx: int, cor: ScalarCoR, proj_angles: np.ndarray,
-               algorithm: str, recon_filter: str, progress=None) -> np.ndarray:
+               algorithm: str, recon_filter: str) -> np.ndarray:
         sample = images.sample
         sino = np.swapaxes(sample, 0, 1)[slice_idx]
-        return AstraRecon.single_sino(sino, sample.shape, cor, proj_angles, algorithm, recon_filter, progress)
+        return AstraRecon.single_sino(sino, sample.shape, cor, proj_angles, algorithm, recon_filter)
 
     @staticmethod
     def single_sino(sino: np.ndarray, original_shape: Tuple[int, int, int],
                     cor: ScalarCoR, proj_angles: np.ndarray,
-                    algorithm: str, recon_filter: str, progress=None) -> np.ndarray:
+                    algorithm: str, recon_filter: str) -> np.ndarray:
         """
 
         :param sino: Single sinogram, i.e. 2D array
@@ -82,7 +84,7 @@ class AstraRecon:
 
         image_width = original_shape[2]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
-        vol_geom = astra.create_vol_geom(sino.shape)
+        vol_geom = astra.create_vol_geom(original_shape[1:])
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(algorithm)
         cfg['FilterType'] = recon_filter
@@ -93,9 +95,17 @@ class AstraRecon:
     @staticmethod
     def full(images: Images, cors: List[ScalarCoR], proj_angles: np.ndarray,
              algorithm: str, filter_name: str, num_iter: int = 1,
-             images_are_sinograms=True, ncores=None, progress=None):
-        vol_geom = astra.create_vol_geom(images.sino(0).shape)
-        rec_id = astra.data2d.create('-vol', vol_geom)  # no change
+             images_are_sinograms=True, ncores=None, progress: Optional[Progress] = None) -> Images:
+        progress = Progress.ensure_instance(progress, num_steps=images.height)
+        # TODO investigate: it might be enough for this to match the sinogram shape -> images.sino(0).shape
+        # but I'm not sure if that may crop out wide objects
+        sino_shape = images.sino(0).shape
+        vol_geom = astra.create_vol_geom(sino_shape)
+        progress.update(0, "Creating output volume")
+        output_images: Images = Images.create_shared_images((images.height, sino_shape[0], sino_shape[1]),
+                                                            images.dtype,
+                                                            f"{os.path.basename(images.filenames[0])}-recon")
+        rec_id = astra.data2d.create('-vol', vol_geom)
 
         vec_cors = [cor.to_vec(images.width).value for cor in cors]
         vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[0])
@@ -104,9 +114,7 @@ class AstraRecon:
 
         cfg = astra.astra_dict(algorithm)
         cfg['FilterType'] = filter_name
-        recon = []
 
-        progress.ensure_instance(progress, num_steps=images.height)
         for i in range(images.height):
             vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[i])
             proj_geom = astra.create_proj_geom('parallel_vec', images.width, vectors)
@@ -120,7 +128,7 @@ class AstraRecon:
 
             alg_id = astra.algorithm.create(cfg)
             astra.algorithm.run(alg_id, iterations=num_iter)
-            recon.append(astra.data2d.get(rec_id))
+            output_images.sample[i] = astra.data2d.get(rec_id)
             progress.update(1, f"Reconstructed slice {i}")
 
             astra.projector.delete(proj_id)
@@ -129,7 +137,7 @@ class AstraRecon:
         astra.data2d.delete(sino_id)
         astra.data2d.delete(rec_id)
 
-        return recon
+        return output_images
 
 
 class AstraConfig:
