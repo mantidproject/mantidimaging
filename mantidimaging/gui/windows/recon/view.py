@@ -9,7 +9,7 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
-from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
+from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter, Notifications as PresN
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -68,24 +68,24 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
-            self.presenter.do_update_projection()
+            self.presenter.notify(PresN.UPDATE_PROJECTION)
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
-                self.presenter.do_user_click_recon(slice_idx)
+                self.presenter.notify(PresN.RECONSTRUCT_USER_CLICK, slice_idx)
 
-        self.cor_table_model.rowsRemoved.connect(lambda: self.presenter.do_update_projection())
+        self.cor_table_model.rowsRemoved.connect(lambda: self.presenter.notify(PresN.UPDATE_PROJECTION))
         self.cor_table_model.dataChanged.connect(on_data_change)
 
-        self.clearAllBtn.clicked.connect(lambda: self.presenter.do_clear_all_cors())
-        self.removeBtn.clicked.connect(lambda: self.presenter.do_remove_selected_cor())
-        self.addBtn.clicked.connect(lambda: self.presenter.do_add_cor())
-        self.refineCorBtn.clicked.connect(lambda: self.presenter.do_refine_selected_cor())
-        self.setAllButton.clicked.connect(lambda: self.presenter.do_set_all_row_values())
-        self.fitBtn.clicked.connect(lambda: self.presenter.do_cor_fit())
-        self.setRoiBtn.clicked.connect(lambda: self.presenter.do_crop_to_roi())
-        self.calculateCors.clicked.connect(lambda: self.presenter.do_calculate_cors_from_manual_tilt())
-        self.reconstructVolume.clicked.connect(lambda: self.presenter.do_reconstruct_volume())
+        self.clearAllBtn.clicked.connect(lambda: self.presenter.notify(PresN.CLEAR_ALL_CORS))
+        self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
+        self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
+        self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
+        self.setAllButton.clicked.connect(lambda: self.presenter.notify(PresN.SET_ALL_ROW_VALUES))
+        self.fitBtn.clicked.connect(lambda: self.presenter.notify(PresN.COR_FIT))
+        self.setRoiBtn.clicked.connect(lambda: self.presenter.notify(PresN.CROP_TO_ROI))
+        self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
+        self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
 
         def on_row_change(item, _):
             """
@@ -100,7 +100,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 self.presenter.set_last_cor(cor)
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.image_view.slice_line.setPos(slice_idx)
-                self.presenter.do_reconstruct_slice()
+                self.presenter.notify(PresN.RECONSTRUCT_SLICE)
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
@@ -114,8 +114,9 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.stackSelector.subscribe_to_main_window(main_window)
 
-        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.do_algorithm_changed())
-        self.presenter.do_algorithm_changed()
+        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))
+        self.presenter.notify(PresN.ALGORITHM_CHANGED)
+        self.stackSelector.stacks_updated.connect(self.presenter.ignore_next_stack_change)
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -205,7 +206,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when no data is left
         if empty:
-            self.presenter.do_update_projection()
+            self.presenter.notify(PresN.UPDATE_PROJECTION)
 
         # Disable fit button when there are less than 2 rows (points)
         enough_to_fit = self.tableView.model().num_points >= 2

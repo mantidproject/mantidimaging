@@ -1,3 +1,5 @@
+import logging
+import os
 import sys
 import traceback
 
@@ -19,6 +21,15 @@ def execute():
         "".join(traceback.format_exception_only(exc_type, exc_value)), "".join(
             traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
+    def dont_let_qt_shutdown_while_debugging(type, value, tback):
+        # log the exception here
+        logging.getLogger(__name__).error(
+            f"Exception {type} encountered:\n{traceback.format_exception(type, value, tback)}")
+        # then call the default handler
+        sys.__excepthook__(type, value, tback)
+
+    if os.environ.get("PYDEVD_LOAD_VALUES_ASYNC", False):
+        sys.excepthook = dont_let_qt_shutdown_while_debugging
     application_window.show()
 
     return sys.exit(q_application.exec_())

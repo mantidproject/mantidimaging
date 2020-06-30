@@ -1,5 +1,4 @@
-from .angles import (  # noqa: F401
-    cors_to_tilt_angle)
+
 
 from .auto import (  # noqa: F401
     auto_find_cors)

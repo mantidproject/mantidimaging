@@ -2,6 +2,8 @@ import threading
 import time
 from logging import getLogger
 
+import numpy as np
+
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
 
@@ -17,6 +19,7 @@ class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
     """
+
     @staticmethod
     def ensure_instance(p=None, *args, num_steps=None, **kwargs):
         """
@@ -168,11 +171,20 @@ class Progress(object):
             if self.current_step > self.end_step:
                 self.end_step = self.current_step + 1
 
-            # Update progress history
+            # update progress history
+            if self.current_step > 2:
+                steps_to_use = min(10, len(self.progress_history))
+                # get all the times we're going to average
+                times = np.asarray([elem[0] for elem in self.progress_history[-1:-steps_to_use:-1]], dtype=np.float32)
+                # get the differences between them (in reverse, to avoid dealing with negative number)
+                # and then the mean time
+                mean_time = np.diff(times[::-1]).mean()
+                eta = round(mean_time * (self.end_step - self.current_step), 2)
+                msg = f"{msg}. Time: {round(self.execution_time(), 2)}s, ETA: {eta}s"
             step_details = (time.process_time(), self.current_step, msg)
             self.progress_history.append(step_details)
 
-        # Process progress callbacks
+        # process progress callbacks
         if len(self.progress_handlers) != 0:
             for cb in self.progress_handlers:
                 cb.progress_update()

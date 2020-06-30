@@ -95,7 +95,7 @@ class AstraRecon:
     @staticmethod
     def full(images: Images, cors: List[ScalarCoR], proj_angles: np.ndarray,
              algorithm: str, filter_name: str, num_iter: int = 1,
-             images_are_sinograms=True, ncores=None, progress: Optional[Progress] = None) -> Images:
+             progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         # TODO investigate: it might be enough for this to match the sinogram shape -> images.sino(0).shape
         # but I'm not sure if that may crop out wide objects
@@ -133,6 +133,8 @@ class AstraRecon:
 
             astra.projector.delete(proj_id)
             astra.algorithm.delete(alg_id)
+
+        progress.mark_complete("Done")
 
         astra.data2d.delete(sino_id)
         astra.data2d.delete(rec_id)

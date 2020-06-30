@@ -151,7 +151,7 @@ class ReconstructWindowModel(object):
     def run_preview_recon(self, slice_idx, cor: ScalarCoR, algorithm: str, recon_filter: str):
         # Ensure we have some sample data
         if self.sample is None:
-            raise ValueError('No sample to use for preview reconstruction')
+            return None
 
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(algorithm)

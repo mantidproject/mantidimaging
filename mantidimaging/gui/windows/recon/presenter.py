@@ -1,4 +1,4 @@
-from contextlib import contextmanager
+from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List
 
@@ -14,6 +14,22 @@ LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.recon.view import ReconstructWindowView
+
+
+class Notifications(Enum):
+    RECONSTRUCT_VOLUME = auto()
+    RECONSTRUCT_SLICE = auto()
+    RECONSTRUCT_USER_CLICK = auto()
+    COR_FIT = auto()
+    SET_ALL_ROW_VALUES = auto()
+    CLEAR_ALL_CORS = auto()
+    REMOVE_SELECTED_COR = auto()
+    CALCULATE_CORS_FROM_MANUAL_TILT = auto()
+    ALGORITHM_CHANGED = auto()
+    CROP_TO_ROI = auto()
+    UPDATE_PROJECTION = auto()
+    ADD_COR = auto()
+    REFINE_COR = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -32,6 +48,38 @@ class ReconstructWindowPresenter(BasePresenter):
         }
         self.main_window = main_window
 
+    def notify(self, notification, slice_idx=None):
+        try:
+            if notification == Notifications.RECONSTRUCT_VOLUME:
+                self.do_reconstruct_volume()
+            elif notification == Notifications.RECONSTRUCT_SLICE:
+                self.do_reconstruct_slice()
+            elif notification == Notifications.RECONSTRUCT_USER_CLICK:
+                self.do_user_click_recon(slice_idx)
+            elif notification == Notifications.COR_FIT:
+                self.do_cor_fit()
+            elif notification == Notifications.SET_ALL_ROW_VALUES:
+                self.do_set_all_row_values()
+            elif notification == Notifications.CLEAR_ALL_CORS:
+                self.do_clear_all_cors()
+            elif notification == Notifications.REMOVE_SELECTED_COR:
+                self.do_remove_selected_cor()
+            elif notification == Notifications.CALCULATE_CORS_FROM_MANUAL_TILT:
+                self.do_calculate_cors_from_manual_tilt()
+            elif notification == Notifications.ALGORITHM_CHANGED:
+                self.do_algorithm_changed()
+            elif notification == Notifications.CROP_TO_ROI:
+                self.do_crop_to_roi()
+            elif notification == Notifications.UPDATE_PROJECTION:
+                self.do_update_projection()
+            elif notification == Notifications.ADD_COR:
+                self.do_add_cor()
+            elif notification == Notifications.REFINE_COR:
+                self._do_refine_selected_cor()
+
+        except Exception as err:
+            self.show_error(str(err))
+
     def do_algorithm_changed(self):
         allowed_args = self.allowed_recon_kwargs[self.view.algorithm_name]
         for arg, widgets in self.restricted_arg_widgets.items():
@@ -43,7 +91,7 @@ class ReconstructWindowPresenter(BasePresenter):
                     widget.hide()
 
     def set_stack_uuid(self, uuid):
-        if self._ignore_stack_change:
+        if self.ignore_stack_change:
             return
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
@@ -116,7 +164,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.preview_slice_idx = slice_idx
         self.do_reconstruct_slice(slice_idx=slice_idx)
 
-    def do_refine_selected_cor(self):
+    def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor)
@@ -147,16 +195,8 @@ class ReconstructWindowPresenter(BasePresenter):
             self.show_error(msg)
 
     def _on_volume_recon_done(self, task):
-        # When reconstructing a new stack is added to the list,
-        # this triggers set_stack_uuid, but for some reason
-        # in that case only, that makes the tilt line go mad
-        # and start triggering infinite Qt transforms with null.
-        # To avoid figuring out why - we just stop the set_stack_uuid
-        # from executing after reconstruct volume.
-        # PS. Hiding, resetting or redrawing the tilt line and/or the
-        # projection image doesn't fix it
-        with self.ignore_stack_change():
-            self.view.show_recon_volume(task.result)
+
+        self.view.show_recon_volume(task.result)
 
     def do_set_all_row_values(self):
         if self.view.cor_table_model.empty:
@@ -182,10 +222,27 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_reconstruct_slice()
 
-    @contextmanager
+    @property
     def ignore_stack_change(self):
-        try:
-            self._ignore_stack_change = True
-            yield
-        finally:
+        """
+        Whether to ignore the stack change signal by the view.
+
+        :return: Returns True only the first time it's called. Afterwards
+                 `self.ignore_next_stack_change` needs to be called again
+        """
+        if self._ignore_stack_change:
             self._ignore_stack_change = False
+            return True
+        else:
+            return False
+
+    def ignore_next_stack_change(self):
+        # When a new stack is added to the list,
+        # this triggers set_stack_uuid. For some reason
+        # that makes the projection view go mad
+        # and starts triggering infinite Qt transforms with null.
+        # To avoid figuring out why - we just stop the set_stack_uuid
+        # from executing after the stack list has been changed
+        # PS. Hiding, resetting or redrawing the tilt line and/or the
+        # projection image doesn't fix it
+        self._ignore_stack_change = True

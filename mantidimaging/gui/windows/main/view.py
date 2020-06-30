@@ -208,9 +208,6 @@ class MainWindowView(BaseMainWindowView):
         QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
         getLogger(__name__).error(log_error_msg)
 
-    def create_new_stack(self, data, title):
-        self.presenter.create_new_stack(data, title)
-
     def attach_debugger(self):
         port = QInputDialog.getInt(self, "Debug port", "Get PyCharm debug listen port", value=25252)[0]
         import pydevd_pycharm
