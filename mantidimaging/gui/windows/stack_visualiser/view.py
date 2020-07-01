@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QGuiApplication
@@ -6,13 +6,13 @@ from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessage
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.external.pyqtgraph.imageview.ImageView import ImageView
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
-from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.stack_visualiser.presenter import StackVisualiserPresenter
 from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification
+from ..stack_visualiser.presenter import StackVisualiserPresenter
+from ...mvp_base import BaseMainWindowView
 from ...utility.common import operation_in_progress
+from ...widgets.pg_image_view import MIImageView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -22,7 +22,7 @@ class StackVisualiserView(BaseMainWindowView):
     # Signal that signifies when the ROI is updated. Used to update previews in Filter views
     roi_updated = pyqtSignal(SensibleROI)
 
-    image_view: ImageView
+    image_view: MIImageView
     presenter: StackVisualiserPresenter
     dock: QDockWidget
     layout: QVBoxLayout
@@ -53,7 +53,7 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.presenter = StackVisualiserPresenter(self, images)
 
-        self.image_view = ImageView(self)
+        self.image_view = MIImageView(self)
         self.image_view.imageItem.menu = self.build_context_menu()
         self.actionCloseStack = QAction("Close window", self)
         self.actionCloseStack.triggered.connect(self.close_view)
