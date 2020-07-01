@@ -1,4 +1,5 @@
 import os
+import traceback
 from enum import Enum
 from logging import getLogger
 from typing import TYPE_CHECKING
@@ -38,7 +39,7 @@ class MainWindowPresenter(BasePresenter):
                 self.save()
 
         except Exception as e:
-            self.show_error(e)
+            self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
     def remove_stack(self, uuid: UUID):
@@ -74,7 +75,7 @@ class MainWindowPresenter(BasePresenter):
         # TODO add types
         msg = base_message.format(task.error)
         log.error(msg)
-        self.show_error(msg)
+        self.show_error(msg, traceback.format_exc())
 
     def create_new_stack(self, images: Images, title: str):
         title = self.model.create_name(title)

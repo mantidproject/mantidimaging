@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum
 from logging import getLogger
 from typing import Callable, Any, Optional
@@ -49,7 +50,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.do_scroll_preview(-1)
 
         except Exception as e:
-            self.show_error(e)
+            self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
     @property
@@ -136,8 +137,7 @@ class FiltersWindowPresenter(BasePresenter):
                 filtered_image_data = sub_images.sample[0]
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
-                log.error(msg)
-                self.show_error(msg)
+                self.show_error(msg, traceback.format_exc())
 
             # Update image after and difference
             if filtered_image_data is not None:

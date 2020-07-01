@@ -74,7 +74,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.notify(PresN.RECONSTRUCT_USER_CLICK, slice_idx)
 
-        self.cor_table_model.rowsRemoved.connect(lambda: self.presenter.notify(PresN.UPDATE_PROJECTION))
+        # self.cor_table_model.rowsRemoved.connect(lambda: self.presenter.notify(PresN.UPDATE_PROJECTION))
         self.cor_table_model.dataChanged.connect(on_data_change)
 
         self.clearAllBtn.clicked.connect(lambda: self.presenter.notify(PresN.CLEAR_ALL_CORS))
@@ -122,7 +122,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.tableView.removeSelectedRows()
 
     def clear_cor_table(self):
-        return self.tableView.model().removeAllRows()
+        return self.cor_table_model.removeAllRows()
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
@@ -204,10 +204,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.setEnabled(not empty)
         self.clearAllBtn.setEnabled(not empty)
 
-        # Update previews when no data is left
-        if empty:
-            self.presenter.notify(PresN.UPDATE_PROJECTION)
-
         # Disable fit button when there are less than 2 rows (points)
         enough_to_fit = self.tableView.model().num_points >= 2
         self.fitBtn.setEnabled(enough_to_fit)
@@ -216,7 +212,7 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
-        self.tableView.model().appendNewRow(row, slice_index, cor)
+        self.cor_table_model.appendNewRow(row, slice_index, cor)
 
     @property
     def rotation_centre(self):

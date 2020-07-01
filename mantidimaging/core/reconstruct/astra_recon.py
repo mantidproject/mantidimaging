@@ -97,8 +97,6 @@ class AstraRecon:
              algorithm: str, filter_name: str, num_iter: int = 1,
              progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
-        # TODO investigate: it might be enough for this to match the sinogram shape -> images.sino(0).shape
-        # but I'm not sure if that may crop out wide objects
         sino_shape = images.sino(0).shape
         vol_geom = astra.create_vol_geom(sino_shape)
         progress.update(0, "Creating output volume")

@@ -120,7 +120,7 @@ class ReconstructWindowModel(object):
             first_slice_to_recon = self.get_initial_slice_index()
             # Getting the middle of the image is probably closer than Tomopy's CoR from what I've seen
             # and certainly much faster. IF a better method is found it might be worth going to it instead
-            cor = ScalarCoR(self.images.width // 2)
+            cor = ScalarCoR(self.images.height // 2)
             # cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon)[0])
             self.last_cor = cor
 
@@ -211,3 +211,6 @@ class ReconstructWindowModel(object):
     @roi.setter
     def roi(self, value: SensibleROI):
         self._roi = value
+
+    def is_current_stack(self, stack):
+        return self.stack == stack

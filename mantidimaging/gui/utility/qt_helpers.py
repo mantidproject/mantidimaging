@@ -4,9 +4,10 @@ Module containing helper functions relating to PyQt.
 
 import os
 from enum import IntEnum, auto
-from typing import Tuple, Union, TYPE_CHECKING
+from typing import Tuple, Union, TYPE_CHECKING, List
 
 from PyQt5 import Qt, uic
+from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
 
 from mantidimaging.core.utility import finder
@@ -20,8 +21,9 @@ class BlockQtSignals(object):
     Used to block Qt signals from a selection of QWidgets within a context.
     """
 
-    def __init__(self, q_objects):
-        from PyQt5 import Qt
+    def __init__(self, q_objects: Union[QObject, List[QObject]]):
+        if not isinstance(q_objects, list):
+            q_objects = [q_objects]
         for obj in q_objects:
             assert isinstance(obj, Qt.QObject), \
                 "This class must be used with QObjects"

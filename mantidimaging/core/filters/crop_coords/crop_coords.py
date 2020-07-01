@@ -8,6 +8,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 
@@ -15,7 +16,7 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(data: Images, region_of_interest=None, progress=None) -> Images:
+    def filter_func(data: Images, region_of_interest: SensibleROI = None, progress=None) -> Images:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -42,8 +43,8 @@ class CropCoordinatesFilter(BaseFilter):
 
         sample = data.sample
         shape = (sample.shape[0],
-                 region_of_interest[2] - region_of_interest[0],
-                 region_of_interest[3] - region_of_interest[1])
+                 region_of_interest.height,
+                 region_of_interest.width)
         sample_name = data.sample_memory_file_name
         if sample_name is not None:
             data.free_sample()
@@ -84,14 +85,6 @@ def execute_single(data, roi, progress=None, out=None):
 
             progress.update(msg="Cropping with coordinates: {0}.".format(roi))
 
-            left = roi[0]
-            top = roi[1]
-            right = roi[2]
-            bottom = roi[3]
-
             output = out[:] if out is not None else data[:]
-            if data.ndim == 2:
-                output = data[top:bottom, left:right]
-            elif data.ndim == 3:
-                output = data[:, top:bottom, left:right]
+            output[:] = data[:, roi.top:roi.bottom, roi.left:roi.right]
     return output

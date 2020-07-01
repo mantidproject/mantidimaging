@@ -121,9 +121,6 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
     def appendNewRow(self, row: Optional[int], slice_idx: int, cor: float = 0.0):
         self.insertRows(row, 1, slice_idx=slice_idx, cor=cor)
-        #
-        # row = row + 1 if row is not None else 0
-        # # the data is added on the row _after_ the selected one
         self.set_point(row, slice_idx, cor)
         self.sort_points()
 

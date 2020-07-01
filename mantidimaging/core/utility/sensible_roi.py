@@ -21,3 +21,11 @@ class SensibleROI:
         :return: Iterable of all ROI parts
         """
         return iter((self.left, self.top, self.right, self.bottom))
+
+    @property
+    def width(self) -> int:
+        return self.right - self.left
+
+    @property
+    def height(self) -> int:
+        return self.bottom - self.top

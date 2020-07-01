@@ -1,4 +1,5 @@
 import json
+import traceback
 from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, List
@@ -69,7 +70,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
                 self.confirm_plugin()
 
         except Exception as e:
-            self.show_error(e)
+            self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
     def set_stack_uuid(self, uuid: UUID):

@@ -2,7 +2,6 @@ from math import isnan
 from typing import Tuple, Optional
 
 import numpy
-from PyQt5.QtCore import QRect
 from PyQt5.QtWidgets import QGraphicsGridLayout
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine
 
@@ -18,7 +17,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.projection, self.projection_vb, self.projection_hist = self.image_in_vb("Projection")
         self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
 
-        self.slice_line = InfiniteLine(pos=1024, angle=0)
+        self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()])
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
@@ -51,13 +50,16 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def update_projection(self, image_data: numpy.ndarray, preview_slice_index: int,
                           tilt_angle: Optional[Degrees], roi: Optional[SensibleROI]):
+        self.projection.clear()
         self.projection.setImage(image_data)
-        if roi:
-            self.projection.setRect(QRect(*roi))
+        # if roi:
+        #     self.projection.setRect(QRect(*roi))
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:
             self.set_tilt(tilt_angle)
+        else:
+            self.hide_tilt()
 
     def update_recon(self, image_data):
         self.recon.setImage(image_data)

@@ -1,10 +1,11 @@
+import traceback
 from enum import Enum
 from logging import getLogger
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from mantidimaging.core.data import Images
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import CORInspectionDialogModel
@@ -30,7 +31,7 @@ class CORInspectionDialogPresenter(BasePresenter):
 
     view: 'CORInspectionDialogView'
 
-    def __init__(self, view, data:Images, slice_index:int, initial_cor:ScalarCoR, initial_step):
+    def __init__(self, view, data: Images, slice_index: int, initial_cor: ScalarCoR, initial_step):
         super().__init__(view)
 
         self.model = CORInspectionDialogModel(data, slice_index, initial_cor, initial_step)
@@ -51,7 +52,7 @@ class CORInspectionDialogPresenter(BasePresenter):
                 self.on_load()
 
         except Exception as e:
-            self.show_error(e)
+            self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
     def on_load(self):
@@ -88,5 +89,5 @@ class CORInspectionDialogPresenter(BasePresenter):
         self.notify(Notification.FULL_UPDATE)
 
     @property
-    def optimal_rotation_centre(self)->ScalarCoR:
+    def optimal_rotation_centre(self) -> ScalarCoR:
         return ScalarCoR(self.model.centre_cor)

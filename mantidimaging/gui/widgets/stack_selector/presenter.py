@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum
 from logging import getLogger
 from typing import List, Tuple
@@ -24,7 +25,7 @@ class StackSelectorWidgetPresenter(BasePresenter):
                 self.do_reload_stacks()
 
         except Exception as e:
-            self.show_error(e)
+            self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
     def do_reload_stacks(self):

@@ -1,3 +1,4 @@
+import traceback
 from enum import IntEnum
 from logging import getLogger
 from typing import TYPE_CHECKING
@@ -50,7 +51,7 @@ class StackVisualiserPresenter(BasePresenter):
             if signal == SVNotification.SWAP_AXES:
                 self.create_swapped_axis_stack()
         except Exception as e:
-            self.show_error(e)
+            self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
     def delete_data(self):

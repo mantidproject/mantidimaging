@@ -9,6 +9,7 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
 LOG = getLogger(__name__)
@@ -91,15 +92,18 @@ class ReconstructWindowPresenter(BasePresenter):
                     widget.hide()
 
     def set_stack_uuid(self, uuid):
-        if self.ignore_stack_change:
-            return
-        self.view.reset_image_recon_preview()
-        self.view.clear_cor_table()
+        # if self.ignore_stack_change:
+        #     return
         stack = self.view.get_stack_visualiser(uuid)
+        if self.model.is_current_stack(stack):
+            return
+
+        self.view.reset_image_recon_preview()
+        with BlockQtSignals(self.view):
+            self.view.clear_cor_table()
         self.set_stack(stack)
-        if stack is not None:
-            self.view.reset_slice_and_tilt(self.model.get_initial_slice_index())
         # find a cor for the middle
+        # with BlockQtSignals(self.view.cor_table_model):
         self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
         self.do_reconstruct_slice()
 
@@ -192,7 +196,7 @@ class ReconstructWindowPresenter(BasePresenter):
         else:
             msg = self.ERROR_STRING.format(task.error)
             log.error(msg)
-            self.show_error(msg)
+            self.show_error(msg, traceback.format_exc())
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
