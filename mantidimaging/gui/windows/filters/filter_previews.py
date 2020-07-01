@@ -1,7 +1,6 @@
 from collections import namedtuple
 from typing import Tuple, Optional
 
-from PyQt5.QtWidgets import QGraphicsLinearLayout
 from numpy import ndarray
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox
 
@@ -46,11 +45,10 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_difference, self.image_difference_vb = self.image_in_vb(name="difference")
 
         # Ensure images resize equally
-        image_layout = QGraphicsLinearLayout()
-        image_layout.addItem(self.image_before_vb)
-        image_layout.addItem(self.image_after_vb)
-        image_layout.addItem(self.image_difference_vb)
-        self.addItem(image_layout, colspan=3)
+        image_layout = self.addLayout(colspan=3)
+        image_layout.addItem(self.image_before_vb, 0, 0)
+        image_layout.addItem(self.image_after_vb, 0, 1)
+        image_layout.addItem(self.image_difference_vb, 0, 2)
         self.nextRow()
 
         before_details = self.addLabel("")

@@ -21,7 +21,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
-        image_layout = QGraphicsGridLayout()
+        image_layout = self.addLayout(colspan=4)
         image_layout.addItem(self.projection_vb, 0, 0)
         image_layout.addItem(self.projection_hist, 0, 1)
         image_layout.addItem(self.recon_vb, 0, 2)
@@ -30,7 +30,6 @@ class ReconImagesView(GraphicsLayoutWidget):
         recon_details = LabelItem("Value")
         image_layout.addItem(projection_details, 1, 0, 1, 2)
         image_layout.addItem(recon_details, 1, 2, 1, 2)
-        self.addItem(image_layout)
 
         self.display_formatted_detail = {
             self.projection: lambda val: projection_details.setText(f"Value: {val:.6f}"),
