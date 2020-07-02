@@ -1,10 +1,14 @@
 import threading
 import time
+from collections import namedtuple
 from logging import getLogger
+from typing import List
 
-import numpy as np
+import numpy
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
+
+ProgressHistory = namedtuple('ProgressHistory', ['time', 'step', 'msg'])
 
 
 class ProgressHandler(object):
@@ -39,19 +43,19 @@ class Progress(object):
     def __init__(self, num_steps=1, task_name='Task'):
         self.task_name = task_name
 
+        # Current step being executed (0 denoting not started)
+        self.current_step = 0
         # Estimated number of steps (used to calculated percentage complete)
         self.end_step = 0
         self.set_estimated_steps(num_steps)
-
-        # Current step being executed (0 denoting not started)
-        self.current_step = 0
 
         # Flag indicating completion
         self.complete = False
 
         # List of tuples defining progress history
         # (timestamp, step, message)
-        self.progress_history = []
+        self.progress_history: List[ProgressHistory] = []
+        self._average_time: float = 0
 
         # Lock used to synchronise modifications to the progress state
         self.lock = threading.Lock()
@@ -171,17 +175,16 @@ class Progress(object):
             if self.current_step > self.end_step:
                 self.end_step = self.current_step + 1
 
-            # update progress history
-            if self.current_step > 2:
-                steps_to_use = min(50, len(self.progress_history))
-                # get all the times we're going to average
-                times = np.asarray([elem[0] for elem in self.progress_history[-1:-steps_to_use:-1]], dtype=np.float32)
+            if self.current_step == 10:
+                times = numpy.asarray([elem.time for elem in self.progress_history[-1:-10:-1]], dtype=numpy.float32)
                 # get the differences between them (in reverse, to avoid dealing with negative number)
                 # and then the mean time
-                mean_time = np.diff(times[::-1]).mean()
-                eta = round(mean_time * (self.end_step - self.current_step), 2)
+                mean_time = numpy.diff(times[::-1]).mean()
+                self._average_time = mean_time
+            else:
+                eta = round(self._average_time * (self.end_step - self.current_step), 2)
                 msg = f"{msg}. Time: {round(self.execution_time(), 2)}s, ETA: {eta}s"
-            step_details = (time.process_time(), self.current_step, msg)
+            step_details = ProgressHistory(time.process_time(), self.current_step, msg)
             self.progress_history.append(step_details)
 
         # process progress callbacks

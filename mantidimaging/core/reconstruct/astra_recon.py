@@ -97,10 +97,9 @@ class AstraRecon:
              algorithm: str, filter_name: str, num_iter: int = 1,
              progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
-        sino_shape = images.sino(0).shape
-        vol_geom = astra.create_vol_geom(sino_shape)
+        vol_geom = astra.create_vol_geom((images.height, images.width))
         progress.update(0, "Creating output volume")
-        output_images: Images = Images.create_shared_images((images.height, sino_shape[0], sino_shape[1]),
+        output_images: Images = Images.create_shared_images((images.height, images.width, images.height),
                                                             images.dtype,
                                                             f"{os.path.basename(images.filenames[0])}-recon")
         rec_id = astra.data2d.create('-vol', vol_geom)
