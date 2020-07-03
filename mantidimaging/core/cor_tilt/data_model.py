@@ -135,7 +135,7 @@ class CorTiltDataModel:
         return {
             const.COR_TILT_ROTATION_CENTRE: float(self.cor.value),
             const.COR_TILT_FITTED_GRADIENT: float(self.gradient.value),
-            const.COR_TILT_TILT_ANGLE_RAD: float(self.angle_in_degrees.value),
+            const.COR_TILT_TILT_ANGLE_DEG: float(self.angle_in_degrees.value),
             const.COR_TILT_SLICE_INDICES: self.slices,
             const.COR_TILT_ROTATION_CENTRES: self.cors
         }

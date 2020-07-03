@@ -67,7 +67,7 @@ def get_cor_tilt_from_images(images: Images) -> Tuple[int, float, float]:
         return 0, 0.0, 0.0
 
     cor = last_find[const.COR_TILT_ROTATION_CENTRE]
-    tilt = last_find[const.COR_TILT_TILT_ANGLE_RAD]
+    tilt = last_find[const.COR_TILT_TILT_ANGLE_DEG]
     gradient = last_find[const.COR_TILT_FITTED_GRADIENT]
 
     cor -= get_crop(images, 0, start=last_find_idx)

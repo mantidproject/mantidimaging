@@ -2,7 +2,7 @@ import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.data_containers import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection.presenter import CORInspectionDialogPresenter
 from mantidimaging.gui.dialogs.cor_inspection.recon_slice_view import CompareSlicesView
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
@@ -16,9 +16,11 @@ class CORInspectionDialogView(BaseDialogView):
     moreButton: QPushButton
     step: QDoubleSpinBox
 
-    def __init__(self, parent, data: Images, slice_index: int, initial_cor: ScalarCoR, initial_step=50):
+    def __init__(self, parent, data: Images, slice_index: int, initial_cor: ScalarCoR,
+                 proj_angles: ProjectionAngles, recon_params: ReconstructionParameters):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
-        self.presenter = CORInspectionDialogPresenter(self, data, slice_index, initial_cor, initial_step)
+        self.presenter = CORInspectionDialogPresenter(self, data, slice_index, initial_cor,
+                                                      proj_angles, recon_params)
 
         self.step.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
         self.lessButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.LESS))

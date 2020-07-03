@@ -19,11 +19,6 @@ def do_importing(tool, alg='fbp'):
         from mantidimaging.core.tools.tomopy_tool import TomoPyTool
         TomoPyTool.check_algorithm_compatibility(alg)
         imported_tool = TomoPyTool()
-
-    elif 'astra' == tool:
-        from mantidimaging.core.tools.astra_tool import AstraTool
-        AstraTool.check_algorithm_compatibility(alg)
-        imported_tool = AstraTool()
     else:
         raise ValueError("Tried to import unknown tool: {0}".format(tool))
 

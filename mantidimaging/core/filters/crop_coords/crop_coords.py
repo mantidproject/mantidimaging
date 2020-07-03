@@ -48,9 +48,7 @@ class CropCoordinatesFilter(BaseFilter):
         sample_name = data.sample_memory_file_name
         if sample_name is not None:
             data.free_sample()
-            output = pu.create_shared_array(sample_name, shape, sample.dtype)
-        else:
-            output = np.zeros(shape, sample.dtype)
+        output = pu.create_array(shape, sample.dtype, sample_name)
         data.sample = execute_single(sample, region_of_interest, progress, out=output)
 
         return data

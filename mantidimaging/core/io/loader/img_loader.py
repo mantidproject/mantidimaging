@@ -125,7 +125,7 @@ class ImageLoader(object):
         # If it's not possible better crash here than later.
         num_images = len(files)
         shape = (num_images, self.img_shape[0], self.img_shape[1])
-        data = pu.create_shared_array(memory_name, shape, self.data_dtype)
+        data = pu.create_array(shape, self.data_dtype, memory_name)
         return self._do_files_load_seq(data, files, memory_name)
 
 

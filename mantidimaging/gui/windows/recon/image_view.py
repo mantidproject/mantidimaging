@@ -13,6 +13,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         super().__init__(parent)
         self.parent = parent
         self.projection, self.projection_vb, self.projection_hist = self.image_in_vb("Projection")
+        self.sinogram, self.sinogram_vb, self.sinogram_hist = self.image_in_vb("Sinogram")
         self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
 
         self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()])
@@ -22,19 +23,27 @@ class ReconImagesView(GraphicsLayoutWidget):
         image_layout = self.addLayout(colspan=4)
         image_layout.addItem(self.projection_vb, 0, 0)
         image_layout.addItem(self.projection_hist, 0, 1)
-        image_layout.addItem(self.recon_vb, 0, 2)
-        image_layout.addItem(self.recon_hist, 0, 3)
+        image_layout.addItem(self.recon_vb, 0, 2, rowspan=3)
+        image_layout.addItem(self.recon_hist, 0, 3, rowspan=3)
+
         projection_details = LabelItem("Value")
-        recon_details = LabelItem("Value")
         image_layout.addItem(projection_details, 1, 0, 1, 2)
-        image_layout.addItem(recon_details, 1, 2, 1, 2)
+
+        image_layout.addItem(self.sinogram_vb, 2, 0)
+        image_layout.addItem(self.sinogram_hist, 2, 1)
+        sino_details = LabelItem("Value")
+        image_layout.addItem(sino_details, 3, 0, 1, 2)
+        recon_details = LabelItem("Value")
+        image_layout.addItem(recon_details, 3, 2, 1, 2)
 
         self.display_formatted_detail = {
             self.projection: lambda val: projection_details.setText(f"Value: {val:.6f}"),
+            self.sinogram: lambda val: sino_details.setText(f"Value: {val:.6f}"),
             self.recon: lambda val: recon_details.setText(f"Value: {val:.6f}")
         }
         self.projection.hoverEvent = lambda ev: self.mouse_over(ev, self.projection)
         self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
+        self.sinogram.hoverEvent = lambda ev: self.mouse_over(ev, self.sinogram)
         self.recon.hoverEvent = lambda ev: self.mouse_over(ev, self.recon)
 
     @staticmethod
@@ -55,7 +64,13 @@ class ReconImagesView(GraphicsLayoutWidget):
         else:
             self.hide_tilt()
 
+    def update_sinogram(self, image):
+        self.sinogram.clear()
+        self.sinogram.setImage(image)
+        self.sinogram_hist.imageChanged(autoLevel=True, autoRange=True)
+
     def update_recon(self, image_data):
+        self.recon.clear()
         self.recon.setImage(image_data)
         self.recon_hist.imageChanged(autoLevel=True, autoRange=True)
 

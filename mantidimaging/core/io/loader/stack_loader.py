@@ -61,7 +61,7 @@ def execute(load_func, file_name, dtype, name, indices=None, progress=None):
         new_data = new_data[indices[0]:indices[1]:indices[2]]
 
     img_shape = new_data.shape
-    data = pu.create_shared_array(f"{file_name}-Stack", img_shape, dtype=dtype)
+    data = pu.create_array(img_shape, dtype=dtype, name=f"{file_name}-Stack")
 
     # we could just move with data[:] = new_data[:] but then we don't get
     # loading bar information, and I doubt there's any performance gain

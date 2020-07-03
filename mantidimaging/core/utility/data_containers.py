@@ -8,6 +8,8 @@ while they're both Float underneath and the value can be used, it just will prod
 """
 from dataclasses import dataclass
 
+import numpy
+
 
 @dataclass
 class SingleValue:
@@ -32,7 +34,7 @@ class ScalarCoR(SingleValue):
 
 
 @dataclass
-class VectorCoR:
+class VectorCoR(SingleValue):
     __slots__ = 'value'
     value: float
 
@@ -41,12 +43,25 @@ class VectorCoR:
 
 
 @dataclass
-class Degrees:
+class Degrees(SingleValue):
     __slots__ = 'value'
     value: float
 
 
 @dataclass
-class Slope:
+class Slope(SingleValue):
     __slots__ = 'value'
     value: float
+
+
+@dataclass
+class ProjectionAngles(SingleValue):
+    __slots__ = 'value'
+    value: numpy.ndarray
+
+
+@dataclass
+class ReconstructionParameters:
+    algorithm: str
+    filter_name: str
+    num_iter: int = 1

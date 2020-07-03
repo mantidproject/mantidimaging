@@ -22,12 +22,11 @@ def free_all():
 
 atexit.register(free_all)
 
-DTYPE_TYPES = Union[str, np.dtype, int]
+NP_DTYPE = Type[np.single]
 
 
-def create_shared_name(file_name) -> str:
-    import uuid
-    return f"{uuid.uuid4()}-{os.path.basename(file_name)}"
+def create_shared_name(file_name=None) -> str:
+    return f"{uuid.uuid4()}{f'-{os.path.basename(file_name)}' if file_name is not None else ''}"
 
 
 def delete_shared_array(name, silent_failure=False):
@@ -38,7 +37,8 @@ def delete_shared_array(name, silent_failure=False):
             raise e
 
 
-def create_array(name: Optional[str], shape: Tuple[int, int, int], dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
+def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32,
+                 name: Optional[str] = None) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
@@ -48,15 +48,13 @@ def create_array(name: Optional[str], shape: Tuple[int, int, int], dtype: DTYPE_
     :return: The created Numpy array
     """
     if name is not None:
-        return create_shared_array(name, shape, dtype)
+        return _create_shared_array(shape, dtype, name)
     else:
         # if the name provided is None, then allocate an array only visible to this process
         return np.zeros(shape, dtype)
 
 
-def create_shared_array(name: str,
-                        shape: Tuple[int, int, int],
-                        dtype: DTYPE_TYPES = np.float32) -> np.ndarray:
+def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str) -> np.ndarray:
     """
     :param dtype:
     :param shape:
@@ -69,9 +67,9 @@ def create_shared_array(name: str,
 
 
 @contextmanager
-def temp_shared_array(shape, dtype: DTYPE_TYPES = np.float32, force_name=None) -> np.ndarray:
-    temp_name = str(uuid.uuid4()) if not force_name else force_name
-    array = create_shared_array(temp_name, shape, dtype)
+def temp_shared_array(shape, dtype: NP_DTYPE = np.float32, force_name=None) -> np.ndarray:
+    temp_name = create_shared_name() if not force_name else force_name
+    array = _create_shared_array(shape, dtype, temp_name)
     try:
         yield array
     finally:

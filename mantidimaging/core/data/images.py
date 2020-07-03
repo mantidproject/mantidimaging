@@ -1,6 +1,5 @@
 import json
 import pprint
-import uuid
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -124,13 +123,10 @@ class Images:
         })
 
     def copy(self, flip_axes=False):
-        import uuid
         from copy import deepcopy
-        sample_name = f"{uuid.uuid4()}"
-        # flat_name = f"{uuid.uuid4()}-Flat"
-        # dark_name = f"{uuid.uuid4()}-Dark"
         shape = (self.sample.shape[1], self.sample.shape[0], self.sample.shape[2]) if flip_axes else self.sample.shape
-        sample_copy = pu.create_shared_array(f"{sample_name}", shape, self.sample.dtype)
+        sample_name = pu.create_shared_name()
+        sample_copy = pu.create_array(shape, self.sample.dtype, sample_name)
         if flip_axes:
             sample_copy[:] = np.swapaxes(self.sample, 0, 1)
         else:
@@ -140,7 +136,7 @@ class Images:
                         sample_memory_file_name=sample_name,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=deepcopy(self.sinograms))
+                        sinograms=False if not self.sinograms and not flip_axes else True)
         return images
 
     @property
@@ -163,10 +159,7 @@ class Images:
 
     @property
     def num_sinograms(self) -> int:
-        if not self.sinograms:
-            return self.sample.shape[1]
-        else:
-            return self.sample.shape[0]
+        return self.height
 
     def sino(self, slice_idx) -> np.ndarray:
         if not self.sinograms:
@@ -193,7 +186,7 @@ class Images:
         return self._sample.dtype
 
     @staticmethod
-    def create_shared_images(shape, dtype, name_suffix: Optional[str] = None):
-        shared_name = f"{uuid.uuid4()}{f'-{name_suffix}' if name_suffix is not None else ''}"
-        arr = pu.create_shared_array(shared_name, shape, dtype)
+    def create_shared_images(shape, dtype):
+        shared_name = pu.create_shared_name()
+        arr = pu.create_array(shape, dtype, shared_name)
         return Images(arr, sample_memory_file_name=shared_name)

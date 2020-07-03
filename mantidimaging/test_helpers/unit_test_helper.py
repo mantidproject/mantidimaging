@@ -37,7 +37,7 @@ def generate_images(shape=g_shape, dtype=np.float32, automatic_free=True) -> Ima
         with pu.temp_shared_array(shape, dtype, force_name=array_name) as d:
             return _set_random_data(d, shape, array_name)
     else:
-        d = pu.create_shared_array(array_name, shape, dtype)
+        d = pu.create_array(shape, dtype, array_name)
         return _set_random_data(d, shape, array_name)
 
 

@@ -90,9 +90,6 @@ class ReconstructWindowPresenter(BasePresenter):
             return
 
         self.view.reset_image_recon_preview()
-
-        # TODO if something breaks i commented this
-        # with BlockQtSignals(self.view):
         self.view.clear_cor_table()
         self.set_stack(stack)
         self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
@@ -102,6 +99,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.initial_select_data(stack)
         self.view.set_results(ScalarCoR(0.0), Degrees(0.0), Slope(0.0))
         self.do_update_projection()
+        self.do_update_sinogram()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -113,14 +111,20 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
+        self.do_update_sinogram()
         self.do_reconstruct_slice()
 
     def do_update_projection(self):
         images = self.model.images
         if images is not None:
             img_data = images.projection(self.model.preview_projection_idx)
+            self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
 
-            self.view.update_image_preview(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
+    def do_update_sinogram(self):
+        images = self.model.images
+        if images is not None:
+            img_data = images.sino(self.model.preview_slice_idx)
+            self.view.update_sinogram(img_data)
 
     def do_add_cor(self):
         row = self.model.selected_row
@@ -132,9 +136,7 @@ class ReconstructWindowPresenter(BasePresenter):
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
-                              {'algorithm': self.view.algorithm_name,
-                               'recon_filter': self.view.filter_name,
-                               'num_iter': self.view.num_iter})
+                              {'recon_params': self.view.recon_params()})
 
     def do_reconstruct_slice(self, cor=None, slice_idx=None):
         if slice_idx is None:
@@ -144,17 +146,20 @@ class ReconstructWindowPresenter(BasePresenter):
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
 
-        data = self.model.run_preview_recon(slice_idx, cor, self.view.algorithm_name, self.view.filter_name)
-        self.view.update_image_recon_preview(data)
+        data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
+        self.view.update_recon_preview(data)
 
     def do_user_click_recon(self, slice_idx):
         self.model.preview_slice_idx = slice_idx
+        self.view.update_sinogram(self.model.images.sino(slice_idx))
         self.do_reconstruct_slice(slice_idx=slice_idx)
 
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor)
+        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx,
+                                         self.model.last_cor, self.model.proj_angles,
+                                         self.view.recon_params())
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))

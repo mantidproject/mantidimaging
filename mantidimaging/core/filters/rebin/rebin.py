@@ -175,6 +175,6 @@ def _create_reshaped_array(old_shape, dtype, rebin_param, sample_name: Optional[
 
     # allocate memory for images with new dimensions
     shape = (num_images, expected_dimy, expected_dimx)
-    data = pu.create_array(sample_name, shape, dtype)
+    data = pu.create_array(shape, dtype, sample_name)
 
     return data

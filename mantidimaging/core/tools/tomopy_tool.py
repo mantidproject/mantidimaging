@@ -96,12 +96,11 @@ class TomoPyTool(AbstractTool):
         progress = Progress.ensure_instance(progress, task_name='TomoPy')
         log = getLogger(__name__)
 
-        h.check_config_integrity(config)
         h.check_data_stack(sample)
 
         if proj_angles is None:
             num_radiograms = sample.shape[1]
-            proj_angles = projection_angles.generate(config.func.max_angle, num_radiograms)
+            proj_angles = projection_angles.generate(config.func.max_angle, num_radiograms).value
 
         alg = config.func.algorithm
         num_iter = config.func.num_iter

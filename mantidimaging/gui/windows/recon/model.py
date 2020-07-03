@@ -8,7 +8,8 @@ from mantidimaging.core.cor_tilt import (update_image_operations)
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ProjectionAngles, \
+    ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
@@ -20,7 +21,7 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowModel(object):
-    proj_angles: Optional[np.ndarray]
+    proj_angles: Optional[ProjectionAngles]
 
     def __init__(self, data_model: CorTiltPointQtModel):
         self.stack: Optional['StackVisualiserView'] = None
@@ -48,20 +49,8 @@ class ReconstructWindowModel(object):
         return self.data_model.cor, self.data_model.angle_in_degrees, self.data_model.gradient
 
     @property
-    def sample(self):
-        return self.stack.presenter.images.sample if self.stack else None
-
-    @property
     def images(self):
         return self.stack.presenter.images if self.stack else None
-
-    @property
-    def num_projections(self):
-        return self.sample.shape[0] if self.sample is not None else 0
-
-    @property
-    def num_slices(self):
-        return self.sample.shape[1] if self.sample is not None else 0
 
     @property
     def num_points(self):
@@ -77,8 +66,7 @@ class ReconstructWindowModel(object):
         self.preview_slice_idx = slice_idx
 
         if stack is not None:
-            image_shape = self.sample.shape
-            self.proj_angles = generate_projection_angles(360, image_shape[0])
+            self.proj_angles = generate_projection_angles(360, self.images.num_projections)
 
     def calculate_slices(self, count):
         self.data_model.clear_results()
@@ -90,15 +78,15 @@ class ReconstructWindowModel(object):
 
     def calculate_projections(self, count):
         self.data_model.clear_results()
-        if self.sample is not None:
-            sample_proj_count = self.sample.shape[0]
+        if self.images is not None:
+            sample_proj_count = self.images.num_projections
             downsample_proj_count = min(sample_proj_count, count)
             self.projection_indices = \
                 np.linspace(int(sample_proj_count * 0.1), sample_proj_count - 1, downsample_proj_count,
                             dtype=int)
 
     def find_initial_cor(self) -> [int, ScalarCoR]:
-        if self.sample is not None:
+        if self.images is not None:
             first_slice_to_recon = self.get_initial_slice_index()
             # Getting the middle of the image is probably closer than Tomopy's CoR from what I've seen
             # and certainly much faster. IF a better method is found it might be worth going to it instead
@@ -110,7 +98,7 @@ class ReconstructWindowModel(object):
         return 0, ScalarCoR(0)
 
     def get_initial_slice_index(self):
-        first_slice_to_recon = self.sample.shape[1] // 2
+        first_slice_to_recon = self.images.num_sinograms // 2
         return first_slice_to_recon
 
     def do_fit(self):
@@ -127,20 +115,20 @@ class ReconstructWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor: ScalarCoR, algorithm: str, recon_filter: str):
+    def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters):
         # Ensure we have some sample data
-        if self.sample is None:
+        if self.images is None:
             return None
 
         # Perform single slice reconstruction
-        reconstructor = get_reconstructor_for(algorithm)
-        return reconstructor.single(self.images, slice_idx, cor, self.proj_angles, algorithm, recon_filter)
+        reconstructor = get_reconstructor_for(recon_params.algorithm)
+        return reconstructor.single(self.images, slice_idx, cor, self.proj_angles, recon_params)
 
-    def run_full_recon(self, algorithm: str, recon_filter: str, num_iter: int, progress: Progress):
-        reconstructor = get_reconstructor_for(algorithm)
+    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress):
+        reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
         return reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
-                                  self.proj_angles, algorithm, recon_filter, num_iter, progress)
+                                  self.proj_angles, recon_params, progress)
 
     @property
     def tilt_angle(self) -> Optional[Degrees]:

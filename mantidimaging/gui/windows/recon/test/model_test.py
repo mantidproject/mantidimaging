@@ -23,12 +23,7 @@ class CORTiltWindowModelTest(unittest.TestCase):
     def test_empty_init(self):
         m = ReconstructWindowModel(CorTiltPointQtModel())
         self.assertIsNone(m.stack)
-        self.assertIsNone(m.sample)
         self.assertIsNone(m.last_result)
-
-    def test_init(self):
-        self.assertEquals(self.model.sample.shape, (10, 128, 128))
-        self.assertEquals(self.model.num_projections, 10)
 
     def test_calculate_slices(self):
         self.assertEquals(self.model.slices, [])

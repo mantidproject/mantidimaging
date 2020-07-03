@@ -2,28 +2,26 @@ from logging import getLogger
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct import get_reconstructor_for
-from mantidimaging.core.utility.data_containers import ScalarCoR
-from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
+from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from .types import ImageType
 
 LOG = getLogger(__name__)
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, data: Images, slice_idx: int, initial_cor: ScalarCoR, initial_step=50, max_angle=360,
-                 algorithm="FBP_CUDA", filter_name="ram-lak"):
+    def __init__(self, data: Images, slice_idx: int, initial_cor: ScalarCoR,
+                 proj_angles: ProjectionAngles, recon_params: ReconstructionParameters):
         self.projection_shape = data.projection(0).shape
         self.sino = data.sino(slice_idx)
 
         # Initial parameters
         self.centre_cor = initial_cor.value
-        self.cor_step = initial_step
+        self.cor_step = 50
 
         # Cache projection angles
-        self.proj_angles = generate_projection_angles(max_angle, data.num_projections)
-        self.algorithm = algorithm
-        self.reconstructor = get_reconstructor_for(algorithm)
-        self.filter = filter_name
+        self.proj_angles = proj_angles
+        self.recon_params = recon_params
+        self.reconstructor = get_reconstructor_for(recon_params.algorithm)
 
     def adjust_cor(self, image):
         """
@@ -50,8 +48,8 @@ class CORInspectionDialogModel(object):
 
     def recon_preview(self, image):
         cor = ScalarCoR(self.cor(image))
-        return self.reconstructor.single_sino(self.sino, self.projection_shape, cor, self.proj_angles,
-                                              self.algorithm, self.filter)
+        return self.reconstructor.single_sino(self.sino, self.projection_shape, cor,
+                                              self.proj_angles, self.recon_params)
 
     @property
     def cor_extents(self):

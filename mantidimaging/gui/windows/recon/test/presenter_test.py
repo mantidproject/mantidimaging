@@ -25,7 +25,7 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
     def test_data_selected(self):
         self.presenter.set_stack(self.stack)
 
-        self.view.update_image_preview.assert_called_once()
+        self.view.update_projection.assert_called_once()
 
     def test_set_slice_preview_index(self):
         self.presenter.set_stack(self.stack)
@@ -61,13 +61,13 @@ class CORTiltWindowPresenterTest(unittest.TestCase):
 
         self.presenter.model.get_cor_from_regression.return_value = None
         self.presenter.do_reconstruct_slice()
-        self.view.update_image_recon_preview.assert_not_called()
+        self.view.update_recon_preview.assert_not_called()
 
         self.presenter.model.has_results = True
         self.presenter.model.get_cor_from_regression.return_value = 333
         self.presenter.model.run_preview_recon.return_value = [1, 2, 3]
         self.presenter.do_reconstruct_slice()
-        self.view.update_image_recon_preview.assert_called_once_with(
+        self.view.update_recon_preview.assert_called_once_with(
             self.presenter.model.run_preview_recon.return_value)
 
     # Test that calls to do_plot_cor_vs_slice_index at least mostly work

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ReconstructionParameters
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
@@ -99,7 +99,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
-            for button in [self.refineCorBtn, self.setAllButton, self.removeBtn]:
+            for button in [self.refineCorBtn, self.removeBtn]:
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
@@ -148,7 +148,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))
 
-    def update_image_preview(self, image_data, preview_slice_index: int, tilt_angle: Optional[Degrees]):
+    def update_projection(self, image_data, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         """
         Updates the preview projection image and associated annotations.
 
@@ -166,7 +166,10 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.image_view.update_projection(image_data, preview_slice_index, tilt_angle)
 
-    def update_image_recon_preview(self, image_data):
+    def update_sinogram(self, image_data):
+        self.image_view.update_sinogram(image_data)
+
+    def update_recon_preview(self, image_data):
         """
         Updates the reconstruction preview image with new data.
         """
@@ -244,7 +247,10 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @property
     def num_iter(self):
-        return self.numIter.value() if self.numIter.isVisible() else 1
+        return self.numIter.value()
+
+    def recon_params(self) -> ReconstructionParameters:
+        return ReconstructionParameters(self.algorithm_name, self.filter_name, self.num_iter)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on
