@@ -2,12 +2,10 @@ from math import isnan
 from typing import Tuple, Optional
 
 import numpy
-from PyQt5.QtWidgets import QGraphicsGridLayout
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class ReconImagesView(GraphicsLayoutWidget):
@@ -47,12 +45,9 @@ class ReconImagesView(GraphicsLayoutWidget):
         hist = HistogramLUTItem(im)
         return im, vb, hist
 
-    def update_projection(self, image_data: numpy.ndarray, preview_slice_index: int,
-                          tilt_angle: Optional[Degrees], roi: Optional[SensibleROI]):
+    def update_projection(self, image_data: numpy.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.projection.clear()
         self.projection.setImage(image_data)
-        # if roi:
-        #     self.projection.setRect(QRect(*roi))
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:

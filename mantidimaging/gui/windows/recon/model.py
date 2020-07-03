@@ -131,7 +131,7 @@ class ReconstructWindowModel(object):
         first_slice_to_recon = self.sample.shape[1] // 2
         return first_slice_to_recon
 
-    def do_fit(self, progress):
+    def do_fit(self):
         # Ensure we have some sample data
         if self.stack is None:
             raise ValueError('No image stack is provided')
@@ -160,7 +160,6 @@ class ReconstructWindowModel(object):
     def run_full_recon(self, algorithm: str, recon_filter: str, num_iter: int, progress: Progress):
         reconstructor = get_reconstructor_for(algorithm)
         # get the image height based on the current ROI
-        self.images.set_roi(self.roi)
         return reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
                                   self.proj_angles, algorithm, recon_filter, num_iter, progress)
 
@@ -203,6 +202,7 @@ class ReconstructWindowModel(object):
 
     def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
         self.data_model.set_precalculated(cor, tilt)
+        self.last_result = self.data_model.stack_properties
 
     @property
     def roi(self) -> SensibleROI:

@@ -13,7 +13,6 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
-    roi: Optional[SensibleROI] = None
 
     def __init__(self,
                  sample: np.ndarray,
@@ -113,14 +112,13 @@ class Images:
             self.metadata[const.OPERATION_HISTORY] = []
 
         def accepted_type(o):
-            return type(o) in [str, int, float, bool, tuple, list]
+            return any([isinstance(o, expected) for expected in [str, int, float, bool, tuple, list, SensibleROI]])
 
         self.metadata[const.OPERATION_HISTORY].append({
             const.OPERATION_NAME:
                 func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
-            const.OPERATION_KEYWORD_ARGS: {k: v
-                                           for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_KEYWORD_ARGS: {k: str(v) for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
                 display_name
         })
@@ -156,31 +154,39 @@ class Images:
     def width(self):
         return self.sample.shape[2]
 
+    @property
+    def num_projections(self) -> int:
+        if not self.sinograms:
+            return self.sample.shape[0]
+        else:
+            return self.sample.shape[1]
+
+    @property
+    def num_sinograms(self) -> int:
+        if not self.sinograms:
+            return self.sample.shape[1]
+        else:
+            return self.sample.shape[0]
+
     def sino(self, slice_idx) -> np.ndarray:
         if not self.sinograms:
             return np.swapaxes(self.sample, 0, 1)[slice_idx]
         else:
             return self.sample[slice_idx]
 
-    # def to_sino(self, deepcopy=False):
-    #     if not self.sinograms:
-    #         return np.swapaxes(self.sample, 0, 1)
-    #     else:
-    #         return self.sample
+    def projection(self, projection_idx) -> np.ndarray:
+        if self.sinograms:
+            return np.swapaxes(self.sample, 0, 1)[projection_idx]
+        else:
+            return self.sample[projection_idx]
 
     @property
     def sample(self) -> np.ndarray:
-        if self.roi is None:
-            return self._sample
-        else:
-            return self._sample[:, self.roi.top:self.roi.bottom, self.roi.left:self.roi.right]
+        return self._sample
 
     @sample.setter
     def sample(self, other: np.ndarray):
         self._sample = other
-
-    def set_roi(self, roi: SensibleROI):
-        self.roi = roi
 
     @property
     def dtype(self):

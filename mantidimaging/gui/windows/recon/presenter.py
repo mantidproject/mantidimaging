@@ -9,7 +9,6 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
 LOG = getLogger(__name__)
@@ -92,18 +91,16 @@ class ReconstructWindowPresenter(BasePresenter):
                     widget.hide()
 
     def set_stack_uuid(self, uuid):
-        # if self.ignore_stack_change:
-        #     return
         stack = self.view.get_stack_visualiser(uuid)
         if self.model.is_current_stack(stack):
             return
 
         self.view.reset_image_recon_preview()
-        with BlockQtSignals(self.view):
-            self.view.clear_cor_table()
+
+        # TODO if something breaks i commented this
+        # with BlockQtSignals(self.view):
+        self.view.clear_cor_table()
         self.set_stack(stack)
-        # find a cor for the middle
-        # with BlockQtSignals(self.view.cor_table_model):
         self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
         self.do_reconstruct_slice()
 
@@ -126,21 +123,19 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_crop_to_roi(self):
         self.model.update_roi_from_stack()
+        self.view.clear_cor_table()
         self.view.set_results(ScalarCoR(0.0), Degrees(0.0), Slope(0.0))
         self.do_update_projection()
 
     def do_update_projection(self):
-        img_data = self.model.sample[self.model.preview_projection_idx] \
-            if self.model.sample is not None else None
+        images = self.model.images
+        if images is not None:
+            img_data = images.projection(self.model.preview_projection_idx)
 
-        self.view.update_image_preview(img_data,
-                                       self.model.preview_slice_idx,
-                                       self.model.tilt_angle,
-                                       self.model.roi)
+            self.view.update_image_preview(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
 
     def do_add_cor(self):
         row = self.model.selected_row
-        # FIXME why doesn't add get one form the regression?!
         cor = self.model.get_me_a_cor()
         self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
 
@@ -184,19 +179,10 @@ class ReconstructWindowPresenter(BasePresenter):
             self.do_reconstruct_slice(new_cor, slice_idx)
 
     def do_cor_fit(self):
-        start_async_task_view(self.view, self.model.do_fit, self._on_finding_done)
-
-    def _on_finding_done(self, task):
-        log = getLogger(__name__)
-
-        if task.was_successful():
-            self.view.set_results(*self.model.get_results())
-            self.do_update_projection()
-            self.do_reconstruct_slice()
-        else:
-            msg = self.ERROR_STRING.format(task.error)
-            log.error(msg)
-            self.show_error(msg, traceback.format_exc())
+        self.model.do_fit()
+        self.view.set_results(*self.model.get_results())
+        self.do_update_projection()
+        self.do_reconstruct_slice()
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
@@ -223,29 +209,5 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.set_results(*self.model.get_results())
         for idx, point in enumerate(self.model.data_model.iter_points()):
             self.view.set_table_point(idx, point.slice_index, point.cor)
+        self.do_update_projection()
         self.do_reconstruct_slice()
-
-    @property
-    def ignore_stack_change(self):
-        """
-        Whether to ignore the stack change signal by the view.
-
-        :return: Returns True only the first time it's called. Afterwards
-                 `self.ignore_next_stack_change` needs to be called again
-        """
-        if self._ignore_stack_change:
-            self._ignore_stack_change = False
-            return True
-        else:
-            return False
-
-    def ignore_next_stack_change(self):
-        # When a new stack is added to the list,
-        # this triggers set_stack_uuid. For some reason
-        # that makes the projection view go mad
-        # and starts triggering infinite Qt transforms with null.
-        # To avoid figuring out why - we just stop the set_stack_uuid
-        # from executing after the stack list has been changed
-        # PS. Hiding, resetting or redrawing the tilt line and/or the
-        # projection image doesn't fix it
-        self._ignore_stack_change = True

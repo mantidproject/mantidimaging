@@ -22,6 +22,9 @@ class SensibleROI:
         """
         return iter((self.left, self.top, self.right, self.bottom))
 
+    def __str__(self):
+        return f"Left: {self.left}, Top: {self.top}, Right: {self.right}, Bottom: {self.bottom}"
+
     @property
     def width(self) -> int:
         return self.right - self.left

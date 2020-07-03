@@ -116,7 +116,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
-        self.stackSelector.stacks_updated.connect(self.presenter.ignore_next_stack_change)
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -154,8 +153,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))
 
-    def update_image_preview(self, image_data, preview_slice_index: int, tilt_angle: Optional[Degrees],
-                             roi: Optional[SensibleROI] = None):
+    def update_image_preview(self, image_data, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         """
         Updates the preview projection image and associated annotations.
 
@@ -172,7 +170,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.previewSliceIndex.setValue(preview_slice_index)
 
-        self.image_view.update_projection(image_data, preview_slice_index, tilt_angle, roi)
+        self.image_view.update_projection(image_data, preview_slice_index, tilt_angle)
 
     def update_image_recon_preview(self, image_data):
         """
@@ -255,7 +253,13 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.numIter.value() if self.numIter.isVisible() else 1
 
     def set_table_point(self, idx, slice_idx, cor):
-        self.cor_table_model.set_point(idx, slice_idx, cor)
+        # reset_results=False stops the resetting of the data model on
+        # changing a point from here - otherwise calculating the CoR
+        # for each slice from tilt ends up resetting the model afterwards
+        # (while it's containing the correct results)
+        # Manual CoR typed by the user will still reset it, as that is
+        # handled as an internal Qt event in the model
+        self.cor_table_model.set_point(idx, slice_idx, cor, reset_results=False)
 
     def show_recon_volume(self, data: Images):
         self.main_window.create_new_stack(data, "Recon")

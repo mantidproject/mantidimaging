@@ -1,7 +1,6 @@
 from typing import Tuple
 
 import numpy as np
-from PyQt5.QtWidgets import QGraphicsGridLayout
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -31,7 +30,7 @@ class CompareSlicesView(GraphicsLayoutWidget):
             view.linkView(ViewBox.XAxis, view2)
             view.linkView(ViewBox.YAxis, view2)
 
-        image_layout = QGraphicsGridLayout()
+        image_layout = self.addLayout(colspan=6)
 
         self.less_label = LabelItem("")
         image_layout.addItem(self.less_label, 0, 0, 1, 2)
@@ -53,8 +52,6 @@ class CompareSlicesView(GraphicsLayoutWidget):
         image_layout.addItem(current_pixel, 2, 2, 1, 2)
         more_pixel = LabelItem("Value")
         image_layout.addItem(more_pixel, 2, 4, 1, 2)
-
-        self.addItem(image_layout, colspan=6)
 
         self.display_formatted_detail = {
             self.less_img: lambda val: less_pixel.setText(f"Value: {val:.6f}"),

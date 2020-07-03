@@ -146,6 +146,7 @@ class StackVisualiserView(BaseMainWindowView):
             roi = [int(r.strip()) for r in roi.split(",")]
             self.image_view.roi.setSize((roi[2], roi[3]))
             self.image_view.roi.setPos((roi[0], roi[1]))
+            # self.image_view.roi.show()
             self.image_view.roiChanged()
 
     def copy_roi_to_clipboard(self):

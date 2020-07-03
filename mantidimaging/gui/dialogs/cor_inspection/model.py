@@ -12,7 +12,7 @@ LOG = getLogger(__name__)
 class CORInspectionDialogModel(object):
     def __init__(self, data: Images, slice_idx: int, initial_cor: ScalarCoR, initial_step=50, max_angle=360,
                  algorithm="FBP_CUDA", filter_name="ram-lak"):
-        self.data_shape = data.sample.shape
+        self.projection_shape = data.projection(0).shape
         self.sino = data.sino(slice_idx)
 
         # Initial parameters
@@ -20,7 +20,7 @@ class CORInspectionDialogModel(object):
         self.cor_step = initial_step
 
         # Cache projection angles
-        self.proj_angles = generate_projection_angles(max_angle, self.data_shape[0])
+        self.proj_angles = generate_projection_angles(max_angle, data.num_projections)
         self.algorithm = algorithm
         self.reconstructor = get_reconstructor_for(algorithm)
         self.filter = filter_name
@@ -50,7 +50,7 @@ class CORInspectionDialogModel(object):
 
     def recon_preview(self, image):
         cor = ScalarCoR(self.cor(image))
-        return self.reconstructor.single_sino(self.sino, self.data_shape, cor, self.proj_angles,
+        return self.reconstructor.single_sino(self.sino, self.projection_shape, cor, self.proj_angles,
                                               self.algorithm, self.filter)
 
     @property

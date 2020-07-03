@@ -61,18 +61,17 @@ class AstraRecon:
     @staticmethod
     def single(images: Images, slice_idx: int, cor: ScalarCoR, proj_angles: np.ndarray,
                algorithm: str, recon_filter: str) -> np.ndarray:
-        sample = images.sample
-        sino = np.swapaxes(sample, 0, 1)[slice_idx]
-        return AstraRecon.single_sino(sino, sample.shape, cor, proj_angles, algorithm, recon_filter)
+        return AstraRecon.single_sino(images.sino(slice_idx), images.projection(0).shape, cor, proj_angles,
+                                      algorithm, recon_filter)
 
     @staticmethod
-    def single_sino(sino: np.ndarray, original_shape: Tuple[int, int, int],
+    def single_sino(sino: np.ndarray, shape: Tuple[int, int],
                     cor: ScalarCoR, proj_angles: np.ndarray,
                     algorithm: str, recon_filter: str) -> np.ndarray:
         """
 
         :param sino: Single sinogram, i.e. 2D array
-        :param original_shape: The original shape of the 3D dataset - used to make the correct reconstruction output shape
+        :param shape: The original shape of the 3D dataset - used to make the correct reconstruction output shape
         :param cor: Center of rotation for parallel geometry. It will be converted to vector geometry before reconstructing
         :param proj_angles: Projection angles
         :param algorithm: Algorithm to be used for the reconstruction
@@ -80,11 +79,11 @@ class AstraRecon:
         :param progress: Progress bar instance
         """
         assert sino.ndim == 2, "Sinogram must be a 2D image"
-        assert len(original_shape) == 3, "Original shape of the data must be 3D"
+        assert len(shape) == 2, "Projection shape of the data must be D"
 
-        image_width = original_shape[2]
+        image_width = shape[1]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
-        vol_geom = astra.create_vol_geom(original_shape[1:])
+        vol_geom = astra.create_vol_geom(shape)
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(algorithm)
         cfg['FilterType'] = recon_filter
@@ -107,6 +106,9 @@ class AstraRecon:
         vec_cors = [cor.to_vec(images.width).value for cor in cors]
         vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[0])
         proj_geom = astra.create_proj_geom('parallel_vec', images.width, vectors)
+        # Unlike the single slice recons, this one keeps the volume and sino
+        # memory objects and just replaces the data on every iteration.
+        # It seems a bit faster (~5%) from eyeballing times taken
         sino_id = astra.data2d.create('-sino', proj_geom)
 
         cfg = astra.astra_dict(algorithm)

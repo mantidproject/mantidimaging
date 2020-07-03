@@ -33,8 +33,8 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         super(CorTiltPointQtModel, self).sort_points()
         self.layoutChanged.emit()
 
-    def set_point(self, idx, slice_idx=None, cor=None):
-        super(CorTiltPointQtModel, self).set_point(idx, slice_idx, cor)
+    def set_point(self, idx, slice_idx: int = None, cor: float = None, reset_results=True):
+        super(CorTiltPointQtModel, self).set_point(idx, slice_idx, cor, reset_results)
         self.dataChanged.emit(self.index(idx, 0), self.index(idx, 1))
 
     def columnCount(self, parent=None):
@@ -132,4 +132,3 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
             return None
 
         return COLUMN_NAMES[Column(section)]
-

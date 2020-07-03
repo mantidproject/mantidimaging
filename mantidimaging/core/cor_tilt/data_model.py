@@ -36,7 +36,6 @@ class CorTiltDataModel:
         self._cached_gradient, self._cached_cor, *_ = sp.stats.linregress(self.slices, self.cors)
 
     def add_point(self, idx=None, slice_idx=0, cor=0.0):
-
         self.clear_results()
 
         if idx is None:
@@ -44,8 +43,9 @@ class CorTiltDataModel:
         else:
             self._points.insert(idx, Point(slice_idx, cor))
 
-    def set_point(self, idx, slice_idx=None, cor=None):
-        self.clear_results()
+    def set_point(self, idx, slice_idx: int = None, cor: float = None, reset_results=True):
+        if reset_results:
+            self.clear_results()
 
         if slice_idx is not None:
             self._points[idx] = Point(int(slice_idx), self._points[idx].cor)
