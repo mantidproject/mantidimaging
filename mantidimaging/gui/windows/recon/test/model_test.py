@@ -33,18 +33,9 @@ class CORTiltWindowModelTest(unittest.TestCase):
     def test_calculate_slices(self):
         self.assertEquals(self.model.slices, [])
         self.assertEquals(self.model.num_points, 0)
-        self.model.roi = (30, 25, 100, 120)
         self.model.calculate_slices(5)
         self.assertEquals(len(self.model.slices), 5)
         self.assertEquals(self.model.num_points, 5)
-
-    def test_calculate_slices_no_roi(self):
-        self.assertEquals(self.model.slices, [])
-        self.assertEquals(self.model.num_points, 0)
-        self.model.roi = None
-        self.model.calculate_slices(5)
-        self.assertEquals(self.model.slices, [])
-        self.assertEquals(self.model.num_points, 0)
 
     def test_tilt_line_data(self):
         self.model.data_model._points = [Point(50, 1), Point(40, 2), Point(30, 3), Point(20, 4)]
@@ -54,14 +45,3 @@ class CORTiltWindowModelTest(unittest.TestCase):
         data = self.model.tilt_angle
 
         self.assertEquals(data, ([1, 4], [50, 20]))
-
-    def test_set_all_cors(self):
-        set_to = 123.0
-        data_model = self.model.data_model
-        data_model.add_point(slice_idx=0, cor=0.0)
-        data_model.add_point(slice_idx=5, cor=10.0)
-        data_model.add_point(slice_idx=10, cor=100.0)
-
-        self.model.set_all_cors(set_to)
-        for [_, cor] in data_model._points:
-            self.assertEquals(cor, set_to)

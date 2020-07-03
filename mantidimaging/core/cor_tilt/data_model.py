@@ -81,10 +81,6 @@ class CorTiltDataModel:
     def sort_points(self):
         self._points.sort(key=lambda p: p.slice_index)
 
-    def get_cor_for_slice(self, slice_idx) -> Optional[ScalarCoR]:
-        a = [p.cor for p in self._points if p.slice_index == slice_idx]
-        return a[0] if a else None
-
     def get_cor_from_regression(self, slice_idx) -> float:
         cor = (self.gradient.value * slice_idx) + self.cor.value
         return cor

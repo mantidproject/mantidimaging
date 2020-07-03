@@ -11,7 +11,6 @@ from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as 
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.projection_angles import (generate as generate_projection_angles)
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
 if TYPE_CHECKING:
@@ -28,7 +27,6 @@ class ReconstructWindowModel(object):
         self.preview_projection_idx = 0
         self.preview_slice_idx = 0
         self.selected_row = 0
-        self._roi = None
         self.projection_indices = None
         self.data_model = data_model
         self.last_result = None
@@ -69,14 +67,6 @@ class ReconstructWindowModel(object):
     def num_points(self):
         return self.data_model.num_points
 
-    @property
-    def cor_for_current_preview_slice(self):
-        return ScalarCoR(self.data_model.get_cor_for_slice(self.preview_slice_idx))
-
-    def set_all_cors(self, cor: ScalarCoR):
-        for slice_idx in self.data_model.slices:
-            self.data_model.set_cor_at_slice(slice_idx, cor.value)
-
     def initial_select_data(self, stack):
         self.data_model.clear_results()
 
@@ -88,23 +78,15 @@ class ReconstructWindowModel(object):
 
         if stack is not None:
             image_shape = self.sample.shape
-            self.roi = SensibleROI(0, 0, image_shape[1], image_shape[2])
             self.proj_angles = generate_projection_angles(360, image_shape[0])
-
-    def update_roi_from_stack(self):
-        self.data_model.clear_results()
-        self.roi = self.stack.current_roi if self.stack else None
 
     def calculate_slices(self, count):
         self.data_model.clear_results()
-        if self.roi is not None:
-            lower = self.roi.top
-            upper = self.roi.bottom
-            # move the bounds by 20% as the ends of the image are usually empty
-            # or contain unimportant information
-            lower = lower * 1.2 if lower != 0 else 0.2 * self.sample.shape[1]
-            upper = upper - upper * 0.2
-            self.data_model.populate_slice_indices(lower, upper, count)
+        # move the bounds by 20% as the ends of the image are usually empty
+        # or contain unimportant information
+        lower = 0.2 * self.images.height
+        upper = self.images.height - lower
+        self.data_model.populate_slice_indices(lower, upper, count)
 
     def calculate_projections(self, count):
         self.data_model.clear_results()
@@ -135,9 +117,6 @@ class ReconstructWindowModel(object):
         # Ensure we have some sample data
         if self.stack is None:
             raise ValueError('No image stack is provided')
-
-        if self.roi is None:
-            raise ValueError('No region of interest is defined')
 
         self.data_model.linear_regression()
         update_image_operations(self.images, self.data_model)
@@ -203,14 +182,6 @@ class ReconstructWindowModel(object):
     def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
         self.data_model.set_precalculated(cor, tilt)
         self.last_result = self.data_model.stack_properties
-
-    @property
-    def roi(self) -> SensibleROI:
-        return self._roi
-
-    @roi.setter
-    def roi(self, value: SensibleROI):
-        self._roi = value
 
     def is_current_stack(self, stack):
         return self.stack == stack

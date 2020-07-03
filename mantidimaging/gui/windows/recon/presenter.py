@@ -22,12 +22,10 @@ class Notifications(Enum):
     RECONSTRUCT_SLICE = auto()
     RECONSTRUCT_USER_CLICK = auto()
     COR_FIT = auto()
-    SET_ALL_ROW_VALUES = auto()
     CLEAR_ALL_CORS = auto()
     REMOVE_SELECTED_COR = auto()
     CALCULATE_CORS_FROM_MANUAL_TILT = auto()
     ALGORITHM_CHANGED = auto()
-    CROP_TO_ROI = auto()
     UPDATE_PROJECTION = auto()
     ADD_COR = auto()
     REFINE_COR = auto()
@@ -59,8 +57,6 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_user_click_recon(slice_idx)
             elif notification == Notifications.COR_FIT:
                 self.do_cor_fit()
-            elif notification == Notifications.SET_ALL_ROW_VALUES:
-                self.do_set_all_row_values()
             elif notification == Notifications.CLEAR_ALL_CORS:
                 self.do_clear_all_cors()
             elif notification == Notifications.REMOVE_SELECTED_COR:
@@ -69,8 +65,6 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_calculate_cors_from_manual_tilt()
             elif notification == Notifications.ALGORITHM_CHANGED:
                 self.do_algorithm_changed()
-            elif notification == Notifications.CROP_TO_ROI:
-                self.do_crop_to_roi()
             elif notification == Notifications.UPDATE_PROJECTION:
                 self.do_update_projection()
             elif notification == Notifications.ADD_COR:
@@ -120,12 +114,6 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
         self.do_reconstruct_slice()
-
-    def do_crop_to_roi(self):
-        self.model.update_roi_from_stack()
-        self.view.clear_cor_table()
-        self.view.set_results(ScalarCoR(0.0), Degrees(0.0), Slope(0.0))
-        self.do_update_projection()
 
     def do_update_projection(self):
         images = self.model.images
@@ -186,11 +174,6 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
-
-    def do_set_all_row_values(self):
-        if self.view.cor_table_model.empty:
-            return
-        self.model.set_all_cors(self.model.cor_for_current_preview_slice)
 
     def do_clear_all_cors(self):
         self.view.clear_cor_table()

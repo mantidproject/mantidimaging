@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBo
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
@@ -20,7 +19,6 @@ class ReconstructWindowView(BaseMainWindowView):
     imageLayout: QVBoxLayout
 
     inputTab: QWidget
-    setRoiBtn: QPushButton
     calculateCors: QPushButton
 
     resultTab: QWidget
@@ -74,16 +72,13 @@ class ReconstructWindowView(BaseMainWindowView):
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
                 self.presenter.notify(PresN.RECONSTRUCT_USER_CLICK, slice_idx)
 
-        # self.cor_table_model.rowsRemoved.connect(lambda: self.presenter.notify(PresN.UPDATE_PROJECTION))
         self.cor_table_model.dataChanged.connect(on_data_change)
 
         self.clearAllBtn.clicked.connect(lambda: self.presenter.notify(PresN.CLEAR_ALL_CORS))
         self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
         self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
         self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
-        self.setAllButton.clicked.connect(lambda: self.presenter.notify(PresN.SET_ALL_ROW_VALUES))
         self.fitBtn.clicked.connect(lambda: self.presenter.notify(PresN.COR_FIT))
-        self.setRoiBtn.clicked.connect(lambda: self.presenter.notify(PresN.CROP_TO_ROI))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
 
@@ -165,7 +160,6 @@ class ReconstructWindowView(BaseMainWindowView):
         :param preview_slice_index: Y coordinate at which to draw the preview
                                     slice indicator
         :param tilt_angle: Angle of the tilt line
-        :param roi: Region of interest to crop the image to
         """
 
         self.previewSliceIndex.setValue(preview_slice_index)
