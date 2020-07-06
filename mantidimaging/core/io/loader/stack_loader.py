@@ -69,4 +69,4 @@ def execute(load_func, file_name, dtype, name, indices=None, progress=None):
 
     # Nexus doesn't load flat/dark images yet, if the functionality is
     # requested it should be changed here
-    return Images(data, None, None, file_name)
+    return Images(data, file_name)

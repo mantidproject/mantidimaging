@@ -165,29 +165,29 @@ class IOTest(FileOutputtingTestCase):
         self.assert_files_exist(os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
                                 dark.shape[0])
 
-        loaded_images = loader.load(self.output_directory,
+        dataset = loader.load(self.output_directory,
                                     flat_dir,
                                     dark_dir,
                                     in_format=img_format,
                                     indices=loader_indices)
 
         if loader_indices:
-            assert len(loaded_images.sample) == expected_len, \
+            assert len(dataset.sample) == expected_len, \
                 "The length of the loaded data doesn't " \
                 "match the expected length: {0}, " \
                 "Got: {1}".format(
-                    expected_len, len(loaded_images.sample))
+                    expected_len, len(dataset.sample))
 
             # crop the original images to make sure the tests is correct
             images = images[loader_indices[0]:loader_indices[1]]
 
-        npt.assert_equal(loaded_images.sample, images)
+        npt.assert_equal(dataset.sample, images)
         # we only check the first image because they will be
         # averaged out when loaded! The initial images are only 3s
-        npt.assert_equal(loaded_images.flat, flat)
-        npt.assert_equal(loaded_images.dark, dark)
+        npt.assert_equal(dataset.flat, flat)
+        npt.assert_equal(dataset.dark, dark)
 
-        loaded_images.free_memory()
+        dataset.free_memory()
 
     def test_metadata_round_trip(self):
         # Create dummy image stack

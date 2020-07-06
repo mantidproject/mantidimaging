@@ -36,51 +36,51 @@ class FlatFieldingTest(unittest.TestCase):
         # below the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
         images, flat, dark = self._make_images()
-        images.sample[:] = 26.
-        flat.sample[:] = 7.
-        dark.sample[:] = 6.
+        images.data[:] = 26.
+        flat.data[:] = 7.
+        dark.data[:] = 6.
 
-        expected = np.full(images.sample.shape, 20.)
+        expected = np.full(images.data.shape, 20.)
 
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images, flat, dark, clip_max=20)
 
-        npt.assert_almost_equal(result.sample, expected, 7)
+        npt.assert_almost_equal(result.data, expected, 7)
 
     def test_clip_max_works(self):
         # the calculation here was designed on purpose to have a value
         # ABOVE the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
         images, flat, dark = self._make_images()
-        images.sample[:] = 846.
-        flat.sample[:] = 42.
-        dark.sample[:] = 6.
-        expected = np.full(images.sample.shape, 3.)
+        images.data[:] = 846.
+        flat.data[:] = 42.
+        dark.data[:] = 6.
+        expected = np.full(images.data.shape, 3.)
 
         # the resulting values from the calculation are above 3,
         # but clip_max should make them all equal to 3
         result = FlatFieldFilter.filter_func(images, flat, dark, clip_max=3)
 
-        npt.assert_equal(result.sample, expected)
-        npt.assert_equal(images.sample, expected)
+        npt.assert_equal(result.data, expected)
+        npt.assert_equal(images.data, expected)
 
-        npt.assert_equal(result.sample, images.sample)
+        npt.assert_equal(result.data, images.data)
 
     def test_clip_min_works(self):
         images, flat, dark = self._make_images()
-        images.sample[:] = 846.
-        flat.sample[:] = 42.
-        dark.sample[:] = 6.
-        expected = np.full(images.sample.shape, 300.)
+        images.data[:] = 846.
+        flat.data[:] = 42.
+        dark.data[:] = 6.
+        expected = np.full(images.data.shape, 300.)
 
         # the resulting values from above are below 300,
         # but clip min should make all values below 300, equal to 300
         result = FlatFieldFilter.filter_func(images, flat, dark, clip_min=300)
 
-        npt.assert_equal(result.sample, expected)
-        npt.assert_equal(images.sample, expected)
+        npt.assert_equal(result.data, expected)
+        npt.assert_equal(images.data, expected)
 
-        npt.assert_equal(result.sample, images.sample)
+        npt.assert_equal(result.data, images.data)
 
     @mock.patch(f'{FlatFieldFilter.__module__ + ".get_average_image"}', mock.MagicMock(return_value=None))
     def test_execute_wrapper_return_is_runnable(self):

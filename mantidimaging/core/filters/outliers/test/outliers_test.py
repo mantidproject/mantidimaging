@@ -22,10 +22,10 @@ class OutliersTest(unittest.TestCase):
         radius = 8
         threshold = 0.1
 
-        sample = np.copy(images.sample)
+        sample = np.copy(images.data)
         result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
 
-        th.assert_not_equals(result.sample, sample)
+        th.assert_not_equals(result.data, sample)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

@@ -30,9 +30,9 @@ class GaussianTest(unittest.TestCase):
         mode = None
         order = None
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = GaussianFilter.filter_func(images, size, mode, order)
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_executed_parallel(self):
         images = th.generate_images()
@@ -41,10 +41,10 @@ class GaussianTest(unittest.TestCase):
         mode = 'reflect'
         order = 1
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = GaussianFilter.filter_func(images, size, mode, order)
 
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_memory_change_acceptable(self):
         """

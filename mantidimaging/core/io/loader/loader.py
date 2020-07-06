@@ -2,9 +2,8 @@ from logging import getLogger
 
 import numpy as np
 
-from mantidimaging import helper
-from mantidimaging.core.data import Images
-from mantidimaging.core.io.loader import img_loader, stack_loader
+from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names)
 
 LOG = getLogger(__name__)
@@ -70,36 +69,24 @@ def supported_formats():
 
 def read_in_shape(input_path, in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32):
     input_file_names = get_file_names(input_path, in_format, in_prefix)
-    images = load(input_path,
-                  None,
-                  None,
-                  in_prefix,
-                  in_format,
-                  data_dtype,
-                  indices=[0, 1, 1],
-                  file_names=input_file_names)
+    dataset = load(input_path, in_prefix=in_prefix, in_format=in_format, dtype=data_dtype, indices=[0, 1, 1],
+                   file_names=input_file_names)
+    images = dataset.sample
 
     # construct and return the new shape
-    shape = (len(input_file_names), ) + images.sample.shape[1:]
+    shape = (len(input_file_names),) + images.data.shape[1:]
     images.free_memory()
     return shape
 
 
-def load(input_path=None,
-         input_path_flat=None,
-         input_path_dark=None,
-         in_prefix='',
-         in_format=DEFAULT_IO_FILE_FORMAT,
-         dtype=np.float32,
-         file_names=None,
-         indices=None,
-         progress=None) -> Images:
+def load(input_path=None, input_path_flat=None, input_path_dark=None,
+         in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, dtype=np.float32,
+         file_names=None, indices=None, progress=None) -> Dataset:
     """
 
     Loads a stack, including sample, white and dark images.
 
     :param input_path: Path for the input data folder
-    TODO remove flat and dark loading, just load images
     :param input_path_flat: Optional: Path for the input Flat images folder
     :param input_path_dark: Optional: Path for the input Dark images folder
     :param in_prefix: Optional: Prefix for loaded files
@@ -126,28 +113,27 @@ def load(input_path=None,
         input_file_names = file_names
 
     if in_format in ['nxs']:
+        raise NotImplementedError("TODO this needs to be adapted to the new changes")
         # pass only the first filename as we only expect a stack
-        input_file = input_file_names[0]
-        images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load", indices, progress)
+        # input_file = input_file_names[0]
+        # images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load", indices, progress)
     else:
         if in_format in ['fits', 'fit']:
             load_func = _fitsread
         else:
             load_func = _imread
 
-        images = img_loader.execute(load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype,
-                                    indices, progress)
-
-    helper.check_data_stack(images)
+        dataset = img_loader.execute(load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype,
+                                     indices, progress)
 
     # Search for and load metadata file
     metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)
     metadata_filename = metadata_found_filenames[0] if metadata_found_filenames else None
     if metadata_filename:
         with open(metadata_filename) as f:
-            images.load_metadata(f)
+            dataset.sample.load_metadata(f)
             LOG.debug('Loaded metadata from: {}'.format(metadata_filename))
     else:
         LOG.debug('No metadata file found')
 
-    return images
+    return dataset

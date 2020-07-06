@@ -8,7 +8,7 @@ def run_auto_finding_on_images(images: Images, model, roi, projections=None, cor
     """
     Performs automatic COR/Tilt finding on an image stack.
     """
-    auto_find_cors(images.sample, roi, model, projections, cores, progress)
+    auto_find_cors(images.data, roi, model, projections, cores, progress)
     model.linear_regression()
     update_image_operations(images, model)
 

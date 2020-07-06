@@ -26,10 +26,10 @@ class MedianTest(unittest.TestCase):
         size = None
         mode = None
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = MedianFilter.filter_func(images, size, mode)
 
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_executed_no_helper_parallel(self):
         images = th.generate_images()
@@ -37,10 +37,10 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = MedianFilter.filter_func(images, size, mode)
 
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     @unittest.skipIf(not gpu.gpu_available(), reason="Skip GPU tests if cupy isn't installed")
     def test_executed_no_helper_gpu(self):
@@ -49,10 +49,10 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
 
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_executed_no_helper_seq(self):
         images = th.generate_images()
@@ -60,12 +60,12 @@ class MedianTest(unittest.TestCase):
         size = 3
         mode = 'reflect'
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         th.switch_mp_off()
         result = MedianFilter.filter_func(images, size, mode)
         th.switch_mp_on()
 
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_memory_change_acceptable(self):
         """

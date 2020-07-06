@@ -42,7 +42,7 @@ class ClipValuesFilter(BaseFilter):
         # evaluates to false
         if clip_min is not None or clip_max is not None:
             with progress:
-                sample = data.sample
+                sample = data.data
                 progress.update(msg="Determining clip min and clip max")
                 clip_min = clip_min if clip_min is not None else sample.min()
                 clip_max = clip_max if clip_max is not None else sample.max()

@@ -120,6 +120,7 @@ def add_property_to_form(label,
     :param tooltip: Optional tooltip text to show on property
     :param on_change: Function to be called when the property changes
     :param form: Form layout to optionally add the new widgets to
+    :param filters_view: The Filter window view - passed to connect Type.STACK to the stack change events
     """
     # By default assume the left hand side widget will be a label
     left_widget = QLabel(label)

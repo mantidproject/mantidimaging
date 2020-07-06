@@ -13,74 +13,37 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
-    def __init__(self,
-                 sample: np.ndarray,
-                 flat: np.ndarray = None,
-                 dark: np.ndarray = None,
-                 sample_filenames: Optional[List[str]] = None,
-                 indices: Optional[Tuple[int, int, int]] = None,
-                 flat_filenames: Optional[List[str]] = None,
-                 dark_filenames: Optional[List[str]] = None,
-                 metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 sample_memory_file_name: Optional[str] = None,
-                 flat_memory_file_name: Optional[str] = None,
-                 dark_memory_file_name: Optional[str] = None):
+    def __init__(self, data: np.ndarray, filenames: Optional[List[str]] = None,
+                 indices: Optional[Tuple[int, int, int]] = None, metadata: Optional[Dict[str, Any]] = None,
+                 sinograms: bool = False, memory_filename: Optional[str] = None):
         """
 
-        :param sample: Images of the Sample/Projection data
-        :param flat: Images of the Flat data
-        :param dark: Images of the Dark data
-        :param sample_filenames: All filenames that were matched for loading
+        :param data: Images of the Sample/Projection data
+        :param filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
-        :param flat_filenames: All filenames that were matched for loading of Flat images
-        :param dark_filenames: All filenames that were matched for loading of Dark images
         :param metadata: Properties to copy when creating a new stack from an existing one
         """
 
-        self._sample = sample
-        self.flat = flat
-        self.dark = dark
+        self._data = data
         self.indices = indices
 
-        self._filenames = sample_filenames
-        self.flat_filenames = flat_filenames
-        self.dark_filenames = dark_filenames
+        self._filenames = filenames
 
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self.sinograms = sinograms
 
-        self.sample_memory_file_name = sample_memory_file_name
-        self.flat_memory_file_name = flat_memory_file_name
-        self.dark_memory_file_name = dark_memory_file_name
+        self.memory_filename = memory_filename
 
     def __str__(self):
-        return 'Image Stack: sample={}, flat={}, dark={}, |properties|={}'.format(
-            self.sample.shape if self.sample is not None else None, self.flat.shape if self.flat is not None else None,
-            self.dark.shape if self.dark is not None else None, len(self.metadata))
+        return f'Image Stack: data={self.data.shape} | properties|={len(self.metadata)}'
 
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
 
     def free_memory(self):
-        self.free_sample()
-        self.free_flat()
-        self.free_dark()
-
-    def free_sample(self):
-        if self.sample_memory_file_name is not None:
-            pu.delete_shared_array(self.sample_memory_file_name)
-        self.sample = None
-
-    def free_flat(self):
-        if self.flat_memory_file_name is not None:
-            pu.delete_shared_array(self.flat_memory_file_name)
-        self.flat = None
-
-    def free_dark(self):
-        if self.dark_memory_file_name is not None:
-            pu.delete_shared_array(self.dark_memory_file_name)
-        self.dark = None
+        if self.memory_filename is not None:
+            pu.delete_shared_array(self.memory_filename)
+        self.data = None
 
     @property
     def filenames(self) -> Optional[List[str]]:
@@ -88,7 +51,7 @@ class Images:
 
     @filenames.setter
     def filenames(self, new_ones: List[str]):
-        assert len(new_ones) == self.sample.shape[0], "Number of filenames and number of images must match."
+        assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
     @property
@@ -124,38 +87,36 @@ class Images:
 
     def copy(self, flip_axes=False):
         from copy import deepcopy
-        shape = (self.sample.shape[1], self.sample.shape[0], self.sample.shape[2]) if flip_axes else self.sample.shape
+        shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         sample_name = pu.create_shared_name()
-        sample_copy = pu.create_array(shape, self.sample.dtype, sample_name)
+        sample_copy = pu.create_array(shape, self.data.dtype, sample_name)
         if flip_axes:
-            sample_copy[:] = np.swapaxes(self.sample, 0, 1)
+            sample_copy[:] = np.swapaxes(self.data, 0, 1)
         else:
-            sample_copy[:] = self.sample[:]
+            sample_copy[:] = self.data[:]
 
-        images = Images(sample_copy,
-                        sample_memory_file_name=sample_name,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
-                        sinograms=False if not self.sinograms and not flip_axes else True)
+        images = Images(sample_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
+                        sinograms=False if not self.sinograms and not flip_axes else True,
+                        memory_filename=sample_name)
         return images
 
     @property
     def height(self):
         if not self.sinograms:
-            return self.sample.shape[1]
+            return self.data.shape[1]
         else:
-            return self.sample.shape[0]
+            return self.data.shape[0]
 
     @property
     def width(self):
-        return self.sample.shape[2]
+        return self.data.shape[2]
 
     @property
     def num_projections(self) -> int:
         if not self.sinograms:
-            return self.sample.shape[0]
+            return self.data.shape[0]
         else:
-            return self.sample.shape[1]
+            return self.data.shape[1]
 
     @property
     def num_sinograms(self) -> int:
@@ -163,30 +124,30 @@ class Images:
 
     def sino(self, slice_idx) -> np.ndarray:
         if not self.sinograms:
-            return np.swapaxes(self.sample, 0, 1)[slice_idx]
+            return np.swapaxes(self.data, 0, 1)[slice_idx]
         else:
-            return self.sample[slice_idx]
+            return self.data[slice_idx]
 
     def projection(self, projection_idx) -> np.ndarray:
         if self.sinograms:
-            return np.swapaxes(self.sample, 0, 1)[projection_idx]
+            return np.swapaxes(self.data, 0, 1)[projection_idx]
         else:
-            return self.sample[projection_idx]
+            return self.data[projection_idx]
 
     @property
-    def sample(self) -> np.ndarray:
-        return self._sample
+    def data(self) -> np.ndarray:
+        return self._data
 
-    @sample.setter
-    def sample(self, other: np.ndarray):
-        self._sample = other
+    @data.setter
+    def data(self, other: np.ndarray):
+        self._data = other
 
     @property
     def dtype(self):
-        return self._sample.dtype
+        return self._data.dtype
 
     @staticmethod
     def create_shared_images(shape, dtype):
         shared_name = pu.create_shared_name()
         arr = pu.create_array(shape, dtype, shared_name)
-        return Images(arr, sample_memory_file_name=shared_name)
+        return Images(arr, memory_filename=shared_name)

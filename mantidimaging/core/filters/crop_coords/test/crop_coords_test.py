@@ -5,6 +5,7 @@ import numpy.testing as npt
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.filters.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class CropCoordsTest(unittest.TestCase):
@@ -13,6 +14,7 @@ class CropCoordsTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 
@@ -25,16 +27,16 @@ class CropCoordsTest(unittest.TestCase):
         #   - valid Region of Interest is provided
         #   - no flat or dark images are provided
 
-        roi = [1, 1, 5, 5]
+        roi = SensibleROI.from_list([1, 1, 5, 5])
         images = th.generate_images(automatic_free=False)
         # store a reference here so it doesn't get freed inside the filter execute
-        sample = images.sample
+        sample = images.data
         result = CropCoordinatesFilter.filter_func(images, roi)
         expected_shape = (10, 4, 4)
 
-        npt.assert_equal(result.sample.shape, expected_shape)
+        npt.assert_equal(result.data.shape, expected_shape)
         # check that the data has been modified
-        th.assert_not_equals(result.sample, sample)
+        th.assert_not_equals(result.data, sample)
         images.free_memory()
 
     def test_memory_change_acceptable(self):
@@ -51,7 +53,7 @@ class CropCoordsTest(unittest.TestCase):
         This will still capture if the data is doubled, which is the main goal.
         """
         images = th.generate_images(automatic_free=False)
-        roi = [1, 1, 5, 5]
+        roi = SensibleROI.from_list([1, 1, 5, 5])
 
         cached_memory = get_memory_usage_linux(mb=True)[0]
 
@@ -61,7 +63,7 @@ class CropCoordsTest(unittest.TestCase):
 
         expected_shape = (10, 4, 4)
 
-        npt.assert_equal(result.sample.shape, expected_shape)
+        npt.assert_equal(result.data.shape, expected_shape)
         result.free_memory()
 
     def test_execute_wrapper_return_is_runnable(self):

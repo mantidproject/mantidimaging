@@ -134,7 +134,7 @@ class FiltersWindowPresenter(BasePresenter):
             try:
                 sub_images = Images(np.asarray([before_image_data]))
                 self.model.apply_filter(sub_images, exec_kwargs)
-                filtered_image_data = sub_images.sample[0]
+                filtered_image_data = sub_images.data[0]
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())

@@ -21,9 +21,9 @@ class ROINormalisationTest(unittest.TestCase):
 
         air = None
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = RoiNormalisationFilter.filter_func(images, air)
-        npt.assert_equal(result.sample[0], original)
+        npt.assert_equal(result.data[0], original)
 
     def test_not_executed_invalid_shape(self):
         images = np.arange(100).reshape(10, 10)
@@ -41,11 +41,11 @@ class ROINormalisationTest(unittest.TestCase):
     def do_execute(self):
         images = th.generate_images()
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         air = [3, 3, 4, 4]
         result = RoiNormalisationFilter.filter_func(images, air)
 
-        th.assert_not_equals(result.sample[0], original)
+        th.assert_not_equals(result.data[0], original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

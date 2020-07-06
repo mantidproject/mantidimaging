@@ -35,7 +35,7 @@ class CircularMaskFilter(BaseFilter):
 
                 # for some reason this doesn't like the ncore param, even though
                 # it's in the official tomopy docs
-                tomopy.circ_mask(arr=data.sample,
+                tomopy.circ_mask(arr=data.data,
                                  axis=0,
                                  ratio=circular_mask_ratio,
                                  val=circular_mask_value,

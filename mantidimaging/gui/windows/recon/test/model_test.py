@@ -15,7 +15,7 @@ class CORTiltWindowModelTest(unittest.TestCase):
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
-        data = Images(sample=np.ndarray(shape=(10, 128, 128), dtype=np.float32))
+        data = Images(data=np.ndarray(shape=(10, 128, 128), dtype=np.float32))
         self.stack.presenter = StackVisualiserPresenter(self.stack, data)
 
         self.model.initial_select_data(self.stack)

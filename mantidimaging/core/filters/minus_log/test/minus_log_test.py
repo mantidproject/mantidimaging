@@ -20,10 +20,10 @@ class MinusLogTest(unittest.TestCase):
     def test_no_execute(self):
         images = th.generate_images()
 
-        sample = np.copy(images.sample)
+        sample = np.copy(images.data)
         result = MinusLogFilter.filter_func(images, minus_log=False)
 
-        npt.assert_equal(result.sample, sample)
+        npt.assert_equal(result.data, sample)
 
     def test_memory_change_acceptable(self):
         """
@@ -41,12 +41,12 @@ class MinusLogTest(unittest.TestCase):
         images = th.generate_images()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
-        original = np.copy(images.sample)
+        original = np.copy(images.data)
 
         result = MinusLogFilter.filter_func(images, minus_log=True)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

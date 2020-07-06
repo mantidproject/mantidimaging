@@ -83,7 +83,7 @@ class SavuFiltersWindowModel(object):
 
     @property
     def image_shape(self):
-        return self.stack_presenter.images.sample.shape
+        return self.stack_presenter.images.data.shape
 
     def setup_filter(self, filter_details):
         """

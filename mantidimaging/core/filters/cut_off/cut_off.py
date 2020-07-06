@@ -23,7 +23,7 @@ class CutOffFilter(BaseFilter):
 
         if threshold and threshold > 0.0:
             with progress:
-                sample = data.sample
+                sample = data.data
                 dmin = np.amin(sample)
                 dmax = np.amax(sample)
 

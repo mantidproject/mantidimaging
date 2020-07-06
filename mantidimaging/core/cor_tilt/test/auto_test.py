@@ -22,7 +22,7 @@ class AutoTest(TestCase):
 
         self.assertFalse(np.any(model.cors))
 
-        auto_find_cors(images.sample, roi, model)
+        auto_find_cors(images.data, roi, model)
 
         self.assertTrue(np.any(model.cors))
 
@@ -41,6 +41,6 @@ class AutoTest(TestCase):
 
         self.assertFalse(np.any(model.cors))
 
-        auto_find_cors(images.sample, roi, model)
+        auto_find_cors(images.data, roi, model)
 
         self.assertTrue(np.any(model.cors))

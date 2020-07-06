@@ -29,8 +29,8 @@ class StackVisualiserView(BaseMainWindowView):
 
     def __init__(self, parent: 'MainWindowView', dock: QDockWidget, images: Images):
         # enforce not showing a single image
-        assert images.sample.ndim == 3, \
-            "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.sample.ndim)
+        assert images.data.ndim == 3, \
+            "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.data.ndim)
 
         # We set the main window as the parent, the effect is the same as
         # having no parent, the window will be inside the QDockWidget. If the
@@ -59,7 +59,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.actionCloseStack.triggered.connect(self.close_view)
         self.actionCloseStack.setShortcut("Ctrl+W")
         self.dock.addAction(self.actionCloseStack)
-        self.image_view.setImage(self.presenter.images.sample)
+        self.image_view.setImage(self.presenter.images.data)
         self.image_view.imageItem.setAutoDownsample(True)
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)

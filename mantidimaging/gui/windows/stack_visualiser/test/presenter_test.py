@@ -36,7 +36,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_get_image(self):
         index = 3
 
-        test_data = self.test_data.sample
+        test_data = self.test_data.data
 
         img = self.presenter.get_image(index)
         npt.assert_equal(test_data[index], img)
@@ -48,7 +48,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_notify_refresh_image_normal_image_mode(self):
         self.presenter.image_mode = SVImageMode.NORMAL
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
-        self.assertIs(self.view.image, self.presenter.images.sample, "Image should have been set as sample images")
+        self.assertIs(self.view.image, self.presenter.images.data, "Image should have been set as sample images")
 
     def test_notify_refresh_image_averaged_image_mode(self):
         self.presenter.image_mode = SVImageMode.SUMMED

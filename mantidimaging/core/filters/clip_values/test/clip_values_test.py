@@ -26,7 +26,7 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=0.1,
                                                 clip_max_new_value=None)
 
-        npt.assert_approx_equal(result.sample.min(), 0.1)
+        npt.assert_approx_equal(result.data.min(), 0.1)
 
     def test_execute_max_only(self):
         images = th.generate_images()
@@ -37,7 +37,7 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=None,
                                                 clip_max_new_value=0.9)
 
-        npt.assert_approx_equal(result.sample.max(), 0.9)
+        npt.assert_approx_equal(result.data.max(), 0.9)
 
     def test_execute_min_max(self):
         images = th.generate_images()
@@ -48,8 +48,8 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=0.1,
                                                 clip_max_new_value=0.9)
 
-        npt.assert_approx_equal(result.sample.min(), 0.1)
-        npt.assert_approx_equal(result.sample.max(), 0.9)
+        npt.assert_approx_equal(result.data.min(), 0.1)
+        npt.assert_approx_equal(result.data.max(), 0.9)
 
     def test_execute_min_max_no_new_values(self):
         images = th.generate_images()
@@ -59,8 +59,8 @@ class ClipValuesFilterTest(unittest.TestCase):
                                                 clip_min_new_value=None,
                                                 clip_max_new_value=None)
 
-        npt.assert_approx_equal(result.sample.min(), 0.2)
-        npt.assert_approx_equal(result.sample.max(), 0.8)
+        npt.assert_approx_equal(result.data.min(), 0.2)
+        npt.assert_approx_equal(result.data.max(), 0.8)
 
     def test_memory_change_acceptable(self):
         """

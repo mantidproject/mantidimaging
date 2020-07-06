@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Callable
 import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QLabel
-from pyqtgraph import ImageView, ROI
+from pyqtgraph import ImageView, ROI, ImageItem
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -15,6 +15,7 @@ class UnrotateablePlotROI(ROI):
     """
     Like PlotROI but does not add a rotation handle.
     """
+
     def __init__(self, size):
         ROI.__init__(self, pos=[0, 0], size=size)
         self.addScaleHandle([1, 1], [0, 0])
@@ -23,6 +24,7 @@ class UnrotateablePlotROI(ROI):
 class MIImageView(ImageView):
     details: QLabel
     roiString = None
+    imageItem: ImageItem
 
     roi_changed_callback: Optional[Callable[[SensibleROI], None]] = None
 
@@ -41,9 +43,9 @@ class MIImageView(ImageView):
         self.roi.setZValue(30)
         self.view.addItem(self.roi)
         self.roi.hide()
-        # self.roi.setSize(300)
         self.roi.sigRegionChangeFinished.connect(self.roiChanged)
         self.extend_roi_plot_mouse_press_handler()
+        self.imageItem.setAutoDownsample(False)
 
     def roiChanged(self):
         """

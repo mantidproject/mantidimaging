@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union, List
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
@@ -14,6 +15,10 @@ class SensibleROI:
     @staticmethod
     def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> 'SensibleROI':
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
+
+    @staticmethod
+    def from_list(roi: List[Union[int, float]]):
+        return SensibleROI(roi[0], roi[1], roi[2], roi[3])
 
     def __iter__(self):
         """

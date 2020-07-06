@@ -2,12 +2,13 @@ import os
 import traceback
 from enum import Enum
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 from uuid import UUID
 
 from PyQt5.QtWidgets import QDockWidget
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import MainWindowModel
@@ -77,27 +78,28 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def create_new_stack(self, images: Images, title: str):
+    def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.model.create_name(title)
 
-        def add_stack(images, title) -> QDockWidget:
+        def add_stack(images: Images, title) -> QDockWidget:
             dock = self.view._create_stack_window(images, title=title)
             stack_visualiser = dock.widget()
             self.model.add_stack(stack_visualiser, dock)
             return dock
 
-        sample_dock = add_stack(images, title)
-        if images.flat is not None and images.flat_filenames is not None:
-            # doesn't pass the memory file - closing this stack will not free the memory
-            flat_dock = add_stack(Images(images.flat, sample_filenames=images.flat_filenames),
-                                  title=f"{self.model.create_name(os.path.basename(images.flat_filenames[0]))}")
-            self.view.tabifyDockWidget(sample_dock, flat_dock)
+        sample = container if isinstance(container, Images) else container.sample
+        sample_dock = add_stack(sample, title)
 
-        if images.dark is not None and images.dark_filenames is not None:
-            # doesn't pass the memory file - closing this stack will not free the memory
-            dark_dock = add_stack(Images(images.dark, sample_filenames=images.dark_filenames),
-                                  title=f"{self.model.create_name(os.path.basename(images.dark_filenames[0]))}")
-            self.view.tabifyDockWidget(sample_dock, dark_dock)
+        if isinstance(container, Dataset):
+            if container.flat:
+                flat_dock = add_stack(container.flat,
+                                      title=f"{self.model.create_name(os.path.basename(container.flat.filenames[0]))}")
+                self.view.tabifyDockWidget(sample_dock, flat_dock)
+
+            if container.dark:
+                dark_dock = add_stack(container.dark,
+                                      title=f"{self.model.create_name(os.path.basename(container.dark.filenames[0]))}")
+                self.view.tabifyDockWidget(sample_dock, dark_dock)
 
         self.view.active_stacks_changed.emit()
 

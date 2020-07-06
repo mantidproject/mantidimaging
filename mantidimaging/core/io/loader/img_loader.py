@@ -11,9 +11,10 @@ from mantidimaging.core.io.utility import get_file_names, get_prefix
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from . import stack_loader
+from ...data.dataset import Dataset
 
 
-def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, indices, progress=None):
+def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, indices, progress=None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -50,20 +51,13 @@ def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, ind
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    flat_avg, flat_filenames, flat_mfname = il.load_data(flat_path)
-    dark_avg, dark_filenames, dark_mfname = il.load_data(dark_path)
+    flat_data, flat_filenames, flat_mfname = il.load_data(flat_path)
+    dark_data, dark_filenames, dark_mfname = il.load_data(dark_path)
     sample_data, sample_mfname = il.load_sample_data(chosen_input_filenames)
 
-    return Images(sample_data,
-                  flat_avg,
-                  dark_avg,
-                  chosen_input_filenames,
-                  indices,
-                  flat_filenames,
-                  dark_filenames,
-                  sample_memory_file_name=sample_mfname,
-                  flat_memory_file_name=flat_mfname,
-                  dark_memory_file_name=dark_mfname)
+    return Dataset(Images(sample_data, chosen_input_filenames, indices, memory_filename=sample_mfname),
+                   Images(flat_data, flat_filenames, memory_filename=flat_mfname) if flat_data is not None else None,
+                   Images(dark_data, dark_filenames, memory_filename=dark_mfname) if dark_data is not None else None)
 
 
 class ImageLoader(object):

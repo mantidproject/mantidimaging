@@ -19,23 +19,10 @@ class MainWindowModel(object):
 
         self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
-    def do_load_stack(self,
-                      sample_path,
-                      image_format,
-                      indices,
-                      progress,
-                      in_prefix,
-                      dtype,
-                      flat_path=None,
-                      dark_path=None):
-        return loader.load(sample_path,
-                           flat_path,
-                           dark_path,
-                           in_prefix=in_prefix,
-                           in_format=image_format,
-                           indices=indices,
-                           dtype=dtype,
-                           progress=progress)
+    def do_load_stack(self, sample_path, image_format, indices, progress, in_prefix, dtype,
+                      flat_path=None, dark_path=None):
+        return loader.load(sample_path, flat_path, dark_path,
+                           in_prefix, image_format, dtype, indices=indices, progress=progress)
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter

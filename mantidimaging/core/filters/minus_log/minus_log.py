@@ -31,7 +31,7 @@ class MinusLogFilter(BaseFilter):
 
             with progress:
                 progress.update(msg="Calculating -log on the sample data")
-                sample = data.sample
+                sample = data.data
                 # this check prevents division by 0 errors from the minus_log
                 sample[sample == 0] = 1e-6
 

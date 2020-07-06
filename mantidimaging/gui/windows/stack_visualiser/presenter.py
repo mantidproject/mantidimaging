@@ -59,11 +59,11 @@ class StackVisualiserPresenter(BasePresenter):
         self.images = None
 
     def get_image(self, index):
-        return self.images.sample[index]
+        return self.images.data[index]
 
     def refresh_image(self):
         self.view.image = self.summed_image if self.image_mode is SVImageMode.SUMMED \
-            else self.images.sample
+            else self.images.data
 
     def get_parameter_value(self, parameter: SVParameters):
         """
@@ -84,8 +84,8 @@ class StackVisualiserPresenter(BasePresenter):
 
         if self.image_mode is SVImageMode.SUMMED and \
                 (self.summed_image is None
-                 or self.summed_image.shape != self.images.sample.shape[1:]):
-            self.summed_image = self.model.sum_images(self.images.sample)
+                 or self.summed_image.shape != self.images.data.shape[1:]):
+            self.summed_image = self.model.sum_images(self.images.data)
         self.refresh_image()
 
     def create_swapped_axis_stack(self):

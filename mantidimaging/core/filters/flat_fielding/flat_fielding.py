@@ -1,13 +1,9 @@
-import os
 from functools import partial
-from logging import getLogger
 from typing import Any, Dict
 
 import numpy as np
-from PyQt5.QtWidgets import QLineEdit
 
 from mantidimaging import helper as h
-from mantidimaging.core import io
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
@@ -49,24 +45,24 @@ class FlatFieldFilter(BaseFilter):
         h.check_data_stack(data)
 
         if flat is not None and dark is not None:
-            flat_avg = flat.sample.mean(axis=0)
-            dark_avg = dark.sample.mean(axis=0)
+            flat_avg = flat.data.mean(axis=0)
+            dark_avg = dark.data.mean(axis=0)
             if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
                 raise ValueError(
                     f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
-                    which should match the shape of the sample images ({data.sample.shape})")
+                    which should match the shape of the sample images ({data.data.shape})")
 
-            if not data.sample.shape[1:] == flat_avg.shape == dark_avg.shape:
-                raise ValueError(f"Not all images are the expected shape: {data.sample.shape[1:]}, instead "
+            if not data.data.shape[1:] == flat_avg.shape == dark_avg.shape:
+                raise ValueError(f"Not all images are the expected shape: {data.data.shape[1:]}, instead "
                                  f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
             progress = Progress.ensure_instance(progress,
-                                                num_steps=data.sample.shape[0],
+                                                num_steps=data.data.shape[0],
                                                 task_name='Background Correction')
-            if pu.multiprocessing_necessary(data.sample.shape, cores):
-                _execute_par(data.sample, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
+            if pu.multiprocessing_necessary(data.data.shape, cores):
+                _execute_par(data.data, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
             else:
-                _execute_seq(data.sample, flat_avg, dark_avg, clip_min, clip_max, progress)
+                _execute_seq(data.data, flat_avg, dark_avg, clip_min, clip_max, progress)
 
         h.check_data_stack(data)
         return data
@@ -83,6 +79,10 @@ class FlatFieldFilter(BaseFilter):
 
         _, flat_widget = add_property_to_form("Flat", Type.STACK, form=form, filters_view=view, on_change=on_change)
         _, dark_widget = add_property_to_form("Dark", Type.STACK, form=form, filters_view=view, on_change=on_change)
+        _, clip_min_widget = add_property_to_form("Clip min values", Type.FLOAT, default_value=MINIMUM_PIXEL_VALUE,
+                                                  form=form, on_change=on_change)
+        _, clip_min_widget = add_property_to_form("Clip max values", Type.FLOAT, default_value=MAXIMUM_PIXEL_VALUE,
+                                                  form=form, on_change=on_change)
 
         assert isinstance(flat_widget, StackSelectorWidgetView)
         flat_widget.setMaximumWidth(250)
@@ -198,21 +198,3 @@ def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_
         np.clip(data, clip_min, clip_max, out=data)
 
     return data
-
-
-def get_average_image(text_widget: 'QLineEdit'):
-    log = getLogger(__name__)
-
-    text = str(text_widget.text())
-    prefix = io.utility.get_prefix(text)
-    extension = io.utility.get_file_extension(text)
-    directory = os.path.dirname(text)
-
-    log.debug(f"Loading image from widget text: '{text}', directory: '{directory}', "
-              f"prefix: '{prefix}', extension: '{extension}'")
-    images_flat_only = io.loader.load(directory, in_prefix=prefix, in_format=extension)
-    # this will be put in the 'sample' attribute, because we load a single
-    # volume
-    mean_image = images_flat_only.sample.mean(axis=0)
-    images_flat_only.free_memory()
-    return mean_image

@@ -44,10 +44,10 @@ class RebinFilter(BaseFilter):
             param_valid = rebin_param > 0
 
         if param_valid:
-            sample = data.sample
+            sample = data.data
             sample_name: Optional[str]
-            if data.sample_memory_file_name is not None:
-                sample_name = data.sample_memory_file_name
+            if data.memory_filename is not None:
+                sample_name = data.memory_filename
                 data.free_sample()
             else:
                 sample_name = None
@@ -57,7 +57,7 @@ class RebinFilter(BaseFilter):
                 rebinned = _execute_par(sample, empty_resized_data, mode, cores, chunksize, progress)
             else:
                 rebinned = _execute_seq(sample, empty_resized_data, mode, progress)
-            data.sample = rebinned
+            data.data = rebinned
 
         return data
 

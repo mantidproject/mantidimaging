@@ -47,7 +47,7 @@ def _set_random_data(data, shape, array_name):
     data[:] = n[:]
 
     images = Images(data)
-    images.sample_memory_file_name = array_name
+    images.memory_filename = array_name
     return images
 
 
@@ -172,6 +172,6 @@ class IgnoreOutputStreams(object):
 
 
 def shared_deepcopy(images: Images) -> np.ndarray:
-    with pu.temp_shared_array(images.sample.shape) as copy:
-        np.copyto(copy, images.sample)
+    with pu.temp_shared_array(images.data.shape) as copy:
+        np.copyto(copy, images.data)
         return copy

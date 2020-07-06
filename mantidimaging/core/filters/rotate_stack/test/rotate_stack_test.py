@@ -30,11 +30,11 @@ class RotateStackTest(unittest.TestCase):
         images = th.generate_images((10, 10, 10))
 
         rotation = 1  # once clockwise
-        images.sample[:, 0, :] = 42
+        images.data[:, 0, :] = 42
 
         result = RotateFilter.filter_func(images, rotation)
 
-        npt.assert_equal(result.sample[:, :, -1], 42)
+        npt.assert_equal(result.data[:, :, -1], 42)
 
     def test_memory_change_acceptable(self):
         """
@@ -52,7 +52,7 @@ class RotateStackTest(unittest.TestCase):
         # only works on square images
         images = th.generate_images((10, 10, 10))
         rotation = 1  # once clockwise
-        images.sample[:, 0, 0] = 42  # set all images at 0,0 to 42
+        images.data[:, 0, 0] = 42  # set all images at 0,0 to 42
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 

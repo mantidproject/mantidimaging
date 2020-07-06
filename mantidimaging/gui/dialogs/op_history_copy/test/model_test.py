@@ -9,12 +9,12 @@ from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogModel
 
 class OpHistoryCopyDialogModelTest(unittest.TestCase):
     def setUp(self):
-        self.data = Images(sample=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        self.data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.model = OpHistoryCopyDialogModel(self.data)
 
     @patch('mantidimaging.gui.dialogs.op_history_copy.model.ops_to_partials')
     def test_final_function_result_returned(self, mock_partial_conversions):
-        expected = Images(sample=321)
+        expected = Images(data=321)
         call_mock = MagicMock()
 
         def fake_filter(_):

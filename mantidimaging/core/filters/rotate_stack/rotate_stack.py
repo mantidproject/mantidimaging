@@ -36,10 +36,10 @@ class RotateFilter(BaseFilter):
         h.check_data_stack(data)
 
         if angle:
-            if pu.multiprocessing_necessary(data.sample.shape, cores):
-                _execute_par(data.sample, angle, cores, chunksize, progress)
+            if pu.multiprocessing_necessary(data.data.shape, cores):
+                _execute_par(data.data, angle, cores, chunksize, progress)
             else:
-                _execute_seq(data.sample, angle, progress)
+                _execute_seq(data.data, angle, progress)
 
             if flat is not None:
                 flat = _rotate_image(flat, angle)

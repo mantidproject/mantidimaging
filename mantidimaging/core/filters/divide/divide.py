@@ -19,7 +19,7 @@ class DivideFilter(BaseFilter):
     def filter_func(data: Images, value: Union[int, float] = 0e7, progress=None) -> Images:
         h.check_data_stack(data)
         if value != 0e7 or value != -0e7:
-            data.sample /= value
+            data.data /= value
         return data
 
     @staticmethod

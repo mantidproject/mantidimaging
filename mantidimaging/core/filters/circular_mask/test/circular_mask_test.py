@@ -22,12 +22,12 @@ class CircularMaskTest(unittest.TestCase):
 
         ratio = 0.9
 
-        self.assertNotEqual(images.sample[0, 0, 0], 0)
-        self.assertNotEqual(images.sample[0, 0, -1], 0)
+        self.assertNotEqual(images.data[0, 0, 0], 0)
+        self.assertNotEqual(images.data[0, 0, -1], 0)
 
         result = CircularMaskFilter.filter_func(images, ratio)
-        self.assertEqual(result.sample[0, 0, 0], 0)
-        self.assertEqual(result.sample[0, 0, -1], 0)
+        self.assertEqual(result.data[0, 0, 0], 0)
+        self.assertEqual(result.data[0, 0, -1], 0)
 
     def test_memory_change_acceptable(self):
         """
@@ -44,14 +44,14 @@ class CircularMaskTest(unittest.TestCase):
         """
         images = th.generate_images()
         ratio = 0.9
-        original = np.copy(images.sample)
+        original = np.copy(images.data)
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
         result = CircularMaskFilter.filter_func(images, ratio)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
-        th.assert_not_equals(result.sample, original)
+        th.assert_not_equals(result.data, original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

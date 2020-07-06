@@ -33,7 +33,7 @@ class OutliersFilter(BaseFilter):
         :return: The processed 3D numpy.ndarray
         """
         progress = Progress.ensure_instance(progress, task_name='Outliers', num_steps=3)
-        if not utility.multiprocessing_necessary(data.sample.shape, cores):
+        if not utility.multiprocessing_necessary(data.data.shape, cores):
             cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
@@ -42,7 +42,7 @@ class OutliersFilter(BaseFilter):
 
                 # we flip the histogram horizontally, this makes the darkest pixels
                 # the brightest
-                sample = data.sample
+                sample = data.data
                 if mode == OUTLIERS_DARK:
                     np.negative(sample, out=sample)
 

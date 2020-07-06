@@ -49,8 +49,8 @@ def check_data_stack(data, expected_dims=3, expected_class=Images):
     if not isinstance(data, expected_class):
         raise ValueError("Invalid data type. It must be an Images object. Instead found: {0}".format(type(data)))
 
-    if expected_dims != data.sample.ndim:
-        raise ValueError("Invalid data format. It does not have 3 dimensions. " "Shape: {0}".format(data.sample.shape))
+    if expected_dims != data.data.ndim:
+        raise ValueError("Invalid data format. It does not have 3 dimensions. " "Shape: {0}".format(data.data.shape))
 
 
 def run_import_checks(config):

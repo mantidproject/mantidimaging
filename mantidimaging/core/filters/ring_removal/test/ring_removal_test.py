@@ -23,9 +23,9 @@ class RingRemovalTest(unittest.TestCase):
         # invalid threshold
         run_ring_removal = False
 
-        original = np.copy(images.sample[0])
+        original = np.copy(images.data[0])
         result = RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
-        npt.assert_equal(result.sample[0], original)
+        npt.assert_equal(result.data[0], original)
 
     def test_memory_change_acceptable(self):
         images = th.generate_images()

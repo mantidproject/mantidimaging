@@ -52,8 +52,8 @@ class RingRemovalFilter(BaseFilter):
 
             with progress:
                 progress.update(msg="Ring Removal")
-                sample = data.sample
-                tp.remove_ring(data.sample,
+                sample = data.data
+                tp.remove_ring(data.data,
                                center_x=center_x,
                                center_y=center_y,
                                thresh=thresh,

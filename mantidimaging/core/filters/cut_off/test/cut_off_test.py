@@ -19,9 +19,9 @@ class CutOffTest(unittest.TestCase):
         images = th.generate_images()
         threshold = 0.5
 
-        previous_max = images.sample.max()
+        previous_max = images.data.max()
         CutOffFilter.filter_func(images, threshold=threshold)
-        new_max = images.sample.max()
+        new_max = images.data.max()
 
         self.assertTrue(new_max < previous_max, "New maximum value should be less than maximum value "
                         "before processing")

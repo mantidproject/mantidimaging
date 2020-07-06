@@ -91,7 +91,6 @@ class ReconstructWindowModel(object):
             # Getting the middle of the image is probably closer than Tomopy's CoR from what I've seen
             # and certainly much faster. IF a better method is found it might be worth going to it instead
             cor = ScalarCoR(self.images.height // 2)
-            # cor = ScalarCoR(find_cor_at_slice(self.sample, first_slice_to_recon)[0])
             self.last_cor = cor
 
             return first_slice_to_recon, cor

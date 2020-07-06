@@ -38,10 +38,10 @@ class GaussianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            if pu.multiprocessing_necessary(data.sample.shape, cores):
-                _execute_par(data.sample, size, mode, order, cores, chunksize, progress)
+            if pu.multiprocessing_necessary(data.data.shape, cores):
+                _execute_par(data.data, size, mode, order, cores, chunksize, progress)
             else:
-                _execute_seq(data.sample, size, mode, order, progress)
+                _execute_seq(data.data, size, mode, order, progress)
 
         h.check_data_stack(data)
         return data

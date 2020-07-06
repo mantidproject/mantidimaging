@@ -63,16 +63,16 @@ class RebinTest(unittest.TestCase):
         images = th.generate_images(dtype=dtype, automatic_free=False)
         mode = 'reflect'
 
-        expected_x = int(images.sample.shape[1] * val)
-        expected_y = int(images.sample.shape[2] * val)
+        expected_x = int(images.data.shape[1] * val)
+        expected_y = int(images.data.shape[2] * val)
 
         result = RebinFilter.filter_func(images, val, mode)
 
-        npt.assert_equal(result.sample.shape[1], expected_x)
-        npt.assert_equal(result.sample.shape[2], expected_y)
+        npt.assert_equal(result.data.shape[1], expected_x)
+        npt.assert_equal(result.data.shape[2], expected_y)
 
-        self.assertEquals(images.sample.dtype, dtype)
-        self.assertEquals(result.sample.dtype, dtype)
+        self.assertEquals(images.data.dtype, dtype)
+        self.assertEquals(result.data.dtype, dtype)
         images.free_memory()
 
     def test_executed_xy_par_128_256(self):
@@ -108,8 +108,8 @@ class RebinTest(unittest.TestCase):
 
         result = RebinFilter.filter_func(images, rebin_param=val, mode=mode)
 
-        npt.assert_equal(result.sample.shape[1], expected_x)
-        npt.assert_equal(result.sample.shape[2], expected_y)
+        npt.assert_equal(result.data.shape[1], expected_x)
+        npt.assert_equal(result.data.shape[2], expected_y)
 
         images.free_memory()
 
@@ -124,8 +124,8 @@ class RebinTest(unittest.TestCase):
         # This about doubles the memory. Value found from running the test
         val = 100.
 
-        expected_x = int(images.sample.shape[1] * val)
-        expected_y = int(images.sample.shape[2] * val)
+        expected_x = int(images.data.shape[1] * val)
+        expected_y = int(images.data.shape[2] * val)
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
 
@@ -133,8 +133,8 @@ class RebinTest(unittest.TestCase):
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 2)
 
-        npt.assert_equal(result.sample.shape[1], expected_x)
-        npt.assert_equal(result.sample.shape[2], expected_y)
+        npt.assert_equal(result.data.shape[1], expected_x)
+        npt.assert_equal(result.data.shape[2], expected_y)
 
         images.free_memory()
 

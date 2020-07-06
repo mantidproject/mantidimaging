@@ -41,15 +41,15 @@ class CropCoordinatesFilter(BaseFilter):
 
         h.check_data_stack(data)
 
-        sample = data.sample
+        sample = data.data
         shape = (sample.shape[0],
                  region_of_interest.height,
                  region_of_interest.width)
-        sample_name = data.sample_memory_file_name
+        sample_name = data.memory_filename
         if sample_name is not None:
             data.free_sample()
         output = pu.create_array(shape, sample.dtype, sample_name)
-        data.sample = execute_single(sample, region_of_interest, progress, out=output)
+        data.data = execute_single(sample, region_of_interest, progress, out=output)
 
         return data
 

@@ -98,7 +98,7 @@ def save(data,
         with open(metadata_filename, 'w+') as f:
             data.save_metadata(f)
 
-        data = data.sample
+        data = data.data
 
     if swap_axes:
         data = np.swapaxes(data, 0, 1)

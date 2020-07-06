@@ -96,7 +96,7 @@ class AstraRecon:
         output_images: Images = Images.create_shared_images((images.height, images.height, images.width), images.dtype)
         # rec_id = astra.data2d.create('-vol', vol_geom)
         for i in range(images.height):
-            output_images.sample[i] = AstraRecon.single(images, i, cors[i], proj_angles, recon_params)
+            output_images.data[i] = AstraRecon.single(images, i, cors[i], proj_angles, recon_params)
             progress.update(1, f"Reconstructed slice {i}")
 
         return output_images
