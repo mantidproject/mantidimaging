@@ -7,6 +7,7 @@ import numpy as np
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
+from mantidimaging.core.filters.rescale import RescaleFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility import value_scaling
@@ -46,6 +47,8 @@ class RoiNormalisationFilter(BaseFilter):
 
         # just get data reference
         if air_region:
+            # rescale to 16-bit range before normalising the values
+            images = RescaleFilter.filter_func(images, 0.0, 65535.0)
             if pu.multiprocessing_necessary(images.data.shape, cores):
                 _execute_par(images.data, air_region, cores, chunksize, progress)
             else:
