@@ -44,10 +44,13 @@ class RescaleFilter(BaseFilter):
         max_output = max_output_widget.value()
 
         if preset_widget.currentText() == "int8":
+            min_output = 0.0
             max_output = 255.0
         elif preset_widget.currentText() == "int16":
+            min_output = 0.0
             max_output = 65535.0
         elif preset_widget.currentText() == "int32":
+            min_output = 0.0
             max_output = 2147483647.0
 
         return partial(RescaleFilter.filter_func, min_output=min_output, max_output=max_output)

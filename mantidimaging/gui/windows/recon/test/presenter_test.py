@@ -10,7 +10,7 @@ from mantidimaging.gui.windows.recon.presenter import Notification as PresNotifi
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
 
 
-class CORTiltWindowPresenterTest(unittest.TestCase):
+class ReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         # Mock view
         self.view = mock.create_autospec(ReconstructWindowView)

@@ -9,7 +9,7 @@ from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPoin
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
 
 
-class CORTiltWindowModelTest(unittest.TestCase):
+class ReconWindowModelTest(unittest.TestCase):
     def setUp(self):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
