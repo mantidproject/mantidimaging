@@ -5,11 +5,13 @@ from typing import Dict, Any
 import numpy as np
 
 from mantidimaging import helper as h
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
 
@@ -18,7 +20,7 @@ class RoiNormalisationFilter(BaseFilter):
     filter_name = "ROI Normalisation"
 
     @staticmethod
-    def filter_func(data, air_region=None, cores=None, chunksize=None, progress=None):
+    def filter_func(images: Images, air_region: SensibleROI = None, cores=None, chunksize=None, progress=None):
         """
         Normalise by beam intensity.
 
@@ -27,7 +29,7 @@ class RoiNormalisationFilter(BaseFilter):
         If the Air Region is in bounds, but has overlapping coordinates
         the crop give back a 0 shape of the coordinates that were wrong.
 
-        :param data: Sample data which is to be processed. Expected in radiograms
+        :param images: Sample data which is to be processed. Expected in radiograms
 
         :param air_region: The order is - Left Top Right Bottom. The air region
                            from which sums will be calculated and all images will
@@ -36,22 +38,21 @@ class RoiNormalisationFilter(BaseFilter):
         :param cores: The number of cores that will be used to process the data.
 
         :param chunksize: The number of chunks that each worker will receive.
+        :param progress: Reference to a progress bar object
 
         :returns: Filtered data (stack of images)
         """
-        h.check_data_stack(data)
+        h.check_data_stack(images)
 
         # just get data reference
         if air_region:
-            # sanity check for the regions
-            assert all(isinstance(region, int) for region in air_region), "The air region coordinates are not integers!"
-            if pu.multiprocessing_necessary(data.data.shape, cores):
-                _execute_par(data.data, air_region, cores, chunksize, progress)
+            if pu.multiprocessing_necessary(images.data.shape, cores):
+                _execute_par(images.data, air_region, cores, chunksize, progress)
             else:
-                _execute_seq(data.data, air_region, progress)
+                _execute_seq(images.data, air_region, progress)
 
-        h.check_data_stack(data)
-        return data
+        h.check_data_stack(images)
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -76,11 +77,6 @@ class RoiNormalisationFilter(BaseFilter):
 
 
 def _calc_sum(data, air_sums, air_left=None, air_top=None, air_right=None, air_bottom=None):
-    # here we can use ndarray.sum or ndarray.mean
-    # ndarray.mean makes the values with a nice int16 range
-    # (0-65535, BUT NOT int16 TYPE! They remain floats!)
-    # while ndarray.sum makes them in a low range of 0-1.5.
-    # There is no difference in the results
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
@@ -88,14 +84,9 @@ def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
+def _execute_par(data, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
     progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
     log = getLogger(__name__)
-
-    left = air_region[0]
-    top = air_region[1]
-    right = air_region[2]
-    bottom = air_region[3]
 
     with progress:
         progress.update(msg="Normalization by air region")
@@ -108,10 +99,10 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
 
             calc_sums_partial = ptsm.create_partial(_calc_sum,
                                                     fwd_function=ptsm.return_to_second,
-                                                    air_left=left,
-                                                    air_top=top,
-                                                    air_right=right,
-                                                    air_bottom=bottom)
+                                                    air_left=air_region.left,
+                                                    air_top=air_region.top,
+                                                    air_right=air_region.right,
+                                                    air_bottom=air_region.bottom)
 
             data, air_sums = ptsm.execute(data,
                                           air_sums,
@@ -138,14 +129,9 @@ def _execute_par(data, air_region, cores=None, chunksize=None, progress=None):
             log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
 
-def _execute_seq(data, air_region, progress):
+def _execute_seq(data, air_region: SensibleROI, progress):
     progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
     log = getLogger(__name__)
-
-    left = air_region[0]
-    top = air_region[1]
-    right = air_region[2]
-    bottom = air_region[3]
 
     with progress:
         progress.update(msg="Normalization by air region")
@@ -153,14 +139,14 @@ def _execute_seq(data, air_region, progress):
 
         air_sums = []
         for idx in range(0, data.shape[0]):
-            air_data_sum = data[idx, top:bottom, left:right].sum()
+            air_data_sum = data[idx, air_region.top:air_region.bottom, air_region.left:air_region.right].sum()
             air_sums.append(air_data_sum)
             progress.update()
 
         progress.update(msg="Normalization by air sums")
         air_sums = np.true_divide(air_sums, np.amax(air_sums))
-        for idx in range(0, data.shape[0]):
-            data[idx, :, :] = np.true_divide(data[idx, :, :], air_sums[idx])
+        for idx in range(data.shape[0]):
+            np.true_divide(data[idx], air_sums[idx], out=data[idx])
             progress.update()
 
         avg = np.average(air_sums)

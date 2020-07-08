@@ -2,7 +2,7 @@ import threading
 import time
 from collections import namedtuple
 from logging import getLogger
-from typing import List, Optional
+from typing import List
 
 import numpy
 
@@ -160,7 +160,7 @@ class Progress(object):
         self.progress_handlers.append(handler)
         handler.progress = self
 
-    def update(self, steps=1, msg:Optional[str]=None, force_continue=False):
+    def update(self, steps=1, msg: str = "", force_continue=False):
         """
         Updates the progress of the task.
 
@@ -183,7 +183,7 @@ class Progress(object):
                 self._average_time = mean_time
             else:
                 eta = round(self._average_time * (self.end_step - self.current_step), 2)
-                msg = f"{f'{msg}.' if msg is not None else ''} Time: {round(self.execution_time(), 2)}s, ETA: {eta}s"
+                msg = f"{f'{msg}.' if len(msg) > 0 else ''} Time: {round(self.execution_time(), 2)}s, ETA: {eta}s"
             step_details = ProgressHistory(time.process_time(), self.current_step, msg)
             self.progress_history.append(step_details)
 

@@ -1,5 +1,5 @@
 import traceback
-from enum import IntEnum
+from enum import IntEnum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING
 
@@ -14,9 +14,10 @@ if TYPE_CHECKING:
 
 
 class SVNotification(IntEnum):
-    REFRESH_IMAGE = 0
-    TOGGLE_IMAGE_MODE = 1
-    SWAP_AXES = 2
+    REFRESH_IMAGE = auto()
+    TOGGLE_IMAGE_MODE = auto()
+    SWAP_AXES = auto()
+    DUPE_STACK = auto()
 
 
 class SVParameters(IntEnum):
@@ -95,3 +96,10 @@ class StackVisualiserPresenter(BasePresenter):
             new_stack = self.images.copy(flip_axes=True)
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
             self.view.parent_create_stack(new_stack, f"{self.view.name}_sino")
+
+    def dupe_stack(self):
+        with operation_in_progress("Copying data, this may take a while",
+                                   "The data is being copied, this may take a while.",
+                                   self.view):
+            new_stack = self.images.copy(flip_axes=False)
+            self.view.parent_create_stack(new_stack, self.view.name)
