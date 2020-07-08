@@ -47,7 +47,7 @@ class CropCoordinatesFilter(BaseFilter):
                  region_of_interest.width)
         sample_name = data.memory_filename
         if sample_name is not None:
-            data.free_sample()
+            data.free_memory()
         output = pu.create_array(shape, sample.dtype, sample_name)
         data.data = execute_single(sample, region_of_interest, progress, out=output)
 
