@@ -136,8 +136,8 @@ class StackVisualiserView(BaseMainWindowView):
                                              text="0, 0, 50, 50")
         if accepted:
             roi = [int(r.strip()) for r in roi.split(",")]
-            self.image_view.roi.setSize((roi[2], roi[3]))
-            self.image_view.roi.setPos((roi[0], roi[1]))
+            self.image_view.roi.setPos((roi[0], roi[1]), update=False)
+            self.image_view.roi.setSize((roi[2] - roi[0], roi[3] - roi[1]))
             self.image_view.roi.show()
             self.image_view.roiChanged()
 
@@ -169,6 +169,6 @@ class StackVisualiserView(BaseMainWindowView):
         # 1 is position of sinograms, 0 is projections
         current = 1 if self.presenter.images.sinograms else 0
         item, accepted = QInputDialog.getItem(self, "Select if projections or sinograms", "Images are:",
-                                    ["projections", "sinograms"], current)
+                                              ["projections", "sinograms"], current)
         if accepted:
             self.presenter.images.sinograms = False if item == "projections" else True
