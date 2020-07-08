@@ -47,10 +47,12 @@ class StackVisualiserPresenter(BasePresenter):
         try:
             if signal == SVNotification.REFRESH_IMAGE:
                 self.refresh_image()
-            if signal == SVNotification.TOGGLE_IMAGE_MODE:
+            elif signal == SVNotification.TOGGLE_IMAGE_MODE:
                 self.toggle_image_mode()
-            if signal == SVNotification.SWAP_AXES:
+            elif signal == SVNotification.SWAP_AXES:
                 self.create_swapped_axis_stack()
+            elif signal == SVNotification.DUPE_STACK:
+                self.dupe_stack()
         except Exception as e:
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
