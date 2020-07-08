@@ -97,7 +97,7 @@ class AstraRecon:
             output_images.data[i] = AstraRecon.single(images, i, cors[i], proj_angles, recon_params)
             progress.update(1, f"Reconstructed slice {i}")
 
-        return out
+        return output_images
 
 
 def allowed_recon_kwargs() -> dict:
