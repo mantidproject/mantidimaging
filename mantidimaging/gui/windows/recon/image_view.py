@@ -36,10 +36,11 @@ class ReconImagesView(GraphicsLayoutWidget):
         recon_details = LabelItem("Value")
         image_layout.addItem(recon_details, 3, 2, 1, 2)
 
+        msg_format = "Value: {:.6f}"
         self.display_formatted_detail = {
-            self.projection: lambda val: projection_details.setText(f"Value: {val:.6f}"),
-            self.sinogram: lambda val: sino_details.setText(f"Value: {val:.6f}"),
-            self.recon: lambda val: recon_details.setText(f"Value: {val:.6f}")
+            self.projection: lambda val: projection_details.setText(msg_format.format(val)),
+            self.sinogram: lambda val: sino_details.setText(msg_format.format(val)),
+            self.recon: lambda val: recon_details.setText(msg_format.format(val))
         }
         self.projection.hoverEvent = lambda ev: self.mouse_over(ev, self.projection)
         self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)

@@ -90,24 +90,14 @@ class StackVisualiserView(BaseMainWindowView):
 
     def closeEvent(self, event):
         with operation_in_progress("Closing image view", "Freeing image memory"):
-            # the image view renderer itself holds a reference to the sample data
-            # make sure to clear that first, so that freeing the memory in the presenter
-            self.image_view.clear()
+            self.dock.setFloating(False)
+            self.hide()
             self.image_view.close()
 
             # this removes all references to the data, allowing it to be GC'ed
             # otherwise there is a hanging reference
             self.presenter.delete_data()
-
-            # this could happen if run without a parent through see(..)
-            if not isinstance(self.window(), QDockWidget):
-                self.window().remove_stack(self)  # refers to MainWindow
-
-            # setting floating to false makes window() to return the MainWindow
-            # because the window will be docked in, however we delete it
-            # immediately after so no visible change occurs
-            self.dock.setFloating(False)
-
+            self.window().remove_stack(self)  # refers to MainWindow
             self.deleteLater()
             # refers to the QDockWidget within which the stack is contained
             self.dock.deleteLater()
@@ -127,6 +117,7 @@ class StackVisualiserView(BaseMainWindowView):
             ("Show history", self.show_image_metadata),
             ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
             ("Apply history from another stack", self.show_op_history_copy_dialog),
+            ("Mark as projections/sinograms", self.mark_as_)
         ]
 
         menu = QMenu(self)
@@ -146,7 +137,7 @@ class StackVisualiserView(BaseMainWindowView):
             roi = [int(r.strip()) for r in roi.split(",")]
             self.image_view.roi.setSize((roi[2], roi[3]))
             self.image_view.roi.setPos((roi[0], roi[1]))
-            # self.image_view.roi.show()
+            self.image_view.roi.show()
             self.image_view.roiChanged()
 
     def copy_roi_to_clipboard(self):
@@ -172,3 +163,11 @@ class StackVisualiserView(BaseMainWindowView):
     def show_op_history_copy_dialog(self):
         dialog = OpHistoryCopyDialogView(self, self.presenter.images, self.main_window)
         dialog.show()
+
+    def mark_as_(self):
+        # 1 is position of sinograms, 0 is projections
+        current = 1 if self.presenter.images.sinograms else 0
+        item, accepted = QInputDialog.getItem(self, "Select if projections or sinograms", "Images are:",
+                                    ["projections", "sinograms"], current)
+        if accepted:
+            self.presenter.images.sinograms = False if item == "projections" else True

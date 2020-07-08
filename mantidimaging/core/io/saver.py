@@ -4,9 +4,9 @@ from typing import List, Union
 
 import numpy as np
 
-from mantidimaging.core.data import Images
-from mantidimaging.core.utility.progress_reporting import Progress
 from .utility import DEFAULT_IO_FILE_FORMAT
+from ..data.images import Images
+from ..utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 
@@ -47,7 +47,7 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
         rangle[...] = projection_angles
 
 
-def save(data,
+def save(images: Images,
          output_dir,
          name_prefix=DEFAULT_NAME_PREFIX,
          swap_axes=False,
@@ -91,14 +91,13 @@ def save(data,
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
 
-    if isinstance(data, Images):
-        # Save metadata
-        metadata_filename = os.path.join(output_dir, name_prefix + '.json')
-        LOG.debug('Metadata filename: {}'.format(metadata_filename))
-        with open(metadata_filename, 'w+') as f:
-            data.save_metadata(f)
+    # Save metadata
+    metadata_filename = os.path.join(output_dir, name_prefix + '.json')
+    LOG.debug('Metadata filename: {}'.format(metadata_filename))
+    with open(metadata_filename, 'w+') as f:
+        images.save_metadata(f)
 
-        data = data.data
+    data = images.data
 
     if swap_axes:
         data = np.swapaxes(data, 0, 1)
@@ -126,7 +125,7 @@ def save(data,
             for idx in range(num_images):
                 write_func(data[idx, :, :], names[idx], overwrite_all)
 
-                progress.update(msg='Image {} of {}'.format(idx, num_images))
+                progress.update(msg=f'Image {idx}/{num_images}')
 
         return names
 
@@ -184,6 +183,7 @@ class Saver(object):
     This class should always fail early before any
     expensive operations have been attempted.
     """
+
     @staticmethod
     def supported_formats():
         # reuse supported formats, they currently share them
@@ -301,7 +301,7 @@ class Saver(object):
 
             with progress:
                 progress.update(msg="Saving all pre-processed images into {0} "
-                                "dtype: {1}".format(preproc_dir, data.dtype))
+                                    "dtype: {1}".format(preproc_dir, data.dtype))
 
                 save(data,
                      preproc_dir,
@@ -334,7 +334,7 @@ class Saver(object):
 
         with progress:
             progress.update(msg="Starting saving slices of the reconstructed "
-                            "volume in: {0}...".format(out_recon_dir))
+                                "volume in: {0}...".format(out_recon_dir))
 
             save(data,
                  out_recon_dir,

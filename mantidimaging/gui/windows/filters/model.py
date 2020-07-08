@@ -57,7 +57,7 @@ class FiltersWindowModel(object):
 
     @property
     def num_images_in_stack(self):
-        num_images = self.stack_presenter.images.data.shape[0] if self.stack_presenter is not None else 0
+        num_images = self.stack_presenter.images.num_projections if self.stack_presenter is not None else 0
         return num_images
 
     @property

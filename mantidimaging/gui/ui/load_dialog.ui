@@ -33,7 +33,16 @@
      <item>
       <widget class="QWidget" name="flat_widget" native="true">
        <layout class="QHBoxLayout" name="flatLayout">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -52,7 +61,16 @@
      <item>
       <widget class="QWidget" name="dark_widget" native="true">
        <layout class="QHBoxLayout" name="darkLayout">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -177,27 +195,6 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Custom Name:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="stackName">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set custom name that will be used as the stack's name. If not provided the folder name will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Pixel Bit Depth:</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1">
       <widget class="QComboBox" name="pixel_bit_depth">
        <property name="editable">
@@ -216,6 +213,34 @@
          <string>float64</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Pixel Bit Depth:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Custom Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="stackName">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set custom name that will be used as the stack's name. If not provided the folder name will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="images_are_sinograms">
+       <property name="text">
+        <string>Images are sinograms</string>
+       </property>
       </widget>
      </item>
     </layout>

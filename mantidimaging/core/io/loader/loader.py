@@ -74,7 +74,7 @@ def read_in_shape(input_path, in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, da
     images = dataset.sample
 
     # construct and return the new shape
-    shape = (len(input_file_names),) + images.data.shape[1:]
+    shape = (len(input_file_names),) + images.projection(0).shape
     images.free_memory()
     return shape
 

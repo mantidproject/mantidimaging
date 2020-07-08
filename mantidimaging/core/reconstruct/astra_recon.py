@@ -92,84 +92,14 @@ class AstraRecon:
     def full(images: Images, cors: List[ScalarCoR], proj_angles: ProjectionAngles,
              recon_params: ReconstructionParameters, progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
-        # vol_geom = astra.create_vol_geom((images.height, images.width))
         output_images: Images = Images.create_shared_images((images.height, images.height, images.width), images.dtype)
-        # rec_id = astra.data2d.create('-vol', vol_geom)
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single(images, i, cors[i], proj_angles, recon_params)
             progress.update(1, f"Reconstructed slice {i}")
 
-        return output_images
+        return out
 
-#         vec_cors = [cor.to_vec(images.width).value for cor in cors]
-#         vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[0])
-#         proj_geom = astra.create_proj_geom('parallel_vec', images.width, vectors)
-#         # Unlike the single slice recons, this one keeps the volume and sino
-#         # memory objects and just replaces the data on every iteration.
-#         # It seems a bit faster (~5%) from eyeballing times taken
-#         sino_id = astra.data2d.create('-sino', proj_geom)
-#
-#         cfg = astra.astra_dict(recon_params.algorithm)
-#         cfg['FilterType'] = recon_params.filter_name
-#
-#         for i in range(images.height):
-#             vectors = vec_geom_init2d(proj_angles, 1.0, vec_cors[i])
-#             proj_geom = astra.create_proj_geom('parallel_vec', images.width, vectors)
-#             proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
-#             astra.data2d.store(sino_id, images.sino(i))
-#             astra.data2d.change_geometry(sino_id, proj_geom)
-#
-#             cfg['ReconstructionDataId'] = rec_id
-#             cfg['ProjectionDataId'] = sino_id
-#             cfg['ProjectorId'] = proj_id
-#
-#             alg_id = astra.algorithm.create(cfg)
-#             astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
-#             output_images.sample[i] = astra.data2d.get(rec_id)
-#             progress.update(1, f"Reconstructed slice {i}")
-#
-#             astra.projector.delete(proj_id)
-#             astra.algorithm.delete(alg_id)
-#
-#         progress.mark_complete("Done")
-#
-#         astra.data2d.delete(sino_id)
-#         astra.data2d.delete(rec_id)
-#
-#         return output_images
-#
-#
-# class AstraConfig:
-#     class AstraPostProcessFilters(Enum):
-#         RAM_LAK = 'ram-lak'
-#         SHEPP_LOGAN = 'shepp-logan'
-#         COSINE = 'cosine'
-#         HAMMING = 'hamming'
-#         HANN = 'hann'
-#         NONE = 'none'
-#         TUKEY = 'tukey'
-#         LANCZOS = 'lanczos'
-#         TRIANGULAR = 'triangular'
-#         GAUSSIAN = 'gaussian'
-#         BARLETT_HANN = 'barlett-hann'
-#         BLACKMAN = 'blackman'
-#         NUTTALL = 'nuttall'
-#         BLACKMAN_HARRIS = 'blackman-harris'
-#         BLACKMAN_NUTTALL = 'blackman-nuttall'
-#         FLAT_TOP = 'flat-top'
-#         KAISER = 'kaiser'
-#         PARZEN = 'parzen'
-#         PROJECTION = 'projection'
-#         SINOGRAM = 'sinogram'
-#         RPROJECTION = 'rprojection'
-#         RSINOGRAM = 'rsinogram'
-#
-#     projector_id: int
-#     projection_data_id: int
-#     reconstruction_data_id: int
-#     filter_type: AstraPostProcessFilters
-#
-#
+
 def allowed_recon_kwargs() -> dict:
     return {'FBP_CUDA': ['filter_name', 'filter_par'],
             'SIRT_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling',

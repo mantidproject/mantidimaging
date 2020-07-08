@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QComboBox
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QComboBox, QCheckBox
 
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
@@ -31,6 +31,7 @@ class MWLoadDialog(Qt.QDialog):
     flat_widget: QWidget
 
     pixel_bit_depth: QComboBox
+    images_are_sinograms: QCheckBox
 
     def __init__(self, parent):
         super(MWLoadDialog, self).__init__(parent)
@@ -207,5 +208,6 @@ class MWLoadDialog(Qt.QDialog):
             'image_format': self.image_format,
             'indices': self.indices,
             'custom_name': self.window_title(),
-            'dtype': self.pixel_bit_depth.currentText()
+            'dtype': self.pixel_bit_depth.currentText(),
+            'sinograms': self.images_are_sinograms.isChecked()
         }

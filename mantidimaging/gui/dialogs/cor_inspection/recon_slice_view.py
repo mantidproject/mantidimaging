@@ -53,10 +53,11 @@ class CompareSlicesView(GraphicsLayoutWidget):
         more_pixel = LabelItem("Value")
         image_layout.addItem(more_pixel, 2, 4, 1, 2)
 
+        msg_format = "Value: {:.6f}, value difference: {:.6e}"
         self.display_formatted_detail = {
-            self.less_img: lambda val: less_pixel.setText(f"Value: {val:.6f}"),
-            self.current_img: lambda val: current_pixel.setText(f"Value: {val:.6f}"),
-            self.more_img: lambda val: more_pixel.setText(f"Value: {val:.6f}"),
+            self.less_img: lambda val, diff: less_pixel.setText(msg_format.format(val, diff)),
+            self.current_img: lambda val, diff: current_pixel.setText(msg_format.format(val, diff)),
+            self.more_img: lambda val, diff: more_pixel.setText(msg_format.format(val, diff)),
         }
 
         for img in self.less_img, self.current_img, self.more_img:
@@ -70,7 +71,8 @@ class CompareSlicesView(GraphicsLayoutWidget):
         for img in self.less_img, self.current_img, self.more_img:
             if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
-                self.display_formatted_detail[img](pixel_value)
+                diff = np.average(np.diff(img.image, axis=0))
+                self.display_formatted_detail[img](pixel_value, diff)
 
     @staticmethod
     def image_in_vb(name=None) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:

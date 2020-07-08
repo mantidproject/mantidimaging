@@ -6,4 +6,4 @@ from .auto import (  # noqa: F401
 from .data_model import CorTiltDataModel  # noqa: F401
 
 from .workflow import (  # noqa: F401
-    run_auto_finding_on_images, update_image_operations)
+    update_image_operations)

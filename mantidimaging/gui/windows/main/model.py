@@ -20,13 +20,15 @@ class MainWindowModel(object):
         self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
     def do_load_stack(self, sample_path, image_format, indices, progress, in_prefix, dtype,
-                      flat_path=None, dark_path=None):
-        return loader.load(sample_path, flat_path, dark_path,
-                           in_prefix, image_format, dtype, indices=indices, progress=progress)
+                      flat_path=None, dark_path=None, sinograms=False):
+        dataset = loader.load(sample_path, flat_path, dark_path,
+                              in_prefix, image_format, dtype, indices=indices, progress=progress)
+        dataset.sample.sinograms = sinograms
+        return dataset
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, swap_axes, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
-        filenames = saver.save(data=svp.images,
+        filenames = saver.save(svp.images,
                                output_dir=output_dir,
                                name_prefix=name_prefix,
                                swap_axes=swap_axes,
