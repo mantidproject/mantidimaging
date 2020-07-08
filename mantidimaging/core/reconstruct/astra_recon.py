@@ -5,6 +5,7 @@ import astra
 import numpy as np
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -27,7 +28,7 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
     return vectors
 
 
-class AstraRecon:
+class AstraRecon(BaseRecon):
 
     @staticmethod
     @contextmanager
@@ -67,14 +68,6 @@ class AstraRecon:
     def single_sino(sino: np.ndarray, shape: Tuple[int, int],
                     cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
-        """
-
-        :param sino: Single sinogram, i.e. 2D array
-        :param shape: The original shape of the 3D dataset - used to make the correct reconstruction output shape
-        :param cor: Center of rotation for parallel geometry. It will be converted to vector geometry before reconstructing
-        :param proj_angles: Projection angles
-        :param recon_params: Reconstruction parameters to configure which algorithm/filter/etc is used
-        """
         assert sino.ndim == 2, "Sinogram must be a 2D image"
         assert len(shape) == 2, "Projection shape of the data must be 2D"
 
@@ -98,6 +91,12 @@ class AstraRecon:
             progress.update(1, f"Reconstructed slice {i}")
 
         return output_images
+
+    @staticmethod
+    def allowed_filters():
+        return ['ram-lak', 'shepp-logan', 'cosine', 'hamming', 'hann', 'none', 'tukey', 'lanczos', 'triangular',
+                'gaussian', 'barlett-hann', 'blackman', 'nuttall', 'blackman-harris', 'blackman-nuttall',
+                'flat - top', 'kaiser', 'parzen', 'projection', 'sinogram', 'rprojection', 'rsinogram']
 
 
 def allowed_recon_kwargs() -> dict:

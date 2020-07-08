@@ -148,6 +148,11 @@ class ReconstructWindowModel(object):
         d.update(astra_allowed_kwargs())
         return d
 
+    @staticmethod
+    def get_allowed_filters(alg_name: str):
+        reconstructor = get_reconstructor_for(alg_name)
+        return reconstructor.allowed_filters()
+
     def get_me_a_cor(self, cor=None):
         if cor is not None:
             # a cor has been passed in!

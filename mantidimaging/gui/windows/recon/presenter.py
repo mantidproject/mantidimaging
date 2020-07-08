@@ -75,7 +75,8 @@ class ReconstructWindowPresenter(BasePresenter):
             self.show_error(err, traceback.format_exc())
 
     def do_algorithm_changed(self):
-        allowed_args = self.allowed_recon_kwargs[self.view.algorithm_name]
+        alg_name = self.view.algorithm_name
+        allowed_args = self.allowed_recon_kwargs[alg_name]
         for arg, widgets in self.restricted_arg_widgets.items():
             if arg in allowed_args:
                 for widget in widgets:
@@ -83,6 +84,7 @@ class ReconstructWindowPresenter(BasePresenter):
             else:
                 for widget in widgets:
                     widget.hide()
+        self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)

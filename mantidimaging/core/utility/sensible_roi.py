@@ -1,3 +1,4 @@
+from collections import Iterable
 from dataclasses import dataclass
 from typing import Union, List
 
@@ -5,7 +6,7 @@ from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 
 @dataclass
-class SensibleROI:
+class SensibleROI(Iterable):
     __slots__ = ("left", "top", "right", "bottom")
     left: int
     top: int

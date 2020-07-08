@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
 
@@ -270,3 +270,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def hide_tilt(self):
         self.image_view.hide_tilt()
+
+    def set_filters_for_recon_tool(self, filters: List[str]):
+        self.filterName.clear()
+        self.filterName.insertItems(0, filters)
