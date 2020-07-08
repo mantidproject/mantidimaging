@@ -54,7 +54,7 @@ class ReconstructWindowPresenter(BasePresenter):
             elif notification == Notifications.RECONSTRUCT_SLICE:
                 self.do_reconstruct_slice()
             elif notification == Notifications.RECONSTRUCT_USER_CLICK:
-                self.do_user_click_recon(slice_idx)
+                self.do_reconstruct_slice(slice_idx=slice_idx)
             elif notification == Notifications.COR_FIT:
                 self.do_cor_fit()
             elif notification == Notifications.CLEAR_ALL_CORS:
@@ -148,13 +148,9 @@ class ReconstructWindowPresenter(BasePresenter):
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
 
+        self.view.update_sinogram(self.model.images.sino(slice_idx))
         data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
         self.view.update_recon_preview(data)
-
-    def do_user_click_recon(self, slice_idx):
-        self.model.preview_slice_idx = slice_idx
-        self.view.update_sinogram(self.model.images.sino(slice_idx))
-        self.do_reconstruct_slice(slice_idx=slice_idx)
 
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
