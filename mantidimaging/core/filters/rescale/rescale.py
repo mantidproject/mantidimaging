@@ -26,7 +26,8 @@ class RescaleFilter(BaseFilter):
         _, min_output_widget = add_property_to_form('Min output', Type.FLOAT, form=form, on_change=on_change,
                                                     valid_values=(0, 2147483647))
         _, max_output_widget = add_property_to_form('Max output', Type.FLOAT, form=form, on_change=on_change,
-                                                    valid_values=(0, 2147483647))
+                                                    default_value=65535.0,
+                                                    valid_values=(1, 2147483647))
         _, preset_widget = add_property_to_form('Preset', Type.CHOICE, form=form, on_change=on_change,
                                                 valid_values=["Use values from above", "int8", "int16", "int32"])
 
