@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Optional, List
 
-from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout, \
+    QInputDialog
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ReconstructionParameters
@@ -27,6 +28,8 @@ class ReconstructWindowView(BaseMainWindowView):
     clearAllBtn: QPushButton
     removeBtn: QPushButton
     fitBtn: QPushButton
+
+    autoBtn: QPushButton
 
     reconTab: QWidget
 
@@ -81,6 +84,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.fitBtn.clicked.connect(lambda: self.presenter.notify(PresN.COR_FIT))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
+
+        self.autoBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR))
 
         def on_row_change(item, _):
             """
@@ -274,3 +279,10 @@ class ReconstructWindowView(BaseMainWindowView):
     def set_filters_for_recon_tool(self, filters: List[str]):
         self.filterName.clear()
         self.filterName.insertItems(0, filters)
+
+    def get_number_of_cors(self) -> int:
+        num, accepted = QInputDialog.getInt(self, "Number of slices",
+                                            "On how many slices to run the automatic CoR finding?",
+                                            value=6, min=0, max=30, step=1)
+        if accepted:
+            return num

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CorTiltWindow</class>
- <widget class="QMainWindow" name="CorTiltWindow">
+ <class>ReconstructionWindow</class>
+ <widget class="QMainWindow" name="ReconstructionWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -191,7 +191,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="autoButton">
+             <widget class="QPushButton" name="autoBtn">
               <property name="text">
                <string>Auto find</string>
               </property>

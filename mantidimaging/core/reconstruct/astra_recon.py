@@ -3,6 +3,7 @@ from typing import Union, Tuple, List, Optional
 
 import astra
 import numpy as np
+from scipy.optimize import minimize
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
@@ -29,6 +30,28 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
 
 
 class AstraRecon(BaseRecon):
+    @staticmethod
+    def find_cor(images: Images, slice_idx: int, start_cor: float,
+                 proj_angles: ProjectionAngles, recon_params: ReconstructionParameters) -> float:
+        """
+        Find the best CoR for this slice by maximising the squared sum of the reconstructed slice.
+
+        Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
+        """
+
+        def get_sumsq(image: np.ndarray) -> float:
+            return np.sum(image ** 2)
+
+        def minimizer_function(cor):
+            return -get_sumsq(AstraRecon.single(images, slice_idx, ScalarCoR(cor), proj_angles, recon_params))
+
+        results = []
+        for i in range(-1, 2):
+            results.append(
+                minimize(minimizer_function, start_cor + (start_cor * 0.1 * i), method='nelder-mead', tol=0.05))
+
+        best_guess = min(results, key=lambda res: res.x)
+        return best_guess.x[0]
 
     @staticmethod
     @contextmanager

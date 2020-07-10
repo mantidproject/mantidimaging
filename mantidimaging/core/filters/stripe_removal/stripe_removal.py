@@ -10,7 +10,7 @@ class StripeRemovalFilter(BaseFilter):
     filter_name = "Stripe Removal"
 
     @staticmethod
-    def filter_func(data, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
+    def filter_func(images, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
         """
         Execute stripe removal filters.
 
@@ -20,7 +20,7 @@ class StripeRemovalFilter(BaseFilter):
         The order for that execution will always be: wavelett-fourier, titarenko,
         smoothing-filter.
 
-        :param data: Sample data which is to be processed. Expected in radiograms
+        :param images: Sample data which is to be processed. Expected in radiograms
 
         :param wf: Specify parameters for the wavelett-fourier filter.
                    Acceptable keywords are:
@@ -59,26 +59,27 @@ class StripeRemovalFilter(BaseFilter):
         msg = "Starting removal of stripes/ring artifacts using method '{0}'..."
 
         with progress:
+            # FIXME pls
             if wf:
-                progress.update(msg=msg.format('Wavelett-Fourier'))
-                data = _wf(data, wf, cores, chunksize)
-
+                progress.update(msg=msg.format('Fourier-wavelet'))
+                func = partial(_wf, images.data, wf, cores, chunksize)
             elif ti:
                 progress.update(msg=msg.format('Titarenko'))
-                data = _ti(data, ti, cores, chunksize)
-
+                func = partial(_ti, images.data, ti, cores, chunksize)
             elif sf:
                 progress.update(msg=msg.format('Smoothing-Filter'))
-                data = _sf(data, sf, cores, chunksize)
+                func = partial(_sf, images.data, sf, cores, chunksize)
 
-        return data
+            images.data = func()
+
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
         # Filter type option
-        _, value_filter_type = add_property_to_form('Filter Type', 'choice', form=form, on_change=on_change)
+        _, value_filter_type = add_property_to_form('Filter Type', Type.CHOICE, form=form, on_change=on_change)
 
         # Wavelet options
         _, value_wf_level = add_property_to_form('Level',
@@ -107,7 +108,7 @@ class StripeRemovalFilter(BaseFilter):
         # Smoothing filter options
         _, value_sf_size = add_property_to_form('Size', Type.INT, 5, (0, 100), form=form, on_change=on_change)
 
-        filters = [('wavelet-fourier', [value_wf_level, value_wf_wname, value_wf_sigma]),
+        filters = [('fourier-wavelet', [value_wf_level, value_wf_wname, value_wf_sigma]),
                    ('titarenko', [value_ti_nblock, value_ti_alpha]), ('smoothing-filter', [value_sf_size])]
 
         def on_filter_type_change(name):
@@ -144,7 +145,7 @@ class StripeRemovalFilter(BaseFilter):
         ti = None
         sf = None
 
-        if filter_type == 'wavelett-fourier':
+        if filter_type == 'fourier-wavelet':
             wf = {
                 'level': value_wf_level.value(),
                 'wname': value_wf_wname.currentText(),
@@ -160,7 +161,7 @@ class StripeRemovalFilter(BaseFilter):
 
 
 def methods():
-    return ['wf', 'wavelet-fourier', 'ti', 'titarenko', 'sf', 'smoothing-filter']
+    return ['wf', 'fourier-wavelet', 'ti', 'titarenko', 'sf', 'smoothing-filter']
 
 
 def wavelet_names():

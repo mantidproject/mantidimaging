@@ -136,7 +136,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="previewImageIndex"/>
+              <widget class="QSpinBox" name="previewImageIndex">
+               <property name="maximum">
+                <number>9999999</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

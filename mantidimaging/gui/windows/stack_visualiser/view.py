@@ -112,13 +112,13 @@ class StackVisualiserView(BaseMainWindowView):
         actions = [
             ("Set ROI", self.set_roi),
             ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
-            ("Change window name", self.change_window_name_clicked),
             ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-            ("Show history", self.show_image_metadata),
             ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
-            ("Apply history from another stack", self.show_op_history_copy_dialog),
             ("Duplicate stack data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
-            ("Mark as projections/sinograms", self.mark_as_)
+            ("Show history", self.show_image_metadata),
+            ("Apply history from another stack", self.show_op_history_copy_dialog),
+            ("Mark as projections/sinograms", self.mark_as_),
+            ("Change window name", self.change_window_name_clicked)
         ]
 
         menu = QMenu(self)

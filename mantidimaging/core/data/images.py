@@ -118,6 +118,10 @@ class Images:
         return self.data.shape[2]
 
     @property
+    def num_images(self) -> int:
+        return self.data.shape[0]
+
+    @property
     def num_projections(self) -> int:
         if not self.sinograms:
             return self.data.shape[0]

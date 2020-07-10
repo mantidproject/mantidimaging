@@ -186,7 +186,7 @@ def _execute_par(data,
 
 def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, progress=None):
     with progress:
-        progress.update(msg="Normalization by flat/dark images")
+        progress.update(msg="Normalization by flat/dark images, no progress updates as it's all Numpy")
 
         norm_divide = np.subtract(flat, dark)
 

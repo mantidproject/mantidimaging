@@ -1,10 +1,12 @@
 from logging import getLogger
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 from typing import TYPE_CHECKING
+
+import numpy as np
 
 from mantidimaging.core.cor_tilt import (update_image_operations)
 from mantidimaging.core.reconstruct import get_reconstructor_for
-from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
+from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs, AstraRecon
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ProjectionAngles, \
     ReconstructionParameters
@@ -158,3 +160,21 @@ class ReconstructWindowModel(object):
 
     def is_current_stack(self, stack):
         return self.stack == stack
+
+    def get_slice_indices(self, num_cors: int) -> Tuple[int, List[int]]:
+        # used to crop off 20% off the top and bottom, which is usually noise/empty
+        remove_a_bit = self.images.height * 0.2
+        slices: List[int] = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)
+        return self.selected_row, slices
+
+    def auto_find_cors_for_slices(self, slices: List[int], recon_params: ReconstructionParameters,
+                                  progress: Progress) -> List[float]:
+
+        progress = Progress.ensure_instance(progress, num_steps=len(slices))
+        progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
+        cors = []
+        for slice in slices:
+            cor = AstraRecon.find_cor(self.images, slice, self.images.width / 2, self.proj_angles, recon_params)
+            cors.append(cor)
+            progress.update(msg=f"Calculating COR for slice {slice}")
+        return cors

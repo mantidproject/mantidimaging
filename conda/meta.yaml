@@ -37,8 +37,7 @@ requirements:
     - python-socketio
     - h5py
     - pyqt
-    # version locked due to source changes in mantidimaging/external
-    - pyqtgraph =0.10
+    - pyqtgraph=0.11
 
 build:
   number: 0

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Dict, List
 from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
-from mantidimaging.gui.dialogs.async_task import start_async_task_view
+from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
@@ -29,6 +29,7 @@ class Notifications(Enum):
     UPDATE_PROJECTION = auto()
     ADD_COR = auto()
     REFINE_COR = auto()
+    AUTO_FIND_COR = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -71,6 +72,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_add_cor()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
+            elif notification == Notifications.AUTO_FIND_COR:
+                self.do_auto_find_cor()
         except Exception as err:
             self.show_error(err, traceback.format_exc())
 
@@ -199,3 +202,23 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
         self.do_reconstruct_slice()
+
+    def do_auto_find_cor(self):
+        if self.model.images is None:
+            return
+        num_cors = self.view.get_number_of_cors()
+        if num_cors is None:
+            return
+
+        self.do_clear_all_cors()
+
+        selected_row, slice_indices = self.model.get_slice_indices(num_cors)
+
+        def _completed_finding_cors(task: TaskWorkerThread):
+            cors = task.result
+            for slice_idx, cor in zip(slice_indices, cors):
+                self.view.add_cor_table_row(selected_row, slice_idx, cor)
+
+        start_async_task_view(self.view, self.model.auto_find_cors_for_slices, _completed_finding_cors,
+                              {'slices': slice_indices,
+                               'recon_params': self.view.recon_params()})

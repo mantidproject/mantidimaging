@@ -12,7 +12,7 @@ class RingRemovalFilter(BaseFilter):
     filter_name = "Ring Removal"
 
     @staticmethod
-    def filter_func(data: Images,
+    def filter_func(images: Images,
                     run_ring_removal=False,
                     center_x=None,
                     center_y=None,
@@ -27,7 +27,7 @@ class RingRemovalFilter(BaseFilter):
         """
         Removal of ring artifacts in reconstructed volume.
 
-        :param data: Sample data which is to be processed. Expected in radiograms
+        :param images: Sample data which is to be processed. Expected in radiograms
         :param run_ring_removal: Uses Wavelet-Fourier based ring removal
         :param center_x: (float, optional) abscissa location of center of rotation
         :param center_y: (float, optional) ordinate location of center of rotation
@@ -48,12 +48,12 @@ class RingRemovalFilter(BaseFilter):
         tp = safe_import('tomopy.misc.corr')
 
         if run_ring_removal:
-            h.check_data_stack(data)
+            h.check_data_stack(images)
 
             with progress:
                 progress.update(msg="Ring Removal")
-                sample = data.data
-                tp.remove_ring(data.data,
+                sample = images.data
+                tp.remove_ring(sample,
                                center_x=center_x,
                                center_y=center_y,
                                thresh=thresh,
@@ -65,7 +65,7 @@ class RingRemovalFilter(BaseFilter):
                                nchunk=chunksize,
                                out=sample)
 
-        return data
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):

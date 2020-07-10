@@ -110,6 +110,11 @@ def calculate_chunksize(cores):
 
 
 def multiprocessing_necessary(shape, cores) -> bool:
+    # This environment variable will be present when running PYDEVD from PyCharm
+    # and that has the bug that multiprocessing Pools can never finish `.join()` ing
+    # thus never actually finish their processing.
+    if 'PYDEVD_LOAD_VALUES_ASYNC' in os.environ:
+        return False
     if cores == 1 or shape[0] < 10:
         return False
     return True

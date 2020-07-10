@@ -62,6 +62,7 @@ class RotateFilter(BaseFilter):
                                         0, (-180, 180),
                                         form=form,
                                         on_change=on_change)
+        angle.setDecimals(7)
 
         return {"angle": angle}
 
