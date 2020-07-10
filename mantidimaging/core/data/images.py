@@ -76,11 +76,17 @@ class Images:
         def accepted_type(o):
             return any([isinstance(o, expected) for expected in [str, int, float, bool, tuple, list, SensibleROI]])
 
+        def prepare(o):
+            if isinstance(o, SensibleROI):
+                return list(o)
+            else:
+                return o
+
         self.metadata[const.OPERATION_HISTORY].append({
             const.OPERATION_NAME:
                 func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
-            const.OPERATION_KEYWORD_ARGS: {k: str(v) for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_KEYWORD_ARGS: {k: prepare(v) for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
                 display_name
         })
