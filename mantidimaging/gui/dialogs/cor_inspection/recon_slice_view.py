@@ -1,10 +1,14 @@
-from typing import Tuple
+from typing import Tuple, List, TYPE_CHECKING
 
 import numpy as np
+from PyQt5.QtWidgets import QPushButton
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
 
 
 class CompareSlicesView(GraphicsLayoutWidget):
@@ -12,8 +16,13 @@ class CompareSlicesView(GraphicsLayoutWidget):
     current_img: ImageItem
     more_img: ImageItem
 
-    def __init__(self, parent):
+    lessButton: QPushButton
+    currentButton: QPushButton
+    moreButton: QPushButton
+
+    def __init__(self, parent: 'CORInspectionDialogView'):
         super().__init__(parent)
+        self.parent = parent
 
         self.less_img, self.less_img_vb, self.less_hist = self.image_in_vb("less")
         self.current_img, self.current_img_vb, self.current_hist = self.image_in_vb("current")
@@ -53,11 +62,22 @@ class CompareSlicesView(GraphicsLayoutWidget):
         more_pixel = LabelItem("Value")
         image_layout.addItem(more_pixel, 2, 4, 1, 2)
 
-        msg_format = "Value: {:.6f}, value difference: {:.6e}"
+        less_sumsq = LabelItem("Value")
+        image_layout.addItem(less_sumsq, 3, 0, 1, 2)
+        current_sumsq = LabelItem("Value")
+        image_layout.addItem(current_sumsq, 3, 2, 1, 2)
+        more_sumsq = LabelItem("Value")
+        image_layout.addItem(more_sumsq, 3, 4, 1, 2)
+
+        def update_text(val: float, sqsum: float, pixel_label: LabelItem, sqsum_label: LabelItem):
+            pixel_label.setText(f"Value: {val:.6f}")
+            sqsum_label.setText(f"Sum of SQ: {sqsum:.6f}")
+
         self.display_formatted_detail = {
-            self.less_img: lambda val, diff: less_pixel.setText(msg_format.format(val, diff)),
-            self.current_img: lambda val, diff: current_pixel.setText(msg_format.format(val, diff)),
-            self.more_img: lambda val, diff: more_pixel.setText(msg_format.format(val, diff)),
+            # '' if val < 0 else ' ' pads out the line
+            self.less_img: lambda val, sumsq: update_text(val, sumsq, less_pixel, less_sumsq),
+            self.current_img: lambda val, sumsq: update_text(val, sumsq, current_pixel, current_sumsq),
+            self.more_img: lambda val, sumsq: update_text(val, sumsq, more_pixel, more_sumsq),
         }
 
         for img in self.less_img, self.current_img, self.more_img:
@@ -68,11 +88,17 @@ class CompareSlicesView(GraphicsLayoutWidget):
         if ev.exit:
             return
         pos = CloseEnoughPoint(ev.pos())
+        self._refresh_value_labels(pos)
+
+    def _refresh_value_labels(self, pos: CloseEnoughPoint):
+        diffs = []
         for img in self.less_img, self.current_img, self.more_img:
             if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
-                diff = np.average(np.diff(img.image, axis=0))
+                diff = np.sum(img.image ** 2)
                 self.display_formatted_detail[img](pixel_value, diff)
+                diffs.append(diff)
+        return diffs
 
     @staticmethod
     def image_in_vb(name=None) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:
@@ -99,3 +125,6 @@ class CompareSlicesView(GraphicsLayoutWidget):
         self.less_hist.imageChanged(True, True)
         self.more_hist.imageChanged(True, True)
         self.current_hist.sigLevelsChanged.emit(self.current_hist)
+        diffs = self._refresh_value_labels(CloseEnoughPoint([0, 0]))
+        self.parent.mark_best_recon(diffs)
+

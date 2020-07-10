@@ -40,6 +40,9 @@
          <height>52</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Select</string>
        </property>

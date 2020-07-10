@@ -191,6 +191,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="autoButton">
+              <property name="text">
+               <string>Auto find</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QGroupBox" name="manualGroup">
               <property name="title">
                <string>Manual</string>

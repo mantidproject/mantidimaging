@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
 
@@ -56,3 +58,12 @@ class CORInspectionDialogView(BaseDialogView):
     @property
     def optimal_rotation_centre(self) -> ScalarCoR:
         return self.presenter.optimal_rotation_centre
+
+    def mark_best_recon(self, diffs):
+        best = diffs.index(max(diffs))
+        buttons: List[QPushButton] = [self.lessButton, self.currentButton, self.moreButton]
+
+        for b in buttons:
+            b.setStyleSheet('')
+
+        buttons[best].setStyleSheet("QPushButton{ background-color:green;}")
