@@ -143,7 +143,7 @@ class StackVisualiserView(BaseMainWindowView):
 
     def copy_roi_to_clipboard(self):
         pos, size = self.image_view.get_roi()
-        QGuiApplication.clipboard().setText(f"{pos.x}, {pos.y}, {size.x}, {size.y}")
+        QGuiApplication.clipboard().setText(f"{pos.x}, {pos.y}, {pos.x + size.x}, {pos.y + size.y}")
 
     def change_window_name_clicked(self):
         input_window = QInputDialog()

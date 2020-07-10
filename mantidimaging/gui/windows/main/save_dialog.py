@@ -46,9 +46,6 @@ class MWSaveDialog(Qt.QDialog):
         """
         return str(self.namePrefix.text())
 
-    def swap_axes(self):
-        return self.swapAxes.isChecked()
-
     def overwrite(self):
         return self.overwriteAll.isChecked()
 

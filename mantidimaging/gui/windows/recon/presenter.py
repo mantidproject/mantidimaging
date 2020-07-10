@@ -143,6 +143,8 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_reconstruct_slice(self, cor=None, slice_idx=None):
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
+        else:
+            self.model.preview_slice_idx = slice_idx
 
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice

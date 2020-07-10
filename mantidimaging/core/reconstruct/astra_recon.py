@@ -73,7 +73,7 @@ class AstraRecon(BaseRecon):
 
         image_width = shape[1]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
-        vol_geom = astra.create_vol_geom(shape)
+        vol_geom = astra.create_vol_geom(sino.shape)
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(recon_params.algorithm)
         cfg['FilterType'] = recon_params.filter_name
@@ -85,7 +85,8 @@ class AstraRecon(BaseRecon):
     def full(images: Images, cors: List[ScalarCoR], proj_angles: ProjectionAngles,
              recon_params: ReconstructionParameters, progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
-        output_images: Images = Images.create_shared_images((images.height, images.height, images.width), images.dtype)
+        output_shape = (images.num_sinograms,) + images.sino(0).shape
+        output_images: Images = Images.create_shared_images(output_shape, images.dtype)
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single(images, i, cors[i], proj_angles, recon_params)
             progress.update(1, f"Reconstructed slice {i}")
@@ -96,7 +97,7 @@ class AstraRecon(BaseRecon):
     def allowed_filters():
         return ['ram-lak', 'shepp-logan', 'cosine', 'hamming', 'hann', 'none', 'tukey', 'lanczos', 'triangular',
                 'gaussian', 'barlett-hann', 'blackman', 'nuttall', 'blackman-harris', 'blackman-nuttall',
-                'flat - top', 'kaiser', 'parzen', 'projection', 'sinogram', 'rprojection', 'rsinogram']
+                'flat-top', 'kaiser', 'parzen', 'projection', 'sinogram', 'rprojection', 'rsinogram']
 
 
 def allowed_recon_kwargs() -> dict:

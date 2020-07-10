@@ -2,8 +2,6 @@ from logging import getLogger
 from typing import Optional, Tuple
 from typing import TYPE_CHECKING
 
-import numpy as np
-
 from mantidimaging.core.cor_tilt import (update_image_operations)
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
@@ -68,35 +66,18 @@ class ReconstructWindowModel(object):
         if stack is not None:
             self.proj_angles = generate_projection_angles(360, self.images.num_projections)
 
-    def calculate_slices(self, count):
-        self.data_model.clear_results()
-        # move the bounds by 20% as the ends of the image are usually empty
-        # or contain unimportant information
-        lower = 0.2 * self.images.height
-        upper = self.images.height - lower
-        self.data_model.populate_slice_indices(lower, upper, count)
-
-    def calculate_projections(self, count):
-        self.data_model.clear_results()
-        if self.images is not None:
-            sample_proj_count = self.images.num_projections
-            downsample_proj_count = min(sample_proj_count, count)
-            self.projection_indices = \
-                np.linspace(int(sample_proj_count * 0.1), sample_proj_count - 1, downsample_proj_count,
-                            dtype=int)
-
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.images is not None:
-            first_slice_to_recon = self.get_initial_slice_index()
+            first_slice_to_recon = self._get_initial_slice_index()
             # Getting the middle of the image is probably closer than Tomopy's CoR from what I've seen
             # and certainly much faster. IF a better method is found it might be worth going to it instead
-            cor = ScalarCoR(self.images.height // 2)
+            cor = ScalarCoR(self.images.width // 2)
             self.last_cor = cor
 
             return first_slice_to_recon, cor
         return 0, ScalarCoR(0)
 
-    def get_initial_slice_index(self):
+    def _get_initial_slice_index(self):
         first_slice_to_recon = self.images.num_sinograms // 2
         return first_slice_to_recon
 

@@ -109,8 +109,7 @@ class MainWindowPresenter(BasePresenter):
             'output_dir': self.view.save_dialogue.save_path(),
             'name_prefix': self.view.save_dialogue.name_prefix(),
             'image_format': self.view.save_dialogue.image_format(),
-            'overwrite': self.view.save_dialogue.overwrite(),
-            'swap_axes': self.view.save_dialogue.swap_axes()
+            'overwrite': self.view.save_dialogue.overwrite()
         }
         start_async_task_view(self.view, self.model.do_saving, self._on_save_done, kwargs)
 

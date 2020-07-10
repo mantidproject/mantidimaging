@@ -61,7 +61,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:
-            self.set_tilt(tilt_angle)
+            self.set_tilt(tilt_angle, image_data.shape[1] // 2)
         else:
             self.hide_tilt()
 
@@ -86,7 +86,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
-        self.parent.presenter.do_user_click_recon(CloseEnoughPoint(ev.pos()).y)
+        self.parent.presenter.do_reconstruct_slice(slice_idx=CloseEnoughPoint(ev.pos()).y)
 
     def clear_recon(self):
         self.recon.clear()
@@ -103,7 +103,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         """
         self.projection_vb.removeItem(self.tilt_line)
 
-    def set_tilt(self, tilt: Degrees):
+    def set_tilt(self, tilt: Degrees, pos: Optional[int] = None):
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
+            if pos is not None:
+                self.tilt_line.setAngle(90)
+                self.tilt_line.setPos(pos)
             self.tilt_line.setAngle(90 + tilt.value)
         self.projection_vb.addItem(self.tilt_line)
