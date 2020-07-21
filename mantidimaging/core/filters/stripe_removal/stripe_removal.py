@@ -59,13 +59,12 @@ class StripeRemovalFilter(BaseFilter):
         msg = "Starting removal of stripes/ring artifacts using method '{0}'..."
 
         with progress:
-            # FIXME pls
             if wf:
                 progress.update(msg=msg.format('Fourier-wavelet'))
                 func = partial(_wf, images.data, wf, cores, chunksize)
-            elif ti:
-                progress.update(msg=msg.format('Titarenko'))
-                func = partial(_ti, images.data, ti, cores, chunksize)
+            # elif ti:
+            #     progress.update(msg=msg.format('Titarenko'))
+            #     func = partial(_ti, images.data, ti, cores, chunksize)
             elif sf:
                 progress.update(msg=msg.format('Smoothing-Filter'))
                 func = partial(_sf, images.data, sf, cores, chunksize)
@@ -97,19 +96,19 @@ class StripeRemovalFilter(BaseFilter):
         _, value_wf_sigma = add_property_to_form('Sigma', Type.FLOAT, 2.0, (0.0, 100.0), form=form, on_change=on_change)
 
         # Titarenko options
-        _, value_ti_nblock = add_property_to_form('Number of Blocks',
-                                                  Type.INT,
-                                                  0, (0, 100),
-                                                  form=form,
-                                                  on_change=on_change)
-
-        _, value_ti_alpha = add_property_to_form('Alpha', Type.FLOAT, 1.5, form=form, on_change=on_change)
+        # _, value_ti_nblock = add_property_to_form('Number of Blocks',
+        #                                           Type.INT,
+        #                                           0, (0, 100),
+        #                                           form=form,
+        #                                           on_change=on_change)
+        #
+        # _, value_ti_alpha = add_property_to_form('Alpha', Type.FLOAT, 1.5, form=form, on_change=on_change)
 
         # Smoothing filter options
         _, value_sf_size = add_property_to_form('Size', Type.INT, 5, (0, 100), form=form, on_change=on_change)
-
+        # ('titarenko', [value_ti_nblock, value_ti_alpha])
         filters = [('fourier-wavelet', [value_wf_level, value_wf_wname, value_wf_sigma]),
-                   ('titarenko', [value_ti_nblock, value_ti_alpha]), ('smoothing-filter', [value_sf_size])]
+                   ('smoothing-filter', [value_sf_size])]
 
         def on_filter_type_change(name):
             for f in filters:
@@ -127,8 +126,6 @@ class StripeRemovalFilter(BaseFilter):
             "value_wf_level": value_wf_level,
             "value_wf_wname": value_wf_wname,
             "value_wf_sigma": value_wf_sigma,
-            "value_ti_nblock": value_ti_nblock,
-            "value_ti_alpha": value_ti_alpha,
             "value_sf_size": value_sf_size,
         }
 
@@ -193,27 +190,27 @@ def _wf(data, params, cores, chunksize):
     kwargs['pad'] = bool(params.get('pad')) if params.get('pad') else kwargs['pad']
 
     return tomopy.prep.stripe.remove_stripe_fw(data, **kwargs)
-    # TODO find where this is from? iprep?
-    # data = iprep.filters.remove_stripes_ring_artifacts(
-    #     data, 'wavelet-fourier')
 
 
-def _ti(data, params, cores, chunksize):
-    tomopy = importer.do_importing('tomopy')
-
-    # creating a dictionary with all possible params for this func
-    kwargs = dict(nblock=0, alpha=1.5, ncore=cores, nchunk=chunksize)
-
-    # process the input parameters
-    params = _get_params(params)
-
-    # dict.get returns a None if the keyword arg is not found
-    # this means if the user hasn't passed anything that matches the string
-    # then the default is used
-    kwargs['nblock'] = int(params.get('nblock')) if params.get('nblock') else kwargs['nblock']
-    kwargs['alpha'] = float(params.get('alpha')) if params.get('alpha') else kwargs['alpha']
-
-    return tomopy.prep.stripe.remove_stripe_ti(data, **kwargs)
+# FIXME takes a huge amount of time even for preview
+# so currently disabled. Might not be needed after
+# integration of more stripe removal methods from
+# def _ti(data, params, cores, chunksize):
+#     tomopy = importer.do_importing('tomopy')
+#
+#     # creating a dictionary with all possible params for this func
+#     kwargs = dict(nblock=0, alpha=1.5, ncore=cores, nchunk=chunksize)
+#
+#     # process the input parameters
+#     params = _get_params(params)
+#
+#     # dict.get returns a None if the keyword arg is not found
+#     # this means if the user hasn't passed anything that matches the string
+#     # then the default is used
+#     kwargs['nblock'] = int(params.get('nblock')) if params.get('nblock') else kwargs['nblock']
+#     kwargs['alpha'] = float(params.get('alpha')) if params.get('alpha') else kwargs['alpha']
+#
+#     return tomopy.prep.stripe.remove_stripe_ti(data, **kwargs)
 
 
 def _sf(data, params, cores, chunksize):

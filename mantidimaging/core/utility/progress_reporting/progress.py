@@ -19,6 +19,9 @@ class ProgressHandler(object):
         raise NotImplementedError("Need to implement this method in the child class")
 
 
+STEPS_TO_AVERAGE = 30
+
+
 class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
@@ -175,8 +178,9 @@ class Progress(object):
             if self.current_step > self.end_step:
                 self.end_step = self.current_step + 1
 
-            if self.current_step == 10:
-                times = numpy.asarray([elem.time for elem in self.progress_history[-1:-10:-1]], dtype=numpy.float32)
+            if self.current_step == STEPS_TO_AVERAGE:
+                times = numpy.asarray([elem.time for elem in self.progress_history[-1:-STEPS_TO_AVERAGE:-1]],
+                                      dtype=numpy.float32)
                 # get the differences between them (in reverse, to avoid dealing with negative number)
                 # and then the mean time
                 mean_time = numpy.diff(times[::-1]).mean()
