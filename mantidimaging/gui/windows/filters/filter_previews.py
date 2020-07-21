@@ -17,7 +17,7 @@ label_coords = {"before": Coord(3, 0), "after": Coord(3, 1), "combined": Coord(3
 
 
 def _data_valid_for_histogram(data):
-    return data is not None and None not in data
+    return data is not None and any(d is not None for d in data)
 
 
 class FilterPreviews(GraphicsLayoutWidget):
