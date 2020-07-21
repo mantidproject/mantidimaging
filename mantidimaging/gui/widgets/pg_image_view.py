@@ -106,9 +106,9 @@ class MIImageView(ImageView):
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
 
-    def set_timeline_to_tick_nearest(self, x):
+    def set_timeline_to_tick_nearest(self, x_pos_clicked):
         x_axis = self.getRoiPlot().getAxis('bottom')
-        frac_pos = (x - x_axis.x()) / x_axis.height()
+        frac_pos = x_pos_clicked / x_axis.width()
         view_range = self.getRoiPlot().viewRange()[0]
         domain_pos = (view_range[1] - view_range[0]) * frac_pos
         self.timeLine.setValue(np.round(view_range[0] + domain_pos))
