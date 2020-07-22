@@ -60,9 +60,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         difference_details = self.addLabel("")
 
         self.display_formatted_detail = {
-            self.image_before: lambda val: before_details.setText(f"Before: {val:.2f}"),
-            self.image_after: lambda val: after_details.setText(f"After: {val:.2f}"),
-            self.image_difference: lambda val: difference_details.setText(f"Difference: {val:.2f}"),
+            self.image_before: lambda val: before_details.setText(f"Before: {val:.6f}"),
+            self.image_after: lambda val: after_details.setText(f"After: {val:.6f}"),
+            self.image_difference: lambda val: difference_details.setText(f"Difference: {val:.6f}"),
         }
 
         for img in self.image_before, self.image_after, self.image_difference:
