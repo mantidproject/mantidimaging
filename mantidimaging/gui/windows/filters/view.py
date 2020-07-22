@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication
+from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
+
+    splitter: QSplitter
 
     linkImages: QCheckBox
     invertDifference: QCheckBox
@@ -35,6 +37,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
+        self.splitter.setStretchFactor(0, 0)
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
@@ -69,7 +72,7 @@ class FiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
-        self.auto_update_triggered.disconnect(self.on_auto_update_triggered)
+        self.auto_update_triggered.disconnect()
         self.main_window.filters = None
         self.presenter = None
 

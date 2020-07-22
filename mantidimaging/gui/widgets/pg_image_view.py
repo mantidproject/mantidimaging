@@ -65,7 +65,7 @@ class MIImageView(ImageView):
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
 
-        data = self.image[:, left:right, top:bottom]
+        data = self.image[:, top:bottom, left:right]
         if data is not None:
             while data.ndim > 1:
                 data = data.mean(axis=1)
@@ -73,7 +73,7 @@ class MIImageView(ImageView):
                 self.roiCurves.append(self.ui.roiPlot.plot())
             self.roiCurves[0].setData(y=data, x=self.tVals)
 
-        self.roiString = f"({left}, {top}, {right}, {bottom}) | region avg={data[int(self.timeLine.value())].mean()}"
+        self.roiString = f"({left}, {top}, {right}, {bottom}) | region avg={data[int(self.timeLine.value())].mean():.6f}"
         if self.roi_changed_callback:
             self.roi_changed_callback(SensibleROI(left, top, right, bottom))
 
@@ -104,14 +104,13 @@ class MIImageView(ImageView):
         pt = CloseEnoughPoint(event.pos())
         msg = f"x={pt.x}, y={pt.y}, "
         if self.image.ndim == 3:
-            msg += f"z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]}"
+            msg += f"z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]:.6f}"
         else:
             msg += f"value={self.image[pt.y, pt.x]}"
 
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
 
-            # TODO add ROI average into message tooltip
         self.details.setText(msg)
 
     def set_timeline_to_tick_nearest(self, x_pos_clicked):

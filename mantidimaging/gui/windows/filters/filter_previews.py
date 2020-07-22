@@ -7,7 +7,7 @@ from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, Vie
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 histogram_axes_labels = {'left': 'Count', 'bottom': 'Bin'}
-before_pen = (0, 0, 200)
+before_pen = (200, 0, 0)
 after_pen = (0, 200, 0)
 
 Coord = namedtuple('Coord', ['row', 'col'])

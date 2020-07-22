@@ -23,13 +23,16 @@
       <property name="opaqueResize">
        <bool>true</bool>
       </property>
+      <property name="handleWidth">
+       <number>8</number>
+      </property>
       <property name="childrenCollapsible">
        <bool>true</bool>
       </property>
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="filterLayout">
         <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
+         <enum>QLayout::SetMaximumSize</enum>
         </property>
         <property name="leftMargin">
          <number>9</number>
@@ -56,7 +59,14 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="filterSelector"/>
+           <widget class="QComboBox" name="filterSelector">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="stackLabel">
@@ -66,7 +76,14 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="StackSelectorWidgetView" name="stackSelector"/>
+           <widget class="StackSelectorWidgetView" name="stackSelector">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QGroupBox" name="filterPropertiesContainer">

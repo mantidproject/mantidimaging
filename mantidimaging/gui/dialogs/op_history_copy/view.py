@@ -51,9 +51,6 @@ class OpHistoryCopyDialogView(BaseDialogView):
         check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         parent_layout.addWidget(check)
 
-        # op_name_label = QLabel("")
-        # op_name_label.setStyleSheet('font-weight: bold')
-        # parent_layout.addWidget(op_name_label, 0, 1)
         row_num = 1
         for arg in operation.filter_args:
             parent_layout.addWidget(QLabel(arg))
