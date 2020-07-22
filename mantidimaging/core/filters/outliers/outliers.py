@@ -19,7 +19,8 @@ class OutliersFilter(BaseFilter):
     filter_name = "Remove Outliers"
 
     @staticmethod
-    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode, cores=None, progress=None):
+    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode, axis=0, type="2D",
+                    cores=None, progress=None):
         """
         Requires tomopy to be available.
 
@@ -47,7 +48,10 @@ class OutliersFilter(BaseFilter):
                     np.negative(sample, out=sample)
 
                 tomopy = importer.do_importing('tomopy')
-                tomopy.misc.corr.remove_outlier(sample, diff, radius, ncore=cores, out=sample)
+                if type == "2D":
+                    tomopy.misc.corr.remove_outlier(sample, diff, radius, axis, ncore=cores, out=sample)
+                else:
+                    tomopy.misc.corr.remove_outlier1d(sample, diff, radius, axis, ncore=cores, out=sample)
                 progress.update()
 
                 # reverse the inversion
@@ -69,15 +73,22 @@ class OutliersFilter(BaseFilter):
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
         _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
+        _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 2), form=form, on_change=on_change)
 
-        return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field}
+        _, dim_field = add_property_to_form('Dims', Type.CHOICE, valid_values=["2D", "1D"], form=form,
+                                            on_change=on_change)
+
+        return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field,
+                'axis_field': axis_field, 'dim_field': dim_field}
 
     @staticmethod
-    def execute_wrapper(diff_field=None, size_field=None, mode_field=None):
+    def execute_wrapper(diff_field=None, size_field=None, mode_field=None, axis_field=None, dim_field=None):
         return partial(OutliersFilter.filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
-                       mode=mode_field.currentText())
+                       mode=mode_field.currentText(),
+                       axis=axis_field.value(),
+                       type=dim_field.currentText())
 
 
 def modes():
