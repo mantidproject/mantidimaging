@@ -1,8 +1,6 @@
 from functools import partial
 from typing import Dict, Any
 
-import numpy as np
-
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
@@ -37,7 +35,9 @@ class CropCoordinatesFilter(BaseFilter):
         """
 
         if region_of_interest is None:
-            region_of_interest = [0, 0, 50, 50]
+            region_of_interest = SensibleROI.from_list([0, 0, 50, 50])
+        if isinstance(region_of_interest, list):
+            region_of_interest = SensibleROI.from_list(region_of_interest)
 
         h.check_data_stack(data)
 
