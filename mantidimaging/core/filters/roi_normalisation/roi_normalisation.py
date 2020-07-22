@@ -47,8 +47,9 @@ class RoiNormalisationFilter(BaseFilter):
 
         # just get data reference
         if air_region:
+            progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
             # rescale to 16-bit range before normalising the values
-            images = RescaleFilter.filter_func(images, images.data.min(), images.data.max(), 65535.0)
+            images = RescaleFilter.filter_func(images, images.data.min(), images.data.max(), 65535.0, progress)
             if pu.multiprocessing_necessary(images.data.shape, cores):
                 _execute_par(images.data, air_region, cores, chunksize, progress)
             else:
@@ -88,7 +89,6 @@ def _divide_by_air_sum(data=None, air_sums=None):
 
 
 def _execute_par(data, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
-    progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
     log = getLogger(__name__)
 
     with progress:
@@ -133,7 +133,6 @@ def _execute_par(data, air_region: SensibleROI, cores=None, chunksize=None, prog
 
 
 def _execute_seq(data, air_region: SensibleROI, progress):
-    progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
     log = getLogger(__name__)
 
     with progress:
