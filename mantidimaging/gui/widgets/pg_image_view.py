@@ -49,25 +49,31 @@ class MIImageView(ImageView):
 
     def roiChanged(self):
         """
-        Reimplements the roiChanged function to expect only 3D data,
+        Re-implements the roiChanged function to expect only 3D data,
         and uses a faster mean calculation on the ROI view of the data,
         instead of the full sized data.
         """
+        # if the data isn't 3D the following code can't handle it correctly
+        # so defer back to the original implementation which can handle 2D (any maybe ND)
+        # more sensibly, albeit slower
+        if self.image.ndim != 3:
+            return super().roiChanged()
+
         roi_pos, roi_size = self.get_roi()
 
         # image indices are in order [Z, X, Y]
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
-        self.roiString = f"({left}, {top}, {right}, {bottom})"
-        if self.image.ndim == 3:
-            data = self.image[:, left:right, top:bottom]
-            if data is not None:
-                while data.ndim > 1:
-                    data = data.mean(axis=1)
-                if len(self.roiCurves) == 0:
-                    self.roiCurves.append(self.ui.roiPlot.plot())
-                self.roiCurves[0].setData(y=data, x=self.tVals)
 
+        data = self.image[:, left:right, top:bottom]
+        if data is not None:
+            while data.ndim > 1:
+                data = data.mean(axis=1)
+            if len(self.roiCurves) == 0:
+                self.roiCurves.append(self.ui.roiPlot.plot())
+            self.roiCurves[0].setData(y=data, x=self.tVals)
+
+        self.roiString = f"({left}, {top}, {right}, {bottom}) | region avg={data[int(self.timeLine.value())].mean()}"
         if self.roi_changed_callback:
             self.roi_changed_callback(SensibleROI(left, top, right, bottom))
 
@@ -104,11 +110,13 @@ class MIImageView(ImageView):
 
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
+
+            # TODO add ROI average into message tooltip
         self.details.setText(msg)
 
     def set_timeline_to_tick_nearest(self, x_pos_clicked):
         x_axis = self.getRoiPlot().getAxis('bottom')
-        frac_pos = x_pos_clicked / x_axis.width()
+        frac_pos = (x_pos_clicked - x_axis.x()) / x_axis.width()
         view_range = self.getRoiPlot().viewRange()[0]
         domain_pos = (view_range[1] - view_range[0]) * frac_pos
         self.timeLine.setValue(np.round(view_range[0] + domain_pos))
