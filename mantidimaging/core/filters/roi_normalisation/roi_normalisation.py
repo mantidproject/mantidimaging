@@ -48,7 +48,7 @@ class RoiNormalisationFilter(BaseFilter):
         # just get data reference
         if air_region:
             # rescale to 16-bit range before normalising the values
-            images = RescaleFilter.filter_func(images, 0.0, 65535.0)
+            images = RescaleFilter.filter_func(images, images.data.min(), images.data.max(), 65535.0)
             if pu.multiprocessing_necessary(images.data.shape, cores):
                 _execute_par(images.data, air_region, cores, chunksize, progress)
             else:
