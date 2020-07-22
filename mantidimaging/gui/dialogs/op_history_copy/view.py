@@ -1,10 +1,9 @@
 from typing import Iterable, Tuple
 
-from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QGridLayout, QPushButton
+from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QPushButton, QVBoxLayout
 
 from mantidimaging.core.operation_history.operations import ImageOperation
 from mantidimaging.gui.mvp_base import BaseDialogView
-from mantidimaging.gui.windows.filters.filter_previews import FilterPreviews
 from .presenter import OpHistoryCopyDialogPresenter
 
 
@@ -12,6 +11,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
     operationsContainer: QGroupBox
     _copy: QCheckBox
     applyButton: QPushButton
+    previewsLayout: QVBoxLayout
 
     def __init__(self, parent, images, main_window):
         super(OpHistoryCopyDialogView, self).__init__(parent, "gui/ui/op_history_copy_dialog.ui")
@@ -21,8 +21,8 @@ class OpHistoryCopyDialogView(BaseDialogView):
         self.stackSourceSelector.stack_selected_uuid.connect(self.presenter.set_source_stack)
         self.stackSourceSelector.subscribe_to_main_window(main_window)
         self.stackTargetSelector.subscribe_to_main_window(main_window)
-        self.previews = FilterPreviews()
-        self.previewsLayout.addWidget(self.previews)
+        # self.previews = FilterPreviews()
+        # self.previewsLayout.addWidget(self.previews)
         self.applyButton.clicked.connect(lambda: self.presenter.do_apply_ops())
 
     def display_op_history(self, operations: Iterable[ImageOperation]):
@@ -40,24 +40,27 @@ class OpHistoryCopyDialogView(BaseDialogView):
     @staticmethod
     def build_operation_row(operation: ImageOperation) -> Tuple[QWidget, QCheckBox]:
         parent = QWidget()
-        parent_layout = QGridLayout(parent)
+        parent_layout = QVBoxLayout(parent)
+        # parent_layout = QGridLayout(parent)
         parent.setLayout(parent_layout)
 
         check = QCheckBox(parent)
+        check.setText(operation.display_name)
+        check.setStyleSheet('font-weight: bold')
         check.setChecked(True)
         check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        parent_layout.addWidget(check, 0, 0)
+        parent_layout.addWidget(check)
 
-        op_name_label = QLabel(operation.display_name)
-        op_name_label.setStyleSheet('font-weight: bold')
-        parent_layout.addWidget(op_name_label, 0, 1)
+        # op_name_label = QLabel("")
+        # op_name_label.setStyleSheet('font-weight: bold')
+        # parent_layout.addWidget(op_name_label, 0, 1)
         row_num = 1
         for arg in operation.filter_args:
-            parent_layout.addWidget(QLabel(arg), row_num, 1)
+            parent_layout.addWidget(QLabel(arg))
             row_num += 1
 
         for k, v in operation.filter_kwargs.items():
-            parent_layout.addWidget(QLabel(f"{k}: {v}"), row_num, 1)
+            parent_layout.addWidget(QLabel(f"{k}: {v}"))
             row_num += 1
 
         return parent, check
