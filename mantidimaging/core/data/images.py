@@ -102,7 +102,7 @@ class Images:
             sample_copy[:] = self.data[:]
 
         images = Images(sample_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
-                        sinograms=False if not self.sinograms and not flip_axes else True,
+                        sinograms=not self.sinograms if flip_axes else self.sinograms,
                         memory_filename=sample_name)
         return images
 
