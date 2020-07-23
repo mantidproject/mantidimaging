@@ -57,7 +57,11 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)
+        # set here to trigger the changed event
+        self.showHistogramLegend.setChecked(True)
+
         self.linkImages.stateChanged.connect(self.link_images_changed)
+        # set here to trigger the changed event
         self.linkImages.setChecked(True)
         self.invertDifference.stateChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 

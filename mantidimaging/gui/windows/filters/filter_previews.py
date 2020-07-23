@@ -9,6 +9,7 @@ from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 histogram_axes_labels = {'left': 'Count', 'bottom': 'Bin'}
 before_pen = (200, 0, 0)
 after_pen = (0, 200, 0)
+diff_pen = (0, 0, 200)
 
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = {"before": Coord(4, 0), "after": Coord(4, 1), "combined": Coord(4, 0)}
@@ -37,7 +38,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.after_histogram = None
 
         self.combined_histograms = True
-        self.histogram_legend_visible = False
+        self.histogram_legend_visible = True
 
         self.addLabel("Image before")
         self.addLabel("Image after")
@@ -70,6 +71,7 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def image_in_vb(self, name=None):
         im = ImageItem()
+        im.setAutoDownsample(False)
         vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
         return im, vb
@@ -99,6 +101,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.histogram = None
         self.before_histogram = None
         self.after_histogram = None
+        self.diff_histogram = None
 
     def delete_histogram_labels(self):
         coords = set(c for c in label_coords.values())
@@ -114,16 +117,14 @@ class FilterPreviews(GraphicsLayoutWidget):
                                       colspan=3)
         self.addLabel("Pixel values", row=label_coords["combined"].row, col=label_coords["combined"].col)
 
+        legend = self.histogram.addLegend()
         # Plot any histogram that has data, and add a legend if both exist
         if _data_valid_for_histogram(self.before_histogram_data):
             before_plot = self.histogram.plot(*self.before_histogram_data, pen=before_pen)
-            if _data_valid_for_histogram(self.after_histogram_data):
-                after_plot = self.histogram.plot(*self.after_histogram_data, pen=after_pen)
-                self.create_histogram_legend(before_plot, after_plot)
-                if not self.histogram_legend_visible:
-                    self.histogram.legend.hide()
-        elif _data_valid_for_histogram(self.after_histogram_data):
-            self.histogram.plot(*self.after_histogram_data, pen=after_pen)
+            legend.addItem(before_plot, "Before")
+        if _data_valid_for_histogram(self.after_histogram_data):
+            after_plot = self.histogram.plot(*self.after_histogram_data, pen=after_pen)
+            legend.addItem(after_plot, "After")
 
     def draw_separate_histograms(self):
         hc = histogram_coords
@@ -141,14 +142,8 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         if _data_valid_for_histogram(self.before_histogram_data):
             self.before_histogram.plot(*self.before_histogram_data, pen=before_pen)
-
         if _data_valid_for_histogram(self.after_histogram_data):
             self.after_histogram.plot(*self.after_histogram_data, pen=after_pen)
-
-    def create_histogram_legend(self, before_plot, after_plot):
-        legend = self.histogram.addLegend()
-        legend.addItem(before_plot, "Before")
-        legend.addItem(after_plot, "After")
 
     def set_before_histogram(self, data: Tuple[ndarray]):
         self.before_histogram_data = data
