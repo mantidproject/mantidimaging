@@ -3,6 +3,7 @@ import ctypes
 import os
 import uuid
 from contextlib import contextmanager
+from functools import partial
 from logging import getLogger
 from multiprocessing.pool import Pool
 from typing import Union, Type, Optional, Tuple
@@ -112,23 +113,29 @@ def calculate_chunksize(cores):
     return 1
 
 
-def multiprocessing_necessary(shape, cores) -> bool:
+def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) -> bool:
     # This environment variable will be present when running PYDEVD from PyCharm
     # and that has the bug that multiprocessing Pools can never finish `.join()` ing
     # thus never actually finish their processing.
     if 'PYDEVD_LOAD_VALUES_ASYNC' in os.environ:
         LOG.info("Debugging environment variable 'PYDEVD_LOAD_VALUES_ASYNC' found. Running synchronously on 1 core")
         return False
-    if cores == 1 or shape[0] < 10:
+
+    if cores == 1:
         return False
+    elif isinstance(shape, int):
+        return shape > 10
+    elif isinstance(shape, tuple) or isinstance(shape, list):
+        return shape[0] > 10
     return True
 
 
-def execute_impl(img_num, partial_func, cores, chunksize, name, progress, msg):
-    task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
+def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int, progress: Progress,
+                 msg: str):
+    task_name = f"{msg} {cores}c {chunksize}chs"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = generate_indices(img_num)
-    if cores > 1:
+    if multiprocessing_necessary(img_num, cores):
         with Pool(cores) as pool:
             for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
                 progress.update(1, msg)

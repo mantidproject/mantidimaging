@@ -163,8 +163,7 @@ def create_partial(func, fwd_function=inplace, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, name="Progress", progress=None,
-            msg: str = None):
+def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = ''):
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -207,8 +206,8 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
                          correct arguments
     :param cores: number of cores that the processing will use
     :param chunksize: chunk of work per process(worker)
-    :param name: name of the task used in progress reporting
     :param progress: Progress instance to use for progress reporting (optional)
+    :param msg: Message to be shown on the progress bar
     :return:
     """
 
@@ -227,7 +226,7 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     second_shared_data = second_data
 
     img_num = shared_data.shape[0]
-    pu.execute_impl(img_num, partial_func, cores, chunksize, name, progress, msg)
+    pu.execute_impl(img_num, partial_func, cores, chunksize, progress, msg)
 
     # remove the global references to remove unused dangling handles to the
     # data, which might prevent it from being GCed

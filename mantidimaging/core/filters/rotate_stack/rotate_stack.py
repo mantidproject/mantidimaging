@@ -98,7 +98,7 @@ def _execute_par(data, angle: float, cores: int, chunksize: int, progress: Progr
     with progress:
         f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, angle=angle)
 
-        data = psm.execute(data, f, cores=cores, chunksize=chunksize, name="Rotation", progress=progress,
+        data = psm.execute(data, f, cores=cores, chunksize=chunksize, progress=progress,
                            msg=f"Rotating by {angle} degrees")
 
     return data

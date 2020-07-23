@@ -36,8 +36,7 @@ def create_factors(data: np.ndarray, roi=None, cores=None, chunksize=None, progr
                                                     roi_right=roi[2] if roi else data[0].shape[1] - 1,
                                                     roi_bottom=roi[3] if roi else data[0].shape[0] - 1)
 
-            data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize,
-                                               "Calculating scale factor")
+            data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize)
 
         return scale_factors
 
@@ -60,7 +59,6 @@ def apply_factor(data: np.ndarray, scale_factors, cores=None, chunksize=None, pr
 
         # scale up all images by the mean sum of all of them, this will keep the
         # contrast the same as from the region of interest
-        data, scale_factors = ptsm.execute(data, [scale_factors.mean()], scale_up_partial, cores, chunksize,
-                                           "Applying scale factor", progress)
+        data, scale_factors = ptsm.execute(data, [scale_factors.mean()], scale_up_partial, cores, chunksize, progress)
 
     return data

@@ -101,7 +101,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
                  "size/width: {1}.".format(data.dtype, size))
 
         progress.update()
-        data = psm.execute(data, f, cores, chunksize, "Median Filter", progress)
+        data = psm.execute(data, f, cores, chunksize, progress)
 
     return data
 

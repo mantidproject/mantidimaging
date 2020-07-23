@@ -100,7 +100,7 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None, progress=N
              "filter size/width: {1}.".format(data.dtype, size))
 
     progress.update()
-    data = psm.execute(data, f, cores, chunksize, "Gaussian", progress)
+    data = psm.execute(data, f, cores, chunksize, progress)
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "

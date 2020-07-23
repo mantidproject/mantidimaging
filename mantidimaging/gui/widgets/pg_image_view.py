@@ -31,7 +31,7 @@ class MIImageView(ImageView):
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, levelMode='mono', *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
         self.details = QLabel("", self.ui.layoutWidget)
-        self.details.setStyleSheet("QLabel { color : white; }")
+        self.details.setStyleSheet("QLabel { color : red; }")
         self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
 
         self.imageItem.hoverEvent = self.image_hover_event
@@ -102,7 +102,10 @@ class MIImageView(ImageView):
         if event.exit:
             return
         pt = CloseEnoughPoint(event.pos())
-        msg = f"x={pt.x}, y={pt.y}, "
+        # event holds the coordinates in column-major coordinate
+        # while the data is in row-major coordinate, hence why
+        # the data access below is [y, x]
+        msg = f"x={pt.y}, y={pt.x}, "
         if self.image.ndim == 3:
             msg += f"z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]:.6f}"
         else:

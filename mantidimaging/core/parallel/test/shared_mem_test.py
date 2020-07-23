@@ -34,7 +34,7 @@ class SharedMemTest(unittest.TestCase):
         f = psm.create_partial(add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         # execute parallel
-        img = psm.execute(img, f, name="Inplace test")
+        img = psm.execute(img, f)
 
         # compare results
         npt.assert_equal(img, expected)
@@ -54,7 +54,7 @@ class SharedMemTest(unittest.TestCase):
         f = psm.create_partial(return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
 
         # execute parallel
-        img = psm.execute(img, f, name="Fwd func test")
+        img = psm.execute(img, f)
 
         # compare results
         npt.assert_equal(img, expected)
@@ -76,7 +76,7 @@ class SharedMemTest(unittest.TestCase):
         f = psm.create_partial(add_inplace, fwd_func=psm.inplace, add_arg=add_arg)
 
         # execute parallel
-        res = psm.execute(img, f, name="Fail Inplace test")
+        res = psm.execute(img, f)
 
         # compare results
         th.assert_not_equals(res, expected)
@@ -98,7 +98,7 @@ class SharedMemTest(unittest.TestCase):
         f = psm.create_partial(return_from_func, fwd_func=psm.return_fwd_func, add_arg=add_arg)
 
         # execute parallel
-        res = psm.execute(img, f, name="Fwd func test")
+        res = psm.execute(img, f)
 
         # compare results
         th.assert_not_equals(res, expected)
@@ -120,7 +120,7 @@ class SharedMemTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
-        img = psm.execute(img, f, name="Inplace test")
+        img = psm.execute(img, f)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
@@ -152,7 +152,7 @@ class SharedMemTest(unittest.TestCase):
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
         # execute parallel
-        img = psm.execute(img, f, name="Fwd func test")
+        img = psm.execute(img, f)
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
         # compare results

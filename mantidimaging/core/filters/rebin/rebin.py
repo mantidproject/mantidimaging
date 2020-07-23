@@ -49,11 +49,11 @@ class RebinFilter(BaseFilter):
                 sample_name = images.memory_filename
                 images.free_memory()
             else:
+                # this case is true when the filter preview is being calculated
                 sample_name = None
-            empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
-
-            if not pu.multiprocessing_necessary(sample.shape, cores) and sample_name is None:
+                # force single core execution as it's faster for a single image
                 cores = 1
+            empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
 
             f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it,
                                     mode=mode, output_shape=empty_resized_data.shape[1:])
