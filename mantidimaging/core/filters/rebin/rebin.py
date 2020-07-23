@@ -57,7 +57,7 @@ class RebinFilter(BaseFilter):
 
             f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it,
                                     mode=mode, output_shape=empty_resized_data.shape[1:])
-            ptsm.execute(data, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
+            ptsm.execute(sample, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
             data.data = empty_resized_data
 
         return data
