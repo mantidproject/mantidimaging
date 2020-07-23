@@ -21,9 +21,9 @@ class RebinFilter(BaseFilter):
     filter_name = "Rebin"
 
     @staticmethod
-    def filter_func(data: Images, rebin_param=0.5, mode=None, cores=None, chunksize=None, progress=None) -> Images:
+    def filter_func(images: Images, rebin_param=0.5, mode=None, cores=None, chunksize=None, progress=None) -> Images:
         """
-        :param data: Sample data which is to be processed. Expects radiograms
+        :param images: Sample data which is to be processed. Expects radiograms
         :param rebin_param: int, float or tuple
                             int - Percentage of current size.
                             float - Fraction of current size.
@@ -35,7 +35,7 @@ class RebinFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        h.check_data_stack(data)
+        h.check_data_stack(images)
 
         if isinstance(rebin_param, tuple):
             param_valid = rebin_param[0] > 0 and rebin_param[1] > 0
@@ -43,11 +43,11 @@ class RebinFilter(BaseFilter):
             param_valid = rebin_param > 0
 
         if param_valid:
-            sample = data.data
+            sample = images.data
             sample_name: Optional[str]
-            if data.memory_filename is not None:
-                sample_name = data.memory_filename
-                data.free_memory()
+            if images.memory_filename is not None:
+                sample_name = images.memory_filename
+                images.free_memory()
             else:
                 sample_name = None
             empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
@@ -58,9 +58,9 @@ class RebinFilter(BaseFilter):
             f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it,
                                     mode=mode, output_shape=empty_resized_data.shape[1:])
             ptsm.execute(sample, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
-            data.data = empty_resized_data
+            images.data = empty_resized_data
 
-        return data
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):

@@ -92,7 +92,6 @@ class Images:
         })
 
     def copy(self, flip_axes=False):
-        from copy import deepcopy
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         sample_name = pu.create_shared_name()
         sample_copy = pu.create_array(shape, self.data.dtype, sample_name)
