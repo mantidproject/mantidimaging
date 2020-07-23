@@ -204,6 +204,7 @@ class MainWindowView(BaseMainWindowView):
         getLogger(__name__).error(log_error_msg)
 
     def attach_debugger(self):
-        port = QInputDialog.getInt(self, "Debug port", "Get PyCharm debug listen port", value=25252)[0]
-        import pydevd_pycharm
-        pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)
+        port, accepted = QInputDialog.getInt(self, "Debug port", "Get PyCharm debug listen port", value=25252)
+        if accepted:
+            import pydevd_pycharm
+            pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)
