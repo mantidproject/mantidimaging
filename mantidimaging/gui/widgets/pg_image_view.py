@@ -31,7 +31,7 @@ class MIImageView(ImageView):
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, levelMode='mono', *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
         self.details = QLabel("", self.ui.layoutWidget)
-        self.details.setStyleSheet("QLabel { color : red; }")
+        self.details.setStyleSheet("QLabel { color : green; }")
         self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
 
         self.imageItem.hoverEvent = self.image_hover_event
