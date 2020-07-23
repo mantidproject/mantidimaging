@@ -13,13 +13,16 @@ OUTLIERS_DARK = 'dark'
 OUTLIERS_BRIGHT = 'bright'
 _default_radius = 3
 _default_mode = OUTLIERS_BRIGHT
+DIM_2D = "2D"
+DIM_1D = "1D"
+_default_dim = DIM_2D
 
 
 class OutliersFilter(BaseFilter):
-    filter_name = "Remove Outliers"
+    filter_name = "Remove Outliers TomoPy"
 
     @staticmethod
-    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode, axis=0, type="2D",
+    def filter_func(data, diff=None, radius=_default_radius, mode=_default_mode, axis=0, type=_default_dim,
                     cores=None, progress=None):
         """
         Requires tomopy to be available.
@@ -41,9 +44,9 @@ class OutliersFilter(BaseFilter):
             with progress:
                 progress.update(msg="Applying outliers with threshold: {0} and " "radius {1}".format(diff, radius))
 
-                # we flip the histogram horizontally, this makes the darkest pixels
-                # the brightest
                 sample = data.data
+                # By default tomopy only clears bright outliers.
+                # As a workaround inverting the image makes the dark outliers the brightest
                 if mode == OUTLIERS_DARK:
                     np.negative(sample, out=sample)
 
@@ -75,7 +78,7 @@ class OutliersFilter(BaseFilter):
         _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
         _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 2), form=form, on_change=on_change)
 
-        _, dim_field = add_property_to_form('Dims', Type.CHOICE, valid_values=["2D", "1D"], form=form,
+        _, dim_field = add_property_to_form('Dims', Type.CHOICE, valid_values=dims(), form=form,
                                             on_change=on_change)
 
         return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field,
@@ -93,3 +96,7 @@ class OutliersFilter(BaseFilter):
 
 def modes():
     return [OUTLIERS_BRIGHT, OUTLIERS_DARK]
+
+
+def dims():
+    return [DIM_2D, DIM_1D]
