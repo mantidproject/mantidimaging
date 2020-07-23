@@ -7,9 +7,8 @@ import skimage.transform
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
-from mantidimaging.core.parallel import exclusive_mem as pem
+from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -48,16 +47,18 @@ class RebinFilter(BaseFilter):
             sample_name: Optional[str]
             if data.memory_filename is not None:
                 sample_name = data.memory_filename
-                data.free_sample()
+                data.free_memory()
             else:
                 sample_name = None
             empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
-            progress = Progress.ensure_instance(progress, num_steps=sample.shape[0], task_name='Rebin')
-            if pu.multiprocessing_necessary(sample.shape, cores) and sample_name is not None:
-                rebinned = _execute_par(sample, empty_resized_data, mode, cores, chunksize, progress)
-            else:
-                rebinned = _execute_seq(sample, empty_resized_data, mode, progress)
-            data.data = rebinned
+
+            if not pu.multiprocessing_necessary(sample.shape, cores) and sample_name is None:
+                cores = 1
+
+            f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it,
+                                    mode=mode, output_shape=empty_resized_data.shape[1:])
+            ptsm.execute(data, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
+            data.data = empty_resized_data
 
         return data
 
@@ -140,24 +141,9 @@ def modes():
 
 
 def _execute_par(data: numpy.ndarray, resized_data, mode, cores=None, chunksize=None, progress=None):
-    with progress:
-        progress.update(msg="Applying rebin.")
-        f = pem.create_partial(skimage.transform.resize, mode=mode, output_shape=resized_data.shape[1:])
-        resized_data = pem.execute(data, f, cores, chunksize, "Rebin", output_data=resized_data, progress=progress)
-    return resized_data
-
-
-def _execute_seq(data: numpy.ndarray, resized_data, mode, progress=None):
-    with progress:
-        progress.update(msg="Starting image rebinning.")
-
-        num_images = resized_data.shape[0]
-        progress.set_estimated_steps(num_images)
-
-        for idx in range(num_images):
-            resized_data[idx] = skimage.transform.resize(data[idx], resized_data.shape[1:], mode=mode)
-            progress.update()
-
+    f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it, mode=mode,
+                            output_shape=resized_data.shape[1:])
+    ptsm.execute(data, resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin.")
     return resized_data
 
 
