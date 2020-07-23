@@ -48,12 +48,12 @@ class RoiNormalisationFilter(BaseFilter):
         # just get data reference
         if air_region:
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-            # rescale to 16-bit range before normalising the values
-            images = RescaleFilter.filter_func(images, images.data.min(), images.data.max(), 65535.0, progress)
-            if pu.multiprocessing_necessary(images.data.shape, cores):
-                _execute_par(images.data, air_region, cores, chunksize, progress)
-            else:
-                _execute_seq(images.data, air_region, progress)
+            # get the max of the input data, to be able to rescale back to it
+            # after the ROI normalisation
+            start_max = images.data.max()
+
+            _execute(images.data, air_region, cores, chunksize, progress)
+            images = RescaleFilter.filter_func(images, images.data.min(), images.data.max(), start_max, progress)
 
         h.check_data_stack(images)
         return images
@@ -88,11 +88,13 @@ def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute_par(data, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
+def _execute(data, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
 
     with progress:
         progress.update(msg="Normalization by air region")
+        if isinstance(air_region, list):
+            air_region = SensibleROI.from_list(air_region)
 
         # initialise same number of air sums
         img_num = data.shape[0]
@@ -107,52 +109,14 @@ def _execute_par(data, air_region: SensibleROI, cores=None, chunksize=None, prog
                                                     air_right=air_region.right,
                                                     air_bottom=air_region.bottom)
 
-            data, air_sums = ptsm.execute(data,
-                                          air_sums,
-                                          calc_sums_partial,
-                                          cores,
-                                          chunksize,
-                                          "Calculating air sums",
-                                          progress=progress)
+            data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores, chunksize, progress=progress)
 
             air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
 
-            data, air_sums = ptsm.execute(data,
-                                          air_sums,
-                                          air_sums_partial,
-                                          cores,
-                                          chunksize,
-                                          "Norm by Air Sums",
-                                          progress=progress)
+            data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores, chunksize, progress=progress)
 
             avg = np.average(air_sums)
             max_avg = np.max(air_sums) / avg
             min_avg = np.min(air_sums) / avg
 
             log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
-
-
-def _execute_seq(data, air_region: SensibleROI, progress):
-    log = getLogger(__name__)
-
-    with progress:
-        progress.update(msg="Normalization by air region")
-        progress.add_estimated_steps((2 * data.shape[0]) + 1)
-
-        air_sums = []
-        for idx in range(0, data.shape[0]):
-            air_data_sum = data[idx, air_region.top:air_region.bottom, air_region.left:air_region.right].sum()
-            air_sums.append(air_data_sum)
-            progress.update()
-
-        progress.update(msg="Normalization by air sums")
-        air_sums = np.true_divide(air_sums, np.amax(air_sums))
-        for idx in range(data.shape[0]):
-            np.true_divide(data[idx], air_sums[idx], out=data[idx])
-            progress.update()
-
-        avg = np.average(air_sums)
-        max_avg = np.max(air_sums) / avg
-        min_avg = np.min(air_sums) / avg
-
-        log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
