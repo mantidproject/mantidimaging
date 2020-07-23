@@ -4,10 +4,13 @@ import os
 import uuid
 from contextlib import contextmanager
 from logging import getLogger
+from multiprocessing.pool import Pool
 from typing import Union, Type, Optional, Tuple
 
 import SharedArray as sa
 import numpy as np
+
+from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 
@@ -114,7 +117,23 @@ def multiprocessing_necessary(shape, cores) -> bool:
     # and that has the bug that multiprocessing Pools can never finish `.join()` ing
     # thus never actually finish their processing.
     if 'PYDEVD_LOAD_VALUES_ASYNC' in os.environ:
+        LOG.info("Debugging environment variable 'PYDEVD_LOAD_VALUES_ASYNC' found. Running synchronously on 1 core")
         return False
     if cores == 1 or shape[0] < 10:
         return False
     return True
+
+
+def execute_impl(img_num, partial_func, cores, chunksize, name, progress, msg):
+    task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
+    progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
+    indices_list = generate_indices(img_num)
+    if cores > 1:
+        with Pool(cores) as pool:
+            for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
+                progress.update(1, msg)
+    else:
+        for ind in indices_list:
+            partial_func(ind)
+            progress.update(1, msg)
+    progress.mark_complete()

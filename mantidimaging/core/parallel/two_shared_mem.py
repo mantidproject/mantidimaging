@@ -1,11 +1,11 @@
 from functools import partial
-from multiprocessing import Pool
 
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.progress_reporting import Progress
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
+# TODO: now uses SharedArray so this shared_data global might not be necessary anymore. Needs testing
+
 shared_data = None
 second_shared_data = None
 
@@ -125,6 +125,23 @@ def return_to_second(func, i, **kwargs):
     second_shared_data[i] = func(shared_data[i], second_shared_data[i], **kwargs)
 
 
+def return_to_second_but_dont_use_it(func, i, **kwargs):
+    """
+    Use if the parameter function will do the following:
+        - Perform an operation on the input data that is dependent on another container
+        - DOES have a return statement
+        - The data is NOT RESIZED
+        - The SECOND INPUT CONTAINER is not used for the calculation
+        - The output will be stored in the SECOND INPUT CONTAINER
+
+    :param func: Function that will be executed
+    :param i: index from the shared_data on which to operate
+    :param kwargs: kwargs to forward to the function func that will be executed
+    :return: nothing is returned, as the data is replaced in place
+    """
+    second_shared_data[i] = func(shared_data[i], **kwargs)
+
+
 def create_partial(func, fwd_function=inplace, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
@@ -146,7 +163,8 @@ def create_partial(func, fwd_function=inplace, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, name="Progress", progress=None):
+def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, name="Progress", progress=None,
+            msg: str = None):
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -159,8 +177,7 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     copy.
 
     When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK
-    TO REPLACE THE ORIGINAL as is done in parallel.exclusive_mem, it is merely
-    discarded.
+    TO REPLACE THE ORIGINAL, it is discarded.
 
     - imap_unordered gives the images back in random order
     - map and map_async do not improve speed performance
@@ -209,25 +226,8 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     global second_shared_data
     second_shared_data = second_data
 
-    pool = Pool(cores)
-    img_num = data.shape[0]
-
-    task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress, task_name=task_name)
-    progress.set_estimated_steps(img_num)
-
-    if img_num == 1:
-        indices_list = [0]
-    else:
-        indices_list = range(img_num)
-
-    for _ in enumerate(pool.imap(partial_func, indices_list, chunksize=chunksize)):
-        progress.update()
-
-    pool.close()
-    pool.join()
-
-    progress.mark_complete()
+    img_num = shared_data.shape[0]
+    pu.execute_impl(img_num, partial_func, cores, chunksize, name, progress, msg)
 
     # remove the global references to remove unused dangling handles to the
     # data, which might prevent it from being GCed

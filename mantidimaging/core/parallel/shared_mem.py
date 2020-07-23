@@ -1,11 +1,11 @@
 from functools import partial
-from multiprocessing import Pool
 
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.progress_reporting import Progress
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
+# TODO: now uses SharedArray so this shared_data global might not be necessary anymore. Needs testing
+
 shared_data = None
 
 
@@ -94,8 +94,7 @@ def execute(data=None, partial_func=None, cores=None, chunksize=None, name="Prog
     copy.
 
     When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK
-    TO REPLACE THE ORIGINAL as is done in parallel.exclusive_mem, it is merely
-    discarded.
+    TO REPLACE THE ORIGINAL, it is discarded.
 
     Function choice for iterating over the data:
         - imap_unordered gives the images back in random order!
@@ -140,20 +139,8 @@ def execute(data=None, partial_func=None, cores=None, chunksize=None, name="Prog
     # if different shape it will get the reference to the new array
     shared_data = data
 
-    pool = Pool(cores)
     img_num = shared_data.shape[0]
-
-    task_name = name + " " + str(cores) + "c " + str(chunksize) + "chs"
-    progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
-
-    indices_list = pu.generate_indices(img_num)
-    for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
-        progress.update(1, msg)
-
-    pool.close()
-    pool.join()
-
-    progress.mark_complete()
+    pu.execute_impl(img_num, partial_func, cores, chunksize, name, progress, msg)
 
     # remove the global references to remove unused dangling handles to the
     # data, which might prevent it from being GCed
