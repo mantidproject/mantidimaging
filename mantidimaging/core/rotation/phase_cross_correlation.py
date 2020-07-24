@@ -24,8 +24,8 @@ def find_center_pc(images: Images, initial_guess: Optional[float] = None) -> flo
     p1 = ndimage.shift(images.projection(0), [0, -initial_guess], mode='constant', cval=0)
     p2 = np.fliplr(
         ndimage.shift(images.projection(images.num_projections // 2), [0, -initial_guess], mode='constant', cval=0))
-    shift = phase_cross_correlation(p1, p2, upsample_factor=1.0)
+    shift = phase_cross_correlation(p1, p2, upsample_factor=3.0)
 
     # Compute center of rotation as the center of first image and the
     # registered translation with the second image
-    return (p1.shape[1] + shift[0][1] - 1.0) / 2.0
+    return (p1.shape[1] + shift[0][1] - 1) / 2

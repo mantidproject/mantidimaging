@@ -2,10 +2,10 @@ from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
 import numpy as np
+
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import AstraRecon
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
-from mantidimaging.core.reconstruct.tomopy_recon import TomopyRecon
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.rotation import update_image_operations
 from mantidimaging.core.rotation.phase_cross_correlation import find_center_pc
@@ -61,26 +61,23 @@ class ReconstructWindowModel(object):
         self.data_model.clear_results()
 
         self.stack = stack
-        slice_idx, _ = self.find_initial_cor()
+        slice_idx, cor = self.find_initial_cor()
 
         self.preview_projection_idx = 0
         self.preview_slice_idx = slice_idx
 
         if stack is not None:
             self.proj_angles = generate_projection_angles(360, self.images.num_projections)
+            self.set_precalculated(cor, self.data_model.get_tilt_from_top_cor(self.images.middle, cor))
 
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.images is None:
             return 0, ScalarCoR(0)
 
-        first_slice_to_recon = self._get_initial_slice_index()
+        first_slice_to_recon = 0
         cor = ScalarCoR(find_center_pc(self.images))
         self.last_cor = cor
         return first_slice_to_recon, cor
-
-    def _get_initial_slice_index(self):
-        first_slice_to_recon = self.images.num_sinograms // 2
-        return first_slice_to_recon
 
     def do_fit(self):
         # Ensure we have some sample data
@@ -174,7 +171,7 @@ class ReconstructWindowModel(object):
         cors = []
         for slice in slices:
             # rotation = TomopyRecon.find_cor(self.images, slice, self.images.width / 2, self.proj_angles, recon_params)
-            cor = AstraRecon.find_cor(self.images, slice, self.images.width / 2, self.proj_angles, recon_params)
+            cor = AstraRecon.find_cor(self.images, slice, find_center_pc(self.images), self.proj_angles, recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors

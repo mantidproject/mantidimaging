@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Dict, List
 
 from PyQt5.QtWidgets import QWidget
 
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
+from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -96,15 +96,12 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
-        self.set_stack(stack)
         self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
-        self.do_reconstruct_slice()
-
-    def set_stack(self, stack):
         self.model.initial_select_data(stack)
-        self.view.set_results(ScalarCoR(0.0), Degrees(0.0), Slope(0.0))
+        self.view.set_results(*self.model.get_results())
         self.do_update_projection()
         self.do_update_sinogram()
+        self.do_reconstruct_slice()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx

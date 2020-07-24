@@ -117,6 +117,10 @@ class Images:
         return self.data.shape[2]
 
     @property
+    def middle(self) -> float:
+        return self.width / 2
+
+    @property
     def num_images(self) -> int:
         return self.data.shape[0]
 

@@ -150,5 +150,12 @@ class CorTiltDataModel:
             self._points[idx] = Point(current.slice_index,
                                       self.get_cor_from_regression(current.slice_index))
 
+    @staticmethod
+    def get_tilt_from_top_cor(middle_of_image: float, cor: ScalarCoR) -> Degrees:
+        """
+        Uses the COR derived from phase cross correlation to calculate the tilt in degrees.
+        """
+        return Degrees(np.arctan(cor.value / middle_of_image))
+
     def iter_points(self) -> Iterator[Point]:
         return iter(self._points)
