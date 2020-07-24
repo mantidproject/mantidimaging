@@ -3,8 +3,8 @@ from typing import Optional
 
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
-from mantidimaging.core.cor_tilt import CorTiltDataModel
-from mantidimaging.core.cor_tilt.data_model import Point
+from mantidimaging.core.rotation import CorTiltDataModel
+from mantidimaging.core.rotation.data_model import Point
 
 
 class Column(Enum):
@@ -17,10 +17,10 @@ COLUMN_NAMES = {Column.SLICE_INDEX: 'Slice Index', Column.CENTRE_OF_ROTATION: 'C
 
 class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     """
-    Model of the slice/cor point data in the cor/tilt view's tableView.
+    Model of the slice/rotation point data in the rotation/tilt view's tableView.
 
     This class handles GUI interaction with the tableView  whilst CorTiltDataModel provides
-    methods for calculating cor and gradient from the stored values.
+    methods for calculating rotation and gradient from the stored values.
     """
 
     def populate_slice_indices(self, begin, end, count, cor=0.0):

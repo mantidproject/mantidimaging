@@ -1,13 +1,11 @@
 from logging import getLogger
-from typing import Tuple, List
+from typing import List, Tuple
 
 import numpy as np
-
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
-from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters, ProjectionAngles
-from mantidimaging.core.utility.optional_imports import \
-    safe_import  # noqa: F401
+from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
+from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
@@ -16,11 +14,21 @@ tomopy = safe_import('tomopy')
 
 class TomopyRecon(BaseRecon):
     @staticmethod
+    def find_cor(images: Images, slice_idx: int, start_cor: float, proj_angles: ProjectionAngles,
+                 recon_params: ReconstructionParameters) -> float:
+        return tomopy.find_center(images.sinograms(),
+                                  proj_angles.value,
+                                  ind=slice_idx,
+                                  init=start_cor,
+                                  sinogram_order=True)
+
+    @staticmethod
     def single(images: Images, slice_idx: int, cor: ScalarCoR, proj_angles: ProjectionAngles,
                recon_params: ReconstructionParameters):
         # make sinogram manually, tomopy likes to copy a lot of data otherwise
         s = images.sino(slice_idx)
-        volume = tomopy.recon(tomo=[s], sinogram_order=True,
+        volume = tomopy.recon(tomo=[s],
+                              sinogram_order=True,
                               theta=proj_angles.value,
                               center=cor.value,
                               algorithm=recon_params.algorithm,
@@ -31,16 +39,21 @@ class TomopyRecon(BaseRecon):
     @staticmethod
     def single_sino(sample: np.ndarray, shape: Tuple[int, int], cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters):
-        volume = tomopy.recon(tomo=[sample], sinogram_order=True,
-                              theta=proj_angles.value, center=cor.value,
+        volume = tomopy.recon(tomo=[sample],
+                              sinogram_order=True,
+                              theta=proj_angles.value,
+                              center=cor.value,
                               algorithm=recon_params.algorithm,
                               filter_name=recon_params.filter_name)
 
         return volume[0]
 
     @staticmethod
-    def full(images: Images, cors: List[ScalarCoR], proj_angles: ProjectionAngles,
-             recon_params: ReconstructionParameters, progress=None):
+    def full(images: Images,
+             cors: List[ScalarCoR],
+             proj_angles: ProjectionAngles,
+             recon_params: ReconstructionParameters,
+             progress=None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
@@ -59,7 +72,7 @@ class TomopyRecon(BaseRecon):
         kwargs = {
             'ncore': ncores,
             'tomo': images.data,
-            'sinogram_order': images.sinograms,
+            'sinogram_order': images._is_sinograms,
             'theta': proj_angles.value,
             'center': [cor.value for cor in cors],
             'algorithm': recon_params.algorithm,

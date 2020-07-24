@@ -23,7 +23,7 @@ class MainWindowModel(object):
                       flat_path=None, dark_path=None, sinograms=False):
         dataset = loader.load(sample_path, flat_path, dark_path,
                               in_prefix, image_format, dtype, indices=indices, progress=progress)
-        dataset.sample.sinograms = sinograms
+        dataset.sample._is_sinograms = sinograms
         return dataset
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, progress):

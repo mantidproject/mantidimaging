@@ -3,7 +3,7 @@ import unittest
 import mock
 import numpy as np
 
-from mantidimaging.core.cor_tilt.data_model import Point
+from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)

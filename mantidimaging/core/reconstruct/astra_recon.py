@@ -47,13 +47,7 @@ class AstraRecon(BaseRecon):
         def minimizer_function(cor):
             return -get_sumsq(AstraRecon.single(images, slice_idx, ScalarCoR(cor), proj_angles, recon_params))
 
-        results = []
-        for i in range(-1, 2):
-            results.append(
-                minimize(minimizer_function, start_cor + (start_cor * 0.1 * i), method='nelder-mead', tol=0.05))
-
-        best_guess = min(results, key=lambda res: res.x)
-        return best_guess.x[0]
+        return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
 
     @staticmethod
     @contextmanager

@@ -1,8 +1,3 @@
-
-
-from .auto import (  # noqa: F401
-    auto_find_cors)
-
 from .data_model import CorTiltDataModel  # noqa: F401
 
 from .workflow import (  # noqa: F401

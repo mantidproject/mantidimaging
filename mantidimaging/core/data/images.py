@@ -30,7 +30,7 @@ class Images:
         self._filenames = filenames
 
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
-        self.sinograms = sinograms
+        self._is_sinograms = sinograms
 
         self.memory_filename = memory_filename
 
@@ -101,13 +101,13 @@ class Images:
             sample_copy[:] = self.data[:]
 
         images = Images(sample_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
-                        sinograms=not self.sinograms if flip_axes else self.sinograms,
+                        sinograms=not self._is_sinograms if flip_axes else self._is_sinograms,
                         memory_filename=sample_name)
         return images
 
     @property
     def height(self):
-        if not self.sinograms:
+        if not self._is_sinograms:
             return self.data.shape[1]
         else:
             return self.data.shape[0]
@@ -122,7 +122,7 @@ class Images:
 
     @property
     def num_projections(self) -> int:
-        if not self.sinograms:
+        if not self._is_sinograms:
             return self.data.shape[0]
         else:
             return self.data.shape[1]
@@ -132,16 +132,22 @@ class Images:
         return self.height
 
     def sino(self, slice_idx) -> np.ndarray:
-        if not self.sinograms:
+        if not self._is_sinograms:
             return np.swapaxes(self.data, 0, 1)[slice_idx]
         else:
             return self.data[slice_idx]
 
     def projection(self, projection_idx) -> np.ndarray:
-        if self.sinograms:
+        if self._is_sinograms:
             return np.swapaxes(self.data, 0, 1)[projection_idx]
         else:
             return self.data[projection_idx]
+
+    def sinograms(self):
+        if not self._is_sinograms:
+            return np.swapaxes(self.data, 0, 1)
+        else:
+            return self.data
 
     @property
     def data(self) -> np.ndarray:

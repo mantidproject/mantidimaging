@@ -167,8 +167,8 @@ class StackVisualiserView(BaseMainWindowView):
 
     def mark_as_(self):
         # 1 is position of sinograms, 0 is projections
-        current = 1 if self.presenter.images.sinograms else 0
+        current = 1 if self.presenter.images._is_sinograms else 0
         item, accepted = QInputDialog.getItem(self, "Select if projections or sinograms", "Images are:",
                                               ["projections", "sinograms"], current)
         if accepted:
-            self.presenter.images.sinograms = False if item == "projections" else True
+            self.presenter.images._is_sinograms = False if item == "projections" else True

@@ -143,7 +143,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def do_reconstruct_slice(self, cor=None, slice_idx=None):
+    def do_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
@@ -155,7 +155,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
-        self.view.update_recon_preview(data)
+        self.view.update_recon_preview(data, refresh_recon_slice_histogram)
 
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx

@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from mantidimaging.core.cor_tilt import (CorTiltDataModel, run_auto_finding_on_images)
+from mantidimaging.core.rotation import (CorTiltDataModel, run_auto_finding_on_images)
 from mantidimaging.core.data import Images
 
 

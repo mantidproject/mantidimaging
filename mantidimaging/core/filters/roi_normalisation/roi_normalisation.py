@@ -1,9 +1,8 @@
 from functools import partial
 from logging import getLogger
-from typing import Dict, Any
+from typing import Any, Dict
 
 import numpy as np
-
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
@@ -48,13 +47,7 @@ class RoiNormalisationFilter(BaseFilter):
         # just get data reference
         if air_region:
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-            # get the max of the input data, to be able to rescale back to it
-            # after the ROI normalisation
-            start_max = images.data.max()
-
             _execute(images.data, air_region, cores, chunksize, progress)
-            images = RescaleFilter.filter_func(images, images.data.min(), images.data.max(), start_max, progress)
-
         h.check_data_stack(images)
         return images
 

@@ -174,13 +174,13 @@ class ReconstructWindowView(BaseMainWindowView):
     def update_sinogram(self, image_data):
         self.image_view.update_sinogram(image_data)
 
-    def update_recon_preview(self, image_data):
+    def update_recon_preview(self, image_data, refresh_recon_slice_histogram:bool):
         """
         Updates the reconstruction preview image with new data.
         """
         # Plot image
         if image_data is not None:
-            self.image_view.update_recon(image_data)
+            self.image_view.update_recon(image_data, refresh_recon_slice_histogram)
 
     def reset_image_recon_preview(self):
         """
