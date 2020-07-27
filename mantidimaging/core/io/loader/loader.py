@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import Tuple
 
 import numpy as np
 
@@ -67,16 +68,17 @@ def supported_formats():
     return avail_list
 
 
-def read_in_shape(input_path, in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32):
+def read_in_shape(input_path, in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32) -> Tuple[
+    Tuple[int, int, int], bool]:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     dataset = load(input_path, in_prefix=in_prefix, in_format=in_format, dtype=data_dtype, indices=[0, 1, 1],
                    file_names=input_file_names)
     images = dataset.sample
 
     # construct and return the new shape
-    shape = (len(input_file_names),) + images.projection(0).shape
+    shape = (len(input_file_names),) + images.data[0].shape
     images.free_memory()
-    return shape
+    return shape, images.is_sinograms
 
 
 def load(input_path=None, input_path_flat=None, input_path_dark=None,

@@ -65,8 +65,10 @@ class Images:
 
     def load_metadata(self, f):
         self.metadata = json.load(f)
+        self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
     def save_metadata(self, f):
+        self.metadata[const.SINOGRAMS] = self.is_sinograms
         json.dump(self.metadata, f)
 
     def record_operation(self, func_name: str, display_name=None, *args, **kwargs):
@@ -180,3 +182,7 @@ class Images:
         shared_name = pu.create_shared_name()
         arr = pu.create_array(shape, dtype, shared_name)
         return Images(arr, memory_filename=shared_name)
+
+    @property
+    def is_sinograms(self):
+        return self._is_sinograms
