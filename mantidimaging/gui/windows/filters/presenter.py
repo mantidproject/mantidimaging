@@ -62,8 +62,7 @@ class FiltersWindowPresenter(BasePresenter):
 
     def set_stack(self, stack):
         # Disconnect ROI update signal from previous stack
-        if self.model.stack:
-            self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
+        self.disconnect_current_stack_roi()
 
         # Connect ROI update signal to newly selected stack
         if stack:
@@ -77,6 +76,10 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
 
         self.do_update_previews()
+
+    def disconnect_current_stack_roi(self):
+        if self.model.stack:
+            self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
 
     def handle_roi_selection(self, roi: SensibleROI):
         if roi and self.filter_uses_parameter(SVParameters.ROI):

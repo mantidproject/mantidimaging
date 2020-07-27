@@ -32,6 +32,8 @@ class FiltersWindowView(BaseMainWindowView):
     error_icon: QLabel
     error_text: QLabel
 
+    presenter: FiltersWindowPresenter
+
     def __init__(self, main_window: 'MainWindowView'):
         super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
 
@@ -76,6 +78,7 @@ class FiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
+        self.presenter.disconnect_current_stack_roi()
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
         self.presenter = None
