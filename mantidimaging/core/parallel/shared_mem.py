@@ -82,7 +82,7 @@ def create_partial(func, fwd_func=return_fwd_func, **kwargs):
     return partial(fwd_func, func, **kwargs)
 
 
-def execute(data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = None):
+def execute(data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = ''):
     """
     Executes a function in parallel with shared memory between the processes.
 

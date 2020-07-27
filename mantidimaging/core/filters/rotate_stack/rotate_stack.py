@@ -15,43 +15,23 @@ class RotateFilter(BaseFilter):
     filter_name = "Rotate Stack"
 
     @staticmethod
-    def filter_func(data: Images, angle=None, flat=None, dark=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: Images, angle=None, dark=None, cores=None, chunksize=None, progress=None):
         """
-        Rotates a stack (sample, flat and dark images).
-
-        This function only works with square images.
-
-        If the picture is cropped first, the ROI coordinates have to be adjusted
-        separately to be pointing at the NON ROTATED image!
+        Rotates images by an arbitrary degree.
 
         :param data: stack of sample images
         :param angle: The rotation to be performed, in degrees
-        :param flat: flat images average
-        :param dark: dark images average
         :param cores: cores for parallel execution
         :param chunksize: chunk for each worker
 
-        :return: rotated images
+        :return: The rotated images
         """
         h.check_data_stack(data)
 
         if angle:
-            if pu.multiprocessing_necessary(data.data.shape, cores):
-                _execute_par(data.data, angle, cores, chunksize, progress)
-            else:
-                _execute_seq(data.data, angle, progress)
+            _execute(data.data, angle, cores, chunksize, progress)
 
-            if flat is not None:
-                flat = _rotate_image(flat, angle)
-            if dark is not None:
-                dark = _rotate_image(dark, angle)
-
-        h.check_data_stack(data)
-
-        if flat is None and dark is None:
-            return data
-        else:
-            return data, flat, dark
+        return data
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -92,7 +72,7 @@ def _execute_seq(data, angle: float, progress: Progress):
     return data
 
 
-def _execute_par(data, angle: float, cores: int, chunksize: int, progress: Progress):
+def _execute(data, angle: float, cores: int, chunksize: int, progress: Progress):
     progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:

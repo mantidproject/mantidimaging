@@ -59,10 +59,7 @@ class FlatFieldFilter(BaseFilter):
             progress = Progress.ensure_instance(progress,
                                                 num_steps=data.data.shape[0],
                                                 task_name='Background Correction')
-            if pu.multiprocessing_necessary(data.data.shape, cores):
-                _execute_par(data.data, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
-            else:
-                _execute_seq(data.data, flat_avg, dark_avg, clip_min, clip_max, progress)
+            _execute(data.data, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
 
         h.check_data_stack(data)
         return data
@@ -127,14 +124,14 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def _execute_par(data,
-                 flat=None,
-                 dark=None,
-                 clip_min=MINIMUM_PIXEL_VALUE,
-                 clip_max=MAXIMUM_PIXEL_VALUE,
-                 cores=None,
-                 chunksize=None,
-                 progress=None):
+def _execute(data,
+             flat=None,
+             dark=None,
+             clip_min=MINIMUM_PIXEL_VALUE,
+             clip_max=MAXIMUM_PIXEL_VALUE,
+             cores=None,
+             chunksize=None,
+             progress=None):
     """
     A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
@@ -180,21 +177,5 @@ def _execute_par(data,
             # The negative values will also get scaled back after this in
             # value_scaling which will increase their values further!
             np.clip(data, clip_min, clip_max, out=data)
-
-    return data
-
-
-def _execute_seq(data, flat=None, dark=None, clip_min=MINIMUM_PIXEL_VALUE, clip_max=MAXIMUM_PIXEL_VALUE, progress=None):
-    with progress:
-        progress.update(msg="Normalization by flat/dark images, no progress updates as it's all Numpy")
-
-        norm_divide = np.subtract(flat, dark)
-
-        # prevent divide-by-zero issues
-        norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
-        np.subtract(data, dark, out=data)
-        np.subtract(flat, dark, out=flat)
-        np.true_divide(data, flat, out=data)
-        np.clip(data, clip_min, clip_max, out=data)
 
     return data

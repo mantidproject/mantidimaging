@@ -9,7 +9,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.parallel import shared_mem as psm
-from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -39,10 +38,8 @@ class MedianFilter(BaseFilter):
         if size and size > 1:
             if not force_cpu:
                 data = _execute_gpu(data.data, size, mode, progress)
-            elif pu.multiprocessing_necessary(data.data.shape, cores):
-                _execute_par(data.data, size, mode, cores, chunksize, progress)
             else:
-                _execute_seq(data.data, size, mode, progress)
+                _execute(data.data, size, mode, cores, chunksize, progress)
 
         h.check_data_stack(data)
         return data
@@ -74,22 +71,7 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def _execute_seq(data, size, mode, progress=None):
-    log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Median filter')
-
-    with progress:
-        log.info("Median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
-
-        progress.add_estimated_steps(data.shape[0])
-        for idx in range(0, data.shape[0]):
-            data[idx] = scipy_ndimage.median_filter(data[idx], size, mode=mode)
-            progress.update()
-
-    return data
-
-
-def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
+def _execute(data, size, mode, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Median filter')
 
@@ -101,7 +83,7 @@ def _execute_par(data, size, mode, cores=None, chunksize=None, progress=None):
                  "size/width: {1}.".format(data.dtype, size))
 
         progress.update()
-        data = psm.execute(data, f, cores, chunksize, progress)
+        data = psm.execute(data, f, cores, chunksize, progress, msg="Median filter")
 
     return data
 

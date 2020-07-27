@@ -7,7 +7,6 @@ from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
-from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -38,11 +37,7 @@ class GaussianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            if pu.multiprocessing_necessary(data.data.shape, cores):
-                _execute_par(data.data, size, mode, order, cores, chunksize, progress)
-            else:
-                _execute_seq(data.data, size, mode, order, progress)
-
+            _execute(data.data, size, mode, order, cores, chunksize, progress)
         h.check_data_stack(data)
         return data
 
@@ -68,23 +63,7 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def _execute_seq(data, size, mode, order, progress=None):
-    log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Gaussian filter')
-
-    # Sequential CPU version of the Gaussian filter
-    log.info("Starting  gaussian filter, with pixel data type: {0}, "
-             "filter size/width: {1}.".format(data.dtype, size))
-
-    for idx in range(0, data.shape[0]):
-        progress.update()
-        data[idx] = scipy_ndimage.gaussian_filter(data[idx], size, mode=mode, order=order)
-
-    progress.mark_complete()
-    log.info("Finished gaussian filter, with pixel data type: {0}, " "filter size/width: {1}.".format(data.dtype, size))
-
-
-def _execute_par(data, size, mode, order, cores=None, chunksize=None, progress=None):
+def _execute(data, size, mode, order, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Gaussian filter')
 
@@ -100,7 +79,7 @@ def _execute_par(data, size, mode, order, cores=None, chunksize=None, progress=N
              "filter size/width: {1}.".format(data.dtype, size))
 
     progress.update()
-    data = psm.execute(data, f, cores, chunksize, progress)
+    data = psm.execute(data, f, cores, chunksize, progress, msg="Gaussian filter")
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "
