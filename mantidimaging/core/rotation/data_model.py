@@ -6,6 +6,7 @@ import numpy as np
 import scipy as sp
 
 from mantidimaging.core.operation_history import const
+from ..data import Images
 from ..utility.data_containers import ScalarCoR, Degrees, Slope
 
 LOG = getLogger(__name__)
@@ -151,11 +152,14 @@ class CorTiltDataModel:
                                       self.get_cor_from_regression(current.slice_index))
 
     @staticmethod
-    def get_tilt_from_top_cor(middle_of_image: float, cor: ScalarCoR) -> Degrees:
+    def get_tilt_from_top_cor(images: Images, cor: ScalarCoR) -> Degrees:
         """
         Uses the COR derived from phase cross correlation to calculate the tilt in degrees.
+
+        It uses arctan to find the angle from the opposite (image height) and the adjacent
+        COR displacement
         """
-        return Degrees(np.arctan(cor.value / middle_of_image))
+        return Degrees(np.rad2deg(np.arctan((cor.value - images.h_middle) / images.height)))
 
     def iter_points(self) -> Iterator[Point]:
         return iter(self._points)

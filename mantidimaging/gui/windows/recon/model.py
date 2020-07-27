@@ -68,7 +68,7 @@ class ReconstructWindowModel(object):
 
         if stack is not None:
             self.proj_angles = generate_projection_angles(360, self.images.num_projections)
-            self.set_precalculated(cor, self.data_model.get_tilt_from_top_cor(self.images.middle, cor))
+            self.set_precalculated(cor, self.data_model.get_tilt_from_top_cor(self.images, cor))
 
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.images is None:

@@ -96,7 +96,6 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
-        self.view.add_cor_table_row(0, self.model.preview_slice_idx, self.model.last_cor.value)
         self.model.initial_select_data(stack)
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
@@ -215,6 +214,7 @@ class ReconstructWindowPresenter(BasePresenter):
             cors = task.result
             for slice_idx, cor in zip(slice_indices, cors):
                 self.view.add_cor_table_row(selected_row, slice_idx, cor)
+            self.do_cor_fit()
 
         start_async_task_view(self.view, self.model.auto_find_cors_for_slices, _completed_finding_cors,
                               {'slices': slice_indices,

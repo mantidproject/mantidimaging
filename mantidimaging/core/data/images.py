@@ -117,8 +117,18 @@ class Images:
         return self.data.shape[2]
 
     @property
-    def middle(self) -> float:
+    def h_middle(self) -> float:
+        """
+        Returns the horizontal middle (middle column) of the projections
+        """
         return self.width / 2
+
+    @property
+    def v_middle(self) -> float:
+        """
+        Returns the vertical middle (middle row) of the projections
+        """
+        return self.height / 2
 
     @property
     def num_images(self) -> int:
