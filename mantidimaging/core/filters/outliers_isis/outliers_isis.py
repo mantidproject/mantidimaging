@@ -3,10 +3,10 @@ from functools import partial
 import numpy as np
 import scipy.ndimage as scipy_ndimage
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.parallel import utility
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -18,6 +18,7 @@ class OutliersISISFilter(BaseFilter):
 
     @staticmethod
     def _execute(data, diff, radius):
+        # Adapted for 2D image from source: https://stackoverflow.com/a/16562028/2823526
         median = scipy_ndimage.median_filter(data, radius)
         abs_diff = np.abs(data - median)
         mdev = np.median(abs_diff)
@@ -25,28 +26,24 @@ class OutliersISISFilter(BaseFilter):
         return np.where(s < diff, data, median)
 
     @staticmethod
-    def filter_func(data, diff=None, radius=_default_radius, axis=0, cores=None, progress=None):
+    def filter_func(images: Images, diff=None, radius=_default_radius, axis=0, cores=None, progress=None):
         """
-        :param data: Input data as a 3D numpy.ndarray
+        :param images: Input data
         :param diff: Pixel value difference above which to crop bright pixels
         :param radius: Size of the median filter to apply
         :param cores: The number of cores that will be used to process the data.
 
         :return: The processed 3D numpy.ndarray
         """
-        if not utility.multiprocessing_necessary(data.data.shape, cores):
+        if not utility.multiprocessing_necessary(images.data.shape, cores):
             cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
-            sample = data.data
-            progress = Progress.ensure_instance(progress, task_name='Outliers', num_steps=sample.shape[0])
-            with progress:
-                # Adapted for 2D image from source: https://stackoverflow.com/a/16562028/2823526
-
-                func = psm.create_partial(OutliersISISFilter._execute, psm.return_fwd_func, diff=diff, radius=radius)
-                psm.execute(sample, func, cores, progress=progress,
-                            msg=f"Outliers with threshold {diff} and kernel {radius}")
-        return data
+            data = images.projections() if axis == 0 else images.sinograms()
+            func = psm.create_partial(OutliersISISFilter._execute, psm.return_fwd_func, diff=diff, radius=radius)
+            psm.execute(data, func, cores, progress=progress,
+                        msg=f"Outliers with threshold {diff} and kernel {radius}")
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -60,7 +57,7 @@ class OutliersISISFilter(BaseFilter):
 
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
-        _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 2), form=form, on_change=on_change)
+        _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 1), form=form, on_change=on_change)
 
         return {'diff_field': diff_field, 'size_field': size_field, 'axis_field': axis_field}
 

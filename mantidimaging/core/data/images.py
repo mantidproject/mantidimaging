@@ -159,11 +159,11 @@ class Images:
         else:
             return self.data[projection_idx]
 
+    def projections(self):
+        return self.data if not self._is_sinograms else np.swapaxes(self.data, 0, 1)
+
     def sinograms(self):
-        if not self._is_sinograms:
-            return np.swapaxes(self.data, 0, 1)
-        else:
-            return self.data
+        return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
     def data(self) -> np.ndarray:
