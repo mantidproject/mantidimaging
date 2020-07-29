@@ -1,4 +1,6 @@
 from contextlib import contextmanager
+from logging import getLogger
+
 from typing import Union, List, Optional
 
 import astra
@@ -11,6 +13,7 @@ from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
 
+LOG = getLogger(__name__)
 
 # Full credit for following code to Daniil Kazantzev
 # Source: https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70
@@ -119,6 +122,7 @@ class AstraRecon(BaseRecon):
         output_images: Images = Images.create_shared_images(output_shape, images.dtype)
 
         num_gpus = AstraRecon._count_gpus()
+        LOG.info(f"Running with {num_gpus} GPUs")
         partial = ptsm.create_partial(AstraRecon.single, ptsm.fwd_gpu_recon,
                                       num_gpus=num_gpus, cors=cors, proj_angles=proj_angles, recon_params=recon_params)
         ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
