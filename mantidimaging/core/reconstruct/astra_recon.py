@@ -1,6 +1,5 @@
 from contextlib import contextmanager
 from logging import getLogger
-
 from typing import Union, List, Optional
 
 import astra
@@ -14,6 +13,7 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngl
 from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
+
 
 # Full credit for following code to Daniil Kazantzev
 # Source: https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70
@@ -39,14 +39,10 @@ class AstraRecon(BaseRecon):
     @staticmethod
     def _count_gpus() -> int:
         num_gpus = 0
-        try:
-            msg = ''
-            while "Invalid device" not in msg:
-                num_gpus += 1
-                msg = astra.set_gpu_index(num_gpus)
-        except Exception:
-            pass
-        astra.set_gpu_index(0)
+        msg = ''
+        while "Invalid device" not in msg:
+            num_gpus += 1
+            msg = astra.get_gpu_info(num_gpus)
         return num_gpus
 
     @staticmethod
