@@ -142,6 +142,12 @@ def return_to_second_but_dont_use_it(func, i, **kwargs):
     second_shared_data[i] = func(shared_data[i], **kwargs)
 
 
+def fwd_gpu_recon(func, i, num_gpus, cors, **kwargs):
+    import astra
+    astra.set_gpu_index(i % num_gpus)
+    second_shared_data[i] = func(shared_data[i], cors[i], **kwargs)
+
+
 def create_partial(func, fwd_function=inplace, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the

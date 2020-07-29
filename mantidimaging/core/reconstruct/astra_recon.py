@@ -6,6 +6,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -32,6 +33,19 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
 
 
 class AstraRecon(BaseRecon):
+    @staticmethod
+    def _count_gpus() -> int:
+        num_gpus = 0
+        try:
+            msg = ''
+            while "Invalid device" not in msg:
+                num_gpus += 1
+                msg = astra.set_gpu_index(num_gpus)
+        except Exception:
+            pass
+        astra.set_gpu_index(0)
+        return num_gpus
+
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float,
                  proj_angles: ProjectionAngles, recon_params: ReconstructionParameters) -> float:
@@ -103,9 +117,14 @@ class AstraRecon(BaseRecon):
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms,) + images.sino(0).shape
         output_images: Images = Images.create_shared_images(output_shape, images.dtype)
-        for i in range(images.height):
-            output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
-            progress.update(1, f"Reconstructed slice {i}")
+
+        num_gpus = AstraRecon._count_gpus()
+        partial = ptsm.create_partial(AstraRecon.single, ptsm.fwd_gpu_recon,
+                                      num_gpus=num_gpus, cors=cors, proj_angles=proj_angles, recon_params=recon_params)
+        ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
+        # for i in range(images.height):
+        #     output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
+        #     progress.update(1, f"Reconstructed slice {i}")
 
         return output_images
 
