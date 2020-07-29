@@ -117,14 +117,16 @@ class AstraRecon(BaseRecon):
         output_shape = (images.num_sinograms,) + images.sino(0).shape
         output_images: Images = Images.create_shared_images(output_shape, images.dtype)
 
-        num_gpus = AstraRecon._count_gpus()
-        LOG.info(f"Running with {num_gpus} GPUs")
-        partial = ptsm.create_partial(AstraRecon.single, ptsm.fwd_gpu_recon,
-                                      num_gpus=num_gpus, cors=cors, proj_angles=proj_angles, recon_params=recon_params)
-        ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
-        # for i in range(images.height):
-        #     output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
-        #     progress.update(1, f"Reconstructed slice {i}")
+        # FIXME multiple GPU support - just starting up a Pool doesn't seem to work
+        # the GPUs can't initialise the memory properly. Not sure why
+        # num_gpus = AstraRecon._count_gpus()
+        # LOG.info(f"Running with {num_gpus} GPUs")
+        # partial = ptsm.create_partial(AstraRecon.single, ptsm.fwd_gpu_recon,
+        #                               num_gpus=num_gpus, cors=cors, proj_angles=proj_angles, recon_params=recon_params)
+        # ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
+        for i in range(images.height):
+            output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
+            progress.update(1, f"Reconstructed slice {i}")
 
         return output_images
 
