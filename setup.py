@@ -136,7 +136,7 @@ setup(
         "h5py",
         "numpy",
         "python-socketio",
-        "pyqt5==5.15"
+        "pyqt5==5.15",
         "pyqtgraph==0.11"
     ],
 )
