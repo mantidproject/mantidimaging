@@ -1,7 +1,8 @@
 from logging import getLogger
-from typing import List, Tuple
+from typing import List
 
 import numpy as np
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
@@ -23,11 +24,10 @@ class TomopyRecon(BaseRecon):
                                   sinogram_order=True)
 
     @staticmethod
-    def single(images: Images, slice_idx: int, cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                recon_params: ReconstructionParameters):
         # make sinogram manually, tomopy likes to copy a lot of data otherwise
-        s = images.sino(slice_idx)
-        volume = tomopy.recon(tomo=[s],
+        volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
                               theta=proj_angles.value,
                               center=cor.value,
@@ -37,7 +37,7 @@ class TomopyRecon(BaseRecon):
         return volume[0]
 
     @staticmethod
-    def single_sino(sample: np.ndarray, shape: Tuple[int, int], cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def single_sino(sample: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters):
         volume = tomopy.recon(tomo=[sample],
                               sinogram_order=True,

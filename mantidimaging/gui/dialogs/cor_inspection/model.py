@@ -11,7 +11,7 @@ LOG = getLogger(__name__)
 class CORInspectionDialogModel(object):
     def __init__(self, data: Images, slice_idx: int, initial_cor: ScalarCoR,
                  proj_angles: ProjectionAngles, recon_params: ReconstructionParameters):
-        self.projection_shape = data.projection(0).shape
+        self.image_width = data.width
         self.sino = data.sino(slice_idx)
 
         # Initial parameters
@@ -48,7 +48,7 @@ class CORInspectionDialogModel(object):
 
     def recon_preview(self, image):
         cor = ScalarCoR(self.cor(image))
-        return self.reconstructor.single_sino(self.sino, self.projection_shape, cor,
+        return self.reconstructor.single_sino(self.sino, cor,
                                               self.proj_angles, self.recon_params)
 
     @property

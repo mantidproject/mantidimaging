@@ -99,7 +99,7 @@ class ReconstructWindowModel(object):
 
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
-        return reconstructor.single(self.images, slice_idx, cor, self.proj_angles, recon_params)
+        return reconstructor.single(self.images.sino(slice_idx), cor, self.proj_angles, recon_params)
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress):
         reconstructor = get_reconstructor_for(recon_params.algorithm)

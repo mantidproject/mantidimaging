@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Union, Tuple, List, Optional
+from typing import Union, List, Optional
 
 import astra
 import numpy as np
@@ -45,7 +45,7 @@ class AstraRecon(BaseRecon):
             return np.sum(image ** 2)
 
         def minimizer_function(cor):
-            return -get_sumsq(AstraRecon.single(images, slice_idx, ScalarCoR(cor), proj_angles, recon_params))
+            return -get_sumsq(AstraRecon.single(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
 
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
 
@@ -78,19 +78,16 @@ class AstraRecon(BaseRecon):
                 astra.data2d.delete(rec_id)
 
     @staticmethod
-    def single(images: Images, slice_idx: int, cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                recon_params: ReconstructionParameters) -> np.ndarray:
-        return AstraRecon.single_sino(images.sino(slice_idx), images.projection(0).shape, cor,
-                                      proj_angles, recon_params)
+        return AstraRecon.single_sino(sino, cor, proj_angles, recon_params)
 
     @staticmethod
-    def single_sino(sino: np.ndarray, shape: Tuple[int, int],
-                    cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
-        assert len(shape) == 2, "Projection shape of the data must be 2D"
 
-        image_width = shape[1]
+        image_width = sino.shape[1]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
         vol_geom = astra.create_vol_geom(sino.shape)
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
@@ -107,7 +104,7 @@ class AstraRecon(BaseRecon):
         output_shape = (images.num_sinograms,) + images.sino(0).shape
         output_images: Images = Images.create_shared_images(output_shape, images.dtype)
         for i in range(images.height):
-            output_images.data[i] = AstraRecon.single(images, i, cors[i], proj_angles, recon_params)
+            output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
             progress.update(1, f"Reconstructed slice {i}")
 
         return output_images
