@@ -37,8 +37,6 @@ class RemoveStripeFilteringTest(unittest.TestCase):
         """
         sigma = mock.Mock()
         sigma.value = mock.Mock(return_value=3)
-        sigma = mock.Mock()
-        sigma.value = mock.Mock(return_value=61)
         size = mock.Mock()
         size.value = mock.Mock(return_value=61)
         window_dim = mock.Mock()
