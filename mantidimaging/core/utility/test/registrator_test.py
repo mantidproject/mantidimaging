@@ -34,7 +34,7 @@ class RegistratorTest(unittest.TestCase):
             'mantidimaging.core.filters.ring_removal', 'mantidimaging.core.filters.ring_removal.test',
             'mantidimaging.core.filters.roi_normalisation', 'mantidimaging.core.filters.roi_normalisation.test',
             'mantidimaging.core.filters.rotate_stack', 'mantidimaging.core.filters.rotate_stack.test',
-            'mantidimaging.core.filters.stripe_removal', 'mantidimaging.core.filters.stripe_removal.test',
+            'mantidimaging.core.filters.remove_stripe', 'mantidimaging.core.filters.remove_stripe.test',
             'mantidimaging.core.filters.wip', 'mantidimaging.core.filters.wip.mcp_corrections'
         ])
 
@@ -53,7 +53,7 @@ class RegistratorTest(unittest.TestCase):
             'mantidimaging.core.filters.minus_log', 'mantidimaging.core.filters.outliers',
             'mantidimaging.core.filters.rebin', 'mantidimaging.core.filters.ring_removal',
             'mantidimaging.core.filters.roi_normalisation', 'mantidimaging.core.filters.rotate_stack',
-            'mantidimaging.core.filters.stripe_removal'
+            'mantidimaging.core.filters.remove_stripe'
         ])
 
     def test_get_package_children_modules_only(self):

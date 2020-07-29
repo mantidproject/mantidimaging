@@ -62,9 +62,6 @@ class StripeRemovalFilter(BaseFilter):
             if wf:
                 progress.update(msg=msg.format('Fourier-wavelet'))
                 func = partial(_wf, images.data, wf, cores, chunksize)
-            # elif ti:
-            #     progress.update(msg=msg.format('Titarenko'))
-            #     func = partial(_ti, images.data, ti, cores, chunksize)
             elif sf:
                 progress.update(msg=msg.format('Smoothing-Filter'))
                 func = partial(_sf, images.data, sf, cores, chunksize)

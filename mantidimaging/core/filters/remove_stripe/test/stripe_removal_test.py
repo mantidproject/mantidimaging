@@ -4,7 +4,7 @@ from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.filters.stripe_removal import StripeRemovalFilter
+from mantidimaging.core.filters.remove_stripe import StripeRemovalFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
