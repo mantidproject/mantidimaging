@@ -11,5 +11,4 @@
   },
   "editor.formatOnSave": true,
   "python.formatting.provider": "yapf",
-  "python.pythonPath": "/home/dtasev/apps/miniconda3/envs/test-env/bin/python",
 }
