@@ -14,7 +14,7 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(data: Images, region_of_interest: SensibleROI = None, progress=None) -> Images:
+    def filter_func(images: Images, region_of_interest: SensibleROI = None, progress=None) -> Images:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -25,7 +25,7 @@ class CropCoordinatesFilter(BaseFilter):
         If the region of interest is in bounds, but has overlapping coordinates
         the crop give back a 0 shape of the coordinates that were wrong.
 
-        :param data: Input data as a 3D numpy.ndarray
+        :param images: Input data as a 3D numpy.ndarray
 
         :param region_of_interest: Crop original images using these coordinates.
                                    The selection is a rectangle and expected order
@@ -39,19 +39,19 @@ class CropCoordinatesFilter(BaseFilter):
         if isinstance(region_of_interest, list):
             region_of_interest = SensibleROI.from_list(region_of_interest)
 
-        h.check_data_stack(data)
+        h.check_data_stack(images)
 
-        sample = data.data
+        sample = images.data
         shape = (sample.shape[0],
                  region_of_interest.height,
                  region_of_interest.width)
-        sample_name = data.memory_filename
+        sample_name = images.memory_filename
         if sample_name is not None:
-            data.free_memory()
+            images.free_memory()
         output = pu.create_array(shape, sample.dtype, sample_name)
-        data.data = execute_single(sample, region_of_interest, progress, out=output)
+        images.data = execute_single(sample, region_of_interest, progress, out=output)
 
-        return data
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):

@@ -41,6 +41,8 @@ class MIImageView(ImageView):
 
         self.roi = UnrotateablePlotROI(300)
         self.roi.setZValue(30)
+        # make ROI red
+        self.roi.setPen((255, 0, 0))
         self.view.addItem(self.roi)
         self.roi.hide()
         self.roi.sigRegionChangeFinished.connect(self.roiChanged)
@@ -93,9 +95,20 @@ class MIImageView(ImageView):
         if ensure_in_image:
             # Don't allow negative point coordinates
             if roi_pos.x < 0 or roi_pos.y < 0:
-                getLogger(__name__).info("Region of Interest starts outside the picture! Clipping start to (0, 0)")
+                getLogger(__name__).info("Region of Interest starts outside the picture! Clipping to image bounds")
                 roi_pos.x = max(roi_pos.x, 0)
                 roi_pos.y = max(roi_pos.y, 0)
+
+            image_width = self.image.shape[1]
+            image_height = self.image.shape[2]
+
+            roi_right = roi_pos.x + roi_size.x
+            roi_bottom = roi_pos.y + roi_size.y
+
+            if roi_right > image_width:
+                roi_size.x -= roi_right - image_width
+            if roi_bottom > image_height:
+                roi_size.y -= roi_bottom - image_height
         return roi_pos, roi_size
 
     def image_hover_event(self, event: HoverEvent):
