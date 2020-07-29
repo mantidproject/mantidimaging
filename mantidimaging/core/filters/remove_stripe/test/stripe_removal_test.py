@@ -12,7 +12,7 @@ class StripeRemovalTest(unittest.TestCase):
     """
     Test stripe removal filter.
 
-    Tests return value only.
+    Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
     def __init__(self, *args, **kwargs):
         super(StripeRemovalTest, self).__init__(*args, **kwargs)

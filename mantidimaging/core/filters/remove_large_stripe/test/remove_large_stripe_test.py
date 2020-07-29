@@ -2,10 +2,10 @@ import unittest
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.filters.remove_all_stripe import RemoveAllStripesFilter
+from mantidimaging.core.filters.remove_large_stripe import RemoveLargeStripesFilter
 
 
-class RemoveAllStripesTest(unittest.TestCase):
+class RemoveLargeStripesTest(unittest.TestCase):
     """
     Test stripe removal filter.
 
@@ -13,13 +13,13 @@ class RemoveAllStripesTest(unittest.TestCase):
     """
 
     def __init__(self, *args, **kwargs):
-        super(RemoveAllStripesTest, self).__init__(*args, **kwargs)
+        super(RemoveLargeStripesTest, self).__init__(*args, **kwargs)
 
     def test_executed(self):
         images = th.generate_images()
         control = images.copy()
 
-        result = RemoveAllStripesFilter.filter_func(images)
+        result = RemoveLargeStripesFilter.filter_func(images)
 
         th.assert_not_equals(result.data, control.data)
 
@@ -31,19 +31,13 @@ class RemoveAllStripesTest(unittest.TestCase):
         snr.value = mock.Mock(return_value=3)
         la_size = mock.Mock()
         la_size.value = mock.Mock(return_value=61)
-        sm_size = mock.Mock()
-        sm_size.value = mock.Mock(return_value=21)
-        dim = mock.Mock()
-        dim.value = mock.Mock(return_value=1)
-        execute_func = RemoveAllStripesFilter.execute_wrapper(snr, la_size, sm_size, dim)
+        execute_func = RemoveLargeStripesFilter.execute_wrapper(snr, la_size)
 
         images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(snr.value.call_count, 1)
         self.assertEqual(la_size.value.call_count, 1)
-        self.assertEqual(sm_size.value.call_count, 1)
-        self.assertEqual(dim.value.call_count, 1)
 
 
 if __name__ == '__main__':
