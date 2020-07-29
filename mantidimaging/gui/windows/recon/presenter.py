@@ -9,12 +9,18 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.utility.common import operation_in_progress
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.recon.view import ReconstructWindowView
+
+
+class AutoCorMethod(Enum):
+    CORRELATION = auto()
+    MINIMISATION_SQUARE_SUM = auto()
 
 
 class Notifications(Enum):
@@ -97,7 +103,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
         self.model.initial_select_data(stack)
-        self.view.set_results(*self.model.get_results())
+        self.view.rotation_centre = self.model.last_cor.value
         self.do_update_projection()
         self.do_update_sinogram()
         self.do_reconstruct_slice()
@@ -190,8 +196,11 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.last_cor = ScalarCoR(cor)
 
     def do_calculate_cors_from_manual_tilt(self):
-        cor = ScalarCoR(self.view.resultCor.value())
-        tilt = Degrees(self.view.resultTilt.value())
+        cor = ScalarCoR(self.view.rotation_centre)
+        tilt = Degrees(self.view.tilt)
+        self._set_precalculated_cor_tilt(cor, tilt)
+
+    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees):
         self.model.set_precalculated(cor, tilt)
         self.view.set_results(*self.model.get_results())
         for idx, point in enumerate(self.model.data_model.iter_points()):
@@ -202,6 +211,18 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_auto_find_cor(self):
         if self.model.images is None:
             return
+        method = self.view.get_auto_cor_method()
+        if method == AutoCorMethod.CORRELATION:
+            self._auto_find_correlation()
+        else:
+            self._auto_find_minimisation_square_sum()
+
+    def _auto_find_correlation(self):
+        with operation_in_progress("Finding COR using correlation...", "This may take a bit"):
+            cor, tilt = self.model.auto_find_correlation()
+            self._set_precalculated_cor_tilt(cor, tilt)
+
+    def _auto_find_minimisation_square_sum(self):
         num_cors = self.view.get_number_of_cors()
         if num_cors is None:
             return
@@ -210,12 +231,20 @@ class ReconstructWindowPresenter(BasePresenter):
 
         selected_row, slice_indices = self.model.get_slice_indices(num_cors)
 
+        if self.model.has_results:
+            initial_cor = []
+            for slc in slice_indices:
+                initial_cor.append(self.model.data_model.get_cor_from_regression(slc))
+        else:
+            initial_cor = self.view.rotation_centre
+
         def _completed_finding_cors(task: TaskWorkerThread):
             cors = task.result
             for slice_idx, cor in zip(slice_indices, cors):
                 self.view.add_cor_table_row(selected_row, slice_idx, cor)
             self.do_cor_fit()
 
-        start_async_task_view(self.view, self.model.auto_find_cors_for_slices, _completed_finding_cors,
+        start_async_task_view(self.view, self.model.auto_find_minimisation_sqsum, _completed_finding_cors,
                               {'slices': slice_indices,
-                               'recon_params': self.view.recon_params()})
+                               'recon_params': self.view.recon_params(),
+                               'initial_cor': initial_cor})

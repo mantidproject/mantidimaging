@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -9,6 +9,7 @@ from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as a
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.rotation import update_image_operations
 from mantidimaging.core.rotation.phase_cross_correlation import find_center_pc
+from mantidimaging.core.rotation.polyfit_correlation import find_center
 from mantidimaging.core.utility.data_containers import (Degrees, ProjectionAngles, ReconstructionParameters, ScalarCoR,
                                                         Slope)
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -62,13 +63,12 @@ class ReconstructWindowModel(object):
 
         self.stack = stack
         slice_idx, cor = self.find_initial_cor()
-
+        self.last_cor = cor
         self.preview_projection_idx = 0
         self.preview_slice_idx = slice_idx
 
         if stack is not None:
             self.proj_angles = generate_projection_angles(360, self.images.num_projections)
-            self.set_precalculated(cor, self.data_model.get_tilt_from_top_cor(self.images, cor))
 
     def find_initial_cor(self) -> [int, ScalarCoR]:
         if self.images is None:
@@ -76,7 +76,6 @@ class ReconstructWindowModel(object):
 
         first_slice_to_recon = 0
         cor = ScalarCoR(find_center_pc(self.images))
-        self.last_cor = cor
         return first_slice_to_recon, cor
 
     def do_fit(self):
@@ -163,15 +162,31 @@ class ReconstructWindowModel(object):
         slices: List[int] = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)
         return self.selected_row, slices
 
-    def auto_find_cors_for_slices(self, slices: List[int], recon_params: ReconstructionParameters,
-                                  progress: Progress) -> List[float]:
+    def auto_find_minimisation_sqsum(self, slices: List[int], recon_params: ReconstructionParameters,
+                                     initial_cor: Union[float, List[float]], progress: Progress) -> List[float]:
+        """
+
+        :param slices: Slice indices to be reconstructed
+        :param recon_params: Reconstruction parameters
+        :param initial_cor: Initial COR for the slices. Will be used as the start for the minimisation.
+                            If a float is passed it will be used for all slices.
+                            If a list is passed, the COR will be retrieved for each slice.
+        :param progress: Progress reporter
+        """
+        if isinstance(initial_cor, list):
+            assert len(slices) == len(initial_cor), "A COR for each slice index being reconstructed must be provided"
+        else:
+            # why be efficient when you can be lazy?
+            initial_cor = [initial_cor] * len(slices)
 
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
         progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
         cors = []
-        for slice in slices:
-            # rotation = TomopyRecon.find_cor(self.images, slice, self.images.width / 2, self.proj_angles, recon_params)
-            cor = AstraRecon.find_cor(self.images, slice, find_center_pc(self.images), self.proj_angles, recon_params)
+        for idx, slice in enumerate(slices):
+            cor = AstraRecon.find_cor(self.images, slice, initial_cor[idx], self.proj_angles, recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors
+
+    def auto_find_correlation(self) -> Tuple[ScalarCoR, Degrees]:
+        return find_center(self.images)

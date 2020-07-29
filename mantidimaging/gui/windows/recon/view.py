@@ -9,7 +9,7 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
-from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter, Notifications as PresN
+from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter, Notifications as PresN, AutoCorMethod
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -30,6 +30,7 @@ class ReconstructWindowView(BaseMainWindowView):
     fitBtn: QPushButton
 
     autoBtn: QPushButton
+    autoFindMethod: QComboBox
 
     reconTab: QWidget
 
@@ -174,7 +175,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def update_sinogram(self, image_data):
         self.image_view.update_sinogram(image_data)
 
-    def update_recon_preview(self, image_data, refresh_recon_slice_histogram:bool):
+    def update_recon_preview(self, image_data, refresh_recon_slice_histogram: bool):
         """
         Updates the reconstruction preview image with new data.
         """
@@ -286,3 +287,10 @@ class ReconstructWindowView(BaseMainWindowView):
                                             value=6, min=0, max=30, step=1)
         if accepted:
             return num
+
+    def get_auto_cor_method(self) -> AutoCorMethod:
+        current = self.autoFindMethod.currentText()
+        if current == "Correlation":
+            return AutoCorMethod.CORRELATION
+        else:
+            return AutoCorMethod.MINIMISATION_SQUARE_SUM

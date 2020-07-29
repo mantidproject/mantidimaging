@@ -18,14 +18,6 @@ LOG = getLogger(__name__)
 SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
                     Type[ctypes.c_float], Type[ctypes.c_double]]
 
-
-def free_all():
-    for arr in sa.list():
-        sa.delete(arr.name.decode("utf-8"))
-
-
-atexit.register(free_all)
-
 NP_DTYPE = Type[np.single]
 
 
