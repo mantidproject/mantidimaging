@@ -16,7 +16,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         f = psm.create_partial(remove_stripe_based_sorting_fitting, psm.return_fwd_func,
                                order=order, sigmax=sigmax, sigmay=sigmay)
 
-        psm.execute(images.sinograms(), f, cores, chunksize, progress)
+        psm.execute(images.sinograms, f, cores, chunksize, progress)
         return images
 
     @staticmethod

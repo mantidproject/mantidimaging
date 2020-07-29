@@ -80,6 +80,7 @@ class StripeRemovalFilter(BaseFilter):
         # Wavelet options
         _, value_wf_level = add_property_to_form('Level',
                                                  Type.INT,
+                                                 default_value=1,
                                                  valid_values=(0, 100),
                                                  form=form,
                                                  on_change=on_change)

@@ -95,17 +95,21 @@ class Images:
 
     def copy(self, flip_axes=False) -> 'Images':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
-        sample_name = pu.create_shared_name()
-        sample_copy = pu.create_array(shape, self.data.dtype, sample_name)
+        data_name = pu.create_shared_name()
+        data_copy = pu.create_array(shape, self.data.dtype, data_name)
         if flip_axes:
-            sample_copy[:] = np.swapaxes(self.data, 0, 1)
+            data_copy[:] = np.swapaxes(self.data, 0, 1)
         else:
-            sample_copy[:] = self.data[:]
+            data_copy[:] = self.data[:]
 
-        images = Images(sample_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
-                        sinograms=not self._is_sinograms if flip_axes else self._is_sinograms,
-                        memory_filename=sample_name)
+        images = Images(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
+                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
+                        memory_filename=data_name)
         return images
+
+    def index_as_images(self, index) -> 'Images':
+        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata),
+                      sinograms=self.is_sinograms)
 
     @property
     def height(self):
@@ -159,11 +163,13 @@ class Images:
         else:
             return self.data[projection_idx]
 
+    @property
     def projections(self):
-        return self.data if not self._is_sinograms else np.swapaxes(self.data, 0, 1)
+        return self._data if not self._is_sinograms else np.swapaxes(self._data, 0, 1)
 
+    @property
     def sinograms(self):
-        return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
+        return self._data if self._is_sinograms else np.swapaxes(self._data, 0, 1)
 
     @property
     def data(self) -> np.ndarray:

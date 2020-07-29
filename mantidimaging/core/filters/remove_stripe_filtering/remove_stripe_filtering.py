@@ -20,7 +20,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
         else:
             f = psm.create_partial(remove_stripe_based_2d_filtering_sorting, psm.return_fwd_func,
                                    sigma=sigma, size=size, dim=window_dim)
-        psm.execute(images.sinograms(), f, cores, chunksize, progress)
+        psm.execute(images.sinograms, f, cores, chunksize, progress)
         return images
 
     @staticmethod

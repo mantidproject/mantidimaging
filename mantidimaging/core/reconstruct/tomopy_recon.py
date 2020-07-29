@@ -16,7 +16,7 @@ class TomopyRecon(BaseRecon):
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float, proj_angles: ProjectionAngles,
                  recon_params: ReconstructionParameters) -> float:
-        return tomopy.find_center(images.sinograms(),
+        return tomopy.find_center(images.sinograms,
                                   proj_angles.value,
                                   ind=slice_idx,
                                   init=start_cor,

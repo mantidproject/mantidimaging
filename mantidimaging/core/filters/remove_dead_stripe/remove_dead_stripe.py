@@ -14,7 +14,7 @@ class RemoveDeadStripesFilter(BaseFilter):
     @staticmethod
     def filter_func(images, snr=3, size=61, cores=None, chunksize=None, progress=None):
         f = psm.create_partial(remove_unresponsive_and_fluctuating_stripe, psm.return_fwd_func, snr=snr, size=size)
-        psm.execute(images.sinograms(), f, cores, chunksize, progress)
+        psm.execute(images.sinograms, f, cores, chunksize, progress)
         return images
 
     @staticmethod
@@ -27,9 +27,9 @@ class RemoveDeadStripesFilter(BaseFilter):
                                       tooltip="Ratio used to segment between useful information and noise"
                                               ". Greater is less sensitive.")
 
-        _, size = add_property_to_form('Stripe kernel', Type.INT, default_value=21, form=form,
-                                          on_change=on_change,
-                                          tooltip="Window size of the median filter to remove large stripes.")
+        _, size = add_property_to_form('Stripe kernel', Type.INT, default_value=21, valid_values=(1, 100), form=form,
+                                       on_change=on_change,
+                                       tooltip="Window size of the median filter to remove large stripes.")
 
         return {'snr': snr,
                 'size': size}

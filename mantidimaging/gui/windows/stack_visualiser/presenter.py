@@ -61,8 +61,8 @@ class StackVisualiserPresenter(BasePresenter):
         self.images.free_memory()
         self.images = None
 
-    def get_image(self, index):
-        return self.images.data[index]
+    def get_image(self, index) -> Images:
+        return self.images.index_as_images(index)
 
     def refresh_image(self):
         self.view.image = self.summed_image if self.image_mode is SVImageMode.SUMMED \

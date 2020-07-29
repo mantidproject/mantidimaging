@@ -14,7 +14,7 @@ class RemoveLargeStripesFilter(BaseFilter):
     @staticmethod
     def filter_func(images, snr=3, la_size=61, cores=None, chunksize=None, progress=None):
         f = psm.create_partial(remove_large_stripe, psm.return_fwd_func, snr=snr, size=la_size)
-        psm.execute(images.sinograms(), f, cores, chunksize, progress)
+        psm.execute(images.sinograms, f, cores, chunksize, progress)
         return images
 
     @staticmethod
@@ -27,7 +27,7 @@ class RemoveLargeStripesFilter(BaseFilter):
                                       tooltip="Ratio used to segment between useful information and noise"
                                               ". Greater is less sensitive.")
 
-        _, la_size = add_property_to_form('Large stripe kernel', Type.INT, default_value=61, form=form,
+        _, la_size = add_property_to_form('Large stripe kernel', Type.INT, default_value=61, valid_values=(1, 100), form=form,
                                           on_change=on_change,
                                           tooltip="Window size of the median filter to remove large stripes.")
 

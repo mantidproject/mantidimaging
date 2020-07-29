@@ -1,5 +1,5 @@
 import traceback
-from enum import Enum
+from enum import Enum, auto
 from logging import getLogger
 from typing import Callable, Any, Optional
 from typing import TYPE_CHECKING
@@ -20,11 +20,11 @@ if TYPE_CHECKING:
 
 
 class Notification(Enum):
-    REGISTER_ACTIVE_FILTER = 1
-    APPLY_FILTER = 2
-    UPDATE_PREVIEWS = 3
-    SCROLL_PREVIEW_UP = 4
-    SCROLL_PREVIEW_DOWN = 5
+    REGISTER_ACTIVE_FILTER = auto()
+    APPLY_FILTER = auto()
+    UPDATE_PREVIEWS = auto()
+    SCROLL_PREVIEW_UP = auto()
+    SCROLL_PREVIEW_DOWN = auto()
 
 
 class FiltersWindowPresenter(BasePresenter):
@@ -125,9 +125,10 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.view.clear_previews()
         if stack is not None:
-            before_image_data = np.copy(stack.get_image(self.model.preview_image_idx))
+            subset: Images = stack.get_image(self.model.preview_image_idx)
+            before_image = np.copy(subset.data[0])
             # Update image before
-            self._update_preview_image(before_image_data, self.view.preview_image_before,
+            self._update_preview_image(before_image, self.view.preview_image_before,
                                        self.view.previews.set_before_histogram)
 
             # Generate sub-stack and run filter
@@ -135,9 +136,8 @@ class FiltersWindowPresenter(BasePresenter):
 
             filtered_image_data = None
             try:
-                sub_images = Images(np.asarray([before_image_data]))
-                self.model.apply_filter(sub_images, exec_kwargs)
-                filtered_image_data = sub_images.data[0]
+                self.model.apply_filter(subset, exec_kwargs)
+                filtered_image_data = subset.data[0]
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())
@@ -147,8 +147,8 @@ class FiltersWindowPresenter(BasePresenter):
                 self._update_preview_image(filtered_image_data, self.view.preview_image_after,
                                            self.view.previews.set_after_histogram)
 
-                if filtered_image_data.shape == before_image_data.shape:
-                    diff = np.subtract(filtered_image_data, before_image_data)
+                if filtered_image_data.shape == before_image.shape:
+                    diff = np.subtract(filtered_image_data, before_image)
                     if self.view.invertDifference.isChecked():
                         diff = np.negative(diff, out=diff)
                     self._update_preview_image(diff, self.view.preview_image_difference, None)

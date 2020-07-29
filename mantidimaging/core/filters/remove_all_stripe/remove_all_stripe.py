@@ -15,7 +15,7 @@ class RemoveAllStripesFilter(BaseFilter):
     def filter_func(images, snr=3, la_size=61, sm_size=21, dim=1, cores=None, chunksize=None, progress=None):
         f = psm.create_partial(remove_all_stripe, psm.return_fwd_func, snr=snr, la_size=la_size, sm_size=sm_size,
                                dim=dim)
-        psm.execute(images.sinograms(), f, cores, chunksize, progress)
+        psm.execute(images.sinograms, f, cores, chunksize, progress)
         return images
 
     @staticmethod
@@ -28,12 +28,12 @@ class RemoveAllStripesFilter(BaseFilter):
                                       tooltip="Ratio used to segment between useful information and noise"
                                               ". Greater is less sensitive.")
 
-        _, la_size = add_property_to_form('Large stripe kernel', Type.INT, default_value=61, form=form,
-                                          on_change=on_change,
+        _, la_size = add_property_to_form('Large stripe kernel', Type.INT, default_value=61, valid_values=(1, 100),
+                                          form=form, on_change=on_change,
                                           tooltip="Window size of the median filter to remove large stripes.")
 
-        _, sm_size = add_property_to_form('Small stripe kernel', Type.INT, default_value=21, form=form,
-                                          on_change=on_change,
+        _, sm_size = add_property_to_form('Small stripe kernel', Type.INT, default_value=21, valid_values=(1, 100),
+                                          form=form, on_change=on_change,
                                           tooltip="Window size of the median filter to remove small-to-medium stripes.")
 
         _, dim = add_property_to_form('Dimension of the window', Type.INT, default_value=1, valid_values=(1, 2),
