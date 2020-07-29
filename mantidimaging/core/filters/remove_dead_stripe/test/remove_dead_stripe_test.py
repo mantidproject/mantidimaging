@@ -31,15 +31,15 @@ class RemoveDeadStripesTest(unittest.TestCase):
         """
         snr = mock.Mock()
         snr.value = mock.Mock(return_value=3)
-        la_size = mock.Mock()
-        la_size.value = mock.Mock(return_value=61)
-        execute_func = RemoveDeadStripesFilter.execute_wrapper(snr, la_size)
+        size = mock.Mock()
+        size.value = mock.Mock(return_value=61)
+        execute_func = RemoveDeadStripesFilter.execute_wrapper(snr, size)
 
         images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(snr.value.call_count, 1)
-        self.assertEqual(la_size.value.call_count, 1)
+        self.assertEqual(size.value.call_count, 1)
 
 
 if __name__ == '__main__':
