@@ -20,13 +20,15 @@ class RemoveStripeFilteringFilter(BaseFilter):
         else:
             f = psm.create_partial(remove_stripe_based_2d_filtering_sorting, psm.return_fwd_func,
                                    sigma=sigma, size=size, dim=window_dim)
-        psm.execute(images.sinograms, f, cores, chunksize, progress)
+        psm.execute(images.data, f, cores, chunksize, progress)
         return images
 
     @staticmethod
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
+        label, _ = add_property_to_form("This filter requires sinograms\nto produce a sensible result.", Type.LABEL,
+                                        form=form, on_change=on_change)
         _, sigma = add_property_to_form('Sigma', Type.INT, default_value=3, form=form, on_change=on_change,
                                         tooltip="Sigma of the Gaussian window used to separate the low-pass and"
                                                 " high-pass components of the intensity profile of each column.")

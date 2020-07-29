@@ -188,15 +188,15 @@ def add_property_to_form(label,
         if on_change is not None:
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
-    elif dtype == 'label':
-        pass
-
     elif dtype == 'stack' or dtype == Type.STACK:
         from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
         right_widget = StackSelectorWidgetView(filters_view)
         if on_change is not None:
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
+    elif dtype == 'label' or dtype == Type.LABEL:
+        # do nothing for label, just use the left widget
+        pass
     else:
         raise ValueError("Unknown data type")
 

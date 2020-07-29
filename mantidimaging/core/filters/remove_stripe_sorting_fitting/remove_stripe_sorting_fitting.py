@@ -16,13 +16,15 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         f = psm.create_partial(remove_stripe_based_sorting_fitting, psm.return_fwd_func,
                                order=order, sigmax=sigmax, sigmay=sigmay)
 
-        psm.execute(images.sinograms, f, cores, chunksize, progress)
+        psm.execute(images.data, f, cores, chunksize, progress)
         return images
 
     @staticmethod
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
+        label, _ = add_property_to_form("This filter requires sinograms\nto produce a sensible result.", Type.LABEL,
+                                        form=form, on_change=on_change)
         _, order = add_property_to_form('Polynomial fit order', Type.INT, default_value=1, form=form,
                                         on_change=on_change)
         _, sigmax = add_property_to_form('Sigma X', Type.INT, default_value=3, form=form,

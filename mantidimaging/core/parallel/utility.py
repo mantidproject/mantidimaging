@@ -122,10 +122,13 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) ->
         return False
 
     if cores == 1:
+        LOG.info("1 core specified. Running synchronously on 1 core")
         return False
     elif isinstance(shape, int):
+        LOG.info("Shape under 10. Running synchronously on 1 core")
         return shape > 10
     elif isinstance(shape, tuple) or isinstance(shape, list):
+        LOG.info("3D axis 0 shape under 10. Running synchronously on 1 core")
         return shape[0] > 10
     return True
 
