@@ -205,7 +205,7 @@ class MainWindowView(BaseMainWindowView):
         QtWidgets.QMessageBox.warning(self, "This is not the latest version", msg)
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
-        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: {log_error_msg}")
+        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)
 
     def attach_debugger(self):

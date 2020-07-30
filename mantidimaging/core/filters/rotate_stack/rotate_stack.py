@@ -37,7 +37,7 @@ class RotateFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, angle = add_property_to_form('Angle of rotation counter clockwise (degrees)',
+        _, angle = add_property_to_form('Angle of rotation\ncounter clockwise (degrees)',
                                         Type.FLOAT,
                                         0, (-180, 180),
                                         form=form,

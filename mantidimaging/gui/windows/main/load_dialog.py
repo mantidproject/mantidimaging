@@ -1,8 +1,9 @@
 import os
+import traceback
 from collections import namedtuple
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Optional, Any, Tuple
+from typing import Dict, Optional, Any
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget, QComboBox, QCheckBox
@@ -83,7 +84,8 @@ class MWLoadDialog(Qt.QDialog):
                                                        in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error("Failed to read file %s (%s)", sample_filename, e)
-            self.parent_view.presenter.show_error("Failed to read this file. See log for details.")
+            self.parent_view.presenter.show_error("Failed to read this file. See log for details.",
+                                                  traceback.format_exc())
             self.last_shape = (0, 0, 0)
             sinograms = False
 

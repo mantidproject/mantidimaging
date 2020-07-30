@@ -63,7 +63,7 @@ class Progress(object):
         # Lock used to synchronise modifications to the progress state
         self.lock = threading.Lock()
 
-        # Handers that receive notifications when progress updates occur
+        # Handlers that receive notifications when progress updates occur
         self.progress_handlers = []
 
         # Levels of nesting when used as a context manager
@@ -79,7 +79,7 @@ class Progress(object):
         getLogger(__name__).debug("Memory usage before execution: %s", get_memory_usage_linux_str())
 
     def __str__(self):
-        return 'Progress(\n{})'.format('\n'.join(self.progress_history))
+        return 'Progress(\n{})'.format('\n'.join([str(ph) for ph in self.progress_history]))
 
     def __enter__(self):
         self.context_nesting_level += 1
@@ -170,6 +170,7 @@ class Progress(object):
         :param steps: Number of steps that have been completed since last call
                       to this function
         :param msg: Message describing current step
+        :param force_continue: Prevent cancellation of the async progress
         """
         # Acquire lock while manipulating progress state
         with self.lock:
@@ -178,16 +179,22 @@ class Progress(object):
             if self.current_step > self.end_step:
                 self.end_step = self.current_step + 1
 
-            if self.current_step == STEPS_TO_AVERAGE:
+            # update the average based on the last 30 inputs
+            if self.current_step > 0 and self.current_step % STEPS_TO_AVERAGE == 0:
                 times = numpy.asarray([elem.time for elem in self.progress_history[-1:-STEPS_TO_AVERAGE:-1]],
                                       dtype=numpy.float32)
                 # get the differences between them (in reverse, to avoid dealing with negative number)
                 # and then the mean time
                 mean_time = numpy.diff(times[::-1]).mean()
                 self._average_time = mean_time
-            else:
-                eta = round(self._average_time * (self.end_step - self.current_step), 2)
-                msg = f"{f'{msg}.' if len(msg) > 0 else ''} Time: {round(self.execution_time(), 2)}s, ETA: {eta}s"
+
+            eta = self._average_time * (self.end_step - self.current_step)
+
+            def fmt(t):
+                t = int(t)
+                return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
+
+            msg = f"{f'{msg}.' if len(msg) > 0 else ''} Time: {fmt(self.execution_time())}, ETA: {fmt(eta)}"
             step_details = ProgressHistory(time.process_time(), self.current_step, msg)
             self.progress_history.append(step_details)
 
