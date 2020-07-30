@@ -38,7 +38,6 @@ class MainWindowView(BaseMainWindowView):
 
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
-        find_if_latest_version()
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Mantid Imaging")
@@ -51,6 +50,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
+        find_if_latest_version(self.not_latest_version_warning)
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
@@ -201,8 +201,11 @@ class MainWindowView(BaseMainWindowView):
             # Ignore the close event, keeping window open
             event.ignore()
 
+    def not_latest_version_warning(self, msg: str):
+        QtWidgets.QMessageBox.warning(self, "This is not the latest version", msg)
+
     def uncaught_exception(self, user_error_msg, log_error_msg):
-        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: ")
+        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}: {log_error_msg}")
         getLogger(__name__).error(log_error_msg)
 
     def attach_debugger(self):
