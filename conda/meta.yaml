@@ -35,6 +35,7 @@ requirements:
     - python-socketio
     - h5py
     - pyqtgraph=0.11
+    - sarepy
 
 build:
   number: 0
