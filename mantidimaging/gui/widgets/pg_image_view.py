@@ -49,6 +49,10 @@ class MIImageView(ImageView):
         self.extend_roi_plot_mouse_press_handler()
         self.imageItem.setAutoDownsample(False)
 
+        self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
+
+        self.imageItem.sigImageChanged.connect(lambda: self._update_message(self._last_mouse_hover_location))
+
     def roiChanged(self):
         """
         Re-implements the roiChanged function to expect only 3D data,
@@ -115,6 +119,10 @@ class MIImageView(ImageView):
         if event.exit:
             return
         pt = CloseEnoughPoint(event.pos())
+        self._last_mouse_hover_location = pt
+        self._update_message(pt)
+
+    def _update_message(self, pt):
         # event holds the coordinates in column-major coordinate
         # while the data is in row-major coordinate, hence why
         # the data access below is [y, x]
@@ -123,10 +131,8 @@ class MIImageView(ImageView):
             msg += f"z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]:.6f}"
         else:
             msg += f"value={self.image[pt.y, pt.x]}"
-
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
-
         self.details.setText(msg)
 
     def set_timeline_to_tick_nearest(self, x_pos_clicked):
