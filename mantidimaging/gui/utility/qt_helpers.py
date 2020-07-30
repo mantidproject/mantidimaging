@@ -99,8 +99,8 @@ class Type(IntEnum):
     STACK = auto()
 
 
-def add_property_to_form(label,
-                         dtype,
+def add_property_to_form(label: str,
+                         dtype: Union[Type, str],
                          default_value=None,
                          valid_values=None,
                          tooltip=None,
