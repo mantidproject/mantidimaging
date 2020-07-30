@@ -51,7 +51,12 @@ class MIImageView(ImageView):
 
         self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
-        self.imageItem.sigImageChanged.connect(lambda: self._update_message(self._last_mouse_hover_location))
+        self.imageItem.sigImageChanged.connect(self._refresh_message)
+
+    def _refresh_message(self):
+        # updates the ROI average value
+        self._update_roi_region_avg()
+        self._update_message(self._last_mouse_hover_location)
 
     def roiChanged(self):
         """
@@ -65,12 +70,15 @@ class MIImageView(ImageView):
         if self.image.ndim != 3:
             return super().roiChanged()
 
-        roi_pos, roi_size = self.get_roi()
+        left, top, right, bottom = self._update_roi_region_avg()
+        if self.roi_changed_callback:
+            self.roi_changed_callback(SensibleROI(left, top, right, bottom))
 
+    def _update_roi_region_avg(self):
+        roi_pos, roi_size = self.get_roi()
         # image indices are in order [Z, X, Y]
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
-
         data = self.image[:, top:bottom, left:right]
         if data is not None:
             while data.ndim > 1:
@@ -78,10 +86,8 @@ class MIImageView(ImageView):
             if len(self.roiCurves) == 0:
                 self.roiCurves.append(self.ui.roiPlot.plot())
             self.roiCurves[0].setData(y=data, x=self.tVals)
-
         self.roiString = f"({left}, {top}, {right}, {bottom}) | region avg={data[int(self.timeLine.value())].mean():.6f}"
-        if self.roi_changed_callback:
-            self.roi_changed_callback(SensibleROI(left, top, right, bottom))
+        return left, top, right, bottom
 
     def extend_roi_plot_mouse_press_handler(self):
         original_handler = self.ui.roiPlot.mousePressEvent
