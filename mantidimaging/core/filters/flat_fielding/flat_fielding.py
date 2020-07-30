@@ -25,8 +25,6 @@ class FlatFieldFilter(BaseFilter):
     def filter_func(data: Images,
                     flat: Images = None,
                     dark: Images = None,
-                    clip_min=MINIMUM_PIXEL_VALUE,
-                    clip_max=MAXIMUM_PIXEL_VALUE,
                     cores=None,
                     chunksize=None,
                     progress=None) -> Images:
@@ -59,7 +57,7 @@ class FlatFieldFilter(BaseFilter):
             progress = Progress.ensure_instance(progress,
                                                 num_steps=data.data.shape[0],
                                                 task_name='Background Correction')
-            _execute(data.data, flat_avg, dark_avg, clip_min, clip_max, cores, chunksize, progress)
+            _execute(data.data, flat_avg, dark_avg, cores, chunksize, progress)
 
         h.check_data_stack(data)
         return data
@@ -76,10 +74,6 @@ class FlatFieldFilter(BaseFilter):
 
         _, flat_widget = add_property_to_form("Flat", Type.STACK, form=form, filters_view=view, on_change=on_change)
         _, dark_widget = add_property_to_form("Dark", Type.STACK, form=form, filters_view=view, on_change=on_change)
-        _, clip_min_widget = add_property_to_form("Clip min values", Type.FLOAT, default_value=MINIMUM_PIXEL_VALUE,
-                                                  form=form, on_change=on_change)
-        _, clip_min_widget = add_property_to_form("Clip max values", Type.FLOAT, default_value=MAXIMUM_PIXEL_VALUE,
-                                                  form=form, on_change=on_change)
 
         assert isinstance(flat_widget, StackSelectorWidgetView)
         flat_widget.setMaximumWidth(250)
@@ -127,8 +121,6 @@ def _subtract(data, dark=None):
 def _execute(data,
              flat=None,
              dark=None,
-             clip_min=MINIMUM_PIXEL_VALUE,
-             clip_max=MAXIMUM_PIXEL_VALUE,
              cores=None,
              chunksize=None,
              progress=None):
@@ -170,12 +162,8 @@ def _execute(data,
             f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
             data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, progress=progress)
 
-            # After scaling back the values some images will have pixels with big
-            # negative values -25626262 which throws off contrast adjustments.
-            # This will crop those negative pixels out, and set them to nearly
-            # zero.
-            # The negative values will also get scaled back after this in
-            # value_scaling which will increase their values further!
-            np.clip(data, clip_min, clip_max, out=data)
+            # Clip out any invalid pixels - negative and extremely high values,
+            # can show up after subtracting the dark gives back small or negative values
+            np.clip(data, 0, 10000, out=data)
 
     return data
