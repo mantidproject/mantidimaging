@@ -108,6 +108,7 @@ class FiltersWindowView(BaseMainWindowView):
         Called when the signal indicating the filter, filter properties or data
         has changed such that the previews are now out of date.
         """
+        self.clear_error_dialog()
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
