@@ -56,7 +56,12 @@ class MIImageView(ImageView):
     def _refresh_message(self):
         # updates the ROI average value
         self._update_roi_region_avg()
-        self._update_message(self._last_mouse_hover_location)
+        try:
+            self._update_message(self._last_mouse_hover_location)
+        except IndexError:
+            # this happens after the image is cropped, and the last location
+            # is outside of the new bounds. To prevent this happening again just reset back to 0, 0
+            self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
     def roiChanged(self):
         """
