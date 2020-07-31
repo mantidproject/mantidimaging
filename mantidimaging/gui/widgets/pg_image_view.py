@@ -114,8 +114,12 @@ class MIImageView(ImageView):
                 roi_pos.x = max(roi_pos.x, 0)
                 roi_pos.y = max(roi_pos.y, 0)
 
-            image_width = self.image.shape[1]
-            image_height = self.image.shape[2]
+            if self.image.ndim == 2:
+                image_width = self.image.shape[0]
+                image_height = self.image.shape[1]
+            else:
+                image_width = self.image.shape[1]
+                image_height = self.image.shape[2]
 
             roi_right = roi_pos.x + roi_size.x
             roi_bottom = roi_pos.y + roi_size.y
