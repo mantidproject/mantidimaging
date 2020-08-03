@@ -105,33 +105,25 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.initial_select_data(stack)
         self.view.rotation_centre = self.model.last_cor.value
         self.do_update_projection()
-        self.do_update_sinogram()
         self.do_reconstruct_slice()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
         self.do_update_projection()
 
-    def set_row(self, row):
-        self.model.selected_row = row
-
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
-        self.do_update_sinogram()
         self.do_reconstruct_slice()
+
+    def set_row(self, row):
+        self.model.selected_row = row
 
     def do_update_projection(self):
         images = self.model.images
         if images is not None:
             img_data = images.projection(self.model.preview_projection_idx)
             self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
-
-    def do_update_sinogram(self):
-        images = self.model.images
-        if images is not None:
-            img_data = images.sino(self.model.preview_slice_idx)
-            self.view.update_sinogram(img_data)
 
     def do_add_cor(self):
         row = self.model.selected_row
