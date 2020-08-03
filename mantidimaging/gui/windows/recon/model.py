@@ -140,7 +140,7 @@ class ReconstructWindowModel(object):
 
         if self.has_results:
             cor = self.get_cor_for_slice_from_regression()
-        elif self.last_cor is not None:
+        else:
             # otherwise just use the last cached CoR
             cor = self.last_cor
         return cor

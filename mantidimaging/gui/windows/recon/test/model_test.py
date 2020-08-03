@@ -36,11 +36,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertIsNone(m.stack)
         self.assertIsNone(m.last_result)
 
-    def test_find_initial_cor(self):
-        first_slice, initial_cor = self.model.find_initial_cor()
-        self.assertEqual(first_slice, 128 // 2)
-        self.assertEqual(initial_cor.value, 256 // 2)
-
+    def test_find_initial_cor_returns_0_0_without_data(self):
         self.model.initial_select_data(None)
         first_slice, initial_cor = self.model.find_initial_cor()
         self.assertEqual(first_slice, 0)
@@ -141,10 +137,15 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertAlmostEqual(self.model.tilt_angle, exp_deg)
 
     def test_get_me_a_cor(self):
-        self.fail("Not impl")
+        self.assertEqual(15, self.model.get_me_a_cor(cor=15))
 
-    def test_auto_find_minimisation(self):
-        self.fail("Not impl")
+        self.model.data_model.clear_results()
+        self.model.last_cor = ScalarCoR(26)
+        self.assertEqual(26, self.model.get_me_a_cor().value)
 
-    def test_auto_find_correlation(self):
-        self.fail("Not impl")
+        self.model.data_model.set_precalculated(ScalarCoR(150), Degrees(1.5))
+        self.model.preview_slice_idx = 5
+        cor = self.model.get_me_a_cor()
+
+        # expected cor value obtained by running the test
+        self.assertAlmostEqual(149.86, cor.value, delta=1e-2)
