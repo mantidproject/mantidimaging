@@ -1,5 +1,6 @@
 import unittest
 
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -113,11 +114,11 @@ class TwoSharedMemTest(unittest.TestCase):
         npt.assert_equal(res1, orig_img)
 
     def test_fail_with_normal_array_fwd_func_inplace(self):
-        # create data as normal nd array
-        img = th.gen_img_numpy_rand()
-        orig_img = th.deepcopy(img)
-        img2nd = th.gen_img_numpy_rand()
-        orig_img2nd = th.deepcopy(img2nd)
+        # shape of 11 forces the execution to be parallel
+        img = th.gen_img_numpy_rand((11, 10, 10))
+        orig_img = np.copy(img)
+        img2nd = th.gen_img_numpy_rand((11, 10, 10))
+        orig_img2nd = np.copy(img2nd)
 
         # get the expected as usual
         expected = img + img2nd
@@ -141,11 +142,11 @@ class TwoSharedMemTest(unittest.TestCase):
         npt.assert_equal(img2nd, orig_img2nd)
 
     def test_fail_with_normal_array_fwd_func_second_2d(self):
-        # create data as normal nd array
-        img = th.gen_img_numpy_rand()
-        orig_img = th.deepcopy(img)
-        img2nd = th.gen_img_numpy_rand()
-        orig_img2nd = th.deepcopy(img2nd)
+        # shape of 11 forces the execution to be parallel
+        img = th.gen_img_numpy_rand((11, 10, 10))
+        orig_img = np.copy(img)
+        img2nd = th.gen_img_numpy_rand((11, 10, 10))
+        orig_img2nd = np.copy(img2nd)
 
         img2nd = img2nd[0]
 
