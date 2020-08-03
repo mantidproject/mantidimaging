@@ -17,7 +17,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         super(StackVisualiserPresenterTest, self).__init__(*args, **kwargs)
 
     def setUp(self):
-        self.test_data = th.generate_images(automatic_free=False)
+        self.test_data = th.generate_images()
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
@@ -30,18 +30,24 @@ class StackVisualiserPresenterTest(unittest.TestCase):
             pass
 
     @classmethod
+    def setUpClass(cls) -> None:
+        for a in sa.list():
+            sa.delete(a.name.decode("utf-8"))
+
+    @classmethod
     def tearDownClass(cls) -> None:
         assert len(sa.list()) == 0, f"Not all shared arrays have been freed. Leftover: {sa.list()}"
 
     def test_get_image(self):
         index = 3
 
-        test_data = self.test_data.data
+        test_data = self.test_data
 
         img = self.presenter.get_image(index)
-        npt.assert_equal(test_data[index], img)
+        npt.assert_equal(test_data.data[index], img.data[0])
 
     def test_delete_data(self):
+        self.presenter.images = th.generate_images(automatic_free=False)
         self.presenter.delete_data()
         self.assertIsNone(self.presenter.images, None)
 
