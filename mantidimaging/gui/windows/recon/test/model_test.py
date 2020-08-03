@@ -117,8 +117,34 @@ class ReconWindowModelTest(unittest.TestCase):
         assert_called_once_with(mock_reconstructor.single, expected_sino, expected_cor, self.model.proj_angles,
                                 expected_recon_params)
 
-    def test_run_full_recon(self):
-        raise NotImplemented("TODO")
+    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
+    def test_run_full_recon(self, mock_get_reconstructor_for):
+        mock_reconstructor = mock.Mock()
+        mock_reconstructor.full = mock.Mock()
+        mock_get_reconstructor_for.return_value = mock_reconstructor
+        expected_cors = [1] * self.model.images.height
+        self.model.data_model.get_all_cors_from_regression = mock.Mock(
+            return_value=expected_cors)
+
+        expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
+        progress = mock.Mock()
+        self.model.run_full_recon(expected_recon_params, progress)
+
+        mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
+        assert_called_once_with(mock_reconstructor.full, self.model.images, expected_cors, self.model.proj_angles,
+                                expected_recon_params)
 
     def test_tilt_angle(self):
-        raise NotImplemented("TODO")
+        self.assertIsNone(self.model.tilt_angle)
+        exp_deg = Degrees(1.5)
+        self.model.set_precalculated(ScalarCoR(1), exp_deg)
+        self.assertAlmostEqual(self.model.tilt_angle, exp_deg)
+
+    def test_get_me_a_cor(self):
+        self.fail("Not impl")
+
+    def test_auto_find_minimisation(self):
+        self.fail("Not impl")
+
+    def test_auto_find_correlation(self):
+        self.fail("Not impl")
