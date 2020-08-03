@@ -50,3 +50,6 @@ class StackSelectorWidgetView(Qt.QComboBox):
 
     def current(self):
         return self.presenter.current_stack
+
+    def select_eligible_stack(self):
+        self.presenter.notify(Notification.SELECT_ELIGIBLE_STACK)

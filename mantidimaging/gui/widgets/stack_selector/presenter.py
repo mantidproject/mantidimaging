@@ -1,18 +1,24 @@
 import traceback
 from enum import Enum
 from logging import getLogger
-from typing import List, Tuple
+from typing import List, Tuple, TYPE_CHECKING
 from uuid import UUID
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+
 
 class Notification(Enum):
     RELOAD_STACKS = 0
+    SELECT_ELIGIBLE_STACK = 1
 
 
 class StackSelectorWidgetPresenter(BasePresenter):
+    view: 'StackSelectorWidgetView'
+
     def __init__(self, view):
         super(StackSelectorWidgetPresenter, self).__init__(view)
 
@@ -23,6 +29,8 @@ class StackSelectorWidgetPresenter(BasePresenter):
         try:
             if signal == Notification.RELOAD_STACKS:
                 self.do_reload_stacks()
+            elif signal == Notification.SELECT_ELIGIBLE_STACK:
+                self.do_select_eligible_stack()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -59,3 +67,11 @@ class StackSelectorWidgetPresenter(BasePresenter):
         uuid = self.stack_uuids[index] if self.stack_uuids else None
         self.current_stack = uuid
         self.view.stack_selected_uuid.emit(uuid)
+
+    def do_select_eligible_stack(self):
+        stack_list: List[Tuple[UUID, str]] = self.view.main_window.stack_list
+        for idx, [_, name] in enumerate(stack_list):
+            if "dark" not in name.lower() and "flat" not in name.lower():
+                self.view.setCurrentIndex(idx)
+                # self.handle_selection(idx)
+                return

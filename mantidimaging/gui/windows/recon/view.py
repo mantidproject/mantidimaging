@@ -7,6 +7,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ReconstructionParameters
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
+from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
 from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter, Notifications as PresN, AutoCorMethod
@@ -43,6 +44,8 @@ class ReconstructWindowView(BaseMainWindowView):
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
     reconstructVolume: QPushButton
+
+    stackSelector: StackSelectorWidgetView
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
@@ -114,6 +117,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.on_table_row_count_change()
 
         self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.select_eligible_stack()
 
         self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))
         self.presenter.notify(PresN.ALGORITHM_CHANGED)

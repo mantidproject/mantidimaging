@@ -77,6 +77,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
         self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.select_eligible_stack()
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
