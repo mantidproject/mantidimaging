@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import AstraRecon
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
-from mantidimaging.core.rotation import update_image_operations
 from mantidimaging.core.rotation.phase_cross_correlation import find_center_pc
 from mantidimaging.core.rotation.polyfit_correlation import find_center
 from mantidimaging.core.utility.data_containers import (Degrees, ProjectionAngles, ReconstructionParameters, ScalarCoR,
@@ -84,7 +84,9 @@ class ReconstructWindowModel(object):
             raise ValueError('No image stack is provided')
 
         self.data_model.linear_regression()
-        update_image_operations(self.images, self.data_model)
+        self.images.record_operation(const.OPERATION_NAME_COR_TILT_FINDING,
+                                     display_name="Calculated COR/Tilt",
+                                     **self.data_model.stack_properties)
 
         # Cache last result
         self.last_result = self.data_model.stack_properties

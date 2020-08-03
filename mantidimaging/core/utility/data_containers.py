@@ -23,6 +23,10 @@ class SingleValue:
     def __str__(self):
         return f"{self.value}"
 
+    def __eq__(self, other: 'SingleValue'):
+        assert isinstance(other, SingleValue), "Can only compare against other `SingleValue`s"
+        return self.value == other.value
+
 
 @dataclass
 class ScalarCoR(SingleValue):
