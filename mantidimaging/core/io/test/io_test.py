@@ -18,6 +18,12 @@ class IOTest(FileOutputtingTestCase):
         # force silent outputs
         initialise_logging()
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        import SharedArray as sa
+        for arr in sa.list():
+            sa.delete(arr.name.decode("utf-8"))
+
     def tearDown(self):
         import SharedArray as sa
         assert len(sa.list()) == 0
@@ -99,46 +105,47 @@ class IOTest(FileOutputtingTestCase):
         self.do_preproc('tiff', saver_indices=[7, 10, 1], expected_len=3)
 
     def do_preproc(self, img_format, loader_indices=None, expected_len=None, saver_indices=None, data_as_stack=False):
-        expected_images = th.gen_img_shared_array_with_val(42.)
+        expected_images = th.generate_images()
 
         # saver indices only affects the enumeration of the data
         if saver_indices:
             # crop the original images to make sure the tests is correct
-            expected_images = \
-                expected_images[saver_indices[0]:saver_indices[1]]
+            expected_images.data = expected_images.data[saver_indices[0]:saver_indices[1]]
 
         # saver.save_preproc_images(expected_images)
         saver.save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
 
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
-                                data_as_stack, expected_images.shape[0], saver_indices)
+                                data_as_stack, expected_images.data.shape[0], saver_indices)
 
         # this does not load any flats or darks as they were not saved out
-        loaded_images = loader.load(self.output_directory, in_format=img_format, indices=loader_indices)
+        dataset = loader.load(self.output_directory, in_format=img_format, indices=loader_indices)
+        loaded_images = dataset.sample
 
         if loader_indices:
-            assert len(loaded_images.sample) == expected_len, \
+            assert len(loaded_images.data) == expected_len, \
                 "The length of the loaded data does not " \
                 "match the expected length! Expected: {0}, " \
                 "Got {1}".format(expected_len, len(
-                    loaded_images.sample))
+                    loaded_images.data))
 
-            expected_images = expected_images[loader_indices[0]:loader_indices[1]]
+            expected_images.data = expected_images.data[loader_indices[0]:loader_indices[1]]
 
-        npt.assert_equal(loaded_images.sample, expected_images)
+        npt.assert_equal(loaded_images.data, expected_images.data)
         loaded_images.free_memory()
+        if dataset.dark:
+            dataset.dark.free_memory()
+        if dataset.flat:
+            dataset.flat.free_memory()
 
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
                                        loader_indices=None,
                                        expected_len=None,
                                        saver_indices=None):
-        images = th.gen_img_shared_array_with_val(42.)
-        flat = th.gen_img_shared_array_with_val(42.)
-        dark = th.gen_img_shared_array_with_val(42.)
-
-        flat[:] = 3
-        dark[:] = 3
+        images = th.generate_images()
+        flat = th.generate_images()
+        dark = th.generate_images()
 
         # this only affects enumeration
         saver._indices = saver_indices
@@ -147,7 +154,7 @@ class IOTest(FileOutputtingTestCase):
         if saver_indices:
             # crop the original images to make sure the test is checking the
             # indices that were actually saved out
-            images = images[saver_indices[0]:saver_indices[1]]
+            images.data = images.data[saver_indices[0]:saver_indices[1]]
 
         saver.save(images, self.output_directory, out_format=img_format)
         flat_dir = os.path.join(self.output_directory, "imgIOTest_flat")
@@ -157,37 +164,45 @@ class IOTest(FileOutputtingTestCase):
 
         data_as_stack = False
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
-                                data_as_stack, images.shape[0])
+                                data_as_stack, images.data.shape[0])
 
-        self.assert_files_exist(os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
-                                flat.shape[0])
+        flat_dir = os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX)
+        self.assert_files_exist(flat_dir, img_format, data_as_stack, flat.data.shape[0])
 
-        self.assert_files_exist(os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX), img_format, data_as_stack,
-                                dark.shape[0])
+        dark_dir = os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX)
+        self.assert_files_exist(dark_dir, img_format, data_as_stack, dark.data.shape[0])
+
+        flat_filename = f"{flat_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
+        dark_filename = f"{dark_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
 
         dataset = loader.load(self.output_directory,
-                                    flat_dir,
-                                    dark_dir,
-                                    in_format=img_format,
-                                    indices=loader_indices)
+                              flat_filename,
+                              dark_filename,
+                              in_format=img_format,
+                              indices=loader_indices)
+        loaded_images = dataset.sample
 
         if loader_indices:
-            assert len(dataset.sample) == expected_len, \
+            assert len(loaded_images.data) == expected_len, \
                 "The length of the loaded data doesn't " \
                 "match the expected length: {0}, " \
                 "Got: {1}".format(
-                    expected_len, len(dataset.sample))
+                    expected_len, len(loaded_images.data))
 
             # crop the original images to make sure the tests is correct
-            images = images[loader_indices[0]:loader_indices[1]]
+            images.data = images.data[loader_indices[0]:loader_indices[1]]
 
-        npt.assert_equal(dataset.sample, images)
+        npt.assert_equal(loaded_images.data, images.data)
         # we only check the first image because they will be
         # averaged out when loaded! The initial images are only 3s
-        npt.assert_equal(dataset.flat, flat)
-        npt.assert_equal(dataset.dark, dark)
+        npt.assert_equal(dataset.flat.data, flat.data)
+        npt.assert_equal(dataset.dark.data, dark.data)
 
-        dataset.free_memory()
+        loaded_images.free_memory()
+        if dataset.dark:
+            dataset.dark.free_memory()
+        if dataset.flat:
+            dataset.flat.free_memory()
 
     def test_metadata_round_trip(self):
         # Create dummy image stack
@@ -199,12 +214,17 @@ class IOTest(FileOutputtingTestCase):
         saver.save(images, self.output_directory)
 
         # Load image stack back
-        loaded_images = loader.load(self.output_directory)
+        dataset = loader.load(self.output_directory)
+        loaded_images = dataset.sample
 
         # Ensure properties have been preserved
         self.assertEquals(loaded_images.metadata, images.metadata)
 
         loaded_images.free_memory()
+        if dataset.dark:
+            dataset.dark.free_memory()
+        if dataset.flat:
+            dataset.flat.free_memory()
 
 
 if __name__ == '__main__':
