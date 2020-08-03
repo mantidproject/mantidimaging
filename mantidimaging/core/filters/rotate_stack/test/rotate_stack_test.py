@@ -14,6 +14,7 @@ class RotateStackTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def __init__(self, *args, **kwargs):
         super(RotateStackTest, self).__init__(*args, **kwargs)
 
@@ -21,18 +22,16 @@ class RotateStackTest(unittest.TestCase):
         self.do_execute()
 
     def test_executed_seq(self):
-        th.switch_mp_off()
-        self.do_execute()
-        th.switch_mp_on()
+        self.do_execute(cores=1)
 
-    def do_execute(self):
+    def do_execute(self, cores=None):
         # only works on square images
         images = th.generate_images((10, 10, 10))
 
-        rotation = 1  # once clockwise
+        rotation = -90
         images.data[:, 0, :] = 42
 
-        result = RotateFilter.filter_func(images, rotation)
+        result = RotateFilter.filter_func(images, rotation, cores=cores)
 
         npt.assert_equal(result.data[:, :, -1], 42)
 
