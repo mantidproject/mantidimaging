@@ -9,8 +9,9 @@ def find_if_latest_version(action: Callable[[str], None]):
     LOG.info("Finding and comparing mantidimaging versions")
     import subprocess
     import os
-    local_mantid_package = subprocess.check_output(
-        "conda list | grep mantidimaging | awk 'END{print $2}'", shell=True, env=os.environ).decode("utf-8").strip()
+    local_mantid_package = subprocess.check_output("conda list | grep mantidimaging | awk 'END{print $2}'",
+                                                   shell=True,
+                                                   env=os.environ).decode("utf-8").strip()
     import requests, json
     try:
         response = requests.get("https://api.anaconda.org/package/dtasev/mantidimaging")

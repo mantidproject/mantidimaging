@@ -42,9 +42,7 @@ class CropCoordinatesFilter(BaseFilter):
         h.check_data_stack(images)
 
         sample = images.data
-        shape = (sample.shape[0],
-                 region_of_interest.height,
-                 region_of_interest.width)
+        shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
         sample_name = images.memory_filename
         if sample_name is not None:
             images.free_memory()

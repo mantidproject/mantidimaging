@@ -24,8 +24,7 @@ class TomopyRecon(BaseRecon):
                                   sinogram_order=True)
 
     @staticmethod
-    def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-               recon_params: ReconstructionParameters):
+    def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles, recon_params: ReconstructionParameters):
         # make sinogram manually, tomopy likes to copy a lot of data otherwise
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,

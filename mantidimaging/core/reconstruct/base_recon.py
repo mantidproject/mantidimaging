@@ -38,8 +38,11 @@ class BaseRecon:
         raise NotImplemented("Base class call")
 
     @staticmethod
-    def full(images: Images, cors: List[ScalarCoR], proj_angles: ProjectionAngles,
-             recon_params: ReconstructionParameters, progress: Optional[Progress] = None) -> Images:
+    def full(images: Images,
+             cors: List[ScalarCoR],
+             proj_angles: ProjectionAngles,
+             recon_params: ReconstructionParameters,
+             progress: Optional[Progress] = None) -> Images:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 

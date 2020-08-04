@@ -31,8 +31,8 @@ class CORInspectionDialogPresenter(BasePresenter):
 
     view: 'CORInspectionDialogView'
 
-    def __init__(self, view, data: Images, slice_index: int, initial_cor: ScalarCoR,
-                 proj_angles: ProjectionAngles, recon_params: ReconstructionParameters):
+    def __init__(self, view, data: Images, slice_index: int, initial_cor: ScalarCoR, proj_angles: ProjectionAngles,
+                 recon_params: ReconstructionParameters):
         super().__init__(view)
 
         self.model = CORInspectionDialogModel(data, slice_index, initial_cor, proj_angles, recon_params)

@@ -148,8 +148,7 @@ class CorTiltDataModel:
 
         for idx in range(len(self._points)):
             current = self._points[idx]
-            self._points[idx] = Point(current.slice_index,
-                                      self.get_cor_from_regression(current.slice_index))
+            self._points[idx] = Point(current.slice_index, self.get_cor_from_regression(current.slice_index))
 
     def iter_points(self) -> Iterator[Point]:
         return iter(self._points)

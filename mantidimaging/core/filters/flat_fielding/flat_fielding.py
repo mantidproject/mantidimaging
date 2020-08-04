@@ -118,12 +118,7 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def _execute(data,
-             flat=None,
-             dark=None,
-             cores=None,
-             chunksize=None,
-             progress=None):
+def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=None):
     """
     A benchmark justifying the current implementation, performed on
     500x2048x2048 images.

@@ -154,9 +154,8 @@ class ReconstructWindowPresenter(BasePresenter):
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx,
-                                         self.model.last_cor, self.model.proj_angles,
-                                         self.view.recon_params())
+        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
+                                         self.model.proj_angles, self.view.recon_params())
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -236,7 +235,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.view.add_cor_table_row(selected_row, slice_idx, cor)
             self.do_cor_fit()
 
-        start_async_task_view(self.view, self.model.auto_find_minimisation_sqsum, _completed_finding_cors,
-                              {'slices': slice_indices,
-                               'recon_params': self.view.recon_params(),
-                               'initial_cor': initial_cor})
+        start_async_task_view(self.view, self.model.auto_find_minimisation_sqsum, _completed_finding_cors, {
+            'slices': slice_indices,
+            'recon_params': self.view.recon_params(),
+            'initial_cor': initial_cor
+        })

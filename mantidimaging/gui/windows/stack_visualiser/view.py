@@ -109,17 +109,14 @@ class StackVisualiserView(BaseMainWindowView):
         self.close()
 
     def build_context_menu(self) -> QMenu:
-        actions = [
-            ("Set ROI", self.set_roi),
-            ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
-            ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-            ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
-            ("Duplicate stack data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
-            ("Show history", self.show_image_metadata),
-            ("Apply history from another stack", self.show_op_history_copy_dialog),
-            ("Mark as projections/sinograms", self.mark_as_),
-            ("Change window name", self.change_window_name_clicked)
-        ]
+        actions = [("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
+                   ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
+                   ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+                   ("Duplicate stack data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
+                   ("Show history", self.show_image_metadata),
+                   ("Apply history from another stack", self.show_op_history_copy_dialog),
+                   ("Mark as projections/sinograms", self.mark_as_),
+                   ("Change window name", self.change_window_name_clicked)]
 
         menu = QMenu(self)
 
@@ -131,9 +128,11 @@ class StackVisualiserView(BaseMainWindowView):
         return menu
 
     def set_roi(self):
-        roi, accepted = QInputDialog.getText(self, "Manual ROI",
-                                             "Enter ROI in order left, top, right, bottom, with commas in-between each number",
-                                             text="0, 0, 50, 50")
+        roi, accepted = QInputDialog.getText(
+            self,
+            "Manual ROI",
+            "Enter ROI in order left, top, right, bottom, with commas in-between each number",
+            text="0, 0, 50, 50")
         if accepted:
             roi = [int(r.strip()) for r in roi.split(",")]
             self.image_view.roi.setPos((roi[0], roi[1]), update=False)

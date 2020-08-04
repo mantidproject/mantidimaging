@@ -9,7 +9,6 @@ from ..data.images import Images
 try:
     from skimage.registration import phase_cross_correlation
 
-
     def find_center_pc(images: Images, initial_guess: Optional[float] = None, tol: float = 0.5) -> float:
         """
         Find rotation axis location by finding the offset between the first
@@ -34,5 +33,6 @@ try:
         center = (p1.shape[1] + shift[0][1]) / 2
         return center + initial_guess
 except ImportError:
+
     def find_center_pc(images: Images, initial_guess: Optional[float] = None, tol: float = 0.5) -> float:
         return images.width / 2

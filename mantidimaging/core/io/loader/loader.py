@@ -68,22 +68,34 @@ def supported_formats():
     return avail_list
 
 
-def read_in_shape(input_path, in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, data_dtype=np.float32) -> Tuple[
-    Tuple[int, int, int], bool]:
+def read_in_shape(input_path,
+                  in_prefix='',
+                  in_format=DEFAULT_IO_FILE_FORMAT,
+                  data_dtype=np.float32) -> Tuple[Tuple[int, int, int], bool]:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
-    dataset = load(input_path, in_prefix=in_prefix, in_format=in_format, dtype=data_dtype, indices=[0, 1, 1],
+    dataset = load(input_path,
+                   in_prefix=in_prefix,
+                   in_format=in_format,
+                   dtype=data_dtype,
+                   indices=[0, 1, 1],
                    file_names=input_file_names)
     images = dataset.sample
 
     # construct and return the new shape
-    shape = (len(input_file_names),) + images.data[0].shape
+    shape = (len(input_file_names), ) + images.data[0].shape
     images.free_memory()
     return shape, images.is_sinograms
 
 
-def load(input_path=None, input_path_flat=None, input_path_dark=None,
-         in_prefix='', in_format=DEFAULT_IO_FILE_FORMAT, dtype=np.float32,
-         file_names=None, indices=None, progress=None) -> Dataset:
+def load(input_path=None,
+         input_path_flat=None,
+         input_path_dark=None,
+         in_prefix='',
+         in_format=DEFAULT_IO_FILE_FORMAT,
+         dtype=np.float32,
+         file_names=None,
+         indices=None,
+         progress=None) -> Dataset:
     """
 
     Loads a stack, including sample, white and dark images.

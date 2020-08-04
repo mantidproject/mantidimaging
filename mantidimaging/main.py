@@ -29,7 +29,7 @@ def parse_args():
         type=str,
         default="INFO",
         help="Log verbosity level. "
-             "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
@@ -39,6 +39,7 @@ def parse_args():
 
 def main():
     import SharedArray as sa
+
     def free_all():
         for arr in sa.list():
             sa.delete(arr.name.decode("utf-8"))
