@@ -3,10 +3,10 @@ from logging import getLogger
 from typing import Any, Dict
 
 import numpy as np
+
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
-from mantidimaging.core.filters.rescale import RescaleFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility import value_scaling

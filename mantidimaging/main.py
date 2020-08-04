@@ -4,8 +4,9 @@ import atexit
 import logging
 import warnings
 
+import SharedArray as sa
+
 from mantidimaging import helper as h
-from mantidimaging.core.parallel import utility
 from mantidimaging.core.utility.optional_imports import safe_import
 
 formatwarning_orig = warnings.formatwarning
@@ -38,8 +39,6 @@ def parse_args():
 
 
 def main():
-    import SharedArray as sa
-
     def free_all():
         for arr in sa.list():
             sa.delete(arr.name.decode("utf-8"))

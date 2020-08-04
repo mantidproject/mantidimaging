@@ -90,7 +90,8 @@ class MIImageView(ImageView):
             if len(self.roiCurves) == 0:
                 self.roiCurves.append(self.ui.roiPlot.plot())
             self.roiCurves[0].setData(y=data, x=self.tVals)
-        self.roiString = f"({left}, {top}, {right}, {bottom}) | region avg={data[int(self.timeLine.value())].mean():.6f}"
+        self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
+                         f"region avg={data[int(self.timeLine.value())].mean():.6f}"
         return left, top, right, bottom
 
     def extend_roi_plot_mouse_press_handler(self):

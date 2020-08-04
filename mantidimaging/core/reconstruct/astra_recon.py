@@ -7,7 +7,6 @@ import numpy as np
 from scipy.optimize import minimize
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -123,7 +122,8 @@ class AstraRecon(BaseRecon):
         # num_gpus = AstraRecon._count_gpus()
         # LOG.info(f"Running with {num_gpus} GPUs")
         # partial = ptsm.create_partial(AstraRecon.single, ptsm.fwd_gpu_recon,
-        #                               num_gpus=num_gpus, cors=cors, proj_angles=proj_angles, recon_params=recon_params)
+        #                               num_gpus=num_gpus, cors=cors,
+        #                               proj_angles=proj_angles, recon_params=recon_params)
         # ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)

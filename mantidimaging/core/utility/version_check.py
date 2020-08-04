@@ -1,18 +1,19 @@
+import json
+import os
+import subprocess
 from logging import getLogger
 from typing import Tuple, Callable
+
+import requests
 
 LOG = getLogger(__name__)
 
 
 def find_if_latest_version(action: Callable[[str], None]):
-    """[ "`conda list | grep mantidimaging | awk 'END{print $2}'`" = "`conda search -c dtasev mantidimaging | awk 'END{print $2}'`" ]"""
     LOG.info("Finding and comparing mantidimaging versions")
-    import subprocess
-    import os
     local_mantid_package = subprocess.check_output("conda list | grep mantidimaging | awk 'END{print $2}'",
                                                    shell=True,
                                                    env=os.environ).decode("utf-8").strip()
-    import requests, json
     try:
         response = requests.get("https://api.anaconda.org/package/dtasev/mantidimaging")
         remote_mantid_package = json.loads(response.content)["latest_version"]
@@ -28,7 +29,8 @@ def find_if_latest_version(action: Callable[[str], None]):
         remote_version, remote_commits_since_last = _parse_version(remote_mantid_package)
 
         if local_version < remote_version or local_commits_since_last < remote_commits_since_last:
-            msg = f"Not running the latest Mantid Imaging. Found {local_mantid_package}, latest: {remote_mantid_package}"
+            msg = f"Not running the latest Mantid Imaging. Found {local_mantid_package}, " \
+                  f"latest: {remote_mantid_package}"
             LOG.info(msg)
             action(msg)
             return
