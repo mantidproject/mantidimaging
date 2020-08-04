@@ -12,11 +12,6 @@ class ValueScalingTest(unittest.TestCase):
 
         self.alg = value_scaling
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        import SharedArray as sa
-        assert len(sa.list()) == 0, f"Not all shared arrays have been freed. Leftover: {sa.list()}"
-
     def test_create_factors_no_roi(self):
         data = th.generate_images().data
         expected_factors = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]

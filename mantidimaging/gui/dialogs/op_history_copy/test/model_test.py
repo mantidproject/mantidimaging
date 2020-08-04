@@ -14,7 +14,7 @@ class OpHistoryCopyDialogModelTest(unittest.TestCase):
 
     @patch('mantidimaging.gui.dialogs.op_history_copy.model.ops_to_partials')
     def test_final_function_result_returned(self, mock_partial_conversions):
-        expected = Images(data=321)
+        expected = self.data
         call_mock = MagicMock()
 
         def fake_filter(_):
@@ -23,11 +23,17 @@ class OpHistoryCopyDialogModelTest(unittest.TestCase):
 
         mock_partial_conversions.return_value = [
             fake_filter,
-            lambda image: "123",
-            lambda image: expected,
         ]
         # Value passed to apply_ops is only used in ops_to_partial, which is mocked for
         # this test, so the value of the parameter shouldn't matter.
-        result = self.model.apply_ops(None)
+        result = self.model.apply_ops([1], copy=False)
         call_mock.assert_called_once()
         self.assertEqual(expected, result)
+        np.testing.assert_equal(expected.data, result.data)
+
+        call_mock.reset_mock()
+
+        result = self.model.apply_ops([1], copy=True)
+        call_mock.assert_called_once()
+        self.assertNotEqual(expected, result)
+        np.testing.assert_equal(expected.data, result.data)
