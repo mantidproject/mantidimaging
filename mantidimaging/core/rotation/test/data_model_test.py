@@ -91,8 +91,8 @@ class CorTiltDataModelTest(TestCase):
         m.linear_regression()
 
         self.assertTrue(m.has_results)
-        self.assertAlmostEqual(m.gradient, 0.1)
-        self.assertAlmostEqual(m.cor, 5.0)
+        self.assertAlmostEqual(m.gradient.value, 0.1)
+        self.assertAlmostEqual(m.cor.value, 5.0)
 
     def test_linear_regression_data(self):
         m = CorTiltDataModel()
@@ -126,8 +126,8 @@ class CorTiltDataModelTest(TestCase):
         ]
         m.linear_regression()
 
-        self.assertAlmostEqual(m.gradient, 0.005292, places=6)
-        self.assertAlmostEqual(m.cor, 1392.99, places=2)
+        self.assertAlmostEqual(m.gradient.value, 0.005292, places=6)
+        self.assertAlmostEqual(m.cor.value, 1392.99, places=2)
 
     def test_stack_properties(self):
         m = CorTiltDataModel()
@@ -174,19 +174,8 @@ class CorTiltDataModelTest(TestCase):
         m.linear_regression()
 
         self.assertTrue(m.has_results)
-        self.assertAlmostEqual(m.gradient, 0.1)
-        self.assertAlmostEqual(m.cor, 4.0)
-
-    def test_get_cor_for_slice(self):
-        m = CorTiltDataModel()
-        m.add_point(None, 10, 5.0)
-        m.add_point(None, 20, 6.0)
-        m.add_point(None, 30, 7.0)
-        m.add_point(None, 40, 8.0)
-
-        self.assertEquals(m.get_cor_for_slice(10), 5.0)
-        self.assertEquals(m.get_cor_for_slice(30), 7.0)
-        self.assertIsNone(m.get_cor_for_slice(45))
+        self.assertAlmostEqual(m.gradient.value, 0.1)
+        self.assertAlmostEqual(m.cor.value, 4.0)
 
     def test_get_cor_for_slice_from_regression(self):
         m = CorTiltDataModel()
