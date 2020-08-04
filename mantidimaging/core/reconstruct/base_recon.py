@@ -21,7 +21,7 @@ class BaseRecon:
         :param recon_params: Parameters for the reconstruction
         :return: 2D image data for reconstructed slice
         """
-        raise NotImplemented("Base class call")
+        raise NotImplementedError("Base class call")
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
@@ -30,12 +30,13 @@ class BaseRecon:
         Reconstruct a single sinogram
 
         :param sino: The 2D sinogram as a numpy array
-        :param cor: Center of rotation for parallel geometry. It will be converted to vector geometry before reconstructing
+        :param cor: Center of rotation for parallel geometry.
+                    It will be converted to vector geometry before reconstructing
         :param proj_angles: Projection angles
         :param recon_params: Reconstruction parameters to configure which algorithm/filter/etc is used
         :return: 2D image data for reconstructed slice
         """
-        raise NotImplemented("Base class call")
+        raise NotImplementedError("Base class call")
 
     @staticmethod
     def full(images: Images,
@@ -53,8 +54,8 @@ class BaseRecon:
         :param progress: Optional progress reporter
         :return: 3D image data for reconstructed volume
         """
-        raise NotImplemented("Base class call")
+        raise NotImplementedError("Base class call")
 
     @staticmethod
     def allowed_filters() -> List[str]:
-        raise NotImplemented("Base class call")
+        raise NotImplementedError("Base class call")

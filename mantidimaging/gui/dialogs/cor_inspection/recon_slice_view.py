@@ -1,4 +1,4 @@
-from typing import Tuple, List, TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtWidgets import QPushButton

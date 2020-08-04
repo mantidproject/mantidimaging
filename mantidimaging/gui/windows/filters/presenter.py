@@ -120,7 +120,6 @@ class FiltersWindowPresenter(BasePresenter):
         self.model.do_apply_filter()
 
     def do_update_previews(self):
-        log = getLogger(__name__)
         stack = self.model.stack_presenter
 
         self.view.clear_previews()

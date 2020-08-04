@@ -1,12 +1,12 @@
 from logging import getLogger
 from typing import Tuple
 
-LOG = getLogger(__name__)
-
 import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR
+
+LOG = getLogger(__name__)
 
 
 def find_center(images: Images) -> Tuple[ScalarCoR, Degrees]:
