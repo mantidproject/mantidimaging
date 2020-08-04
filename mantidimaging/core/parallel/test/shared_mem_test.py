@@ -1,5 +1,6 @@
 import unittest
 
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -61,8 +62,8 @@ class SharedMemTest(unittest.TestCase):
 
     def test_fail_with_normal_array_fwd_func_inplace(self):
         # create data as normal nd array
-        img = th.gen_img_numpy_rand()
-        orig = th.deepcopy(img)
+        img = th.gen_img_numpy_rand((11, 10, 10))
+        orig = np.copy(img)
         add_arg = 5
 
         expected = img + add_arg
@@ -84,8 +85,8 @@ class SharedMemTest(unittest.TestCase):
 
     def test_fail_with_normal_array_fwd_func(self):
         # create data as shared array
-        img = th.gen_img_numpy_rand()
-        orig = th.deepcopy(img)
+        img = th.gen_img_numpy_rand((11, 10, 10))
+        orig = np.copy(img)
         add_arg = 5
 
         expected = img + add_arg

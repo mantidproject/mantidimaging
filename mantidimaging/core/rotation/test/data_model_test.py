@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.rotation import CorTiltDataModel
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.gui.windows.recon import Column, COLUMN_NAMES
@@ -140,11 +141,11 @@ class CorTiltDataModelTest(TestCase):
         d = m.stack_properties
         self.assertEqual(len(d), 5)
 
-        self.assertEqual(d['fitted_gradient'], m.gradient)
-        self.assertEqual(d['rotation_centre'], m.cor)
-        self.assertEqual(d['slice_indices'], m.slices)
-        self.assertEqual(d['rotation_centres'], m.cors)
-        self.assertTrue(isinstance(d['tilt_angle_rad'], float))
+        self.assertEqual(d[const.COR_TILT_FITTED_GRADIENT], m.gradient.value)
+        self.assertEqual(d[const.COR_TILT_ROTATION_CENTRE], m.cor.value)
+        self.assertEqual(d[const.COR_TILT_SLICE_INDICES], m.slices)
+        self.assertEqual(d[const.COR_TILT_ROTATION_CENTRES], m.cors)
+        self.assertTrue(isinstance(d[const.COR_TILT_TILT_ANGLE_DEG], float))
 
     def test_clear_results(self):
         m = CorTiltDataModel()
