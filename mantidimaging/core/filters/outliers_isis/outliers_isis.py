@@ -41,8 +41,7 @@ class OutliersISISFilter(BaseFilter):
         if diff and radius and diff > 0 and radius > 0:
             data = images.projections if axis == 0 else images.sinograms
             func = psm.create_partial(OutliersISISFilter._execute, psm.return_fwd_func, diff=diff, radius=radius)
-            psm.execute(data, func, cores, progress=progress,
-                        msg=f"Outliers with threshold {diff} and kernel {radius}")
+            psm.execute(data, func, cores, progress=progress, msg=f"Outliers with threshold {diff} and kernel {radius}")
         return images
 
     @staticmethod
@@ -64,4 +63,6 @@ class OutliersISISFilter(BaseFilter):
     @staticmethod
     def execute_wrapper(diff_field=None, size_field=None, axis_field=None):
         return partial(OutliersISISFilter.filter_func,
-                       diff=diff_field.value(), radius=size_field.value(), axis=axis_field.value())
+                       diff=diff_field.value(),
+                       radius=size_field.value(),
+                       axis=axis_field.value())

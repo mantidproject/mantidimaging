@@ -15,8 +15,10 @@ def test_rescale(value):
     images.data[6:10] = 1.0
 
     expected_min_input = 0.1
-    images = RescaleFilter.filter_func(images, min_input=expected_min_input,
-                                       max_input=images.data.max(), max_output=value)
+    images = RescaleFilter.filter_func(images,
+                                       min_input=expected_min_input,
+                                       max_input=images.data.max(),
+                                       max_output=value)
 
     # below min_input has been clipped to 0
     npt.assert_equal(0, images.data[0:3])
@@ -39,14 +41,11 @@ def test_execute_wrapper_no_preset():
     assert partial.keywords['max_output'] == 420.0
 
 
-@pytest.mark.parametrize(
-    'type, expected_max',
-    [
-        ('int8', 255.0),
-        ('int16', 65535),
-        ('int32', 2147483647.0),
-    ]
-)
+@pytest.mark.parametrize('type, expected_max', [
+    ('int8', 255.0),
+    ('int16', 65535),
+    ('int32', 2147483647.0),
+])
 def test_execute_wrapper_with_preset(type: str, expected_max: float):
     min_input_value = 12
     max_input_value = 34

@@ -20,7 +20,6 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
-
     def __init__(self, q_objects: Union[QObject, List[QObject]]):
         if not isinstance(q_objects, list):
             q_objects = [q_objects]

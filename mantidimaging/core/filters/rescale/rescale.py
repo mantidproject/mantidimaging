@@ -13,8 +13,7 @@ class RescaleFilter(BaseFilter):
     filter_name = 'Rescale'
 
     @staticmethod
-    def filter_func(images: Images, min_input: float, max_input: float, max_output: float,
-                    progress=None) -> Images:
+    def filter_func(images: Images, min_input: float, max_input: float, max_output: float, progress=None) -> Images:
         images.data[images.data < min_input] = 0
         images.data[images.data > max_input] = 0
         images.data *= (max_output / images.data.max())
@@ -23,15 +22,27 @@ class RescaleFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
-        _, min_input_widget = add_property_to_form('Min input', Type.FLOAT, form=form, on_change=on_change,
+        _, min_input_widget = add_property_to_form('Min input',
+                                                   Type.FLOAT,
+                                                   form=form,
+                                                   on_change=on_change,
                                                    valid_values=(-2147483647, 2147483647))
-        _, max_input_widget = add_property_to_form('Max input', Type.FLOAT, form=form, on_change=on_change,
+        _, max_input_widget = add_property_to_form('Max input',
+                                                   Type.FLOAT,
+                                                   form=form,
+                                                   on_change=on_change,
                                                    default_value=5.0,
                                                    valid_values=(-2147483647, 2147483647))
-        _, max_output_widget = add_property_to_form('Max output', Type.FLOAT, form=form, on_change=on_change,
+        _, max_output_widget = add_property_to_form('Max output',
+                                                    Type.FLOAT,
+                                                    form=form,
+                                                    on_change=on_change,
                                                     default_value=65535.0,
                                                     valid_values=(1, 2147483647))
-        _, preset_widget = add_property_to_form('Preset', Type.CHOICE, form=form, on_change=on_change,
+        _, preset_widget = add_property_to_form('Preset',
+                                                Type.CHOICE,
+                                                form=form,
+                                                on_change=on_change,
                                                 valid_values=["Use values from above", "int8", "int16", "int32"])
 
         return {

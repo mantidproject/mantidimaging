@@ -19,10 +19,24 @@ class MainWindowModel(object):
 
         self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
-    def do_load_stack(self, sample_path, image_format, indices, progress, in_prefix, dtype,
-                      flat_path=None, dark_path=None, sinograms=False):
-        dataset = loader.load(sample_path, flat_path, dark_path,
-                              in_prefix, image_format, dtype, indices=indices, progress=progress)
+    def do_load_stack(self,
+                      sample_path,
+                      image_format,
+                      indices,
+                      progress,
+                      in_prefix,
+                      dtype,
+                      flat_path=None,
+                      dark_path=None,
+                      sinograms=False):
+        dataset = loader.load(sample_path,
+                              flat_path,
+                              dark_path,
+                              in_prefix,
+                              image_format,
+                              dtype,
+                              indices=indices,
+                              progress=progress)
         dataset.sample._is_sinograms = sinograms
         return dataset
 

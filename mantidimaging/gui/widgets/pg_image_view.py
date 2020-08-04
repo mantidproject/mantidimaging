@@ -15,7 +15,6 @@ class UnrotateablePlotROI(ROI):
     """
     Like PlotROI but does not add a rotation handle.
     """
-
     def __init__(self, size):
         ROI.__init__(self, pos=[0, 0], size=size)
         self.addScaleHandle([1, 1], [0, 0])

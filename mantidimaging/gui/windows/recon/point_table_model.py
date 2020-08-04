@@ -22,7 +22,6 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     This class handles GUI interaction with the tableView  whilst CorTiltDataModel provides
     methods for calculating rotation and gradient from the stored values.
     """
-
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.beginResetModel()
         super(CorTiltPointQtModel, self).populate_slice_indices(begin, end, count, cor)

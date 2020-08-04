@@ -64,8 +64,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertEqual(slope.value, expected_slope)
 
         # pre-calculated by hand
-        expected_cors_with_this_gradient = [996.5036594028245, 997.2029275222595,
-                                            997.9021956416947, 998.6014637611298]
+        expected_cors_with_this_gradient = [996.5036594028245, 997.2029275222595, 997.9021956416947, 998.6014637611298]
         for i, point in enumerate(self.model.data_model._points):
             self.assertEqual(point.cor, expected_cors_with_this_gradient[i])
 
@@ -119,8 +118,7 @@ class ReconWindowModelTest(unittest.TestCase):
         mock_reconstructor.full = mock.Mock()
         mock_get_reconstructor_for.return_value = mock_reconstructor
         expected_cors = [1] * self.model.images.height
-        self.model.data_model.get_all_cors_from_regression = mock.Mock(
-            return_value=expected_cors)
+        self.model.data_model.get_all_cors_from_regression = mock.Mock(return_value=expected_cors)
 
         expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
         progress = mock.Mock()

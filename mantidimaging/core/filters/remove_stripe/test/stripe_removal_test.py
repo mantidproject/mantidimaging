@@ -12,7 +12,6 @@ class StripeRemovalTest(unittest.TestCase):
 
     Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
-
     def __init__(self, *args, **kwargs):
         super(StripeRemovalTest, self).__init__(*args, **kwargs)
 
@@ -57,9 +56,7 @@ class StripeRemovalTest(unittest.TestCase):
         value_wf_wname.currentText = mock.Mock(return_value="haar")
         value_wf_sigma = mock.Mock()
         value_wf_sigma.value = mock.Mock(return_value=2.0)
-        execute_func = StripeRemovalFilter.execute_wrapper(value_filter_type,
-                                                           value_wf_level,
-                                                           value_wf_wname,
+        execute_func = StripeRemovalFilter.execute_wrapper(value_filter_type, value_wf_level, value_wf_wname,
                                                            value_wf_sigma)
 
         images = th.generate_images()

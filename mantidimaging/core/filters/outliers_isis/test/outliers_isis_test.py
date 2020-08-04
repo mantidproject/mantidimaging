@@ -13,7 +13,6 @@ class OutliersISISTest(unittest.TestCase):
 
     Tests return value only.
     """
-
     def __init__(self, *args, **kwargs):
         super(OutliersISISTest, self).__init__(*args, **kwargs)
 

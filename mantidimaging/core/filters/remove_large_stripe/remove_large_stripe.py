@@ -20,21 +20,30 @@ class RemoveLargeStripesFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
-        label, _ = add_property_to_form("This filter requires sinograms\nto produce a sensible result.", Type.LABEL,
-                                        form=form, on_change=on_change)
+        label, _ = add_property_to_form("This filter requires sinograms\nto produce a sensible result.",
+                                        Type.LABEL,
+                                        form=form,
+                                        on_change=on_change)
 
         # defaults taken from TomoPy integration
         # https://tomopy.readthedocs.io/en/latest/api/tomopy.prep.stripe.html#tomopy.prep.stripe.remove_all_stripe
-        _, snr = add_property_to_form('Stripe ratio', Type.FLOAT, default_value=3, form=form, on_change=on_change,
+        _, snr = add_property_to_form('Stripe ratio',
+                                      Type.FLOAT,
+                                      default_value=3,
+                                      form=form,
+                                      on_change=on_change,
                                       tooltip="Ratio used to segment between useful information and noise"
-                                              ". Greater is less sensitive.")
+                                      ". Greater is less sensitive.")
 
-        _, la_size = add_property_to_form('Large stripe kernel', Type.INT, default_value=61, valid_values=(1, 100), form=form,
+        _, la_size = add_property_to_form('Large stripe kernel',
+                                          Type.INT,
+                                          default_value=61,
+                                          valid_values=(1, 100),
+                                          form=form,
                                           on_change=on_change,
                                           tooltip="Window size of the median filter to remove large stripes.")
 
-        return {'snr': snr,
-                'la_size': la_size}
+        return {'snr': snr, 'la_size': la_size}
 
     @staticmethod
     def execute_wrapper(snr: QDoubleSpinBox, la_size: QSpinBox):

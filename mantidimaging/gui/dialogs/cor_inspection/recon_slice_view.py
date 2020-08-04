@@ -75,9 +75,12 @@ class CompareSlicesView(GraphicsLayoutWidget):
 
         self.display_formatted_detail = {
             # '' if val < 0 else ' ' pads out the line
-            self.less_img: lambda val, sumsq: update_text(val, sumsq, less_pixel, less_sumsq),
-            self.current_img: lambda val, sumsq: update_text(val, sumsq, current_pixel, current_sumsq),
-            self.more_img: lambda val, sumsq: update_text(val, sumsq, more_pixel, more_sumsq),
+            self.less_img:
+            lambda val, sumsq: update_text(val, sumsq, less_pixel, less_sumsq),
+            self.current_img:
+            lambda val, sumsq: update_text(val, sumsq, current_pixel, current_sumsq),
+            self.more_img:
+            lambda val, sumsq: update_text(val, sumsq, more_pixel, more_sumsq),
         }
 
         for img in self.less_img, self.current_img, self.more_img:
@@ -95,7 +98,7 @@ class CompareSlicesView(GraphicsLayoutWidget):
         for img in self.less_img, self.current_img, self.more_img:
             if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
-                diff = np.sum(img.image ** 2)
+                diff = np.sum(img.image**2)
                 self.display_formatted_detail[img](pixel_value, diff)
                 diffs.append(diff)
         return diffs
@@ -127,4 +130,3 @@ class CompareSlicesView(GraphicsLayoutWidget):
         self.current_hist.sigLevelsChanged.emit(self.current_hist)
         diffs = self._refresh_value_labels(CloseEnoughPoint([0, 0]))
         self.parent.mark_best_recon(diffs)
-
