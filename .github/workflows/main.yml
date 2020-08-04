@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build conda package
 
 on:
   workflow_dispatch:
@@ -12,6 +12,7 @@ on:
       home:
         description: 'Label'
         required: false
+        default: 'label/unstable'
         
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,15 +23,22 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Runs a set of commands using the runners shell
+    - name: Install conda and build environment
+      run: |
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        chmod +x Miniconda3-latest-Linux-x86_64.sh
+        bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+        rm Miniconda3-latest-Linux-x86_64.sh
+        eval "$(/opt/miniconda/bin/conda shell.bash hook)"
+        conda create -n build-env anaconda python=3.7
+        conda activate build-env
+        conda install conda-build conda-verify
+
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    - name: Publish Conda
-      uses: fcakyon/conda-publish-action@v1.3
-      with:
-        # Sub-directory with conda recipe
-        subdir: $GITHUB_WORKSPACE
-        # Anaconda access token
-        anacondatoken: ${{ secrets.ANACONDA_API_TOKEN }}
-        # Platforms to publish [osx/linux/win]
-        platforms: linux
+    
+    - name: Build package
+      run: |
+        conda build $GITHUB_WORKSPACE/conda
+        anaconda upload --user dtasev -t ${{ secrets.ANACONDA_API_TOKEN }} $(conda build $GITHUB_WORKSPACE/conda --output) --label unstable
