@@ -15,7 +15,7 @@ class ImagesTest(unittest.TestCase):
         imgs.load_metadata(json_file)
 
         def validate_prop(k, v):
-            self.assertEquals(imgs.metadata[k], v)
+            self.assertEqual(imgs.metadata[k], v)
 
         validate_prop('a_bool', True)
         validate_prop('a_string', 'yes')
@@ -39,7 +39,7 @@ class ImagesTest(unittest.TestCase):
 
         self.assertTrue(imgs.has_history)
 
-        self.assertEquals(
+        self.assertEqual(
             imgs.metadata, {
                 'operation_history': [{
                     'name': 'test_func',

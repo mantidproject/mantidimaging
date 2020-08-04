@@ -8,15 +8,15 @@ from mantidimaging.gui.windows.recon import Column, COLUMN_NAMES
 
 class CorTiltDataModelTest(TestCase):
     def test_field_defs_sanity(self):
-        self.assertEquals(len(Column), len(COLUMN_NAMES))
+        self.assertEqual(len(Column), len(COLUMN_NAMES))
 
     def test_init(self):
         m = CorTiltDataModel()
 
         self.assertTrue(m.empty)
-        self.assertEquals(m.num_points, 0)
-        self.assertEquals(m.slices, [])
-        self.assertEquals(m.cors, [])
+        self.assertEqual(m.num_points, 0)
+        self.assertEqual(m.slices, [])
+        self.assertEqual(m.cors, [])
         self.assertFalse(m.has_results)
 
     def test_add_points(self):
@@ -26,9 +26,9 @@ class CorTiltDataModelTest(TestCase):
         m.add_point(1, 60, 7.8)
 
         self.assertFalse(m.empty)
-        self.assertEquals(m.num_points, 3)
-        self.assertEquals(m.slices, [20, 60, 0])
-        self.assertEquals(m.cors, [5.0, 7.8, 0.0])
+        self.assertEqual(m.num_points, 3)
+        self.assertEqual(m.slices, [20, 60, 0])
+        self.assertEqual(m.cors, [5.0, 7.8, 0.0])
 
     def test_add_points_no_index(self):
         m = CorTiltDataModel()
@@ -37,9 +37,9 @@ class CorTiltDataModelTest(TestCase):
         m.add_point(None, 60, 7.8)
 
         self.assertFalse(m.empty)
-        self.assertEquals(m.num_points, 3)
-        self.assertEquals(m.slices, [0, 20, 60])
-        self.assertEquals(m.cors, [0.0, 5.0, 7.8])
+        self.assertEqual(m.num_points, 3)
+        self.assertEqual(m.slices, [0, 20, 60])
+        self.assertEqual(m.cors, [0.0, 5.0, 7.8])
 
     def test_clear_points(self):
         m = CorTiltDataModel()
@@ -49,31 +49,31 @@ class CorTiltDataModelTest(TestCase):
         m.clear_points()
 
         self.assertTrue(m.empty)
-        self.assertEquals(m.num_points, 0)
-        self.assertEquals(m.slices, [])
-        self.assertEquals(m.cors, [])
+        self.assertEqual(m.num_points, 0)
+        self.assertEqual(m.slices, [])
+        self.assertEqual(m.cors, [])
 
     def test_populate_slice_indices_no_cor(self):
         m = CorTiltDataModel()
         m.populate_slice_indices(300, 400, 20)
 
-        self.assertEquals(m.num_points, 20)
-        self.assertEquals(m.point(0)[0], 300)
-        self.assertEquals(m.point(19)[0], 400)
+        self.assertEqual(m.num_points, 20)
+        self.assertEqual(m.point(0)[0], 300)
+        self.assertEqual(m.point(19)[0], 400)
 
         for i in range(20):
-            self.assertEquals(m.point(i)[1], 0.0)
+            self.assertEqual(m.point(i)[1], 0.0)
 
     def test_populate_slice_indices_with_cor(self):
         m = CorTiltDataModel()
         m.populate_slice_indices(300, 400, 20, 56.7)
 
-        self.assertEquals(m.num_points, 20)
-        self.assertEquals(m.point(0)[0], 300)
-        self.assertEquals(m.point(19)[0], 400)
+        self.assertEqual(m.num_points, 20)
+        self.assertEqual(m.point(0)[0], 300)
+        self.assertEqual(m.point(19)[0], 400)
 
         for i in range(20):
-            self.assertEquals(m.point(i)[1], 56.7)
+            self.assertEqual(m.point(i)[1], 56.7)
 
     def test_linear_regression_no_data(self):
         m = CorTiltDataModel()
@@ -169,8 +169,8 @@ class CorTiltDataModelTest(TestCase):
         m.sort_points()
 
         # Expect data to be sorted as it is inserted
-        self.assertEquals(m.slices, [10, 20, 30, 40])
-        self.assertEquals(m.cors, [5.0, 6.0, 7.0, 8.0])
+        self.assertEqual(m.slices, [10, 20, 30, 40])
+        self.assertEqual(m.cors, [5.0, 6.0, 7.0, 8.0])
 
         m.linear_regression()
 
@@ -187,9 +187,9 @@ class CorTiltDataModelTest(TestCase):
 
         m.linear_regression()
 
-        self.assertEquals(m.get_cor_from_regression(0), 4.0)
-        self.assertEquals(m.get_cor_from_regression(10), 5.0)
-        self.assertEquals(m.get_cor_from_regression(50), 9.0)
+        self.assertEqual(m.get_cor_from_regression(0), 4.0)
+        self.assertEqual(m.get_cor_from_regression(10), 5.0)
+        self.assertEqual(m.get_cor_from_regression(50), 9.0)
 
     def test_get_data_idx_for_slice_idx(self):
         m = CorTiltDataModel()
@@ -198,7 +198,7 @@ class CorTiltDataModelTest(TestCase):
         m.add_point(None, 30, 7.0)
         m.add_point(None, 40, 8.0)
 
-        self.assertEquals(m._get_data_idx_from_slice_idx(10), 0)
+        self.assertEqual(m._get_data_idx_from_slice_idx(10), 0)
         self.assertIsNone(m._get_data_idx_from_slice_idx(100))
 
     def test_set_cor_at_slice(self):
@@ -209,4 +209,4 @@ class CorTiltDataModelTest(TestCase):
         m.add_point(None, 40, 8.0)
 
         m.set_cor_at_slice(30, 15)
-        self.assertEquals(m.cors, [5.0, 6.0, 15.0, 8.0])
+        self.assertEqual(m.cors, [5.0, 6.0, 15.0, 8.0])
