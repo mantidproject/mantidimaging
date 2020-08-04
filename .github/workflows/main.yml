@@ -31,7 +31,7 @@ jobs:
     - name: Initialise conda
       run: conda init bash
     - name: test activate
-      run: conda activate myenvs
+      run: source activate myenvs
       
     - name: Make build-env
       run: |
@@ -41,7 +41,7 @@ jobs:
         rm Miniconda3-latest-Linux-x86_64.sh
         conda config --set always_yes yes --set changeps1 no
         conda create -n build-env anaconda python=3.7
-        conda activate build-env
+        source activate build-env
         conda install conda-build conda-verify
 #       run: |
 
