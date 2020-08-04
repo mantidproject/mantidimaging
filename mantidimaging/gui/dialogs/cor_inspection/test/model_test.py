@@ -3,60 +3,60 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.gui.dialogs.cor_inspection import (CORInspectionDialogModel, ImageType)
+from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
+from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
+from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class CORInspectionDialogModelTest(unittest.TestCase):
-    def test_construct_from_sinogram(self):
-        sino = np.ones(shape=(128, 64), dtype=np.float32)
-        m = CORInspectionDialogModel(sino)
-        npt.assert_equal(m.sino, sino)
-        self.assertEquals(m.cor_extents, (0, 63))
-        self.assertEquals(m.proj_angles.shape, (128, ))
-
-    def test_construct_from_projections(self):
-        proj = np.ones(shape=(128, 64, 64), dtype=np.float32)
-        m = CORInspectionDialogModel(proj, slice_idx=5)
-        self.assertEquals(m.sino.shape, (128, 64))
-        self.assertEquals(m.cor_extents, (0, 63))
-        self.assertEquals(m.proj_angles.shape, (128, ))
-
-    def test_construct_from_sinogram_defaults(self):
-        sino = np.ones(shape=(128, 64), dtype=np.float32)
-        m = CORInspectionDialogModel(sino)
-        self.assertEquals(m.centre_cor, (64 - 1) / 2)
+    def test_construct(self):
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5,
+                                     ScalarCoR(20),
+                                     ProjectionAngles(np.arange(10)),
+                                     ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        npt.assert_equal(m.sino, images.sino(5))
+        self.assertEquals(m.cor_extents, (0, 9))
+        self.assertEquals(m.proj_angles.value.shape, (10,))
 
     def test_current_cor(self):
-        sino = np.ones(shape=(128, 64), dtype=np.float32)
-        m = CORInspectionDialogModel(sino)
-        m.centre_cor = 30
-        m.cor_step = 10
-        self.assertEquals(m.cor(ImageType.LESS), 20)
-        self.assertEquals(m.cor(ImageType.CURRENT), 30)
-        self.assertEquals(m.cor(ImageType.MORE), 40)
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5,
+                                     ScalarCoR(20),
+                                     ProjectionAngles(np.arange(10)),
+                                     ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m.centre_cor = 5
+        m.cor_step = 1
+        self.assertEquals(m.cor(ImageType.LESS), 4)
+        self.assertEquals(m.cor(ImageType.CURRENT), 5)
+        self.assertEquals(m.cor(ImageType.MORE), 6)
 
     def test_adjust_cor(self):
-        sino = np.ones(shape=(128, 64), dtype=np.float32)
-        m = CORInspectionDialogModel(sino)
-        m.centre_cor = 30
-        m.cor_step = 10
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5,
+                                     ScalarCoR(20),
+                                     ProjectionAngles(np.arange(10)),
+                                     ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m.centre_cor = 5
+        m.cor_step = 1
 
         m.adjust_cor(ImageType.CURRENT)
-        self.assertEquals(m.centre_cor, 30)
-        self.assertEquals(m.cor_step, 5)
+        self.assertEquals(m.centre_cor, 5)
+        self.assertEquals(m.cor_step, 0.5)
 
         m.adjust_cor(ImageType.LESS)
-        self.assertEquals(m.centre_cor, 25)
-        self.assertEquals(m.cor_step, 5)
+        self.assertEquals(m.centre_cor, 4.5)
+        self.assertEquals(m.cor_step, 0.5)
 
         m.adjust_cor(ImageType.CURRENT)
-        self.assertEquals(m.centre_cor, 25)
-        self.assertEquals(m.cor_step, 2.5)
+        self.assertEquals(m.centre_cor, 4.5)
+        self.assertEquals(m.cor_step, 0.25)
 
         m.adjust_cor(ImageType.MORE)
-        self.assertEquals(m.centre_cor, 27.5)
-        self.assertEquals(m.cor_step, 2.5)
+        self.assertEquals(m.centre_cor, 4.75)
+        self.assertEquals(m.cor_step, 0.25)
 
         m.adjust_cor(ImageType.CURRENT)
-        self.assertEquals(m.centre_cor, 27.5)
-        self.assertEquals(m.cor_step, 1.25)
+        self.assertEquals(m.centre_cor, 4.75)
+        self.assertEquals(m.cor_step, 0.125)

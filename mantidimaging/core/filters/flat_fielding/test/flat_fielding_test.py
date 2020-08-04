@@ -27,11 +27,6 @@ class FlatFieldingTest(unittest.TestCase):
         return images, flat, dark
 
     def test_real_result(self):
-        th.switch_mp_off()
-        self.do_real_result()
-        th.switch_mp_on()
-
-    def do_real_result(self):
         # the calculation here was designed on purpose to have a value
         # below the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
@@ -43,46 +38,10 @@ class FlatFieldingTest(unittest.TestCase):
         expected = np.full(images.data.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = FlatFieldFilter.filter_func(images, flat, dark, clip_max=20)
+        result = FlatFieldFilter.filter_func(images, flat, dark)
 
         npt.assert_almost_equal(result.data, expected, 7)
 
-    def test_clip_max_works(self):
-        # the calculation here was designed on purpose to have a value
-        # ABOVE the np.clip in flat_fielding
-        # the operation is (sample - dark) / (flat - dark)
-        images, flat, dark = self._make_images()
-        images.data[:] = 846.
-        flat.data[:] = 42.
-        dark.data[:] = 6.
-        expected = np.full(images.data.shape, 3.)
-
-        # the resulting values from the calculation are above 3,
-        # but clip_max should make them all equal to 3
-        result = FlatFieldFilter.filter_func(images, flat, dark, clip_max=3)
-
-        npt.assert_equal(result.data, expected)
-        npt.assert_equal(images.data, expected)
-
-        npt.assert_equal(result.data, images.data)
-
-    def test_clip_min_works(self):
-        images, flat, dark = self._make_images()
-        images.data[:] = 846.
-        flat.data[:] = 42.
-        dark.data[:] = 6.
-        expected = np.full(images.data.shape, 300.)
-
-        # the resulting values from above are below 300,
-        # but clip min should make all values below 300, equal to 300
-        result = FlatFieldFilter.filter_func(images, flat, dark, clip_min=300)
-
-        npt.assert_equal(result.data, expected)
-        npt.assert_equal(images.data, expected)
-
-        npt.assert_equal(result.data, images.data)
-
-    @mock.patch(f'{FlatFieldFilter.__module__ + ".get_average_image"}', mock.MagicMock(return_value=None))
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
