@@ -35,7 +35,7 @@ jobs:
         - $DOCKER_RUN -t $DOCKER_IMAGE yapf --parallel --diff --recursive .
         - $DOCKER_RUN -t $DOCKER_IMAGE flake8
         - $DOCKER_RUN -t $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
-        - $DOCKER_RUN -t $DOCKER_IMAGE nosetests
+        - $DOCKER_RUN -t $DOCKER_IMAGE pytest
 
     - stage: test
       name: Test Abseil
@@ -45,7 +45,7 @@ jobs:
         - $DOCKER_RUN $DOCKER_IMAGE yapf --parallel --diff --recursive .
         - $DOCKER_RUN $DOCKER_IMAGE flake8
         - $DOCKER_RUN $DOCKER_IMAGE mypy --ignore-missing-imports mantidimaging
-        - $DOCKER_RUN $DOCKER_IMAGE nosetests
+        - $DOCKER_RUN $DOCKER_IMAGE pytest
 
     - stage: upload-nightly
       if: type = cron

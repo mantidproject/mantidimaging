@@ -1,5 +1,3 @@
-nose == 1.3.7
-nose-randomly == 1.2.6
 testfixtures == 6.10.0
 coverage == 4.5
 hazelnut == 0.4.1
@@ -11,4 +9,5 @@ sphinx
 mypy
 yapf
 pytest
+pytest-randomly
 isort
