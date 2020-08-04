@@ -46,4 +46,5 @@ jobs:
       run: |
         source activate build-env
         conda config --set anaconda_upload yes
+        # if the upload silently fails - check the token expiration. Conda can fail silently!
         conda build --user ${{ github.event.inputs.repository }} --token ${{ secrets.ANACONDA_API_TOKEN }} --label ${{ github.event.inputs.label }} $GITHUB_WORKSPACE/conda 
