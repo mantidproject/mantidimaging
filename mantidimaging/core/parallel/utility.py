@@ -1,4 +1,3 @@
-import atexit
 import ctypes
 import os
 import uuid
@@ -109,7 +108,7 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) ->
     # This environment variable will be present when running PYDEVD from PyCharm
     # and that has the bug that multiprocessing Pools can never finish `.join()` ing
     # thus never actually finish their processing.
-    if 'PYDEVD_LOAD_VALUES_ASYNC' in os.environ:
+    if 'PYDEVD_LOAD_VALUES_ASYNC' in os.environ and 'PYTEST_CURRENT_TEST' not in os.environ:
         LOG.info("Debugging environment variable 'PYDEVD_LOAD_VALUES_ASYNC' found. Running synchronously on 1 core")
         return False
 
