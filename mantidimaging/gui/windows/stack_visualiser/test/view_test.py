@@ -27,7 +27,9 @@ class StackVisualiserViewTest(unittest.TestCase):
 
     def setUp(self):
         # mock the view so it has the same methods
-        self.window = MainWindowView()
+        with mock.patch('mantidimaging.gui.windows.main.view.find_if_latest_version') as mock_find_latest_version:
+            self.window = MainWindowView()
+            mock_find_latest_version.assert_called_once()
         self.window.remove_stack = mock.Mock()
 
         self.dock = QDockWidget()
