@@ -218,7 +218,7 @@ class IOTest(FileOutputtingTestCase):
         loaded_images = dataset.sample
 
         # Ensure properties have been preserved
-        self.assertEquals(loaded_images.metadata, images.metadata)
+        self.assertEqual(loaded_images.metadata, images.metadata)
 
         loaded_images.free_memory()
         if dataset.dark:

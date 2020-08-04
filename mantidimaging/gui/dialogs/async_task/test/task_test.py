@@ -18,7 +18,7 @@ class TaskWorkerThreadTest(unittest.TestCase):
 
         self.assertTrue(t.was_successful())
         self.assertIsNone(t.error)
-        self.assertEquals(t.result, 9)
+        self.assertEqual(t.result, 9)
 
     def test_failure(self):
         def f(a, b):
@@ -37,4 +37,4 @@ class TaskWorkerThreadTest(unittest.TestCase):
         self.assertIsNone(t.result)
 
         self.assertTrue(isinstance(t.error, RuntimeError))
-        self.assertEquals(t.error.args, ('nope', ))
+        self.assertEqual(t.error.args, ('nope', ))

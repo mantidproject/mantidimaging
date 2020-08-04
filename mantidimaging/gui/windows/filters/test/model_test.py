@@ -38,7 +38,7 @@ class FiltersWindowModelTest(unittest.TestCase):
     def execute_mock_with_roi(self, data, roi):
         self.assertTrue(isinstance(data, np.ndarray))
         data *= 4
-        self.assertEquals(roi, self.ROI_PARAMETER)
+        self.assertEqual(roi, self.ROI_PARAMETER)
         return data
 
     def apply_before_mock(self, data):

@@ -73,7 +73,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     def test_set_projection_preview_index(self):
         self.presenter.set_preview_projection_idx(5)
-        self.assertEquals(self.presenter.model.preview_projection_idx, 5)
+        self.assertEqual(self.presenter.model.preview_projection_idx, 5)
         self.view.update_projection.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
@@ -97,8 +97,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.preview_slice_idx = 15
 
         self.presenter.notify(PresNotification.ADD_COR)
-        self.view.add_cor_table_row.assert_called_once_with(self.presenter.model.selected_row,
-                                                            self.presenter.model.preview_slice_idx, 15)
+        self.view.add_cor_table_row.assert_called_once_with(
+            self.presenter.model.selected_row, self.presenter.model.preview_slice_idx, 15)
         mock_get_me_a_cor.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')

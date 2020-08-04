@@ -10,12 +10,12 @@ class ExecutionTimerTest(unittest.TestCase):
 
     def test_execute(self):
         t = ExecutionTimer()
-        self.assertEquals(t.total_seconds, None)
-        self.assertEquals(str(t), 'Elapsed time: unknown seconds')
+        self.assertEqual(t.total_seconds, None)
+        self.assertEqual(str(t), 'Elapsed time: unknown seconds')
 
         with t:
-            self.assertEquals(t.total_seconds, None)
-            self.assertEquals(str(t), 'Elapsed time: unknown seconds')
+            self.assertEqual(t.total_seconds, None)
+            self.assertEqual(str(t), 'Elapsed time: unknown seconds')
 
             time.sleep(0.1)
 
@@ -23,12 +23,12 @@ class ExecutionTimerTest(unittest.TestCase):
 
     def test_custom_message(self):
         t = ExecutionTimer(msg='Task')
-        self.assertEquals(str(t), 'Task: unknown seconds')
+        self.assertEqual(str(t), 'Task: unknown seconds')
 
     def test_custom_message_empty(self):
         t = ExecutionTimer(msg='')
-        self.assertEquals(str(t), 'unknown seconds')
+        self.assertEqual(str(t), 'unknown seconds')
 
     def test_custom_message_none(self):
         t = ExecutionTimer(msg=None)
-        self.assertEquals(str(t), 'unknown seconds')
+        self.assertEqual(str(t), 'unknown seconds')

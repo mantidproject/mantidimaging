@@ -15,6 +15,7 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     def __init__(self, *args, **kwargs):
         super(RebinTest, self).__init__(*args, **kwargs)
 
@@ -71,8 +72,8 @@ class RebinTest(unittest.TestCase):
         npt.assert_equal(result.data.shape[1], expected_x)
         npt.assert_equal(result.data.shape[2], expected_y)
 
-        self.assertEquals(images.data.dtype, dtype)
-        self.assertEquals(result.data.dtype, dtype)
+        self.assertEqual(images.data.dtype, dtype)
+        self.assertEqual(result.data.dtype, dtype)
         images.free_memory()
 
     def test_executed_xy_par_128_256(self):
