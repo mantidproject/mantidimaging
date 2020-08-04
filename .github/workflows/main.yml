@@ -5,14 +5,14 @@ name: Build conda package
 on:
   workflow_dispatch:
     inputs:
-      name:
+      repository:
         description: 'Anaconda repository'
         required: true
         default: 'dtasev'
-      home:
+      label:
         description: 'Label'
         required: false
-        default: 'label/unstable'
+        default: 'unstable'
         
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -31,6 +31,7 @@ jobs:
         bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
         rm Miniconda3-latest-Linux-x86_64.sh
         eval "$(/opt/miniconda/bin/conda shell.bash hook)"
+        conda config --set always_yes yes --set changeps1 no
         conda create -n build-env anaconda python=3.7
         conda activate build-env
         conda install conda-build conda-verify
@@ -41,4 +42,4 @@ jobs:
     - name: Build package
       run: |
         conda build $GITHUB_WORKSPACE/conda
-        anaconda upload --user dtasev -t ${{ secrets.ANACONDA_API_TOKEN }} $(conda build $GITHUB_WORKSPACE/conda --output) --label unstable
+        anaconda upload --user ${{ github.event.inputs.repository }} -t ${{ secrets.ANACONDA_API_TOKEN }} $(conda build $GITHUB_WORKSPACE/conda --output) --label ${{ github.event.inputs.label }}
