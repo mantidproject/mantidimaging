@@ -31,10 +31,6 @@ jobs:
 
     - name: Make build-env
       run: |
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        chmod +x Miniconda3-latest-Linux-x86_64.sh
-        bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
-        rm Miniconda3-latest-Linux-x86_64.sh
         conda config --set always_yes yes --set changeps1 no
         conda create -n build-env anaconda python=3.7
         source activate build-env
