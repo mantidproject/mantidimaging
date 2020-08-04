@@ -26,16 +26,12 @@ jobs:
     - name: setup-conda
       uses: s-weigand/setup-conda@v1.0.3
       with:
-        # Whether to activate the conda base env (Default: 'true')
-        activate-conda: true
-        # If conda should be updated before running other commands (Default: 'false')
-        update-conda: false
-        python-version: '3.7'
         # Additional channels like 'conda-forge' which can be used to install packages
         conda-channels: 'dtasev,astra-toolbox/label/dev,defaults,conda-forge'
     - name: Make build-env
       run: |
         conda config --set always_yes yes --set changeps1 no
+        conda init bash
         conda create -n build-env anaconda python=3.7
         conda activate build-env
         conda install conda-build conda-verify
