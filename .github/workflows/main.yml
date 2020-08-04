@@ -41,5 +41,7 @@ jobs:
     
     - name: Build package
       run: |
+        conda env list
+        conda activate build-env
         conda build $GITHUB_WORKSPACE/conda
         anaconda upload --user ${{ github.event.inputs.repository }} -t ${{ secrets.ANACONDA_API_TOKEN }} $(conda build $GITHUB_WORKSPACE/conda --output) --label ${{ github.event.inputs.label }}
