@@ -32,6 +32,7 @@ COPY deps/pip-requirements.txt deps/dev-requirements.pip /opt/mantidimaging-deps
 RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
     conda init &&\
     conda config --set always_yes yes --set changeps1 no &&\
+    conda config --prepend channels dtasev &&\
     conda config --prepend channels astra-toolbox/label/dev &&\
     conda config --prepend channels defaults &&\
     conda config --prepend channels conda-forge &&\
