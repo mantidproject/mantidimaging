@@ -118,7 +118,12 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=None):
+def _execute(data,
+             flat=None,
+             dark=None,
+             cores=None,
+             chunksize=None,
+             progress=None):
     """
     A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
@@ -137,7 +142,7 @@ def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=No
     Subtract then divide (par) - 55s
     """
     with progress:
-        progress.update(msg="Applying background correction.")
+        progress.update(msg="Applying background correction")
 
         with pu.temp_shared_array((1, data.shape[1], data.shape[2]), data.dtype) as norm_divide:
             # remove a dimension, I found this to be the easiest way to do it

@@ -125,7 +125,7 @@ def save(images: Images,
             for idx in range(num_images):
                 write_func(data[idx, :, :], names[idx], overwrite_all)
 
-                progress.update(msg=f'Image {idx}/{num_images}')
+                progress.update(msg='Image')
 
         return names
 
@@ -183,6 +183,7 @@ class Saver(object):
     This class should always fail early before any
     expensive operations have been attempted.
     """
+
     @staticmethod
     def supported_formats():
         # reuse supported formats, they currently share them
@@ -300,7 +301,7 @@ class Saver(object):
 
             with progress:
                 progress.update(msg="Saving all pre-processed images into {0} "
-                                "dtype: {1}".format(preproc_dir, data.dtype))
+                                    "dtype: {1}".format(preproc_dir, data.dtype))
 
                 save(data,
                      preproc_dir,
@@ -333,7 +334,7 @@ class Saver(object):
 
         with progress:
             progress.update(msg="Starting saving slices of the reconstructed "
-                            "volume in: {0}...".format(out_recon_dir))
+                                "volume in: {0}...".format(out_recon_dir))
 
             save(data,
                  out_recon_dir,

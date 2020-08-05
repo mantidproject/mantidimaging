@@ -26,6 +26,7 @@ class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
     """
+
     @staticmethod
     def ensure_instance(p=None, *args, num_steps=None, **kwargs) -> 'Progress':
         """
@@ -193,7 +194,8 @@ class Progress(object):
                 t = int(t)
                 return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
 
-            msg = f"{f'{msg}.' if len(msg) > 0 else ''} Time: {fmt(self.execution_time())}, ETA: {fmt(eta)}"
+            msg = f"{f'{msg}.' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
+                  f"Time: {fmt(self.execution_time())}, ETA: {fmt(eta)}"
             step_details = ProgressHistory(time.process_time(), self.current_step, msg)
             self.progress_history.append(step_details)
 

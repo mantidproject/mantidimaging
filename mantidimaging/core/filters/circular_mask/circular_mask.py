@@ -31,11 +31,15 @@ class CircularMaskFilter(BaseFilter):
             tomopy = importer.do_importing('tomopy')
 
             with progress:
-                progress.update(msg="Applying circular mask.")
+                progress.update(msg="Applying circular mask")
 
                 # for some reason this doesn't like the ncore param, even though
                 # it's in the official tomopy docs
-                tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value, ncore=cores)
+                tomopy.circ_mask(arr=data.data,
+                                 axis=0,
+                                 ratio=circular_mask_ratio,
+                                 val=circular_mask_value,
+                                 ncore=cores)
 
         return data
 

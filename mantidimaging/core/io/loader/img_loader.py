@@ -103,7 +103,7 @@ class ImageLoader(object):
             for idx, in_file in enumerate(files):
                 try:
                     data[idx, :] = self.load_func(in_file)
-                    progress.update(msg='Image {} of {}'.format(idx, num_images))
+                    progress.update(msg='Image')
                 except ValueError as exc:
                     raise ValueError("An image has different width and/or height "
                                      "dimensions! All images must have the same "
