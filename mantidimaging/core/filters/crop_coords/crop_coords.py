@@ -49,10 +49,7 @@ class CropCoordinatesFilter(BaseFilter):
         shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
         sample_name = images.memory_filename
         if sample_name is not None:
-            images.free_memory()
-            # free deletes the filename, but we've kept it so that the new stack
-            # re-uses it, to simulate "replacing" it
-            images.memory_filename = sample_name
+            images.free_memory(delete_filename=False)
         output = pu.create_array(shape, sample.dtype, sample_name)
         images.data = execute_single(sample, region_of_interest, progress, out=output)
 

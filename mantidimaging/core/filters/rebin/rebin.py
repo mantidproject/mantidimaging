@@ -47,7 +47,7 @@ class RebinFilter(BaseFilter):
             sample_name: Optional[str]
             if images.memory_filename is not None:
                 sample_name = images.memory_filename
-                images.free_memory()
+                images.free_memory(delete_filename=False)
             else:
                 # this case is true when the filter preview is being calculated
                 sample_name = None
