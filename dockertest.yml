@@ -2,9 +2,10 @@
 
 name: Docker test
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-on: push
+on: 
+  push:
+    branch:
+      - add-docker-action
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
