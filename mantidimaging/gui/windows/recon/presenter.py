@@ -10,6 +10,7 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWork
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.common import operation_in_progress
+from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
 LOG = getLogger(__name__)
@@ -93,7 +94,9 @@ class ReconstructWindowPresenter(BasePresenter):
             else:
                 for widget in widgets:
                     widget.hide()
-        self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
+        with BlockQtSignals([self.view.filterName, self.view.numIter]):
+            self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
+        self.do_reconstruct_slice()
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)

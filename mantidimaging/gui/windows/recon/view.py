@@ -122,6 +122,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.algorithmName.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
+        self.filterName.currentTextChanged.connect(
+            lambda: self.presenter.notify(PresN.RECONSTRUCT_SLICE))  # type: ignore
+        self.numIter.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_SLICE))  # type: ignore
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -288,9 +291,13 @@ class ReconstructWindowView(BaseMainWindowView):
         self.filterName.insertItems(0, filters)
 
     def get_number_of_cors(self) -> Optional[int]:
-        num, accepted = QInputDialog.getInt(self, "Number of slices",
+        num, accepted = QInputDialog.getInt(self,
+                                            "Number of slices",
                                             "On how many slices to run the automatic CoR finding?",
-                                            value=6, min=0, max=30, step=1)
+                                            value=6,
+                                            min=0,
+                                            max=30,
+                                            step=1)
         if accepted:
             return num
         else:
