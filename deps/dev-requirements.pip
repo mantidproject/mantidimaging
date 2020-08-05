@@ -10,4 +10,5 @@ mypy
 yapf
 pytest
 pytest-randomly
+pytest-parallel
 isort
