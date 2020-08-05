@@ -23,6 +23,8 @@ env:
 before_script:
   - docker pull $DOCKER_IMAGE
   - docker run $DOCKER_IMAGE conda list
+  - mount -o remount,size=100% /run/shm
+
 
 jobs:
   fast_finish: true
