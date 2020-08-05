@@ -1,3 +1,4 @@
+import datetime
 import json
 import pprint
 from copy import deepcopy
@@ -47,6 +48,7 @@ class Images:
     def free_memory(self):
         if self.memory_filename is not None:
             pu.delete_shared_array(self.memory_filename)
+            self.memory_filename = None
         self.data = None
 
     @property
@@ -89,6 +91,8 @@ class Images:
                 return o
 
         self.metadata[const.OPERATION_HISTORY].append({
+            const.TIMESTAMP:
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             const.OPERATION_NAME:
             func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],

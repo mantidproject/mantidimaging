@@ -4,6 +4,8 @@ import numpy as np
 from six import StringIO
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history import const
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class ImagesTest(unittest.TestCase):
@@ -39,20 +41,28 @@ class ImagesTest(unittest.TestCase):
 
         self.assertTrue(imgs.has_history)
 
-        self.assertEqual(
-            imgs.metadata, {
-                'operation_history': [{
-                    'name': 'test_func',
-                    'display_name': 'A pretty name',
-                    'args': [56, 9002, None, 'yes', False],
-                    'kwargs': {
-                        'this': 765,
-                        'that': 495.0,
-                        'roi': (1, 2, 3, 4)
-                    },
-                }]
-            })
+        expected = {
+            'operation_history': [{
+                'name': 'test_func',
+                'display_name': 'A pretty name',
+                'args': [56, 9002, None, 'yes', False],
+                'kwargs': {
+                    'this': 765,
+                    'that': 495.0,
+                    'roi': (1, 2, 3, 4)
+                },
+            }]
+        }
+
+        self.assertIn(const.TIMESTAMP, imgs.metadata[const.OPERATION_HISTORY][0])
+
+        imgs.metadata[const.OPERATION_HISTORY][0].pop(const.TIMESTAMP)
+        self.assertEqual(imgs.metadata, expected)
 
     def test_free_memory(self):
-        self.skipTest("Not implemented")
-        # create some images and free the memory
+        images = generate_images(automatic_free=False)
+        self.assertIsNotNone(images.memory_filename)
+        self.assertIsNotNone(images.data)
+        images.free_memory()
+        self.assertIsNone(images.memory_filename)
+        self.assertIsNone(images.data)

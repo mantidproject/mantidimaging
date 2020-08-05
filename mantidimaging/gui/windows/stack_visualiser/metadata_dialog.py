@@ -45,6 +45,10 @@ class MetadataDialog(Qt.QDialog):
 
                 main_widget.insertTopLevelItem(i, operation_item)
 
+                if op[const.TIMESTAMP]:
+                    date_item = QTreeWidgetItem(operation_item)
+                    date_item.setText(0, f"Date: {op[const.TIMESTAMP]}")
+
                 if op[const.OPERATION_ARGS]:
                     args_item = QTreeWidgetItem(operation_item)
                     args_item.setText(0, f"Positional arguments: {', '.join(op[const.OPERATION_ARGS])}")
