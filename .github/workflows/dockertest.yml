@@ -28,7 +28,7 @@ jobs:
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
 
     - name: pytest
-      uses: GabrielBB/xvfb-action@v1.2
-      with:
+#       uses: GabrielBB/xvfb-action@v1.2
+#       with:
         # Command to execute using xvfb
-        run: docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ${{ github.workspace }}:/opt/mantidimaging mantidproject/mantidimaging:latest pytest
+      run: /usr/bin/xvfb-run --auto-servernum docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ${{ github.workspace }}:/opt/mantidimaging mantidproject/mantidimaging:latest pytest
