@@ -14,13 +14,9 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
-    def __init__(self,
-                 data: np.ndarray,
-                 filenames: Optional[List[str]] = None,
-                 indices: Optional[Tuple[int, int, int]] = None,
-                 metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 memory_filename: Optional[str] = None):
+    def __init__(self, data: np.ndarray, filenames: Optional[List[str]] = None,
+                 indices: Optional[Tuple[int, int, int]] = None, metadata: Optional[Dict[str, Any]] = None,
+                 sinograms: bool = False, memory_filename: Optional[str] = None):
         """
 
         :param data: Images of the Sample/Projection data
@@ -91,15 +87,12 @@ class Images:
                 return o
 
         self.metadata[const.OPERATION_HISTORY].append({
-            const.TIMESTAMP:
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            const.OPERATION_NAME:
-            func_name,
+            const.TIMESTAMP: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            const.OPERATION_NAME: func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
-            const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
-                                           for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_KEYWORD_ARGS: {k: prepare(v) for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-            display_name
+                display_name
         })
 
     def copy(self, flip_axes=False) -> 'Images':
@@ -111,15 +104,14 @@ class Images:
         else:
             data_copy[:] = self.data[:]
 
-        images = Images(data_copy,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
+        images = Images(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
                         sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
                         memory_filename=data_name)
         return images
 
     def index_as_images(self, index) -> 'Images':
-        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata),
+                      sinograms=self.is_sinograms)
 
     @property
     def height(self):
@@ -194,10 +186,10 @@ class Images:
         return self._data.dtype
 
     @staticmethod
-    def create_shared_images(shape, dtype):
+    def create_shared_images(shape, dtype, metadata):
         shared_name = pu.create_shared_name()
         arr = pu.create_array(shape, dtype, shared_name)
-        return Images(arr, memory_filename=shared_name)
+        return Images(arr, memory_filename=shared_name, metadata=metadata)
 
     @property
     def is_sinograms(self):

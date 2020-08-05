@@ -7,6 +7,7 @@ and helps the type hints to tell you that you might be passing the wrong value (
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
 from dataclasses import dataclass
+from typing import Optional
 
 import numpy
 
@@ -60,6 +61,9 @@ class Degrees(SingleValue):
     __slots__ = 'value'
     value: float
 
+    def __str__(self):
+        return f"{self.value}°"
+
 
 @dataclass
 class Slope(SingleValue):
@@ -78,3 +82,12 @@ class ReconstructionParameters:
     algorithm: str
     filter_name: str
     num_iter: int = 1
+    cor: Optional[ScalarCoR] = None
+    tilt: Optional[Degrees] = None
+
+    def to_dict(self) -> dict:
+        return {'algorithm': self.algorithm,
+                'filter_name': self.filter_name,
+                'num_iter': self.num_iter,
+                'cor': str(self.cor),
+                'tilt': str(self.tilt)}

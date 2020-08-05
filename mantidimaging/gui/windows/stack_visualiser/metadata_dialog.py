@@ -9,6 +9,7 @@ class MetadataDialog(Qt.QDialog):
     """
     Dialog used to show a pretty formatted version of the image metadata.
     """
+
     def __init__(self, parent: QWidget, images: Images):
         super(MetadataDialog, self).__init__(parent)
 
@@ -45,15 +46,15 @@ class MetadataDialog(Qt.QDialog):
 
                 main_widget.insertTopLevelItem(i, operation_item)
 
-                if op[const.TIMESTAMP]:
+                if op.get(const.TIMESTAMP, False):
                     date_item = QTreeWidgetItem(operation_item)
                     date_item.setText(0, f"Date: {op[const.TIMESTAMP]}")
 
-                if op[const.OPERATION_ARGS]:
+                if op.get(const.OPERATION_ARGS, False):
                     args_item = QTreeWidgetItem(operation_item)
                     args_item.setText(0, f"Positional arguments: {', '.join(op[const.OPERATION_ARGS])}")
 
-                if op[const.OPERATION_KEYWORD_ARGS]:
+                if op.get(const.OPERATION_KEYWORD_ARGS, False):
                     kwargs_list_item = QTreeWidgetItem(operation_item)
                     kwargs_list_item.setText(0, "Keyword arguments")
                     # Note: Items must be added to the tree before they can expanded.
