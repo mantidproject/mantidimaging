@@ -46,5 +46,5 @@ class RemoveDeadStripesFilter(BaseFilter):
         return {'snr': snr, 'size': size}
 
     @staticmethod
-    def execute_wrapper(snr: QDoubleSpinBox, size: QSpinBox):
+    def execute_wrapper(snr: QDoubleSpinBox, size: QSpinBox):  # type: ignore
         return partial(RemoveDeadStripesFilter.filter_func, snr=snr.value(), size=size.value())

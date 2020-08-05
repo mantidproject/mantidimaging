@@ -108,11 +108,17 @@ class CorTiltDataModel:
 
     @property
     def gradient(self) -> Slope:
-        return Slope(self._cached_gradient)
+        if self._cached_gradient is not None:
+            return Slope(self._cached_gradient)
+        else:
+            return Slope(0.0)
 
     @property
     def cor(self) -> ScalarCoR:
-        return ScalarCoR(self._cached_cor)
+        if self._cached_cor is not None:
+            return ScalarCoR(self._cached_cor)
+        else:
+            return ScalarCoR(0.0)
 
     @property
     def angle_in_degrees(self) -> Degrees:

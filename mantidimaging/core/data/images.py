@@ -75,7 +75,7 @@ class Images:
         self.metadata[const.SINOGRAMS] = self.is_sinograms
         json.dump(self.metadata, f)
 
-    def record_operation(self, func_name: str, display_name=None, *args, **kwargs):
+    def record_operation(self, func_name: str, display_name, *args, **kwargs):
         if const.OPERATION_HISTORY not in self.metadata:
             self.metadata[const.OPERATION_HISTORY] = []
 

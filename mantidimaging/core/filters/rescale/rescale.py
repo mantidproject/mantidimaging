@@ -13,7 +13,11 @@ class RescaleFilter(BaseFilter):
     filter_name = 'Rescale'
 
     @staticmethod
-    def filter_func(images: Images, min_input: float, max_input: float, max_output: float, progress=None) -> Images:
+    def filter_func(images: Images,
+                    min_input: float = 0.0,
+                    max_input: float = 10000.0,
+                    max_output: float = 256.0,
+                    progress=None) -> Images:
         images.data[images.data < min_input] = 0
         images.data[images.data > max_input] = 0
         images.data *= (max_output / images.data.max())
@@ -53,8 +57,9 @@ class RescaleFilter(BaseFilter):
         }
 
     @staticmethod
-    def execute_wrapper(min_input_widget: QDoubleSpinBox, max_input_widget: QDoubleSpinBox,
-                        max_output_widget: QDoubleSpinBox, preset_widget: QComboBox) -> partial:
+    def execute_wrapper(  # type: ignore
+            min_input_widget: QDoubleSpinBox, max_input_widget: QDoubleSpinBox, max_output_widget: QDoubleSpinBox,
+            preset_widget: QComboBox) -> partial:
         min_input = min_input_widget.value()
         max_input = max_input_widget.value()
         max_output = max_output_widget.value()

@@ -70,7 +70,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
         return {'sigma': sigma, 'size': size, 'window_dim': window_dim, 'filtering_dim': filtering_dim}
 
     @staticmethod
-    def execute_wrapper(sigma: QSpinBox, size: QSpinBox, window_dim: QSpinBox, filtering_dim: QSpinBox):
+    def execute_wrapper(sigma: QSpinBox, size: QSpinBox, window_dim: QSpinBox, filtering_dim: QSpinBox):  # type: ignore
         return partial(RemoveStripeFilteringFilter.filter_func,
                        sigma=sigma.value(),
                        size=size.value(),

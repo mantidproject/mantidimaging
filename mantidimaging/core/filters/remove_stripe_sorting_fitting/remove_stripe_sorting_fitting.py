@@ -51,7 +51,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         return {'order': order, 'sigmax': sigmax, 'sigmay': sigmay}
 
     @staticmethod
-    def execute_wrapper(order: QSpinBox, sigmax: QSpinBox, sigmay: QSpinBox):
+    def execute_wrapper(order: QSpinBox, sigmax: QSpinBox, sigmay: QSpinBox):  # type: ignore
         return partial(RemoveStripeSortingFittingFilter.filter_func,
                        order=order.value(),
                        sigmax=sigmax.value(),

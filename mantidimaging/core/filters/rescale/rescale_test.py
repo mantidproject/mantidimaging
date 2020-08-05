@@ -54,7 +54,7 @@ def test_execute_wrapper_with_preset(type: str, expected_max: float):
     max_input = MockQSpinBox(max_input_value)
     max_output = MockQSpinBox(420.0)  # this value is overridden by preset
     preset = MockQComboBox(type)
-    partial = RescaleFilter.execute_wrapper(min_input, max_input, max_output, preset)
+    partial = RescaleFilter.execute_wrapper(min_input, max_input, max_output, preset)  # type: ignore
 
     assert partial.keywords['min_input'] == min_input_value
     assert partial.keywords['max_input'] == max_input_value

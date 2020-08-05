@@ -4,7 +4,7 @@ import sys
 import traceback
 
 import pyqtgraph
-from PyQt5.QtGui import QApplication
+from PyQt5.Qt import QApplication
 
 from mantidimaging.gui.windows.main import MainWindowView
 

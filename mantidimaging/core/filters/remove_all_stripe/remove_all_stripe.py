@@ -65,7 +65,7 @@ class RemoveAllStripesFilter(BaseFilter):
         return {'snr': snr, 'la_size': la_size, 'sm_size': sm_size, 'dim': dim}
 
     @staticmethod
-    def execute_wrapper(snr: QDoubleSpinBox, la_size: QSpinBox, sm_size: QSpinBox, dim: QSpinBox):
+    def execute_wrapper(snr: QDoubleSpinBox, la_size: QSpinBox, sm_size: QSpinBox, dim: QSpinBox):  # type: ignore
         return partial(RemoveAllStripesFilter.filter_func,
                        snr=snr.value(),
                        la_size=la_size.value(),

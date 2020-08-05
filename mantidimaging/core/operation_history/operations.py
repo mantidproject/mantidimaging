@@ -1,11 +1,10 @@
 from functools import partial
 from logging import getLogger
-from typing import Any, Callable, Dict, Iterable, List, Optional
+from typing import Any, Callable, Dict, Iterable, List
 
 import numpy as np
 
 from mantidimaging.core.filters.loader import load_filter_packages
-
 from . import const
 
 MODULE_NOT_FOUND = "Could not find module with name '{}'"
@@ -15,11 +14,7 @@ class ImageOperation:
     """
     A deserialized representation of an item in a stack's operation_history
     """
-    def __init__(self,
-                 filter_name: str,
-                 filter_args: List[Any],
-                 filter_kwargs: Dict[str, Any],
-                 display_name: Optional[str] = None):
+    def __init__(self, filter_name: str, filter_args: List[Any], filter_kwargs: Dict[str, Any], display_name: str):
         self.filter_name = filter_name
         self.filter_args = filter_args
         self.filter_kwargs = filter_kwargs

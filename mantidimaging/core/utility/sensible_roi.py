@@ -18,8 +18,8 @@ class SensibleROI(Iterable):
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
 
     @staticmethod
-    def from_list(roi: List[Union[int, float]]):
-        return SensibleROI(roi[0], roi[1], roi[2], roi[3])
+    def from_list(roi: Union[List[int], List[float]]):
+        return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]))
 
     def __iter__(self):
         """
