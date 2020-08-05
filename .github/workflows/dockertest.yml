@@ -20,4 +20,4 @@ jobs:
     - name: Pull and run flake8
       run: |
         docker pull dtasev/mantidimaging:latest
-        docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging -t dtasev/mantidimaging:latest flake8
+        docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging dtasev/mantidimaging:latest flake8
