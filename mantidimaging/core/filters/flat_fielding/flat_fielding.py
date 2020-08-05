@@ -157,8 +157,4 @@ def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=No
             f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
             data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, progress=progress)
 
-            # Clip out any invalid pixels - negative and extremely high values,
-            # can show up after subtracting the dark gives back small or negative values
-            np.clip(data, 0, 10000, out=data)
-
     return data

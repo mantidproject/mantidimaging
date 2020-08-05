@@ -74,11 +74,13 @@ class MIImageView(ImageView):
         if self.image.ndim != 3:
             return super().roiChanged()
 
-        left, top, right, bottom = self._update_roi_region_avg()
-        if self.roi_changed_callback:
-            self.roi_changed_callback(SensibleROI(left, top, right, bottom))
+        roi = self._update_roi_region_avg()
+        if self.roi_changed_callback and roi is not None:
+            self.roi_changed_callback(roi)
 
-    def _update_roi_region_avg(self):
+    def _update_roi_region_avg(self) -> Optional[SensibleROI]:
+        if self.image.ndim != 3:
+            return None
         roi_pos, roi_size = self.get_roi()
         # image indices are in order [Z, X, Y]
         left, right = roi_pos.x, roi_pos.x + roi_size.x
@@ -92,7 +94,7 @@ class MIImageView(ImageView):
             self.roiCurves[0].setData(y=data, x=self.tVals)
         self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
                          f"region avg={data[int(self.timeLine.value())].mean():.6f}"
-        return left, top, right, bottom
+        return SensibleROI(left, top, right, bottom)
 
     def extend_roi_plot_mouse_press_handler(self):
         original_handler = self.ui.roiPlot.mousePressEvent
@@ -115,11 +117,11 @@ class MIImageView(ImageView):
                 roi_pos.y = max(roi_pos.y, 0)
 
             if self.image.ndim == 2:
-                image_width = self.image.shape[0]
-                image_height = self.image.shape[1]
-            else:
+                image_height = self.image.shape[0]
                 image_width = self.image.shape[1]
-                image_height = self.image.shape[2]
+            else:
+                image_height = self.image.shape[1]
+                image_width = self.image.shape[2]
 
             roi_right = roi_pos.x + roi_size.x
             roi_bottom = roi_pos.y + roi_size.y

@@ -40,8 +40,6 @@ build-conda-package-release: .remind-current .remind-for-user .remind-for-anacon
 .remind-for-anaconda-api:
 	@if [ -z "$$ANACONDA_API_TOKEN" ]; then echo "Environment variable ANACONDA_API_TOKEN not set!"; exit 1; fi;
 
-test:
-	nosetests
 
 test_environment_name = test-env
 test-env:
@@ -49,8 +47,19 @@ test-env:
 	conda activate $(test_environment_name)
 	$(MAKE) install-dev-requirements
 
+test:
+	python -m pytest
+
 mypy:
 	python -m mypy --ignore-missing-imports mantidimaging
 
 yapf:
-	yapf --parallel --diff --recursive .
+	python -m yapf --parallel --diff --recursive .
+
+yapf_apply:
+	python -m yapf -i --parallel --recursive .
+
+flake8:
+	python -m flake8
+
+check: yapf_apply test flake8 mypy
