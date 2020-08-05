@@ -32,5 +32,5 @@ jobs:
       with:
         # Command to execute using xvfb
         run: |
-          echo $GITHUB_WORKSPACE
-          docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v "$GITHUB_WORKSPACE":/opt/mantidimaging mantidproject/mantidimaging:latest pytest
+          echo ${{ github.workspace }}
+          docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ${{ github.workspace }}:/opt/mantidimaging mantidproject/mantidimaging:latest pytest
