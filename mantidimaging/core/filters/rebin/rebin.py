@@ -55,8 +55,10 @@ class RebinFilter(BaseFilter):
                 cores = 1
             empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
 
-            f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it,
-                                    mode=mode, output_shape=empty_resized_data.shape[1:])
+            f = ptsm.create_partial(skimage.transform.resize,
+                                    ptsm.return_to_second_but_dont_use_it,
+                                    mode=mode,
+                                    output_shape=empty_resized_data.shape[1:])
             ptsm.execute(sample, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
             images.data = empty_resized_data
 
@@ -141,7 +143,9 @@ def modes():
 
 
 def _execute_par(data: numpy.ndarray, resized_data, mode, cores=None, chunksize=None, progress=None):
-    f = ptsm.create_partial(skimage.transform.resize, ptsm.return_to_second_but_dont_use_it, mode=mode,
+    f = ptsm.create_partial(skimage.transform.resize,
+                            ptsm.return_to_second_but_dont_use_it,
+                            mode=mode,
                             output_shape=resized_data.shape[1:])
     ptsm.execute(data, resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
     return resized_data

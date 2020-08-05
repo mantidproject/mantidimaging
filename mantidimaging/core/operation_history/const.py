@@ -1,5 +1,6 @@
 OPERATION_HISTORY = 'operation_history'
 OPERATION_NAME = 'name'
+TIMESTAMP = 'timestamp'
 OPERATION_KEYWORD_ARGS = 'kwargs'
 OPERATION_ARGS = 'args'
 OPERATION_DISPLAY_NAME = 'display_name'

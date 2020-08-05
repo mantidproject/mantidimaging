@@ -96,7 +96,6 @@ class ImageLoader(object):
         return None, None, None
 
     def _do_files_load_seq(self, data, files, name):
-        num_images = len(files)
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name=f'Load {name}')
 
         with progress:
