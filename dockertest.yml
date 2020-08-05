@@ -6,7 +6,10 @@ on:
   push:
     branch:
       - add-docker-action
-
+  pull_request:
+    branch:
+      - add-docker-action
+      
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
