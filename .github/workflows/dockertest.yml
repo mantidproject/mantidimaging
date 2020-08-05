@@ -3,7 +3,7 @@
 name: Testing with docker
 
 on: [push, pull_request]
-      
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -18,17 +18,17 @@ jobs:
 
     # Runs a set of commands using the runners shell
     - name: Pull docker image
-      run: docker pull dtasev/mantidimaging:latest
+      run: docker pull mantidproject/mantidimaging:latest
 
     - name: yapf
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging dtasev/mantidimaging:latest yapf --parallel --diff --recursive .
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest yapf --parallel --diff --recursive .
     - name: flake8
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging dtasev/mantidimaging:latest flake8
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest flake8
     - name: mypy
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging dtasev/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
 
     - name: pytest
       uses: GabrielBB/xvfb-action@v1.2
       with:
         # Command to execute using xvfb
-        run: docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $GITHUB_WORKSPACE:/opt/mantidimaging dtasev/mantidimaging:latest pytest
+        run: docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest pytest

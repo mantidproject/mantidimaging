@@ -17,7 +17,7 @@ env:
     - ENVIRONMENT_NAME=test-environment
     - DOCKER_RUN="docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TRAVIS_BUILD_DIR:/opt/mantidimaging"
   jobs:
-    - DOCKER_IMAGE="dtasev/mantidimaging"
+    - DOCKER_IMAGE="mantidproject/mantidimaging"
 
 
 before_script:
@@ -29,7 +29,7 @@ before_script:
 jobs:
   fast_finish: true
   allow_failures:
-    - env: DOCKER_IMAGE="dtasev/mantidimaging:abseil"
+    - env: DOCKER_IMAGE="mantidproject/mantidimaging:abseil"
   include:
     - stage: test
       name: Test
@@ -42,7 +42,7 @@ jobs:
     - stage: test
       name: Test Abseil
       # if: type = cron # disabled for testing in PR
-      env: DOCKER_IMAGE="dtasev/mantidimaging:abseil"
+      env: DOCKER_IMAGE="mantidproject/mantidimaging:abseil"
       script:
         - $DOCKER_RUN $DOCKER_IMAGE yapf --parallel --diff --recursive .
         - $DOCKER_RUN $DOCKER_IMAGE flake8
