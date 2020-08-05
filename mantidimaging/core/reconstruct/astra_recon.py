@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from logging import getLogger
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Tuple, Generator
 
 import astra
 import numpy as np
@@ -33,6 +33,34 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
     return vectors
 
 
+@contextmanager
+def _managed_recon(sino, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int], None, None]:
+    proj_id = None
+    sino_id = None
+    rec_id = None
+    alg_id = None
+    try:
+        proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
+        sino_id = astra.data2d.create('-sino', proj_geom, sino)
+        rec_id = astra.data2d.create('-vol', vol_geom)
+
+        cfg['ReconstructionDataId'] = rec_id
+        cfg['ProjectionDataId'] = sino_id
+        cfg['ProjectorId'] = proj_id
+
+        alg_id = astra.algorithm.create(cfg)
+        yield alg_id, rec_id
+    finally:
+        if alg_id:
+            astra.algorithm.delete(alg_id)
+        if proj_id:
+            astra.projector.delete(proj_id)
+        if sino_id:
+            astra.data2d.delete(sino_id)
+        if rec_id:
+            astra.data2d.delete(rec_id)
+
+
 class AstraRecon(BaseRecon):
     @staticmethod
     def _count_gpus() -> int:
@@ -60,34 +88,6 @@ class AstraRecon(BaseRecon):
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
 
     @staticmethod
-    @contextmanager
-    def _managed_recon(sino, cfg, proj_geom, vol_geom) -> int:
-        proj_id = None
-        sino_id = None
-        rec_id = None
-        alg_id = None
-        try:
-            proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
-            sino_id = astra.data2d.create('-sino', proj_geom, sino)
-            rec_id = astra.data2d.create('-vol', vol_geom)
-
-            cfg['ReconstructionDataId'] = rec_id
-            cfg['ProjectionDataId'] = sino_id
-            cfg['ProjectorId'] = proj_id
-
-            alg_id = astra.algorithm.create(cfg)
-            yield alg_id, rec_id
-        finally:
-            if alg_id:
-                astra.algorithm.delete(alg_id)
-            if proj_id:
-                astra.projector.delete(proj_id)
-            if sino_id:
-                astra.data2d.delete(sino_id)
-            if rec_id:
-                astra.data2d.delete(rec_id)
-
-    @staticmethod
     def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                recon_params: ReconstructionParameters) -> np.ndarray:
         return AstraRecon.single_sino(sino, cor, proj_angles, recon_params)
@@ -103,7 +103,7 @@ class AstraRecon(BaseRecon):
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(recon_params.algorithm)
         cfg['FilterType'] = recon_params.filter_name
-        with AstraRecon._managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
+        with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
             astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
             return astra.data2d.get(rec_id)
 

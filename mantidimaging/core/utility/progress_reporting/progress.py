@@ -27,7 +27,7 @@ class Progress(object):
     Class used to perform basic progress monitoring and reporting.
     """
     @staticmethod
-    def ensure_instance(p=None, *args, num_steps=None, **kwargs):
+    def ensure_instance(p=None, *args, num_steps=None, **kwargs) -> 'Progress':
         """
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.

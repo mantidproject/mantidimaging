@@ -67,9 +67,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
 
-        self.cor_table_model.rowsInserted.connect(self.on_table_row_count_change)
-        self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)
-        self.cor_table_model.modelReset.connect(self.on_table_row_count_change)
+        self.cor_table_model.rowsInserted.connect(self.on_table_row_count_change)  # type: ignore
+        self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
+        self.cor_table_model.modelReset.connect(self.on_table_row_count_change)  # type: ignore
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
@@ -111,7 +111,7 @@ class ReconstructWindowView(BaseMainWindowView):
             for button in [self.refineCorBtn, self.removeBtn]:
                 button.setEnabled(item.isValid())
 
-        self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
+        self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
 
         # Update initial UI state
         self.on_table_row_count_change()
@@ -119,7 +119,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.select_eligible_stack()
 
-        self.algorithmName.currentTextChanged.connect(lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))
+        self.algorithmName.currentTextChanged.connect(
+            lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
 
     def remove_selected_cor(self):
@@ -137,7 +138,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if self.tableView.model() is None:
             mdl = CorTiltPointQtModel(self.tableView)
             self.tableView.setModel(mdl)
-        return self.tableView.model()
+        return self.tableView.model()  # type: ignore
 
     def set_results(self, cor: ScalarCoR, tilt: Degrees, slope: Slope):
         """
@@ -285,7 +286,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.filterName.clear()
         self.filterName.insertItems(0, filters)
 
-    def get_number_of_cors(self) -> int:
+    def get_number_of_cors(self) -> Optional[int]:
         num, accepted = QInputDialog.getInt(self,
                                             "Number of slices",
                                             "On how many slices to run the automatic CoR finding?",
@@ -295,6 +296,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                             step=1)
         if accepted:
             return num
+        else:
+            return None
 
     def get_auto_cor_method(self) -> AutoCorMethod:
         current = self.autoFindMethod.currentText()

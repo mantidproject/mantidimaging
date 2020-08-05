@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Dict, Any
+from typing import Dict, Any, Union, Optional, List
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -14,7 +14,9 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
 
     @staticmethod
-    def filter_func(images: Images, region_of_interest: SensibleROI = None, progress=None) -> Images:
+    def filter_func(images: Images,
+                    region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
+                    progress=None) -> Images:
         """
         Execute the Crop Coordinates by Region of Interest filter.
         This does NOT do any checks if the Region of interest is out of bounds!
@@ -38,6 +40,8 @@ class CropCoordinatesFilter(BaseFilter):
             region_of_interest = SensibleROI.from_list([0, 0, 50, 50])
         if isinstance(region_of_interest, list):
             region_of_interest = SensibleROI.from_list(region_of_interest)
+
+        assert isinstance(region_of_interest, SensibleROI)
 
         h.check_data_stack(images)
 

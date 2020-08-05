@@ -91,12 +91,12 @@ class MainWindowPresenter(BasePresenter):
         sample_dock = add_stack(sample, title)
 
         if isinstance(container, Dataset):
-            if container.flat:
+            if container.flat and container.flat.filenames:
                 flat_dock = add_stack(container.flat,
                                       title=f"{self.model.create_name(os.path.basename(container.flat.filenames[0]))}")
                 self.view.tabifyDockWidget(sample_dock, flat_dock)
 
-            if container.dark:
+            if container.dark and container.dark.filenames:
                 dark_dock = add_stack(container.dark,
                                       title=f"{self.model.create_name(os.path.basename(container.dark.filenames[0]))}")
                 self.view.tabifyDockWidget(sample_dock, dark_dock)

@@ -70,7 +70,7 @@ class ReconstructWindowModel(object):
         if stack is not None:
             self.proj_angles = generate_projection_angles(360, self.images.num_projections)
 
-    def find_initial_cor(self) -> [int, ScalarCoR]:
+    def find_initial_cor(self) -> Tuple[int, ScalarCoR]:
         if self.images is None:
             return 0, ScalarCoR(0)
 
@@ -96,7 +96,7 @@ class ReconstructWindowModel(object):
 
     def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters):
         # Ensure we have some sample data
-        if self.images is None:
+        if self.images is None or self.proj_angles is None:
             return None
 
         # Perform single slice reconstruction
@@ -104,6 +104,9 @@ class ReconstructWindowModel(object):
         return reconstructor.single(self.images.sino(slice_idx), cor, self.proj_angles, recon_params)
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress):
+        # Ensure we have some sample data
+        if self.images is None or self.proj_angles is None:
+            return None
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
         return reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
@@ -113,6 +116,8 @@ class ReconstructWindowModel(object):
     def tilt_angle(self) -> Optional[Degrees]:
         if self.data_model.has_results:
             return self.data_model.angle_in_degrees
+        else:
+            return None
 
     @property
     def cors(self):
@@ -175,6 +180,11 @@ class ReconstructWindowModel(object):
                             If a list is passed, the COR will be retrieved for each slice.
         :param progress: Progress reporter
         """
+
+        # Ensure we have some sample data
+        if self.images is None or self.proj_angles is None:
+            return [0.0]
+
         if isinstance(initial_cor, list):
             assert len(slices) == len(initial_cor), "A COR for each slice index being reconstructed must be provided"
         else:

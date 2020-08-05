@@ -4,9 +4,10 @@ Module containing helper functions relating to PyQt.
 
 import os
 from enum import IntEnum, auto
-from typing import Tuple, Union, TYPE_CHECKING, List
+from typing import Tuple, Union, TYPE_CHECKING, List, Optional
 
-from PyQt5 import Qt, uic
+from PyQt5 import Qt
+from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
 
@@ -105,7 +106,7 @@ def add_property_to_form(label: str,
                          tooltip=None,
                          on_change=None,
                          form=None,
-                         filters_view=None) -> Tuple[Union[QLabel, QLineEdit], ReturnTypes]:
+                         filters_view=None) -> Tuple[Union[QLabel, QLineEdit], Optional[ReturnTypes]]:
     """
     Adds a property to the algorithm dialog.
 
