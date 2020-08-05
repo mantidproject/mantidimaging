@@ -9,7 +9,7 @@ The simplest way to install the toolkit is via the packages_ published to Anacon
 can be done with an existing Anaconda or Miniconda distribution if you already
 have one on your machine.
 
-.. _packages: https://anaconda.org/dtasev/mantidimaging/
+.. _packages: https://anaconda.org/mantid/mantidimaging/
 
 1. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
 2. Add needed channels to Anaconda
@@ -21,12 +21,9 @@ have one on your machine.
 
   - :code:`conda config --set channel_priority flexible`
 
-4. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c dtasev mantidimaging python=3.7`
+4. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c mantid mantidimaging python=3.7`
 5. Activate the newly created environment: :code:`conda activate mantidimaging`
 6. Install additional :code:`pip` dependencies with :code:`pip install deps/pip-requirements.txt` from the source folder.
-
-  - If the source is unavailable, the packages are :code:`pip install PyQt5==5.13.2`
-
 
 Running the source
 ------------------

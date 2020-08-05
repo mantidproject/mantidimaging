@@ -3,7 +3,7 @@ AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 install-conda-env:
 	conda config --prepend channels conda-forge
 	conda config --prepend channels defaults
-	conda create -n mantidimaging -c dtasev mantidimaging python=3.7
+	conda create -n mantidimaging -c mantid mantidimaging python=3.7
 	conda activate mantidimaging
 	pip install -U -r deps/pip-requirements.txt
 
@@ -45,7 +45,7 @@ test:
 
 test_environment_name = test-env
 test-env:
-	conda create -n $(test_environment_name) -c dtasev/label/deps mantidimaging
+	conda create -n $(test_environment_name) -c mantid/label/deps mantidimaging
 	conda activate $(test_environment_name)
 	$(MAKE) install-dev-requirements
 

@@ -15,7 +15,7 @@ def find_if_latest_version(action: Callable[[str], None]):
                                                    shell=True,
                                                    env=os.environ).decode("utf-8").strip()
     try:
-        response = requests.get("https://api.anaconda.org/package/dtasev/mantidimaging")
+        response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
         remote_mantid_package = json.loads(response.content)["latest_version"]
     except Exception:
         # whatever goes wrong, in the end we don't have the version
