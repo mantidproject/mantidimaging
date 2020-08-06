@@ -30,7 +30,6 @@ class FilterPreviews(GraphicsLayoutWidget):
     histogram_after: Optional[PlotItem]
     histogram: Optional[PlotItem]
 
-
     def __init__(self, parent=None, **kwargs):
         super(FilterPreviews, self).__init__(parent, **kwargs)
         self.before_histogram_data = None

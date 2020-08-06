@@ -42,7 +42,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
-        self.splitter.setSizes([200,9999])
+        self.splitter.setSizes([200, 9999])
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
@@ -55,8 +55,8 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
-        self.splitter.setStretchFactor(0,0)
-        self.splitter.setStretchFactor(0,0)
+        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(0, 0)
 
         self.previews = FilterPreviews(self)
         self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
