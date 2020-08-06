@@ -32,5 +32,8 @@ jobs:
 #       with:
         # Command to execute using xvfb
       run: |
-        /usr/bin/xvfb-run --auto-servernum echo $DISPLAY
+        echo $DISPLAY
+        printenv DISPLAY
+        /usr/bin/xvfb-run echo $DISPLAY
+        /usr/bin/xvfb-run printenv DISPLAY
         /usr/bin/xvfb-run --auto-servernum docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ${{ github.workspace }}:/opt/mantidimaging mantidproject/mantidimaging:latest pytest
