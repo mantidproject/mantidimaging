@@ -9,7 +9,8 @@ from typing import Tuple, Union, TYPE_CHECKING, List, Optional
 from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget
+from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget, \
+    QSizePolicy
 
 from mantidimaging.core.utility import finder
 
@@ -21,6 +22,7 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
+
     def __init__(self, q_objects: Union[QObject, List[QObject]]):
         if not isinstance(q_objects, list):
             q_objects = [q_objects]
@@ -207,6 +209,11 @@ def add_property_to_form(label: str,
         if right_widget:
             right_widget.setToolTip(tooltip)
 
+    if left_widget:
+        left_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+
+    if right_widget:
+        right_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
     # Add to form layout
     if form is not None:
         form.addRow(left_widget, right_widget)

@@ -1,8 +1,9 @@
 from collections import namedtuple
 from typing import Tuple, Optional
 
+import numpy as np
 from numpy import ndarray
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
@@ -29,6 +30,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     histogram_after: Optional[PlotItem]
     histogram: Optional[PlotItem]
 
+
     def __init__(self, parent=None, **kwargs):
         super(FilterPreviews, self).__init__(parent, **kwargs)
         self.before_histogram_data = None
@@ -48,6 +50,16 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before, self.image_before_vb = self.image_in_vb(name="before")
         self.image_after, self.image_after_vb = self.image_in_vb(name="after")
         self.image_difference, self.image_difference_vb = self.image_in_vb(name="difference")
+
+        self.image_after_overlay = ImageItem()
+        self.image_after_overlay.setZValue(10)
+        self.image_after_vb.addItem(self.image_after_overlay)
+        # pos = np.array([0,2<<32])
+        # color = np.array([[255,0,0,255], [255,0,0,255]], dtype=np.ubyte)
+        # map = ColorMap(pos, color)
+        # self.image_difference.setLookupTable(map.getLookupTable(0.0, 2<<32, 512))
+        # self.image_difference.setZValue(10)
+        # self.image_difference.setOpacity(0.5)
 
         # Ensure images resize equally
         image_layout = self.addLayout(colspan=3)
@@ -139,7 +151,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         lc = label_coords
         self.addLabel("Pixel values before", row=lc["before"].row, col=lc["before"].col)
         self.addLabel("Pixel values after", row=lc["after"].row, col=lc["after"].col)
-
         if _data_valid_for_histogram(self.before_histogram_data):
             self.before_histogram.plot(*self.before_histogram_data, pen=before_pen)
         if _data_valid_for_histogram(self.after_histogram_data):
@@ -179,3 +190,16 @@ class FilterPreviews(GraphicsLayoutWidget):
         for view in self.image_before_vb, self.image_after_vb, self.image_difference_vb:
             view.linkView(ViewBox.XAxis, None)
             view.linkView(ViewBox.YAxis, None)
+
+    def add_difference_overlay(self, diff):
+        diff = -diff
+        pos = np.array([diff.min(), diff.max()])
+        color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
+        map = ColorMap(pos, color)
+        self.image_after_overlay.setOpacity(1)
+        self.image_after_overlay.setImage(diff)
+        lut = map.getLookupTable(diff.min(), diff.max(), 512)
+        self.image_after_overlay.setLookupTable(lut)
+
+    def hide_difference_overlay(self):
+        self.image_after_overlay.setOpacity(0)

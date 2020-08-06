@@ -151,6 +151,10 @@ class FiltersWindowPresenter(BasePresenter):
                     if self.view.invertDifference.isChecked():
                         diff = np.negative(diff, out=diff)
                     self._update_preview_image(diff, self.view.preview_image_difference, None)
+                    if self.view.overlayDifference.isChecked():
+                        self.view.previews.add_difference_overlay(diff)
+                    else:
+                        self.view.previews.hide_difference_overlay()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem,

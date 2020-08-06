@@ -285,6 +285,16 @@
            </widget>
           </item>
           <item alignment="Qt::AlignTop">
+           <widget class="QCheckBox" name="overlayDifference">
+            <property name="text">
+             <string>Overlay difference</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignTop">
            <widget class="QCheckBox" name="invertDifference">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -293,7 +303,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Invert difference</string>
+             <string>Invert diff image</string>
             </property>
            </widget>
           </item>

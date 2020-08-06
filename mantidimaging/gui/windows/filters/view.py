@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton
+from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, QSizePolicy
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -21,9 +21,10 @@ class FiltersWindowView(BaseMainWindowView):
     splitter: QSplitter
 
     linkImages: QCheckBox
-    invertDifference: QCheckBox
     showHistogramLegend: QCheckBox
     combinedHistograms: QCheckBox
+    invertDifference: QCheckBox
+    overlayDifference: QCheckBox
 
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
@@ -41,7 +42,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
-        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setSizes([200,9999])
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
@@ -54,8 +55,11 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.splitter.setStretchFactor(0,0)
+        self.splitter.setStretchFactor(0,0)
 
         self.previews = FilterPreviews(self)
+        self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
 
@@ -68,6 +72,7 @@ class FiltersWindowView(BaseMainWindowView):
         # set here to trigger the changed event
         self.linkImages.setChecked(True)
         self.invertDifference.stateChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
+        self.overlayDifference.stateChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)
