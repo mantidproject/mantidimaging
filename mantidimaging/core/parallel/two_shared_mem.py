@@ -141,6 +141,7 @@ def return_to_second_but_dont_use_it(func, i, **kwargs):
     """
     second_shared_data[i] = func(shared_data[i], **kwargs)
 
+
 def return_to_second_index_only(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
@@ -156,6 +157,7 @@ def return_to_second_index_only(func, i, **kwargs):
     :return: nothing is returned, as the data is replaced in place
     """
     second_shared_data[i] = func(i, shared_data[i], **kwargs)
+
 
 def fwd_gpu_recon(func, i, num_gpus, cors, **kwargs):
     import astra
