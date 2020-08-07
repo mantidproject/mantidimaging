@@ -200,5 +200,5 @@ class ReconstructWindowModel(object):
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors
 
-    def auto_find_correlation(self) -> Tuple[ScalarCoR, Degrees]:
-        return find_center(self.images)
+    def auto_find_correlation(self, progress) -> Tuple[ScalarCoR, Degrees]:
+        return find_center(self.images, progress)

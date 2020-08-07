@@ -9,7 +9,6 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility.common import operation_in_progress
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 
@@ -212,9 +211,12 @@ class ReconstructWindowPresenter(BasePresenter):
             self._auto_find_minimisation_square_sum()
 
     def _auto_find_correlation(self):
-        with operation_in_progress("Finding COR using correlation...", "This may take a bit"):
-            cor, tilt = self.model.auto_find_correlation()
+        # with operation_in_progress("Finding COR using correlation...", "This may take a bit"):
+        def completed(task: TaskWorkerThread):
+            cor, tilt = task.result
             self._set_precalculated_cor_tilt(cor, tilt)
+
+        start_async_task_view(self.view, self.model.auto_find_correlation, completed)
 
     def _auto_find_minimisation_square_sum(self):
         num_cors = self.view.get_number_of_cors()

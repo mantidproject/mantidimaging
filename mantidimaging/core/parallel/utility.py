@@ -44,8 +44,11 @@ def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name
     if name is not None:
         return _create_shared_array(shape, dtype, name)
     else:
-        # if the name provided is None, then allocate an array only visible to this process
-        return np.zeros(shape, dtype)
+        # if the name provided is None, then a shared array, and delete the memory file
+        # reference, so that when all Python references are removed the memory is
+        # automatically freed
+        temp = temp_shared_array(shape, dtype)
+        return temp
 
 
 def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str) -> np.ndarray:
@@ -115,11 +118,13 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) ->
         LOG.info("1 core specified. Running synchronously on 1 core")
         return False
     elif isinstance(shape, int):
-        LOG.info("Shape under 10. Running synchronously on 1 core")
-        return shape > 10
+        if shape < 10:
+            LOG.info("Shape under 10. Running synchronously on 1 core")
+            return False
     elif isinstance(shape, tuple) or isinstance(shape, list):
-        LOG.info("3D axis 0 shape under 10. Running synchronously on 1 core")
-        return shape[0] > 10
+        if shape[0] < 10:
+            LOG.info("3D axis 0 shape under 10. Running synchronously on 1 core")
+            return False
     return True
 
 
