@@ -141,6 +141,21 @@ def return_to_second_but_dont_use_it(func, i, **kwargs):
     """
     second_shared_data[i] = func(shared_data[i], **kwargs)
 
+def return_to_second_index_only(func, i, **kwargs):
+    """
+    Use if the parameter function will do the following:
+        - Perform an operation on the input data that is dependent on another container
+        - DOES have a return statement
+        - The data is NOT RESIZED
+        - The SECOND INPUT CONTAINER is not used for the calculation
+        - The output will be stored in the SECOND INPUT CONTAINER
+
+    :param func: Function that will be executed
+    :param i: index from the shared_data on which to operate
+    :param kwargs: kwargs to forward to the function func that will be executed
+    :return: nothing is returned, as the data is replaced in place
+    """
+    second_shared_data[i] = func(i, shared_data[i], **kwargs)
 
 def fwd_gpu_recon(func, i, num_gpus, cors, **kwargs):
     import astra
