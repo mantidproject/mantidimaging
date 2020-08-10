@@ -211,7 +211,6 @@ class ReconstructWindowPresenter(BasePresenter):
             self._auto_find_minimisation_square_sum()
 
     def _auto_find_correlation(self):
-        # with operation_in_progress("Finding COR using correlation...", "This may take a bit"):
         def completed(task: TaskWorkerThread):
             cor, tilt = task.result
             self._set_precalculated_cor_tilt(cor, tilt)
