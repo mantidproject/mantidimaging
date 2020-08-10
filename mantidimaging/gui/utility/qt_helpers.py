@@ -22,6 +22,7 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
+
     def __init__(self, q_objects: Union[QObject, List[QObject]]):
         if not isinstance(q_objects, list):
             q_objects = [q_objects]
@@ -46,25 +47,6 @@ def compile_ui(ui_file, qt_obj=None):
     return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
 
 
-def select_file(field, caption):
-    """
-    :param field: The field in which the result will be saved
-    :param caption: Title of the file browser window that will be opened
-    :return: True: If a file has been selected, False otherwise
-    """
-    assert isinstance(field, Qt.QLineEdit), ("The passed object is of type {0}. This function only works with "
-                                             "QLineEdit".format(type(field)))
-    images_filter = "Images (*.png *.jpg *.tif *.tiff *.fit *.fits)"
-    selected_file = Qt.QFileDialog.getOpenFileName(caption=caption,
-                                                   filter=f"{images_filter};;All (*.*)",
-                                                   initialFilter=images_filter)[0]
-    # open file dialogue and set the text if file is selected
-    if selected_file:
-        field.setText(selected_file)
-        return True
-
-    # no file has been selected
-    return False
 
 
 def select_directory(field, caption):
