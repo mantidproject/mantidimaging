@@ -51,7 +51,7 @@ class MetadataDialog(Qt.QDialog):
 
                 if op.get(const.OPERATION_ARGS, False):
                     args_item = QTreeWidgetItem(operation_item)
-                    args_item.setText(0, f"Positional arguments: {', '.join(op[const.OPERATION_ARGS])}")
+                    args_item.setText(0, f"Positional arguments: {op[const.OPERATION_ARGS]}")
 
                 if op.get(const.OPERATION_KEYWORD_ARGS, False):
                     kwargs_list_item = QTreeWidgetItem(operation_item)

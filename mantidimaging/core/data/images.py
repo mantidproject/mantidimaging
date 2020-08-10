@@ -5,6 +5,7 @@ from typing import List, Tuple, Optional, Any, Dict
 
 import numpy as np
 
+from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -148,6 +149,8 @@ class Images:
                         metadata=deepcopy(self.metadata),
                         sinograms=self._is_sinograms,
                         memory_filename=data_name)
+
+        mark_cropped(images, roi)
         return images
 
     def index_as_images(self, index) -> 'Images':

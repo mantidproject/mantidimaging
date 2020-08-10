@@ -5,6 +5,7 @@ import numpy as np
 from six import StringIO
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.filters.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
@@ -104,6 +105,13 @@ class ImagesTest(unittest.TestCase):
 
         self.assertEqual(cropped_copy, images.data[:, 0:5, 0:5])
 
+        self.assertEqual(len(cropped_copy.metadata[const.OPERATION_HISTORY]), 2)
+        self.assertEqual(cropped_copy.metadata[const.OPERATION_HISTORY][-1][const.OPERATION_DISPLAY_NAME],
+                         CropCoordinatesFilter.filter_name)
+
+        # remove the extra crop operation
+        cropped_copy.metadata[const.OPERATION_HISTORY].pop(-1)
+        # the two metadatas show now be equal again
         self.assertEqual(images.metadata, cropped_copy.metadata)
         self.assertNotEqual(images.memory_filename, cropped_copy.memory_filename)
         self.assertNotEqual(images, cropped_copy)
