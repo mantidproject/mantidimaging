@@ -5,7 +5,7 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.rotation.data_model import Point
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
+from mantidimaging.core.utility.data_containers import ScalarCoR
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
 from mantidimaging.gui.windows.recon.presenter import Notifications as PresNotification
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
@@ -183,13 +183,10 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_projection.assert_called_once()
         self.presenter.do_reconstruct_slice.assert_called_once()
 
-    @mock.patch('mantidimaging.gui.windows.recon.presenter.operation_in_progress')
-    @mock.patch('mantidimaging.gui.windows.recon.model.find_center')
-    def test_auto_find_correlation(self, mock_find_center, mock_op_in_prog):
-        exp_cor, exp_tilt = ScalarCoR(44), Degrees(1.5)
-        mock_find_center.return_value = exp_cor, exp_tilt
-        self.presenter._set_precalculated_cor_tilt = mock.Mock()
-
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_auto_find_correlation(self, mock_start_async: mock.Mock):
         self.presenter._auto_find_correlation()
-
-        self.presenter._set_precalculated_cor_tilt.assert_called_once_with(exp_cor, exp_tilt)
+        mock_start_async.assert_called_once()
+        mock_first_call = mock_start_async.call_args[0]
+        self.assertEqual(self.presenter.view, mock_first_call[0])
+        self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])

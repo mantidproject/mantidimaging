@@ -14,13 +14,9 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
-    def __init__(self,
-                 data: np.ndarray,
-                 filenames: Optional[List[str]] = None,
-                 indices: Optional[Tuple[int, int, int]] = None,
-                 metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 memory_filename: Optional[str] = None):
+    def __init__(self, data: np.ndarray, filenames: Optional[List[str]] = None,
+                 indices: Optional[Tuple[int, int, int]] = None, metadata: Optional[Dict[str, Any]] = None,
+                 sinograms: bool = False, memory_filename: Optional[str] = None):
         """
 
         :param data: Images of the Sample/Projection data
@@ -38,6 +34,7 @@ class Images:
         self._is_sinograms = sinograms
 
         self.memory_filename = memory_filename
+        self._proj_180deg: Optional[np.ndarray] = None
 
     def __str__(self):
         return f'Image Stack: data={self.data.shape} | properties|={len(self.metadata)}'
@@ -104,15 +101,12 @@ class Images:
                 return o
 
         self.metadata[const.OPERATION_HISTORY].append({
-            const.TIMESTAMP:
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            const.OPERATION_NAME:
-            func_name,
+            const.TIMESTAMP: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            const.OPERATION_NAME: func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
-            const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
-                                           for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_KEYWORD_ARGS: {k: prepare(v) for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-            display_name
+                display_name
         })
 
     def copy(self, flip_axes=False) -> 'Images':
@@ -124,15 +118,14 @@ class Images:
         else:
             data_copy[:] = self.data[:]
 
-        images = Images(data_copy,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
+        images = Images(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
                         sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
                         memory_filename=data_name)
         return images
 
     def index_as_images(self, index) -> 'Images':
-        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata),
+                      sinograms=self.is_sinograms)
 
     @property
     def height(self):
@@ -185,6 +178,15 @@ class Images:
             return np.swapaxes(self.data, 0, 1)[projection_idx]
         else:
             return self.data[projection_idx]
+
+    def proj180deg(self):
+        if self._proj_180deg is not None:
+            return self._proj_180deg
+        else:
+            # best guess when the real 180 degree projection is lacking
+            # it's likely the middle of the stack is not _exactly_ 180 degrees
+            # so the calculated COR will be a few pixels off
+            return self.projection(self.num_projections // 2)
 
     @property
     def projections(self):
