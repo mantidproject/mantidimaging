@@ -16,6 +16,8 @@ def assert_called_once_with(mock: mock.Mock, *args):
     for actual, expected in zip(mock.call_args[0], args):
         if isinstance(actual, np.ndarray):
             np.testing.assert_equal(actual, expected)
+        elif isinstance(actual, Images):
+            assert actual is expected
         else:
             assert actual == expected
 
@@ -132,7 +134,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertIsNone(self.model.tilt_angle)
         exp_deg = Degrees(1.5)
         self.model.set_precalculated(ScalarCoR(1), exp_deg)
-        self.assertAlmostEqual(self.model.tilt_angle, exp_deg)
+        self.assertAlmostEqual(self.model.tilt_angle.value, exp_deg.value)
 
     def test_get_me_a_cor(self):
         self.assertEqual(15, self.model.get_me_a_cor(cor=15))

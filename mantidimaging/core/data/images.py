@@ -1,6 +1,5 @@
 import datetime
 import json
-import pprint
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -40,6 +39,20 @@ class Images:
         self.memory_filename = memory_filename
         self._proj_180deg: Optional[np.ndarray] = None
 
+    def __eq__(self, other):
+        if isinstance(other, Images):
+            return np.array_equal(self.data, other.data) \
+                   and self.is_sinograms == other.is_sinograms \
+                   and self.metadata == other.metadata \
+                   and self.indices == other.indices
+        elif isinstance(other, np.ndarray):
+            return np.array_equal(self.data, other)
+        else:
+            raise ValueError(f"Cannot compare against {other}")
+
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         return f'Image Stack: data={self.data.shape} | properties|={len(self.metadata)}'
 
@@ -74,22 +87,13 @@ class Images:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
-    @property
-    def has_history(self) -> bool:
-        return const.OPERATION_HISTORY in self.metadata
-
-    @property
-    def metadata_pretty(self):
-        pp = pprint.PrettyPrinter(indent=2)
-        return pp.pformat(self.metadata)
-
     def load_metadata(self, f):
         self.metadata = json.load(f)
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
     def save_metadata(self, f):
         self.metadata[const.SINOGRAMS] = self.is_sinograms
-        json.dump(self.metadata, f)
+        json.dump(self.metadata, f, indent=4)
 
     def record_operation(self, func_name: str, display_name, *args, **kwargs):
         if const.OPERATION_HISTORY not in self.metadata:
@@ -129,6 +133,20 @@ class Images:
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
                         sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
+                        memory_filename=data_name)
+        return images
+
+    def copy_roi(self, roi: SensibleROI):
+        shape = (self.data.shape[0], roi.height, roi.width)
+
+        data_name = pu.create_shared_name()
+        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
+
+        images = Images(data_copy,
+                        indices=deepcopy(self.indices),
+                        metadata=deepcopy(self.metadata),
+                        sinograms=self._is_sinograms,
                         memory_filename=data_name)
         return images
 
@@ -217,7 +235,7 @@ class Images:
         return self._data.dtype
 
     @staticmethod
-    def create_shared_images(shape, dtype, metadata):
+    def create_empty_images(shape, dtype, metadata):
         shared_name = pu.create_shared_name()
         arr = pu.create_array(shape, dtype, shared_name)
         return Images(arr, memory_filename=shared_name, metadata=metadata)

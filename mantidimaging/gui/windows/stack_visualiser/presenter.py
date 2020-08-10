@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
 from ...utility.common import operation_in_progress
@@ -18,6 +19,7 @@ class SVNotification(IntEnum):
     TOGGLE_IMAGE_MODE = auto()
     SWAP_AXES = auto()
     DUPE_STACK = auto()
+    DUPE_STACK_ROI = auto()
 
 
 class SVParameters(IntEnum):
@@ -53,6 +55,8 @@ class StackVisualiserPresenter(BasePresenter):
                 self.create_swapped_axis_stack()
             elif signal == SVNotification.DUPE_STACK:
                 self.dupe_stack()
+            elif signal == SVNotification.DUPE_STACK_ROI:
+                self.dupe_stack_roi()
         except Exception as e:
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
@@ -101,5 +105,11 @@ class StackVisualiserPresenter(BasePresenter):
     def dupe_stack(self):
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
-            new_stack = self.images.copy(flip_axes=False)
-            self.view.parent_create_stack(new_stack, self.view.name)
+            new_images = self.images.copy(flip_axes=False)
+            self.view.parent_create_stack(new_images, self.view.name)
+
+    def dupe_stack_roi(self):
+        with operation_in_progress("Copying data, this may take a while",
+                                   "The data is being copied, this may take a while.", self.view):
+            new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
+            self.view.parent_create_stack(new_images, self.view.name)

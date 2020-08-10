@@ -115,7 +115,7 @@ class AstraRecon(BaseRecon):
              progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms, ) + images.sino(0).shape
-        output_images: Images = Images.create_shared_images(output_shape, images.dtype, images.metadata)
+        output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Reconstruction', **recon_params.to_dict())
 
         # FIXME multiple GPU support - just starting up a Pool doesn't seem to work

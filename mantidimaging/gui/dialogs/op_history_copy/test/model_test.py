@@ -9,12 +9,13 @@ from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogModel
 
 class OpHistoryCopyDialogModelTest(unittest.TestCase):
     def setUp(self):
-        self.data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
-        self.model = OpHistoryCopyDialogModel(self.data)
+        self.images = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        self.images.data[:] = 100
+        self.model = OpHistoryCopyDialogModel(self.images)
 
     @patch('mantidimaging.gui.dialogs.op_history_copy.model.ops_to_partials')
     def test_final_function_result_returned(self, mock_partial_conversions):
-        expected = self.data
+        expected = self.images
         call_mock = MagicMock()
 
         def fake_filter(_):
@@ -28,6 +29,7 @@ class OpHistoryCopyDialogModelTest(unittest.TestCase):
         # this test, so the value of the parameter shouldn't matter.
         result = self.model.apply_ops([1], copy=False)
         call_mock.assert_called_once()
+        self.assertIs(expected, result)
         self.assertEqual(expected, result)
         np.testing.assert_equal(expected.data, result.data)
 
@@ -35,5 +37,6 @@ class OpHistoryCopyDialogModelTest(unittest.TestCase):
 
         result = self.model.apply_ops([1], copy=True)
         call_mock.assert_called_once()
-        self.assertNotEqual(expected, result)
+        self.assertIsNot(expected, result)
+        self.assertEqual(expected, result)
         np.testing.assert_equal(expected.data, result.data)
