@@ -187,12 +187,13 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def add_difference_overlay(self, diff):
         diff = -diff
-        pos = np.array([diff.min(), diff.max()])
+        diff[diff > 0.0] = 1.0
+        pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
         map = ColorMap(pos, color)
         self.image_after_overlay.setOpacity(1)
         self.image_after_overlay.setImage(diff)
-        lut = map.getLookupTable(diff.min(), diff.max(), 512)
+        lut = map.getLookupTable(0, 1, 2)
         self.image_after_overlay.setLookupTable(lut)
 
     def hide_difference_overlay(self):
