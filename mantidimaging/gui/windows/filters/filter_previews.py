@@ -53,12 +53,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
-        # pos = np.array([0,2<<32])
-        # color = np.array([[255,0,0,255], [255,0,0,255]], dtype=np.ubyte)
-        # map = ColorMap(pos, color)
-        # self.image_difference.setLookupTable(map.getLookupTable(0.0, 2<<32, 512))
-        # self.image_difference.setZValue(10)
-        # self.image_difference.setOpacity(0.5)
 
         # Ensure images resize equally
         image_layout = self.addLayout(colspan=3)
@@ -91,6 +85,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before.clear()
         self.image_after.clear()
         self.image_difference.clear()
+        self.image_after_overlay.clear()
         self.delete_histograms()
 
     # There seems to be a bug with pyqtgraph.PlotDataItem.setData not forcing a redraw.

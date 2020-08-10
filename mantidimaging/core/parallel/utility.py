@@ -47,8 +47,8 @@ def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name
         # if the name provided is None, then a shared array, and delete the memory file
         # reference, so that when all Python references are removed the memory is
         # automatically freed
-        temp = temp_shared_array(shape, dtype)
-        return temp
+        with temp_shared_array(shape, dtype) as temp:
+            return temp
 
 
 def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str) -> np.ndarray:
