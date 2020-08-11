@@ -1,4 +1,3 @@
-import os
 from collections import namedtuple
 from typing import Dict, Optional, Any, Tuple
 
@@ -38,11 +37,16 @@ class MWLoadDialog(Qt.QDialog):
         self.tree.header().setStretchLastSection(False)
         self.tree.setTabKeyNavigation(True)
 
-        self.sample, self.select_sample = self.create_file_input(0)
-        self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE))
+        self.sample, self.select_sample = self.create_file_input(0, connect=False)
+        self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_SAMPLE))
 
         self.flat, self.select_flat = self.create_file_input(1)
+        self.select_flat.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
+                                                                       field=self.flat, name="Flat"))
+
         self.dark, self.select_dark = self.create_file_input(2)
+        self.select_dark.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
+                                                                       field=self.dark, name="Dark"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
         self.sample_log, self.select_sample_log = self.create_file_input(4)
@@ -56,7 +60,7 @@ class MWLoadDialog(Qt.QDialog):
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")
 
-    def create_file_input(self, position: int) -> Tuple[Field, QPushButton]:
+    def create_file_input(self, position: int, connect=True) -> Tuple[Field, QPushButton]:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
         select_button = QPushButton(f"Select")
@@ -64,11 +68,12 @@ class MWLoadDialog(Qt.QDialog):
         select_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 
         self.tree.setItemWidget(section, 2, select_button)
+        field = Field(self, self.tree, section)
 
-        return Field(self, self.tree, section), select_button
+        return field, select_button
 
     @staticmethod
-    def select_file(field: Field, caption: str) -> bool:
+    def select_file(caption: str) -> Optional[str]:
         """
         :param field: The field in which the result will be saved
         :param caption: Title of the file browser window that will be opened
@@ -80,30 +85,9 @@ class MWLoadDialog(Qt.QDialog):
                                                                  initialFilter=images_filter)
 
         if accepted:
-            field.path.setText(1, selected_file)
-            return True
+            return selected_file
         else:
-            return False
-
-    def update_indices(self, field: Field, number_of_images):
-        """
-        :param number_of_images: Number of images that will be loaded in from
-                                 the current selection
-        """
-        # Cap the end value FIRST, otherwise setValue might fail if the
-        # previous max val is smaller
-        field.stop.setMaximum(number_of_images)
-        field.stop.setValue(number_of_images)
-
-        # Cap the start value to be end - 1 (ensure no negative value can be
-        # set in case of loading failure)
-        field.start.setMaximum(max(number_of_images - 1, 0))
-
-        # Enforce the maximum step (ensure a minimum of 1)
-        field.increment.setMaximum(max(number_of_images, 1))
-
-    def update_expected_mem_usage(self, num_images: int, shape: Tuple[int, int, int], exp_mem: int):
-        self.expectedResourcesLabel.setText(f"{num_images}x{shape[1]}x{shape[2]}: {exp_mem} MB")
+            return None
 
     @property
     def indices(self) -> Indices:
@@ -135,8 +119,3 @@ class MWLoadDialog(Qt.QDialog):
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
-
-    # def add_indices(self, parent: QTreeWidgetItem):
-    #     start = QTreeWidgetItem(parent)
-    #     start_spinbox = QSpinBox(self)
-    #     self.tree.setItemWidget(start, 1, start_spinbox)
