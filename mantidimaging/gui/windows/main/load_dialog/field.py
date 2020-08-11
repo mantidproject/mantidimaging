@@ -1,7 +1,9 @@
 import os
-from typing import Optional
+from typing import Optional, List, Union, Tuple
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel
+
+from mantidimaging.core.utility import size_calculator
 
 
 class Field:
@@ -11,11 +13,18 @@ class Field:
     _stop_spinbox: Optional[QSpinBox] = None
     _increment_spinbox: Optional[QSpinBox] = None
 
+    _shape: Optional[QTreeWidgetItem] = None
+
     def __init__(self, parent, tree: QTreeWidget, widget: QTreeWidgetItem):
         self._parent = parent
         self._tree = tree
         self._widget = widget
         self._path = None
+
+    def set_images(self, image_files: List[str]):
+        if len(image_files) > 0:
+            self.path = image_files[0]
+            self.update_shape(len(image_files))
 
     @property
     def widget(self) -> QTreeWidgetItem:
@@ -72,6 +81,7 @@ class Field:
         _spinbox_layout.addWidget(self._stop_spinbox)
 
         self._increment_spinbox = QSpinBox(self._tree.parent())
+        self._increment_spinbox.setMinimum(1)
         _spinbox_layout.addWidget(QLabel("Increment", self._tree.parent()))
         _spinbox_layout.addWidget(self._increment_spinbox)
 
@@ -81,31 +91,76 @@ class Field:
         self._tree.setItemWidget(indices_item, 1, self._spinbox_widget)
 
     @property
-    def start(self) -> QSpinBox:
+    def _start(self) -> QSpinBox:
         if self._spinbox_widget is None:
             self._init_indices()
         return self._start_spinbox
 
-    @start.setter
-    def start(self, value: int):
-        self.start.setValue(value)
+    @_start.setter
+    def _start(self, value: int):
+        self._start.setValue(value)
 
     @property
-    def stop(self) -> QSpinBox:
+    def _stop(self) -> QSpinBox:
         if self._spinbox_widget is None:
             self._init_indices()
         return self._stop_spinbox
 
-    @stop.setter
-    def stop(self, value: int):
-        self.stop.setValue(value)
+    @_stop.setter
+    def _stop(self, value: int):
+        self._stop.setValue(value)
 
     @property
-    def increment(self) -> QSpinBox:
+    def _increment(self) -> QSpinBox:
         if self._spinbox_widget is None:
             self._init_indices()
         return self._increment_spinbox
 
-    @increment.setter
-    def increment(self, value: int):
-        self.increment.setValue(value)
+    @_increment.setter
+    def _increment(self, value: int):
+        self._increment.setValue(value)
+
+    @property
+    def shape(self) -> QTreeWidgetItem:
+        if self._shape is None:
+            self._shape = QTreeWidgetItem(self._widget)
+            self._shape.setText(0, "")
+        return self._shape
+
+    @shape.setter
+    def shape(self, value: str):
+        self.shape.setText(1, value)
+
+    def update_indices(self, number_of_images):
+        """
+        :param number_of_images: Number of images that will be loaded in from
+                                 the current selection
+        """
+        # Cap the end value FIRST, otherwise setValue might fail if the
+        # previous max val is smaller
+        self._stop.setMaximum(number_of_images)
+        self._stop.setValue(number_of_images)
+
+        # Cap the start value to be end - 1 (ensure no negative value can be
+        # set in case of loading failure)
+        self._start.setMaximum(max(number_of_images - 1, 0))
+
+        # Enforce the maximum step (ensure a minimum of 1)
+        self._increment.setMaximum(max(number_of_images, 1))
+
+    def _update_expected_mem_usage(self, shape: Tuple[int, int]):
+        num_images = size_calculator.number_of_images_from_indices(self._start.value(),
+                                                                   self._stop.value(),
+                                                                   self._increment.value())
+
+        single_mem = size_calculator.to_MB(size_calculator.single_size(shape), dtype='32')
+
+        exp_mem = round(single_mem * num_images, 2)
+        return num_images, shape, exp_mem
+
+    def update_shape(self, shape: Union[int, Tuple[int, int]]):
+        if isinstance(shape, int):
+            self.shape = f"{str(shape)} images"
+        else:
+            num_images, shape, exp_mem = self._update_expected_mem_usage(shape)
+            self.shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"
