@@ -15,7 +15,7 @@ logger = getLogger(__name__)
 
 
 class Notification(Enum):
-    UPDATE_SAMPLE = auto()
+    UPDATE_ALL_FIELDS = auto()
     UPDATE_OTHER = auto()
     # UPDATE_EXPECTED_MEM_USAGE = auto()
 
@@ -31,7 +31,7 @@ class LoadPresenter:
         self.dtype = '32'
 
     def notify(self, n: Notification, **baggage):
-        if n == Notification.UPDATE_SAMPLE:
+        if n == Notification.UPDATE_ALL_FIELDS:
             self.do_update_sample()
         elif n == Notification.UPDATE_OTHER:
             self.do_update_other(**baggage)

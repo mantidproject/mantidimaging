@@ -37,8 +37,8 @@ class MWLoadDialog(Qt.QDialog):
         self.tree.header().setStretchLastSection(False)
         self.tree.setTabKeyNavigation(True)
 
-        self.sample, self.select_sample = self.create_file_input(0, connect=False)
-        self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_SAMPLE))
+        self.sample, self.select_sample = self.create_file_input(0)
+        self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
         self.flat, self.select_flat = self.create_file_input(1)
         self.select_flat.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
@@ -60,22 +60,24 @@ class MWLoadDialog(Qt.QDialog):
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")
 
-    def create_file_input(self, position: int, connect=True) -> Tuple[Field, QPushButton]:
+    def create_file_input(self, position: int) -> Tuple[Field, QPushButton]:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
-        select_button = QPushButton(f"Select")
+        use = QCheckBox(self)
+        self.tree.setItemWidget(section, 2, use)
+
+        select_button = QPushButton(f"Select", self)
         select_button.setMaximumWidth(100)
         select_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 
-        self.tree.setItemWidget(section, 2, select_button)
-        field = Field(self, self.tree, section)
+        self.tree.setItemWidget(section, 3, select_button)
+        field = Field(self, self.tree, section, use)
 
         return field, select_button
 
     @staticmethod
     def select_file(caption: str) -> Optional[str]:
         """
-        :param field: The field in which the result will be saved
         :param caption: Title of the file browser window that will be opened
         :return: True: If a file has been selected, False otherwise
         """
@@ -105,13 +107,13 @@ class MWLoadDialog(Qt.QDialog):
 
     def get_kwargs(self) -> Dict[str, Any]:
         return {
-            'selected_file': self.sample_file(),
-            'sample_path': self.sample_path_directory(),
-            'flat_path': self.flat_path_text(),
-            'dark_path': self.dark_path_text(),
-            'in_prefix': get_prefix(self.sample_path_text()),
-            'image_format': self.image_format,
-            'indices': self.indices,
+            'selected_file': self.sample.file(),
+            'sample_path': self.sample.directory(),
+            'flat_path': self.flat.path_text(),
+            'dark_path': self.dark.path_text(),
+            'in_prefix': get_prefix(self.sample.path_text()),
+            'image_format': self.presenter.image_format,
+            'indices': self.sample.indices,
             'custom_name': self.window_title(),
             'dtype': self.pixel_bit_depth.currentText(),
             'sinograms': self.images_are_sinograms.isChecked()

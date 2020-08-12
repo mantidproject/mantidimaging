@@ -1,24 +1,26 @@
 import os
 from typing import Optional, List, Union, Tuple
 
-from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox
 
 from mantidimaging.core.utility import size_calculator
 
 
 class Field:
     _widget: QTreeWidgetItem
+    _use: QCheckBox
     _spinbox_widget: Optional[QWidget] = None
     _start_spinbox: Optional[QSpinBox] = None
     _stop_spinbox: Optional[QSpinBox] = None
     _increment_spinbox: Optional[QSpinBox] = None
 
-    _shape: Optional[QTreeWidgetItem] = None
+    _shape_widget: Optional[QTreeWidgetItem] = None
 
-    def __init__(self, parent, tree: QTreeWidget, widget: QTreeWidgetItem):
+    def __init__(self, parent, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox):
         self._parent = parent
         self._tree = tree
         self._widget = widget
+        self._use = use
         self._path = None
 
     def set_images(self, image_files: List[str]):
@@ -36,6 +38,10 @@ class Field:
         return self._widget
 
     @property
+    def use(self) -> QCheckBox:
+        return self._use
+
+    @property
     def path(self):
         if self._path is None:
             self._path = QTreeWidgetItem(self._widget)
@@ -48,6 +54,7 @@ class Field:
         if value != "":
             self.path.setText(1, value)
             self.widget.setText(1, self.file())
+            self.use.setChecked(True)
 
     def file(self) -> str:
         """
@@ -121,15 +128,19 @@ class Field:
         self._increment.setValue(value)
 
     @property
-    def shape(self) -> QTreeWidgetItem:
-        if self._shape is None:
-            self._shape = QTreeWidgetItem(self._widget)
-            self._shape.setText(0, "")
-        return self._shape
+    def _shape(self) -> QTreeWidgetItem:
+        if self._shape_widget is None:
+            self._shape_widget = QTreeWidgetItem(self._widget)
+            self._shape_widget.setText(0, "")
+        return self._shape_widget
 
-    @shape.setter
-    def shape(self, value: str):
-        self.shape.setText(1, value)
+    @_shape.setter
+    def _shape(self, value: str):
+        self._shape.setText(1, value)
+
+    @property
+    def indices(self):
+        return [self._start.value(), self._stop.value(), self._increment.value()]
 
     def update_indices(self, number_of_images):
         """
@@ -160,7 +171,7 @@ class Field:
 
     def update_shape(self, shape: Union[int, Tuple[int, int]]):
         if isinstance(shape, int):
-            self.shape = f"{str(shape)} images"
+            self._shape = f"{str(shape)} images"
         else:
             num_images, shape, exp_mem = self._update_expected_mem_usage(shape)
-            self.shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"
+            self._shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"
