@@ -6,6 +6,7 @@ The biggest benefit is explicitly marking what the value represents (e.g. Degree
 and helps the type hints to tell you that you might be passing the wrong value (e.g. ScalarCoR to a VectorCoR),
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
+from collections import namedtuple
 from dataclasses import dataclass
 from typing import Optional
 
@@ -93,3 +94,26 @@ class ReconstructionParameters:
             'cor': str(self.cor),
             'tilt': str(self.tilt)
         }
+
+
+Indices = namedtuple('Indices', ['start', 'end', 'step'])
+
+
+@dataclass
+class ImageParameters:
+    input_path: str
+    format: str
+    prefix: str
+    indices: Optional[Indices] = None
+    log_file: Optional[str] = None
+
+
+class LoadingParameters:
+    sample: ImageParameters
+    flat: Optional[ImageParameters] = None
+    dark: Optional[ImageParameters] = None
+    proj_180deg: Optional[ImageParameters] = None
+
+    name: str
+    dtype: str
+    sinograms: bool

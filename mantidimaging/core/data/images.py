@@ -1,5 +1,6 @@
 import datetime
 import json
+import math
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -8,11 +9,14 @@ import numpy as np
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
+
+    _log_file: Optional[IMATLogFile] = None
 
     def __init__(self,
                  data: np.ndarray,
@@ -38,7 +42,7 @@ class Images:
         self._is_sinograms = sinograms
 
         self.memory_filename = memory_filename
-        self._proj_180deg: Optional[np.ndarray] = None
+        self._proj180deg: Optional[Images] = None
 
     def __eq__(self, other):
         if isinstance(other, Images):
@@ -208,14 +212,20 @@ class Images:
         else:
             return self.data[projection_idx]
 
-    def proj180deg(self):
-        if self._proj_180deg is not None:
-            return self._proj_180deg
+    @property
+    def proj180deg(self) -> 'Images':
+        if self._proj180deg is not None:
+            return self._proj180deg
         else:
             # best guess when the real 180 degree projection is lacking
             # it's likely the middle of the stack is not _exactly_ 180 degrees
             # so the calculated COR will be a few pixels off
-            return self.projection(self.num_projections // 2)
+            return Images(self.projection(self.num_projections // 2))
+
+    @proj180deg.setter
+    def proj180deg(self, value: 'Images'):
+        assert isinstance(value, Images)
+        self._proj180deg = value
 
     @property
     def projections(self):
@@ -246,3 +256,15 @@ class Images:
     @property
     def is_sinograms(self):
         return self._is_sinograms
+
+    @property
+    def log_file(self):
+        return self._log_file
+
+    @log_file.setter
+    def log_file(self, value: IMATLogFile):
+        self._log_file = value
+
+    def projection_angles(self):
+        return self._log_file.projection_angles() if self._log_file is not None else np.linspace(
+            0, math.tau, self.num_projections)

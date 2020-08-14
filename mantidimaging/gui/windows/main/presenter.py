@@ -54,19 +54,20 @@ class MainWindowPresenter(BasePresenter):
             self.view.active_stacks_changed.emit()
 
     def load_stack(self, **kwargs):
-        kwargs = kwargs if kwargs else self.view.load_dialogue.get_kwargs()
+        if kwargs:
+            raise NotImplementedError("Converting from kwargs to LoadParameters not implemented")
+        par = self.view.load_dialogue.get_parameters()
 
-        if 'sample_path' not in kwargs or not kwargs['sample_path']:
-            raise ValueError("No sample path provided, cannot load anything")
+        if par.sample.input_path == "":
+            raise ValueError("No sample path provided")
 
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, kwargs)
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, {'parameters': par})
 
     def _on_stack_load_done(self, task):
         log = getLogger(__name__)
 
         if task.was_successful():
-            custom_name = task.kwargs['custom_name']
-            title = task.kwargs['selected_file'] if not custom_name else custom_name
+            title = task.kwargs['parameters'].name
             self.create_new_stack(task.result, title)
             task.result = None
         else:

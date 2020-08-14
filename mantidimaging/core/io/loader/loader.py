@@ -3,9 +3,12 @@ from typing import Tuple
 
 import numpy as np
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names)
+from mantidimaging.core.utility.data_containers import ImageParameters
+from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 
 LOG = getLogger(__name__)
 
@@ -85,6 +88,24 @@ def read_in_shape(input_path,
     shape = (len(input_file_names), ) + images.data[0].shape
     images.free_memory()
     return shape, images.is_sinograms
+
+
+def load_log(log_file) -> IMATLogFile:
+    data = []
+    with open(log_file, 'r') as f:
+        for line in f:
+            data.append(line.strip().split("   "))
+
+    return IMATLogFile(data)
+
+
+def load_p(parameters: ImageParameters, dtype, progress) -> Images:
+    return load(input_path=parameters.input_path,
+                in_prefix=parameters.prefix,
+                in_format=parameters.format,
+                indices=parameters.indices,
+                dtype=dtype,
+                progress=progress).sample
 
 
 def load(input_path=None,

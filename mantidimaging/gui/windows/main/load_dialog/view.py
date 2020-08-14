@@ -1,16 +1,14 @@
-from collections import namedtuple
-from typing import Dict, Optional, Any, Tuple
+from typing import Optional, Tuple
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
     QHeaderView
 
 from mantidimaging.core.io.utility import get_prefix
+from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.utility import (compile_ui)
 from mantidimaging.gui.windows.main.load_dialog.field import Field
 from mantidimaging.gui.windows.main.load_dialog.presenter import LoadPresenter, Notification
-
-Indices = namedtuple('Indices', ['start', 'end', 'step'])
 
 
 class MWLoadDialog(Qt.QDialog):
@@ -41,12 +39,12 @@ class MWLoadDialog(Qt.QDialog):
         self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
         self.flat, self.select_flat = self.create_file_input(1)
-        self.select_flat.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
-                                                                       field=self.flat, name="Flat"))
+        self.select_flat.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.flat, name="Flat"))
 
         self.dark, self.select_dark = self.create_file_input(2)
-        self.select_dark.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
-                                                                       field=self.dark, name="Dark"))
+        self.select_dark.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.dark, name="Dark"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
         self.sample_log, self.select_sample_log = self.create_file_input(4)
@@ -66,7 +64,7 @@ class MWLoadDialog(Qt.QDialog):
         use = QCheckBox(self)
         self.tree.setItemWidget(section, 2, use)
 
-        select_button = QPushButton(f"Select", self)
+        select_button = QPushButton("Select", self)
         select_button.setMaximumWidth(100)
         select_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 
@@ -91,13 +89,13 @@ class MWLoadDialog(Qt.QDialog):
         else:
             return None
 
-    @property
-    def indices(self) -> Indices:
-        return Indices(self.index_start.value(), self.index_end.value(), self.index_step.value())
+    # @property
+    # def indices(self) -> Indices:
+    #     return Indices(self.index_start.value(), self.index_end.value(), self.index_step.value())
 
-    def window_title(self) -> Optional[str]:
-        user_text = self.stackName.text()
-        return user_text if len(user_text) > 0 else None
+    # def window_title(self) -> Optional[str]:
+    #     user_text = self.stackName.text()
+    #     return user_text if len(user_text) > 0 else None
 
     def _set_all_step(self):
         self.index_step.setValue(1)
@@ -105,19 +103,47 @@ class MWLoadDialog(Qt.QDialog):
     def _set_preview_step(self):
         self.index_step.setValue(self.last_shape[0] / 10)
 
-    def get_kwargs(self) -> Dict[str, Any]:
-        return {
-            'selected_file': self.sample.file(),
-            'sample_path': self.sample.directory(),
-            'flat_path': self.flat.path_text(),
-            'dark_path': self.dark.path_text(),
-            'in_prefix': get_prefix(self.sample.path_text()),
-            'image_format': self.presenter.image_format,
-            'indices': self.sample.indices,
-            'custom_name': self.window_title(),
-            'dtype': self.pixel_bit_depth.currentText(),
-            'sinograms': self.images_are_sinograms.isChecked()
-        }
+    def get_parameters(self) -> LoadingParameters:
+        lp = LoadingParameters()
+        lp.sample = ImageParameters(input_path=self.sample.directory(),
+                                    format=self.presenter.image_format,
+                                    prefix=get_prefix(self.sample.path_text()),
+                                    indices=self.sample.indices,
+                                    log_file=self.sample_log.path_text())
+
+        lp.name = self.sample.file()
+
+        if self.flat.use and self.flat.path_text() != "":
+            lp.flat = ImageParameters(input_path=self.flat.directory(),
+                                      prefix=get_prefix(self.flat.path_text()),
+                                      format=self.presenter.image_format)
+
+        if self.dark.use and self.dark.path_text() != "":
+            lp.dark = ImageParameters(input_path=self.dark.directory(),
+                                      prefix=get_prefix(self.dark.path_text()),
+                                      format=self.presenter.image_format)
+        if self.proj_180deg.use and self.proj_180deg.path_text() != "":
+            lp.proj_180deg = ImageParameters(input_path=self.proj_180deg.directory(),
+                                             prefix=get_prefix(self.proj_180deg.path_text()),
+                                             format=self.presenter.image_format)
+
+        # lp.custom_name = self.window_title()
+        lp.dtype = self.pixel_bit_depth.currentText()
+        lp.sinograms = self.images_are_sinograms.isChecked()
+
+        return lp
+        # return {
+        #     # 'selected_file': self.sample.file(),
+        #     # 'sample_path': self.sample.directory(),
+        #     'flat_path': self.flat.path_text(),
+        #     'dark_path': self.dark.path_text(),
+        #     # 'in_prefix': ,
+        #     # 'image_format': self.presenter.image_format,
+        #     # 'indices': self.sample.indices,
+        #     'custom_name': self.window_title(),
+        #     'dtype': self.pixel_bit_depth.currentText(),
+        #     'sinograms': self.images_are_sinograms.isChecked()
+        # }
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)

@@ -22,7 +22,6 @@ class BlockQtSignals(object):
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """
-
     def __init__(self, q_objects: Union[QObject, List[QObject]]):
         if not isinstance(q_objects, list):
             q_objects = [q_objects]
@@ -45,8 +44,6 @@ class BlockQtSignals(object):
 def compile_ui(ui_file, qt_obj=None):
     base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
     return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
-
-
 
 
 def select_directory(field, caption):

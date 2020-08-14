@@ -4,7 +4,9 @@ from collections import namedtuple
 from logging import getLogger
 from typing import Dict, List, Optional, TYPE_CHECKING, Any
 
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
+from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
@@ -19,26 +21,26 @@ class MainWindowModel(object):
 
         self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
-    def do_load_stack(self,
-                      sample_path,
-                      image_format,
-                      indices,
-                      progress,
-                      in_prefix,
-                      dtype,
-                      flat_path=None,
-                      dark_path=None,
-                      sinograms=False):
-        dataset = loader.load(sample_path,
-                              flat_path,
-                              dark_path,
-                              in_prefix,
-                              image_format,
-                              dtype,
-                              indices=indices,
-                              progress=progress)
-        dataset.sample._is_sinograms = sinograms
-        return dataset
+    def do_load_stack(self, parameters: LoadingParameters, progress):
+        ds = Dataset(loader.load_p(parameters.sample, parameters.dtype, progress))
+        ds.sample._is_sinograms = parameters.sinograms
+
+        if parameters.sample.log_file:
+            ds.sample.log_file = loader.load_log(parameters.sample.log_file)
+
+        if parameters.flat:
+            ds.flat = loader.load_p(parameters.flat, parameters.dtype, progress)
+            if parameters.flat.log_file:
+                ds.flat.log_file = loader.load_log(parameters.flat.log_file)
+        if parameters.dark:
+            ds.dark = loader.load_p(parameters.dark, parameters.dtype, progress)
+        if parameters.proj_180deg:
+            p180 = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
+            ds.sample.proj180deg = p180
+            # free the p180, but it will stay alive as a reference in the sample Images
+            p180.free_memory()
+
+        return ds
 
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
