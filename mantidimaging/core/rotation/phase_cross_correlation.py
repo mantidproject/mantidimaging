@@ -24,8 +24,7 @@ try:
         # if the user provides an initial guess of the COR, take that into account to move the image to it
         initial_guess = 0 if initial_guess is None else initial_guess - images.h_middle
         p1 = ndimage.shift(images.projection(0), [0, -initial_guess], mode='constant', cval=0)
-        p2 = np.fliplr(
-            ndimage.shift(images.projection(images.num_projections // 2), [0, -initial_guess], mode='constant', cval=0))
+        p2 = np.fliplr(ndimage.shift(images.proj180deg.data, [0, -initial_guess], mode='constant', cval=0))
         shift = phase_cross_correlation(p1, p2, upsample_factor=1.0 / tol)
         getLogger(__name__).info(f"Found COR shift {shift}")
         # Compute center of rotation as the center of first image and the

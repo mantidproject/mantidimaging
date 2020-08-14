@@ -55,12 +55,12 @@ class LoadPresenter:
         filename = self.view.sample.path_text()
         dirname = self.view.sample.directory()
         try:
-            self.last_shape, sinograms = read_in_shape(dirname, in_prefix=get_prefix(filename),
+            self.last_shape, sinograms = read_in_shape(dirname,
+                                                       in_prefix=get_prefix(filename),
                                                        in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error(f"Failed to read file {sample_filename} {e}")
-            self.view.show_error("Failed to read this file. See log for details.",
-                                 traceback.format_exc())
+            self.view.show_error("Failed to read this file. See log for details.", traceback.format_exc())
             self.last_shape = (0, 0, 0)
             sinograms = False
 
@@ -95,9 +95,6 @@ class LoadPresenter:
                 logger.info(f"Could not find {type} files in {expected_folder_path.absolute()}")
 
         return []
-
-    # def do_update_expected_memory_usage(self):
-    #     self._update_expected_mem_usage()
 
     def _find_180deg_proj(self, sample_dirname: Path):
         expected_path = sample_dirname / '..' / '180deg'

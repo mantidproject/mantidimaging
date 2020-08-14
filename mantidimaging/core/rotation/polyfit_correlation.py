@@ -33,7 +33,7 @@ def find_center(images: Images, progress: Progress) -> Tuple[ScalarCoR, Degrees]
                                          shared_mem.fwd_index_only,
                                          image_width=images.width,
                                          p0=images.projection(0),
-                                         p180=np.fliplr(images.proj180deg()),
+                                         p180=np.fliplr(images.proj180deg.data),
                                          search_range=search_range)
         shared_mem.execute(shift, func, progress=progress, msg="Finding correlation on row")
         par = np.polyfit(slices, shift, deg=1)

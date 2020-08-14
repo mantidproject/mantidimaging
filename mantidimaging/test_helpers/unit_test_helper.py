@@ -72,8 +72,8 @@ def assert_not_equals(one: np.ndarray, two: np.ndarray):
 
     :param two: The right side of the comparison
     """
-    assert isinstance(one, np.ndarray)
-    assert isinstance(two, np.ndarray)
+    assert isinstance(one, np.ndarray), f"LHS type isn't NDARRAY, found: {one}"
+    assert isinstance(two, np.ndarray), f"RHS type isn't NDARRAY, found: {two}"
     npt.assert_raises(AssertionError, npt.assert_equal, one, two)
 
 

@@ -4,7 +4,7 @@ import mock
 
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.main.load_dialog.view import MWLoadDialog
 
 
 class MainWindowPresenterTest(unittest.TestCase):
