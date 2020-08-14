@@ -39,12 +39,12 @@ class MWLoadDialog(Qt.QDialog):
         self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
         self.flat, self.select_flat = self.create_file_input(1)
-        self.select_flat.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.flat, name="Flat"))
+        self.select_flat.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
+                                                                       field=self.flat, name="Flat"))
 
         self.dark, self.select_dark = self.create_file_input(2)
-        self.select_dark.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.dark, name="Dark"))
+        self.select_dark.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
+                                                                       field=self.dark, name="Dark"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
         self.sample_log, self.select_sample_log = self.create_file_input(4)
@@ -89,14 +89,6 @@ class MWLoadDialog(Qt.QDialog):
         else:
             return None
 
-    # @property
-    # def indices(self) -> Indices:
-    #     return Indices(self.index_start.value(), self.index_end.value(), self.index_step.value())
-
-    # def window_title(self) -> Optional[str]:
-    #     user_text = self.stackName.text()
-    #     return user_text if len(user_text) > 0 else None
-
     def _set_all_step(self):
         self.index_step.setValue(1)
 
@@ -105,27 +97,31 @@ class MWLoadDialog(Qt.QDialog):
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
-        lp.sample = ImageParameters(input_path=self.sample.directory(),
-                                    format=self.presenter.image_format,
-                                    prefix=get_prefix(self.sample.path_text()),
-                                    indices=self.sample.indices,
-                                    log_file=self.sample_log.path_text())
+        lp.sample = ImageParameters(
+            input_path=self.sample.directory(),
+            format=self.presenter.image_format,
+            prefix=get_prefix(self.sample.path_text()),
+            indices=self.sample.indices,
+            log_file=self.sample_log.path_text())
 
         lp.name = self.sample.file()
 
         if self.flat.use and self.flat.path_text() != "":
-            lp.flat = ImageParameters(input_path=self.flat.directory(),
-                                      prefix=get_prefix(self.flat.path_text()),
-                                      format=self.presenter.image_format)
+            lp.flat = ImageParameters(
+                input_path=self.flat.directory(),
+                prefix=get_prefix(self.flat.path_text()),
+                format=self.presenter.image_format)
 
         if self.dark.use and self.dark.path_text() != "":
-            lp.dark = ImageParameters(input_path=self.dark.directory(),
-                                      prefix=get_prefix(self.dark.path_text()),
-                                      format=self.presenter.image_format)
+            lp.dark = ImageParameters(
+                input_path=self.dark.directory(),
+                prefix=get_prefix(self.dark.path_text()),
+                format=self.presenter.image_format)
         if self.proj_180deg.use and self.proj_180deg.path_text() != "":
-            lp.proj_180deg = ImageParameters(input_path=self.proj_180deg.directory(),
-                                             prefix=get_prefix(self.proj_180deg.path_text()),
-                                             format=self.presenter.image_format)
+            lp.proj_180deg = ImageParameters(
+                input_path=self.proj_180deg.directory(),
+                prefix=get_prefix(self.proj_180deg.path_text()),
+                format=self.presenter.image_format)
 
         # lp.custom_name = self.window_title()
         lp.dtype = self.pixel_bit_depth.currentText()
