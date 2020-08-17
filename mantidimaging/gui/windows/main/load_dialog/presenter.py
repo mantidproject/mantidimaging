@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List
 
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
+from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.windows.main.load_dialog.field import Field
 
 if TYPE_CHECKING:
@@ -17,7 +18,6 @@ logger = getLogger(__name__)
 class Notification(Enum):
     UPDATE_ALL_FIELDS = auto()
     UPDATE_OTHER = auto()
-    # UPDATE_EXPECTED_MEM_USAGE = auto()
 
 
 class LoadPresenter:
@@ -53,12 +53,12 @@ class LoadPresenter:
         filename = self.view.sample.path_text()
         dirname = self.view.sample.directory()
         try:
-            self.last_shape, sinograms = read_in_shape(dirname,
-                                                       in_prefix=get_prefix(filename),
+            self.last_shape, sinograms = read_in_shape(dirname, in_prefix=get_prefix(filename),
                                                        in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error(f"Failed to read file {sample_filename} {e}")
-            self.view.show_error("Failed to read this file. See log for details.", traceback.format_exc())
+            self.view.show_error("Failed to read this file. See log for details.",
+                                 traceback.format_exc())
             self.last_shape = (0, 0, 0)
             sinograms = False
 
@@ -67,8 +67,12 @@ class LoadPresenter:
         self.view.flat.set_images(self._find_images(sample_dirname, "Flat"))
         self.view.dark.set_images(self._find_images(sample_dirname, "Dark"))
         self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
+
         self.view.sample_log.path = self._find_log(sample_dirname, self.view.sample.directory())
+        self.view.sample_log.use = False
+
         self.view.flat_log.path = self._find_log(sample_dirname, self.view.flat.directory())
+        self.view.flat_log.use = False
 
         self.view.images_are_sinograms.setChecked(sinograms)
 
@@ -116,3 +120,37 @@ class LoadPresenter:
             return
         selected_dir = Path(os.path.dirname(selected_file))
         field.set_images(self._find_images(selected_dir, name))
+
+    def get_parameters(self) -> LoadingParameters:
+        lp = LoadingParameters()
+        lp.sample = ImageParameters(
+            input_path=self.view.sample.directory(),
+            format=self.image_format,
+            prefix=get_prefix(self.view.sample.path_text()),
+            indices=self.view.sample.indices,
+            log_file=self.view.sample_log.path_text())
+
+        lp.name = self.view.sample.file()
+        lp.pixel_size = self.view.pixelSize.value()
+
+        if self.view.flat.use and self.view.flat.path_text() != "":
+            lp.flat = ImageParameters(
+                input_path=self.view.flat.directory(),
+                prefix=get_prefix(self.view.flat.path_text()),
+                format=self.image_format)
+
+        if self.view.dark.use and self.view.dark.path_text() != "":
+            lp.dark = ImageParameters(
+                input_path=self.view.dark.directory(),
+                prefix=get_prefix(self.view.dark.path_text()),
+                format=self.image_format)
+        if self.view.proj_180deg.use and self.view.proj_180deg.path_text() != "":
+            lp.proj_180deg = ImageParameters(
+                input_path=self.view.proj_180deg.directory(),
+                prefix=get_prefix(self.view.proj_180deg.path_text()),
+                format=self.image_format)
+
+        lp.dtype = self.view.pixel_bit_depth.currentText()
+        lp.sinograms = self.view.images_are_sinograms.isChecked()
+
+        return lp
