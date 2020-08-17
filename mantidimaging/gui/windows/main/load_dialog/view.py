@@ -123,23 +123,10 @@ class MWLoadDialog(Qt.QDialog):
                                              prefix=get_prefix(self.proj_180deg.path_text()),
                                              format=self.presenter.image_format)
 
-        # lp.custom_name = self.window_title()
         lp.dtype = self.pixel_bit_depth.currentText()
         lp.sinograms = self.images_are_sinograms.isChecked()
 
         return lp
-        # return {
-        #     # 'selected_file': self.sample.file(),
-        #     # 'sample_path': self.sample.directory(),
-        #     'flat_path': self.flat.path_text(),
-        #     'dark_path': self.dark.path_text(),
-        #     # 'in_prefix': ,
-        #     # 'image_format': self.presenter.image_format,
-        #     # 'indices': self.sample.indices,
-        #     'custom_name': self.window_title(),
-        #     'dtype': self.pixel_bit_depth.currentText(),
-        #     'sinograms': self.images_are_sinograms.isChecked()
-        # }
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
