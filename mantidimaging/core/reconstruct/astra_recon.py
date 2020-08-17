@@ -17,7 +17,8 @@ LOG = getLogger(__name__)
 # Full credit for following code to Daniil Kazantzev
 # Source: https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70
 def rotation_matrix2d(theta):
-    return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+    return np.array([[np.cos(theta), -np.sin(theta)],
+                     [np.sin(theta), np.cos(theta)]])
 
 
 def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, center_rot_offset: Union[float]):
@@ -82,7 +83,7 @@ class AstraRecon(BaseRecon):
         proj_angles = images.projection_angles()
 
         def get_sumsq(image: np.ndarray) -> float:
-            return np.sum(image**2)
+            return np.sum(image ** 2)
 
         def minimizer_function(cor):
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
@@ -109,12 +110,10 @@ class AstraRecon(BaseRecon):
             return astra.data2d.get(rec_id)
 
     @staticmethod
-    def full(images: Images,
-             cors: List[ScalarCoR],
-             recon_params: ReconstructionParameters,
+    def full(images: Images, cors: List[ScalarCoR], recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
-        output_shape = (images.num_sinograms, ) + images.sino(0).shape
+        output_shape = (images.num_sinograms,) + images.sino(0).shape
         output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Reconstruction', **recon_params.to_dict())
 
@@ -129,7 +128,7 @@ class AstraRecon(BaseRecon):
 
         proj_angles = images.projection_angles()
         for i in range(images.height):
-            output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
+            output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params)
             progress.update(1, "Reconstructed slice")
 
         return output_images
@@ -138,15 +137,14 @@ class AstraRecon(BaseRecon):
     def allowed_filters():
         # removed from list: 'kaiser' as it hard crashes ASTRA
         #                    'projection', 'sinogram', 'rprojection', 'rsinogram' as they error
-        return [
-            'ram-lak', 'shepp-logan', 'cosine', 'hamming', 'hann', 'none', 'tukey', 'lanczos', 'triangular', 'gaussian',
-            'barlett-hann', 'blackman', 'nuttall', 'blackman-harris', 'blackman-nuttall', 'flat-top', 'parzen'
-        ]
+        return ['ram-lak', 'shepp-logan', 'cosine', 'hamming', 'hann', 'none', 'tukey', 'lanczos', 'triangular',
+                'gaussian', 'barlett-hann', 'blackman', 'nuttall', 'blackman-harris', 'blackman-nuttall',
+                'flat-top', 'parzen']
 
 
 def allowed_recon_kwargs() -> dict:
-    return {
-        'FBP_CUDA': ['filter_name', 'filter_par'],
-        'SIRT_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling', 'PixelSuperSampling'],
-        'SIRT3D_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling', 'PixelSuperSampling']
-    }
+    return {'FBP_CUDA': ['filter_name', 'filter_par'],
+            'SIRT_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling',
+                          'PixelSuperSampling'],
+            'SIRT3D_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling',
+                            'PixelSuperSampling']}
