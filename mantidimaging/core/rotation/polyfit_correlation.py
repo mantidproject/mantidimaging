@@ -25,11 +25,12 @@ def do_search(row: int, image_width, p0, p180, search_range: list) -> int:
 def find_center(images: Images, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
     # assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
-    with pu.temp_shared_array((images.height,)) as shift:
+    with pu.temp_shared_array((images.height, )) as shift:
         # this is the area that is looked into for the shift after overlapping the images
         search_range = get_search_range(images.width)
 
-        func = shared_mem.create_partial(do_search, shared_mem.fwd_index_only,
+        func = shared_mem.create_partial(do_search,
+                                         shared_mem.fwd_index_only,
                                          image_width=images.width,
                                          p0=images.projection(0),
                                          p180=np.fliplr(images.proj180deg.data[0]),

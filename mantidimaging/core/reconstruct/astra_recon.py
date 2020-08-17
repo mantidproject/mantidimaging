@@ -93,6 +93,10 @@ class AstraRecon(BaseRecon):
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
+        assert sino.shape[0] == len(
+            proj_angles.value), f"Number of projection angles {len(proj_angles.value)} does not equal" \
+                                f" the number of projections {sino.shape[0]}. This can happen if loading subset of" \
+                                f" projections, and using projection angles from a log file."
 
         image_width = sino.shape[1]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
