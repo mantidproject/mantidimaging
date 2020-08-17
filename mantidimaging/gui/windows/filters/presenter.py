@@ -12,6 +12,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (BlockQtSignals, get_parameters_from_stack)
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
+from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import FiltersWindowModel
 
 if TYPE_CHECKING:
@@ -29,6 +30,7 @@ class Notification(Enum):
 
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
+    stack: Optional[StackVisualiserView] = None
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
         super(FiltersWindowPresenter, self).__init__(view)
@@ -55,7 +57,8 @@ class FiltersWindowPresenter(BasePresenter):
 
     @property
     def max_preview_image_idx(self):
-        return max(self.model.num_images_in_stack - 1, 0)
+        num_images = self.stack.presenter.images.num_images if self.stack is not None else 0
+        return max(num_images - 1, 0)
 
     def set_stack_uuid(self, uuid):
         self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
@@ -68,7 +71,7 @@ class FiltersWindowPresenter(BasePresenter):
         if stack:
             stack.roi_updated.connect(self.handle_roi_selection)
 
-        self.model.stack = stack
+        self.stack = stack
 
         # Update the preview image index
         with BlockQtSignals([self.view]):
@@ -78,8 +81,8 @@ class FiltersWindowPresenter(BasePresenter):
         self.do_update_previews()
 
     def disconnect_current_stack_roi(self):
-        if self.model.stack:
-            self.model.stack.roi_updated.disconnect(self.handle_roi_selection)
+        if self.stack:
+            self.stack.roi_updated.disconnect(self.handle_roi_selection)
 
     def handle_roi_selection(self, roi: SensibleROI):
         if roi and self.filter_uses_parameter(SVParameters.ROI):
@@ -117,21 +120,19 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_apply_filter(self):
         self.view.clear_previews()
-        self.model.do_apply_filter()
+        self.model.do_apply_filter(self.stack.view, self.stack.presenter)
 
     def do_update_previews(self):
-        stack = self.model.stack_presenter
-
         self.view.clear_previews()
-        if stack is not None:
-            subset: Images = stack.get_image(self.model.preview_image_idx)
+        if self.stack is not None:
+            subset: Images = self.stack.get_image(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
             # Update image before
             self._update_preview_image(before_image, self.view.preview_image_before,
                                        self.view.previews.set_before_histogram)
 
             # Generate sub-stack and run filter
-            exec_kwargs = get_parameters_from_stack(stack, self.model.params_needed_from_stack)
+            exec_kwargs = get_parameters_from_stack(self.stack, self.model.params_needed_from_stack)
 
             filtered_image_data = None
             try:

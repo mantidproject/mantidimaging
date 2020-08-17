@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):
@@ -34,9 +34,17 @@ class FiltersWindowModel(object):
         self.preview_image_idx = 0
 
         # Execution info for current filter
-        self.stack = None
+        self._stack = None
         self.selected_filter = self.filters[0]
         self.filter_widget_kwargs = {}
+
+    # @property
+    # def stack(self):
+    #     return self._stack
+    #
+    # @stack.setter
+    # def stack(self, value):
+    #     self._stack = value
 
     @property
     def filter_names(self):
@@ -50,15 +58,6 @@ class FiltersWindowModel(object):
         :param filter_idx: Index of the filter in the registry
         """
         return self.filters[filter_idx].register_gui
-
-    @property
-    def stack_presenter(self):
-        return self.stack.presenter if self.stack else None
-
-    @property
-    def num_images_in_stack(self):
-        num_images = self.stack_presenter.images.num_images if self.stack_presenter is not None else 0
-        return num_images
 
     @property
     def params_needed_from_stack(self):
@@ -84,29 +83,36 @@ class FiltersWindowModel(object):
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
-        exec_func(images, **stack_params)
+        self._apply_to(exec_func, images, stack_params)
+        images_180deg = images.proj180deg
+        # the 180 projection is a loaded image, not a guess of the middle
+        if images_180deg.memory_filename is not None:
+            log.info("Applying filter to 180 deg projection")
+            self._apply_to(exec_func, images_180deg, stack_params)
 
-        # store the executed filter in history if it all executed successfully
+    def _apply_to(self, exec_func, images, stack_params):
+        exec_func(images, **stack_params)
         exec_func.keywords.update(stack_params)
+        # store the executed filter in history if it executed successfully
         images.record_operation(
             self.selected_filter.__name__,  # type: ignore
             self.selected_filter.filter_name,
             *exec_func.args,
             **exec_func.keywords)
 
-    def do_apply_filter(self):
+    def do_apply_filter(self, stack_view, stack_presenter):
         """
         Applies the selected filter to the selected stack.
         """
-        if not self.stack_presenter:
+        if not stack_presenter:
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        stack_params = get_parameters_from_stack(self.stack_presenter, self.params_needed_from_stack)
-        apply_func = partial(self.apply_filter, self.stack_presenter.images, stack_params)
+        stack_params = get_parameters_from_stack(stack_presenter, self.params_needed_from_stack)
+        apply_func = partial(self.apply_filter, stack_presenter.images, stack_params)
 
         def post_filter(_):
-            self.stack_presenter.notify(SVNotification.REFRESH_IMAGE)
+            stack_presenter.notify(SVNotification.REFRESH_IMAGE)
             self.presenter.do_update_previews()
 
-        start_async_task_view(self.stack_presenter.view, apply_func, post_filter)
+        start_async_task_view(stack_view, apply_func, post_filter)
