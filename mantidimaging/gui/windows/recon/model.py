@@ -8,12 +8,9 @@ from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import AstraRecon
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
-from mantidimaging.core.rotation.phase_cross_correlation import find_center_pc
 from mantidimaging.core.rotation.polyfit_correlation import find_center
-from mantidimaging.core.utility.data_containers import (Degrees, ProjectionAngles, ReconstructionParameters, ScalarCoR,
-                                                        Slope)
+from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
 from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.core.utility.projection_angles import generate as generate_projection_angles
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
 if TYPE_CHECKING:
@@ -23,8 +20,6 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowModel(object):
-    proj_angles: Optional[ProjectionAngles]
-
     def __init__(self, data_model: CorTiltPointQtModel):
         self.stack: Optional['StackVisualiserView'] = None
         self.preview_projection_idx = 0
@@ -67,15 +62,12 @@ class ReconstructWindowModel(object):
         self.preview_projection_idx = 0
         self.preview_slice_idx = slice_idx
 
-        if stack is not None:
-            self.proj_angles = generate_projection_angles(360, self.images.num_projections)
-
     def find_initial_cor(self) -> Tuple[int, ScalarCoR]:
         if self.images is None:
             return 0, ScalarCoR(0)
 
         first_slice_to_recon = 0
-        cor = ScalarCoR(find_center_pc(self.images))
+        cor = ScalarCoR(self.images.v_middle)
         return first_slice_to_recon, cor
 
     def do_fit(self):
@@ -96,21 +88,22 @@ class ReconstructWindowModel(object):
 
     def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters):
         # Ensure we have some sample data
-        if self.images is None or self.proj_angles is None:
+        if self.images is None:
             return None
 
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
-        return reconstructor.single(self.images.sino(slice_idx), cor, self.proj_angles, recon_params)
+        return reconstructor.single_sino(self.images.sino(slice_idx), cor, self.images.projection_angles(),
+                                         recon_params)
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress):
         # Ensure we have some sample data
-        if self.images is None or self.proj_angles is None:
+        if self.images is None:
             return None
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
         return reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
-                                  self.proj_angles, recon_params, progress)
+                                  recon_params, progress)
 
     @property
     def tilt_angle(self) -> Optional[Degrees]:
@@ -163,10 +156,10 @@ class ReconstructWindowModel(object):
     def is_current_stack(self, stack):
         return self.stack == stack
 
-    def get_slice_indices(self, num_cors: int) -> Tuple[int, List[int]]:
+    def get_slice_indices(self, num_cors: int) -> Tuple[int, Union[np.ndarray, Tuple[np.ndarray, Optional[float]]]]:
         # used to crop off 20% off the top and bottom, which is usually noise/empty
         remove_a_bit = self.images.height * 0.2
-        slices: List[int] = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)
+        slices = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)
         return self.selected_row, slices
 
     def auto_find_minimisation_sqsum(self, slices: List[int], recon_params: ReconstructionParameters,
@@ -182,7 +175,7 @@ class ReconstructWindowModel(object):
         """
 
         # Ensure we have some sample data
-        if self.images is None or self.proj_angles is None:
+        if self.images is None:
             return [0.0]
 
         if isinstance(initial_cor, list):
@@ -195,7 +188,7 @@ class ReconstructWindowModel(object):
         progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
         cors = []
         for idx, slice in enumerate(slices):
-            cor = AstraRecon.find_cor(self.images, slice, initial_cor[idx], self.proj_angles, recon_params)
+            cor = AstraRecon.find_cor(self.images, slice, initial_cor[idx], recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors

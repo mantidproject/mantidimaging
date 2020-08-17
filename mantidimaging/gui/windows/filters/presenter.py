@@ -120,19 +120,27 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_apply_filter(self):
         self.view.clear_previews()
-        self.model.do_apply_filter(self.stack.view, self.stack.presenter)
+
+        def post_filter(_):
+            self.view.main_window.update_stack_with_images(self.stack.presenter.images)
+            if self.stack.presenter.images.has_proj180deg():
+                self.view.main_window.update_stack_with_images(self.stack.presenter.images.proj180deg)
+            self.do_update_previews()
+
+        self.model.do_apply_filter(self.stack, self.stack.presenter, post_filter)
 
     def do_update_previews(self):
         self.view.clear_previews()
         if self.stack is not None:
-            subset: Images = self.stack.get_image(self.model.preview_image_idx)
+            stack_presenter = self.stack.presenter
+            subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
             # Update image before
             self._update_preview_image(before_image, self.view.preview_image_before,
                                        self.view.previews.set_before_histogram)
 
             # Generate sub-stack and run filter
-            exec_kwargs = get_parameters_from_stack(self.stack, self.model.params_needed_from_stack)
+            exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
 
             filtered_image_data = None
             try:

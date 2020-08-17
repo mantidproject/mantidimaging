@@ -2,24 +2,23 @@ from logging import getLogger
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct import get_reconstructor_for
-from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
+from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from .types import ImageType
 
 LOG = getLogger(__name__)
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, data: Images, slice_idx: int, initial_cor: ScalarCoR, proj_angles: ProjectionAngles,
-                 recon_params: ReconstructionParameters):
-        self.image_width = data.width
-        self.sino = data.sino(slice_idx)
+    def __init__(self, images: Images, slice_idx: int, initial_cor: ScalarCoR, recon_params: ReconstructionParameters):
+        self.image_width = images.width
+        self.sino = images.sino(slice_idx)
 
         # Initial parameters
         self.centre_cor = initial_cor.value
         self.cor_step = 50
 
         # Cache projection angles
-        self.proj_angles = proj_angles
+        self.proj_angles = images.projection_angles()
         self.recon_params = recon_params
         self.reconstructor = get_reconstructor_for(recon_params.algorithm)
 

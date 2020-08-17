@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import Qt
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
+from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import CORInspectionDialogModel
 from .types import ImageType
@@ -31,11 +31,11 @@ class CORInspectionDialogPresenter(BasePresenter):
 
     view: 'CORInspectionDialogView'
 
-    def __init__(self, view, data: Images, slice_index: int, initial_cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def __init__(self, view, images: Images, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters):
         super().__init__(view)
 
-        self.model = CORInspectionDialogModel(data, slice_index, initial_cor, proj_angles, recon_params)
+        self.model = CORInspectionDialogModel(images, slice_index, initial_cor, recon_params)
 
     def notify(self, signal):
         try:

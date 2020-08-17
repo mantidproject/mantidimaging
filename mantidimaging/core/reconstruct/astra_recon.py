@@ -72,25 +72,22 @@ class AstraRecon(BaseRecon):
         return num_gpus
 
     @staticmethod
-    def find_cor(images: Images, slice_idx: int, start_cor: float, proj_angles: ProjectionAngles,
-                 recon_params: ReconstructionParameters) -> float:
+    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         """
         Find the best CoR for this slice by maximising the squared sum of the reconstructed slice.
 
         Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
         """
+
+        proj_angles = images.projection_angles()
+
         def get_sumsq(image: np.ndarray) -> float:
             return np.sum(image**2)
 
         def minimizer_function(cor):
-            return -get_sumsq(AstraRecon.single(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
+            return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
 
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
-
-    @staticmethod
-    def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-               recon_params: ReconstructionParameters) -> np.ndarray:
-        return AstraRecon.single_sino(sino, cor, proj_angles, recon_params)
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
@@ -110,7 +107,6 @@ class AstraRecon(BaseRecon):
     @staticmethod
     def full(images: Images,
              cors: List[ScalarCoR],
-             proj_angles: ProjectionAngles,
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
@@ -126,6 +122,8 @@ class AstraRecon(BaseRecon):
         #                               num_gpus=num_gpus, cors=cors,
         #                               proj_angles=proj_angles, recon_params=recon_params)
         # ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
+
+        proj_angles = images.projection_angles()
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single(images.sino(i), cors[i], proj_angles, recon_params)
             progress.update(1, "Reconstructed slice")

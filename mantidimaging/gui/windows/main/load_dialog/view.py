@@ -2,7 +2,7 @@ from typing import Optional, Tuple
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView
+    QHeaderView, QDoubleSpinBox
 
 from mantidimaging.core.io.utility import get_prefix
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
@@ -15,6 +15,8 @@ class MWLoadDialog(Qt.QDialog):
     tree: QTreeWidget
     pixel_bit_depth: QComboBox
     images_are_sinograms: QCheckBox
+
+    pixelSize: QDoubleSpinBox
 
     _sample_path: Optional[QTreeWidgetItem] = None
     _flat_path: Optional[QTreeWidgetItem] = None
@@ -39,12 +41,12 @@ class MWLoadDialog(Qt.QDialog):
         self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
         self.flat, self.select_flat = self.create_file_input(1)
-        self.select_flat.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
-                                                                       field=self.flat, name="Flat"))
+        self.select_flat.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.flat, name="Flat"))
 
         self.dark, self.select_dark = self.create_file_input(2)
-        self.select_dark.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
-                                                                       field=self.dark, name="Dark"))
+        self.select_dark.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.dark, name="Dark"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
         self.sample_log, self.select_sample_log = self.create_file_input(4)
@@ -96,32 +98,30 @@ class MWLoadDialog(Qt.QDialog):
         self.index_step.setValue(self.last_shape[0] / 10)
 
     def get_parameters(self) -> LoadingParameters:
+        # TODO move to presenter
         lp = LoadingParameters()
-        lp.sample = ImageParameters(
-            input_path=self.sample.directory(),
-            format=self.presenter.image_format,
-            prefix=get_prefix(self.sample.path_text()),
-            indices=self.sample.indices,
-            log_file=self.sample_log.path_text())
+        lp.sample = ImageParameters(input_path=self.sample.directory(),
+                                    format=self.presenter.image_format,
+                                    prefix=get_prefix(self.sample.path_text()),
+                                    indices=self.sample.indices,
+                                    log_file=self.sample_log.path_text())
 
         lp.name = self.sample.file()
+        lp.pixel_size = self.pixelSize.value()
 
         if self.flat.use and self.flat.path_text() != "":
-            lp.flat = ImageParameters(
-                input_path=self.flat.directory(),
-                prefix=get_prefix(self.flat.path_text()),
-                format=self.presenter.image_format)
+            lp.flat = ImageParameters(input_path=self.flat.directory(),
+                                      prefix=get_prefix(self.flat.path_text()),
+                                      format=self.presenter.image_format)
 
         if self.dark.use and self.dark.path_text() != "":
-            lp.dark = ImageParameters(
-                input_path=self.dark.directory(),
-                prefix=get_prefix(self.dark.path_text()),
-                format=self.presenter.image_format)
+            lp.dark = ImageParameters(input_path=self.dark.directory(),
+                                      prefix=get_prefix(self.dark.path_text()),
+                                      format=self.presenter.image_format)
         if self.proj_180deg.use and self.proj_180deg.path_text() != "":
-            lp.proj_180deg = ImageParameters(
-                input_path=self.proj_180deg.directory(),
-                prefix=get_prefix(self.proj_180deg.path_text()),
-                format=self.presenter.image_format)
+            lp.proj_180deg = ImageParameters(input_path=self.proj_180deg.directory(),
+                                             prefix=get_prefix(self.proj_180deg.path_text()),
+                                             format=self.presenter.image_format)
 
         # lp.custom_name = self.window_title()
         lp.dtype = self.pixel_bit_depth.currentText()

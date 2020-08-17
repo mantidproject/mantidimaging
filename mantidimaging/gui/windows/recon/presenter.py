@@ -150,14 +150,17 @@ class ReconstructWindowPresenter(BasePresenter):
         cor = self.model.get_me_a_cor(cor)
 
         self.view.update_sinogram(self.model.images.sino(slice_idx))
-        data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
-        self.view.update_recon_preview(data, refresh_recon_slice_histogram)
+        try:
+            data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
+            self.view.update_recon_preview(data, refresh_recon_slice_histogram)
+        except ValueError as err:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
-                                         self.model.proj_angles, self.view.recon_params())
+                                         self.view.recon_params())
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
