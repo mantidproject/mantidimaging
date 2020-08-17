@@ -38,4 +38,4 @@ class IMATLogFile:
             assert "angle:" in angle_str
             angles[i] = float(angle_str[angle_str.rfind(": ") + 1:])
 
-        return ProjectionAngles(angles)
+        return ProjectionAngles(numpy.deg2rad(angles))

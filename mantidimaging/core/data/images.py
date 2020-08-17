@@ -2,6 +2,7 @@ import datetime
 import json
 import math
 from copy import deepcopy
+from logging import getLogger
 from typing import List, Tuple, Optional, Any, Dict
 
 import numpy as np
@@ -19,13 +20,9 @@ class Images:
 
     _log_file: Optional[IMATLogFile] = None
 
-    def __init__(self,
-                 data: np.ndarray,
-                 filenames: Optional[List[str]] = None,
-                 indices: Optional[Tuple[int, int, int]] = None,
-                 metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 memory_filename: Optional[str] = None):
+    def __init__(self, data: np.ndarray, filenames: Optional[List[str]] = None,
+                 indices: Optional[Tuple[int, int, int]] = None, metadata: Optional[Dict[str, Any]] = None,
+                 sinograms: bool = False, memory_filename: Optional[str] = None):
         """
 
         :param data: Images of the Sample/Projection data
@@ -115,15 +112,12 @@ class Images:
                 return o
 
         self.metadata[const.OPERATION_HISTORY].append({
-            const.TIMESTAMP:
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            const.OPERATION_NAME:
-            func_name,
+            const.TIMESTAMP: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            const.OPERATION_NAME: func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
-            const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
-                                           for k, v in kwargs.items() if accepted_type(v)},
+            const.OPERATION_KEYWORD_ARGS: {k: prepare(v) for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-            display_name
+                display_name
         })
 
     def copy(self, flip_axes=False) -> 'Images':
@@ -135,9 +129,7 @@ class Images:
         else:
             data_copy[:] = self.data[:]
 
-        images = Images(data_copy,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
+        images = Images(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
                         sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
                         memory_filename=data_name)
         return images
@@ -149,17 +141,15 @@ class Images:
         data_copy = pu.create_array(shape, self.data.dtype, data_name)
         data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
-        images = Images(data_copy,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
-                        sinograms=self._is_sinograms,
-                        memory_filename=data_name)
+        images = Images(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata),
+                        sinograms=self._is_sinograms, memory_filename=data_name)
 
         mark_cropped(images, roi)
         return images
 
     def index_as_images(self, index) -> 'Images':
-        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata),
+                      sinograms=self.is_sinograms)
 
     @property
     def height(self):
@@ -271,5 +261,7 @@ class Images:
         self._log_file = value
 
     def projection_angles(self):
-        return self._log_file.projection_angles() if self._log_file is not None else \
+        pa = self._log_file.projection_angles() if self._log_file is not None else \
             ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+        getLogger(__name__).info(f"Using projection angles: {len(pa.value)}, and value: {pa.value}")
+        return pa
