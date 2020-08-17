@@ -168,7 +168,7 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="2">
+     <item row="1" column="2">
       <widget class="QComboBox" name="pixel_bit_depth">
        <property name="editable">
         <bool>false</bool>
@@ -188,21 +188,14 @@
        </item>
       </widget>
      </item>
-     <item row="1" column="2">
+     <item row="2" column="2">
       <widget class="QCheckBox" name="images_are_sinograms">
        <property name="text">
         <string>Images are sinograms</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Pixel Bit Depth:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
+     <item row="1" column="0">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -214,6 +207,30 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Pixel Bit Depth:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QDoubleSpinBox" name="pixelSize">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label">
+       <property name="toolTip">
+        <string>Set pixel size to automatically compute linear attenuation after reconstruction. If left 0 the reconstruction will be output in gray values</string>
+       </property>
+       <property name="text">
+        <string>Pixel size (microns)</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

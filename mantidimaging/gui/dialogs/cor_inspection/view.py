@@ -18,10 +18,10 @@ class CORInspectionDialogView(BaseDialogView):
     moreButton: QPushButton
     step: QDoubleSpinBox
 
-    def __init__(self, parent, data: Images, slice_index: int, initial_cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
-        self.presenter = CORInspectionDialogPresenter(self, data, slice_index, initial_cor, proj_angles, recon_params)
+        self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params)
 
         self.step.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
         self.lessButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.LESS))

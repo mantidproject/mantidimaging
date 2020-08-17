@@ -11,6 +11,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from .model import MainWindowModel
 
 if TYPE_CHECKING:
@@ -61,7 +62,8 @@ class MainWindowPresenter(BasePresenter):
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
 
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, {'parameters': par})
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done,
+                              {'parameters': par})
 
     def _on_stack_load_done(self, task):
         log = getLogger(__name__)
@@ -101,6 +103,10 @@ class MainWindowPresenter(BasePresenter):
                 dark_dock = add_stack(container.dark,
                                       title=f"{self.model.create_name(os.path.basename(container.dark.filenames[0]))}")
                 self.view.tabifyDockWidget(sample_dock, dark_dock)
+            if container.sample.has_proj180deg():
+                proj180_dock = add_stack(container.sample.proj180deg,
+                                         title=f"{self.model.create_name(os.path.basename(container.sample.proj180deg.filenames[0]))}")
+                self.view.tabifyDockWidget(sample_dock, proj180_dock)
 
         self.view.active_stacks_changed.emit()
 
@@ -137,3 +143,7 @@ class MainWindowPresenter(BasePresenter):
     @property
     def have_active_stacks(self):
         return self.model.have_active_stacks
+
+    def update_stack_with_images(self, images):
+        sv = self.model.get_stack_by_images(images)
+        sv.presenter.notify(SVNotification.REFRESH_IMAGE)

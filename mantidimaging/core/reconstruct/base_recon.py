@@ -9,21 +9,6 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 class BaseRecon:
     @staticmethod
-    def single(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-               recon_params: ReconstructionParameters) -> np.ndarray:
-        """
-        Performs a preview of a single slice/sinogram from a 3D volume provided as
-        a stack of projections.
-
-        :param sino: Sinogram to reconstruct
-        :param cor: Centre of rotation value
-        :param proj_angles: Array of projection angles
-        :param recon_params: Parameters for the reconstruction
-        :return: 2D image data for reconstructed slice
-        """
-        raise NotImplementedError("Base class call")
-
-    @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
         """
@@ -41,7 +26,6 @@ class BaseRecon:
     @staticmethod
     def full(images: Images,
              cors: List[ScalarCoR],
-             proj_angles: ProjectionAngles,
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None) -> Images:
         """

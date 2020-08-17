@@ -4,6 +4,7 @@ from collections import namedtuple
 from logging import getLogger
 from typing import Dict, List, Optional, TYPE_CHECKING, Any
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters
@@ -35,10 +36,7 @@ class MainWindowModel(object):
         if parameters.dark:
             ds.dark = loader.load_p(parameters.dark, parameters.dtype, progress)
         if parameters.proj_180deg:
-            p180 = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
-            ds.sample.proj180deg = p180
-            # free the p180, but it will stay alive as a reference in the sample Images
-            p180.free_memory()
+            ds.sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
 
         return ds
 
@@ -97,6 +95,13 @@ class MainWindowModel(object):
         for stack_id in self.stack_list:
             if stack_id.name == search_name:
                 return self.get_stack(stack_id.id)
+        return None
+
+    def get_stack_by_images(self, images: Images) -> Optional[StackVisualiserView]:
+        for _, dock_widget in self.active_stacks.items():
+            sv = dock_widget.widget()
+            if images == sv.presenter.images:
+                return sv
         return None
 
     def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:

@@ -32,7 +32,8 @@ def delete_shared_array(name, silent_failure=False):
             raise e
 
 
-def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name: Optional[str] = None) -> np.ndarray:
+def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32,
+                 name: Optional[str] = None) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
@@ -125,10 +126,13 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) ->
         if shape[0] <= 10:
             LOG.info("3D axis 0 shape under 10. Running synchronously on 1 core")
             return False
+
+    LOG.info(f"Running async on {cores} cores")
     return True
 
 
-def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int, progress: Progress, msg: str):
+def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int, progress: Progress,
+                 msg: str):
     task_name = f"{msg} {cores}c {chunksize}chs"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = generate_indices(img_num)

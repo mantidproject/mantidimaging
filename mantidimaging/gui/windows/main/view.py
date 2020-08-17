@@ -146,6 +146,9 @@ class MainWindowView(BaseMainWindowView):
     def create_new_stack(self, images: Images, title: str):
         self.presenter.create_new_stack(images, title)
 
+    def update_stack_with_images(self, images: Images):
+        self.presenter.update_stack_with_images(images)
+
     def _create_stack_window(self,
                              stack: Images,
                              title: str,

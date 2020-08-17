@@ -71,7 +71,7 @@ class StackSelectorWidgetPresenter(BasePresenter):
     def do_select_eligible_stack(self):
         stack_list: List[Tuple[UUID, str]] = self.view.main_window.stack_list
         for idx, [_, name] in enumerate(stack_list):
-            if "dark" not in name.lower() and "flat" not in name.lower():
+            name = name.lower()
+            if "dark" not in name and "flat" not in name and "180deg" not in name:
                 self.view.setCurrentIndex(idx)
-                # self.handle_selection(idx)
-                return
+                break

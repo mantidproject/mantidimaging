@@ -8,7 +8,6 @@ from mantidimaging.core.filters.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import get_parameters_from_stack
-from mantidimaging.gui.windows.stack_visualiser import SVNotification
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401
@@ -100,7 +99,7 @@ class FiltersWindowModel(object):
             *exec_func.args,
             **exec_func.keywords)
 
-    def do_apply_filter(self, stack_view, stack_presenter):
+    def do_apply_filter(self, stack_view, stack_presenter, post_filter: Callable[[Any], None]):
         """
         Applies the selected filter to the selected stack.
         """
@@ -110,9 +109,4 @@ class FiltersWindowModel(object):
         # Get auto parameters
         stack_params = get_parameters_from_stack(stack_presenter, self.params_needed_from_stack)
         apply_func = partial(self.apply_filter, stack_presenter.images, stack_params)
-
-        def post_filter(_):
-            stack_presenter.notify(SVNotification.REFRESH_IMAGE)
-            self.presenter.do_update_previews()
-
         start_async_task_view(stack_view, apply_func, post_filter)
