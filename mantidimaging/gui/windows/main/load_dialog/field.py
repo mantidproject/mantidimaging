@@ -145,7 +145,7 @@ class Field:
 
     @property
     def indices(self) -> Indices:
-        return [self._start.value(), self._stop.value(), self._increment.value()]
+        return self._start.value(), self._stop.value(), self._increment.value()
 
     def update_indices(self, number_of_images):
         """
@@ -163,6 +163,10 @@ class Field:
 
         # Enforce the maximum step (ensure a minimum of 1)
         self._increment.setMaximum(max(number_of_images, 1))
+
+    def set_step(self, value: int):
+        if self._increment_spinbox is not None:
+            self._increment_spinbox.setValue(value)
 
     def _update_expected_mem_usage(self, shape: Tuple[int, int]):
         num_images = size_calculator.number_of_images_from_indices(self._start.value(),

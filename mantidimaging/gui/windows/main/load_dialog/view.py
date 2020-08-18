@@ -17,6 +17,9 @@ class MWLoadDialog(Qt.QDialog):
 
     pixelSize: QDoubleSpinBox
 
+    step_preview: QPushButton
+    step_all: QPushButton
+
     _sample_path: Optional[QTreeWidgetItem] = None
     _flat_path: Optional[QTreeWidgetItem] = None
     _dark_path: Optional[QTreeWidgetItem] = None
@@ -91,10 +94,10 @@ class MWLoadDialog(Qt.QDialog):
             return None
 
     def _set_all_step(self):
-        self.index_step.setValue(1)
+        self.sample.set_step(1)
 
     def _set_preview_step(self):
-        self.index_step.setValue(self.last_shape[0] / 10)
+        self.sample.set_step(self.presenter.last_shape[0] // 10)
 
     def get_parameters(self) -> LoadingParameters:
         return self.presenter.get_parameters()
