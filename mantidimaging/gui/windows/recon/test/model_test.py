@@ -6,20 +6,10 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.rotation.data_model import Point
-from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
+from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters, ProjectionAngles
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
-
-
-def assert_called_once_with(mock: mock.Mock, *args):
-    assert 1 == mock.call_count
-    for actual, expected in zip(mock.call_args[0], args):
-        if isinstance(actual, np.ndarray):
-            np.testing.assert_equal(actual, expected)
-        elif isinstance(actual, Images):
-            assert actual is expected
-        else:
-            assert actual == expected
+from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with
 
 
 class ReconWindowModelTest(unittest.TestCase):
@@ -66,7 +56,8 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertEqual(slope.value, expected_slope)
 
         # pre-calculated by hand
-        expected_cors_with_this_gradient = [996.5036594028245, 997.2029275222595, 997.9021956416947, 998.6014637611298]
+        expected_cors_with_this_gradient = [996.5036594028245, 997.2029275222595,
+                                            997.9021956416947, 998.6014637611298]
         for i, point in enumerate(self.model.data_model._points):
             self.assertEqual(point.cor, expected_cors_with_this_gradient[i])
 
@@ -87,8 +78,6 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertNotEqual(test_tilt, self.model.tilt_angle)
         self.assertEqual(0, self.model.preview_projection_idx)
         self.assertEqual(0, self.model.preview_slice_idx)
-        self.assertIsNotNone(self.model.proj_angles)
-        self.assertEqual(10, len(self.model.proj_angles.value))
 
     def test_do_fit(self):
         self.model.images.metadata.clear()
@@ -101,7 +90,7 @@ class ReconWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_run_preview_recon(self, mock_get_reconstructor_for):
         mock_reconstructor = mock.Mock()
-        mock_reconstructor.single = mock.Mock()
+        mock_reconstructor.single_sino = mock.Mock()
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         expected_idx = 5
@@ -111,24 +100,60 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model.run_preview_recon(expected_idx, expected_cor, expected_recon_params)
 
         mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
-        assert_called_once_with(mock_reconstructor.single, expected_sino, expected_cor, self.model.proj_angles,
+        assert_called_once_with(mock_reconstructor.single_sino, expected_sino, expected_cor,
+                                self.model.images.projection_angles(),
                                 expected_recon_params)
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_run_full_recon(self, mock_get_reconstructor_for):
+    def test_run_full_recon_no_pixel_size(self, mock_get_reconstructor_for):
         mock_reconstructor = mock.Mock()
         mock_reconstructor.full = mock.Mock()
+        mock_reconstructor.full.return_value = self.model.images
         mock_get_reconstructor_for.return_value = mock_reconstructor
+
         expected_cors = [1] * self.model.images.height
-        self.model.data_model.get_all_cors_from_regression = mock.Mock(return_value=expected_cors)
+        self.model.data_model.get_all_cors_from_regression = mock.Mock(
+            return_value=expected_cors)
 
         expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
         progress = mock.Mock()
         self.model.run_full_recon(expected_recon_params, progress)
 
         mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
-        assert_called_once_with(mock_reconstructor.full, self.model.images, expected_cors, self.model.proj_angles,
-                                expected_recon_params)
+        assert_called_once_with(mock_reconstructor.full, self.model.images, expected_cors, expected_recon_params)
+        self.assertNotIn(const.OPERATION_HISTORY, self.model.images.metadata)
+
+    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
+    def test_run_full_recon_with_pixel_size(self, mock_get_reconstructor_for):
+        """
+        Test that reconstructing images with pixel size above 0 will perform a divide
+        to calculate attenuation values of the reconstructed slice.
+        """
+
+        # the size is expected in microns, we put a big value so that after
+        # conversion to microns it divides by 10
+        self.model.images.pixel_size = 100000
+        initial_pixel = 10
+        self.model.images.data[0, 0, 0] = initial_pixel
+
+        mock_reconstructor = mock.Mock()
+        mock_reconstructor.full = mock.Mock()
+        mock_reconstructor.full.return_value = self.model.images
+        mock_get_reconstructor_for.return_value = mock_reconstructor
+
+        expected_cors = [1] * self.model.images.height
+        self.model.data_model.get_all_cors_from_regression = mock.Mock(
+            return_value=expected_cors)
+
+        expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
+        progress = mock.Mock()
+        output = self.model.run_full_recon(expected_recon_params, progress)
+
+        mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
+        assert_called_once_with(mock_reconstructor.full, self.model.images, expected_cors, expected_recon_params)
+        self.assertIn(const.OPERATION_HISTORY, self.model.images.metadata)
+        self.assertEqual(len(self.model.images.metadata[const.OPERATION_HISTORY]), 1)
+        self.assertAlmostEqual(initial_pixel / 10, output.data[0, 0, 0], delta=1e-3)
 
     def test_tilt_angle(self):
         self.assertIsNone(self.model.tilt_angle)

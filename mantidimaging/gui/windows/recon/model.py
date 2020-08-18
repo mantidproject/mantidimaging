@@ -102,8 +102,15 @@ class ReconstructWindowModel(object):
             return None
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
-        return reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
-                                  recon_params, progress)
+        recon = reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
+                                   recon_params, progress)
+        if recon.pixel_size.value > 0:
+            recon = DivideFilter.filter_func(recon, value=recon.pixel_size.value, unit="micron", progress=progress)
+            recon.record_operation(DivideFilter.__name__,
+                                   DivideFilter.filter_name,
+                                   value=recon.pixel_size.value,
+                                   unit="micron")
+        return recon
 
     @property
     def tilt_angle(self) -> Optional[Degrees]:

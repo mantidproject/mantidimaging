@@ -59,12 +59,6 @@ class FiltersWindowModelTest(unittest.TestCase):
         f.execute_wrapper = lambda: execute_mock
         f.validate_execute_kwargs = lambda _: True
 
-        # if do_before_mock:
-        #     f.do_before_wrapper = do_before_mock
-        #
-        # if do_after_mock:
-        #     f.do_after_wrapper = do_after_mock
-
         return orig_exec, orig_validate, orig_before, orig_after
 
     def reset_filter_model(self, exec, validate, before, after):
@@ -83,77 +77,65 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertTrue(len(self.model.filter_names) > 0)
 
     @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
-    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
-    def test_do_apply_filter(self, mocked_notify, mocked_start_view):
+    def test_do_apply_filter(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
-        self.model.stack = self.sv_presenter.view
+
+        callback_mock = mock.Mock()
+
+        def callback(arg):
+            callback_mock()
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
         originals = self.setup_mocks(execute)
-        self.model.do_apply_filter()
+        self.model.do_apply_filter(self.sv_view, self.sv_presenter, callback)
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
-        mocked_notify.assert_called_once()
+        callback_mock.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
-    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
-    def test_do_apply_filter_with_roi(self, mocked_notify, mocked_start_view):
+    def test_do_apply_filter_with_roi(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
-        self.model.stack = self.sv_presenter.view
+
+        callback_mock = mock.Mock()
+
+        def callback(arg):
+            callback_mock()
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
         originals = self.setup_mocks(execute)
         self.model.selected_filter.params = lambda: {'roi': SVParameters.ROI}
-        self.model.do_apply_filter()
-        # Reset state, as the same model is used for all tests
-        self.model.selected_filter.sv_params = lambda: {}
+        self.model.do_apply_filter(self.sv_view, self.sv_presenter, callback)
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
-        mocked_notify.assert_called_once()
-
-    # @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
-    # @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
-    # def test_do_apply_filter_pre_post_processing(self, mocked_notify, mocked_start_view):
-    #     mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
-    #     self.model.stack = self.sv_presenter.view
-    #
-    #     execute = mock.MagicMock(return_value=partial(self.execute_mock))
-    #     do_before = mock.MagicMock(return_value=partial(self.apply_before_mock))
-    #     do_after = mock.MagicMock(return_value=partial(self.apply_after_mock))
-    #     originals = self.setup_mocks(execute, do_before, do_after)
-    #
-    #     self.model.do_apply_filter()
-    #     self.reset_filter_model(*originals)
-    #
-    #     do_before.assert_called_once()
-    #     execute.assert_called_once()
-    #     do_after.assert_called_once()
-    #     mocked_notify.assert_called_once()
+        callback_mock.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
-    @mock.patch("mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify")
-    def test_operation_recorded_in_image_history(self, mocked_notify, mocked_start_view):
+    def test_operation_recorded_in_image_history(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
-        self.model.stack = self.sv_presenter.view
-        self.model.stack_presenter.images.metadata = {}
+        self.sv_presenter.images.metadata = {}
+
+        callback_mock = mock.Mock()
+
+        def callback(arg):
+            callback_mock()
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
         execute.args = ["arg"]
         execute.keywords = {"kwarg": "kwarg"}
         originals = self.setup_mocks(execute)
 
-        self.model.do_apply_filter()
+        self.model.do_apply_filter(self.sv_view, self.sv_presenter, callback)
         self.reset_filter_model(*originals)
 
-        op_history = self.model.stack_presenter.images.metadata['operation_history']
+        op_history = self.sv_presenter.images.metadata['operation_history']
         self.assertEqual(len(op_history), 1, "One operation should have been recorded")
         self.assertEqual(op_history[0][const.OPERATION_ARGS], ['arg'])
         self.assertEqual(op_history[0][const.OPERATION_KEYWORD_ARGS], {"kwarg": "kwarg"})
         # Recorded operation should not be a qualified module name.
         self.assertNotIn(".", op_history[0][const.OPERATION_NAME])
-        mocked_notify.assert_called_once()
+        callback_mock.assert_called_once()
 
 
 if __name__ == '__main__':

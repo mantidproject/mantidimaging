@@ -20,9 +20,6 @@
 # File change history is stored at: <https://github.com/mantidproject/mantid>.
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
-from . import (  # noqa: F401
-    load_dialog, save_dialog)
-
 from .model import MainWindowModel  # noqa: F401
 from .view import MainWindowView  # noqa: F401
 from .presenter import MainWindowPresenter  # noqa: F401  # noqa:F821

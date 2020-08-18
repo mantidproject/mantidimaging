@@ -2,12 +2,14 @@ import os
 import sys
 from typing import Tuple
 
+import mock
 import numpy as np
 import numpy.testing as npt
 from six import StringIO
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 backup_mp_avail = None
 g_shape = (10, 8, 10)
@@ -175,3 +177,16 @@ def shared_deepcopy(images: Images) -> np.ndarray:
     with pu.temp_shared_array(images.data.shape) as copy:
         np.copyto(copy, images.data)
         return copy
+
+
+def assert_called_once_with(mock: mock.Mock, *args):
+    assert 1 == mock.call_count
+    for actual, expected in zip(mock.call_args[0], args):
+        if isinstance(actual, np.ndarray):
+            np.testing.assert_equal(actual, expected)
+        elif isinstance(actual, ProjectionAngles):
+            np.testing.assert_equal(actual.value, expected.value)
+        elif isinstance(actual, Images):
+            assert actual is expected, f"Expected {expected}, got {actual}"
+        else:
+            assert actual == expected, f"Expected {expected}, got {actual}"

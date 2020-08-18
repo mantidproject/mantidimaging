@@ -142,28 +142,27 @@ class FiltersWindowPresenter(BasePresenter):
             # Generate sub-stack and run filter
             exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
 
-            filtered_image_data = None
             try:
                 self.model.apply_filter(subset, exec_kwargs)
-                filtered_image_data = subset.data[0]
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())
+                return
 
+            filtered_image_data = subset.data[0]
             # Update image after and difference
-            if filtered_image_data is not None:
-                self._update_preview_image(filtered_image_data, self.view.preview_image_after,
-                                           self.view.previews.set_after_histogram)
+            self._update_preview_image(filtered_image_data, self.view.preview_image_after,
+                                       self.view.previews.set_after_histogram)
 
-                if filtered_image_data.shape == before_image.shape:
-                    diff = np.subtract(filtered_image_data, before_image)
-                    if self.view.invertDifference.isChecked():
-                        diff = np.negative(diff, out=diff)
-                    self._update_preview_image(diff, self.view.preview_image_difference, None)
-                    if self.view.overlayDifference.isChecked():
-                        self.view.previews.add_difference_overlay(diff)
-                    else:
-                        self.view.previews.hide_difference_overlay()
+            if filtered_image_data.shape == before_image.shape:
+                diff = np.subtract(filtered_image_data, before_image)
+                if self.view.invertDifference.isChecked():
+                    diff = np.negative(diff, out=diff)
+                self._update_preview_image(diff, self.view.preview_image_difference, None)
+                if self.view.overlayDifference.isChecked():
+                    self.view.previews.add_difference_overlay(diff)
+                else:
+                    self.view.previews.hide_difference_overlay()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem,
