@@ -42,7 +42,7 @@ class MetadataDialog(Qt.QDialog):
                     MetadataDialog._build_operation_history(main_widget, metadata)
                 else:
                     item = QTreeWidgetItem(main_widget)
-                    item.setText(0, value)
+                    item.setText(0, f"{key}: {str(value)}")
                     main_widget.insertTopLevelItem(0, item)
 
         return main_widget
