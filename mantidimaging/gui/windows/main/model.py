@@ -25,6 +25,7 @@ class MainWindowModel(object):
     def do_load_stack(self, parameters: LoadingParameters, progress):
         ds = Dataset(loader.load_p(parameters.sample, parameters.dtype, progress))
         ds.sample._is_sinograms = parameters.sinograms
+        ds.sample.pixel_size = parameters.pixel_size
 
         if parameters.sample.log_file:
             ds.sample.log_file = loader.load_log(parameters.sample.log_file)
