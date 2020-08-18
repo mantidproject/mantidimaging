@@ -53,12 +53,12 @@ class LoadPresenter:
         filename = self.view.sample.path_text()
         dirname = self.view.sample.directory()
         try:
-            self.last_shape, sinograms = read_in_shape(dirname, in_prefix=get_prefix(filename),
+            self.last_shape, sinograms = read_in_shape(dirname,
+                                                       in_prefix=get_prefix(filename),
                                                        in_format=self.image_format)
         except Exception as e:
             getLogger(__name__).error(f"Failed to read file {sample_filename} {e}")
-            self.view.show_error("Failed to read this file. See log for details.",
-                                 traceback.format_exc())
+            self.view.show_error("Failed to read this file. See log for details.", traceback.format_exc())
             self.last_shape = (0, 0, 0)
             sinograms = False
 
@@ -123,32 +123,28 @@ class LoadPresenter:
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
-        lp.sample = ImageParameters(
-            input_path=self.view.sample.directory(),
-            format=self.image_format,
-            prefix=get_prefix(self.view.sample.path_text()),
-            indices=self.view.sample.indices,
-            log_file=self.view.sample_log.path_text())
+        lp.sample = ImageParameters(input_path=self.view.sample.directory(),
+                                    format=self.image_format,
+                                    prefix=get_prefix(self.view.sample.path_text()),
+                                    indices=self.view.sample.indices,
+                                    log_file=self.view.sample_log.path_text())
 
         lp.name = self.view.sample.file()
         lp.pixel_size = self.view.pixelSize.value()
 
         if self.view.flat.use and self.view.flat.path_text() != "":
-            lp.flat = ImageParameters(
-                input_path=self.view.flat.directory(),
-                prefix=get_prefix(self.view.flat.path_text()),
-                format=self.image_format)
+            lp.flat = ImageParameters(input_path=self.view.flat.directory(),
+                                      prefix=get_prefix(self.view.flat.path_text()),
+                                      format=self.image_format)
 
         if self.view.dark.use and self.view.dark.path_text() != "":
-            lp.dark = ImageParameters(
-                input_path=self.view.dark.directory(),
-                prefix=get_prefix(self.view.dark.path_text()),
-                format=self.image_format)
+            lp.dark = ImageParameters(input_path=self.view.dark.directory(),
+                                      prefix=get_prefix(self.view.dark.path_text()),
+                                      format=self.image_format)
         if self.view.proj_180deg.use and self.view.proj_180deg.path_text() != "":
-            lp.proj_180deg = ImageParameters(
-                input_path=self.view.proj_180deg.directory(),
-                prefix=get_prefix(self.view.proj_180deg.path_text()),
-                format=self.image_format)
+            lp.proj_180deg = ImageParameters(input_path=self.view.proj_180deg.directory(),
+                                             prefix=get_prefix(self.view.proj_180deg.path_text()),
+                                             format=self.image_format)
 
         lp.dtype = self.view.pixel_bit_depth.currentText()
         lp.sinograms = self.view.images_are_sinograms.isChecked()

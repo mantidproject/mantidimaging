@@ -114,7 +114,7 @@ class LoadingParameters:
     dark: Optional[ImageParameters] = None
     proj_180deg: Optional[ImageParameters] = None
 
-    pixel_size: float
+    pixel_size: int
     name: str
     dtype: str
     sinograms: bool

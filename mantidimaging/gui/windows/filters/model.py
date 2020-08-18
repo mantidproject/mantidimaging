@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):
@@ -36,14 +36,6 @@ class FiltersWindowModel(object):
         self._stack = None
         self.selected_filter = self.filters[0]
         self.filter_widget_kwargs = {}
-
-    # @property
-    # def stack(self):
-    #     return self._stack
-    #
-    # @stack.setter
-    # def stack(self, value):
-    #     self._stack = value
 
     @property
     def filter_names(self):

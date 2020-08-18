@@ -43,12 +43,12 @@ class MWLoadDialog(Qt.QDialog):
         self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
         self.flat, self.select_flat = self.create_file_input(1)
-        self.select_flat.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
-                                                                       field=self.flat, name="Flat"))
+        self.select_flat.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.flat, name="Flat"))
 
         self.dark, self.select_dark = self.create_file_input(2)
-        self.select_dark.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_OTHER,
-                                                                       field=self.dark, name="Dark"))
+        self.select_dark.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.dark, name="Dark"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
         self.sample_log, self.select_sample_log = self.create_file_input(4)

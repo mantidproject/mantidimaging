@@ -102,7 +102,7 @@ class MainWindowPresenter(BasePresenter):
                 dark_dock = add_stack(container.dark,
                                       title=f"{self.model.create_name(os.path.basename(container.dark.filenames[0]))}")
                 self.view.tabifyDockWidget(sample_dock, dark_dock)
-            if container.sample.has_proj180deg():
+            if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
                 proj180_dock = add_stack(
                     container.sample.proj180deg,
                     title=f"{self.model.create_name(os.path.basename(container.sample.proj180deg.filenames[0]))}")

@@ -43,7 +43,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.initial_select_data(None)
 
         mock_reconstructor = mock.Mock()
-        mock_reconstructor.single = mock.Mock()
+        mock_reconstructor.single_sino = mock.Mock()
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         # first-time selecting this data after reset
@@ -56,7 +56,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
         self.view.update_recon_preview.assert_called_once()
         mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single.assert_called_once()
+        mock_reconstructor.single_sino.assert_called_once()
 
         # calling again with the same stack shouldn't re-do everything
         self.presenter.set_stack_uuid(self.uuid)
@@ -69,7 +69,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
         self.view.update_recon_preview.assert_called_once()
         mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single.assert_called_once()
+        mock_reconstructor.single_sino.assert_called_once()
 
     def test_set_projection_preview_index(self):
         self.presenter.set_preview_projection_idx(5)
@@ -79,7 +79,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_set_slice_preview_index(self, mock_get_reconstructor_for):
         mock_reconstructor = mock.Mock()
-        mock_reconstructor.single = mock.Mock()
+        mock_reconstructor.single_sino = mock.Mock()
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         self.presenter.set_preview_slice_idx(5)
@@ -89,7 +89,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_recon_preview.assert_called_once()
 
         mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single.assert_called_once()
+        mock_reconstructor.single_sino.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor', return_value=ScalarCoR(15))
     def test_do_add_manual_cor_table_row(self, mock_get_me_a_cor):
@@ -104,7 +104,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_do_reconstruct_slice(self, mock_get_reconstructor_for):
         mock_reconstructor = mock.Mock()
-        mock_reconstructor.single = mock.Mock()
+        mock_reconstructor.single_sino = mock.Mock()
         mock_get_reconstructor_for.return_value = mock_reconstructor
         self.presenter.model.preview_slice_idx = 0
         self.presenter.model.last_cor = ScalarCoR(150)
@@ -115,7 +115,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_recon_preview.assert_called_once()
 
         mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single.assert_called_once()
+        mock_reconstructor.single_sino.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_do_reconstruct_volume(self, mock_async_task):

@@ -169,8 +169,7 @@ class Field:
             self._increment_spinbox.setValue(value)
 
     def _update_expected_mem_usage(self, shape: Tuple[int, int]):
-        num_images = size_calculator.number_of_images_from_indices(self._start.value(),
-                                                                   self._stop.value(),
+        num_images = size_calculator.number_of_images_from_indices(self._start.value(), self._stop.value(),
                                                                    self._increment.value())
 
         single_mem = size_calculator.to_MB(size_calculator.single_size(shape), dtype='32')
