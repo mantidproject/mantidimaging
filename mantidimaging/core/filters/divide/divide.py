@@ -17,14 +17,14 @@ class DivideFilter(BaseFilter):
     filter_name = "Divide"
 
     @staticmethod
-    def filter_func(data: Images, value: Union[int, float] = 0e7, unit="micron", progress=None) -> Images:
+    def filter_func(images: Images, value: Union[int, float] = 0e7, unit="micron", progress=None) -> Images:
         if unit == "micron":
             value *= 1e-4
 
-        h.check_data_stack(data)
+        h.check_data_stack(images)
         if value != 0e7 or value != -0e7:
-            data.data /= value
-        return data
+            images.data /= value
+        return images
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, 'QWidget']:
@@ -33,10 +33,7 @@ class DivideFilter(BaseFilter):
         _, value_widget = add_property_to_form("Divide by", Type.FLOAT, form=form, on_change=on_change)
         assert value_widget is not None, "Requested widget was for FLOAT, got None instead"
         value_widget.setDecimals(7)
-        _, unit_widget = add_property_to_form("Unit",
-                                              Type.CHOICE,
-                                              valid_values=["micron", "cm"],
-                                              form=form,
+        _, unit_widget = add_property_to_form("Unit", Type.CHOICE, valid_values=["micron", "cm"], form=form,
                                               on_change=on_change)
 
         return {'value_widget': value_widget}

@@ -79,6 +79,12 @@ class ProjectionAngles(SingleValue):
 
 
 @dataclass
+class Micron(SingleValue):
+    __slots__ = 'value'
+    value: int
+
+
+@dataclass
 class ReconstructionParameters:
     algorithm: str
     filter_name: str
@@ -87,13 +93,11 @@ class ReconstructionParameters:
     tilt: Optional[Degrees] = None
 
     def to_dict(self) -> dict:
-        return {
-            'algorithm': self.algorithm,
-            'filter_name': self.filter_name,
-            'num_iter': self.num_iter,
-            'cor': str(self.cor),
-            'tilt': str(self.tilt)
-        }
+        return {'algorithm': self.algorithm,
+                'filter_name': self.filter_name,
+                'num_iter': self.num_iter,
+                'cor': str(self.cor),
+                'tilt': str(self.tilt)}
 
 
 Indices = namedtuple('Indices', ['start', 'end', 'step'])

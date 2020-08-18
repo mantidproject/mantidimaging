@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
+from mantidimaging.core.filters.divide import DivideFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import AstraRecon
