@@ -47,7 +47,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Populate list of filters and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
-        self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
+        self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)  # type:ignore
         self.handle_filter_selection(0)
 
         # Handle stack selection
@@ -56,7 +56,6 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
-        self.splitter.setStretchFactor(0, 0)
         self.splitter.setStretchFactor(0, 0)
 
         self.previews = FilterPreviews(self)

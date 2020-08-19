@@ -8,7 +8,6 @@ from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with,
 
 
 class FiltersWindowPresenterTest(unittest.TestCase):
-
     def setUp(self) -> None:
         self.main_window = mock.create_autospec(MainWindowView)
         self.view = mock.MagicMock()
@@ -41,7 +40,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.filters.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.filters.presenter.FiltersWindowModel.apply_filter')
-    def test_update_previews(self, update_preview_image_mock: mock.Mock, apply_filter_mock: mock.Mock):
+    def test_update_previews_apply_throws_exception(self, apply_filter_mock: mock.Mock,
+                                                    update_preview_image_mock: mock.Mock):
         apply_filter_mock.side_effect = Exception
         stack = mock.Mock()
         presenter = mock.Mock()
@@ -59,7 +59,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.filters.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.filters.presenter.FiltersWindowModel.apply_filter')
-    def test_update_previews(self, apply_filter_mock: mock.Mock, update_preview_mock: mock.Mock):
+    def test_update_previews(self, apply_filter_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
         presenter = mock.Mock()
         stack.presenter = presenter
@@ -70,5 +70,5 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
-        self.assertEqual(3, update_preview_mock.call_count)
+        self.assertEqual(3, update_preview_image_mock.call_count)
         apply_filter_mock.assert_called_once()

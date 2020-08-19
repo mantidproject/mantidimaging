@@ -17,8 +17,6 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
 
-    _log_file: Optional[IMATLogFile] = None
-
     def __init__(self,
                  data: np.ndarray,
                  filenames: Optional[List[str]] = None,
@@ -44,6 +42,7 @@ class Images:
 
         self.memory_filename = memory_filename
         self._proj180deg: Optional[Images] = None
+        self._log_file: Optional[IMATLogFile] = None
 
     def __eq__(self, other):
         if isinstance(other, Images):

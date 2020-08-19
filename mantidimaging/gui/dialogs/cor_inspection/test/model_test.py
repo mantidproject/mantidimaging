@@ -1,9 +1,8 @@
 import unittest
 
-import numpy as np
 import numpy.testing as npt
 
-from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
+from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -12,16 +11,14 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 class CORInspectionDialogModelTest(unittest.TestCase):
     def test_construct(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ProjectionAngles(np.arange(10)),
-                                     ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
         npt.assert_equal(m.sino, images.sino(5))
         self.assertEqual(m.cor_extents, (0, 9))
         self.assertEqual(m.proj_angles.value.shape, (10, ))
 
     def test_current_cor(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ProjectionAngles(np.arange(10)),
-                                     ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
         m.centre_cor = 5
         m.cor_step = 1
         self.assertEqual(m.cor(ImageType.LESS), 4)
@@ -30,8 +27,7 @@ class CORInspectionDialogModelTest(unittest.TestCase):
 
     def test_adjust_cor(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ProjectionAngles(np.arange(10)),
-                                     ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
         m.centre_cor = 5
         m.cor_step = 1
 
