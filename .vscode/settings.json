@@ -6,9 +6,6 @@
   "python.sortImports.args": [
     "--line-width=120"
   ],
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": true,
-  },
   "editor.formatOnSave": true,
   "python.formatting.provider": "yapf",
 }
