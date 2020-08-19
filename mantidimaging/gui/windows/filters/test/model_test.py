@@ -41,17 +41,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertEqual(roi, self.ROI_PARAMETER)
         return data
 
-    def apply_before_mock(self, data):
-        self.assertTrue(isinstance(data, np.ndarray))
-        self.apply_before_mock_variable = \
-            self.APPLY_BEFORE_AFTER_MAGIC_NUMBER
-        return self.apply_before_mock_variable
-
-    def apply_after_mock(self, data, result_from_before):
-        self.assertTrue(isinstance(data, np.ndarray))
-        self.assertEqual(result_from_before, self.APPLY_BEFORE_AFTER_MAGIC_NUMBER)
-
-    def setup_mocks(self, execute_mock, do_before_mock=None, do_after_mock=None):
+    def setup_mocks(self, execute_mock):
         f = self.model.selected_filter
         orig_exec, orig_validate, orig_before, orig_after = \
             f.execute_wrapper, f.validate_execute_kwargs, f.do_before_wrapper, f.do_after_wrapper
@@ -136,6 +126,55 @@ class FiltersWindowModelTest(unittest.TestCase):
         # Recorded operation should not be a qualified module name.
         self.assertNotIn(".", op_history[0][const.OPERATION_NAME])
         callback_mock.assert_called_once()
+
+    # @mock.patch("mantidimaging.gui.windows.filters.FiltersWindowModel._apply_to")
+    def test_apply_filter_no_180deg_proj_loaded(self):
+        """
+        When no 180deg projection is loaded the filter is only
+        applied to the main data.
+        """
+        images = th.generate_images()
+        stack_params = {'test': 123}
+        selected_filter_mock = mock.Mock()
+        selected_filter_mock.__name__ = mock.Mock()
+        selected_filter_mock.__name__.return_value = "Test filter"
+        selected_filter_mock.filter_name.return_value = "Test filter"
+        progress_mock = mock.Mock()
+
+        callback_mock = mock.Mock()
+
+        selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
+        self.model.selected_filter = selected_filter_mock
+        self.model.apply_filter(images, stack_params, progress=progress_mock)
+
+        selected_filter_mock.validate_execute_kwargs.assert_called_once()
+        callback_mock.assert_called_once_with(images, progress=progress_mock, **stack_params)
+
+    def test_apply_filter_with_180deg_proj_loaded(self):
+        """
+        When 180deg projection is loaded the filter is applied
+        to both the data and the 180deg projection
+        """
+        images = th.generate_images()
+        images.proj180deg = th.generate_images(automatic_free=False)
+        stack_params = {'test': 123}
+        selected_filter_mock = mock.Mock()
+        selected_filter_mock.__name__ = mock.Mock()
+        selected_filter_mock.__name__.return_value = "Test filter"
+        selected_filter_mock.filter_name.return_value = "Test filter"
+        progress_mock = mock.Mock()
+
+        callback_mock = mock.Mock()
+
+        selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
+        self.model.selected_filter = selected_filter_mock
+        self.model.apply_filter(images, stack_params, progress=progress_mock)
+
+        selected_filter_mock.validate_execute_kwargs.assert_called_once()
+        callback_mock.assert_called_with(mock.call(images, progress=progress_mock, **stack_params),
+                                         mock.call(images.proj180deg, progress=progress_mock, **stack_params))
+
+        images.proj180deg.free_memory()
 
 
 if __name__ == '__main__':
