@@ -158,3 +158,6 @@ class MIImageView(ImageView):
         view_range = self.getRoiPlot().viewRange()[0]
         domain_pos = (view_range[1] - view_range[0]) * frac_pos
         self.timeLine.setValue(np.round(view_range[0] + domain_pos))
+
+    def set_selected_image(self, image_index: int):
+        self.timeLine.setValue(image_index)
