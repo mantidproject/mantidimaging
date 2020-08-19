@@ -6,7 +6,7 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.rotation.data_model import Point
-from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters, ProjectionAngles
+from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with
@@ -56,8 +56,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertEqual(slope.value, expected_slope)
 
         # pre-calculated by hand
-        expected_cors_with_this_gradient = [996.5036594028245, 997.2029275222595,
-                                            997.9021956416947, 998.6014637611298]
+        expected_cors_with_this_gradient = [996.5036594028245, 997.2029275222595, 997.9021956416947, 998.6014637611298]
         for i, point in enumerate(self.model.data_model._points):
             self.assertEqual(point.cor, expected_cors_with_this_gradient[i])
 
@@ -101,8 +100,7 @@ class ReconWindowModelTest(unittest.TestCase):
 
         mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
         assert_called_once_with(mock_reconstructor.single_sino, expected_sino, expected_cor,
-                                self.model.images.projection_angles(),
-                                expected_recon_params)
+                                self.model.images.projection_angles(), expected_recon_params)
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_run_full_recon_no_pixel_size(self, mock_get_reconstructor_for):
@@ -112,8 +110,7 @@ class ReconWindowModelTest(unittest.TestCase):
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         expected_cors = [1] * self.model.images.height
-        self.model.data_model.get_all_cors_from_regression = mock.Mock(
-            return_value=expected_cors)
+        self.model.data_model.get_all_cors_from_regression = mock.Mock(return_value=expected_cors)
 
         expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
         progress = mock.Mock()
@@ -142,8 +139,7 @@ class ReconWindowModelTest(unittest.TestCase):
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         expected_cors = [1] * self.model.images.height
-        self.model.data_model.get_all_cors_from_regression = mock.Mock(
-            return_value=expected_cors)
+        self.model.data_model.get_all_cors_from_regression = mock.Mock(return_value=expected_cors)
 
         expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
         progress = mock.Mock()

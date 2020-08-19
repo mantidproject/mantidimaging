@@ -41,7 +41,6 @@ class Notifications(Enum):
 class ReconstructWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
     view: 'ReconstructWindowView'
-    _ignore_stack_change: bool = False
 
     def __init__(self, view: 'ReconstructWindowView', main_window):
         super(ReconstructWindowPresenter, self).__init__(view)

@@ -16,14 +16,13 @@ class IMATLogColumn(Enum):
 
 
 class IMATLogFile:
-    _data: Dict[IMATLogColumn, List] = {
-        IMATLogColumn.TIMESTAMP: [],
-        IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER: [],
-        IMATLogColumn.COUNTS_BEFORE: [],
-        IMATLogColumn.COUNTS_AFTER: []
-    }
-
     def __init__(self, data: List[List[str]]):
+        self._data: Dict[IMATLogColumn, List] = {
+            IMATLogColumn.TIMESTAMP: [],
+            IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER: [],
+            IMATLogColumn.COUNTS_BEFORE: [],
+            IMATLogColumn.COUNTS_AFTER: []
+        }
         # ignores the headers (index 0) as they're not the same as the data anyway
         # and index 1 is an empty line
         for line in data[2:]:

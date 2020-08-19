@@ -184,11 +184,12 @@ class ImagesTest(unittest.TestCase):
     def test_get_projection_angles_from_logfile(self):
         images = generate_images()
         images.log_file = generate_logfile()
-        expected = np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368])
+        expected = np.deg2rad(np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368]))
         actual: ProjectionAngles = images.projection_angles()
+        self.assertEqual(len(actual.value), len(expected))
         np.testing.assert_equal(actual.value, expected)
 
     def test_get_projection_angles_no_logfile(self):
         images = generate_images()
         actual = images.projection_angles()
-        self.assertEqual(10, len(actual))
+        self.assertEqual(10, len(actual.value))
