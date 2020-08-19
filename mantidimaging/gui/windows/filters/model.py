@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):
@@ -76,7 +76,8 @@ class FiltersWindowModel(object):
         exec_func.keywords["progress"] = progress
         self._apply_to(exec_func, images, stack_params)
         images_180deg = images.proj180deg
-        # the 180 projection is a loaded image, not a guess of the middle
+        # if the 180 projection has a memory mapped file then it is a loaded image
+        # if it doesn't then it uses the middle of the stack as a 'guess' of the 180 degree proj
         if images_180deg.memory_filename is not None:
             log.info("Applying filter to 180 deg projection")
             self._apply_to(exec_func, images_180deg, stack_params)
