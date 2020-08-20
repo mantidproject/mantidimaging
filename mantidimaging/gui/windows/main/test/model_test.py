@@ -18,7 +18,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.stack_list_property = f"{self.model_class_name}.stack_list"
 
     def test_initial_stack_list(self):
-        self.assertEqual(self.model.stack_names, [])
+        self.assertEqual(self.model._stack_names, [])
 
     def test_create_name_no_stacks_loaded(self):
         # Mock the stack list function (this depends on Qt)
@@ -59,16 +59,16 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.assertTrue(hasattr(stack_mock, 'uuid'))
         self.assertEqual(1, len(self.model.stack_list))
-        self.assertEqual(1, len(self.model.stack_names))
-        self.assertEqual(expected_name, self.model.stack_names[0])
+        self.assertEqual(1, len(self.model._stack_names))
+        self.assertEqual(expected_name, self.model._stack_names[0])
 
     def test_stack_list(self):
         uid, widget_mock, expected_name = self._add_mock_widget()
 
         self.assertEqual(1, len(self.model.stack_list))
-        self.assertEqual(1, len(self.model.stack_names))
+        self.assertEqual(1, len(self.model._stack_names))
         self.assertEqual(uid, self.model.stack_list[0].id)
-        self.assertEqual(expected_name, self.model.stack_names[0])
+        self.assertEqual(expected_name, self.model._stack_names[0])
 
     def test_get_stack(self):
         uid, widget_mock, _ = self._add_mock_widget()
@@ -187,6 +187,16 @@ class MainWindowModelTest(unittest.TestCase):
         ])
 
         load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_mock.log_file)])
+
+    def test_create_name(self):
+        self.assertEqual("apple", self.model.create_name("apple"))
+
+        taken_name = "apple"
+        widget_mock = mock.Mock()
+        widget_mock.windowTitle.return_value = taken_name
+        self.model.active_stacks = {"some_uuid": widget_mock}
+
+        self.assertEqual("apple_2", self.model.create_name("apple"))
 
 
 if __name__ == '__main__':
