@@ -84,7 +84,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.image_view.setImage(to_display)
 
     @property
-    def main_window(self):
+    def main_window(self) -> 'MainWindowView':
         return self.parent().parent()
 
     def closeEvent(self, event):
@@ -149,7 +149,7 @@ class StackVisualiserView(BaseMainWindowView):
         new_window_name, ok = input_window.getText(self, "Change window name", "Name:", text=self.name)
         if ok:
             if new_window_name not in self.main_window.stack_names:
-                self.main_window.presenter.rename_stack_by_name(self.name, new_window_name)
+                self.main_window.rename_stack(self.name, new_window_name)
             else:
                 error = QMessageBox(self)
                 error.setWindowTitle("Stack name conflict")

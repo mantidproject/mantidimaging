@@ -175,7 +175,10 @@ class MainWindowView(BaseMainWindowView):
 
     def remove_stack(self, obj: StackVisualiserView):
         getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)
-        self.presenter.remove_stack(obj.uuid)
+        self.presenter.notify(PresNotification.REMOVE_STACK, uuid=obj.uuid)
+
+    def rename_stack(self, current_name: str, new_name: str):
+        self.presenter.notify(PresNotification.RENAME_STACK, current_name=current_name, new_name=new_name)
 
     def closeEvent(self, event):
         """
