@@ -272,11 +272,3 @@ class Images:
     def projection_angles(self):
         return self._log_file.projection_angles() if self._log_file is not None else \
             ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
-
-    @property
-    def pixel_size(self):
-        return Micron(self.metadata.get(const.PIXEL_SIZE, 0))
-
-    @pixel_size.setter
-    def pixel_size(self, value: int):
-        self.metadata[const.PIXEL_SIZE] = value
