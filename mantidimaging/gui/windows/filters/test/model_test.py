@@ -171,8 +171,10 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.apply_filter(images, stack_params, progress=progress_mock)
 
         selected_filter_mock.validate_execute_kwargs.assert_called_once()
-        callback_mock.assert_called_with(mock.call(images, progress=progress_mock, **stack_params),
-                                         mock.call(images.proj180deg, progress=progress_mock, **stack_params))
+        callback_mock.assert_has_calls([
+            mock.call(images, progress=progress_mock, **stack_params),
+            mock.call(images.proj180deg, progress=progress_mock, **stack_params)
+        ])
 
         images.proj180deg.free_memory()
 
