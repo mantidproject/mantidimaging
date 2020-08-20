@@ -100,9 +100,10 @@ class MainWindowModel(object):
     def get_stack_by_images(self, images: Images) -> Optional[StackVisualiserView]:
         for _, dock_widget in self.active_stacks.items():
             sv = dock_widget.widget()
-            if images == sv.presenter.images:
+            if images is sv.presenter.images:
                 return sv
-        return None
+        raise RuntimeError(f"Did not find stack {images} in active stacks! "
+                           f"Active stacks: {self.active_stacks.items()}")
 
     def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
         """
