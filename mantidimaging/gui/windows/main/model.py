@@ -60,7 +60,7 @@ class MainWindowModel(object):
 
         # Avoid duplicate names
         name = filename
-        current_names = self.stack_names
+        current_names = self._stack_names
         num = 1
         while name in current_names:
             num += 1
@@ -74,7 +74,7 @@ class MainWindowModel(object):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def stack_names(self) -> List[str]:
+    def _stack_names(self) -> List[str]:
         return [stack.name for stack in self.stack_list]
 
     def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: 'QDockWidget'):
