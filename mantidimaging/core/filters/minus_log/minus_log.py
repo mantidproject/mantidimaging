@@ -11,14 +11,14 @@ class MinusLogFilter(BaseFilter):
     filter_name = "Minus Log"
 
     @staticmethod
-    def filter_func(data: Images, minus_log=True, progress=None):
+    def filter_func(images: Images, minus_log=True, progress=None):
         """
         This filter should be used on transmission images (background corrected
         images).
 
         It converts the images from transmission to attenuation.
 
-        :param data: Sample data which is to be processed. Expected in radiograms
+        :param images: Sample data which is to be processed. Expected in radiograms
         :param minus_log: Specify whether to calculate minus log or just return.
 
         :return: Inverted image
@@ -31,14 +31,14 @@ class MinusLogFilter(BaseFilter):
 
             with progress:
                 progress.update(msg="Calculating -log on the sample data")
-                sample = data.data
+                sample = images.data
                 # this check prevents division by 0 errors from the minus_log
                 sample[sample == 0] = 1e-6
 
                 # the operation is done in place
                 tomopy.prep.normalize.minus_log(sample, out=sample)
 
-        return data
+        return images
 
     @staticmethod
     def execute_wrapper(**kwargs):
