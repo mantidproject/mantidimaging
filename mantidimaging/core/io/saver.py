@@ -6,6 +6,7 @@ import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
 from ..data.images import Images
+from ..filters.rescale import RescaleFilter
 from ..utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
@@ -57,7 +58,8 @@ def save(images: Images,
          zfill_len=DEFAULT_ZFILL_LENGTH,
          name_postfix=DEFAULT_NAME_POSTFIX,
          indices=None,
-         progress=None) -> Union[str, List[str]]:
+         progress=None,
+         pixel_depth=None) -> Union[str, List[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -91,11 +93,25 @@ def save(images: Images,
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
 
+    # Do rescale if needed.
+    if pixel_depth is None or pixel_depth == "float32":
+        rescale_params = None
+    elif pixel_depth == "int16":
+        int16_size = 65536
+        max_value = images.data.max()
+        slope = (max_value - 0) / int16_size
+        rescale_params = {"offset": 0, "slope": slope}
+
+        # Overwrite images with the copy that has been rescaled.
+        images = do_rescale(images, images.data.min(), max_value, int16_size - 1)
+    else:
+        raise ValueError("The pixel depth given is not handled: " + pixel_depth)
+
     # Save metadata
     metadata_filename = os.path.join(output_dir, name_prefix + '.json')
     LOG.debug('Metadata filename: {}'.format(metadata_filename))
     with open(metadata_filename, 'w+') as f:
-        images.save_metadata(f)
+        images.save_metadata(f, rescale_params)
 
     data = images.data
 
@@ -128,6 +144,13 @@ def save(images: Images,
                 progress.update(msg='Image')
 
         return names
+
+
+def do_rescale(images: Images, min_input, max_input, max_output):
+    images_copy = images.copy()
+    rescale = RescaleFilter()
+    rescale.filter_func(images_copy, min_input, max_input, max_output)
+    return images_copy
 
 
 def generate_names(name_prefix,

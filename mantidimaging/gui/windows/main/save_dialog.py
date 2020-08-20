@@ -51,3 +51,6 @@ class MWSaveDialog(Qt.QDialog):
 
     def image_format(self):
         return str(self.formats.currentText())
+
+    def pixel_depth(self):
+        return str(self.pixelDepth.currentText())

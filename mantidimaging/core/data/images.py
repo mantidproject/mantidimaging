@@ -96,8 +96,14 @@ class Images:
         self.metadata = json.load(f)
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
-    def save_metadata(self, f):
+    def save_metadata(self, f, rescale_params=None):
         self.metadata[const.SINOGRAMS] = self.is_sinograms
+
+        if rescale_params is None:
+            self.metadata[const.RESCALED] = ""
+        else:
+            self.metadata[const.RESCALED] = rescale_params
+
         json.dump(self.metadata, f, indent=4)
 
     def record_operation(self, func_name: str, display_name, *args, **kwargs):
