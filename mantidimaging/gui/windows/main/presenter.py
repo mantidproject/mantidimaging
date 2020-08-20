@@ -1,8 +1,8 @@
 import os
 import traceback
-from enum import Enum
+from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Tuple
 from uuid import UUID
 
 from PyQt5.QtWidgets import QDockWidget
@@ -12,6 +12,7 @@ from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
+from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
 
 if TYPE_CHECKING:
@@ -19,8 +20,10 @@ if TYPE_CHECKING:
 
 
 class Notification(Enum):
-    LOAD = 1
-    SAVE = 2
+    LOAD = auto()
+    SAVE = auto()
+    REMOVE_STACK = auto()
+    RENAME_STACK = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -33,22 +36,26 @@ class MainWindowPresenter(BasePresenter):
         super(MainWindowPresenter, self).__init__(view)
         self.model = MainWindowModel()
 
-    def notify(self, signal):
+    def notify(self, signal, **baggage):
         try:
             if signal == Notification.LOAD:
                 self.load_stack()
             elif signal == Notification.SAVE:
                 self.save()
+            elif signal == Notification.REMOVE_STACK:
+                self._do_remove_stack(**baggage)
+            elif signal == Notification.RENAME_STACK:
+                self._do_rename(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def remove_stack(self, uuid: UUID):
+    def _do_remove_stack(self, uuid: UUID):
         self.model.do_remove_stack(uuid)
         self.view.active_stacks_changed.emit()
 
-    def rename_stack_by_name(self, old_name: str, new_name: str):
+    def _do_rename(self, old_name: str, new_name: str):
         dock = self.model.get_stack_by_name(old_name)
         if dock:
             dock.setWindowTitle(new_name)
@@ -62,8 +69,7 @@ class MainWindowPresenter(BasePresenter):
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
 
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done,
-                              {'parameters': par})
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, {'parameters': par})
 
     def _on_stack_load_done(self, task):
         log = getLogger(__name__)
@@ -76,37 +82,35 @@ class MainWindowPresenter(BasePresenter):
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
 
     def _handle_task_error(self, base_message: str, log, task):
-        # TODO add types
         msg = base_message.format(task.error)
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
+    def _make_stack_window(self, images: Images, title) -> Tuple[QDockWidget, StackVisualiserView]:
+        dock = self.view._create_stack_window(images, title=title)
+        stack_visualiser = dock.widget()
+        return dock, stack_visualiser
+
+    def _add_stack(self, images: Images, filename: str, sample_dock):
+        name = self.model.create_name(os.path.basename(filename))
+        dock, stack_visualiser = self._make_stack_window(images, title=f"{name}")
+        self.model.add_stack(stack_visualiser, dock)
+        self.view.tabifyDockWidget(sample_dock, dock)
+
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.model.create_name(title)
 
-        def add_stack(images: Images, title) -> QDockWidget:
-            dock = self.view._create_stack_window(images, title=title)
-            stack_visualiser = dock.widget()
-            self.model.add_stack(stack_visualiser, dock)
-            return dock
-
         sample = container if isinstance(container, Images) else container.sample
-        sample_dock = add_stack(sample, title)
+        sample_dock, sample_stack_vis = self._make_stack_window(sample, title)
+        self.model.add_stack(sample_stack_vis, sample_dock)
 
         if isinstance(container, Dataset):
             if container.flat and container.flat.filenames:
-                flat_dock = add_stack(container.flat,
-                                      title=f"{self.model.create_name(os.path.basename(container.flat.filenames[0]))}")
-                self.view.tabifyDockWidget(sample_dock, flat_dock)
-
+                self._add_stack(container.flat, container.flat.filenames[0], sample_dock)
             if container.dark and container.dark.filenames:
-                dark_dock = add_stack(container.dark,
-                                      title=f"{self.model.create_name(os.path.basename(container.dark.filenames[0]))}")
-                self.view.tabifyDockWidget(sample_dock, dark_dock)
+                self._add_stack(container.dark, container.dark.filenames[0], sample_dock)
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
-                proj180_dock = add_stack(container.sample.proj180deg,
-                                         title=f"{self.model.create_name(os.path.basename(container.sample.proj180deg.filenames[0]))}")
-                self.view.tabifyDockWidget(sample_dock, proj180_dock)
+                self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_dock)
 
         self.view.active_stacks_changed.emit()
 
