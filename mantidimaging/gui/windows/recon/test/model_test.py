@@ -102,55 +102,6 @@ class ReconWindowModelTest(unittest.TestCase):
         assert_called_once_with(mock_reconstructor.single_sino, expected_sino, expected_cor,
                                 self.model.images.projection_angles(), expected_recon_params)
 
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_run_full_recon_no_pixel_size(self, mock_get_reconstructor_for):
-        mock_reconstructor = mock.Mock()
-        mock_reconstructor.full = mock.Mock()
-        mock_reconstructor.full.return_value = self.model.images
-        mock_get_reconstructor_for.return_value = mock_reconstructor
-
-        expected_cors = [1] * self.model.images.height
-        self.model.data_model.get_all_cors_from_regression = mock.Mock(return_value=expected_cors)
-
-        expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
-        progress = mock.Mock()
-        self.model.run_full_recon(expected_recon_params, progress)
-
-        mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
-        assert_called_once_with(mock_reconstructor.full, self.model.images, expected_cors, expected_recon_params)
-        self.assertNotIn(const.OPERATION_HISTORY, self.model.images.metadata)
-
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_run_full_recon_with_pixel_size(self, mock_get_reconstructor_for):
-        """
-        Test that reconstructing images with pixel size above 0 will perform a divide
-        to calculate attenuation values of the reconstructed slice.
-        """
-
-        # the size is expected in microns, we put a big value so that after
-        # conversion to microns it divides by 10
-        self.model.images.pixel_size = 100000
-        initial_pixel = 10
-        self.model.images.data[0, 0, 0] = initial_pixel
-
-        mock_reconstructor = mock.Mock()
-        mock_reconstructor.full = mock.Mock()
-        mock_reconstructor.full.return_value = self.model.images
-        mock_get_reconstructor_for.return_value = mock_reconstructor
-
-        expected_cors = [1] * self.model.images.height
-        self.model.data_model.get_all_cors_from_regression = mock.Mock(return_value=expected_cors)
-
-        expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
-        progress = mock.Mock()
-        output = self.model.run_full_recon(expected_recon_params, progress)
-
-        mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
-        assert_called_once_with(mock_reconstructor.full, self.model.images, expected_cors, expected_recon_params)
-        self.assertIn(const.OPERATION_HISTORY, self.model.images.metadata)
-        self.assertEqual(len(self.model.images.metadata[const.OPERATION_HISTORY]), 1)
-        self.assertAlmostEqual(initial_pixel / 10, output.data[0, 0, 0], delta=1e-3)
-
     def test_tilt_angle(self):
         self.assertIsNone(self.model.tilt_angle)
         exp_deg = Degrees(1.5)
