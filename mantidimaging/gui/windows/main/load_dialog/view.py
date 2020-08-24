@@ -66,6 +66,8 @@ class MWLoadDialog(Qt.QDialog):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
         use = QCheckBox(self)
+        if position == 0:
+            use.setEnabled(False)
         self.tree.setItemWidget(section, 2, use)
 
         select_button = QPushButton("Select", self)
