@@ -11,19 +11,21 @@ have one on your machine.
 
 .. _packages: https://anaconda.org/mantid/mantidimaging/
 
-1. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
-2. Add needed channels to Anaconda
+1. These dependencies must be present on your system before installing the Mantid Imaging environment.
+Please look for instructions specific to your OS on how to do that:
 
-  - :code:`conda config --prepend channels defaults`
-  - :code:`conda config --prepend channels conda-forge`
+  - PyQt5
+  - CUDA Runtime version 10.2 https://developer.nvidia.com/cuda-10.2-download-archive
 
-3. Make sure the channel priority is flexible
 
-  - :code:`conda config --set channel_priority flexible`
+2. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
+3. Make sure :code:`conda` is available on your PATH
+4. Run the install script:
 
-4. Create a virtual environment with Mantid Imaging installed: :code:`conda create -n mantidimaging -c mantid mantidimaging python=3.7`
-5. Activate the newly created environment: :code:`conda activate mantidimaging`
-6. Install additional :code:`pip` dependencies with :code:`pip install deps/pip-requirements.txt` from the source folder.
+  - :code:`source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)`
+
+
+5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
 
 Running the source
 ------------------
