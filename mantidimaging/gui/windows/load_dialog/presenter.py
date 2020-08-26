@@ -8,10 +8,10 @@ from typing import TYPE_CHECKING, List
 from mantidimaging.core.io.loader import read_in_shape
 from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
-from mantidimaging.gui.windows.main.load_dialog.field import Field
+from mantidimaging.gui.windows.load_dialog.field import Field
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main.load_dialog.view import MWLoadDialog
+    from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 logger = getLogger(__name__)
 
 
@@ -148,5 +148,6 @@ class LoadPresenter:
 
         lp.dtype = self.view.pixel_bit_depth.currentText()
         lp.sinograms = self.view.images_are_sinograms.isChecked()
+        lp.pixel_size = self.view.pixelSize.value()
 
         return lp

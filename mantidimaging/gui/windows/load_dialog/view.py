@@ -2,12 +2,12 @@ from typing import Optional, Tuple
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView, QDoubleSpinBox
+    QHeaderView, QSpinBox
 
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.utility import (compile_ui)
-from mantidimaging.gui.windows.main.load_dialog.field import Field
-from mantidimaging.gui.windows.main.load_dialog.presenter import LoadPresenter, Notification
+from mantidimaging.gui.windows.load_dialog.field import Field
+from .presenter import LoadPresenter, Notification
 
 
 class MWLoadDialog(Qt.QDialog):
@@ -15,7 +15,7 @@ class MWLoadDialog(Qt.QDialog):
     pixel_bit_depth: QComboBox
     images_are_sinograms: QCheckBox
 
-    pixelSize: QDoubleSpinBox
+    pixelSize: QSpinBox
 
     step_preview: QPushButton
     step_all: QPushButton

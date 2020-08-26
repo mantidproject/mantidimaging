@@ -5,7 +5,7 @@ import mock
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.load_dialog.view import MWLoadDialog
+from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 

@@ -106,6 +106,8 @@ class Field:
     def _start(self) -> QSpinBox:
         if self._spinbox_widget is None:
             self._init_indices()
+        # assert to clear up mypy error for wrong type
+        assert self._start_spinbox is not None
         return self._start_spinbox
 
     @_start.setter
@@ -116,6 +118,8 @@ class Field:
     def _stop(self) -> QSpinBox:
         if self._spinbox_widget is None:
             self._init_indices()
+        # assert to clear up mypy error for wrong type
+        assert self._stop_spinbox is not None
         return self._stop_spinbox
 
     @_stop.setter
@@ -126,6 +130,8 @@ class Field:
     def _increment(self) -> QSpinBox:
         if self._spinbox_widget is None:
             self._init_indices()
+        # assert to clear up mypy error for wrong type
+        assert self._increment_spinbox is not None
         return self._increment_spinbox
 
     @_increment.setter
@@ -145,7 +151,7 @@ class Field:
 
     @property
     def indices(self) -> Indices:
-        return self._start.value(), self._stop.value(), self._increment.value()
+        return Indices(self._start.value(), self._stop.value(), self._increment.value())
 
     def update_indices(self, number_of_images):
         """
@@ -179,7 +185,7 @@ class Field:
 
     def update_shape(self, shape: Union[int, Tuple[int, int]]):
         if isinstance(shape, int):
-            self._shape = f"{str(shape)} images"
+            self._shape = f"{str(shape)} images"  # type: ignore
         else:
             num_images, shape, exp_mem = self._update_expected_mem_usage(shape)
-            self._shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"
+            self._shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"  # type: ignore
