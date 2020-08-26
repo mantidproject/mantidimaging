@@ -28,7 +28,7 @@ requirements:
     - sharedarray
     - numpy
     - tomopy=1.7.1=cuda*
-    - cudatoolkit=10.1*
+    - cudatoolkit=10.2*
     - astra-toolbox
     - requests
     - requests-futures
