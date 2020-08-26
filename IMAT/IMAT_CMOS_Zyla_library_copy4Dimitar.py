@@ -30,6 +30,8 @@ def ensure_dir(f):
     if not os.path.exists(f):
         os.makedirs(f)
 
+def write_csv(f, *args):
+    f.writelines([",".join(args), "\n"])
 
 def waitNewImageReady(camera):
     camera.startAcquire(1)
@@ -213,8 +215,7 @@ def CMOS_Zyla_radio_log(image_type, n_radio, expo_time, mon_th, x, y, z, rot, RB
         TiffFileAutoSavePV.putw(1) # Ensure Auto Save is RENABLED
         return
 
-    f.writelines([ ' TIME STAMP', '  IMAGE TYPE' , '   IMAGE COUNTER', '   COUNTS BM3 before image', '   COUNTS BM3 after image','   \n' ])
-    f.write('\n')
+    write_csv(f, 'TIME STAMP', 'IMAGE TYPE' , 'IMAGE COUNTER', 'COUNTS BM3 before image', 'COUNTS BM3 after image')
 
     # cset(rot=rot)
     # waitfor_move()
@@ -240,11 +241,10 @@ def CMOS_Zyla_radio_log(image_type, n_radio, expo_time, mon_th, x, y, z, rot, RB
             print(("Total Beam  Counts =", EndBeamCount-StartBeamCount, "  image acquired: ", image_counter))
             TiffFileWriteFilePV.putw(1)
             if( image_type == 0 ):
-                f.writelines([ str(time.ctime()), '   Dark Field:  ', str(image_counter), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
+                write_csv(f, str(time.ctime()), 'Dark Field', str(image_counter), 'Monitor 3 before: '+ str(StartBeamCount), 'Monitor 3 after: '+ str(EndBeamCount))
             else:
-
-                f.writelines([ str(time.ctime()), '   Radiography:  ', str(image_counter), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
-                # f.writelines([ str(time.ctime()), '   Radiography:  ', str(image_counter), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '   RHController: ', str(rh), '   M4a_Counts: ', str(m4a), '   M4b_Counts: ', str(m4b), '   M5a_Counts: ', str(m5a), '   M5b_Counts: ', str(m5b),'\n' ])
+                write_csv(f, str(time.ctime()), 'Radiography', str(image_counter), 'Monitor 3 before: '+ str(StartBeamCount), 'Monitor 3 after: '+ str(EndBeamCount))
+                # write_csv(f, str(time.ctime()), 'Radiography', str(image_counter), 'Monitor 3 before: '+ str(StartBeamCount), 'Monitor 3 after: '+ str(EndBeamCount), 'RHController: '+ str(rh), 'M4a_Counts: '+ str(m4a), 'M4b_Counts: '+ str(m4b), 'M5a_Counts: '+ str(m5a), '   M5b_Counts: ', str(m5b))
             image_counter += 1
         else :
             print(("Image NOT SAVED, intensity variation over 20% --> Beam Counts= ", EndBeamCount-StartBeamCount, "  image number: ", image_counter))
@@ -319,8 +319,7 @@ def CMOS_Zyla_tomo_log(image_type, n_radio, expo_time, mon_th, x, y, z, start_a,
         sys.exit(0)
 
 
-    f.writelines([ ' TIME STAMP', '  IMAGE TYPE' , '   IMAGE COUNTER', '   COUNTS BM3 before image', '   COUNTS BM3 after image\n' ])
-    f.write('\n')
+    write_csv(f, 'TIME STAMP', 'IMAGE TYPE' , 'IMAGE COUNTER', 'IMAGE ANGLE', 'COUNTS BM3 before image', 'COUNTS BM3 after image')
     print("test2")
     cset(y=y)
     waitfor_move()
@@ -353,7 +352,7 @@ def CMOS_Zyla_tomo_log(image_type, n_radio, expo_time, mon_th, x, y, z, start_a,
                 print((" Current angular position: ", current_a, "    Wait for the image: ", image_counter, " Time = ", time.ctime()))
             if current_a >=100:
                 print((" Current angular position: ", current_a, "   Wait for the image: ", image_counter, " Time = ", time.ctime()))
-            f.writelines([ str(time.ctime()), '   Projection:  ', str(image_counter), "  angle: " , str(current_a), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
+            write_csv(f, str(time.ctime()), 'Projection', str(image_counter), "Angle:" + str(current_a), 'Monitor 3 before: '+ str(StartBeamCount), 'Monitor 3 after: '+ str(EndBeamCount))
             current_a += step_a
             image_counter += 1
         else :
@@ -429,9 +428,7 @@ def CMOS_Zyla_multi_tomo_log(image_type, n_radio, expo_time, mon_th, x, y, z, st
         sys.exit(0)
 
 
-    f.writelines([ ' TIME STAMP', '  IMAGE TYPE' , '   IMAGE COUNTER', '   COUNTS BM3 before image', '   COUNTS BM3 after image\n' ])
-    f.write('\n')
-
+    write_csv(f, 'TIME STAMP', 'IMAGE TYPE' , 'IMAGE COUNTER', 'IMAGE ANGLE', 'COUNTS BM3 before image', 'COUNTS BM3 after image')
     cset(y=y)
     waitfor_move()
     cset(x=x)
@@ -462,7 +459,7 @@ def CMOS_Zyla_multi_tomo_log(image_type, n_radio, expo_time, mon_th, x, y, z, st
                 print((" Current angular position: ", current_a, "    Wait for the image: ", image_counter, " Time = ", time.ctime()))
             if current_a >=100:
                 print((" Current angular position: ", current_a, "   Wait for the image: ", image_counter, " Time = ", time.ctime()))
-            f.writelines([ str(time.ctime()), '   Projection:  ', str(image_counter), "  angle: " , str(current_a), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
+            write_csv(f, str(time.ctime()), 'Projection', str(image_counter), "Angle:" + str(current_a), 'Monitor 3 before: '+ str(StartBeamCount), 'Monitor 3 after: '+ str(EndBeamCount))
             current_a += step_a
             image_counter += 1
         else :
@@ -532,8 +529,7 @@ def CMOS_Zyla_multi_golden_tomo_log(image_type, n_radio, expo_time, mon_th, x, y
         TiffFileAutoSavePV.putw(1)    # Ensure Auto Save is RENABLED
         sys.exit(0)
 
-    f.writelines([ ' TIME STAMP', '  IMAGE TYPE' , '   IMAGE COUNTER', '   COUNTS BM3 before image', '   COUNTS BM3 after image\n' ])
-    f.write('\n')
+    write_csv(f, 'TIME STAMP', 'IMAGE TYPE' , 'IMAGE COUNTER', 'IMAGE ANGLE', 'COUNTS BM3 before image', 'COUNTS BM3 after image')
     cset(y=y)
     waitfor_move()
     cset(x=x)
@@ -562,7 +558,7 @@ def CMOS_Zyla_multi_golden_tomo_log(image_type, n_radio, expo_time, mon_th, x, y
                 print((" Current angular position: ", current_a, "    Wait for the image: ", image_counter, " Time = ", time.ctime()))
             if current_a >=100:
                 print((" Current angular position: ", current_a, "   Wait for the image: ", image_counter, " Time = ", time.ctime()))
-            f.writelines([ str(time.ctime()), '   Projection:  ', str(image_counter), "  angle: " , str(current_a), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
+            write_csv(f, str(time.ctime()), 'Projection', str(image_counter), "Angle:" + str(current_a), 'Monitor 3 before: '+ str(StartBeamCount), 'Monitor 3 after: '+ str(EndBeamCount))
             image_counter += 1
             current_a = (image_counter*G)%360.0
         else :
@@ -633,8 +629,7 @@ def CMOS_Zyla_multi_radio_log(image_type, n_radio, expo_time, mon_th, x, y, z, r
         print("Non-existing destination Path. Exiting...")
         TiffFileAutoSavePV.putw(1) # Ensure Auto Save is RENABLED
         sys.exit(0)
-    f.writelines([ ' TIME STAMP', '  IMAGE TYPE' , '   IMAGE COUNTER', '   COUNTS BM3 before image', '   COUNTS BM3 after image\n' ])
-    f.write('\n')
+    write_csv(f, 'TIME STAMP', 'IMAGE TYPE' , 'IMAGE COUNTER', 'COUNTS BM3 before image', 'COUNTS BM3 after image')
 
     cset(axa=rot,axb=rot, axc=rot)
     waitfor_move()
@@ -659,9 +654,9 @@ def CMOS_Zyla_multi_radio_log(image_type, n_radio, expo_time, mon_th, x, y, z, r
             print(("Total Beam  Counts =", EndBeamCount-StartBeamCount, "  image acquired: ", image_counter))
             TiffFileWriteFilePV.putw(1)
             if( image_type == 0 ):
-                f.writelines([ str(time.ctime()), '   Dark Field:  ', str(image_counter), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
+                write_csv(f, str(time.ctime()), 'Dark Field', str(image_counter), 'Monitor 3 before: ' + str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount))
             else:
-                f.writelines([ str(time.ctime()), '   Radiography:  ', str(image_counter), '   Monitor 3 before:  ', str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount), '\n' ])
+                write_csv(f, str(time.ctime()), 'Radiography', str(image_counter), 'Monitor 3 before: ' + str(StartBeamCount), '   Monitor 3 after:  ', str(EndBeamCount))
             image_counter += 1
         else :
             print(("Image NOT SAVED, intensity variation over 20% --> Beam Counts= ", EndBeamCount-StartBeamCount, "  image number: ", image_counter))
