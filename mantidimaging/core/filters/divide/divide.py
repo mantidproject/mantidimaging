@@ -33,7 +33,10 @@ class DivideFilter(BaseFilter):
         _, value_widget = add_property_to_form("Divide by", Type.FLOAT, form=form, on_change=on_change)
         assert value_widget is not None, "Requested widget was for FLOAT, got None instead"
         value_widget.setDecimals(7)
-        _, unit_widget = add_property_to_form("Unit", Type.CHOICE, valid_values=["micron", "cm"], form=form,
+        _, unit_widget = add_property_to_form("Unit",
+                                              Type.CHOICE,
+                                              valid_values=["micron", "cm"],
+                                              form=form,
                                               on_change=on_change)
 
         return {'value_widget': value_widget}
