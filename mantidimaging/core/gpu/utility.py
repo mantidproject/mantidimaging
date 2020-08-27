@@ -229,6 +229,7 @@ def _convert_diff(diff, dtype):
 
 class CudaExecuter:
     def __init__(self, dtype):
+        import cupy as cp
 
         # Load the CUDA kernel through cupy
         loaded_from_source = _load_cuda_kernel(dtype)

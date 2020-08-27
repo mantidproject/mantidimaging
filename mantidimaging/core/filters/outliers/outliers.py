@@ -2,6 +2,7 @@ from functools import partial
 
 import numpy as np
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.filters.base_filter import BaseFilter
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.parallel import utility
@@ -53,10 +54,10 @@ class OutliersFilter(BaseFilter):
             cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
-            if force_cpu:
+            if force_cpu and not gpu.gpu_available():
                 data = _execute_cpu(data, diff, radius, mode, axis, cores, progress)
             else:
-                data = _execute_gpu(data, diff, radius, mode, cores, progress)
+                data = _execute_gpu(data, diff, radius, mode, progress)
         return data
 
     @staticmethod
@@ -110,11 +111,11 @@ def dims():
     return [DIM_2D, DIM_1D]
 
 
-def _execute_cpu(data, diff, radius, mode, axis, cores, progress):
+def _execute_cpu(images: Images, diff, radius, mode, axis, cores, progress):
     with progress:
         progress.update(msg="Applying outliers with threshold: {0} and " "radius {1}".format(diff, radius))
 
-        sample = data.data
+        sample = images.data
         # By default tomopy only clears bright outliers.
         # As a workaround inverting the image makes the dark outliers the brightest
         if mode == OUTLIERS_DARK:
@@ -131,16 +132,16 @@ def _execute_cpu(data, diff, radius, mode, axis, cores, progress):
         if mode == OUTLIERS_DARK:
             np.negative(sample, out=sample)
 
-    return data
+    return images
 
 
-def _execute_gpu(data, diff, radius, mode, progress):
+def _execute_gpu(images: Images, diff, radius, mode, progress):
+    data = images.data
     progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Remove outlier GPU")
     cuda = gpu.CudaExecuter(data.dtype)
 
     with progress:
         progress.update(msg="Applying GPU outliers with threshold: {0} and " "radius {1}".format(diff, radius))
-        sample = data.sample
-        sample[:] = cuda.remove_outlier(sample, diff, radius, mode, progress)
+        data[:] = cuda.remove_outlier(data, diff, radius, mode, progress)
 
-    return data
+    return images
