@@ -9,7 +9,6 @@ from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.core.gpu import utility as gpu
 
 OUTLIERS_DARK = 'dark'
 OUTLIERS_BRIGHT = 'bright'
@@ -41,7 +40,11 @@ class OutliersFilter(BaseFilter):
         :param radius: Size of the median filter to apply
         :param mode: Spot brightness to remove.
                      Either 'bright' or 'dark'.
+        :param axis: The data axis on which the Outliers filter will be executed
+        :param type: Which outliers to remove - bright or dark
         :param cores: The number of cores that will be used to process the data.
+        :param progress: Progress object to which progress is reported
+        :param force_cpu: Force usage of the CPU instead of the GPU
 
         :return: The processed 3D numpy.ndarray
         """
@@ -50,10 +53,10 @@ class OutliersFilter(BaseFilter):
             cores = 1
 
         if diff and radius and diff > 0 and radius > 0:
-            if not force_cpu and gpu.gpu_available():
-                return _execute_gpu(data, diff, radius, mode, progress)
+            if force_cpu:
+                data = _execute_cpu(data, diff, radius, mode, axis, cores, progress)
             else:
-                return _execute_cpu(data, diff, radius, mode, cores, progress)
+                data = _execute_gpu(data, diff, radius, mode, cores, progress)
         return data
 
     @staticmethod

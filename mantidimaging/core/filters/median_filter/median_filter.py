@@ -29,6 +29,8 @@ class MedianFilter(BaseFilter):
                      One of [reflect, constant, nearest, mirror, wrap].
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
+        :param progress: Progress object to which progress is reported
+        :param force_cpu: Force usage of the CPU instead of the GPU
 
         :return: Returns the processed data
 
@@ -38,8 +40,6 @@ class MedianFilter(BaseFilter):
         if size and size > 1:
             if not force_cpu and gpu.gpu_available():
                 data = _execute_gpu(data.data, size, mode, progress)
-            elif pu.multiprocessing_available():
-                data = _execute_par(data, size, mode, cores, chunksize, progress)
             else:
                 _execute(data.data, size, mode, cores, chunksize, progress)
 
