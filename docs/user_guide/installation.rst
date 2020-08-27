@@ -11,6 +11,7 @@ have one on your machine.
 
 .. _packages: https://anaconda.org/mantid/mantidimaging/
 
+
 1. These dependencies must be present on your system before installing the Mantid Imaging environment.
 Please look for instructions specific to your OS on how to do that:
 
