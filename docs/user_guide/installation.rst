@@ -15,8 +15,9 @@ have one on your machine.
 1. These dependencies must be present on your system before installing the Mantid Imaging environment.
 Please look for instructions specific to your OS on how to do that:
 
-  - PyQt5
-  - CUDA Runtime version 10.2 https://developer.nvidia.com/cuda-10.2-download-archive
+
+  - Qt5 - https://doc.qt.io/qt-5/gettingstarted.html
+  - CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive
 
 
 2. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
