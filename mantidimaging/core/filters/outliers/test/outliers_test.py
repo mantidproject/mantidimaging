@@ -45,11 +45,9 @@ class OutliersTest(unittest.TestCase):
         use_gpu_field = mock.Mock()
         use_gpu_field.isChecked = mock.Mock(return_value=False)
 
-        images = th.generate_images()
         execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field, axis_field, dim_field,
                                                       use_gpu_field)
-
-        images, _ = th.gen_img_shared_array_and_copy()
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(diff_field.value.call_count, 1)
