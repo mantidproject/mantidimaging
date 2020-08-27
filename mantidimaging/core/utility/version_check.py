@@ -30,8 +30,11 @@ def find_if_latest_version(action: Callable[[str], None]):
 
         if local_version < remote_version or local_commits_since_last < remote_commits_since_last:
             msg = f"Not running the latest Mantid Imaging. Found {local_mantid_package}, " \
-                  f"latest: {remote_mantid_package}"
+                  f"latest: {remote_mantid_package}. Please check the terminal for an update command!"
             LOG.info(msg)
+            LOG.info("To update your environment please copy and run the following commands:\n\n"
+                     "\t\t . /opt/miniconda/bin/activate /opt/miniconda && "
+                     "source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)"
             action(msg)
             return
         LOG.info("Running the latest Mantid Imaging")
