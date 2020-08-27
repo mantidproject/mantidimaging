@@ -9,7 +9,7 @@ import numpy as np
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.data_containers import ProjectionAngles, Micron
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -272,3 +272,11 @@ class Images:
     def projection_angles(self):
         return self._log_file.projection_angles() if self._log_file is not None else \
             ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+
+    @property
+    def pixel_size(self):
+        return self.metadata.get(const.PIXEL_SIZE, 0)
+
+    @pixel_size.setter
+    def pixel_size(self, value: int):
+        self.metadata[const.PIXEL_SIZE] = value

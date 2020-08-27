@@ -105,6 +105,13 @@ class ReconstructWindowModel(object):
         # get the image height based on the current ROI
         recon = reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
                                    recon_params, progress)
+
+        if recon.pixel_size > 0:
+            recon = DivideFilter.filter_func(recon, value=recon.pixel_size, unit="micron", progress=progress)
+            recon.record_operation(DivideFilter.__name__,
+                                   DivideFilter.filter_name,
+                                   value=recon.pixel_size,
+                                   unit="micron")
         return recon
 
     @property

@@ -115,6 +115,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = True
+        lp.pixel_size = 101
         progress_mock = mock.Mock()
 
         self.model.do_load_stack(lp, progress_mock)
@@ -130,6 +131,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
+        lp.pixel_size = 101
         progress_mock = mock.Mock()
 
         self.model.do_load_stack(lp, progress_mock)
@@ -145,6 +147,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
+        lp.pixel_size = 101
 
         flat_mock = mock.Mock()
         lp.flat = flat_mock
@@ -165,6 +168,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
+        lp.pixel_size = 101
 
         flat_mock = mock.Mock()
         lp.flat = flat_mock
