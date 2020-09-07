@@ -66,7 +66,7 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_filters_populated(self):
         self.assertTrue(len(self.model.filter_names) > 0)
 
-    @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
     def test_do_apply_filter(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
 
@@ -83,7 +83,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute.assert_called_once()
         callback_mock.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
     def test_do_apply_filter_with_roi(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
 
@@ -101,7 +101,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute.assert_called_once()
         callback_mock.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
     def test_operation_recorded_in_image_history(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
         self.sv_presenter.images.metadata = {}
@@ -127,7 +127,6 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertNotIn(".", op_history[0][const.OPERATION_NAME])
         callback_mock.assert_called_once()
 
-    # @mock.patch("mantidimaging.gui.windows.operations.FiltersWindowModel._apply_to")
     def test_apply_filter_no_180deg_proj_loaded(self):
         """
         When no 180deg projection is loaded the filter is only
