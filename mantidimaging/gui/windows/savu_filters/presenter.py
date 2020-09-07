@@ -124,7 +124,7 @@ class SavuFiltersWindowPresenter(BasePresenter):
 
         # TODO then trigger self.view.auto_update_triggered.emit to update the view
 
-        # we do not have to do this for SAVU filters as they are all the same #notallfilters
+        # we do not have to do this for SAVU operations as they are all the same #notallfilters
         # Register new filter (adding it's property widgets to the properties layout)
         # TODO set up the filter further if necessary
         # self.model.setup_filter(None)

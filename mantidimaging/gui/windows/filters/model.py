@@ -3,8 +3,8 @@ from logging import getLogger
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.filters.base_filter import BaseFilter
-from mantidimaging.core.filters.loader import load_filter_packages
+from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import get_parameters_from_stack
@@ -28,7 +28,7 @@ class FiltersWindowModel(object):
 
         self.presenter = presenter
         # Update the local filter registry
-        self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
+        self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
 
         self.preview_image_idx = 0
 

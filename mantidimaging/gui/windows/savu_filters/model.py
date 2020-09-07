@@ -47,7 +47,7 @@ class SavuFiltersWindowModel(object):
 
     def register_filters(self, filters: Dict):
         """
-        Builds a local registry of filters.
+        Builds a local registry of operations.
 
         Filter name is used to initially populate the combo box for filter
         selection.
@@ -89,7 +89,7 @@ class SavuFiltersWindowModel(object):
         """
         Sets filter properties from result of registration function.
         """
-        # TODO need to manually add parameters necessary for the SAVU filters in auto_props
+        # TODO need to manually add parameters necessary for the SAVU operations in auto_props
         # self.auto_props, self.do_before, self.execute, self.do_after = filter_details
         # self.parameters_from_stack, self.do_before_wrapper, self.execute_wrapper,
         # self.do_after_wrapper = [], [], [], []
