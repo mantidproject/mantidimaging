@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Iterable, List
 
 import numpy as np
 
-from mantidimaging.core.filters.loader import load_filter_packages
+from mantidimaging.core.operations.loader import load_filter_packages
 from . import const
 
 MODULE_NOT_FOUND = "Could not find module with name '{}'"
@@ -58,7 +58,7 @@ def deserialize_metadata(metadata: Dict[str, Any]) -> List[ImageOperation]:
 def ops_to_partials(filter_ops: Iterable[ImageOperation]) -> Iterable[partial]:
     filter_funcs: Dict[str, Callable] = {
         f.__name__: f.filter_func
-        for f in load_filter_packages(ignored_packages=['mantidimaging.core.filters.wip'])
+        for f in load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
     }
     fixed_funcs = {
         const.OPERATION_NAME_AXES_SWAP: lambda img, **_: np.swapaxes(img, 0, 1),

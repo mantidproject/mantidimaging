@@ -41,7 +41,7 @@ class SavuFiltersWindowView(BaseMainWindowView):
         self.new_output.connect(self.show_output_text)
         self.savu_finished.connect(self.load_savu_stack)
 
-        # Populate list of filters and handle filter selection
+        # Populate list of operations and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)
         self.handle_filter_selection()

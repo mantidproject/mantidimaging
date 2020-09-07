@@ -74,7 +74,7 @@ class StackVisualiserPresenter(BasePresenter):
 
     def get_parameter_value(self, parameter: SVParameters):
         """
-        Gets a parameter from the stack visualiser for use elsewhere (e.g. filters).
+        Gets a parameter from the stack visualiser for use elsewhere (e.g. operations).
         :param parameter: The parameter value to be retrieved
         """
         if parameter == SVParameters.ROI:

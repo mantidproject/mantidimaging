@@ -126,7 +126,7 @@ class TomoPyTool(AbstractTool):
                 log.info("Mean COR: {0}, Number of CORs provided {1}, "
                          "Algorithm: {2}...".format(np.mean(cors), len(cors), alg))
 
-            # TODO need to expose the filters to CLI
+            # TODO need to expose the operations to CLI
             # filter_name='parzen',
             # filter_par=[5.],
             recon = self._tomopy.recon(tomo=sample,

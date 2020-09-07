@@ -4,7 +4,7 @@ from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.filters.median_filter import MedianFilter, modes
+from mantidimaging.core.operations.median_filter import MedianFilter, modes
 from mantidimaging.core.gpu import utility as gpu
 
 GPU_NOT_AVAIL = not gpu.gpu_available()

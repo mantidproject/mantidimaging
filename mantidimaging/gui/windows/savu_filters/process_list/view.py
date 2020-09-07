@@ -7,7 +7,7 @@ from .presenter import ProcessListPresenter, Notification
 
 
 class ProcessListView(Qt.QGroupBox):
-    """The view of the process list in the savu filters window.
+    """The view of the process list in the savu operations window.
 
     A fixed loader and saver plugin are represented by non-interactive widgets.
     Processing plugins are laid out in between, and can be edited, removed, and have their positions changed.
