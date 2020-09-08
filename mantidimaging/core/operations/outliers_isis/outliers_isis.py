@@ -56,8 +56,10 @@ class OutliersISISFilter(BaseFilter):
 
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
-        _, apply_to_field = add_property_to_form('Apply to', Type.CHOICE,
-                                                 valid_values=("Projections", "Sinograms"), form=form,
+        _, apply_to_field = add_property_to_form('Apply to',
+                                                 Type.CHOICE,
+                                                 valid_values=("Projections", "Sinograms"),
+                                                 form=form,
                                                  on_change=on_change)
 
         return {'diff_field': diff_field, 'size_field': size_field, 'apply_to_field': apply_to_field}
@@ -71,7 +73,4 @@ class OutliersISISFilter(BaseFilter):
         else:
             raise AttributeError("apply_to_field not given a valid input.")
 
-        return partial(OutliersISISFilter.filter_func,
-                       diff=diff_field.value(),
-                       radius=size_field.value(),
-                       axis=axis)
+        return partial(OutliersISISFilter.filter_func, diff=diff_field.value(), radius=size_field.value(), axis=axis)
