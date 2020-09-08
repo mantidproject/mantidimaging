@@ -56,13 +56,22 @@ class OutliersISISFilter(BaseFilter):
 
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
-        _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 1), form=form, on_change=on_change)
+        _, apply_to_field = add_property_to_form('Apply to', Type.CHOICE,
+                                                 valid_values=("Projections", "Sinograms"), form=form,
+                                                 on_change=on_change)
 
-        return {'diff_field': diff_field, 'size_field': size_field, 'axis_field': axis_field}
+        return {'diff_field': diff_field, 'size_field': size_field, 'apply_to_field': apply_to_field}
 
     @staticmethod
-    def execute_wrapper(diff_field=None, size_field=None, axis_field=None):
+    def execute_wrapper(diff_field=None, size_field=None, apply_to_field=None):
+        if apply_to_field.currentText() == "Projections":
+            axis = 0
+        elif apply_to_field.currentText() == "Sinograms":
+            axis = 1
+        else:
+            raise AttributeError("apply_to_field not given a valid input.")
+
         return partial(OutliersISISFilter.filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
-                       axis=axis_field.value())
+                       axis=axis)
