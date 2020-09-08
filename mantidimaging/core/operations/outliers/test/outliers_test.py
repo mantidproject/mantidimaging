@@ -38,11 +38,12 @@ class OutliersTest(unittest.TestCase):
         size_field.value = mock.Mock(return_value=0)
         mode_field = mock.Mock()
         mode_field.currentText = mock.Mock(return_value=OUTLIERS_BRIGHT)
-        axis_field = mock.Mock()
-        axis_field.value = mock.Mock(return_value=0)
-        dim_field = mock.Mock()
-        dim_field.currentText = mock.Mock(return_value=DIM_2D)
-        execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field, axis_field, dim_field)
+        apply_to_field = mock.Mock()
+        apply_to_field.currentText = mock.Mock(return_value="Projections")
+        median_filter_field = mock.Mock()
+        median_filter_field.currentText = mock.Mock(return_value=DIM_2D)
+        execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field, apply_to_field,
+                                                      median_filter_field)
 
         images = th.generate_images()
         execute_func(images)
@@ -50,8 +51,8 @@ class OutliersTest(unittest.TestCase):
         self.assertEqual(diff_field.value.call_count, 1)
         self.assertEqual(size_field.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
-        self.assertEqual(axis_field.value.call_count, 1)
-        self.assertEqual(dim_field.currentText.call_count, 1)
+        self.assertEqual(apply_to_field.currentText.call_count, 1)
+        self.assertEqual(median_filter_field.currentText.call_count, 1)
 
 
 if __name__ == '__main__':

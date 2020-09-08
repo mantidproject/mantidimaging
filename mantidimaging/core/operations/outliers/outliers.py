@@ -82,26 +82,37 @@ class OutliersFilter(BaseFilter):
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
         _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
-        _, axis_field = add_property_to_form('Axis', Type.INT, 0, (0, 2), form=form, on_change=on_change)
+        _, apply_to_field = add_property_to_form('Apply to', Type.CHOICE,
+                                                 valid_values=("Projections", "Sinograms"), form=form,
+                                                 on_change=on_change)
 
-        _, dim_field = add_property_to_form('Dims', Type.CHOICE, valid_values=dims(), form=form, on_change=on_change)
+        _, median_filter_field = add_property_to_form('Median filter dimensions', Type.CHOICE, valid_values=dims(),
+                                                      form=form, on_change=on_change)
 
         return {
             'diff_field': diff_field,
             'size_field': size_field,
             'mode_field': mode_field,
-            'axis_field': axis_field,
-            'dim_field': dim_field
+            'apply_to_field': apply_to_field,
+            'median_filter_field': median_filter_field
         }
 
     @staticmethod
-    def execute_wrapper(diff_field=None, size_field=None, mode_field=None, axis_field=None, dim_field=None):
+    def execute_wrapper(diff_field=None, size_field=None, mode_field=None, apply_to_field=None,
+                        median_filter_field=None):
+        if apply_to_field.currentText() == "Projections":
+            axis = 0
+        elif apply_to_field.currentText() == "Sinograms":
+            axis = 1
+        else:
+            raise AttributeError("apply_to_field not given a valid input.")
+
         return partial(OutliersFilter.filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
                        mode=mode_field.currentText(),
-                       axis=axis_field.value(),
-                       type=dim_field.currentText())
+                       axis=axis,
+                       type=median_filter_field.currentText())
 
 
 def modes():
