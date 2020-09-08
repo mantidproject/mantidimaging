@@ -82,12 +82,17 @@ class OutliersFilter(BaseFilter):
         _, size_field = add_property_to_form('Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
         _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
-        _, apply_to_field = add_property_to_form('Apply to', Type.CHOICE,
-                                                 valid_values=("Projections", "Sinograms"), form=form,
+        _, apply_to_field = add_property_to_form('Apply to',
+                                                 Type.CHOICE,
+                                                 valid_values=("Projections", "Sinograms"),
+                                                 form=form,
                                                  on_change=on_change)
 
-        _, median_filter_field = add_property_to_form('Median filter dimensions', Type.CHOICE, valid_values=dims(),
-                                                      form=form, on_change=on_change)
+        _, median_filter_field = add_property_to_form('Median filter dimensions',
+                                                      Type.CHOICE,
+                                                      valid_values=dims(),
+                                                      form=form,
+                                                      on_change=on_change)
 
         return {
             'diff_field': diff_field,
@@ -98,7 +103,10 @@ class OutliersFilter(BaseFilter):
         }
 
     @staticmethod
-    def execute_wrapper(diff_field=None, size_field=None, mode_field=None, apply_to_field=None,
+    def execute_wrapper(diff_field=None,
+                        size_field=None,
+                        mode_field=None,
+                        apply_to_field=None,
                         median_filter_field=None):
         if apply_to_field.currentText() == "Projections":
             axis = 0
