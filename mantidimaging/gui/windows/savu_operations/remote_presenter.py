@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
 from mantidimaging.core.utility.savu_interop.webapi import WS_JOB_STATUS_NAMESPACE
-from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
-from mantidimaging.gui.windows.savu_filters.sio_model import SavuFiltersSIOModel
+from mantidimaging.gui.windows.savu_operations.job_run_response import JobRunResponseContent
+from mantidimaging.gui.windows.savu_operations.sio_model import SavuFiltersSIOModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView  # noqa:F401
+    from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView  # noqa:F401
 
 
 class SavuFiltersRemotePresenter(object):

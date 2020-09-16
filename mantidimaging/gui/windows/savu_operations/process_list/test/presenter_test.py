@@ -4,7 +4,7 @@ from unittest import mock
 import numpy as np
 
 from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginListEntry
-from mantidimaging.gui.windows.savu_filters.process_list import ProcessListView, ProcessListPresenter
+from mantidimaging.gui.windows.savu_operations.process_list import ProcessListView, ProcessListPresenter
 
 PLUGIN_NAME = "TestPlugin"
 

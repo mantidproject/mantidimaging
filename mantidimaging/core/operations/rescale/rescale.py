@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.gui.windows.filters import FiltersWindowView
+from mantidimaging.gui.windows.operations import FiltersWindowView
 
 
 class RescaleFilter(BaseFilter):

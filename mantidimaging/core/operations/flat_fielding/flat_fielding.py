@@ -11,7 +11,7 @@ from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
-from mantidimaging.gui.windows.filters import FiltersWindowView
+from mantidimaging.gui.windows.operations import FiltersWindowView
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9

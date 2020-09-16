@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QSpinBox, QTextEdit
 
 from mantidimaging.core.configs.savu_backend_docker import RemoteConfig, RemoteConstants
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.savu_filters.presenter import Notification as PresNotification
-from mantidimaging.gui.windows.savu_filters.presenter import SavuFiltersWindowPresenter
+from mantidimaging.gui.windows.savu_operations.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.savu_operations.presenter import SavuFiltersWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401

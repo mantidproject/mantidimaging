@@ -11,14 +11,14 @@ from requests import Response
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals, add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import delete_all_widgets_from_layout
-from mantidimaging.gui.windows.savu_filters.job_run_response import JobRunResponseContent
-from mantidimaging.gui.windows.savu_filters.model import (CurrentFilterData, SavuFiltersWindowModel)
-from mantidimaging.gui.windows.savu_filters.process_list.view import ProcessListView
-from mantidimaging.gui.windows.savu_filters.remote_presenter import SavuFiltersRemotePresenter
+from mantidimaging.gui.windows.savu_operations.job_run_response import JobRunResponseContent
+from mantidimaging.gui.windows.savu_operations.model import (CurrentFilterData, SavuFiltersWindowModel)
+from mantidimaging.gui.windows.savu_operations.process_list.view import ProcessListView
+from mantidimaging.gui.windows.savu_operations.remote_presenter import SavuFiltersRemotePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView  # noqa: F401
+    from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView  # noqa: F401
     from mantidimaging.gui.windows.main.view import MainWindowView  # noqa: F401
 
 

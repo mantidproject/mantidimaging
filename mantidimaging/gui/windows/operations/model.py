@@ -11,7 +11,7 @@ from mantidimaging.gui.utility import get_parameters_from_stack
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401
-    from mantidimaging.gui.windows.filters import FiltersWindowPresenter
+    from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 
 
 def ensure_tuple(val):

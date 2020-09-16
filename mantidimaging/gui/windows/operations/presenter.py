@@ -17,7 +17,7 @@ from .model import FiltersWindowModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
-    from mantidimaging.gui.windows.filters import FiltersWindowView
+    from mantidimaging.gui.windows.operations import FiltersWindowView
 
 
 class Notification(Enum):

@@ -6,7 +6,7 @@ import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operation_history import const
-from mantidimaging.gui.windows.filters import FiltersWindowModel
+from mantidimaging.gui.windows.operations import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter, SVParameters)
 
 
@@ -66,7 +66,7 @@ class FiltersWindowModelTest(unittest.TestCase):
     def test_filters_populated(self):
         self.assertTrue(len(self.model.filter_names) > 0)
 
-    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
     def test_do_apply_filter(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
 
@@ -83,7 +83,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute.assert_called_once()
         callback_mock.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
     def test_do_apply_filter_with_roi(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
 
@@ -101,7 +101,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute.assert_called_once()
         callback_mock.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.filters.model.start_async_task_view")
+    @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
     def test_operation_recorded_in_image_history(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
         self.sv_presenter.images.metadata = {}

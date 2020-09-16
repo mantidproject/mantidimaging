@@ -14,12 +14,12 @@ from mantidimaging.core.configs.savu_backend_docker import RemoteConstants
 from mantidimaging.core.io import savu_config_writer
 from mantidimaging.core.utility.savu_interop.plugin_list import (SAVUPlugin, SAVUPluginList, SAVUPluginListEntry)
 from mantidimaging.gui.utility.qt_helpers import get_value_from_qwidget
-from mantidimaging.gui.windows.savu_filters.job_run_response import \
+from mantidimaging.gui.windows.savu_operations.job_run_response import \
     JobRunResponseContent
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowPresenter  # noqa:F401
+    from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowPresenter  # noqa:F401
 
 CurrentFilterData = Union[Tuple, Tuple[SAVUPlugin, List[QWidget]]]
 

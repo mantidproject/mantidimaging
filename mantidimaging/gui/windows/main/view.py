@@ -7,13 +7,13 @@ from PyQt5.QtWidgets import QAction, QLabel, QInputDialog
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.version_check import find_if_latest_version
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.filters import FiltersWindowView
+from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
 from mantidimaging.gui.windows.recon import ReconstructWindowView
-from mantidimaging.gui.windows.savu_filters.view import SavuFiltersWindowView
+from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 LOG = getLogger(__file__)
