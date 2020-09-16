@@ -5,11 +5,11 @@ Operations
    :maxdepth: 1
    :caption: Contents:
 
-   background_correction
    circular_mask
    clip_values
    crop_coords
    cut_off
+   flat_fielding
    gaussian
    median
    minus_log
@@ -18,4 +18,4 @@ Operations
    ring_removal
    roi_normalisation
    rotate_stack
-   stripe_removal
+   remove_stripe

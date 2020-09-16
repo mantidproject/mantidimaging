@@ -8,6 +8,6 @@ Graphical User Interface (GUI)
    quick_start
    loading_saving
    stack_vis
-   filters
+   operations
    cor_tilt
    tomopy_recon

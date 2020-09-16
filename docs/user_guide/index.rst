@@ -8,6 +8,6 @@ User Guide
    installation
    troubleshooting
    gui/index
-   filters/index
+   operations/index
    python/index
    savu/index
