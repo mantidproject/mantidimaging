@@ -6,7 +6,7 @@ import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
 from ..data.images import Images
-from ..filters.rescale import RescaleFilter
+from ..operations.rescale import RescaleFilter
 from ..utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
@@ -149,7 +149,7 @@ def save(images: Images,
 def do_rescale(images: Images, min_input, max_input, max_output):
     images_copy = images.copy()
     rescale = RescaleFilter()
-    rescale.filter_func(images_copy, min_input, max_input, max_output)
+    rescale.filter_func(images_copy, min_input, max_input, max_output, data_type=np.int16)
     return images_copy
 
 

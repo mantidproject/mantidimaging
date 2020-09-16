@@ -1,5 +1,6 @@
 from functools import partial
 from typing import Dict, Any
+from numpy import issubdtype, int16, float32
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
 
@@ -17,10 +18,17 @@ class RescaleFilter(BaseFilter):
                     min_input: float = 0.0,
                     max_input: float = 10000.0,
                     max_output: float = 256.0,
-                    progress=None) -> Images:
+                    progress=None,
+                    data_type=float32) -> Images:
         images.data[images.data < min_input] = 0
         images.data[images.data > max_input] = 0
         images.data *= (max_output / images.data.max())
+
+        if data_type == int16 and not images.dtype == int16:
+            images.data = images.data.astype(int16)
+        elif data_type == float32 and not images.dtype == float32:
+            images.data = images.data.astype(float32)
+
         return images
 
     @staticmethod
