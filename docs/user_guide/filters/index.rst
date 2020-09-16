@@ -1,5 +1,5 @@
-Filters
-=======
+Operations
+==========
 
 .. toctree::
    :maxdepth: 1

@@ -1,15 +1,15 @@
-Filters
-=======
+Operations
+==========
 
-Selecting the *Filters* option in the *Processing* menu opens the filters
+Selecting the *Operations* option in the *Processing* menu opens the filters
 dialog, this is used for applying filters to image stacks.
 
-Filters may be applied to image stacks of any type (i.e. projection, sinogram,
+Operations may be applied to image stacks of any type (i.e. projection, sinogram,
 reconstruction), they are essentially just image filters and do not directly
 care about the type of image.
 
 .. image:: ../../_static/gui_filters_dialog_initial.png
-    :alt: Filters dialog
+    :alt: Operations dialog
     :width: 60%
 
 Here you can select the type of filter and the image stack you wish to apply it
@@ -26,7 +26,7 @@ inspection of the effects of the filter.
 The *Image* control in the *Preview* section can be used to select the index of
 the image in the stack that is used to generate the preview.
 
-Filters are automatically updated when parameters are changed. For filters that
+Operations are automatically updated when parameters are changed. For filters that
 take a long time to apply even on a single image it is worthwhile to disable the
 *Auto Update* option and trigger preview updates manually using the *Update Now*
 button.

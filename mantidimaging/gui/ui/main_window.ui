@@ -102,7 +102,7 @@
   </action>
   <action name="actionFilters">
    <property name="text">
-    <string>Filters</string>
+    <string>Operations</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>

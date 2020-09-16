@@ -1,7 +1,7 @@
 Using Savu from Mantid Imaging
 ==============================
 
-The Savu integration is currently done via the Savu Filters GUI. This can be accessed via "Workflow > Savu Image Operations" or by pressing :code:`Ctrl+Shift+F`.
+The Savu integration is currently done via the Savu Operations GUI. This can be accessed via "Workflow > Savu Image Operations" or by pressing :code:`Ctrl+Shift+F`.
 
 Once that is open, it connects to the already running (on IDaaS) backend.
 
