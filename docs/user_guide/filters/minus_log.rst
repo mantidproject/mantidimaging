@@ -20,6 +20,6 @@ This filter should only be used once image normalisation has been performed.
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.minus_log.MinusLogFilter
+.. autoclass:: mantidimaging.core.operations.minus_log.MinusLogFilter
 
 .. _docs: http://tomopy.readthedocs.io/en/latest/api/tomopy.prep.normalize.html#tomopy.prep.normalize.minus_log

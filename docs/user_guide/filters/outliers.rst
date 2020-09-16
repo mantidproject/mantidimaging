@@ -13,6 +13,6 @@ This uses the TomoPy implementation (:code:`tomopy.misc.corr.remove_outlier`)
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.outliers.OutliersFilter
+.. autoclass:: mantidimaging.core.operations.outliers.OutliersFilter
 
 .. _docs: http://tomopy.readthedocs.io/en/latest/api/tomopy.misc.corr.html#tomopy.misc.corr.remove_outlier

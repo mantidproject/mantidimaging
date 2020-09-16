@@ -14,6 +14,6 @@ to all pixels outside this radius.
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.circular_mask.CircularMaskFilter
+.. autoclass:: mantidimaging.core.operations.circular_mask.CircularMaskFilter
 
 .. _docs: http://tomopy.readthedocs.io/en/latest/api/tomopy.misc.corr.html#tomopy.misc.corr.circ_mask

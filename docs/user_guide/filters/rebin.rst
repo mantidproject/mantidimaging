@@ -7,6 +7,6 @@ Reshapes an image (or stack of images) using SciPy's :code:`scipy.misc.imresize`
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.rebin.RebinFilter
+.. autoclass:: mantidimaging.core.operations.rebin.RebinFilter
 
 .. _docs: https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.misc.imresize.html

@@ -9,4 +9,4 @@ The extents are expected in the order :code:`left top right bottom`.
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.crop_coords.CropCoordinatesFilter
+.. autoclass:: mantidimaging.core.operations.crop_coords.CropCoordinatesFilter

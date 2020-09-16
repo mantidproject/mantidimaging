@@ -13,4 +13,4 @@ them in a single call to :code:`execute()`.
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.rotate_stack.RotateFilter
+.. autoclass:: mantidimaging.core.operations.rotate_stack.RotateFilter

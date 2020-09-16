@@ -7,6 +7,6 @@ Applies SciPy's median filter (:code:`scipy.ndimage.filters.median_filter`)
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.median_filter.MedianFilter
+.. autoclass:: mantidimaging.core.operations.median_filter.MedianFilter
 
 .. _docs: https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html

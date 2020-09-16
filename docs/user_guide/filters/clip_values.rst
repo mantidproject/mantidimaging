@@ -7,4 +7,4 @@ of any pixels that have a value outside of a given range.
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.clip_values.ClipValuesFilter
+.. autoclass:: mantidimaging.core.operations.clip_values.ClipValuesFilter

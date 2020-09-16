@@ -13,4 +13,4 @@ Performs stripe removal using one of three methods provided by TomoPy:
 Python API
 ----------
 
-.. autoclass:: mantidimaging.core.filters.stripe_removal.StripeRemovalFilter
+.. autoclass:: mantidimaging.core.operations.stripe_removal.StripeRemovalFilter
