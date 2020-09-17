@@ -99,7 +99,7 @@ def save(images: Images,
     elif pixel_depth == "int16":
         int16_size = 65536
         max_value = images.data.max()
-        slope = (max_value - 0) / int16_size
+        slope = max_value / int16_size
         rescale_params = {"offset": 0, "slope": slope}
 
         # Overwrite images with the copy that has been rescaled.
