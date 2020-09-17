@@ -1,5 +1,5 @@
 import pytest
-from numpy import testing as npt
+from numpy import testing as npt, int16, float32, finfo
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rescale import RescaleFilter
@@ -59,6 +59,23 @@ def test_execute_wrapper_with_preset(type: str, expected_max: float):
     assert partial.keywords['min_input'] == min_input_value
     assert partial.keywords['max_input'] == max_input_value
     assert partial.keywords['max_output'] == expected_max
+
+
+@pytest.mark.parametrize('type, max_value', [
+    (int16, 65535),
+    (float32, finfo(float32).max)
+])
+def test_type_changes_to_given_type(type, max_value):
+    images = th.generate_images((10, 100, 100))
+
+    expected_min_input = 0
+    images = RescaleFilter.filter_func(images,
+                                       min_input=expected_min_input,
+                                       max_input=images.data.max(),
+                                       max_output=max_value,
+                                       data_type=type)
+
+    npt.assert_equal(images.dtype, type)
 
 
 if __name__ == "__main__":
