@@ -9,7 +9,7 @@ import numpy as np
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -115,14 +115,14 @@ class Images:
 
         self.metadata[const.OPERATION_HISTORY].append({
             const.TIMESTAMP:
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             const.OPERATION_NAME:
-            func_name,
+                func_name,
             const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
                                            for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-            display_name
+                display_name
         })
 
     def copy(self, flip_axes=False) -> 'Images':
@@ -272,6 +272,12 @@ class Images:
     def projection_angles(self):
         return self._log_file.projection_angles() if self._log_file is not None else \
             ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+
+    def counts(self) -> Optional[Counts]:
+        if self._log_file is not None:
+            return self._log_file.counts()
+        else:
+            return None
 
     @property
     def pixel_size(self):

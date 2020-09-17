@@ -77,6 +77,10 @@ class ProjectionAngles(SingleValue):
     __slots__ = 'value'
     value: numpy.ndarray
 
+@dataclass
+class Counts(SingleValue):
+    __slots__ = 'value'
+    value: numpy.ndarray
 
 @dataclass
 class Micron(SingleValue):
