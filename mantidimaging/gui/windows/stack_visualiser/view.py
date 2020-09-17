@@ -116,7 +116,8 @@ class StackVisualiserView(BaseMainWindowView):
                    ("Show history", self.show_image_metadata),
                    ("Apply history from another stack", self.show_op_history_copy_dialog),
                    ("Mark as projections/sinograms", self.mark_as_),
-                   ("Change window name", self.change_window_name_clicked)]
+                   ("Change window name", self.change_window_name_clicked), ("Goto projection", self.goto_projection),
+                   ("Goto angle", self.goto_angle)]
 
         menu = QMenu(self)
 
@@ -126,6 +127,31 @@ class StackVisualiserView(BaseMainWindowView):
             menu.addAction(action)
 
         return menu
+
+    def goto_projection(self):
+        projection_to_goto, accepted = QInputDialog.getInt(
+            self,
+            "Enter Projection",
+            "Projection",
+            0,  # Default value
+            0,  # Min projection value
+            self.presenter.get_num_images(),  # Max possible value
+        )
+        if accepted:
+            self.image_view.set_selected_image(projection_to_goto)
+
+    def goto_angle(self):
+        projection_to_goto, accepted = QInputDialog.getDouble(
+            self,
+            "Enter Angle",
+            "Angle in Degrees",
+            0,  # Default value
+            0,  # Min projection value
+            2147483647,  # Max possible value
+            4,  # Digits/decimals
+        )
+        if accepted:
+            self.image_view.set_selected_image(self.presenter.find_image_from_angle(projection_to_goto))
 
     def set_roi(self):
         roi, accepted = QInputDialog.getText(

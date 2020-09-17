@@ -1,3 +1,4 @@
+import numpy as np
 import traceback
 from enum import IntEnum, auto
 from logging import getLogger
@@ -113,3 +114,16 @@ class StackVisualiserPresenter(BasePresenter):
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             self.view.parent_create_stack(new_images, self.view.name)
+
+    def get_num_images(self) -> int:
+        return self.images.num_projections
+
+    def find_image_from_angle(self, selected_angle: float) -> int:
+        selected_angle = np.deg2rad(selected_angle)
+        for index, angle in enumerate(self.images.projection_angles().value):
+            if angle == selected_angle:
+                return index
+
+            if angle > selected_angle:
+                return index
+        return len(self.images.projection_angles().value)
