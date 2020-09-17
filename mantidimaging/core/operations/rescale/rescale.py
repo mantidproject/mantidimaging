@@ -1,6 +1,6 @@
 from functools import partial
 from typing import Dict, Any
-from numpy import issubdtype, int16, float32
+from numpy import int16, float32
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
 
