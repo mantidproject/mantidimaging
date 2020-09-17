@@ -1,10 +1,7 @@
 from logging import getLogger
-from typing import TYPE_CHECKING, List
+from typing import List
 
 import numpy as np
-
-if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
 
 class MIImagePresenter:

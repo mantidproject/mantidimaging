@@ -13,8 +13,7 @@ from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
         ([0, 0], [10, 10], [0, 0], [10, 10]),  # all in bounds
         ([-50, -50], [10, 10], [0, 0], [10, 10]),  # outside of bounds on the left/top
         ([-50, -50], [101, 101], [0, 0], [100, 100]),  # also outside of bounds on the bottom/right
-    ]
-)
+    ])
 def test_get_roi(init_pos: List[int], init_size: List[int], exp_pos: List[int], exp_size: List[int]):
     image = np.zeros((100, 100))
     pres = MIImagePresenter()

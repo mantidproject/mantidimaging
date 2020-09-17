@@ -14,7 +14,6 @@ class UnrotateablePlotROI(ROI):
     """
     Like PlotROI but does not add a rotation handle.
     """
-
     def __init__(self, size):
         ROI.__init__(self, pos=[0, 0], size=size)
         self.addScaleHandle([1, 1], [0, 0])
@@ -108,7 +107,8 @@ class MIImageView(ImageView):
         self.ui.roiPlot.mousePressEvent = lambda ev: extended_handler(ev)
 
     def get_roi(self) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
-        return self.presenter.get_roi(self.image, roi_pos=CloseEnoughPoint(self.roi.pos()),
+        return self.presenter.get_roi(self.image,
+                                      roi_pos=CloseEnoughPoint(self.roi.pos()),
                                       roi_size=CloseEnoughPoint(self.roi.size()))
 
     def image_hover_event(self, event: HoverEvent):
@@ -134,8 +134,7 @@ class MIImageView(ImageView):
     def set_timeline_to_tick_nearest(self, x_pos_clicked):
         x_axis = self.getRoiPlot().getAxis('bottom')
         view_range = self.getRoiPlot().viewRange()[0]
-        nearest = self.presenter.get_nearest_timeline_tick(x_pos_clicked,
-                                                           x_axis, view_range)
+        nearest = self.presenter.get_nearest_timeline_tick(x_pos_clicked, x_axis, view_range)
         self.timeLine.setValue(nearest)
 
     def set_selected_image(self, image_index: int):
