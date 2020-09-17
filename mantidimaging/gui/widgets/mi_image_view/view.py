@@ -1,6 +1,5 @@
 from typing import Optional, Tuple, Callable
 
-import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QLabel
 from pyqtgraph import ImageView, ROI, ImageItem
@@ -30,7 +29,7 @@ class MIImageView(ImageView):
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, levelMode='mono', *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
-        self.presenter = MIImagePresenter(self)
+        self.presenter = MIImagePresenter()
         self.details = QLabel("", self.ui.layoutWidget)
         self.details.setStyleSheet("QLabel { color : white; background-color: black}")
         self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
@@ -108,11 +107,9 @@ class MIImageView(ImageView):
 
         self.ui.roiPlot.mousePressEvent = lambda ev: extended_handler(ev)
 
-    def get_roi(self, ensure_in_image=True) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
-
+    def get_roi(self) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
         return self.presenter.get_roi(self.image, roi_pos=CloseEnoughPoint(self.roi.pos()),
-                                      roi_size=CloseEnoughPoint(self.roi.size()),
-                                      ensure_in_image=ensure_in_image)
+                                      roi_size=CloseEnoughPoint(self.roi.size()))
 
     def image_hover_event(self, event: HoverEvent):
         if event.exit:
@@ -136,10 +133,10 @@ class MIImageView(ImageView):
 
     def set_timeline_to_tick_nearest(self, x_pos_clicked):
         x_axis = self.getRoiPlot().getAxis('bottom')
-        frac_pos = (x_pos_clicked - x_axis.x()) / x_axis.width()
         view_range = self.getRoiPlot().viewRange()[0]
-        domain_pos = (view_range[1] - view_range[0]) * frac_pos
-        self.timeLine.setValue(np.round(view_range[0] + domain_pos))
+        nearest = self.presenter.get_nearest_timeline_tick(x_pos_clicked,
+                                                           x_axis, view_range)
+        self.timeLine.setValue(nearest)
 
     def set_selected_image(self, image_index: int):
         self.timeLine.setValue(image_index)
