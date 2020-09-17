@@ -61,10 +61,7 @@ def test_execute_wrapper_with_preset(type: str, expected_max: float):
     assert partial.keywords['max_output'] == expected_max
 
 
-@pytest.mark.parametrize('type, max_value', [
-    (int16, 65535),
-    (float32, finfo(float32).max)
-])
+@pytest.mark.parametrize('type, max_value', [(int16, 65535), (float32, finfo(float32).max)])
 def test_type_changes_to_given_type(type, max_value):
     images = th.generate_images((10, 100, 100))
 
