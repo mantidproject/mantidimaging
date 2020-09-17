@@ -9,7 +9,7 @@ class CloseEnoughPoint:
     y: int
     x: int
 
-    def __init__(self, points: List[Union[int, float]]):
+    def __init__(self, points: Union[List[int], List[float]]):
         self.y = int(points[1])
         self.x = int(points[0])
 
