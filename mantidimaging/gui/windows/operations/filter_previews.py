@@ -1,8 +1,7 @@
 from collections import namedtuple
-from typing import Tuple, Optional
+from typing import Optional
 
 import numpy as np
-from numpy import ndarray
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -74,6 +73,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         for img in self.image_before, self.image_after, self.image_difference:
             img.hoverEvent = lambda ev: self.mouse_over(ev)
 
+        self.init_histogram()
+
     def image_in_vb(self, name=None):
         im = ImageItem()
         im.setAutoDownsample(False)
@@ -86,36 +87,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after.clear()
         self.image_difference.clear()
         self.image_after_overlay.clear()
-        self.delete_histograms()
 
-    # There seems to be a bug with pyqtgraph.PlotDataItem.setData not forcing a redraw.
-    # We work around this by redrawing everything completely every time, which is unreasonably fast anyway.
-    def redraw_histograms(self):
-        self.delete_histograms()
-        self.delete_histogram_labels()
-
-        if self.combined_histograms:
-            self.draw_combined_histogram()
-        else:
-            self.draw_separate_histograms()
-
-    def delete_histograms(self):
-        coords = set(c for c in histogram_coords.values())
-        histograms = (self.getItem(*coord) for coord in coords)
-        for histogram in filter(lambda h: h is not None, histograms):
-            self.removeItem(histogram)
-        self.histogram = None
-        self.before_histogram = None
-        self.after_histogram = None
-        self.diff_histogram = None
-
-    def delete_histogram_labels(self):
-        coords = set(c for c in label_coords.values())
-        labels = (self.getItem(*coord) for coord in coords)
-        for label in filter(lambda h: h is not None, labels):
-            self.removeItem(label)
-
-    def draw_combined_histogram(self):
+    def init_histogram(self):
         self.histogram = self.addPlot(row=histogram_coords["combined"].row,
                                       col=histogram_coords["combined"].col,
                                       labels=histogram_axes_labels,
@@ -123,16 +96,18 @@ class FilterPreviews(GraphicsLayoutWidget):
                                       colspan=3)
         self.addLabel("Pixel values", row=label_coords["combined"].row, col=label_coords["combined"].col)
 
-        legend = self.histogram.addLegend()
-        # Plot any histogram that has data, and add a legend if both exist
-        if _data_valid_for_histogram(self.before_histogram_data):
-            before_plot = self.histogram.plot(*self.before_histogram_data, pen=before_pen)
-            legend.addItem(before_plot, "Before")
-        if _data_valid_for_histogram(self.after_histogram_data):
-            after_plot = self.histogram.plot(*self.after_histogram_data, pen=after_pen)
-            legend.addItem(after_plot, "After")
+        self.legend = self.histogram.addLegend()
 
-    def draw_separate_histograms(self):
+    def set_histogram_data(self, before_data, after_data):
+        # Plot any histogram that has data, and add a legend if both exist
+        if _data_valid_for_histogram(before_data):
+            before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
+            self.legend.addItem(before_plot, "Before")
+        if _data_valid_for_histogram(after_data):
+            after_plot = self.histogram.plot(*after_data, pen=after_pen)
+            self.legend.addItem(after_plot, "After")
+
+    def init_separate_histograms(self):
         hc = histogram_coords
         self.before_histogram = self.addPlot(row=hc["before"].row,
                                              col=hc["before"].col,
@@ -149,14 +124,6 @@ class FilterPreviews(GraphicsLayoutWidget):
             self.before_histogram.plot(*self.before_histogram_data, pen=before_pen)
         if _data_valid_for_histogram(self.after_histogram_data):
             self.after_histogram.plot(*self.after_histogram_data, pen=after_pen)
-
-    def set_before_histogram(self, data: Tuple[ndarray]):
-        self.before_histogram_data = data
-        self.redraw_histograms()
-
-    def set_after_histogram(self, data: Tuple[ndarray]):
-        self.after_histogram_data = data
-        self.redraw_histograms()
 
     @property
     def histogram_legend(self) -> Optional[LegendItem]:
