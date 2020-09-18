@@ -136,7 +136,7 @@ class FiltersWindowPresenter(BasePresenter):
             subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
             # Update image before
-            before_histogram = self._update_preview_image(before_image, self.view.preview_image_before)
+            self._update_preview_image(before_image, self.view.preview_image_before)
 
             # Generate sub-stack and run filter
             exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
@@ -150,9 +150,9 @@ class FiltersWindowPresenter(BasePresenter):
 
             filtered_image_data = subset.data[0]
 
-            after_histogram = self._update_preview_image(filtered_image_data, self.view.preview_image_after)
+            self._update_preview_image(filtered_image_data, self.view.preview_image_after)
 
-            self.view.previews.set_histogram_data(before_histogram, after_histogram)
+            self.view.previews.update_histogram_data()
 
             if filtered_image_data.shape == before_image.shape:
                 diff = np.subtract(filtered_image_data, before_image)
@@ -168,8 +168,6 @@ class FiltersWindowPresenter(BasePresenter):
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
         image.clear()
         image.setImage(image_data)
-
-        return image.getHistogram()
 
     def do_scroll_preview(self, offset):
         idx = self.model.preview_image_idx + offset
