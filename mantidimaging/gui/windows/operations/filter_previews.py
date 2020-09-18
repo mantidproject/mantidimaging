@@ -98,14 +98,22 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         self.legend = self.histogram.addLegend()
 
-    def set_histogram_data(self, before_data, after_data):
+    def update_histogram_data(self):
         # Plot any histogram that has data, and add a legend if both exist
+        before_data = self.image_before.getHistogram()
+        after_data = self.image_after.getHistogram()
         if _data_valid_for_histogram(before_data):
-            before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
-            self.legend.addItem(before_plot, "Before")
+            if self.combined_histograms:
+                before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
+                self.legend.addItem(before_plot, "Before")
+            else:
+                before_plot = self.before_histogram.plot(*before_data, pen=before_pen, clear=True)
         if _data_valid_for_histogram(after_data):
-            after_plot = self.histogram.plot(*after_data, pen=after_pen)
-            self.legend.addItem(after_plot, "After")
+            if self.combined_histograms:
+                after_plot = self.histogram.plot(*after_data, pen=after_pen)
+                self.legend.addItem(after_plot, "After")
+            else:
+                after_plot = self.after_histogram.plot(*after_data, pen=after_pen)
 
     def init_separate_histograms(self):
         hc = histogram_coords
@@ -124,6 +132,21 @@ class FilterPreviews(GraphicsLayoutWidget):
             self.before_histogram.plot(*self.before_histogram_data, pen=before_pen)
         if _data_valid_for_histogram(self.after_histogram_data):
             self.after_histogram.plot(*self.after_histogram_data, pen=after_pen)
+
+    def delete_histograms(self):
+        coords = set(c for c in histogram_coords.values())
+        histograms = (self.getItem(*coord) for coord in coords)
+        for histogram in filter(lambda h: h is not None, histograms):
+            self.removeItem(histogram)
+        self.histogram = None
+        self.before_histogram = None
+        self.after_histogram = None
+
+    def delete_histogram_labels(self):
+        coords = set(c for c in label_coords.values())
+        labels = (self.getItem(*coord) for coord in coords)
+        for label in filter(lambda h: h is not None, labels):
+            self.removeItem(label)
 
     @property
     def histogram_legend(self) -> Optional[LegendItem]:
