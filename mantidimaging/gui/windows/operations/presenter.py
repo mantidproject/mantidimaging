@@ -1,7 +1,7 @@
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import Callable, Any, Optional
+from typing import Optional
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -136,8 +136,7 @@ class FiltersWindowPresenter(BasePresenter):
             subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
             # Update image before
-            self._update_preview_image(before_image, self.view.preview_image_before,
-                                       self.view.previews.set_before_histogram)
+            before_histogram = self._update_preview_image(before_image, self.view.preview_image_before)
 
             # Generate sub-stack and run filter
             exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
@@ -150,29 +149,27 @@ class FiltersWindowPresenter(BasePresenter):
                 return
 
             filtered_image_data = subset.data[0]
-            # Update image after and difference
-            self._update_preview_image(filtered_image_data, self.view.preview_image_after,
-                                       self.view.previews.set_after_histogram)
+
+            after_histogram = self._update_preview_image(filtered_image_data, self.view.preview_image_after)
+
+            self.view.previews.set_histogram_data(before_histogram, after_histogram)
 
             if filtered_image_data.shape == before_image.shape:
                 diff = np.subtract(filtered_image_data, before_image)
                 if self.view.invertDifference.isChecked():
                     diff = np.negative(diff, out=diff)
-                self._update_preview_image(diff, self.view.preview_image_difference, None)
+                self._update_preview_image(diff, self.view.preview_image_difference)
                 if self.view.overlayDifference.isChecked():
                     self.view.previews.add_difference_overlay(diff)
                 else:
                     self.view.previews.hide_difference_overlay()
 
     @staticmethod
-    def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem,
-                              redraw_histogram: Optional[Callable[[Any], None]]):
+    def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
         image.clear()
         image.setImage(image_data)
 
-        if redraw_histogram:
-            # Update histogram
-            redraw_histogram(image.getHistogram())
+        return image.getHistogram()
 
     def do_scroll_preview(self, offset):
         idx = self.model.preview_image_idx + offset
