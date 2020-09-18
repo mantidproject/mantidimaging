@@ -19,11 +19,11 @@ class MonitorNormalisation(BaseFilter):
         if counts is None:
             return images
         else:
-            counts = counts.value
-        counts /= counts[0]
+            counts_val = counts.value
+            counts_val /= counts_val[0]
 
         div_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
-        images, air_sums = ptsm.execute(images.data, counts, div_partial, cores, chunksize, progress=progress)
+        images, _ = ptsm.execute(images.data, counts_val, div_partial, cores, chunksize, progress=progress)
         return images
 
     @staticmethod
@@ -31,7 +31,7 @@ class MonitorNormalisation(BaseFilter):
         return {}
 
     @staticmethod
-    def execute_wrapper() -> partial:
+    def execute_wrapper(*args) -> partial:
         return partial(MonitorNormalisation.filter_func)
 
     @staticmethod

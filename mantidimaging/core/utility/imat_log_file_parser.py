@@ -42,8 +42,9 @@ class IMATLogFile:
 
     def counts(self) -> Counts:
         counts = numpy.zeros(len(self._data[IMATLogColumn.COUNTS_BEFORE]))
-        for i, [before, after] in enumerate(
-                zip(self._data[IMATLogColumn.COUNTS_BEFORE], self._data[IMATLogColumn.COUNTS_AFTER])):
+        for i, [before,
+                after] in enumerate(zip(self._data[IMATLogColumn.COUNTS_BEFORE],
+                                        self._data[IMATLogColumn.COUNTS_AFTER])):
 
             # clips the string before the count number
             before = before[before.rfind(":") + 1:]
