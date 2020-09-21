@@ -3,7 +3,6 @@ from enum import Enum, auto
 from logging import getLogger
 from typing import Optional
 from typing import TYPE_CHECKING
-
 import numpy as np
 from pyqtgraph import ImageItem
 
@@ -173,3 +172,6 @@ class FiltersWindowPresenter(BasePresenter):
         idx = self.model.preview_image_idx + offset
         idx = max(min(idx, self.max_preview_image_idx), 0)
         self.set_preview_image_index(idx)
+
+    def get_filter_module_name(self, filter_idx):
+        return self.model.get_filter_module_name(filter_idx)

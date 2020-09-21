@@ -1,6 +1,7 @@
 from functools import partial
 from logging import getLogger
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
+from inspect import getsourcefile
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
@@ -103,3 +104,9 @@ class FiltersWindowModel(object):
         stack_params = get_parameters_from_stack(stack_presenter, self.params_needed_from_stack)
         apply_func = partial(self.apply_filter, stack_presenter.images, stack_params)
         start_async_task_view(stack_view, apply_func, post_filter)
+
+    def get_filter_module_name(self, filter_idx):
+        """
+        Returns the class name of the filter index passed to it
+        """
+        return self.filters[filter_idx].__module__

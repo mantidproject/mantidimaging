@@ -177,6 +177,13 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         images.proj180deg.free_memory()
 
+    def test_get_filter_module_name(self):
+        self.model.filters = mock.MagicMock()
+
+        module_name = self.model.get_filter_module_name(0)
+
+        self.assertEqual("mock.mock", module_name)
+
 
 if __name__ == '__main__':
     unittest.main()
