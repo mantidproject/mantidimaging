@@ -1,7 +1,6 @@
 from functools import partial
 from logging import getLogger
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
-from inspect import getsourcefile
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
