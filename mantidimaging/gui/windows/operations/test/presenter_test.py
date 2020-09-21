@@ -72,3 +72,10 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.clear_previews.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_filter_mock.assert_called_once()
+
+    def test_get_filter_module_name(self):
+        self.presenter.model.filters = mock.MagicMock()
+
+        module_name = self.presenter.get_filter_module_name(0)
+
+        self.assertEqual("mock.mock", module_name)

@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, QSizePolicy, QComboBox
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QUrl
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -84,6 +86,9 @@ class FiltersWindowView(BaseMainWindowView):
         self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.select_eligible_stack()
 
+        # Handle help button pressed
+        self.filterHelpButton.pressed.connect(self.open_help_webpage)
+
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
         self.presenter.disconnect_current_stack_roi()
@@ -161,3 +166,9 @@ class FiltersWindowView(BaseMainWindowView):
         self.error_icon.clear()
         self.error_text.clear()
         self.error_text.hide()
+
+    def open_help_webpage(self):
+        filter_module_path = self.presenter.get_filter_module_name(self.filterSelector.currentIndex())
+        url = QUrl("https://mantidproject.github.io/mantidimaging/api/" + filter_module_path + ".html")
+        if not QDesktopServices.openUrl(url):
+            self.show_error_dialog("Url could not be opened: " + url.toString())
