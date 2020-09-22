@@ -27,6 +27,22 @@ def test_execute():
     assert_not_equals(original.data, images.data)
 
 
+def test_execute2():
+    """
+    Test that the counts are correctly divided by the value at counts[0].
+
+    In this test that will make all the counts equal to 1, and the data will remain unchanged
+    """
+    images = generate_images()
+    images._log_file = mock.Mock()
+    images._log_file.counts = mock.Mock(return_value=Counts(np.full((10, ), 10)))
+
+    original = images.copy()
+    MonitorNormalisation.filter_func(images)
+    images._log_file.counts.assert_called_once()
+    npt.assert_equal(original.data, images.data)
+
+
 def test_register_gui():
     assert MonitorNormalisation.register_gui(None, None, None) == {}
 
