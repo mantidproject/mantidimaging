@@ -132,16 +132,16 @@ class LoadPresenter:
         lp.name = self.view.sample.file()
         lp.pixel_size = self.view.pixelSize.value()
 
-        if self.view.flat.use and self.view.flat.path_text() != "":
+        if self.view.flat.use.isChecked() and self.view.flat.path_text() != "":
             lp.flat = ImageParameters(input_path=self.view.flat.directory(),
                                       prefix=get_prefix(self.view.flat.path_text()),
                                       format=self.image_format)
 
-        if self.view.dark.use and self.view.dark.path_text() != "":
+        if self.view.dark.use.isChecked() and self.view.dark.path_text() != "":
             lp.dark = ImageParameters(input_path=self.view.dark.directory(),
                                       prefix=get_prefix(self.view.dark.path_text()),
                                       format=self.image_format)
-        if self.view.proj_180deg.use and self.view.proj_180deg.path_text() != "":
+        if self.view.proj_180deg.use.isChecked() and self.view.proj_180deg.path_text() != "":
             lp.proj_180deg = ImageParameters(input_path=self.view.proj_180deg.directory(),
                                              prefix=get_prefix(self.view.proj_180deg.path_text()),
                                              format=self.image_format)
