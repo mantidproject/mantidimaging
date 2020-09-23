@@ -145,8 +145,8 @@ def save(images: Images,
             for idx in range(num_images):
                 # Overwrite images with the copy that has been rescaled.
                 if pixel_depth == "int16":
-                    write_func(rescale_single_image(np.copy(images.data[idx]), min_value, max_value,
-                                                    INT16_SIZE - 1), names[idx], overwrite_all)
+                    write_func(rescale_single_image(np.copy(images.data[idx]), min_value, max_value, INT16_SIZE - 1),
+                               names[idx], overwrite_all)
                 else:
                     write_func(data[idx, :, :], names[idx], overwrite_all)
 

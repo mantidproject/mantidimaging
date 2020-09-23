@@ -82,19 +82,15 @@ def test_scale_single_image():
     images.data[1] = 1.5
 
     # Scale to int16
-    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(),
-                                                      1, data_type=int16)
-    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(),
-                                                      1, data_type=int16)
+    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(), 1, data_type=int16)
+    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(), 1, data_type=int16)
 
     npt.assert_equal(0, scaled_image1)
     npt.assert_equal(1, scaled_image2)
 
     # Scale to float32
-    scaled_image3 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(),
-                                                      2, data_type=float32)
-    scaled_image4 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(),
-                                                      2, data_type=float32)
+    scaled_image3 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(), 2, data_type=float32)
+    scaled_image4 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(), 2, data_type=float32)
 
     npt.assert_equal(0.0, scaled_image3)
     npt.assert_equal(2.0, scaled_image4)
