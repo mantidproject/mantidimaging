@@ -3,7 +3,7 @@ from typing import List, Dict
 
 import numpy
 
-from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
 
 
 class IMATLogColumn(Enum):
@@ -34,7 +34,21 @@ class IMATLogFile:
     def projection_angles(self) -> ProjectionAngles:
         angles = numpy.zeros(len(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]))
         for i, angle_str in enumerate(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]):
-            assert "angle:" in angle_str
+            if "angle:" not in angle_str:
+                raise ValueError("Projection angles loaded from logfile do not have the correct formatting!")
             angles[i] = float(angle_str[angle_str.rfind(": ") + 1:])
 
         return ProjectionAngles(numpy.deg2rad(angles))
+
+    def counts(self) -> Counts:
+        counts = numpy.zeros(len(self._data[IMATLogColumn.COUNTS_BEFORE]))
+        for i, [before,
+                after] in enumerate(zip(self._data[IMATLogColumn.COUNTS_BEFORE],
+                                        self._data[IMATLogColumn.COUNTS_AFTER])):
+
+            # clips the string before the count number
+            before = before[before.rfind(":") + 1:]
+            after = after[after.rfind(":") + 1:]
+            counts[i] = float(after) - float(before)
+
+        return Counts(counts)
