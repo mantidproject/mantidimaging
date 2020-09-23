@@ -123,19 +123,22 @@ class LoadPresenter:
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
+        sample_log = self.view.sample_log.path_text() if self.view.sample_log.use.isChecked() else None
         lp.sample = ImageParameters(input_path=self.view.sample.directory(),
                                     format=self.image_format,
                                     prefix=get_prefix(self.view.sample.path_text()),
                                     indices=self.view.sample.indices,
-                                    log_file=self.view.sample_log.path_text())
+                                    log_file=sample_log)
 
         lp.name = self.view.sample.file()
         lp.pixel_size = self.view.pixelSize.value()
 
         if self.view.flat.use.isChecked() and self.view.flat.path_text() != "":
+            flat_log = self.view.flat_log.path_text() if self.view.flat_log.use.isChecked() else None
             lp.flat = ImageParameters(input_path=self.view.flat.directory(),
                                       prefix=get_prefix(self.view.flat.path_text()),
-                                      format=self.image_format)
+                                      format=self.image_format,
+                                      log_file=flat_log)
 
         if self.view.dark.use.isChecked() and self.view.dark.path_text() != "":
             lp.dark = ImageParameters(input_path=self.view.dark.directory(),
