@@ -1,5 +1,5 @@
 import pytest
-from numpy import testing as npt, int16, float32, finfo
+from numpy import testing as npt, int16, float32, finfo, copy
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rescale import RescaleFilter
@@ -73,6 +73,36 @@ def test_type_changes_to_given_type(type, max_value):
                                        data_type=type)
 
     npt.assert_equal(images.dtype, type)
+
+
+def test_scale_single_image():
+    images = th.generate_images((2, 100, 100))
+
+    images.data[0] = -100.0
+    images.data[1] = 1.5
+
+    # Scale to int16
+    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(),
+                                                      1, data_type=int16)
+    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(),
+                                                      1, data_type=int16)
+
+    npt.assert_equal(0, scaled_image1)
+    npt.assert_equal(1, scaled_image2)
+
+    # Scale to float32
+    scaled_image3 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(),
+                                                      2, data_type=float32)
+    scaled_image4 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(),
+                                                      2, data_type=float32)
+
+    npt.assert_equal(0.0, scaled_image3)
+    npt.assert_equal(2.0, scaled_image4)
+
+    assert scaled_image1.dtype == int16
+    assert scaled_image2.dtype == int16
+    assert scaled_image3.dtype == float32
+    assert scaled_image4.dtype == float32
 
 
 if __name__ == "__main__":
