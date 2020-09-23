@@ -140,8 +140,7 @@ class ImagesTest(unittest.TestCase):
         stream = io.StringIO()
         images.save_metadata(stream)
         self.assertEqual(stream.getvalue(), f'''{{
-    "{const.SINOGRAMS}": true,
-    "{const.RESCALED}": ""
+    "{const.SINOGRAMS}": true
 }}''')
 
     def test_helper_properties(self):

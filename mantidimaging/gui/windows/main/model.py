@@ -48,8 +48,8 @@ class MainWindowModel(object):
                                name_prefix=name_prefix,
                                overwrite_all=overwrite,
                                out_format=image_format,
-                               progress=progress,
-                               pixel_depth=pixel_depth)
+                               pixel_depth=pixel_depth,
+                               progress=progress)
         svp.images.filenames = filenames
         return True
 

@@ -99,9 +99,7 @@ class Images:
     def save_metadata(self, f, rescale_params=None):
         self.metadata[const.SINOGRAMS] = self.is_sinograms
 
-        if rescale_params is None:
-            self.metadata[const.RESCALED] = ""
-        else:
+        if rescale_params is not None:
             self.metadata[const.RESCALED] = rescale_params
 
         json.dump(self.metadata, f, indent=4)
