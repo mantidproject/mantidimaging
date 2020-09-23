@@ -64,7 +64,7 @@ def save(images: Images,
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
 
-    :param data: Data as images/slices stores in numpy array
+    :param images: Data as images/slices stores in numpy array
     :param output_dir: Output directory for the files
     :param name_prefix: Prefix for the names of the images,
                         appended before the image number
@@ -85,6 +85,10 @@ def save(images: Images,
     :param indices: Only works if custom_idx is not specified.
                     Specify the start and end range of the indices
                     which will be used for the file names.
+    :param progress: Passed to ensure progress during saving is tracked properly
+    :param pixel_depth: Defines the target pixel depth of the save operation so
+                        np.float32 or np.int16 will ensure the values are scaled
+                        correctly to these values.
     :return The filename/filenames of the saved data.
     """
     progress = Progress.ensure_instance(progress, task_name='Save')
@@ -101,9 +105,6 @@ def save(images: Images,
         max_value = images.data.max()
         slope = max_value / int16_size
         rescale_params = {"offset": 0, "slope": slope}
-
-        # Overwrite images with the copy that has been rescaled.
-        images = do_rescale(images, images.data.min(), max_value, int16_size - 1)
     else:
         raise ValueError("The pixel depth given is not handled: " + pixel_depth)
 
@@ -139,11 +140,20 @@ def save(images: Images,
 
         with progress:
             for idx in range(num_images):
-                write_func(data[idx, :, :], names[idx], overwrite_all)
+                # Overwrite images with the copy that has been rescaled.
+                if pixel_depth == "int16":
+                    int16_size = 65536
+                    write_func(rescale_single_image(images.data[idx], images.data.min(), images.data.max(),
+                                                    int16_size - 1), names[idx], overwrite_all)
+                else:
+                    write_func(data[idx, :, :], names[idx], overwrite_all)
 
                 progress.update(msg='Image')
 
         return names
+
+def rescale_single_image(image: np.ndarray, min_input, max_input, max_output):
+    return RescaleFilter().filter_single_image(image, min_input, max_input, max_output, data_type=np.int16)
 
 
 def do_rescale(images: Images, min_input, max_input, max_output):
