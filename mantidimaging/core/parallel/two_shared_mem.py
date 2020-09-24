@@ -8,7 +8,10 @@ from mantidimaging.core.parallel import utility as pu
 
 shared_data = None
 second_shared_data = None
+third_shared_data = None
 
+def inplace3(func, i, **kwargs):
+    func(shared_data[i], second_shared_data[i], third_shared_data, **kwargs)
 
 def inplace(func, i, **kwargs):
     """
@@ -165,10 +168,6 @@ def fwd_gpu_recon(func, i, num_gpus, cors, **kwargs):
     second_shared_data[i] = func(shared_data[i], cors[i], **kwargs)
 
 
-def fwd_index_only(func, i, **kwargs):
-    func(i, store, second_shared_data[i], **kwargs)
-
-
 def create_partial(func, fwd_function=inplace, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
@@ -190,7 +189,7 @@ def create_partial(func, fwd_function=inplace, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = ''):
+def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = '', third_data=None):
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -252,6 +251,9 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     global second_shared_data
     second_shared_data = second_data
 
+    global third_shared_data
+    third_shared_data = third_data
+
     img_num = shared_data.shape[0]
     pu.execute_impl(img_num, partial_func, cores, chunksize, progress, msg)
 
@@ -261,5 +263,8 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     del shared_data
     temp_data_2_ref = second_shared_data
     del second_shared_data
+
+    temp_data_3_ref = third_shared_data
+    del third_shared_data
 
     return temp_data_ref, temp_data_2_ref
