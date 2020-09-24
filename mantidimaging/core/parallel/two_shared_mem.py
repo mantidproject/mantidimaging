@@ -165,6 +165,10 @@ def fwd_gpu_recon(func, i, num_gpus, cors, **kwargs):
     second_shared_data[i] = func(shared_data[i], cors[i], **kwargs)
 
 
+def fwd_index_only(func, i, **kwargs):
+    func(i, store, second_shared_data[i], **kwargs)
+
+
 def create_partial(func, fwd_function=inplace, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the

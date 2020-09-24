@@ -131,6 +131,7 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) ->
 
 
 def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int, progress: Progress, msg: str):
+    assert isinstance(partial_func, partial), "The partial_func is not a partial! Check the .execute call-site args"
     task_name = f"{msg} {cores}c {chunksize}chs"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = generate_indices(img_num)

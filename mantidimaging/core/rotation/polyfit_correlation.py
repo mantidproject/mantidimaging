@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.parallel import shared_mem, utility as pu
+from mantidimaging.core.parallel import utility as pu, two_shared_mem as ptsm
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -15,27 +15,51 @@ def do_search(row: int, image_width, p0, p180, search_range: list) -> int:
     minimum = 1e7
     index_min = 0
     for t in search_range:
-        rmse = np.square((np.roll(p0[row], t, axis=0) - p180[row])).sum() / image_width
+        rmse = np.square(np.roll(p0[row], t, axis=0) - p180[row]).sum() / image_width
         if rmse <= minimum:
             minimum = rmse
             index_min = t
     return index_min
 
 
+def do_search2d(store, search_index, image_width, p0, p180):
+    # calculates squared sum error in the difference between the images
+    store[:] = np.square(np.roll(p0, search_index, axis=1) - p180).sum(axis=1) / image_width
+
+
+# find the actual search_range used for fitting with
+# row = 450
+# search_range[np.where(store.T[row] == store.T[row].min())[0][0]]
+# originally the data is stored in dimensions
+# corresponding to (search_range, square sum)
+# we transpose store with store.T to make the array hold
+# (square sum, search range) so that each store.T[row] accesses the
+# information for the row's square sum across all search ranges
+# then we just find the index of the minimum one (minimum error)
+# and we get which search range is at that index
+# that is the number that we then pass into polyfit
+
+
 def find_center(images: Images, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
     # assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
-    with pu.temp_shared_array((images.height, )) as shift:
-        # this is the area that is looked into for the shift after overlapping the images
+    with pu.temp_shared_array((images.height,)) as shift:
         search_range = get_search_range(images.width)
+        with pu.temp_shared_array((len(search_range), images.height)) as store:
+            with pu.temp_shared_array((len(search_range),),dtype=np.int32) as shared_search_range:
+                shared_search_range[:] = np.asarray(search_range, dtype=np.int32)
 
-        func = shared_mem.create_partial(do_search,
-                                         shared_mem.fwd_index_only,
-                                         image_width=images.width,
-                                         p0=images.projection(0),
-                                         p180=np.fliplr(images.proj180deg.data[0]),
-                                         search_range=search_range)
-        shared_mem.execute(shift, func, progress=progress, msg="Finding correlation on row")
+                func = ptsm.create_partial(do_search2d,
+                                           ptsm.inplace,
+                                           image_width=images.width,
+                                           p0=images.projection(0),
+                                           p180=np.fliplr(images.proj180deg.data[0]))
+                ptsm.execute(store, shared_search_range, func, progress=progress,
+                             msg="Finding correlation on row")
+
+            for row in range(images.height):
+                shift[row] = search_range[np.where(store.T[row] == store.T[row].min())[0][0]]
+
         par = np.polyfit(slices, shift, deg=1)
         m = par[0]
         q = par[1]
