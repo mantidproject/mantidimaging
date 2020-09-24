@@ -8,7 +8,6 @@ from mantidimaging.core.parallel import utility as pu
 
 shared_data = None
 second_shared_data = None
-third_shared_data = None
 
 
 def inplace(func, i, **kwargs):
@@ -191,7 +190,7 @@ def create_partial(func, fwd_function=inplace, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = '', third_data=None):
+def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = ''):
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -262,6 +261,5 @@ def execute(data=None, second_data=None, partial_func=None, cores=None, chunksiz
     del shared_data
     temp_data_2_ref = second_shared_data
     del second_shared_data
-    del third_shared_data
 
     return temp_data_ref, temp_data_2_ref

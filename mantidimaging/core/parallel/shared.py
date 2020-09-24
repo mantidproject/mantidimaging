@@ -1,8 +1,11 @@
 from functools import partial
+from typing import List
+
+import numpy
 
 from mantidimaging.core.parallel import utility as pu
 
-shared_list = []
+shared_list: List[numpy.ndarray] = []
 
 
 def inplace3(func, i, **kwargs):
