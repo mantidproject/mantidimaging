@@ -176,3 +176,43 @@ class MainWindowViewTest(unittest.TestCase):
 
         mock_qtwidgets.QMessageBox.critical.assert_called_once_with(view, view.UNCAUGHT_EXCEPTION, "user-error")
         mock_getlogger.return_value.error.assert_called_once_with("log-error")
+
+    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
+    def test_show_about(self, mock_qtwidgets: mock.Mock):
+        view = MainWindowView()
+        view.show_about()
+
+        mock_qtwidgets.QMessageBox.assert_called_once()
+        mock_qtwidgets.QMessageBox.return_value.setWindowTitle.assert_called_once()
+        mock_qtwidgets.QMessageBox.return_value.setTextFormat.assert_called_once()
+        mock_qtwidgets.QMessageBox.return_value.setText.assert_called_once()
+        mock_qtwidgets.QMessageBox.return_value.show.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.QtGui")
+    def test_open_online_documentation(self, mock_qtgui: mock.Mock):
+        view = MainWindowView()
+        view.open_online_documentation()
+        mock_qtgui.QDesktopServices.openUrl.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
+    @mock.patch("mantidimaging.gui.windows.main.view.Qt")
+    def test_create_stack_window(self, mock_qt: mock.Mock, mock_sv: mock.Mock):
+        view = MainWindowView()
+        view.setCentralWidget = mock.Mock()
+        view.addDockWidget = mock.Mock()
+
+        images = generate_images()
+        title = "test_title"
+        position = "test_position"
+        floating = False
+
+        view._create_stack_window(images, title, position=position, floating=floating)
+
+        mock_qt.QDockWidget.assert_called_once_with(title, view)
+        dock = mock_qt.QDockWidget.return_value
+        view.setCentralWidget.assert_called_once_with(dock)
+        view.addDockWidget.assert_called_once_with(position, dock)
+
+        mock_sv.assert_called_once_with(view, dock, images)
+        dock.setWidget.assert_called_once_with(mock_sv.return_value)
+        dock.setFloating.assert_called_once_with(floating)
