@@ -55,8 +55,8 @@ class MainWindowPresenter(BasePresenter):
         self.model.do_remove_stack(uuid)
         self.view.active_stacks_changed.emit()
 
-    def _do_rename(self, old_name: str, new_name: str):
-        dock = self.model.get_stack_by_name(old_name)
+    def _do_rename(self, current_name: str, new_name: str):
+        dock = self.model.get_stack_by_name(current_name)
         if dock:
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
