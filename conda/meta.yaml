@@ -34,6 +34,7 @@ requirements:
     - requests-futures
     - python-socketio
     - h5py
+    - pyqt
     - pyqtgraph=0.11
     - sarepy
 
