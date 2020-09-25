@@ -48,10 +48,6 @@ def inplace(func, i, **kwargs):
     func(shared_data[i], second_shared_data[i], **kwargs)
 
 
-def fwd_index_only(func, i, **kwargs):
-    shared_data[i] = func(i, second_shared_data, **kwargs)
-
-
 def inplace_second_2d(func, i, **kwargs):
     """
     Use if the parameter function will do the following:
