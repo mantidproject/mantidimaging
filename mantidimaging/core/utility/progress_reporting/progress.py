@@ -195,7 +195,7 @@ class Progress(object):
 
             msg = f"{f'{msg}' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
                   f"Time: {fmt(self.execution_time())}, ETA: {fmt(eta)}"
-            step_details = ProgressHistory(time.process_time(), self.current_step, msg)
+            step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
             self.progress_history.append(step_details)
 
         # process progress callbacks
