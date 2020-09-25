@@ -65,10 +65,6 @@ def return_fwd_func(func, i, **kwargs):
     shared_data[i] = func(shared_data[i], **kwargs)
 
 
-def fwd_index_only(func, i, **kwargs):
-    shared_data[i] = func(i, **kwargs)
-
-
 def create_partial(func, fwd_func=return_fwd_func, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
