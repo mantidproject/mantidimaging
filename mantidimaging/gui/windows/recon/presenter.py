@@ -120,6 +120,12 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_row(self, row):
         self.model.selected_row = row
 
+    def get_pixel_size_from_images(self):
+        if self.model.images is not None and self.model.images.pixel_size is not None:
+            return self.model.images.pixel_size
+        else:
+            return 0.
+
     def do_update_projection(self):
         images = self.model.images
         if images is not None:

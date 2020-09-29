@@ -40,6 +40,7 @@ class ReconstructWindowView(BaseMainWindowView):
     filterName: QComboBox
     numIter: QSpinBox
     maxProjAngle: QDoubleSpinBox
+    pixelSize: QDoubleSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
@@ -125,6 +126,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.filterName.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_SLICE))  # type: ignore
         self.numIter.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_SLICE))  # type: ignore
+
+        # Set pixel size from loaded stack
+        self.pixelSize.setValue(self.presenter.get_pixel_size_from_images())
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -263,9 +267,17 @@ class ReconstructWindowView(BaseMainWindowView):
     def num_iter(self):
         return self.numIter.value()
 
+    @property
+    def pixel_size(self):
+        return self.pixelSize.value()
+
     def recon_params(self) -> ReconstructionParameters:
-        return ReconstructionParameters(self.algorithm_name, self.filter_name, self.num_iter,
-                                        ScalarCoR(self.rotation_centre), Degrees(self.tilt))
+        return ReconstructionParameters(algorithm=self.algorithm_name,
+                                        filter_name=self.filter_name,
+                                        num_iter=self.num_iter,
+                                        cor=ScalarCoR(self.rotation_centre),
+                                        tilt=Degrees(self.tilt),
+                                        pixel_size=self.pixel_size)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on

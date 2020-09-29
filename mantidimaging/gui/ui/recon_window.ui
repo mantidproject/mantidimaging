@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1578</width>
-    <height>782</height>
+    <height>790</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,16 +25,7 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
-        <property name="leftMargin">
-         <number>9</number>
-        </property>
-        <property name="topMargin">
-         <number>9</number>
-        </property>
-        <property name="rightMargin">
-         <number>9</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>9</number>
         </property>
         <item>
@@ -46,7 +37,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="resultsTab">
            <attribute name="title">
@@ -198,11 +189,11 @@
                    <property name="toolTip">
                     <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>2</number>
-                   </property>
                    <property name="text">
                     <string>Fit from COR/Tilt above</string>
+                   </property>
+                   <property name="toolTipDuration" stdset="0">
+                    <number>2</number>
                    </property>
                   </widget>
                  </item>
@@ -426,6 +417,20 @@
                 </property>
                 <property name="value">
                  <double>360.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="pixelSizeLabel">
+                <property name="text">
+                 <string>Pixel size (microns)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QDoubleSpinBox" name="pixelSize">
+                <property name="maximum">
+                 <double>99999.000000000000000</double>
                 </property>
                </widget>
               </item>

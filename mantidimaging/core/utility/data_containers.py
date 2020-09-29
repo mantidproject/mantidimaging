@@ -97,6 +97,7 @@ class ReconstructionParameters:
     num_iter: int = 1
     cor: Optional[ScalarCoR] = None
     tilt: Optional[Degrees] = None
+    pixel_size: float = 0.0
 
     def to_dict(self) -> dict:
         return {
@@ -104,7 +105,8 @@ class ReconstructionParameters:
             'filter_name': self.filter_name,
             'num_iter': self.num_iter,
             'cor': str(self.cor),
-            'tilt': str(self.tilt)
+            'tilt': str(self.tilt),
+            'pixel_size': self.pixel_size
         }
 
 

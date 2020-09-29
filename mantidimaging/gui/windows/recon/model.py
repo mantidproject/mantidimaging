@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
-from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.operation_history import const
+from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import AstraRecon
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
@@ -106,11 +106,13 @@ class ReconstructWindowModel(object):
         recon = reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
                                    recon_params, progress)
 
-        if recon.pixel_size > 0:
-            recon = DivideFilter.filter_func(recon, value=recon.pixel_size, unit="micron", progress=progress)
+        if recon_params.pixel_size > 0.:
+            recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
+            # update the reconstructed stack pixel size with the value actually used for division
+            recon.pixel_size = recon_params.pixel_size
             recon.record_operation(DivideFilter.__name__,
                                    DivideFilter.filter_name,
-                                   value=recon.pixel_size,
+                                   value=recon_params.pixel_size,
                                    unit="micron")
         return recon
 
