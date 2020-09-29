@@ -61,10 +61,6 @@ class MetadataDialog(Qt.QDialog):
                 date_item = QTreeWidgetItem(operation_item)
                 date_item.setText(0, f"Date: {op[const.TIMESTAMP]}")
 
-            if op.get(const.OPERATION_ARGS, False):
-                args_item = QTreeWidgetItem(operation_item)
-                args_item.setText(0, f"Positional arguments: {op[const.OPERATION_ARGS]}")
-
             if op.get(const.OPERATION_KEYWORD_ARGS, False):
                 kwargs_list_item = QTreeWidgetItem(operation_item)
                 kwargs_list_item.setText(0, "Keyword arguments")
