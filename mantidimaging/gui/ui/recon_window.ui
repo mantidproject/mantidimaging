@@ -25,16 +25,7 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
-        <property name="leftMargin">
-         <number>9</number>
-        </property>
-        <property name="topMargin">
-         <number>9</number>
-        </property>
-        <property name="rightMargin">
-         <number>9</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>9</number>
         </property>
         <item>
@@ -198,11 +189,11 @@
                    <property name="toolTip">
                     <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>2</number>
-                   </property>
                    <property name="text">
                     <string>Fit from COR/Tilt above</string>
+                   </property>
+                   <property name="toolTipDuration" stdset="0">
+                    <number>2</number>
                    </property>
                   </widget>
                  </item>
@@ -437,7 +428,11 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QDoubleSpinBox" name="pixelSize"/>
+               <widget class="QDoubleSpinBox" name="pixelSize">
+                <property name="maximum">
+                 <double>99999.000000000000000</double>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
