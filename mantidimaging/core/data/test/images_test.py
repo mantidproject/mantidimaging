@@ -32,11 +32,7 @@ class ImagesTest(unittest.TestCase):
     def test_record_parameters_in_metadata(self):
         imgs = Images(np.asarray([1]))
 
-        imgs.record_operation('test_func',
-                              'A pretty name',
-                              this=765,
-                              that=495.0,
-                              roi=(1, 2, 3, 4))
+        imgs.record_operation('test_func', 'A pretty name', this=765, that=495.0, roi=(1, 2, 3, 4))
 
         expected = {
             'operation_history': [{
