@@ -122,7 +122,6 @@ class Images:
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             const.OPERATION_NAME:
             func_name,
-            const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
                                            for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:

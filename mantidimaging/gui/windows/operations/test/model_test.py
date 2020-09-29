@@ -121,7 +121,6 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         op_history = self.sv_presenter.images.metadata['operation_history']
         self.assertEqual(len(op_history), 1, "One operation should have been recorded")
-        self.assertEqual(op_history[0][const.OPERATION_ARGS], ['arg'])
         self.assertEqual(op_history[0][const.OPERATION_KEYWORD_ARGS], {"kwarg": "kwarg"})
         # Recorded operation should not be a qualified module name.
         self.assertNotIn(".", op_history[0][const.OPERATION_NAME])
