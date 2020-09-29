@@ -52,10 +52,6 @@ class OpHistoryCopyDialogView(BaseDialogView):
         parent_layout.addWidget(check)
 
         row_num = 1
-        for arg in operation.filter_args:
-            parent_layout.addWidget(QLabel(arg))
-            row_num += 1
-
         for k, v in operation.filter_kwargs.items():
             parent_layout.addWidget(QLabel(f"{k}: {v}"))
             row_num += 1
