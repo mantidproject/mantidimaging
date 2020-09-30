@@ -1,8 +1,6 @@
 from functools import partial
-from logging import getLogger
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
 
-from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
@@ -12,6 +10,7 @@ from mantidimaging.gui.utility import get_parameters_from_stack
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401
     from mantidimaging.gui.windows.operations import FiltersWindowPresenter
+    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 
 def ensure_tuple(val):
@@ -58,13 +57,18 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_filter(self, images: Images, stack_params: Dict[str, Any], progress=None, ignore_180deg=False):
+    def apply_to_stacks(self, stacks: List['StackVisualiserView'], stack_params, progress=None):
         """
         Applies the selected filter to a given image stack.
-        """
-        log = getLogger(__name__)
-        log.info(f"Filter kwargs: {stack_params}")
 
+        It gets the image reference out of the StackVisualiserView and forwards
+        it to the function that actually processes the images.
+        """
+        for stack in stacks:
+            self.apply_to_images(stack.presenter.images, stack_params, progress=progress)
+
+
+    def apply_to_images(self, images, stack_params, progress=None):
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
 
         # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
@@ -74,19 +78,6 @@ class FiltersWindowModel(object):
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
-        self._apply_to(exec_func, images, stack_params)
-
-        if ignore_180deg:
-            return
-
-        images_180deg = images.proj180deg
-        # if the 180 projection has a memory mapped file then it is a loaded image
-        # if it doesn't then it uses the middle of the stack as a 'guess' of the 180 degree proj
-        if images_180deg.memory_filename is not None:
-            log.info("Applying filter to 180 deg projection")
-            self._apply_to(exec_func, images_180deg, stack_params)
-
-    def _apply_to(self, exec_func, images, stack_params):
         exec_func(images, **stack_params)
         exec_func.keywords.update(stack_params)
         # store the executed filter in history if it executed successfully
@@ -96,17 +87,17 @@ class FiltersWindowModel(object):
             *exec_func.args,
             **exec_func.keywords)
 
-    def do_apply_filter(self, stack_view, stack_presenter, post_filter: Callable[[Any], None], ignore_180deg=False):
+    def do_apply_filter(self, stacks: List['StackVisualiserView'], post_filter: Callable[[Any], None]):
         """
         Applies the selected filter to the selected stack.
         """
-        if not stack_presenter:
+        if len(stacks) == 0:
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        stack_params = get_parameters_from_stack(stack_presenter, self.params_needed_from_stack)
-        apply_func = partial(self.apply_filter, stack_presenter.images, stack_params, ignore_180deg=ignore_180deg)
-        start_async_task_view(stack_view, apply_func, post_filter)
+        stack_params = get_parameters_from_stack(stacks[0].presenter, self.params_needed_from_stack)
+        apply_func = partial(self.apply_to_stacks, stacks, stack_params)
+        start_async_task_view(self.presenter.view, apply_func, post_filter)
 
     def get_filter_module_name(self, filter_idx):
         """

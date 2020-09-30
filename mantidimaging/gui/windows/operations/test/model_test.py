@@ -143,7 +143,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
         self.model.selected_filter = selected_filter_mock
-        self.model.apply_filter(images, stack_params, progress=progress_mock)
+        self.model.apply_to_stacks(images, stack_params, progress=progress_mock)
 
         selected_filter_mock.validate_execute_kwargs.assert_called_once()
         callback_mock.assert_called_once_with(images, progress=progress_mock, **stack_params)
@@ -166,7 +166,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
         self.model.selected_filter = selected_filter_mock
-        self.model.apply_filter(images, stack_params, progress=progress_mock)
+        self.model.apply_to_stacks(images, stack_params, progress=progress_mock)
 
         selected_filter_mock.validate_execute_kwargs.assert_called_once()
         callback_mock.assert_has_calls([

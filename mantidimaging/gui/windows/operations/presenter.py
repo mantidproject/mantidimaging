@@ -124,14 +124,13 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_apply_filter(self):
         self.view.clear_previews()
+        apply_to = [self.stack]
+        if self.stack.presenter.images.has_proj180deg():
+            proj180_stack_visualiser = self.view.main_window.get_stack_with_images(
+                self.stack.presenter.images.proj180deg)
+            apply_to.append(proj180_stack_visualiser)
 
-        def post_filter(_):
-            self.view.main_window.update_stack_with_images(self.stack.presenter.images)
-            if self.stack.presenter.images.has_proj180deg():
-                self.view.main_window.update_stack_with_images(self.stack.presenter.images.proj180deg)
-            self.do_update_previews()
-
-        self.model.do_apply_filter(self.stack, self.stack.presenter, post_filter)
+        self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_all(self):
         confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
@@ -139,15 +138,16 @@ class FiltersWindowPresenter(BasePresenter):
             return
         stacks = self.main_window.get_all_stack_visualisers()
 
-        def post_filter(stack, task):
-            self.view.main_window.update_stack_with_images(stack.presenter.images)
-            if stack.presenter.images.has_proj180deg():
-                self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
-            if stack == self.stack:
-                self.do_update_previews()
+        self._do_apply_filter(stacks)
 
-        for stack in stacks:
-            self.model.do_apply_filter(stack, stack.presenter, partial(post_filter, stack), ignore_180deg=True)
+    def _do_apply_filter(self, apply_to):
+        def post_filter(updated_stacks, _):
+            for stack in updated_stacks:
+                self.view.main_window.update_stack_with_images(stack.presenter.images)
+
+            self.do_update_previews()
+
+        self.model.do_apply_filter(apply_to, partial(post_filter, apply_to))
 
     def do_update_previews(self):
         self.view.clear_previews()
@@ -162,7 +162,7 @@ class FiltersWindowPresenter(BasePresenter):
             exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
 
             try:
-                self.model.apply_filter(subset, exec_kwargs)
+                self.model.apply_to_images(subset, exec_kwargs)
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())

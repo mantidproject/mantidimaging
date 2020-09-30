@@ -153,5 +153,8 @@ class MainWindowPresenter(BasePresenter):
         return self.model.have_active_stacks
 
     def update_stack_with_images(self, images):
-        sv = self.model.get_stack_by_images(images)
+        sv = self.get_stack_with_images(images)
         sv.presenter.notify(SVNotification.REFRESH_IMAGE)
+
+    def get_stack_with_images(self, images):
+        return self.model.get_stack_by_images(images)
