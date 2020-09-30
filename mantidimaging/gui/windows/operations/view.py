@@ -38,6 +38,7 @@ class FiltersWindowView(BaseMainWindowView):
     presenter: FiltersWindowPresenter
 
     applyButton: QPushButton
+    applyToAllButton: QPushButton
     filterSelector: QComboBox
 
     def __init__(self, main_window: 'MainWindowView'):
@@ -58,6 +59,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.applyToAllButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER_TO_ALL))
         self.splitter.setStretchFactor(0, 0)
 
         self.previews = FilterPreviews(self)

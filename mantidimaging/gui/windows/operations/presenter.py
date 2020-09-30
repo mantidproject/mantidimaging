@@ -1,8 +1,10 @@
 import traceback
 from enum import Enum, auto
+from functools import partial
 from logging import getLogger
 from typing import Optional
 from typing import TYPE_CHECKING
+
 import numpy as np
 from pyqtgraph import ImageItem
 
@@ -22,6 +24,7 @@ if TYPE_CHECKING:
 class Notification(Enum):
     REGISTER_ACTIVE_FILTER = auto()
     APPLY_FILTER = auto()
+    APPLY_FILTER_TO_ALL = auto()
     UPDATE_PREVIEWS = auto()
     SCROLL_PREVIEW_UP = auto()
     SCROLL_PREVIEW_DOWN = auto()
@@ -43,6 +46,8 @@ class FiltersWindowPresenter(BasePresenter):
                 self.do_register_active_filter()
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
+            elif signal == Notification.APPLY_FILTER_TO_ALL:
+                self.do_apply_filter_to_all()
             elif signal == Notification.UPDATE_PREVIEWS:
                 self.do_update_previews()
             elif signal == Notification.SCROLL_PREVIEW_UP:
@@ -127,6 +132,19 @@ class FiltersWindowPresenter(BasePresenter):
             self.do_update_previews()
 
         self.model.do_apply_filter(self.stack, self.stack.presenter, post_filter)
+
+    def do_apply_filter_to_all(self):
+        stacks = self.main_window.get_all_stack_visualisers()
+
+        def post_filter(stack, task):
+            self.view.main_window.update_stack_with_images(stack.presenter.images)
+            if stack.presenter.images.has_proj180deg():
+                self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
+            if stack == self.stack:
+                self.do_update_previews()
+
+        for stack in stacks:
+            self.model.do_apply_filter(stack, stack.presenter, partial(post_filter, stack))
 
     def do_update_previews(self):
         self.view.clear_previews()

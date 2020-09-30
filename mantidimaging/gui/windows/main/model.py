@@ -114,6 +114,9 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid].widget()
 
+    def get_all_stack_visualisers(self) -> List[StackVisualiserView]:
+        return [stack.widget() for stack in self.active_stacks.values()]
+
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 

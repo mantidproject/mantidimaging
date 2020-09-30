@@ -142,6 +142,9 @@ class MainWindowPresenter(BasePresenter):
     def get_stack_visualiser(self, stack_uuid: UUID):
         return self.model.get_stack_visualiser(stack_uuid)
 
+    def get_all_stack_visualisers(self):
+        return self.model.get_all_stack_visualisers()
+
     def get_stack_history(self, stack_uuid: UUID):
         return self.model.get_stack_history(stack_uuid)
 

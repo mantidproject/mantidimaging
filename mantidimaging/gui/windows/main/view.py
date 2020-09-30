@@ -140,6 +140,9 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
+    def get_all_stack_visualisers(self):
+        return self.presenter.get_all_stack_visualisers()
+
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
