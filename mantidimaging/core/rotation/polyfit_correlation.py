@@ -21,10 +21,10 @@ def do_search(store: np.ndarray, search_index: int, p0_and_180: Tuple[np.ndarray
 def find_center(images: Images, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
     # assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
-    with pu.temp_shared_array((images.height, )) as shift:
+    with pu.temp_shared_array((images.height,)) as shift:
         search_range = get_search_range(images.width)
         with pu.temp_shared_array((len(search_range), images.height)) as store:
-            with pu.temp_shared_array((len(search_range), ), dtype=np.int32) as shared_search_range:
+            with pu.temp_shared_array((len(search_range),), dtype=np.int32) as shared_search_range:
                 shared_search_range[:] = np.asarray(search_range, dtype=np.int32)
                 # if the projections are passed in the partial they are copied to every process on every iteration
                 # this makes the multiprocessing significantly slower
@@ -48,10 +48,13 @@ def find_center(images: Images, progress: Progress) -> Tuple[ScalarCoR, Degrees]
             store = np.transpose(store)
             for row in range(images.height):
                 # then we just find the index of the minimum one (minimum error)
-                min_error_position = np.where(store[row] == store[row].min())[0][0]
+                min_arg_positions = store[row].argmin()
+                # argmin returns a list of where the minimum argument is found
+                # just in case that happens - get the first minimum one, should be close enough
+                min_arg = min_arg_positions if isinstance(min_arg_positions, np.int64) else min_arg_positions[0]
                 # and we get which search range is at that index
                 # that is the number that we then pass into polyfit
-                shift[row] = search_range[min_error_position]
+                shift[row] = search_range[min_arg]
 
             par = np.polyfit(slices, shift, deg=1)
             m = par[0]
