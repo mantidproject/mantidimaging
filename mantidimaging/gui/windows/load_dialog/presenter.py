@@ -17,7 +17,8 @@ logger = getLogger(__name__)
 
 class Notification(Enum):
     UPDATE_ALL_FIELDS = auto()
-    UPDATE_OTHER = auto()
+    UPDATE_FLAT_OR_DARK = auto()
+    UPDATE_SINGLE_FILE = auto()
 
 
 class LoadPresenter:
@@ -33,8 +34,10 @@ class LoadPresenter:
     def notify(self, n: Notification, **baggage):
         if n == Notification.UPDATE_ALL_FIELDS:
             self.do_update_sample()
-        elif n == Notification.UPDATE_OTHER:
+        elif n == Notification.UPDATE_FLAT_OR_DARK:
             self.do_update_other(**baggage)
+        elif n == Notification.UPDATE_SINGLE_FILE:
+            self.do_update_single_file(**baggage)
 
     def do_update_sample(self):
         """
@@ -106,7 +109,8 @@ class LoadPresenter:
             logger.info(f"Could not find 180 degree projection in {expected_path}")
         return ""
 
-    def _find_log(self, dirname: Path, log_name: str):
+    @staticmethod
+    def _find_log(dirname: Path, log_name: str):
         expected_path = dirname / '..'
         try:
             return get_file_names(expected_path.absolute(), "txt", prefix=log_name)[0]
@@ -144,9 +148,10 @@ class LoadPresenter:
             lp.dark = ImageParameters(input_path=self.view.dark.directory(),
                                       prefix=get_prefix(self.view.dark.path_text()),
                                       format=self.image_format)
+
         if self.view.proj_180deg.use.isChecked() and self.view.proj_180deg.path_text() != "":
             lp.proj_180deg = ImageParameters(input_path=self.view.proj_180deg.directory(),
-                                             prefix=get_prefix(self.view.proj_180deg.path_text()),
+                                             prefix=os.path.splitext(self.view.proj_180deg.path_text())[0],
                                              format=self.image_format)
 
         lp.dtype = self.view.pixel_bit_depth.currentText()
@@ -154,3 +159,14 @@ class LoadPresenter:
         lp.pixel_size = self.view.pixelSize.value()
 
         return lp
+
+    def do_update_single_file(self, field, name, image_file):
+        try:
+            file_name = self.view.select_file(name, image_file)
+        except RuntimeError:
+            logger.info(f"Could not find the {name} file")
+            return
+
+        if file_name is not None:
+            field.path = file_name
+            field.use = True

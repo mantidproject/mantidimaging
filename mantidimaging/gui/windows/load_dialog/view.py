@@ -44,15 +44,26 @@ class MWLoadDialog(Qt.QDialog):
 
         self.flat, self.select_flat = self.create_file_input(1)
         self.select_flat.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.flat, name="Flat"))
+            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.flat, name="Flat"))
 
         self.dark, self.select_dark = self.create_file_input(2)
         self.select_dark.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_OTHER, field=self.dark, name="Dark"))
+            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.dark, name="Dark"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
+        self.select_proj_180deg.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree",
+                                          image_file=True))
+
         self.sample_log, self.select_sample_log = self.create_file_input(4)
+        self.select_sample_log.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_SINGLE_FILE, field=self.sample_log, name="Sample Log",
+                                          image_file=False))
+
         self.flat_log, self.select_flat_log = self.create_file_input(5)
+        self.select_flat_log.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_SINGLE_FILE, field=self.flat_log, name="Flat Log",
+                                          image_file=False))
 
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
@@ -80,15 +91,20 @@ class MWLoadDialog(Qt.QDialog):
         return field, select_button
 
     @staticmethod
-    def select_file(caption: str) -> Optional[str]:
+    def select_file(caption: str, image_file=True) -> Optional[str]:
         """
         :param caption: Title of the file browser window that will be opened
+        :param image_file: Whether or not the file being looked for is an image
         :return: True: If a file has been selected, False otherwise
         """
-        images_filter = "Images (*.png *.jpg *.tif *.tiff *.fit *.fits)"
+        if image_file:
+            file_filter = "Images (*.png *.jpg *.tif *.tiff *.fit *.fits)"
+        else:
+            # Assume text file
+            file_filter = "Log File (*.txt *.log)"
         selected_file, accepted = Qt.QFileDialog.getOpenFileName(caption=caption,
-                                                                 filter=f"{images_filter};;All (*.*)",
-                                                                 initialFilter=images_filter)
+                                                                 filter=f"{file_filter};;All (*.*)",
+                                                                 initialFilter=file_filter)
 
         if accepted:
             return selected_file
