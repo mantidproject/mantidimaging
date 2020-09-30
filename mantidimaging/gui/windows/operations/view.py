@@ -188,5 +188,5 @@ class FiltersWindowView(BaseMainWindowView):
             self.show_error_dialog("Url could not be opened: " + url.toString())
 
     def ask_confirmation(self, msg: str):
-        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)
+        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
