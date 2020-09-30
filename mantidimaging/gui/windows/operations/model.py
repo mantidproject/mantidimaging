@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
+    return val if isinstance(val, tuple) else (val,)
 
 
 class FiltersWindowModel(object):
@@ -58,7 +58,7 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_filter(self, images: Images, stack_params: Dict[str, Any], progress=None):
+    def apply_filter(self, images: Images, stack_params: Dict[str, Any], progress=None, ignore_180deg=False):
         """
         Applies the selected filter to a given image stack.
         """
@@ -75,6 +75,10 @@ class FiltersWindowModel(object):
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
         self._apply_to(exec_func, images, stack_params)
+
+        if ignore_180deg:
+            return
+
         images_180deg = images.proj180deg
         # if the 180 projection has a memory mapped file then it is a loaded image
         # if it doesn't then it uses the middle of the stack as a 'guess' of the 180 degree proj
@@ -92,7 +96,7 @@ class FiltersWindowModel(object):
             *exec_func.args,
             **exec_func.keywords)
 
-    def do_apply_filter(self, stack_view, stack_presenter, post_filter: Callable[[Any], None]):
+    def do_apply_filter(self, stack_view, stack_presenter, post_filter: Callable[[Any], None], ignore_180deg=False):
         """
         Applies the selected filter to the selected stack.
         """
@@ -101,7 +105,7 @@ class FiltersWindowModel(object):
 
         # Get auto parameters
         stack_params = get_parameters_from_stack(stack_presenter, self.params_needed_from_stack)
-        apply_func = partial(self.apply_filter, stack_presenter.images, stack_params)
+        apply_func = partial(self.apply_filter, stack_presenter.images, stack_params, ignore_180deg=ignore_180deg)
         start_async_task_view(stack_view, apply_func, post_filter)
 
     def get_filter_module_name(self, filter_idx):

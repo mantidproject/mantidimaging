@@ -147,7 +147,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.do_update_previews()
 
         for stack in stacks:
-            self.model.do_apply_filter(stack, stack.presenter, partial(post_filter, stack))
+            self.model.do_apply_filter(stack, stack.presenter, partial(post_filter, stack), ignore_180deg=True)
 
     def do_update_previews(self):
         self.view.clear_previews()
