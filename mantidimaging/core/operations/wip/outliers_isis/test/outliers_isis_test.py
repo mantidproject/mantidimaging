@@ -4,7 +4,7 @@ from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.operations.outliers_isis import OutliersISISFilter
+from ..outliers_isis import OutliersISISFilter
 
 
 class OutliersISISTest(unittest.TestCase):
