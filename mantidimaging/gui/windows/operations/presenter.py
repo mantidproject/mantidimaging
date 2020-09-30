@@ -134,6 +134,9 @@ class FiltersWindowPresenter(BasePresenter):
         self.model.do_apply_filter(self.stack, self.stack.presenter, post_filter)
 
     def do_apply_filter_to_all(self):
+        confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
+        if not confirmed:
+            return
         stacks = self.main_window.get_all_stack_visualisers()
 
         def post_filter(stack, task):

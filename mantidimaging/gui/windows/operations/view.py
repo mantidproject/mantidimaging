@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, QSizePolicy, QComboBox
-from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
+    QSizePolicy, QComboBox
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -185,3 +186,7 @@ class FiltersWindowView(BaseMainWindowView):
         url = QUrl("https://mantidproject.github.io/mantidimaging/api/" + filter_module_path + ".html")
         if not QDesktopServices.openUrl(url):
             self.show_error_dialog("Url could not be opened: " + url.toString())
+
+    def ask_confirmation(self, msg: str):
+        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)
+        return response == QMessageBox.Ok
