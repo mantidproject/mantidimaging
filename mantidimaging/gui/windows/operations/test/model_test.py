@@ -77,7 +77,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
         originals = self.setup_mocks(execute)
-        self.model.do_apply_filter(self.sv_view, self.sv_presenter, callback)
+        self.model.do_apply_filter([self.sv_view], callback)
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
@@ -95,7 +95,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
         originals = self.setup_mocks(execute)
         self.model.selected_filter.params = lambda: {'roi': SVParameters.ROI}
-        self.model.do_apply_filter(self.sv_view, self.sv_presenter, callback)
+        self.model.do_apply_filter([self.sv_view], callback)
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
@@ -116,7 +116,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute.keywords = {"kwarg": "kwarg"}
         originals = self.setup_mocks(execute)
 
-        self.model.do_apply_filter(self.sv_view, self.sv_presenter, callback)
+        self.model.do_apply_filter([self.sv_view], callback)
         self.reset_filter_model(*originals)
 
         op_history = self.sv_presenter.images.metadata['operation_history']
@@ -126,7 +126,20 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertNotIn(".", op_history[0][const.OPERATION_NAME])
         callback_mock.assert_called_once()
 
-    def test_apply_filter_no_180deg_proj_loaded(self):
+    @mock.patch("mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_images")
+    def test_apply_filter_to_stacks(self, apply_to_images_mock: mock.Mock):
+        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
+        mock_stack_params = mock.Mock()
+        mock_progress = mock.Mock()
+
+        self.model.apply_to_stacks(mock_stack_visualisers, mock_stack_params, mock_progress)
+
+        apply_to_images_mock.assert_has_calls([
+            mock.call(mock_stack_visualisers[0].presenter.images, mock_stack_params, progress=mock_progress),
+            mock.call(mock_stack_visualisers[1].presenter.images, mock_stack_params, progress=mock_progress)
+        ])
+
+    def test_apply_filter_to_images(self):
         """
         When no 180deg projection is loaded the filter is only
         applied to the main data.
@@ -143,38 +156,10 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
         self.model.selected_filter = selected_filter_mock
-        self.model.apply_to_stacks(images, stack_params, progress=progress_mock)
+        self.model.apply_to_images(images, stack_params, progress=progress_mock)
 
         selected_filter_mock.validate_execute_kwargs.assert_called_once()
         callback_mock.assert_called_once_with(images, progress=progress_mock, **stack_params)
-
-    def test_apply_filter_with_180deg_proj_loaded(self):
-        """
-        When 180deg projection is loaded the filter is applied
-        to both the data and the 180deg projection
-        """
-        images = th.generate_images()
-        images.proj180deg = th.generate_images(automatic_free=False)
-        stack_params = {'test': 123}
-        selected_filter_mock = mock.Mock()
-        selected_filter_mock.__name__ = mock.Mock()
-        selected_filter_mock.__name__.return_value = "Test filter"
-        selected_filter_mock.filter_name.return_value = "Test filter"
-        progress_mock = mock.Mock()
-
-        callback_mock = mock.Mock()
-
-        selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
-        self.model.selected_filter = selected_filter_mock
-        self.model.apply_to_stacks(images, stack_params, progress=progress_mock)
-
-        selected_filter_mock.validate_execute_kwargs.assert_called_once()
-        callback_mock.assert_has_calls([
-            mock.call(images, progress=progress_mock, **stack_params),
-            mock.call(images.proj180deg, progress=progress_mock, **stack_params)
-        ])
-
-        images.proj180deg.free_memory()
 
     def test_get_filter_module_name(self):
         self.model.filters = mock.MagicMock()
