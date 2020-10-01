@@ -140,14 +140,14 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(stacks)
 
+    def _post_filter(self, updated_stacks, _):
+        for stack in updated_stacks:
+            self.view.main_window.update_stack_with_images(stack.presenter.images)
+
+        self.do_update_previews()
+
     def _do_apply_filter(self, apply_to):
-        def post_filter(updated_stacks, _):
-            for stack in updated_stacks:
-                self.view.main_window.update_stack_with_images(stack.presenter.images)
-
-            self.do_update_previews()
-
-        self.model.do_apply_filter(apply_to, partial(post_filter, apply_to))
+        self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
         self.view.clear_previews()

@@ -1,5 +1,6 @@
 import os
 import sys
+from functools import partial
 from typing import Tuple
 
 import mock
@@ -188,5 +189,8 @@ def assert_called_once_with(mock: mock.Mock, *args):
             np.testing.assert_equal(actual.value, expected.value)
         elif isinstance(actual, Images):
             assert actual is expected, f"Expected {expected}, got {actual}"
+        elif isinstance(actual, partial):
+            assert actual.args == expected.args
+            assert actual.keywords == expected.keywords
         else:
             assert actual == expected, f"Expected {expected}, got {actual}"

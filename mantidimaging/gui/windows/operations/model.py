@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val,)
+    return val if isinstance(val, tuple) else (val, )
 
 
 class FiltersWindowModel(object):
@@ -66,7 +66,6 @@ class FiltersWindowModel(object):
         """
         for stack in stacks:
             self.apply_to_images(stack.presenter.images, stack_params, progress=progress)
-
 
     def apply_to_images(self, images, stack_params, progress=None):
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
