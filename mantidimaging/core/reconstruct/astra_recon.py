@@ -98,6 +98,7 @@ class AstraRecon(BaseRecon):
                                 f" the number of projections {sino.shape[0]}. This can happen if loading subset of" \
                                 f" projections, and using projection angles from a log file."
 
+        sino = BaseRecon.sino_recon_prep(sino)
         image_width = sino.shape[1]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
         vol_geom = astra.create_vol_geom((image_width, image_width))
@@ -117,15 +118,6 @@ class AstraRecon(BaseRecon):
         output_shape = (images.num_sinograms, images.width, images.width)
         output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Reconstruction', **recon_params.to_dict())
-
-        # FIXME multiple GPU support - just starting up a Pool doesn't seem to work
-        # the GPUs can't initialise the memory properly. Not sure why
-        # num_gpus = AstraRecon._count_gpus()
-        # LOG.info(f"Running with {num_gpus} GPUs")
-        # partial = ptsm.create_partial(AstraRecon.single, ptsm.fwd_gpu_recon,
-        #                               num_gpus=num_gpus, cors=cors,
-        #                               proj_angles=proj_angles, recon_params=recon_params)
-        # ptsm.execute(images.sinograms, output_images.data, partial, num_gpus, progress=progress)
 
         proj_angles = images.projection_angles()
         for i in range(images.height):
