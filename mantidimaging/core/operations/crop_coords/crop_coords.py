@@ -58,7 +58,10 @@ class CropCoordinatesFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
-        add_property_to_form("Select ROI", "button", form=form, on_change=on_change,
+        add_property_to_form("Select ROI",
+                             "button",
+                             form=form,
+                             on_change=on_change,
                              run_on_press=lambda: view.roi_visualiser())
         return {}
 
