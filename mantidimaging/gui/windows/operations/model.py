@@ -7,7 +7,6 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import get_parameters_from_stack
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401

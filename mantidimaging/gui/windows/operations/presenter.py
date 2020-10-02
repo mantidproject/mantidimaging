@@ -7,10 +7,8 @@ import numpy as np
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import (BlockQtSignals, get_parameters_from_stack)
-from mantidimaging.gui.windows.stack_visualiser import SVParameters
+from mantidimaging.gui.utility import (BlockQtSignals)
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import FiltersWindowModel
 

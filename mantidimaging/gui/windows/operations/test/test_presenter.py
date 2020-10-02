@@ -32,7 +32,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = stack
         self.presenter.do_apply_filter()
         self.view.clear_previews.assert_called_once()
-        assert_called_once_with(apply_filter_mock, stack, presenter)
+        assert_called_once_with(apply_filter_mock)
 
     def test_update_previews_no_stack(self):
         self.presenter.do_update_previews()
