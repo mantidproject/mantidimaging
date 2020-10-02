@@ -4,6 +4,7 @@ from PyQt5 import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, QSizePolicy, QComboBox
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtCore import QUrl
+from mantidimaging.gui.widgets.pg_image_view import MIImageView
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -45,6 +46,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
+        self.roi_view = None
         self.splitter.setSizes([200, 9999])
 
         # Populate list of operations and handle filter selection
@@ -91,7 +93,9 @@ class FiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
-        self.presenter.disconnect_current_stack_roi()
+        if self.roi_view is not None:
+            self.roi_view.close()
+            self.roi_view = None
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
         self.presenter = None
@@ -183,3 +187,32 @@ class FiltersWindowView(BaseMainWindowView):
         url = QUrl("https://mantidproject.github.io/mantidimaging/api/" + filter_module_path + ".html")
         if not QDesktopServices.openUrl(url):
             self.show_error_dialog("Url could not be opened: " + url.toString())
+
+    def roi_visualiser(self):
+        # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
+        try:
+            images = self.presenter.stack.presenter.get_image(self.presenter.model.preview_image_idx)
+        except IndexError:
+            # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
+            return
+
+        self.roi_view = MIImageView()
+        self.roi_view.setWindowTitle("Select ROI for operation")
+
+        self.roi_view.setImage(images.data)
+        self.roi_view.roi_changed_callback = lambda callback: self.roi_changed_callback(callback)
+
+        # prep the MIImageView to display in this context
+        self.roi_view.ui.roiBtn.hide()
+        self.roi_view.ui.histogram.hide()
+        self.roi_view.ui.menuBtn.hide()
+        self.roi_view.ui.roiPlot.hide()
+        self.roi_view.roi.show()
+        self.roi_view.ui.gridLayout.setRowStretch(1, 5)
+        self.roi_view.ui.gridLayout.setRowStretch(0, 95)
+
+        self.roi_view.show()
+
+    def roi_changed_callback(self, callback):
+        self.presenter.roi = callback
+        self.presenter.notify(PresNotification.UPDATE_PREVIEWS)

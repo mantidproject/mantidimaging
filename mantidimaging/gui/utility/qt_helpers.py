@@ -86,7 +86,8 @@ def add_property_to_form(label: str,
                          tooltip=None,
                          on_change=None,
                          form=None,
-                         filters_view=None) -> Tuple[Union[QLabel, QLineEdit], Optional[ReturnTypes]]:
+                         filters_view=None,
+                         run_on_press=None) -> Tuple[Union[QLabel, QLineEdit], Optional[ReturnTypes]]:
     """
     Adds a property to the algorithm dialog.
 
@@ -101,6 +102,7 @@ def add_property_to_form(label: str,
     :param on_change: Function to be called when the property changes
     :param form: Form layout to optionally add the new widgets to
     :param filters_view: The Filter window view - passed to connect Type.STACK to the stack change events
+    :param run_on_press: Run this function on press, specialisation for button.
     """
     # By default assume the left hand side widget will be a label
     left_widget = QLabel(label)
@@ -174,9 +176,15 @@ def add_property_to_form(label: str,
         if on_change is not None:
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
+    elif dtype == 'button' or dtype == Type.BUTTON:
+        left_widget = Qt.QPushButton(label)
+        if run_on_press is not None:
+            left_widget.clicked.connect(lambda: run_on_press())
+
     elif dtype == 'label' or dtype == Type.LABEL:
         # do nothing for label, just use the left widget
         pass
+
     else:
         raise ValueError("Unknown data type")
 

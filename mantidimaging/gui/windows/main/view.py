@@ -149,11 +149,11 @@ class MainWindowView(BaseMainWindowView):
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
 
-    def _create_stack_window(self,
-                             stack: Images,
-                             title: str,
-                             position=QtCore.Qt.TopDockWidgetArea,
-                             floating=False) -> Qt.QDockWidget:
+    def create_stack_window(self,
+                            stack: Images,
+                            title: str,
+                            position=QtCore.Qt.TopDockWidgetArea,
+                            floating=False) -> Qt.QDockWidget:
         dock = Qt.QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window

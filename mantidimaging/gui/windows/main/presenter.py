@@ -86,14 +86,14 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _make_stack_window(self, images: Images, title) -> Tuple[QDockWidget, StackVisualiserView]:
-        dock = self.view._create_stack_window(images, title=title)
+    def make_stack_window(self, images: Images, title) -> Tuple[QDockWidget, StackVisualiserView]:
+        dock = self.view.create_stack_window(images, title=title)
         stack_visualiser = dock.widget()
         return dock, stack_visualiser
 
     def _add_stack(self, images: Images, filename: str, sample_dock):
         name = self.model.create_name(os.path.basename(filename))
-        dock, stack_visualiser = self._make_stack_window(images, title=f"{name}")
+        dock, stack_visualiser = self.make_stack_window(images, title=f"{name}")
         self.model.add_stack(stack_visualiser, dock)
         self.view.tabifyDockWidget(sample_dock, dock)
 
@@ -101,7 +101,7 @@ class MainWindowPresenter(BasePresenter):
         title = self.model.create_name(title)
 
         sample = container if isinstance(container, Images) else container.sample
-        sample_dock, sample_stack_vis = self._make_stack_window(sample, title)
+        sample_dock, sample_stack_vis = self.make_stack_window(sample, title)
         self.model.add_stack(sample_stack_vis, sample_dock)
 
         if isinstance(container, Dataset):

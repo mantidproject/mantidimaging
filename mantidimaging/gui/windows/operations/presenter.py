@@ -36,6 +36,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.model = FiltersWindowModel(self)
         self.main_window = main_window
+        self.roi = None
 
     def notify(self, signal):
         try:
@@ -63,13 +64,6 @@ class FiltersWindowPresenter(BasePresenter):
         self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
 
     def set_stack(self, stack):
-        # Disconnect ROI update signal from previous stack
-        self.disconnect_current_stack_roi()
-
-        # Connect ROI update signal to newly selected stack
-        if stack:
-            stack.roi_updated.connect(self.handle_roi_selection)
-
         self.stack = stack
 
         # Update the preview image index
@@ -78,14 +72,6 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
 
         self.do_update_previews()
-
-    def disconnect_current_stack_roi(self):
-        if self.stack:
-            self.stack.roi_updated.disconnect(self.handle_roi_selection)
-
-    def handle_roi_selection(self, roi: SensibleROI):
-        if roi and self.filter_uses_parameter(SVParameters.ROI):
-            self.view.auto_update_triggered.emit()
 
     def set_preview_image_index(self, image_idx):
         """
@@ -124,6 +110,13 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.main_window.update_stack_with_images(self.stack.presenter.images)
             if self.stack.presenter.images.has_proj180deg():
                 self.view.main_window.update_stack_with_images(self.stack.presenter.images.proj180deg)
+
+            # Recent region of interest stuff after a filter was applied
+            self.roi = None
+            if self.view.roi_view is not None:
+                self.view.roi_view.close()
+                self.view.roi_view = None
+
             self.do_update_previews()
 
         self.model.do_apply_filter(self.stack, self.stack.presenter, post_filter)
@@ -138,7 +131,10 @@ class FiltersWindowPresenter(BasePresenter):
             self._update_preview_image(before_image, self.view.preview_image_before)
 
             # Generate sub-stack and run filter
-            exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
+            if self.roi is not None and self.needs_roi():
+                exec_kwargs = {"region_of_interest": self.roi}
+            else:
+                exec_kwargs = {}
 
             try:
                 self.model.apply_filter(subset, exec_kwargs)
@@ -162,6 +158,9 @@ class FiltersWindowPresenter(BasePresenter):
                     self.view.previews.add_difference_overlay(diff)
                 else:
                     self.view.previews.hide_difference_overlay()
+
+    def needs_roi(self):
+        return self.model.selected_filter.filter_name in ["ROI Normalisation", "Crop Coordinates"]
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):

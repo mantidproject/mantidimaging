@@ -100,7 +100,11 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        stack_params = get_parameters_from_stack(stack_presenter, self.params_needed_from_stack)
+        # Generate sub-stack and run filter
+        if self.presenter.roi is not None and self.presenter.needs_roi():
+            stack_params = {"region_of_interest": self.presenter.roi}
+        else:
+            stack_params = {}
         apply_func = partial(self.apply_filter, stack_presenter.images, stack_params)
         start_async_task_view(stack_view, apply_func, post_filter)
 
