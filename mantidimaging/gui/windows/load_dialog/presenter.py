@@ -35,7 +35,7 @@ class LoadPresenter:
         if n == Notification.UPDATE_ALL_FIELDS:
             self.do_update_sample()
         elif n == Notification.UPDATE_FLAT_OR_DARK:
-            self.do_update_other(**baggage)
+            self.do_update_flat_or_dark(**baggage)
         elif n == Notification.UPDATE_SINGLE_FILE:
             self.do_update_single_file(**baggage)
 
@@ -118,7 +118,7 @@ class LoadPresenter:
             logger.info(f"Could not find a log file for {log_name} in {dirname}")
         return ""
 
-    def do_update_other(self, field: Field, name: str):
+    def do_update_flat_or_dark(self, field: Field, name: str):
         selected_file = self.view.select_file(name)
         if not selected_file:
             return
