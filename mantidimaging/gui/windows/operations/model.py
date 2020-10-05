@@ -95,9 +95,9 @@ class FiltersWindowModel(object):
         # Get auto parameters
         # Generate sub-stack and run filter
         if self.presenter.roi is not None and self.presenter.needs_roi():
-            stack_params = {"region_of_interest": self.presenter.roi}
+            stack_params: Dict[str, Any] = {"region_of_interest": self.presenter.roi}
         else:
-            stack_params: Dict[str, Any] = {}
+            stack_params = {}
         apply_func = partial(self.apply_to_stacks, stacks, stack_params)
         start_async_task_view(self.presenter.view, apply_func, post_filter)
 

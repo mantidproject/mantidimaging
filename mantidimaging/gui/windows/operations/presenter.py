@@ -116,7 +116,6 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(apply_to)
 
-
     def do_apply_filter_to_all(self):
         confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
         if not confirmed:

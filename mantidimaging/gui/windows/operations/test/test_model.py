@@ -179,16 +179,15 @@ def test_model_request_roi_during_apply_filter(class_name, filter_name):
         selected_filter_mock.__name__ = mock.Mock()
         selected_filter_mock.__name__.return_value = class_name
         selected_filter_mock.filter_name.return_value = filter_name
-        stack_view = mock.Mock()
-        stack_presenter = mock.Mock()
-        callback_mock = mock.Mock()
+        stacks = [mock.Mock()]
         post_filter = mock.Mock()
+        callback_mock = mock.Mock()
         model.presenter.roi = [0, 1, 2, 3]
         model.presenter.needs_roi = mock.MagicMock()
 
         selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
         model.selected_filter = selected_filter_mock
-        model.do_apply_filter(stack_view, stack_presenter, post_filter)
+        model.do_apply_filter(stacks, post_filter)
 
         model.presenter.needs_roi.assert_called_once()
         assert start_async_task_view.call_args_list[0].args[1].args[1] == {'region_of_interest': [0, 1, 2, 3]}
