@@ -77,6 +77,7 @@ class Type(IntEnum):
     BOOL = auto()
     LABEL = auto()
     STACK = auto()
+    BUTTON = auto()
 
 
 def add_property_to_form(label: str,
