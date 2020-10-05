@@ -47,6 +47,9 @@ class CropCoordinatesFilter(BaseFilter):
 
         sample = images.data
         shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
+        if any((s < 0 for s in shape)):
+            raise ValueError("It seems the Region of Interest is outside of the current image dimensions.\n"
+                             "This can happen on the image preview right after a previous Crop Coordinates.")
         sample_name = images.memory_filename
         if sample_name is not None:
             images.free_memory(delete_filename=False)

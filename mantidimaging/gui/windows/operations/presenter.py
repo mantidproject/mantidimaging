@@ -1,8 +1,10 @@
 import traceback
 from enum import Enum, auto
+from functools import partial
 from logging import getLogger
 from typing import Optional
 from typing import TYPE_CHECKING
+
 import numpy as np
 from pyqtgraph import ImageItem
 
@@ -22,6 +24,7 @@ if TYPE_CHECKING:
 class Notification(Enum):
     REGISTER_ACTIVE_FILTER = auto()
     APPLY_FILTER = auto()
+    APPLY_FILTER_TO_ALL = auto()
     UPDATE_PREVIEWS = auto()
     SCROLL_PREVIEW_UP = auto()
     SCROLL_PREVIEW_DOWN = auto()
@@ -43,6 +46,8 @@ class FiltersWindowPresenter(BasePresenter):
                 self.do_register_active_filter()
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
+            elif signal == Notification.APPLY_FILTER_TO_ALL:
+                self.do_apply_filter_to_all()
             elif signal == Notification.UPDATE_PREVIEWS:
                 self.do_update_previews()
             elif signal == Notification.SCROLL_PREVIEW_UP:
@@ -119,14 +124,30 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_apply_filter(self):
         self.view.clear_previews()
+        apply_to = [self.stack]
+        if self.stack.presenter.images.has_proj180deg():
+            proj180_stack_visualiser = self.view.main_window.get_stack_with_images(
+                self.stack.presenter.images.proj180deg)
+            apply_to.append(proj180_stack_visualiser)
 
-        def post_filter(_):
-            self.view.main_window.update_stack_with_images(self.stack.presenter.images)
-            if self.stack.presenter.images.has_proj180deg():
-                self.view.main_window.update_stack_with_images(self.stack.presenter.images.proj180deg)
-            self.do_update_previews()
+        self._do_apply_filter(apply_to)
 
-        self.model.do_apply_filter(self.stack, self.stack.presenter, post_filter)
+    def do_apply_filter_to_all(self):
+        confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
+        if not confirmed:
+            return
+        stacks = self.main_window.get_all_stack_visualisers()
+
+        self._do_apply_filter(stacks)
+
+    def _post_filter(self, updated_stacks, _):
+        for stack in updated_stacks:
+            self.view.main_window.update_stack_with_images(stack.presenter.images)
+
+        self.do_update_previews()
+
+    def _do_apply_filter(self, apply_to):
+        self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
         self.view.clear_previews()
@@ -141,7 +162,7 @@ class FiltersWindowPresenter(BasePresenter):
             exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
 
             try:
-                self.model.apply_filter(subset, exec_kwargs)
+                self.model.apply_to_images(subset, exec_kwargs)
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())
