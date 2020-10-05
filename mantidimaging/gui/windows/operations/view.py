@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, QSizePolicy, QComboBox
-from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
+    QSizePolicy, QComboBox
 from mantidimaging.gui.widgets.pg_image_view import MIImageView
 from pyqtgraph import ImageItem
 
@@ -39,6 +40,7 @@ class FiltersWindowView(BaseMainWindowView):
     presenter: FiltersWindowPresenter
 
     applyButton: QPushButton
+    applyToAllButton: QPushButton
     filterSelector: QComboBox
 
     def __init__(self, main_window: 'MainWindowView'):
@@ -60,6 +62,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
+        self.applyToAllButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER_TO_ALL))
         self.splitter.setStretchFactor(0, 0)
 
         self.previews = FilterPreviews(self)
@@ -187,6 +190,10 @@ class FiltersWindowView(BaseMainWindowView):
         url = QUrl("https://mantidproject.github.io/mantidimaging/api/" + filter_module_path + ".html")
         if not QDesktopServices.openUrl(url):
             self.show_error_dialog("Url could not be opened: " + url.toString())
+
+    def ask_confirmation(self, msg: str):
+        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
+        return response == QMessageBox.Ok
 
     def roi_visualiser(self):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this

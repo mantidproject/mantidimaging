@@ -142,6 +142,9 @@ class MainWindowPresenter(BasePresenter):
     def get_stack_visualiser(self, stack_uuid: UUID):
         return self.model.get_stack_visualiser(stack_uuid)
 
+    def get_all_stack_visualisers(self):
+        return self.model.get_all_stack_visualisers()
+
     def get_stack_history(self, stack_uuid: UUID):
         return self.model.get_stack_history(stack_uuid)
 
@@ -150,5 +153,8 @@ class MainWindowPresenter(BasePresenter):
         return self.model.have_active_stacks
 
     def update_stack_with_images(self, images):
-        sv = self.model.get_stack_by_images(images)
+        sv = self.get_stack_with_images(images)
         sv.presenter.notify(SVNotification.REFRESH_IMAGE)
+
+    def get_stack_with_images(self, images):
+        return self.model.get_stack_by_images(images)

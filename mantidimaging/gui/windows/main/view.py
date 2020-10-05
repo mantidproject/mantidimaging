@@ -7,11 +7,11 @@ from PyQt5.QtWidgets import QAction, QLabel, QInputDialog
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.version_check import find_if_latest_version
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
@@ -140,6 +140,9 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
+    def get_all_stack_visualisers(self):
+        return self.presenter.get_all_stack_visualisers()
+
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
@@ -148,6 +151,9 @@ class MainWindowView(BaseMainWindowView):
 
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
+
+    def get_stack_with_images(self, images: Images):
+        return self.presenter.get_stack_with_images(images)
 
     def create_stack_window(self,
                             stack: Images,
