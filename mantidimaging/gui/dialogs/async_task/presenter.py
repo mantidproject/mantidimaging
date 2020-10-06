@@ -30,14 +30,12 @@ class AsyncTaskDialogPresenter(Qt.QObject, ProgressHandler):
                 self.do_start_processing()
             elif signal == Notification.CANCEL:
                 self.do_cancel_processing()
-
         except Exception as e:
-            getLogger(__name__).exception("Notification handler failed")
+            getLogger(__name__).exception("Notification handler failed: " + str(e))
 
     def do_cancel_processing(self):
         # Ensure the user is sure this is what they want to do
-        response = self.view.ask_user_if_they_are_sure_destructive()
-        if response:
+        if self.view.ask_user_if_they_are_sure_destructive():
             self.model.do_cancel_task()
 
     def set_task(self, f):
