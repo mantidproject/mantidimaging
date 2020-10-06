@@ -31,7 +31,8 @@ class AsyncTaskDialogModelTest(unittest.TestCase):
         def long_task():
             for ii in range(0, 100):
                 time.sleep(0.1)
-            raise Exception("It should not get here")
+            # Should not get here
+            self.assertFalse(True)
 
         self.m.task.task_function = long_task
         self.assertFalse(self.m.task_is_running)
