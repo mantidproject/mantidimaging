@@ -33,38 +33,3 @@ class AsyncTaskDialogPresenterTest(unittest.TestCase):
 
         self.p.model.task.wait()
         self.assertFalse(self.p.task_is_running)
-
-    def test_async_task_cancelled(self):
-        # Setup
-        self.p.set_task(self._long_task)
-        self.v.ask_user_if_they_are_sure_destructive.return_value = True
-        self.assertFalse(self.p.task_is_running)
-
-        # Start task
-        self.p.notify(Notification.START)
-        self.v.show.assert_called_once()
-        self.assertTrue(self.p.task_is_running)
-
-        # Cancel running task
-        self.p.notify(Notification.CANCEL)
-        self.assertFalse(self.p.task_is_running)
-        self.v.ask_user_if_they_are_sure_destructive.assert_called_once()
-
-    def test_async_task_doesnt_cancel(self):
-        # Setup
-        self.p.set_task(self._long_task)
-        self.v.ask_user_if_they_are_sure_destructive.return_value = False
-        self.assertFalse(self.p.task_is_running)
-
-        # Start task
-        self.p.notify(Notification.START)
-        self.v.show.assert_called_once()
-        self.assertTrue(self.p.task_is_running)
-
-        # Cancel running task
-        self.p.notify(Notification.CANCEL)
-        self.assertTrue(self.p.task_is_running)
-        self.v.ask_user_if_they_are_sure_destructive.assert_called_once()
-
-        # Cleanup
-        self.p.model.do_cancel_task()

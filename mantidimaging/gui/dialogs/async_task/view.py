@@ -53,12 +53,12 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setValue(progress * 1000)
 
     def ask_user_if_they_are_sure_destructive(self):
-        response = QMessageBox.warning(parent=self,
-                                       title="Destructive Action",
-                                       text="Cancelling a task in progress has the potential to cause unknown side "
-                                       "effects, and destroy data, are you sure?",
-                                       button0=QMessageBox.No,
-                                       button1=QMessageBox.Yes)
+        response = QMessageBox.warning(self,
+                                       "Destructive Action",
+                                       "Cancelling a task in progress has the potential to cause unknown side effects, "
+                                       "and destroy data, are you sure?",
+                                       QMessageBox.No | QMessageBox.Yes,
+                                       QMessageBox.No)
         return response == QMessageBox.Yes
 
 
