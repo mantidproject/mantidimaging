@@ -123,6 +123,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
+        self.view.previews.auto_range.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
 
