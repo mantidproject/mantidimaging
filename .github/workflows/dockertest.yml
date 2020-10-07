@@ -31,4 +31,4 @@ jobs:
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest apt update -y && sudo apt install -y xvfb x11-utils libxkbcommon-x11-0
 
     - name: pytest
-      run: docker run -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ${{ github.workspace }}:/opt/mantidimaging mantidproject/mantidimaging:latest xvfb-run --auto-servernum pytest
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest xvfb-run --auto-servernum pytest
