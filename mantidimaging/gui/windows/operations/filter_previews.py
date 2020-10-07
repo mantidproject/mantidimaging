@@ -110,10 +110,10 @@ class FilterPreviews(GraphicsLayoutWidget):
                 self.before_histogram.plot(*before_data, pen=before_pen, clear=True)
         if _data_valid_for_histogram(after_data):
             if self.combined_histograms:
-                after_plot = self.histogram.plot(*after_data, pen=after_pen)
+                after_plot = self.histogram.plot(*after_data, pen=after_pen, clear=True)
                 self.legend.addItem(after_plot, "After")
             else:
-                self.after_histogram.plot(*after_data, pen=after_pen)
+                self.after_histogram.plot(*after_data, pen=after_pen, clear=True)
 
     def init_separate_histograms(self):
         hc = histogram_coords
