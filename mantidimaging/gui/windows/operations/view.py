@@ -4,8 +4,7 @@ from PyQt5 import Qt
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
-    QSizePolicy, QComboBox
-from mantidimaging.gui.widgets.pg_image_view import MIImageView
+    QSizePolicy, QComboBox, QStyle
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -34,8 +33,8 @@ class FiltersWindowView(BaseMainWindowView):
     previews: FilterPreviews
     stackSelector: StackSelectorWidgetView
 
-    error_icon: QLabel
-    error_text: QLabel
+    notification_icon: QLabel
+    notification_text: QLabel
 
     presenter: FiltersWindowPresenter
 
@@ -126,7 +125,7 @@ class FiltersWindowView(BaseMainWindowView):
         Called when the signal indicating the filter, filter properties or data
         has changed such that the previews are now out of date.
         """
-        self.clear_error_dialog()
+        self.clear_notification_dialog()
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
@@ -176,14 +175,19 @@ class FiltersWindowView(BaseMainWindowView):
         return self.previews.image_difference
 
     def show_error_dialog(self, msg=""):
-        self.error_text.show()
-        self.error_icon.setPixmap(QApplication.style().standardPixmap(QApplication.style().SP_MessageBoxCritical))
-        self.error_text.setText(str(msg))
+        self.notification_text.show()
+        self.notification_icon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_MessageBoxCritical))
+        self.notification_text.setText(str(msg))
 
-    def clear_error_dialog(self):
-        self.error_icon.clear()
-        self.error_text.clear()
-        self.error_text.hide()
+    def clear_notification_dialog(self):
+        self.notification_icon.clear()
+        self.notification_text.clear()
+        self.notification_text.hide()
+
+    def show_operation_completed(self, operation_name):
+        self.notification_text.show()
+        self.notification_icon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_DialogYesButton))
+        self.notification_text.setText(f"{operation_name} completed successfully!")
 
     def open_help_webpage(self):
         filter_module_path = self.presenter.get_filter_module_name(self.filterSelector.currentIndex())
