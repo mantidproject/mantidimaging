@@ -176,6 +176,9 @@ class FiltersWindowPresenter(BasePresenter):
                 else:
                     self.view.previews.hide_difference_overlay()
 
+            # Ensure all of it is visible
+            self.view.previews.auto_range()
+
     def needs_roi(self):
         return self.model.selected_filter.filter_name in ["ROI Normalisation", "Crop Coordinates"]
 
