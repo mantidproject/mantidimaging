@@ -100,7 +100,7 @@ class FiltersWindowPresenter(BasePresenter):
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
         self.model.setup_filter(filter_idx, filter_widget_kwargs)
-        self.view.clear_error_dialog()
+        self.view.clear_notification_dialog()
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
@@ -134,6 +134,10 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.roi_view = None
 
         self.do_update_previews()
+
+        # Feedback to user
+        self.view.clear_notification_dialog()
+        self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
