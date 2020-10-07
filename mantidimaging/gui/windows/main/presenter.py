@@ -104,6 +104,10 @@ class MainWindowPresenter(BasePresenter):
         sample_dock, sample_stack_vis = self._make_stack_window(sample, title)
         self.model.add_stack(sample_stack_vis, sample_dock)
 
+        current_stack_visualisers = self.get_all_stack_visualisers()
+        if len(current_stack_visualisers) > 1:
+            self.view.tabifyDockWidget(current_stack_visualisers[0].dock, sample_dock)
+
         if isinstance(container, Dataset):
             if container.flat and container.flat.filenames:
                 self._add_stack(container.flat, container.flat.filenames[0], sample_dock)
