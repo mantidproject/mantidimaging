@@ -7,6 +7,7 @@ import numpy as np
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.rescale.rescale import RescaleFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility import value_scaling
@@ -46,8 +47,13 @@ class RoiNormalisationFilter(BaseFilter):
 
         # just get data reference
         if region_of_interest:
+            initial_image_max = images.data.max()
+
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
             _execute(images.data, region_of_interest, cores, chunksize, progress)
+
+            images = RescaleFilter.filter_func(images, min_input=images.data.min(), max_input=images.data.max(),
+                                               max_output=initial_image_max, progress=progress)
         h.check_data_stack(images)
         return images
 

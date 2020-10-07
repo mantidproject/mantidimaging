@@ -54,6 +54,17 @@ class ROINormalisationTest(unittest.TestCase):
         images = th.generate_images()
         RoiNormalisationFilter.execute_wrapper()(images)
 
+    def test_roi_normalisation_performs_rescale(self):
+        images = th.generate_images()
+        images_max = images.data.max()
+
+        original = np.copy(images.data[0])
+        air = [3, 3, 4, 4]
+        result = RoiNormalisationFilter.filter_func(images, air)
+
+        th.assert_not_equals(result.data[0], original)
+        self.assertAlmostEqual(result.data.max(), images_max)
+
 
 if __name__ == '__main__':
     unittest.main()
