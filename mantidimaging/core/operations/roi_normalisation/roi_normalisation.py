@@ -20,7 +20,7 @@ class RoiNormalisationFilter(BaseFilter):
     filter_name = "ROI Normalisation"
 
     @staticmethod
-    def filter_func(images: Images, air_region: SensibleROI = None, cores=None, chunksize=None, progress=None):
+    def filter_func(images: Images, region_of_interest: SensibleROI = None, cores=None, chunksize=None, progress=None):
         """
         Normalise by beam intensity.
 
@@ -31,7 +31,7 @@ class RoiNormalisationFilter(BaseFilter):
 
         :param images: Sample data which is to be processed. Expected in radiograms
 
-        :param air_region: The order is - Left Top Right Bottom. The air region
+        :param region_of_interest: The order is - Left Top Right Bottom. The air region
                            from which sums will be calculated and all images will
                            be normalised.
 
@@ -45,15 +45,19 @@ class RoiNormalisationFilter(BaseFilter):
         h.check_data_stack(images)
 
         # just get data reference
-        if air_region:
+        if region_of_interest:
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-            _execute(images.data, air_region, cores, chunksize, progress)
+            _execute(images.data, region_of_interest, cores, chunksize, progress)
         h.check_data_stack(images)
         return images
 
     @staticmethod
     def register_gui(form, on_change, view):
-        add_property_to_form("Select ROI on stack visualiser.", "label", form=form, on_change=on_change)
+        add_property_to_form("Select ROI",
+                             "button",
+                             form=form,
+                             on_change=on_change,
+                             run_on_press=lambda: view.roi_visualiser())
         return {}
 
     @staticmethod

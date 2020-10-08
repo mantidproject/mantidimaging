@@ -59,9 +59,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
 
-        dock, sv = self.presenter._make_stack_window(images, "mytitle")
+        dock, sv = self.presenter.make_stack_window(images, "mytitle")
 
         self.assertIs(dock_mock, dock)
         self.assertIs(stack_visualiser_mock, sv)
@@ -73,7 +73,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
 
         self.presenter._add_stack(images, "myfilename", sample_dock_mock)
 
@@ -93,7 +93,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
         ds = Dataset(sample=generate_images(automatic_free=False),
