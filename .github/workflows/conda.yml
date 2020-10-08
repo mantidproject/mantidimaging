@@ -17,7 +17,7 @@ jobs:
           auto-activate-base: false
 
       - shell: bash -l {0}
-          run: |
+        run: |
             conda info
             conda list
 
