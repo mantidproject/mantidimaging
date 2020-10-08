@@ -7,8 +7,10 @@ channels:
   - defaults
 dependencies:
   - mantidimaging
+  - pip
   - pip:
       - pytest
+      - pytest-xvfb
       - pyqt5
       - yapf
       - mypy
