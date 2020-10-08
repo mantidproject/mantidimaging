@@ -1,0 +1,30 @@
+name: Testing with (mini)Conda
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: goanpeca/setup-miniconda@v1
+        with:
+          activate-environment: mantidimaging
+          environment-file: $GITHUB_WORKSPACE/conda/meta.yml
+          python-version: 3.7
+          auto-activate-base: false
+
+      - shell: bash -l {0}
+          run: |
+            conda info
+            conda list
+
+      - name: Flake8
+        shell: bash -l {0}
+        run: |
+          conda install flake8
+          python -m flake8
+
+
