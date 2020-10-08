@@ -27,4 +27,4 @@ jobs:
     - name: mypy
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
     - name: pytest
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest apt update -y && sudo apt install -y xvfb x11-utils libxkbcommon-x11-0 && xvfb-run --auto-servernum pytest
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest apt update -y && sudo apt install -y xvfb x11-utils libxkbcommon-x11-0 && xvfb-run --auto-servernum /opt/miniconda/envs/mantidimaging_test/bin/python -m pytest
