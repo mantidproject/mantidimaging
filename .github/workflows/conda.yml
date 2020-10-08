@@ -12,7 +12,7 @@ jobs:
       - uses: goanpeca/setup-miniconda@v1
         with:
           activate-environment: mantidimaging
-          environment-file: ../conda/meta.yml
+          environment-file: environment.yml
           python-version: 3.7
           auto-activate-base: false
 
@@ -24,7 +24,6 @@ jobs:
       - name: Flake8
         shell: bash -l {0}
         run: |
-          conda install flake8
           python -m flake8
 
 

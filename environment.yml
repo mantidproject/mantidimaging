@@ -1,0 +1,16 @@
+name: mantidimaging
+channels:
+  - mantid
+  - dtasev
+  - astra-toolbox/label/dev
+  - conda-forge
+  - defaults
+dependencies:
+  - mantidimaging
+  - pip:
+      - pytest
+      - pyqt5
+      - yapf
+      - mypy
+      - flake8
+prefix: /home/sam/miniconda3/envs/mantidimaging
