@@ -26,9 +26,5 @@ jobs:
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest flake8
     - name: mypy
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
-
-    - name: install pytest reqs
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest apt update -y && sudo apt install -y xvfb x11-utils libxkbcommon-x11-0
-
     - name: pytest
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest xvfb-run --auto-servernum pytest
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest apt update -y && sudo apt install -y xvfb x11-utils libxkbcommon-x11-0 && xvfb-run --auto-servernum pytest
