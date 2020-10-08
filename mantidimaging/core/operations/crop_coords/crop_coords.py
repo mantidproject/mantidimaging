@@ -11,17 +11,26 @@ from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 
 class CropCoordinatesFilter(BaseFilter):
+    """Crop a region of interest from the image.
+
+    Intended to be used on: Projections, or reconstructed slices
+
+    When: To remove part of the image that contains only noise, this reduces
+    memory usage and can greatly improve the speed of reconstruction.
+
+    Caution: Make sure the region of cropping does not crop parts of the sample
+    during the rotation of the sample in the dataset.
+    """
     filter_name = "Crop Coordinates"
 
-    @staticmethod
     def filter_func(images: Images,
                     region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
                     progress=None) -> Images:
-        """
-        Execute the Crop Coordinates by Region of Interest filter.
-        This does NOT do any checks if the Region of interest is out of bounds!
+        """Execute the Crop Coordinates by Region of Interest filter. This does
+        NOT do any checks if the Region of interest is out of bounds!
 
         If the region of interest is out of bounds, the crop will **FAIL** at
+        runtime.egion of interest is out of bounds, the crop will **FAIL** at
         runtime.
 
         If the region of interest is in bounds, but has overlapping coordinates

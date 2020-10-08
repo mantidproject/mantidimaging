@@ -9,6 +9,19 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RemoveStripeSortingFittingFilter(BaseFilter):
+    """Combination of algorithm 3 and 1 in [1].
+    Remove stripes using the sorting and fitting technique.
+    Angular direction is along the axis 0.
+
+    Source: https://github.com/nghia-vo/sarepy
+
+    Intended to be used on: Sinograms
+    When: If stripes artifacts are present that have not been
+          removed with outliers + flat-fielding the projections
+
+    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
+    and should be fixed by ROI Normalisation instead!
+    """
     filter_name = "Remove stripes with sorting and fitting"
 
     @staticmethod

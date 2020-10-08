@@ -19,6 +19,18 @@ MAXIMUM_PIXEL_VALUE = 1e9
 
 
 class FlatFieldFilter(BaseFilter):
+    """Uses the flat (open beam) and dark images to reduce the noise in the
+    projection images.
+
+    Intended to be used on: Projections
+
+    When: As one of the first pre-processing steps to greatly reduce noise in the data
+
+    Caution: Make sure the correct stacks are selected for flat and dark.
+
+    Caution: Check that the flat and dark images don't have any very bright pixels,
+    or this will introduce additional noise in the sample.
+    """
     filter_name = 'Flat-fielding'
 
     @staticmethod
@@ -28,8 +40,7 @@ class FlatFieldFilter(BaseFilter):
                     cores=None,
                     chunksize=None,
                     progress=None) -> Images:
-        """
-        Do background correction with flat and dark images.
+        """Do background correction with flat and dark images.
 
         :param data: Sample data which is to be processed. Expected in radiograms
         :param flat: Flat (open beam) image to use in normalization
@@ -119,10 +130,10 @@ def _subtract(data, dark=None):
 
 
 def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=None):
-    """
-    A benchmark justifying the current implementation, performed on
+    """A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
 
+    #1 Separate runs
     #1 Separate runs
     Subtract (sequential with np.subtract(data, dark, out=data)) - 13s
     Divide (par) - 1.15s

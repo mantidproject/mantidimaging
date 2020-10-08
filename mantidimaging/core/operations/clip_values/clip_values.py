@@ -6,6 +6,15 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 
 class ClipValuesFilter(BaseFilter):
+    """Clips pixel values of the image based on the parameters. Can be used as
+    a way to mask a.
+
+    Intended to be used on: Projections
+
+    When: To remove a range of pixel values from the data.
+
+    Caution: Make sure the value range does not clip information from the sample.
+    """
     filter_name = "Clip Values"
 
     @staticmethod
@@ -15,8 +24,7 @@ class ClipValuesFilter(BaseFilter):
                     clip_min_new_value=None,
                     clip_max_new_value=None,
                     progress=None) -> Images:
-        """
-        Clip values below the min and above the max pixels.
+        """Clip values below the min and above the max pixels.
 
         :param data: Input data as a 3D numpy.ndarray.
         :param clip_min: The minimum value to be clipped from the data.

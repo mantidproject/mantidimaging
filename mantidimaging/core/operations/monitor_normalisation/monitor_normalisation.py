@@ -15,6 +15,12 @@ def _divide_by_counts(data=None, counts=None):
 
 
 class MonitorNormalisation(BaseFilter):
+    """Normalises the values of the data by the monitor counts read from the Sample log file.
+
+    Intended to be used on: Projections
+
+    When: As a pre-processing step to normalise the value ranges of the data.
+    """
     filter_name = "Monitor Normalisation"
 
     @staticmethod

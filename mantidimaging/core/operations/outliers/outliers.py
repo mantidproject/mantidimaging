@@ -21,6 +21,15 @@ _default_dim = DIM_2D
 
 
 class OutliersFilter(BaseFilter):
+    """Removes pixel values that are found to be outliers by the parameters.
+
+    Intended to be used on: Projections
+
+    When: As a pre-processing step to reduce very bright or dead pixels in the data.
+
+    Caution: This should usually be the first step applied to the data, flat and dark
+    images, to remove pixels with very large values that will cause issues in the flat-fielding.
+    """
     filter_name = "Remove Outliers"
 
     @staticmethod

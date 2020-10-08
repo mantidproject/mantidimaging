@@ -14,6 +14,15 @@ if TYPE_CHECKING:
 
 
 class DivideFilter(BaseFilter):
+    """Divides the images by a value. That value is usually the pixel value,
+    and can be specified in either microns or cms.
+
+    Intended to be used on: Reconstructed slices
+
+    When: To calculate attenuation values by dividing by the pixel size in Microns
+
+    Caution: Check preview values before applying divide
+    """
     filter_name = "Divide"
 
     @staticmethod
