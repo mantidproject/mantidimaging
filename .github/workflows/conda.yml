@@ -12,7 +12,7 @@ jobs:
       - uses: goanpeca/setup-miniconda@v1
         with:
           activate-environment: mantidimaging
-          environment-file: $GITHUB_WORKSPACE/conda/meta.yml
+          environment-file: ../conda/meta.yml
           python-version: 3.7
           auto-activate-base: false
 
