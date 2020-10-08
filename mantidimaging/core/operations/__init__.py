@@ -21,7 +21,7 @@
 # Code Documentation is available at: <http://doxygen.mantidproject.org>
 
 from . import (  # noqa: F401
-    circular_mask, clip_values, crop_coords, cut_off, flat_fielding, gaussian, median_filter, minus_log, outliers,
-    rebin, ring_removal, roi_normalisation, rotate_stack, remove_stripe)
+    circular_mask, clip_values, crop_coords, cut_off, flat_fielding, gaussian, median_filter, outliers, rebin,
+    ring_removal, roi_normalisation, rotate_stack, remove_stripe)
 
 from .wip import mcp_corrections  # noqa: F401

@@ -9,6 +9,10 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 class BaseRecon:
     @staticmethod
+    def sino_recon_prep(sino: np.ndarray):
+        return -np.log(sino)
+
+    @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
         """

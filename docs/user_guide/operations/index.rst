@@ -12,7 +12,6 @@ Operations
    flat_fielding
    gaussian
    median
-   minus_log
    outliers
    rebin
    ring_removal
