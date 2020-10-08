@@ -10,11 +10,11 @@ class CutOffFilter(BaseFilter):
     filter_name = 'Intensity Cut Off'
 
     @staticmethod
-    def filter_func(data, threshold=None, progress=None):
+    def filter_func(images, threshold=None, progress=None):
         """
         Cut off values above threshold relative to the max pixels.
 
-        :param data: Input data as a 3D numpy.ndarray
+        :param images: Input data as a 3D numpy.ndarray
         :param threshold: The threshold related to the minimum pixel value that
                           will be clipped
         :return: The processed 3D numpy.ndarray
@@ -23,7 +23,7 @@ class CutOffFilter(BaseFilter):
 
         if threshold and threshold > 0.0:
             with progress:
-                sample = data.data
+                sample = images.data
                 dmin = np.amin(sample)
                 dmax = np.amax(sample)
 
@@ -33,7 +33,7 @@ class CutOffFilter(BaseFilter):
 
                 np.minimum(sample, rel_cut_off, out=sample)
 
-        return data
+        return images
 
     @staticmethod
     def register_gui(form, on_change, view):
