@@ -8,6 +8,15 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class CircularMaskFilter(BaseFilter):
+    """Masks a circular area around the center of the image, by setting it to a
+    specified value.
+
+    Intended to be used on: Reconstructed slices
+
+    When: To remove reconstruction artifacts near the outside of the image.
+
+    Caution: Ensure that the radius does not mask data from the sample.
+    """
     filter_name = "Circular Mask"
 
     @staticmethod
@@ -43,13 +52,15 @@ class CircularMaskFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, radius_field = add_property_to_form('Radius', Type.FLOAT, 0.95, (0.0, 1.0), form=form, on_change=on_change)
+        _, radius_field = add_property_to_form('Radius', Type.FLOAT, 0.95, (0.0, 1.0), form=form, on_change=on_change,
+                                               tooltip="Radius [0, 1] of image that should be left untouched.")
 
         _, value_field = add_property_to_form('Set to value',
                                               Type.FLOAT,
                                               0, (-10000, 10000),
                                               form=form,
-                                              on_change=on_change)
+                                              on_change=on_change,
+                                              tooltip="The value of the mask.")
 
         return {'radius_field': radius_field, 'value_field': value_field}
 

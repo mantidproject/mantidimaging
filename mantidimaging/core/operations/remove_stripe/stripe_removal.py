@@ -7,6 +7,17 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class StripeRemovalFilter(BaseFilter):
+    """Stripe removal operations wrapped from TomoPy.
+
+    Source: https://tomopy.readthedocs.io/en/latest/api/tomopy.prep.stripe.html
+
+    Intended to be used on: Sinograms
+    When: If stripes artifacts are present that have not been
+          removed with outliers + flat-fielding the projections
+
+    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
+    and should be fixed by ROI Normalisation instead!
+    """
     filter_name = "Stripe Removal"
 
     @staticmethod

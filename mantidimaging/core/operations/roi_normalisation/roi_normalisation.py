@@ -18,12 +18,20 @@ from mantidimaging.gui.windows.stack_visualiser import SVParameters
 
 
 class RoiNormalisationFilter(BaseFilter):
+    """Normalises the image data by the average values in a region of interest.
+
+    Intended to be used on: Projections
+
+    When: Always, to ensure that any fluctuations in beam intensity are normalised.
+
+    Caution: If you see horizontal lines in the sinogram this means some projections
+    are brighter/darker than the rest. This can be fixed with this operation.
+    """
     filter_name = "ROI Normalisation"
 
     @staticmethod
     def filter_func(images: Images, region_of_interest: SensibleROI = None, cores=None, chunksize=None, progress=None):
-        """
-        Normalise by beam intensity.
+        """Normalise by beam intensity.
 
         This does NOT do any checks if the Air Region is out of bounds!
         If the Air Region is out of bounds, the crop will fail at runtime.

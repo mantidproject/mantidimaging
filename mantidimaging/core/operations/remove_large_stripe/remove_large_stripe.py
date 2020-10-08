@@ -9,6 +9,20 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RemoveLargeStripesFilter(BaseFilter):
+    """Algorithm 5 in the paper. Remove large stripes by: locating stripes,
+    normalizing to remove full stripes, using the sorting technique to
+    remove partial stripes.
+    Angular direction is along the axis 0.
+
+    Source: https://github.com/nghia-vo/sarepy
+
+    Intended to be used on: Sinograms
+    When: If stripes artifacts are present that have not been
+          removed with outliers + flat-fielding the projections
+
+    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
+    and should be fixed by ROI Normalisation instead!
+    """
     filter_name = "Remove large stripes"
 
     @staticmethod

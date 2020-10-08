@@ -18,6 +18,12 @@ if TYPE_CHECKING:
 
 
 class MedianFilter(BaseFilter):
+    """Applies Median filter to the data.
+
+    Intended to be used on: Projections
+
+    When: As a pre-processing step to reduce noise.
+    """
     filter_name = "Median"
 
     @staticmethod
@@ -48,7 +54,8 @@ class MedianFilter(BaseFilter):
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
         _, size_field = add_property_to_form('Kernel Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
 
-        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change,
+                                             tooltip="How to handle the edges of the image")
 
         _, gpu_field = add_property_to_form('Use GPU',
                                             Type.BOOL,

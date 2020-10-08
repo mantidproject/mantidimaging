@@ -68,29 +68,29 @@ def save(images: Images,
     :param images: Data as images/slices stores in numpy array
     :param output_dir: Output directory for the files
     :param name_prefix: Prefix for the names of the images,
-                        appended before the image number
+           appended before the image number
     :param swap_axes: Swap the 0 and 1 axis of the images
-                      (convert from radiograms to sinograms on saving)
+           (convert from radiograms to sinograms on saving)
     :param out_format: File format of the saved out images
     :param overwrite_all: Overwrite existing images with conflicting names
     :param custom_idx: Single index to be used for the file name,
-                       instead of incremental numbers
+           instead of incremental numbers
     :param zfill_len: This option is ignored if custom_idx is specified!
-                      Prepend zeros to the output file names to have a
-                      constant file name length. Example:
-                      - saving out an image with zfill_len = 6:
-                          saved_image000001,...saved_image000201 and so on
-                      - saving out an image with zfill_len = 3:
-                          saved_image001,...saved_image201 and so on
+           Prepend zeros to the output file names to have a
+           constant file name length. Example:
+           - saving out an image with zfill_len = 6:
+           saved_image000001,...saved_image000201 and so on
+           - saving out an image with zfill_len = 3:
+           saved_image001,...saved_image201 and so on
     :param name_postfix: Postfix for the name after the index
     :param indices: Only works if custom_idx is not specified.
-                    Specify the start and end range of the indices
-                    which will be used for the file names.
+           Specify the start and end range of the indices
+           which will be used for the file names.
     :param progress: Passed to ensure progress during saving is tracked properly
     :param pixel_depth: Defines the target pixel depth of the save operation so
-                        np.float32 or np.int16 will ensure the values are scaled
-                        correctly to these values.
-    :return The filename/filenames of the saved data.
+           np.float32 or np.int16 will ensure the values are scaled
+           correctly to these values.
+    :returns: The filename/filenames of the saved data.
     """
     progress = Progress.ensure_instance(progress, task_name='Save')
 
@@ -261,22 +261,21 @@ class Saver(object):
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
 
         :param subdir: Specify an additional subdirectory
-                       inside the output directory
+               inside the output directory
         :param data: Data volume with pre-processed images
         :param name: Image name to be appended
-        :param custom_index: Index that will be appended at the end of the
-                             image filename
+        :param custom_index: Index that will be appended at the end of the image filename
         :param zfill_len: Prepend zeros to the output file names to have a
-                          constant file name length. Example:
-                          - saving out an image with zfill_len = 6:
-                              saved_image000001,...saved_image000201 and so on
-                          - saving out an image with zfill_len = 3:
-                              saved_image001,...saved_image201 and so on
+               constant file name length. Example:
+               - saving out an image with zfill_len = 6:
+               saved_image000001,...saved_image000201 and so on
+               - saving out an image with zfill_len = 3:
+               saved_image001,...saved_image201 and so on
         :param name_postfix: String to be appended after the zero fill.
-                             This is not recommended and might confuse
-                             imaging programs (including this script) as to
-                             the order of the images, and they could
-                             end up not loading all of the images.
+               This is not recommended and might confuse
+               imaging programs (including this script) as to
+               the order of the images, and they could
+               end up not loading all of the images.
         """
         assert data.ndim == 2, \
             "This should not be used with a 3D stack of images!"
