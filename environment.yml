@@ -10,7 +10,7 @@ dependencies:
   - pip
   - sharedarray
   - sarepy
-  - astra
+  - astra-toolbox
   - pip:
       - pytest
       - pytest-xvfb
