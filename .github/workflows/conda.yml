@@ -43,6 +43,6 @@ jobs:
           ulimit -c unlimited
           ls -la /usr/share/miniconda/condabin
           ls -la /usr/share/miniconda
-          sudo catchsegv xvfb-run --auto-servernum /usr/share/miniconda/condabin/python -m pytest
+          sudo catchsegv xvfb-run --auto-servernum /usr/share/miniconda/bin/pytest
 
 
