@@ -40,7 +40,7 @@ jobs:
       - name: pytest
         shell: bash -l {0}
         run: |
-          apt update -y
-          apt install xvfb -y
+          sudo apt update -y
+          sudo apt install xvfb -y
           python -m pytest
 
