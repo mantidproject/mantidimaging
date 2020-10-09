@@ -16,7 +16,7 @@ class RemoveAllStripesFilter(BaseFilter):
 
     Intended to be used on: Sinograms
     When: If stripes artifacts are present that have not been
-          removed with outliers + flat-fielding the projections
+    removed with outliers + flat-fielding the projections
 
     Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
     and should be fixed by ROI Normalisation instead!

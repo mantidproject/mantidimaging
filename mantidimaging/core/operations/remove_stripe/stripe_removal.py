@@ -13,7 +13,7 @@ class StripeRemovalFilter(BaseFilter):
 
     Intended to be used on: Sinograms
     When: If stripes artifacts are present that have not been
-          removed with outliers + flat-fielding the projections
+    removed with outliers + flat-fielding the projections
 
     Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
     and should be fixed by ROI Normalisation instead!
@@ -22,8 +22,7 @@ class StripeRemovalFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
-        """
-        Execute stripe removal operations.
+        """Execute stripe removal operations.
 
         Multiple operations can be executed, if they are specified on the command
         line.
