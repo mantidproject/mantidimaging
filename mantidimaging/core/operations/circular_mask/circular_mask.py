@@ -52,7 +52,11 @@ class CircularMaskFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, radius_field = add_property_to_form('Radius', Type.FLOAT, 0.95, (0.0, 1.0), form=form, on_change=on_change,
+        _, radius_field = add_property_to_form('Radius',
+                                               Type.FLOAT,
+                                               0.95, (0.0, 1.0),
+                                               form=form,
+                                               on_change=on_change,
                                                tooltip="Radius [0, 1] of image that should be left untouched.")
 
         _, value_field = add_property_to_form('Set to value',
