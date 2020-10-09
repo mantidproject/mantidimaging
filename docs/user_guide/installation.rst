@@ -53,6 +53,8 @@ To update to the latest version of Mantid Imaging run:
 
 :code:`conda activate mantidimaging && conda update mantidimaging`
 
+If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.
+
 Reinstalling the environment
 ----------------------------
 To completely delete the Mantid Imaging environment follow these steps:
