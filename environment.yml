@@ -16,4 +16,14 @@ dependencies:
       - yapf
       - mypy
       - flake8
+      - testfixtures
+      - coverage
+      - hazelnut
+      - gitpython
+      - mock
+      - pylint
+      - sphinx
+      - pytest-randomly
+      - pytest-parallel
+      - isort
 prefix: /home/sam/miniconda3/envs/mantidimaging
