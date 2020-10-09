@@ -42,5 +42,5 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install xvfb -y
-          python -m pytest
+          xvfb-run python -m pytest
 
