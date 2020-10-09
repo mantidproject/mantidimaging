@@ -43,6 +43,6 @@ jobs:
         shell: bash -l {0}
         run: |
           ulimit -c unlimited
-          sudo catchsegv xvfb-run --auto-servernum pytest
+          sudo catchsegv xvfb-run --auto-servernum /usr/share/miniconda/condabin/pytest
 
 
