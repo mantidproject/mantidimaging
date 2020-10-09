@@ -45,5 +45,10 @@ jobs:
           ls -la /usr/share/miniconda
           ls -la /usr/share/miniconda/bin
           xvfb-run --auto-servernum --server-args="-screen 0 640x480x24" pytest
-
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          path: /
+          # The desired behavior if no files are found using the provided path.
 
