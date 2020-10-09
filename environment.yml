@@ -13,7 +13,7 @@ dependencies:
   - astra-toolbox
   - pip:
       - pytest
-      - pyqt5
+      - pyqt5==5.15
       - yapf
       - mypy
       - flake8
@@ -26,6 +26,4 @@ dependencies:
       - sphinx
       - pytest-randomly
       - pytest-parallel
-      - pytest-qt
       - isort
-prefix: /home/sam/miniconda3/envs/mantidimaging
