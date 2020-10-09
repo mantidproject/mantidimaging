@@ -16,11 +16,11 @@ jobs:
           python-version: 3.7
           auto-activate-base: false
 
-      - name: Conda Details
+      - name: Other dependencies
         shell: bash -l {0}
         run: |
-            conda info
-            conda list
+          sudo apt update -y
+          sudo apt install xvfb x11-utils libxkbcommon-x11-0 -y
 
       - name: Yapf
         shell: bash -l {0}
@@ -38,9 +38,11 @@ jobs:
           mypy --ignore-missing-imports mantidimaging
 
       - name: pytest
+        env:
+          QT_DEBUG_PLUGINS: 1
         shell: bash -l {0}
         run: |
-          sudo apt update -y
-          sudo apt install xvfb x11-utils libxkbcommon-x11-0 -y
-          xvfb-run --auto-servernum python -m pytest
+          ulimit -c unlimited
+          sudo catchsegv xvfb-run --auto-servernum python -m pytest
+
 
