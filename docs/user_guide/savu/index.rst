@@ -1,3 +1,5 @@
+This was intentionally removed from the user_guide toctree - return if we start to actively try to integrate Savu again.
+
 Using Savu from Mantid Imaging
 ==============================
 

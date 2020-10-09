@@ -6,8 +6,7 @@ User Guide
    :caption: Contents:
 
    installation
-   troubleshooting
-   gui/index
    operations/index
+   gui/index
    python/index
-   savu/index
+
