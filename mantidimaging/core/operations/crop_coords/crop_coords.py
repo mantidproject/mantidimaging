@@ -23,6 +23,7 @@ class CropCoordinatesFilter(BaseFilter):
     """
     filter_name = "Crop Coordinates"
 
+    @staticmethod
     def filter_func(images: Images,
                     region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
                     progress=None) -> Images:

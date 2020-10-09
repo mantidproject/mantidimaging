@@ -25,7 +25,6 @@ class RegistratorTest(unittest.TestCase):
             'mantidimaging.core.operations.wip.mcp_corrections.mcp_corrections',
             'mantidimaging.core.operations.wip.outliers_isis.outliers_isis',
             'mantidimaging.core.operations.wip.outliers_isis.test.outliers_isis_test',
-
         ])
 
     def test_get_package_children_packages_and_modules(self):
