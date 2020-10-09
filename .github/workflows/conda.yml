@@ -41,6 +41,6 @@ jobs:
         shell: bash -l {0}
         run: |
           sudo apt update -y
-          sudo apt install xvfb -y
+          sudo apt install xvfb x11-utils libxkbcommon-x11-0 -y
           xvfb-run --auto-servernum python -m pytest
 
