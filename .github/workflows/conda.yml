@@ -42,5 +42,5 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install xvfb -y
-          xvfb-run python -m pytest
+          xvfb-run --auto-servernum python -m pytest
 
