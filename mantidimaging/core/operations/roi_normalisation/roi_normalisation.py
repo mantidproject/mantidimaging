@@ -51,7 +51,7 @@ class RoiNormalisationFilter(BaseFilter):
 
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
             _execute(images.data, region_of_interest, cores, chunksize, progress)
-
+            progress.update(1, "Rescaling to input value range")
             images = RescaleFilter.filter_func(images,
                                                min_input=images.data.min(),
                                                max_input=images.data.max(),
