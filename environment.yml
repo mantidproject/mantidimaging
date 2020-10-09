@@ -9,6 +9,8 @@ dependencies:
   - mantidimaging
   - pip
   - sharedarray
+  - sarepy
+  - astra
   - pip:
       - pytest
       - pytest-xvfb
