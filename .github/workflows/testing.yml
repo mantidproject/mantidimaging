@@ -19,12 +19,12 @@ jobs:
     - name: Pre-load docker image
       run: docker pull mantidproject/mantidimaging:latest
 
-    - name: YAPF
+    - name: yapf
       uses: ./.github/actions/test
       with:
         command: yapf --parallel --diff --recursive .
 
-    - name: Flake8
+    - name: flake8
       uses: ./.github/actions/test
       with:
         command: flake8
@@ -34,12 +34,22 @@ jobs:
       with:
         command: mypy --ignore-missing-imports mantidimaging
 
-    - name: Docs
+    - name: docs
       uses: ./.github/actions/test
       with:
         command: python setup.py docs_api && python setup.py docs
 
-    - name: Docs
+    - name: pytest
       uses: ./.github/actions/test
       with:
         command: apt update && apt install -y xvfb && xvfb-run pytest
+
+    - name: publish 'unstable' package
+      if: github.ref == 'refs/heads/master'
+      uses: ./.github/actions/publish-package
+
+    - name: publish 'unstable' package TEST ONLY
+      if: github.ref == 'refs/heads/515_update_op_docs'
+      uses: ./.github/actions/publish-package
+      with:
+        label: test-only
