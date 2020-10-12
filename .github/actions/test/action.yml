@@ -14,15 +14,3 @@ runs:
     - name: yapf
       shell: bash
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest '${{ inputs.command }}'
-  # - name: flake8
-  #   shell: bash
-  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest flake8
-  # - name: mypy
-  #   shell: bash
-  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
-  # - name: docs
-  #   shell: bash
-  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'python setup.py docs_api && python setup.py docs'
-  # - name: pytest
-  #   shell: bash
-  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'apt update && apt install -y xvfb && xvfb-run pytest'
