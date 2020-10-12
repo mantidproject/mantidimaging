@@ -2,28 +2,27 @@
 
 name: Testing with docker
 
+inputs:
+  command:
+    description: 'Command to be executed in the docker image'
+    required: true
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 runs:
   using: "composite"
   steps:
-
-  # Runs a set of commands using the runners shell
-  - name: Pull docker image
-    shell: bash
-    run: docker pull mantidproject/mantidimaging:latest
-
-  - name: yapf
-    shell: bash
-    run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest yapf --parallel --diff --recursive .
-  - name: flake8
-    shell: bash
-    run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest flake8
-  - name: mypy
-    shell: bash
-    run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
-  - name: docs
-    shell: bash
-    run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'python setup.py docs_api && python setup.py docs'
-  - name: pytest
-    shell: bash
-    run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'apt update && apt install -y xvfb && xvfb-run pytest'
+    - name: yapf
+      shell: bash
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest '${{ inputs.command }}'
+  # - name: flake8
+  #   shell: bash
+  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest flake8
+  # - name: mypy
+  #   shell: bash
+  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
+  # - name: docs
+  #   shell: bash
+  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'python setup.py docs_api && python setup.py docs'
+  # - name: pytest
+  #   shell: bash
+  #   run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'apt update && apt install -y xvfb && xvfb-run pytest'
