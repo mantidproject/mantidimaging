@@ -1,0 +1,31 @@
+name: Publish docs and package
+on:
+  push:
+    branches:
+      - main
+      - 515_update_op_docs
+
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Run the tests
+        uses: ./.github/workflows/dockertest.yml
+
+      - name: Publish docs
+        run: |
+          git config --global credential.helper store
+          echo "https://mantid-builder:REPLACE_WITH_GITHUB_SECRET@github.com" > ~/.git-credentials
+          python setup.py docs_publish
+
+      - name: Publish package
+        uses: ./
+        id: main
+        with:
+          repository: mantid
+          label: unstable
