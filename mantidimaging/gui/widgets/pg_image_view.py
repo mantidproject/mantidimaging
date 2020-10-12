@@ -1,9 +1,10 @@
+from time import sleep
 from logging import getLogger
 from typing import Optional, Tuple, Callable
 
 import numpy as np
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget, QApplication
 from pyqtgraph import ImageView, ROI, ImageItem
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
@@ -33,6 +34,31 @@ class MIImageView(ImageView):
         self.details.setStyleSheet("QLabel { color : white; background-color: black}")
         self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
 
+        # Hide the norm button as it allows for manual data changes and we don't want users to do that unrecorded.
+        self.ui.menuBtn.hide()
+
+        # Construct and add the left and right buttons for the stack
+        self.shifting_through_images = False
+
+        self.button_stack_left = QPushButton()
+        self.button_stack_left.setText("<")
+        self.button_stack_left.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.button_stack_left.setMaximumSize(40, 40)
+        self.button_stack_left.pressed.connect(lambda: self.toggle_jumping_frame(-1))
+        self.button_stack_left.released.connect(lambda: self.toggle_jumping_frame())
+
+        self.button_stack_right = QPushButton()
+        self.button_stack_right.setText(">")
+        self.button_stack_right.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.button_stack_right.setMaximumSize(40, 40)
+        self.button_stack_right.pressed.connect(lambda: self.toggle_jumping_frame(1))
+        self.button_stack_right.released.connect(lambda: self.toggle_jumping_frame())
+
+        self.vertical_layout = QHBoxLayout()
+        self.vertical_layout.addWidget(self.button_stack_left)
+        self.vertical_layout.addWidget(self.button_stack_right)
+        self.ui.gridLayout.addLayout(self.vertical_layout, 1, 2, 1, 1)
+
         self.imageItem.hoverEvent = self.image_hover_event
         # disconnect the ROI recalculation on every move
         self.roi.sigRegionChanged.disconnect(self.roiChanged)
@@ -51,6 +77,16 @@ class MIImageView(ImageView):
         self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
         self.imageItem.sigImageChanged.connect(self._refresh_message)
+
+    def toggle_jumping_frame(self, images_to_jump_by=None):
+        if not self.shifting_through_images and images_to_jump_by is not None:
+            self.shifting_through_images = True
+        else:
+            self.shifting_through_images = False
+        while self.shifting_through_images:
+            self.jumpFrames(images_to_jump_by)
+            sleep(0.02)
+            QApplication.processEvents()
 
     def _refresh_message(self):
         # updates the ROI average value
