@@ -15,5 +15,23 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-    - name: Run the tests
+
+    - name: YAPF
       uses: ./.github/actions/test
+      with:
+        command: yapf --parallel --diff --recursive .
+
+    - name: Flake8
+      uses: ./.github/actions/test
+      with:
+        command: flake8
+
+    - name: mypy
+      uses: ./.github/actions/test
+      with:
+        command: mypy --ignore-missing-imports mantidimaging
+
+    - name: Docs
+      uses: ./.github/actions/test
+      with:
+        command: python setup.py docs_api && python setup.py docs
