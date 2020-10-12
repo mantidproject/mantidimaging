@@ -26,7 +26,7 @@ jobs:
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest flake8
     - name: mypy
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest mypy --ignore-missing-imports mantidimaging
-    - name: pytest
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'apt update && apt install -y xvfb && xvfb-run pytest'
     - name: docs
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'python setup.py docs_api && python setup.py docs'
+    - name: pytest
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest 'apt update && apt install -y xvfb && xvfb-run pytest'
