@@ -134,7 +134,6 @@ def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=No
     500x2048x2048 images.
 
     #1 Separate runs
-    #1 Separate runs
     Subtract (sequential with np.subtract(data, dark, out=data)) - 13s
     Divide (par) - 1.15s
 

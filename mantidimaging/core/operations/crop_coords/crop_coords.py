@@ -31,7 +31,6 @@ class CropCoordinatesFilter(BaseFilter):
         NOT do any checks if the Region of interest is out of bounds!
 
         If the region of interest is out of bounds, the crop will **FAIL** at
-        runtime.egion of interest is out of bounds, the crop will **FAIL** at
         runtime.
 
         If the region of interest is in bounds, but has overlapping coordinates
