@@ -53,3 +53,4 @@ jobs:
       uses: ./.github/actions/publish-package
       with:
         label: test-only
+        token: '{{ secrets.ANACONDA_API_TOKEN }}'
