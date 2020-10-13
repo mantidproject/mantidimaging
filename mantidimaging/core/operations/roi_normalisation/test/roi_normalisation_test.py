@@ -63,7 +63,7 @@ class ROINormalisationTest(unittest.TestCase):
         result = RoiNormalisationFilter.filter_func(images, air)
 
         th.assert_not_equals(result.data[0], original)
-        self.assertAlmostEqual(result.data.max(), images_max)
+        self.assertAlmostEqual(result.data.max(), images_max, places=6)
 
 
 if __name__ == '__main__':
