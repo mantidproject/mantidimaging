@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Callable
 
 import numpy as np
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget, QApplication
+from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QSizePolicy, QApplication
 from pyqtgraph import ImageView, ROI, ImageItem
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
