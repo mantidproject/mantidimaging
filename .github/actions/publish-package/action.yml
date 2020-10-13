@@ -25,9 +25,15 @@ runs:
   - name: Install miniconda
     shell: bash
     run: |
-      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/Miniconda3-latest-Linux-x86_64.sh
-      bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /tmp/miniconda
-      source /tmp/miniconda/bin/activate /tmp/miniconda/
+      mkdir ./tmp
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ./tmp/Miniconda3-latest-Linux-x86_64.sh
+      bash ./tmp/Miniconda3-latest-Linux-x86_64.sh -b -p ./tmp/miniconda
+      source ./tmp/miniconda/bin/activate ./tmp/miniconda/
+      conda config --channels prepend dtasev
+      conda config --channels prepend mantid
+      conda config --channels prepend astra-toolbox/label/dev
+      conda config --channels prepend defaults
+      conda config --channels prepend conda-forge
     # run: s-weigand/setup-conda@v1.0.5
     # with:
     #   # Additional channels like 'conda-forge' which can be used to install packages
