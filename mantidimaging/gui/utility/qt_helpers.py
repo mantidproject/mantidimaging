@@ -4,6 +4,7 @@ Module containing helper functions relating to PyQt.
 
 import os
 from enum import IntEnum, auto
+from logging import getLogger
 from typing import Tuple, Union, TYPE_CHECKING, List, Optional
 
 from PyQt5 import Qt
@@ -195,6 +196,11 @@ def add_property_to_form(label: str,
 
         if right_widget:
             right_widget.setToolTip(tooltip)
+
+    # right widget check avoids printing debug msg for labels only
+    if tooltip is None and right_widget is not None:
+        log = getLogger(__name__)
+        log.debug("Missing tooltip for %s", label)
 
     if left_widget:
         left_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)

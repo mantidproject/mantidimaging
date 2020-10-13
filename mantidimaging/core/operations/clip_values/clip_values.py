@@ -78,14 +78,16 @@ class ClipValuesFilter(BaseFilter):
                                                  'float',
                                                  valid_values=value_range,
                                                  form=form,
-                                                 on_change=on_change)
+                                                 on_change=on_change,
+                                                 tooltip="Any pixel with a value below this number will be clipped")
         clip_min_field.setDecimals(7)
 
         _, clip_max_field = add_property_to_form('Clip Max',
                                                  'float',
                                                  valid_values=value_range,
                                                  form=form,
-                                                 on_change=on_change)
+                                                 on_change=on_change,
+                                                 tooltip="Any pixel with a value above this number will be clipped")
         clip_max_field.setDecimals(7)
 
         _, clip_min_new_value_field = add_property_to_form(

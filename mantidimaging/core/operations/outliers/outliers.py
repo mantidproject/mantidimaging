@@ -21,15 +21,6 @@ _default_dim = DIM_2D
 
 
 class OutliersFilter(BaseFilter):
-    """Removes pixel values that are found to be outliers by the parameters.
-
-    Intended to be used on: Projections
-
-    When: As a pre-processing step to reduce very bright or dead pixels in the data.
-
-    Caution: This should usually be the first step applied to the data, flat and dark
-    images, to remove pixels with very large values that will cause issues in the flat-fielding.
-    """
     filter_name = "Remove Outliers"
 
     @staticmethod
@@ -77,7 +68,10 @@ class OutliersFilter(BaseFilter):
                                              1,
                                              valid_values=(-1000000, 1000000),
                                              form=form,
-                                             on_change=on_change)
+                                             on_change=on_change,
+                                             tooltip="Difference between pixels that will be used to spot outliers.\n"
+                                             "It is calculated by subtracting the original image "
+                                             "from the median filtered image")
         diff_field.setDecimals(7)
 
         _, size_field = add_property_to_form('Median kernel',
@@ -87,7 +81,12 @@ class OutliersFilter(BaseFilter):
                                              on_change=on_change,
                                              tooltip="The size of the median filter kernel used to find outliers.")
 
-        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode',
+                                             Type.CHOICE,
+                                             valid_values=modes(),
+                                             form=form,
+                                             on_change=on_change,
+                                             tooltip="Specifies how to handle the edges of the image")
 
         return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field}
 

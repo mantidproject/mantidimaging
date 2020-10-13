@@ -7,22 +7,12 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class StripeRemovalFilter(BaseFilter):
-    """Stripe removal operations wrapped from TomoPy.
-
-    Source: https://tomopy.readthedocs.io/en/latest/api/tomopy.prep.stripe.html
-
-    Intended to be used on: Sinograms
-    When: If stripes artifacts are present that have not been
-    removed with outliers + flat-fielding the projections
-
-    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
-    and should be fixed by ROI Normalisation instead!
-    """
     filter_name = "Stripe Removal"
 
     @staticmethod
     def filter_func(images, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
-        """Execute stripe removal operations.
+        """
+        Execute stripe removal operations.
 
         Multiple operations can be executed, if they are specified on the command
         line.
@@ -89,7 +79,11 @@ class StripeRemovalFilter(BaseFilter):
                                         form=form,
                                         on_change=on_change)
         # Filter type option
-        _, value_filter_type = add_property_to_form('Filter Type', Type.CHOICE, form=form, on_change=on_change)
+        _, value_filter_type = add_property_to_form('Filter Type',
+                                                    Type.CHOICE,
+                                                    form=form,
+                                                    on_change=on_change,
+                                                    tooltip="Which filter to use in the operation.")
 
         # Wavelet options
         _, value_wf_level = add_property_to_form('Level',
@@ -97,15 +91,22 @@ class StripeRemovalFilter(BaseFilter):
                                                  default_value=1,
                                                  valid_values=(0, 100),
                                                  form=form,
-                                                 on_change=on_change)
+                                                 on_change=on_change,
+                                                 tooltip="Number of discrete wavelet transform levels.")
 
         _, value_wf_wname = add_property_to_form('Wavelet Filter',
                                                  Type.CHOICE,
                                                  valid_values=wavelet_names(),
                                                  form=form,
-                                                 on_change=on_change)
+                                                 on_change=on_change,
+                                                 tooltip="Type of the wavelet filter. 'haar', 'db5', 'sym5'.")
 
-        _, value_wf_sigma = add_property_to_form('Sigma', Type.FLOAT, 2.0, (0.0, 100.0), form=form, on_change=on_change)
+        _, value_wf_sigma = add_property_to_form('Sigma',
+                                                 Type.FLOAT,
+                                                 2.0, (0.0, 100.0),
+                                                 form=form,
+                                                 on_change=on_change,
+                                                 tooltip="Damping parameter in Fourier space.")
 
         # Titarenko options
         # _, value_ti_nblock = add_property_to_form('Number of Blocks',
@@ -117,7 +118,12 @@ class StripeRemovalFilter(BaseFilter):
         # _, value_ti_alpha = add_property_to_form('Alpha', Type.FLOAT, 1.5, form=form, on_change=on_change)
 
         # Smoothing filter options
-        _, value_sf_size = add_property_to_form('Size', Type.INT, 5, (0, 100), form=form, on_change=on_change)
+        _, value_sf_size = add_property_to_form('Size',
+                                                Type.INT,
+                                                5, (0, 100),
+                                                form=form,
+                                                on_change=on_change,
+                                                tooltip="Size of the smoothing filter.")
         # ('titarenko', [value_ti_nblock, value_ti_alpha])
         filters = [('fourier-wavelet', [value_wf_level, value_wf_wname, value_wf_sigma]),
                    ('smoothing-filter', [value_sf_size])]
