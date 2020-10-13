@@ -1,6 +1,6 @@
 import unittest
 
-from gui.windows.main.save_dialog import sort_by_tomo_and_recon
+from mantidimaging.gui.windows.main.save_dialog import sort_by_tomo_and_recon
 
 
 class SaveDialogTest(unittest.TestCase):
