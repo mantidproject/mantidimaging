@@ -13,9 +13,17 @@ runs:
 
   # Steps represent a sequence of tasks that will be executed as part of the job
   steps:
-  - name: Make build-env
+  - name: Publish docs
     shell: bash
     run: |
-      source activate build-env
-      pip install sphinx
-      python setup.py docs && python setup.py docs_publish
+      conda config --set always_yes yes --set changeps1 no
+      conda create -n docs_build sphinx
+      source activate docs_build
+
+      python setup.py docs
+
+      git config --global user.name mantid-builder
+      git config --global user.email mantid-builder@hosting.com
+      git config --global credential.helper store
+      echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
+      python setup.py docs_publish
