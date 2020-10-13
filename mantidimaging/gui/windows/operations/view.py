@@ -222,6 +222,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.roi.show()
         self.roi_view.ui.gridLayout.setRowStretch(1, 5)
         self.roi_view.ui.gridLayout.setRowStretch(0, 95)
+        self.roi_view.button_stack_right.hide()
+        self.roi_view.button_stack_left.hide()
 
         self.roi_view.show()
 
