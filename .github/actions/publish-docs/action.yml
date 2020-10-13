@@ -15,4 +15,7 @@ runs:
   steps:
   - name: Make build-env
     shell: bash
-    run: python setup.py docs && python setup.py docs_publish
+    run: |
+      source activate build-env
+      pip install sphinx
+      python setup.py docs && python setup.py docs_publish
