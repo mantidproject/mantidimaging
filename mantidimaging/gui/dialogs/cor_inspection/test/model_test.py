@@ -16,6 +16,11 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         self.assertEqual(m.cor_extents, (0, 9))
         self.assertEqual(m.proj_angles.value.shape, (10, ))
 
+    def test_start_cor_step(self):
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        self.assertEqual(images.width, m.cor_step)
+
     def test_current_cor(self):
         images = generate_images()
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
