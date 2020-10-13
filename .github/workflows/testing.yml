@@ -31,10 +31,10 @@ jobs:
       with:
         command: flake8
 
-    # - name: mypy
-    #   uses: ./.github/actions/test
-    #   with:
-    #     command: mypy --ignore-missing-imports mantidimaging
+    - name: mypy
+      uses: ./.github/actions/test
+      with:
+        command: mypy --ignore-missing-imports mantidimaging
 
     - name: docs
       uses: ./.github/actions/test
