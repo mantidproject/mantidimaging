@@ -20,7 +20,10 @@ runs:
       conda create -n docs_build sphinx
       source activate docs_build
 
+      python setup.py docs_api
+      sudo chmod -R 0755 docs/build
       python setup.py docs
+
 
       git config --global user.name mantid-builder
       git config --global user.email mantid-builder@hosting.com
