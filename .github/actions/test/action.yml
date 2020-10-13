@@ -11,6 +11,5 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: yapf
-      shell: bash
+    - shell: bash
       run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest '${{ inputs.command }}'
