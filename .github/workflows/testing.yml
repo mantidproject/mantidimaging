@@ -49,7 +49,7 @@ jobs:
       uses: ./.github/actions/publish-package
 
     - name: publish 'unstable' package TEST ONLY
-      if: github.ref == 'refs/heads/515_update_op_docs'
+      if: github.ref == 'refs/heads/move_ci_to_actions'
       uses: ./.github/actions/publish-package
       with:
         label: test-only
