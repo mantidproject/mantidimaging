@@ -16,6 +16,13 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: publish 'unstable' package TEST ONLY
+      if: github.ref == 'refs/heads/move_ci_to_actions'
+      uses: ./.github/actions/publish-package
+      with:
+        label: test-only
+        token: ${{ secrets.ANACONDA_API_TOKEN }}
+
     - name: Pre-load docker image
       run: docker pull mantidproject/mantidimaging:latest
 
@@ -46,13 +53,6 @@ jobs:
 
     - name: publish 'unstable' package
       if: github.ref == 'refs/heads/master'
-      uses: ./.github/actions/publish-package
-      with:
-        label: test-only
-        token: ${{ secrets.ANACONDA_API_TOKEN }}
-
-    - name: publish 'unstable' package TEST ONLY
-      if: github.ref == 'refs/heads/move_ci_to_actions'
       uses: ./.github/actions/publish-package
       with:
         label: test-only
