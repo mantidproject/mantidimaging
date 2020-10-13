@@ -11,18 +11,6 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RotateFilter(BaseFilter):
-    """Rotates the image data by an arbitrary degree counter-clockwise.
-
-    Intended to be used on: Projections
-
-    When: Never, ASTRA vector geometry will take care of the tilt correction
-
-    Caution: Manually rotating could introduce additional artifacts in the
-    reconstructed volume, and since it is unnecessary with the vector geometry it is
-    not necessary. It is possible that data that is reconstructed without rotation
-    could have better quality than if rotated. However, there is no official
-    published research on this topic.
-    """
     filter_name = "Rotate Stack"
 
     @staticmethod
@@ -52,7 +40,8 @@ class RotateFilter(BaseFilter):
                                         Type.FLOAT,
                                         0, (-180, 180),
                                         form=form,
-                                        on_change=on_change)
+                                        on_change=on_change,
+                                        tooltip="How much degrees to rotate counter-clockwise")
         angle.setDecimals(7)
 
         return {"angle": angle}

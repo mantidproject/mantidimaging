@@ -83,8 +83,18 @@ class FlatFieldFilter(BaseFilter):
                     widget.setCurrentIndex(i)
                     break
 
-        _, flat_widget = add_property_to_form("Flat", Type.STACK, form=form, filters_view=view, on_change=on_change)
-        _, dark_widget = add_property_to_form("Dark", Type.STACK, form=form, filters_view=view, on_change=on_change)
+        _, flat_widget = add_property_to_form("Flat",
+                                              Type.STACK,
+                                              form=form,
+                                              filters_view=view,
+                                              on_change=on_change,
+                                              tooltip="Flat images to be used for correcting the flat field.")
+        _, dark_widget = add_property_to_form("Dark",
+                                              Type.STACK,
+                                              form=form,
+                                              filters_view=view,
+                                              on_change=on_change,
+                                              tooltip="Dark images to be used for subtracting the background.")
 
         assert isinstance(flat_widget, StackSelectorWidgetView)
         flat_widget.setMaximumWidth(250)

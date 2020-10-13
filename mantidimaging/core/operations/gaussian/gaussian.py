@@ -13,12 +13,6 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class GaussianFilter(BaseFilter):
-    """Applies Gaussian filter to the data.
-
-    Intended to be used on: Projections
-
-    When: As a pre-processing step to reduce noise.
-    """
     filter_name = "Gaussian"
 
     @staticmethod
@@ -49,27 +43,26 @@ class GaussianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change, view):
-        _, size_field = add_property_to_form('Sigma',
+        _, size_field = add_property_to_form('Kernel Size',
                                              Type.INT,
                                              3, (0, 1000),
                                              form=form,
                                              on_change=on_change,
-                                             tooltip="Standard deviation for Gaussian kernel")
+                                             tooltip="Size of the median filter kernel")
 
-        _, order_field = add_property_to_form(
-            'Order',
-            Type.INT,
-            0, (0, 3),
-            form=form,
-            on_change=on_change,
-            tooltip="The order of the filter along each axis is given as a single number")
+        _, order_field = add_property_to_form('Order',
+                                              Type.INT,
+                                              0, (0, 3),
+                                              form=form,
+                                              on_change=on_change,
+                                              tooltip="Order of the Gaussian filter")
 
-        _, mode_field = add_property_to_form('Edge Mode',
+        _, mode_field = add_property_to_form('Mode',
                                              Type.CHOICE,
                                              valid_values=modes(),
                                              form=form,
                                              on_change=on_change,
-                                             tooltip="How to handle the edges of the image")
+                                             tooltip="Mode to handle the edges of the image")
 
         return {'size_field': size_field, 'order_field': order_field, 'mode_field': mode_field}
 

@@ -14,14 +14,9 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RebinFilter(BaseFilter):
-    """Rebins the image to the given parameter.
-
+    """
     This filter temporarily increases memory usage, while the image is being rebinned.
     The memory usage will be lowered after the filter has finished executing.
-
-    Intended to be used on: Any data
-
-    When: If you want to reduce the data size by losing information.
     """
     filter_name = "Rebin"
 
@@ -72,7 +67,12 @@ class RebinFilter(BaseFilter):
     @staticmethod
     def register_gui(form, on_change, view):
         # Rebin by uniform factor options
-        _, factor = add_property_to_form('Factor', 'float', 0.5, (0.0, 1.0), on_change=on_change)
+        _, factor = add_property_to_form('Factor',
+                                         'float',
+                                         0.5, (0.0, 1.0),
+                                         on_change=on_change,
+                                         tooltip="Factor by which the data will be rebinned, "
+                                         "e.g. 0.5 is 50% reduced size")
         factor.setSingleStep(0.05)
 
         # Rebin to target shape options

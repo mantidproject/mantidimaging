@@ -9,18 +9,6 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RemoveAllStripesFilter(BaseFilter):
-    """Remove all types of stripe artifacts by combining algorithm 6, 5, and 3.
-    Angular direction is along the axis 0.
-
-    Source: https://github.com/nghia-vo/sarepy
-
-    Intended to be used on: Sinograms
-    When: If stripes artifacts are present that have not been
-    removed with outliers + flat-fielding the projections
-
-    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
-    and should be fixed by ROI Normalisation instead!
-    """
     filter_name = "Remove all stripes"
 
     @staticmethod
@@ -73,7 +61,9 @@ class RemoveAllStripesFilter(BaseFilter):
                                       default_value=1,
                                       valid_values=(1, 2),
                                       form=form,
-                                      on_change=on_change)
+                                      on_change=on_change,
+                                      tooltip="Whether to perform the median on 1D or 2D view of the data")
+
         return {'snr': snr, 'la_size': la_size, 'sm_size': sm_size, 'dim': dim}
 
     @staticmethod

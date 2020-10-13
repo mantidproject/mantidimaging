@@ -14,15 +14,6 @@ if TYPE_CHECKING:
 
 
 class DivideFilter(BaseFilter):
-    """Divides the images by a value. That value is usually the pixel value,
-    and can be specified in either microns or cms.
-
-    Intended to be used on: Reconstructed slices
-
-    When: To calculate attenuation values by dividing by the pixel size in Microns
-
-    Caution: Check preview values before applying divide
-    """
     filter_name = "Divide"
 
     @staticmethod
@@ -39,14 +30,20 @@ class DivideFilter(BaseFilter):
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, 'QWidget']:
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, value_widget = add_property_to_form("Divide by", Type.FLOAT, form=form, on_change=on_change)
+        _, value_widget = add_property_to_form("Divide by",
+                                               Type.FLOAT,
+                                               form=form,
+                                               on_change=on_change,
+                                               tooltip="Value the data will be divided by")
         assert value_widget is not None, "Requested widget was for FLOAT, got None instead"
         value_widget.setDecimals(7)
         _, unit_widget = add_property_to_form("Unit",
                                               Type.CHOICE,
                                               valid_values=["micron", "cm"],
                                               form=form,
-                                              on_change=on_change)
+                                              on_change=on_change,
+                                              tooltip="The unit of the input number. "
+                                              "Microns will be converted to cm before division")
 
         return {'value_widget': value_widget}
 
