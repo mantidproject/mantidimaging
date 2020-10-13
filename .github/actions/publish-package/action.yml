@@ -22,37 +22,18 @@ runs:
 
   # Steps represent a sequence of tasks that will be executed as part of the job
   steps:
-  - name: Install miniconda
-    shell: bash
-    run: |
-      mkdir ./tmp
-      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ./tmp/Miniconda3-latest-Linux-x86_64.sh
-      bash ./tmp/Miniconda3-latest-Linux-x86_64.sh -b -p ./tmp/miniconda
-      source ./tmp/miniconda/bin/activate ./tmp/miniconda/
-      conda config --prepend channels dtasev
-      conda config --prepend channels mantid
-      conda config --prepend channels astra-toolbox/label/dev
-      conda config --prepend channels defaults
-      conda config --prepend channels conda-forge
-    # run: s-weigand/setup-conda@v1.0.5
-    # with:
-    #   # Additional channels like 'conda-forge' which can be used to install packages
-    #   conda-channels: 'dtasev,mantid,astra-toolbox/label/dev,defaults,conda-forge'
-
   - name: Make build-env
     shell: bash
     run: |
       conda config --set always_yes yes --set changeps1 no
       conda create -n build-env anaconda python=3.7
-      source ./tmp/miniconda/bin/activate ./tmp/miniconda/
-      conda activate build-env
+      source activate build-env
       conda install conda-build conda-verify
 
   - name: Build package
     shell: bash
     run: |
-      source ./tmp/miniconda/bin/activate ./tmp/miniconda/
-      conda activate build-env
+      source activate build-env
       conda config --set anaconda_upload yes
       # if the upload silently fails - check the token expiration. Conda can fail silently!
       conda build --user ${{ inputs.repository }} --token ${{ inputs.token }} --label ${{ inputs.label }} $GITHUB_WORKSPACE/conda
