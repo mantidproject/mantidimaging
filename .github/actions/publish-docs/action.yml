@@ -16,17 +16,11 @@ runs:
   - name: Publish docs
     shell: bash
     run: |
-      conda config --set always_yes yes --set changeps1 no
-      conda create -n docs_build sphinx
-      source activate docs_build
-
-      python setup.py docs_api
-      sudo chmod -R 0755 docs/build
-      python setup.py docs
-
+      sudo chmod -R 0777 docs/build
 
       git config --global user.name mantid-builder
       git config --global user.email mantid-builder@hosting.com
       git config --global credential.helper store
       echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
+      python -m pip install sphinx gitpython
       python setup.py docs_publish
