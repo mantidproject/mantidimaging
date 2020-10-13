@@ -15,7 +15,7 @@ class CORInspectionDialogModel(object):
 
         # Initial parameters
         self.centre_cor = initial_cor.value
-        self.cor_step = images.width
+        self.cor_step = self.image_width * 0.05
 
         # Cache projection angles
         self.proj_angles = images.projection_angles()
