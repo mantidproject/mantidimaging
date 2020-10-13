@@ -41,19 +41,6 @@ jobs:
       with:
         command: python setup.py docs_api && python setup.py docs
 
-    - name: setup-conda
-      if: github.ref == 'refs/heads/move_ci_to_actions'
-      uses: s-weigand/setup-conda@v1.0.5
-      with:
-        # Additional channels like 'conda-forge' which can be used to install packages
-        conda-channels: 'dtasev,mantid,astra-toolbox/label/dev,defaults,conda-forge'
-
-    - name: publish docs
-      if: github.ref == 'refs/heads/move_ci_to_actions'
-      uses: ./.github/actions/publish-docs
-      with:
-        token: ${{ secrets.GHPAGES_API_TOKEN }}
-
     - name: pytest
       uses: ./.github/actions/test
       with:
@@ -72,3 +59,9 @@ jobs:
       with:
         label: test-only
         token: ${{ secrets.ANACONDA_API_TOKEN }}
+
+    - name: publish docs
+      if: github.ref == 'refs/heads/master'
+      uses: ./.github/actions/publish-docs
+      with:
+        token: ${{ secrets.GHPAGES_API_TOKEN }}
