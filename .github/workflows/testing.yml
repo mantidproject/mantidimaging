@@ -41,6 +41,12 @@ jobs:
       with:
         command: python setup.py docs_api && python setup.py docs
 
+    - name: publish docs
+      if: github.ref == 'refs/heads/move_ci_to_actions'
+      uses: ./.github/actions/publish-docs
+      with:
+        token: ${{ secrets.GHPAGES_API_TOKEN }}
+
     - name: pytest
       uses: ./.github/actions/test
       with:
