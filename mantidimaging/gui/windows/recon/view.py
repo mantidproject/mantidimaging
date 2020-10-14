@@ -30,8 +30,8 @@ class ReconstructWindowView(BaseMainWindowView):
     removeBtn: QPushButton
     fitBtn: QPushButton
 
-    autoBtn: QPushButton
-    autoFindMethod: QComboBox
+    correlateBtn: QPushButton
+    minimiseBtn: QPushButton
 
     reconTab: QWidget
 
@@ -90,7 +90,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
 
-        self.autoBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR))
+        self.correlateBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_CORRELATE))
+        self.minimiseBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_MINIMISE))
 
         def on_row_change(item, _):
             """

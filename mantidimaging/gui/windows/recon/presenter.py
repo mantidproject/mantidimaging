@@ -35,7 +35,8 @@ class Notifications(Enum):
     UPDATE_PROJECTION = auto()
     ADD_COR = auto()
     REFINE_COR = auto()
-    AUTO_FIND_COR = auto()
+    AUTO_FIND_COR_CORRELATE = auto()
+    AUTO_FIND_COR_MINIMISE = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -77,8 +78,10 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_add_cor()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
-            elif notification == Notifications.AUTO_FIND_COR:
-                self.do_auto_find_cor()
+            elif notification == Notifications.AUTO_FIND_COR_CORRELATE:
+                self._auto_find_correlation()
+            elif notification == Notifications.AUTO_FIND_COR_MINIMISE:
+                self._auto_find_minimisation_square_sum()
         except Exception as err:
             self.show_error(err, traceback.format_exc())
 
@@ -208,15 +211,6 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
         self.do_reconstruct_slice()
-
-    def do_auto_find_cor(self):
-        if self.model.images is None:
-            return
-        method = self.view.get_auto_cor_method()
-        if method == AutoCorMethod.CORRELATION:
-            self._auto_find_correlation()
-        else:
-            self._auto_find_minimisation_square_sum()
 
     def _auto_find_correlation(self):
         def completed(task: TaskWorkerThread):

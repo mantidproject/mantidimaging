@@ -37,11 +37,11 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="resultsTab">
            <attribute name="title">
-            <string>Results</string>
+            <string>COR and Tilt</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
@@ -206,34 +206,38 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <widget class="QComboBox" name="autoFindMethod">
-                <item>
-                 <property name="text">
-                  <string>Correlation</string>
+             <widget class="QGroupBox" name="groupBox">
+              <property name="title">
+               <string>Auto COR finding methods</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QPushButton" name="correlateBtn">
+                 <property name="toolTip">
+                  <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
                  </property>
-                </item>
-                <item>
                  <property name="text">
-                  <string>Minimise sqsum</string>
+                  <string>Correlate 0 and 180</string>
                  </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="autoBtn">
-                <property name="text">
-                 <string>Auto find COR/Tilt</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="minimiseBtn">
+                 <property name="toolTip">
+                  <string>Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
+                 </property>
+                 <property name="text">
+                  <string>Minimise error</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </item>
             <item>
              <widget class="QGroupBox" name="manualGroup">
               <property name="title">
-               <string/>
+               <string>COR Table - refine manually</string>
               </property>
               <property name="flat">
                <bool>false</bool>
@@ -243,7 +247,14 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
                <item>
-                <widget class="RemovableRowTableView" name="tableView"/>
+                <widget class="RemovableRowTableView" name="tableView">
+                 <attribute name="horizontalHeaderHighlightSections">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="verticalHeaderVisible">
+                  <bool>false</bool>
+                 </attribute>
+                </widget>
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout">
