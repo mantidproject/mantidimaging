@@ -2,7 +2,11 @@
 
 name: Testing with docker
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * mon-fri'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
