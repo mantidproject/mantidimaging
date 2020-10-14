@@ -58,14 +58,14 @@ jobs:
         conda-channels: 'dtasev,mantid,astra-toolbox/label/dev,defaults,conda-forge'
 
     - name: publish 'unstable' package
-      if: github.ref == 'refs/heads/add_nightly' and github.event != 'schedule'
+      if: github.ref == 'refs/heads/add_nightly' && github.event != 'schedule'
       uses: ./.github/actions/publish-package
       with:
         label: unstable
         token: ${{ secrets.ANACONDA_API_TOKEN }}
 
     - name: publish 'nightly' package
-      if: github.ref == 'refs/heads/add_nightly' and github.event == 'schedule'
+      if: github.ref == 'refs/heads/add_nightly' && github.event == 'schedule'
       uses: ./.github/actions/publish-package
       with:
         label: nightly
