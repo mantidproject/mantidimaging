@@ -2,11 +2,7 @@
 
 name: Testing with docker
 
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: '0 0 * * mon-fri'
+on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -58,17 +54,10 @@ jobs:
         conda-channels: 'dtasev,mantid,astra-toolbox/label/dev,defaults,conda-forge'
 
     - name: publish 'unstable' package
-      if: github.ref == 'refs/heads/master' && github.event != 'schedule'
+      if: github.ref == 'refs/heads/master'
       uses: ./.github/actions/publish-package
       with:
         label: unstable
-        token: ${{ secrets.ANACONDA_API_TOKEN }}
-
-    - name: publish 'nightly' package
-      if: github.ref == 'refs/heads/master' && github.event == 'schedule'
-      uses: ./.github/actions/publish-package
-      with:
-        label: nightly
         token: ${{ secrets.ANACONDA_API_TOKEN }}
 
     - name: publish docs
