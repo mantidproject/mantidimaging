@@ -5,7 +5,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING, Union, Tuple
 from uuid import UUID
 
-from PyQt5.QtWidgets import QDockWidget
+from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -115,6 +115,14 @@ class MainWindowPresenter(BasePresenter):
                 self._add_stack(container.dark, container.dark.filenames[0], sample_dock)
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
                 self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_dock)
+
+        if len(current_stack_visualisers) > 1:
+            tab_bar = self.view.findChild(QTabBar)
+            if tab_bar is not None:
+                last_stack_pos = len(current_stack_visualisers) - 1
+                # make Qt process the addition of the dock onto the main window
+                QApplication.processEvents()
+                tab_bar.setCurrentIndex(last_stack_pos)
 
         self.view.active_stacks_changed.emit()
 
