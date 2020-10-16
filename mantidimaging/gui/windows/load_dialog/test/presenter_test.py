@@ -118,3 +118,66 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with(name, image_name)
         self.assertEqual(field.path, file_name)
+
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix", return_value="/path")
+    def test_get_parameters(self, get_prefix):
+        path_text = "/path/text"
+        sample_input_path = "/sample/input/path"
+        image_format = ".tif"
+        sample_indices = [1, 1]
+        sample_file_name = "/path/sample_file_name"
+        pixel_size = 24
+        flat_file_name = "/path/flat_file_name"
+        flat_log_file_name = "/path/flat/log/file_name"
+        flat_directory = "/path/directory"
+        dark_directory = "/path/dark/directory"
+        proj180deg_directory = "/path/proj180/directory"
+        proj180deg_file = "/path/proj180/directory/file"
+        dtype = "float32"
+        sinograms = True
+        sample_path_text = "/path/of/sample"
+        dark_path_text = "/path/of/dark"
+        self.v.sample_log.path_text.return_value = path_text
+        self.v.sample_log.use.isChecked.return_value = True
+        self.v.sample.directory.return_value = sample_input_path
+        self.p.image_format = image_format
+        self.v.sample.indices = sample_indices
+        self.v.sample.file.return_value = sample_file_name
+        self.v.pixelSize.value.return_value = pixel_size
+        self.v.flat.use.isChecked.return_value = True
+        self.v.flat.path_text.return_value = flat_file_name
+        self.v.flat_log.path_text.return_value = flat_log_file_name
+        self.v.flat.directory.return_value = flat_directory
+        self.v.dark.directory.return_value = dark_directory
+        self.v.pixel_bit_depth.currentText.return_value = dtype
+        self.v.images_are_sinograms.isChecked.return_value = sinograms
+        self.v.proj_180deg.path_text.return_value = proj180deg_file
+        self.v.proj_180deg.directory.return_value = proj180deg_directory
+        self.v.sample.path_text.return_value = sample_path_text
+        self.v.dark.path_text.return_value = dark_path_text
+
+        lp = self.p.get_parameters()
+
+        self.assertEqual(lp.sample.log_file, path_text)
+        self.assertEqual(lp.sample.input_path, sample_input_path)
+        self.assertEqual(lp.sample.format, image_format)
+        self.assertEqual(lp.sample.prefix, "/path")
+        self.assertEqual(lp.sample.indices, sample_indices)
+        self.assertEqual(lp.name, sample_file_name)
+        self.assertEqual(lp.pixel_size, pixel_size)
+        self.assertEqual(lp.flat.prefix, "/path")
+        self.assertEqual(lp.flat.log_file, flat_log_file_name)
+        self.assertEqual(lp.flat.format, image_format)
+        self.assertEqual(lp.flat.input_path, flat_directory)
+        self.assertEqual(lp.dark.input_path, dark_directory)
+        self.assertEqual(lp.dark.prefix, "/path")
+        self.assertEqual(lp.dark.format, image_format)
+        self.assertEqual(lp.proj_180deg.input_path, proj180deg_directory)
+        self.assertEqual(lp.proj_180deg.prefix, "/path/proj180/directory/file")
+        self.assertEqual(lp.proj_180deg.format, image_format)
+        self.assertEqual(lp.dtype, dtype)
+        self.assertEqual(lp.sinograms, sinograms)
+        self.assertEqual(lp.pixel_size, pixel_size)
+        self.assertTrue(mock.call(sample_path_text) in get_prefix.call_args_list)
+        self.assertTrue(mock.call(flat_file_name) in get_prefix.call_args_list)
+        self.assertTrue(mock.call(dark_path_text) in get_prefix.call_args_list)
