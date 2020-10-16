@@ -42,7 +42,8 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.select_file.assert_called_once_with("Sample")
 
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.read_in_shape", return_value=((0, 0, 0), True))
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_file_extension", )
+    @mock.patch(
+        "mantidimaging.gui.windows.load_dialog.presenter.get_file_extension", )
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix")
     def test_do_update_sample(self, get_prefix, get_file_extension, read_in_shape):
         selected_file = "SelectedFile"
