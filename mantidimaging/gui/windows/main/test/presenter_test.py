@@ -89,7 +89,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.model = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
 
         self.presenter._add_stack(images, "myfilename", sample_dock_mock)
         self.presenter._add_stack(images2, "myfilename2", sample_dock_mock)
