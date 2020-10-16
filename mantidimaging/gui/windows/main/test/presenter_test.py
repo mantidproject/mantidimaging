@@ -105,7 +105,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(1, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
 
-    def test_create_new_stack_images_focuses_newest_tab(self):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
+    def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
         self.view.active_stacks_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
@@ -118,6 +119,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_tab_bar = self.view.findChild.return_value
         expected_position = 1
         mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
+        mock_QApp.sendPostedEvents.assert_called_once()
 
     def test_create_new_stack_dataset(self):
         dock_mock = mock.Mock()
