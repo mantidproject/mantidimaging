@@ -17,6 +17,7 @@ jobs:
           environment-file: environment.yml
           python-version: 3.7
           auto-activate-base: false
+          channel-priority: strict
 
       - name: Other dependencies
         shell: bash -l {0}

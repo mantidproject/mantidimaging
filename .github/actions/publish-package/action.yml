@@ -22,7 +22,7 @@ runs:
   # Steps represent a sequence of tasks that will be executed as part of the job
   steps:
   - name: Make build-env
-    shell: bash
+    shell: bash -l {0}
     run: |
       conda config --set always_yes yes --set changeps1 no
       conda create -n build-env anaconda python=3.7
@@ -30,7 +30,7 @@ runs:
       conda install conda-build conda-verify
 
   - name: Build package
-    shell: bash
+    shell: bash -l {0}
     run: |
       source activate build-env
       conda config --set anaconda_upload yes
