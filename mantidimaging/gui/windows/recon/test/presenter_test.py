@@ -36,6 +36,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.filterNameLabel = mock.Mock()
         self.view.numIter = mock.Mock()
         self.view.numIterLabel = mock.Mock()
+        self.view.autoBtn = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_set_stack_uuid(self, mock_get_reconstructor_for):
@@ -190,3 +191,4 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_first_call = mock_start_async.call_args[0]
         self.assertEqual(self.presenter.view, mock_first_call[0])
         self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])
+        self.view.autoBtn.setDisabled.assert_called_once()
