@@ -3,6 +3,7 @@ from functools import partial
 
 import mock
 import numpy as np
+import pytest
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operation_history import const
@@ -167,6 +168,29 @@ class FiltersWindowModelTest(unittest.TestCase):
         module_name = self.model.get_filter_module_name(0)
 
         self.assertEqual("mock.mock", module_name)
+
+
+@pytest.mark.parametrize('class_name,filter_name', [("RoiNormalisationFilter", "ROI Normalisation"),
+                                                    ("CropCoordinatesFilter", "Crop Coordinates")])
+def test_model_request_roi_during_apply_filter(class_name, filter_name):
+    with mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view") as start_async_task_view:
+        model = FiltersWindowModel(mock.MagicMock())
+        selected_filter_mock = mock.Mock()
+        selected_filter_mock.__name__ = mock.Mock()
+        selected_filter_mock.__name__.return_value = class_name
+        selected_filter_mock.filter_name.return_value = filter_name
+        stacks = [mock.Mock()]
+        post_filter = mock.Mock()
+        callback_mock = mock.Mock()
+        model.presenter.roi = [0, 1, 2, 3]
+        model.presenter.needs_roi = mock.MagicMock()
+
+        selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
+        model.selected_filter = selected_filter_mock
+        model.do_apply_filter(stacks, post_filter)
+
+        model.presenter.needs_roi.assert_called_once()
+        assert start_async_task_view.call_args_list[0].args[1].args[1] == {'region_of_interest': [0, 1, 2, 3]}
 
 
 if __name__ == '__main__':

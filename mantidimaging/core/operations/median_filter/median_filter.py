@@ -6,8 +6,8 @@ import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.gpu import utility as gpu
+from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
@@ -46,9 +46,19 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
-        _, size_field = add_property_to_form('Kernel Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Kernel Size',
+                                             Type.INT,
+                                             3, (0, 1000),
+                                             form=form,
+                                             on_change=on_change,
+                                             tooltip="Size of the median filter kernel")
 
-        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode',
+                                             Type.CHOICE,
+                                             valid_values=modes(),
+                                             form=form,
+                                             on_change=on_change,
+                                             tooltip="Mode to handle the edges of the image")
 
         _, gpu_field = add_property_to_form('Use GPU',
                                             Type.BOOL,

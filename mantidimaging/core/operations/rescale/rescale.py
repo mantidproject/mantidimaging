@@ -52,24 +52,31 @@ class RescaleFilter(BaseFilter):
                                                    Type.FLOAT,
                                                    form=form,
                                                    on_change=on_change,
-                                                   valid_values=(-2147483647, 2147483647))
+                                                   valid_values=(-2147483647, 2147483647),
+                                                   tooltip="Minimum value of the data that will be used.\n"
+                                                   "Anything below this will be clipped to 0")
         _, max_input_widget = add_property_to_form('Max input',
                                                    Type.FLOAT,
                                                    form=form,
                                                    on_change=on_change,
                                                    default_value=5.0,
-                                                   valid_values=(-2147483647, 2147483647))
+                                                   valid_values=(-2147483647, 2147483647),
+                                                   tooltip="Maximum value of the data that will be used.\n"
+                                                   "Anything above it will be clipped to 0")
         _, max_output_widget = add_property_to_form('Max output',
                                                     Type.FLOAT,
                                                     form=form,
                                                     on_change=on_change,
                                                     default_value=65535.0,
-                                                    valid_values=(1, 2147483647))
+                                                    valid_values=(1, 2147483647),
+                                                    tooltip="Maximum value of the OUTPUT images. They will \n"
+                                                    "be rescaled to range [0, MAX OUTPUT]")
         _, preset_widget = add_property_to_form('Preset',
                                                 Type.CHOICE,
                                                 form=form,
                                                 on_change=on_change,
-                                                valid_values=["Use values from above", "int8", "int16", "int32"])
+                                                valid_values=["Use values from above", "int8", "int16", "int32"],
+                                                tooltip="Provides pre-set ranges to rescale to.")
 
         return {
             'min_input_widget': min_input_widget,

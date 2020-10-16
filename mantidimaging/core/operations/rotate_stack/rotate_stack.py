@@ -40,7 +40,8 @@ class RotateFilter(BaseFilter):
                                         Type.FLOAT,
                                         0, (-180, 180),
                                         form=form,
-                                        on_change=on_change)
+                                        on_change=on_change,
+                                        tooltip="How much degrees to rotate counter-clockwise")
         angle.setDecimals(7)
 
         return {"angle": angle}

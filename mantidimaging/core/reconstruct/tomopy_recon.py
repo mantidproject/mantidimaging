@@ -19,9 +19,10 @@ class TomopyRecon(BaseRecon):
         return tomopy.find_center(images.sinograms, None)
 
     @staticmethod
-    def single_sino(sample: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters):
-        volume = tomopy.recon(tomo=[sample],
+        sino = BaseRecon.sino_recon_prep(sino)
+        volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
                               theta=proj_angles.value,
                               center=cor.value,

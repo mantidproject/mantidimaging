@@ -4,8 +4,8 @@ import mock
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
-from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -59,9 +59,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
 
-        dock, sv = self.presenter._make_stack_window(images, "mytitle")
+        dock, sv = self.presenter.make_stack_window(images, "mytitle")
 
         self.assertIs(dock_mock, dock)
         self.assertIs(stack_visualiser_mock, sv)
@@ -73,12 +73,30 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
 
         self.presenter._add_stack(images, "myfilename", sample_dock_mock)
 
         self.assertEqual(1, len(self.presenter.model.stack_list))
         self.view.tabifyDockWidget.assert_called_once_with(sample_dock_mock, dock_mock)
+
+    def test_add_multiple_stacks(self):
+        images = generate_images()
+        images2 = generate_images()
+        dock_mock = mock.Mock()
+        sample_dock_mock = mock.Mock()
+        stack_visualiser_mock = mock.Mock()
+        self.presenter.model = mock.Mock()
+
+        dock_mock.widget.return_value = stack_visualiser_mock
+        self.view.create_stack_window.return_value = dock_mock
+
+        self.presenter._add_stack(images, "myfilename", sample_dock_mock)
+        self.presenter._add_stack(images2, "myfilename2", sample_dock_mock)
+
+        self.assertEqual(2, self.presenter.model.add_stack.call_count)
+        self.view.tabifyDockWidget.assert_called_with(sample_dock_mock, dock_mock)
+        self.assertEqual(2, self.view.tabifyDockWidget.call_count)
 
     def test_create_new_stack_images(self):
         self.view.active_stacks_changed.emit = mock.Mock()
@@ -87,13 +105,29 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(1, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
 
+    @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
+    def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
+        self.view.active_stacks_changed.emit = mock.Mock()
+        images = generate_images()
+        self.presenter.create_new_stack(images, "My title")
+        self.assertEqual(1, len(self.presenter.model.stack_list))
+        self.view.active_stacks_changed.emit.assert_called_once()
+
+        self.presenter.create_new_stack(images, "My title")
+        self.view.tabifyDockWidget.assert_called_once()
+        self.view.findChild.assert_called_once()
+        mock_tab_bar = self.view.findChild.return_value
+        expected_position = 1
+        mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
+        mock_QApp.sendPostedEvents.assert_called_once()
+
     def test_create_new_stack_dataset(self):
         dock_mock = mock.Mock()
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
         ds = Dataset(sample=generate_images(automatic_free=False),

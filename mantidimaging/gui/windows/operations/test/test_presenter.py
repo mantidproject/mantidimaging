@@ -87,6 +87,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         for i, msv in enumerate(mock_stack_visualisers):
             assert msv.presenter.images == self.view.main_window.update_stack_with_images.call_args_list[i].args[0]
         update_previews_mock.assert_called_once()
+        self.view.show_operation_completed.assert_called_once_with("Circular Mask")
 
     def test_update_previews_no_stack(self):
         self.presenter.do_update_previews()
@@ -123,6 +124,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
+        self.view.previews.auto_range.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
 

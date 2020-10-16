@@ -35,7 +35,8 @@ class Notifications(Enum):
     UPDATE_PROJECTION = auto()
     ADD_COR = auto()
     REFINE_COR = auto()
-    AUTO_FIND_COR = auto()
+    AUTO_FIND_COR_CORRELATE = auto()
+    AUTO_FIND_COR_MINIMISE = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -77,8 +78,10 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_add_cor()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
-            elif notification == Notifications.AUTO_FIND_COR:
-                self.do_auto_find_cor()
+            elif notification == Notifications.AUTO_FIND_COR_CORRELATE:
+                self._auto_find_correlation()
+            elif notification == Notifications.AUTO_FIND_COR_MINIMISE:
+                self._auto_find_minimisation_square_sum()
         except Exception as err:
             self.show_error(err, traceback.format_exc())
 
@@ -209,20 +212,13 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.do_reconstruct_slice()
 
-    def do_auto_find_cor(self):
-        if self.model.images is None:
-            return
-        method = self.view.get_auto_cor_method()
-        if method == AutoCorMethod.CORRELATION:
-            self._auto_find_correlation()
-        else:
-            self._auto_find_minimisation_square_sum()
-
     def _auto_find_correlation(self):
         def completed(task: TaskWorkerThread):
             cor, tilt = task.result
             self._set_precalculated_cor_tilt(cor, tilt)
+            self.view.autoBtn.setDisabled(False)
 
+        self.view.autoBtn.setDisabled(True)
         start_async_task_view(self.view, self.model.auto_find_correlation, completed)
 
     def _auto_find_minimisation_square_sum(self):
@@ -246,7 +242,9 @@ class ReconstructWindowPresenter(BasePresenter):
             for slice_idx, cor in zip(slice_indices, cors):
                 self.view.add_cor_table_row(selected_row, slice_idx, cor)
             self.do_cor_fit()
+            self.view.autoBtn.setDisabled(False)
 
+        self.view.autoBtn.setDisabled(True)
         start_async_task_view(self.view, self.model.auto_find_minimisation_sqsum, _completed_finding_cors, {
             'slices': slice_indices,
             'recon_params': self.view.recon_params(),

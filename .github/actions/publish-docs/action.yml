@@ -1,0 +1,29 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish Mantid Imaging docs
+
+inputs:
+  token:
+    description: 'Github API Token'
+    required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+runs:
+  using: "composite"
+
+  # Steps represent a sequence of tasks that will be executed as part of the job
+  steps:
+  - name: Publish docs
+    shell: bash
+    # the doc files are generated inside docker and the owner appears to be root
+    # 0777 allows everyone to read/write/exec so that we can upload them with
+    # the docs_publish action afterwards
+    run: |
+      sudo chmod -R 0777 docs/build
+
+      git config --global user.name mantid-builder
+      git config --global user.email mantid-builder@hosting.com
+      git config --global credential.helper store
+      echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
+      python -m pip install sphinx gitpython
+      python setup.py docs_publish

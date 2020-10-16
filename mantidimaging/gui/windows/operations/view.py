@@ -4,7 +4,8 @@ from PyQt5 import Qt
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
-    QSizePolicy, QComboBox
+    QSizePolicy, QComboBox, QStyle
+from mantidimaging.gui.widgets.pg_image_view import MIImageView
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -33,8 +34,8 @@ class FiltersWindowView(BaseMainWindowView):
     previews: FilterPreviews
     stackSelector: StackSelectorWidgetView
 
-    error_icon: QLabel
-    error_text: QLabel
+    notification_icon: QLabel
+    notification_text: QLabel
 
     presenter: FiltersWindowPresenter
 
@@ -47,6 +48,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
+        self.roi_view = None
         self.splitter.setSizes([200, 9999])
 
         # Populate list of operations and handle filter selection
@@ -94,7 +96,9 @@ class FiltersWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
-        self.presenter.disconnect_current_stack_roi()
+        if self.roi_view is not None:
+            self.roi_view.close()
+            self.roi_view = None
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
         self.presenter = None
@@ -122,7 +126,7 @@ class FiltersWindowView(BaseMainWindowView):
         Called when the signal indicating the filter, filter properties or data
         has changed such that the previews are now out of date.
         """
-        self.clear_error_dialog()
+        self.clear_notification_dialog()
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
@@ -172,14 +176,19 @@ class FiltersWindowView(BaseMainWindowView):
         return self.previews.image_difference
 
     def show_error_dialog(self, msg=""):
-        self.error_text.show()
-        self.error_icon.setPixmap(QApplication.style().standardPixmap(QApplication.style().SP_MessageBoxCritical))
-        self.error_text.setText(str(msg))
+        self.notification_text.show()
+        self.notification_icon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_MessageBoxCritical))
+        self.notification_text.setText(str(msg))
 
-    def clear_error_dialog(self):
-        self.error_icon.clear()
-        self.error_text.clear()
-        self.error_text.hide()
+    def clear_notification_dialog(self):
+        self.notification_icon.clear()
+        self.notification_text.clear()
+        self.notification_text.hide()
+
+    def show_operation_completed(self, operation_name):
+        self.notification_text.show()
+        self.notification_icon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_DialogYesButton))
+        self.notification_text.setText(f"{operation_name} completed successfully!")
 
     def open_help_webpage(self):
         filter_module_path = self.presenter.get_filter_module_name(self.filterSelector.currentIndex())
@@ -190,3 +199,34 @@ class FiltersWindowView(BaseMainWindowView):
     def ask_confirmation(self, msg: str):
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
+
+    def roi_visualiser(self):
+        # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
+        try:
+            images = self.presenter.stack.presenter.get_image(self.presenter.model.preview_image_idx)
+        except IndexError:
+            # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
+            return
+
+        self.roi_view = MIImageView()
+        self.roi_view.setWindowTitle("Select ROI for operation")
+
+        self.roi_view.setImage(images.data)
+        self.roi_view.roi_changed_callback = lambda callback: self.roi_changed_callback(callback)
+
+        # prep the MIImageView to display in this context
+        self.roi_view.ui.roiBtn.hide()
+        self.roi_view.ui.histogram.hide()
+        self.roi_view.ui.menuBtn.hide()
+        self.roi_view.ui.roiPlot.hide()
+        self.roi_view.roi.show()
+        self.roi_view.ui.gridLayout.setRowStretch(1, 5)
+        self.roi_view.ui.gridLayout.setRowStretch(0, 95)
+        self.roi_view.button_stack_right.hide()
+        self.roi_view.button_stack_left.hide()
+
+        self.roi_view.show()
+
+    def roi_changed_callback(self, callback):
+        self.presenter.roi = callback
+        self.presenter.notify(PresNotification.UPDATE_PREVIEWS)

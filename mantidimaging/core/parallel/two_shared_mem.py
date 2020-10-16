@@ -1,5 +1,4 @@
 from functools import partial
-
 from mantidimaging.core.parallel import utility as pu
 
 # this global is necessary for the child processes to access the original
@@ -11,8 +10,8 @@ second_shared_data = None
 
 
 def inplace(func, i, **kwargs):
-    """
-    Use if the parameter function will do the following:
+    """Use if the parameter function will do the following:
+
         - Perform an operation on the input data that is dependent on another
           container
         - DOES NOT have a return statement
@@ -22,19 +21,24 @@ def inplace(func, i, **kwargs):
 
     You HAVE to be careful when using this, for example the func:
 
-    def _apply_normalise_inplace(
-            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
-        data = np.clip(np.true_divide(
-            data - dark, norm_divide), clip_min, clip_max)
+    .. highlight:: python
+    .. code-block:: python
+
+        def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+            data = np.clip(np.true_divide(data - dark, norm_divide), clip_min, clip_max)
+
 
     DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a
     LOCAL VARIABLE that is discarded.
 
     The proper way to write this function is:
-    def _apply_normalise_inplace(
-            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
-        data[:] = np.clip(np.true_divide(
-            data - dark, norm_divide), clip_min, clip_max)
+
+    .. highlight:: python
+    .. code-block:: python
+
+        def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+            data[:] = np.clip(np.true_divide(data - dark, norm_divide), clip_min, clip_max)
+
 
     Notice the data[:], what this does is REFER to the ACTUAL parameter, and
     then changes it's contents, as [:] gives a reference back to the inner
@@ -49,8 +53,8 @@ def inplace(func, i, **kwargs):
 
 
 def inplace_second_2d(func, i, **kwargs):
-    """
-    Use if the parameter function will do the following:
+    """Use if the parameter function will do the following:
+
         - Perform an operation on the input data that is dependent on the same
           second parameter
         - DOES NOT have a return statement
@@ -65,19 +69,25 @@ def inplace_second_2d(func, i, **kwargs):
     image.
 
     You HAVE to be careful when using this, for example the func:
-    def _apply_normalise_inplace(
-            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
-        data = np.clip(np.true_divide(
-            data - dark, norm_divide), clip_min, clip_max)
+
+    .. highlight:: python
+    .. code-block:: python
+
+        def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+            data = np.clip(np.true_divide(data - dark, norm_divide), clip_min, clip_max)
+
 
     DOES NOT CHANGE THE DATA! Because the data = ... variable inside is just a
     local variable that is discarded.
 
     The proper way to write this function is:
-    def _apply_normalise_inplace(
-            data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
-        data[:] = np.clip(np.true_divide(
-            data - dark, norm_divide), clip_min, clip_max)
+
+    .. highlight:: python
+    .. code-block:: python
+
+        def _apply_normalise_inplace(data, dark=None, norm_divide=None, clip_min=None, clip_max=None):
+            data[:] = np.clip(np.true_divide(data - dark, norm_divide), clip_min, clip_max)
+
 
     Notice the data[:], what this does is refer to the ACTUAL parameter, and
     then changes it's contents, as [:] gives a reference back to the inner
@@ -92,8 +102,8 @@ def inplace_second_2d(func, i, **kwargs):
 
 
 def return_to_first(func, i, **kwargs):
-    """
-    Use if the parameter function will do the following:
+    """Use if the parameter function will do the following:
+
         - Perform an operation on the input data that is dependent on another
           container
         - DOES have a return statement
@@ -109,8 +119,8 @@ def return_to_first(func, i, **kwargs):
 
 
 def return_to_second(func, i, **kwargs):
-    """
-    Use if the parameter function will do the following:
+    """Use if the parameter function will do the following:
+
         - Perform an operation on the input data that is dependent on another
           container
         - DOES have a return statement
@@ -126,8 +136,8 @@ def return_to_second(func, i, **kwargs):
 
 
 def return_to_second_but_dont_use_it(func, i, **kwargs):
-    """
-    Use if the parameter function will do the following:
+    """Use if the parameter function will do the following:
+
         - Perform an operation on the input data that is dependent on another container
         - DOES have a return statement
         - The data is NOT RESIZED
@@ -143,8 +153,8 @@ def return_to_second_but_dont_use_it(func, i, **kwargs):
 
 
 def return_to_second_index_only(func, i, **kwargs):
-    """
-    Use if the parameter function will do the following:
+    """Use if the parameter function will do the following:
+
         - Perform an operation on the input data that is dependent on another container
         - DOES have a return statement
         - The data is NOT RESIZED
@@ -166,31 +176,29 @@ def fwd_gpu_recon(func, i, num_gpus, cors, **kwargs):
 
 
 def create_partial(func, fwd_function=inplace, **kwargs):
-    """
-    Create a partial using functools.partial, to forward the kwargs to the
+    """Create a partial using functools.partial, to forward the kwargs to the
     parallel execution of imap.
 
     If you seem to be getting nans, check if the correct fwd_function is set!
 
     :param func: Function that will be executed
     :param fwd_function: The function will be forwarded through function.
-            It must be one of:
-            - two_shared_mem.inplace: if the function replaces
-            - two_shared_mem.inplace_second_2d: if the function returns a value
-            - two_shared_mem.return_to_first: if the function returns a value
-            - two_shared_mem.return_to_second: if the function will overwrite
-              the data in place
+           It must be one of:
+           - two_shared_mem.inplace: if the function replaces
+           - two_shared_mem.inplace_second_2d: if the function returns a value
+           - two_shared_mem.return_to_first: if the function returns a value
+           - two_shared_mem.return_to_second: if the function will overwrite the data in place
     :param kwargs: kwargs to forward to the function func that will be executed
-    :return:
     """
     return partial(fwd_function, func, **kwargs)
 
 
 def execute(data=None, second_data=None, partial_func=None, cores=None, chunksize=None, progress=None, msg: str = ''):
-    """
-    Executes a function in parallel with shared memory between the processes.
+    """Executes a function in parallel with shared memory between the
+    processes.
 
     The array must have been created using
+    parallel.utility.create_shared_array(shape, dtype).
     parallel.utility.create_shared_array(shape, dtype).
 
     If the input array IS NOT a shared array, the data will NOT BE CHANGED!

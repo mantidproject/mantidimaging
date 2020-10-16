@@ -5,7 +5,6 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import get_parameters_from_stack
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401
@@ -94,7 +93,11 @@ class FiltersWindowModel(object):
             raise ValueError('No stack selected')
 
         # Get auto parameters
-        stack_params = get_parameters_from_stack(stacks[0].presenter, self.params_needed_from_stack)
+        # Generate sub-stack and run filter
+        if self.presenter.roi is not None and self.presenter.needs_roi():
+            stack_params: Dict[str, Any] = {"region_of_interest": self.presenter.roi}
+        else:
+            stack_params = {}
         apply_func = partial(self.apply_to_stacks, stacks, stack_params)
         start_async_task_view(self.presenter.view, apply_func, post_filter)
 

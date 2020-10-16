@@ -113,7 +113,7 @@ class FilterPreviews(GraphicsLayoutWidget):
                 after_plot = self.histogram.plot(*after_data, pen=after_pen)
                 self.legend.addItem(after_plot, "After")
             else:
-                self.after_histogram.plot(*after_data, pen=after_pen)
+                self.after_histogram.plot(*after_data, pen=after_pen, clear=True)
 
     def init_separate_histograms(self):
         hc = histogram_coords
@@ -188,3 +188,7 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def hide_difference_overlay(self):
         self.image_after_overlay.setOpacity(0)
+
+    def auto_range(self):
+        # This will cause the previews to all show by just causing autorange on self.image_before_vb
+        self.image_before_vb.autoRange()

@@ -61,7 +61,9 @@ class RemoveAllStripesFilter(BaseFilter):
                                       default_value=1,
                                       valid_values=(1, 2),
                                       form=form,
-                                      on_change=on_change)
+                                      on_change=on_change,
+                                      tooltip="Whether to perform the median on 1D or 2D view of the data")
+
         return {'snr': snr, 'la_size': la_size, 'sm_size': sm_size, 'dim': dim}
 
     @staticmethod

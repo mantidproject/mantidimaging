@@ -1,29 +1,30 @@
 import unittest
-
-import numpy as np
-import numpy.testing as npt
+from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.operations.minus_log import MinusLogFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
+from ..cut_off import CutOffFilter
 
 
-class MinusLogTest(unittest.TestCase):
+class CutOffTest(unittest.TestCase):
     """
-    Test minus log filter.
+    Test cut-off filter.
 
     Tests return value and in-place modified data.
     """
     def __init__(self, *args, **kwargs):
-        super(MinusLogTest, self).__init__(*args, **kwargs)
+        super(CutOffTest, self).__init__(*args, **kwargs)
 
-    def test_no_execute(self):
+    def test_execute(self):
         images = th.generate_images()
+        threshold = 0.5
 
-        sample = np.copy(images.data)
-        result = MinusLogFilter.filter_func(images, minus_log=False)
+        previous_max = images.data.max()
+        CutOffFilter.filter_func(images, threshold=threshold)
+        new_max = images.data.max()
 
-        npt.assert_equal(result.data, sample)
+        self.assertTrue(new_max < previous_max, "New maximum value should be less than maximum value "
+                        "before processing")
 
     def test_memory_change_acceptable(self):
         """
@@ -41,19 +42,23 @@ class MinusLogTest(unittest.TestCase):
         images = th.generate_images()
 
         cached_memory = get_memory_usage_linux(kb=True)[0]
-        original = np.copy(images.data)
 
-        result = MinusLogFilter.filter_func(images, minus_log=True)
+        CutOffFilter.filter_func(images, threshold=0.5)
 
         self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-        th.assert_not_equals(result.data, original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
+        threshold_field = mock.Mock()
+        threshold_field.value = mock.Mock(return_value=0)
+        execute_func = CutOffFilter.execute_wrapper(threshold_field)
+
         images = th.generate_images()
-        MinusLogFilter.execute_wrapper()(images)
+        execute_func(images)
+
+        self.assertEqual(threshold_field.value.call_count, 1)
 
 
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ import numpy as np
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.rescale.rescale import RescaleFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility import value_scaling
@@ -17,12 +18,20 @@ from mantidimaging.gui.windows.stack_visualiser import SVParameters
 
 
 class RoiNormalisationFilter(BaseFilter):
+    """Normalises the image data by the average values in a region of interest.
+
+    Intended to be used on: Projections
+
+    When: Always, to ensure that any fluctuations in beam intensity are normalised.
+
+    Caution: If you see horizontal lines in the sinogram this means some projections
+    are brighter/darker than the rest. This can be fixed with this operation.
+    """
     filter_name = "ROI Normalisation"
 
     @staticmethod
-    def filter_func(images: Images, air_region: SensibleROI = None, cores=None, chunksize=None, progress=None):
-        """
-        Normalise by beam intensity.
+    def filter_func(images: Images, region_of_interest: SensibleROI = None, cores=None, chunksize=None, progress=None):
+        """Normalise by beam intensity.
 
         This does NOT do any checks if the Air Region is out of bounds!
         If the Air Region is out of bounds, the crop will fail at runtime.
@@ -31,7 +40,7 @@ class RoiNormalisationFilter(BaseFilter):
 
         :param images: Sample data which is to be processed. Expected in radiograms
 
-        :param air_region: The order is - Left Top Right Bottom. The air region
+        :param region_of_interest: The order is - Left Top Right Bottom. The air region
                            from which sums will be calculated and all images will
                            be normalised.
 
@@ -45,15 +54,27 @@ class RoiNormalisationFilter(BaseFilter):
         h.check_data_stack(images)
 
         # just get data reference
-        if air_region:
+        if region_of_interest:
+            initial_image_max = images.data.max()
+
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-            _execute(images.data, air_region, cores, chunksize, progress)
+            _execute(images.data, region_of_interest, cores, chunksize, progress)
+            progress.update(1, "Rescaling to input value range")
+            images = RescaleFilter.filter_func(images,
+                                               min_input=images.data.min(),
+                                               max_input=images.data.max(),
+                                               max_output=initial_image_max,
+                                               progress=progress)
         h.check_data_stack(images)
         return images
 
     @staticmethod
     def register_gui(form, on_change, view):
-        add_property_to_form("Select ROI on stack visualiser.", "label", form=form, on_change=on_change)
+        add_property_to_form("Select ROI",
+                             "button",
+                             form=form,
+                             on_change=on_change,
+                             run_on_press=lambda: view.roi_visualiser())
         return {}
 
     @staticmethod

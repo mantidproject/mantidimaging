@@ -9,10 +9,8 @@ import numpy as np
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import (BlockQtSignals, get_parameters_from_stack)
-from mantidimaging.gui.windows.stack_visualiser import SVParameters
+from mantidimaging.gui.utility import (BlockQtSignals)
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import FiltersWindowModel
 
@@ -39,6 +37,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.model = FiltersWindowModel(self)
         self.main_window = main_window
+        self.roi = None
 
     def notify(self, signal):
         try:
@@ -68,13 +67,6 @@ class FiltersWindowPresenter(BasePresenter):
         self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
 
     def set_stack(self, stack):
-        # Disconnect ROI update signal from previous stack
-        self.disconnect_current_stack_roi()
-
-        # Connect ROI update signal to newly selected stack
-        if stack:
-            stack.roi_updated.connect(self.handle_roi_selection)
-
         self.stack = stack
 
         # Update the preview image index
@@ -83,14 +75,6 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
 
         self.do_update_previews()
-
-    def disconnect_current_stack_roi(self):
-        if self.stack:
-            self.stack.roi_updated.disconnect(self.handle_roi_selection)
-
-    def handle_roi_selection(self, roi: SensibleROI):
-        if roi and self.filter_uses_parameter(SVParameters.ROI):
-            self.view.auto_update_triggered.emit()
 
     def set_preview_image_index(self, image_idx):
         """
@@ -116,7 +100,7 @@ class FiltersWindowPresenter(BasePresenter):
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
         self.model.setup_filter(filter_idx, filter_widget_kwargs)
-        self.view.clear_error_dialog()
+        self.view.clear_notification_dialog()
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
@@ -144,7 +128,16 @@ class FiltersWindowPresenter(BasePresenter):
         for stack in updated_stacks:
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 
+        self.roi = None
+        if self.view.roi_view is not None:
+            self.view.roi_view.close()
+            self.view.roi_view = None
+
         self.do_update_previews()
+
+        # Feedback to user
+        self.view.clear_notification_dialog()
+        self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
@@ -159,7 +152,10 @@ class FiltersWindowPresenter(BasePresenter):
             self._update_preview_image(before_image, self.view.preview_image_before)
 
             # Generate sub-stack and run filter
-            exec_kwargs = get_parameters_from_stack(stack_presenter, self.model.params_needed_from_stack)
+            if self.roi is not None and self.needs_roi():
+                exec_kwargs = {"region_of_interest": self.roi}
+            else:
+                exec_kwargs = {}
 
             try:
                 self.model.apply_to_images(subset, exec_kwargs)
@@ -183,6 +179,12 @@ class FiltersWindowPresenter(BasePresenter):
                     self.view.previews.add_difference_overlay(diff)
                 else:
                     self.view.previews.hide_difference_overlay()
+
+            # Ensure all of it is visible
+            self.view.previews.auto_range()
+
+    def needs_roi(self):
+        return self.model.selected_filter.filter_name in ["ROI Normalisation", "Crop Coordinates"]
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):

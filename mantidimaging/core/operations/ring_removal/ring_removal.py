@@ -74,27 +74,54 @@ class RingRemovalFilter(BaseFilter):
         range1 = (0, 1000000)
         range2 = (-1000000, 1000000)
 
-        _, x_field = add_property_to_form('Abcissa X', Type.INT, valid_values=range1, form=form, on_change=on_change)
+        _, x_field = add_property_to_form('Center of rotation X position',
+                                          Type.INT,
+                                          valid_values=range1,
+                                          form=form,
+                                          on_change=on_change,
+                                          tooltip="abscissa location of center of rotation")
 
-        _, y_field = add_property_to_form('Ordinate Y', Type.INT, valid_values=range1, form=form, on_change=on_change)
+        _, y_field = add_property_to_form('Center of rotation Y position',
+                                          Type.INT,
+                                          valid_values=range1,
+                                          form=form,
+                                          on_change=on_change,
+                                          tooltip="ordinate location of center of rotation")
 
-        _, thresh = add_property_to_form('Threshold', Type.FLOAT, valid_values=range2, form=form, on_change=on_change)
+        _, thresh = add_property_to_form('Threshold',
+                                         Type.FLOAT,
+                                         valid_values=range2,
+                                         form=form,
+                                         on_change=on_change,
+                                         tooltip="maximum value of an offset due to a ring artifact")
 
         _, thresh_min = add_property_to_form('Threshold Min',
                                              Type.FLOAT,
                                              valid_values=range2,
                                              form=form,
-                                             on_change=on_change)
+                                             on_change=on_change,
+                                             tooltip="min value for portion of image to filter")
 
         _, thresh_max = add_property_to_form('Threshold Max',
                                              Type.FLOAT,
                                              valid_values=range2,
                                              form=form,
-                                             on_change=on_change)
+                                             on_change=on_change,
+                                             tooltip="max value for portion of image to filter")
 
-        _, theta = add_property_to_form('Theta', Type.INT, valid_values=(-1000, 1000), form=form, on_change=on_change)
+        _, theta = add_property_to_form('Theta',
+                                        Type.INT,
+                                        valid_values=(-1000, 1000),
+                                        form=form,
+                                        on_change=on_change,
+                                        tooltip="minimum angle in degrees to be considered ring artifact")
 
-        _, rwidth = add_property_to_form('RWidth', Type.INT, valid_values=range2, form=form, on_change=on_change)
+        _, rwidth = add_property_to_form('RWidth',
+                                         Type.INT,
+                                         valid_values=range2,
+                                         form=form,
+                                         on_change=on_change,
+                                         tooltip="Maximum width of the rings to be filtered in pixels")
 
         return {
             "x_field": x_field,

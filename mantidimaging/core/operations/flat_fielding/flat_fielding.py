@@ -19,6 +19,18 @@ MAXIMUM_PIXEL_VALUE = 1e9
 
 
 class FlatFieldFilter(BaseFilter):
+    """Uses the flat (open beam) and dark images to reduce the noise in the
+    projection images.
+
+    Intended to be used on: Projections
+
+    When: As one of the first pre-processing steps to greatly reduce noise in the data
+
+    Caution: Make sure the correct stacks are selected for flat and dark.
+
+    Caution: Check that the flat and dark images don't have any very bright pixels,
+    or this will introduce additional noise in the sample.
+    """
     filter_name = 'Flat-fielding'
 
     @staticmethod
@@ -28,8 +40,7 @@ class FlatFieldFilter(BaseFilter):
                     cores=None,
                     chunksize=None,
                     progress=None) -> Images:
-        """
-        Do background correction with flat and dark images.
+        """Do background correction with flat and dark images.
 
         :param data: Sample data which is to be processed. Expected in radiograms
         :param flat: Flat (open beam) image to use in normalization
@@ -72,8 +83,18 @@ class FlatFieldFilter(BaseFilter):
                     widget.setCurrentIndex(i)
                     break
 
-        _, flat_widget = add_property_to_form("Flat", Type.STACK, form=form, filters_view=view, on_change=on_change)
-        _, dark_widget = add_property_to_form("Dark", Type.STACK, form=form, filters_view=view, on_change=on_change)
+        _, flat_widget = add_property_to_form("Flat",
+                                              Type.STACK,
+                                              form=form,
+                                              filters_view=view,
+                                              on_change=on_change,
+                                              tooltip="Flat images to be used for correcting the flat field.")
+        _, dark_widget = add_property_to_form("Dark",
+                                              Type.STACK,
+                                              form=form,
+                                              filters_view=view,
+                                              on_change=on_change,
+                                              tooltip="Dark images to be used for subtracting the background.")
 
         assert isinstance(flat_widget, StackSelectorWidgetView)
         flat_widget.setMaximumWidth(250)
@@ -119,8 +140,7 @@ def _subtract(data, dark=None):
 
 
 def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=None):
-    """
-    A benchmark justifying the current implementation, performed on
+    """A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
 
     #1 Separate runs

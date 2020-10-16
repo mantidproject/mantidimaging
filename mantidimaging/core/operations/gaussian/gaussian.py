@@ -43,11 +43,26 @@ class GaussianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change, view):
-        _, size_field = add_property_to_form('Kernel Size', Type.INT, 3, (0, 1000), form=form, on_change=on_change)
+        _, size_field = add_property_to_form('Kernel Size',
+                                             Type.INT,
+                                             3, (0, 1000),
+                                             form=form,
+                                             on_change=on_change,
+                                             tooltip="Size of the median filter kernel")
 
-        _, order_field = add_property_to_form('Order', Type.INT, 0, (0, 3), form=form, on_change=on_change)
+        _, order_field = add_property_to_form('Order',
+                                              Type.INT,
+                                              0, (0, 3),
+                                              form=form,
+                                              on_change=on_change,
+                                              tooltip="Order of the Gaussian filter")
 
-        _, mode_field = add_property_to_form('Mode', Type.CHOICE, valid_values=modes(), form=form, on_change=on_change)
+        _, mode_field = add_property_to_form('Mode',
+                                             Type.CHOICE,
+                                             valid_values=modes(),
+                                             form=form,
+                                             on_change=on_change,
+                                             tooltip="Mode to handle the edges of the image")
 
         return {'size_field': size_field, 'order_field': order_field, 'mode_field': mode_field}
 

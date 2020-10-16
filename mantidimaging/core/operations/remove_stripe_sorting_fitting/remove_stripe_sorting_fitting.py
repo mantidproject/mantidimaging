@@ -34,7 +34,8 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
                                         Type.INT,
                                         default_value=1,
                                         form=form,
-                                        on_change=on_change)
+                                        on_change=on_change,
+                                        tooltip="Polynomial fit order. Check sarepy for more information")
         _, sigmax = add_property_to_form('Sigma X',
                                          Type.INT,
                                          default_value=3,
