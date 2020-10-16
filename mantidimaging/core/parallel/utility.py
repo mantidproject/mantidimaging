@@ -10,7 +10,9 @@ from typing import Union, Type, Optional, Tuple
 import SharedArray as sa
 import numpy as np
 
+from mantidimaging.core.utility.memory_usage import system_free_memory
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.size_calculator import full_size_KB
 
 LOG = getLogger(__name__)
 
@@ -32,6 +34,10 @@ def delete_shared_array(name, silent_failure=False):
             raise e
 
 
+def enough_memory(shape, dtype):
+    return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
+
+
 def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name: Optional[str] = None) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
@@ -41,6 +47,10 @@ def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name
     :param dtype: Dtype of the array
     :return: The created Numpy array
     """
+    if not enough_memory(shape, dtype):
+        raise RuntimeError(
+            "The machine does not have enough physical memory available to allocate space for this data.")
+
     if name is not None:
         return _create_shared_array(shape, dtype, name)
     else:

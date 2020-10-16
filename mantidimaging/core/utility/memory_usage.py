@@ -1,27 +1,37 @@
 from logging import getLogger
 
 
+def system_free_memory():
+    class Value:
+        def __init__(self, bytes):
+            self._bytes = bytes
+
+        def kb(self):
+            return self._bytes / 1024
+
+        def mb(self):
+            return self._bytes / 1024 / 1024
+
+    import psutil
+    meminfo = psutil.virtual_memory()
+    return Value(meminfo.available)
+
+
 def get_memory_usage_linux(kb=False, mb=False):
     """
     :param kb: Return the value in Kilobytes
     :param mb: Return the value in Megabytes
     """
-    log = getLogger(__name__)
+    import psutil
 
-    try:
-        # Windows doesn't seem to have resource package, so this will
-        # silently fail
-        import resource as res
-    except ImportError:
-        log.debug('Resource monitoring is not available on Windows.')
-        return 0, 0
-
+    meminfo = psutil.virtual_memory()
     tuple_to_return = tuple()  # start with empty tuple
+    # meminfo.used gives the size in bytes
     if kb:
-        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss), )
+        tuple_to_return += (meminfo.used / 1024,)
 
     if mb:
-        tuple_to_return += (int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024, )
+        tuple_to_return += (meminfo.used / 1024 / 1024,)
     return tuple_to_return
 
 
@@ -37,8 +47,8 @@ def get_memory_usage_linux_str():
     else:
         # get memory difference in Megabytes
         delta_memory = (
-            memory_in_kbs - get_memory_usage_linux_str.last_memory_cache) \
-                    / 1024
+                               memory_in_kbs - get_memory_usage_linux_str.last_memory_cache) \
+                       / 1024
 
         # remove cached memory, del removes the reference so that hasattr will
         # work correctly
