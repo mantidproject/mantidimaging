@@ -121,7 +121,7 @@ class MainWindowPresenter(BasePresenter):
             if tab_bar is not None:
                 last_stack_pos = len(current_stack_visualisers) - 1
                 # make Qt process the addition of the dock onto the main window
-                QApplication.processEvents()
+                QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
 
         self.view.active_stacks_changed.emit()
