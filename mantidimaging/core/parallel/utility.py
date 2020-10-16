@@ -48,8 +48,7 @@ def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name
     :return: The created Numpy array
     """
     if not enough_memory(shape, dtype):
-        raise RuntimeError(
-            "The machine does not have enough physical memory available to allocate space for this data.")
+        raise RuntimeError("The machine does not have enough RAM available to perform this operation.")
 
     if name is not None:
         return _create_shared_array(shape, dtype, name)
