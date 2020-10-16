@@ -2,7 +2,7 @@ from logging import getLogger
 from typing import Optional
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction, QLabel, QInputDialog, QTabBar
+from PyQt5.QtWidgets import QAction, QLabel, QInputDialog
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.version_check import find_if_latest_version
@@ -225,4 +225,3 @@ class MainWindowView(BaseMainWindowView):
         if accepted:
             import pydevd_pycharm
             pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)
-
