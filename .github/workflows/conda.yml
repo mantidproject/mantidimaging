@@ -20,7 +20,7 @@ jobs:
         shell: bash -l {0}
         run: |
           sudo apt update -y
-          sudo apt install xvfb x11-utils libxkbcommon-x11-0 -y
+          sudo apt-get install -y xvfb libxcb* libxkb*
           export DISPLAY=:98.0
           Xvfb -ac :98 -screen 0 1280x1024x16 > /dev/null 2>&1 &
 
