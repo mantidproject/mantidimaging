@@ -42,4 +42,4 @@ jobs:
       - name: pytest
         shell: bash -l {0}
         run: |
-          sudo -E catchsegv xvfb-run --auto-servernum --server-args="-screen 0 640x480x24" /usr/share/miniconda/bin/pytest
+          xvfb-run --auto-servernum --server-args="-screen 0 640x480x24" python -m pytest

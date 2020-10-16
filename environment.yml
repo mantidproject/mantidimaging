@@ -11,8 +11,8 @@ dependencies:
   - sharedarray
   - sarepy
   - astra-toolbox
-  - pytest
   - pip:
+      - pytest
       - pyqt5==5.15
       - yapf
       - mypy
