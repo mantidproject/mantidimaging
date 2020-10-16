@@ -39,6 +39,11 @@ jobs:
         run: |
           mypy --ignore-missing-imports mantidimaging
 
+      - name: docs
+        shell: bash -l {0}
+        run: |
+          python setup.py docs_api && python setup.py docs
+
       - name: pytest
         shell: bash -l {0}
         run: |
