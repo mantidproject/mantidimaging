@@ -73,8 +73,10 @@ def full_size(shape=None, axis=None):
 def full_size_MB(shape=None, axis=None, dtype=None):
     return to_MB(full_size(shape, axis), dtype)
 
+
 def full_size_KB(shape=None, axis=None, dtype=None):
     return to_KB(full_size(shape, axis), dtype)
+
 
 def number_of_images_from_indices(start, end, increment):
     return int((end - start) / increment) if increment != 0 else 0
