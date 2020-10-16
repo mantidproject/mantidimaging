@@ -206,7 +206,7 @@ class MainWindowViewTest(unittest.TestCase):
         position = "test_position"
         floating = False
 
-        view._create_stack_window(images, title, position=position, floating=floating)
+        view.create_stack_window(images, title, position=position, floating=floating)
 
         mock_qt.QDockWidget.assert_called_once_with(title, view)
         dock = mock_qt.QDockWidget.return_value
