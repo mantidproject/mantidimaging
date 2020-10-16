@@ -1,4 +1,4 @@
-name: Testing with Conda
+name: Testing with conda
 
 on: [push, pull_request]
 
@@ -8,6 +8,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: goanpeca/setup-miniconda@v1
         with:
@@ -43,14 +45,14 @@ jobs:
           xvfb-run --auto-servernum python -m pytest
 
       - name: publish 'unstable' package
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/update_github_actions_versions'
         uses: ./.github/actions/publish-package
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN }}
 
       - name: publish docs
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/update_github_actions_versions'
         uses: ./.github/actions/publish-docs
         with:
           token: ${{ secrets.GHPAGES_API_TOKEN }}
