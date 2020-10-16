@@ -12,6 +12,7 @@ dependencies:
   - sarepy
   - astra-toolbox
   - pip:
+      - pyqtgraph
       - pytest
       - pyqt5==5.15
       - yapf
