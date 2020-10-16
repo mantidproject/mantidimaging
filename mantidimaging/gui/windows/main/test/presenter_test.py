@@ -4,8 +4,8 @@ import mock
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
-from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -89,7 +89,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.model = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
-        self.view._create_stack_window.return_value = dock_mock
+        self.view.create_stack_window.return_value = dock_mock
 
         self.presenter._add_stack(images, "myfilename", sample_dock_mock)
         self.presenter._add_stack(images2, "myfilename2", sample_dock_mock)
@@ -104,6 +104,22 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_new_stack(images, "My title")
         self.assertEqual(1, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
+    def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
+        self.view.active_stacks_changed.emit = mock.Mock()
+        images = generate_images()
+        self.presenter.create_new_stack(images, "My title")
+        self.assertEqual(1, len(self.presenter.model.stack_list))
+        self.view.active_stacks_changed.emit.assert_called_once()
+
+        self.presenter.create_new_stack(images, "My title")
+        self.view.tabifyDockWidget.assert_called_once()
+        self.view.findChild.assert_called_once()
+        mock_tab_bar = self.view.findChild.return_value
+        expected_position = 1
+        mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
+        mock_QApp.sendPostedEvents.assert_called_once()
 
     def test_create_new_stack_dataset(self):
         dock_mock = mock.Mock()
