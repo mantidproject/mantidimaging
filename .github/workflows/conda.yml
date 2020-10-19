@@ -50,14 +50,14 @@ jobs:
           xvfb-run --auto-servernum python -m pytest
 
       - name: publish 'unstable' package
-        if: github.ref == 'refs/heads/update_github_actions_versions'
+        if: github.ref == 'refs/heads/master'
         uses: ./.github/actions/publish-package
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN }}
 
       - name: publish docs
-        if: github.ref == 'refs/heads/update_github_actions_versions'
+        if: github.ref == 'refs/heads/master'
         uses: ./.github/actions/publish-docs
         with:
           token: ${{ secrets.GHPAGES_API_TOKEN }}
