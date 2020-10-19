@@ -1,0 +1,30 @@
+name: mantidimaging
+channels:
+  - mantid
+  - dtasev
+  - astra-toolbox/label/dev
+  - conda-forge
+  - defaults
+dependencies:
+  - mantidimaging
+  - pip
+  - sharedarray
+  - sarepy
+  - astra-toolbox
+  - pip:
+      - pyqtgraph
+      - pytest
+      - pyqt5==5.15
+      - yapf
+      - mypy
+      - flake8
+      - testfixtures
+      - coverage
+      - hazelnut
+      - gitpython
+      - mock
+      - pylint
+      - sphinx
+      - pytest-randomly
+      - pytest-parallel
+      - isort

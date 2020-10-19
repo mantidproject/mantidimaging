@@ -14,7 +14,7 @@ runs:
   # Steps represent a sequence of tasks that will be executed as part of the job
   steps:
   - name: Publish docs
-    shell: bash
+    shell: bash -l {0}
     # the doc files are generated inside docker and the owner appears to be root
     # 0777 allows everyone to read/write/exec so that we can upload them with
     # the docs_publish action afterwards

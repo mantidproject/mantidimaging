@@ -1,0 +1,63 @@
+name: Testing with conda
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: goanpeca/setup-miniconda@v1
+        with:
+          activate-environment: mantidimaging
+          environment-file: environment.yml
+          python-version: 3.7
+          auto-activate-base: false
+
+      - name: Other dependencies
+        shell: bash -l {0}
+        run: |
+          sudo apt update -y
+          sudo apt-get install -y xvfb libxcb* libxkb*
+
+      - name: Yapf
+        shell: bash -l {0}
+        run: |
+          yapf --parallel --diff --recursive .
+
+      - name: Flake8
+        shell: bash -l {0}
+        run: |
+          python -m flake8
+
+      - name: mypy
+        shell: bash -l {0}
+        run: |
+          mypy --ignore-missing-imports mantidimaging
+
+      - name: docs
+        shell: bash -l {0}
+        run: |
+          python setup.py docs_api && python setup.py docs
+
+      - name: pytest
+        shell: bash -l {0}
+        run: |
+          xvfb-run --auto-servernum python -m pytest
+
+      - name: publish 'unstable' package
+        if: github.ref == 'refs/heads/master'
+        uses: ./.github/actions/publish-package
+        with:
+          label: unstable
+          token: ${{ secrets.ANACONDA_API_TOKEN }}
+
+      - name: publish docs
+        if: github.ref == 'refs/heads/master'
+        uses: ./.github/actions/publish-docs
+        with:
+          token: ${{ secrets.GHPAGES_API_TOKEN }}
