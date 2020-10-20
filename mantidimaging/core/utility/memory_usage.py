@@ -1,5 +1,11 @@
 from logging import getLogger
 
+# Percent memory of the system total to AVOID being allocated by Mantid Imaging shared arrays
+# as taking up nearly, if not exactly, 100% not only makes it more likely to get hit by
+# SIGBUS by the OS, but even if the allocation is permitted it could slow the system down
+# to the point of being unusable
+MEMORY_CAP_PERCENTAGE = 0.025
+
 
 def system_free_memory():
     class Value:
@@ -13,8 +19,9 @@ def system_free_memory():
             return self._bytes / 1024 / 1024
 
     import psutil
+
     meminfo = psutil.virtual_memory()
-    return Value(meminfo.available)
+    return Value(meminfo.available - meminfo.total * MEMORY_CAP_PERCENTAGE)
 
 
 def get_memory_usage_linux(kb=False, mb=False):
@@ -28,10 +35,10 @@ def get_memory_usage_linux(kb=False, mb=False):
     tuple_to_return = tuple()  # start with empty tuple
     # meminfo.used gives the size in bytes
     if kb:
-        tuple_to_return += (meminfo.used / 1024, )
+        tuple_to_return += (meminfo.used / 1024,)
 
     if mb:
-        tuple_to_return += (meminfo.used / 1024 / 1024, )
+        tuple_to_return += (meminfo.used / 1024 / 1024,)
     return tuple_to_return
 
 
