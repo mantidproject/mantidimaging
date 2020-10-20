@@ -216,9 +216,9 @@ class ReconstructWindowPresenter(BasePresenter):
         def completed(task: TaskWorkerThread):
             cor, tilt = task.result
             self._set_precalculated_cor_tilt(cor, tilt)
-            self.view.autoBtn.setDisabled(False)
+            self.view.set_correlate_buttons_enabled(True)
 
-        self.view.autoBtn.setDisabled(True)
+        self.view.set_correlate_buttons_enabled(False)
         start_async_task_view(self.view, self.model.auto_find_correlation, completed)
 
     def _auto_find_minimisation_square_sum(self):
@@ -242,9 +242,9 @@ class ReconstructWindowPresenter(BasePresenter):
             for slice_idx, cor in zip(slice_indices, cors):
                 self.view.add_cor_table_row(selected_row, slice_idx, cor)
             self.do_cor_fit()
-            self.view.autoBtn.setDisabled(False)
+            self.view.set_correlate_buttons_enabled(True)
 
-        self.view.autoBtn.setDisabled(True)
+        self.view.set_correlate_buttons_enabled(False)
         start_async_task_view(self.view, self.model.auto_find_minimisation_sqsum, _completed_finding_cors, {
             'slices': slice_indices,
             'recon_params': self.view.recon_params(),
