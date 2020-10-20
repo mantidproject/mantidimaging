@@ -49,7 +49,9 @@ def allocate_output(images, shape):
     return output
 
 
-def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name: Optional[str] = None,
+def create_array(shape: Tuple[int, int, int],
+                 dtype: NP_DTYPE = np.float32,
+                 name: Optional[str] = None,
                  random_name=False) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)

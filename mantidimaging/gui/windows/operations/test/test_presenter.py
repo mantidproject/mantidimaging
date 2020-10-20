@@ -102,6 +102,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         for i, msv in enumerate(mock_stack_visualisers):
             assert msv.presenter.images == self.view.main_window.update_stack_with_images.call_args_list[i].args[0]
         update_previews_mock.assert_called_once()
+
     def test_update_previews_no_stack(self):
         self.presenter.do_update_previews()
         self.view.clear_previews.assert_called_once()

@@ -35,10 +35,10 @@ def get_memory_usage_linux(kb=False, mb=False):
     tuple_to_return = tuple()  # start with empty tuple
     # meminfo.used gives the size in bytes
     if kb:
-        tuple_to_return += (meminfo.used / 1024,)
+        tuple_to_return += (meminfo.used / 1024, )
 
     if mb:
-        tuple_to_return += (meminfo.used / 1024 / 1024,)
+        tuple_to_return += (meminfo.used / 1024 / 1024, )
     return tuple_to_return
 
 
