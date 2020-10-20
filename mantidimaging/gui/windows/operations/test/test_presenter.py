@@ -80,15 +80,28 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                 partial(self.presenter._post_filter, mock_stack_visualisers))
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews')
-    def test_post_filter(self, update_previews_mock):
+    def test_post_filter_success(self, update_previews_mock):
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
-        self.presenter._post_filter(mock_stack_visualisers, None)
+        mock_task = mock.Mock()
+        mock_task.error = None
+        self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
         for i, msv in enumerate(mock_stack_visualisers):
             assert msv.presenter.images == self.view.main_window.update_stack_with_images.call_args_list[i].args[0]
         update_previews_mock.assert_called_once()
-        self.view.show_operation_completed.assert_called_once_with("Circular Mask")
+        self.view.clear_notification_dialog.assert_called_once()
+        self.view.show_operation_completed.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
 
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews')
+    def test_post_filter_fail(self, update_previews_mock):
+        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
+        mock_task = mock.Mock()
+        mock_task.error = 123
+        self.presenter._post_filter(mock_stack_visualisers, mock_task)
+
+        for i, msv in enumerate(mock_stack_visualisers):
+            assert msv.presenter.images == self.view.main_window.update_stack_with_images.call_args_list[i].args[0]
+        update_previews_mock.assert_called_once()
     def test_update_previews_no_stack(self):
         self.presenter.do_update_previews()
         self.view.clear_previews.assert_called_once()
