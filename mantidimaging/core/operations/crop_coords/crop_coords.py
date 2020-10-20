@@ -59,10 +59,11 @@ class CropCoordinatesFilter(BaseFilter):
         if any((s < 0 for s in shape)):
             raise ValueError("It seems the Region of Interest is outside of the current image dimensions.\n"
                              "This can happen on the image preview right after a previous Crop Coordinates.")
-        sample_name = images.memory_filename
-        if sample_name is not None:
-            images.free_memory(delete_filename=False)
-        output = pu.create_array(shape, sample.dtype, sample_name)
+
+        # allocate output first BEFORE freeing the original data,
+        # otherwise it's possible to free and then fail allocation for output
+        # at which point you're left with no data
+        output = pu.allocate_output(images, shape)
         images.data = execute_single(sample, region_of_interest, progress, out=output)
 
         return images

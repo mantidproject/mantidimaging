@@ -38,17 +38,34 @@ def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name: Optional[str] = None) -> np.ndarray:
+def allocate_output(images, shape):
+    if images.memory_filename is not None:
+        name = create_shared_name()
+        output = create_array(shape, images.dtype, name)
+        images.free_memory(delete_filename=False)
+        images.memory_filename = name
+    else:
+        output = create_array(shape, images.dtype)
+    return output
+
+
+def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32, name: Optional[str] = None,
+                 random_name=False) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
-    :param name: Name of the shared memory array. If None, a non-shared array will be created
     :param shape: Shape of the array
     :param dtype: Dtype of the array
+    :param name: Name of the shared memory array. If None, a non-shared array will be created
+    :param random_name: Whether to randomise the name. Will discard anything in the `name` parameter
     :return: The created Numpy array
     """
     if not enough_memory(shape, dtype):
-        raise RuntimeError("The machine does not have enough RAM available to perform this operation.")
+        raise RuntimeError(
+            "The machine does not have enough physical memory available to allocate space for this data.")
+
+    if random_name:
+        name = create_shared_name()
 
     if name is not None:
         return _create_shared_array(shape, dtype, name)

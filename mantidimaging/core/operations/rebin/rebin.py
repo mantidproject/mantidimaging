@@ -45,15 +45,10 @@ class RebinFilter(BaseFilter):
         if param_valid:
             sample = images.data
             sample_name: Optional[str]
-            if images.memory_filename is not None:
-                sample_name = images.memory_filename
-                images.free_memory(delete_filename=False)
-            else:
-                # this case is true when the filter preview is being calculated
-                sample_name = None
-                # force single core execution as it's faster for a single image
-                cores = 1
-            empty_resized_data = _create_reshaped_array(sample.shape, sample.dtype, rebin_param, sample_name)
+            # allocate output first BEFORE freeing the original data,
+            # otherwise it's possible to free and then fail allocation for output
+            # at which point you're left with no data
+            empty_resized_data = _create_reshaped_array(images, rebin_param)
 
             f = ptsm.create_partial(skimage.transform.resize,
                                     ptsm.return_to_second_but_dont_use_it,
@@ -72,7 +67,7 @@ class RebinFilter(BaseFilter):
                                          0.5, (0.0, 1.0),
                                          on_change=on_change,
                                          tooltip="Factor by which the data will be rebinned, "
-                                         "e.g. 0.5 is 50% reduced size")
+                                                 "e.g. 0.5 is 50% reduced size")
         factor.setSingleStep(0.05)
 
         # Rebin to target shape options
@@ -156,7 +151,8 @@ def _execute_par(data: numpy.ndarray, resized_data, mode, cores=None, chunksize=
     return resized_data
 
 
-def _create_reshaped_array(old_shape, dtype, rebin_param, sample_name: Optional[str]):
+def _create_reshaped_array(images, rebin_param):
+    old_shape = images.data.shape
     num_images = old_shape[0]
 
     # use SciPy's calculation to find the expected dimensions
@@ -170,6 +166,4 @@ def _create_reshaped_array(old_shape, dtype, rebin_param, sample_name: Optional[
 
     # allocate memory for images with new dimensions
     shape = (num_images, expected_dimy, expected_dimx)
-    data = pu.create_array(shape, dtype, sample_name)
-
-    return data
+    return pu.allocate_output(images, shape)
