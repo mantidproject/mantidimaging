@@ -1,6 +1,5 @@
 from functools import partial
 from logging import getLogger
-from typing import Any, Dict
 
 import numpy as np
 
@@ -15,7 +14,6 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.gui.windows.stack_visualiser import SVParameters
 
 
 class RoiNormalisationFilter(BaseFilter):
@@ -100,7 +98,7 @@ class RoiNormalisationFilter(BaseFilter):
         return partial(value_scaling.apply_factor)
 
 
-def _calc_sum(data, air_sums, air_left=None, air_top=None, air_right=None, air_bottom=None):
+def _calc_sum(data, _, air_left=None, air_top=None, air_right=None, air_bottom=None):
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 

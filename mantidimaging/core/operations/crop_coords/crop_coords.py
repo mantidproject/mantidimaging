@@ -10,7 +10,6 @@ from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.gui.windows.operations import FiltersWindowView
 
 
 class CropCoordinatesFilter(BaseFilter):
@@ -72,7 +71,7 @@ class CropCoordinatesFilter(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form, on_change, view: FiltersWindowView):
+    def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
         label, roi_field = add_property_to_form("ROI",
                                                 Type.STR,
