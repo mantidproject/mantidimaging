@@ -14,6 +14,7 @@ from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
+from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
 
 
@@ -70,16 +71,25 @@ class RoiNormalisationFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change, view):
+        label, roi_field = add_property_to_form("ROI",
+                                                Type.STR,
+                                                form=form,
+                                                on_change=on_change,
+                                                default_value="0, 0, 200, 200")
         add_property_to_form("Select ROI",
                              "button",
                              form=form,
                              on_change=on_change,
-                             run_on_press=lambda: view.roi_visualiser())
-        return {}
+                             run_on_press=lambda: view.roi_visualiser(roi_field))
+        return {'roi_field': roi_field}
 
     @staticmethod
-    def execute_wrapper():
-        return partial(RoiNormalisationFilter.filter_func)
+    def execute_wrapper(roi_field):
+        try:
+            roi = SensibleROI.from_list([int(number) for number in roi_field.text().strip("[").strip("]").split(",")])
+            return partial(RoiNormalisationFilter.filter_func, region_of_interest=roi)
+        except Exception as e:
+            raise ValueError(f"The provided ROI string is invalid! Error: {e}")
 
     @staticmethod
     def do_before_wrapper() -> partial:
@@ -88,10 +98,6 @@ class RoiNormalisationFilter(BaseFilter):
     @staticmethod
     def do_after_wrapper() -> partial:
         return partial(value_scaling.apply_factor)
-
-    @staticmethod
-    def sv_params() -> Dict[str, Any]:
-        return {"air_region": SVParameters.ROI}
 
 
 def _calc_sum(data, air_sums, air_left=None, air_top=None, air_right=None, air_bottom=None):

@@ -129,7 +129,6 @@ class FiltersWindowPresenter(BasePresenter):
         for stack in updated_stacks:
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 
-        self.roi = None
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None

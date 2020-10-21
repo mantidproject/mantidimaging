@@ -1,5 +1,7 @@
 from functools import partial
-from typing import Dict, Any, Union, Optional, List
+from typing import Union, Optional, List
+
+from PyQt5.QtWidgets import QLineEdit
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -7,7 +9,8 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
+from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.gui.windows.operations import FiltersWindowView
 
 
 class CropCoordinatesFilter(BaseFilter):
@@ -69,22 +72,27 @@ class CropCoordinatesFilter(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form, on_change, view):
+    def register_gui(form, on_change, view: FiltersWindowView):
         from mantidimaging.gui.utility import add_property_to_form
+        label, roi_field = add_property_to_form("ROI",
+                                                Type.STR,
+                                                form=form,
+                                                on_change=on_change,
+                                                default_value="0, 0, 200, 200")
         add_property_to_form("Select ROI",
-                             "button",
+                             Type.BUTTON,
                              form=form,
                              on_change=on_change,
-                             run_on_press=lambda: view.roi_visualiser())
-        return {}
+                             run_on_press=lambda: view.roi_visualiser(roi_field))
+        return {'roi_field': roi_field}
 
     @staticmethod
-    def sv_params() -> Dict[str, Any]:
-        return {'region_of_interest': SVParameters.ROI}
-
-    @staticmethod
-    def execute_wrapper(*args) -> partial:
-        return partial(CropCoordinatesFilter.filter_func)
+    def execute_wrapper(roi_field: QLineEdit) -> partial:
+        try:
+            roi = SensibleROI.from_list([int(number) for number in roi_field.text().strip("[").strip("]").split(",")])
+            return partial(CropCoordinatesFilter.filter_func, region_of_interest=roi)
+        except Exception as e:
+            raise ValueError(f"The provided ROI string is invalid! Error: {e}")
 
 
 def execute_single(data, roi, progress=None, out=None):
