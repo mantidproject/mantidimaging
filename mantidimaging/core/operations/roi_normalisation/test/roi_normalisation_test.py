@@ -1,5 +1,6 @@
 import unittest
 
+import mock
 import numpy as np
 import numpy.testing as npt
 
@@ -52,7 +53,10 @@ class ROINormalisationTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         images = th.generate_images()
-        RoiNormalisationFilter.execute_wrapper()(images)
+        roi_mock = mock.Mock()
+        roi_mock.text.return_value = "0, 0, 5, 5"
+        RoiNormalisationFilter.execute_wrapper(roi_mock)(images)
+        roi_mock.text.assert_called_once()
 
     def test_roi_normalisation_performs_rescale(self):
         images = th.generate_images()
@@ -64,6 +68,17 @@ class ROINormalisationTest(unittest.TestCase):
 
         th.assert_not_equals(result.data[0], original)
         self.assertAlmostEqual(result.data.max(), images_max, places=6)
+
+    def test_execute_wrapper_bad_roi_raises_valueerror(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images = th.generate_images(automatic_free=False)
+        roi_mock = mock.Mock()
+        roi_mock.text.return_value = "apples"
+        self.assertRaises(ValueError, RoiNormalisationFilter.execute_wrapper, roi_mock)
+        roi_mock.text.assert_called_once()
+        images.free_memory()
 
 
 if __name__ == '__main__':
