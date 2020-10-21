@@ -234,7 +234,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.ui.gridLayout.setRowStretch(0, 95)
         self.roi_view.button_stack_right.hide()
         self.roi_view.button_stack_left.hide()
-
-        self.roi_view.show()
+        button = QPushButton("OK", window)
+        button.clicked.connect(lambda: window.close())
+        self.roi_view.ui.gridLayout.addWidget(button)
 
         window.show()
