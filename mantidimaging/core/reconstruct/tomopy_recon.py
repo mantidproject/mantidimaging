@@ -16,7 +16,11 @@ tomopy = safe_import('tomopy')
 class TomopyRecon(BaseRecon):
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
-        return tomopy.find_center(images.sinograms, None)
+        return tomopy.find_center(images.sinograms,
+                                  images.projection_angles().value,
+                                  ind=slice_idx,
+                                  init=start_cor,
+                                  sinogram_order=True)
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
