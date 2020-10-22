@@ -37,7 +37,6 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.model = FiltersWindowModel(self)
         self.main_window = main_window
-        self.roi = None
 
     def notify(self, signal):
         try:
@@ -129,7 +128,6 @@ class FiltersWindowPresenter(BasePresenter):
         for stack in updated_stacks:
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 
-        self.roi = None
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None
@@ -156,14 +154,8 @@ class FiltersWindowPresenter(BasePresenter):
             # Update image before
             self._update_preview_image(before_image, self.view.preview_image_before)
 
-            # Generate sub-stack and run filter
-            if self.roi is not None and self.needs_roi():
-                exec_kwargs = {"region_of_interest": self.roi}
-            else:
-                exec_kwargs = {}
-
             try:
-                self.model.apply_to_images(subset, exec_kwargs)
+                self.model.apply_to_images(subset)
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())
@@ -187,9 +179,6 @@ class FiltersWindowPresenter(BasePresenter):
 
             # Ensure all of it is visible
             self.view.previews.auto_range()
-
-    def needs_roi(self):
-        return self.model.selected_filter.filter_name in ["ROI Normalisation", "Crop Coordinates"]
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):

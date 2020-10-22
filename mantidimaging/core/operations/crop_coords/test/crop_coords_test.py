@@ -1,5 +1,6 @@
 import unittest
 
+import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -76,7 +77,21 @@ class CropCoordsTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         images = th.generate_images(automatic_free=False)
-        CropCoordinatesFilter.execute_wrapper()(images, [1, 1, 5, 5])
+        roi_mock = mock.Mock()
+        roi_mock.text.return_value = "0, 0, 5, 5"
+        CropCoordinatesFilter.execute_wrapper(roi_mock)(images)
+        roi_mock.text.assert_called_once()
+        images.free_memory()
+
+    def test_execute_wrapper_bad_roi_raises_valueerror(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        images = th.generate_images(automatic_free=False)
+        roi_mock = mock.Mock()
+        roi_mock.text.return_value = "apples"
+        self.assertRaises(ValueError, CropCoordinatesFilter.execute_wrapper, roi_mock)
+        roi_mock.text.assert_called_once()
         images.free_memory()
 
 

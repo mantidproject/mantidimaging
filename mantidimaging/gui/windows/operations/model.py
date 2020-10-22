@@ -56,7 +56,7 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_to_stacks(self, stacks: List['StackVisualiserView'], stack_params, progress=None):
+    def apply_to_stacks(self, stacks: List['StackVisualiserView'], progress=None):
         """
         Applies the selected filter to a given image stack.
 
@@ -64,9 +64,9 @@ class FiltersWindowModel(object):
         it to the function that actually processes the images.
         """
         for stack in stacks:
-            self.apply_to_images(stack.presenter.images, stack_params, progress=progress)
+            self.apply_to_images(stack.presenter.images, progress=progress)
 
-    def apply_to_images(self, images, stack_params, progress=None):
+    def apply_to_images(self, images, progress=None):
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
 
         # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
@@ -76,8 +76,7 @@ class FiltersWindowModel(object):
         # Run filter
         exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
-        exec_func(images, **stack_params)
-        exec_func.keywords.update(stack_params)
+        exec_func(images)
         # store the executed filter in history if it executed successfully
         images.record_operation(
             self.selected_filter.__name__,  # type: ignore
@@ -94,11 +93,7 @@ class FiltersWindowModel(object):
 
         # Get auto parameters
         # Generate sub-stack and run filter
-        if self.presenter.roi is not None and self.presenter.needs_roi():
-            stack_params: Dict[str, Any] = {"region_of_interest": self.presenter.roi}
-        else:
-            stack_params = {}
-        apply_func = partial(self.apply_to_stacks, stacks, stack_params)
+        apply_func = partial(self.apply_to_stacks, stacks)
         start_async_task_view(self.presenter.view, apply_func, post_filter)
 
     def get_filter_module_name(self, filter_idx):

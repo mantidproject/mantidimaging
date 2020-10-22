@@ -3,7 +3,6 @@ from functools import partial
 
 import mock
 import numpy as np
-import pytest
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operation_history import const
@@ -130,14 +129,13 @@ class FiltersWindowModelTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_images")
     def test_apply_filter_to_stacks(self, apply_to_images_mock: mock.Mock):
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
-        mock_stack_params = mock.Mock()
         mock_progress = mock.Mock()
 
-        self.model.apply_to_stacks(mock_stack_visualisers, mock_stack_params, mock_progress)
+        self.model.apply_to_stacks(mock_stack_visualisers, mock_progress)
 
         apply_to_images_mock.assert_has_calls([
-            mock.call(mock_stack_visualisers[0].presenter.images, mock_stack_params, progress=mock_progress),
-            mock.call(mock_stack_visualisers[1].presenter.images, mock_stack_params, progress=mock_progress)
+            mock.call(mock_stack_visualisers[0].presenter.images, progress=mock_progress),
+            mock.call(mock_stack_visualisers[1].presenter.images, progress=mock_progress)
         ])
 
     def test_apply_filter_to_images(self):
@@ -146,7 +144,6 @@ class FiltersWindowModelTest(unittest.TestCase):
         applied to the main data.
         """
         images = th.generate_images()
-        stack_params = {'test': 123}
         selected_filter_mock = mock.Mock()
         selected_filter_mock.__name__ = mock.Mock()
         selected_filter_mock.__name__.return_value = "Test filter"
@@ -157,10 +154,10 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
         self.model.selected_filter = selected_filter_mock
-        self.model.apply_to_images(images, stack_params, progress=progress_mock)
+        self.model.apply_to_images(images, progress=progress_mock)
 
         selected_filter_mock.validate_execute_kwargs.assert_called_once()
-        callback_mock.assert_called_once_with(images, progress=progress_mock, **stack_params)
+        callback_mock.assert_called_once_with(images, progress=progress_mock)
 
     def test_get_filter_module_name(self):
         self.model.filters = mock.MagicMock()
@@ -168,29 +165,6 @@ class FiltersWindowModelTest(unittest.TestCase):
         module_name = self.model.get_filter_module_name(0)
 
         self.assertEqual("mock.mock", module_name)
-
-
-@pytest.mark.parametrize('class_name,filter_name', [("RoiNormalisationFilter", "ROI Normalisation"),
-                                                    ("CropCoordinatesFilter", "Crop Coordinates")])
-def test_model_request_roi_during_apply_filter(class_name, filter_name):
-    with mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view") as start_async_task_view:
-        model = FiltersWindowModel(mock.MagicMock())
-        selected_filter_mock = mock.Mock()
-        selected_filter_mock.__name__ = mock.Mock()
-        selected_filter_mock.__name__.return_value = class_name
-        selected_filter_mock.filter_name.return_value = filter_name
-        stacks = [mock.Mock()]
-        post_filter = mock.Mock()
-        callback_mock = mock.Mock()
-        model.presenter.roi = [0, 1, 2, 3]
-        model.presenter.needs_roi = mock.MagicMock()
-
-        selected_filter_mock.execute_wrapper.return_value = partial(callback_mock)
-        model.selected_filter = selected_filter_mock
-        model.do_apply_filter(stacks, post_filter)
-
-        model.presenter.needs_roi.assert_called_once()
-        assert start_async_task_view.call_args_list[0].args[1].args[1] == {'region_of_interest': [0, 1, 2, 3]}
 
 
 if __name__ == '__main__':

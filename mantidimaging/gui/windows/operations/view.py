@@ -4,12 +4,12 @@ from PyQt5 import Qt
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
-    QSizePolicy, QComboBox, QStyle
-from mantidimaging.gui.widgets.pg_image_view import MIImageView
+    QSizePolicy, QComboBox, QStyle, QMainWindow
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import (delete_all_widgets_from_layout)
+from mantidimaging.gui.widgets.pg_image_view import MIImageView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
@@ -200,19 +200,29 @@ class FiltersWindowView(BaseMainWindowView):
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
 
-    def roi_visualiser(self):
+    def roi_visualiser(self, roi_field):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
         try:
             images = self.presenter.stack.presenter.get_image(self.presenter.model.preview_image_idx)
-        except IndexError:
+        except Exception:
             # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
             return
 
-        self.roi_view = MIImageView()
+        window = QMainWindow(self)
+        window.setWindowTitle("Select ROI")
+        window.setMinimumHeight(600)
+        window.setMinimumWidth(600)
+        self.roi_view = MIImageView(window)
+        window.setCentralWidget(self.roi_view)
         self.roi_view.setWindowTitle("Select ROI for operation")
 
         self.roi_view.setImage(images.data)
-        self.roi_view.roi_changed_callback = lambda callback: self.roi_changed_callback(callback)
+
+        def roi_changed_callback(callback):
+            roi_field.setText(callback.to_list_string())
+            roi_field.editingFinished.emit()
+
+        self.roi_view.roi_changed_callback = lambda callback: roi_changed_callback(callback)
 
         # prep the MIImageView to display in this context
         self.roi_view.ui.roiBtn.hide()
@@ -224,9 +234,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.ui.gridLayout.setRowStretch(0, 95)
         self.roi_view.button_stack_right.hide()
         self.roi_view.button_stack_left.hide()
+        button = QPushButton("OK", window)
+        button.clicked.connect(lambda: window.close())
+        self.roi_view.ui.gridLayout.addWidget(button)
 
-        self.roi_view.show()
-
-    def roi_changed_callback(self, callback):
-        self.presenter.roi = callback
-        self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
+        window.show()
