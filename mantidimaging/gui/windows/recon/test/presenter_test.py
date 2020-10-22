@@ -186,9 +186,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation(self, mock_start_async: mock.Mock):
-        self.presenter._auto_find_correlation()
+        self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_called_once()
         mock_first_call = mock_start_async.call_args[0]
         self.assertEqual(self.presenter.view, mock_first_call[0])
         self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])
-        self.view.autoBtn.setDisabled.assert_called_once()
+        self.view.set_correlate_buttons_enabled.assert_called_once_with(False)

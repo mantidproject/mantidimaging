@@ -6,7 +6,6 @@ import numpy as np
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.reconstruct import get_reconstructor_for
-from mantidimaging.core.reconstruct.astra_recon import AstraRecon
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.rotation.polyfit_correlation import find_center
@@ -195,11 +194,12 @@ class ReconstructWindowModel(object):
             # why be efficient when you can be lazy?
             initial_cor = [initial_cor] * len(slices)
 
+        reconstructor = get_reconstructor_for(recon_params.algorithm)
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
         progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
         cors = []
         for idx, slice in enumerate(slices):
-            cor = AstraRecon.find_cor(self.images, slice, initial_cor[idx], recon_params)
+            cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors

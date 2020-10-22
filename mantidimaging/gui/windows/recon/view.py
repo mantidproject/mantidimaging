@@ -322,3 +322,7 @@ class ReconstructWindowView(BaseMainWindowView):
             return AutoCorMethod.CORRELATION
         else:
             return AutoCorMethod.MINIMISATION_SQUARE_SUM
+
+    def set_correlate_buttons_enabled(self, enabled: bool):
+        self.correlateBtn.setEnabled(enabled)
+        self.minimiseBtn.setEnabled(enabled)
