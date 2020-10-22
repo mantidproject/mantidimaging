@@ -148,6 +148,9 @@ class ReconstructWindowPresenter(BasePresenter):
                               {'recon_params': self.view.recon_params()})
 
     def do_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
+        if self.model.images is None:
+            return
+
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
