@@ -36,7 +36,6 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.filterNameLabel = mock.Mock()
         self.view.numIter = mock.Mock()
         self.view.numIterLabel = mock.Mock()
-        self.view.autoBtn = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_set_stack_uuid(self, mock_get_reconstructor_for):
