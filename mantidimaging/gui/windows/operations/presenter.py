@@ -124,7 +124,8 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(stacks)
 
-    def _post_filter(self, updated_stacks, _):
+    def _post_filter(self, updated_stacks, task):
+
         for stack in updated_stacks:
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 
@@ -135,9 +136,13 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.do_update_previews()
 
-        # Feedback to user
-        self.view.clear_notification_dialog()
-        self.view.show_operation_completed(self.model.selected_filter.filter_name)
+        if task.error is not None:
+            # task failed, show why
+            self.view.show_error_dialog(f"Operation failed: {task.error}")
+        else:
+            # Feedback to user
+            self.view.clear_notification_dialog()
+            self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
