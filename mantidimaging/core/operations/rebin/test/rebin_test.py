@@ -113,6 +113,24 @@ class RebinTest(unittest.TestCase):
 
         images.free_memory()
 
+    def test_failure_to_allocate_output_doesnt_free_input_data(self):
+        """
+        Tests for a bug fixed in PR#600 that the input data would be freed
+        if the output data could not be allocated
+        :return:
+        """
+        images = th.generate_images(shape=(500, 10, 10), automatic_free=False)
+        mode = 'reflect'
+
+        input_mfile = images.memory_filename
+
+        # something very huge that shouldn't fit on ANY computer
+        rebin_param = (100000, 100000)
+        self.assertRaises(RuntimeError, RebinFilter.filter_func, images, rebin_param=rebin_param, mode=mode)
+        self.assertEqual(input_mfile, images.memory_filename)
+
+        images.free_memory()
+
     def test_memory_change_acceptable(self):
         """
         This filter will increase the memory usage as it has to allocate memory

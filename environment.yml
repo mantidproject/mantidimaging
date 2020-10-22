@@ -27,4 +27,5 @@ dependencies:
       - sphinx
       - pytest-randomly
       - pytest-parallel
+      - psutil
       - isort
