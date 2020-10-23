@@ -11,6 +11,14 @@ from mantidimaging.gui.windows.operations import FiltersWindowView
 
 
 class RescaleFilter(BaseFilter):
+    """Rescales the image data to a new [0, maximum output] range.
+
+    Intended to be used on: Any
+
+    When: Can be used to crop-out value regions of interest
+
+    When: Automatically used when saving images to int16
+    """
     filter_name = 'Rescale'
 
     @staticmethod
