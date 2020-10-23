@@ -18,6 +18,12 @@ if TYPE_CHECKING:
 
 
 class MedianFilter(BaseFilter):
+    """Applies Median filter to the data.
+
+    Intended to be used on: Projections
+
+    When: As a pre-processing step to reduce noise.
+    """
     filter_name = "Median"
 
     @staticmethod

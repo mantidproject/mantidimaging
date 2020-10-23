@@ -9,6 +9,12 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RingRemovalFilter(BaseFilter):
+    """Remove ring artifacts from images in the reconstructed domain.
+
+    Intended to be used on: Reconstructed slices
+
+    When: To remove ring-filters that have not been removed by the pre-processing
+    """
     filter_name = "Ring Removal"
 
     @staticmethod
