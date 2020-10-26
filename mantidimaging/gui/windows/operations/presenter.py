@@ -2,10 +2,12 @@ import traceback
 from enum import Enum, auto
 from functools import partial
 from logging import getLogger
+from time import sleep
 from typing import Optional
 from typing import TYPE_CHECKING
 
 import numpy as np
+from PyQt5.QtWidgets import QApplication
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
@@ -13,6 +15,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (BlockQtSignals)
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import FiltersWindowModel
+from ..stack_choice.presenter import StackChoicePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
@@ -37,6 +40,8 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.model = FiltersWindowModel(self)
         self.main_window = main_window
+
+        self.original_images_stack = None
 
     def notify(self, signal):
         try:
@@ -106,6 +111,9 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
+        if self.view.safeApply.isChecked:
+            self.original_images_stack = self.stack.presenter.images.copy()
+
         self.view.clear_previews()
         apply_to = [self.stack]
         if self.stack.presenter.images.has_proj180deg():
@@ -123,7 +131,20 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(stacks)
 
+    def _wait_for_stack_choice(self, new_stack):
+        stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self)
+        stack_choice.show()
+
+        while stack_choice.view.isVisible:
+            QApplication.processEvents()
+            QApplication.sendPostedEvents()
+            sleep(0.05)
+
     def _post_filter(self, updated_stacks, task):
+        # If safe apply was ticked do the safe apply
+        if self.view.safeApply.isChecked:
+            self._wait_for_stack_choice(updated_stacks[0].presenter.images)
+            self.original_images_stack = None
 
         for stack in updated_stacks:
             self.view.main_window.update_stack_with_images(stack.presenter.images)

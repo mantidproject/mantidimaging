@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1131</width>
+    <width>1205</width>
     <height>600</height>
    </rect>
   </property>
@@ -289,7 +289,7 @@
           <property name="sizeConstraint">
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
-          <item alignment="Qt::AlignLeft|Qt::AlignTop">
+          <item>
            <widget class="QCheckBox" name="showHistogramLegend">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -308,7 +308,7 @@
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignLeft|Qt::AlignTop">
+          <item>
            <widget class="QCheckBox" name="linkImages">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -324,7 +324,7 @@
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignLeft|Qt::AlignTop">
+          <item>
            <widget class="QCheckBox" name="combinedHistograms">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -346,8 +346,14 @@
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignTop">
+          <item>
            <widget class="QCheckBox" name="overlayDifference">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Overlay difference</string>
             </property>
@@ -356,7 +362,7 @@
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignTop">
+          <item>
            <widget class="QCheckBox" name="invertDifference">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -366,6 +372,25 @@
             </property>
             <property name="text">
              <string>Invert diff image</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="safeApply">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Give the option to choose which stack to use after a filter is applied, RAM intensive</string>
+            </property>
+            <property name="text">
+             <string>Safe Apply</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
