@@ -4,6 +4,7 @@ from typing import Optional
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QAction, QLabel, QInputDialog
 
+from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.version_check import find_if_latest_version
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -58,6 +59,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionExit.triggered.connect(self.close)
 
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
+        self.actionWorkflowWizard.triggered.connect(self.show_wizard)
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
@@ -75,6 +77,10 @@ class MainWindowView(BaseMainWindowView):
     def open_online_documentation():
         url = QtCore.QUrl("https://mantidproject.github.io/mantidimaging/")
         QtGui.QDesktopServices.openUrl(url)
+
+    def show_wizard(self):
+        wizard_presenter = WizardPresenter()
+        wizard_presenter.show()
 
     def show_about(self):
         from mantidimaging import __version__ as version_no
