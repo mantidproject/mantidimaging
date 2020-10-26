@@ -1,7 +1,7 @@
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
@@ -147,22 +147,27 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def do_preview_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
-        if self.model.images is None:
-            return
+    def _reconstruct_slice(self, cor, slice_idx):
+        # If no COR is provided and there are regression results then calculate
+        # the COR for the selected preview slice
+        cor = self.model.get_me_a_cor(cor)
+        return self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
 
+    def _get_slice_index(self, slice_idx: Optional[int]):
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
             self.model.preview_slice_idx = slice_idx
+        return slice_idx
 
-        # If no COR is provided and there are regression results then calculate
-        # the COR for the selected preview slice
-        cor = self.model.get_me_a_cor(cor)
+    def do_preview_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
+        if self.model.images is None:
+            return
 
+        slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         try:
-            data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
+            data = self._reconstruct_slice(cor, slice_idx)
             self.view.update_recon_preview(data, refresh_recon_slice_histogram)
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
