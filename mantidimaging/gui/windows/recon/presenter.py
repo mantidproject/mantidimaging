@@ -177,10 +177,10 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx=None):
-        print("Stack...")
         slice_idx = self._get_slice_index(slice_idx)
         try:
             data = self._reconstruct_slice(cor, slice_idx)
+            data = data.reshape((data.shape[0], data.shape[1], 1))
             self.view.show_recon_volume(Images(data))
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
