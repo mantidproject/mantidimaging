@@ -59,9 +59,9 @@ class ReconstructWindowPresenter(BasePresenter):
             if notification == Notifications.RECONSTRUCT_VOLUME:
                 self.do_reconstruct_volume()
             elif notification == Notifications.RECONSTRUCT_SLICE:
-                self.do_reconstruct_slice()
+                self.do_preview_reconstruct_slice()
             elif notification == Notifications.RECONSTRUCT_USER_CLICK:
-                self.do_reconstruct_slice(slice_idx=slice_idx)
+                self.do_preview_reconstruct_slice(slice_idx=slice_idx)
             elif notification == Notifications.COR_FIT:
                 self.do_cor_fit()
             elif notification == Notifications.CLEAR_ALL_CORS:
@@ -97,7 +97,7 @@ class ReconstructWindowPresenter(BasePresenter):
                     widget.hide()
         with BlockQtSignals([self.view.filterName, self.view.numIter]):
             self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)
@@ -109,7 +109,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.initial_select_data(stack)
         self.view.rotation_centre = self.model.last_cor.value
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -118,7 +118,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def set_row(self, row):
         self.model.selected_row = row
@@ -147,7 +147,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def do_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
+    def do_preview_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
         if self.model.images is None:
             return
 
@@ -181,13 +181,13 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor.value)
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
-            self.do_reconstruct_slice(new_cor, slice_idx)
+            self.do_preview_reconstruct_slice(new_cor, slice_idx)
 
     def do_cor_fit(self):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
@@ -213,7 +213,7 @@ class ReconstructWindowPresenter(BasePresenter):
         for idx, point in enumerate(self.model.data_model.iter_points()):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self):
         def completed(task: TaskWorkerThread):
