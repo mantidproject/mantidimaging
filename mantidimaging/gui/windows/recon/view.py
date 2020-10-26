@@ -45,6 +45,7 @@ class ReconstructWindowView(BaseMainWindowView):
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
     reconstructVolume: QPushButton
+    reconstructSlice: QPushButton
 
     stackSelector: StackSelectorWidgetView
 
@@ -89,6 +90,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.fitBtn.clicked.connect(lambda: self.presenter.notify(PresN.COR_FIT))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
+        self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
 
         self.correlateBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_CORRELATE))
         self.minimiseBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_MINIMISE))
@@ -106,7 +108,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 self.presenter.set_last_cor(cor)
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.image_view.slice_line.setPos(slice_idx)
-                self.presenter.notify(PresN.RECONSTRUCT_SLICE)
+                self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
@@ -125,8 +127,8 @@ class ReconstructWindowView(BaseMainWindowView):
             lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
         self.filterName.currentTextChanged.connect(
-            lambda: self.presenter.notify(PresN.RECONSTRUCT_SLICE))  # type: ignore
-        self.numIter.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_SLICE))  # type: ignore
+            lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
+        self.numIter.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         # Set pixel size from loaded stack
         self.pixelSize.setValue(self.presenter.get_pixel_size_from_images())

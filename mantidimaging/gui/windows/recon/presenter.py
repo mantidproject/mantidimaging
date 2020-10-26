@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
@@ -25,7 +26,8 @@ class AutoCorMethod(Enum):
 
 class Notifications(Enum):
     RECONSTRUCT_VOLUME = auto()
-    RECONSTRUCT_SLICE = auto()
+    RECONSTRUCT_PREVIEW_SLICE = auto()
+    RECONSTRUCT_STACK_SLICE = auto()
     RECONSTRUCT_USER_CLICK = auto()
     COR_FIT = auto()
     CLEAR_ALL_CORS = auto()
@@ -58,8 +60,10 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             if notification == Notifications.RECONSTRUCT_VOLUME:
                 self.do_reconstruct_volume()
-            elif notification == Notifications.RECONSTRUCT_SLICE:
+            elif notification == Notifications.RECONSTRUCT_PREVIEW_SLICE:
                 self.do_preview_reconstruct_slice()
+            elif notification == Notifications.RECONSTRUCT_STACK_SLICE:
+                self.do_stack_reconstruct_slice()
             elif notification == Notifications.RECONSTRUCT_USER_CLICK:
                 self.do_preview_reconstruct_slice(slice_idx=slice_idx)
             elif notification == Notifications.COR_FIT:
@@ -169,6 +173,15 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             data = self._reconstruct_slice(cor, slice_idx)
             self.view.update_recon_preview(data, refresh_recon_slice_histogram)
+        except ValueError as err:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+
+    def do_stack_reconstruct_slice(self, cor=None, slice_idx=None):
+        print("Stack...")
+        slice_idx = self._get_slice_index(slice_idx)
+        try:
+            data = self._reconstruct_slice(cor, slice_idx)
+            self.view.show_recon_volume(Images(data))
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
