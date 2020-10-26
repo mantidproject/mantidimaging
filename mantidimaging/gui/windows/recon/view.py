@@ -128,7 +128,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
         self.filterName.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
-        self.numIter.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
+        self.numIter.valueChanged.connect(
+            lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         # Set pixel size from loaded stack
         self.pixelSize.setValue(self.presenter.get_pixel_size_from_images())
