@@ -191,3 +191,10 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.view, mock_first_call[0])
         self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])
         self.view.set_correlate_buttons_enabled.assert_called_once_with(False)
+
+    def test_do_stack_reconstruct_slice(self):
+        self.presenter._reconstruct_slice = mock.Mock()
+        self.presenter._reconstruct_slice.return_value = test_data = np.ndarray(shape=(200, 250), dtype=np.float32)
+        self.presenter.do_stack_reconstruct_slice()
+        self.view.show_recon_volume.assert_called_once_with(
+            Images(test_data.reshape(1, test_data.shape[0], test_data.shape[1])))
