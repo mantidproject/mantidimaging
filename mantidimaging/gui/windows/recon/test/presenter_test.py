@@ -196,5 +196,5 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter._reconstruct_slice = mock.Mock()
         self.presenter._reconstruct_slice.return_value = test_data = np.ndarray(shape=(200, 250), dtype=np.float32)
         self.presenter.do_stack_reconstruct_slice()
-        self.view.show_recon_volume.assert_called_once_with(
-            Images(test_data.reshape(1, test_data.shape[0], test_data.shape[1])))
+        self.view.show_recon_volume.assert_called_once()
+        np.array_equal(self.view.show_recon_volume.call_args[0][0].data, test_data)
