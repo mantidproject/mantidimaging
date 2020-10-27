@@ -15,7 +15,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (BlockQtSignals)
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import FiltersWindowModel
-from ..stack_choice.presenter import StackChoicePresenter
+from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
@@ -131,22 +131,21 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(stacks)
 
-    def _wait_for_stack_choice(self, new_stack):
-        stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self)
+    def _wait_for_stack_choice(self, new_stack, stack_uuid):
+        stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
         stack_choice.show()
 
-        while stack_choice.view.isVisible:
+        while self.original_images_stack is not None:
             QApplication.processEvents()
             QApplication.sendPostedEvents()
             sleep(0.05)
 
     def _post_filter(self, updated_stacks, task):
         # If safe apply was ticked do the safe apply
-        if self.view.safeApply.isChecked:
-            self._wait_for_stack_choice(updated_stacks[0].presenter.images)
-            self.original_images_stack = None
 
         for stack in updated_stacks:
+            if self.view.safeApply.isChecked:
+                self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 
         if self.view.roi_view is not None:
