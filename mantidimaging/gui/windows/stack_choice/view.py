@@ -1,5 +1,7 @@
+from time import sleep
+
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDockWidget, QFrame, QSizePolicy
+from PyQt5.QtWidgets import QDockWidget, QFrame, QSizePolicy, QApplication
 
 from mantidimaging.gui.widgets.pg_image_view import MIImageView
 
@@ -14,10 +16,10 @@ class StackChoiceView(BaseMainWindowView):
         self.setWindowTitle("Choose the stack you want to keep")
 
         # Create stacks and place them in the choice window
-        self.original_stack = MIImageView()
+        self.original_stack = MIImageView(detailsSpanAllCols=True)
         self.original_stack.name = "Original Stack"
 
-        self.new_stack = MIImageView()
+        self.new_stack = MIImageView(detailsSpanAllCols=True)
         self.new_stack.name = "New Stack"
 
         self._setup_stack_for_view(self.original_stack, original_stack.data)
@@ -26,6 +28,16 @@ class StackChoiceView(BaseMainWindowView):
         self.topHorizontalLayout.insertWidget(0, self.original_stack)
         self.topHorizontalLayout.addWidget(self.new_stack)
 
+        self.shifting_through_images = False
+        self.original_stack.sigTimeChanged.connect(self._sync_new_stack_with_old_stack)
+        self.new_stack.sigTimeChanged.connect(self._sync_old_stack_with_new_stack)
+
+        # Hook nav buttons into original stack (new stack not needed as the timelines are synced)
+        self.leftButton.pressed.connect(self.original_stack.button_stack_left.pressed)
+        self.leftButton.released.connect(self.original_stack.button_stack_left.released)
+        self.rightButton.pressed.connect(self.original_stack.button_stack_right.pressed)
+        self.rightButton.released.connect(self.original_stack.button_stack_right.released)
+
     def _setup_stack_for_view(self, stack, data):
         stack.setContentsMargins(4, 4, 4, 4)
         stack.setImage(data)
@@ -33,4 +45,17 @@ class StackChoiceView(BaseMainWindowView):
         stack.ui.roiBtn.hide()
         stack.button_stack_right.hide()
         stack.button_stack_left.hide()
+        details_size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
+        details_size_policy.setHorizontalStretch(1)
+        stack.details.setSizePolicy(details_size_policy)
         self.roiButton.clicked.connect(stack.roiClicked)
+
+    def _sync_new_stack_with_old_stack(self, index, _):
+        self.new_stack.sigTimeChanged.disconnect(self._sync_old_stack_with_new_stack)
+        self.new_stack.setCurrentIndex(index)
+        self.new_stack.sigTimeChanged.connect(self._sync_old_stack_with_new_stack)
+
+    def _sync_old_stack_with_new_stack(self, index, _):
+        self.original_stack.sigTimeChanged.disconnect(self._sync_new_stack_with_old_stack)
+        self.original_stack.setCurrentIndex(index)
+        self.original_stack.sigTimeChanged.connect(self._sync_new_stack_with_old_stack)
