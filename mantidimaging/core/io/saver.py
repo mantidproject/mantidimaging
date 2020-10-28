@@ -197,7 +197,7 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
     if not os.path.exists(path):
         os.makedirs(path)
     elif os.listdir(path) and not overwrite_all:
-        raise RuntimeError("The output directory is NOT empty:{0}\n. This can be "
+        raise RuntimeError("The output directory is NOT empty:{0}\nThis can be "
                            "overridden by specifying 'Overwrite on name conflict'.".format(path))
 
 
