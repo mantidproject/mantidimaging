@@ -45,6 +45,12 @@ class StackChoiceView(BaseMainWindowView):
         self.rightButton.pressed.connect(self.original_stack.button_stack_right.pressed)
         self.rightButton.released.connect(self.original_stack.button_stack_right.released)
 
+        # Hook the choice buttons
+        self.originalDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_ORIGINAL))
+        self.newDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_NEW_DATA))
+
+        self.choice_made = False
+
     def _setup_stack_for_view(self, stack, data):
         stack.setContentsMargins(4, 4, 4, 4)
         stack.setImage(data)
@@ -69,8 +75,9 @@ class StackChoiceView(BaseMainWindowView):
 
     def closeEvent(self, e):
         # Confirm exit is actually wanted as it will lead to data loss
-        response = QMessageBox.Warning(self, "Data Loss! Are you sure?",
-                                       "You will lose the original stack if you close this window! Are you sure?",
-                                       QMessageBox.Ok | QMessageBox.Cancel)
-        if response == QMessageBox.Ok:
-            self.presenter.notify(Notification.CHOOSE_NEW_DATA)
+        if not self.choice_made:
+            response = QMessageBox.warning(self, "Data Loss! Are you sure?",
+                                           "You will lose the original stack if you close this window! Are you sure?",
+                                           QMessageBox.Ok | QMessageBox.Cancel)
+            if response == QMessageBox.Ok:
+                self.presenter.notify(Notification.CHOOSE_NEW_DATA)

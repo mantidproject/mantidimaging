@@ -111,7 +111,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
-        if self.view.safeApply.isChecked:
+        if self.view.safeApply.isChecked():
             self.original_images_stack = self.stack.presenter.images.copy()
 
         self.view.clear_previews()
@@ -144,7 +144,7 @@ class FiltersWindowPresenter(BasePresenter):
         # If safe apply was ticked do the safe apply
 
         for stack in updated_stacks:
-            if self.view.safeApply.isChecked:
+            if self.view.safeApply.isChecked():
                 self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 

@@ -93,8 +93,13 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def set_stack(self, stack_uuid: uuid.UUID, stack):
-        self.active_stacks[stack_uuid] = stack
+    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
+        stack = self.active_stacks[stack_uuid]
+        stack.image_view.setImage(images)
+
+        # Free previous images stack before reassignment
+        stack.presenter.images.free_memory()
+        stack.presenter.images = images
 
     def get_stack_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
         for stack_id in self.stack_list:

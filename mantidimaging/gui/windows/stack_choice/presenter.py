@@ -28,13 +28,16 @@ class StackChoicePresenter:
             getLogger(__name__).exception("Notification handler failed")
 
     def do_reapply_original_data(self):
-        self.operations_presenter.main_window.model.set_stack(self.stack_uuid,
-                                                              self.operations_presenter.original_images_stack)
+        self.operations_presenter.main_window.presenter.model\
+            .set_images_in_stack(self.stack_uuid, self.operations_presenter.original_images_stack)
         self.operations_presenter.original_images_stack = None
+        self.view.choice_made = True
         self.close_view()
 
     def do_clean_up_original_data(self):
+        self.operations_presenter.original_images_stack.free_memory()
         self.operations_presenter.original_images_stack = None
+        self.view.choice_made = True
         self.close_view()
 
     def close_view(self):
