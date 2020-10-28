@@ -81,3 +81,6 @@ class StackChoiceView(BaseMainWindowView):
                                            QMessageBox.Ok | QMessageBox.Cancel)
             if response == QMessageBox.Ok:
                 self.presenter.notify(Notification.CHOOSE_NEW_DATA)
+
+        self.original_stack.close()
+        self.new_stack.close()

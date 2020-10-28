@@ -95,6 +95,7 @@ class MainWindowModel(object):
 
     def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
         stack = self.active_stacks[stack_uuid]
+        stack.image_view.clear()
         stack.image_view.setImage(images)
 
         # Free previous images stack before reassignment
