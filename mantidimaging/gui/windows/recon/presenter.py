@@ -3,7 +3,6 @@ from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-import numpy as np
 from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.data import Images
