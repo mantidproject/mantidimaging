@@ -180,7 +180,7 @@ class ReconstructWindowPresenter(BasePresenter):
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
-    def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int]=None):
+    def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)
         try:
             data = self._get_reconstruct_slice(cor, slice_idx)
