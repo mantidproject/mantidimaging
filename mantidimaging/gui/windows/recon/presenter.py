@@ -152,7 +152,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]) -> Optional[np.ndarray]:
+    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]):
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
