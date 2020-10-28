@@ -198,7 +198,7 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
         os.makedirs(path)
     elif os.listdir(path) and not overwrite_all:
         raise RuntimeError("The output directory is NOT empty:{0}\n. This can be "
-                           "overridden with -w/--overwrite-all.".format(path))
+                           "overridden by specifying 'Overwrite on name conflict'.".format(path))
 
 
 class Saver(object):
