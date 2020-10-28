@@ -156,7 +156,7 @@ def save(images: Images,
 
 
 def rescale_single_image(image: np.ndarray, min_input, max_input, max_output):
-    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, data_type=np.int16)
+    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, data_type=np.uint16)
 
 
 def generate_names(name_prefix,
