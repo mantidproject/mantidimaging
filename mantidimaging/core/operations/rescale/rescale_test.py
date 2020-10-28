@@ -1,5 +1,5 @@
 import pytest
-from numpy import testing as npt, int16, float32, finfo, copy
+from numpy import testing as npt, int16, uint16, float32, finfo, copy
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rescale import RescaleFilter
@@ -61,7 +61,7 @@ def test_execute_wrapper_with_preset(type: str, expected_max: float):
     assert partial.keywords['max_output'] == expected_max
 
 
-@pytest.mark.parametrize('type, max_value', [(int16, 65535), (float32, finfo(float32).max)])
+@pytest.mark.parametrize('type, max_value', [(uint16, 65535), (float32, finfo(float32).max)])
 def test_type_changes_to_given_type(type, max_value):
     images = th.generate_images((10, 100, 100))
 
@@ -82,8 +82,8 @@ def test_scale_single_image():
     images.data[1] = 1.5
 
     # Scale to int16
-    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(), 1, data_type=int16)
-    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(), 1, data_type=int16)
+    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(), 1, data_type=uint16)
+    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(), 1, data_type=uint16)
 
     npt.assert_equal(0, scaled_image1)
     npt.assert_equal(1, scaled_image2)
@@ -95,10 +95,14 @@ def test_scale_single_image():
     npt.assert_equal(0.0, scaled_image3)
     npt.assert_equal(2.0, scaled_image4)
 
-    assert scaled_image1.dtype == int16
-    assert scaled_image2.dtype == int16
+    assert scaled_image1.dtype == uint16
+    assert scaled_image2.dtype == uint16
     assert scaled_image3.dtype == float32
     assert scaled_image4.dtype == float32
+    assert scaled_image1.dtype != int16, \
+        "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
+    assert scaled_image2.dtype != int16, \
+        "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
 
 
 if __name__ == "__main__":

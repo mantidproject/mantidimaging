@@ -1,6 +1,6 @@
 from functools import partial
 from typing import Dict, Any
-from numpy import int16, float32, ndarray
+from numpy import uint16, float32, ndarray
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
 
@@ -33,8 +33,8 @@ class RescaleFilter(BaseFilter):
         images.data *= (max_output / images.data.max())
 
         if data_type is not None:
-            if data_type == int16 and not images.dtype == int16:
-                images.data = images.data.astype(int16)
+            if data_type == uint16 and not images.dtype == uint16:
+                images.data = images.data.astype(uint16)
             elif data_type == float32 and not images.dtype == float32:
                 images.data = images.data.astype(float32)
 
@@ -48,8 +48,8 @@ class RescaleFilter(BaseFilter):
 
         if data_type == float32:
             return image.astype(float32)
-        elif data_type == int16:
-            return image.astype(int16)
+        elif data_type == uint16:
+            return image.astype(uint16)
         else:
             raise ValueError("Only float32 and int16 data types are supported by single image rescale")
 
