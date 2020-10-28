@@ -152,7 +152,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _reconstruct_slice(self, cor, slice_idx: Optional[int]) -> Optional[np.ndarray]:
+    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]) -> Optional[np.ndarray]:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
@@ -165,22 +165,25 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.preview_slice_idx = slice_idx
         return slice_idx
 
-    def do_preview_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
+    def do_preview_reconstruct_slice(self,
+                                     cor=None,
+                                     slice_idx: Optional[int] = None,
+                                     refresh_recon_slice_histogram: bool = True):
         if self.model.images is None:
             return
 
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         try:
-            data = self._reconstruct_slice(cor, slice_idx)
+            data = self._get_reconstruct_slice(cor, slice_idx)
             self.view.update_recon_preview(data, refresh_recon_slice_histogram)
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
-    def do_stack_reconstruct_slice(self, cor=None, slice_idx=None):
+    def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int]=None):
         slice_idx = self._get_slice_index(slice_idx)
         try:
-            data = self._reconstruct_slice(cor, slice_idx)
+            data = self._get_reconstruct_slice(cor, slice_idx)
             data = data.reshape((1, data.shape[0], data.shape[1]))
             self.view.show_recon_volume(Images(data))
         except ValueError as err:
