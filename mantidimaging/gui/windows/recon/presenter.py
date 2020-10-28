@@ -3,6 +3,7 @@ from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List, Optional
 
+import numpy as np
 from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.data import Images
@@ -151,7 +152,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _reconstruct_slice(self, cor, slice_idx):
+    def _reconstruct_slice(self, cor, slice_idx: Optional[int]) -> Optional[np.ndarray]:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
