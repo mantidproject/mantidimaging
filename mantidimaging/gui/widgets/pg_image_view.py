@@ -28,7 +28,14 @@ class MIImageView(ImageView):
 
     roi_changed_callback: Optional[Callable[[SensibleROI], None]] = None
 
-    def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, levelMode='mono', detailsSpanAllCols=False, *args):
+    def __init__(self,
+                 parent=None,
+                 name="ImageView",
+                 view=None,
+                 imageItem=None,
+                 levelMode='mono',
+                 detailsSpanAllCols=False,
+                 *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
         self.details = QLabel("", self.ui.layoutWidget)
         self.details.setStyleSheet("QLabel { color : white; background-color: black}")
