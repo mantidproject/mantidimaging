@@ -2,16 +2,14 @@ import os
 import uuid
 from collections import namedtuple
 from logging import getLogger
-from typing import Dict, List, Optional, TYPE_CHECKING, Any
+from typing import Dict, List, Optional, Any
+from PyQt5.Qt import QDockWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
-
-if TYPE_CHECKING:
-    from PyQt5.Qt import QDockWidget
 
 StackId = namedtuple('StackId', ['id', 'name'])
 
@@ -95,8 +93,10 @@ class MainWindowModel(object):
 
     def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
         stack = self.active_stacks[stack_uuid]
+        if isinstance(stack, QDockWidget):
+            stack = stack.widget()
         stack.image_view.clear()
-        stack.image_view.setImage(images)
+        stack.image_view.setImage(images.data)
 
         # Free previous images stack before reassignment
         stack.presenter.images.free_memory()

@@ -128,6 +128,10 @@ class FiltersWindowPresenter(BasePresenter):
         if not confirmed:
             return
         stacks = self.main_window.get_all_stack_visualisers()
+        if self.view.safeApply.isChecked():
+            self.original_images_stack = []
+            for stack in stacks:
+                self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
 
         self._do_apply_filter(stacks)
 
@@ -135,14 +139,12 @@ class FiltersWindowPresenter(BasePresenter):
         stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
         stack_choice.show()
 
-        while self.original_images_stack is not None:
+        while not stack_choice.done:
             QApplication.processEvents()
             QApplication.sendPostedEvents()
             sleep(0.05)
 
     def _post_filter(self, updated_stacks, task):
-        # If safe apply was ticked do the safe apply
-
         for stack in updated_stacks:
             if self.view.safeApply.isChecked():
                 self._wait_for_stack_choice(stack.presenter.images, stack.uuid)

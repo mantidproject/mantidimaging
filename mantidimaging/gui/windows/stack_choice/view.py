@@ -1,7 +1,8 @@
 from enum import Enum, auto
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QSizePolicy, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QSizePolicy, QMessageBox, QApplication
 
 from mantidimaging.gui.widgets.pg_image_view import MIImageView
 
@@ -15,12 +16,13 @@ class Notification(Enum):
 
 class StackChoiceView(BaseMainWindowView):
     def __init__(self, original_stack, new_stack, presenter):
-        super(StackChoiceView, self).__init__(None, "gui/ui/stack_choice_window.ui")
+        super(StackChoiceView, self).__init__(presenter.operations_presenter.view, "gui/ui/stack_choice_window.ui")
 
         self.presenter = presenter
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Choose the stack you want to keep")
+        self.setWindowModality(Qt.ApplicationModal)
 
         # Create stacks and place them in the choice window
         self.original_stack = MIImageView(detailsSpanAllCols=True)
@@ -36,8 +38,8 @@ class StackChoiceView(BaseMainWindowView):
         self.topHorizontalLayout.addWidget(self.new_stack)
 
         self.shifting_through_images = False
-        self.original_stack.sigTimeChanged.connect(self._sync_new_stack_with_old_stack)
-        self.new_stack.sigTimeChanged.connect(self._sync_old_stack_with_new_stack)
+        self.original_stack.sigTimeChanged.connect(self._sync_timelines_for_new_stack_with_old_stack)
+        self.new_stack.sigTimeChanged.connect(self._sync_timelines_for_old_stack_with_new_stack)
 
         # Hook nav buttons into original stack (new stack not needed as the timelines are synced)
         self.leftButton.pressed.connect(self.original_stack.button_stack_left.pressed)
@@ -48,6 +50,16 @@ class StackChoiceView(BaseMainWindowView):
         # Hook the choice buttons
         self.originalDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_ORIGINAL))
         self.newDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_NEW_DATA))
+
+        # Hook ROI button into both stacks
+        self.original_stack.ui.roiBtn.setChecked(True)
+        self.new_stack.ui.roiBtn.setChecked(True)
+        self.roiButton.clicked.connect(self.original_stack.roiClicked)
+        self.roiButton.clicked.connect(self.new_stack.roiClicked)
+
+        # Hook the two plot ROIs together so that any changes are synced
+        self.original_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_new_stack_with_old_stack)
+        self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
 
         self.choice_made = False
 
@@ -63,15 +75,27 @@ class StackChoiceView(BaseMainWindowView):
         stack.details.setSizePolicy(details_size_policy)
         self.roiButton.clicked.connect(stack.roiClicked)
 
-    def _sync_new_stack_with_old_stack(self, index, _):
-        self.new_stack.sigTimeChanged.disconnect(self._sync_old_stack_with_new_stack)
-        self.new_stack.setCurrentIndex(index)
-        self.new_stack.sigTimeChanged.connect(self._sync_old_stack_with_new_stack)
+    def _sync_roi_plot_for_new_stack_with_old_stack(self):
+        self.new_stack.roi.sigRegionChanged.disconnect(self._sync_roi_plot_for_old_stack_with_new_stack)
+        self.new_stack.roi.setPos(self.original_stack.roi.pos())
+        self.new_stack.roi.setSize(self.original_stack.roi.size())
+        self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
 
-    def _sync_old_stack_with_new_stack(self, index, _):
-        self.original_stack.sigTimeChanged.disconnect(self._sync_new_stack_with_old_stack)
+    def _sync_roi_plot_for_old_stack_with_new_stack(self):
+        self.original_stack.roi.sigRegionChanged.disconnect(self._sync_roi_plot_for_new_stack_with_old_stack)
+        self.original_stack.roi.setPos(self.new_stack.roi.pos())
+        self.original_stack.roi.setSize(self.new_stack.roi.size())
+        self.original_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_new_stack_with_old_stack)
+
+    def _sync_timelines_for_new_stack_with_old_stack(self, index, _):
+        self.new_stack.sigTimeChanged.disconnect(self._sync_timelines_for_old_stack_with_new_stack)
+        self.new_stack.setCurrentIndex(index)
+        self.new_stack.sigTimeChanged.connect(self._sync_timelines_for_old_stack_with_new_stack)
+
+    def _sync_timelines_for_old_stack_with_new_stack(self, index, _):
+        self.original_stack.sigTimeChanged.disconnect(self._sync_timelines_for_new_stack_with_old_stack)
         self.original_stack.setCurrentIndex(index)
-        self.original_stack.sigTimeChanged.connect(self._sync_new_stack_with_old_stack)
+        self.original_stack.sigTimeChanged.connect(self._sync_timelines_for_new_stack_with_old_stack)
 
     def closeEvent(self, e):
         # Confirm exit is actually wanted as it will lead to data loss
