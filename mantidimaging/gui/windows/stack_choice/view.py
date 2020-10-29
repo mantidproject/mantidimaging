@@ -52,16 +52,28 @@ class StackChoiceView(BaseMainWindowView):
         self.newDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_NEW_DATA))
 
         # Hook ROI button into both stacks
-        self.original_stack.ui.roiBtn.setChecked(True)
-        self.new_stack.ui.roiBtn.setChecked(True)
-        self.roiButton.clicked.connect(self.original_stack.roiClicked)
-        self.roiButton.clicked.connect(self.new_stack.roiClicked)
+        self.roiButton.clicked.connect(self._toggle_roi)
 
         # Hook the two plot ROIs together so that any changes are synced
         self.original_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_new_stack_with_old_stack)
         self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
 
         self.choice_made = False
+        self.roi_shown = False
+
+    def _toggle_roi(self):
+        if self.roi_shown:
+            self.roi_shown = False
+            self.original_stack.ui.roiBtn.setChecked(False)
+            self.new_stack.ui.roiBtn.setChecked(False)
+            self.original_stack.roiClicked()
+            self.new_stack.roiClicked()
+        else:
+            self.roi_shown = True
+            self.original_stack.ui.roiBtn.setChecked(True)
+            self.new_stack.ui.roiBtn.setChecked(True)
+            self.original_stack.roiClicked()
+            self.new_stack.roiClicked()
 
     def _setup_stack_for_view(self, stack, data):
         stack.setContentsMargins(4, 4, 4, 4)
