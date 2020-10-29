@@ -131,6 +131,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.numIter.valueChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
+        def refresh_preview_and_histogram():
+            self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
+            self.image_view.reset_recon_histogram()
+
+        self.pixelSize.valueChanged.connect(refresh_preview_and_histogram)
+
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
 

@@ -175,17 +175,16 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         try:
-            data = self._get_reconstruct_slice(cor, slice_idx)
-            self.view.update_recon_preview(data, refresh_recon_slice_histogram)
+            images = self._get_reconstruct_slice(cor, slice_idx)
+            self.view.update_recon_preview(images.data[0], refresh_recon_slice_histogram)
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)
         try:
-            data = self._get_reconstruct_slice(cor, slice_idx)
-            data = data.reshape((1, data.shape[0], data.shape[1]))
-            self.view.show_recon_volume(Images(data))
+            images = self._get_reconstruct_slice(cor, slice_idx)
+            self.view.show_recon_volume(images)
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.reconstruct import get_reconstructor_for
@@ -117,17 +118,21 @@ class ReconstructWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters):
+    def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters) -> Optional[Images]:
         # Ensure we have some sample data
         if self.images is None:
             return None
 
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
-        return reconstructor.single_sino(self.images.sino(slice_idx), cor, self.images.projection_angles(),
-                                         recon_params)
+        output_shape = (1, self.images.width, self.images.width)
+        recon: Images = Images.create_empty_images(output_shape, self.images.dtype, self.images.metadata)
+        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx), cor, self.images.projection_angles(),
+                                                  recon_params)
+        recon = self._apply_pixel_size(recon, recon_params)
+        return recon
 
-    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress):
+    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> Optional[Images]:
         # Ensure we have some sample data
         if self.images is None:
             return None
@@ -136,6 +141,11 @@ class ReconstructWindowModel(object):
         recon = reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
                                    recon_params, progress)
 
+        recon = self._apply_pixel_size(recon, recon_params, progress)
+        return recon
+
+    @staticmethod
+    def _apply_pixel_size(recon, recon_params, progress=None):
         if recon_params.pixel_size > 0.:
             recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
             # update the reconstructed stack pixel size with the value actually used for division
