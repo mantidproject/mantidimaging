@@ -2,7 +2,7 @@ from enum import Enum, auto
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QSizePolicy, QMessageBox, QApplication
+from PyQt5.QtWidgets import QSizePolicy, QMessageBox
 
 from mantidimaging.gui.widgets.pg_image_view import MIImageView
 
