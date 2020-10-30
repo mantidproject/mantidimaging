@@ -90,8 +90,8 @@ class ReconImagesView(GraphicsLayoutWidget):
         # don't refresh the histogram on click to stop the contrast for re-adjusting for each slice
         # it's much easier to see what's happening to the reconstruction if the slice doesn't
         # reset after every click
-        self.parent.presenter.do_reconstruct_slice(slice_idx=CloseEnoughPoint(ev.pos()).y,
-                                                   refresh_recon_slice_histogram=False)
+        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=CloseEnoughPoint(ev.pos()).y,
+                                                           refresh_recon_slice_histogram=False)
 
     def clear_recon(self):
         self.recon.clear()

@@ -1,10 +1,11 @@
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
@@ -25,7 +26,8 @@ class AutoCorMethod(Enum):
 
 class Notifications(Enum):
     RECONSTRUCT_VOLUME = auto()
-    RECONSTRUCT_SLICE = auto()
+    RECONSTRUCT_PREVIEW_SLICE = auto()
+    RECONSTRUCT_STACK_SLICE = auto()
     RECONSTRUCT_USER_CLICK = auto()
     COR_FIT = auto()
     CLEAR_ALL_CORS = auto()
@@ -58,10 +60,12 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             if notification == Notifications.RECONSTRUCT_VOLUME:
                 self.do_reconstruct_volume()
-            elif notification == Notifications.RECONSTRUCT_SLICE:
-                self.do_reconstruct_slice()
+            elif notification == Notifications.RECONSTRUCT_PREVIEW_SLICE:
+                self.do_preview_reconstruct_slice()
+            elif notification == Notifications.RECONSTRUCT_STACK_SLICE:
+                self.do_stack_reconstruct_slice()
             elif notification == Notifications.RECONSTRUCT_USER_CLICK:
-                self.do_reconstruct_slice(slice_idx=slice_idx)
+                self.do_preview_reconstruct_slice(slice_idx=slice_idx)
             elif notification == Notifications.COR_FIT:
                 self.do_cor_fit()
             elif notification == Notifications.CLEAR_ALL_CORS:
@@ -97,7 +101,7 @@ class ReconstructWindowPresenter(BasePresenter):
                     widget.hide()
         with BlockQtSignals([self.view.filterName, self.view.numIter]):
             self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)
@@ -109,7 +113,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.initial_select_data(stack)
         self.view.rotation_centre = self.model.last_cor.value
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -118,7 +122,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def set_row(self, row):
         self.model.selected_row = row
@@ -147,23 +151,40 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def do_reconstruct_slice(self, cor=None, slice_idx=None, refresh_recon_slice_histogram=True):
-        if self.model.images is None:
-            return
+    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]):
+        # If no COR is provided and there are regression results then calculate
+        # the COR for the selected preview slice
+        cor = self.model.get_me_a_cor(cor)
+        return self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
 
+    def _get_slice_index(self, slice_idx: Optional[int]):
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
             self.model.preview_slice_idx = slice_idx
+        return slice_idx
 
-        # If no COR is provided and there are regression results then calculate
-        # the COR for the selected preview slice
-        cor = self.model.get_me_a_cor(cor)
+    def do_preview_reconstruct_slice(self,
+                                     cor=None,
+                                     slice_idx: Optional[int] = None,
+                                     refresh_recon_slice_histogram: bool = True):
+        if self.model.images is None:
+            return
 
+        slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         try:
-            data = self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
+            data = self._get_reconstruct_slice(cor, slice_idx)
             self.view.update_recon_preview(data, refresh_recon_slice_histogram)
+        except ValueError as err:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+
+    def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
+        slice_idx = self._get_slice_index(slice_idx)
+        try:
+            data = self._get_reconstruct_slice(cor, slice_idx)
+            data = data.reshape((1, data.shape[0], data.shape[1]))
+            self.view.show_recon_volume(Images(data))
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
@@ -181,13 +202,13 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor.value)
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
-            self.do_reconstruct_slice(new_cor, slice_idx)
+            self.do_preview_reconstruct_slice(new_cor, slice_idx)
 
     def do_cor_fit(self):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
@@ -213,7 +234,7 @@ class ReconstructWindowPresenter(BasePresenter):
         for idx, point in enumerate(self.model.data_model.iter_points()):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
-        self.do_reconstruct_slice()
+        self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self):
         def completed(task: TaskWorkerThread):
