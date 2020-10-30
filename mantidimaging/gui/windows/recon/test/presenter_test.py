@@ -110,7 +110,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.last_cor = ScalarCoR(150)
         self.presenter.model.data_model._cached_gradient = None
 
-        self.presenter.do_reconstruct_slice()
+        self.presenter.do_preview_reconstruct_slice()
         self.view.update_sinogram.assert_called_once()
         self.view.update_recon_preview.assert_called_once()
 
@@ -129,7 +129,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     def test_do_refine_selected_cor_declined(self, mock_corview):
         self.presenter.model.preview_slice_idx = 155
         self.presenter.model.last_cor = ScalarCoR(314)
-        self.presenter.do_reconstruct_slice = mock.Mock()
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
 
         mock_dialog = mock.Mock()
         mock_corview.return_value = mock_dialog
@@ -138,13 +138,13 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         mock_corview.assert_called_once()
         mock_dialog.exec.assert_called_once()
-        self.presenter.do_reconstruct_slice.assert_not_called()
+        self.presenter.do_preview_reconstruct_slice.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
     def test_do_refine_selected_cor_accepted(self, mock_corview):
         self.presenter.model.preview_slice_idx = 155
         self.presenter.model.last_cor = ScalarCoR(314)
-        self.presenter.do_reconstruct_slice = mock.Mock()
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
         mock_dialog = mock.Mock()
         mock_dialog.exec.return_value = mock_corview.Accepted
         mock_corview.return_value = mock_dialog
@@ -155,22 +155,22 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.last_cor, mock_dialog.optimal_rotation_centre)
         mock_corview.assert_called_once()
         mock_dialog.exec.assert_called_once()
-        self.presenter.do_reconstruct_slice.assert_called_once()
+        self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
     def test_do_cor_fit(self):
-        self.presenter.do_reconstruct_slice = mock.Mock()
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
 
         self.presenter.do_cor_fit()
 
         self.view.set_results.assert_called_once()
         self.presenter.do_update_projection.assert_called_once()
-        self.presenter.do_reconstruct_slice.assert_called_once()
+        self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
     def test_set_precalculated_cor_tilt(self):
         self.view.rotation_centre = 150
         self.view.tilt = 1
-        self.presenter.do_reconstruct_slice = mock.Mock()
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
         self.presenter.model.data_model.iter_points.return_value = [Point(0, 0)]
 
@@ -181,7 +181,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertTrue(self.presenter.model.has_results)
         self.view.set_results.assert_called_once()
         self.presenter.do_update_projection.assert_called_once()
-        self.presenter.do_reconstruct_slice.assert_called_once()
+        self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation(self, mock_start_async: mock.Mock):
@@ -191,3 +191,10 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.view, mock_first_call[0])
         self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])
         self.view.set_correlate_buttons_enabled.assert_called_once_with(False)
+
+    def test_do_stack_reconstruct_slice(self):
+        self.presenter._get_reconstruct_slice = mock.Mock()
+        self.presenter._get_reconstruct_slice.return_value = test_data = np.ndarray(shape=(200, 250), dtype=np.float32)
+        self.presenter.do_stack_reconstruct_slice()
+        self.view.show_recon_volume.assert_called_once()
+        np.array_equal(self.view.show_recon_volume.call_args[0][0].data, test_data)
