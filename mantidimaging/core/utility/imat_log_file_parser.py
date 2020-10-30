@@ -31,6 +31,15 @@ class IMATLogFile:
             self._data[IMATLogColumn.COUNTS_BEFORE].append(line[2])
             self._data[IMATLogColumn.COUNTS_AFTER].append(line[3])
 
+    def projection_numbers(self):
+        proj_nums = numpy.zeros(len(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]), dtype=numpy.uint32)
+        for i, angle_str in enumerate(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]):
+            if "angle:" not in angle_str:
+                raise ValueError("Projection angles loaded from logfile do not have the correct formatting!")
+            proj_nums[i] = int(angle_str[angle_str.find(": ") + 1:angle_str.find("a")])
+
+        return proj_nums
+
     def projection_angles(self) -> ProjectionAngles:
         angles = numpy.zeros(len(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]))
         for i, angle_str in enumerate(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]):
@@ -45,10 +54,17 @@ class IMATLogFile:
         for i, [before,
                 after] in enumerate(zip(self._data[IMATLogColumn.COUNTS_BEFORE],
                                         self._data[IMATLogColumn.COUNTS_AFTER])):
-
             # clips the string before the count number
             before = before[before.rfind(":") + 1:]
             after = after[after.rfind(":") + 1:]
             counts[i] = float(after) - float(before)
 
         return Counts(counts)
+
+    def find_missing_projection_number(self, image_filenames):
+        proj_numbers = self.projection_numbers()
+        image_numbers = [ifile[ifile.rfind("_") + 1:] for ifile in image_filenames]
+
+        for projection_num, image_num in zip(proj_numbers, image_numbers):
+            if str(projection_num) not in image_num:
+                return projection_num, image_num

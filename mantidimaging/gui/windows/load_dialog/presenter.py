@@ -5,7 +5,8 @@ from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, List
 
-from mantidimaging.core.io.loader import read_in_shape
+from mantidimaging.core.io.loader import load_log
+from mantidimaging.core.io.loader.loader import read_in_file_information
 from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.windows.load_dialog.field import Field
@@ -19,6 +20,7 @@ class Notification(Enum):
     UPDATE_ALL_FIELDS = auto()
     UPDATE_FLAT_OR_DARK = auto()
     UPDATE_SINGLE_FILE = auto()
+    UPDATE_SAMPLE_LOG = auto()
 
 
 class LoadPresenter:
@@ -32,12 +34,17 @@ class LoadPresenter:
         self.dtype = '32'
 
     def notify(self, n: Notification, **baggage):
-        if n == Notification.UPDATE_ALL_FIELDS:
-            self.do_update_sample()
-        elif n == Notification.UPDATE_FLAT_OR_DARK:
-            self.do_update_flat_or_dark(**baggage)
-        elif n == Notification.UPDATE_SINGLE_FILE:
-            self.do_update_single_file(**baggage)
+        try:
+            if n == Notification.UPDATE_ALL_FIELDS:
+                self.do_update_sample()
+            elif n == Notification.UPDATE_FLAT_OR_DARK:
+                self.do_update_flat_or_dark(**baggage)
+            elif n == Notification.UPDATE_SINGLE_FILE:
+                self.do_update_single_file(**baggage)
+            elif n == Notification.UPDATE_SAMPLE_LOG:
+                self.do_update_sample_log(**baggage)
+        except RuntimeError as err:
+            self.view.show_error(str(err), traceback.format_exc())
 
     def do_update_sample(self):
         """
@@ -56,14 +63,19 @@ class LoadPresenter:
         filename = self.view.sample.path_text()
         dirname = self.view.sample.directory()
         try:
-            self.last_shape, sinograms = read_in_shape(dirname,
-                                                       in_prefix=get_prefix(filename),
-                                                       in_format=self.image_format)
+            # TODO consider a better way to re-use this structure, perhaps cache it instead of last_shape?
+            file_information = read_in_file_information(dirname,
+                                                        in_prefix=get_prefix(filename),
+                                                        in_format=self.image_format)
+            self.last_shape = file_information.shape
+            sinograms = file_information.sinograms
+            filenames = file_information.filenames
         except Exception as e:
             getLogger(__name__).error(f"Failed to read file {sample_filename} {e}")
             self.view.show_error("Failed to read this file. See log for details.", traceback.format_exc())
             self.last_shape = (0, 0, 0)
             sinograms = False
+            filenames = None
 
         sample_dirname = Path(dirname)
 
@@ -75,7 +87,11 @@ class LoadPresenter:
         self.view.dark_after.set_images(self._find_images(sample_dirname, "Dark", suffix="After"))
         self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
 
-        self.view.sample_log.path = self._find_log(sample_dirname, self.view.sample.directory())
+        try:
+            self.set_sample_log(self.view.sample_log, sample_dirname, self.view.sample.directory(), filenames)
+        except RuntimeError as err:
+            self.view.show_error(str(err), traceback.format_exc())
+
         self.view.sample_log.use = False
 
         self.view.flat_before_log.path = self._find_log(sample_dirname, self.view.flat_before.directory())
@@ -111,7 +127,7 @@ class LoadPresenter:
             try:
                 return get_file_names(expected_folder_path.absolute(), self.image_format)
             except RuntimeError:
-                logger.info(f"Could not find {type} files in {expected_folder_path.absolute()}")
+                logger.info(f"Could not find {image_type} files in {expected_folder_path.absolute()}")
 
         return []
 
@@ -125,6 +141,12 @@ class LoadPresenter:
 
     @staticmethod
     def _find_log(dirname: Path, log_name: str):
+        """
+
+        :param dirname: The directory in which the sample images were found
+        :param log_name: The log name is typically the directory name of the sample
+        :return:
+        """
         expected_path = dirname / '..'
         try:
             return get_file_names(expected_path.absolute(), "txt", prefix=log_name)[0]
@@ -188,13 +210,40 @@ class LoadPresenter:
 
         return lp
 
-    def do_update_single_file(self, field, name, image_file):
+    def do_update_single_file(self, field: Field, name: str, image_file: bool):
         try:
             file_name = self.view.select_file(name, image_file)
         except RuntimeError:
             logger.info(f"Could not find the {name} file")
             return
 
+        self._update_field_action(field, file_name)
+
+    def _update_field_action(self, field: Field, file_name):
         if file_name is not None:
             field.path = file_name
             field.use = True
+
+    def do_update_sample_log(self, field: Field, name: str, image_file: bool):
+        self.do_update_single_file(field, name, image_file)
+        # how to get image filenames?!
+        self.ensure_sample_log_consistency(field, image_file)
+
+    def ensure_sample_log_consistency(self, field: Field, file_name, image_filenames=None):
+        self._update_field_action(field, file_name)
+
+        log = load_log(file_name)
+        pa = log.projection_angles()
+        num_images = self.last_shape[0]
+
+        if len(pa.value) != num_images:
+            pn, iname = log.find_missing_projection_number(image_filenames)
+            raise RuntimeError(
+                "The number of images does not match the number of projection angles in the log.\n"
+                "Please add missing projections or remove their lines from the logfile.\n"
+                f"Mismatching projection angle for image {pn} was going to be used for image file {iname}")
+
+    def set_sample_log(self, sample_log: Field, sample_dirname, log_name, image_filenames=None):
+        sample_log_filepath = self._find_log(sample_dirname, log_name)
+        self.ensure_sample_log_consistency(sample_log, sample_log_filepath, image_filenames)
+        sample_log.path = sample_log_filepath

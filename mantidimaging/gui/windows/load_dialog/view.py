@@ -66,7 +66,7 @@ class MWLoadDialog(Qt.QDialog):
 
         self.sample_log, self.select_sample_log = self.create_file_input(6)
         self.select_sample_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.sample_log, name="Sample Log", image_file=False))
+            Notification.UPDATE_SAMPLE_LOG, field=self.sample_log, name="Sample Log", image_file=False))
 
         self.flat_before_log, self.select_flat_before_log = self.create_file_input(7)
         self.select_flat_before_log.clicked.connect(lambda: self.presenter.notify(

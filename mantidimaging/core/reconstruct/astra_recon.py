@@ -82,7 +82,7 @@ class AstraRecon(BaseRecon):
         proj_angles = images.projection_angles()
 
         def get_sumsq(image: np.ndarray) -> float:
-            return np.sum(image**2)
+            return np.sum(image ** 2)
 
         def minimizer_function(cor):
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
@@ -93,10 +93,6 @@ class AstraRecon(BaseRecon):
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
-        assert sino.shape[0] == len(
-            proj_angles.value), f"Number of projection angles {len(proj_angles.value)} does not equal" \
-                                f" the number of projections {sino.shape[0]}. This can happen if loading subset of" \
-                                f" projections, and using projection angles from a log file."
 
         sino = BaseRecon.sino_recon_prep(sino)
         image_width = sino.shape[1]
