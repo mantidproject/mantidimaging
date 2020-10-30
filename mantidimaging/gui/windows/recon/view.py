@@ -272,6 +272,10 @@ class ReconstructWindowView(BaseMainWindowView):
     def pixel_size(self):
         return self.pixelSize.value()
 
+    @pixel_size.setter
+    def pixel_size(self, value: int):
+        return self.pixelSize.setValue(value)
+
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
                                         filter_name=self.filter_name,
