@@ -28,11 +28,7 @@ class StackChoicePresenter:
         self.done = False
 
     def show(self):
-        if isinstance(self.view, list):
-            for view in self.view:
-                view.show()
-        else:
-            self.view.show()
+        self.view.show()
 
     def notify(self, signal):
         try:

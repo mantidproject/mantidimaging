@@ -81,6 +81,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews')
     def test_post_filter_success(self, update_previews_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = None
@@ -94,6 +95,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews')
     def test_post_filter_fail(self, update_previews_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = 123
@@ -148,3 +150,31 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         module_name = self.presenter.get_filter_module_name(0)
 
         self.assertEqual("mock.mock", module_name)
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.StackChoicePresenter')
+    def test_safe_apply_starts_stack_choice_presenter(self, stack_choice_presenter):
+        self.presenter.view.safeApply.isChecked.return_value = True
+        stack_choice_presenter.done = True
+        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
+
+        self.assertEqual(2, stack_choice_presenter.call_count)
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.StackChoicePresenter')
+    def test_unchecked_safe_apply_does_not_start_stack_choice_presenter(self, stack_choice_presenter):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        stack_choice_presenter.done = True
+        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
+
+        stack_choice_presenter.assert_not_called()
+
+    def test_original_stack_assigned_when_safe_apply_checked(self):
+        stack = mock.MagicMock()
+        self.presenter.stack = stack
+        stack_data = "THIS IS USEFUL STACK DATA"
+        stack.presenter.images.copy.return_value = stack_data
+        self.presenter._do_apply_filter = mock.MagicMock()
+
+        self.presenter.do_apply_filter()
+
+        stack.presenter.images.copy.assert_called_once()
+        self.assertEqual(stack_data, self.presenter.original_images_stack)
