@@ -14,8 +14,11 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.v = mock.MagicMock()
         self.op_p = mock.MagicMock()
         self.uuid = uuid4()
-        self.p = StackChoicePresenter(original_stack=self.original_stack, new_stack=self.new_stack,
-                                      operations_presenter=self.op_p, stack_uuid=self.uuid, view=self.v)
+        self.p = StackChoicePresenter(original_stack=self.original_stack,
+                                      new_stack=self.new_stack,
+                                      operations_presenter=self.op_p,
+                                      stack_uuid=self.uuid,
+                                      view=self.v)
 
     def test_presenter_doesnt_raise_lists_for_original_stack(self):
         single_stack_uuid = uuid4()
@@ -25,10 +28,10 @@ class StackChoicePresenterTest(unittest.TestCase):
     def test_presenter_throws_list_if_uuid_is_not_in_stack(self):
         single_stack_uuid = uuid4()
         original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
-        self.assertRaises(
-            expected_exception=RuntimeError,
-            callable=StackChoicePresenter,
-            args=(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid, mock.MagicMock()))
+        self.assertRaises(expected_exception=RuntimeError,
+                          callable=StackChoicePresenter,
+                          args=(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid,
+                                mock.MagicMock()))
 
     def test_show_calls_show_in_the_view(self):
         self.p.show()
@@ -76,8 +79,7 @@ class StackChoicePresenterTest(unittest.TestCase):
 
         self.p.do_reapply_original_data()
 
-        self.op_p.main_window.presenter.model.set_images_in_stack.assert_called_once_with(self.uuid,
-                                                                                          1)
+        self.op_p.main_window.presenter.model.set_images_in_stack.assert_called_once_with(self.uuid, 1)
         self.p._clean_up_original_images_stack.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
