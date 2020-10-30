@@ -11,7 +11,7 @@ LOG = getLogger(__name__)
 
 def find_if_latest_version(action: Callable[[str], None]):
     LOG.info("Finding and comparing mantidimaging versions")
-    local_mantid_package = subprocess.check_output("conda list | grep mantidimaging | awk 'END{print $2}'",
+    local_mantid_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2}'",
                                                    shell=True,
                                                    env=os.environ).decode("utf-8").strip()
     try:
