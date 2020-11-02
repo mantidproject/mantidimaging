@@ -156,7 +156,7 @@ def save(images: Images,
 
 
 def rescale_single_image(image: np.ndarray, min_input, max_input, max_output):
-    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, data_type=np.int16)
+    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, data_type=np.uint16)
 
 
 def generate_names(name_prefix,
@@ -197,8 +197,8 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
     if not os.path.exists(path):
         os.makedirs(path)
     elif os.listdir(path) and not overwrite_all:
-        raise RuntimeError("The output directory is NOT empty:{0}\n. This can be "
-                           "overridden with -w/--overwrite-all.".format(path))
+        raise RuntimeError("The output directory is NOT empty:{0}\nThis can be "
+                           "overridden by specifying 'Overwrite on name conflict'.".format(path))
 
 
 class Saver(object):

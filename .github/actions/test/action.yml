@@ -6,10 +6,14 @@ inputs:
   command:
     description: 'Command to be executed in the docker image'
     required: true
+  label:
+    description: 'Label for the docker image'
+    required: true
+    default: 'latest'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 runs:
   using: "composite"
   steps:
     - shell: bash
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:latest '${{ inputs.command }}'
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:${{ inputs.label }} '${{ inputs.command }}'

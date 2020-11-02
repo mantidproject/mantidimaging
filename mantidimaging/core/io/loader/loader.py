@@ -45,11 +45,6 @@ def _imread(filename):
 def supported_formats():
     # ignore errors for unused import/variable, we are only checking
     # availability
-    try:
-        import h5py  # noqa: F401
-        h5nxs_available = True
-    except ImportError:
-        h5nxs_available = False
 
     try:
         from skimage import io as skio  # noqa: F401
@@ -64,9 +59,8 @@ def supported_formats():
         fits_available = False
 
     avail_list = \
-        (['nxs'] if h5nxs_available else []) + \
         (['fits', 'fit'] if fits_available else []) + \
-        (['tif', 'tiff', 'png', 'jpg'] if skio_available else [])
+        (['tif', 'tiff'] if skio_available else [])
 
     return avail_list
 

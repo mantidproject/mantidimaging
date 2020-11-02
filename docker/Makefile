@@ -1,14 +1,22 @@
 image_label := $$(if [ -z "$$IMAGE_LABEL" ]; then echo travis-ci-$$(git rev-parse --short HEAD); else echo "$$IMAGE_LABEL"; fi)
 
-build-docker-image: .remind-for-user .remind-for-image-name
-	# tags the image with the current commit short SHA, and without a label
-	docker build --rm -t $$UPLOAD_USER/mantidimaging:$(image_label) -t $$UPLOAD_USER/mantidimaging -f Dockerfile ..
-	docker push $$UPLOAD_USER/mantidimaging:$(image_label)
-	docker push $$UPLOAD_USER/mantidimaging
+all: centos7-base ubuntu18-base
+	docker tag mantidproject/mantidimaging:centos7-base mantidproject/mantidimaging:base
+	docker build -f Dockerfile -t mantidproject/mantidimaging:centos7 ..
 
-.remind-for-user:
-	@if [ -z "$$UPLOAD_USER" ]; then echo "Environment variable UPLOAD_USER not set!"; exit 1; fi;
+	docker tag mantidproject/mantidimaging:ubuntu18-base mantidproject/mantidimaging:base
+	docker build -f Dockerfile -t mantidproject/mantidimaging:ubuntu18 ..
+	docker tag mantidproject/mantidimaging:ubuntu18 mantidproject/mantidimaging:latest
 
-.remind-for-image-name:
-	@if [ -z "$$IMAGE_LABEL" ]; then echo "Custom image name not set (export IMAGE_LABEL). "; fi;
-	@echo Using label: '$(image_label)'
+push:
+	docker push mantidproject/mantidimaging:centos7
+	docker push mantidproject/mantidimaging:ubuntu18
+	docker push mantidproject/mantidimaging:latest
+
+centos7-base:
+	docker build -f CentOS7_base.Dockerfile -t mantidproject/mantidimaging:centos7-base ..
+	docker push mantidproject/mantidimaging:centos7-base
+
+ubuntu18-base:
+	docker build -f Ubuntu18_base.Dockerfile -t mantidproject/mantidimaging:ubuntu18-base ..
+	docker push mantidproject/mantidimaging:ubuntu18-base

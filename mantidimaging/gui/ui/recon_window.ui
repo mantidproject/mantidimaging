@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1578</width>
-    <height>790</height>
+    <width>1495</width>
+    <height>831</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,16 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
          <number>9</number>
         </property>
         <item>
@@ -37,7 +46,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="resultsTab">
            <attribute name="title">
@@ -189,11 +198,11 @@
                    <property name="toolTip">
                     <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                    </property>
+                   <property name="toolTipDuration">
+                    <number>2</number>
+                   </property>
                    <property name="text">
                     <string>Fit from COR/Tilt above</string>
-                   </property>
-                   <property name="toolTipDuration" stdset="0">
-                    <number>2</number>
                    </property>
                   </widget>
                  </item>
@@ -459,6 +468,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="reconstructSlice">
+              <property name="text">
+               <string>Reconstruct Slice</string>
+              </property>
+             </widget>
             </item>
             <item>
              <layout class="QHBoxLayout" name="reconButtonGroup">
