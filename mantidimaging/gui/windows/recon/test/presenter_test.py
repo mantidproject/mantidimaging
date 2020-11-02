@@ -10,6 +10,8 @@ from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, Reconstr
 from mantidimaging.gui.windows.recon.presenter import Notifications as PresNotification
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
 
+TEST_PIXEL_SIZE = 1443
+
 
 class ReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
@@ -22,6 +24,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.sv_view = mock.create_autospec(StackVisualiserView)
 
         data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        data.pixel_size = TEST_PIXEL_SIZE
         self.sv_view.presenter = StackVisualiserPresenter(self.sv_view, data)
 
         self.presenter.model.initial_select_data(self.sv_view)
@@ -70,6 +73,15 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_recon_preview.assert_called_once()
         mock_get_reconstructor_for.assert_called_once()
         mock_reconstructor.single_sino.assert_called_once()
+
+    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
+    def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, _):
+        self.presenter.model.stack = None
+        # first-time selecting this data after reset
+        self.presenter.set_stack_uuid(self.uuid)
+
+        self.assertEqual(5.0, self.view.rotation_centre)
+        self.assertEqual(TEST_PIXEL_SIZE, self.view.pixel_size)
 
     def test_set_projection_preview_index(self):
         self.presenter.set_preview_projection_idx(5)

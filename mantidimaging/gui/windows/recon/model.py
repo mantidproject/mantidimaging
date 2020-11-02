@@ -22,13 +22,44 @@ LOG = getLogger(__name__)
 class ReconstructWindowModel(object):
     def __init__(self, data_model: CorTiltPointQtModel):
         self.stack: Optional['StackVisualiserView'] = None
-        self.preview_projection_idx = 0
-        self.preview_slice_idx = 0
-        self.selected_row = 0
-        self.projection_indices = None
+        self._preview_projection_idx = 0
+        self._preview_slice_idx = 0
+        self._selected_row = 0
         self.data_model = data_model
-        self.last_result = None
+        self._last_result = None
         self._last_cor = ScalarCoR(0.0)
+
+    @property
+    def last_result(self):
+        return self._last_result
+
+    @last_result.setter
+    def last_result(self, value):
+        self._last_result = value
+
+    @property
+    def selected_row(self):
+        return self._selected_row
+
+    @selected_row.setter
+    def selected_row(self, value):
+        self._selected_row = value
+
+    @property
+    def preview_projection_idx(self):
+        return self._preview_projection_idx
+
+    @preview_projection_idx.setter
+    def preview_projection_idx(self, value: int):
+        self._preview_projection_idx = value
+
+    @property
+    def preview_slice_idx(self):
+        return self._preview_slice_idx
+
+    @preview_slice_idx.setter
+    def preview_slice_idx(self, value: int):
+        self._preview_slice_idx = value
 
     @property
     def last_cor(self):

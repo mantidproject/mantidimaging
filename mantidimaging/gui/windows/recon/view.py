@@ -131,9 +131,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.numIter.valueChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
-        # Set pixel size from loaded stack
-        self.pixelSize.setValue(self.presenter.get_pixel_size_from_images())
-
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
 
@@ -274,6 +271,10 @@ class ReconstructWindowView(BaseMainWindowView):
     @property
     def pixel_size(self):
         return self.pixelSize.value()
+
+    @pixel_size.setter
+    def pixel_size(self, value: int):
+        return self.pixelSize.setValue(value)
 
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
