@@ -40,27 +40,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                 partial(self.presenter._post_filter, expected_apply_to))
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
-    def test_apply_filter_with_180degree_proj_stack(self, apply_filter_mock: mock.Mock):
-        stack = mock.Mock()
-        stack_proj180 = mock.Mock()
-        presenter = mock.Mock()
-        stack.presenter = presenter
-
-        presenter.images.has_proj180deg.return_value = True
-        presenter.images.proj180deg = stack_proj180
-        self.view.main_window.get_stack_with_images.return_value = stack_proj180
-
-        self.presenter.stack = stack
-        self.presenter.do_apply_filter()
-
-        self.view.clear_previews.assert_called_once()
-        self.view.main_window.get_stack_with_images.assert_called_once_with(stack_proj180)
-
-        expected_apply_to = [stack, stack_proj180]
-        assert_called_once_with(apply_filter_mock, expected_apply_to,
-                                partial(self.presenter._post_filter, expected_apply_to))
-
-    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
     def test_apply_filter_to_all(self, apply_filter_mock: mock.Mock):
         self.view.ask_confirmation.return_value = False
         self.presenter.do_apply_filter_to_all()
@@ -85,6 +64,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = None
+        self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
         for i, msv in enumerate(mock_stack_visualisers):
@@ -99,11 +79,26 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = 123
+        self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
         for i, msv in enumerate(mock_stack_visualisers):
             assert msv.presenter.images == self.view.main_window.update_stack_with_images.call_args_list[i].args[0]
         update_previews_mock.assert_called_once()
+
+    def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter._do_apply_filter = mock.MagicMock()
+        self.presenter.applying_to_all = False
+        mock_stack = mock.MagicMock()
+        mock_stack.presenter.images.has_proj180deg.return_value = True
+        mock_stack_visualisers = [mock_stack]
+        mock_task = mock.MagicMock()
+        mock_task.error = None
+
+        self.presenter._post_filter(mock_stack_visualisers, mock_task)
+
+        self.presenter._do_apply_filter.assert_called_once()
 
     def test_update_previews_no_stack(self):
         self.presenter.do_update_previews()
@@ -155,6 +150,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_safe_apply_starts_stack_choice_presenter(self, stack_choice_presenter):
         self.presenter.view.safeApply.isChecked.return_value = True
         stack_choice_presenter.done = True
+        self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
 
         self.assertEqual(2, stack_choice_presenter.call_count)
@@ -163,6 +159,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_unchecked_safe_apply_does_not_start_stack_choice_presenter(self, stack_choice_presenter):
         self.presenter.view.safeApply.isChecked.return_value = False
         stack_choice_presenter.done = True
+        self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
 
         stack_choice_presenter.assert_not_called()

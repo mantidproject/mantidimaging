@@ -162,11 +162,11 @@ class FiltersWindowPresenter(BasePresenter):
                 do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
             self.view.main_window.update_stack_with_images(stack.presenter.images)
 
-            if self.stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
+            if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
                     and not self.applying_to_all:
                 self.view.clear_previews()
                 self._do_apply_filter(
-                    [self.view.main_window.get_stack_with_images(self.stack.presenter.images.proj180deg)])
+                    [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
