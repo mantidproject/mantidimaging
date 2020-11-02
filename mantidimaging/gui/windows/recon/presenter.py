@@ -112,6 +112,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.clear_cor_table()
         self.model.initial_select_data(stack)
         self.view.rotation_centre = self.model.last_cor.value
+        self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
 
