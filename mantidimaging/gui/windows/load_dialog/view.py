@@ -62,11 +62,11 @@ class MWLoadDialog(Qt.QDialog):
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(5)
         self.select_proj_180deg.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree", image_file=True))
+            Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree", is_image_file=True))
 
         self.sample_log, self.select_sample_log = self.create_file_input(6)
         self.select_sample_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SAMPLE_LOG, field=self.sample_log, name="Sample Log", image_file=False))
+            Notification.UPDATE_SAMPLE_LOG, field=self.sample_log, name="Sample Log", is_image_file=False))
 
         self.flat_before_log, self.select_flat_before_log = self.create_file_input(7)
         self.select_flat_before_log.clicked.connect(lambda: self.presenter.notify(
@@ -75,6 +75,7 @@ class MWLoadDialog(Qt.QDialog):
         self.flat_after_log, self.select_flat_after_log = self.create_file_input(8)
         self.select_flat_after_log.clicked.connect(lambda: self.presenter.notify(
             Notification.UPDATE_SINGLE_FILE, field=self.flat_after_log, name="Flat After Log", image_file=False))
+
 
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)

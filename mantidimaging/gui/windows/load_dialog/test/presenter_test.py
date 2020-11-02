@@ -2,6 +2,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from mantidimaging.core.io.loader.loader import FileInformation
+from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.gui.windows.load_dialog.presenter import LoadPresenter, Notification
 
 
@@ -41,11 +44,12 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with("Sample")
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.read_in_shape", return_value=((0, 0, 0), True))
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.read_in_file_information",
+                return_value=FileInformation([], (0, 0, 0), True))
     @mock.patch(
         "mantidimaging.gui.windows.load_dialog.presenter.get_file_extension", )
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix")
-    def test_do_update_sample(self, get_prefix, get_file_extension, read_in_shape):
+    def test_do_update_sample(self, get_prefix, get_file_extension, read_in_file_information):
         selected_file = "SelectedFile"
         sample_file_name = "SampleFileName"
         path_text = "PathText"
@@ -71,7 +75,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.assertEqual(image_format, self.p.image_format)
         get_file_extension.assert_called_once_with(sample_file_name)
         get_prefix.assert_called_once_with(path_text)
-        read_in_shape.assert_called_once_with(dirname, in_prefix=prefix, in_format=image_format)
+        read_in_file_information.assert_called_once_with(dirname, in_prefix=prefix, in_format=image_format)
         self.assertEqual((0, 0, 0), self.p.last_shape)
         self.v.flat_before.set_images.assert_called_once_with(1)
         self.v.dark_before.set_images.assert_called_once_with(1)
@@ -113,15 +117,109 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
     def test_do_update_single_file(self):
         file_name = "file_name"
-        image_name = "/ExampleImageName"
         name = "Name"
+        is_image_file = True
         field = mock.MagicMock()
         self.v.select_file.return_value = file_name
 
-        self.p.do_update_single_file(field, name, image_name)
+        self.p.do_update_single_file(field, name, is_image_file)
 
-        self.v.select_file.assert_called_once_with(name, image_name)
+        self.v.select_file.assert_called_once_with(name, is_image_file)
         self.assertEqual(field.path, file_name)
+
+    def test_do_update_single_file_no_file_selected(self):
+        file_name = "file_name"
+        name = "Name"
+        is_image_file = True
+        field = mock.MagicMock()
+        self.v.select_file.return_value = None
+
+        self.p.do_update_single_file(field, name, is_image_file)
+
+        self.v.select_file.assert_called_once_with(name, is_image_file)
+        self.assertNotEqual(field.path, file_name)
+
+    def test_do_update_sample_log_no_sample_selected(self):
+        name = "Name"
+        is_image_file = True
+        field = mock.MagicMock()
+        self.p.last_file_info = None
+        self.assertRaises(RuntimeError, self.p.do_update_sample_log, field, name, is_image_file)
+
+    def test_do_update_sample_log_no_file_selected(self):
+        file_name = "file_name"
+        name = "Name"
+        is_image_file = True
+        field = mock.MagicMock()
+        self.v.select_file.return_value = None
+
+        self.p.last_file_info = FileInformation([], (0, 0, 0), False)
+        self.p.do_update_sample_log(field, name, is_image_file)
+
+        self.v.select_file.assert_called_once_with(name, is_image_file)
+        self.assertNotEqual(field.path, file_name)
+
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency")
+    def test_do_update_sample_log(self, mock_ensure):
+        file_name = "file_name"
+        name = "Name"
+
+        is_image_file = True
+        field = mock.MagicMock()
+        self.v.select_file.return_value = file_name
+
+        self.p.last_file_info = FileInformation([], (0, 0, 0), False)
+        self.p.do_update_sample_log(field, name, is_image_file)
+
+        self.v.select_file.assert_called_once_with(name, is_image_file)
+        mock_ensure.assert_called_once_with(field, file_name, [])
+
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
+    def test_ensure_sample_log_consistency_matching(self, mock_load_log):
+        """
+        Test behaviour when the number of projection angles and files matches
+        """
+        mock_log = mock.create_autospec(IMATLogFile)
+        mock_load_log.return_value = mock_log
+        file_name = "file_name"
+        field = mock.MagicMock()
+        field.path = None
+        field.use = None
+        test_filenames = ["file1", "file2"]
+
+        self.p.last_file_info = FileInformation(test_filenames, (2, 10, 10), False)
+
+        mock_log.projection_angles.return_value = ProjectionAngles([1, 2])
+        self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
+
+        mock_load_log.assert_called_once_with(file_name)
+        mock_log.projection_angles.assert_called_once()
+        self.assertIsNotNone(field.path)
+        self.assertIsNotNone(field.use)
+
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
+    def test_ensure_sample_log_consistency_mismatching(self, mock_load_log):
+        """
+        Test behaviour when the number of projection angles and files DOES NOT match
+        """
+        mock_log = mock.create_autospec(IMATLogFile)
+        mock_load_log.return_value = mock_log
+        file_name = "file_name"
+        field = mock.MagicMock()
+        field.path = None
+        field.use = None
+        test_filenames = ["file1", "file2"]
+
+        self.p.last_file_info = FileInformation(test_filenames, (2, 10, 10), False)
+
+        mock_log.projection_angles.return_value = ProjectionAngles([1, 2, 3])
+        mock_log.raise_if_angle_missing.return_value = (5, "006.tif")
+        self.assertRaises(RuntimeError, self.p.ensure_sample_log_consistency, field, file_name, test_filenames)
+
+        mock_load_log.assert_called_once_with(file_name)
+        mock_log.projection_angles.assert_called_once()
+        self.assertIsNone(field.path)
+        self.assertIsNone(field.use)
 
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix", return_value="/path")
     def test_get_parameters(self, get_prefix):

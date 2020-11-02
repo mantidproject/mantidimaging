@@ -206,28 +206,21 @@ class LoadPresenter:
 
         return lp
 
-    def _get_file_from_selection(self, name: str, is_image_file: bool) -> Optional[str]:
-        try:
-            return self.view.select_file(name, is_image_file)
-        except RuntimeError:
-            logger.info(f"Could not find the {name} file")
-            return None
-
     def _update_field_action(self, field: Field, file_name):
         if file_name is not None:
             field.path = file_name
-            field.use = True
+            field.use = True  # type: ignore
 
-    def do_update_single_file(self, field: Field, name: str, image_file: bool):
-        file_name = self._get_file_from_selection(name, image_file)
+    def do_update_single_file(self, field: Field, name: str, is_image_file: bool):
+        file_name = self.view.select_file(name, is_image_file)
         if file_name is None:
             return
         self._update_field_action(field, file_name)
 
-    def do_update_sample_log(self, field: Field, name: str, image_file: bool):
+    def do_update_sample_log(self, field: Field, name: str, is_image_file: bool):
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
-        file_name = self._get_file_from_selection(name, image_file)
+        file_name = self.view.select_file(name, is_image_file)
         if file_name is None:
             return
 
@@ -236,16 +229,7 @@ class LoadPresenter:
 
     def ensure_sample_log_consistency(self, field: Field, file_name, image_filenames):
         log = load_log(file_name)
-        pa = log.projection_angles()
-        num_images = self.last_file_info.shape[0]
-
-        if len(pa.value) != num_images:
-            pn, iname = log.find_missing_projection_number(image_filenames)
-            raise RuntimeError(
-                "The number of images does not match the number of projection angles in the log.\n"
-                "Please add missing projections or remove their lines from the logfile.\n"
-                f"Mismatching projection angle for image {pn} was going to be used for image file {iname}")
-
+        log.raise_if_angle_missing(image_filenames)
         self._update_field_action(field, file_name)
 
     def set_sample_log(self, sample_log: Field, sample_dirname, log_name, image_filenames):
