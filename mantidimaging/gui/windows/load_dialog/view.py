@@ -113,11 +113,11 @@ class MWLoadDialog(Qt.QDialog):
         else:
             # Assume text file
             file_filter = "Log File (*.txt *.log)"
-        selected_file, accepted = Qt.QFileDialog.getOpenFileName(caption=caption,
-                                                                 filter=f"{file_filter};;All (*.*)",
-                                                                 initialFilter=file_filter)
+        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=caption,
+                                                          filter=f"{file_filter};;All (*.*)",
+                                                          initialFilter=file_filter)
 
-        if accepted:
+        if len(selected_file) > 0:
             return selected_file
         else:
             return None
@@ -126,7 +126,8 @@ class MWLoadDialog(Qt.QDialog):
         self.sample.set_step(1)
 
     def _set_preview_step(self):
-        self.sample.set_step(self.presenter.last_shape[0] // 10)
+        # FIXME direct attribute access
+        self.sample.set_step(self.presenter.last_file_info.shape[0] // 10)
 
     def get_parameters(self) -> LoadingParameters:
         return self.presenter.get_parameters()
