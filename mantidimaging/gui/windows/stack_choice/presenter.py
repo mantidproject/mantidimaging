@@ -26,6 +26,7 @@ class StackChoicePresenter:
         self.view = view
         self.stack_uuid = stack_uuid
         self.done = False
+        self.use_new_data = False
 
     def show(self):
         self.view.show()
@@ -36,6 +37,7 @@ class StackChoicePresenter:
                 self.do_reapply_original_data()
             elif signal == Notification.CHOOSE_NEW_DATA:
                 self.do_clean_up_original_data()
+                self.use_new_data = True
 
         except Exception as e:
             self.operations_presenter.show_error(e, traceback.format_exc())
