@@ -1,16 +1,13 @@
 from functools import partial
-from typing import Union, Callable, Dict, Any, TYPE_CHECKING
+from typing import Union, Callable, Dict, Any
 
-from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox
+from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import Type
-
-if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QWidget
 
 
 class DivideFilter(BaseFilter):
@@ -35,7 +32,7 @@ class DivideFilter(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
         _, value_widget = add_property_to_form("Divide by",
@@ -53,12 +50,14 @@ class DivideFilter(BaseFilter):
                                               tooltip="The unit of the input number. "
                                               "Microns will be converted to cm before division")
 
-        return {'value_widget': value_widget}
+        return {'value_widget': value_widget, 'unit_widget': unit_widget}
 
     @staticmethod
-    def execute_wrapper(value_widget: QDoubleSpinBox) -> partial:
+    def execute_wrapper(  # type: ignore
+            value_widget: QDoubleSpinBox, unit_widget: QComboBox) -> partial:
         value = value_widget.value()
-        return partial(DivideFilter.filter_func, value=value)
+        unit = unit_widget.currentText()
+        return partial(DivideFilter.filter_func, value=value, unit=unit)
 
     @staticmethod
     def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
