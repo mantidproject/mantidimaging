@@ -119,13 +119,13 @@ class Images:
 
         self.metadata[const.OPERATION_HISTORY].append({
             const.TIMESTAMP:
-                datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             const.OPERATION_NAME:
-                func_name,
+            func_name,
             const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
                                            for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
-                display_name
+            display_name
         })
 
     def copy(self, flip_axes=False) -> 'Images':
@@ -276,9 +276,9 @@ class Images:
         proj_angles = self._log_file.projection_angles() if self._log_file is not None else \
             ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
         if self.num_images != len(proj_angles.value):
-            raise ValueError(f"Number of projection angles {len(proj_angles.value)} does not equal" \
-                             f" the number of projections {self.num_images}. This can happen if loading subset of" \
-                             f" projections, and using projection angles from a log file.")
+            raise ValueError(f"Number of projection angles {len(proj_angles.value)} does not equal "
+                             f"the number of projections {self.num_images}. This can happen if loading subset of "
+                             "projections, and using projection angles from a log file.")
         return proj_angles
 
     def counts(self) -> Optional[Counts]:
