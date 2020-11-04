@@ -167,6 +167,7 @@ def add_property_to_form(label: str,
 
     elif dtype == "choice" or dtype == Type.CHOICE:
         right_widget = Qt.QComboBox()
+        right_widget.setSizeAdjustPolicy(Qt.QComboBox.AdjustToContents)
         if valid_values:
             right_widget.addItems(valid_values)
         if on_change is not None:

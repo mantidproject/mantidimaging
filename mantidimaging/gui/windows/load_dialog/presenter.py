@@ -67,15 +67,20 @@ class LoadPresenter:
 
         sample_dirname = Path(dirname)
 
-        self.view.flat.set_images(self._find_images(sample_dirname, "Flat"))
-        self.view.dark.set_images(self._find_images(sample_dirname, "Dark"))
+        self.view.flat_before.set_images(self._find_images(sample_dirname, "Flat Before"))
+        self.view.flat_after.set_images(self._find_images(sample_dirname, "Flat After"))
+        self.view.dark_before.set_images(self._find_images(sample_dirname, "Dark Before"))
+        self.view.dark_after.set_images(self._find_images(sample_dirname, "Dark After"))
         self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
 
         self.view.sample_log.path = self._find_log(sample_dirname, self.view.sample.directory())
         self.view.sample_log.use = False
 
-        self.view.flat_log.path = self._find_log(sample_dirname, self.view.flat.directory())
-        self.view.flat_log.use = False
+        self.view.flat_before_log.path = self._find_log(sample_dirname, self.view.flat_before.directory())
+        self.view.flat_before_log.use = False
+
+        self.view.flat_after_log.path = self._find_log(sample_dirname, self.view.flat_after.directory())
+        self.view.flat_after_log.use = False
 
         self.view.images_are_sinograms.setChecked(sinograms)
 
@@ -90,7 +95,7 @@ class LoadPresenter:
             logger.info(f"Could not find {type} files in {sample_dirname.absolute()}")
 
         # look into different directories 1 level above
-        dirs = [f"{type.lower()}", type, f"{type}_After", f"{type}_Before"]
+        dirs = [f"{type.lower()}", type, type.replace(" ", "_")]
 
         for d in dirs:
             expected_folder_path = sample_dirname / ".." / d
@@ -137,17 +142,31 @@ class LoadPresenter:
         lp.name = self.view.sample.file()
         lp.pixel_size = self.view.pixelSize.value()
 
-        if self.view.flat.use.isChecked() and self.view.flat.path_text() != "":
-            flat_log = self.view.flat_log.path_text() if self.view.flat_log.use.isChecked() else None
-            lp.flat = ImageParameters(input_path=self.view.flat.directory(),
-                                      prefix=get_prefix(self.view.flat.path_text()),
-                                      format=self.image_format,
-                                      log_file=flat_log)
+        if self.view.flat_before.use.isChecked() and self.view.flat_before.path_text() != "":
+            flat_before_log = self.view.flat_before_log.path_text() if self.view.flat_before_log.use.isChecked() \
+                else None
+            lp.flat_before = ImageParameters(input_path=self.view.flat_before.directory(),
+                                             prefix=get_prefix(self.view.flat_before.path_text()),
+                                             format=self.image_format,
+                                             log_file=flat_before_log)
 
-        if self.view.dark.use.isChecked() and self.view.dark.path_text() != "":
-            lp.dark = ImageParameters(input_path=self.view.dark.directory(),
-                                      prefix=get_prefix(self.view.dark.path_text()),
-                                      format=self.image_format)
+        if self.view.flat_after.use.isChecked() and self.view.flat_after.path_text() != "":
+            flat_after_log = self.view.flat_after_log.path_text() if self.view.flat_after_log.use.isChecked() \
+                else None
+            lp.flat_after = ImageParameters(input_path=self.view.flat_after.directory(),
+                                            prefix=get_prefix(self.view.flat_after.path_text()),
+                                            format=self.image_format,
+                                            log_file=flat_after_log)
+
+        if self.view.dark_before.use.isChecked() and self.view.dark_before.path_text() != "":
+            lp.dark_before = ImageParameters(input_path=self.view.dark_before.directory(),
+                                             prefix=get_prefix(self.view.dark_before.path_text()),
+                                             format=self.image_format)
+
+        if self.view.dark_after.use.isChecked() and self.view.dark_after.path_text() != "":
+            lp.dark_after = ImageParameters(input_path=self.view.dark_after.directory(),
+                                            prefix=get_prefix(self.view.dark_after.path_text()),
+                                            format=self.image_format)
 
         if self.view.proj_180deg.use.isChecked() and self.view.proj_180deg.path_text() != "":
             lp.proj_180deg = ImageParameters(input_path=self.view.proj_180deg.directory(),
