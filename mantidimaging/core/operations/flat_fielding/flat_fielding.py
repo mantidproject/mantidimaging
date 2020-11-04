@@ -35,10 +35,10 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def filter_func(data: Images,
-                    flat_before: Images,
-                    flat_after: Images,
-                    dark_before: Images,
-                    dark_after: Images,
+                    flat_before: Images = None,
+                    flat_after: Images = None,
+                    dark_before: Images = None,
+                    dark_after: Images = None,
                     selected_flat_fielding: str = None,
                     cores=None,
                     chunksize=None,
@@ -59,13 +59,14 @@ class FlatFieldFilter(BaseFilter):
         h.check_data_stack(data)
 
         if selected_flat_fielding is not None:
-            if selected_flat_fielding == "Both, concatenated":
+            if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
+                    and dark_after is not None and dark_before is not None:
                 flat_avg = (flat_before.data.mean(axis=0) + flat_after.data.mean(axis=0)) / 2.0
                 dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
-            elif selected_flat_fielding == "Only Before":
+            elif selected_flat_fielding == "Only Before" and flat_before is not None and dark_before is not None:
                 flat_avg = flat_before.data.mean(axis=0)
                 dark_avg = dark_before.data.mean(axis=0)
-            elif selected_flat_fielding == "Only After":
+            elif selected_flat_fielding == "Only After" and flat_after is not None and dark_after is not None:
                 flat_avg = flat_after.data.mean(axis=0)
                 dark_avg = dark_after.data.mean(axis=0)
             else:
