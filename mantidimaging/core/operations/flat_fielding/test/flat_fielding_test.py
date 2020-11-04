@@ -39,7 +39,9 @@ class FlatFieldingTest(unittest.TestCase):
         expected = np.full(images.data.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = FlatFieldFilter.filter_func(images, flat_before=flat_before, dark_before=dark_before,
+        result = FlatFieldFilter.filter_func(images,
+                                             flat_before=flat_before,
+                                             dark_before=dark_before,
                                              selected_flat_fielding="Only Before")
 
         npt.assert_almost_equal(result.data, expected, 7)
@@ -53,7 +55,9 @@ class FlatFieldingTest(unittest.TestCase):
         expected = np.full(images.data.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = FlatFieldFilter.filter_func(images, flat_after=flat_after, dark_after=dark_after,
+        result = FlatFieldFilter.filter_func(images,
+                                             flat_after=flat_after,
+                                             dark_after=dark_after,
                                              selected_flat_fielding="Only After")
 
         npt.assert_almost_equal(result.data, expected, 7)
@@ -70,8 +74,11 @@ class FlatFieldingTest(unittest.TestCase):
         expected = np.full(images.data.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = FlatFieldFilter.filter_func(images, flat_before=flat_before, dark_before=dark_before,
-                                             flat_after=flat_after, dark_after=dark_after,
+        result = FlatFieldFilter.filter_func(images,
+                                             flat_before=flat_before,
+                                             dark_before=dark_before,
+                                             flat_after=flat_after,
+                                             dark_after=dark_after,
                                              selected_flat_fielding="Both, concatenated")
 
         npt.assert_almost_equal(result.data, expected, 7)

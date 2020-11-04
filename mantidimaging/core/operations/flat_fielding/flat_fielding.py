@@ -109,15 +109,15 @@ class FlatFieldFilter(BaseFilter):
                     widget.setCurrentIndex(i)
                     break
 
-        _, selected_flat_fielding_widget = add_property_to_form("Flat Fielding Method",
-                                                                Type.CHOICE,
-                                                                valid_values=["Only Before", "Only After",
-                                                                              "Both, concatenated"],
-                                                                form=form,
-                                                                filters_view=view,
-                                                                on_change=on_change,
-                                                                tooltip="Choosing which stacks to use during flat "
-                                                                        "fielding")
+        _, selected_flat_fielding_widget = add_property_to_form(
+            "Flat Fielding Method",
+            Type.CHOICE,
+            valid_values=["Only Before", "Only After", "Both, concatenated"],
+            form=form,
+            filters_view=view,
+            on_change=on_change,
+            tooltip="Choosing which stacks to use during flat "
+            "fielding")
 
         _, flat_before_widget = add_property_to_form("Flat Before",
                                                      Type.STACK,
@@ -190,8 +190,11 @@ class FlatFieldFilter(BaseFilter):
 
         selected_flat_fielding = selected_flat_fielding_widget.currentText()
 
-        return partial(FlatFieldFilter.filter_func, flat_before=flat_before_images, flat_after=flat_after_images,
-                       dark_before=dark_before_images, dark_after=dark_after_images,
+        return partial(FlatFieldFilter.filter_func,
+                       flat_before=flat_before_images,
+                       flat_after=flat_after_images,
+                       dark_before=dark_before_images,
+                       dark_after=dark_after_images,
                        selected_flat_fielding=selected_flat_fielding)
 
     @staticmethod

@@ -157,12 +157,16 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.do_load_stack(lp, progress_mock)
 
-        load_p_mock.assert_has_calls(
-            [mock.call(sample_mock, lp.dtype, progress_mock),
-             mock.call(flat_before_mock, lp.dtype, progress_mock),
-             mock.call(flat_after_mock, lp.dtype, progress_mock)])
-        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_before_mock.log_file),
-                                        mock.call(flat_after_mock.log_file)])
+        load_p_mock.assert_has_calls([
+            mock.call(sample_mock, lp.dtype, progress_mock),
+            mock.call(flat_before_mock, lp.dtype, progress_mock),
+            mock.call(flat_after_mock, lp.dtype, progress_mock)
+        ])
+        load_log_mock.assert_has_calls([
+            mock.call(sample_mock.log_file),
+            mock.call(flat_before_mock.log_file),
+            mock.call(flat_after_mock.log_file)
+        ])
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_p')
@@ -200,8 +204,11 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(proj_180deg_mock, lp.dtype, progress_mock)
         ])
 
-        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_before_mock.log_file),
-                                        mock.call(flat_after_mock.log_file)])
+        load_log_mock.assert_has_calls([
+            mock.call(sample_mock.log_file),
+            mock.call(flat_before_mock.log_file),
+            mock.call(flat_after_mock.log_file)
+        ])
 
     def test_create_name(self):
         self.assertEqual("apple", self.model.create_name("apple"))

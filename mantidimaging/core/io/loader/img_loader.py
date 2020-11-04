@@ -14,8 +14,16 @@ from . import stack_loader
 from ...data.dataset import Dataset
 
 
-def execute(load_func, sample_path, flat_before_path, flat_after_path, dark_before_path, dark_after_path, img_format,
-            dtype, indices, progress=None) -> Dataset:
+def execute(load_func,
+            sample_path,
+            flat_before_path,
+            flat_after_path,
+            dark_before_path,
+            dark_after_path,
+            img_format,
+            dtype,
+            indices,
+            progress=None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -66,8 +74,7 @@ def execute(load_func, sample_path, flat_before_path, flat_after_path, dark_befo
                    dark_before=Images(dark_before_data, dark_before_filenames, memory_filename=dark_before_mfname)
                    if dark_before_data is not None else None,
                    dark_after=Images(dark_after_data, dark_after_filenames, memory_filename=dark_after_mfname)
-                   if dark_after_data is not None else None
-                   )
+                   if dark_after_data is not None else None)
 
 
 class ImageLoader(object):
