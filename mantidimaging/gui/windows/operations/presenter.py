@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtWidgets import QApplication
+from mantidimaging.gui.utility.common import operation_in_progress
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
@@ -113,7 +114,8 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_apply_filter(self):
         if self.view.safeApply.isChecked():
-            self.original_images_stack = self.stack.presenter.images.copy()
+            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
+                self.original_images_stack = self.stack.presenter.images.copy()
 
         self.view.clear_previews()
         apply_to = [self.stack]
