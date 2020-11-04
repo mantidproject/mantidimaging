@@ -35,10 +35,10 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def filter_func(data: Images,
-                    flat_before: Images = None,
-                    flat_after: Images = None,
-                    dark_before: Images = None,
-                    dark_after: Images = None,
+                    flat_before: Images,
+                    flat_after: Images,
+                    dark_before: Images,
+                    dark_after: Images,
                     selected_flat_fielding: str = None,
                     cores=None,
                     chunksize=None,

@@ -41,7 +41,9 @@ class FlatFieldingTest(unittest.TestCase):
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images,
                                              flat_before=flat_before,
+                                             flat_after=None,
                                              dark_before=dark_before,
+                                             dark_after=None,
                                              selected_flat_fielding="Only Before")
 
         npt.assert_almost_equal(result.data, expected, 7)
@@ -56,7 +58,9 @@ class FlatFieldingTest(unittest.TestCase):
 
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images,
+                                             None,
                                              flat_after=flat_after,
+                                             dark_before=None,
                                              dark_after=dark_after,
                                              selected_flat_fielding="Only After")
 
@@ -76,8 +80,8 @@ class FlatFieldingTest(unittest.TestCase):
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images,
                                              flat_before=flat_before,
-                                             dark_before=dark_before,
                                              flat_after=flat_after,
+                                             dark_before=dark_before,
                                              dark_after=dark_after,
                                              selected_flat_fielding="Both, concatenated")
 
