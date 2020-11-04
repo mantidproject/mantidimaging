@@ -149,16 +149,20 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sinograms = False
         lp.pixel_size = 101
 
-        flat_mock = mock.Mock()
-        lp.flat = flat_mock
+        flat_before_mock = mock.Mock()
+        lp.flat_before = flat_before_mock
+        flat_after_mock = mock.Mock()
+        lp.flat_after = flat_after_mock
         progress_mock = mock.Mock()
 
         self.model.do_load_stack(lp, progress_mock)
 
         load_p_mock.assert_has_calls(
             [mock.call(sample_mock, lp.dtype, progress_mock),
-             mock.call(flat_mock, lp.dtype, progress_mock)])
-        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_mock.log_file)])
+             mock.call(flat_before_mock, lp.dtype, progress_mock),
+             mock.call(flat_after_mock, lp.dtype, progress_mock)])
+        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_before_mock.log_file),
+                                        mock.call(flat_after_mock.log_file)])
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_p')
@@ -170,11 +174,15 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sinograms = False
         lp.pixel_size = 101
 
-        flat_mock = mock.Mock()
-        lp.flat = flat_mock
+        flat_before_mock = mock.Mock()
+        lp.flat_before = flat_before_mock
+        flat_after_mock = mock.Mock()
+        lp.flat_after = flat_after_mock
 
-        dark_mock = mock.Mock()
-        lp.dark = dark_mock
+        dark_before_mock = mock.Mock()
+        lp.dark_before = dark_before_mock
+        dark_after_mock = mock.Mock()
+        lp.dark_after = dark_after_mock
 
         proj_180deg_mock = mock.Mock()
         lp.proj_180deg = proj_180deg_mock
@@ -185,12 +193,15 @@ class MainWindowModelTest(unittest.TestCase):
 
         load_p_mock.assert_has_calls([
             mock.call(sample_mock, lp.dtype, progress_mock),
-            mock.call(flat_mock, lp.dtype, progress_mock),
-            mock.call(dark_mock, lp.dtype, progress_mock),
+            mock.call(flat_before_mock, lp.dtype, progress_mock),
+            mock.call(flat_after_mock, lp.dtype, progress_mock),
+            mock.call(dark_before_mock, lp.dtype, progress_mock),
+            mock.call(dark_after_mock, lp.dtype, progress_mock),
             mock.call(proj_180deg_mock, lp.dtype, progress_mock)
         ])
 
-        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_mock.log_file)])
+        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_before_mock.log_file),
+                                        mock.call(flat_after_mock.log_file)])
 
     def test_create_name(self):
         self.assertEqual("apple", self.model.create_name("apple"))

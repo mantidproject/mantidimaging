@@ -109,10 +109,14 @@ class MainWindowPresenter(BasePresenter):
             self.view.tabifyDockWidget(current_stack_visualisers[0].dock, sample_dock)
 
         if isinstance(container, Dataset):
-            if container.flat and container.flat.filenames:
-                self._add_stack(container.flat, container.flat.filenames[0], sample_dock)
-            if container.dark and container.dark.filenames:
-                self._add_stack(container.dark, container.dark.filenames[0], sample_dock)
+            if container.flat_before and container.flat_before.filenames:
+                self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_dock)
+            if container.flat_after and container.flat_after.filenames:
+                self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_dock)
+            if container.dark_before and container.dark_before.filenames:
+                self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_dock)
+            if container.dark_after and container.dark_after.filenames:
+                self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_dock)
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
                 self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_dock)
 

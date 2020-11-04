@@ -21,8 +21,10 @@ class MWLoadDialog(Qt.QDialog):
     step_all: QPushButton
 
     _sample_path: Optional[QTreeWidgetItem] = None
-    _flat_path: Optional[QTreeWidgetItem] = None
-    _dark_path: Optional[QTreeWidgetItem] = None
+    _flat_before_path: Optional[QTreeWidgetItem] = None
+    _flat_after_path: Optional[QTreeWidgetItem] = None
+    _dark_before_path: Optional[QTreeWidgetItem] = None
+    _dark_after_path: Optional[QTreeWidgetItem] = None
     _proj_180deg_path: Optional[QTreeWidgetItem] = None
     _sample_log_path: Optional[QTreeWidgetItem] = None
     _flat_log_path: Optional[QTreeWidgetItem] = None
@@ -42,25 +44,37 @@ class MWLoadDialog(Qt.QDialog):
         self.sample, self.select_sample = self.create_file_input(0)
         self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
-        self.flat, self.select_flat = self.create_file_input(1)
-        self.select_flat.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.flat, name="Flat"))
+        self.flat_before, self.select_flat_before = self.create_file_input(1)
+        self.select_flat_before.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.flat_before, name="Flat Before"))
 
-        self.dark, self.select_dark = self.create_file_input(2)
-        self.select_dark.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.dark, name="Dark"))
+        self.flat_after, self.select_flat_after = self.create_file_input(2)
+        self.select_flat_after.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.flat_after, name="Flat After"))
 
-        self.proj_180deg, self.select_proj_180deg = self.create_file_input(3)
+        self.dark_before, self.select_dark_before = self.create_file_input(3)
+        self.select_dark_before.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.dark_before, name="Dark Before"))
+
+        self.dark_after, self.select_dark_after = self.create_file_input(4)
+        self.select_dark_after.clicked.connect(
+            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.dark_after, name="Dark After"))
+
+        self.proj_180deg, self.select_proj_180deg = self.create_file_input(5)
         self.select_proj_180deg.clicked.connect(lambda: self.presenter.notify(
             Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree", image_file=True))
 
-        self.sample_log, self.select_sample_log = self.create_file_input(4)
+        self.sample_log, self.select_sample_log = self.create_file_input(6)
         self.select_sample_log.clicked.connect(lambda: self.presenter.notify(
             Notification.UPDATE_SINGLE_FILE, field=self.sample_log, name="Sample Log", image_file=False))
 
-        self.flat_log, self.select_flat_log = self.create_file_input(5)
-        self.select_flat_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.flat_log, name="Flat Log", image_file=False))
+        self.flat_before_log, self.select_flat_before_log = self.create_file_input(7)
+        self.select_flat_before_log.clicked.connect(lambda: self.presenter.notify(
+            Notification.UPDATE_SINGLE_FILE, field=self.flat_before_log, name="Flat Before Log", image_file=False))
+
+        self.flat_after_log, self.select_flat_after_log = self.create_file_input(8)
+        self.select_flat_after_log.clicked.connect(lambda: self.presenter.notify(
+            Notification.UPDATE_SINGLE_FILE, field=self.flat_after_log, name="Flat After Log", image_file=False))
 
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
