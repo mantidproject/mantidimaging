@@ -15,6 +15,7 @@ def execute():
 
     # create the GUI event loop
     q_application = QApplication(sys.argv)
+    q_application.setApplicationName("Mantid Imaging")
     application_window = MainWindowView()
 
     sys.excepthook = lambda exc_type, exc_value, exc_traceback: application_window.uncaught_exception(

@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../images/mantid_imaging_64px.png</normaloff>../../../images/mantid_imaging_64px.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">/* background: url(/home/matt/Documents/imgpy/mantidimaging/gui/ui/code.jpg)*/</string>
   </property>
@@ -23,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
