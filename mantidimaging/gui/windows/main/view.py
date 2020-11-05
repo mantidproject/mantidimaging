@@ -61,7 +61,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionAbout.triggered.connect(self.show_about)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
-        self.actionSavuFilters.triggered.connect(self.show_savu_filters_window)
+        # self.actionSavuFilters.triggered.connect(self.show_savu_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
 
         self.active_stacks_changed.connect(self.update_shortcuts)

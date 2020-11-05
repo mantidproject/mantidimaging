@@ -45,7 +45,6 @@
     </property>
     <addaction name="actionFilters"/>
     <addaction name="actionRecon"/>
-    <addaction name="actionSavuFilters"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
