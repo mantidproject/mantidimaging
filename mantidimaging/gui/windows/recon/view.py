@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Optional, List
 
 from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout, \
     QInputDialog
+import numpy
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ReconstructionParameters
@@ -131,6 +132,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.numIter.valueChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
+        def refresh_preview_and_histogram():
+            self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
+            self.image_view.reset_recon_histogram()
+
+        self.pixelSize.valueChanged.connect(refresh_preview_and_histogram)
+
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
 
@@ -188,13 +195,12 @@ class ReconstructWindowView(BaseMainWindowView):
     def update_sinogram(self, image_data):
         self.image_view.update_sinogram(image_data)
 
-    def update_recon_preview(self, image_data, refresh_recon_slice_histogram: bool):
+    def update_recon_preview(self, image_data: numpy.ndarray, refresh_recon_slice_histogram: bool):
         """
         Updates the reconstruction preview image with new data.
         """
         # Plot image
-        if image_data is not None:
-            self.image_view.update_recon(image_data, refresh_recon_slice_histogram)
+        self.image_view.update_recon(image_data, refresh_recon_slice_histogram)
 
     def reset_image_recon_preview(self):
         """
@@ -274,7 +280,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @pixel_size.setter
     def pixel_size(self, value: int):
-        return self.pixelSize.setValue(value)
+        self.pixelSize.setValue(value)
 
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,

@@ -115,3 +115,6 @@ class ReconImagesView(GraphicsLayoutWidget):
                 self.tilt_line.setPos(pos)
             self.tilt_line.setAngle(90 + tilt.value)
         self.projection_vb.addItem(self.tilt_line)
+
+    def reset_recon_histogram(self):
+        self.recon_hist.autoHistogramRange()
