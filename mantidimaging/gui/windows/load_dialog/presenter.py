@@ -87,21 +87,20 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_shape[0])
         self.view.sample.update_shape(self.last_shape[1:])
 
-    def _find_images(self, sample_dirname: Path, type: str, suffix: str = None) -> List[str]:
+    def _find_images(self, sample_dirname: Path, type: str, suffix: str) -> List[str]:
         # same folder
         try:
-            if suffix is None or suffix != "After":
+            if suffix != "After":
                 return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}")
         except RuntimeError:
             logger.info(f"Could not find {type} files in {sample_dirname.absolute()}")
-            if suffix is not None:
-                try:
-                    return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}_{suffix}")
-                except RuntimeError:
-                    logger.info(f"Could not find {type}_{suffix} files in {sample_dirname.absolute()}")
+            try:
+                return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}_{suffix}")
+            except RuntimeError:
+                logger.info(f"Could not find {type}_{suffix} files in {sample_dirname.absolute()}")
 
         # look into different directories 1 level above
-        dirs = [type + " " + suffix, type + "_" + suffix, f"{type.lower()}", type]
+        dirs = [f"{type} {suffix}", f"{type}_{suffix}", f"{type.lower()}", type]
 
         for d in dirs:
             expected_folder_path = sample_dirname / ".." / d
@@ -129,12 +128,12 @@ class LoadPresenter:
             logger.info(f"Could not find a log file for {log_name} in {dirname}")
         return ""
 
-    def do_update_flat_or_dark(self, field: Field, name: str):
+    def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
         selected_file = self.view.select_file(name)
         if not selected_file:
             return
         selected_dir = Path(os.path.dirname(selected_file))
-        field.set_images(self._find_images(selected_dir, name))
+        field.set_images(self._find_images(selected_dir, name, suffix))
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
