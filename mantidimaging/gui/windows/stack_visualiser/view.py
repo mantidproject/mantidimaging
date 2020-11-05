@@ -108,20 +108,14 @@ class StackVisualiserView(BaseMainWindowView):
         self.close()
 
     def build_context_menu(self) -> QMenu:
-        actions = [
-            ("Set ROI", self.set_roi),
-            ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
-            ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-            ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
-            ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
-            ("Duplicate current ROI of data", lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
-            ("Show history", self.show_image_metadata),
-            #    ("Apply history from another stack", self.show_op_history_copy_dialog),
-            ("Mark as projections/sinograms", self.mark_as_),
-            ("Change window name", self.change_window_name_clicked),
-            ("Goto projection", self.goto_projection),
-            ("Goto angle", self.goto_angle)
-        ]
+        actions = [("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
+                   ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
+                   ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+                   ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
+                   ("Duplicate current ROI of data", lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
+                   ("Show history", self.show_image_metadata), ("Mark as projections/sinograms", self.mark_as_),
+                   ("Change window name", self.change_window_name_clicked), ("Goto projection", self.goto_projection),
+                   ("Goto angle", self.goto_angle)]
 
         menu = QMenu(self)
 
