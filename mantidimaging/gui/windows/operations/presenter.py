@@ -2,10 +2,13 @@ import traceback
 from enum import Enum, auto
 from functools import partial
 from logging import getLogger
+from time import sleep
 from typing import Optional
 from typing import TYPE_CHECKING
 
 import numpy as np
+from PyQt5.QtWidgets import QApplication
+from mantidimaging.gui.utility.common import operation_in_progress
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
@@ -13,6 +16,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import (BlockQtSignals)
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import FiltersWindowModel
+from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
@@ -37,6 +41,9 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.model = FiltersWindowModel(self)
         self.main_window = main_window
+
+        self.original_images_stack = None
+        self.applying_to_all = False
 
     def notify(self, signal):
         try:
@@ -106,12 +113,12 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
+        if self.view.safeApply.isChecked():
+            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
+                self.original_images_stack = self.stack.presenter.images.copy()
+
         self.view.clear_previews()
         apply_to = [self.stack]
-        if self.stack.presenter.images.has_proj180deg():
-            proj180_stack_visualiser = self.view.main_window.get_stack_with_images(
-                self.stack.presenter.images.proj180deg)
-            apply_to.append(proj180_stack_visualiser)
 
         self._do_apply_filter(apply_to)
 
@@ -120,18 +127,61 @@ class FiltersWindowPresenter(BasePresenter):
         if not confirmed:
             return
         stacks = self.main_window.get_all_stack_visualisers()
+        if self.view.safeApply.isChecked():
+            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
+                self.original_images_stack = []
+                for stack in stacks:
+                    self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
 
+        if len(stacks) > 0:
+            self.applying_to_all = True
         self._do_apply_filter(stacks)
 
-    def _post_filter(self, updated_stacks, task):
+    def _wait_for_stack_choice(self, new_stack, stack_uuid):
+        stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
+        stack_choice.show()
 
+        while not stack_choice.done:
+            QApplication.processEvents()
+            QApplication.sendPostedEvents()
+            sleep(0.05)
+
+        return stack_choice.use_new_data
+
+    def is_a_proj180deg(self, stack_to_check):
+        if stack_to_check.presenter.images.has_proj180deg():
+            return False
+        stacks = self.main_window.get_all_stack_visualisers()
+        for stack in stacks:
+            if stack.presenter.images.proj180deg == stack_to_check.presenter.images:
+                return True
+        return False
+
+    def _post_filter(self, updated_stacks, task):
+        do_180deg = True
+        attempt_repair = task.error is not None and self.original_images_stack is not None
         for stack in updated_stacks:
-            self.view.main_window.update_stack_with_images(stack.presenter.images)
+            # If the operation encountered an error during processing, try to restore the original data else continue
+            # processing as usual
+            if attempt_repair:
+                self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
+            else:
+                is_a_proj180deg = self.is_a_proj180deg(stack)
+                if self.view.safeApply.isChecked() and not is_a_proj180deg:
+                    do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
+                self.view.main_window.update_stack_with_images(stack.presenter.images)
+
+                if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
+                        and not self.applying_to_all:
+                    self.view.clear_previews()
+                    self._do_apply_filter(
+                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None
 
+        self.applying_to_all = False
         self.do_update_previews()
 
         if task.error is not None:

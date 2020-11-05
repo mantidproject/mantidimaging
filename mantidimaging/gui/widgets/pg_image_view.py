@@ -28,11 +28,24 @@ class MIImageView(ImageView):
 
     roi_changed_callback: Optional[Callable[[SensibleROI], None]] = None
 
-    def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, levelMode='mono', *args):
+    def __init__(self,
+                 parent=None,
+                 name="ImageView",
+                 view=None,
+                 imageItem=None,
+                 levelMode='mono',
+                 detailsSpanAllCols=False,
+                 *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
         self.details = QLabel("", self.ui.layoutWidget)
         self.details.setStyleSheet("QLabel { color : white; background-color: black}")
-        self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
+        if detailsSpanAllCols:
+            self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 3)
+            self.ui.gridLayout.setColumnStretch(0, 8)
+            self.ui.gridLayout.setColumnStretch(1, 1)
+            self.ui.gridLayout.setColumnStretch(2, 1)
+        else:
+            self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
 
         # Hide the norm button as it allows for manual data changes and we don't want users to do that unrecorded.
         self.ui.menuBtn.hide()
