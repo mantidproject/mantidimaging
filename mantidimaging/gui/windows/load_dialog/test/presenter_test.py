@@ -90,23 +90,25 @@ class LoadDialogPresenterTest(unittest.TestCase):
     def test_do_update_flat_or_dark_returns_without_setting_anything(self):
         file_name = None
         name = "Name"
+        suffix = "testing"
         field = mock.MagicMock()
         self.v.select_file.return_value = file_name
 
-        self.p.do_update_flat_or_dark(field, name)
+        self.p.do_update_flat_or_dark(field, name, suffix)
 
         field.set_images.assert_not_called()
 
     def test_do_update_flat_or_dark(self):
         file_name = "/ExampleFilename"
         name = "Name"
+        suffix = "Apples"
         field = mock.MagicMock()
         self.v.select_file.return_value = file_name
         self.p._find_images = mock.MagicMock(return_value=1)
 
-        self.p.do_update_flat_or_dark(field, name)
+        self.p.do_update_flat_or_dark(field, name, suffix)
 
-        self.p._find_images.assert_called_once_with(Path('/'), "Name")
+        self.p._find_images.assert_called_once_with(Path('/'), name, suffix)
         field.set_images.assert_called_once_with(1)
 
     def test_do_update_single_file(self):
