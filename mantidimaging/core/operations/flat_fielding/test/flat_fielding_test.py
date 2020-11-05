@@ -19,26 +19,71 @@ class FlatFieldingTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(FlatFieldingTest, self).__init__(*args, **kwargs)
 
-    def _make_images(self) -> Tuple[Images, Images, Images]:
+    def _make_images(self) -> Tuple[Images, Images, Images, Images, Images]:
         images = th.generate_images()
+        flat_before = th.generate_images()
+        dark_before = th.generate_images()
+        flat_after = th.generate_images()
+        dark_after = th.generate_images()
+        return images, flat_before, dark_before, flat_after, dark_after
 
-        flat = th.generate_images()
-        dark = th.generate_images()
-        return images, flat, dark
-
-    def test_real_result(self):
+    def test_real_result_before_only(self):
         # the calculation here was designed on purpose to have a value
         # below the np.clip in flat_fielding
         # the operation is (sample - dark) / (flat - dark)
-        images, flat, dark = self._make_images()
+        images, flat_before, dark_before, flat_after, dark_after = self._make_images()
         images.data[:] = 26.
-        flat.data[:] = 7.
-        dark.data[:] = 6.
+        flat_before.data[:] = 7.
+        dark_before.data[:] = 6.
 
         expected = np.full(images.data.shape, 20.)
 
         # we dont want anything to be cropped out
-        result = FlatFieldFilter.filter_func(images, flat, dark)
+        result = FlatFieldFilter.filter_func(images,
+                                             flat_before=flat_before,
+                                             flat_after=None,
+                                             dark_before=dark_before,
+                                             dark_after=None,
+                                             selected_flat_fielding="Only Before")
+
+        npt.assert_almost_equal(result.data, expected, 7)
+
+    def test_real_result_after_only(self):
+        images, flat_before, dark_before, flat_after, dark_after = self._make_images()
+        images.data[:] = 26.
+        flat_after.data[:] = 7.
+        dark_after.data[:] = 6.
+
+        expected = np.full(images.data.shape, 20.)
+
+        # we dont want anything to be cropped out
+        result = FlatFieldFilter.filter_func(images,
+                                             None,
+                                             flat_after=flat_after,
+                                             dark_before=None,
+                                             dark_after=dark_after,
+                                             selected_flat_fielding="Only After")
+
+        npt.assert_almost_equal(result.data, expected, 7)
+
+    def test_real_result_both_concat(self):
+        images, flat_before, dark_before, flat_after, dark_after = self._make_images()
+        images.data[:] = 26.
+
+        flat_after.data[:] = 6.
+        flat_before.data[:] = 8.
+        dark_after.data[:] = 7.
+        dark_before.data[:] = 5.
+
+        expected = np.full(images.data.shape, 20.)
+
+        # we dont want anything to be cropped out
+        result = FlatFieldFilter.filter_func(images,
+                                             flat_before=flat_before,
+                                             flat_after=flat_after,
+                                             dark_before=dark_before,
+                                             dark_after=dark_after,
+                                             selected_flat_fielding="Both, concatenated")
 
         npt.assert_almost_equal(result.data, expected, 7)
 
@@ -48,13 +93,25 @@ class FlatFieldingTest(unittest.TestCase):
         """
         fake_presenter = mock.MagicMock()
         fake_presenter.presenter.images = th.generate_images()
-        flat_widget = mock.Mock()
-        flat_widget.main_window.get_stack_visualiser = mock.Mock()
-        flat_widget.main_window.get_stack_visualiser.return_value = fake_presenter
-        dark_widget = mock.Mock()
-        dark_widget.main_window.get_stack_visualiser = mock.Mock()
-        dark_widget.main_window.get_stack_visualiser.return_value = fake_presenter
-        execute_func = FlatFieldFilter.execute_wrapper(flat_widget, dark_widget)
+        flat_before_widget = mock.Mock()
+        flat_before_widget.main_window.get_stack_visualiser = mock.Mock()
+        flat_before_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        flat_after_widget = mock.Mock()
+        flat_after_widget.main_window.get_stack_visualiser = mock.Mock()
+        flat_after_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        dark_before_widget = mock.Mock()
+        dark_before_widget.main_window.get_stack_visualiser = mock.Mock()
+        dark_before_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        dark_after_widget = mock.Mock()
+        dark_after_widget.main_window.get_stack_visualiser = mock.Mock()
+        dark_after_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        selected_flat_fielding_widget = mock.Mock()
+
+        execute_func = FlatFieldFilter.execute_wrapper(flat_before_widget=flat_before_widget,
+                                                       flat_after_widget=flat_before_widget,
+                                                       dark_before_widget=dark_before_widget,
+                                                       dark_after_widget=dark_after_widget,
+                                                       selected_flat_fielding_widget=selected_flat_fielding_widget)
         images = th.generate_images()
         execute_func(images)
 

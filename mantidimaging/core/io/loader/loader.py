@@ -103,8 +103,10 @@ def load_p(parameters: ImageParameters, dtype, progress) -> Images:
 
 
 def load(input_path=None,
-         input_path_flat=None,
-         input_path_dark=None,
+         input_path_flat_before=None,
+         input_path_flat_after=None,
+         input_path_dark_before=None,
+         input_path_dark_after=None,
          in_prefix='',
          in_format=DEFAULT_IO_FILE_FORMAT,
          dtype=np.float32,
@@ -116,8 +118,10 @@ def load(input_path=None,
     Loads a stack, including sample, white and dark images.
 
     :param input_path: Path for the input data folder
-    :param input_path_flat: Optional: Path for the input Flat images folder
-    :param input_path_dark: Optional: Path for the input Dark images folder
+    :param input_path_flat_before: Optional: Path for the input Flat Before images folder
+    :param input_path_flat_after: Optional: Path for the input Flat After images folder
+    :param input_path_dark_before: Optional: Path for the input Dark Before images folder
+    :param input_path_dark_after: Optional: Path for the input Dark After images folder
     :param in_prefix: Optional: Prefix for loaded files
     :param in_format: Default:'tiff', format for the input images
     :param dtype: Default:np.float32, data type for the input images
@@ -152,8 +156,8 @@ def load(input_path=None,
         else:
             load_func = _imread
 
-        dataset = img_loader.execute(load_func, input_file_names, input_path_flat, input_path_dark, in_format, dtype,
-                                     indices, progress)
+        dataset = img_loader.execute(load_func, input_file_names, input_path_flat_before, input_path_flat_after,
+                                     input_path_dark_before, input_path_dark_after, in_format, dtype, indices, progress)
 
     # Search for and load metadata file
     metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)

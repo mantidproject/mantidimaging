@@ -28,12 +28,20 @@ class MainWindowModel(object):
         if parameters.sample.log_file:
             ds.sample.log_file = loader.load_log(parameters.sample.log_file)
 
-        if parameters.flat:
-            ds.flat = loader.load_p(parameters.flat, parameters.dtype, progress)
-            if parameters.flat.log_file:
-                ds.flat.log_file = loader.load_log(parameters.flat.log_file)
-        if parameters.dark:
-            ds.dark = loader.load_p(parameters.dark, parameters.dtype, progress)
+        if parameters.flat_before:
+            ds.flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
+            if parameters.flat_before.log_file:
+                ds.flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
+        if parameters.flat_after:
+            ds.flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
+            if parameters.flat_after.log_file:
+                ds.flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
+
+        if parameters.dark_before:
+            ds.dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
+        if parameters.dark_after:
+            ds.dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
+
         if parameters.proj_180deg:
             ds.sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
 

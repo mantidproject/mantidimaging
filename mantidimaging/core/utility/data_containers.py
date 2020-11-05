@@ -124,8 +124,10 @@ class ImageParameters:
 
 class LoadingParameters:
     sample: ImageParameters
-    flat: Optional[ImageParameters] = None
-    dark: Optional[ImageParameters] = None
+    flat_before: Optional[ImageParameters] = None
+    flat_after: Optional[ImageParameters] = None
+    dark_before: Optional[ImageParameters] = None
+    dark_after: Optional[ImageParameters] = None
     proj_180deg: Optional[ImageParameters] = None
 
     pixel_size: int

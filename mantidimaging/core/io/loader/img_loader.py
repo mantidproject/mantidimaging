@@ -14,7 +14,16 @@ from . import stack_loader
 from ...data.dataset import Dataset
 
 
-def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, indices, progress=None) -> Dataset:
+def execute(load_func,
+            sample_path,
+            flat_before_path,
+            flat_after_path,
+            dark_before_path,
+            dark_after_path,
+            img_format,
+            dtype,
+            indices,
+            progress=None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -51,13 +60,21 @@ def execute(load_func, sample_path, flat_path, dark_path, img_format, dtype, ind
 
     # we load the flat and dark first, because if they fail we don't want to
     # fail after we've loaded a big stack into memory
-    flat_data, flat_filenames, flat_mfname = il.load_data(flat_path)
-    dark_data, dark_filenames, dark_mfname = il.load_data(dark_path)
+    flat_before_data, flat_before_filenames, flat_before_mfname = il.load_data(flat_before_path)
+    flat_after_data, flat_after_filenames, flat_after_mfname = il.load_data(flat_after_path)
+    dark_before_data, dark_before_filenames, dark_before_mfname = il.load_data(dark_before_path)
+    dark_after_data, dark_after_filenames, dark_after_mfname = il.load_data(dark_after_path)
     sample_data, sample_mfname = il.load_sample_data(chosen_input_filenames)
 
     return Dataset(Images(sample_data, chosen_input_filenames, indices, memory_filename=sample_mfname),
-                   Images(flat_data, flat_filenames, memory_filename=flat_mfname) if flat_data is not None else None,
-                   Images(dark_data, dark_filenames, memory_filename=dark_mfname) if dark_data is not None else None)
+                   flat_before=Images(flat_before_data, flat_before_filenames, memory_filename=flat_before_mfname)
+                   if flat_before_data is not None else None,
+                   flat_after=Images(flat_after_data, flat_after_filenames, memory_filename=flat_after_mfname)
+                   if flat_after_data is not None else None,
+                   dark_before=Images(dark_before_data, dark_before_filenames, memory_filename=dark_before_mfname)
+                   if dark_before_data is not None else None,
+                   dark_after=Images(dark_after_data, dark_after_filenames, memory_filename=dark_after_mfname)
+                   if dark_after_data is not None else None)
 
 
 class ImageLoader(object):
