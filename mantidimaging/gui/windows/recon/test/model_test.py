@@ -9,7 +9,7 @@ from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
 from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
-from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with
+from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 
 
 class ReconWindowModelTest(unittest.TestCase):
@@ -90,6 +90,7 @@ class ReconWindowModelTest(unittest.TestCase):
     def test_run_preview_recon(self, mock_get_reconstructor_for):
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
+        mock_reconstructor.single_sino.return_value = np.random.rand(256, 256)
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         expected_idx = 5
@@ -101,6 +102,20 @@ class ReconWindowModelTest(unittest.TestCase):
         mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
         assert_called_once_with(mock_reconstructor.single_sino, expected_sino, expected_cor,
                                 self.model.images.projection_angles(), expected_recon_params)
+
+    def test_apply_pixel_size(self):
+        images = generate_images()
+
+        initial_value = images.data[0][0, 0]
+        test_pixel_size = 100
+        recon_params = ReconstructionParameters("FBP", "ram-lak", test_pixel_size, pixel_size=test_pixel_size)
+        images = self.model._apply_pixel_size(images, recon_params)
+
+        # converts the number we put for pixel size to microns
+        expected_value = initial_value / (test_pixel_size * 1e-4)
+        self.assertAlmostEqual(expected_value, images.data[0][0, 0], places=4)
+        self.assertEqual(test_pixel_size, images.metadata[const.PIXEL_SIZE])
+        self.assertEqual(1, len(images.metadata[const.OPERATION_HISTORY]))
 
     def test_tilt_angle(self):
         self.assertIsNone(self.model.tilt_angle)
