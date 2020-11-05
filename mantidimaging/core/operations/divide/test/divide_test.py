@@ -1,5 +1,5 @@
 import unittest
-
+import mock
 import numpy as np
 import numpy.testing as npt
 
@@ -30,6 +30,20 @@ class DivideTest(unittest.TestCase):
 
     def do_divide(self, images: Images, value: float) -> Images:
         return DivideFilter.filter_func(images, value)
+
+    def test_execute_wrapper_return_is_runnable(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        value_widget = mock.Mock()
+        value_widget.value.return_value = 10
+        unit_widget = mock.Mock()
+        unit_widget.currentText.return_value = "cm"
+
+        execute_func = DivideFilter.execute_wrapper(value_widget, unit_widget)
+
+        images = th.generate_images()
+        execute_func(images)
 
 
 if __name__ == '__main__':
