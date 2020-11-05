@@ -26,7 +26,7 @@ class SaveDialogTest(unittest.TestCase):
 
 @start_qapplication
 class SaveDialogQtTest(unittest.TestCase):
-    def test_init(self):
+    def test_init_sorts_stack_list_correctly(self):
         stack_list = [
             StackId(uuid.uuid4(), "Stack 1"),
             StackId(uuid.uuid4(), "Stack 2"),
