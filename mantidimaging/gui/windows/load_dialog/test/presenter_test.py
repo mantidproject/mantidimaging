@@ -200,6 +200,25 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.assertIsNotNone(field.path)
         self.assertIsNotNone(field.use)
 
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
+    def test_ensure_sample_log_consistency_exits_when_none_or_empty_str(self, mock_load_log):
+        mock_log = mock.create_autospec(IMATLogFile)
+        mock_load_log.return_value = mock_log
+        file_name = None
+        field = mock.MagicMock()
+        test_filenames = ["file1", "file2"]
+
+        self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
+
+        mock_load_log.assert_not_called()
+        mock_log.raise_if_angle_missing.assert_not_called()
+
+        file_name = ""
+        self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
+
+        mock_load_log.assert_not_called()
+        mock_log.raise_if_angle_missing.assert_not_called()
+
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix", return_value="/path")
     def test_get_parameters(self, get_prefix):
         path_text = "/path/text"

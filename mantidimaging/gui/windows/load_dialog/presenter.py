@@ -136,7 +136,7 @@ class LoadPresenter:
         return ""
 
     @staticmethod
-    def _find_log(dirname: Path, log_name: str):
+    def _find_log(dirname: Path, log_name: str) -> str:
         """
 
         :param dirname: The directory in which the sample images were found
@@ -221,13 +221,14 @@ class LoadPresenter:
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
         file_name = self.view.select_file(name, is_image_file)
-        if file_name is None:
-            return
 
         # this is set when the user selects sample data
         self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)
 
     def ensure_sample_log_consistency(self, field: Field, file_name, image_filenames):
+        if file_name is None or file_name == "":
+            return
+
         log = load_log(file_name)
         log.raise_if_angle_missing(image_filenames)
         self._update_field_action(field, file_name)

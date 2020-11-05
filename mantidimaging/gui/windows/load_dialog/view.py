@@ -76,7 +76,6 @@ class MWLoadDialog(Qt.QDialog):
         self.select_flat_after_log.clicked.connect(lambda: self.presenter.notify(
             Notification.UPDATE_SINGLE_FILE, field=self.flat_after_log, name="Flat After Log", image_file=False))
 
-
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
         # if accepted load the stack
