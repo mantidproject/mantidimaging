@@ -40,8 +40,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         assert_called_once_with(apply_filter_mock, expected_apply_to,
                                 partial(self.presenter._post_filter, expected_apply_to))
 
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
-    def test_apply_filter_to_all(self, apply_filter_mock: mock.Mock):
+    def test_apply_filter_to_all(self, apply_filter_mock: mock.Mock, _):
         self.view.ask_confirmation.return_value = False
         self.presenter.do_apply_filter_to_all()
 
