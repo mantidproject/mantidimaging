@@ -152,7 +152,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]):
+    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]) -> Optional[Images]:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
@@ -174,20 +174,25 @@ class ReconstructWindowPresenter(BasePresenter):
 
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
+        images = None
         try:
-            data = self._get_reconstruct_slice(cor, slice_idx)
-            self.view.update_recon_preview(data, refresh_recon_slice_histogram)
+            images = self._get_reconstruct_slice(cor, slice_idx)
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
 
+        if images is not None:
+            self.view.update_recon_preview(images.data[0], refresh_recon_slice_histogram)
+
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)
+        images = None
         try:
-            data = self._get_reconstruct_slice(cor, slice_idx)
-            data = data.reshape((1, data.shape[0], data.shape[1]))
-            self.view.show_recon_volume(Images(data))
+            images = self._get_reconstruct_slice(cor, slice_idx)
         except ValueError as err:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+
+        if images is not None:
+            self.view.show_recon_volume(images)
 
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
