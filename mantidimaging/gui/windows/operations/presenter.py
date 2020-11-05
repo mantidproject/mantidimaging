@@ -161,7 +161,8 @@ class FiltersWindowPresenter(BasePresenter):
         do_180deg = True
         attempt_repair = task.error is not None and self.original_images_stack is not None
         for stack in updated_stacks:
-            # Check if the stack was an error and fix if error occured else do normal bits
+            # If the operation encountered an error during processing, try to restore the original data else continue
+            # processing as usual
             if attempt_repair:
                 self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
             else:
