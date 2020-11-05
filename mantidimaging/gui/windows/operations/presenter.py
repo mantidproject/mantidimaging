@@ -128,9 +128,10 @@ class FiltersWindowPresenter(BasePresenter):
             return
         stacks = self.main_window.get_all_stack_visualisers()
         if self.view.safeApply.isChecked():
-            self.original_images_stack = []
-            for stack in stacks:
-                self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
+            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
+                self.original_images_stack = []
+                for stack in stacks:
+                    self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
 
         if len(stacks) > 0:
             self.applying_to_all = True
@@ -158,23 +159,29 @@ class FiltersWindowPresenter(BasePresenter):
 
     def _post_filter(self, updated_stacks, task):
         do_180deg = True
+        attempt_repair = task.error is not None and self.original_images_stack is not None
         for stack in updated_stacks:
-            is_a_proj180deg = self.is_a_proj180deg(stack)
-            if self.view.safeApply.isChecked() and not is_a_proj180deg:
-                do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
-            self.view.main_window.update_stack_with_images(stack.presenter.images)
+            # Check if the stack was an error and fix if error occured else do normal bits
+            if attempt_repair:
+                self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
+            else:
+                is_a_proj180deg = self.is_a_proj180deg(stack)
+                if self.view.safeApply.isChecked() and not is_a_proj180deg:
+                    do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
+                self.view.main_window.update_stack_with_images(stack.presenter.images)
 
-            if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
-                    and not self.applying_to_all:
-                self.view.clear_previews()
-                self._do_apply_filter([self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
+                        and not self.applying_to_all:
+                    self.view.clear_previews()
+                    self._do_apply_filter(
+                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None
 
-        self.do_update_previews()
         self.applying_to_all = False
+        self.do_update_previews()
 
         if task.error is not None:
             # task failed, show why

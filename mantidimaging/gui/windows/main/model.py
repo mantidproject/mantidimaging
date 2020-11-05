@@ -91,16 +91,18 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
+    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images, ):
         stack = self.active_stacks[stack_uuid]
         if isinstance(stack, QDockWidget):
             stack = stack.widget()
-        stack.image_view.clear()
-        stack.image_view.setImage(images.data)
 
-        # Free previous images stack before reassignment
-        stack.presenter.images.free_memory()
-        stack.presenter.images = images
+        if not stack.presenter.images == images:
+            stack.image_view.clear()
+            stack.image_view.setImage(images.data)
+
+            # Free previous images stack before reassignment
+            stack.presenter.images.free_memory()
+            stack.presenter.images = images
 
     def get_stack_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
         for stack_id in self.stack_list:
