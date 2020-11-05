@@ -67,9 +67,11 @@ class LoadPresenter:
 
         sample_dirname = Path(dirname)
 
-        self.view.flat_before.set_images(self._find_images(sample_dirname, "Flat", suffix="Before"))
+        self.view.flat_before.set_images(
+            self._find_images(sample_dirname, "Flat", suffix="Before", look_without_suffix=True))
         self.view.flat_after.set_images(self._find_images(sample_dirname, "Flat", suffix="After"))
-        self.view.dark_before.set_images(self._find_images(sample_dirname, "Dark", suffix="Before"))
+        self.view.dark_before.set_images(
+            self._find_images(sample_dirname, "Dark", suffix="Before", look_without_suffix=True))
         self.view.dark_after.set_images(self._find_images(sample_dirname, "Dark", suffix="After"))
         self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
 
@@ -87,7 +89,7 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_shape[0])
         self.view.sample.update_shape(self.last_shape[1:])
 
-    def _find_images(self, sample_dirname: Path, type: str, suffix: str) -> List[str]:
+    def _find_images(self, sample_dirname: Path, type: str, suffix: str, look_without_suffix=False) -> List[str]:
         # same folder
         try:
             if suffix != "After":
@@ -100,7 +102,9 @@ class LoadPresenter:
                 logger.info(f"Could not find {type}_{suffix} files in {sample_dirname.absolute()}")
 
         # look into different directories 1 level above
-        dirs = [f"{type} {suffix}", f"{type}_{suffix}", f"{type.lower()}", type]
+        dirs = [f"{type} {suffix}", f"{type}_{suffix}"]
+        if look_without_suffix:
+            dirs.extend([f"{type.lower()}", type])
 
         for d in dirs:
             expected_folder_path = sample_dirname / ".." / d
