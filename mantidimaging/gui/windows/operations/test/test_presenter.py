@@ -32,6 +32,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         stack.presenter = presenter
         presenter.images.has_proj180deg.return_value = False
         self.presenter.stack = stack
+        self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.do_apply_filter()
         self.view.clear_previews.assert_called_once()
 
@@ -164,7 +165,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         stack_choice_presenter.assert_not_called()
 
-    def test_original_stack_assigned_when_safe_apply_checked(self):
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_original_stack_assigned_when_safe_apply_checked(self, _):
         stack = mock.MagicMock()
         self.presenter.stack = stack
         stack_data = "THIS IS USEFUL STACK DATA"
