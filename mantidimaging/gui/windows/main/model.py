@@ -91,7 +91,7 @@ class MainWindowModel(object):
         """
         return self.active_stacks[stack_uuid]
 
-    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images, ):
+    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
         stack = self.active_stacks[stack_uuid]
         if isinstance(stack, QDockWidget):
             stack = stack.widget()
