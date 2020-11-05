@@ -67,10 +67,12 @@ class LoadPresenter:
 
         sample_dirname = Path(dirname)
 
-        self.view.flat_before.set_images(self._find_images(sample_dirname, "Flat Before"))
-        self.view.flat_after.set_images(self._find_images(sample_dirname, "Flat After"))
-        self.view.dark_before.set_images(self._find_images(sample_dirname, "Dark Before"))
-        self.view.dark_after.set_images(self._find_images(sample_dirname, "Dark After"))
+        self.view.flat_before.set_images(
+            self._find_images(sample_dirname, "Flat", suffix="Before", look_without_suffix=True))
+        self.view.flat_after.set_images(self._find_images(sample_dirname, "Flat", suffix="After"))
+        self.view.dark_before.set_images(
+            self._find_images(sample_dirname, "Dark", suffix="Before", look_without_suffix=True))
+        self.view.dark_after.set_images(self._find_images(sample_dirname, "Dark", suffix="After"))
         self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
 
         self.view.sample_log.path = self._find_log(sample_dirname, self.view.sample.directory())
@@ -87,15 +89,22 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_shape[0])
         self.view.sample.update_shape(self.last_shape[1:])
 
-    def _find_images(self, sample_dirname: Path, type: str) -> List[str]:
+    def _find_images(self, sample_dirname: Path, type: str, suffix: str, look_without_suffix=False) -> List[str]:
         # same folder
         try:
-            return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}")
+            if suffix != "After":
+                return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}")
         except RuntimeError:
             logger.info(f"Could not find {type} files in {sample_dirname.absolute()}")
+            try:
+                return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}_{suffix}")
+            except RuntimeError:
+                logger.info(f"Could not find {type}_{suffix} files in {sample_dirname.absolute()}")
 
         # look into different directories 1 level above
-        dirs = [f"{type.lower()}", type, type.replace(" ", "_")]
+        dirs = [f"{type} {suffix}", f"{type}_{suffix}"]
+        if look_without_suffix:
+            dirs.extend([f"{type.lower()}", type])
 
         for d in dirs:
             expected_folder_path = sample_dirname / ".." / d
@@ -123,12 +132,12 @@ class LoadPresenter:
             logger.info(f"Could not find a log file for {log_name} in {dirname}")
         return ""
 
-    def do_update_flat_or_dark(self, field: Field, name: str):
+    def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
         selected_file = self.view.select_file(name)
         if not selected_file:
             return
         selected_dir = Path(os.path.dirname(selected_file))
-        field.set_images(self._find_images(selected_dir, name))
+        field.set_images(self._find_images(selected_dir, name, suffix))
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()

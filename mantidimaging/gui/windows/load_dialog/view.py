@@ -45,20 +45,20 @@ class MWLoadDialog(Qt.QDialog):
         self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
 
         self.flat_before, self.select_flat_before = self.create_file_input(1)
-        self.select_flat_before.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.flat_before, name="Flat Before"))
+        self.select_flat_before.clicked.connect(lambda: self.presenter.notify(
+            Notification.UPDATE_FLAT_OR_DARK, field=self.flat_before, name="Flat", suffix="Before"))
 
         self.flat_after, self.select_flat_after = self.create_file_input(2)
-        self.select_flat_after.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.flat_after, name="Flat After"))
+        self.select_flat_after.clicked.connect(lambda: self.presenter.notify(
+            Notification.UPDATE_FLAT_OR_DARK, field=self.flat_after, name="Flat", suffix="After"))
 
         self.dark_before, self.select_dark_before = self.create_file_input(3)
-        self.select_dark_before.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.dark_before, name="Dark Before"))
+        self.select_dark_before.clicked.connect(lambda: self.presenter.notify(
+            Notification.UPDATE_FLAT_OR_DARK, field=self.dark_before, name="Dark", suffix="Before"))
 
         self.dark_after, self.select_dark_after = self.create_file_input(4)
-        self.select_dark_after.clicked.connect(
-            lambda: self.presenter.notify(Notification.UPDATE_FLAT_OR_DARK, field=self.dark_after, name="Dark After"))
+        self.select_dark_after.clicked.connect(lambda: self.presenter.notify(
+            Notification.UPDATE_FLAT_OR_DARK, field=self.dark_after, name="Dark", suffix="After"))
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(5)
         self.select_proj_180deg.clicked.connect(lambda: self.presenter.notify(
