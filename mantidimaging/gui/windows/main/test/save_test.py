@@ -11,11 +11,17 @@ class SaveDialogTest(unittest.TestCase):
         super(SaveDialogTest, self).__init__(*args, **kwargs)
 
     def test_sort_stack_names_order(self):
-        names = ["Dark", "Dark1", "Flat", "Recon", "Tomo"]
-        new_names = sorted(names, key=sort_by_tomo_and_recon)
+        stack_list = [
+            StackId(uuid.uuid4(), "Stack 1"),
+            StackId(uuid.uuid4(), "Stack 2"),
+            StackId(uuid.uuid4(), "Stack 3"),
+            StackId(uuid.uuid4(), "Tomo"),
+            StackId(uuid.uuid4(), "Recon"),
+        ]
+        new_names = sorted(stack_list, key=sort_by_tomo_and_recon)
 
-        self.assertEqual("Recon", new_names[0])
-        self.assertEqual("Tomo", new_names[1])
+        self.assertEqual("Recon", new_names[0].name)
+        self.assertEqual("Tomo", new_names[1].name)
 
 
 @start_qapplication
