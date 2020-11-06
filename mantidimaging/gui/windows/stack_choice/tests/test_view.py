@@ -129,13 +129,15 @@ class StackChoiceViewTest(unittest.TestCase):
         self.v.new_stack = mock.MagicMock()
         message_box.warning.return_value = QMessageBox.Ok
         message_box.Ok = QMessageBox.Ok
+        mock_event = mock.MagicMock()
 
-        self.v.closeEvent(None)
+        self.v.closeEvent(mock_event)
 
         message_box.warning.assert_called_once()
         self.p.notify.assert_called_once_with(Notification.CHOOSE_NEW_DATA)
         self.v.original_stack.close.assert_called_once()
         self.v.new_stack.close.assert_called_once()
+        mock_event.ignore.assert_not_called()
 
     @mock.patch("mantidimaging.gui.windows.stack_choice.view.QMessageBox")
     def test_closeEvent_message_pop_up_if_choice_not_made_and_doesnt_notify_presenter_on_cancel(self, message_box):
@@ -143,10 +145,12 @@ class StackChoiceViewTest(unittest.TestCase):
         self.v.original_stack = mock.MagicMock()
         self.v.new_stack = mock.MagicMock()
         message_box.warning.return_value = QMessageBox.Cancel
+        mock_event = mock.MagicMock()
 
-        self.v.closeEvent(None)
+        self.v.closeEvent(mock_event)
 
         message_box.warning.assert_called_once()
         self.p.notify.assert_not_called()
         self.v.original_stack.close.assert_not_called()
         self.v.new_stack.close.assert_not_called()
+        mock_event.ignore.assert_called_once()
