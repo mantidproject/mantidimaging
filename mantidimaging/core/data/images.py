@@ -273,8 +273,13 @@ class Images:
         self._log_file = value
 
     def projection_angles(self):
-        return self._log_file.projection_angles() if self._log_file is not None else \
+        proj_angles = self._log_file.projection_angles() if self._log_file is not None else \
             ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+        if self.num_images != len(proj_angles.value):
+            raise ValueError(f"Number of projection angles {len(proj_angles.value)} does not equal "
+                             f"the number of projections {self.num_images}. This can happen if loading subset of "
+                             "projections, and using projection angles from a log file.")
+        return proj_angles
 
     def counts(self) -> Optional[Counts]:
         if self._log_file is not None:

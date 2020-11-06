@@ -62,11 +62,11 @@ class MWLoadDialog(Qt.QDialog):
 
         self.proj_180deg, self.select_proj_180deg = self.create_file_input(5)
         self.select_proj_180deg.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree", image_file=True))
+            Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree", is_image_file=True))
 
         self.sample_log, self.select_sample_log = self.create_file_input(6)
         self.select_sample_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.sample_log, name="Sample Log", image_file=False))
+            Notification.UPDATE_SAMPLE_LOG, field=self.sample_log, name="Sample Log", is_image_file=False))
 
         self.flat_before_log, self.select_flat_before_log = self.create_file_input(7)
         self.select_flat_before_log.clicked.connect(lambda: self.presenter.notify(
@@ -113,11 +113,11 @@ class MWLoadDialog(Qt.QDialog):
         else:
             # Assume text file
             file_filter = "Log File (*.txt *.log)"
-        selected_file, accepted = Qt.QFileDialog.getOpenFileName(caption=caption,
-                                                                 filter=f"{file_filter};;All (*.*)",
-                                                                 initialFilter=file_filter)
+        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=caption,
+                                                          filter=f"{file_filter};;All (*.*)",
+                                                          initialFilter=file_filter)
 
-        if accepted:
+        if len(selected_file) > 0:
             return selected_file
         else:
             return None
@@ -126,7 +126,8 @@ class MWLoadDialog(Qt.QDialog):
         self.sample.set_step(1)
 
     def _set_preview_step(self):
-        self.sample.set_step(self.presenter.last_shape[0] // 10)
+        # FIXME direct attribute access
+        self.sample.set_step(self.presenter.last_file_info.shape[0] // 10)
 
     def get_parameters(self) -> LoadingParameters:
         return self.presenter.get_parameters()
