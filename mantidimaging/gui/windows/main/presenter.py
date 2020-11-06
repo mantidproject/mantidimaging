@@ -158,7 +158,7 @@ class MainWindowPresenter(BasePresenter):
     def stack_names(self):
         return self.model._stack_names
 
-    def get_stack_visualiser(self, stack_uuid: UUID):
+    def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
         return self.model.get_stack_visualiser(stack_uuid)
 
     def get_all_stack_visualisers(self):
