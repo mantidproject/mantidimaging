@@ -79,7 +79,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertNotEqual(test_cor, self.model.last_cor)
         self.assertNotEqual(test_tilt, self.model.tilt_angle)
         self.assertEqual(0, self.model.preview_projection_idx)
-        self.assertEqual(0, self.model.preview_slice_idx)
+        self.assertEqual(64, self.model.preview_slice_idx)
 
     def test_do_fit(self):
         self.model.images.metadata.clear()
