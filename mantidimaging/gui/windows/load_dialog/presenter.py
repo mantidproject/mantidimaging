@@ -123,7 +123,7 @@ class LoadPresenter:
             try:
                 return get_file_names(expected_folder_path.absolute(), self.image_format)
             except RuntimeError:
-                logger.info(f"Could not find {image_type} files in {expected_folder_path.absolute()}")
+                logger.info(f"Could not find {self.image_format} files in {expected_folder_path.absolute()}")
 
         return []
 
