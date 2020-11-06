@@ -88,7 +88,7 @@ class ReconstructWindowModel(object):
     def num_points(self):
         return self.data_model.num_points
 
-    def initial_select_data(self, stack):
+    def initial_select_data(self, stack: StackVisualiserView):
         self.data_model.clear_results()
 
         self.stack = stack
@@ -101,7 +101,7 @@ class ReconstructWindowModel(object):
         if self.images is None:
             return 0, ScalarCoR(0)
 
-        first_slice_to_recon = 0
+        first_slice_to_recon = self.images.height // 2
         cor = ScalarCoR(self.images.v_middle)
         return first_slice_to_recon, cor
 
