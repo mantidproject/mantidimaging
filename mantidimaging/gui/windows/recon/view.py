@@ -307,9 +307,10 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: Images):
         self.main_window.create_new_stack(data, "Recon")
 
-    def get_stack_visualiser(self, uuid)-> 'StackVisualiserView':
+    def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:
         if uuid is not None:
             return self.main_window.get_stack_visualiser(uuid)
+        return None
 
     def hide_tilt(self):
         self.image_view.hide_tilt()
