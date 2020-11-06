@@ -88,7 +88,7 @@ class ReconstructWindowModel(object):
     def num_points(self):
         return self.data_model.num_points
 
-    def initial_select_data(self, stack: StackVisualiserView):
+    def initial_select_data(self, stack: 'StackVisualiserView'):
         self.data_model.clear_results()
 
         self.stack = stack
