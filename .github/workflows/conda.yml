@@ -11,6 +11,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check License Lines
+          uses: kt3k/license_checker@v1.0.3
+
       - uses: goanpeca/setup-miniconda@v1
         with:
           activate-environment: mantidimaging
