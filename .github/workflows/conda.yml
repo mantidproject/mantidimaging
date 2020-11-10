@@ -14,7 +14,8 @@ jobs:
       - name: Check License Lines
         uses: kt3k/license_checker@v1.0.3
 
-      - uses: goanpeca/setup-miniconda@v2.0.0
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2.0.0
         with:
           activate-environment: mantidimaging
           environment-file: environment.yml
