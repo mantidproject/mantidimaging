@@ -20,7 +20,7 @@ jobs:
         fetch-depth: 0
 
     - name: Check License Lines
-        uses: kt3k/license_checker@v1.0.3
+      uses: kt3k/license_checker@v1.0.3
 
     - name: Pre-load docker image
       run: docker pull mantidproject/mantidimaging:centos7
