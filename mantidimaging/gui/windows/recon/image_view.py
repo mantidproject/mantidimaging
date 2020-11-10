@@ -2,13 +2,15 @@ from math import isnan
 from typing import Tuple, Optional
 
 import numpy
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine, QtCore
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
 
 
 class ReconImagesView(GraphicsLayoutWidget):
+    sigSliceIndexChanged = QtCore.pyqtSignal(int)
+
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -87,11 +89,13 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
+        slice_index = CloseEnoughPoint(ev.pos()).y
         # don't refresh the histogram on click to stop the contrast for re-adjusting for each slice
         # it's much easier to see what's happening to the reconstruction if the slice doesn't
         # reset after every click
-        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=CloseEnoughPoint(ev.pos()).y,
+        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=slice_index,
                                                            refresh_recon_slice_histogram=False)
+        self.sigSliceIndexChanged.emit(slice_index)
 
     def clear_recon(self):
         self.recon.clear()
