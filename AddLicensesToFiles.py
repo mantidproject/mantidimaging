@@ -26,7 +26,7 @@ for root, dirs, files in os.walk('.'):
             inplace=True,
             # backup='.bak' # uncomment this if you want backups
             ):
-        if fileinput.isfirstline():
+        if fileinput.isfirstline() and line != "# This file is part of Mantid Imaging\n":
             sys.stdout.write('# This file is part of Mantid Imaging\n#\n# Mantid Imaging is a graphical toolkit for '
                              'performing 3D reconstruction of neutron tomography data.\n# Copyright (C) 2020 ISIS '
                              'Rutherford Appleton Laboratory UKRI\n#\n#   Mantid Imaging is free software: you can '
