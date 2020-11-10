@@ -189,9 +189,8 @@ class FlatFieldFilter(BaseFilter):
         dark_after_widget.setEnabled(False)
 
         # Ensure that fields that are not currently used are disabled
-        selected_flat_fielding_widget.currentTextChanged.connect(
-            lambda text: enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget,
-                                                    dark_after_widget))
+        selected_flat_fielding_widget.currentTextChanged.connect(lambda text: enable_correct_fields_only(
+            text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget))
 
         return {
             'selected_flat_fielding_widget': selected_flat_fielding_widget,
