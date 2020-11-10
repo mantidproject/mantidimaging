@@ -1,5 +1,6 @@
 from functools import partial
 from typing import Any, Dict
+from pyqt5.QtWidgets import QComboBox
 
 import numpy as np
 
@@ -189,6 +190,7 @@ class FlatFieldFilter(BaseFilter):
         dark_after_widget.setEnabled(False)
 
         # Ensure that fields that are not currently used are disabled
+        assert(isinstance(selected_flat_fielding_widget, QComboBox)
         selected_flat_fielding_widget.currentTextChanged.connect(lambda text: enable_correct_fields_only(
             text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget))
 
