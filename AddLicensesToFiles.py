@@ -37,7 +37,7 @@ for root, dirs, files in os.walk('.'):
                              ' of\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n#   GNU General '
                              'Public License for more details.\n#\n#   You should have received a copy of the GNU '
                              'General Public License\n#   along with this program.  If not, see '
-                             '<https://www.gnu.org/licenses/>.\n')
+                             '<https://www.gnu.org/licenses/>.\n\n')
             sys.stdout.write(line)
         else:
             sys.stdout.write(line)
