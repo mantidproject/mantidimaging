@@ -3,6 +3,7 @@ from unittest import mock
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QMessageBox
+from pyqtgraph import ViewBox
 
 from mantidimaging.test_helpers import start_qapplication
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -154,3 +155,14 @@ class StackChoiceViewTest(unittest.TestCase):
         self.v.original_stack.close.assert_not_called()
         self.v.new_stack.close.assert_not_called()
         mock_event.ignore.assert_called_once()
+
+    def test_images_are_synced(self):
+        self.v.original_stack = mock.MagicMock()
+        self.v.new_stack = mock.MagicMock()
+        self.v.new_stack.view = "view"
+
+        self.v._sync_both_image_axis()
+
+        self.assertIn(mock.call(ViewBox.XAxis, "view"), self.v.original_stack.view.linkView.call_args_list)
+        self.assertIn(mock.call(ViewBox.YAxis, "view"), self.v.original_stack.view.linkView.call_args_list)
+        self.assertEqual(2, self.v.original_stack.view.linkView.call_count)

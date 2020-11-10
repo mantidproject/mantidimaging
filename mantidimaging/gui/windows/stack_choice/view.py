@@ -3,6 +3,7 @@ from enum import Enum, auto
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy, QMessageBox
+from pyqtgraph import ViewBox
 
 from mantidimaging.gui.widgets.pg_image_view import MIImageView
 
@@ -58,6 +59,8 @@ class StackChoiceView(BaseMainWindowView):
         self.original_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_new_stack_with_old_stack)
         self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
 
+        self._sync_both_image_axis()
+
         self.choice_made = False
         self.roi_shown = False
 
@@ -108,6 +111,10 @@ class StackChoiceView(BaseMainWindowView):
         self.original_stack.sigTimeChanged.disconnect(self._sync_timelines_for_new_stack_with_old_stack)
         self.original_stack.setCurrentIndex(index)
         self.original_stack.sigTimeChanged.connect(self._sync_timelines_for_new_stack_with_old_stack)
+
+    def _sync_both_image_axis(self):
+        self.original_stack.view.linkView(ViewBox.XAxis, self.new_stack.view)
+        self.original_stack.view.linkView(ViewBox.YAxis, self.new_stack.view)
 
     def closeEvent(self, e):
         # Confirm exit is actually wanted as it will lead to data loss
