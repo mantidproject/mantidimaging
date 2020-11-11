@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+
 class AbstractTool:
     """
     The AbstractTool class requires the tools to know how to import themselves,

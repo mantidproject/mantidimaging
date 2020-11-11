@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+
 def to_KB(size, dtype=None):
     return to_bytes(to_bits(size, dtype)) / 1024
 

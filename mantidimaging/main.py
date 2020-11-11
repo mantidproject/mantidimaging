@@ -33,7 +33,7 @@ def parse_args():
         type=str,
         default="INFO",
         help="Log verbosity level. "
-             "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
