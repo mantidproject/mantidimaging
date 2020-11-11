@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 SERVER_URL = "http://localhost:5000"
 # websocket URL
 SERVER_WS_URL = "ws://localhost:5000"

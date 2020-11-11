@@ -1,4 +1,7 @@
-#!/usr/bin/env python
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+# !/usr/bin/env python
 import argparse
 import atexit
 import logging
@@ -30,7 +33,7 @@ def parse_args():
         type=str,
         default="INFO",
         help="Log verbosity level. "
-        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+             "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
