@@ -60,9 +60,24 @@ class StackChoiceView(BaseMainWindowView):
         self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
 
         self._sync_both_image_axis()
+        self._ensure_range_is_the_same()
 
         self.choice_made = False
         self.roi_shown = False
+
+    def _ensure_range_is_the_same(self):
+        new_range = self.new_stack.ui.histogram.vb.viewRange()
+        original_range = self.original_stack.ui.histogram.vb.viewRange()
+
+        new_max_y = max(new_range[0][1], new_range[1][1])
+        new_min_y = min(new_range[0][1], new_range[1][1])
+        original_max_y = max(original_range[0][1], original_range[1][1])
+        original_min_y = min(original_range[0][1], original_range[1][1])
+        y_range_min = min(new_min_y, original_min_y)
+        y_range_max = max(new_max_y, original_max_y)
+
+        self.new_stack.ui.histogram.vb.setRange(yRange=(y_range_min, y_range_max))
+        self.original_stack.ui.histogram.vb.setRange(yRange=(y_range_min, y_range_max))
 
     def _toggle_roi(self):
         if self.roi_shown:

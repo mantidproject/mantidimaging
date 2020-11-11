@@ -166,3 +166,25 @@ class StackChoiceViewTest(unittest.TestCase):
         self.assertIn(mock.call(ViewBox.XAxis, "view"), self.v.original_stack.view.linkView.call_args_list)
         self.assertIn(mock.call(ViewBox.YAxis, "view"), self.v.original_stack.view.linkView.call_args_list)
         self.assertEqual(2, self.v.original_stack.view.linkView.call_count)
+
+    def test_ensure_range_is_the_same_new_stack_min_original_stack_max(self):
+        self.v.new_stack.ui.histogram.vb = mock.MagicMock()
+        self.v.original_stack.ui.histogram.vb = mock.MagicMock()
+        self.v.new_stack.ui.histogram.vb.viewRange = mock.MagicMock(return_value=[[0, 1], [0, 100]])
+        self.v.original_stack.ui.histogram.vb.viewRange = mock.MagicMock(return_value=[[0, 2], [0, 200]])
+
+        self.v._ensure_range_is_the_same()
+
+        self.v.new_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
+        self.v.original_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
+
+    def test_ensure_range_is_the_same_new_stack_max_original_stack_min(self):
+        self.v.new_stack.ui.histogram.vb = mock.MagicMock()
+        self.v.original_stack.ui.histogram.vb = mock.MagicMock()
+        self.v.new_stack.ui.histogram.vb.viewRange = mock.MagicMock(return_value=[[0, 2], [0, 200]])
+        self.v.original_stack.ui.histogram.vb.viewRange = mock.MagicMock(return_value=[[0, 1], [0, 100]])
+
+        self.v._ensure_range_is_the_same()
+
+        self.v.new_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
+        self.v.original_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
