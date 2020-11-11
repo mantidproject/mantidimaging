@@ -54,6 +54,7 @@ class FiltersWindowView(BaseMainWindowView):
         # Populate list of operations and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentTextChanged.connect(self.handle_filter_selection)
+        self.filterSelector.currentTextChanged.connect(self._update_apply_all_button)
         self.handle_filter_selection(0)
 
         # Handle stack selection
@@ -203,6 +204,13 @@ class FiltersWindowView(BaseMainWindowView):
     def ask_confirmation(self, msg: str):
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
+
+    def _update_apply_all_button(self, filter_name):
+        list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding"]
+        if filter_name in list_of_apply_single_stack:
+            self.applyToAllButton.setEnabled(False)
+        else:
+            self.applyToAllButton.setEnabled(True)
 
     def roi_visualiser(self, roi_field):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
