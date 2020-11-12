@@ -5,7 +5,7 @@ import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -212,6 +212,10 @@ class FlatFieldFilter(BaseFilter):
         assert isinstance(kwargs["dark_before_widget"], StackSelectorWidgetView)
         assert isinstance(kwargs["dark_after_widget"], StackSelectorWidgetView)
         return True
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Basic
 
 
 def _divide(data, norm_divide):

@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from sarepy.prep.stripe_removal_original import remove_all_stripe
 
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -86,3 +86,7 @@ class RemoveAllStripesFilter(BaseFilter):
                        la_size=la_size.value(),
                        sm_size=sm_size.value(),
                        dim=dim.value())
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Advanced

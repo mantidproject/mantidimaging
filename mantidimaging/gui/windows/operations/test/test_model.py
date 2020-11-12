@@ -166,6 +166,29 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         self.assertEqual("mock.mock", module_name)
 
+    def test_find_filter_index_from_filter_name(self):
+        filter1 = mock.MagicMock()
+        filter1.filter_name = "1"
+        filter2 = mock.MagicMock()
+        filter2.filter_name = "2"
+        filter3 = mock.MagicMock()
+        filter3.filter_name = "3"
+        self.model.filters = [filter1, filter2, filter3]
+
+        self.assertEqual(1, self.model._find_filter_index_from_filter_name("2"))
+
+    def test_filter_names(self):
+        self.model.presenter.divider = "-----------------"
+        filter_names = self.model.filter_names
+
+        self.assertEqual([
+            'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', "-----------------",
+            'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation', 'Rebin', 'Rescale',
+            'Ring Removal', 'Rotate Stack', "-----------------", 'Remove all stripes', 'Remove dead stripes',
+            'Remove large stripes', 'Stripe Removal', 'Remove stripes with filtering',
+            'Remove stripes with sorting and fitting'
+        ], filter_names)
+
 
 if __name__ == '__main__':
     unittest.main()
