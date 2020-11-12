@@ -52,7 +52,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.splitter.setSizes([200, 9999])
 
         # Populate list of operations and handle filter selection
-        filters_to_populate_with = self.presenter.model.filter_names
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentTextChanged.connect(self.handle_filter_selection)
         self.handle_filter_selection(0)
