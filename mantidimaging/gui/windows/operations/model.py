@@ -80,6 +80,7 @@ class FiltersWindowModel(object):
         for index, filter_ in enumerate(self.filters):
             if filter_.filter_name == filter_name:
                 return index
+        return 0
 
     def setup_filter(self, filter_name, filter_widget_kwargs):
         filter_idx = self._find_filter_index_from_filter_name(filter_name)
