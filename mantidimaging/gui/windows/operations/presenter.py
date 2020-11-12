@@ -35,6 +35,7 @@ class Notification(Enum):
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
     stack: Optional[StackVisualiserView] = None
+    divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
         super(FiltersWindowPresenter, self).__init__(view)
@@ -97,15 +98,15 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
-        filter_idx = self.view.filterSelector.currentIndex()
+        filter_name = self.view.filterSelector.currentText()
 
         # Get registration function for new filter
-        register_func = self.model.filter_registration_func(filter_idx)
+        register_func = self.model.filter_registration_func(filter_name)
 
         # Register new filter (adding it's property widgets to the properties layout)
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
-        self.model.setup_filter(filter_idx, filter_widget_kwargs)
+        self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
 
     def filter_uses_parameter(self, parameter):

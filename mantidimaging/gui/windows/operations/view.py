@@ -52,8 +52,9 @@ class FiltersWindowView(BaseMainWindowView):
         self.splitter.setSizes([200, 9999])
 
         # Populate list of operations and handle filter selection
+        filters_to_populate_with = self.presenter.model.filter_names
         self.filterSelector.addItems(self.presenter.model.filter_names)
-        self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)  # type:ignore
+        self.filterSelector.currentTextChanged.connect(self.handle_filter_selection)
         self.handle_filter_selection(0)
 
         # Handle stack selection
@@ -107,10 +108,14 @@ class FiltersWindowView(BaseMainWindowView):
         super(FiltersWindowView, self).show()
         self.auto_update_triggered.emit()
 
-    def handle_filter_selection(self, filter_idx):
+    def handle_filter_selection(self, filter_name):
         """
         Handle selection of a filter from the drop down list.
         """
+        # If a divider select the one below the divider.
+        if filter_name == self.presenter.divider:
+            self.filterSelector.setCurrentIndex(self.filterSelector.currentIndex() + 1)
+
         # Remove all existing items from the properties layout
         delete_all_widgets_from_layout(self.filterPropertiesLayout)
 

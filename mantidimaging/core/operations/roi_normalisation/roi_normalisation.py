@@ -5,7 +5,7 @@ import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.operations.rescale.rescale import RescaleFilter
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
@@ -96,6 +96,10 @@ class RoiNormalisationFilter(BaseFilter):
     @staticmethod
     def do_after_wrapper() -> partial:
         return partial(value_scaling.apply_factor)
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Basic
 
 
 def _calc_sum(data, _, air_left=None, air_top=None, air_right=None, air_bottom=None):

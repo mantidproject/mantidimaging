@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QSpinBox
 from sarepy.prep.stripe_removal_improved import remove_stripe_based_filtering_sorting, \
     remove_stripe_based_2d_filtering_sorting
 
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -91,3 +91,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
                        size=size.value(),
                        window_dim=window_dim.value(),
                        filtering_dim=filtering_dim.value())
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Advanced

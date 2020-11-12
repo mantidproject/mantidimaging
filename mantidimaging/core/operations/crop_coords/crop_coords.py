@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QLineEdit
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -92,6 +92,10 @@ class CropCoordinatesFilter(BaseFilter):
             return partial(CropCoordinatesFilter.filter_func, region_of_interest=roi)
         except Exception as e:
             raise ValueError(f"The provided ROI string is invalid! Error: {e}")
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Basic
 
 
 def execute_single(data, roi, progress=None, out=None):

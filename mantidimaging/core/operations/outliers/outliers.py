@@ -5,7 +5,7 @@ import numpy as np
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
@@ -106,6 +106,10 @@ class OutliersFilter(BaseFilter):
                        diff=diff_field.value(),
                        radius=size_field.value(),
                        mode=mode_field.currentText())
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Basic
 
 
 def modes():
