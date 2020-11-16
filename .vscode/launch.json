@@ -5,6 +5,21 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "-pno:django",
+        "${file}"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "Mantid Imaging",
+        "order": 4
+      }
+    },
+    {
       "name": "Python: Current File",
       "type": "python",
       "request": "launch",
