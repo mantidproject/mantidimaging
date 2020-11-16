@@ -64,6 +64,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.image_view = ReconImagesView(self)
         self.imageLayout.addWidget(self.image_view)
+        self.image_view.sigSliceIndexChanged.connect(self.presenter.set_preview_slice_idx)
 
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)

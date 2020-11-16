@@ -12,7 +12,12 @@ from ..monitor_normalisation import MonitorNormalisation
 def test_no_counts():
     images = generate_images()
     original = images.copy()
-    MonitorNormalisation.filter_func(images)
+    filter_threw = False
+    try:
+        MonitorNormalisation.filter_func(images)
+    except RuntimeError:
+        filter_threw = True
+    assert filter_threw
     npt.assert_equal(original.data, images.data)
 
 

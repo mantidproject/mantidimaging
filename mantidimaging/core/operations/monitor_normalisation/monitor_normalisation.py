@@ -27,7 +27,7 @@ class MonitorNormalisation(BaseFilter):
     def filter_func(images: Images, cores=None, chunksize=None, progress=None) -> Images:
         counts = images.counts()
         if counts is None:
-            return images
+            raise RuntimeError("No loaded log values for this stack.")
 
         counts_val = counts.value / counts.value[0]
         div_partial = ptsm.create_partial(_divide_by_counts, fwd_function=ptsm.inplace)
