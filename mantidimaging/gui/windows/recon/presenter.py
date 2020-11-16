@@ -117,7 +117,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.rotation_centre = self.model.last_cor.value
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
-        self.do_preview_reconstruct_slice()
+        self.do_preview_reconstruct_slice(refresh_recon_slice_histogram=True)
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -171,7 +171,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_preview_reconstruct_slice(self,
                                      cor=None,
                                      slice_idx: Optional[int] = None,
-                                     refresh_recon_slice_histogram: bool = True):
+                                     refresh_recon_slice_histogram: bool = False):
         if self.model.images is None:
             return
 
