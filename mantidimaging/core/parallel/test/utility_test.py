@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import mock
 
 from mantidimaging.core.parallel.utility import multiprocessing_necessary, execute_impl

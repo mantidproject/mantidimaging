@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from .model import ReconstructWindowModel  # noqa: F401
 from .point_table_model import CorTiltPointQtModel, Column, COLUMN_NAMES  # noqa: F401
 from .presenter import ReconstructWindowPresenter  # noqa: F401

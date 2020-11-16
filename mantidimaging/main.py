@@ -1,4 +1,7 @@
-#!/usr/bin/env python
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+# !/usr/bin/env python
 import argparse
 import atexit
 import logging
