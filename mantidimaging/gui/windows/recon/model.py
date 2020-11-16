@@ -102,7 +102,7 @@ class ReconstructWindowModel(object):
             return 0, ScalarCoR(0)
 
         first_slice_to_recon = self.images.height // 2
-        cor = ScalarCoR(self.images.v_middle)
+        cor = ScalarCoR(self.images.h_middle)
         return first_slice_to_recon, cor
 
     def do_fit(self):
