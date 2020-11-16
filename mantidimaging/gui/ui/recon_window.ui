@@ -25,16 +25,7 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
-        <property name="leftMargin">
-         <number>9</number>
-        </property>
-        <property name="topMargin">
-         <number>9</number>
-        </property>
-        <property name="rightMargin">
-         <number>9</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>9</number>
         </property>
         <item>
@@ -46,7 +37,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="resultsTab">
            <attribute name="title">
@@ -198,11 +189,11 @@
                    <property name="toolTip">
                     <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>2</number>
-                   </property>
                    <property name="text">
                     <string>Fit from COR/Tilt above</string>
+                   </property>
+                   <property name="toolTipDuration" stdset="0">
+                    <number>2</number>
                    </property>
                   </widget>
                  </item>
@@ -511,12 +502,16 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QSpinBox" name="previewProjectionIndex"/>
+            <widget class="QSpinBox" name="previewProjectionIndex">
+             <property name="maximum">
+              <number>99999</number>
+             </property>
+            </widget>
            </item>
            <item row="1" column="1">
             <widget class="QSpinBox" name="previewSliceIndex">
              <property name="maximum">
-              <number>9999</number>
+              <number>99999</number>
              </property>
             </widget>
            </item>

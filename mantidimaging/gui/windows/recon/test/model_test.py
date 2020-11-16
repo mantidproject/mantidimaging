@@ -37,6 +37,12 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertEqual(first_slice, 0)
         self.assertEqual(initial_cor.value, 0)
 
+    def test_find_initial_cor_returns_middle_with_data(self):
+        self.model.initial_select_data(self.stack)
+        first_slice, initial_cor = self.model.find_initial_cor()
+        self.assertEqual(first_slice, 64)
+        self.assertEqual(initial_cor.value, 128)
+
     def test_tilt_line_data(self):
         # TODO move into data_model test
         self.model.data_model._points = [Point(50, 1), Point(40, 2), Point(30, 3), Point(20, 4)]
@@ -79,7 +85,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertNotEqual(test_cor, self.model.last_cor)
         self.assertNotEqual(test_tilt, self.model.tilt_angle)
         self.assertEqual(0, self.model.preview_projection_idx)
-        self.assertEqual(0, self.model.preview_slice_idx)
+        self.assertEqual(64, self.model.preview_slice_idx)
 
     def test_do_fit(self):
         self.model.images.metadata.clear()

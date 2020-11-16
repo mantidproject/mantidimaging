@@ -88,7 +88,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         # first-time selecting this data after reset
         self.presenter.set_stack_uuid(self.uuid)
 
-        self.assertEqual(5.0, self.view.rotation_centre)
+        self.assertEqual(64.0, self.view.rotation_centre)
         self.assertEqual(TEST_PIXEL_SIZE, self.view.pixel_size)
 
     def test_set_projection_preview_index(self):
