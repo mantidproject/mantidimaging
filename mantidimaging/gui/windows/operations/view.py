@@ -55,7 +55,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentTextChanged.connect(self.handle_filter_selection)
         self.filterSelector.currentTextChanged.connect(self._update_apply_all_button)
-        self.handle_filter_selection(0)
+        self.handle_filter_selection("")
 
         # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
@@ -108,7 +108,7 @@ class FiltersWindowView(BaseMainWindowView):
         super(FiltersWindowView, self).show()
         self.auto_update_triggered.emit()
 
-    def handle_filter_selection(self, filter_name):
+    def handle_filter_selection(self, filter_name: str):
         """
         Handle selection of a filter from the drop down list.
         """
