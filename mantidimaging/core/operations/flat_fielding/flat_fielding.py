@@ -1,5 +1,6 @@
 from functools import partial
 from typing import Any, Dict
+from PyQt5.QtWidgets import QComboBox
 
 import numpy as np
 
@@ -16,6 +17,26 @@ from mantidimaging.gui.windows.operations import FiltersWindowView
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
 MAXIMUM_PIXEL_VALUE = 1e9
+
+
+def enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget):
+    if text == "Only Before":
+        flat_before_widget.setEnabled(True)
+        flat_after_widget.setEnabled(False)
+        dark_before_widget.setEnabled(True)
+        dark_after_widget.setEnabled(False)
+    elif text == "Only After":
+        flat_before_widget.setEnabled(False)
+        flat_after_widget.setEnabled(True)
+        dark_before_widget.setEnabled(False)
+        dark_after_widget.setEnabled(True)
+    elif text == "Both, concatenated":
+        flat_before_widget.setEnabled(True)
+        flat_after_widget.setEnabled(True)
+        dark_before_widget.setEnabled(True)
+        dark_after_widget.setEnabled(True)
+    else:
+        raise RuntimeError("Unknown field parameter")
 
 
 class FlatFieldFilter(BaseFilter):
@@ -155,6 +176,7 @@ class FlatFieldFilter(BaseFilter):
         flat_after_widget.setMaximumWidth(375)
         flat_after_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Flat After", flat_after_widget)
+        flat_after_widget.setEnabled(False)
 
         assert isinstance(dark_before_widget, StackSelectorWidgetView)
         dark_before_widget.setMaximumWidth(375)
@@ -165,6 +187,12 @@ class FlatFieldFilter(BaseFilter):
         dark_after_widget.setMaximumWidth(375)
         dark_after_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Dark After", dark_after_widget)
+        dark_after_widget.setEnabled(False)
+
+        # Ensure that fields that are not currently used are disabled
+        assert (isinstance(selected_flat_fielding_widget, QComboBox))
+        selected_flat_fielding_widget.currentTextChanged.connect(lambda text: enable_correct_fields_only(
+            text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget))
 
         return {
             'selected_flat_fielding_widget': selected_flat_fielding_widget,
