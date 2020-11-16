@@ -173,6 +173,7 @@ class FlatFieldFilter(BaseFilter):
         assert isinstance(flat_before_widget, StackSelectorWidgetView)
         flat_before_widget.setMaximumWidth(375)
         flat_before_widget.subscribe_to_main_window(view.main_window)
+        try_to_select_relevant_stack("Flat", flat_before_widget)
         try_to_select_relevant_stack("Flat Before", flat_before_widget)
 
         assert isinstance(flat_after_widget, StackSelectorWidgetView)
@@ -184,6 +185,7 @@ class FlatFieldFilter(BaseFilter):
         assert isinstance(dark_before_widget, StackSelectorWidgetView)
         dark_before_widget.setMaximumWidth(375)
         dark_before_widget.subscribe_to_main_window(view.main_window)
+        try_to_select_relevant_stack("Dark", dark_before_widget)
         try_to_select_relevant_stack("Dark Before", dark_before_widget)
 
         assert isinstance(dark_after_widget, StackSelectorWidgetView)
