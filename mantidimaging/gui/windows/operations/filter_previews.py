@@ -6,6 +6,7 @@ from typing import Optional
 
 import numpy as np
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
+from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
@@ -48,19 +49,23 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_before, self.image_before_vb = self.image_in_vb(name="before")
-        self.image_after, self.image_after_vb = self.image_in_vb(name="after")
-        self.image_difference, self.image_difference_vb = self.image_in_vb(name="difference")
+        self.image_before, self.image_before_vb, self.image_before_hist = self.image_in_vb(name="before")
+        self.image_after, self.image_after_vb, self.image_after_hist = self.image_in_vb(name="after")
+        self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
+            name="difference")
 
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
 
         # Ensure images resize equally
-        image_layout = self.addLayout(colspan=3)
+        image_layout = self.addLayout(colspan=6)
         image_layout.addItem(self.image_before_vb, 0, 0)
-        image_layout.addItem(self.image_after_vb, 0, 1)
-        image_layout.addItem(self.image_difference_vb, 0, 2)
+        image_layout.addItem(self.image_before_hist, 0, 1)
+        image_layout.addItem(self.image_after_vb, 0, 2)
+        image_layout.addItem(self.image_after_hist, 0, 3)
+        image_layout.addItem(self.image_difference_vb, 0, 4)
+        image_layout.addItem(self.image_difference_hist, 0, 5)
         self.nextRow()
 
         before_details = self.addLabel("")
@@ -80,10 +85,10 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def image_in_vb(self, name=None):
         im = ImageItem()
-        im.setAutoDownsample(False)
         vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
-        return im, vb
+        hist = HistogramLUTItem(im)
+        return im, vb, hist
 
     def clear_items(self):
         self.image_before.clear()
