@@ -104,20 +104,26 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
 
+    def _find_images_in_same_directory(self, sample_dirname: Path, type: str, suffix: str) -> Optional[List[str]]:
+        prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
+
+        for prefix in prefix_list:
+            try:
+                if suffix != "After":
+                    return get_file_names(sample_dirname.absolute(), self.image_format, prefix=prefix)
+            except RuntimeError:
+                logger.info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
+
+        return None
+
     def _find_images(self, sample_dirname: Path, type: str, suffix: str, look_without_suffix=False) -> List[str]:
         # same folder
-        try:
-            if suffix != "After":
-                return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}")
-        except RuntimeError:
-            logger.info(f"Could not find {type} files in {sample_dirname.absolute()}")
-            try:
-                return get_file_names(sample_dirname.absolute(), self.image_format, prefix=f"*{type}_{suffix}")
-            except RuntimeError:
-                logger.info(f"Could not find {type}_{suffix} files in {sample_dirname.absolute()}")
+        file_names = self._find_images_in_same_directory(sample_dirname, type, suffix)
+        if file_names is not None:
+            return file_names
 
         # look into different directories 1 level above
-        dirs = [f"{type} {suffix}", f"{type}_{suffix}"]
+        dirs = [f"{type} {suffix}", f"{type.lower()} {suffix}", f"{type}_{suffix}", f"{type.lower()}_{suffix}"]
         if look_without_suffix:
             dirs.extend([f"{type.lower()}", type])
 

@@ -9,6 +9,10 @@ import numpy
 
 from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
 
+EXPECTED_HEADER_FOR_IMAT_LOG_FILE = [
+    'TIME STAMP  IMAGE TYPE', 'IMAGE COUNTER', 'COUNTS BM3 before image', 'COUNTS BM3 after image'
+]
+
 
 class IMATLogColumn(Enum):
     TIMESTAMP = auto()
@@ -27,6 +31,13 @@ class IMATLogFile:
             IMATLogColumn.COUNTS_BEFORE: [],
             IMATLogColumn.COUNTS_AFTER: []
         }
+
+        if EXPECTED_HEADER_FOR_IMAT_LOG_FILE != data[0]:
+            raise RuntimeError(
+                "The Log file found for this dataset does not seem to have the correct header for an IMAT log file.\n"
+                "The header is expected to contain the names of the columns:\n"
+                f"{str(EXPECTED_HEADER_FOR_IMAT_LOG_FILE)}")
+
         # ignores the headers (index 0) as they're not the same as the data anyway
         # and index 1 is an empty line
         for line in data[2:]:
