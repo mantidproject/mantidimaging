@@ -7,9 +7,9 @@ FBP_CUDA and SIRT_CUDA
 ----------------------
 These filters are used from the ASTRA Toolbox package.
 
-The original documentation for FBP_CUDA can be found `here <http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html>`_.
+`Link to the original documentation for FBP_CUDA <http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html>`_.
 
-The original documentation for SIRT_CUDA can be found `here <http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html>`_.
+`Link to the original documentation for SIRT_CUDA <http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html>`_.
 
 This is an implementation of the algorithms for 2D data sets. They require a CUDA-compatible graphics card.
 
