@@ -1,12 +1,12 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.gui.windows.operations.view import FiltersWindowView
 import unittest
 from unittest import mock
 
-from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.gui.windows.main import MainWindowView
+from mantidimaging.gui.windows.operations.view import FiltersWindowView
+from mantidimaging.test_helpers import start_qapplication
 
 
 @start_qapplication

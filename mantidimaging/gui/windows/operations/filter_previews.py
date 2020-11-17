@@ -3,11 +3,11 @@
 
 from collections import namedtuple
 from typing import Optional
-from PyQt5.QtCore import QPoint, QRect
-from PyQt5.QtGui import QGuiApplication, QResizeEvent
 
 import numpy as np
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
+from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtGui import QGuiApplication, QResizeEvent
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
