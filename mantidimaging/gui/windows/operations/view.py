@@ -26,6 +26,7 @@ class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     splitter: QSplitter
+    collapseToggleButton: QPushButton
 
     linkImages: QCheckBox
     showHistogramLegend: QCheckBox
@@ -97,6 +98,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle help button pressed
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
+        self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
@@ -254,3 +256,11 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.ui.gridLayout.addWidget(button)
 
         window.show()
+
+    def toggle_filters_section(self):
+        if self.collapseToggleButton.text() == "<<":
+            self.splitter.setSizes([0, 9999])
+            self.collapseToggleButton.setText(">>")
+        else:
+            self.splitter.setSizes([200, 9999])
+            self.collapseToggleButton.setText("<<")
