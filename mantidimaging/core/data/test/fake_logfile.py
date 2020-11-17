@@ -1,12 +1,12 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile, EXPECTED_HEADER_FOR_IMAT_LOG_FILE
 
 
 def generate_logfile() -> IMATLogFile:
     data = [
-        ["column headers"],  # skipped when parsing
+        EXPECTED_HEADER_FOR_IMAT_LOG_FILE,  # checked if exists, but skipped
         [""],  # skipped when parsing
         # for each row a list with 4 entries is currently expected
         [
