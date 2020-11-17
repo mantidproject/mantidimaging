@@ -3,9 +3,11 @@
 
 from collections import namedtuple
 from typing import Optional
+from PyQt5.QtGui import QResizeEvent
 
 import numpy as np
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
+from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -40,7 +42,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.histogram = None
         self.before_histogram = None
         self.after_histogram = None
-
+        GraphicsLayout
         self.combined_histograms = True
         self.histogram_legend_visible = True
 
@@ -59,13 +61,13 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_vb.addItem(self.image_after_overlay)
 
         # Ensure images resize equally
-        image_layout = self.addLayout(colspan=6)
-        image_layout.addItem(self.image_before_vb, 0, 0)
-        image_layout.addItem(self.image_before_hist, 0, 1)
-        image_layout.addItem(self.image_after_vb, 0, 2)
-        image_layout.addItem(self.image_after_hist, 0, 3)
-        image_layout.addItem(self.image_difference_vb, 0, 4)
-        image_layout.addItem(self.image_difference_hist, 0, 5)
+        self.image_layout: GraphicsLayout = self.addLayout(colspan=6)
+        self.image_layout.addItem(self.image_before_vb, 0, 0)
+        self.image_layout.addItem(self.image_before_hist, 0, 1)
+        self.image_layout.addItem(self.image_after_vb, 0, 2)
+        self.image_layout.addItem(self.image_after_hist, 0, 3)
+        self.image_layout.addItem(self.image_difference_vb, 0, 4)
+        self.image_layout.addItem(self.image_difference_hist, 0, 5)
         self.nextRow()
 
         before_details = self.addLabel("")
@@ -82,6 +84,12 @@ class FilterPreviews(GraphicsLayoutWidget):
             img.hoverEvent = lambda ev: self.mouse_over(ev)
 
         self.init_histogram()
+
+    def resizeEvent(self, ev: QResizeEvent):
+        if ev is not None:
+            size = ev.size()
+            self.image_layout.setFixedHeight(min(size.height() * 0.7, 800))
+        super().resizeEvent(ev)
 
     def image_in_vb(self, name=None):
         im = ImageItem()
