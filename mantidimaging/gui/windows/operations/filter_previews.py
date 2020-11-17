@@ -3,7 +3,8 @@
 
 from collections import namedtuple
 from typing import Optional
-from PyQt5.QtGui import QResizeEvent
+from PyQt5.QtCore import QCoreApplication, QPoint, QRect
+from PyQt5.QtGui import QGuiApplication, QResizeEvent, QScreen
 
 import numpy as np
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
@@ -37,12 +38,16 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def __init__(self, parent=None, **kwargs):
         super(FilterPreviews, self).__init__(parent, **kwargs)
+
+        widget_location = self.mapToGlobal(QPoint(self.width() / 2, 0))
+        # allow the widget to take up to 80% of the desktop's height
+        self.ALLOWED_HEIGHT: QRect = QGuiApplication.screenAt(widget_location).availableGeometry().height() * 0.8
+
         self.before_histogram_data = None
         self.after_histogram_data = None
         self.histogram = None
         self.before_histogram = None
         self.after_histogram = None
-        GraphicsLayout
         self.combined_histograms = True
         self.histogram_legend_visible = True
 
@@ -88,7 +93,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None:
             size = ev.size()
-            self.image_layout.setFixedHeight(min(size.height() * 0.7, 800))
+            self.image_layout.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT))
         super().resizeEvent(ev)
 
     def image_in_vb(self, name=None):
