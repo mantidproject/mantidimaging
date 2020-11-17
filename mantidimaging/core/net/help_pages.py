@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInpu
                              QVBoxLayout, QWidget)
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_api_webpage, open_help_webpage
+from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
