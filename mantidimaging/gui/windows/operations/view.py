@@ -5,8 +5,6 @@ from mantidimaging.core.net.help_pages import open_api_webpage
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
     QSizePolicy, QComboBox, QStyle, QMainWindow
 from pyqtgraph import ImageItem
