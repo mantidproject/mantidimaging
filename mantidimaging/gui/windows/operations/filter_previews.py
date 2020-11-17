@@ -3,8 +3,8 @@
 
 from collections import namedtuple
 from typing import Optional
-from PyQt5.QtCore import QCoreApplication, QPoint, QRect
-from PyQt5.QtGui import QGuiApplication, QResizeEvent, QScreen
+from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtGui import QGuiApplication, QResizeEvent
 
 import numpy as np
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
