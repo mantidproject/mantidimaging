@@ -6,20 +6,20 @@ from enum import Enum, auto
 from functools import partial
 from logging import getLogger
 from time import sleep
-from typing import Optional
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 from PyQt5.QtWidgets import QApplication
-from mantidimaging.gui.utility.common import operation_in_progress
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import (BlockQtSignals)
-from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
-from .model import FiltersWindowModel
+from mantidimaging.gui.utility import BlockQtSignals
+from mantidimaging.gui.utility.common import operation_in_progress
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
+from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
+
+from .model import FiltersWindowModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
@@ -223,13 +223,13 @@ class FiltersWindowPresenter(BasePresenter):
 
             if filtered_image_data.shape == before_image.shape:
                 diff = np.subtract(filtered_image_data, before_image)
-                if self.view.invertDifference.isChecked():
-                    diff = np.negative(diff, out=diff)
-                self._update_preview_image(diff, self.view.preview_image_difference)
                 if self.view.overlayDifference.isChecked():
                     self.view.previews.add_difference_overlay(diff)
                 else:
                     self.view.previews.hide_difference_overlay()
+                if self.view.invertDifference.isChecked():
+                    diff = np.negative(diff, out=diff)
+                self._update_preview_image(diff, self.view.preview_image_difference)
 
             # Ensure all of it is visible
             self.view.previews.auto_range()
