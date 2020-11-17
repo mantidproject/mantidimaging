@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1495</width>
-    <height>831</height>
+    <width>1411</width>
+    <height>813</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="resultsTab">
            <attribute name="title">
@@ -446,6 +446,13 @@
                </widget>
               </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="reconHelpButton">
+              <property name="text">
+               <string>Open Reconstruction Help Page</string>
+              </property>
+             </widget>
             </item>
             <item>
              <spacer name="verticalSpacer_5">
