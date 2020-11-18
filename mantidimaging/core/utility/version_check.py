@@ -14,26 +14,28 @@ LOG = getLogger(__name__)
 
 def find_if_latest_version(action: Callable[[str], None]):
     LOG.info("Finding and comparing mantidimaging versions")
-    local_mantid_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2}'",
+    local_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2}'",
                                                    shell=True,
                                                    env=os.environ).decode("utf-8").strip()
+    if local_package == "":
+        LOG.info("Running a development build without a local Mantid Imaging package installation.")
+        # no local installation, no point sending out API requests
+        return
     try:
         response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
-        remote_mantid_package = json.loads(response.content)["latest_version"]
+        remote_package = json.loads(response.content)["latest_version"]
     except Exception:
         # whatever goes wrong, in the end we don't have the version
-        remote_mantid_package = ''
-    if local_mantid_package == "":
-        LOG.info("Running a development build without a local Mantid Imaging package installation.")
-    elif remote_mantid_package == "":
+        remote_package = ''
+    if remote_package == "":
         LOG.info("Could not connect Anaconda remote to get the latest version")
     else:
-        local_version, local_commits_since_last = _parse_version(local_mantid_package)
-        remote_version, remote_commits_since_last = _parse_version(remote_mantid_package)
+        local_version, local_commits_since_last = _parse_version(local_package)
+        remote_version, remote_commits_since_last = _parse_version(remote_package)
 
         if local_version < remote_version or local_commits_since_last < remote_commits_since_last:
-            msg = f"Not running the latest Mantid Imaging. Found {local_mantid_package}, " \
-                  f"latest: {remote_mantid_package}. Please check the terminal for an update command!"
+            msg = f"Not running the latest Mantid Imaging. Found {local_package}, " \
+                  f"latest: {remote_package}. Please check the terminal for an update command!"
             LOG.info(msg)
             LOG.info(
                 "To update your environment please copy and run the following command:\n\n"
