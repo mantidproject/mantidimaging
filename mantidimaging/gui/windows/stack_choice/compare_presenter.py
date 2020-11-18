@@ -13,6 +13,7 @@ class StackComparePresenter:
 
         # forces the view's closeEvent to not prompt any dialogs, but only free the image views
         self.view.choice_made = True
+        self.view.setWindowTitle("Comparing data")
 
     def show(self):
         self.view.show()
