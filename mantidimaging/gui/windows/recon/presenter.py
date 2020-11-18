@@ -161,7 +161,7 @@ class ReconstructWindowPresenter(BasePresenter):
         cor = self.model.get_me_a_cor(cor)
         try:
             return self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
-        except:
+        except Exception:
             return None
 
     def _get_slice_index(self, slice_idx: Optional[int]):
