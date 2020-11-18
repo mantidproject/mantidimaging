@@ -69,7 +69,7 @@ def _parse_version(package_version_string: str) -> ParsedVersion:
 
 def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Callable[[str], None], unstable: bool):
     if local.version < remote.version or local.commits < remote.commits:
-        suffix = " Nightly" if unstable else ""
+        suffix = " Unstable" if unstable else ""
 
         msg = f"Not running the latest Mantid Imaging{suffix}. Found version {_make_version_str(local)}, " \
               f"latest: {_make_version_str(remote)}. Please check the terminal for an update command!"

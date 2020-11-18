@@ -60,7 +60,7 @@ class MainWindowView(BaseMainWindowView):
         is_main_label = check_version_and_label(self.not_latest_version_warning)
 
         if not is_main_label:
-            self.setWindowTitle("Mantid Imaging Nightly")
+            self.setWindowTitle("Mantid Imaging Unstable")
             self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
 
     def setup_shortcuts(self):
