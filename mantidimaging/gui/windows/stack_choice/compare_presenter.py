@@ -17,3 +17,7 @@ class StackComparePresenter:
 
     def show(self):
         self.view.show()
+
+    def notify(self, notification):
+        # this presenter doesn't handle any notifications
+        pass
