@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
 from mantidimaging.gui.widgets.stack_selector.view import StackSelectorWidgetView
 from PyQt5.QtWidgets import QDialog, QGridLayout, QPushButton
