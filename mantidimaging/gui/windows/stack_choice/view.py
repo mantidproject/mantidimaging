@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING, Union
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
@@ -28,7 +28,7 @@ class StackChoiceView(BaseMainWindowView):
     newDataButton: QPushButton
 
     def __init__(self, original_stack: Images, new_stack: Images,
-                 presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: QMainWindow):
+                 presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: Optional[QMainWindow]):
         super(StackChoiceView, self).__init__(parent, "gui/ui/stack_choice_window.ui")
 
         self.presenter = presenter

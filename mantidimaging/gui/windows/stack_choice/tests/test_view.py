@@ -19,8 +19,7 @@ class StackChoiceViewTest(unittest.TestCase):
         self.original_stack = th.generate_images()
         self.new_stack = th.generate_images()
         self.p = mock.MagicMock()
-        self.p.operations_presenter.view = None
-        self.v = StackChoiceView(self.original_stack, self.new_stack, self.p)
+        self.v = StackChoiceView(self.original_stack, self.new_stack, self.p, None)
 
     def test_toggle_roi_show_true(self):
         self.v.roi_shown = True
