@@ -5,10 +5,11 @@ from logging import getLogger
 from typing import Optional
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction, QLabel, QInputDialog
+from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.version_check import find_if_latest_version
+from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
@@ -17,6 +18,7 @@ from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView
+from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 LOG = getLogger(__file__)
@@ -29,6 +31,7 @@ class MainWindowView(BaseMainWindowView):
     actionRecon: QAction
     actionFilters: QAction
     actionSavuFilters: QAction
+    actionCompareImages: QAction
 
     filters: Optional[FiltersWindowView] = None
     savu_filters: Optional[SavuFiltersWindowView] = None
@@ -65,6 +68,8 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
+
+        self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
 
@@ -227,3 +232,12 @@ class MainWindowView(BaseMainWindowView):
         if accepted:
             import pydevd_pycharm
             pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)
+
+    def show_stack_select_dialog(self):
+        dialog = MultipleStackSelect(self)
+        if dialog.exec() == QDialog.Accepted:
+            one = self.presenter.get_stack_visualiser(dialog.stack_one.current()).presenter.images
+            two = self.presenter.get_stack_visualiser(dialog.stack_two.current()).presenter.images
+
+            stack_choice = StackComparePresenter(one, two, self)
+            stack_choice.show()

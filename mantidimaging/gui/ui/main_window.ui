@@ -54,8 +54,15 @@
     <addaction name="actionAbout"/>
     <addaction name="actionDebug_Me"/>
    </widget>
+   <widget class="QMenu" name="menuFunctions">
+    <property name="title">
+     <string>Functions</string>
+    </property>
+    <addaction name="actionCompareImages"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuWorkflow"/>
+   <addaction name="menuFunctions"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionLoad">
@@ -143,6 +150,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionCompare_Images">
+   <property name="text">
+    <string>Compare Images</string>
+   </property>
+  </action>
+  <action name="actionCompareImages">
+   <property name="text">
+    <string>Compare Images</string>
    </property>
   </action>
  </widget>

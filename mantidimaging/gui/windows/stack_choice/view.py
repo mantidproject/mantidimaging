@@ -2,15 +2,20 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum, auto
+from typing import TYPE_CHECKING
+from mantidimaging.core.data.images import Images
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QSizePolicy, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QSizePolicy, QMessageBox
 from pyqtgraph import ViewBox
 
 from mantidimaging.gui.widgets.pg_image_view import MIImageView
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 
 
 class Notification(Enum):
@@ -19,8 +24,12 @@ class Notification(Enum):
 
 
 class StackChoiceView(BaseMainWindowView):
-    def __init__(self, original_stack, new_stack, presenter):
-        super(StackChoiceView, self).__init__(presenter.operations_presenter.view, "gui/ui/stack_choice_window.ui")
+    originalDataButton: QPushButton
+    newDataButton: QPushButton
+
+    def __init__(self, original_stack: Images, new_stack: Images, presenter: 'StackChoicePresenter',
+                 parent: QMainWindow):
+        super(StackChoiceView, self).__init__(parent, "gui/ui/stack_choice_window.ui")
 
         self.presenter = presenter
 
@@ -145,5 +154,6 @@ class StackChoiceView(BaseMainWindowView):
             else:
                 e.ignore()
                 return
+
         self.original_stack.close()
         self.new_stack.close()

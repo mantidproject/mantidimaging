@@ -1,10 +1,16 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from mantidimaging.core.data.images import Images
 import traceback
 from logging import getLogger
+from typing import List, Optional, TYPE_CHECKING, Tuple, Union
+from uuid import UUID
 
 from mantidimaging.gui.windows.stack_choice.view import StackChoiceView, Notification
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter
 
 
 def _get_stack_from_uuid(original_stack, stack_uuid):
@@ -15,7 +21,12 @@ def _get_stack_from_uuid(original_stack, stack_uuid):
 
 
 class StackChoicePresenter:
-    def __init__(self, original_stack, new_stack, operations_presenter, stack_uuid, view=None):
+    def __init__(self,
+                 original_stack: Union[List[Tuple[Images, UUID]], Images],
+                 new_stack: Images,
+                 operations_presenter: 'FiltersWindowPresenter',
+                 stack_uuid: Optional[UUID],
+                 view: Optional[StackChoiceView] = None):
         self.operations_presenter = operations_presenter
 
         if view is None:
@@ -24,7 +35,7 @@ class StackChoicePresenter:
                 self.stack = _get_stack_from_uuid(original_stack, stack_uuid)
             else:
                 self.stack = original_stack
-            view = StackChoiceView(self.stack, new_stack, self)
+            view = StackChoiceView(self.stack, new_stack, self, parent=operations_presenter.view)
 
         self.view = view
         self.stack_uuid = stack_uuid
