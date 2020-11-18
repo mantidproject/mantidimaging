@@ -1,9 +1,11 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import mock
-from mock import DEFAULT, MagicMock, Mock, patch
 import pytest
-from mantidimaging.core.utility.version_check import _do_version_check, _make_version_str, _parse_version, check_version_and_label
+from mock import DEFAULT
+
+from mantidimaging.core.utility.version_check import (_do_version_check, _make_version_str, _parse_version,
+                                                      check_version_and_label)
 
 
 def test_parse_version():
