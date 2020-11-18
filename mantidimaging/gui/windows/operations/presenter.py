@@ -124,7 +124,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.clear_previews()
         apply_to = [self.stack]
 
-        self._do_apply_filter(apply_to)
+        self._do_apply_filter(apply_to, confirm_with_user_for_180degree=True)
 
     def do_apply_filter_to_all(self):
         confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
@@ -179,7 +179,8 @@ class FiltersWindowPresenter(BasePresenter):
                         and not self.applying_to_all:
                     self.view.clear_previews()
                     self._do_apply_filter(
-                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)],
+                        allow_180_degree=True)
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
@@ -196,8 +197,22 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
-    def _do_apply_filter(self, apply_to):
-        self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
+    def _do_apply_filter(self, apply_to, allow_180_degree=False, confirm_with_user_for_180degree=False):
+        confirmed_stacks = []
+        for stack in apply_to:
+            is_180_proj = self.is_a_proj180deg(stack)
+            if not is_180_proj:
+                confirmed_stacks.append(stack)
+                continue
+            if is_180_proj and allow_180_degree:
+                confirmed_stacks.append(stack)
+            else:
+                if is_180_proj and confirm_with_user_for_180degree and\
+                        self.view.ask_confirmation("Are you sure you want to apply to 180 degree projection?"):
+                    confirmed_stacks.append(stack)
+
+        if 0 < len(confirmed_stacks):
+            self.model.do_apply_filter(confirmed_stacks, partial(self._post_filter, confirmed_stacks))
 
     def do_update_previews(self):
         self.view.clear_previews()

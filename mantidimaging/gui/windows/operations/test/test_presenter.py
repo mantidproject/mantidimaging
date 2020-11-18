@@ -5,6 +5,7 @@ import unittest
 from functools import partial
 
 import mock
+import pytest
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
@@ -181,3 +182,62 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         stack.presenter.images.copy.assert_called_once()
         self.assertEqual(stack_data, self.presenter.original_images_stack)
+
+
+@pytest.mark.parametrize('allow_180_degree, confirm_with_user_for_180degree', [(True, False), (True, True),
+                                                                               (False, False), (False, True)])
+@mock.patch("mantidimaging.gui.windows.operations.presenter.partial", return_value="Partial")
+def test_apply_filter_on_180_deg_proj_behaviour_not_180_projection(partial_mock, allow_180_degree,
+                                                                   confirm_with_user_for_180degree):
+    main_window = mock.create_autospec(MainWindowView)
+    view = mock.MagicMock()
+    presenter = FiltersWindowPresenter(view, main_window)
+    view.presenter = presenter
+    model = mock.MagicMock()
+    presenter.model = model
+    view.ask_confirmation.return_value = True
+    images = "images"
+    post_filter = "post_filter"
+    presenter._post_filter = post_filter
+    presenter.is_a_proj180deg = mock.MagicMock(return_value=False)
+
+    presenter._do_apply_filter(apply_to=[images],
+                               allow_180_degree=allow_180_degree,
+                               confirm_with_user_for_180degree=confirm_with_user_for_180degree)
+
+    model.do_apply_filter.assert_called_once_with([images], "Partial")
+    partial_mock.assert_called_once_with(post_filter, [images])
+
+
+@pytest.mark.parametrize('allow_180_degree, confirm_with_user_for_180degree', [(True, False), (True, True),
+                                                                               (False, False), (False, True)])
+@mock.patch("mantidimaging.gui.windows.operations.presenter.partial", return_value="Partial")
+def test_apply_filter_on_180_deg_proj_behaviour_with_180_projection(partial_mock, allow_180_degree,
+                                                                    confirm_with_user_for_180degree):
+    main_window = mock.create_autospec(MainWindowView)
+    view = mock.MagicMock()
+    presenter = FiltersWindowPresenter(view, main_window)
+    view.presenter = presenter
+    model = mock.MagicMock()
+    presenter.model = model
+    view.ask_confirmation.return_value = True
+    images = "images"
+    post_filter = "post_filter"
+    presenter._post_filter = post_filter
+    presenter.is_a_proj180deg = mock.MagicMock(return_value=True)
+
+    presenter._do_apply_filter(apply_to=[images],
+                               allow_180_degree=allow_180_degree,
+                               confirm_with_user_for_180degree=confirm_with_user_for_180degree)
+
+    if not allow_180_degree:
+        if confirm_with_user_for_180degree:
+            model.do_apply_filter.assert_called_once_with([images], "Partial")
+            partial_mock.assert_called_once_with(post_filter, [images])
+        else:
+            model.do_apply_filter.assert_not_called()
+            partial_mock.assert_not_called()
+    else:
+        # Confirm_with_user is supposed to be ignored if allow_180_degree is True
+        model.do_apply_filter.assert_called_once_with([images], "Partial")
+        partial_mock.assert_called_once_with(post_filter, [images])
