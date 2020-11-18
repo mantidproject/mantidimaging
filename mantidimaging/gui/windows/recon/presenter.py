@@ -159,10 +159,7 @@ class ReconstructWindowPresenter(BasePresenter):
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
-        try:
-            return self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
-        except Exception:
-            return None
+        return self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
 
     def _get_slice_index(self, slice_idx: Optional[int]):
         if slice_idx is None:
@@ -220,7 +217,10 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
-        self.do_preview_reconstruct_slice()
+        try:
+            self.do_preview_reconstruct_slice()
+        except Exception:
+            pass
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
