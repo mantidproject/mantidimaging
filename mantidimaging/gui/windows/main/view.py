@@ -5,10 +5,11 @@ from logging import getLogger
 from typing import Optional
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.version_check import find_if_latest_version
+from mantidimaging.core.utility.version_check import check_version_and_label
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -56,7 +57,11 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-        find_if_latest_version(self.not_latest_version_warning)
+        is_main_label = check_version_and_label(self.not_latest_version_warning)
+
+        if not is_main_label:
+            self.setWindowTitle("Mantid Imaging Nightly")
+            self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)

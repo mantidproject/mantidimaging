@@ -14,7 +14,15 @@ LOG = getLogger(__name__)
 ParsedVersion = namedtuple('ParsedVersion', ['version', 'commits'])
 
 
-def find_if_latest_version(action: Callable[[str], None]):
+def check_version_and_label(action: Callable[[str], None]) -> bool:
+    """
+    Checks the package version and label. Shows a warning message to user
+    and an update command if the version is out of date for the current package's label.
+
+    Supports labels: main and unstable
+
+    :returns: Whether the label is "unstable" (False) or "main" (True)
+    """
     LOG.info("Finding and comparing mantidimaging versions")
     local_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2,$4}'",
                                             shell=True,
@@ -23,7 +31,8 @@ def find_if_latest_version(action: Callable[[str], None]):
     if local_package == "":
         LOG.info("Running a development build without a local Mantid Imaging package installation.")
         # no local installation, no point sending out API requests
-        return
+        # just returns as "unstable" label
+        return False
 
     local_version, local_label = local_package.split()
     # makes sure this is no longer used by accident
@@ -37,15 +46,18 @@ def find_if_latest_version(action: Callable[[str], None]):
     except Exception:
         # if anything goes wrong, in the end we don't have the version
         LOG.info("Could not connect Anaconda remote to get the latest version")
-        return
+        # just returns as "unstable" label
+        return False
 
     parsed_local_version = _parse_version(local_version)
     del local_version
 
     if "unstable" in local_label:
-        return _do_version_check(parsed_local_version, _parse_version(remote_unstable_version), unstable=True, action)
+        _do_version_check(parsed_local_version, _parse_version(remote_unstable_version), action, unstable=True)
+        return False
     elif "main" in local_label:
-        return _do_version_check(parsed_local_version, _parse_version(remote_main_version), unstable=False, action)
+        _do_version_check(parsed_local_version, _parse_version(remote_main_version), action, unstable=False)
+        return True
     else:
         raise RuntimeError(f"Unknown package label found: {local_label}")
 
@@ -55,10 +67,12 @@ def _parse_version(package_version_string: str) -> ParsedVersion:
     return ParsedVersion(tuple(map(int, local_version.split("."))), int(local_commits_since_last))
 
 
-def _do_version_check(local: ParsedVersion, remote: ParsedVersion, unstable: bool, action: Callable[[str], None]):
+def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Callable[[str], None], unstable: bool):
     if local.version < remote.version or local.commits < remote.commits:
-        msg = f"Not running the latest Mantid Imaging. Found {local}, " \
-                f"latest: {remote}. Please check the terminal for an update command!"
+        suffix = " Nightly" if unstable else ""
+
+        msg = f"Not running the latest Mantid Imaging{suffix}. Found version {_make_version_str(local)}, " \
+              f"latest: {_make_version_str(remote)}. Please check the terminal for an update command!"
         LOG.info(msg)
 
         # for unstable packages these run variables are prepended to the command
@@ -72,3 +86,7 @@ def _do_version_check(local: ParsedVersion, remote: ParsedVersion, unstable: boo
         action(msg)
         return
     LOG.info("Running the latest Mantid Imaging")
+
+
+def _make_version_str(parsed: ParsedVersion) -> str:
+    return f"{'.'.join([str(v) for v in parsed.version])}_{parsed.commits}"
