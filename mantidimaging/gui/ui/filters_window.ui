@@ -315,10 +315,16 @@
       </widget>
       <widget class="QWidget" name="layoutWidget_2">
        <layout class="QVBoxLayout" name="previewsPaneLayout">
+        <property name="topMargin">
+         <number>2</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="previewsPaneToolbar">
           <property name="sizeConstraint">
            <enum>QLayout::SetMaximumSize</enum>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
           </property>
           <item>
            <widget class="QPushButton" name="collapseToggleButton">
@@ -342,6 +348,9 @@
             </property>
             <property name="toolTip">
              <string extracomment="Collapse the filter section of the window"/>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>&lt;&lt;</string>
