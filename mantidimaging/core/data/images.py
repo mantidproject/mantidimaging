@@ -297,3 +297,6 @@ class Images:
     @pixel_size.setter
     def pixel_size(self, value: int):
         self.metadata[const.PIXEL_SIZE] = value
+
+    def clear_proj180deg(self):
+        self._proj180deg = None

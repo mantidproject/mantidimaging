@@ -100,6 +100,8 @@ class StackVisualiserView(BaseMainWindowView):
                         "not be available for COR correlation, and the middle of the image stack will be used."):
                     event.ignore()
                     return
+                else:
+                    stack.presenter.images.clear_proj180deg()
 
         with operation_in_progress("Closing image view", "Freeing image memory"):
             self.dock.setFloating(False)
