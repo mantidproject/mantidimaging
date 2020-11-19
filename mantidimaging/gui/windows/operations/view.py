@@ -4,9 +4,10 @@
 from mantidimaging.core.net.help_pages import open_api_webpage
 from typing import TYPE_CHECKING
 
+import numpy as np
 from PyQt5 import Qt
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
-    QSizePolicy, QComboBox, QStyle, QMainWindow
+    QSizePolicy, QComboBox, QStyle, QMainWindow, QAction, QMenu
 from pyqtgraph import ImageItem
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -51,6 +52,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
         self.roi_view = None
+        self.roi_view_averaged = False
         self.splitter.setSizes([200, 9999])
 
         # Populate list of operations and handle filter selection
@@ -230,6 +232,24 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view = MIImageView(window)
         window.setCentralWidget(self.roi_view)
         self.roi_view.setWindowTitle("Select ROI for operation")
+
+        def toggle_average_images(images_):
+            if self.roi_view_averaged:
+                self.roi_view.setImage(images_.data)
+                self.roi_view_averaged = False
+            else:
+                averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
+                self.roi_view.setImage(averaged_images)
+                self.roi_view_averaged = True
+            self.roi_view.roi.show()
+            self.roi_view.ui.roiPlot.hide()
+
+        # Add context menu bits:
+        menu = QMenu(self.roi_view)
+        toggle_show_averaged_image = QAction("Toggle show averaged image", menu)
+        toggle_show_averaged_image.triggered.connect(lambda: toggle_average_images(images))
+        menu.addAction(toggle_show_averaged_image)
+        self.roi_view.imageItem.menu = menu
 
         self.roi_view.setImage(images.data)
 
