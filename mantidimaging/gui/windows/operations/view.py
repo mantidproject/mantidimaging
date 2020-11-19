@@ -1,12 +1,11 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from mantidimaging.core.net.help_pages import open_api_webpage
 from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt5 import Qt
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
     QSizePolicy, QComboBox, QStyle, QMainWindow, QAction, QMenu
 from pyqtgraph import ImageItem
@@ -202,9 +201,10 @@ class FiltersWindowView(BaseMainWindowView):
 
     def open_help_webpage(self):
         filter_module_path = self.presenter.get_filter_module_name(self.filterSelector.currentIndex())
-        url = QUrl("https://mantidproject.github.io/mantidimaging/api/" + filter_module_path + ".html")
-        if not QDesktopServices.openUrl(url):
-            self.show_error_dialog("Url could not be opened: " + url.toString())
+        try:
+            open_api_webpage(filter_module_path)
+        except RuntimeError as err:
+            self.show_error_dialog(str(err))
 
     def ask_confirmation(self, msg: str):
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
