@@ -38,6 +38,11 @@ def check_version_and_label(action: Callable[[str], None]) -> bool:
     # makes sure this is no longer used by accident
     del local_package
 
+    # if the label contains "main", it will return True
+    # if it doesn't then it will return False and mark
+    # the app as unstable
+    is_main_label = "main" in local_label
+
     try:
         response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
         remote_main_version = json.loads(response.content)["latest_version"]
@@ -46,18 +51,17 @@ def check_version_and_label(action: Callable[[str], None]) -> bool:
     except Exception:
         # if anything goes wrong, in the end we don't have the version
         LOG.info("Could not connect to Anaconda remote to retrieve the latest version")
-        # just returns as "unstable" label
-        return False
+        return is_main_label
 
     parsed_local_version = _parse_version(local_version)
     del local_version
 
     if "unstable" in local_label:
         _do_version_check(parsed_local_version, _parse_version(remote_unstable_version), action, unstable=True)
-        return False
+        return is_main_label
     elif "main" in local_label:
         _do_version_check(parsed_local_version, _parse_version(remote_main_version), action, unstable=False)
-        return True
+        return is_main_label
     else:
         raise RuntimeError(f"Unknown package label found: {local_label}")
 
