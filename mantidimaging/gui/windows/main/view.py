@@ -107,7 +107,8 @@ class MainWindowView(BaseMainWindowView):
         self.load_dialogue.show()
 
     def load_sample_log_dialog(self):
-        stack_selector = StackSelectorDialog(main_window=self, title="Stack Selector",
+        stack_selector = StackSelectorDialog(main_window=self,
+                                             title="Stack Selector",
                                              message="Which stack is the log being loaded for?")
         stack_selector.exec()
         stack_to_add_log_to = stack_selector.selected_stack
