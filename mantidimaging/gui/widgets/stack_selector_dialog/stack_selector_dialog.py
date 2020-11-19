@@ -30,7 +30,7 @@ class StackSelectorDialog(QDialog):
         # Stack selector
         self.stack_selector_widget = StackSelectorWidgetView(self)
         self.stack_selector_widget.subscribe_to_main_window(main_window)
-        self._select_tomo()
+        self.stack_selector_widget.select_eligble_stac()
         self.vertical_layout.addWidget(self.stack_selector_widget)
 
         # Button layout
@@ -42,13 +42,6 @@ class StackSelectorDialog(QDialog):
         self.vertical_layout.addLayout(self.button_layout)
 
         self.setLayout(self.vertical_layout)
-
-    def _select_tomo(self):
-        for index in range(0, self.stack_selector_widget.count()):
-            item_string = self.stack_selector_widget.itemText(index).lower()
-            if "tomo" in item_string:
-                self.stack_selector_widget.setCurrentIndex(index)
-                return
 
     def on_ok_clicked(self):
         self.selected_stack = self.stack_selector_widget.currentText()

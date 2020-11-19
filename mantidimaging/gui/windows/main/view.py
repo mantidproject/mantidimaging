@@ -110,7 +110,9 @@ class MainWindowView(BaseMainWindowView):
         stack_selector = StackSelectorDialog(main_window=self,
                                              title="Stack Selector",
                                              message="Which stack is the log being loaded for?")
-        stack_selector.exec()
+        # Was closed via x button
+        if QDialog.Accepted != stack_selector.exec():
+            return
         stack_to_add_log_to = stack_selector.selected_stack
 
         # Open file dialog
@@ -118,6 +120,9 @@ class MainWindowView(BaseMainWindowView):
         selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="Log to be loaded",
                                                           filter=f"{file_filter};;All (*.*)",
                                                           initialFilter=file_filter)
+        # Cancel/Close was clicked
+        if selected_file == "":
+            return
 
         self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
 
