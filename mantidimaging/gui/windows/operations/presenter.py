@@ -216,6 +216,8 @@ class FiltersWindowPresenter(BasePresenter):
 
         if 0 < len(confirmed_stacks):
             self.model.do_apply_filter(confirmed_stacks, partial(self._post_filter, confirmed_stacks))
+        else:
+            self.do_update_previews()
 
     def do_update_previews(self):
         self.view.clear_previews()
