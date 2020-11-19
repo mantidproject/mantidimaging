@@ -208,7 +208,10 @@ class FiltersWindowPresenter(BasePresenter):
                 confirmed_stacks.append(stack)
             else:
                 if is_180_proj and confirm_with_user_for_180degree and\
-                        self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the 180 degree projection. Please avoid applying an operation unless you're absolutely certain you need to.\nAre you sure you want to apply to 180 degree projection?"):
+                        self.view.ask_confirmation("Operations applied to the sample are also automatically applied to "
+                                                   "the 180 degree projection. Please avoid applying an operation "
+                                                   "unless you're absolutely certain you need to.\nAre you sure you "
+                                                   "want to apply to 180 degree projection?"):
                     confirmed_stacks.append(stack)
 
         if 0 < len(confirmed_stacks):
