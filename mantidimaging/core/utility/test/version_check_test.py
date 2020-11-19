@@ -25,17 +25,17 @@ def test_make_version_str():
 
 
 @pytest.mark.parametrize(
-    'old, new, should_call_back, unstable',
+    'old, new, should_call_back, is_main_label',
     [
-        ["9.9.9_1234", "19.9.9_1234", True, False],  # remote is newer
-        ["9.9.9_1234", "9.9.9_1234", False, False],  # local and remote is the same
-        ["19.9.9_1234", "9.9.9_1234", False, False],  # for some reason the local is newer
         ["9.9.9_1234", "19.9.9_1234", True, True],  # remote is newer
         ["9.9.9_1234", "9.9.9_1234", False, True],  # local and remote is the same
         ["19.9.9_1234", "9.9.9_1234", False, True],  # for some reason the local is newer
+        ["9.9.9_1234", "19.9.9_1234", True, False],  # remote is newer
+        ["9.9.9_1234", "9.9.9_1234", False, False],  # local and remote is the same
+        ["19.9.9_1234", "9.9.9_1234", False, False],  # for some reason the local is newer
     ])
 @mock.patch("mantidimaging.core.utility.version_check.LOG")
-def test_do_version_check_main(mock_log, old: str, new: str, should_call_back: bool, unstable: bool):
+def test_do_version_check_main(mock_log, old: str, new: str, should_call_back: bool, is_main_label: bool):
     older = _parse_version(old)
     newer = _parse_version(new)
 
@@ -44,7 +44,7 @@ def test_do_version_check_main(mock_log, old: str, new: str, should_call_back: b
     def callback(msg):
         callback_mock(msg)
 
-    _do_version_check(older, newer, callback, unstable=unstable)
+    _do_version_check(older, newer, callback, is_main_label)
 
     # True when local is older
     if should_call_back:
@@ -59,11 +59,11 @@ def test_do_version_check_main(mock_log, old: str, new: str, should_call_back: b
         assert "https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh" \
                in logged_update_message
 
-        if unstable:
-            assert "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable" in logged_update_message
-        else:
-            # when unstable this should NOT be in the string
+        if is_main_label:
+            # when main this should NOT be in the string
             assert "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable" not in logged_update_message
+        else:
+            assert "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable" in logged_update_message
     else:
         callback_mock.assert_not_called()
         assert mock_log.info.call_count == 1
