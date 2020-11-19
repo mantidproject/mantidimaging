@@ -153,3 +153,7 @@ class MainWindowModel(object):
     @property
     def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0
+
+    def add_log_to_sample(self, stack_name, log_file):
+        stack = self.get_stack_by_name(stack_name).widget()
+        stack.presenter.images.log_file = loader.load_log(log_file)

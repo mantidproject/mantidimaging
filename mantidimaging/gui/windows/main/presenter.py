@@ -177,3 +177,6 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack_with_images(self, images):
         return self.model.get_stack_by_images(images)
+
+    def add_log_to_sample(self, stack_name, log_file):
+        self.model.add_log_to_sample(stack_name, log_file)

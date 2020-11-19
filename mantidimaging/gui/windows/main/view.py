@@ -7,6 +7,8 @@ from typing import Optional
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel
 
+from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.version_check import find_if_latest_version
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
@@ -32,6 +34,10 @@ class MainWindowView(BaseMainWindowView):
     actionFilters: QAction
     actionSavuFilters: QAction
     actionCompareImages: QAction
+    actionLoadLog: QAction
+    actionLoad: QAction
+    actionSave: QAction
+    actionExit: QAction
 
     filters: Optional[FiltersWindowView] = None
     savu_filters: Optional[SavuFiltersWindowView] = None
@@ -60,6 +66,7 @@ class MainWindowView(BaseMainWindowView):
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
+        self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
@@ -98,6 +105,20 @@ class MainWindowView(BaseMainWindowView):
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
         self.load_dialogue.show()
+
+    def load_sample_log_dialog(self):
+        stack_selector = StackSelectorDialog(main_window=self, title="Stack Selector",
+                                             message="Which stack is the log being loaded for?")
+        stack_selector.exec()
+        stack_to_add_log_to = stack_selector.selected_stack
+
+        # Open file dialog
+        file_filter = "Log File (*.txt *.log)"
+        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="Log to be loaded",
+                                                          filter=f"{file_filter};;All (*.*)",
+                                                          initialFilter=file_filter)
+
+        self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)
