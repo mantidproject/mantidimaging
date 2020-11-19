@@ -237,7 +237,7 @@ def test_apply_filter_on_180_deg_proj_behaviour_with_180_projection(partial_mock
         else:
             model.do_apply_filter.assert_not_called()
             partial_mock.assert_not_called()
-            self.view.clear_previews.assert_called_once()
+            view.clear_previews.assert_called_once()
     else:
         # Confirm_with_user is supposed to be ignored if allow_180_degree is True
         model.do_apply_filter.assert_called_once_with([images], "Partial")
