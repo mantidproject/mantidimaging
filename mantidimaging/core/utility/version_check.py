@@ -56,14 +56,13 @@ def check_version_and_label(action: Callable[[str], None]) -> bool:
     parsed_local_version = _parse_version(local_version)
     del local_version
 
-    if "unstable" in local_label:
-        _do_version_check(parsed_local_version, _parse_version(remote_unstable_version), action, unstable=True)
-        return is_main_label
-    elif "main" in local_label:
-        _do_version_check(parsed_local_version, _parse_version(remote_main_version), action, unstable=False)
-        return is_main_label
+    if is_main_label:
+        parsed_remote_version = _parse_version(remote_main_version)
     else:
-        raise RuntimeError(f"Unknown package label found: {local_label}")
+        parsed_remote_version = _parse_version(remote_unstable_version)
+
+    _do_version_check(parsed_local_version, parsed_remote_version, action, is_main_label)
+    return is_main_label
 
 
 def _parse_version(package_version_string: str) -> ParsedVersion:
@@ -71,9 +70,10 @@ def _parse_version(package_version_string: str) -> ParsedVersion:
     return ParsedVersion(tuple(map(int, local_version.split("."))), int(local_commits_since_last))
 
 
-def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Callable[[str], None], unstable: bool):
+def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Callable[[str], None], is_main_label: bool):
     if local.version < remote.version or local.commits < remote.commits:
-        suffix = " Unstable" if unstable else ""
+        # no suffix if main, else adds Unstable
+        suffix = "" if is_main_label else " Unstable"
 
         msg = f"Not running the latest Mantid Imaging{suffix}. Found version {_make_version_str(local)}, " \
               f"latest: {_make_version_str(remote)}. Please check the terminal for an update command!"
@@ -81,15 +81,15 @@ def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Calla
 
         # for unstable packages these run variables are prepended to the command
         # for main packages nothing is prepended, and the script's defaults are used
-        command_prefix = "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable " if unstable else ''
+        command_prefix = "" if is_main_label else "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable "
 
         LOG.info("To update your environment please copy and run the following command:\n\n"
                  "source /opt/miniconda/bin/activate /opt/miniconda && "
                  f"{command_prefix}source "
                  "<(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)")
         action(msg)
-        return
-    LOG.info("Running the latest Mantid Imaging")
+    else:
+        LOG.info("Running the latest Mantid Imaging")
 
 
 def _make_version_str(parsed: ParsedVersion) -> str:
