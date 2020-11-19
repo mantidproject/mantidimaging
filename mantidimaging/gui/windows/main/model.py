@@ -140,6 +140,12 @@ class MainWindowModel(object):
     def get_all_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack.widget() for stack in self.active_stacks.values()]  # type:ignore
 
+    def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
+        return [
+            stack.widget() for stack in self.active_stacks.values()  # type:ignore
+            if stack.widget().presenter.images.proj180deg is not None
+        ]
+
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 

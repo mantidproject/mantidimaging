@@ -150,6 +150,9 @@ class MainWindowView(BaseMainWindowView):
     def get_all_stack_visualisers(self):
         return self.presenter.get_all_stack_visualisers()
 
+    def get_all_stack_visualisers_with_180deg_proj(self):
+        return self.presenter.get_all_stack_visualisers_with_180deg_proj()
+
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
