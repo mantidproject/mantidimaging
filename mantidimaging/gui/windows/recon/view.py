@@ -1,20 +1,23 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, List, Optional
 
-from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout, \
-    QInputDialog
 import numpy
+from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
+                             QVBoxLayout, QWidget)
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ReconstructionParameters
+from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
+from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
-from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
-from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter, Notifications as PresN, AutoCorMethod
+from mantidimaging.gui.windows.recon.point_table_model import Column, CorTiltPointQtModel
+from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
+from mantidimaging.gui.windows.recon.presenter import Notifications as PresN
+from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
@@ -138,6 +141,7 @@ class ReconstructWindowView(BaseMainWindowView):
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.reconHelpButton.clicked.connect(self.open_help_webpage)
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -338,3 +342,9 @@ class ReconstructWindowView(BaseMainWindowView):
     def set_correlate_buttons_enabled(self, enabled: bool):
         self.correlateBtn.setEnabled(enabled)
         self.minimiseBtn.setEnabled(enabled)
+
+    def open_help_webpage(self):
+        try:
+            open_help_webpage(SECTION_USER_GUIDE, "reconstructions/index")
+        except RuntimeError as err:
+            self.show_error_dialog(str(err))
