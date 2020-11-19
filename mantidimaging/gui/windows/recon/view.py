@@ -111,10 +111,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 cor = row_data.cor
                 self.presenter.set_row(item.row())
                 self.presenter.set_last_cor(cor)
-                try:
-                    self.presenter.set_preview_slice_idx(slice_idx)
-                except Exception:
-                    pass
+                self.presenter.set_preview_slice_idx(slice_idx)
                 self.image_view.slice_line.setPos(slice_idx)
                 self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 

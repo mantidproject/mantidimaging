@@ -126,7 +126,12 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
-        self.do_preview_reconstruct_slice()
+        # Astra raises type exception during auto fit here, attempting to fit without data to fit to is a problem, it is
+        # not easy to force the method to not be called given no table data.
+        try:
+            self.do_preview_reconstruct_slice()
+        except Exception:
+            pass
 
     def set_row(self, row):
         self.model.selected_row = row
@@ -217,6 +222,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
+        # Astra raises type exception during auto fit here, attempting to fit without data to fit to is a problem, it is
+        # not easy to force the method to not be called given no table data.
         try:
             self.do_preview_reconstruct_slice()
         except Exception:
