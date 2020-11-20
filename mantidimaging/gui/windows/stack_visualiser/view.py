@@ -59,7 +59,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.image_view = MIImageView(self)
         self.image_view.imageItem.menu = self.build_context_menu()
         self.actionCloseStack = QAction("Close window", self)
-        self.actionCloseStack.triggered.connect(self.close_view)
+        self.actionCloseStack.triggered.connect(self.close)
         self.actionCloseStack.setShortcut("Ctrl+W")
         self.dock.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.data)
@@ -118,9 +118,6 @@ class StackVisualiserView(BaseMainWindowView):
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)
-
-    def close_view(self):
-        self.close()
 
     def build_context_menu(self) -> QMenu:
         actions = [("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard),

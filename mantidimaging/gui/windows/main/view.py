@@ -162,7 +162,7 @@ class MainWindowView(BaseMainWindowView):
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
 
-    def get_stack_with_images(self, images: Images):
+    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
         return self.presenter.get_stack_with_images(images)
 
     def create_stack_window(self,

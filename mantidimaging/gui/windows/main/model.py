@@ -122,7 +122,7 @@ class MainWindowModel(object):
                 return self.get_stack(stack_id.id)
         return None
 
-    def get_stack_by_images(self, images: Images) -> Optional[StackVisualiserView]:
+    def get_stack_by_images(self, images: Images) -> StackVisualiserView:
         for _, dock_widget in self.active_stacks.items():
             sv: StackVisualiserView = dock_widget.widget()  # type: ignore
             if images is sv.presenter.images:
@@ -143,7 +143,7 @@ class MainWindowModel(object):
     def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
         return [
             stack.widget() for stack in self.active_stacks.values()  # type:ignore
-            if stack.widget().presenter.images.proj180deg is not None
+            if stack.widget().presenter.images.has_proj180deg()
         ]
 
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
