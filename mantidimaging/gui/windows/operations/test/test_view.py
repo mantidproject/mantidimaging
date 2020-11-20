@@ -13,7 +13,7 @@ from mantidimaging.test_helpers import start_qapplication
 class OperationsWindowsViewTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
-        with mock.patch('mantidimaging.gui.windows.main.view.find_if_latest_version'):
+        with mock.patch('mantidimaging.gui.windows.main.view.check_version_and_label'):
             self.main_window = MainWindowView()
         self.window = FiltersWindowView(self.main_window)
 
