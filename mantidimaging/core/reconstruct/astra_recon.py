@@ -18,7 +18,8 @@ LOG = getLogger(__name__)
 
 
 # Full credit for following code to Daniil Kazantzev
-# Source: https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70
+# Source:
+# https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70
 def rotation_matrix2d(theta):
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 

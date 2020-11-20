@@ -448,6 +448,13 @@
              </layout>
             </item>
             <item>
+             <widget class="QPushButton" name="reconHelpButton">
+              <property name="text">
+               <string>Open Reconstruction Help Page</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="verticalSpacer_5">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
