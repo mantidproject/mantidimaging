@@ -41,7 +41,7 @@ def check_version_and_label(action: Callable[[str], None]) -> bool:
     # if the label contains "main", it will return True
     # if it doesn't then it will return False and mark
     # the app as unstable
-    is_main_label = "main" in local_label
+    is_main_label = "unstable" not in local_label
 
     try:
         response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
