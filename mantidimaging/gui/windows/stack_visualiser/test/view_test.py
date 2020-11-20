@@ -34,7 +34,9 @@ class StackVisualiserViewTest(unittest.TestCase):
             self.window = MainWindowView()
             mock_find_latest_version.assert_called_once()
         self.window.remove_stack = mock.Mock()
+        self._add_stack_visualiser()
 
+    def _add_stack_visualiser(self):
         self.dock = QDockWidget()
         self.dock.setWindowTitle("Potatoes")
 
@@ -49,6 +51,20 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.assertEqual(title, self.view.name)
 
     def test_closeEvent_deletes_images(self):
+        self.dock.setFloating = mock.Mock()
+        self.dock.deleteLater = mock.Mock()
+
+        self.view.close()
+
+        self.dock.setFloating.assert_called_once_with(False)
+        self.dock.deleteLater.assert_called_once_with()
+        self.assertEqual(None, self.view.presenter.images)
+        self.window.remove_stack.assert_called_once_with(self.view)
+
+    def test_closeEvent_deletes_images_with_proj180(self):
+        assert False, "TODO me"
+        self._add_stack_visualiser()
+
         self.dock.setFloating = mock.Mock()
         self.dock.deleteLater = mock.Mock()
 
