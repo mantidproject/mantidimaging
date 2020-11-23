@@ -45,6 +45,7 @@
     </property>
     <addaction name="actionFilters"/>
     <addaction name="actionRecon"/>
+    <addaction name="actionCompareImages"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -143,6 +144,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionCompare_Images">
+   <property name="text">
+    <string>Compare Images</string>
+   </property>
+  </action>
+  <action name="actionCompareImages">
+   <property name="text">
+    <string>Compare Images</string>
    </property>
   </action>
  </widget>
