@@ -6,7 +6,8 @@ from enum import Enum, auto
 from functools import partial
 from logging import getLogger
 from time import sleep
-from typing import TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, Tuple, Union
+from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QApplication
@@ -46,7 +47,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.model = FiltersWindowModel(self)
         self.main_window = main_window
 
-        self.original_images_stack = None
+        self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
         self.applying_to_all = False
 
     def notify(self, signal):
@@ -121,9 +122,7 @@ class FiltersWindowPresenter(BasePresenter):
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = self.stack.presenter.images.copy()
 
-        self.view.clear_previews()
         apply_to = [self.stack]
-
         self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_all(self):
@@ -141,7 +140,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.applying_to_all = True
         self._do_apply_filter(stacks)
 
-    def _wait_for_stack_choice(self, new_stack, stack_uuid):
+    def _wait_for_stack_choice(self, new_stack: Images, stack_uuid: UUID):
         stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
         stack_choice.show()
 
@@ -152,7 +151,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         return stack_choice.use_new_data
 
-    def is_a_proj180deg(self, stack_to_check):
+    def is_a_proj180deg(self, stack_to_check: StackVisualiserView):
         if stack_to_check.presenter.images.has_proj180deg():
             return False
         stacks = self.main_window.get_all_stack_visualisers()
@@ -161,9 +160,9 @@ class FiltersWindowPresenter(BasePresenter):
                 return True
         return False
 
-    def _post_filter(self, updated_stacks, task):
+    def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
         do_180deg = True
-        attempt_repair = task.error is not None and self.original_images_stack is not None
+        attempt_repair = task.error is not None
         for stack in updated_stacks:
             # If the operation encountered an error during processing, try to restore the original data else continue
             # processing as usual
@@ -177,8 +176,10 @@ class FiltersWindowPresenter(BasePresenter):
 
                 if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
                         and not self.applying_to_all:
-                    self.view.clear_previews()
-                    self._do_apply_filter(
+                    # Apply to proj180 synchronously - this function is already running async
+                    # and running another async instance causes a race condition in the parallel module
+                    # where the shared data can be removed in the middle of the operation of another operation
+                    self._do_apply_filter_sync(
                         [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
 
         if self.view.roi_view is not None:
@@ -198,6 +199,9 @@ class FiltersWindowPresenter(BasePresenter):
 
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
+
+    def _do_apply_filter_sync(self, apply_to):
+        self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
         self.view.clear_previews()
