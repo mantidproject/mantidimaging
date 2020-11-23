@@ -13,7 +13,3 @@ Note: this hasn't been kept up
    tests
    conda_packaging_and_docker_image
    release
-   notebooks
-   python_3x_performance_issues
-   parallelism
-   savu_hebi
