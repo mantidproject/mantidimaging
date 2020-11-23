@@ -3,6 +3,7 @@
 
 from logging import getLogger
 from typing import Optional
+from uuid import UUID
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
@@ -249,3 +250,6 @@ class MainWindowView(BaseMainWindowView):
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
+
+    def set_images_in_stack(self, uuid: UUID, images: Images):
+        self.presenter.set_images_in_stack(uuid, images)

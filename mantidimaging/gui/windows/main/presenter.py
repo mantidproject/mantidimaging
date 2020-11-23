@@ -181,3 +181,6 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack_with_images(self, images: Images) -> StackVisualiserView:
         return self.model.get_stack_by_images(images)
+
+    def set_images_in_stack(self, uuid: UUID, images: Images):
+        self.model.set_images_in_stack(uuid, images)
