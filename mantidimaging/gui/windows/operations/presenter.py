@@ -45,10 +45,14 @@ class FiltersWindowPresenter(BasePresenter):
         super(FiltersWindowPresenter, self).__init__(view)
 
         self.model = FiltersWindowModel(self)
-        self.main_window = main_window
+        self._main_window = main_window
 
         self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
         self.applying_to_all = False
+
+    @property
+    def main_window(self) -> 'MainWindowView':
+        return self._main_window
 
     def notify(self, signal):
         try:
@@ -164,15 +168,15 @@ class FiltersWindowPresenter(BasePresenter):
         do_180deg = True
         attempt_repair = task.error is not None
         for stack in updated_stacks:
-            # If the operation encountered an error during processing, try to restore the original data else continue
-            # processing as usual
+            # If the operation encountered an error during processing,
+            # try to restore the original data else continue processing as usual
             if attempt_repair:
-                self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
+                self.main_window.set_images_in_stack(stack.uuid, stack.presenter.images)
             else:
                 is_a_proj180deg = self.is_a_proj180deg(stack)
                 if self.view.safeApply.isChecked() and not is_a_proj180deg:
                     do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
-                self.view.main_window.update_stack_with_images(stack.presenter.images)
+                self.main_window.update_stack_with_images(stack.presenter.images)
 
                 if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
                         and not self.applying_to_all:
@@ -180,7 +184,7 @@ class FiltersWindowPresenter(BasePresenter):
                     # and running another async instance causes a race condition in the parallel module
                     # where the shared data can be removed in the middle of the operation of another operation
                     self._do_apply_filter_sync(
-                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                        [self.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
