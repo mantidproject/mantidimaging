@@ -9,7 +9,7 @@ import scipy.ndimage as scipy_ndimage
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import utility as pu, shared as ps
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
