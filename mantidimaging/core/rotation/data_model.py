@@ -87,6 +87,8 @@ class CorTiltDataModel:
 
     def get_cor_from_regression(self, slice_idx) -> float:
         cor = (self.gradient.value * slice_idx) + self.cor.value
+        if np.isnan(cor):
+            cor = np.float64(0.0)
         return cor
 
     def get_all_cors_from_regression(self, image_height) -> List[ScalarCoR]:

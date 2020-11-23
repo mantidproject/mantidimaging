@@ -225,7 +225,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.clearAllBtn.setEnabled(not empty)
 
         if self.tableView.model().num_points >= 2:
+            self.addBtn.setDisabled(True)
             self.presenter.notify(PresN.COR_FIT)
+            self.addBtn.setDisabled(False)
 
     def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
         """

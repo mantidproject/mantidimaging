@@ -126,12 +126,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def set_preview_slice_idx(self, idx):
         self.model.preview_slice_idx = idx
         self.do_update_projection()
-        # Astra raises type exception during auto fit here, attempting to fit without data to fit to is a problem, it is
-        # not easy to force the method to not be called given no table data.
-        try:
-            self.do_preview_reconstruct_slice()
-        except Exception:
-            pass
+        self.do_preview_reconstruct_slice()
 
     def set_row(self, row):
         self.model.selected_row = row
@@ -185,8 +180,9 @@ class ReconstructWindowPresenter(BasePresenter):
         images = None
         try:
             images = self._get_reconstruct_slice(cor, slice_idx)
-        except ValueError as err:
-            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+        except Exception as err:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}. "
+                                        f"Check your COR table values for invalid values!")
 
         if images is not None:
             self.view.update_recon_preview(images.data[0], refresh_recon_slice_histogram)
@@ -235,6 +231,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_clear_all_cors(self):
         self.view.clear_cor_table()
         self.model.reset_selected_row()
+        self.model.clean_up()
 
     def do_remove_selected_cor(self):
         self.view.remove_selected_cor()
