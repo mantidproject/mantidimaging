@@ -166,6 +166,14 @@ class ImagesTest(unittest.TestCase):
         images._proj180deg = generate_images((1, 100, 350))
         assert_not_equals(images.proj180deg.data, expected_projection)
 
+    def test_clear_proj180deg(self):
+        images = generate_images((10, 100, 350))
+        # expected without having a specific 180 deg projection
+        self.assertIsNone(images._proj180deg)
+        images._proj180deg = generate_images((1, 100, 350))
+        images.clear_proj180deg()
+        self.assertIsNone(images._proj180deg)
+
     def test_data_get(self):
         images = generate_images((10, 100, 350))
         self.assertIsNotNone(images.data)

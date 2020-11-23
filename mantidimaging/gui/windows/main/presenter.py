@@ -164,6 +164,9 @@ class MainWindowPresenter(BasePresenter):
     def get_all_stack_visualisers(self):
         return self.model.get_all_stack_visualisers()
 
+    def get_all_stack_visualisers_with_180deg_proj(self):
+        return self.model.get_all_stack_visualisers_with_180deg_proj()
+
     def get_stack_history(self, stack_uuid: UUID):
         return self.model.get_stack_history(stack_uuid)
 
@@ -171,9 +174,10 @@ class MainWindowPresenter(BasePresenter):
     def have_active_stacks(self):
         return self.model.have_active_stacks
 
-    def update_stack_with_images(self, images):
+    def update_stack_with_images(self, images: Images):
         sv = self.get_stack_with_images(images)
-        sv.presenter.notify(SVNotification.REFRESH_IMAGE)
+        if sv is not None:
+            sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
-    def get_stack_with_images(self, images):
+    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
         return self.model.get_stack_by_images(images)
