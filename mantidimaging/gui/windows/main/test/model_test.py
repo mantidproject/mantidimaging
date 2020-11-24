@@ -224,7 +224,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertEqual("apple_2", self.model.create_name("apple"))
 
     @mock.patch('mantidimaging.core.io.loader.load_log', return_value="log_data")
-    def test_add_log_to_sample(self, load_log):
+    def test_add_log_to_sample(self, load_log: mock.Mock):
         log_file = "Log file"
         stack_name = "stack name"
         stack_mock = mock.MagicMock()
