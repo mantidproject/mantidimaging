@@ -5,8 +5,7 @@ import unittest
 from functools import partial
 
 import mock
-import pytest
-from mock import DEFAULT, Mock, call
+from mock import DEFAULT, Mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
@@ -106,22 +105,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         do_update_previews.assert_called_once()
         self.presenter.main_window.presenter.model.set_images_in_stack.assert_called_once()
-
-    @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
-                         do_update_previews=DEFAULT,
-                         _do_apply_filter=DEFAULT)
-    def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self,
-                                                                  do_update_previews: Mock = Mock(),
-                                                                  _do_apply_filter: Mock = Mock()):
-        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
-        for i, msv in enumerate(mock_stack_visualisers):
-            assert msv.presenter.images == self.main_window.set_images_in_stack.call_args_list[i].args[1]
-
-        self.main_window.update_stack_with_images.assert_not_called()
-        _do_apply_filter.assert_not_called()
-
-        # still refreshes the previews to ensure we haven't left them blank
-        do_update_previews.assert_called_once()
 
     @mock.patch.multiple(
         'mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
