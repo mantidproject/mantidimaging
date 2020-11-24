@@ -250,9 +250,3 @@ class ReconstructWindowModel(object):
 
     def auto_find_correlation(self, progress) -> Tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
-
-    def clean_up(self):
-        self.data_model.clear_results()
-        self.data_model.clear_points()
-        self._last_result = None
-        self._last_cor = ScalarCoR(0.0)

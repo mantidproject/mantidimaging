@@ -218,12 +218,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
-        # Astra raises type exception during auto fit here, attempting to fit without data to fit to is a problem, it is
-        # not easy to force the method to not be called given no table data.
-        try:
-            self.do_preview_reconstruct_slice()
-        except Exception:
-            pass
+        self.do_preview_reconstruct_slice()
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
@@ -231,7 +226,6 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_clear_all_cors(self):
         self.view.clear_cor_table()
         self.model.reset_selected_row()
-        self.model.clean_up()
 
     def do_remove_selected_cor(self):
         self.view.remove_selected_cor()

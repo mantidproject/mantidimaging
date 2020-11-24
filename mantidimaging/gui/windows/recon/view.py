@@ -80,10 +80,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.rowsInserted.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.modelReset.connect(self.on_table_row_count_change)  # type: ignore
-        self.cor_table_model.dataChanged.connect(self.on_table_row_count_change)
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
+            # Should we auto fit on data change?
+            if self.tableView.model().num_points >= 2:
+                self.presenter.notify(PresN.COR_FIT)
             self.presenter.notify(PresN.UPDATE_PROJECTION)
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
@@ -229,9 +231,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.clearAllBtn.setEnabled(not empty)
 
         if self.tableView.model().num_points >= 2:
-            self.addBtn.setDisabled(True)
             self.presenter.notify(PresN.COR_FIT)
-            self.addBtn.setDisabled(False)
 
     def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
         """
