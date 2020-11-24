@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 
 class StackSelectorDialog(QDialog):
-    def __init__(self, main_window: 'MainWindowView', title: Optional[str] = None, message: Optional[str] = None):
+    def __init__(self, main_window: Optional['MainWindowView'], title: Optional[str] = None,
+                 message: Optional[str] = None):
         super().__init__(main_window)
 
         self.selected_stack = None
@@ -33,7 +34,7 @@ class StackSelectorDialog(QDialog):
         # Stack selector
         self.stack_selector_widget = StackSelectorWidgetView(self)
         self.stack_selector_widget.subscribe_to_main_window(main_window)
-        self.stack_selector_widget.select_eligble_stack()
+        self.stack_selector_widget.select_eligible_stack()
         self.vertical_layout.addWidget(self.stack_selector_widget)
 
         # Button layout
