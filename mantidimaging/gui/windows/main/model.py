@@ -6,7 +6,8 @@ import uuid
 from collections import namedtuple
 from logging import getLogger
 from typing import Dict, List, Optional, Any
-from PyQt5.Qt import QDockWidget
+
+from PyQt5.QtWidgets import QDockWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -21,7 +22,7 @@ class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
 
-        self.active_stacks: Dict[uuid.UUID, StackVisualiserView] = {}
+        self.active_stacks: Dict[uuid.UUID, QDockWidget] = {}
 
     def do_load_stack(self, parameters: LoadingParameters, progress):
         ds = Dataset(loader.load_p(parameters.sample, parameters.dtype, progress))
@@ -93,19 +94,19 @@ class MainWindowModel(object):
         self.active_stacks[stack_visualiser.uuid] = dock_widget
         getLogger(__name__).debug(f"Active stacks: {self.active_stacks}")
 
-    def get_stack(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
+    def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
         """
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The QDockWidget that contains the Stack Visualiser.
                 For direct access to the Stack Visualiser widget use
                 get_stack_visualiser
         """
-        return self.active_stacks[stack_uuid]
+        return self.active_stacks[stack_uuid]  # type:ignore
 
     def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
         stack = self.active_stacks[stack_uuid]
         if isinstance(stack, QDockWidget):
-            stack = stack.widget()
+            stack: StackVisualiserView = stack.widget()  # type:ignore
 
         if not stack.presenter.images == images:
             stack.image_view.clear()
@@ -121,9 +122,9 @@ class MainWindowModel(object):
                 return self.get_stack(stack_id.id)
         return None
 
-    def get_stack_by_images(self, images: Images) -> Optional[StackVisualiserView]:
+    def get_stack_by_images(self, images: Images) -> StackVisualiserView:
         for _, dock_widget in self.active_stacks.items():
-            sv = dock_widget.widget()
+            sv: StackVisualiserView = dock_widget.widget()  # type: ignore
             if images is sv.presenter.images:
                 return sv
         raise RuntimeError(f"Did not find stack {images} in active stacks! "
@@ -134,10 +135,16 @@ class MainWindowModel(object):
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The Stack Visualiser widget that contains the data.
         """
-        return self.active_stacks[stack_uuid].widget()
+        return self.active_stacks[stack_uuid].widget()  # type:ignore
 
     def get_all_stack_visualisers(self) -> List[StackVisualiserView]:
-        return [stack.widget() for stack in self.active_stacks.values()]
+        return [stack.widget() for stack in self.active_stacks.values()]  # type:ignore
+
+    def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
+        return [
+            stack.widget() for stack in self.active_stacks.values()  # type:ignore
+            if stack.widget().presenter.images.has_proj180deg()
+        ]
 
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata

@@ -3,14 +3,16 @@
 
 from logging import getLogger
 from typing import Optional
+from uuid import UUID
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel
 
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.version_check import find_if_latest_version
+from mantidimaging.core.utility.version_check import check_version_and_label
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -62,7 +64,11 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-        find_if_latest_version(self.not_latest_version_warning)
+        is_main_label = check_version_and_label(self.not_latest_version_warning)
+
+        if not is_main_label:
+            self.setWindowTitle("Mantid Imaging Unstable")
+            self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
@@ -177,6 +183,9 @@ class MainWindowView(BaseMainWindowView):
     def get_all_stack_visualisers(self):
         return self.presenter.get_all_stack_visualisers()
 
+    def get_all_stack_visualisers_with_180deg_proj(self):
+        return self.presenter.get_all_stack_visualisers_with_180deg_proj()
+
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
@@ -186,7 +195,7 @@ class MainWindowView(BaseMainWindowView):
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
 
-    def get_stack_with_images(self, images: Images):
+    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
         return self.presenter.get_stack_with_images(images)
 
     def create_stack_window(self,
@@ -268,3 +277,6 @@ class MainWindowView(BaseMainWindowView):
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
+
+    def set_images_in_stack(self, uuid: UUID, images: Images):
+        self.presenter.set_images_in_stack(uuid, images)

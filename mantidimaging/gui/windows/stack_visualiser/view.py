@@ -59,7 +59,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.image_view = MIImageView(self)
         self.image_view.imageItem.menu = self.build_context_menu()
         self.actionCloseStack = QAction("Close window", self)
-        self.actionCloseStack.triggered.connect(self.close_view)
+        self.actionCloseStack.triggered.connect(self.close)
         self.actionCloseStack.setShortcut("Ctrl+W")
         self.dock.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.data)
@@ -91,6 +91,18 @@ class StackVisualiserView(BaseMainWindowView):
         return self.parent().parent()
 
     def closeEvent(self, event):
+        window: 'MainWindowView' = self.window()
+        stacks_with_proj180 = window.get_all_stack_visualisers_with_180deg_proj()
+        for stack in stacks_with_proj180:
+            if stack.presenter.images.proj180deg is self.presenter.images:
+                if not self.ask_confirmation(
+                        "Caution: If you close this then the 180 degree projection will "
+                        "not be available for COR correlation, and the middle of the image stack will be used."):
+                    event.ignore()
+                    return
+                else:
+                    stack.presenter.images.clear_proj180deg()
+
         with operation_in_progress("Closing image view", "Freeing image memory"):
             self.dock.setFloating(False)
             self.hide()
@@ -99,16 +111,13 @@ class StackVisualiserView(BaseMainWindowView):
             # this removes all references to the data, allowing it to be GC'ed
             # otherwise there is a hanging reference
             self.presenter.delete_data()
-            self.window().remove_stack(self)  # refers to MainWindow
+            window.remove_stack(self)
             self.deleteLater()
             # refers to the QDockWidget within which the stack is contained
             self.dock.deleteLater()
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)
-
-    def close_view(self):
-        self.close()
 
     def build_context_menu(self) -> QMenu:
         actions = [("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
@@ -198,3 +207,7 @@ class StackVisualiserView(BaseMainWindowView):
                                               ["projections", "sinograms"], current)
         if accepted:
             self.presenter.images._is_sinograms = False if item == "projections" else True
+
+    def ask_confirmation(self, msg: str):
+        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
+        return response == QMessageBox.Ok

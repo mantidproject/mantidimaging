@@ -8,9 +8,9 @@ from uuid import uuid4
 from PyQt5.QtWidgets import QMessageBox
 from pyqtgraph import ViewBox
 
-from mantidimaging.test_helpers import start_qapplication
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.gui.windows.stack_choice.view import StackChoiceView, Notification
+from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
+from mantidimaging.test_helpers import start_qapplication
 
 
 @start_qapplication

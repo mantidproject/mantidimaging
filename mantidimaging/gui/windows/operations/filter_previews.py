@@ -5,7 +5,11 @@ from collections import namedtuple
 from typing import Optional
 
 import numpy as np
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, PlotItem, LegendItem, ViewBox, ColorMap
+from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtGui import QGuiApplication, QResizeEvent
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
+from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
+from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
@@ -34,12 +38,16 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def __init__(self, parent=None, **kwargs):
         super(FilterPreviews, self).__init__(parent, **kwargs)
+
+        widget_location = self.mapToGlobal(QPoint(self.width() / 2, 0))
+        # allow the widget to take up to 80% of the desktop's height
+        self.ALLOWED_HEIGHT: QRect = QGuiApplication.screenAt(widget_location).availableGeometry().height() * 0.8
+
         self.before_histogram_data = None
         self.after_histogram_data = None
         self.histogram = None
         self.before_histogram = None
         self.after_histogram = None
-
         self.combined_histograms = True
         self.histogram_legend_visible = True
 
@@ -48,19 +56,23 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_before, self.image_before_vb = self.image_in_vb(name="before")
-        self.image_after, self.image_after_vb = self.image_in_vb(name="after")
-        self.image_difference, self.image_difference_vb = self.image_in_vb(name="difference")
+        self.image_before, self.image_before_vb, self.image_before_hist = self.image_in_vb(name="before")
+        self.image_after, self.image_after_vb, self.image_after_hist = self.image_in_vb(name="after")
+        self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
+            name="difference")
 
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
 
         # Ensure images resize equally
-        image_layout = self.addLayout(colspan=3)
-        image_layout.addItem(self.image_before_vb, 0, 0)
-        image_layout.addItem(self.image_after_vb, 0, 1)
-        image_layout.addItem(self.image_difference_vb, 0, 2)
+        self.image_layout: GraphicsLayout = self.addLayout(colspan=6)
+        self.image_layout.addItem(self.image_before_vb, 0, 0)
+        self.image_layout.addItem(self.image_before_hist, 0, 1)
+        self.image_layout.addItem(self.image_after_vb, 0, 2)
+        self.image_layout.addItem(self.image_after_hist, 0, 3)
+        self.image_layout.addItem(self.image_difference_vb, 0, 4)
+        self.image_layout.addItem(self.image_difference_hist, 0, 5)
         self.nextRow()
 
         before_details = self.addLabel("")
@@ -78,12 +90,18 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         self.init_histogram()
 
+    def resizeEvent(self, ev: QResizeEvent):
+        if ev is not None:
+            size = ev.size()
+            self.image_layout.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT))
+        super().resizeEvent(ev)
+
     def image_in_vb(self, name=None):
         im = ImageItem()
-        im.setAutoDownsample(False)
         vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
-        return im, vb
+        hist = HistogramLUTItem(im)
+        return im, vb, hist
 
     def clear_items(self):
         self.image_before.clear()
