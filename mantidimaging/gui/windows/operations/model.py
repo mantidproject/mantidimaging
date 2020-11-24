@@ -130,6 +130,17 @@ class FiltersWindowModel(object):
         apply_func = partial(self.apply_to_stacks, stacks)
         start_async_task_view(self.presenter.view, apply_func, post_filter)
 
+    def do_apply_filter_sync(self, stacks: List['StackVisualiserView'], post_filter: Callable[[Any], None]):
+        """
+        Applies the selected filter to the selected stack in a synchronous manner
+        """
+        if len(stacks) == 0:
+            raise ValueError('No stack selected')
+
+        # Get auto parameters
+        # Generate sub-stack and run filter
+        self.apply_to_stacks(stacks)
+
     def get_filter_module_name(self, filter_idx):
         """
         Returns the class name of the filter index passed to it

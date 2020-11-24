@@ -6,7 +6,8 @@ from enum import Enum, auto
 from functools import partial
 from logging import getLogger
 from time import sleep
-from typing import TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, Tuple, Union
+from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QApplication
@@ -44,9 +45,14 @@ class FiltersWindowPresenter(BasePresenter):
         super(FiltersWindowPresenter, self).__init__(view)
 
         self.model = FiltersWindowModel(self)
-        self.main_window = main_window
+        self._main_window = main_window
 
-        self.original_images_stack = None
+        self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
+        self.applying_to_all = False
+
+    @property
+    def main_window(self) -> 'MainWindowView':
+        return self._main_window
 
     def notify(self, signal):
         try:
@@ -120,7 +126,6 @@ class FiltersWindowPresenter(BasePresenter):
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = self.stack.presenter.images.copy()
 
-        self.view.clear_previews()
         apply_to = [self.stack]
 
         self._do_apply_filter(apply_to, confirm_with_user_for_180degree=True)
@@ -138,7 +143,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(stacks)
 
-    def _wait_for_stack_choice(self, new_stack, stack_uuid):
+    def _wait_for_stack_choice(self, new_stack: Images, stack_uuid: UUID):
         stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
         stack_choice.show()
 
@@ -149,7 +154,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         return stack_choice.use_new_data
 
-    def is_a_proj180deg(self, stack_to_check):
+    def is_a_proj180deg(self, stack_to_check: StackVisualiserView):
         if stack_to_check.presenter.images.has_proj180deg():
             return False
         stacks = self.main_window.get_all_stack_visualisers()
@@ -158,12 +163,12 @@ class FiltersWindowPresenter(BasePresenter):
                 return True
         return False
 
-    def _post_filter(self, updated_stacks, task):
+    def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
         do_180deg = True
-        attempt_repair = task.error is not None and self.original_images_stack is not None
+        attempt_repair = task.error is not None
         for stack in updated_stacks:
-            # If the operation encountered an error during processing, try to restore the original data else continue
-            # processing as usual
+            # If the operation encountered an error during processing,
+            # try to restore the original data else continue processing as usual
             if attempt_repair:
                 self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
             # Ensure there is no error if we are to continue with safe apply and 180 degree.
@@ -174,7 +179,10 @@ class FiltersWindowPresenter(BasePresenter):
                 # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
                 if stack.presenter.images.has_proj180deg() and do_180deg:
                     self.view.clear_previews()
-                    self._do_apply_filter(
+                    # Apply to proj180 synchronously - this function is already running async
+                    # and running another async instance causes a race condition in the parallel module
+                    # where the shared data can be removed in the middle of the operation of another operation
+                    self._do_apply_filter_sync(
                         [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)],
                         allow_180_degree=True)
                 self.view.main_window.update_stack_with_images(stack.presenter.images)
@@ -212,6 +220,9 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.do_apply_filter(confirmed_stacks, partial(self._post_filter, confirmed_stacks))
         else:
             self.do_update_previews()
+
+    def _do_apply_filter_sync(self, apply_to):
+        self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
         self.view.clear_previews()
