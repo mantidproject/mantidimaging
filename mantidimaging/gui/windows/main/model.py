@@ -116,7 +116,7 @@ class MainWindowModel(object):
             stack.presenter.images.free_memory()
             stack.presenter.images = images
 
-    def get_stack_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
+    def get_stack_by_name(self, search_name: str) -> Optional[QDockWidget]:
         for stack_id in self.stack_list:
             if stack_id.name == search_name:
                 return self.get_stack(stack_id.id)
