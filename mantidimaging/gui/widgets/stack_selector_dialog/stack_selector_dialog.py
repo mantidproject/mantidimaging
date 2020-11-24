@@ -49,4 +49,4 @@ class StackSelectorDialog(QDialog):
 
     def on_ok_clicked(self):
         self.selected_stack = self.stack_selector_widget.currentText()
-        self.close()
+        self.done(QDialog.Accepted)
