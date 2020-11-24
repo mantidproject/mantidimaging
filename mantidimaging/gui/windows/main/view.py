@@ -110,7 +110,7 @@ class MainWindowView(BaseMainWindowView):
         stack_selector = StackSelectorDialog(main_window=self,
                                              title="Stack Selector",
                                              message="Which stack is the log being loaded for?")
-        # Was closed via x button
+        # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.Accepted != stack_selector.exec():
             return
         stack_to_add_log_to = stack_selector.selected_stack
