@@ -126,9 +126,17 @@ class FiltersWindowPresenter(BasePresenter):
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = self.stack.presenter.images.copy()
 
+        # if is a 180degree stack and a user says no, cancel apply filter.
+        if self.is_a_proj180deg(self.stack) \
+            and not self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the "
+                                               "180 degree projection. Please avoid applying an operation unless you're"
+                                               " absolutely certain you need to.\nAre you sure you want to apply to 180"
+                                               " degree projection?"):
+            return
+
         apply_to = [self.stack]
 
-        self._do_apply_filter(apply_to, confirm_with_user_for_180degree=True)
+        self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_all(self):
         confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
@@ -141,6 +149,8 @@ class FiltersWindowPresenter(BasePresenter):
                 for stack in stacks:
                     self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
 
+        if len(stacks) > 0:
+            self.applying_to_all = True
         self._do_apply_filter(stacks)
 
     def _wait_for_stack_choice(self, new_stack: Images, stack_uuid: UUID):
@@ -177,20 +187,21 @@ class FiltersWindowPresenter(BasePresenter):
                 if self.view.safeApply.isChecked():
                     do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
                 # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
-                if stack.presenter.images.has_proj180deg() and do_180deg:
+                if stack.presenter.images.has_proj180deg() and do_180deg and not self.applying_to_all:
                     self.view.clear_previews()
                     # Apply to proj180 synchronously - this function is already running async
                     # and running another async instance causes a race condition in the parallel module
                     # where the shared data can be removed in the middle of the operation of another operation
                     self._do_apply_filter_sync(
-                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)],
-                        allow_180_degree=True)
+                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                    self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
                 self.view.main_window.update_stack_with_images(stack.presenter.images)
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None
 
+        self.applying_to_all = False
         self.do_update_previews()
 
         if task.error is not None:
@@ -201,25 +212,8 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
-    def _do_apply_filter(self, apply_to, allow_180_degree=False, confirm_with_user_for_180degree=False):
-        confirmed_stacks = []
-        for stack in apply_to:
-            is_180_proj = self.is_a_proj180deg(stack)
-            if not is_180_proj:
-                confirmed_stacks.append(stack)
-            elif allow_180_degree:
-                confirmed_stacks.append(stack)
-            elif confirm_with_user_for_180degree and\
-                self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the 180 "
-                                           "degree projection. Please avoid applying an operation unless you're "
-                                           "absolutely certain you need to.\nAre you sure you want to apply to 180 "
-                                           "degree projection?"):
-                confirmed_stacks.append(stack)
-
-        if 0 < len(confirmed_stacks):
-            self.model.do_apply_filter(confirmed_stacks, partial(self._post_filter, confirmed_stacks))
-        else:
-            self.do_update_previews()
+    def _do_apply_filter(self, apply_to):
+        self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
 
     def _do_apply_filter_sync(self, apply_to):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))

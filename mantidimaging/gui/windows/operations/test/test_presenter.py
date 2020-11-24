@@ -81,15 +81,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task.error = None
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
-        for i, msv in enumerate(mock_stack_visualisers):
-            assert msv.presenter.images == self.main_window.update_stack_with_images.call_args_list[i].args[0]
-
         do_update_previews.assert_called_once()
         _wait_for_stack_choice.assert_not_called()
-        _do_apply_filter_sync.assert_has_calls([
-            call([self.main_window.get_stack_with_images.return_value]),
-            call([self.main_window.get_stack_with_images.return_value])
-        ])
+        self.assertEqual(2, _do_apply_filter_sync.call_count)
 
         self.view.clear_notification_dialog.assert_called_once()
         self.view.show_operation_completed.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
@@ -102,16 +96,24 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         Tests when the operation has encountered an error.
         """
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.show_error_dialog = mock.MagicMock()
-        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
+        self.presenter.view.show_error_dialog = mock.Mock()
+        self.presenter.main_window.presenter = mock.Mock()
+        mock_stack_visualisers = [mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = 123
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
         self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
-        update_previews_mock.assert_called_once()
+        do_update_previews.assert_called_once()
+        self.presenter.main_window.presenter.model.set_images_in_stack.assert_called_once()
 
-    def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self):
+    @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
+                         do_update_previews=DEFAULT,
+                         _do_apply_filter=DEFAULT)
+    def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self,
+                                                                  do_update_previews: Mock = Mock(),
+                                                                  _do_apply_filter: Mock = Mock()):
+        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         for i, msv in enumerate(mock_stack_visualisers):
             assert msv.presenter.images == self.main_window.set_images_in_stack.call_args_list[i].args[1]
 
@@ -221,6 +223,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_unchecked_safe_apply_does_not_start_stack_choice_presenter(self, stack_choice_presenter):
         self.presenter.view.safeApply.isChecked.return_value = False
         stack_choice_presenter.done = True
+        self.presenter.applying_to_all = True
         self.presenter._do_apply_filter = mock.MagicMock()
         task = mock.MagicMock()
         task.error = None
@@ -240,63 +243,3 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         stack.presenter.images.copy.assert_called_once()
         self.assertEqual(stack_data, self.presenter.original_images_stack)
-
-
-@pytest.mark.parametrize('allow_180_degree, confirm_with_user_for_180degree', [(True, False), (True, True),
-                                                                               (False, False), (False, True)])
-@mock.patch("mantidimaging.gui.windows.operations.presenter.partial", return_value="Partial")
-def test_apply_filter_on_180_deg_proj_behaviour_not_180_projection(partial_mock, allow_180_degree,
-                                                                   confirm_with_user_for_180degree):
-    main_window = mock.create_autospec(MainWindowView)
-    view = mock.MagicMock()
-    presenter = FiltersWindowPresenter(view, main_window)
-    view.presenter = presenter
-    model = mock.MagicMock()
-    presenter.model = model
-    view.ask_confirmation.return_value = True
-    images = "images"
-    post_filter = "post_filter"
-    presenter._post_filter = post_filter
-    presenter.is_a_proj180deg = mock.MagicMock(return_value=False)
-
-    presenter._do_apply_filter(apply_to=[images],
-                               allow_180_degree=allow_180_degree,
-                               confirm_with_user_for_180degree=confirm_with_user_for_180degree)
-
-    model.do_apply_filter.assert_called_once_with([images], "Partial")
-    partial_mock.assert_called_once_with(post_filter, [images])
-
-
-@pytest.mark.parametrize('allow_180_degree, confirm_with_user_for_180degree', [(True, False), (True, True),
-                                                                               (False, False), (False, True)])
-@mock.patch("mantidimaging.gui.windows.operations.presenter.partial", return_value="Partial")
-def test_apply_filter_on_180_deg_proj_behaviour_with_180_projection(partial_mock, allow_180_degree,
-                                                                    confirm_with_user_for_180degree):
-    main_window = mock.create_autospec(MainWindowView)
-    view = mock.MagicMock()
-    presenter = FiltersWindowPresenter(view, main_window)
-    view.presenter = presenter
-    model = mock.MagicMock()
-    presenter.model = model
-    view.ask_confirmation.return_value = True
-    images = "images"
-    post_filter = "post_filter"
-    presenter._post_filter = post_filter
-    presenter.is_a_proj180deg = mock.MagicMock(return_value=True)
-
-    presenter._do_apply_filter(apply_to=[images],
-                               allow_180_degree=allow_180_degree,
-                               confirm_with_user_for_180degree=confirm_with_user_for_180degree)
-
-    if not allow_180_degree:
-        if confirm_with_user_for_180degree:
-            model.do_apply_filter.assert_called_once_with([images], "Partial")
-            partial_mock.assert_called_once_with(post_filter, [images])
-        else:
-            model.do_apply_filter.assert_not_called()
-            partial_mock.assert_not_called()
-            view.clear_previews.assert_called_once()
-    else:
-        # Confirm_with_user is supposed to be ignored if allow_180_degree is True
-        model.do_apply_filter.assert_called_once_with([images], "Partial")
-        partial_mock.assert_called_once_with(post_filter, [images])
