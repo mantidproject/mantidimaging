@@ -1,11 +1,12 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from typing import Tuple
 import unittest
 
 import mock
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDockWidget
+from mock import Mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -18,6 +19,7 @@ from mantidimaging.test_helpers import start_qapplication
 @start_qapplication
 class StackVisualiserViewTest(unittest.TestCase):
     test_data: Images
+    window: MainWindowView
 
     def __init__(self, *args, **kwargs):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
@@ -27,6 +29,9 @@ class StackVisualiserViewTest(unittest.TestCase):
             self.test_data.free_memory()
         except FileNotFoundError:
             pass
+        self.view = None
+        self.window = None  # type: ignore[assignment]
+        self.dock = None
 
     def setUp(self):
         # mock the view so it has the same methods
@@ -34,14 +39,13 @@ class StackVisualiserViewTest(unittest.TestCase):
             self.window = MainWindowView()
             mock_find_latest_version.assert_called_once()
         self.window.remove_stack = mock.Mock()
+        self.dock, self.view, self.test_data = self._add_stack_visualiser()
 
-        self.dock = QDockWidget()
-        self.dock.setWindowTitle("Potatoes")
-
-        self.test_data = th.generate_images(automatic_free=False)
-        self.view = StackVisualiserView(self.window, self.dock, self.test_data)
-        self.dock.setWidget(self.view)
-        self.window.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dock)
+    def _add_stack_visualiser(self) -> Tuple[QDockWidget, StackVisualiserView, Images]:
+        test_data = th.generate_images(automatic_free=False)
+        self.window.create_new_stack(test_data, "Test Data")
+        view = self.window.get_stack_with_images(test_data)
+        return view.dock, view, test_data
 
     def test_name(self):
         title = "Potatoes"
@@ -58,6 +62,46 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.dock.deleteLater.assert_called_once_with()
         self.assertEqual(None, self.view.presenter.images)
         self.window.remove_stack.assert_called_once_with(self.view)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView.ask_confirmation", return_value=True)
+    def test_closeEvent_deletes_images_with_proj180_user_accepts(self, ask_confirmation_mock: Mock):
+        p180_dock, p180_view, images = self._add_stack_visualiser()
+        self.test_data.proj180deg = images
+
+        p180_dock.setFloating = mock.Mock()  # type: ignore[assignment]
+        p180_dock.deleteLater = mock.Mock()  # type: ignore[assignment]
+
+        p180_view.close()
+
+        ask_confirmation_mock.assert_called_once()
+
+        # proj180 has been cleared from the stack referencing it
+        self.assertFalse(self.test_data.has_proj180deg())
+
+        p180_dock.setFloating.assert_called_once_with(False)
+        p180_dock.deleteLater.assert_called_once_with()
+        self.assertIsNone(p180_view.presenter.images)
+        self.window.remove_stack.assert_called_once_with(p180_view)  # type: ignore[attr-defined]
+
+    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView.ask_confirmation", return_value=False)
+    def test_closeEvent_deletes_images_with_proj180_user_declined(self, ask_confirmation_mock: Mock):
+        p180_dock, p180_view, images = self._add_stack_visualiser()
+        self.test_data.proj180deg = images
+
+        p180_dock.setFloating = mock.Mock()  # type: ignore[assignment]
+        p180_dock.deleteLater = mock.Mock()  # type: ignore[assignment]
+
+        p180_view.close()
+
+        ask_confirmation_mock.assert_called_once()
+
+        # proj180 has been cleared from the stack referencing it
+        self.assertTrue(self.test_data.has_proj180deg())
+
+        p180_dock.setFloating.assert_not_called()
+        p180_dock.deleteLater.assert_not_called()
+        self.assertIsNotNone(p180_view.presenter.images)
+        self.window.remove_stack.assert_not_called()  # type: ignore[attr-defined]
 
     def _roi_updated_callback(self, roi):
         self.assertIsInstance(roi, SensibleROI)

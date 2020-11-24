@@ -3,6 +3,7 @@
 
 from logging import getLogger
 from typing import Optional
+from uuid import UUID
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
@@ -155,6 +156,9 @@ class MainWindowView(BaseMainWindowView):
     def get_all_stack_visualisers(self):
         return self.presenter.get_all_stack_visualisers()
 
+    def get_all_stack_visualisers_with_180deg_proj(self):
+        return self.presenter.get_all_stack_visualisers_with_180deg_proj()
+
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
@@ -164,7 +168,7 @@ class MainWindowView(BaseMainWindowView):
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
 
-    def get_stack_with_images(self, images: Images):
+    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
         return self.presenter.get_stack_with_images(images)
 
     def create_stack_window(self,
@@ -246,3 +250,6 @@ class MainWindowView(BaseMainWindowView):
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
+
+    def set_images_in_stack(self, uuid: UUID, images: Images):
+        self.presenter.set_images_in_stack(uuid, images)
