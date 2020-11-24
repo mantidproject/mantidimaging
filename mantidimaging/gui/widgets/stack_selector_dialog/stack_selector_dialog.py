@@ -10,7 +10,9 @@ if TYPE_CHECKING:
 
 
 class StackSelectorDialog(QDialog):
-    def __init__(self, main_window: Optional['MainWindowView'], title: Optional[str] = None,
+    def __init__(self,
+                 main_window: Optional['MainWindowView'],
+                 title: Optional[str] = None,
                  message: Optional[str] = None):
         super().__init__(main_window)
 
