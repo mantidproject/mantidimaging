@@ -47,7 +47,6 @@ class FiltersWindowPresenter(BasePresenter):
         self.main_window = main_window
 
         self.original_images_stack = None
-        self.applying_to_all = False
 
     def notify(self, signal):
         try:
@@ -137,8 +136,6 @@ class FiltersWindowPresenter(BasePresenter):
                 for stack in stacks:
                     self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
 
-        if len(stacks) > 0:
-            self.applying_to_all = True
         self._do_apply_filter(stacks)
 
     def _wait_for_stack_choice(self, new_stack, stack_uuid):
@@ -169,24 +166,23 @@ class FiltersWindowPresenter(BasePresenter):
             # processing as usual
             if attempt_repair:
                 self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
-            else:
-                is_a_proj180deg = self.is_a_proj180deg(stack)
-                if self.view.safeApply.isChecked() and not is_a_proj180deg:
+            # Ensure there is no error if we are to continue with safe apply and 180 degree.
+            elif task.error is None:
+                # otherwise check with user which one to keep
+                if self.view.safeApply.isChecked():
                     do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
-                self.view.main_window.update_stack_with_images(stack.presenter.images)
-
-                if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
-                        and not self.applying_to_all:
+                # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
+                if stack.presenter.images.has_proj180deg() and do_180deg:
                     self.view.clear_previews()
                     self._do_apply_filter(
                         [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)],
                         allow_180_degree=True)
+                self.view.main_window.update_stack_with_images(stack.presenter.images)
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None
 
-        self.applying_to_all = False
         self.do_update_previews()
 
         if task.error is not None:
@@ -203,16 +199,14 @@ class FiltersWindowPresenter(BasePresenter):
             is_180_proj = self.is_a_proj180deg(stack)
             if not is_180_proj:
                 confirmed_stacks.append(stack)
-                continue
-            if is_180_proj and allow_180_degree:
+            elif allow_180_degree:
                 confirmed_stacks.append(stack)
-            else:
-                if is_180_proj and confirm_with_user_for_180degree and\
-                        self.view.ask_confirmation("Operations applied to the sample are also automatically applied to "
-                                                   "the 180 degree projection. Please avoid applying an operation "
-                                                   "unless you're absolutely certain you need to.\nAre you sure you "
-                                                   "want to apply to 180 degree projection?"):
-                    confirmed_stacks.append(stack)
+            elif confirm_with_user_for_180degree and\
+                self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the 180 "
+                                           "degree projection. Please avoid applying an operation unless you're "
+                                           "absolutely certain you need to.\nAre you sure you want to apply to 180 "
+                                           "degree projection?"):
+                confirmed_stacks.append(stack)
 
         if 0 < len(confirmed_stacks):
             self.model.do_apply_filter(confirmed_stacks, partial(self._post_filter, confirmed_stacks))

@@ -82,14 +82,14 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews')
     def test_post_filter_fail(self, update_previews_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter.view.show_error_dialog = mock.MagicMock()
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = 123
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
-        for i, msv in enumerate(mock_stack_visualisers):
-            assert msv.presenter.images == self.view.main_window.update_stack_with_images.call_args_list[i].args[0]
+        self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         update_previews_mock.assert_called_once()
 
     def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self):
@@ -157,7 +157,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.safeApply.isChecked.return_value = True
         stack_choice_presenter.done = True
         self.presenter._do_apply_filter = mock.MagicMock()
-        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
+        task = mock.MagicMock()
+        task.error = None
+        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], task)
 
         self.assertEqual(2, stack_choice_presenter.call_count)
 
@@ -166,7 +168,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.safeApply.isChecked.return_value = False
         stack_choice_presenter.done = True
         self.presenter._do_apply_filter = mock.MagicMock()
-        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
+        task = mock.MagicMock()
+        task.error = None
+        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], task)
 
         stack_choice_presenter.assert_not_called()
 
