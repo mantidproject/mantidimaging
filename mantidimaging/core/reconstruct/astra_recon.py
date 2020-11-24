@@ -83,7 +83,7 @@ class AstraRecon(BaseRecon):
         Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
         """
 
-        proj_angles = images.projection_angles()
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
 
         def get_sumsq(image: np.ndarray) -> float:
             return np.sum(image**2)
@@ -119,7 +119,7 @@ class AstraRecon(BaseRecon):
         output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Reconstruction', **recon_params.to_dict())
 
-        proj_angles = images.projection_angles()
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params)
             progress.update(1, "Reconstructed slice")
