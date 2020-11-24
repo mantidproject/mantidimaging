@@ -95,7 +95,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         Tests when the operation has encountered an error.
         """
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.show_error_dialog = mock.Mock()
+        self.presenter.view.show_error_dialog = mock.Mock()  # type: ignore
         self.presenter.main_window.presenter = mock.Mock()
         mock_stack_visualisers = [mock.Mock()]
         mock_task = mock.Mock()
@@ -193,7 +193,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.presenter.view.safeApply.isChecked.return_value = True
         stack_choice_presenter.done = True
-        self.presenter._do_apply_filter = mock.MagicMock()
+        self.presenter._do_apply_filter = mock.MagicMock()  # type: ignore
         task = mock.MagicMock()
         task.error = None
 
