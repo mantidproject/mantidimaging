@@ -1,13 +1,16 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main.view import MainWindowView
+
 
 class StackSelectorDialog(QDialog):
-    def __init__(self, main_window, title: Optional[str] = None, message: Optional[str] = None):
+    def __init__(self, main_window: 'MainWindowView', title: Optional[str] = None, message: Optional[str] = None):
         super().__init__(main_window)
 
         self.selected_stack = None
@@ -30,7 +33,7 @@ class StackSelectorDialog(QDialog):
         # Stack selector
         self.stack_selector_widget = StackSelectorWidgetView(self)
         self.stack_selector_widget.subscribe_to_main_window(main_window)
-        self.stack_selector_widget.select_eligble_stac()
+        self.stack_selector_widget.select_eligble_stack()
         self.vertical_layout.addWidget(self.stack_selector_widget)
 
         # Button layout
