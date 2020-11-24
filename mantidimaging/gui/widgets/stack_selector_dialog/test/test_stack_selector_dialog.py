@@ -4,9 +4,6 @@ import unittest
 from unittest import mock
 
 from PyQt5.QtWidgets import QWidget
-from mantidimaging.gui.windows.main import MainWindowView
-
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from test_helpers import start_qapplication
