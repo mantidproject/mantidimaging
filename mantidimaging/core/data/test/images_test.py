@@ -11,7 +11,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.data.test.fake_logfile import generate_logfile
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
-from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 
