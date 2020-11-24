@@ -36,7 +36,6 @@ class ReconstructWindowView(BaseMainWindowView):
     refineCorBtn: QPushButton
     clearAllBtn: QPushButton
     removeBtn: QPushButton
-    fitBtn: QPushButton
 
     correlateBtn: QPushButton
     minimiseBtn: QPushButton
@@ -84,6 +83,9 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
+            # Should we auto fit on data change?
+            if self.tableView.model().num_points >= 2:
+                self.presenter.notify(PresN.COR_FIT)
             self.presenter.notify(PresN.UPDATE_PROJECTION)
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
@@ -96,7 +98,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
         self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
         self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
-        self.fitBtn.clicked.connect(lambda: self.presenter.notify(PresN.COR_FIT))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
         self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
@@ -217,7 +218,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def reset_slice_and_tilt(self, slice_index):
         self.image_view.reset_slice_and_tilt(slice_index)
 
-    def on_table_row_count_change(self):
+    def on_table_row_count_change(self, _=None, __=None):
         """
         Called when rows have been added or removed from the point table.
 
@@ -229,15 +230,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.setEnabled(not empty)
         self.clearAllBtn.setEnabled(not empty)
 
-        # Disable fit button when there are less than 2 rows (points)
-        enough_to_fit = self.tableView.model().num_points >= 2
-        self.fitBtn.setEnabled(enough_to_fit)
-
     def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
         self.cor_table_model.appendNewRow(row, slice_index, cor)
+        self.tableView.selectRow(row)
 
     @property
     def rotation_centre(self):

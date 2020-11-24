@@ -50,11 +50,12 @@ class CorTiltDataModel:
         if reset_results:
             self.clear_results()
 
-        if slice_idx is not None:
-            self._points[idx] = Point(int(slice_idx), self._points[idx].cor)
+        if len(self._points) > idx:
+            if slice_idx is not None:
+                self._points[idx] = Point(int(slice_idx), self._points[idx].cor)
 
-        if cor is not None:
-            self._points[idx] = Point(self._points[idx].slice_index, float(cor))
+            if cor is not None:
+                self._points[idx] = Point(self._points[idx].slice_index, float(cor))
 
     def _get_data_idx_from_slice_idx(self, slice_idx):
         for i, p in enumerate(self._points):

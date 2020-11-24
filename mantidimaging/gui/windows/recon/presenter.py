@@ -143,10 +143,26 @@ class ReconstructWindowPresenter(BasePresenter):
             img_data = images.projection(self.model.preview_projection_idx)
             self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
 
+    def _find_next_free_slice_index(self) -> int:
+        slice_index = self.model.preview_slice_idx
+        max_slice = self.model.images.height
+        column = self.view.cor_table_model.getColumn(0)
+
+        for index in range(slice_index + 1, max_slice):
+            if index not in column:
+                return index
+
+        for index in range(0, slice_index):
+            if index not in column:
+                return index
+
+        raise RuntimeError("No free slice indexes to add to the COR Table")
+
     def do_add_cor(self):
         row = self.model.selected_row
         cor = self.model.get_me_a_cor()
-        self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
+        slice_index = self._find_next_free_slice_index()
+        self.view.add_cor_table_row(row, slice_index, cor.value)
 
     def do_reconstruct_volume(self):
         if not self.model.has_results:
@@ -180,8 +196,9 @@ class ReconstructWindowPresenter(BasePresenter):
         images = None
         try:
             images = self._get_reconstruct_slice(cor, slice_idx)
-        except ValueError as err:
-            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+        except Exception as err:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}. "
+                                        f"Check your COR table values for invalid values!")
 
         if images is not None:
             self.view.update_recon_preview(images.data[0], refresh_recon_slice_histogram)

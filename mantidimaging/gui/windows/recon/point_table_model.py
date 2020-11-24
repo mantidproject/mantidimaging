@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
 
@@ -74,6 +74,15 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
             elif col_field == Column.CENTRE_OF_ROTATION:
                 return 'Centre of rotation for specific slice'
             return ''
+
+    def getColumn(self, column_index) -> List[int]:
+        if column_index != 0 and column_index != 1:
+            return []
+        else:
+            column = []
+            for point in self._points:
+                column.append(point.slice_index)
+            return column
 
     def setData(self, index, val, role=Qt.EditRole):
         if role != Qt.EditRole:
