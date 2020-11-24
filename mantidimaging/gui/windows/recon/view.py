@@ -230,14 +230,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.setEnabled(not empty)
         self.clearAllBtn.setEnabled(not empty)
 
-        if self.tableView.model().num_points >= 2:
-            self.presenter.notify(PresN.COR_FIT)
-
     def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
         self.cor_table_model.appendNewRow(row, slice_index, cor)
+        self.tableView.selectRow(row)
 
     @property
     def rotation_centre(self):
