@@ -35,7 +35,7 @@ class StackSelectorDialog(QDialog):
 
         # Stack selector
         self.stack_selector_widget = StackSelectorWidgetView(self)
-        self.stack_selector_widget.subscribe_to_main_window(main_window)
+        self.stack_selector_widget.subscribe_to_main_window(main_window)  # type: ignore
         self.stack_selector_widget.select_eligible_stack()
         self.vertical_layout.addWidget(self.stack_selector_widget)
 
