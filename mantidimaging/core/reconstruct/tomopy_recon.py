@@ -20,7 +20,7 @@ class TomopyRecon(BaseRecon):
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         return tomopy.find_center(images.sinograms,
-                                  images.projection_angles().value,
+                                  images.projection_angles(recon_params.max_projection_angle).value,
                                   ind=slice_idx,
                                   init=start_cor,
                                   sinogram_order=True)
@@ -59,7 +59,7 @@ class TomopyRecon(BaseRecon):
             'ncore': ncores,
             'tomo': images.data,
             'sinogram_order': images._is_sinograms,
-            'theta': images.projection_angles().value,
+            'theta': images.projection_angles(recon_params.max_projection_angle).value,
             'center': [cor.value for cor in cors],
             'algorithm': recon_params.algorithm,
             'filter_name': recon_params.filter_name

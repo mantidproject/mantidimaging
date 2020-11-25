@@ -21,7 +21,7 @@ class CORInspectionDialogModel(object):
         self.cor_step = self.image_width * 0.05
 
         # Cache projection angles
-        self.proj_angles = images.projection_angles()
+        self.proj_angles = images.projection_angles(recon_params.max_projection_angle)
         self.recon_params = recon_params
         self.reconstructor = get_reconstructor_for(recon_params.algorithm)
 

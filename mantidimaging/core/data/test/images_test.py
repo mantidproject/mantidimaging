@@ -11,7 +11,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.data.test.fake_logfile import generate_logfile
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
-from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 
@@ -186,11 +185,16 @@ class ImagesTest(unittest.TestCase):
         images = generate_images()
         images.log_file = generate_logfile()
         expected = np.deg2rad(np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368]))
-        actual: ProjectionAngles = images.projection_angles()
+        actual = images.projection_angles(360.0)
         self.assertEqual(len(actual.value), len(expected))
         np.testing.assert_equal(actual.value, expected)
 
     def test_get_projection_angles_no_logfile(self):
         images = generate_images()
-        actual = images.projection_angles()
+        actual = images.projection_angles(360.0)
         self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(np.deg2rad(360), actual.value[-1], places=4)
+
+        actual = images.projection_angles(275.69)
+        self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)

@@ -133,6 +133,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.select_eligible_stack()
 
+        self.maxProjAngle.valueChanged.connect(
+            lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
         self.algorithmName.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
@@ -291,7 +293,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                         num_iter=self.num_iter,
                                         cor=ScalarCoR(self.rotation_centre),
                                         tilt=Degrees(self.tilt),
-                                        pixel_size=self.pixel_size)
+                                        pixel_size=self.pixel_size,
+                                        max_projection_angle=self.max_proj_angle)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on
