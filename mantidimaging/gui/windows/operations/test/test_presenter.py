@@ -5,7 +5,7 @@ import unittest
 from functools import partial
 
 import mock
-from mock import DEFAULT, Mock, call
+from mock import DEFAULT, Mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
@@ -80,15 +80,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task.error = None
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
-        for i, msv in enumerate(mock_stack_visualisers):
-            assert msv.presenter.images == self.main_window.update_stack_with_images.call_args_list[i].args[0]
-
         do_update_previews.assert_called_once()
         _wait_for_stack_choice.assert_not_called()
-        _do_apply_filter_sync.assert_has_calls([
-            call([self.main_window.get_stack_with_images.return_value]),
-            call([self.main_window.get_stack_with_images.return_value])
-        ])
+        self.assertEqual(2, _do_apply_filter_sync.call_count)
 
         self.view.clear_notification_dialog.assert_called_once()
         self.view.show_operation_completed.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
@@ -101,19 +95,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         Tests when the operation has encountered an error.
         """
         self.presenter.view.safeApply.isChecked.return_value = False
-        mock_stack_visualisers = [mock.MagicMock(), mock.MagicMock()]
+        self.presenter.view.show_error_dialog = mock.Mock()  # type: ignore
+        self.presenter.main_window.presenter = mock.Mock()
+        mock_stack_visualisers = [mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = 123
         self.presenter._post_filter(mock_stack_visualisers, mock_task)
 
-        for i, msv in enumerate(mock_stack_visualisers):
-            assert msv.presenter.images == self.main_window.set_images_in_stack.call_args_list[i].args[1]
-
-        self.main_window.update_stack_with_images.assert_not_called()
-        _do_apply_filter.assert_not_called()
-
-        # still refreshes the previews to ensure we haven't left them blank
+        self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         do_update_previews.assert_called_once()
+        self.presenter.main_window.presenter.model.set_images_in_stack.assert_called_once()
 
     @mock.patch.multiple(
         'mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
@@ -202,6 +193,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.presenter.view.safeApply.isChecked.return_value = True
         stack_choice_presenter.done = True
+        self.presenter._do_apply_filter = mock.MagicMock()  # type: ignore
+        task = mock.MagicMock()
+        task.error = None
 
         self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], task)
 
@@ -212,8 +206,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_unchecked_safe_apply_does_not_start_stack_choice_presenter(self, stack_choice_presenter):
         self.presenter.view.safeApply.isChecked.return_value = False
         stack_choice_presenter.done = True
+        self.presenter.applying_to_all = True
         self.presenter._do_apply_filter = mock.MagicMock()
-        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], mock.MagicMock())
+        task = mock.MagicMock()
+        task.error = None
+        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], task)
 
         stack_choice_presenter.assert_not_called()
 
