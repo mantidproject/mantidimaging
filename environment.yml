@@ -15,6 +15,7 @@ dependencies:
       - pyqtgraph
       - pytest
       - pytest-cov
+      - coveralls
       - pyqt5==5.15
       - yapf
       - mypy

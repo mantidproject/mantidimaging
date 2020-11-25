@@ -53,10 +53,10 @@ jobs:
         run: |
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml
 
-      - name: Coveralls Python
-        uses: AndreMiras/coveralls-python-action@v20200413
-        with:
-          github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      - name: Coveralls
+        shell: bash -l {0}
+        run: |
+          coveralls
 
       - name: publish 'unstable' package
         if: github.ref == 'refs/heads/master'
