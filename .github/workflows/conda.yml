@@ -51,7 +51,7 @@ jobs:
       - name: pytest
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml
 
       - name: publish 'unstable' package
         if: github.ref == 'refs/heads/master'
