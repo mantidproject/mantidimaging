@@ -3,6 +3,7 @@
 
 import unittest
 from unittest import mock
+from unittest.mock import DEFAULT, Mock, patch
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QMessageBox
@@ -188,5 +189,29 @@ class StackChoiceViewTest(unittest.TestCase):
 
         self.v._ensure_range_is_the_same()
 
-        self.v.new_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(0, 200))
-        self.v.original_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(0, 200))
+        self.v.new_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
+        self.v.original_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
+
+    @patch.multiple('mantidimaging.gui.windows.stack_choice.view.StackChoiceView',
+                    _set_from_old_to_new=DEFAULT,
+                    _set_from_new_to_old=DEFAULT)
+    def test_connect_histogram_changes(self, _set_from_old_to_new: Mock = Mock(), _set_from_new_to_old: Mock = Mock()):
+        self.v.connect_histogram_changes()
+        expected_emit = (0, 99)
+
+        self.v.original_stack.ui.histogram.sigLevelsChanged.emit(expected_emit)
+        _set_from_old_to_new.assert_called_once_with(expected_emit)
+
+        self.v.new_stack.ui.histogram.sigLevelsChanged.emit(expected_emit)
+        _set_from_new_to_old.assert_called_once_with(expected_emit)
+
+        # reset mocks and disconnect signals
+        _set_from_old_to_new.reset_mock()
+        _set_from_new_to_old.reset_mock()
+        self.v.disconnect_histogram_changes()
+
+        self.v.original_stack.ui.histogram.sigLevelsChanged.emit(expected_emit)
+        _set_from_old_to_new.assert_not_called()
+
+        self.v.new_stack.ui.histogram.sigLevelsChanged.emit(expected_emit)
+        _set_from_new_to_old.assert_not_called()
