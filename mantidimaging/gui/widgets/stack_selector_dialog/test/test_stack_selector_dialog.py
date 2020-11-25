@@ -3,7 +3,7 @@
 import unittest
 from unittest import mock
 
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QDialog
 
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from test_helpers import start_qapplication
@@ -53,8 +53,8 @@ class StackSelectorDialogTest(unittest.TestCase):
 
     def test_close_called_on_ok_clicked(self):
         diag = StackSelectorDialog(main_window=FakeMainWindowView())
-        diag.close = mock.MagicMock()
+        diag.done = mock.MagicMock()
 
         diag.on_ok_clicked()
 
-        diag.close.assert_called_once()
+        diag.done.assert_called_once_with(QDialog.Accepted)
