@@ -126,7 +126,16 @@ class FiltersWindowPresenter(BasePresenter):
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = self.stack.presenter.images.copy()
 
+        # if is a 180degree stack and a user says no, cancel apply filter.
+        if self.is_a_proj180deg(self.stack) \
+            and not self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the "
+                                               "180 degree projection. Please avoid applying an operation unless you're"
+                                               " absolutely certain you need to.\nAre you sure you want to apply to 180"
+                                               " degree projection?"):
+            return
+
         apply_to = [self.stack]
+
         self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_all(self):
@@ -171,20 +180,22 @@ class FiltersWindowPresenter(BasePresenter):
             # If the operation encountered an error during processing,
             # try to restore the original data else continue processing as usual
             if attempt_repair:
-                self.main_window.set_images_in_stack(stack.uuid, stack.presenter.images)
-            else:
-                is_a_proj180deg = self.is_a_proj180deg(stack)
-                if self.view.safeApply.isChecked() and not is_a_proj180deg:
+                self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
+            # Ensure there is no error if we are to continue with safe apply and 180 degree.
+            elif task.error is None:
+                # otherwise check with user which one to keep
+                if self.view.safeApply.isChecked():
                     do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
-                self.main_window.update_stack_with_images(stack.presenter.images)
-
-                if stack.presenter.images.has_proj180deg() and do_180deg and not is_a_proj180deg \
-                        and not self.applying_to_all:
+                # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
+                if stack.presenter.images.has_proj180deg() and do_180deg and not self.applying_to_all:
+                    self.view.clear_previews()
                     # Apply to proj180 synchronously - this function is already running async
                     # and running another async instance causes a race condition in the parallel module
                     # where the shared data can be removed in the middle of the operation of another operation
                     self._do_apply_filter_sync(
-                        [self.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                    self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
+                self.view.main_window.update_stack_with_images(stack.presenter.images)
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()

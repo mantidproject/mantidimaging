@@ -3,7 +3,6 @@
 
 import datetime
 import json
-import math
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -275,9 +274,9 @@ class Images:
     def log_file(self, value: IMATLogFile):
         self._log_file = value
 
-    def projection_angles(self):
+    def projection_angles(self, max_angle: float = 360.0):
         proj_angles = self._log_file.projection_angles() if self._log_file is not None else \
-            ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+            ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
         if self.num_images != len(proj_angles.value):
             raise ValueError(f"Number of projection angles {len(proj_angles.value)} does not equal "
                              f"the number of projections {self.num_images}. This can happen if loading subset of "
