@@ -1,6 +1,6 @@
 name: Testing with conda
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   test:
@@ -55,6 +55,8 @@ jobs:
 
       - name: Coveralls
         shell: bash -l {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           coveralls
 
