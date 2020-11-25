@@ -133,7 +133,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
 
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
-                                                       f"{stack_to_add_log_to}.")
+                                f"{stack_to_add_log_to}.")
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)
