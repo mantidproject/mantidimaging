@@ -55,6 +55,19 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="lockHistogramsButton">
+        <property name="toolTip">
+         <string>If activated - the histograms will share the value ranges for the contrast. If inactive they will be separate.</string>
+        </property>
+        <property name="text">
+         <string>Lock Histograms</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="roiButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -197,7 +210,7 @@
      <x>0</x>
      <y>0</y>
      <width>1338</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

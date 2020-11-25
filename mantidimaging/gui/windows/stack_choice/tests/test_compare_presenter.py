@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from mantidimaging.gui.windows.stack_choice.view import Notification
 import unittest
 from unittest import mock
 
@@ -31,3 +32,16 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.presenter.show()
 
         view.return_value.show.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.stack_choice.compare_presenter.StackChoiceView")
+    def test_do_toggle_lock_histograms(self, view_class_mock):
+        view_instance = view_class_mock.return_value
+
+        view_instance.lockHistogramsButton.isChecked.return_value = True
+        self.presenter = StackComparePresenter(stack_one=self.stack_one, stack_two=self.stack_two, parent=self.parent)
+        self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
+        view_instance.connect_histogram_changes.assert_called_once()
+
+        view_instance.lockHistogramsButton.isChecked.return_value = False
+        self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
+        view_instance.disconnect_histogram_changes.assert_called_once()
