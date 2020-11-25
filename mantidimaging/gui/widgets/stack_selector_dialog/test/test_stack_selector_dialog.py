@@ -6,7 +6,7 @@ from unittest import mock
 from PyQt5.QtWidgets import QWidget, QDialog
 
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
-from test_helpers import start_qapplication
+from mantidimaging.test_helpers import start_qapplication
 
 
 class FakeMainWindowView(QWidget):
