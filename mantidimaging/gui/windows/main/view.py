@@ -7,7 +7,7 @@ from uuid import UUID
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel
+from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox
 
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
@@ -131,6 +131,9 @@ class MainWindowView(BaseMainWindowView):
             return
 
         self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
+
+        QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
+                                                       f"{stack_to_add_log_to}.")
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)

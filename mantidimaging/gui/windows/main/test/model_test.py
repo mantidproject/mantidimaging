@@ -223,7 +223,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.assertEqual("apple_2", self.model.create_name("apple"))
 
-    @mock.patch('mantidimaging.core.io.loader.load_log', return_value="log_data")
+    @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
         log_file = "Log file"
         stack_name = "stack name"
@@ -234,7 +234,9 @@ class MainWindowModelTest(unittest.TestCase):
 
         load_log.assert_called_once_with(log_file)
         stack_mock.assert_called_with(stack_name)
-        self.assertEqual("log_data", stack_mock.return_value.widget.return_value.presenter.images.log_file)
+        self.assertEqual(load_log.return_value, stack_mock.return_value.widget.return_value.presenter.images.log_file)
+        stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
+            .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
 
 
 if __name__ == '__main__':
