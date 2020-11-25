@@ -2,13 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from time import sleep
-from logging import getLogger
-from typing import Optional, Tuple, Callable
+from typing import Callable, Optional, Tuple
 
-import numpy as np
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QSizePolicy, QApplication
-from pyqtgraph import ImageView, ROI, ImageItem
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
