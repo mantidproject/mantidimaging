@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum, auto
-from typing import Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
@@ -11,7 +11,7 @@ from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.images import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.widgets.pg_image_view import MIImageView
+from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
