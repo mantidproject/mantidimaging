@@ -2,9 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum
-from typing import Optional, List
+from typing import List
 
-from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
+from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
 from mantidimaging.core.rotation import CorTiltDataModel
 from mantidimaging.core.rotation.data_model import Point
@@ -133,7 +133,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.clear_points()
         self.endRemoveRows()
 
-    def appendNewRow(self, row: Optional[int], slice_idx: int, cor: float = 0.0):
+    def appendNewRow(self, row: int, slice_idx: int, cor: float = 0.0):
         self.insertRows(row, 1, slice_idx=slice_idx, cor=cor)
         self.set_point(row, slice_idx, cor)
         self.sort_points()
