@@ -5,7 +5,6 @@ User Guide
    :maxdepth: 1
    :caption: Contents:
 
-   installation
    operations/index
    gui/index
    python/index
