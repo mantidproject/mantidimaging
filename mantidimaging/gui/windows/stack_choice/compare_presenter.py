@@ -2,8 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import traceback
-from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
+
 from mantidimaging.core.data.images import Images
+from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
 from mantidimaging.gui.windows.stack_choice.view import StackChoiceView
 
 

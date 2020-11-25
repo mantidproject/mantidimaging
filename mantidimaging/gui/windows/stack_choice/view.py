@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum, auto
-from typing import Optional, TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt

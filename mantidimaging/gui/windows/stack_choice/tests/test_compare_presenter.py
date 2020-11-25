@@ -1,12 +1,12 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.gui.windows.stack_choice.view import Notification
 import unittest
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
+from mantidimaging.gui.windows.stack_choice.view import Notification
 
 
 class StackChoicePresenterTest(unittest.TestCase):

@@ -7,8 +7,8 @@ from unittest.mock import DEFAULT, MagicMock, Mock, patch
 from uuid import uuid4
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.gui.windows.stack_choice.view import Notification
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
+from mantidimaging.gui.windows.stack_choice.view import Notification
 
 
 class StackChoicePresenterTest(unittest.TestCase):

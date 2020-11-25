@@ -1,13 +1,13 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
-from mantidimaging.core.data.images import Images
 import traceback
-from typing import List, Optional, TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from uuid import UUID
 
-from mantidimaging.gui.windows.stack_choice.view import StackChoiceView, Notification
+from mantidimaging.core.data.images import Images
+from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
+from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter
