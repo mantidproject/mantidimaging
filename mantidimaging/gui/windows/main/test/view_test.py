@@ -29,7 +29,7 @@ class MainWindowViewTest(unittest.TestCase):
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
         self.p.add_180_deg_to_sample.return_value = _180_dataset
-        self.v.create_new_stack = mock.MagicMock()
+        self.v.create_new_stack = mock.MagicMock()  # type: ignore
         selected_filename = "selected_file.tif"
         self.p.create_stack_name = mock.MagicMock(return_value=selected_filename)
 
