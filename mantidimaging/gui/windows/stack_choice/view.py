@@ -182,6 +182,12 @@ class StackChoiceView(BaseMainWindowView):
         self.original_stack.ui.histogram.sigLevelsChanged.connect(self._set_from_old_to_new)
         self.new_stack.ui.histogram.sigLevelsChanged.connect(self._set_from_new_to_old)
 
+        self.original_stack.ui.histogram.vb.linkView(ViewBox.YAxis, self.new_stack.ui.histogram.vb)
+        self.original_stack.ui.histogram.vb.linkView(ViewBox.XAxis, self.new_stack.ui.histogram.vb)
+
     def disconnect_histogram_changes(self):
         self.original_stack.ui.histogram.sigLevelsChanged.disconnect(self._set_from_old_to_new)
         self.new_stack.ui.histogram.sigLevelsChanged.disconnect(self._set_from_new_to_old)
+
+        self.original_stack.ui.histogram.vb.linkView(ViewBox.YAxis, None)
+        self.original_stack.ui.histogram.vb.linkView(ViewBox.XAxis, None)
