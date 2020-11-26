@@ -38,7 +38,7 @@ class MainWindowViewTest(unittest.TestCase):
         stack_selector_diag.assert_called_once_with(main_window=self.v,
                                                     title='Stack Selector',
                                                     message='Which stack is the 180 degree projection being loaded '
-                                                            'for?')
+                                                    'for?')
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
