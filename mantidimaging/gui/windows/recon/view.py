@@ -232,7 +232,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.setEnabled(not empty)
         self.clearAllBtn.setEnabled(not empty)
 
-    def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
+    def add_cor_table_row(self, row: int, slice_index: int, cor: float):
         """
         Adds a row to the manual COR table with a specified slice index.
         """

@@ -187,3 +187,9 @@ class MainWindowPresenter(BasePresenter):
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_images_in_stack(uuid, images)
+
+    def add_180_deg_to_sample(self, stack_name: str, _180_deg_file: str):
+        return self.model.add_180_deg_to_stack(stack_name, _180_deg_file)
+
+    def create_stack_name(self, filename: str):
+        return self.model.create_name(os.path.basename(filename))
