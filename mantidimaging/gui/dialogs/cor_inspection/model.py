@@ -1,6 +1,6 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+from dataclasses import replace
 from logging import getLogger
 
 from mantidimaging.core.data import Images
@@ -12,45 +12,77 @@ LOG = getLogger(__name__)
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, images: Images, slice_idx: int, initial_cor: ScalarCoR, recon_params: ReconstructionParameters):
+    def __init__(self, images: Images, slice_idx: int, initial_cor: ScalarCoR, recon_params: ReconstructionParameters,
+                 iters_mode: bool):
         self.image_width = images.width
         self.sino = images.sino(slice_idx)
 
         # Initial parameters
-        self.centre_cor = initial_cor.value
-        self.cor_step = self.image_width * 0.05
+        if iters_mode:
+            self.centre_value = 100
+            self.step = 50
+            self.initial_cor = initial_cor
+            self._recon_preview = self._recon_iters_preview
+            self._divide_step = self._divide_iters_step
+        else:
+            self.centre_value = initial_cor.value
+            self.step = self.image_width * 0.05
+            self._recon_preview = self._recon_cor_preview
+            self._divide_step = self._divide_cor_step
 
         # Cache projection angles
         self.proj_angles = images.projection_angles(recon_params.max_projection_angle)
         self.recon_params = recon_params
         self.reconstructor = get_reconstructor_for(recon_params.algorithm)
 
-    def adjust_cor(self, image):
+    def _divide_iters_step(self):
+        self.step = self.step // 2
+
+    def _divide_cor_step(self):
+        self.step /= 2
+
+    def adjust(self, image):
         """
-        Adjusts the rotation centre and step after an image is selected as the
+        Adjusts the rotation centre/number of iterations and step after an image is selected as the
         optimal of an iteration.
         """
         if image == ImageType.LESS:
-            self.centre_cor -= self.cor_step
+            self.centre_value -= self.step
         elif image == ImageType.MORE:
-            self.centre_cor += self.cor_step
+            self.centre_value += self.step
         elif image == ImageType.CURRENT:
-            self.cor_step /= 2
+            self._divide_step()
 
     def cor(self, image):
         """
         Gets the rotation centre for a given image in the current iteration.
         """
         if image == ImageType.LESS:
-            return max(self.cor_extents[0], self.centre_cor - self.cor_step)
+            return max(self.cor_extents[0], self.centre_value - self.step)
         elif image == ImageType.CURRENT:
-            return self.centre_cor
+            return self.centre_value
         elif image == ImageType.MORE:
-            return min(self.cor_extents[1], self.centre_cor + self.cor_step)
+            return min(self.cor_extents[1], self.centre_value + self.step)
 
-    def recon_preview(self, image):
+    def iterations(self, image) -> int:
+        if image == ImageType.LESS:
+            return max(1, self.centre_value - self.step)
+        elif image == ImageType.CURRENT:
+            return self.centre_value
+        elif image == ImageType.MORE:
+            return self.centre_value + self.step
+
+    def _recon_cor_preview(self, image):
         cor = ScalarCoR(self.cor(image))
         return self.reconstructor.single_sino(self.sino, cor, self.proj_angles, self.recon_params)
+
+    def _recon_iters_preview(self, image):
+        iters = self.iterations(image)
+        new_params = replace(self.recon_params, num_iter=iters)
+        return self.reconstructor.single_sino(self.sino, self.initial_cor, self.proj_angles, new_params)
+
+    def recon_preview(self, image):
+        return self._recon_preview(image)
 
     @property
     def cor_extents(self):
