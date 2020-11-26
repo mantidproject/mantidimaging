@@ -27,7 +27,7 @@ class CORInspectionDialogView(BaseDialogView):
     def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
-        self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params)
+        self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params, iters_mode)
 
         self.stepCOR.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
         self.stepIterations.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
