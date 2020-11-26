@@ -7,6 +7,7 @@ from typing import Optional, TYPE_CHECKING, Union
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton, QSizePolicy
+import numpy as np
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.images import Images
@@ -78,13 +79,13 @@ class StackChoiceView(BaseMainWindowView):
         self.roi_shown = False
 
     def _ensure_range_is_the_same(self):
-        new_range = self.new_stack.ui.histogram.vb.viewRange()
-        original_range = self.original_stack.ui.histogram.vb.viewRange()
+        new_range = self.new_stack.ui.histogram.getLevels()
+        original_range = self.original_stack.ui.histogram.getLevels()
 
-        new_max_y = max(new_range[0][1], new_range[1][1])
-        new_min_y = min(new_range[0][1], new_range[1][1])
-        original_max_y = max(original_range[0][1], original_range[1][1])
-        original_min_y = min(original_range[0][1], original_range[1][1])
+        new_max_y = max(new_range[0], new_range[1])
+        new_min_y = min(new_range[0], new_range[1])
+        original_max_y = max(original_range[0], original_range[1])
+        original_min_y = min(original_range[0], original_range[1])
         y_range_min = min(new_min_y, original_min_y)
         y_range_max = max(new_max_y, original_max_y)
 
@@ -105,7 +106,7 @@ class StackChoiceView(BaseMainWindowView):
             self.original_stack.roiClicked()
             self.new_stack.roiClicked()
 
-    def _setup_stack_for_view(self, stack, data):
+    def _setup_stack_for_view(self, stack: MIImageView, data: np.ndarray):
         stack.setContentsMargins(4, 4, 4, 4)
         stack.setImage(data)
         stack.ui.menuBtn.hide()
