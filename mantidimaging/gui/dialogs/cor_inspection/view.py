@@ -4,7 +4,7 @@
 from typing import List
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
+from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
@@ -26,7 +26,7 @@ class CORInspectionDialogView(BaseDialogView):
 
 
     def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
-                 recon_params: ReconstructionParameters, stack_index: int):
+                 recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
         self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params)
 
@@ -39,8 +39,8 @@ class CORInspectionDialogView(BaseDialogView):
 
         self.finishButton.clicked.connect(self.accept)
 
-        self.stepStackedWidget.setCurrentIndex(stack_index)
-        self.instructionStackedWidget.setCurrentIndex(stack_index)
+        self.stepStackedWidget.setCurrentIndex(int(iters_mode))
+        self.instructionStackedWidget.setCurrentIndex(int(iters_mode))
 
         self.image_canvas = CompareSlicesView(self)
         self.imagePlotLayout.addWidget(self.image_canvas)
@@ -55,20 +55,30 @@ class CORInspectionDialogView(BaseDialogView):
         """
         Set the maximum valid rotation centre.
         """
-        self.step.setMaximum(cor)
+        self.stepCOR.setMaximum(cor)
 
     @property
     def step_size(self):
-        return self.step.value()
+        if self.stepCOR.isVisible():
+            return self.stepCOR.value()
+        return self.stepIterations.value()
 
     @step_size.setter
     def step_size(self, value):
-        with BlockQtSignals([self.step]):
-            self.step.setValue(value)
+        if self.stepCOR.isVisible():
+            with BlockQtSignals([self.stepCOR]):
+                self.stepCOR.setValue(value)
+        else:
+            with BlockQtSignals([self.stepIterations]):
+                self.stepIterations.setValue(value)
 
     @property
     def optimal_rotation_centre(self) -> ScalarCoR:
         return self.presenter.optimal_rotation_centre
+
+    @property
+    def optimal_iterations(self) -> int:
+        return self.presenter.optimal_iterations
 
     def mark_best_recon(self, diffs):
         best = diffs.index(max(diffs))

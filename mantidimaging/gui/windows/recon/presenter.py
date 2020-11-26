@@ -40,6 +40,7 @@ class Notifications(Enum):
     UPDATE_PROJECTION = auto()
     ADD_COR = auto()
     REFINE_COR = auto()
+    REFINE_ITERS = auto()
     AUTO_FIND_COR_CORRELATE = auto()
     AUTO_FIND_COR_MINIMISE = auto()
 
@@ -85,6 +86,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_add_cor()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
+            elif notification == Notifications.REFINE_ITERS:
+                self._do_refine_iterations()
             elif notification == Notifications.AUTO_FIND_COR_CORRELATE:
                 self._auto_find_correlation()
             elif notification == Notifications.AUTO_FIND_COR_MINIMISE:
@@ -218,7 +221,7 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
-                                         self.view.recon_params(), 0)
+                                         self.view.recon_params(), False)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -229,6 +232,19 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
             self.do_preview_reconstruct_slice(new_cor, slice_idx)
+
+    def _do_refine_iterations(self):
+        slice_idx = self.model.preview_slice_idx
+
+        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor, self.view.recon_params(), True)
+
+        res = dialog.exec()
+        LOG.debug('COR refine iteration result: {}'.format(res))
+        if res == CORInspectionDialogView.Accepted:
+            new_iters = dialog.optimal_iterations
+            LOG.debug('New optimal iterations: {}'.format(new_iters))
+            self.model.data_model.set_iterations_at_slice(slice_idx, new_iters)
+            # self.do_preview_reconstruct_slice()
 
     def do_cor_fit(self):
         self.model.do_fit()
