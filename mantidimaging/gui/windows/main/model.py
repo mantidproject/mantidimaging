@@ -8,7 +8,6 @@ from logging import getLogger
 from typing import Dict, List, Optional, Any
 
 from PyQt5.QtWidgets import QDockWidget
-from mantidimaging.core.io.loader.img_loader import ImageLoader
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset

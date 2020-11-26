@@ -147,7 +147,7 @@ class MainWindowView(BaseMainWindowView):
         stack_to_add_180_deg_to = stack_selector.selected_stack
 
         # Open file dialog
-        file_filter = f"Image File (*.tif *.tiff)"
+        file_filter = "Image File (*.tif *.tiff)"
         selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="180 Degree Image",
                                                           filter=f"{file_filter};;All (*.*)",
                                                           initialFilter=file_filter)
