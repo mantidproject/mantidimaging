@@ -18,6 +18,17 @@
     <item>
      <layout class="QHBoxLayout" name="topHorizontalLayout">
       <item>
+       <layout class="QVBoxLayout" name="topVerticalOriginal">
+        <item>
+         <widget class="QLabel" name="originalStackLabel">
+          <property name="text">
+           <string>Original Stack</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="Line" name="line">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
@@ -29,6 +40,17 @@
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="topVerticalNew">
+        <item>
+         <widget class="QLabel" name="newStackLabel">
+          <property name="text">
+           <string>New Stack</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
