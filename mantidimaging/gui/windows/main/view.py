@@ -29,6 +29,10 @@ LOG = getLogger(__file__)
 
 
 class MainWindowView(BaseMainWindowView):
+    AVAILABLE_MSG = "Savu Backend not available"
+    NOT_THE_LATEST_VERSION = "This is not the latest version"
+    UNCAUGHT_EXCEPTION = "Uncaught exception"
+
     active_stacks_changed = Qt.pyqtSignal()
     backend_message = Qt.pyqtSignal(bytes)
 
@@ -191,7 +195,7 @@ class MainWindowView(BaseMainWindowView):
                 self.savu_filters = SavuFiltersWindowView(self)
                 self.savu_filters.show()
             except RuntimeError as e:
-                QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
+                QtWidgets.QMessageBox.warning(self, self.AVAILABLE_MSG, str(e))
         else:
             self.savu_filters.activateWindow()
             self.savu_filters.raise_()
@@ -241,10 +245,6 @@ class MainWindowView(BaseMainWindowView):
         # we can get the stack visualiser widget with dock_widget.widget
         dock.setWidget(StackVisualiserView(self, dock, stack))
 
-        # proof of concept above
-        assert isinstance(dock.widget(),
-                          StackVisualiserView), "Widget inside dock_widget is not an StackVisualiserView!"
-
         dock.setFloating(floating)
 
         return dock
@@ -284,10 +284,10 @@ class MainWindowView(BaseMainWindowView):
             event.ignore()
 
     def not_latest_version_warning(self, msg: str):
-        QtWidgets.QMessageBox.warning(self, "This is not the latest version", msg)
+        QtWidgets.QMessageBox.warning(self, self.NOT_THE_LATEST_VERSION, msg)
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
-        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}")
+        QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)
 
     def attach_debugger(self):
