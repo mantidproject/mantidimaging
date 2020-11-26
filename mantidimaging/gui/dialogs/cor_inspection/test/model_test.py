@@ -22,13 +22,13 @@ class CORInspectionDialogModelTest(unittest.TestCase):
     def test_start_cor_step(self):
         images = generate_images()
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
-        self.assertEqual(images.width * 0.05, m.cor_step)
+        self.assertEqual(images.width * 0.05, m.step)
 
     def test_current_cor(self):
         images = generate_images()
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
-        m.centre_cor = 5
-        m.cor_step = 1
+        m.centre_value = 5
+        m.step = 1
         self.assertEqual(m.cor(ImageType.LESS), 4)
         self.assertEqual(m.cor(ImageType.CURRENT), 5)
         self.assertEqual(m.cor(ImageType.MORE), 6)
@@ -36,25 +36,25 @@ class CORInspectionDialogModelTest(unittest.TestCase):
     def test_adjust_cor(self):
         images = generate_images()
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
-        m.centre_cor = 5
-        m.cor_step = 1
+        m.centre_value = 5
+        m.step = 1
 
-        m.adjust_cor(ImageType.CURRENT)
-        self.assertEqual(m.centre_cor, 5)
-        self.assertEqual(m.cor_step, 0.5)
+        m.adjust(ImageType.CURRENT)
+        self.assertEqual(m.centre_value, 5)
+        self.assertEqual(m.step, 0.5)
 
-        m.adjust_cor(ImageType.LESS)
-        self.assertEqual(m.centre_cor, 4.5)
-        self.assertEqual(m.cor_step, 0.5)
+        m.adjust(ImageType.LESS)
+        self.assertEqual(m.centre_value, 4.5)
+        self.assertEqual(m.step, 0.5)
 
-        m.adjust_cor(ImageType.CURRENT)
-        self.assertEqual(m.centre_cor, 4.5)
-        self.assertEqual(m.cor_step, 0.25)
+        m.adjust(ImageType.CURRENT)
+        self.assertEqual(m.centre_value, 4.5)
+        self.assertEqual(m.step, 0.25)
 
-        m.adjust_cor(ImageType.MORE)
-        self.assertEqual(m.centre_cor, 4.75)
-        self.assertEqual(m.cor_step, 0.25)
+        m.adjust(ImageType.MORE)
+        self.assertEqual(m.centre_value, 4.75)
+        self.assertEqual(m.step, 0.25)
 
-        m.adjust_cor(ImageType.CURRENT)
-        self.assertEqual(m.centre_cor, 4.75)
-        self.assertEqual(m.cor_step, 0.125)
+        m.adjust(ImageType.CURRENT)
+        self.assertEqual(m.centre_value, 4.75)
+        self.assertEqual(m.step, 0.125)
