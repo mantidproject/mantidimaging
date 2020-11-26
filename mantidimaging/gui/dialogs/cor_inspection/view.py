@@ -19,19 +19,28 @@ class CORInspectionDialogView(BaseDialogView):
     lessButton: QPushButton
     currentButton: QPushButton
     moreButton: QPushButton
-    step: QDoubleSpinBox
+    stepCOR: QDoubleSpinBox
+    stepIterations: QSpinBox
+    stepStackedWidget: QStackedWidget
+    instructionStackedWidget: QStackedWidget
+
 
     def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
-                 recon_params: ReconstructionParameters):
+                 recon_params: ReconstructionParameters, stack_index: int):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
         self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params)
 
-        self.step.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+        self.stepCOR.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+        self.stepIterations.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+
         self.lessButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.LESS))
         self.currentButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.CURRENT))
         self.moreButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.MORE))
 
         self.finishButton.clicked.connect(self.accept)
+
+        self.stepStackedWidget.setCurrentIndex(stack_index)
+        self.instructionStackedWidget.setCurrentIndex(stack_index)
 
         self.image_canvas = CompareSlicesView(self)
         self.imagePlotLayout.addWidget(self.image_canvas)

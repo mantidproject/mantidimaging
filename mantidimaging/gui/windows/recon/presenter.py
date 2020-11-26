@@ -218,7 +218,7 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
-                                         self.view.recon_params())
+                                         self.view.recon_params(), 0)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
