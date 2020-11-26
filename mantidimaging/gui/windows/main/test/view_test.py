@@ -3,8 +3,8 @@
 import unittest
 import mock
 
-from mock import DEFAULT, Mock
 from PyQt5.QtWidgets import QDialog
+from mock import DEFAULT, MagicMock, Mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
@@ -49,18 +49,21 @@ class MainWindowViewTest(unittest.TestCase):
         self.presenter.create_stack_name.assert_called_once_with(selected_file)
         self.view.create_new_stack.assert_called_once_with(_180_dataset, selected_filename)
         self.view = MainWindowView()
+        self.presenter = MagicMock()
+        self.view.presenter = self.presenter
+
+    def tearDown(self) -> None:
+        self.presenter.reset_mock()
 
     def test_execute_save(self):
-        self.view.presenter.notify = mock.Mock()
         self.view.execute_save()
 
-        self.view.presenter.notify.assert_called_once_with(PresNotification.SAVE)
+        self.presenter.notify.assert_called_once_with(PresNotification.SAVE)
 
     def test_execute_load(self):
-        self.view.presenter.notify = mock.Mock()
         self.view.execute_load()
 
-        self.view.presenter.notify.assert_called_once_with(PresNotification.LOAD)
+        self.presenter.notify.assert_called_once_with(PresNotification.LOAD)
 
     @mock.patch("mantidimaging.gui.windows.main.view.MWLoadDialog")
     def test_show_load_dialogue(self, mock_load: mock.Mock):
@@ -119,35 +122,31 @@ class MainWindowViewTest(unittest.TestCase):
         mock_savu_filters.assert_called_once_with(self.view)
         mock_widgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.AVAILABLE_MSG, "Test message")
 
-    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
-    def test_create_new_stack(self, presenter: Mock):
+    def test_create_new_stack(self):
         images = generate_images()
         self.view.create_new_stack(images, "Test Title")
 
-        presenter.create_new_stack.assert_called_once_with(images, "Test Title")
+        self.presenter.create_new_stack.assert_called_once_with(images, "Test Title")
 
-    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
-    def test_update_stack_with_images(self, presenter: Mock):
+    def test_update_stack_with_images(self):
         images = generate_images()
         self.view.update_stack_with_images(images)
 
-        presenter.update_stack_with_images.assert_called_once_with(images)
+        self.presenter.update_stack_with_images.assert_called_once_with(images)
 
-    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
-    def test_remove_stack(self, presenter: Mock):
+    def test_remove_stack(self):
         fake_stack_vis = mock.Mock()
         fake_stack_vis.uuid = "test-uuid"
         self.view.remove_stack(fake_stack_vis)
 
-        presenter.notify.assert_called_once_with(PresNotification.REMOVE_STACK, uuid="test-uuid")
+        self.presenter.notify.assert_called_once_with(PresNotification.REMOVE_STACK, uuid="test-uuid")
 
-    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
-    def test_rename_stack(self, presenter: Mock):
+    def test_rename_stack(self):
         self.view.rename_stack("apples", "oranges")
 
-        presenter.notify.assert_called_once_with(PresNotification.RENAME_STACK,
-                                                 current_name="apples",
-                                                 new_name="oranges")
+        self.presenter.notify.assert_called_once_with(PresNotification.RENAME_STACK,
+                                                      current_name="apples",
+                                                      new_name="oranges")
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     def test_not_latest_version_warning(self, mock_qtwidgets):
