@@ -5,7 +5,7 @@ import unittest
 import mock
 
 from PyQt5.QtWidgets import QDialog
-from mock import DEFAULT, MagicMock, Mock
+from mock import DEFAULT, Mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
