@@ -236,7 +236,8 @@ class ReconstructWindowPresenter(BasePresenter):
     def _do_refine_iterations(self):
         slice_idx = self.model.preview_slice_idx
 
-        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor, self.view.recon_params(), True)
+        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
+                                         self.view.recon_params(), True)
 
         res = dialog.exec()
         LOG.debug('COR refine iteration result: {}'.format(res))

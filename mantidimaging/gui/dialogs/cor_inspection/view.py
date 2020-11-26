@@ -24,7 +24,6 @@ class CORInspectionDialogView(BaseDialogView):
     stepStackedWidget: QStackedWidget
     instructionStackedWidget: QStackedWidget
 
-
     def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
