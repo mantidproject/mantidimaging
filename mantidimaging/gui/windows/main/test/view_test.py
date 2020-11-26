@@ -22,6 +22,11 @@ class MainWindowViewTest(unittest.TestCase):
             self.view.presenter = self.presenter
             self.check_version_and_label = check_version_and_label
 
+    def test_execute_save(self):
+        self.view.execute_save()
+
+        self.presenter.notify.assert_called_once_with(PresNotification.SAVE)
+
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.Qt.QFileDialog.getOpenFileName")
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_diag: mock.Mock):
@@ -49,17 +54,6 @@ class MainWindowViewTest(unittest.TestCase):
                                                                      _180_deg_file=selected_file)
         self.presenter.create_stack_name.assert_called_once_with(selected_file)
         self.view.create_new_stack.assert_called_once_with(_180_dataset, selected_filename)
-        self.view = MainWindowView()
-        self.presenter = MagicMock()
-        self.view.presenter = self.presenter
-
-    def tearDown(self) -> None:
-        self.presenter.reset_mock()
-
-    def test_execute_save(self):
-        self.view.execute_save()
-
-        self.presenter.notify.assert_called_once_with(PresNotification.SAVE)
 
     def test_execute_load(self):
         self.view.execute_load()
