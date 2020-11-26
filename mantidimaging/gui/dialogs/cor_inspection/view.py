@@ -47,6 +47,8 @@ class CORInspectionDialogView(BaseDialogView):
         self.presenter.do_refresh()
         self.image_canvas.current_hist.imageChanged(autoLevel=True, autoRange=True)
 
+        self.iters_mode = iters_mode
+
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
         self.image_canvas.set_image(image_type, recon_data, title)
 
@@ -58,18 +60,17 @@ class CORInspectionDialogView(BaseDialogView):
 
     @property
     def step_size(self):
-        if self.stepCOR.isVisible():
-            return self.stepCOR.value()
-        return self.stepIterations.value()
+        if self.iters_mode:
+            return self.stepIterations.value()
+        return self.stepCOR.value()
 
     @step_size.setter
     def step_size(self, value):
-        if self.stepCOR.isVisible():
-            with BlockQtSignals([self.stepCOR]):
-                self.stepCOR.setValue(value)
-        else:
+        if self.iters_mode:
             with BlockQtSignals([self.stepIterations]):
                 self.stepIterations.setValue(value)
+        with BlockQtSignals([self.stepCOR]):
+            self.stepCOR.setValue(value)
 
     @property
     def optimal_rotation_centre(self) -> ScalarCoR:
