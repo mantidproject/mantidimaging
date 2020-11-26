@@ -29,6 +29,7 @@ LOG = getLogger(__file__)
 
 
 class MainWindowView(BaseMainWindowView):
+    AVAILABLE_MSG = "Savu Backend not available"
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
@@ -194,7 +195,7 @@ class MainWindowView(BaseMainWindowView):
                 self.savu_filters = SavuFiltersWindowView(self)
                 self.savu_filters.show()
             except RuntimeError as e:
-                QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
+                QtWidgets.QMessageBox.warning(self, self.AVAILABLE_MSG, str(e))
         else:
             self.savu_filters.activateWindow()
             self.savu_filters.raise_()
