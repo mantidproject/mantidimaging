@@ -251,5 +251,6 @@ class MainWindowModelTest(unittest.TestCase):
         stack_mock.assert_called_with(stack_name)
         self.assertEqual(_180_stack, stack_mock.return_value.widget.return_value.presenter.images.proj180deg)
 
+
 if __name__ == '__main__':
     unittest.main()
