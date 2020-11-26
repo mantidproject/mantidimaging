@@ -111,10 +111,10 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.assertTrue(self.p.done)
 
     def test_do_toggle_lock_histograms(self):
-        self.v.lockHistogramsButton.isChecked.return_value = True
+        self.v.lockHistograms.isChecked.return_value = True
         self.p.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
         self.v.connect_histogram_changes.assert_called_once()
 
-        self.v.lockHistogramsButton.isChecked.return_value = False
+        self.v.lockHistograms.isChecked.return_value = False
         self.p.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
         self.v.disconnect_histogram_changes.assert_called_once()

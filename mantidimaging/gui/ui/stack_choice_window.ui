@@ -55,7 +55,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="lockHistogramsButton">
+       <widget class="QCheckBox" name="lockHistograms">
         <property name="toolTip">
          <string>If activated - the histograms will share the value ranges for the contrast. If inactive they will be separate.</string>
         </property>

@@ -37,11 +37,11 @@ class StackChoicePresenterTest(unittest.TestCase):
     def test_do_toggle_lock_histograms(self, view_class_mock):
         view_instance = view_class_mock.return_value
 
-        view_instance.lockHistogramsButton.isChecked.return_value = True
+        view_instance.lockHistograms.isChecked.return_value = True
         self.presenter = StackComparePresenter(stack_one=self.stack_one, stack_two=self.stack_two, parent=self.parent)
         self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
         view_instance.connect_histogram_changes.assert_called_once()
 
-        view_instance.lockHistogramsButton.isChecked.return_value = False
+        view_instance.lockHistograms.isChecked.return_value = False
         self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
         view_instance.disconnect_histogram_changes.assert_called_once()

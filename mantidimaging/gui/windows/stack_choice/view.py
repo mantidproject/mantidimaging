@@ -4,10 +4,10 @@
 from enum import Enum, auto
 from typing import TYPE_CHECKING, Optional, Tuple, Union
 
+import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton, QSizePolicy
-import numpy as np
+from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.images import Images
@@ -28,7 +28,7 @@ class Notification(Enum):
 class StackChoiceView(BaseMainWindowView):
     originalDataButton: QPushButton
     newDataButton: QPushButton
-    lockHistogramsButton: QPushButton
+    lockHistograms: QCheckBox
 
     def __init__(self, original_stack: Images, new_stack: Images,
                  presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: Optional[QMainWindow]):
@@ -67,8 +67,8 @@ class StackChoiceView(BaseMainWindowView):
         self.originalDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_ORIGINAL))
         self.newDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_NEW_DATA))
 
-        # Hooks the lock histograms button
-        self.lockHistogramsButton.clicked.connect(lambda: self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS))
+        # Hooks the lock histograms checkbox
+        self.lockHistograms.clicked.connect(lambda: self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS))
 
         # Hook ROI button into both stacks
         self.roiButton.clicked.connect(self._toggle_roi)

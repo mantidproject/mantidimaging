@@ -18,7 +18,7 @@ class StackChoicePresenterMixin(BasePresenter):
     def do_toggle_lock_histograms(self):
         # The state of the button changes before this signal is triggered
         # so on first click you get isChecked = True
-        histograms_should_lock = self.view.lockHistogramsButton.isChecked()
+        histograms_should_lock = self.view.lockHistograms.isChecked()
 
         if histograms_should_lock:
             self.view.connect_histogram_changes()
