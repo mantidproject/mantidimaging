@@ -1,8 +1,9 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
-from unittest import mock
+import mock
 
+from mock import DEFAULT, Mock
 from PyQt5.QtWidgets import QDialog
 
 from mantidimaging.gui.windows.main import MainWindowView
@@ -47,140 +48,126 @@ class MainWindowViewTest(unittest.TestCase):
                                                                      _180_deg_file=selected_file)
         self.presenter.create_stack_name.assert_called_once_with(selected_file)
         self.view.create_new_stack.assert_called_once_with(_180_dataset, selected_filename)
+        self.view = MainWindowView()
 
     def test_execute_save(self):
-        view = MainWindowView()
-        view.presenter.notify = mock.Mock()
-        view.execute_save()
+        self.view.presenter.notify = mock.Mock()
+        self.view.execute_save()
 
-        view.presenter.notify.assert_called_once_with(PresNotification.SAVE)
+        self.view.presenter.notify.assert_called_once_with(PresNotification.SAVE)
 
     def test_execute_load(self):
-        view = MainWindowView()
-        view.presenter.notify = mock.Mock()
-        view.execute_load()
+        self.view.presenter.notify = mock.Mock()
+        self.view.execute_load()
 
-        view.presenter.notify.assert_called_once_with(PresNotification.LOAD)
+        self.view.presenter.notify.assert_called_once_with(PresNotification.LOAD)
 
     @mock.patch("mantidimaging.gui.windows.main.view.MWLoadDialog")
     def test_show_load_dialogue(self, mock_load: mock.Mock):
-        view = MainWindowView()
-        view.show_load_dialogue()
+        self.view.show_load_dialogue()
 
-        mock_load.assert_called_once_with(view)
+        mock_load.assert_called_once_with(self.view)
         mock_load.return_value.show.assert_called_once_with()
 
     @mock.patch("mantidimaging.gui.windows.main.view.ReconstructWindowView")
     def test_show_recon_window(self, mock_recon: mock.Mock):
-        view = MainWindowView()
-        view.show_recon_window()
+        self.view.show_recon_window()
 
-        mock_recon.assert_called_once_with(view)
+        mock_recon.assert_called_once_with(self.view)
         mock_recon.return_value.show.assert_called_once_with()
         mock_recon.return_value.activateWindow.assert_not_called()
         mock_recon.return_value.raise_.assert_not_called()
 
-        view.show_recon_window()
-        mock_recon.assert_called_once_with(view)
+        self.view.show_recon_window()
+        mock_recon.assert_called_once_with(self.view)
         mock_recon.return_value.activateWindow.assert_called_once_with()
         mock_recon.return_value.raise_.assert_called_once_with()
 
     @mock.patch("mantidimaging.gui.windows.main.view.FiltersWindowView")
     def test_show_filters_window(self, mock_filters: mock.Mock):
-        view = MainWindowView()
-        view.show_filters_window()
+        self.view.show_filters_window()
 
-        mock_filters.assert_called_once_with(view)
+        mock_filters.assert_called_once_with(self.view)
         mock_filters.return_value.show.assert_called_once_with()
         mock_filters.return_value.activateWindow.assert_not_called()
         mock_filters.return_value.raise_.assert_not_called()
 
-        view.show_filters_window()
-        mock_filters.assert_called_once_with(view)
+        self.view.show_filters_window()
+        mock_filters.assert_called_once_with(self.view)
         mock_filters.return_value.activateWindow.assert_called_once_with()
         mock_filters.return_value.raise_.assert_called_once_with()
 
     @mock.patch("mantidimaging.gui.windows.main.view.SavuFiltersWindowView")
     def test_show_savu_filters_window(self, mock_savu_filters: mock.Mock):
-        view = MainWindowView()
-        view.show_savu_filters_window()
+        self.view.show_savu_filters_window()
 
-        mock_savu_filters.assert_called_once_with(view)
+        mock_savu_filters.assert_called_once_with(self.view)
         mock_savu_filters.return_value.show.assert_called_once_with()
         mock_savu_filters.return_value.activateWindow.assert_not_called()
         mock_savu_filters.return_value.raise_.assert_not_called()
 
-        view.show_savu_filters_window()
-        mock_savu_filters.assert_called_once_with(view)
+        self.view.show_savu_filters_window()
+        mock_savu_filters.assert_called_once_with(self.view)
         mock_savu_filters.return_value.activateWindow.assert_called_once_with()
         mock_savu_filters.return_value.raise_.assert_called_once_with()
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     @mock.patch("mantidimaging.gui.windows.main.view.SavuFiltersWindowView", side_effect=RuntimeError("Test message"))
     def test_show_savu_filters_window_no_backend(self, mock_savu_filters: mock.Mock, mock_widgets: mock.Mock):
-        view = MainWindowView()
-        view.show_savu_filters_window()
+        self.view.show_savu_filters_window()
 
-        mock_savu_filters.assert_called_once_with(view)
-        mock_widgets.QMessageBox.warning.assert_called_once_with(view, view.AVAILABLE_MSG, "Test message")
+        mock_savu_filters.assert_called_once_with(self.view)
+        mock_widgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.AVAILABLE_MSG, "Test message")
 
-    def test_create_new_stack(self):
-        view = MainWindowView()
-        view.presenter = mock.Mock()
-
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
+    def test_create_new_stack(self, presenter: Mock):
         images = generate_images()
-        view.create_new_stack(images, "Test Title")
+        self.view.create_new_stack(images, "Test Title")
 
-        view.presenter.create_new_stack.assert_called_once_with(images, "Test Title")
+        presenter.create_new_stack.assert_called_once_with(images, "Test Title")
 
-    def test_update_stack_with_images(self):
-        view = MainWindowView()
-        view.presenter = mock.Mock()
-
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
+    def test_update_stack_with_images(self, presenter: Mock):
         images = generate_images()
-        view.update_stack_with_images(images)
+        self.view.update_stack_with_images(images)
 
-        view.presenter.update_stack_with_images.assert_called_once_with(images)
+        presenter.update_stack_with_images.assert_called_once_with(images)
 
-    def test_remove_stack(self):
-        view = MainWindowView()
-        view.presenter = mock.Mock()
-
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
+    def test_remove_stack(self, presenter: Mock):
         fake_stack_vis = mock.Mock()
         fake_stack_vis.uuid = "test-uuid"
-        view.remove_stack(fake_stack_vis)
+        self.view.remove_stack(fake_stack_vis)
 
-        view.presenter.notify.assert_called_once_with(PresNotification.REMOVE_STACK, uuid="test-uuid")
+        presenter.notify.assert_called_once_with(PresNotification.REMOVE_STACK, uuid="test-uuid")
 
-    def test_rename_stack(self):
-        view = MainWindowView()
-        view.presenter.notify = mock.Mock()
-        view.rename_stack("apples", "oranges")
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.presenter")
+    def test_rename_stack(self, presenter: Mock):
+        self.view.rename_stack("apples", "oranges")
 
-        view.presenter.notify.assert_called_once_with(PresNotification.RENAME_STACK,
-                                                      current_name="apples",
-                                                      new_name="oranges")
+        presenter.notify.assert_called_once_with(PresNotification.RENAME_STACK,
+                                                 current_name="apples",
+                                                 new_name="oranges")
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     def test_not_latest_version_warning(self, mock_qtwidgets):
-        view = MainWindowView()
-        view.not_latest_version_warning("test-message")
+        self.view.not_latest_version_warning("test-message")
 
-        mock_qtwidgets.QMessageBox.warning.assert_called_once_with(view, view.NOT_THE_LATEST_VERSION, "test-message")
+        mock_qtwidgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.NOT_THE_LATEST_VERSION,
+                                                                   "test-message")
 
     @mock.patch("mantidimaging.gui.windows.main.view.getLogger")
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     def test_uncaught_exception(self, mock_qtwidgets, mock_getlogger):
-        view = MainWindowView()
-        view.uncaught_exception("user-error", "log-error")
+        self.view.uncaught_exception("user-error", "log-error")
 
-        mock_qtwidgets.QMessageBox.critical.assert_called_once_with(view, view.UNCAUGHT_EXCEPTION, "user-error")
+        mock_qtwidgets.QMessageBox.critical.assert_called_once_with(self.view, self.view.UNCAUGHT_EXCEPTION,
+                                                                    "user-error")
         mock_getlogger.return_value.error.assert_called_once_with("log-error")
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     def test_show_about(self, mock_qtwidgets: mock.Mock):
-        view = MainWindowView()
-        view.show_about()
+        self.view.show_about()
 
         mock_qtwidgets.QMessageBox.assert_called_once()
         mock_qtwidgets.QMessageBox.return_value.setWindowTitle.assert_called_once()
@@ -190,29 +177,31 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtGui")
     def test_open_online_documentation(self, mock_qtgui: mock.Mock):
-        view = MainWindowView()
-        view.open_online_documentation()
+        self.view.open_online_documentation()
         mock_qtgui.QDesktopServices.openUrl.assert_called_once()
 
+    @mock.patch.multiple("mantidimaging.gui.windows.main.view.MainWindowView",
+                         setCentralWidget=DEFAULT,
+                         addDockWidget=DEFAULT)
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
     @mock.patch("mantidimaging.gui.windows.main.view.Qt")
-    def test_create_stack_window(self, mock_qt: mock.Mock, mock_sv: mock.Mock):
-        view = MainWindowView()
-        view.setCentralWidget = mock.Mock()
-        view.addDockWidget = mock.Mock()
-
+    def test_create_stack_window(self,
+                                 mock_qt: mock.Mock,
+                                 mock_sv: mock.Mock,
+                                 setCentralWidget: Mock = Mock(),
+                                 addDockWidget: Mock = Mock()):
         images = generate_images()
         title = "test_title"
         position = "test_position"
         floating = False
 
-        view.create_stack_window(images, title, position=position, floating=floating)
+        self.view.create_stack_window(images, title, position=position, floating=floating)
 
-        mock_qt.QDockWidget.assert_called_once_with(title, view)
+        mock_qt.QDockWidget.assert_called_once_with(title, self.view)
         dock = mock_qt.QDockWidget.return_value
-        view.setCentralWidget.assert_called_once_with(dock)
-        view.addDockWidget.assert_called_once_with(position, dock)
+        setCentralWidget.assert_called_once_with(dock)
+        addDockWidget.assert_called_once_with(position, dock)
 
-        mock_sv.assert_called_once_with(view, dock, images)
+        mock_sv.assert_called_once_with(self.view, dock, images)
         dock.setWidget.assert_called_once_with(mock_sv.return_value)
         dock.setFloating.assert_called_once_with(floating)
