@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1593</width>
+    <width>1274</width>
     <height>914</height>
    </rect>
   </property>
@@ -199,7 +199,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QStackedWidget" name="instructionStackWidget">
+        <widget class="QStackedWidget" name="instructionStackedWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -207,7 +207,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="corInstructionspage">
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -220,7 +220,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the best number of iterations.&lt;br/&gt;Selecting the left or right image centres the search space on their number of iterations.&lt;br/&gt;Step size is halved by selecting the centre image.&lt;br/&gt;Once sufficient quality is reached on the centre image click &amp;quot;Finish&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the best reconstruction.&lt;br/&gt;Selecting the left or right image centres the search space on their rotation centre.&lt;br/&gt;Step size is halved by selecting the centre image.&lt;br/&gt;Once sufficient quality is reached on the centre image click &amp;quot;Finish&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -237,7 +237,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the best reconstruction.&lt;br/&gt;Selecting the left or right image centres the search space on their rotation centre.&lt;br/&gt;Step size is halved by selecting the centre image.&lt;br/&gt;Once sufficient quality is reached on the centre image click &amp;quot;Finish&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the best reconstruction.&lt;br/&gt;Selecting the left or right image centres the search space on their number of iterations.&lt;br/&gt;Step size is halved by selecting the centre image.&lt;br/&gt;Once sufficient quality is reached on the centre image click &amp;quot;Finish&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
