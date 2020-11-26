@@ -37,6 +37,7 @@ class MainWindowView(BaseMainWindowView):
     actionSavuFilters: QAction
     actionCompareImages: QAction
     actionLoadLog: QAction
+    actionLoad180deg: QAction
     actionLoad: QAction
     actionSave: QAction
     actionExit: QAction
@@ -73,6 +74,7 @@ class MainWindowView(BaseMainWindowView):
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
+        self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
@@ -134,6 +136,28 @@ class MainWindowView(BaseMainWindowView):
 
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
                                 f"{stack_to_add_log_to}.")
+
+    def load_180_deg_dialog(self):
+        stack_selector = StackSelectorDialog(main_window=self,
+                                             title="Stack Selector",
+                                             message="Which stack is the 180 degree projection being loaded for?")
+        # Was closed without accepting (e.g. via x button or ESC)
+        if QDialog.Accepted != stack_selector.exec():
+            return
+        stack_to_add_180_deg_to = stack_selector.selected_stack
+
+        # Open file dialog
+        file_filter = f"Image File (*.tif *.tiff)"
+        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="180 Degree Image",
+                                                          filter=f"{file_filter};;All (*.*)",
+                                                          initialFilter=file_filter)
+        # Cancel/Close was clicked
+        if selected_file == "":
+            return
+
+        _180_dataset = self.presenter.add_180_deg_to_sample(stack_name=stack_to_add_180_deg_to,
+                                                            _180_deg_file=selected_file)
+        self.create_new_stack(_180_dataset, self.presenter.create_stack_name(selected_file))
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)

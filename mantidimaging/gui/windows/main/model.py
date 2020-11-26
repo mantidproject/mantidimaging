@@ -8,6 +8,7 @@ from logging import getLogger
 from typing import Dict, List, Optional, Any
 
 from PyQt5.QtWidgets import QDockWidget
+from mantidimaging.core.io.loader.img_loader import ImageLoader
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -165,3 +166,9 @@ class MainWindowModel(object):
         stack = self.get_stack_by_name(stack_name).widget()  # type: ignore
         stack.presenter.images.log_file = loader.load_log(log_file)
         stack.presenter.images.log_file.raise_if_angle_missing(stack.presenter.images.filenames)
+
+    def add_180_deg_to_stack(self, stack_name, _180_deg_file):
+        stack = self.get_stack_by_name(stack_name).widget()  # type: ignore
+        _180_deg = loader.load(file_names=[_180_deg_file])
+        stack.presenter.images.proj180deg = _180_deg.sample
+        return _180_deg

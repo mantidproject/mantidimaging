@@ -36,6 +36,7 @@
     </property>
     <addaction name="actionLoad"/>
     <addaction name="actionSampleLoadLog"/>
+    <addaction name="actionLoad180deg"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
@@ -161,6 +162,11 @@
   <action name="actionSampleLoadLog">
    <property name="text">
     <string>Load log for stack...</string>
+   </property>
+  </action>
+  <action name="actionLoad180deg">
+   <property name="text">
+    <string>Load 180 deg projection...</string>
    </property>
   </action>
  </widget>
