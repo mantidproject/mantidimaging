@@ -21,7 +21,7 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.Qt.QFileDialog.getOpenFileName")
-    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock(), stack_selector_diag: mock.Mock()):
+    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_diag: mock.Mock):
         stack_selector_diag.return_value.exec.return_value = QDialog.Accepted
         selected_stack = "selected_stack"
         stack_selector_diag.return_value.selected_stack = selected_stack
