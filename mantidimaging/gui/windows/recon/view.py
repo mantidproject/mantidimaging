@@ -34,6 +34,7 @@ class ReconstructWindowView(BaseMainWindowView):
     resultTab: QWidget
     addBtn: QPushButton
     refineCorBtn: QPushButton
+    refineIterationsBtn: QPushButton
     clearAllBtn: QPushButton
     removeBtn: QPushButton
 
@@ -98,6 +99,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
         self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
         self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
+        self.refineIterationsBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_ITERS))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
         self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
@@ -122,7 +124,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
-            for button in [self.refineCorBtn, self.removeBtn]:
+            for button in [self.refineCorBtn, self.removeBtn, self.refineIterationsBtn]:
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
