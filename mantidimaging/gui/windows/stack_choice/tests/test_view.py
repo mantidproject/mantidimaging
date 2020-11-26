@@ -189,8 +189,8 @@ class StackChoiceViewTest(unittest.TestCase):
 
         self.v._ensure_range_is_the_same()
 
-        self.v.new_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
-        self.v.original_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(1, 200))
+        self.v.new_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(0, 200))
+        self.v.original_stack.ui.histogram.vb.setRange.assert_called_once_with(yRange=(0, 200))
 
     @patch.multiple('mantidimaging.gui.windows.stack_choice.view.StackChoiceView',
                     _set_from_old_to_new=DEFAULT,
