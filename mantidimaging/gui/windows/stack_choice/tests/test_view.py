@@ -197,7 +197,12 @@ class StackChoiceViewTest(unittest.TestCase):
                     _set_from_new_to_old=DEFAULT)
     def test_connect_histogram_changes(self, _set_from_old_to_new: Mock = Mock(), _set_from_new_to_old: Mock = Mock()):
         self.v.connect_histogram_changes()
+
+        # check this is called once to set the same range on the new histogram as is currently selected on the new one
+        _set_from_old_to_new.assert_called_once()
+
         expected_emit = (0, 99)
+        _set_from_old_to_new.reset_mock()
 
         self.v.original_stack.ui.histogram.sigLevelsChanged.emit(expected_emit)
         _set_from_old_to_new.assert_called_once_with(expected_emit)
