@@ -34,7 +34,7 @@ class StackChoicePresenterTest(unittest.TestCase):
         view.return_value.show.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.stack_choice.compare_presenter.StackChoiceView")
-    def test_titles_set(self, view):
+    def test_titles_set(self, view: mock.Mock):
         stack_name = "stack_name"
         custom_parent = mock.MagicMock()
         custom_parent.find_images_stack_title.return_value = stack_name
