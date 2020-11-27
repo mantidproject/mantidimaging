@@ -1,11 +1,7 @@
 AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 install-conda-env:
-	conda config --prepend channels conda-forge
-	conda config --prepend channels defaults
-	conda create -n mantidimaging -c mantid mantidimaging python=3.7
-	conda activate mantidimaging
-	pip install -U -r deps/pip-requirements.txt
+	source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
 
 install-run-requirements:
 	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging

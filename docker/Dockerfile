@@ -6,14 +6,13 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &
     rm Miniconda3-latest-Linux-x86_64.sh
 
 # Copy the requirement files into the docker image for installing the dependencies
-COPY deps/pip-requirements.txt deps/dev-requirements.pip /opt/mantidimaging-deps/
+COPY deps/dev-requirements.pip /opt/mantidimaging-deps/
 
 SHELL ["/bin/bash", "-c"]
 
 RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
     ENVIRONMENT_NAME=mantidimaging_test REPO_LABEL=unstable source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh) &&\
     conda activate mantidimaging_test &&\
-    pip install -r /opt/mantidimaging-deps/pip-requirements.txt &&\
     pip install -r /opt/mantidimaging-deps/dev-requirements.pip &&\
     conda clean --all
 
