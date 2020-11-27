@@ -1,11 +1,12 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import Optional, Tuple, Callable
+from time import sleep
+from typing import Callable, Optional, Tuple
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QLabel
-from pyqtgraph import ImageView, ROI, ImageItem
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -29,12 +30,50 @@ class MIImageView(ImageView):
 
     roi_changed_callback: Optional[Callable[[SensibleROI], None]] = None
 
-    def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, levelMode='mono', *args):
+    def __init__(self,
+                 parent=None,
+                 name="ImageView",
+                 view=None,
+                 imageItem=None,
+                 levelMode='mono',
+                 detailsSpanAllCols=False,
+                 *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
         self.presenter = MIImagePresenter()
         self.details = QLabel("", self.ui.layoutWidget)
         self.details.setStyleSheet("QLabel { color : white; background-color: black}")
-        self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
+        if detailsSpanAllCols:
+            self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 3)
+            self.ui.gridLayout.setColumnStretch(0, 8)
+            self.ui.gridLayout.setColumnStretch(1, 1)
+            self.ui.gridLayout.setColumnStretch(2, 1)
+        else:
+            self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 1)
+
+        # Hide the norm button as it allows for manual data changes and we don't want users to do that unrecorded.
+        self.ui.menuBtn.hide()
+
+        # Construct and add the left and right buttons for the stack
+        self.shifting_through_images = False
+
+        self.button_stack_left = QPushButton()
+        self.button_stack_left.setText("<")
+        self.button_stack_left.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.button_stack_left.setMaximumSize(40, 40)
+        self.button_stack_left.pressed.connect(lambda: self.toggle_jumping_frame(-1))
+        self.button_stack_left.released.connect(lambda: self.toggle_jumping_frame())
+
+        self.button_stack_right = QPushButton()
+        self.button_stack_right.setText(">")
+        self.button_stack_right.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.button_stack_right.setMaximumSize(40, 40)
+        self.button_stack_right.pressed.connect(lambda: self.toggle_jumping_frame(1))
+        self.button_stack_right.released.connect(lambda: self.toggle_jumping_frame())
+
+        self.vertical_layout = QHBoxLayout()
+        self.vertical_layout.addWidget(self.button_stack_left)
+        self.vertical_layout.addWidget(self.button_stack_right)
+        self.ui.gridLayout.addLayout(self.vertical_layout, 1, 2, 1, 1)
 
         self.imageItem.hoverEvent = self.image_hover_event
         # disconnect the ROI recalculation on every move
@@ -54,6 +93,16 @@ class MIImageView(ImageView):
         self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
         self.imageItem.sigImageChanged.connect(self._refresh_message)
+
+    def toggle_jumping_frame(self, images_to_jump_by=None):
+        if not self.shifting_through_images and images_to_jump_by is not None:
+            self.shifting_through_images = True
+        else:
+            self.shifting_through_images = False
+        while self.shifting_through_images:
+            self.jumpFrames(images_to_jump_by)
+            sleep(0.02)
+            QApplication.processEvents()
 
     def _refresh_message(self):
         # updates the ROI average value
@@ -80,6 +129,20 @@ class MIImageView(ImageView):
         roi = self._update_roi_region_avg()
         if self.roi_changed_callback and roi is not None:
             self.roi_changed_callback(roi)
+
+    def timeLineChanged(self):
+        """
+        Re-implements timeLineChanged function, and the only change
+        is that now self.updateImage will NOT auto range the histogram
+        """
+        if not self.ignorePlaying:
+            self.play(0)
+
+        (ind, time) = self.timeIndex(self.timeLine)
+        if ind != self.currentIndex:
+            self.currentIndex = ind
+            self.updateImage(autoHistogramRange=False)
+        self.sigTimeChanged.emit(ind, time)
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
         if self.image.ndim != 3:
