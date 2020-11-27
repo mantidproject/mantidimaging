@@ -48,8 +48,8 @@ class StackChoiceView(BaseMainWindowView):
         self._setup_stack_for_view(self.original_stack, original_stack.data)
         self._setup_stack_for_view(self.new_stack, new_stack.data)
 
-        self.topHorizontalLayout.insertWidget(0, self.original_stack)
-        self.topHorizontalLayout.addWidget(self.new_stack)
+        self.topVerticalOriginal.addWidget(self.original_stack)
+        self.topVerticalNew.addWidget(self.new_stack)
 
         self.shifting_through_images = False
         self.original_stack.sigTimeChanged.connect(self._sync_timelines_for_new_stack_with_old_stack)
