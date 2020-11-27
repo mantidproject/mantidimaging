@@ -12,7 +12,7 @@ from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.images import Images
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.widgets.pg_image_view import MIImageView
+from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter

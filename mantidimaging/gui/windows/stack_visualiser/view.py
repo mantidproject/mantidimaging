@@ -5,17 +5,18 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
-from .metadata_dialog import MetadataDialog
-from .presenter import SVNotification
-from ..stack_visualiser.presenter import StackVisualiserPresenter
+from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
+
 from ...mvp_base import BaseMainWindowView
 from ...utility.common import operation_in_progress
-from ...widgets.pg_image_view import MIImageView
+from ..stack_visualiser.presenter import StackVisualiserPresenter
+from .metadata_dialog import MetadataDialog
+from .presenter import SVNotification
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
