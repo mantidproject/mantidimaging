@@ -21,6 +21,12 @@
        <layout class="QVBoxLayout" name="topVerticalOriginal">
         <item>
          <widget class="QLabel" name="originalStackLabel">
+          <property name="styleSheet">
+           <string notr="true">QLabel{
+margin-left:5px;
+margin-top:3px;
+}</string>
+          </property>
           <property name="text">
            <string>Original Stack</string>
           </property>
@@ -45,6 +51,11 @@
        <layout class="QVBoxLayout" name="topVerticalNew">
         <item>
          <widget class="QLabel" name="newStackLabel">
+          <property name="styleSheet">
+           <string notr="true">QLabel{
+margin-top:3px;
+}</string>
+          </property>
           <property name="text">
            <string>New Stack</string>
           </property>
