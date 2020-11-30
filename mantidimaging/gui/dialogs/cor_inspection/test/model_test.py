@@ -7,6 +7,7 @@ import numpy.testing as npt
 
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
+from mantidimaging.gui.dialogs.cor_inspection.model import INIT_ITERS_CENTRE_VALUE, INIT_ITERS_STEP
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -58,3 +59,12 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         m.adjust(ImageType.CURRENT)
         self.assertEqual(m.centre_value, 4.75)
         self.assertEqual(m.step, 0.125)
+
+    def test_iters_mode(self):
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), True)
+
+        self.assertEqual(m.centre_value, INIT_ITERS_CENTRE_VALUE)
+        self.assertEqual(m.step, INIT_ITERS_STEP)
+        self.assertEqual(m._recon_preview, m._recon_iters_preview)
+        self.assertEqual(m._divide_step, m._divide_iters_step)

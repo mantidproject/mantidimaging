@@ -11,6 +11,9 @@ from .types import ImageType
 
 LOG = getLogger(__name__)
 
+INIT_ITERS_CENTRE_VALUE = 100
+INIT_ITERS_STEP = 50
+
 
 class CORInspectionDialogModel(object):
     def __init__(self, images: Images, slice_idx: int, initial_cor: ScalarCoR, recon_params: ReconstructionParameters,
@@ -20,8 +23,8 @@ class CORInspectionDialogModel(object):
 
         # Initial parameters
         if iters_mode:
-            self.centre_value: Union[int, float] = 100
-            self.step = 50
+            self.centre_value: Union[int, float] = INIT_ITERS_CENTRE_VALUE
+            self.step = INIT_ITERS_STEP
             self.initial_cor = initial_cor
             self._recon_preview = self._recon_iters_preview
             self._divide_step = self._divide_iters_step
