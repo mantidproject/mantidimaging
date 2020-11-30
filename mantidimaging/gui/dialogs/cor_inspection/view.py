@@ -67,10 +67,11 @@ class CORInspectionDialogView(BaseDialogView):
     @step_size.setter
     def step_size(self, value):
         if self.iters_mode:
-            with BlockQtSignals([self.stepIterations]):
-                self.stepIterations.setValue(value)
-        with BlockQtSignals([self.stepCOR]):
-            self.stepCOR.setValue(value)
+            spin_box = self.stepIterations
+        else:
+            spin_box = self.stepCOR
+        with BlockQtSignals([spin_box]):
+            self.spin_box.setValue(value)
 
     @property
     def optimal_rotation_centre(self) -> ScalarCoR:
