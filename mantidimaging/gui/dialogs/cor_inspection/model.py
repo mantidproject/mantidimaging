@@ -64,7 +64,7 @@ class CORInspectionDialogModel(object):
         elif image == ImageType.MORE:
             return min(self.cor_extents[1], self.centre_value + self.step)
 
-    def iterations(self, image) -> int:
+    def iterations(self, image):
         if image == ImageType.LESS:
             return max(1, self.centre_value - self.step)
         elif image == ImageType.CURRENT:
