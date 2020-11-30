@@ -211,6 +211,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter._do_refine_iterations()
         self.view.set_iterations.assert_not_called()
 
+        mock_corview.assert_called_once()
+        mock_corview.return_value.exec.assert_called_once()
+
     def test_do_refine_iterations_accepted(self):
         pass
 
