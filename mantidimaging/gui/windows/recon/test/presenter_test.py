@@ -205,6 +205,15 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_dialog.exec.assert_called_once()
         self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
+    def test_do_refine_iterations_declined(self, mock_corview):
+        self.presenter.preview_slice_idx = 155
+        self.presenter._do_refine_iterations()
+        self.view.set_iterations.assert_not_called()
+
+    def test_do_refine_iterations_accepted(self):
+        pass
+
     def test_do_cor_fit(self):
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
