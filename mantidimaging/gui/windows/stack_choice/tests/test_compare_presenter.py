@@ -47,6 +47,7 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
         view_instance.disconnect_histogram_changes.assert_called_once()
 
+    @mock.patch("mantidimaging.gui.windows.stack_choice.compare_presenter.StackChoiceView")
     def test_titles_set(self, view: mock.Mock):
         stack_name = "stack_name"
         custom_parent = mock.MagicMock()
