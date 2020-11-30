@@ -134,12 +134,12 @@ class StackVisualiserView(BaseMainWindowView):
         menu = QMenu(self)
 
         for (menu_text, func) in actions:
-            action = QAction(menu_text, menu)
             if func is None:
-                action.setSeparator(True)
+                menu.addSeparator()
             else:
+                action = QAction(menu_text, menu)
                 action.triggered.connect(func)
-            menu.addAction(action)
+                menu.addAction(action)
 
         return menu
 

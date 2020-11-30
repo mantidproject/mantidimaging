@@ -8,6 +8,7 @@ from PyQt5 import Qt
 from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
 from pyqtgraph import ImageItem
+from pyqtgraph.debug import Tracer
 
 from mantidimaging.core.net.help_pages import open_api_webpage
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -252,6 +253,7 @@ class FiltersWindowView(BaseMainWindowView):
         toggle_show_averaged_image = QAction("Toggle show averaged image", menu)
         toggle_show_averaged_image.triggered.connect(lambda: toggle_average_images(images))
         menu.addAction(toggle_show_averaged_image)
+        menu.addSeparator()
         self.roi_view.imageItem.menu = menu
 
         self.roi_view.setImage(images.data)
