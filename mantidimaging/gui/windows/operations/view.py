@@ -1,19 +1,20 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.core.net.help_pages import open_api_webpage
 from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt5 import Qt
-from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
-    QSizePolicy, QComboBox, QStyle, QMainWindow, QAction, QMenu
+from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
+                             QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
 from pyqtgraph import ImageItem
 
+from mantidimaging.core.net.help_pages import open_api_webpage
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import (delete_all_widgets_from_layout)
-from mantidimaging.gui.widgets.pg_image_view import MIImageView
+from mantidimaging.gui.utility import delete_all_widgets_from_layout
+from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification

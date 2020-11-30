@@ -29,6 +29,10 @@ LOG = getLogger(__file__)
 
 
 class MainWindowView(BaseMainWindowView):
+    AVAILABLE_MSG = "Savu Backend not available"
+    NOT_THE_LATEST_VERSION = "This is not the latest version"
+    UNCAUGHT_EXCEPTION = "Uncaught exception"
+
     active_stacks_changed = Qt.pyqtSignal()
     backend_message = Qt.pyqtSignal(bytes)
 
@@ -37,6 +41,7 @@ class MainWindowView(BaseMainWindowView):
     actionSavuFilters: QAction
     actionCompareImages: QAction
     actionLoadLog: QAction
+    actionLoad180deg: QAction
     actionLoad: QAction
     actionSave: QAction
     actionExit: QAction
@@ -73,6 +78,7 @@ class MainWindowView(BaseMainWindowView):
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
+        self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
@@ -135,6 +141,28 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
                                 f"{stack_to_add_log_to}.")
 
+    def load_180_deg_dialog(self):
+        stack_selector = StackSelectorDialog(main_window=self,
+                                             title="Stack Selector",
+                                             message="Which stack is the 180 degree projection being loaded for?")
+        # Was closed without accepting (e.g. via x button or ESC)
+        if QDialog.Accepted != stack_selector.exec():
+            return
+        stack_to_add_180_deg_to = stack_selector.selected_stack
+
+        # Open file dialog
+        file_filter = "Image File (*.tif *.tiff)"
+        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="180 Degree Image",
+                                                          filter=f"{file_filter};;All (*.*)",
+                                                          initialFilter=file_filter)
+        # Cancel/Close was clicked
+        if selected_file == "":
+            return
+
+        _180_dataset = self.presenter.add_180_deg_to_sample(stack_name=stack_to_add_180_deg_to,
+                                                            _180_deg_file=selected_file)
+        self.create_new_stack(_180_dataset, self.presenter.create_stack_name(selected_file))
+
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)
 
@@ -167,7 +195,7 @@ class MainWindowView(BaseMainWindowView):
                 self.savu_filters = SavuFiltersWindowView(self)
                 self.savu_filters.show()
             except RuntimeError as e:
-                QtWidgets.QMessageBox.warning(self, "Savu Backend not available", str(e))
+                QtWidgets.QMessageBox.warning(self, self.AVAILABLE_MSG, str(e))
         else:
             self.savu_filters.activateWindow()
             self.savu_filters.raise_()
@@ -217,10 +245,6 @@ class MainWindowView(BaseMainWindowView):
         # we can get the stack visualiser widget with dock_widget.widget
         dock.setWidget(StackVisualiserView(self, dock, stack))
 
-        # proof of concept above
-        assert isinstance(dock.widget(),
-                          StackVisualiserView), "Widget inside dock_widget is not an StackVisualiserView!"
-
         dock.setFloating(floating)
 
         return dock
@@ -260,10 +284,10 @@ class MainWindowView(BaseMainWindowView):
             event.ignore()
 
     def not_latest_version_warning(self, msg: str):
-        QtWidgets.QMessageBox.warning(self, "This is not the latest version", msg)
+        QtWidgets.QMessageBox.warning(self, self.NOT_THE_LATEST_VERSION, msg)
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
-        QtWidgets.QMessageBox.critical(self, "Uncaught exception", f"{user_error_msg}")
+        QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)
 
     def attach_debugger(self):
@@ -283,3 +307,6 @@ class MainWindowView(BaseMainWindowView):
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.presenter.set_images_in_stack(uuid, images)
+
+    def find_images_stack_title(self, images: Images) -> str:
+        return self.presenter.get_stack_with_images(images).name
