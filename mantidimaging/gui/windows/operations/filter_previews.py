@@ -186,13 +186,14 @@ class FilterPreviews(GraphicsLayoutWidget):
                 self.display_formatted_detail[img](pixel_value)
 
     def link_all_views(self):
-        for view1, view2 in zip([self.image_before_vb, self.image_after_vb],
-                                [self.image_after_vb, self.image_difference_vb]):
+        for view1, view2 in [[self.image_before_vb, self.image_after_vb],
+                             [self.image_after_vb, self.image_difference_vb],
+                             [self.image_after_hist.vb, self.image_before_hist.vb]]:
             view1.linkView(ViewBox.XAxis, view2)
             view1.linkView(ViewBox.YAxis, view2)
 
     def unlink_all_views(self):
-        for view in self.image_before_vb, self.image_after_vb, self.image_difference_vb:
+        for view in self.image_before_vb, self.image_after_vb, self.image_after_hist.vb:
             view.linkView(ViewBox.XAxis, None)
             view.linkView(ViewBox.YAxis, None)
 

@@ -3,11 +3,12 @@
 
 import unittest
 from unittest import mock
+from unittest.mock import DEFAULT, MagicMock, Mock, patch
 from uuid import uuid4
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.gui.windows.stack_choice.view import Notification
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
+from mantidimaging.gui.windows.stack_choice.view import Notification
 
 
 class StackChoicePresenterTest(unittest.TestCase):
@@ -48,13 +49,13 @@ class StackChoicePresenterTest(unittest.TestCase):
 
         self.p.do_reapply_original_data.assert_called_once()
 
-    def test_notify_handles_exceptions(self):
-        self.p.do_reapply_original_data = mock.MagicMock()
-        self.p.do_reapply_original_data.side_effect = RuntimeError
-
+    @patch.multiple("mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter",
+                    do_reapply_original_data=MagicMock(side_effect=RuntimeError),
+                    show_error=DEFAULT)
+    def test_notify_handles_exceptions(self, _: Mock = Mock(), show_error: Mock = Mock()):
         self.p.notify(Notification.CHOOSE_ORIGINAL)
 
-        self.p.operations_presenter.show_error.assert_called_once()
+        show_error.assert_called_once()
 
     def test_notify_choose_new_data(self):
         self.p.do_clean_up_original_data = mock.MagicMock()
@@ -108,3 +109,12 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.p.close_view()
 
         self.assertTrue(self.p.done)
+
+    def test_do_toggle_lock_histograms(self):
+        self.v.lockHistograms.isChecked.return_value = True
+        self.p.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
+        self.v.connect_histogram_changes.assert_called_once()
+
+        self.v.lockHistograms.isChecked.return_value = False
+        self.p.notify(Notification.TOGGLE_LOCK_HISTOGRAMS)
+        self.v.disconnect_histogram_changes.assert_called_once()
