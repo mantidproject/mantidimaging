@@ -8,7 +8,6 @@ from PyQt5 import Qt
 from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
 from pyqtgraph import ImageItem
-from pyqtgraph.debug import Tracer
 
 from mantidimaging.core.net.help_pages import open_api_webpage
 from mantidimaging.gui.mvp_base import BaseMainWindowView

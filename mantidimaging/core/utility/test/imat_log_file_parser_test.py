@@ -11,7 +11,7 @@ def test_parsing_log_file():
         EXPECTED_HEADER_FOR_IMAT_LOG_FILE, ["ignored line"],
         ["timestamp", "Projection:  0  angle: 0.1", "counts before: 12345", "counts_after: 45678"]
     ]
-    logfile = IMATLogFile(test_input)
+    logfile = IMATLogFile(test_input, "/tmp/fake")
     assert len(logfile.projection_angles().value) == 1
     assert logfile.projection_angles().value[0] == np.deg2rad(0.1), f"Got: {logfile.projection_angles().value[0]}"
     assert logfile.counts().value[0] == (45678 - 12345)
@@ -25,7 +25,7 @@ def test_counts():
         ["timestamp", "Projection:  1  angle: 0.1", "counts before: 45678", "counts_after: 84678"],
         ["timestamp", "Projection:  2  angle: 0.2", "counts before: 84678", "counts_after: 124333"],
     ]
-    logfile = IMATLogFile(test_input)
+    logfile = IMATLogFile(test_input, "/tmp/fake")
     assert len(logfile.counts().value) == 3
     assert logfile.counts().value[0] == 45678 - 12345
     assert logfile.counts().value[1] == 84678 - 45678
@@ -50,7 +50,7 @@ def test_find_missing_projection_number():
         ["timestamp", "Projection:  1  angle: 0.1", "counts before: 12345", "counts_after: 45678"],
         ["timestamp", "Projection:  2  angle: 0.2", "counts before: 12345", "counts_after: 45678"],
     ]
-    logfile = IMATLogFile(test_input)
+    logfile = IMATLogFile(test_input, "/tmp/fake")
     assert len(logfile.projection_numbers()) == 3
     # nothing missing
     logfile.raise_if_angle_missing(["file_000.tif", "file_001.tif", "file_002.tif"])
@@ -60,3 +60,15 @@ def test_find_missing_projection_number():
     assert_raises(RuntimeError, logfile.raise_if_angle_missing, ["file_000.tif", "file_001.tif"])
     assert_raises(RuntimeError, logfile.raise_if_angle_missing,
                   ["file_000.tif", "file_001.tif", "file_002.tif", "file_003.tif"])
+
+
+def test_source_file():
+    test_input = [
+        EXPECTED_HEADER_FOR_IMAT_LOG_FILE,
+        ["ignored line"],
+        ["timestamp", "Projection:  0  angle: 0.0", "counts before: 12345", "counts_after: 45678"],
+        ["timestamp", "Projection:  1  angle: 0.1", "counts before: 12345", "counts_after: 45678"],
+        ["timestamp", "Projection:  2  angle: 0.2", "counts before: 12345", "counts_after: 45678"],
+    ]
+    logfile = IMATLogFile(test_input, "/tmp/fake")
+    assert logfile.source_file == "/tmp/fake"
