@@ -14,19 +14,19 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 class CORInspectionDialogModelTest(unittest.TestCase):
     def test_construct(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
         npt.assert_equal(m.sino, images.sino(5))
         self.assertEqual(m.cor_extents, (0, 9))
         self.assertEqual(m.proj_angles.value.shape, (10, ))
 
     def test_start_cor_step(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
         self.assertEqual(images.width * 0.05, m.step)
 
     def test_current_cor(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
         m.centre_value = 5
         m.step = 1
         self.assertEqual(m.cor(ImageType.LESS), 4)
@@ -35,7 +35,7 @@ class CORInspectionDialogModelTest(unittest.TestCase):
 
     def test_adjust_cor(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'))
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
         m.centre_value = 5
         m.step = 1
 
