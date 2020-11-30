@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from dataclasses import replace
 from logging import getLogger
+from typing import Union
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct import get_reconstructor_for
@@ -19,7 +20,7 @@ class CORInspectionDialogModel(object):
 
         # Initial parameters
         if iters_mode:
-            self.centre_value = 100
+            self.centre_value: Union[int, float] = 100
             self.step = 50
             self.initial_cor = initial_cor
             self._recon_preview = self._recon_iters_preview

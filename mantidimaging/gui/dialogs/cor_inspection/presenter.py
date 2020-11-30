@@ -107,5 +107,5 @@ class CORInspectionDialogPresenter(BasePresenter):
         return ScalarCoR(self.model.centre_value)
 
     @property
-    def optimal_iterations(self) -> int:
+    def optimal_iterations(self):
         return self.model.centre_value
