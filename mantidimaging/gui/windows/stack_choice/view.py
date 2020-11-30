@@ -2,12 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
+import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton, QSizePolicy
-import numpy as np
+from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.images import Images
@@ -22,11 +22,13 @@ if TYPE_CHECKING:
 class Notification(Enum):
     CHOOSE_ORIGINAL = auto()
     CHOOSE_NEW_DATA = auto()
+    TOGGLE_LOCK_HISTOGRAMS = auto()
 
 
 class StackChoiceView(BaseMainWindowView):
     originalDataButton: QPushButton
     newDataButton: QPushButton
+    lockHistograms: QCheckBox
 
     def __init__(self, original_stack: Images, new_stack: Images,
                  presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: Optional[QMainWindow]):
@@ -64,6 +66,9 @@ class StackChoiceView(BaseMainWindowView):
         # Hook the choice buttons
         self.originalDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_ORIGINAL))
         self.newDataButton.clicked.connect(lambda: self.presenter.notify(Notification.CHOOSE_NEW_DATA))
+
+        # Hooks the lock histograms checkbox
+        self.lockHistograms.clicked.connect(lambda: self.presenter.notify(Notification.TOGGLE_LOCK_HISTOGRAMS))
 
         # Hook ROI button into both stacks
         self.roiButton.clicked.connect(self._toggle_roi)
@@ -158,3 +163,33 @@ class StackChoiceView(BaseMainWindowView):
 
         self.original_stack.close()
         self.new_stack.close()
+
+    def _set_from_old_to_new(self):
+        """
+        Signal triggered when the histograms are locked and the contrast values changed.
+        """
+        levels: Tuple[float, float] = self.original_stack.ui.histogram.getLevels()
+        self.new_stack.ui.histogram.setLevels(*levels)
+
+    def _set_from_new_to_old(self):
+        """
+        Signal triggered when the histograms are locked and the contrast values changed.
+        """
+        levels: Tuple[float, float] = self.new_stack.ui.histogram.getLevels()
+        self.original_stack.ui.histogram.setLevels(*levels)
+
+    def connect_histogram_changes(self):
+        self._set_from_old_to_new()
+
+        self.original_stack.ui.histogram.sigLevelsChanged.connect(self._set_from_old_to_new)
+        self.new_stack.ui.histogram.sigLevelsChanged.connect(self._set_from_new_to_old)
+
+        self.new_stack.ui.histogram.vb.linkView(ViewBox.YAxis, self.original_stack.ui.histogram.vb)
+        self.new_stack.ui.histogram.vb.linkView(ViewBox.XAxis, self.original_stack.ui.histogram.vb)
+
+    def disconnect_histogram_changes(self):
+        self.original_stack.ui.histogram.sigLevelsChanged.disconnect(self._set_from_old_to_new)
+        self.new_stack.ui.histogram.sigLevelsChanged.disconnect(self._set_from_new_to_old)
+
+        self.new_stack.ui.histogram.vb.linkView(ViewBox.YAxis, None)
+        self.new_stack.ui.histogram.vb.linkView(ViewBox.XAxis, None)
