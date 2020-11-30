@@ -34,13 +34,11 @@ requirements:
     - requests-futures
     - python-socketio
     - h5py
-    - pyqt
-    - pyqtgraph=0.11
     - sarepy
     - psutil
 
 build:
-  number: 0
+  number: 1
   script:
     - {{ PYTHON }} -m pip install --ignore-installed .
 
