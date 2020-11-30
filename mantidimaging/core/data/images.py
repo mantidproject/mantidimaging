@@ -272,6 +272,10 @@ class Images:
 
     @log_file.setter
     def log_file(self, value: IMATLogFile):
+        if value is not None:
+            self.metadata[const.LOG_FILE] = value.source_file
+        elif value is None:
+            del self.metadata[const.LOG_FILE]
         self._log_file = value
 
     def projection_angles(self, max_angle: float = 360.0):

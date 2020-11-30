@@ -24,7 +24,8 @@ class IMATLogColumn(Enum):
 
 
 class IMATLogFile:
-    def __init__(self, data: List[List[str]]):
+    def __init__(self, data: List[List[str]], source_file: str):
+        self._source_file = source_file
         self._data: Dict[IMATLogColumn, List] = {
             IMATLogColumn.TIMESTAMP: [],
             IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER: [],
@@ -45,6 +46,10 @@ class IMATLogFile:
             self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER].append(line[1])
             self._data[IMATLogColumn.COUNTS_BEFORE].append(line[2])
             self._data[IMATLogColumn.COUNTS_AFTER].append(line[3])
+
+    @property
+    def source_file(self) -> str:
+        return self._source_file
 
     def projection_numbers(self):
         proj_nums = numpy.zeros(len(self._data[IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER]), dtype=numpy.uint32)
