@@ -27,6 +27,15 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.notify.assert_called_once_with(PresNotification.SAVE)
 
+    def test_find_images_stack_title(self):
+        images = mock.MagicMock()
+        self.presenter.get_stack_with_images = mock.MagicMock()
+
+        return_value = self.view.find_images_stack_title(images)
+
+        self.presenter.get_stack_with_images.assert_called_once_with(images)
+        self.assertEqual(return_value, self.presenter.get_stack_with_images.return_value.name)
+
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.Qt.QFileDialog.getOpenFileName")
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_diag: mock.Mock):
