@@ -351,3 +351,6 @@ class ReconstructWindowView(BaseMainWindowView):
             open_help_webpage(SECTION_USER_GUIDE, "reconstructions/index")
         except RuntimeError as err:
             self.show_error_dialog(str(err))
+
+    def set_iterations(self, iters: int):
+        self.numIter.setValue(iters)
