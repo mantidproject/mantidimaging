@@ -58,4 +58,3 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.assertEqual(2, custom_parent.find_images_stack_title.call_count)
         view.return_value.originalStackLabel.setText.assert_called_once_with(stack_name)
         view.return_value.newStackLabel.setText.assert_called_once_with(stack_name)
-
