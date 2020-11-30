@@ -307,3 +307,6 @@ class MainWindowView(BaseMainWindowView):
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.presenter.set_images_in_stack(uuid, images)
+
+    def find_images_stack_title(self, images: Images) -> str:
+        return self.presenter.get_stack_with_images(images).name
