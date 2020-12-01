@@ -108,6 +108,7 @@ class ReconstructWindowPresenter(BasePresenter):
         with BlockQtSignals([self.view.filterName, self.view.numIter]):
             self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
         self.do_preview_reconstruct_slice()
+        self.view.change_refine_iterations()
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)

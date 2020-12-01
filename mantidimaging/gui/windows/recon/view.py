@@ -124,7 +124,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
-            for button in [self.refineCorBtn, self.removeBtn, self.refineIterationsBtn]:
+            for button in [self.refineCorBtn, self.removeBtn]:
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
@@ -354,3 +354,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def set_iterations(self, iters: int):
         self.numIter.setValue(iters)
+
+    def change_refine_iterations(self):
+        self.refineIterationsBtn.setEnabled(self.algorithmName.currentText() == "SIRT_CUDA")
