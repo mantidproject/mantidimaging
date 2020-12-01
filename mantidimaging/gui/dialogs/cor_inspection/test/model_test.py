@@ -86,3 +86,19 @@ class CORInspectionDialogModelTest(unittest.TestCase):
 
         m._divide_step()
         self.assertEqual(m.step, 5)
+
+    def test_iterations(self):
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), True)
+
+        m.adjust(ImageType.LESS)
+        self.assertEqual(m.centre_value, 50)
+        self.assertEqual(m.step, 50)
+
+        m.adjust(ImageType.CURRENT)
+        self.assertEqual(m.centre_value, 50)
+        self.assertEqual(m.step, 25)
+
+        m.adjust(ImageType.MORE)
+        self.assertEqual(m.centre_value, 75)
+        self.assertEqual(m.step, 25)
