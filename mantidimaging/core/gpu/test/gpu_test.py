@@ -44,12 +44,12 @@ class GPUTest(unittest.TestCase):
         for mode in modes():
             with self.subTest(mode=mode):
 
-                images = th.generate_shared_array()
+                images = th.generate_images()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
                 cpu_result = self.run_serial(images.copy(), size, mode)
 
-                npt.assert_almost_equal(gpu_result[0], cpu_result[0])
+                npt.assert_almost_equal(gpu_result.data[0], cpu_result.data[0])
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_different_filter_sizes(self):
@@ -60,12 +60,12 @@ class GPUTest(unittest.TestCase):
         for size in [5, 7, 9]:
             with self.subTest(size=size):
 
-                images = th.generate_shared_array()
+                images = th.generate_images()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
                 cpu_result = self.run_serial(images.copy(), size, mode)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_result_matches_cpu_result_for_larger_images(self):
@@ -77,12 +77,12 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        images = th.generate_shared_array(shape=(20, N, N))
+        images = th.generate_images(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
 
-        npt.assert_almost_equal(gpu_result, cpu_result)
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_double_is_used_in_cuda_for_float_64_arrays(self):
@@ -92,12 +92,12 @@ class GPUTest(unittest.TestCase):
         """
         size = 3
         mode = "reflect"
-        images = th.generate_shared_array(dtype="float64")
+        images = th.generate_images(dtype="float64")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
 
-        npt.assert_almost_equal(gpu_result, cpu_result)
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_image_slicing_works(self):
@@ -112,12 +112,12 @@ class GPUTest(unittest.TestCase):
         # Make the number of images in the stack exceed the maximum number of GPU-stored images
         n_images = gpu.MAX_GPU_SLICES * 3
 
-        images = th.generate_shared_array(shape=(n_images, N, N))
+        images = th.generate_images(shape=(n_images, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = self.run_serial(images.copy(), size, mode)
 
-        npt.assert_almost_equal(gpu_result, cpu_result)
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_array_input_unchanged_when_gpu_runs_out_of_memory(self):
@@ -131,13 +131,13 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        images = th.generate_shared_array(shape=(n_images, N, N))
+        images = th.generate_images(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             gpu_result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
 
-        npt.assert_equal(gpu_result, images)
+        assert gpu_result == images
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_running_out_of_memory_causes_free_memory_to_be_called(self):
@@ -149,7 +149,7 @@ class GPUTest(unittest.TestCase):
         N = 20
         n_images = 2
 
-        images = th.generate_shared_array(shape=(n_images, N, N))
+        images = th.generate_images(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
