@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
+from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
 
@@ -41,6 +42,7 @@ class MainWindowView(BaseMainWindowView):
     actionSavuFilters: QAction
     actionCompareImages: QAction
     actionLoadLog: QAction
+    actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
     actionLoad: QAction
     actionSave: QAction
@@ -79,6 +81,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
+        self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
@@ -162,6 +165,31 @@ class MainWindowView(BaseMainWindowView):
         _180_dataset = self.presenter.add_180_deg_to_sample(stack_name=stack_to_add_180_deg_to,
                                                             _180_deg_file=selected_file)
         self.create_new_stack(_180_dataset, self.presenter.create_stack_name(selected_file))
+
+    LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
+    LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
+
+    def load_projection_angles(self):
+        stack_selector = StackSelectorDialog(main_window=self,
+                                             title="Stack Selector",
+                                             message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE)
+        # Was closed without accepting (e.g. via x button or ESC)
+        if QDialog.Accepted != stack_selector.exec():
+            return
+
+        stack_name = stack_selector.selected_stack
+
+        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
+                                                          filter="All (*.*)")
+        if selected_file == "":
+            return
+
+        pafp = ProjectionAngleFileParser(selected_file)
+        projection_angles = pafp.get_projection_angles()
+
+        self.presenter.add_projection_angles_to_sample(stack_name, projection_angles)
+        QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
+                                f"{stack_name}.")
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)
