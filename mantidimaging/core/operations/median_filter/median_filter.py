@@ -119,4 +119,4 @@ def _execute_gpu(data, size, mode, progress=None):
 
         data = cuda.median_filter(data, size, mode, progress)
 
-    return data
+    return Images(data)
