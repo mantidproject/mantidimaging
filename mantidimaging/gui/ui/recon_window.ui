@@ -290,16 +290,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QPushButton" name="refineCorBtn">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="text">
-                    <string>Refine COR</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="0" colspan="2">
                   <widget class="QPushButton" name="clearAllBtn">
                    <property name="toolTip">
@@ -310,13 +300,13 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QPushButton" name="refineIterationsBtn">
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QPushButton" name="refineCorBtn">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string>Refine Iterations</string>
+                    <string>Refine COR</string>
                    </property>
                   </widget>
                  </item>
@@ -455,6 +445,16 @@
                </widget>
               </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="refineIterationsBtn">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Refine Iterations</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="reconHelpButton">
