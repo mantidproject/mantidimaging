@@ -1,13 +1,13 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.core.data.images import Images
 import traceback
-from logging import getLogger
-from typing import List, Optional, TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from uuid import UUID
 
-from mantidimaging.gui.windows.stack_choice.view import StackChoiceView, Notification
+from mantidimaging.core.data.images import Images
+from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
+from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter
@@ -20,7 +20,7 @@ def _get_stack_from_uuid(original_stack, stack_uuid):
     raise RuntimeError("No useful stacks passed to Stack Choice Presenter")
 
 
-class StackChoicePresenter:
+class StackChoicePresenter(StackChoicePresenterMixin):
     def __init__(self,
                  original_stack: Union[List[Tuple[Images, UUID]], Images],
                  new_stack: Images,
@@ -52,10 +52,10 @@ class StackChoicePresenter:
             elif signal == Notification.CHOOSE_NEW_DATA:
                 self.do_clean_up_original_data()
                 self.use_new_data = True
-
+            else:
+                super().notify(signal)
         except Exception as e:
-            self.operations_presenter.show_error(e, traceback.format_exc())
-            getLogger(__name__).exception("Notification handler failed")
+            self.show_error(e, traceback.format_exc())
 
     def _clean_up_original_images_stack(self):
         if isinstance(self.operations_presenter.original_images_stack, list) \

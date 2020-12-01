@@ -31,6 +31,6 @@ conda config --prepend channels mantid # for mantidimaging
 conda create -c mantid/label/${repo_label} -n ${env_name} mantidimaging
 
 conda activate ${env_name}
-pip install pyqt5==5.15
+pip install pyqt5==5.15 pyqtgraph==0.11
 
 conda config --set always_yes no
