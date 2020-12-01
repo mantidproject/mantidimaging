@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import io
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
 import numpy as np
@@ -203,3 +204,15 @@ class ImagesTest(unittest.TestCase):
         images = generate_images()
         images.log_file = generate_logfile()
         self.assertEqual(images.log_file.source_file, images.metadata[const.LOG_FILE])
+
+    def test_set_projection_angles(self):
+        images = generate_images()
+        images.set_projection_angles(ProjectionAngles(list(range(0, 10))))
+
+        actual = images.projection_angles()
+        self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(np.deg2rad(360), actual.value[-1], places=4)
+
+        actual = images.projection_angles(275.69)
+        self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)
