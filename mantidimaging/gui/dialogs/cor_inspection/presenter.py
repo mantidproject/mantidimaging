@@ -93,7 +93,7 @@ class CORInspectionDialogPresenter(BasePresenter):
         self.view.step_size = self.model.step
 
         # Images
-        for i in ImageType:
+        for i in images:
             self.view.set_image(i, self.model.recon_preview(i), self.get_title(i))
 
     def do_update_ui_parameters(self):
