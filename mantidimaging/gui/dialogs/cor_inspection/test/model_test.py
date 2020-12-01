@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from unittest.mock import Mock, patch
 
 import numpy.testing as npt
 
@@ -102,3 +103,14 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         m.adjust(ImageType.MORE)
         self.assertEqual(m.centre_value, 75)
         self.assertEqual(m.step, 25)
+
+    @patch('mantidimaging.gui.dialogs.cor_inspection.model.replace')
+    def test_recon_iters_preview(self, replace_mock):
+        images = generate_images()
+        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), True)
+
+        m.reconstructor = Mock()
+        m.recon_preview(ImageType.CURRENT)
+        replace_mock.assert_called_once_with(m.recon_params, num_iter=100)
+        m.reconstructor.single_sino.assert_called_once_with(m.sino, m.initial_cor, m.proj_angles,
+                                                            replace_mock.return_value)
