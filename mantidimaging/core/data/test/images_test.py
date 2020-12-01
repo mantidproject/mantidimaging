@@ -207,12 +207,9 @@ class ImagesTest(unittest.TestCase):
 
     def test_set_projection_angles(self):
         images = generate_images()
-        images.set_projection_angles(ProjectionAngles(list(range(0, 10))))
+        pangles = ProjectionAngles(list(range(0, 10)))
+        images.set_projection_angles(pangles)
 
         actual = images.projection_angles()
         self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(np.deg2rad(360), actual.value[-1], places=4)
-
-        actual = images.projection_angles(275.69)
-        self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)
+        self.assertAlmostEqual(images.projection_angles().value, pangles.value, places=4)
