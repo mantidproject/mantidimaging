@@ -32,12 +32,14 @@ class MedianFilter(BaseFilter):
     @staticmethod
     def filter_func(data: Images, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
         """
-        :param data: Input data as a 3D numpy.ndarray
+        :param data: Input data as an Images pbject.
         :param size: Size of the kernel
-        :param mode: The mode with which to handle the endges.
+        :param mode: The mode with which to handle the edges.
                      One of [reflect, constant, nearest, mirror, wrap].
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
+        :param progress: The object for displaying the progress.
+        :param force_cpu: Whether or not to use the CPU.
 
         :return: Returns the processed data
 
