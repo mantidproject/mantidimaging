@@ -34,16 +34,3 @@ def test_angles_as_csv(input: str):
         pafp = ProjectionAngleFileParser(tempfilename)
         result = pafp.get_projection_angles().value
         np.testing.assert_array_almost_equal(expected, result, err_msg="Arrays not equal")
-
-
-# def test_angles_as_file_newline_list():
-#     angles =
-#     with tempinput(angles) as tempfilename:
-#         pafp = ProjectionAngleFileParser(tempfilename)
-#         assert [0, 0.1, 0.2, 0.3, 0.4, 0.5] == pafp.get_projection_angles().value
-
-#     # with a new empty line
-#     angles = "0\n0.1\n0.2\n0.3\n0.4\n0.5\n"
-#     with tempinput(angles) as tempfilename:
-#         pafp = ProjectionAngleFileParser(tempfilename)
-#         assert [0, 0.1, 0.2, 0.3, 0.4, 0.5] == pafp.get_projection_angles().value
