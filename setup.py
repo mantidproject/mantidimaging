@@ -140,5 +140,5 @@ setup(
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
     },
-    install_requires=["h5py", "numpy", "python-socketio", "pyqt5==5.15", "pyqtgraph==0.11"],
+    install_requires=["h5py", "numpy", "python-socketio", "pyqt5==5.15.2", "pyqtgraph==0.11"],
 )
