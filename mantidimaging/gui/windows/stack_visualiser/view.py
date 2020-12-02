@@ -121,21 +121,25 @@ class StackVisualiserView(BaseMainWindowView):
         self.roi_updated.emit(roi)
 
     def build_context_menu(self) -> QMenu:
-        actions = [("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
-                   ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-                   ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+        actions = [("Show history and metadata", self.show_image_metadata),
                    ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
                    ("Duplicate current ROI of data", lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
-                   ("Show history", self.show_image_metadata), ("Mark as projections/sinograms", self.mark_as_),
+                   ("Mark as projections/sinograms", self.mark_as_), ("", None),
+                   ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
+                   ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+                   ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
                    ("Change window name", self.change_window_name_clicked), ("Goto projection", self.goto_projection),
                    ("Goto angle", self.goto_angle)]
 
         menu = QMenu(self)
 
         for (menu_text, func) in actions:
-            action = QAction(menu_text, menu)
-            action.triggered.connect(func)
-            menu.addAction(action)
+            if func is None:
+                menu.addSeparator()
+            else:
+                action = QAction(menu_text, menu)
+                action.triggered.connect(func)
+                menu.addAction(action)
 
         return menu
 

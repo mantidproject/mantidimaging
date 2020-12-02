@@ -252,6 +252,7 @@ class FiltersWindowView(BaseMainWindowView):
         toggle_show_averaged_image = QAction("Toggle show averaged image", menu)
         toggle_show_averaged_image.triggered.connect(lambda: toggle_average_images(images))
         menu.addAction(toggle_show_averaged_image)
+        menu.addSeparator()
         self.roi_view.imageItem.menu = menu
 
         self.roi_view.setImage(images.data)

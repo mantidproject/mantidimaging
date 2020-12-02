@@ -50,4 +50,4 @@ def generate_logfile() -> IMATLogFile:
             "Monitor 3 after:  6078866"
         ]
     ]
-    return IMATLogFile(data)
+    return IMATLogFile(data, "/tmp/fake")
