@@ -162,12 +162,21 @@ class MainWindowModel(object):
         return len(self.active_stacks) > 0
 
     def add_log_to_sample(self, stack_name: str, log_file: str):
-        stack = self.get_stack_by_name(stack_name).widget()  # type: ignore
-        stack.presenter.images.log_file = loader.load_log(log_file)
-        stack.presenter.images.log_file.raise_if_angle_missing(stack.presenter.images.filenames)
+        stack_dock = self.get_stack_by_name(stack_name)
+        if stack_dock is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+
+        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
+        log = loader.load_log(log_file)
+        log.raise_if_angle_missing(stack.presenter.images.filenames)
+        stack.presenter.images.log_file = log
 
     def add_180_deg_to_stack(self, stack_name, _180_deg_file):
-        stack = self.get_stack_by_name(stack_name).widget()  # type: ignore
+        stack_dock = self.get_stack_by_name(stack_name)
+        if stack_dock is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+
+        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
         _180_deg = loader.load(file_names=[_180_deg_file])
         stack.presenter.images.proj180deg = _180_deg.sample
         return _180_deg
