@@ -39,6 +39,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     correlateBtn: QPushButton
     minimiseBtn: QPushButton
+    corHelpButton: QPushButton
 
     reconTab: QWidget
 
@@ -144,7 +145,8 @@ class ReconstructWindowView(BaseMainWindowView):
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
-        self.reconHelpButton.clicked.connect(self.open_help_webpage)
+        self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
+        self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -344,8 +346,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.correlateBtn.setEnabled(enabled)
         self.minimiseBtn.setEnabled(enabled)
 
-    def open_help_webpage(self):
+    def open_help_webpage(self, page: str):
         try:
-            open_help_webpage(SECTION_USER_GUIDE, "reconstructions/index")
+            open_help_webpage(SECTION_USER_GUIDE, page)
         except RuntimeError as err:
             self.show_error_dialog(str(err))
