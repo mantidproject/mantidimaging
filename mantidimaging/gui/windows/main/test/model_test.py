@@ -238,6 +238,21 @@ class MainWindowModelTest(unittest.TestCase):
         stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
             .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
 
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    def test_add_log_to_sample_no_stack(self, load_log: mock.Mock):
+        """
+        Test in add_log_to_sample when get_stack_by_name returns None
+        """
+        log_file = "Log file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+
+        self.assertRaises(RuntimeError, self.model.add_log_to_sample, stack_name=stack_name, log_file=log_file)
+
+        stack_mock.assert_called_with(stack_name)
+
     @mock.patch('mantidimaging.core.io.loader.load')
     def test_add_180_deg_to_stack(self, load: mock.Mock):
         _180_file = "180 file"
@@ -250,6 +265,20 @@ class MainWindowModelTest(unittest.TestCase):
         load.assert_called_with(file_names=[_180_file])
         stack_mock.assert_called_with(stack_name)
         self.assertEqual(_180_stack, stack_mock.return_value.widget.return_value.presenter.images.proj180deg)
+
+    @mock.patch('mantidimaging.core.io.loader.load')
+    def test_add_180_deg_to_stack_no_stack(self, load: mock.Mock):
+        """
+        Test in add_180_deg_to_stack when get_stack_by_name returns None
+        """
+        _180_file = "180 file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+
+        self.assertRaises(RuntimeError, self.model.add_180_deg_to_stack, stack_name=stack_name, _180_deg_file=_180_file)
+        stack_mock.assert_called_with(stack_name)
 
 
 if __name__ == '__main__':

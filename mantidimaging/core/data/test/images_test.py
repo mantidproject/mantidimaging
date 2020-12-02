@@ -198,3 +198,8 @@ class ImagesTest(unittest.TestCase):
         actual = images.projection_angles(275.69)
         self.assertEqual(10, len(actual.value))
         self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)
+
+    def test_metadata_gets_updated_with_logfile(self):
+        images = generate_images()
+        images.log_file = generate_logfile()
+        self.assertEqual(images.log_file.source_file, images.metadata[const.LOG_FILE])
