@@ -19,7 +19,7 @@ from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
 
 
 class StackVisualiserView(BaseMainWindowView):

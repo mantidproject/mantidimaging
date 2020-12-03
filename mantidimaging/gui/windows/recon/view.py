@@ -20,8 +20,8 @@ from mantidimaging.gui.windows.recon.presenter import Notifications as PresN
 from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
-    from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
+    from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView  # pragma: no cover
 
 
 class ReconstructWindowView(BaseMainWindowView):

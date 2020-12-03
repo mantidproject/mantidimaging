@@ -15,7 +15,7 @@ from .model import SVModel
 from ...utility.common import operation_in_progress
 
 if TYPE_CHECKING:
-    from .view import StackVisualiserView
+    from .view import StackVisualiserView  # pragma: no cover
 
 
 class SVNotification(IntEnum):
