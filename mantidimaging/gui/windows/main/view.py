@@ -6,10 +6,12 @@ from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFi
 from typing import Optional
 from uuid import UUID
 
-from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox
+from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
 
+from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
 from mantidimaging.core.data import Images
@@ -32,13 +34,18 @@ class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
-    active_stacks_changed = Qt.pyqtSignal()
-    backend_message = Qt.pyqtSignal(bytes)
+    active_stacks_changed = pyqtSignal()
+    backend_message = pyqtSignal(bytes)
+
+    menuFile: QMenu
+    menuWorkflow: QMenu
+    menuImage: QMenu
+    menuHelp: QMenu
 
     actionRecon: QAction
     actionFilters: QAction
     actionCompareImages: QAction
-    actionLoadLog: QAction
+    actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
     actionLoad: QAction
@@ -81,6 +88,8 @@ class MainWindowView(BaseMainWindowView):
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
+        self.menuImage.aboutToShow.connect(self.populate_image_menu)
+
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
@@ -93,8 +102,28 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionDebug_Me.triggered.connect(self.attach_debugger)
 
+    def populate_image_menu(self):
+        self.menuImage.clear()
+        current_stack = self.current_showing_stack()
+        if current_stack is None:
+            self.menuImage.addAction("No stack loaded!")
+        else:
+            populate_menu(self.menuImage, current_stack.actions)
+
+    def current_showing_stack(self) -> Optional[StackVisualiserView]:
+        for stack in self.findChildren(StackVisualiserView):
+            if not stack.visibleRegion().isEmpty():
+                return stack
+        return None
+
     def update_shortcuts(self):
-        self.actionSave.setEnabled(len(self.presenter.stack_names) > 0)
+        enabled = len(self.presenter.stack_names) > 0
+        self.actionSave.setEnabled(enabled)
+        self.actionSampleLoadLog.setEnabled(enabled)
+        self.actionLoad180deg.setEnabled(enabled)
+        self.actionLoadProjectionAngles.setEnabled(enabled)
+        self.menuWorkflow.setEnabled(enabled)
+        self.menuImage.setEnabled(enabled)
 
     @staticmethod
     def open_online_documentation():
@@ -128,9 +157,9 @@ class MainWindowView(BaseMainWindowView):
 
         # Open file dialog
         file_filter = "Log File (*.txt *.log)"
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="Log to be loaded",
-                                                          filter=f"{file_filter};;All (*.*)",
-                                                          initialFilter=file_filter)
+        selected_file, _ = QFileDialog.getOpenFileName(caption="Log to be loaded",
+                                                       filter=f"{file_filter};;All (*.*)",
+                                                       initialFilter=file_filter)
         # Cancel/Close was clicked
         if selected_file == "":
             return
@@ -151,9 +180,9 @@ class MainWindowView(BaseMainWindowView):
 
         # Open file dialog
         file_filter = "Image File (*.tif *.tiff)"
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="180 Degree Image",
-                                                          filter=f"{file_filter};;All (*.*)",
-                                                          initialFilter=file_filter)
+        selected_file, _ = QFileDialog.getOpenFileName(caption="180 Degree Image",
+                                                       filter=f"{file_filter};;All (*.*)",
+                                                       initialFilter=file_filter)
         # Cancel/Close was clicked
         if selected_file == "":
             return
@@ -175,8 +204,8 @@ class MainWindowView(BaseMainWindowView):
 
         stack_name = stack_selector.selected_stack
 
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                          filter="All (*.*)")
+        selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
+                                                       filter="All (*.*)")
         if selected_file == "":
             return
 
@@ -246,8 +275,8 @@ class MainWindowView(BaseMainWindowView):
                             stack: Images,
                             title: str,
                             position=QtCore.Qt.TopDockWidgetArea,
-                            floating=False) -> Qt.QDockWidget:
-        dock = Qt.QDockWidget(title, self)
+                            floating=False) -> QDockWidget:
+        dock = QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
         self.setCentralWidget(dock)
