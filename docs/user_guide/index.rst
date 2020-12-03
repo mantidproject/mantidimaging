@@ -99,7 +99,7 @@ For this reconstruction we will be manually finding the COR and tilt values. The
    :alt: Loading screen
    :align: center
 
-4. Continue by selecting which image shows the most accurate depiction of the sample. Mantid Imaging will highlight the image it feels is best in green. This can be innacurate for very noisy samples, but should be accurate for this dataset.
+4. Continue by selecting which image shows the most accurate depiction of the sample. Mantid Imaging will highlight the image it feels is best in green. This can be inaccurate for very noisy samples, but should be accurate for this dataset.
 5. Select another slice at the bottom of the sample, "Add" it to the table.  As soon as you add the 2nd slice it will perform a fit for the COR and tilt. This will not be accurate - select the newly added row and repeat the refine.
 6. Once you find a good COR and confirmed with "Finish", the fit should be automatically performed to the new COR you found.
 
