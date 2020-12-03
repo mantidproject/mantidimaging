@@ -82,6 +82,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.modelReset.connect(self.on_table_row_count_change)  # type: ignore
 
+
+
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
             # Should we auto fit on data change?
@@ -147,8 +149,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
-
-        getLogger(__name__).info("I am attempting to start the recon window")
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()

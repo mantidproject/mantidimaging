@@ -106,6 +106,7 @@ class AstraRecon(BaseRecon):
         cfg = astra.astra_dict(recon_params.algorithm)
         cfg['FilterType'] = recon_params.filter_name
         with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
+            LOG.info("No GPU = problems here")
             astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
             return astra.data2d.get(rec_id)
 

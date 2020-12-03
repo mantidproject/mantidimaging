@@ -88,7 +88,6 @@ def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str
     :param shape:
     :param name: Name used for the shared memory file by which this memory chunk will be identified
     """
-    b = "a" / "c"
     LOG.info(f"Requested shared array with name='{name}', shape={shape}, dtype={dtype}")
     memory_file_name = f"shm://{name}"
     arr = sa.create(memory_file_name, shape, dtype)
