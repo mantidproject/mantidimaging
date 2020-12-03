@@ -60,8 +60,6 @@ class ReconstructWindowView(BaseMainWindowView):
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
 
-        getLogger(__name__).info("I am attempting to start the recon window")
-
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
 
@@ -149,6 +147,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
+
+        getLogger(__name__).info("I am attempting to start the recon window")
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
