@@ -1,6 +1,6 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional
 
 import numpy
@@ -59,6 +59,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
+
+        getLogger(__name__).info("I am attempting to start the recon window")
 
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
