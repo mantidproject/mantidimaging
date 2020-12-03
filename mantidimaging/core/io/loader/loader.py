@@ -53,7 +53,7 @@ def supported_formats():
     try:
         from skimage import io as skio  # noqa: F401
         skio_available = True
-    except ImportError:   # pragma: no cover
+    except ImportError:  # pragma: no cover
         skio_available = False  # pragma: no cover
 
     try:
