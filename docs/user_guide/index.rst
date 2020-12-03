@@ -7,7 +7,6 @@ User Guide
 
    operations/index
    gui/index
-   python/index
    reconstructions/index
 
 
