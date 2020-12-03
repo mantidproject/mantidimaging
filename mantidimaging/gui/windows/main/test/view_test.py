@@ -1,6 +1,8 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import numpy as np
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 import mock
 
@@ -38,10 +40,10 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
-    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_diag: mock.Mock):
-        stack_selector_diag.return_value.exec.return_value = QDialog.Accepted
+    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_dialog: mock.Mock):
+        stack_selector_dialog.return_value.exec.return_value = QDialog.Accepted
         selected_stack = "selected_stack"
-        stack_selector_diag.return_value.selected_stack = selected_stack
+        stack_selector_dialog.return_value.selected_stack = selected_stack
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
@@ -52,10 +54,10 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.load_180_deg_dialog()
 
-        stack_selector_diag.assert_called_once_with(main_window=self.view,
-                                                    title='Stack Selector',
-                                                    message='Which stack is the 180 degree projection being loaded '
-                                                    'for?')
+        stack_selector_dialog.assert_called_once_with(main_window=self.view,
+                                                      title='Stack Selector',
+                                                      message='Which stack is the 180 degree projection being loaded '
+                                                      'for?')
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
@@ -208,6 +210,34 @@ class MainWindowViewTest(unittest.TestCase):
         mock_sv.assert_called_once_with(self.view, dock, images)
         dock.setWidget.assert_called_once_with(mock_sv.return_value)
         dock.setFloating.assert_called_once_with(floating)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
+    @mock.patch("mantidimaging.gui.windows.main.view.ProjectionAngleFileParser")
+    @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
+    @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
+    def test_load_projection_angles(self, getOpenFileName: mock.Mock, StackSelectorDialog: mock.Mock,
+                                    ProjectionAngleFileParser: Mock, QMessageBox: Mock):
+        StackSelectorDialog.return_value.exec.return_value = QDialog.Accepted
+        selected_stack = "selected_stack"
+        StackSelectorDialog.return_value.selected_stack = selected_stack
+
+        selected_file = "~/home/test/directory/selected_file.txt"
+        getOpenFileName.return_value = (selected_file, None)
+
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        ProjectionAngleFileParser.return_value.get_projection_angles.return_value = proj_angles
+
+        self.presenter.add_projection_angles_to_sample
+        self.view.load_projection_angles()
+
+        StackSelectorDialog.assert_called_once_with(main_window=self.view,
+                                                    title='Stack Selector',
+                                                    message=self.view.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE)
+        getOpenFileName.assert_called_once_with(caption=self.view.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
+                                                filter="All (*.*)")
+
+        self.presenter.add_projection_angles_to_sample.assert_called_once_with(selected_stack, proj_angles)
+        QMessageBox.information.assert_called_once()
 
     def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
         self.presenter.stack_names = ["1", "2"]
