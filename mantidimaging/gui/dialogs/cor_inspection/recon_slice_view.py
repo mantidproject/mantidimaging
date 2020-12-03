@@ -11,7 +11,7 @@ from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
+    from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView  # pragma: no cover
 
 
 class CompareSlicesView(GraphicsLayoutWidget):

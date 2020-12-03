@@ -18,7 +18,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView  # pragma: no cover
 
 LOG = getLogger(__name__)
 

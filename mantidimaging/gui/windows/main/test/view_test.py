@@ -106,28 +106,6 @@ class MainWindowViewTest(unittest.TestCase):
         mock_filters.return_value.activateWindow.assert_called_once_with()
         mock_filters.return_value.raise_.assert_called_once_with()
 
-    @mock.patch("mantidimaging.gui.windows.main.view.SavuFiltersWindowView")
-    def test_show_savu_filters_window(self, mock_savu_filters: mock.Mock):
-        self.view.show_savu_filters_window()
-
-        mock_savu_filters.assert_called_once_with(self.view)
-        mock_savu_filters.return_value.show.assert_called_once_with()
-        mock_savu_filters.return_value.activateWindow.assert_not_called()
-        mock_savu_filters.return_value.raise_.assert_not_called()
-
-        self.view.show_savu_filters_window()
-        mock_savu_filters.assert_called_once_with(self.view)
-        mock_savu_filters.return_value.activateWindow.assert_called_once_with()
-        mock_savu_filters.return_value.raise_.assert_called_once_with()
-
-    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
-    @mock.patch("mantidimaging.gui.windows.main.view.SavuFiltersWindowView", side_effect=RuntimeError("Test message"))
-    def test_show_savu_filters_window_no_backend(self, mock_savu_filters: mock.Mock, mock_widgets: mock.Mock):
-        self.view.show_savu_filters_window()
-
-        mock_savu_filters.assert_called_once_with(self.view)
-        mock_widgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.AVAILABLE_MSG, "Test message")
-
     def test_create_new_stack(self):
         images = generate_images()
         self.view.create_new_stack(images, "Test Title")

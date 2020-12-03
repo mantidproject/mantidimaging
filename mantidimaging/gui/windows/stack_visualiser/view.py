@@ -20,7 +20,7 @@ from .presenter import SVNotification
 from ...utility.qt_helpers import populate_menu
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
 
 
 class StackVisualiserView(BaseMainWindowView):

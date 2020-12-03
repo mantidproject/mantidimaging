@@ -24,7 +24,6 @@ from mantidimaging.gui.windows.main.presenter import Notification as PresNotific
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
-from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
@@ -32,7 +31,6 @@ LOG = getLogger(__file__)
 
 
 class MainWindowView(BaseMainWindowView):
-    AVAILABLE_MSG = "Savu Backend not available"
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
@@ -46,7 +44,6 @@ class MainWindowView(BaseMainWindowView):
 
     actionRecon: QAction
     actionFilters: QAction
-    actionSavuFilters: QAction
     actionCompareImages: QAction
     actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
@@ -56,7 +53,6 @@ class MainWindowView(BaseMainWindowView):
     actionExit: QAction
 
     filters: Optional[FiltersWindowView] = None
-    savu_filters: Optional[SavuFiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
 
     load_dialogue: Optional[MWLoadDialog] = None
@@ -246,17 +242,6 @@ class MainWindowView(BaseMainWindowView):
             self.filters.activateWindow()
             self.filters.raise_()
 
-    def show_savu_filters_window(self):
-        if not self.savu_filters:
-            try:
-                self.savu_filters = SavuFiltersWindowView(self)
-                self.savu_filters.show()
-            except RuntimeError as e:
-                QtWidgets.QMessageBox.warning(self, self.AVAILABLE_MSG, str(e))
-        else:
-            self.savu_filters.activateWindow()
-            self.savu_filters.raise_()
-
     @property
     def stack_list(self):
         return self.presenter.stack_list
@@ -329,10 +314,6 @@ class MainWindowView(BaseMainWindowView):
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:
-            # allows to properly cleanup the socket IO connection
-            if self.savu_filters:
-                self.savu_filters.close()
-
             # Pass close event to parent
             super(MainWindowView, self).closeEvent(event)
 
