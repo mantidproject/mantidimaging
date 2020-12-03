@@ -255,6 +255,7 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.actionSave.setEnabled(original_state)
         self.view.actionSampleLoadLog.setEnabled(original_state)
         self.view.actionLoad180deg.setEnabled(original_state)
+        self.view.actionLoadProjectionAngles.setEnabled(original_state)
         self.view.menuWorkflow.setEnabled(original_state)
         self.view.menuImage.setEnabled(original_state)
 
@@ -263,6 +264,7 @@ class MainWindowViewTest(unittest.TestCase):
         self.assertEqual(expected_state, self.view.actionSave.isEnabled())
         self.assertEqual(expected_state, self.view.actionSampleLoadLog.isEnabled())
         self.assertEqual(expected_state, self.view.actionLoad180deg.isEnabled())
+        self.assertEqual(expected_state, self.view.actionLoadProjectionAngles.isEnabled())
         self.assertEqual(expected_state, self.view.menuWorkflow.isEnabled())
         self.assertEqual(expected_state, self.view.menuImage.isEnabled())
 

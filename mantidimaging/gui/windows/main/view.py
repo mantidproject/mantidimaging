@@ -125,6 +125,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionSave.setEnabled(enabled)
         self.actionSampleLoadLog.setEnabled(enabled)
         self.actionLoad180deg.setEnabled(enabled)
+        self.actionLoadProjectionAngles.setEnabled(enabled)
         self.menuWorkflow.setEnabled(enabled)
         self.menuImage.setEnabled(enabled)
 
@@ -207,7 +208,7 @@ class MainWindowView(BaseMainWindowView):
 
         stack_name = stack_selector.selected_stack
 
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
+        selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
                                                           filter="All (*.*)")
         if selected_file == "":
             return
