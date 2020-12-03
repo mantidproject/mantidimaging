@@ -32,7 +32,7 @@ Firstly, let's load our projections. Go to "File" then "Load" or alternatively u
 
 #. Click select on the sample row and go to the directory you want to load. We'll be working with the "Tilt 4 pre reco" data set.
 #. Open one of the images with the prefix "Tomo".
-#. All images with the prefix "Tomo" in the same area will be loaded
+#. All images with the prefix "Tomo" in the same directory will be loaded
 
 Mantid Imaging should at this stage search the directory for all the files with prefixes like "Flat" and "Dark" and put them in the correct category. If this is missed or simply stored in a different location, the above steps can be repeated to find and load these.
 
@@ -91,7 +91,7 @@ To open the reconstruction window, go to "Workflow" then "Reconstruct". This sho
    :alt: Loading screen
    :align: center
 
-4. Continue by selecting which window shows the most accurate depiction of the sample. Mantid image will highlight the window it feels is best in green.
+4. Continue by selecting which window shows the most accurate depiction of the sample. Mantid Imaging will highlight the window it feels is best in green.
 5. Repeat for a slice at the bottom.
 6. After this the "Calculate COR/Tilt from slice COR table" will now be selectable. Feel free to repeat the process for intermediate slices before pressing this button.
 
@@ -102,6 +102,6 @@ Now move to the "Reconstruct" tab. At this stage there should several different 
 - Reconstruction filter: hann
 - Pixel size (microns): 103
 
-There are many filter options. Experiment with the filters by looking at the slice preview and the corresponding hitogram next to it. Filters like "hann" will strongly filter out higher frequency components. In contrast "ram-lak" preservers these higher frequency components resulting in a visibly less smooth histogram.
+There are many filter options. Experiment with the filters by looking at the slice preview and the corresponding histogram next to it. Filters like "hann" will strongly filter out higher frequency components. In contrast "ram-lak" preserves these higher frequency components resulting in a visibly less smooth histogram.
 
 Then click "Reconstruct Volume" to complete the reconstruction.
