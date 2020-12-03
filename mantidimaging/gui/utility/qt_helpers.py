@@ -130,7 +130,6 @@ def add_property_to_form(label: str,
         if default_value:
             box.setValue(cast_func(default_value))
 
-    # some of these are used dynamically by Savu Operations GUI and will not show up in a grep
     if dtype in ['str', Type.STR, 'tuple', Type.TUPLE, 'NoneType', Type.NONETYPE, 'list', Type.LIST]:
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
         right_widget = Qt.QLineEdit()
