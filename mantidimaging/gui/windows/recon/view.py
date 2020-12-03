@@ -1,6 +1,5 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional
 
 import numpy
@@ -81,8 +80,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.rowsInserted.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.modelReset.connect(self.on_table_row_count_change)  # type: ignore
-
-
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
