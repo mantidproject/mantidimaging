@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButt
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main.view import MainWindowView
+    from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 
 class StackSelectorDialog(QDialog):

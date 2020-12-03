@@ -8,7 +8,7 @@ from PyQt5 import Qt
 from .presenter import (StackSelectorWidgetPresenter, Notification)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
 class StackSelectorWidgetView(Qt.QComboBox):

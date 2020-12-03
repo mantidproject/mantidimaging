@@ -14,7 +14,7 @@ from mantidimaging.gui.windows.savu_operations.presenter import Notification as 
 from mantidimaging.gui.windows.savu_operations.presenter import SavuFiltersWindowPresenter
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main.view import MainWindowView  # noqa:F401  # pragma: no cover
 
 
 class SavuFiltersWindowView(BaseMainWindowView):

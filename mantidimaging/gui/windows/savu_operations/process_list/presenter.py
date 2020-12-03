@@ -9,7 +9,7 @@ from mantidimaging.core.utility.savu_interop.plugin_list import SAVUPluginListEn
 from .model import ProcessListModel
 
 if TYPE_CHECKING:
-    from .view import ProcessListView
+    from .view import ProcessListView  # pragma: no cover
 
 
 class Notification(Enum):

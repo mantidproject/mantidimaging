@@ -20,7 +20,7 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
 class Notification(Enum):

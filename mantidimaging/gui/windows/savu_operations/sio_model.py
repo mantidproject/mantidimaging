@@ -10,7 +10,7 @@ from mantidimaging.core.net.socket_io import SocketIO
 from mantidimaging.gui.windows.savu_operations.job_run_response import JobRunResponseContent
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_operations.remote_presenter import SavuFiltersRemotePresenter  # noqa: F401
+    from mantidimaging.gui.windows.savu_operations.remote_presenter import SavuFiltersRemotePresenter  # noqa: F401  # pragma: no cover
 
 
 class SavuFiltersSIOModel(object):

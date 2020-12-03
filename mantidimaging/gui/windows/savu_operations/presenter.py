@@ -21,8 +21,8 @@ from mantidimaging.gui.windows.savu_operations.remote_presenter import SavuFilte
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView  # noqa: F401
-    from mantidimaging.gui.windows.main.view import MainWindowView  # noqa: F401
+    from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView  # noqa: F401  # pragma: no cover
+    from mantidimaging.gui.windows.main.view import MainWindowView  # noqa: F401  # pragma: no cover
 
 
 class Notification(Enum):

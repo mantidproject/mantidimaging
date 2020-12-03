@@ -17,7 +17,7 @@ from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout
+    from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
 
 
 class MedianFilter(BaseFilter):

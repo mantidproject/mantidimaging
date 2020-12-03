@@ -10,7 +10,7 @@ from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePre
 from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter
+    from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter  # pragma: no cover
 
 
 def _get_stack_from_uuid(original_stack, stack_uuid):

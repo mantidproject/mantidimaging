@@ -19,7 +19,7 @@ from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.recon.view import ReconstructWindowView
+    from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
 
 
 class AutoCorMethod(Enum):

@@ -15,8 +15,8 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
-    from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
+    from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter  # pragma: no cover
+    from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter  # pragma: no cover
 
 
 class Notification(Enum):

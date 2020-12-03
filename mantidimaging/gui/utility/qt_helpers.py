@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpi
 from mantidimaging.core.utility import finder
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView  # pragma: no cover
 
 
 class BlockQtSignals(object):
