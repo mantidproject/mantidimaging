@@ -36,7 +36,8 @@ class StackVisualiserViewTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
         with mock.patch('mantidimaging.gui.windows.main.view.check_version_and_label') as mock_find_latest_version:
-            self.window = MainWindowView()
+            with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+                self.window = MainWindowView()
             mock_find_latest_version.assert_called_once()
         self.window.remove_stack = mock.Mock()
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
