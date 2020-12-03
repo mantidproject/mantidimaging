@@ -37,7 +37,7 @@ class MainWindowViewTest(unittest.TestCase):
         self.assertEqual(return_value, self.presenter.get_stack_with_images.return_value.name)
 
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
-    @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
+    @mock.patch("mantidimaging.gui.windows.main.view.Qt.QFileDialog.getOpenFileName")
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_diag: mock.Mock):
         stack_selector_diag.return_value.exec.return_value = QDialog.Accepted
         selected_stack = "selected_stack"
@@ -187,9 +187,9 @@ class MainWindowViewTest(unittest.TestCase):
                          setCentralWidget=DEFAULT,
                          addDockWidget=DEFAULT)
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    @mock.patch("mantidimaging.gui.windows.main.view.QDockWidget")
+    @mock.patch("mantidimaging.gui.windows.main.view.Qt")
     def test_create_stack_window(self,
-                                 mock_dock: mock.Mock,
+                                 mock_qt: mock.Mock,
                                  mock_sv: mock.Mock,
                                  setCentralWidget: Mock = Mock(),
                                  addDockWidget: Mock = Mock()):
@@ -200,99 +200,11 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.create_stack_window(images, title, position=position, floating=floating)
 
-        mock_dock.assert_called_once_with(title, self.view)
-        dock = mock_dock.return_value
+        mock_qt.QDockWidget.assert_called_once_with(title, self.view)
+        dock = mock_qt.QDockWidget.return_value
         setCentralWidget.assert_called_once_with(dock)
         addDockWidget.assert_called_once_with(position, dock)
 
         mock_sv.assert_called_once_with(self.view, dock, images)
         dock.setWidget.assert_called_once_with(mock_sv.return_value)
         dock.setFloating.assert_called_once_with(floating)
-
-    def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
-        self.presenter.stack_names = ["1", "2"]
-
-        self._update_shortcuts_test(False, True)
-        self._update_shortcuts_test(True, True)
-
-    def test_update_shortcuts_with_presenter_with_no_stacks(self):
-        self.presenter.stack_names = []
-
-        self._update_shortcuts_test(False, False)
-        self._update_shortcuts_test(True, False)
-
-    def _update_shortcuts_test(self, original_state, expected_state):
-        self.view.actionSave.setEnabled(original_state)
-        self.view.actionSampleLoadLog.setEnabled(original_state)
-        self.view.actionLoad180deg.setEnabled(original_state)
-        self.view.menuWorkflow.setEnabled(original_state)
-        self.view.menuImage.setEnabled(original_state)
-
-        self.view.update_shortcuts()
-
-        self.assertEqual(expected_state, self.view.actionSave.isEnabled())
-        self.assertEqual(expected_state, self.view.actionSampleLoadLog.isEnabled())
-        self.assertEqual(expected_state, self.view.actionLoad180deg.isEnabled())
-        self.assertEqual(expected_state, self.view.menuWorkflow.isEnabled())
-        self.assertEqual(expected_state, self.view.menuImage.isEnabled())
-
-    @mock.patch("mantidimaging.gui.windows.main.view.populate_menu")
-    def test_populate_image_menu_with_no_stack(self, populate_menu):
-        self.view.menuImage = mock.MagicMock()
-        self.view.current_showing_stack = mock.MagicMock(return_value=None)
-
-        self.view.populate_image_menu()
-
-        populate_menu.assert_not_called()
-        self.view.menuImage.addAction.assert_called_once_with("No stack loaded!")
-
-    @mock.patch("mantidimaging.gui.windows.main.view.populate_menu")
-    def test_populate_image_menu_with_stack_and_actions(self, populate_menu):
-        self.view.menuImage = mock.MagicMock()
-        stack = mock.MagicMock()
-        actions = mock.MagicMock()
-        stack.actions = actions
-        self.view.current_showing_stack = mock.MagicMock(return_value=stack)
-
-        self.view.populate_image_menu()
-
-        populate_menu.assert_called_once_with(self.view.menuImage, actions)
-        self.view.menuImage.addAction.assert_not_called()
-
-    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    def test_current_showing_stack_with_stack_with_visible(self, stack_visualiser_view):
-        stack = mock.MagicMock()
-        stack.visibleRegion.return_value.isEmpty.return_value = False
-        self.view.findChildren = mock.MagicMock(return_value=[stack])
-
-        current_stack = self.view.current_showing_stack()
-
-        self.assertEqual(stack, current_stack)
-        stack.visibleRegion.assert_called_once()
-        stack.visibleRegion.return_value.isEmpty.assert_called_once()
-        self.view.findChildren.assert_called_once_with(stack_visualiser_view)
-
-    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    def test_current_showing_stack_with_stack_not_visible(self, stack_visualiser_view):
-        stack = mock.MagicMock()
-        stack.visibleRegion.return_value.isEmpty.return_value = True
-        self.view.findChildren = mock.MagicMock(return_value=[stack])
-
-        current_stack = self.view.current_showing_stack()
-
-        self.assertEqual(None, current_stack)
-        stack.visibleRegion.assert_called_once()
-        stack.visibleRegion.return_value.isEmpty.assert_called_once()
-        self.view.findChildren.assert_called_once_with(stack_visualiser_view)
-
-    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    def test_current_showing_stack_no_stack(self, stack_visualiser_view):
-        stack = mock.MagicMock()
-        self.view.findChildren = mock.MagicMock(return_value=[])
-
-        current_stack = self.view.current_showing_stack()
-
-        self.assertEqual(None, current_stack)
-        stack.visibleRegion.assert_not_called()
-        stack.visibleRegion.return_value.isEmpty.assert_not_called()
-        self.view.findChildren.assert_called_once_with(stack_visualiser_view)

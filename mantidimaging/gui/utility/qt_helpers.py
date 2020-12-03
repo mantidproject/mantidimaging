@@ -13,7 +13,7 @@ from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget, \
-    QSizePolicy, QAction
+    QSizePolicy
 
 from mantidimaging.core.utility import finder
 
@@ -235,13 +235,3 @@ def delete_all_widgets_from_layout(lo):
         # layout and marks them for deletion)
         elif item.widget() is not None:
             item.widget().setParent(None)
-
-
-def populate_menu(menu, actions_list):
-    for (menu_text, func) in actions_list:
-        if func is None:
-            menu.addSeparator()
-        else:
-            action = QAction(menu_text, menu)
-            action.triggered.connect(func)
-            menu.addAction(action)
