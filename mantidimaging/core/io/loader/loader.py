@@ -53,14 +53,14 @@ def supported_formats():
     try:
         from skimage import io as skio  # noqa: F401
         skio_available = True
-    except ImportError:
-        skio_available = False
+    except ImportError:   # pragma: no cover
+        skio_available = False  # pragma: no cover
 
     try:
         import astropy.io.fits as fits  # noqa: F401
         fits_available = True
-    except ImportError:
-        fits_available = False
+    except ImportError:  # pragma: no cover
+        fits_available = False  # pragma: no cover
 
     avail_list = \
         (['fits', 'fit'] if fits_available else []) + \

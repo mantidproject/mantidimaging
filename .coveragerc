@@ -24,6 +24,9 @@ exclude_lines =
     raise AssertionError
     raise NotImplementedError
 
+    # Don't complain if tests never check a lack of Import as they should always be present in tests
+    except ImportError:
+
     # Don't complain if non-runnable code isn't run:
     if 0:
     if __name__ == .__main__.:
