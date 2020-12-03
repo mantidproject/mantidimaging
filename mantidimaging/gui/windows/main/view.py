@@ -209,7 +209,7 @@ class MainWindowView(BaseMainWindowView):
         stack_name = stack_selector.selected_stack
 
         selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                          filter="All (*.*)")
+                                                       filter="All (*.*)")
         if selected_file == "":
             return
 
