@@ -20,7 +20,7 @@ from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
 
 
 class FiltersWindowView(BaseMainWindowView):
