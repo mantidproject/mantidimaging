@@ -31,5 +31,5 @@ dependencies:
       - pytest-parallel
       - psutil
       - isort
-      - cudatookit==10.2
+      - cudatoolkit==10.2
       - cupy-cuda102
