@@ -11,6 +11,8 @@ dependencies:
   - sharedarray
   - sarepy
   - astra-toolbox
+  - cudatoolkit=9.0
+  - cupy
   - pip:
       - pytest
       - pytest-cov
@@ -31,4 +33,3 @@ dependencies:
       - pytest-parallel
       - psutil
       - isort
-      - cupy-cuda102
