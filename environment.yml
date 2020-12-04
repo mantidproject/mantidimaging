@@ -31,3 +31,4 @@ dependencies:
       - pytest-parallel
       - psutil
       - isort
+      - cupy
