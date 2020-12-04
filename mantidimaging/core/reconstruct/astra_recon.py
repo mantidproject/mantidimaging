@@ -44,7 +44,7 @@ def _managed_recon(sino, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int],
     rec_id = None
     alg_id = None
     try:
-        proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
+        proj_id = astra.create_projector('line', proj_geom, vol_geom)
         sino_id = astra.data2d.create('-sino', proj_geom, sino)
         rec_id = astra.data2d.create('-vol', vol_geom)
 
