@@ -71,7 +71,7 @@ def run_import_checks(config):
 
 def run_cuda_check():
     """
-    Checks if nvidia-smi is on the system and working correctly.
+    Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
     import os
-    return "Driver Version" in os.popen("nvidia-smi").read()
+    return "Driver Version" in os.popen("nvidia-smi").read() and os.popen("locate libcuda.so")
