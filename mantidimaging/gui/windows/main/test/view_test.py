@@ -1,14 +1,15 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import numpy as np
-from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
-import mock
+from uuid import uuid4
 
+import mock
+import numpy as np
 from PyQt5.QtWidgets import QDialog
 from mock import DEFAULT, Mock
 
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.test_helpers import start_qapplication
@@ -205,7 +206,6 @@ class MainWindowViewTest(unittest.TestCase):
         proj_angles = ProjectionAngles(np.arange(0, 10))
         ProjectionAngleFileParser.return_value.get_projection_angles.return_value = proj_angles
 
-        self.presenter.add_projection_angles_to_sample
         self.view.load_projection_angles()
 
         StackSelectorDialog.assert_called_once_with(main_window=self.view,
@@ -306,3 +306,13 @@ class MainWindowViewTest(unittest.TestCase):
         stack.visibleRegion.assert_not_called()
         stack.visibleRegion.return_value.isEmpty.assert_not_called()
         self.view.findChildren.assert_called_once_with(stack_visualiser_view)
+
+    def test_get_images_from_stack_uuid(self):
+        uuid = uuid4()
+        images = mock.MagicMock()
+        self.presenter.get_stack_visualiser.return_value.presenter.images = images
+
+        return_value = self.view.get_images_from_stack_uuid(uuid)
+
+        self.presenter.get_stack_visualiser.assert_called_once_with(uuid)
+        self.assertEqual(images, return_value)
