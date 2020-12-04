@@ -11,7 +11,7 @@ dependencies:
   - sharedarray
   - sarepy
   - astra-toolbox
-  - cudatookit=10.2
+  - cudatoolkit=10.2
   - pip:
       - pytest
       - pytest-cov
