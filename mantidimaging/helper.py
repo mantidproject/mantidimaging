@@ -68,6 +68,7 @@ def run_import_checks(config):
     else:
         log.info("Running process on {0} cores.".format(config.func.cores))
 
+
 def run_cuda_check():
     """
     Checks if nvidia-smi is on the system and working correctly.
