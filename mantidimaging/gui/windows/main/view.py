@@ -6,10 +6,12 @@ from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFi
 from typing import Optional
 from uuid import UUID
 
-from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox
+from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
 
+from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
 from mantidimaging.core.data import Images
@@ -22,7 +24,6 @@ from mantidimaging.gui.windows.main.presenter import Notification as PresNotific
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
-from mantidimaging.gui.windows.savu_operations.view import SavuFiltersWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
@@ -30,18 +31,21 @@ LOG = getLogger(__file__)
 
 
 class MainWindowView(BaseMainWindowView):
-    AVAILABLE_MSG = "Savu Backend not available"
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
-    active_stacks_changed = Qt.pyqtSignal()
-    backend_message = Qt.pyqtSignal(bytes)
+    active_stacks_changed = pyqtSignal()
+    backend_message = pyqtSignal(bytes)
+
+    menuFile: QMenu
+    menuWorkflow: QMenu
+    menuImage: QMenu
+    menuHelp: QMenu
 
     actionRecon: QAction
     actionFilters: QAction
-    actionSavuFilters: QAction
     actionCompareImages: QAction
-    actionLoadLog: QAction
+    actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
     actionLoad: QAction
@@ -49,7 +53,6 @@ class MainWindowView(BaseMainWindowView):
     actionExit: QAction
 
     filters: Optional[FiltersWindowView] = None
-    savu_filters: Optional[SavuFiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
 
     load_dialogue: Optional[MWLoadDialog] = None
@@ -85,6 +88,8 @@ class MainWindowView(BaseMainWindowView):
         self.actionSave.triggered.connect(self.show_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
+        self.menuImage.aboutToShow.connect(self.populate_image_menu)
+
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
@@ -97,8 +102,28 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionDebug_Me.triggered.connect(self.attach_debugger)
 
+    def populate_image_menu(self):
+        self.menuImage.clear()
+        current_stack = self.current_showing_stack()
+        if current_stack is None:
+            self.menuImage.addAction("No stack loaded!")
+        else:
+            populate_menu(self.menuImage, current_stack.actions)
+
+    def current_showing_stack(self) -> Optional[StackVisualiserView]:
+        for stack in self.findChildren(StackVisualiserView):
+            if not stack.visibleRegion().isEmpty():
+                return stack
+        return None
+
     def update_shortcuts(self):
-        self.actionSave.setEnabled(len(self.presenter.stack_names) > 0)
+        enabled = len(self.presenter.stack_names) > 0
+        self.actionSave.setEnabled(enabled)
+        self.actionSampleLoadLog.setEnabled(enabled)
+        self.actionLoad180deg.setEnabled(enabled)
+        self.actionLoadProjectionAngles.setEnabled(enabled)
+        self.menuWorkflow.setEnabled(enabled)
+        self.menuImage.setEnabled(enabled)
 
     @staticmethod
     def open_online_documentation():
@@ -132,9 +157,9 @@ class MainWindowView(BaseMainWindowView):
 
         # Open file dialog
         file_filter = "Log File (*.txt *.log)"
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="Log to be loaded",
-                                                          filter=f"{file_filter};;All (*.*)",
-                                                          initialFilter=file_filter)
+        selected_file, _ = QFileDialog.getOpenFileName(caption="Log to be loaded",
+                                                       filter=f"{file_filter};;All (*.*)",
+                                                       initialFilter=file_filter)
         # Cancel/Close was clicked
         if selected_file == "":
             return
@@ -155,9 +180,9 @@ class MainWindowView(BaseMainWindowView):
 
         # Open file dialog
         file_filter = "Image File (*.tif *.tiff)"
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption="180 Degree Image",
-                                                          filter=f"{file_filter};;All (*.*)",
-                                                          initialFilter=file_filter)
+        selected_file, _ = QFileDialog.getOpenFileName(caption="180 Degree Image",
+                                                       filter=f"{file_filter};;All (*.*)",
+                                                       initialFilter=file_filter)
         # Cancel/Close was clicked
         if selected_file == "":
             return
@@ -179,8 +204,8 @@ class MainWindowView(BaseMainWindowView):
 
         stack_name = stack_selector.selected_stack
 
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                          filter="All (*.*)")
+        selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
+                                                       filter="All (*.*)")
         if selected_file == "":
             return
 
@@ -217,17 +242,6 @@ class MainWindowView(BaseMainWindowView):
             self.filters.activateWindow()
             self.filters.raise_()
 
-    def show_savu_filters_window(self):
-        if not self.savu_filters:
-            try:
-                self.savu_filters = SavuFiltersWindowView(self)
-                self.savu_filters.show()
-            except RuntimeError as e:
-                QtWidgets.QMessageBox.warning(self, self.AVAILABLE_MSG, str(e))
-        else:
-            self.savu_filters.activateWindow()
-            self.savu_filters.raise_()
-
     @property
     def stack_list(self):
         return self.presenter.stack_list
@@ -261,8 +275,8 @@ class MainWindowView(BaseMainWindowView):
                             stack: Images,
                             title: str,
                             position=QtCore.Qt.TopDockWidgetArea,
-                            floating=False) -> Qt.QDockWidget:
-        dock = Qt.QDockWidget(title, self)
+                            floating=False) -> QDockWidget:
+        dock = QDockWidget(title, self)
 
         # this puts the new stack window into the centre of the window
         self.setCentralWidget(dock)
@@ -300,10 +314,6 @@ class MainWindowView(BaseMainWindowView):
             should_close = msg_box == QtWidgets.QMessageBox.Yes
 
         if should_close:
-            # allows to properly cleanup the socket IO connection
-            if self.savu_filters:
-                self.savu_filters.close()
-
             # Pass close event to parent
             super(MainWindowView, self).closeEvent(event)
 

@@ -39,7 +39,7 @@ class MainWindowViewTest(unittest.TestCase):
         self.assertEqual(return_value, self.presenter.get_stack_with_images.return_value.name)
 
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
-    @mock.patch("mantidimaging.gui.windows.main.view.Qt.QFileDialog.getOpenFileName")
+    @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_dialog: mock.Mock):
         stack_selector_dialog.return_value.exec.return_value = QDialog.Accepted
         selected_stack = "selected_stack"
@@ -106,28 +106,6 @@ class MainWindowViewTest(unittest.TestCase):
         mock_filters.return_value.activateWindow.assert_called_once_with()
         mock_filters.return_value.raise_.assert_called_once_with()
 
-    @mock.patch("mantidimaging.gui.windows.main.view.SavuFiltersWindowView")
-    def test_show_savu_filters_window(self, mock_savu_filters: mock.Mock):
-        self.view.show_savu_filters_window()
-
-        mock_savu_filters.assert_called_once_with(self.view)
-        mock_savu_filters.return_value.show.assert_called_once_with()
-        mock_savu_filters.return_value.activateWindow.assert_not_called()
-        mock_savu_filters.return_value.raise_.assert_not_called()
-
-        self.view.show_savu_filters_window()
-        mock_savu_filters.assert_called_once_with(self.view)
-        mock_savu_filters.return_value.activateWindow.assert_called_once_with()
-        mock_savu_filters.return_value.raise_.assert_called_once_with()
-
-    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
-    @mock.patch("mantidimaging.gui.windows.main.view.SavuFiltersWindowView", side_effect=RuntimeError("Test message"))
-    def test_show_savu_filters_window_no_backend(self, mock_savu_filters: mock.Mock, mock_widgets: mock.Mock):
-        self.view.show_savu_filters_window()
-
-        mock_savu_filters.assert_called_once_with(self.view)
-        mock_widgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.AVAILABLE_MSG, "Test message")
-
     def test_create_new_stack(self):
         images = generate_images()
         self.view.create_new_stack(images, "Test Title")
@@ -189,9 +167,9 @@ class MainWindowViewTest(unittest.TestCase):
                          setCentralWidget=DEFAULT,
                          addDockWidget=DEFAULT)
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    @mock.patch("mantidimaging.gui.windows.main.view.Qt")
+    @mock.patch("mantidimaging.gui.windows.main.view.QDockWidget")
     def test_create_stack_window(self,
-                                 mock_qt: mock.Mock,
+                                 mock_dock: mock.Mock,
                                  mock_sv: mock.Mock,
                                  setCentralWidget: Mock = Mock(),
                                  addDockWidget: Mock = Mock()):
@@ -202,8 +180,8 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.create_stack_window(images, title, position=position, floating=floating)
 
-        mock_qt.QDockWidget.assert_called_once_with(title, self.view)
-        dock = mock_qt.QDockWidget.return_value
+        mock_dock.assert_called_once_with(title, self.view)
+        dock = mock_dock.return_value
         setCentralWidget.assert_called_once_with(dock)
         addDockWidget.assert_called_once_with(position, dock)
 
@@ -214,7 +192,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
     @mock.patch("mantidimaging.gui.windows.main.view.ProjectionAngleFileParser")
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
-    @mock.patch("mantidimaging.gui.windows.main.view.Qt.QFileDialog.getOpenFileName")
+    @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
     def test_load_projection_angles(self, getOpenFileName: mock.Mock, StackSelectorDialog: mock.Mock,
                                     ProjectionAngleFileParser: Mock, QMessageBox: Mock):
         StackSelectorDialog.return_value.exec.return_value = QDialog.Accepted
@@ -238,3 +216,93 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.add_projection_angles_to_sample.assert_called_once_with(selected_stack, proj_angles)
         QMessageBox.information.assert_called_once()
+
+    def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
+        self.presenter.stack_names = ["1", "2"]
+
+        self._update_shortcuts_test(False, True)
+        self._update_shortcuts_test(True, True)
+
+    def test_update_shortcuts_with_presenter_with_no_stacks(self):
+        self.presenter.stack_names = []
+
+        self._update_shortcuts_test(False, False)
+        self._update_shortcuts_test(True, False)
+
+    def _update_shortcuts_test(self, original_state, expected_state):
+        self.view.actionSave.setEnabled(original_state)
+        self.view.actionSampleLoadLog.setEnabled(original_state)
+        self.view.actionLoad180deg.setEnabled(original_state)
+        self.view.actionLoadProjectionAngles.setEnabled(original_state)
+        self.view.menuWorkflow.setEnabled(original_state)
+        self.view.menuImage.setEnabled(original_state)
+
+        self.view.update_shortcuts()
+
+        self.assertEqual(expected_state, self.view.actionSave.isEnabled())
+        self.assertEqual(expected_state, self.view.actionSampleLoadLog.isEnabled())
+        self.assertEqual(expected_state, self.view.actionLoad180deg.isEnabled())
+        self.assertEqual(expected_state, self.view.actionLoadProjectionAngles.isEnabled())
+        self.assertEqual(expected_state, self.view.menuWorkflow.isEnabled())
+        self.assertEqual(expected_state, self.view.menuImage.isEnabled())
+
+    @mock.patch("mantidimaging.gui.windows.main.view.populate_menu")
+    def test_populate_image_menu_with_no_stack(self, populate_menu):
+        self.view.menuImage = mock.MagicMock()
+        self.view.current_showing_stack = mock.MagicMock(return_value=None)
+
+        self.view.populate_image_menu()
+
+        populate_menu.assert_not_called()
+        self.view.menuImage.addAction.assert_called_once_with("No stack loaded!")
+
+    @mock.patch("mantidimaging.gui.windows.main.view.populate_menu")
+    def test_populate_image_menu_with_stack_and_actions(self, populate_menu):
+        self.view.menuImage = mock.MagicMock()
+        stack = mock.MagicMock()
+        actions = mock.MagicMock()
+        stack.actions = actions
+        self.view.current_showing_stack = mock.MagicMock(return_value=stack)
+
+        self.view.populate_image_menu()
+
+        populate_menu.assert_called_once_with(self.view.menuImage, actions)
+        self.view.menuImage.addAction.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
+    def test_current_showing_stack_with_stack_with_visible(self, stack_visualiser_view):
+        stack = mock.MagicMock()
+        stack.visibleRegion.return_value.isEmpty.return_value = False
+        self.view.findChildren = mock.MagicMock(return_value=[stack])
+
+        current_stack = self.view.current_showing_stack()
+
+        self.assertEqual(stack, current_stack)
+        stack.visibleRegion.assert_called_once()
+        stack.visibleRegion.return_value.isEmpty.assert_called_once()
+        self.view.findChildren.assert_called_once_with(stack_visualiser_view)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
+    def test_current_showing_stack_with_stack_not_visible(self, stack_visualiser_view):
+        stack = mock.MagicMock()
+        stack.visibleRegion.return_value.isEmpty.return_value = True
+        self.view.findChildren = mock.MagicMock(return_value=[stack])
+
+        current_stack = self.view.current_showing_stack()
+
+        self.assertEqual(None, current_stack)
+        stack.visibleRegion.assert_called_once()
+        stack.visibleRegion.return_value.isEmpty.assert_called_once()
+        self.view.findChildren.assert_called_once_with(stack_visualiser_view)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
+    def test_current_showing_stack_no_stack(self, stack_visualiser_view):
+        stack = mock.MagicMock()
+        self.view.findChildren = mock.MagicMock(return_value=[])
+
+        current_stack = self.view.current_showing_stack()
+
+        self.assertEqual(None, current_stack)
+        stack.visibleRegion.assert_not_called()
+        stack.visibleRegion.return_value.isEmpty.assert_not_called()
+        self.view.findChildren.assert_called_once_with(stack_visualiser_view)

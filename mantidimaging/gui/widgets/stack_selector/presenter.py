@@ -11,7 +11,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView  # pragma: no cover
 
 
 class Notification(Enum):

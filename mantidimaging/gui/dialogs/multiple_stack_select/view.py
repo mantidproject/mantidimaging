@@ -6,7 +6,7 @@ from mantidimaging.gui.widgets.stack_selector.view import StackSelectorWidgetVie
 from PyQt5.QtWidgets import QDialog, QGridLayout, QPushButton
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main.view import MainWindowView
+    from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 
 class MultipleStackSelect(QDialog):
