@@ -11,7 +11,10 @@ class WelcomeScreenView(BaseDialogView):
         super(WelcomeScreenView, self).__init__(parent, "gui/ui/welcome_screen_dialog.ui")
         self.presenter = presenter
 
+        self.issue_box.setVisible(False)
+
         self.show_at_start.stateChanged.connect(presenter.show_at_start_changed)
+        self.ok_button.clicked.connect(self.close)
 
     def get_show_at_start(self):
         return self.show_at_start.isChecked()
@@ -25,4 +28,10 @@ class WelcomeScreenView(BaseDialogView):
     def add_link(self, label, row):
         link_label = QLabel(label)
         link_label.setOpenExternalLinks(True)
-        self.link_box_layout.addWidget(link_label, 0, row)
+        self.link_box_layout.addWidget(link_label, row, 0)
+
+    def add_issue(self, contents):
+        self.issue_box.setVisible(True)
+        issue_label = QLabel(contents)
+        issue_label.setOpenExternalLinks(True)
+        self.issue_box_layout.addWidget(issue_label)

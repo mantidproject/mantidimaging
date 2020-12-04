@@ -75,8 +75,8 @@ def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Calla
         # no suffix if main, else adds Unstable
         suffix = "" if is_main_label else " Unstable"
 
-        msg = f"Not running the latest Mantid Imaging{suffix}. Found version {_make_version_str(local)}, " \
-              f"latest: {_make_version_str(remote)}. Please check the terminal for an update command!"
+        msg = f"Not running the latest Mantid Imaging{suffix}.\nFound version {_make_version_str(local)}, " \
+              f"latest: {_make_version_str(remote)}.\nPlease check the terminal for an update command!"
         LOG.info(msg)
 
         # for unstable packages these run variables are prepended to the command

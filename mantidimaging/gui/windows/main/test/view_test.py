@@ -134,13 +134,6 @@ class MainWindowViewTest(unittest.TestCase):
                                                       current_name="apples",
                                                       new_name="oranges")
 
-    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
-    def test_not_latest_version_warning(self, mock_qtwidgets):
-        self.view.not_latest_version_warning("test-message")
-
-        mock_qtwidgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.NOT_THE_LATEST_VERSION,
-                                                                   "test-message")
-
     @mock.patch("mantidimaging.gui.windows.main.view.getLogger")
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     def test_uncaught_exception(self, mock_qtwidgets, mock_getlogger):

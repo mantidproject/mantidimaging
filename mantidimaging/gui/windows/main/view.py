@@ -75,7 +75,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-        is_main_label = check_version_and_label(self.not_latest_version_warning)
+        is_main_label = check_version_and_label(lambda args: None)
 
         if not is_main_label:
             self.setWindowTitle("Mantid Imaging Unstable")
@@ -319,9 +319,6 @@ class MainWindowView(BaseMainWindowView):
         else:
             # Ignore the close event, keeping window open
             event.ignore()
-
-    def not_latest_version_warning(self, msg: str):
-        QtWidgets.QMessageBox.warning(self, self.NOT_THE_LATEST_VERSION, msg)
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")

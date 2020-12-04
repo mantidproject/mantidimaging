@@ -24,13 +24,15 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
     def setUp(self):
         self.v = mock.MagicMock()
         self.v.get_show_at_start = mock.Mock(return_value=True)
-        self.p = WelcomeScreenPresenter(None, view=self.v)
+        with mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up"):
+            self.p = WelcomeScreenPresenter(None, view=self.v)
 
     def tearDown(self):
         settings = QSettings()
         settings.clear()
 
     def test_init(self):
+        self.p.do_set_up()
         self.v.set_version_label.assert_called_once()
 
     def test_show_at_start_init(self):

@@ -6,8 +6,12 @@ from PyQt5.QtCore import QSettings
 from mantidimaging.gui.mvp_base.presenter import BasePresenter
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging import __version__ as version_no
+from mantidimaging.core.utility.version_check import check_version_and_label
 
-WELCOME_LINKS = [["Homepage", "https://github.com/mantidproject/mantidimaging"]]
+WELCOME_LINKS = [
+    ["Homepage", "https://github.com/mantidproject/mantidimaging"],
+    ["Documentation", "https://mantidproject.github.io/mantidimaging/index.html"],
+]
 
 
 class WelcomeScreenPresenter(BasePresenter):
@@ -16,14 +20,16 @@ class WelcomeScreenPresenter(BasePresenter):
             view = WelcomeScreenView(parent, self)
 
         super(WelcomeScreenPresenter, self).__init__(view)
-        self.view.set_version_label(f"Mantid Imaging {version_no}")
-
-        self.link_count = 0
-        self.set_up_links()
-
         self.settings = QSettings()
+        self.link_count = 0
 
+        self.do_set_up()
+
+    def do_set_up(self):
+        self.view.set_version_label(f"Mantid Imaging {version_no}")
+        self.set_up_links()
         self.set_up_show_at_start()
+        self.check_issues()
 
     def show(self):
         self.view.show()
@@ -50,3 +56,6 @@ class WelcomeScreenPresenter(BasePresenter):
     def show_at_start_changed(self):
         show_at_start = self.view.get_show_at_start()
         self.settings.setValue("welcome_screen/show_at_start", show_at_start)
+
+    def check_issues(self):
+        check_version_and_label(self.view.add_issue)
