@@ -80,7 +80,7 @@ class MainWindowView(BaseMainWindowView):
             self.setWindowTitle("Mantid Imaging Unstable")
             self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
 
-        if WelcomeScreenPresenter.show_at_start_enabled():
+        if WelcomeScreenPresenter.show_today():
             self.show_about()
 
     def setup_shortcuts(self):

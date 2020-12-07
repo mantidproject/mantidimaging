@@ -41,6 +41,18 @@ class WelcomeScreenPresenter(BasePresenter):
         settings = QSettings()
         return settings.value("welcome_screen/show_at_start", defaultValue=True, type=bool)
 
+    @staticmethod
+    def show_today():
+        """Show if show_at_start or if version has changed"""
+        settings = QSettings()
+        show_at_start = settings.value("welcome_screen/show_at_start", defaultValue=True, type=bool)
+        if not show_at_start:
+            last_run_version = settings.value("welcome_screen/last_run_version", defaultValue="")
+            if last_run_version != versions.get_conda_installed_version():
+                return True
+        else:
+            return show_at_start
+
     def set_up_links(self):
         for link_name, url in WELCOME_LINKS:
             self.add_link(link_name, url)
@@ -58,6 +70,7 @@ class WelcomeScreenPresenter(BasePresenter):
     def show_at_start_changed(self):
         show_at_start = self.view.get_show_at_start()
         self.settings.setValue("welcome_screen/show_at_start", show_at_start)
+        self.settings.setValue("welcome_screen/last_run_version", versions.get_conda_installed_version())
 
     def check_issues(self):
         if not versions.is_conda_uptodate():
