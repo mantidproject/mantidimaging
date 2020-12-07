@@ -1,6 +1,6 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import os
 from contextlib import contextmanager
 from logging import getLogger
 from typing import Union, List, Optional, Tuple, Generator
@@ -21,7 +21,6 @@ def check_cuda():
     """
     Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
-    import os
     return "Driver Version" in os.popen("nvidia-smi").read() and os.popen("locate libcuda.so").read() is not ""
 
 
