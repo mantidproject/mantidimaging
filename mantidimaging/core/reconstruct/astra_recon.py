@@ -53,6 +53,7 @@ def _managed_recon(sino, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int],
     alg_id = None
     try:
         proj_type = 'cuda' if check_cuda() else 'line'
+        LOG.info("Using projection type {}".format(proj_type))
 
         proj_id = astra.create_projector(proj_type, proj_geom, vol_geom)
         sino_id = astra.data2d.create('-sino', proj_geom, sino)
