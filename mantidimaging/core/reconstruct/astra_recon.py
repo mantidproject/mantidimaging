@@ -13,9 +13,16 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.helper import check_cuda
 
 LOG = getLogger(__name__)
+
+
+def check_cuda():
+    """
+    Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
+    """
+    import os
+    return "Driver Version" in os.popen("nvidia-smi").read() and os.popen("locate libcuda.so")
 
 
 # Full credit for following code to Daniil Kazantzev
@@ -89,7 +96,7 @@ class AstraRecon(BaseRecon):
         proj_angles = images.projection_angles(recon_params.max_projection_angle)
 
         def get_sumsq(image: np.ndarray) -> float:
-            return np.sum(image**2)
+            return np.sum(image ** 2)
 
         def minimizer_function(cor):
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
