@@ -8,14 +8,16 @@ from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
 from mantidimaging.test_helpers import start_qapplication
 
+from mantidimaging.core.utility.version_check import versions
+versions._use_test_values()
+
 
 @start_qapplication
 class OperationsWindowsViewTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
-        with mock.patch('mantidimaging.gui.windows.main.view.check_version_and_label'):
-            with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-                self.main_window = MainWindowView()
+        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+            self.main_window = MainWindowView()
         self.window = FiltersWindowView(self.main_window)
 
     def test_collapse(self):

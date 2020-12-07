@@ -15,6 +15,9 @@ from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
 
+from mantidimaging.core.utility.version_check import versions
+versions._use_test_values()
+
 
 @start_qapplication
 class StackVisualiserViewTest(unittest.TestCase):
@@ -34,11 +37,8 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.dock = None
 
     def setUp(self):
-        # mock the view so it has the same methods
-        with mock.patch('mantidimaging.gui.windows.main.view.check_version_and_label') as mock_find_latest_version:
-            with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-                self.window = MainWindowView()
-            mock_find_latest_version.assert_called_once()
+        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+            self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
 

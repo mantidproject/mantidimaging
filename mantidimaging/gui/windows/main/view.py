@@ -15,7 +15,7 @@ from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.version_check import check_version_and_label
+from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -75,9 +75,8 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-        is_main_label = check_version_and_label(lambda args: None)
 
-        if not is_main_label:
+        if versions.get_conda_installed_label() != "main":
             self.setWindowTitle("Mantid Imaging Unstable")
             self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
 

@@ -15,16 +15,17 @@ from mantidimaging.gui.windows.main.presenter import Notification as PresNotific
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
+from mantidimaging.core.utility.version_check import versions
+versions._use_test_values()
+
 
 @start_qapplication
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.check_version_and_label") as check_version_and_label:
-            with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-                self.view = MainWindowView()
-            self.presenter = mock.MagicMock()
-            self.view.presenter = self.presenter
-            self.check_version_and_label = check_version_and_label
+        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+            self.view = MainWindowView()
+        self.presenter = mock.MagicMock()
+        self.view.presenter = self.presenter
 
     def test_execute_save(self):
         self.view.execute_save()

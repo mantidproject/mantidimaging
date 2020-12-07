@@ -2,11 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from PyQt5.QtCore import QSettings
+from logging import getLogger
 
 from mantidimaging.gui.mvp_base.presenter import BasePresenter
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
-from mantidimaging import __version__ as version_no
-from mantidimaging.core.utility.version_check import check_version_and_label
+from mantidimaging.core.utility.version_check import versions
+
+LOG = getLogger(__name__)
 
 WELCOME_LINKS = [
     ["Homepage", "https://github.com/mantidproject/mantidimaging"],
@@ -26,7 +28,7 @@ class WelcomeScreenPresenter(BasePresenter):
         self.do_set_up()
 
     def do_set_up(self):
-        self.view.set_version_label(f"Mantid Imaging {version_no}")
+        self.view.set_version_label(f"Mantid Imaging {versions.get_version()}")
         self.set_up_links()
         self.set_up_show_at_start()
         self.check_issues()
@@ -58,4 +60,7 @@ class WelcomeScreenPresenter(BasePresenter):
         self.settings.setValue("welcome_screen/show_at_start", show_at_start)
 
     def check_issues(self):
-        check_version_and_label(self.view.add_issue)
+        if not versions.is_conda_uptodate():
+            msg, detailed = versions.conda_update_message()
+            self.view.add_issue(msg)
+            LOG.info(detailed)
