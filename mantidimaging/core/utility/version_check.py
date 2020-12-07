@@ -104,7 +104,6 @@ class CheckVersion:
         return msg, detailed
 
     def _retrieve_conda_installed_version(self) -> None:
-        LOG.info("Finding and comparing mantidimaging versions")
         local_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2,$4}'",
                                                 shell=True,
                                                 env=os.environ).decode("utf-8").strip()
@@ -131,7 +130,7 @@ class CheckVersion:
             self._conda_available_version = ""
             return
 
-        if self._conda_installed_label == "main":
+        if self.get_conda_installed_label() == "main":
             self._conda_available_version = remote_main_version
         else:
             self._conda_available_version = remote_unstable_version

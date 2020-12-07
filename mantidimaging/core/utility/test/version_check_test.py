@@ -62,3 +62,20 @@ class TestCheckVersion(unittest.TestCase):
     def test_show_versions(self, mock_print):
         self.versions.show_versions()
         mock_print.assert_called()
+
+    @mock.patch("subprocess.check_output")
+    def test_retrieve_conda_installed_version(self, mock_check_output):
+        mock_check_output.return_value = b"1.1.0_1018 mantid/label/unstable"
+        self.versions._retrieve_conda_installed_version()
+        self.assertEqual(self.versions.get_conda_installed_version(), "1.1.0_1018")
+
+    @mock.patch("requests.get")
+    def test_retrieve_conda_available_version(self, mock_get):
+        mock_get.return_value = mock.Mock(content='{"latest_version": "1.1.0_1018", "versions": ["1.1.0_1090"]}')
+        self.versions._conda_installed_label = "main"
+        self.versions._retrieve_conda_available_version()
+        self.assertEqual(self.versions.get_conda_available_version(), "1.1.0_1018")
+
+        self.versions._conda_installed_label = "unstable"
+        self.versions._retrieve_conda_available_version()
+        self.assertEqual(self.versions.get_conda_available_version(), "1.1.0_1090")
