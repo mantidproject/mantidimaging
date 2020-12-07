@@ -67,6 +67,3 @@ def run_import_checks(config):
         log.info("Multiprocessing not available.")
     else:
         log.info("Running process on {0} cores.".format(config.func.cores))
-
-
-

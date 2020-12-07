@@ -96,7 +96,7 @@ class AstraRecon(BaseRecon):
         proj_angles = images.projection_angles(recon_params.max_projection_angle)
 
         def get_sumsq(image: np.ndarray) -> float:
-            return np.sum(image ** 2)
+            return np.sum(image**2)
 
         def minimizer_function(cor):
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
