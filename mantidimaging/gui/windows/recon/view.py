@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInpu
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
+from mantidimaging.core.reconstruct.astra_recon import check_cuda
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
@@ -62,6 +63,11 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
+
+        if check_cuda():
+            self.algorithmName.addItem("FBP_CUDA")
+            self.algorithmName.addItem("SIRT_CUDA")
+            self.algorithmName.setCurrentIndex(1)
 
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
