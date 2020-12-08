@@ -63,7 +63,8 @@ class ReconstructWindowView(BaseMainWindowView):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
-        self.presenter = ReconstructWindowPresenter(self, main_window, use_cuda)
+        self.use_cuda = use_cuda
+        self.presenter = ReconstructWindowPresenter(self, main_window, self.use_cuda)
 
         if use_cuda:
             self.algorithmName.addItem("FBP_CUDA")
@@ -317,7 +318,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                         cor=ScalarCoR(self.rotation_centre),
                                         tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
-                                        max_projection_angle=self.max_proj_angle)
+                                        max_projection_angle=self.max_proj_angle,
+                                        use_cuda=self.use_cuda)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on

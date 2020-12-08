@@ -101,6 +101,7 @@ class ReconstructionParameters:
     tilt: Optional[Degrees] = None
     pixel_size: float = 0.0
     max_projection_angle: float = 360.0
+    use_cuda: bool=True
 
     def to_dict(self) -> dict:
         return {
@@ -109,7 +110,8 @@ class ReconstructionParameters:
             'num_iter': self.num_iter,
             'cor': str(self.cor),
             'tilt': str(self.tilt),
-            'pixel_size': self.pixel_size
+            'pixel_size': self.pixel_size,
+            'use_cuda': self.use_cuda
         }
 
 
