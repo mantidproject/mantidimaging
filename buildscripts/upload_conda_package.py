@@ -3,8 +3,18 @@ import argparse
 
 
 def upload(build_file: str, version: str, token: str):
-    final_url = f"https://api.anaconda.org/stage/mantid/mantidimaging/{version}/{build_file}"
-    response = requests.post(final_url, headers={'Authorization': f'access_token {token}'})
+    auth = {'Authorization': f'token {token}'}
+    response = requests.post(f"https://api.anaconda.org/release/mantid/mantidimaging/{version}",
+                             headers=auth,
+                             data={
+                                 "announce": "Announce",
+                                 "description": "Mantid Imaging package",
+                                 "requirements": "numpy"
+                             })
+    print(response)
+
+    response = requests.post(f"https://api.anaconda.org/stage/mantid/mantidimaging/{version}/{build_file}",
+                             headers=auth)
     print(response)
 
 
