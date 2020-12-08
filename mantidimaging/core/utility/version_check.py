@@ -88,8 +88,10 @@ class CheckVersion:
     def conda_update_message(self) -> tuple:
         suffix = self.get_conda_installed_label()
 
-        msg = f"Not running the latest Mantid Imaging{suffix}.\n"
-        msg += f"Found version {self.get_conda_installed_version()}, "
+        msg = "Not running the latest Mantid Imaging"
+        if suffix != "main":
+            msg += f"-{suffix}"
+        msg += f".\nFound version {self.get_conda_installed_version()}, "
         msg += f"latest: {self.get_conda_available_version()}.\nPlease check the terminal for an update command!"
 
         detailed = f"Not running the latest Mantid Imaging{suffix}.\n"
@@ -144,10 +146,6 @@ def _parse_version(package_version_string: Optional[str]) -> ParsedVersion:
         raise ValueError
     local_version, local_commits_since_last = package_version_string.split("_")
     return ParsedVersion(tuple(map(int, local_version.split("."))), int(local_commits_since_last))
-
-
-def _make_version_str(parsed: ParsedVersion) -> str:
-    return f"{'.'.join([str(v) for v in parsed.version])}_{parsed.commits}"
 
 
 def _version_is_uptodate(local: ParsedVersion, remote: ParsedVersion):

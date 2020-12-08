@@ -4,8 +4,7 @@
 import unittest
 from unittest import mock
 
-from mantidimaging.core.utility.version_check import (CheckVersion, _version_is_uptodate, _make_version_str,
-                                                      _parse_version)
+from mantidimaging.core.utility.version_check import (CheckVersion, _version_is_uptodate, _parse_version)
 
 
 class TestCheckVersion(unittest.TestCase):
@@ -19,14 +18,6 @@ class TestCheckVersion(unittest.TestCase):
 
         assert parsed.version == (9, 9, 9)
         assert parsed.commits == 1234
-
-    def test_make_version_str(self):
-        input_version_str = "9.9.9_1234"
-        parsed = _parse_version(input_version_str)
-
-        version_string = _make_version_str(parsed)
-
-        assert version_string == input_version_str
 
     def test_version_is_uptodate(self):
         for local, remote, is_uptodate in [
