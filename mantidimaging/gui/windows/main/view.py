@@ -15,7 +15,7 @@ from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.version_check import check_version_and_label
+from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -26,6 +26,7 @@ from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 
 LOG = getLogger(__file__)
 
@@ -74,11 +75,13 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-        is_main_label = check_version_and_label(self.not_latest_version_warning)
 
-        if not is_main_label:
+        if versions.get_conda_installed_label() != "main":
             self.setWindowTitle("Mantid Imaging Unstable")
             self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
+
+        if WelcomeScreenPresenter.show_today():
+            self.show_about()
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
@@ -131,16 +134,8 @@ class MainWindowView(BaseMainWindowView):
         QtGui.QDesktopServices.openUrl(url)
 
     def show_about(self):
-        from mantidimaging import __version__ as version_no
-
-        msg_box = QtWidgets.QMessageBox(self)
-        msg_box.setWindowTitle("About MantidImaging")
-        msg_box.setTextFormat(QtCore.Qt.RichText)
-        msg_box.setText(
-            '<a href="https://github.com/mantidproject/mantidimaging">MantidImaging</a>'
-            '<br>Version: <a href="https://github.com/mantidproject/mantidimaging/releases/tag/{0}">{0}</a>'.format(
-                version_no))
-        msg_box.show()
+        welcome_window = WelcomeScreenPresenter(self)
+        welcome_window.show()
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
@@ -323,9 +318,6 @@ class MainWindowView(BaseMainWindowView):
         else:
             # Ignore the close event, keeping window open
             event.ignore()
-
-    def not_latest_version_warning(self, msg: str):
-        QtWidgets.QMessageBox.warning(self, self.NOT_THE_LATEST_VERSION, msg)
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")

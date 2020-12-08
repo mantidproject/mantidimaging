@@ -15,15 +15,17 @@ from mantidimaging.gui.windows.main.presenter import Notification as PresNotific
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
+from mantidimaging.core.utility.version_check import versions
+versions._use_test_values()
+
 
 @start_qapplication
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.check_version_and_label") as check_version_and_label:
+        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.view = MainWindowView()
-            self.presenter = mock.MagicMock()
-            self.view.presenter = self.presenter
-            self.check_version_and_label = check_version_and_label
+        self.presenter = mock.MagicMock()
+        self.view.presenter = self.presenter
 
     def test_execute_save(self):
         self.view.execute_save()
@@ -133,13 +135,6 @@ class MainWindowViewTest(unittest.TestCase):
                                                       current_name="apples",
                                                       new_name="oranges")
 
-    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
-    def test_not_latest_version_warning(self, mock_qtwidgets):
-        self.view.not_latest_version_warning("test-message")
-
-        mock_qtwidgets.QMessageBox.warning.assert_called_once_with(self.view, self.view.NOT_THE_LATEST_VERSION,
-                                                                   "test-message")
-
     @mock.patch("mantidimaging.gui.windows.main.view.getLogger")
     @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
     def test_uncaught_exception(self, mock_qtwidgets, mock_getlogger):
@@ -149,15 +144,10 @@ class MainWindowViewTest(unittest.TestCase):
                                                                     "user-error")
         mock_getlogger.return_value.error.assert_called_once_with("log-error")
 
-    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
-    def test_show_about(self, mock_qtwidgets: mock.Mock):
+    @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
+    def test_show_about(self, mock_welcomescreen: mock.Mock):
         self.view.show_about()
-
-        mock_qtwidgets.QMessageBox.assert_called_once()
-        mock_qtwidgets.QMessageBox.return_value.setWindowTitle.assert_called_once()
-        mock_qtwidgets.QMessageBox.return_value.setTextFormat.assert_called_once()
-        mock_qtwidgets.QMessageBox.return_value.setText.assert_called_once()
-        mock_qtwidgets.QMessageBox.return_value.show.assert_called_once()
+        mock_welcomescreen.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtGui")
     def test_open_online_documentation(self, mock_qtgui: mock.Mock):
