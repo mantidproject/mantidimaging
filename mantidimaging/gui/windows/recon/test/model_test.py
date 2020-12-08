@@ -27,7 +27,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model.initial_select_data(self.stack)
 
     def test_empty_init(self):
-        m = ReconstructWindowModel(CorTiltPointQtModel())
+        m = ReconstructWindowModel(CorTiltPointQtModel(), True)
         self.assertIsNone(m.stack)
         self.assertIsNone(m.last_result)
 
