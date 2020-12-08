@@ -132,8 +132,8 @@ class StackVisualiserView(BaseMainWindowView):
             self.hide()
             self.image_view.close()
 
-            # this removes all references to the data, allowing it to be GC'ed
-            # otherwise there is a hanging reference
+            # this removes a hanging reference from the presenter to the data
+            # allowing it to be GC'ed
             self.presenter.delete_data()
             window.remove_stack(self)
             self.deleteLater()
