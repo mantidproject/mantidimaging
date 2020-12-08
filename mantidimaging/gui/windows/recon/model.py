@@ -133,7 +133,7 @@ class ReconstructWindowModel(object):
         recon: Images = Images.create_empty_images(output_shape, self.images.dtype, self.images.metadata)
         recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx), cor,
                                                   self.images.projection_angles(recon_params.max_projection_angle),
-                                                  recon_params, self.use_cuda)
+                                                  recon_params)
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
@@ -144,7 +144,7 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
         recon = reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
-                                   recon_params, self.use_cuda, progress)
+                                   recon_params, progress)
 
         recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
