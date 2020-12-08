@@ -280,6 +280,16 @@
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout">
+                 <item row="0" column="1">
+                  <widget class="QPushButton" name="addBtn">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="0">
                   <widget class="QPushButton" name="removeBtn">
                    <property name="enabled">
@@ -310,16 +320,6 @@
                    </property>
                    <property name="text">
                     <string>Refine</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QPushButton" name="addBtn">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="text">
-                    <string>Add</string>
                    </property>
                   </widget>
                  </item>
@@ -450,6 +450,16 @@
              </layout>
             </item>
             <item>
+             <widget class="QPushButton" name="refineIterationsBtn">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Refine Iterations</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="reconHelpButton">
               <property name="text">
                <string>Open Reconstruction Help Page</string>
@@ -503,10 +513,10 @@
            <string>Preview</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0">
-            <widget class="QLabel" name="previewProjectionIndexLabel">
+           <item row="1" column="0">
+            <widget class="QLabel" name="previewSliceIndexLabel">
              <property name="text">
-              <string>Projection index:</string>
+              <string>Slice index:</string>
              </property>
             </widget>
            </item>
@@ -517,17 +527,17 @@
              </property>
             </widget>
            </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="previewProjectionIndexLabel">
+             <property name="text">
+              <string>Projection index:</string>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1">
             <widget class="QSpinBox" name="previewSliceIndex">
              <property name="maximum">
               <number>99999</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="previewSliceIndexLabel">
-             <property name="text">
-              <string>Slice index:</string>
              </property>
             </widget>
            </item>

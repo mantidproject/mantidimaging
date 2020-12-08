@@ -2,10 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from typing import TYPE_CHECKING, List, Optional
+from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget)
+                             QVBoxLayout, QWidget, QMessageBox)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
@@ -34,6 +35,7 @@ class ReconstructWindowView(BaseMainWindowView):
     resultTab: QWidget
     addBtn: QPushButton
     refineCorBtn: QPushButton
+    refineIterationsBtn: QPushButton
     clearAllBtn: QPushButton
     removeBtn: QPushButton
 
@@ -104,6 +106,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
         self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
         self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
+        self.refineIterationsBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_ITERS))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
         self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
@@ -137,6 +140,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.on_table_row_count_change()
 
         self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.stack_selected_uuid.connect(self.check_stack_for_invalid_180_deg_proj)
         self.stackSelector.select_eligible_stack()
 
         self.maxProjAngle.valueChanged.connect(
@@ -152,6 +156,18 @@ class ReconstructWindowView(BaseMainWindowView):
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
+
+    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
+        selected_images = self.main_window.get_images_from_stack_uuid(uuid)
+        if selected_images.has_proj180deg() and \
+                not self.presenter.proj_180_degree_shape_matches_images(selected_images):
+            self.warn_user(
+                "Potential Failure",
+                "The shapes of the selected stack and it's 180 degree projections do not match! This is "
+                "going to cause an error when calculating the COR. Fix the shape before continuing!")
+
+    def warn_user(self, title, message):
+        QMessageBox.warning(self, title, message)
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -356,3 +372,9 @@ class ReconstructWindowView(BaseMainWindowView):
             open_help_webpage(SECTION_USER_GUIDE, page)
         except RuntimeError as err:
             self.show_error_dialog(str(err))
+
+    def set_iterations(self, iters: int):
+        self.numIter.setValue(iters)
+
+    def change_refine_iterations(self):
+        self.refineIterationsBtn.setEnabled(self.algorithmName.currentText() == "SIRT_CUDA")

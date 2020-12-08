@@ -252,3 +252,8 @@ class ReconstructWindowModel(object):
 
     def auto_find_correlation(self, progress) -> Tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
+
+    @staticmethod
+    def proj_180_degree_shape_matches_images(images):
+        return images.has_proj180deg() and images.height == images.proj180deg.height \
+               and images.width == images.proj180deg.width

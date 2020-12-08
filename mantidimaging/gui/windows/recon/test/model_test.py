@@ -145,3 +145,32 @@ class ReconWindowModelTest(unittest.TestCase):
 
         # expected cor value obtained by running the test
         self.assertAlmostEqual(149.86, cor.value, delta=1e-2)
+
+    def test_proj_180_degree_shape_matches_images_where_they_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 10
+        images.proj180deg.width = 10
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertTrue(self.model.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 20
+        images.proj180deg.width = 20
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.model.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
+        images = mock.MagicMock()
+        has_proj180deg = mock.MagicMock(return_value=False)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.model.proj_180_degree_shape_matches_images(images))

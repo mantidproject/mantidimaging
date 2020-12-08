@@ -257,6 +257,9 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
+    def get_images_from_stack_uuid(self, stack_uuid) -> Images:
+        return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
+
     def get_all_stack_visualisers(self):
         return self.presenter.get_all_stack_visualisers()
 
