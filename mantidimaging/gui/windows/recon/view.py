@@ -35,6 +35,7 @@ class ReconstructWindowView(BaseMainWindowView):
     resultTab: QWidget
     addBtn: QPushButton
     refineCorBtn: QPushButton
+    refineIterationsBtn: QPushButton
     clearAllBtn: QPushButton
     removeBtn: QPushButton
 
@@ -100,6 +101,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
         self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
         self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
+        self.refineIterationsBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_ITERS))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
         self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
@@ -365,3 +367,9 @@ class ReconstructWindowView(BaseMainWindowView):
             open_help_webpage(SECTION_USER_GUIDE, page)
         except RuntimeError as err:
             self.show_error_dialog(str(err))
+
+    def set_iterations(self, iters: int):
+        self.numIter.setValue(iters)
+
+    def change_refine_iterations(self):
+        self.refineIterationsBtn.setEnabled(self.algorithmName.currentText() == "SIRT_CUDA")
