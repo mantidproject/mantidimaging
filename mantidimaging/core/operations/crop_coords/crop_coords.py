@@ -68,7 +68,7 @@ class CropCoordinatesFilter(BaseFilter):
         # allocate output first BEFORE freeing the original data,
         # otherwise it's possible to free and then fail allocation for output
         # at which point you're left with no data
-        output = pu.allocate_output(images, shape)
+        output = pu.create_array(shape, images.dtype)
         images.data = execute_single(sample, region_of_interest, progress, out=output)
 
         return images

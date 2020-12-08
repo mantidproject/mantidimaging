@@ -45,10 +45,6 @@ def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
 
 
-def allocate_output(images, shape):
-    return create_array(shape, images.dtype)
-
-
 def create_array(shape: Tuple[Any, ...], dtype: NP_DTYPE = np.float32) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)

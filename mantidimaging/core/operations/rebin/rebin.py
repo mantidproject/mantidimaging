@@ -174,4 +174,4 @@ def _create_reshaped_array(images, rebin_param):
 
     # allocate memory for images with new dimensions
     shape = (num_images, expected_dimy, expected_dimx)
-    return pu.allocate_output(images, shape)
+    return pu.create_array(shape, images.dtype)
