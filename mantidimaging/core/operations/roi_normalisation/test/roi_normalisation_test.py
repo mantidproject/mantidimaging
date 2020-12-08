@@ -81,7 +81,6 @@ class ROINormalisationTest(unittest.TestCase):
         roi_mock.text.return_value = "apples"
         self.assertRaises(ValueError, RoiNormalisationFilter.execute_wrapper, roi_mock)
         roi_mock.text.assert_called_once()
-        images.free_memory()
 
 
 if __name__ == '__main__':

@@ -46,7 +46,6 @@ class CropCoordsTest(unittest.TestCase):
         npt.assert_equal(result.data.shape, expected_shape)
         # check that the data has been modified
         th.assert_not_equals(result.data, sample)
-        images.free_memory()
 
     def test_memory_change_acceptable(self):
         """
@@ -73,7 +72,6 @@ class CropCoordsTest(unittest.TestCase):
         expected_shape = (10, 4, 4)
 
         npt.assert_equal(result.data.shape, expected_shape)
-        result.free_memory()
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -84,7 +82,6 @@ class CropCoordsTest(unittest.TestCase):
         roi_mock.text.return_value = "0, 0, 5, 5"
         CropCoordinatesFilter.execute_wrapper(roi_mock)(images)
         roi_mock.text.assert_called_once()
-        images.free_memory()
 
     def test_execute_wrapper_bad_roi_raises_valueerror(self):
         """
@@ -95,7 +92,6 @@ class CropCoordsTest(unittest.TestCase):
         roi_mock.text.return_value = "apples"
         self.assertRaises(ValueError, CropCoordinatesFilter.execute_wrapper, roi_mock)
         roi_mock.text.assert_called_once()
-        images.free_memory()
 
 
 if __name__ == '__main__':

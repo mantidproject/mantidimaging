@@ -28,10 +28,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
     def tearDown(self) -> None:
-        try:
-            self.test_data.free_memory()
-        except FileNotFoundError:
-            pass
         self.view = None
         self.window = None  # type: ignore[assignment]
         self.dock = None

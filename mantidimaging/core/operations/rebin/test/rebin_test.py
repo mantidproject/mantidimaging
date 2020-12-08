@@ -76,7 +76,6 @@ class RebinTest(unittest.TestCase):
 
         self.assertEqual(images.data.dtype, dtype)
         self.assertEqual(result.data.dtype, dtype)
-        images.free_memory()
 
     def test_executed_xy_par_128_256(self):
         self.do_execute_xy((128, 256))
@@ -114,8 +113,6 @@ class RebinTest(unittest.TestCase):
         npt.assert_equal(result.data.shape[1], expected_x)
         npt.assert_equal(result.data.shape[2], expected_y)
 
-        images.free_memory()
-
     def test_failure_to_allocate_output_doesnt_free_input_data(self):
         """
         Tests for a bug fixed in PR#600 that the input data would be freed
@@ -131,8 +128,6 @@ class RebinTest(unittest.TestCase):
         rebin_param = (100000, 100000)
         self.assertRaises(RuntimeError, RebinFilter.filter_func, images, rebin_param=rebin_param, mode=mode)
         self.assertEqual(input_mfile, images.memory_filename)
-
-        images.free_memory()
 
     def test_memory_change_acceptable(self):
         """
@@ -157,8 +152,6 @@ class RebinTest(unittest.TestCase):
         npt.assert_equal(result.data.shape[1], expected_x)
         npt.assert_equal(result.data.shape[2], expected_y)
 
-        images.free_memory()
-
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
@@ -178,7 +171,6 @@ class RebinTest(unittest.TestCase):
 
         images = th.generate_images(automatic_free=False)
         execute_func(images)
-        images.free_memory()
 
         self.assertEqual(rebin_to_dimensions_radio.isChecked.call_count, 1)
         self.assertEqual(rebin_by_factor_radio.isChecked.call_count, 1)

@@ -63,14 +63,7 @@ def enough_memory(shape, dtype):
 
 
 def allocate_output(images, shape):
-    if images.memory_filename is not None:
-        name = create_shared_name()
-        output = create_array(shape, images.dtype, name)
-        images.free_memory(delete_filename=False)
-        images.memory_filename = name
-    else:
-        output = create_array(shape, images.dtype)
-    return output
+    return create_array(shape, images.dtype)
 
 
 def create_array(shape: Tuple[int, int, int],

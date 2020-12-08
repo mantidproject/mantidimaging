@@ -148,12 +148,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(5, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
 
-        ds.sample.free_memory()
-        ds.flat_before.free_memory()
-        ds.dark_before.free_memory()
-        ds.flat_after.free_memory()
-        ds.dark_after.free_memory()
-
 
 if __name__ == '__main__':
     unittest.main()

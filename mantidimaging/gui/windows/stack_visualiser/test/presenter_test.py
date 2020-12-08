@@ -25,13 +25,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(StackVisualiserView)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
 
-    def tearDown(self) -> None:
-        try:
-            self.test_data.free_memory()
-        except FileNotFoundError:
-            # the test has deleted the data manually
-            pass
-
     @classmethod
     def setUpClass(cls) -> None:
         for a in sa.list():

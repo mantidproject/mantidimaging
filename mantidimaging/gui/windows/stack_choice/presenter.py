@@ -75,7 +75,6 @@ class StackChoicePresenter(StackChoicePresenterMixin):
 
     def do_clean_up_original_data(self):
         self._clean_up_original_images_stack()
-        self.stack.free_memory()
         self.view.choice_made = True
         self.close_view()
 

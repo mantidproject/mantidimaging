@@ -67,25 +67,6 @@ class Images:
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
 
-    def free_memory(self, delete_filename=True):
-        """
-        Delete the memory file containing the data, and the references to it within this class.
-
-        The memory will not be freed until _all_ references to it are gone, so local variables
-        can safely keep a reference even after deletion. This is used in unit testing data
-        generation, and ROI normalisation.
-
-        :param delete_filename: Whether to reset the memory filename attribute.
-                                Set this to False in cases where the data will be replaced with
-                                data with a new shape (rebin, crop), but the memory filename
-                                ought to remain the same.
-        """
-        if self.memory_filename is not None:
-            pu.delete_shared_array(self.memory_filename)
-            if delete_filename:
-                self.memory_filename = None
-        self.data = None
-
     @property
     def filenames(self) -> Optional[List[str]]:
         return self._filenames
