@@ -7,7 +7,6 @@ from mantidimaging.core.parallel import utility as pu
 
 # this global is necessary for the child processes to access the original
 # array and overwrite the values in-place
-# TODO: now uses SharedArray so this shared_data global might not be necessary anymore. Needs testing
 
 shared_data = None
 

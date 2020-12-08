@@ -21,16 +21,6 @@ class IOTest(FileOutputtingTestCase):
         # force silent outputs
         initialise_logging()
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        import SharedArray as sa
-        for arr in sa.list():
-            sa.delete(arr.name.decode("utf-8"))
-
-    def tearDown(self):
-        import SharedArray as sa
-        assert len(sa.list()) == 0
-
     def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
 
         if not stack:

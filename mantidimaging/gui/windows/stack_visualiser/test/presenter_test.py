@@ -2,9 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
-
-import SharedArray as sa
 from unittest import mock
+
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -24,15 +23,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        for a in sa.list():
-            sa.delete(a.name.decode("utf-8"))
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        assert len(sa.list()) == 0, f"Not all shared arrays have been freed. Leftover: {sa.list()}"
 
     def test_get_image(self):
         index = 3

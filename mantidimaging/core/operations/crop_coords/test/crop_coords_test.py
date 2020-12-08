@@ -21,16 +21,6 @@ class CropCoordsTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        import SharedArray as sa
-        for arr in sa.list():
-            sa.delete(arr.name.decode("utf-8"))
-
-    def tearDown(self):
-        import SharedArray as sa
-        assert len(sa.list()) == 0
-
     def test_executed_only_volume(self):
         # Check that the filter is  executed when:
         #   - valid Region of Interest is provided

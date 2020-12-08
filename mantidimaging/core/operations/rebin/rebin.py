@@ -2,9 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import Optional
-
-import numpy
 import skimage.transform
 
 from mantidimaging import helper as h
