@@ -106,12 +106,11 @@ class ReconWindowModelTest(unittest.TestCase):
         expected_sino = self.model.images.sino(expected_idx)
         expected_cor = ScalarCoR(15)
         expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
-        self.model.use_cuda = use_cuda = True
         self.model.run_preview_recon(expected_idx, expected_cor, expected_recon_params)
 
         mock_get_reconstructor_for.assert_called_once_with(expected_recon_params.algorithm)
         assert_called_once_with(mock_reconstructor.single_sino, expected_sino, expected_cor,
-                                self.model.images.projection_angles(), expected_recon_params, use_cuda)
+                                self.model.images.projection_angles(), expected_recon_params)
 
     def test_apply_pixel_size(self):
         images = generate_images()
