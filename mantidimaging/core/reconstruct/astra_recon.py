@@ -16,6 +16,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 
+
 # Full credit for following code to Daniil Kazantzev
 # Source:
 # https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70
@@ -97,7 +98,7 @@ class AstraRecon(BaseRecon):
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters) -> np.ndarray:
+                    recon_params: ReconstructionParameters, use_cuda: bool) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
         sino = BaseRecon.sino_recon_prep(sino)
@@ -107,7 +108,7 @@ class AstraRecon(BaseRecon):
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(recon_params.algorithm)
         cfg['FilterType'] = recon_params.filter_name
-        with _managed_recon(sino, cfg, proj_geom, vol_geom, recon_params.use_cuda) as (alg_id, rec_id):
+        with _managed_recon(sino, cfg, proj_geom, vol_geom, use_cuda) as (alg_id, rec_id):
             astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
             return astra.data2d.get(rec_id)
 
@@ -115,6 +116,7 @@ class AstraRecon(BaseRecon):
     def full(images: Images,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
+             use_cuda: bool,
              progress: Optional[Progress] = None) -> Images:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms, images.width, images.width)
@@ -123,7 +125,7 @@ class AstraRecon(BaseRecon):
 
         proj_angles = images.projection_angles(recon_params.max_projection_angle)
         for i in range(images.height):
-            output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params)
+            output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params, use_cuda)
             progress.update(1, "Reconstructed slice")
 
         return output_images

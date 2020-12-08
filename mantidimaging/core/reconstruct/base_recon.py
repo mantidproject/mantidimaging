@@ -17,7 +17,7 @@ class BaseRecon:
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters) -> np.ndarray:
+                    recon_params: ReconstructionParameters, use_cuda: bool) -> np.ndarray:
         """
         Reconstruct a single sinogram
 
@@ -34,6 +34,7 @@ class BaseRecon:
     def full(images: Images,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
+             use_cuda: bool,
              progress: Optional[Progress] = None) -> Images:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
