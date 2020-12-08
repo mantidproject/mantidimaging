@@ -52,10 +52,6 @@ class RebinFilter(BaseFilter):
 
         if param_valid:
             sample = images.data
-            sample_name: Optional[str]
-            # allocate output first BEFORE freeing the original data,
-            # otherwise it's possible to free and then fail allocation for output
-            # at which point you're left with no data
             empty_resized_data = _create_reshaped_array(images, rebin_param)
 
             f = ptsm.create_partial(skimage.transform.resize,
@@ -148,15 +144,6 @@ class RebinFilter(BaseFilter):
 
 def modes():
     return ["constant", "edge", "wrap", "reflect", "symmetric"]
-
-
-def _execute_par(data: numpy.ndarray, resized_data, mode, cores=None, chunksize=None, progress=None):
-    f = ptsm.create_partial(skimage.transform.resize,
-                            ptsm.return_to_second_but_dont_use_it,
-                            mode=mode,
-                            output_shape=resized_data.shape[1:])
-    ptsm.execute(data, resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
-    return resized_data
 
 
 def _create_reshaped_array(images, rebin_param):
