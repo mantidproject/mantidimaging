@@ -80,4 +80,5 @@ class StackChoicePresenter(StackChoicePresenterMixin):
 
     def close_view(self):
         self.view.close()
+        self.stack = None
         self.done = True
