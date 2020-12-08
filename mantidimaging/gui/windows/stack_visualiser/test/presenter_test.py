@@ -43,7 +43,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         npt.assert_equal(test_data.data[index], img.data[0])
 
     def test_delete_data(self):
-        self.presenter.images = th.generate_images(automatic_free=False)
+        self.presenter.images = th.generate_images()
         self.presenter.delete_data()
         self.assertIsNone(self.presenter.images, None)
 

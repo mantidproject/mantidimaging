@@ -35,25 +35,17 @@ def generate_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
         return generated_array
 
 
-def generate_images(shape=g_shape, dtype=np.float32, automatic_free=True) -> Images:
-    import inspect
-    import uuid
-    array_name = f"{str(uuid.uuid4())}{inspect.stack()[1].function}"
-    if automatic_free:
-        with pu.temp_shared_array(shape, dtype, force_name=array_name) as d:
-            return _set_random_data(d, shape, array_name)
-    else:
-        d = pu.create_array(shape, dtype, array_name)
-        return _set_random_data(d, shape, array_name)
+def generate_images(shape=g_shape, dtype=np.float32) -> Images:
+    d = pu.create_array(shape, dtype)
+    return _set_random_data(d, shape)
 
 
-def _set_random_data(data, shape, array_name):
+def _set_random_data(data, shape):
     n = np.random.rand(*shape)
     # move the data in the shared array
     data[:] = n[:]
 
     images = Images(data)
-    images.memory_filename = array_name
     return images
 
 

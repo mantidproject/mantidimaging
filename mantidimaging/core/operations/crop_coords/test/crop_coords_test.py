@@ -37,7 +37,7 @@ class CropCoordsTest(unittest.TestCase):
         #   - no flat or dark images are provided
 
         roi = SensibleROI.from_list([1, 1, 5, 5])
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         # store a reference here so it doesn't get freed inside the filter execute
         sample = images.data
         result = CropCoordinatesFilter.filter_func(images, roi)
@@ -60,7 +60,7 @@ class CropCoordsTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         roi = SensibleROI.from_list([1, 1, 5, 5])
 
         cached_memory = get_memory_usage_linux(mb=True)[0]
@@ -77,7 +77,7 @@ class CropCoordsTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "0, 0, 5, 5"
         CropCoordinatesFilter.execute_wrapper(roi_mock)(images)
@@ -87,7 +87,7 @@ class CropCoordsTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "apples"
         self.assertRaises(ValueError, CropCoordinatesFilter.execute_wrapper, roi_mock)

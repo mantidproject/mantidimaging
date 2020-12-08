@@ -43,21 +43,6 @@ def free_all():
         sa.delete(arr.name.decode("utf-8"))
 
 
-def create_shared_name(file_name=None) -> str:
-    return f"{INSTANCE_PREFIX}-{uuid.uuid4()}{f'-{os.path.basename(file_name)}' if file_name is not None else ''}"
-
-
-def delete_shared_array(name, silent_failure=True):
-    try:
-        LOG.debug(f"Deleting array with name: {name}")
-        sa.delete(f"shm://{name}")
-    except FileNotFoundError as e:
-        if not silent_failure:
-            raise e
-        else:
-            LOG.warning(f"Failed to remove SharedArray with name {name}")
-
-
 def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
 
@@ -66,10 +51,7 @@ def allocate_output(images, shape):
     return create_array(shape, images.dtype)
 
 
-def create_array(shape: Tuple[int, int, int],
-                 dtype: NP_DTYPE = np.float32,
-                 name: Optional[str] = None,
-                 random_name=False) -> np.ndarray:
+def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
@@ -83,20 +65,10 @@ def create_array(shape: Tuple[int, int, int],
         raise RuntimeError(
             "The machine does not have enough physical memory available to allocate space for this data.")
 
-    if random_name:
-        name = create_shared_name()
-
-    if name is not None:
-        return _create_shared_array(shape, dtype, name)
-    else:
-        # if the name provided is None, then a shared array, and delete the memory file
-        # reference, so that when all Python references are removed the memory is
-        # automatically freed
-        with temp_shared_array(shape, dtype) as temp:
-            return temp
+    return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32, _=None):
+def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32):
     ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
     if isinstance(dtype, np.uint8) or dtype == 'uint8':
         ctype = ctypes.c_uint8
@@ -136,26 +108,13 @@ def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32, _=None
     return data.reshape(shape)
 
 
-# def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str) -> np.ndarray:
-#     """
-#     :param dtype:
-#     :param shape:
-#     :param name: Name used for the shared memory file by which this memory chunk will be identified
-#     """
-#     LOG.info(f"Requested shared array with name='{name}', shape={shape}, dtype={dtype}")
-#     memory_file_name = f"shm://{name}"
-#     arr = sa.create(memory_file_name, shape, dtype)
-#     return arr
-
-
 @contextmanager
-def temp_shared_array(shape, dtype: NP_DTYPE = np.float32, force_name=None) -> np.ndarray:
-    temp_name = create_shared_name() if not force_name else force_name
-    array = _create_shared_array(shape, dtype, temp_name)
+def temp_shared_array(shape, dtype: NP_DTYPE = np.float32) -> np.ndarray:
+    array = _create_shared_array(shape, dtype)
     try:
         yield array
     finally:
-        delete_shared_array(temp_name)
+        pass
 
 
 def multiprocessing_available():

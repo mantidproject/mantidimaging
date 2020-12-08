@@ -24,8 +24,7 @@ class Images:
                  filenames: Optional[List[str]] = None,
                  indices: Optional[Tuple[int, int, int]] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 memory_filename: Optional[str] = None):
+                 sinograms: bool = False):
         """
 
         :param data: Images of the Sample/Projection data
@@ -42,7 +41,6 @@ class Images:
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self.memory_filename = memory_filename
         self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
         self._projection_angles: Optional[ProjectionAngles] = None
@@ -114,8 +112,7 @@ class Images:
 
     def copy(self, flip_axes=False) -> 'Images':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
-        data_name = pu.create_shared_name()
-        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
             data_copy[:] = np.swapaxes(self.data, 0, 1)
         else:
@@ -124,22 +121,19 @@ class Images:
         images = Images(data_copy,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
-                        memory_filename=data_name)
+                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
     def copy_roi(self, roi: SensibleROI):
         shape = (self.data.shape[0], roi.height, roi.width)
 
-        data_name = pu.create_shared_name()
-        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy = pu.create_array(shape, self.data.dtype)
         data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
         images = Images(data_copy,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=self._is_sinograms,
-                        memory_filename=data_name)
+                        sinograms=self._is_sinograms)
 
         mark_cropped(images, roi)
         return images
@@ -240,9 +234,8 @@ class Images:
 
     @staticmethod
     def create_empty_images(shape, dtype, metadata):
-        shared_name = pu.create_shared_name()
-        arr = pu.create_array(shape, dtype, shared_name)
-        return Images(arr, memory_filename=shared_name, metadata=metadata)
+        arr = pu.create_array(shape, dtype)
+        return Images(arr, metadata=metadata)
 
     @property
     def is_sinograms(self):

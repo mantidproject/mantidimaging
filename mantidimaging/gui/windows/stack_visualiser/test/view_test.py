@@ -40,7 +40,7 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
 
     def _add_stack_visualiser(self) -> Tuple[QDockWidget, StackVisualiserView, Images]:
-        test_data = th.generate_images(automatic_free=False)
+        test_data = th.generate_images()
         self.window.create_new_stack(test_data, "Test Data")
         view = self.window.get_stack_with_images(test_data)
         return view.dock, view, test_data

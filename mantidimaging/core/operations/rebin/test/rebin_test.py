@@ -63,7 +63,7 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute_uniform(self, val=2.0, dtype=np.float32):
-        images = th.generate_images(dtype=dtype, automatic_free=False)
+        images = th.generate_images(dtype=dtype)
         mode = 'reflect'
 
         expected_x = int(images.data.shape[1] * val)
@@ -102,7 +102,7 @@ class RebinTest(unittest.TestCase):
         th.switch_mp_on()
 
     def do_execute_xy(self, val=(512, 512)):
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         mode = 'reflect'
 
         expected_x = int(val[0])
@@ -119,22 +119,19 @@ class RebinTest(unittest.TestCase):
         if the output data could not be allocated
         :return:
         """
-        images = th.generate_images(shape=(500, 10, 10), automatic_free=False)
+        images = th.generate_images(shape=(500, 10, 10))
         mode = 'reflect'
-
-        input_mfile = images.memory_filename
 
         # something very huge that shouldn't fit on ANY computer
         rebin_param = (100000, 100000)
         self.assertRaises(RuntimeError, RebinFilter.filter_func, images, rebin_param=rebin_param, mode=mode)
-        self.assertEqual(input_mfile, images.memory_filename)
 
     def test_memory_change_acceptable(self):
         """
         This filter will increase the memory usage as it has to allocate memory
         for the new resized shape
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
 
         mode = 'reflect'
         # This about doubles the memory. Value found from running the test
@@ -169,7 +166,7 @@ class RebinTest(unittest.TestCase):
                                                    factor=factor,
                                                    mode_field=mode_field)
 
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(rebin_to_dimensions_radio.isChecked.call_count, 1)

@@ -54,7 +54,7 @@ class ImagesTest(unittest.TestCase):
         self.assertEqual(imgs.metadata, expected)
 
     def test_copy(self):
-        images = generate_images(automatic_free=False)
+        images = generate_images()
         images.record_operation("Test", "Display", 123)
         self.assertFalse(images.is_sinograms)
         copy = images.copy()
@@ -68,7 +68,7 @@ class ImagesTest(unittest.TestCase):
         self.assertNotEqual(images, copy)
 
     def test_copy_flip_axes(self):
-        images = generate_images(automatic_free=False)
+        images = generate_images()
         images.record_operation("Test", "Display", 123)
         self.assertFalse(images.is_sinograms)
         copy = images.copy(flip_axes=True)
@@ -82,7 +82,7 @@ class ImagesTest(unittest.TestCase):
         self.assertNotEqual(images.sinograms, copy)
 
     def test_copy_roi(self):
-        images = generate_images(automatic_free=False)
+        images = generate_images()
         images.record_operation("Test", "Display", 123)
         self.assertFalse(images.is_sinograms)
         cropped_copy = images.copy_roi(SensibleROI(0, 0, 5, 5))

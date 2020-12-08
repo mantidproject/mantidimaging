@@ -133,11 +133,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
-        ds = Dataset(sample=generate_images(automatic_free=False),
-                     flat_before=generate_images(automatic_free=False),
-                     flat_after=generate_images(automatic_free=False),
-                     dark_before=generate_images(automatic_free=False),
-                     dark_after=generate_images(automatic_free=False))
+        ds = Dataset(sample=generate_images(),
+                     flat_before=generate_images(),
+                     flat_after=generate_images(),
+                     dark_before=generate_images(),
+                     dark_after=generate_images())
         ds.flat_before.filenames = ["filename"] * 10
         ds.dark_before.filenames = ["filename"] * 10
         ds.flat_after.filenames = ["filename"] * 10
