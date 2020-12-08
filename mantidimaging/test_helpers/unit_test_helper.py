@@ -30,9 +30,9 @@ def generate_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarra
 
 
 def generate_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
-    with pu.temp_shared_array(shape, dtype) as generated_array:
-        np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]).astype(dtype))
-        return generated_array
+    generated_array = pu.create_array(shape, dtype)
+    np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]).astype(dtype))
+    return generated_array
 
 
 def generate_images(shape=g_shape, dtype=np.float32) -> Images:
@@ -49,17 +49,12 @@ def _set_random_data(data, shape):
     return images
 
 
-def gen_empty_shared_array(shape=g_shape):
-    with pu.temp_shared_array(shape) as d:
-        return d
-
-
 def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    with pu.temp_shared_array(shape) as d:
-        n = np.full(shape, val)
-        # move the data in the shared array
-        d[:] = n[:]
-        return d
+    d = pu.create_array(shape)
+    n = np.full(shape, val)
+    # move the data in the shared array
+    d[:] = n[:]
+    return d
 
 
 def assert_not_equals(one: np.ndarray, two: np.ndarray):
@@ -167,12 +162,6 @@ class IgnoreOutputStreams(object):
         # Restore the default streams
         sys.stdout = self.stdout
         sys.stderr = self.stderr
-
-
-def shared_deepcopy(images: Images) -> np.ndarray:
-    with pu.temp_shared_array(images.data.shape) as copy:
-        np.copyto(copy, images.data)
-        return copy
 
 
 def assert_called_once_with(mock: mock.Mock, *args):
