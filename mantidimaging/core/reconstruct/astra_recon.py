@@ -1,6 +1,5 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import os
 from contextlib import contextmanager
 from logging import getLogger
 from typing import Union, List, Optional, Tuple, Generator
