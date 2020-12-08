@@ -3,12 +3,10 @@
 
 # !/usr/bin/env python
 import argparse
-import atexit
 import logging
 import warnings
 
 from mantidimaging import helper as h
-from mantidimaging.core.parallel.utility import free_all_owned_by_this_instance
 from mantidimaging.core.utility.optional_imports import safe_import
 
 formatwarning_orig = warnings.formatwarning
@@ -41,7 +39,6 @@ def parse_args():
 
 
 def main():
-    atexit.register(free_all_owned_by_this_instance)
     args = parse_args()
     # Print version number and exit
     if args.version:
