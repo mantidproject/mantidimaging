@@ -2,6 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
+
+from mantidimaging.core.utility.cuda_check import check_cuda
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
@@ -79,6 +81,8 @@ class MainWindowView(BaseMainWindowView):
         if not is_main_label:
             self.setWindowTitle("Mantid Imaging Unstable")
             self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
+
+        self.use_cuda = check_cuda()
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
@@ -228,7 +232,7 @@ class MainWindowView(BaseMainWindowView):
 
     def show_recon_window(self):
         if not self.recon:
-            self.recon = ReconstructWindowView(self)
+            self.recon = ReconstructWindowView(self, self.use_cuda)
             self.recon.show()
         else:
             self.recon.activateWindow()

@@ -10,7 +10,7 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.reconstruct import get_reconstructor_for
-from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs, check_cuda
+from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.rotation.polyfit_correlation import find_center
 from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
@@ -24,7 +24,7 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowModel(object):
-    def __init__(self, data_model: CorTiltPointQtModel):
+    def __init__(self, data_model: CorTiltPointQtModel, use_cuda: bool):
         self.stack: Optional['StackVisualiserView'] = None
         self._preview_projection_idx = 0
         self._preview_slice_idx = 0
@@ -32,6 +32,7 @@ class ReconstructWindowModel(object):
         self.data_model = data_model
         self._last_result = None
         self._last_cor = ScalarCoR(0.0)
+        self.use_cuda = use_cuda
 
     @property
     def last_result(self):
@@ -175,10 +176,9 @@ class ReconstructWindowModel(object):
     def slices(self):
         return self.data_model.slices
 
-    @staticmethod
-    def load_allowed_recon_kwargs():
+    def load_allowed_recon_kwargs(self):
         d = tomopy_allowed_kwargs()
-        if check_cuda():
+        if self.use_cuda:
             d.update(astra_allowed_kwargs())
         return d
 

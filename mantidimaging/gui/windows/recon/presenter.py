@@ -48,10 +48,10 @@ class ReconstructWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
     view: 'ReconstructWindowView'
 
-    def __init__(self, view: 'ReconstructWindowView', main_window):
+    def __init__(self, view: 'ReconstructWindowView', main_window, use_cuda: bool):
         super(ReconstructWindowPresenter, self).__init__(view)
         self.view = view
-        self.model = ReconstructWindowModel(self.view.cor_table_model)
+        self.model = ReconstructWindowModel(self.view.cor_table_model, use_cuda)
         self.allowed_recon_kwargs: Dict[str, List[str]] = self.model.load_allowed_recon_kwargs()
         self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
             'filter_name': [self.view.filterName, self.view.filterNameLabel],
