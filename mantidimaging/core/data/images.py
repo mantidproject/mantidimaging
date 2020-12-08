@@ -45,6 +45,7 @@ class Images:
         self.memory_filename = memory_filename
         self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
+        self._projection_angles: Optional[ProjectionAngles] = None
 
     def __eq__(self, other):
         if isinstance(other, Images):
@@ -278,14 +279,30 @@ class Images:
             del self.metadata[const.LOG_FILE]
         self._log_file = value
 
-    def projection_angles(self, max_angle: float = 360.0):
-        proj_angles = self._log_file.projection_angles() if self._log_file is not None else \
-            ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
-        if self.num_images != len(proj_angles.value):
-            raise ValueError(f"Number of projection angles {len(proj_angles.value)} does not equal "
-                             f"the number of projections {self.num_images}. This can happen if loading subset of "
-                             "projections, and using projection angles from a log file.")
-        return proj_angles
+    def set_projection_angles(self, angles: ProjectionAngles):
+        if len(angles.value) != self.num_images:
+            raise RuntimeError("The number of angles does not match the number of images. "
+                               f"Num angles {len(angles.value)} and num images {self.num_images}")
+
+        self._projection_angles = angles
+
+    def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
+        """
+        Return projection angles, in priority order:
+        - From a log
+        - From the manually loaded file with a list of angles
+        - Automatically generated with equidistant step
+
+        :param max_angle: The maximum angle up to which the angles will be generated.
+                          Only used when the angles are generated, if they are provided
+                          via a log or a file the argument will be ignored.
+        """
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
+        elif self._projection_angles is not None:
+            return self._projection_angles
+        else:
+            return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
 
     def counts(self) -> Optional[Counts]:
         if self._log_file is not None:

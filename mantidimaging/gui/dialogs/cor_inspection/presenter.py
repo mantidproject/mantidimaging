@@ -15,7 +15,7 @@ from .model import CORInspectionDialogModel
 from .types import ImageType
 
 if TYPE_CHECKING:
-    from .view import CORInspectionDialogView
+    from .view import CORInspectionDialogView  # pragma: no cover
 
 LOG = getLogger(__name__)
 

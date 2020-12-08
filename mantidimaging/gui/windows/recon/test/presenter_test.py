@@ -260,6 +260,33 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])
         self.view.set_correlate_buttons_enabled.assert_called_once_with(False)
 
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 20
+        images.proj180deg.width = 20
+        self.view = mock.MagicMock()
+        self.presenter.view = self.view
+        self.view.main_window.get_images_from_stack_uuid = mock.MagicMock(return_value=images)
+
+        self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
+
+        mock_start_async.assert_called_once()
+        completed_function = mock_start_async.call_args[0][2]
+
+        task = mock.MagicMock()
+        task.result = None
+        task.error = ValueError("Task Error")
+        completed_function(task)
+
+        self.view.warn_user.assert_called_once_with(
+            "Failure!",
+            "Finding the COR failed, likely caused by the selected stack's 180 degree projection being a different "
+            "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
+            "projection to (10, 10)")
+
     def test_do_stack_reconstruct_slice(self):
         self.presenter._get_reconstruct_slice = mock.Mock()
         self.presenter._get_reconstruct_slice.return_value = test_data = np.ndarray(shape=(200, 250), dtype=np.float32)
@@ -273,3 +300,32 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_stack_reconstruct_slice()
         self.view.show_recon_volume.assert_not_called()
         self.view.show_error_dialog.assert_called_once()
+
+    def test_proj_180_degree_shape_matches_images_where_they_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 10
+        images.proj180deg.width = 10
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertTrue(self.presenter.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 20
+        images.proj180deg.width = 20
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
+        images = mock.MagicMock()
+        has_proj180deg = mock.MagicMock(return_value=False)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))

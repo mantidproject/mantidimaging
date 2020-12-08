@@ -5,14 +5,14 @@ import os
 import uuid
 from collections import namedtuple
 from logging import getLogger
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from PyQt5.QtWidgets import QDockWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
-from mantidimaging.core.utility.data_containers import LoadingParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 StackId = namedtuple('StackId', ['id', 'name'])
@@ -180,3 +180,12 @@ class MainWindowModel(object):
         _180_deg = loader.load(file_names=[_180_deg_file])
         stack.presenter.images.proj180deg = _180_deg.sample
         return _180_deg
+
+    def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
+        stack_dock = self.get_stack_by_name(stack_name)
+        if stack_dock is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+
+        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
+        images: Images = stack.presenter.images
+        images.set_projection_angles(proj_angles)

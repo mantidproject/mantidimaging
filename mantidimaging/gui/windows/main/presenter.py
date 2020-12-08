@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 import os
 import traceback
 from enum import Enum, auto
@@ -19,7 +20,7 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
 class Notification(Enum):
@@ -193,3 +194,6 @@ class MainWindowPresenter(BasePresenter):
 
     def create_stack_name(self, filename: str):
         return self.model.create_name(os.path.basename(filename))
+
+    def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
+        self.model.add_projection_angles_to_sample(stack_name, proj_angles)

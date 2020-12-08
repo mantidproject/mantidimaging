@@ -19,7 +19,7 @@ from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.recon.view import ReconstructWindowView
+    from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
 
 
 class AutoCorMethod(Enum):
@@ -281,8 +281,17 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _auto_find_correlation(self):
         def completed(task: TaskWorkerThread):
-            cor, tilt = task.result
-            self._set_precalculated_cor_tilt(cor, tilt)
+            if task.result is None and task.error is not None:
+                selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
+                self.view.warn_user(
+                    "Failure!", f"Finding the COR failed, likely caused by the selected stack's 180 "
+                    f"degree projection being a different shape. \n\n "
+                    f"Error: {str(task.error)} "
+                    f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
+                    f"({selected_stack.height}, {selected_stack.width})")
+            else:
+                cor, tilt = task.result
+                self._set_precalculated_cor_tilt(cor, tilt)
             self.view.set_correlate_buttons_enabled(True)
 
         self.view.set_correlate_buttons_enabled(False)
@@ -317,3 +326,6 @@ class ReconstructWindowPresenter(BasePresenter):
             'recon_params': self.view.recon_params(),
             'initial_cor': initial_cor
         })
+
+    def proj_180_degree_shape_matches_images(self, images):
+        return self.model.proj_180_degree_shape_matches_images(images)

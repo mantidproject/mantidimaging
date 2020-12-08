@@ -11,8 +11,8 @@ from .model import OpHistoryCopyDialogModel
 from ...utility.common import operation_in_progress
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogView
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogView  # pragma: no cover
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
 class OpHistoryCopyDialogPresenter(BasePresenter):
