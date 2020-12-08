@@ -21,7 +21,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         # Mock view
         self.make_view()
 
-        self.presenter = ReconstructWindowPresenter(self.view, None)
+        self.presenter = ReconstructWindowPresenter(self.view, None, True)
 
         # Mock stack
         self.sv_view = mock.create_autospec(StackVisualiserView)
