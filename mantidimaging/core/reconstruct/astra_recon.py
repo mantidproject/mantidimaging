@@ -16,14 +16,6 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 
-
-def check_cuda():
-    """
-    Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
-    """
-    return "Driver Version" in os.popen("nvidia-smi").read() and os.popen("locate libcuda.so").read() is not ""
-
-
 # Full credit for following code to Daniil Kazantzev
 # Source:
 # https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70
@@ -45,13 +37,13 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
 
 
 @contextmanager
-def _managed_recon(sino, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int], None, None]:
+def _managed_recon(sino, cfg, proj_geom, vol_geom, use_cuda) -> Generator[Tuple[int, int], None, None]:
     proj_id = None
     sino_id = None
     rec_id = None
     alg_id = None
     try:
-        proj_type = 'cuda' if check_cuda() else 'line'
+        proj_type = 'cuda' if use_cuda else 'line'
         LOG.info("Using projection type {}".format(proj_type))
 
         proj_id = astra.create_projector(proj_type, proj_geom, vol_geom)
@@ -115,8 +107,7 @@ class AstraRecon(BaseRecon):
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(recon_params.algorithm)
         cfg['FilterType'] = recon_params.filter_name
-        with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
-            LOG.info("No GPU = problems here")
+        with _managed_recon(sino, cfg, proj_geom, vol_geom, recon_params.use_cuda) as (alg_id, rec_id):
             astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
             return astra.data2d.get(rec_id)
 
