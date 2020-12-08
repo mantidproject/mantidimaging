@@ -8,6 +8,8 @@ from contextlib import contextmanager
 from functools import partial
 from logging import getLogger
 from multiprocessing.pool import Pool
+# for some reason mypy can't find this import, nor can IDE suggestions
+from multiprocessing import heap  # type: ignore
 from typing import Union, Type, Optional, Tuple
 
 import SharedArray as sa
@@ -45,13 +47,15 @@ def create_shared_name(file_name=None) -> str:
     return f"{INSTANCE_PREFIX}-{uuid.uuid4()}{f'-{os.path.basename(file_name)}' if file_name is not None else ''}"
 
 
-def delete_shared_array(name, silent_failure=False):
+def delete_shared_array(name, silent_failure=True):
     try:
         LOG.debug(f"Deleting array with name: {name}")
         sa.delete(f"shm://{name}")
     except FileNotFoundError as e:
         if not silent_failure:
             raise e
+        else:
+            LOG.warning(f"Failed to remove SharedArray with name {name}")
 
 
 def enough_memory(shape, dtype):
@@ -99,16 +103,56 @@ def create_array(shape: Tuple[int, int, int],
             return temp
 
 
-def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str) -> np.ndarray:
-    """
-    :param dtype:
-    :param shape:
-    :param name: Name used for the shared memory file by which this memory chunk will be identified
-    """
-    LOG.info(f"Requested shared array with name='{name}', shape={shape}, dtype={dtype}")
-    memory_file_name = f"shm://{name}"
-    arr = sa.create(memory_file_name, shape, dtype)
-    return arr
+def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32, _=None):
+    ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
+    if isinstance(dtype, np.uint8) or dtype == 'uint8':
+        ctype = ctypes.c_uint8
+        dtype = np.uint8
+    elif isinstance(dtype, np.uint16) or dtype == 'uint16':
+        ctype = ctypes.c_uint16
+        dtype = np.uint16
+    elif isinstance(dtype, np.int32) or dtype == 'int32':
+        ctype = ctypes.c_int32
+        dtype = np.int32
+    elif isinstance(dtype, np.int64) or dtype == 'int64':
+        ctype = ctypes.c_int64
+        dtype = np.int64
+    elif isinstance(dtype, np.float32) or dtype == 'float32':
+        ctype = ctypes.c_float
+        dtype = np.float32
+    elif isinstance(dtype, np.float64) or dtype == 'float64':
+        ctype = ctypes.c_double
+        dtype = np.float64
+
+    length = 1
+    for axis_length in shape:
+        length *= axis_length
+
+    size = ctypes.sizeof(ctype(1)) * length
+
+    LOG.info('Requested shared array with shape={}, length={}, size={}, ' 'dtype={}'.format(shape, length, size, dtype))
+
+    arena = heap.Arena(size)
+    mem = memoryview(arena.buffer)
+
+    array_type = ctype * length
+    array = array_type.from_buffer(mem)
+
+    data = np.frombuffer(array, dtype=dtype)
+
+    return data.reshape(shape)
+
+
+# def _create_shared_array(shape: Tuple[int, int, int], dtype: NP_DTYPE, name: str) -> np.ndarray:
+#     """
+#     :param dtype:
+#     :param shape:
+#     :param name: Name used for the shared memory file by which this memory chunk will be identified
+#     """
+#     LOG.info(f"Requested shared array with name='{name}', shape={shape}, dtype={dtype}")
+#     memory_file_name = f"shm://{name}"
+#     arr = sa.create(memory_file_name, shape, dtype)
+#     return arr
 
 
 @contextmanager
