@@ -87,7 +87,6 @@ class CropCoordsTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images()
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "apples"
         self.assertRaises(ValueError, CropCoordinatesFilter.execute_wrapper, roi_mock)
