@@ -3,16 +3,14 @@
 
 import ctypes
 import os
-import uuid
 from contextlib import contextmanager
 from functools import partial
 from logging import getLogger
-from multiprocessing.pool import Pool
 # for some reason mypy can't find this import, nor can IDE suggestions
 from multiprocessing import heap  # type: ignore
-from typing import Union, Type, Optional, Tuple
+from multiprocessing.pool import Pool
+from typing import Any, Tuple, Type, Union
 
-import SharedArray as sa
 import numpy as np
 
 from mantidimaging.core.utility.memory_usage import system_free_memory
@@ -51,7 +49,7 @@ def allocate_output(images, shape):
     return create_array(shape, images.dtype)
 
 
-def create_array(shape: Tuple[int, int, int], dtype: NP_DTYPE = np.float32) -> np.ndarray:
+def create_array(shape: Tuple[Any, ...], dtype: NP_DTYPE = np.float32) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
