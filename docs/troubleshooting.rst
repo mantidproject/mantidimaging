@@ -82,3 +82,41 @@ Reinstalling CUDA on Linux can be quickly done with this script
 
     # install GPU driver and CUDA Toolkit from CLI silently
     sudo bash ~/Downloads/cuda_10.2.89_440.33.01_linux.run --silent --driver --toolkit
+
+
+Specific Errors
+===============
+
+
+SystemError: <built-in function connectSlotsByName> returned a result with an error set
+---------------------------------------------------------------------------------------
+
+This means that the PyQt package is missing or an old version (it must be newer than PyQt5==5.13.2)
+
+Suggested Fix
+#############
+
+Install PyQt5 and pyqtgraph with :code:`pip install pyqt5==5.15 pyqtgraph==0.11`
+
+
+
+qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
+----------------------------------------------------------------------------------------------
+
+This might mean some system libraries are missing
+
+Suggested Fix
+#############
+
+Try installing :code:`apt install libxcb-xinerama0`
+
+qt.qpa.xcb: could not connect to display...
+-------------------------------------------
+
+Missing :code:`DISPLAY` variable. This means the application cannot find the display to show itself on.
+
+
+Suggested Fix
+#############
+
+You can set this via :code:`export DISPLAY=:N` where :code:`:N` should be the number of your display
