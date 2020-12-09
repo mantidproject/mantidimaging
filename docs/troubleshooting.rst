@@ -3,6 +3,53 @@
 Troubleshooting
 ===============
 
+Updating Mantid Imaging on IDAaaS
+---------------------------------
+
+Updating Unstable package
+#########################
+
+To update the unstable package please copy and run this command in a terminal:
+
+.. code-block:: bash
+
+    source /opt/miniconda/bin/activate /opt/miniconda && ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
+
+Updating Release package
+########################
+
+To update the release package please copy and run this command in a terminal:
+
+.. code-block:: bash
+
+    source /opt/miniconda/bin/activate /opt/miniconda && source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
+
+Updating when not on IDAaaS
+###########################
+
+When updating the package, and not on IDAaaS, you will have to:
+
+- Open a terminal which has the :code:`base` Anaconda environment activated, or
+- replace the :code:`/opt/miniconda/` paths in :code:`source /opt/miniconda/bin/activate /opt/miniconda`
+command with the path where :code:`conda` is installed on your system.
+
+Afterwards run the remainder of the command to update the environment:
+
+- For Unstable
+
+.. code-block:: bash
+
+    ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
+
+
+- For Release
+
+.. code-block:: bash
+
+    source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
+
+
+
 Can't reconstruct with FBP_CUDA and SIRT_CUDA
 ---------------------------------------------
 
