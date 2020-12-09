@@ -51,7 +51,7 @@ jobs:
       - name: pytest
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest -v --cov --cov-report=xml
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml
 
       - name: Coveralls
         shell: bash -l {0}

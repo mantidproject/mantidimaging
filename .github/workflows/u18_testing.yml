@@ -47,4 +47,4 @@ jobs:
     - name: pytest
       uses: ./.github/actions/test
       with:
-        command: xvfb-run pytest -v
+        command: xvfb-run pytest
