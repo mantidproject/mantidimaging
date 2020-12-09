@@ -17,9 +17,11 @@ WELCOME_LINKS = [["Homepage", "https://github.com/mantidproject/mantidimaging"],
 
 
 class WelcomeScreenPresenter(BasePresenter):
-    def __init__(self, parent=None, view=None):
+    def __init__(self, cuda_present: bool, parent=None, view=None):
         if view is None:
             view = WelcomeScreenView(parent, self)
+
+        self.cuda_present = cuda_present
 
         super(WelcomeScreenPresenter, self).__init__(view)
         self.settings = QSettings()
@@ -77,7 +79,7 @@ class WelcomeScreenPresenter(BasePresenter):
             msg, detailed = versions.conda_update_message()
             self.view.add_issue(msg)
             LOG.info(detailed)
-        if not cuda_check.cuda_is_present():
+        if not self.cuda_present:
             msg, detailed = cuda_check.not_found_message()
             self.view.add_issue(msg)
             LOG.info(detailed)
