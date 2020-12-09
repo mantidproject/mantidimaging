@@ -38,7 +38,8 @@ class StackVisualiserViewTest(unittest.TestCase):
 
     def setUp(self):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.window = MainWindowView()
+            with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
+                self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
 
