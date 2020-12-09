@@ -42,7 +42,6 @@ def test_execute_impl_par(mock_pool):
 
 
 def test_free_all_owned_by_this_instance():
-    [sa.delete(x.name.decode("utf-8")) for x in sa.list()]
     create_array((10, 10), np.float32, random_name=True)
     create_array((10, 10), np.float32, random_name=True)
     create_array((10, 10), np.float32, random_name=True)
@@ -50,9 +49,12 @@ def test_free_all_owned_by_this_instance():
     temp_name = "not_this_instance"
     sa.create("not_this_instance", (10, 10))
 
-    assert len(sa.list()) == 4
+    # these tests run in parallel, this should avoid some race conditions at least
+    initial = len(sa.list())
+    # frees the 3 allocated above
     free_all_owned_by_this_instance()
-    assert len(sa.list()) == 1
+    expected = initial - 3
+    assert len(sa.list()) == expected
     sa.delete(temp_name)
 
 
