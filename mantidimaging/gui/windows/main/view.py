@@ -139,7 +139,7 @@ class MainWindowView(BaseMainWindowView):
         QtGui.QDesktopServices.openUrl(url)
 
     def show_about(self):
-        welcome_window = WelcomeScreenPresenter(self, cuda_present=self.use_cuda)
+        welcome_window = WelcomeScreenPresenter(parent=self, cuda_present=self.use_cuda)
         welcome_window.show()
 
     def show_load_dialogue(self):
