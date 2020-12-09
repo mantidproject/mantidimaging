@@ -3,7 +3,7 @@
 
 from logging import getLogger
 
-from mantidimaging.core.utility.cuda_check import check_cuda
+from mantidimaging.core.utility.cuda_check import is_cuda_present
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
@@ -85,7 +85,7 @@ class MainWindowView(BaseMainWindowView):
         if WelcomeScreenPresenter.show_today():
             self.show_about()
 
-        self.use_cuda = check_cuda()
+        self.use_cuda = is_cuda_present()
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)

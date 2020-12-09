@@ -4,7 +4,7 @@
 import os
 
 
-def check_cuda():
+def is_cuda_present():
     """
     Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
