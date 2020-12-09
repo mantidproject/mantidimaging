@@ -3,9 +3,10 @@
 
 import mock
 import numpy as np
-
-from mantidimaging.core.parallel.utility import create_array, free_all_owned_by_this_instance, multiprocessing_necessary, execute_impl
 import SharedArray as sa
+
+from mantidimaging.core.parallel.utility import (create_array, execute_impl, free_all_owned_by_this_instance,
+                                                 multiprocessing_necessary)
 
 
 def test_correctly_chooses_parallel():

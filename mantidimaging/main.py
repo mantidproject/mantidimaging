@@ -5,12 +5,10 @@
 import argparse
 import atexit
 import logging
-from mantidimaging.core.parallel.utility import INSTANCE_PREFIX, free_all_owned_by_this_instance
 import warnings
 
-import SharedArray as sa
-
 from mantidimaging import helper as h
+from mantidimaging.core.parallel.utility import free_all_owned_by_this_instance
 from mantidimaging.core.utility.optional_imports import safe_import
 
 formatwarning_orig = warnings.formatwarning
