@@ -75,11 +75,14 @@ class WelcomeScreenPresenter(BasePresenter):
         self.settings.setValue("welcome_screen/last_run_version", versions.get_conda_installed_version())
 
     def check_issues(self):
+        issues = []
         if not versions.is_conda_uptodate():
             msg, detailed = versions.conda_update_message()
-            self.view.add_issue(msg)
+            issues.append(msg)
             LOG.info(detailed)
         if not self.cuda_present:
             msg, detailed = cuda_check.not_found_message()
-            self.view.add_issue(msg)
+            issues.append(msg)
             LOG.info(detailed)
+        self.view.add_issue("\n".join(issues))
+
