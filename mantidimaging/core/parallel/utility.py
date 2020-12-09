@@ -6,7 +6,8 @@ import os
 from contextlib import contextmanager
 from functools import partial
 from logging import getLogger
-# for some reason mypy can't find this import, nor can IDE suggestions
+# COMPAT python 3.7 : Using heap instead of Array,
+# see https://github.com/mantidproject/mantidimaging/pull/762#issuecomment-741663482
 from multiprocessing import heap  # type: ignore
 from multiprocessing.pool import Pool
 from typing import Any, Tuple, Type, Union
