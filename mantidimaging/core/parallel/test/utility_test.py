@@ -5,8 +5,8 @@ import mock
 import numpy as np
 import SharedArray as sa
 
-from mantidimaging.core.parallel.utility import (create_array, execute_impl, free_all_owned_by_this_instance,
-                                                 multiprocessing_necessary)
+from mantidimaging.core.parallel.utility import (create_array, create_shared_name, execute_impl,
+                                                 free_all_owned_by_this_instance, multiprocessing_necessary)
 
 
 def test_correctly_chooses_parallel():
@@ -42,19 +42,21 @@ def test_execute_impl_par(mock_pool):
 
 
 def test_free_all_owned_by_this_instance():
-    create_array((10, 10), np.float32, random_name=True)
-    create_array((10, 10), np.float32, random_name=True)
-    create_array((10, 10), np.float32, random_name=True)
+    name1 = create_shared_name()
+    name2 = create_shared_name()
+    name3 = create_shared_name()
+    create_array((10, 10), np.float32, name=name1)
+    create_array((10, 10), np.float32, name=name2)
+    create_array((10, 10), np.float32, name=name3)
 
     temp_name = "not_this_instance"
     sa.create("not_this_instance", (10, 10))
 
-    # these tests run in parallel, this should avoid some race conditions at least
-    initial = len(sa.list())
-    # frees the 3 allocated above
     free_all_owned_by_this_instance()
-    expected = initial - 3
-    assert len(sa.list()) == expected
+    assert name1 not in [arr.name.decode("utf-8") for arr in sa.list()]
+    assert name2 not in [arr.name.decode("utf-8") for arr in sa.list()]
+    assert name3 not in [arr.name.decode("utf-8") for arr in sa.list()]
+    assert temp_name in [arr.name.decode("utf-8") for arr in sa.list()]
     sa.delete(temp_name)
 
 
