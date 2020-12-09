@@ -2,8 +2,10 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import mock
+import numpy as np
 
-from mantidimaging.core.parallel.utility import multiprocessing_necessary, execute_impl
+from mantidimaging.core.parallel.utility import create_array, free_all_owned_by_this_instance, multiprocessing_necessary, execute_impl
+import SharedArray as sa
 
 
 def test_correctly_chooses_parallel():
@@ -36,6 +38,21 @@ def test_execute_impl_par(mock_pool):
     execute_impl(15, mock_partial, 10, 1, mock_progress, "Test")
     mock_pool_instance.imap.assert_called_once()
     assert mock_progress.update.call_count == 15
+
+
+def test_free_all_owned_by_this_instance():
+    [sa.delete(x.name.decode("utf-8")) for x in sa.list()]
+    create_array((10, 10), np.float32, random_name=True)
+    create_array((10, 10), np.float32, random_name=True)
+    create_array((10, 10), np.float32, random_name=True)
+
+    temp_name = "not_this_instance"
+    sa.create("not_this_instance", (10, 10))
+
+    assert len(sa.list()) == 4
+    free_all_owned_by_this_instance()
+    assert len(sa.list()) == 1
+    sa.delete(temp_name)
 
 
 if __name__ == "__main__":
