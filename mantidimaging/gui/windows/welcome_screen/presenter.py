@@ -4,7 +4,7 @@
 from PyQt5.QtCore import QSettings
 from logging import getLogger
 
-from mantidimaging.core.utility.cuda_check import is_cuda_present
+from mantidimaging.core.utility import cuda_check
 from mantidimaging.gui.mvp_base.presenter import BasePresenter
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.core.utility.version_check import versions
@@ -78,5 +78,7 @@ class WelcomeScreenPresenter(BasePresenter):
             msg, detailed = versions.conda_update_message()
             self.view.add_issue(msg)
             LOG.info(detailed)
-        if not is_cuda_present():
-            pass
+        if not cuda_check.cuda_is_present():
+            msg, detailed = cuda_check.not_found_message()
+            self.view.add_issue(msg)
+            LOG.info(detailed)
