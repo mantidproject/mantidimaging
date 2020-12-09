@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
+from typing import Tuple
 
 
 def cuda_is_present() -> bool:
@@ -11,9 +12,9 @@ def cuda_is_present() -> bool:
     return "Driver Version" in os.popen("nvidia-smi").read() and os.popen("locate libcuda.so").read() != ""
 
 
-def not_found_message() -> str:
+def not_found_message() -> Tuple[str, str]:
     """
     Generates a message that can be displayed if a working CUDA installation isn't found.
     """
-    return "Working CUDA installation not found. Will only use gridrec algorithm for reconstruction. Check " \
-           "troubleshooting page for assistance. "
+    cuda_not_found_msg = "Working CUDA installation not found."
+    return cuda_not_found_msg, cuda_not_found_msg + " Will only use gridrec algorithm for reconstruction.",
