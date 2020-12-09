@@ -83,16 +83,16 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.ReconstructWindowView")
     def test_show_recon_window(self, mock_recon: mock.Mock):
-        self.view.check_cuda = check_cuda = True
+        self.view.use_cuda = use_cuda = True
         self.view.show_recon_window()
 
-        mock_recon.assert_called_once_with(self.view, check_cuda)
+        mock_recon.assert_called_once_with(self.view, use_cuda)
         mock_recon.return_value.show.assert_called_once_with()
         mock_recon.return_value.activateWindow.assert_not_called()
         mock_recon.return_value.raise_.assert_not_called()
 
         self.view.show_recon_window()
-        mock_recon.assert_called_once_with(self.view, check_cuda)
+        mock_recon.assert_called_once_with(self.view, use_cuda)
         mock_recon.return_value.activateWindow.assert_called_once_with()
         mock_recon.return_value.raise_.assert_called_once_with()
 
