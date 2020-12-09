@@ -17,6 +17,7 @@ such as `Avizo
    installation
    user_guide/index
    developer_guide/index
+   troubleshooting
    api
 
 .. toctree::
