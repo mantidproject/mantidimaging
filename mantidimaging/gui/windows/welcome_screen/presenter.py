@@ -85,4 +85,3 @@ class WelcomeScreenPresenter(BasePresenter):
             issues.append(msg)
             LOG.info(detailed)
         self.view.add_issue("\n".join(issues))
-

@@ -87,7 +87,6 @@ class MainWindowView(BaseMainWindowView):
         if WelcomeScreenPresenter.show_today():
             self.show_about()
 
-
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
