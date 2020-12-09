@@ -84,11 +84,10 @@ class MainWindowView(BaseMainWindowView):
         if WelcomeScreenPresenter.show_today():
             self.show_about()
 
-        self.ask_user_to_free_data()
+        if has_other_shared_arrays():
+            self.ask_user_to_free_data()
 
     def ask_user_to_free_data(self):
-        if not has_other_shared_arrays():
-            return
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("Previously loaded data found")
         msg_box.setText("This can happen if Mantid Imaging crashes, or there are multiple instances running.\n\n"

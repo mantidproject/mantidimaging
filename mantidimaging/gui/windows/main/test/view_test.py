@@ -23,7 +23,8 @@ versions._use_test_values()
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.view = MainWindowView()
+            with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
+                self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
 
@@ -336,20 +337,4 @@ class MainWindowViewTest(unittest.TestCase):
         QMessageBox.return_value.setText.assert_called_once()
         self.assertEquals(QMessageBox.return_value.addButton.call_count, 2)
         QMessageBox.return_value.exec.assert_called_once()
-        free_all.assert_not_called()
-
-    @mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays")
-    @mock.patch("mantidimaging.gui.windows.main.view.free_all")
-    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
-    def test_ask_user_to_free_data_no_shared_arrays(self, QMessageBox: Mock, free_all: Mock,
-                                                    has_other_shared_arrays: Mock):
-        has_other_shared_arrays.return_value = False
-        # makes the clickedButton the same return value mock as the addButton return
-
-        self.view.ask_user_to_free_data()
-
-        QMessageBox.return_value.setWindowTitle.assert_not_called()
-        QMessageBox.return_value.setText.assert_not_called()
-        QMessageBox.return_value.addButton.assert_not_called()
-        QMessageBox.return_value.exec.assert_not_called()
         free_all.assert_not_called()
