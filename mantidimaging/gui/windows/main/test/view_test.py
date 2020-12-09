@@ -24,7 +24,8 @@ class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
-                self.view = MainWindowView()
+                with mock.patch("mantidimaging.gui.windows.main.view.QMessageBox", return_value=False):
+                    self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
 
