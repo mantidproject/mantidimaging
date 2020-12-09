@@ -16,7 +16,6 @@ have one on your machine.
 Please look for instructions specific to your OS on how to do that:
 
 
-  - Qt5 - https://doc.qt.io/qt-5/gettingstarted.html
   - CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive
 
 
