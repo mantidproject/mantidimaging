@@ -10,10 +10,9 @@ from mantidimaging.core.utility.version_check import versions
 
 LOG = getLogger(__name__)
 
-WELCOME_LINKS = [
-    ["Homepage", "https://github.com/mantidproject/mantidimaging"],
-    ["Documentation", "https://mantidproject.github.io/mantidimaging/index.html"],
-]
+WELCOME_LINKS = [["Homepage", "https://github.com/mantidproject/mantidimaging"],
+                 ["Documentation", "https://mantidproject.github.io/mantidimaging/index.html"],
+                 ["Troubleshooting", "https://mantidproject.github.io/mantidimaging/troubleshooting.html"]]
 
 
 class WelcomeScreenPresenter(BasePresenter):
