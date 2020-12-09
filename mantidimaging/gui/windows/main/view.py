@@ -82,10 +82,11 @@ class MainWindowView(BaseMainWindowView):
             self.setWindowTitle("Mantid Imaging Unstable")
             self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
 
+        self.use_cuda = cuda_is_present()
+
         if WelcomeScreenPresenter.show_today():
             self.show_about()
 
-        self.use_cuda = cuda_is_present()
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
