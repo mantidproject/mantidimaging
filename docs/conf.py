@@ -51,7 +51,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'MantidImaging'
-copyright = u'2017, Mantid Project'
+copyright = u'2017-2020, Mantid Project'
 author = u'Dimitar Tasev, Dan Nixon'
 
 # The version info for the project you're documenting, acts as replacement for
