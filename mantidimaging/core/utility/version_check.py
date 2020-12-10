@@ -144,7 +144,14 @@ versions = CheckVersion()
 def _parse_version(package_version_string: Optional[str]) -> ParsedVersion:
     if package_version_string is None:
         raise ValueError
-    local_version, local_commits_since_last = package_version_string.split("_")
+
+    if package_version_string[-2:] == "rc":
+        package_version_string = package_version_string[0:len(package_version_string) - 2]
+
+    if "_" in package_version_string:
+        local_version, local_commits_since_last = package_version_string.split("_")
+    else:
+        local_version, local_commits_since_last = package_version_string, "0"
     return ParsedVersion(tuple(map(int, local_version.split("."))), int(local_commits_since_last))
 
 
