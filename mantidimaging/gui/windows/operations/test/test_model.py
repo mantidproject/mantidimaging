@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 from functools import partial
 
@@ -45,7 +48,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         f = self.model.selected_filter
         orig_exec, orig_validate, orig_before, orig_after = \
             f.execute_wrapper, f.validate_execute_kwargs, f.do_before_wrapper, f.do_after_wrapper
-        self.model.setup_filter(0, {})
+        self.model.setup_filter("", {})
         f.execute_wrapper = lambda: execute_mock
         f.validate_execute_kwargs = lambda _: True
 
@@ -165,6 +168,29 @@ class FiltersWindowModelTest(unittest.TestCase):
         module_name = self.model.get_filter_module_name(0)
 
         self.assertEqual("mock.mock", module_name)
+
+    def test_find_filter_index_from_filter_name(self):
+        filter1 = mock.MagicMock()
+        filter1.filter_name = "1"
+        filter2 = mock.MagicMock()
+        filter2.filter_name = "2"
+        filter3 = mock.MagicMock()
+        filter3.filter_name = "3"
+        self.model.filters = [filter1, filter2, filter3]
+
+        self.assertEqual(1, self.model._find_filter_index_from_filter_name("2"))
+
+    def test_filter_names(self):
+        self.model.presenter.divider = "-----------------"
+        filter_names = self.model.filter_names
+
+        self.assertEqual([
+            'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', "-----------------",
+            'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation', 'Rebin', 'Rescale',
+            'Ring Removal', 'Rotate Stack', "-----------------", 'Remove all stripes', 'Remove dead stripes',
+            'Remove large stripes', 'Stripe Removal', 'Remove stripes with filtering',
+            'Remove stripes with sorting and fitting'
+        ], filter_names)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,10 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import List
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox
+from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
@@ -16,19 +19,34 @@ class CORInspectionDialogView(BaseDialogView):
     lessButton: QPushButton
     currentButton: QPushButton
     moreButton: QPushButton
-    step: QDoubleSpinBox
+    stepCOR: QDoubleSpinBox
+    stepIterations: QSpinBox
+    stepStackedWidget: QStackedWidget
+    instructionStackedWidget: QStackedWidget
 
     def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
-                 recon_params: ReconstructionParameters):
+                 recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
-        self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params)
+        self.iters_mode = iters_mode
 
-        self.step.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+        if self.iters_mode:
+            self.spin_box = self.stepIterations
+        else:
+            self.spin_box = self.stepCOR
+
+        self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params, iters_mode)
+
+        self.stepCOR.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+        self.stepIterations.editingFinished.connect(lambda: self.presenter.do_update_ui_parameters())
+
         self.lessButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.LESS))
         self.currentButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.CURRENT))
         self.moreButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.MORE))
 
         self.finishButton.clicked.connect(self.accept)
+
+        self.stepStackedWidget.setCurrentIndex(int(iters_mode))
+        self.instructionStackedWidget.setCurrentIndex(int(iters_mode))
 
         self.image_canvas = CompareSlicesView(self)
         self.imagePlotLayout.addWidget(self.image_canvas)
@@ -43,20 +61,24 @@ class CORInspectionDialogView(BaseDialogView):
         """
         Set the maximum valid rotation centre.
         """
-        self.step.setMaximum(cor)
+        self.stepCOR.setMaximum(cor)
 
     @property
     def step_size(self):
-        return self.step.value()
+        return self.spin_box.value()
 
     @step_size.setter
     def step_size(self, value):
-        with BlockQtSignals([self.step]):
-            self.step.setValue(value)
+        with BlockQtSignals([self.spin_box]):
+            self.spin_box.setValue(value)
 
     @property
     def optimal_rotation_centre(self) -> ScalarCoR:
         return self.presenter.optimal_rotation_centre
+
+    @property
+    def optimal_iterations(self) -> int:
+        return self.presenter.optimal_iterations
 
     def mark_best_recon(self, diffs):
         best = diffs.index(max(diffs))

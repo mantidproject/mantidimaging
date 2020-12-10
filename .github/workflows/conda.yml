@@ -11,7 +11,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: goanpeca/setup-miniconda@v1
+      - name: Check License Lines
+        uses: kt3k/license_checker@v1.0.3
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2.0.0
         with:
           activate-environment: mantidimaging
           environment-file: environment.yml
@@ -47,7 +51,14 @@ jobs:
       - name: pytest
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml
+
+      - name: Coveralls
+        shell: bash -l {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          coveralls
 
       - name: publish 'unstable' package
         if: github.ref == 'refs/heads/master'

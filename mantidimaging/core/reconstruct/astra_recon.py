@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from contextlib import contextmanager
 from logging import getLogger
 from typing import Union, List, Optional, Tuple, Generator
@@ -15,7 +18,8 @@ LOG = getLogger(__name__)
 
 
 # Full credit for following code to Daniil Kazantzev
-# Source: https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70
+# Source:
+# https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70
 def rotation_matrix2d(theta):
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
@@ -79,7 +83,7 @@ class AstraRecon(BaseRecon):
         Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
         """
 
-        proj_angles = images.projection_angles()
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
 
         def get_sumsq(image: np.ndarray) -> float:
             return np.sum(image**2)
@@ -93,10 +97,6 @@ class AstraRecon(BaseRecon):
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
-        assert sino.shape[0] == len(
-            proj_angles.value), f"Number of projection angles {len(proj_angles.value)} does not equal" \
-                                f" the number of projections {sino.shape[0]}. This can happen if loading subset of" \
-                                f" projections, and using projection angles from a log file."
 
         sino = BaseRecon.sino_recon_prep(sino)
         image_width = sino.shape[1]
@@ -119,7 +119,7 @@ class AstraRecon(BaseRecon):
         output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Reconstruction', **recon_params.to_dict())
 
-        proj_angles = images.projection_angles()
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params)
             progress.update(1, "Reconstructed slice")

@@ -1,14 +1,18 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 from math import isnan
 from typing import Tuple, Optional
 
 import numpy
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine, QtCore
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
 
 
 class ReconImagesView(GraphicsLayoutWidget):
+    sigSliceIndexChanged = QtCore.pyqtSignal(int)
+
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -16,7 +20,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.sinogram, self.sinogram_vb, self.sinogram_hist = self.image_in_vb("Sinogram")
         self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
 
-        self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()])
+        self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()], movable=True)
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
@@ -44,8 +48,12 @@ class ReconImagesView(GraphicsLayoutWidget):
         }
         self.projection.hoverEvent = lambda ev: self.mouse_over(ev, self.projection)
         self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
+        self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
         self.sinogram.hoverEvent = lambda ev: self.mouse_over(ev, self.sinogram)
         self.recon.hoverEvent = lambda ev: self.mouse_over(ev, self.recon)
+
+    def slice_line_moved(self):
+        self.slice_changed(int(self.slice_line.value()))
 
     @staticmethod
     def image_in_vb(name=None) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:
@@ -87,11 +95,14 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
+        self.slice_changed(CloseEnoughPoint(ev.pos()).y)
+
+    def slice_changed(self, slice_index):
         # don't refresh the histogram on click to stop the contrast for re-adjusting for each slice
         # it's much easier to see what's happening to the reconstruction if the slice doesn't
         # reset after every click
-        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=CloseEnoughPoint(ev.pos()).y,
-                                                           refresh_recon_slice_histogram=False)
+        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=slice_index, refresh_recon_slice_histogram=False)
+        self.sigSliceIndexChanged.emit(slice_index)
 
     def clear_recon(self):
         self.recon.clear()

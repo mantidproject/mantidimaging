@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
@@ -15,7 +18,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView  # pragma: no cover
 
 LOG = getLogger(__name__)
 
@@ -85,7 +88,7 @@ class ReconstructWindowModel(object):
     def num_points(self):
         return self.data_model.num_points
 
-    def initial_select_data(self, stack):
+    def initial_select_data(self, stack: 'StackVisualiserView'):
         self.data_model.clear_results()
 
         self.stack = stack
@@ -98,8 +101,8 @@ class ReconstructWindowModel(object):
         if self.images is None:
             return 0, ScalarCoR(0)
 
-        first_slice_to_recon = 0
-        cor = ScalarCoR(self.images.v_middle)
+        first_slice_to_recon = self.images.height // 2
+        cor = ScalarCoR(self.images.h_middle)
         return first_slice_to_recon, cor
 
     def do_fit(self):
@@ -127,7 +130,8 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         output_shape = (1, self.images.width, self.images.width)
         recon: Images = Images.create_empty_images(output_shape, self.images.dtype, self.images.metadata)
-        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx), cor, self.images.projection_angles(),
+        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx), cor,
+                                                  self.images.projection_angles(recon_params.max_projection_angle),
                                                   recon_params)
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
@@ -247,3 +251,8 @@ class ReconstructWindowModel(object):
 
     def auto_find_correlation(self, progress) -> Tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
+
+    @staticmethod
+    def proj_180_degree_shape_matches_images(images):
+        return images.has_proj180deg() and images.height == images.proj180deg.height \
+               and images.width == images.proj180deg.width

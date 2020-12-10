@@ -1,3 +1,7 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 import os
 import traceback
 from enum import Enum, auto
@@ -16,7 +20,7 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
 class Notification(Enum):
@@ -155,11 +159,14 @@ class MainWindowPresenter(BasePresenter):
     def stack_names(self):
         return self.model._stack_names
 
-    def get_stack_visualiser(self, stack_uuid: UUID):
+    def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
         return self.model.get_stack_visualiser(stack_uuid)
 
     def get_all_stack_visualisers(self):
         return self.model.get_all_stack_visualisers()
+
+    def get_all_stack_visualisers_with_180deg_proj(self):
+        return self.model.get_all_stack_visualisers_with_180deg_proj()
 
     def get_stack_history(self, stack_uuid: UUID):
         return self.model.get_stack_history(stack_uuid)
@@ -168,9 +175,25 @@ class MainWindowPresenter(BasePresenter):
     def have_active_stacks(self):
         return self.model.have_active_stacks
 
-    def update_stack_with_images(self, images):
+    def update_stack_with_images(self, images: Images):
         sv = self.get_stack_with_images(images)
-        sv.presenter.notify(SVNotification.REFRESH_IMAGE)
+        if sv is not None:
+            sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
-    def get_stack_with_images(self, images):
+    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
         return self.model.get_stack_by_images(images)
+
+    def add_log_to_sample(self, stack_name: str, log_file: str):
+        self.model.add_log_to_sample(stack_name, log_file)
+
+    def set_images_in_stack(self, uuid: UUID, images: Images):
+        self.model.set_images_in_stack(uuid, images)
+
+    def add_180_deg_to_sample(self, stack_name: str, _180_deg_file: str):
+        return self.model.add_180_deg_to_stack(stack_name, _180_deg_file)
+
+    def create_stack_name(self, filename: str):
+        return self.model.create_name(os.path.basename(filename))
+
+    def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
+        self.model.add_projection_angles_to_sample(stack_name, proj_angles)

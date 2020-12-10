@@ -1,6 +1,9 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from functools import partial
 
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -185,6 +188,10 @@ class StripeRemovalFilter(BaseFilter):
             sf = {'size': value_sf_size.value()}
 
         return partial(StripeRemovalFilter.filter_func, wf=wf, ti=ti, sf=sf)
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Advanced
 
 
 def methods():

@@ -1,13 +1,23 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from functools import partial
 from typing import TYPE_CHECKING, Any, Callable, Dict
+from enum import Enum, auto
 
 import numpy as np
 
 from mantidimaging.core.data import Images
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
-    from mantidimaging.gui.mvp_base import BaseMainWindowView
+    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
+    from mantidimaging.gui.mvp_base import BaseMainWindowView  # pragma: no cover
+
+
+class FilterGroup(Enum):
+    NoGroup = auto()
+    Basic = auto()
+    Advanced = auto()
 
 
 class BaseFilter:
@@ -79,6 +89,10 @@ class BaseFilter:
     @staticmethod
     def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
         return True
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.NoGroup
 
 
 def raise_not_implemented(function_name):

@@ -1,9 +1,12 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
-    from mantidimaging.core.data import Images
+    from mantidimaging.core.data import Images  # pragma: no cover
 
 
 def mark_cropped(images: 'Images', roi: SensibleROI):

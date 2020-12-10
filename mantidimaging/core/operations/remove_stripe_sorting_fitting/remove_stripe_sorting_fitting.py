@@ -1,9 +1,12 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from functools import partial
 
 from PyQt5.QtWidgets import QSpinBox
 from sarepy.prep.stripe_removal_improved import remove_stripe_based_sorting_fitting
 
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -70,3 +73,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
                        order=order.value(),
                        sigmax=sigmax.value(),
                        sigmay=sigmay.value())
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Advanced

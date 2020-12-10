@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import os
 from typing import Optional, List, Union, Tuple
 
@@ -55,7 +58,9 @@ class Field:
 
     @path.setter
     def path(self, value: str):
-        assert isinstance(value, str), "Can only display strings"
+        assert isinstance(value,
+                          str), f"The object passed as path for this field is not a string. " \
+                                f"Instead got {type(value)}"
         if value != "":
             self.path.setText(1, value)
             self.widget.setText(1, self.file())

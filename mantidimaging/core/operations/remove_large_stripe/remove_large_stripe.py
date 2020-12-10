@@ -1,9 +1,12 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from functools import partial
 
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from sarepy.prep.stripe_removal_original import remove_large_stripe
 
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared_mem as psm
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -61,3 +64,7 @@ class RemoveLargeStripesFilter(BaseFilter):
     @staticmethod
     def execute_wrapper(snr: QDoubleSpinBox, la_size: QSpinBox):  # type: ignore
         return partial(RemoveLargeStripesFilter.filter_func, snr=snr.value(), la_size=la_size.value())
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Advanced

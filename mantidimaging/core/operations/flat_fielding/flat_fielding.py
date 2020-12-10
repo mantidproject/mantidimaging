@@ -1,11 +1,15 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from functools import partial
 from typing import Any, Dict
+from PyQt5.QtWidgets import QComboBox
 
 import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import two_shared_mem as ptsm
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -16,6 +20,26 @@ from mantidimaging.gui.windows.operations import FiltersWindowView
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
 MAXIMUM_PIXEL_VALUE = 1e9
+
+
+def enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget):
+    if text == "Only Before":
+        flat_before_widget.setEnabled(True)
+        flat_after_widget.setEnabled(False)
+        dark_before_widget.setEnabled(True)
+        dark_after_widget.setEnabled(False)
+    elif text == "Only After":
+        flat_before_widget.setEnabled(False)
+        flat_after_widget.setEnabled(True)
+        dark_before_widget.setEnabled(False)
+        dark_after_widget.setEnabled(True)
+    elif text == "Both, concatenated":
+        flat_before_widget.setEnabled(True)
+        flat_after_widget.setEnabled(True)
+        dark_before_widget.setEnabled(True)
+        dark_after_widget.setEnabled(True)
+    else:
+        raise RuntimeError("Unknown field parameter")
 
 
 class FlatFieldFilter(BaseFilter):
@@ -51,7 +75,7 @@ class FlatFieldFilter(BaseFilter):
         :param dark_before: Dark image to use in normalization, for before the sample is imaged
         :param dark_after: Dark image to use in normalization, for before the sample is imaged
         :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
-        stacks or combined.
+                                       stacks or combined.
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
         :return: Filtered data (stack of images)
@@ -149,22 +173,31 @@ class FlatFieldFilter(BaseFilter):
         assert isinstance(flat_before_widget, StackSelectorWidgetView)
         flat_before_widget.setMaximumWidth(375)
         flat_before_widget.subscribe_to_main_window(view.main_window)
+        try_to_select_relevant_stack("Flat", flat_before_widget)
         try_to_select_relevant_stack("Flat Before", flat_before_widget)
 
         assert isinstance(flat_after_widget, StackSelectorWidgetView)
         flat_after_widget.setMaximumWidth(375)
         flat_after_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Flat After", flat_after_widget)
+        flat_after_widget.setEnabled(False)
 
         assert isinstance(dark_before_widget, StackSelectorWidgetView)
         dark_before_widget.setMaximumWidth(375)
         dark_before_widget.subscribe_to_main_window(view.main_window)
+        try_to_select_relevant_stack("Dark", dark_before_widget)
         try_to_select_relevant_stack("Dark Before", dark_before_widget)
 
         assert isinstance(dark_after_widget, StackSelectorWidgetView)
         dark_after_widget.setMaximumWidth(375)
         dark_after_widget.subscribe_to_main_window(view.main_window)
         try_to_select_relevant_stack("Dark After", dark_after_widget)
+        dark_after_widget.setEnabled(False)
+
+        # Ensure that fields that are not currently used are disabled
+        assert (isinstance(selected_flat_fielding_widget, QComboBox))
+        selected_flat_fielding_widget.currentTextChanged.connect(lambda text: enable_correct_fields_only(
+            text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget))
 
         return {
             'selected_flat_fielding_widget': selected_flat_fielding_widget,
@@ -212,6 +245,10 @@ class FlatFieldFilter(BaseFilter):
         assert isinstance(kwargs["dark_before_widget"], StackSelectorWidgetView)
         assert isinstance(kwargs["dark_after_widget"], StackSelectorWidgetView)
         return True
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Basic
 
 
 def _divide(data, norm_divide):

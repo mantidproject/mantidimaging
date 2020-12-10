@@ -1,28 +1,33 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
 
+import numpy as np
 from PyQt5 import Qt
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QCheckBox, QLabel, QApplication, QSplitter, QPushButton, \
-    QSizePolicy, QComboBox, QStyle, QMainWindow
+from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
+                             QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
 from pyqtgraph import ImageItem
 
+from mantidimaging.core.net.help_pages import open_api_webpage
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility import (delete_all_widgets_from_layout)
-from mantidimaging.gui.widgets.pg_image_view import MIImageView
+from mantidimaging.gui.utility import delete_all_widgets_from_layout
+from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
 from .presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
 
 
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
 
     splitter: QSplitter
+    collapseToggleButton: QPushButton
 
     linkImages: QCheckBox
     showHistogramLegend: QCheckBox
@@ -49,12 +54,15 @@ class FiltersWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
         self.roi_view = None
+        self.roi_view_averaged = False
         self.splitter.setSizes([200, 9999])
+        self.splitter.setStretchFactor(0, 1)
 
         # Populate list of operations and handle filter selection
         self.filterSelector.addItems(self.presenter.model.filter_names)
-        self.filterSelector.currentIndexChanged[int].connect(self.handle_filter_selection)  # type:ignore
-        self.handle_filter_selection(0)
+        self.filterSelector.currentTextChanged.connect(self.handle_filter_selection)
+        self.filterSelector.currentTextChanged.connect(self._update_apply_all_button)
+        self.handle_filter_selection("")
 
         # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
@@ -63,7 +71,6 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
         self.applyToAllButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER_TO_ALL))
-        self.splitter.setStretchFactor(0, 0)
 
         self.previews = FilterPreviews(self)
         self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -93,6 +100,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle help button pressed
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
+        self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
@@ -107,10 +115,14 @@ class FiltersWindowView(BaseMainWindowView):
         super(FiltersWindowView, self).show()
         self.auto_update_triggered.emit()
 
-    def handle_filter_selection(self, filter_idx):
+    def handle_filter_selection(self, filter_name: str):
         """
         Handle selection of a filter from the drop down list.
         """
+        # If a divider select the one below the divider.
+        if filter_name == self.presenter.divider:
+            self.filterSelector.setCurrentIndex(self.filterSelector.currentIndex() + 1)
+
         # Remove all existing items from the properties layout
         delete_all_widgets_from_layout(self.filterPropertiesLayout)
 
@@ -192,13 +204,21 @@ class FiltersWindowView(BaseMainWindowView):
 
     def open_help_webpage(self):
         filter_module_path = self.presenter.get_filter_module_name(self.filterSelector.currentIndex())
-        url = QUrl("https://mantidproject.github.io/mantidimaging/api/" + filter_module_path + ".html")
-        if not QDesktopServices.openUrl(url):
-            self.show_error_dialog("Url could not be opened: " + url.toString())
+        try:
+            open_api_webpage(filter_module_path)
+        except RuntimeError as err:
+            self.show_error_dialog(str(err))
 
     def ask_confirmation(self, msg: str):
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
+
+    def _update_apply_all_button(self, filter_name):
+        list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding"]
+        if filter_name in list_of_apply_single_stack:
+            self.applyToAllButton.setEnabled(False)
+        else:
+            self.applyToAllButton.setEnabled(True)
 
     def roi_visualiser(self, roi_field):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
@@ -215,6 +235,25 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view = MIImageView(window)
         window.setCentralWidget(self.roi_view)
         self.roi_view.setWindowTitle("Select ROI for operation")
+
+        def toggle_average_images(images_):
+            if self.roi_view_averaged:
+                self.roi_view.setImage(images_.data)
+                self.roi_view_averaged = False
+            else:
+                averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
+                self.roi_view.setImage(averaged_images)
+                self.roi_view_averaged = True
+            self.roi_view.roi.show()
+            self.roi_view.ui.roiPlot.hide()
+
+        # Add context menu bits:
+        menu = QMenu(self.roi_view)
+        toggle_show_averaged_image = QAction("Toggle show averaged image", menu)
+        toggle_show_averaged_image.triggered.connect(lambda: toggle_average_images(images))
+        menu.addAction(toggle_show_averaged_image)
+        menu.addSeparator()
+        self.roi_view.imageItem.menu = menu
 
         self.roi_view.setImage(images.data)
 
@@ -239,3 +278,11 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.ui.gridLayout.addWidget(button)
 
         window.show()
+
+    def toggle_filters_section(self):
+        if self.collapseToggleButton.text() == "<<":
+            self.splitter.setSizes([0, 9999])
+            self.collapseToggleButton.setText(">>")
+        else:
+            self.splitter.setSizes([200, 9999])
+            self.collapseToggleButton.setText("<<")

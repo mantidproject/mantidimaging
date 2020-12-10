@@ -1,6 +1,8 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import datetime
 import json
-import math
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -43,6 +45,7 @@ class Images:
         self.memory_filename = memory_filename
         self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
+        self._projection_angles: Optional[ProjectionAngles] = None
 
     def __eq__(self, other):
         if isinstance(other, Images):
@@ -270,11 +273,36 @@ class Images:
 
     @log_file.setter
     def log_file(self, value: IMATLogFile):
+        if value is not None:
+            self.metadata[const.LOG_FILE] = value.source_file
+        elif value is None:
+            del self.metadata[const.LOG_FILE]
         self._log_file = value
 
-    def projection_angles(self):
-        return self._log_file.projection_angles() if self._log_file is not None else \
-            ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+    def set_projection_angles(self, angles: ProjectionAngles):
+        if len(angles.value) != self.num_images:
+            raise RuntimeError("The number of angles does not match the number of images. "
+                               f"Num angles {len(angles.value)} and num images {self.num_images}")
+
+        self._projection_angles = angles
+
+    def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
+        """
+        Return projection angles, in priority order:
+        - From a log
+        - From the manually loaded file with a list of angles
+        - Automatically generated with equidistant step
+
+        :param max_angle: The maximum angle up to which the angles will be generated.
+                          Only used when the angles are generated, if they are provided
+                          via a log or a file the argument will be ignored.
+        """
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
+        elif self._projection_angles is not None:
+            return self._projection_angles
+        else:
+            return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
 
     def counts(self) -> Optional[Counts]:
         if self._log_file is not None:
@@ -289,3 +317,6 @@ class Images:
     @pixel_size.setter
     def pixel_size(self, value: int):
         self.metadata[const.PIXEL_SIZE] = value
+
+    def clear_proj180deg(self):
+        self._proj180deg = None

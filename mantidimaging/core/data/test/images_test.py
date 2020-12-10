@@ -1,4 +1,8 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import io
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
 import numpy as np
@@ -8,7 +12,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.data.test.fake_logfile import generate_logfile
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
-from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 
@@ -163,6 +166,14 @@ class ImagesTest(unittest.TestCase):
         images._proj180deg = generate_images((1, 100, 350))
         assert_not_equals(images.proj180deg.data, expected_projection)
 
+    def test_clear_proj180deg(self):
+        images = generate_images((10, 100, 350))
+        # expected without having a specific 180 deg projection
+        self.assertIsNone(images._proj180deg)
+        images._proj180deg = generate_images((1, 100, 350))
+        images.clear_proj180deg()
+        self.assertIsNone(images._proj180deg)
+
     def test_data_get(self):
         images = generate_images((10, 100, 350))
         self.assertIsNotNone(images.data)
@@ -175,11 +186,30 @@ class ImagesTest(unittest.TestCase):
         images = generate_images()
         images.log_file = generate_logfile()
         expected = np.deg2rad(np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368]))
-        actual: ProjectionAngles = images.projection_angles()
+        actual = images.projection_angles(360.0)
         self.assertEqual(len(actual.value), len(expected))
         np.testing.assert_equal(actual.value, expected)
 
     def test_get_projection_angles_no_logfile(self):
         images = generate_images()
+        actual = images.projection_angles(360.0)
+        self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(np.deg2rad(360), actual.value[-1], places=4)
+
+        actual = images.projection_angles(275.69)
+        self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)
+
+    def test_metadata_gets_updated_with_logfile(self):
+        images = generate_images()
+        images.log_file = generate_logfile()
+        self.assertEqual(images.log_file.source_file, images.metadata[const.LOG_FILE])
+
+    def test_set_projection_angles(self):
+        images = generate_images()
+        pangles = ProjectionAngles(list(range(0, 10)))
+        images.set_projection_angles(pangles)
+
         actual = images.projection_angles()
         self.assertEqual(10, len(actual.value))
+        self.assertAlmostEqual(images.projection_angles().value, pangles.value, places=4)

@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import ctypes
 import os
 import uuid
@@ -21,13 +24,30 @@ SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_i
 
 NP_DTYPE = Type[np.single]
 
+INSTANCE_PREFIX = str(uuid.uuid4())
+
+
+def free_all_owned_by_this_instance():
+    for arr in [array for array in sa.list() if array.name.decode("utf-8").startswith(INSTANCE_PREFIX)]:
+        sa.delete(arr.name.decode("utf-8"))
+
+
+def has_other_shared_arrays() -> bool:
+    return len(sa.list()) > 0
+
+
+def free_all():
+    for arr in [array for array in sa.list()]:
+        sa.delete(arr.name.decode("utf-8"))
+
 
 def create_shared_name(file_name=None) -> str:
-    return f"{uuid.uuid4()}{f'-{os.path.basename(file_name)}' if file_name is not None else ''}"
+    return f"{INSTANCE_PREFIX}-{uuid.uuid4()}{f'-{os.path.basename(file_name)}' if file_name is not None else ''}"
 
 
 def delete_shared_array(name, silent_failure=False):
     try:
+        LOG.debug(f"Deleting array with name: {name}")
         sa.delete(f"shm://{name}")
     except FileNotFoundError as e:
         if not silent_failure:

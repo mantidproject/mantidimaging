@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
 
 from PyQt5 import Qt
@@ -5,7 +8,7 @@ from PyQt5 import Qt
 from .presenter import (StackSelectorWidgetPresenter, Notification)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
 class StackSelectorWidgetView(Qt.QComboBox):

@@ -1,9 +1,13 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 import uuid
 
 import mock
+import numpy as np
 
-from mantidimaging.core.utility.data_containers import LoadingParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import StackId
 
@@ -219,6 +223,84 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.active_stacks = {"some_uuid": widget_mock}
 
         self.assertEqual("apple_2", self.model.create_name("apple"))
+
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    def test_add_log_to_sample(self, load_log: mock.Mock):
+        log_file = "Log file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+
+        self.model.add_log_to_sample(stack_name=stack_name, log_file=log_file)
+
+        load_log.assert_called_once_with(log_file)
+        stack_mock.assert_called_with(stack_name)
+        self.assertEqual(load_log.return_value, stack_mock.return_value.widget.return_value.presenter.images.log_file)
+        stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
+            .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
+
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    def test_add_log_to_sample_no_stack(self, load_log: mock.Mock):
+        """
+        Test in add_log_to_sample when get_stack_by_name returns None
+        """
+        log_file = "Log file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+
+        self.assertRaises(RuntimeError, self.model.add_log_to_sample, stack_name=stack_name, log_file=log_file)
+
+        stack_mock.assert_called_with(stack_name)
+
+    @mock.patch('mantidimaging.core.io.loader.load')
+    def test_add_180_deg_to_stack(self, load: mock.Mock):
+        _180_file = "180 file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+
+        _180_stack = self.model.add_180_deg_to_stack(stack_name=stack_name, _180_deg_file=_180_file).sample
+
+        load.assert_called_with(file_names=[_180_file])
+        stack_mock.assert_called_with(stack_name)
+        self.assertEqual(_180_stack, stack_mock.return_value.widget.return_value.presenter.images.proj180deg)
+
+    @mock.patch('mantidimaging.core.io.loader.load')
+    def test_add_180_deg_to_stack_no_stack(self, load: mock.Mock):
+        """
+        Test in add_180_deg_to_stack when get_stack_by_name returns None
+        """
+        _180_file = "180 file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+        self.assertRaises(RuntimeError, self.model.add_180_deg_to_stack, stack_name=stack_name, _180_deg_file=_180_file)
+        stack_mock.assert_called_with(stack_name)
+
+    def test_add_projection_angles_to_sample_no_stack(self):
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+        self.assertRaises(RuntimeError, self.model.add_projection_angles_to_sample, stack_name, proj_angles)
+
+        stack_mock.assert_called_with(stack_name)
+
+    def test_add_projection_angles_to_sample(self):
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+
+        self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+
+        stack_mock.assert_called_with(stack_name)
+        stack_mock.return_value.widget.return_value.presenter.images.set_projection_angles.assert_called_once_with(
+            proj_angles)
 
 
 if __name__ == '__main__':

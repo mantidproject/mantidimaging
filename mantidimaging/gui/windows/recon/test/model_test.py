@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 
 import mock
@@ -33,6 +36,12 @@ class ReconWindowModelTest(unittest.TestCase):
         first_slice, initial_cor = self.model.find_initial_cor()
         self.assertEqual(first_slice, 0)
         self.assertEqual(initial_cor.value, 0)
+
+    def test_find_initial_cor_returns_middle_with_data(self):
+        self.model.initial_select_data(self.stack)
+        first_slice, initial_cor = self.model.find_initial_cor()
+        self.assertEqual(first_slice, 64)
+        self.assertEqual(initial_cor.value, 128)
 
     def test_tilt_line_data(self):
         # TODO move into data_model test
@@ -76,7 +85,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertNotEqual(test_cor, self.model.last_cor)
         self.assertNotEqual(test_tilt, self.model.tilt_angle)
         self.assertEqual(0, self.model.preview_projection_idx)
-        self.assertEqual(0, self.model.preview_slice_idx)
+        self.assertEqual(64, self.model.preview_slice_idx)
 
     def test_do_fit(self):
         self.model.images.metadata.clear()
@@ -136,3 +145,32 @@ class ReconWindowModelTest(unittest.TestCase):
 
         # expected cor value obtained by running the test
         self.assertAlmostEqual(149.86, cor.value, delta=1e-2)
+
+    def test_proj_180_degree_shape_matches_images_where_they_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 10
+        images.proj180deg.width = 10
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertTrue(self.model.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 20
+        images.proj180deg.width = 20
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.model.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
+        images = mock.MagicMock()
+        has_proj180deg = mock.MagicMock(return_value=False)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.model.proj_180_degree_shape_matches_images(images))

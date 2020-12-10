@@ -12,9 +12,11 @@ dependencies:
   - sarepy
   - astra-toolbox
   - pip:
-      - pyqtgraph
       - pytest
+      - pytest-cov
+      - coveralls
       - pyqt5==5.15
+      - pyqtgraph==0.11
       - yapf
       - mypy
       - flake8

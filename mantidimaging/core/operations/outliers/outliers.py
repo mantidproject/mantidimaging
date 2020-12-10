@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import operator
 from functools import partial
 
@@ -5,8 +8,8 @@ import numpy as np
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import utility as pu, shared as ps
+from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -17,7 +20,6 @@ _default_radius = 3
 _default_mode = OUTLIERS_BRIGHT
 DIM_2D = "2D"
 DIM_1D = "1D"
-_default_dim = DIM_2D
 
 
 class OutliersFilter(BaseFilter):
@@ -57,25 +59,21 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        if not pu.multiprocessing_necessary(images.data.shape, cores):
-            cores = 1
-
         if diff and radius and diff > 0 and radius > 0:
             func = ps.create_partial(OutliersFilter._execute, ps.return_to_self1, diff=diff, radius=radius, mode=mode)
             ps.shared_list = [images.data]
             ps.execute(func,
                        images.num_projections,
                        progress=progress,
-                       msg=f"Outliers with threshold {diff} and kernel {radius}",
-                       cores=cores)
+                       msg=f"Outliers with threshold {diff} and kernel {radius}")
         return images
 
     @staticmethod
     def register_gui(form, on_change, view):
         _, diff_field = add_property_to_form('Difference',
                                              'float',
-                                             1,
-                                             valid_values=(-1000000, 1000000),
+                                             1000,
+                                             valid_values=(0, 1000000),
                                              form=form,
                                              on_change=on_change,
                                              tooltip="Difference between pixels that will be used to spot outliers.\n"
@@ -106,6 +104,10 @@ class OutliersFilter(BaseFilter):
                        diff=diff_field.value(),
                        radius=size_field.value(),
                        mode=mode_field.currentText())
+
+    @staticmethod
+    def group_name() -> FilterGroup:
+        return FilterGroup.Basic
 
 
 def modes():

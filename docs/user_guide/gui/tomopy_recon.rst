@@ -1,4 +1,0 @@
-TomoPy Reconstruction
-=====================
-
-TODO

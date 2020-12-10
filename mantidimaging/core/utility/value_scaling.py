@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import numpy as np
 
 from mantidimaging.core.parallel import two_shared_mem as ptsm, utility as pu

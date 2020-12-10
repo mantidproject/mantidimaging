@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from functools import partial
 from logging import getLogger
 from typing import Callable, Dict, Any, TYPE_CHECKING
@@ -14,7 +17,7 @@ from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout
+    from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
 
 
 class MedianFilter(BaseFilter):

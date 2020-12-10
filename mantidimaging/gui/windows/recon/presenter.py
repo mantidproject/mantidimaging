@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import traceback
 from enum import Enum, auto
 from logging import getLogger
@@ -16,7 +19,7 @@ from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.recon.view import ReconstructWindowView
+    from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
 
 
 class AutoCorMethod(Enum):
@@ -37,6 +40,7 @@ class Notifications(Enum):
     UPDATE_PROJECTION = auto()
     ADD_COR = auto()
     REFINE_COR = auto()
+    REFINE_ITERS = auto()
     AUTO_FIND_COR_CORRELATE = auto()
     AUTO_FIND_COR_MINIMISE = auto()
 
@@ -82,6 +86,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_add_cor()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
+            elif notification == Notifications.REFINE_ITERS:
+                self._do_refine_iterations()
             elif notification == Notifications.AUTO_FIND_COR_CORRELATE:
                 self._auto_find_correlation()
             elif notification == Notifications.AUTO_FIND_COR_MINIMISE:
@@ -102,6 +108,7 @@ class ReconstructWindowPresenter(BasePresenter):
         with BlockQtSignals([self.view.filterName, self.view.numIter]):
             self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
         self.do_preview_reconstruct_slice()
+        self.view.change_refine_iterations()
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)
@@ -114,7 +121,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.rotation_centre = self.model.last_cor.value
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
-        self.do_preview_reconstruct_slice()
+        self.do_preview_reconstruct_slice(refresh_recon_slice_histogram=True)
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -140,10 +147,26 @@ class ReconstructWindowPresenter(BasePresenter):
             img_data = images.projection(self.model.preview_projection_idx)
             self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
 
+    def _find_next_free_slice_index(self) -> int:
+        slice_index = self.model.preview_slice_idx
+        max_slice = self.model.images.height
+        column = self.view.cor_table_model.getColumn(0)
+
+        for index in range(slice_index + 1, max_slice):
+            if index not in column:
+                return index
+
+        for index in range(0, slice_index):
+            if index not in column:
+                return index
+
+        raise RuntimeError("No free slice indexes to add to the COR Table")
+
     def do_add_cor(self):
         row = self.model.selected_row
         cor = self.model.get_me_a_cor()
-        self.view.add_cor_table_row(row, self.model.preview_slice_idx, cor.value)
+        slice_index = self._find_next_free_slice_index()
+        self.view.add_cor_table_row(row, slice_index, cor.value)
 
     def do_reconstruct_volume(self):
         if not self.model.has_results:
@@ -168,7 +191,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_preview_reconstruct_slice(self,
                                      cor=None,
                                      slice_idx: Optional[int] = None,
-                                     refresh_recon_slice_histogram: bool = True):
+                                     refresh_recon_slice_histogram: bool = False):
         if self.model.images is None:
             return
 
@@ -177,8 +200,9 @@ class ReconstructWindowPresenter(BasePresenter):
         images = None
         try:
             images = self._get_reconstruct_slice(cor, slice_idx)
-        except ValueError as err:
-            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+        except Exception as err:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}. "
+                                        f"Check your COR table values for invalid values!")
 
         if images is not None:
             self.view.update_recon_preview(images.data[0], refresh_recon_slice_histogram)
@@ -198,7 +222,7 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
-                                         self.view.recon_params())
+                                         self.view.recon_params(), False)
 
         res = dialog.exec()
         LOG.debug('COR refine dialog result: {}'.format(res))
@@ -209,6 +233,19 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
             self.do_preview_reconstruct_slice(new_cor, slice_idx)
+
+    def _do_refine_iterations(self):
+        slice_idx = self.model.preview_slice_idx
+
+        dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
+                                         self.view.recon_params(), True)
+
+        res = dialog.exec()
+        LOG.debug('COR refine iteration result: {}'.format(res))
+        if res == CORInspectionDialogView.Accepted:
+            new_iters = dialog.optimal_iterations
+            LOG.debug('New optimal iterations: {}'.format(new_iters))
+            self.view.set_iterations(new_iters)
 
     def do_cor_fit(self):
         self.model.do_fit()
@@ -244,8 +281,17 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _auto_find_correlation(self):
         def completed(task: TaskWorkerThread):
-            cor, tilt = task.result
-            self._set_precalculated_cor_tilt(cor, tilt)
+            if task.result is None and task.error is not None:
+                selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
+                self.view.warn_user(
+                    "Failure!", f"Finding the COR failed, likely caused by the selected stack's 180 "
+                    f"degree projection being a different shape. \n\n "
+                    f"Error: {str(task.error)} "
+                    f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
+                    f"({selected_stack.height}, {selected_stack.width})")
+            else:
+                cor, tilt = task.result
+                self._set_precalculated_cor_tilt(cor, tilt)
             self.view.set_correlate_buttons_enabled(True)
 
         self.view.set_correlate_buttons_enabled(False)
@@ -280,3 +326,6 @@ class ReconstructWindowPresenter(BasePresenter):
             'recon_params': self.view.recon_params(),
             'initial_cor': initial_cor
         })
+
+    def proj_180_degree_shape_matches_images(self, images):
+        return self.model.proj_180_degree_shape_matches_images(images)

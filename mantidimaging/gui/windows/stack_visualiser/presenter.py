@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import numpy as np
 import traceback
 from enum import IntEnum, auto
@@ -12,7 +15,7 @@ from .model import SVModel
 from ...utility.common import operation_in_progress
 
 if TYPE_CHECKING:
-    from .view import StackVisualiserView
+    from .view import StackVisualiserView  # pragma: no cover
 
 
 class SVNotification(IntEnum):

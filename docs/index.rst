@@ -14,8 +14,10 @@ such as `Avizo
    :maxdepth: 1
    :caption: Contents:
 
+   installation
    user_guide/index
    developer_guide/index
+   troubleshooting
    api
 
 .. toctree::

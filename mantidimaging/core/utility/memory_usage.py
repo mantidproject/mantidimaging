@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from logging import getLogger
 
 # Percent memory of the system total to AVOID being allocated by Mantid Imaging shared arrays

@@ -1,20 +1,28 @@
-from typing import TYPE_CHECKING, Optional, List
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QAbstractItemView, QWidget, QDoubleSpinBox, QComboBox, QSpinBox, QPushButton, QVBoxLayout, \
-    QInputDialog
+from typing import TYPE_CHECKING, List, Optional
+from uuid import UUID
+
 import numpy
+from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
+                             QVBoxLayout, QWidget, QMessageBox)
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope, ReconstructionParameters
+from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
+from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
-from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel, Column
-from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter, Notifications as PresN, AutoCorMethod
+from mantidimaging.gui.windows.recon.point_table_model import Column, CorTiltPointQtModel
+from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
+from mantidimaging.gui.windows.recon.presenter import Notifications as PresN
+from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
+    from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView  # pragma: no cover
 
 
 class ReconstructWindowView(BaseMainWindowView):
@@ -27,12 +35,13 @@ class ReconstructWindowView(BaseMainWindowView):
     resultTab: QWidget
     addBtn: QPushButton
     refineCorBtn: QPushButton
+    refineIterationsBtn: QPushButton
     clearAllBtn: QPushButton
     removeBtn: QPushButton
-    fitBtn: QPushButton
 
     correlateBtn: QPushButton
     minimiseBtn: QPushButton
+    corHelpButton: QPushButton
 
     reconTab: QWidget
 
@@ -64,6 +73,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.image_view = ReconImagesView(self)
         self.imageLayout.addWidget(self.image_view)
+        self.image_view.sigSliceIndexChanged.connect(self.presenter.set_preview_slice_idx)
 
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
@@ -76,6 +86,9 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
+            # Should we auto fit on data change?
+            if self.tableView.model().num_points >= 2:
+                self.presenter.notify(PresN.COR_FIT)
             self.presenter.notify(PresN.UPDATE_PROJECTION)
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
@@ -88,7 +101,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
         self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
         self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
-        self.fitBtn.clicked.connect(lambda: self.presenter.notify(PresN.COR_FIT))
+        self.refineIterationsBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_ITERS))
         self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
         self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
         self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
@@ -122,8 +135,11 @@ class ReconstructWindowView(BaseMainWindowView):
         self.on_table_row_count_change()
 
         self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.stack_selected_uuid.connect(self.check_stack_for_invalid_180_deg_proj)
         self.stackSelector.select_eligible_stack()
 
+        self.maxProjAngle.valueChanged.connect(
+            lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
         self.algorithmName.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
@@ -132,11 +148,21 @@ class ReconstructWindowView(BaseMainWindowView):
         self.numIter.valueChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
-        def refresh_preview_and_histogram():
-            self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
-            self.image_view.reset_recon_histogram()
+        self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
+        self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
-        self.pixelSize.valueChanged.connect(refresh_preview_and_histogram)
+    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
+        selected_images = self.main_window.get_images_from_stack_uuid(uuid)
+        if selected_images.has_proj180deg() and \
+                not self.presenter.proj_180_degree_shape_matches_images(selected_images):
+            self.warn_user(
+                "Potential Failure",
+                "The shapes of the selected stack and it's 180 degree projections do not match! This is "
+                "going to cause an error when calculating the COR. Fix the shape before continuing!")
+
+    def warn_user(self, title, message):
+        QMessageBox.warning(self, title, message)
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
@@ -212,7 +238,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def reset_slice_and_tilt(self, slice_index):
         self.image_view.reset_slice_and_tilt(slice_index)
 
-    def on_table_row_count_change(self):
+    def on_table_row_count_change(self, _=None, __=None):
         """
         Called when rows have been added or removed from the point table.
 
@@ -224,15 +250,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.setEnabled(not empty)
         self.clearAllBtn.setEnabled(not empty)
 
-        # Disable fit button when there are less than 2 rows (points)
-        enough_to_fit = self.tableView.model().num_points >= 2
-        self.fitBtn.setEnabled(enough_to_fit)
-
-    def add_cor_table_row(self, row: Optional[int], slice_index: int, cor: float):
+    def add_cor_table_row(self, row: int, slice_index: int, cor: float):
         """
         Adds a row to the manual COR table with a specified slice index.
         """
         self.cor_table_model.appendNewRow(row, slice_index, cor)
+        self.tableView.selectRow(row)
 
     @property
     def rotation_centre(self):
@@ -288,7 +311,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                         num_iter=self.num_iter,
                                         cor=ScalarCoR(self.rotation_centre),
                                         tilt=Degrees(self.tilt),
-                                        pixel_size=self.pixel_size)
+                                        pixel_size=self.pixel_size,
+                                        max_projection_angle=self.max_proj_angle)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on
@@ -302,9 +326,10 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: Images):
         self.main_window.create_new_stack(data, "Recon")
 
-    def get_stack_visualiser(self, uuid):
+    def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:
         if uuid is not None:
             return self.main_window.get_stack_visualiser(uuid)
+        return None
 
     def hide_tilt(self):
         self.image_view.hide_tilt()
@@ -336,3 +361,15 @@ class ReconstructWindowView(BaseMainWindowView):
     def set_correlate_buttons_enabled(self, enabled: bool):
         self.correlateBtn.setEnabled(enabled)
         self.minimiseBtn.setEnabled(enabled)
+
+    def open_help_webpage(self, page: str):
+        try:
+            open_help_webpage(SECTION_USER_GUIDE, page)
+        except RuntimeError as err:
+            self.show_error_dialog(str(err))
+
+    def set_iterations(self, iters: int):
+        self.numIter.setValue(iters)
+
+    def change_refine_iterations(self):
+        self.refineIterationsBtn.setEnabled(self.algorithmName.currentText() == "SIRT_CUDA")

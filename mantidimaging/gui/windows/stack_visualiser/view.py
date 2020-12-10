@@ -1,21 +1,26 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtWidgets import (QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
-from .metadata_dialog import MetadataDialog
-from .presenter import SVNotification
-from ..stack_visualiser.presenter import StackVisualiserPresenter
+from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
+
 from ...mvp_base import BaseMainWindowView
 from ...utility.common import operation_in_progress
-from ...widgets.pg_image_view import MIImageView
+from ..stack_visualiser.presenter import StackVisualiserPresenter
+from .metadata_dialog import MetadataDialog
+from .presenter import SVNotification
+from ...utility.qt_helpers import populate_menu
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
 
 
 class StackVisualiserView(BaseMainWindowView):
@@ -42,6 +47,7 @@ class StackVisualiserView(BaseMainWindowView):
         self.central_widget.setLayout(self.layout)
         self.setCentralWidget(self.central_widget)
         self.parent_create_stack = self.parent().create_new_stack
+        self._main_window = parent
 
         # capture the QDockWidget reference so that we can access the Qt widget
         # and change things like the title
@@ -53,10 +59,23 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.presenter = StackVisualiserPresenter(self, images)
 
+        self._actions = [
+            ("Show history and metadata", self.show_image_metadata),
+            ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
+            ("Duplicate current ROI of data", lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
+            ("Mark as projections/sinograms", self.mark_as_sinograms), ("", None),
+            ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
+            ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+            ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
+            ("Change window name", self.change_window_name_clicked), ("Goto projection", self.goto_projection),
+            ("Goto angle", self.goto_angle)
+        ]
+        self._context_actions = self.build_context_menu()
+
         self.image_view = MIImageView(self)
-        self.image_view.imageItem.menu = self.build_context_menu()
+        self.image_view.imageItem.menu = self._context_actions
         self.actionCloseStack = QAction("Close window", self)
-        self.actionCloseStack.triggered.connect(self.close_view)
+        self.actionCloseStack.triggered.connect(self.close)
         self.actionCloseStack.setShortcut("Ctrl+W")
         self.dock.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.data)
@@ -85,9 +104,29 @@ class StackVisualiserView(BaseMainWindowView):
 
     @property
     def main_window(self) -> 'MainWindowView':
-        return self.parent().parent()
+        return self._main_window
+
+    @property
+    def context_actions(self):
+        return self._context_actions
+
+    @property
+    def actions(self):
+        return self._actions
 
     def closeEvent(self, event):
+        window: 'MainWindowView' = self.window()
+        stacks_with_proj180 = window.get_all_stack_visualisers_with_180deg_proj()
+        for stack in stacks_with_proj180:
+            if stack.presenter.images.proj180deg is self.presenter.images:
+                if not self.ask_confirmation(
+                        "Caution: If you close this then the 180 degree projection will "
+                        "not be available for COR correlation, and the middle of the image stack will be used."):
+                    event.ignore()
+                    return
+                else:
+                    stack.presenter.images.clear_proj180deg()
+
         with operation_in_progress("Closing image view", "Freeing image memory"):
             self.dock.setFloating(False)
             self.hide()
@@ -96,7 +135,7 @@ class StackVisualiserView(BaseMainWindowView):
             # this removes all references to the data, allowing it to be GC'ed
             # otherwise there is a hanging reference
             self.presenter.delete_data()
-            self.window().remove_stack(self)  # refers to MainWindow
+            window.remove_stack(self)
             self.deleteLater()
             # refers to the QDockWidget within which the stack is contained
             self.dock.deleteLater()
@@ -104,28 +143,9 @@ class StackVisualiserView(BaseMainWindowView):
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)
 
-    def close_view(self):
-        self.close()
-
     def build_context_menu(self) -> QMenu:
-        actions = [("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard),
-                   ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-                   ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
-                   ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
-                   ("Duplicate current ROI of data", lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
-                   ("Show history", self.show_image_metadata),
-                   ("Apply history from another stack", self.show_op_history_copy_dialog),
-                   ("Mark as projections/sinograms", self.mark_as_),
-                   ("Change window name", self.change_window_name_clicked), ("Goto projection", self.goto_projection),
-                   ("Goto angle", self.goto_angle)]
-
         menu = QMenu(self)
-
-        for (menu_text, func) in actions:
-            action = QAction(menu_text, menu)
-            action.triggered.connect(func)
-            menu.addAction(action)
-
+        populate_menu(menu, self.actions)
         return menu
 
     def goto_projection(self):
@@ -190,10 +210,14 @@ class StackVisualiserView(BaseMainWindowView):
         dialog = OpHistoryCopyDialogView(self, self.presenter.images, self.main_window)
         dialog.show()
 
-    def mark_as_(self):
+    def mark_as_sinograms(self):
         # 1 is position of sinograms, 0 is projections
         current = 1 if self.presenter.images._is_sinograms else 0
         item, accepted = QInputDialog.getItem(self, "Select if projections or sinograms", "Images are:",
                                               ["projections", "sinograms"], current)
         if accepted:
             self.presenter.images._is_sinograms = False if item == "projections" else True
+
+    def ask_confirmation(self, msg: str):
+        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
+        return response == QMessageBox.Ok

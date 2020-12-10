@@ -1,22 +1,30 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import traceback
 from enum import Enum, auto
 from functools import partial
 from logging import getLogger
-from typing import Optional
-from typing import TYPE_CHECKING
+from time import sleep
+from typing import List, TYPE_CHECKING, Optional, Tuple, Union
+from uuid import UUID
 
 import numpy as np
+from PyQt5.QtWidgets import QApplication
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.utility import (BlockQtSignals)
+from mantidimaging.gui.utility import BlockQtSignals
+from mantidimaging.gui.utility.common import operation_in_progress
+from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
+
 from .model import FiltersWindowModel
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.main import MainWindowView
-    from mantidimaging.gui.windows.operations import FiltersWindowView
+    from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
+    from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
 
 
 class Notification(Enum):
@@ -31,12 +39,20 @@ class Notification(Enum):
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
     stack: Optional[StackVisualiserView] = None
+    divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
         super(FiltersWindowPresenter, self).__init__(view)
 
         self.model = FiltersWindowModel(self)
-        self.main_window = main_window
+        self._main_window = main_window
+
+        self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
+        self.applying_to_all = False
+
+    @property
+    def main_window(self) -> 'MainWindowView':
+        return self._main_window
 
     def notify(self, signal):
         try:
@@ -90,15 +106,15 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
-        filter_idx = self.view.filterSelector.currentIndex()
+        filter_name = self.view.filterSelector.currentText()
 
         # Get registration function for new filter
-        register_func = self.model.filter_registration_func(filter_idx)
+        register_func = self.model.filter_registration_func(filter_name)
 
         # Register new filter (adding it's property widgets to the properties layout)
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
-        self.model.setup_filter(filter_idx, filter_widget_kwargs)
+        self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
 
     def filter_uses_parameter(self, parameter):
@@ -106,12 +122,19 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
-        self.view.clear_previews()
+        if self.view.safeApply.isChecked():
+            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
+                self.original_images_stack = self.stack.presenter.images.copy()
+
+        # if is a 180degree stack and a user says no, cancel apply filter.
+        if self.is_a_proj180deg(self.stack) \
+            and not self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the "
+                                               "180 degree projection. Please avoid applying an operation unless you're"
+                                               " absolutely certain you need to.\nAre you sure you want to apply to 180"
+                                               " degree projection?"):
+            return
+
         apply_to = [self.stack]
-        if self.stack.presenter.images.has_proj180deg():
-            proj180_stack_visualiser = self.view.main_window.get_stack_with_images(
-                self.stack.presenter.images.proj180deg)
-            apply_to.append(proj180_stack_visualiser)
 
         self._do_apply_filter(apply_to)
 
@@ -120,18 +143,65 @@ class FiltersWindowPresenter(BasePresenter):
         if not confirmed:
             return
         stacks = self.main_window.get_all_stack_visualisers()
+        if self.view.safeApply.isChecked():
+            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
+                self.original_images_stack = []
+                for stack in stacks:
+                    self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
 
+        if len(stacks) > 0:
+            self.applying_to_all = True
         self._do_apply_filter(stacks)
 
-    def _post_filter(self, updated_stacks, task):
+    def _wait_for_stack_choice(self, new_stack: Images, stack_uuid: UUID):
+        stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
+        stack_choice.show()
 
+        while not stack_choice.done:
+            QApplication.processEvents()
+            QApplication.sendPostedEvents()
+            sleep(0.05)
+
+        return stack_choice.use_new_data
+
+    def is_a_proj180deg(self, stack_to_check: StackVisualiserView):
+        if stack_to_check.presenter.images.has_proj180deg():
+            return False
+        stacks = self.main_window.get_all_stack_visualisers()
+        for stack in stacks:
+            if stack.presenter.images.proj180deg == stack_to_check.presenter.images:
+                return True
+        return False
+
+    def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
+        do_180deg = True
+        attempt_repair = task.error is not None
         for stack in updated_stacks:
-            self.view.main_window.update_stack_with_images(stack.presenter.images)
+            # If the operation encountered an error during processing,
+            # try to restore the original data else continue processing as usual
+            if attempt_repair:
+                self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
+            # Ensure there is no error if we are to continue with safe apply and 180 degree.
+            elif task.error is None:
+                # otherwise check with user which one to keep
+                if self.view.safeApply.isChecked():
+                    do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
+                # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
+                if stack.presenter.images.has_proj180deg() and do_180deg and not self.applying_to_all:
+                    self.view.clear_previews()
+                    # Apply to proj180 synchronously - this function is already running async
+                    # and running another async instance causes a race condition in the parallel module
+                    # where the shared data can be removed in the middle of the operation of another operation
+                    self._do_apply_filter_sync(
+                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
+                    self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
+                self.view.main_window.update_stack_with_images(stack.presenter.images)
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
             self.view.roi_view = None
 
+        self.applying_to_all = False
         self.do_update_previews()
 
         if task.error is not None:
@@ -144,6 +214,9 @@ class FiltersWindowPresenter(BasePresenter):
 
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
+
+    def _do_apply_filter_sync(self, apply_to):
+        self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
         self.view.clear_previews()
@@ -169,13 +242,13 @@ class FiltersWindowPresenter(BasePresenter):
 
             if filtered_image_data.shape == before_image.shape:
                 diff = np.subtract(filtered_image_data, before_image)
-                if self.view.invertDifference.isChecked():
-                    diff = np.negative(diff, out=diff)
-                self._update_preview_image(diff, self.view.preview_image_difference)
                 if self.view.overlayDifference.isChecked():
                     self.view.previews.add_difference_overlay(diff)
                 else:
                     self.view.previews.hide_difference_overlay()
+                if self.view.invertDifference.isChecked():
+                    diff = np.negative(diff, out=diff)
+                self._update_preview_image(diff, self.view.preview_image_difference)
 
             # Ensure all of it is visible
             self.view.previews.auto_range()

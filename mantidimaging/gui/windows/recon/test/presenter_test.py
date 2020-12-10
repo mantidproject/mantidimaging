@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 
 import mock
@@ -85,7 +88,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         # first-time selecting this data after reset
         self.presenter.set_stack_uuid(self.uuid)
 
-        self.assertEqual(5.0, self.view.rotation_centre)
+        self.assertEqual(64.0, self.view.rotation_centre)
         self.assertEqual(TEST_PIXEL_SIZE, self.view.pixel_size)
 
     def test_set_projection_preview_index(self):
@@ -119,8 +122,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.preview_slice_idx = 15
 
         self.presenter.notify(PresNotification.ADD_COR)
-        self.view.add_cor_table_row.assert_called_once_with(self.presenter.model.selected_row,
-                                                            self.presenter.model.preview_slice_idx, 15)
+        self.view.add_cor_table_row.assert_called_once_with(self.presenter.model.selected_row, 0, 15)
         mock_get_me_a_cor.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
@@ -203,6 +205,26 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_dialog.exec.assert_called_once()
         self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
+    def test_do_refine_iterations_declined(self, mock_corview):
+        self.presenter._do_refine_iterations()
+        self.view.set_iterations.assert_not_called()
+
+        mock_corview.assert_called_once()
+        mock_corview.return_value.exec.assert_called_once()
+
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
+    def test_do_refine_iterations_accepted(self, mock_corview):
+        mock_dialog = mock_corview.return_value
+        mock_dialog.exec.return_value = mock_corview.Accepted
+        mock_dialog.optimal_iterations = iters = 25
+
+        self.presenter._do_refine_iterations()
+
+        mock_corview.assert_called_once()
+        mock_corview.return_value.exec.assert_called_once()
+        self.view.set_iterations.assert_called_once_with(iters)
+
     def test_do_cor_fit(self):
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
@@ -238,6 +260,33 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.auto_find_correlation, mock_first_call[1])
         self.view.set_correlate_buttons_enabled.assert_called_once_with(False)
 
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 20
+        images.proj180deg.width = 20
+        self.view = mock.MagicMock()
+        self.presenter.view = self.view
+        self.view.main_window.get_images_from_stack_uuid = mock.MagicMock(return_value=images)
+
+        self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
+
+        mock_start_async.assert_called_once()
+        completed_function = mock_start_async.call_args[0][2]
+
+        task = mock.MagicMock()
+        task.result = None
+        task.error = ValueError("Task Error")
+        completed_function(task)
+
+        self.view.warn_user.assert_called_once_with(
+            "Failure!",
+            "Finding the COR failed, likely caused by the selected stack's 180 degree projection being a different "
+            "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
+            "projection to (10, 10)")
+
     def test_do_stack_reconstruct_slice(self):
         self.presenter._get_reconstruct_slice = mock.Mock()
         self.presenter._get_reconstruct_slice.return_value = test_data = np.ndarray(shape=(200, 250), dtype=np.float32)
@@ -251,3 +300,32 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_stack_reconstruct_slice()
         self.view.show_recon_volume.assert_not_called()
         self.view.show_error_dialog.assert_called_once()
+
+    def test_proj_180_degree_shape_matches_images_where_they_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 10
+        images.proj180deg.width = 10
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertTrue(self.presenter.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
+        images = mock.MagicMock()
+        images.height = 10
+        images.width = 10
+        images.proj180deg.height = 20
+        images.proj180deg.width = 20
+        has_proj180deg = mock.MagicMock(return_value=True)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
+
+    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
+        images = mock.MagicMock()
+        has_proj180deg = mock.MagicMock(return_value=False)
+        images.has_proj180deg = has_proj180deg
+
+        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))

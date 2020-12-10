@@ -1,5 +1,9 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+from dataclasses import dataclass
 from logging import getLogger
-from typing import Tuple
+from typing import Tuple, List
 
 import numpy as np
 
@@ -49,14 +53,14 @@ def supported_formats():
     try:
         from skimage import io as skio  # noqa: F401
         skio_available = True
-    except ImportError:
-        skio_available = False
+    except ImportError:  # pragma: no cover
+        skio_available = False  # pragma: no cover
 
     try:
         import astropy.io.fits as fits  # noqa: F401
         fits_available = True
-    except ImportError:
-        fits_available = False
+    except ImportError:  # pragma: no cover
+        fits_available = False  # pragma: no cover
 
     avail_list = \
         (['fits', 'fit'] if fits_available else []) + \
@@ -65,10 +69,17 @@ def supported_formats():
     return avail_list
 
 
-def read_in_shape(input_path,
-                  in_prefix='',
-                  in_format=DEFAULT_IO_FILE_FORMAT,
-                  data_dtype=np.float32) -> Tuple[Tuple[int, int, int], bool]:
+@dataclass
+class FileInformation:
+    filenames: List[str]
+    shape: Tuple[int, int, int]
+    sinograms: bool
+
+
+def read_in_file_information(input_path,
+                             in_prefix='',
+                             in_format=DEFAULT_IO_FILE_FORMAT,
+                             data_dtype=np.float32) -> FileInformation:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     dataset = load(input_path,
                    in_prefix=in_prefix,
@@ -81,16 +92,18 @@ def read_in_shape(input_path,
     # construct and return the new shape
     shape = (len(input_file_names), ) + images.data[0].shape
     images.free_memory()
-    return shape, images.is_sinograms
+
+    fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=images.is_sinograms)
+    return fi
 
 
-def load_log(log_file) -> IMATLogFile:
+def load_log(log_file: str) -> IMATLogFile:
     data = []
     with open(log_file, 'r') as f:
         for line in f:
             data.append(line.strip().split("   "))
 
-    return IMATLogFile(data)
+    return IMATLogFile(data, log_file)
 
 
 def load_p(parameters: ImageParameters, dtype, progress) -> Images:

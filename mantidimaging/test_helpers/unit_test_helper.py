@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import os
 import sys
 from functools import partial
@@ -181,7 +184,13 @@ def shared_deepcopy(images: Images) -> np.ndarray:
 
 
 def assert_called_once_with(mock: mock.Mock, *args):
+    """
+    Custom assert function that checks different parameter types
+    with the correct assert function (i.e. numpy arrays, partials)
+    """
     assert 1 == mock.call_count
+    assert len(args) == len(mock.call_args[0])
+
     for actual, expected in zip(mock.call_args[0], args):
         if isinstance(actual, np.ndarray):
             np.testing.assert_equal(actual, expected)

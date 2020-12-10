@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 from typing import Tuple
 from unittest import mock
@@ -6,6 +9,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.operations.flat_fielding.flat_fielding import enable_correct_fields_only
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.flat_fielding import FlatFieldFilter
 
@@ -114,6 +118,64 @@ class FlatFieldingTest(unittest.TestCase):
                                                        selected_flat_fielding_widget=selected_flat_fielding_widget)
         images = th.generate_images()
         execute_func(images)
+
+    def test_enable_correct_fields_only_before(self):
+        text = "Only Before"
+        flat_before_widget = mock.MagicMock()
+        flat_after_widget = mock.MagicMock()
+        dark_before_widget = mock.MagicMock()
+        dark_after_widget = mock.MagicMock()
+
+        enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget)
+
+        flat_before_widget.setEnabled.assert_called_once_with(True)
+        flat_after_widget.setEnabled.assert_called_once_with(False)
+        dark_before_widget.setEnabled.assert_called_once_with(True)
+        dark_after_widget.setEnabled.assert_called_once_with(False)
+
+    def test_enable_correct_fields_only_after(self):
+        text = "Only After"
+        flat_before_widget = mock.MagicMock()
+        flat_after_widget = mock.MagicMock()
+        dark_before_widget = mock.MagicMock()
+        dark_after_widget = mock.MagicMock()
+
+        enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget)
+
+        flat_before_widget.setEnabled.assert_called_once_with(False)
+        flat_after_widget.setEnabled.assert_called_once_with(True)
+        dark_before_widget.setEnabled.assert_called_once_with(False)
+        dark_after_widget.setEnabled.assert_called_once_with(True)
+
+    def test_enable_correct_fields_both(self):
+        text = "Both, concatenated"
+        flat_before_widget = mock.MagicMock()
+        flat_after_widget = mock.MagicMock()
+        dark_before_widget = mock.MagicMock()
+        dark_after_widget = mock.MagicMock()
+
+        enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget)
+
+        flat_before_widget.setEnabled.assert_called_once_with(True)
+        flat_after_widget.setEnabled.assert_called_once_with(True)
+        dark_before_widget.setEnabled.assert_called_once_with(True)
+        dark_after_widget.setEnabled.assert_called_once_with(True)
+
+    def test_enable_correct_fields_runtime_error(self):
+        text = "BANANA"
+        flat_before_widget = mock.MagicMock()
+        flat_after_widget = mock.MagicMock()
+        dark_before_widget = mock.MagicMock()
+        dark_after_widget = mock.MagicMock()
+
+        with self.assertRaises(RuntimeError):
+            enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget,
+                                       dark_after_widget)
+
+        flat_before_widget.setEnabled.assert_not_called()
+        flat_after_widget.setEnabled.asser_not_called()
+        dark_before_widget.setEnabled.assert_not_called()
+        dark_after_widget.setEnabled.assert_not_called()
 
 
 if __name__ == '__main__':

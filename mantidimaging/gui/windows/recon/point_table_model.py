@@ -1,7 +1,10 @@
-from enum import Enum
-from typing import Optional
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex
+from enum import Enum
+from typing import List
+
+from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
 from mantidimaging.core.rotation import CorTiltDataModel
 from mantidimaging.core.rotation.data_model import Point
@@ -72,6 +75,15 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
                 return 'Centre of rotation for specific slice'
             return ''
 
+    def getColumn(self, column_index) -> List[int]:
+        if column_index != 0 and column_index != 1:
+            return []
+        else:
+            column = []
+            for point in self._points:
+                column.append(point.slice_index)
+            return column
+
     def setData(self, index, val, role=Qt.EditRole):
         if role != Qt.EditRole:
             return False
@@ -121,7 +133,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.clear_points()
         self.endRemoveRows()
 
-    def appendNewRow(self, row: Optional[int], slice_idx: int, cor: float = 0.0):
+    def appendNewRow(self, row: int, slice_idx: int, cor: float = 0.0):
         self.insertRows(row, 1, slice_idx=slice_idx, cor=cor)
         self.set_point(row, slice_idx, cor)
         self.sort_points()

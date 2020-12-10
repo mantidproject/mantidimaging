@@ -1,3 +1,5 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 """
 Containers for data. They don't do much apart from storing the data,
 and optionally provide helpful operations.
@@ -98,6 +100,7 @@ class ReconstructionParameters:
     cor: Optional[ScalarCoR] = None
     tilt: Optional[Degrees] = None
     pixel_size: float = 0.0
+    max_projection_angle: float = 360.0
 
     def to_dict(self) -> dict:
         return {

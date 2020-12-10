@@ -1,3 +1,5 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 from functools import partial
 
 import mock
@@ -12,7 +14,12 @@ from ..monitor_normalisation import MonitorNormalisation
 def test_no_counts():
     images = generate_images()
     original = images.copy()
-    MonitorNormalisation.filter_func(images)
+    filter_threw = False
+    try:
+        MonitorNormalisation.filter_func(images)
+    except RuntimeError:
+        filter_threw = True
+    assert filter_threw
     npt.assert_equal(original.data, images.data)
 
 

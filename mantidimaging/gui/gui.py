@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import logging
 import os
 import sys
@@ -11,6 +14,9 @@ from mantidimaging.gui.windows.main import MainWindowView
 
 def setup_application():
     q_application = QApplication(sys.argv)
+    q_application.setApplicationName("Mantid Imaging")
+    q_application.setOrganizationName("mantidproject")
+    q_application.setOrganizationDomain("mantidproject.org")
     return q_application, MainWindowView()
 
 
