@@ -5,6 +5,7 @@ from unittest.mock import Mock, patch
 
 from mantidimaging.core.utility import cuda_check
 
+
 class TestCudaCheck(unittest.TestCase):
     def test_cuda_is_present(self):
         with patch("mantidimaging.core.utility.cuda_check.os") as os_mock:
