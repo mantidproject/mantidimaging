@@ -67,9 +67,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.presenter = ReconstructWindowPresenter(self, main_window, self.use_cuda)
 
         if use_cuda:
-            self.algorithmName.addItem("FBP_CUDA")
-            self.algorithmName.addItem("SIRT_CUDA")
-            self.algorithmName.setCurrentIndex(1)
+            self.algorithmName.insertItem(0, "FBP_CUDA")
+            self.algorithmName.insertItem(1, "SIRT_CUDA")
+            self.algorithmName.setCurrentIndex(0)
             self.algorithmName.setEnabled(True)
 
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
