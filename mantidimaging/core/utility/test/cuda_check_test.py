@@ -19,4 +19,6 @@ class TestCudaCheck(unittest.TestCase):
             assert not cuda_check.cuda_is_present()
 
     def test_not_found_message(self):
-        pass
+        short_msg, long_msg = cuda_check.not_found_message()
+        assert short_msg == "Working CUDA installation not found."
+        assert long_msg == "Working CUDA installation not found. Will only use gridrec algorithm for reconstruction."
