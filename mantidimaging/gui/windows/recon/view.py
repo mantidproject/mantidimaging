@@ -70,6 +70,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.algorithmName.addItem("FBP_CUDA")
             self.algorithmName.addItem("SIRT_CUDA")
             self.algorithmName.setCurrentIndex(1)
+            self.algorithmName.setEnabled(True)
 
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
