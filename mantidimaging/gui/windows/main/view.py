@@ -36,7 +36,7 @@ class MainWindowView(BaseMainWindowView):
 
     actionDebug_Me: QAction
 
-    def __init__(self):
+    def __init__(self, open_dialogs=True):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -50,7 +50,9 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-        find_if_latest_version(self.not_latest_version_warning)
+
+        if open_dialogs:
+            find_if_latest_version(self.not_latest_version_warning)
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)

@@ -9,13 +9,17 @@ from PyQt5.Qt import QApplication
 from mantidimaging.gui.windows.main import MainWindowView
 
 
+def setup_application():
+    q_application = QApplication(sys.argv)
+    return q_application, MainWindowView()
+
+
 def execute():
     # all data will be row-major, so this needs to be specified as the default is col-major
     pyqtgraph.setConfigOptions(imageAxisOrder="row-major")
 
     # create the GUI event loop
-    q_application = QApplication(sys.argv)
-    application_window = MainWindowView()
+    q_application, application_window = setup_application()
 
     sys.excepthook = lambda exc_type, exc_value, exc_traceback: application_window.uncaught_exception(
         "".join(traceback.format_exception_only(exc_type, exc_value)), "".join(
