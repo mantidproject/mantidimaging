@@ -10,7 +10,7 @@ from uuid import UUID
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
+from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
 
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
@@ -59,8 +59,6 @@ class MainWindowView(BaseMainWindowView):
 
     load_dialogue: Optional[MWLoadDialog] = None
     save_dialogue: Optional[MWSaveDialog] = None
-
-    actionDebug_Me: QAction
 
     def __init__(self):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
@@ -120,8 +118,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
-
-        self.actionDebug_Me.triggered.connect(self.attach_debugger)
 
     def populate_image_menu(self):
         self.menuImage.clear()
@@ -340,12 +336,6 @@ class MainWindowView(BaseMainWindowView):
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)
-
-    def attach_debugger(self):
-        port, accepted = QInputDialog.getInt(self, "Debug port", "Get PyCharm debug listen port", value=25252)
-        if accepted:
-            import pydevd_pycharm
-            pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)
 
     def show_stack_select_dialog(self):
         dialog = MultipleStackSelect(self)

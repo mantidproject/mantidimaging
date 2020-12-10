@@ -60,7 +60,6 @@
     </property>
     <addaction name="actionOnlineDocumentation"/>
     <addaction name="actionAbout"/>
-    <addaction name="actionDebug_Me"/>
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="enabled">
@@ -158,14 +157,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+F</string>
-   </property>
-  </action>
-  <action name="actionDebug_Me">
-   <property name="text">
-    <string>Debug Me</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionCompare_Images">
