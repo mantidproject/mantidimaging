@@ -5,11 +5,15 @@ import os
 from typing import Tuple
 
 
+def _read_from_terminal(command: str) -> str:
+    return os.popen(command).read()
+
+
 def cuda_is_present() -> bool:
     """
     Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
-    return "Driver Version" in os.popen("nvidia-smi").read() and os.popen("locate libcuda.so").read() != ""
+    return "Driver Version" in _read_from_terminal("nvidia-smi") and _read_from_terminal("locate libcuda.so") != ""
 
 
 def not_found_message() -> Tuple[str, str]:
