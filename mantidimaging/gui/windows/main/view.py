@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
-
+from mantidimaging.core.parallel.utility import free_all, has_other_shared_arrays
 from mantidimaging.core.utility.cuda_check import cuda_is_present
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
@@ -86,6 +86,23 @@ class MainWindowView(BaseMainWindowView):
 
         if WelcomeScreenPresenter.show_today():
             self.show_about()
+
+        if has_other_shared_arrays():
+            self.ask_user_to_free_data()
+
+    def ask_user_to_free_data(self):
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Previously loaded data found")
+        msg_box.setText("This can happen if Mantid Imaging crashes, or there are multiple instances running.\n\n"
+                        "If Mantid Imaging crashed it is recommended to just 'Release all previous data'.\n\n"
+                        "If you have another instance running it is recommended you 'Ignore' "
+                        "otherwise the other instance will be corrupted.")
+        delete_all = msg_box.addButton("Release all previous data", QMessageBox.ActionRole)
+        _ = msg_box.addButton(QMessageBox.Ignore)
+        msg_box.exec()
+
+        if msg_box.clickedButton() == delete_all:
+            free_all()
 
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
