@@ -6,6 +6,9 @@ from typing import Tuple
 
 
 def _read_from_terminal(command: str) -> str:
+    """
+    Runs a terminal command and returns the result.
+    """
     return os.popen(command).read()
 
 
