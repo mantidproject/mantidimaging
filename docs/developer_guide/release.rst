@@ -12,9 +12,22 @@ The version number is expected to be in SemVer format and will be referred to as
    - ``setup.py``
    - ``mantidimaging/__init__.py``
    - ``docs/conf.py``
-- Create Git tag from ``master``: ``git tag M.m.p --sign``
-- Push the tag to the repository: ``git push M.m.p``
-- This should produce a conda package on https://anaconda.org/mantid/mantidimaging that is using the version from the new tag.
-  - Edit the labels on this package and add :code:`main`. This will make IDAaaS automatically pick it up when it creates the release environment.
-  - We may leave the :code:`unstable` tag, as they don't conflict with each other. It just means that there may be a point where the release and unstable environment point to the same version. This will change as soon as a new unstable version is published.
-- (optional) Add release notes in the docs GitHub
+   - Grep for current version in the repository just to make sure you've got them all
+
+Release candidate
+-----------------
+- Checkout master, and create a release branch ``release-M.m.p``
+- Push the branch to the remote
+- Create Git tag on the release branch with format ``M.m.prc`` - note the ``rc`` at the end, this marks it as a release candidate
+- Push the tag to the repository: ``git push M.m.p``. New executions of ``conda build`` will now use the new tag
+- Build the conda package locally, or use the Github action on the release branch
+- Publish the package using the ``main`` label, then install it and test that it works OK
+
+Release
+-------
+- Similar to the release candidate, but tag without the ``rc`` suffix
+- Build and publish the package
+- Install it and make sure it works
+- Delete the RC package from Anaconda.
+  - Also consider deleting old unstable packages that are just taking up space.
+  - ``main`` version packages should never be deleted
