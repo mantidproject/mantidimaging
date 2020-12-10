@@ -1,6 +1,8 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from mantidimaging.core.utility import finder
+import os
 from PyQt5.QtWidgets import QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -9,6 +11,12 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 class WelcomeScreenView(BaseDialogView):
     def __init__(self, parent, presenter):
         super(WelcomeScreenView, self).__init__(parent, "gui/ui/welcome_screen_dialog.ui")
+        base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+
+        bg_image = os.path.join(base_path, "gui/ui/images/welcome_screen_background.png")
+        self.setStyleSheet("#WelcomeScreenDialog {"
+                           f"border-image:url({bg_image});"
+                           "min-width:30em; min-height:20em;max-width:30em; max-height:20em;}")
         self.presenter = presenter
 
         self.issue_box.setVisible(False)

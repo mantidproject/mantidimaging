@@ -115,9 +115,9 @@ class CompilePyQtUiFiles(Command):
 
 setup(
     name="mantidimaging",
-    version="1.1.0",
+    version="2.0.0",
     packages=find_packages(),
-    package_data={"mantidimaging.gui": ["ui/*.ui"]},
+    package_data={"mantidimaging.gui": ["ui/*.ui", "ui/images/*.png"]},
     entry_points={
         "console_scripts": ["mantidimaging-ipython = mantidimaging.ipython:main"],
         "gui_scripts": ["mantidimaging = mantidimaging.main:main"],
