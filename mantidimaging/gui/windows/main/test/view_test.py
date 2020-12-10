@@ -147,8 +147,9 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     def test_show_about(self, mock_welcomescreen: mock.Mock):
+        self.view.use_cuda = use_cuda = False
         self.view.show_about()
-        mock_welcomescreen.assert_called_once()
+        mock_welcomescreen.assert_called_once_with(parent=self.view, cuda_present=use_cuda)
 
     @mock.patch("mantidimaging.gui.windows.main.view.QtGui")
     def test_open_online_documentation(self, mock_qtgui: mock.Mock):
