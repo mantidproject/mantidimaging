@@ -6,19 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>510</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>About Mantid Imaging</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">#WelcomeScreenDialog {
-border-image:url(images/welcome_screen_background.png);
-min-width:30em; min-height:20em;
-max-width:30em; max-height:20em;
-}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
