@@ -58,3 +58,17 @@ class ReconstructWindowViewTest(unittest.TestCase):
         assert self.view.tilt == tilt_val
         assert self.view.slope == slope_val
         image_view_mock.set_tilt.assert_called_once_with(tilt)
+
+    def test_preview_image_on_button_press(self):
+        event_mock = mock.Mock()
+        event_mock.button = 1
+        event_mock.ydata = ydata = 20.3
+        self.view.preview_image_on_button_press(event_mock)
+        self.presenter.set_preview_slice_idx.assert_called_once_with(int(ydata))
+
+    def test_no_preview_image_on_button_press(self):
+        event_mock = mock.Mock()
+        event_mock.button = 2
+        event_mock.ydata = 20.3
+        self.view.preview_image_on_button_press(event_mock)
+        self.presenter.set_preview_slice_idx.assert_not_called()
