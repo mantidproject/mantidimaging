@@ -63,6 +63,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         event_mock = mock.Mock()
         event_mock.button = 1
         event_mock.ydata = ydata = 20.3
+
         self.view.preview_image_on_button_press(event_mock)
         self.presenter.set_preview_slice_idx.assert_called_once_with(int(ydata))
 
@@ -70,5 +71,18 @@ class ReconstructWindowViewTest(unittest.TestCase):
         event_mock = mock.Mock()
         event_mock.button = 2
         event_mock.ydata = 20.3
+
         self.view.preview_image_on_button_press(event_mock)
         self.presenter.set_preview_slice_idx.assert_not_called()
+
+    def test_update_projection(self):
+        image_data = mock.Mock()
+        preview_slice_idx = 13
+        tilt_angle = Degrees(30)
+
+        self.view.previewSliceIndex = preview_slice_index_mock = mock.Mock()
+        self.view.image_view = image_view_mock = mock.Mock()
+        self.view.update_projection(image_data, preview_slice_idx, tilt_angle)
+
+        preview_slice_index_mock.setValue.assert_called_once_with(preview_slice_idx)
+        image_view_mock.update_projection.assert_called_once_with(image_data, preview_slice_idx, tilt_angle)
