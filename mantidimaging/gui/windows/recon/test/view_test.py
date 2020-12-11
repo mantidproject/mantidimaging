@@ -23,6 +23,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.resultCor = self.resultCor = mock.Mock()
         self.view.resultTilt = self.resultTilt = mock.Mock()
         self.view.resultSlope = self.resultSlope = mock.Mock()
+        self.view.numIter = self.numIter = mock.Mock()
+        self.view.pixelSize = self.pixelSize = mock.Mock()
 
     def test_on_row_change(self):
         pass
@@ -160,4 +162,21 @@ class ReconstructWindowViewTest(unittest.TestCase):
         assert self.view.algorithm_name == algorithm_name_mock.currentText.return_value
 
     def test_filter_name(self):
-        pass
+        self.view.filterName = filter_name_mock = mock.Mock()
+        assert self.view.filter_name == filter_name_mock.currentText.return_value
+
+    def test_num_iter_property(self):
+        assert self.view.num_iter == self.numIter.value.return_value
+
+    def test_num_iter_setter(self):
+        iters = 123
+        self.view.num_iter = iters
+        self.numIter.setValue.assert_called_once_with(iters)
+
+    def test_pixel_size_property(self):
+        assert self.view.pixel_size == self.pixelSize.value.return_value
+
+    def test_pixel_size_setter(self):
+        value = 123
+        self.view.pixel_size = value
+        self.pixelSize.setValue.assert_called_once_with(value)
