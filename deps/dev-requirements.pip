@@ -6,6 +6,7 @@ mock==3.0.5
 flake8
 pylint
 sphinx
+sphinx-multiversion
 mypy
 yapf
 pytest

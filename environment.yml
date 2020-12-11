@@ -27,6 +27,7 @@ dependencies:
       - mock
       - pylint
       - sphinx
+      - sphinx-multiversion
       - pytest-randomly
       - pytest-parallel
       - psutil
