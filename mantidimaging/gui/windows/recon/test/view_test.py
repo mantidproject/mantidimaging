@@ -19,5 +19,15 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view = ReconstructWindowView(self.main_window)
         self.view.presenter = self.presenter = mock.MagicMock()
 
-    def test_test(self):
+    def test_on_row_change(self):
         pass
+
+    def test_check_stack_for_invalid_180_deg_proj(self):
+        pass
+
+    @mock.patch("mantidimaging.gui.windows.recon.view.QMessageBox")
+    def test_warn_user(self, qmessagebox_mock):
+        warning_title = "warning title"
+        warning_message = "warning message"
+        self.view.warn_user(warning_title, warning_message)
+        qmessagebox_mock.warning.assert_called_once_with(self.view, warning_title, warning_message)
