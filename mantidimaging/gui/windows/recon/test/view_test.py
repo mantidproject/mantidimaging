@@ -31,3 +31,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         warning_message = "warning message"
         self.view.warn_user(warning_title, warning_message)
         qmessagebox_mock.warning.assert_called_once_with(self.view, warning_title, warning_message)
+
+    def test_remove_selected_cor(self):
+        self.view.tableView = table_view_mock = mock.Mock()
+        assert self.view.remove_selected_cor() == table_view_mock.removeSelectedRows.return_value
