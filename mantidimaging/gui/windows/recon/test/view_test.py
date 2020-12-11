@@ -101,10 +101,13 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_update_recon_preview(self):
         image_data = mock.Mock()
-        refresh_recon_slice_histogram = True
 
-        self.view.update_recon_preview(image_data, refresh_recon_slice_histogram)
-        self.image_view.update_recon.assert_called_once_with(image_data, refresh_recon_slice_histogram)
+        for refresh_recon_slice_histogram in [True, False]:
+            with self.subTest(refresh_recon_slice_histogram=refresh_recon_slice_histogram):
+                self.view.update_recon_preview(image_data, refresh_recon_slice_histogram)
+                self.image_view.update_recon.assert_called_once_with(image_data, refresh_recon_slice_histogram)
+            if refresh_recon_slice_histogram:
+                self.image_view.update_recon.reset_mock()
 
     def test_reset_image_recon_preview(self):
         self.view.reset_image_recon_preview()
@@ -265,3 +268,16 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def test_get_auto_cor_method_when_current_is_not_correlation(self):
         self.autoFindMethod.currentText.return_value = "NotCorrelation"
         assert self.view.get_auto_cor_method() == AutoCorMethod.MINIMISATION_SQUARE_SUM
+
+    def test_set_correlate_buttons_enables(self):
+        self.view.correlateBtn = correlate_button_mock = mock.Mock()
+        self.view.minimiseBtn = minimise_button_mock = mock.Mock()
+
+        for enabled in [True, False]:
+            with self.subTest(enabled=enabled):
+                self.view.set_correlate_buttons_enabled(enabled)
+                correlate_button_mock.setEnabled.assert_called_once_with(enabled)
+                minimise_button_mock.setEnabled.assert_called_once_with(enabled)
+            if enabled:
+                correlate_button_mock.reset_mock()
+                minimise_button_mock.reset_mock()
