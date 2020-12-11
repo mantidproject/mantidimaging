@@ -114,3 +114,23 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
         remove_button_mock.setEnabled.assert_called_once_with(not empty)
         clear_all_button_mock.setEnabled.assert_called_once_with(not empty)
+
+    def test_add_cor_table_row(self):
+        row = 3
+        slice_index = 4
+        cor = 5.0
+
+        self.view.add_cor_table_row(row, slice_index, cor)
+
+        self.tableView.model.return_value.appendNewRow.assert_called_once_with(row, slice_index, cor)
+        self.tableView.selectRow.assert_called_once_with(row)
+
+    def test_rotation_centre_property(self):
+        self.view.resultCor = result_cor_mock = mock.Mock()
+        assert self.view.rotation_centre == result_cor_mock.value.return_value
+
+    def test_rotation_centre_setter(self):
+        value = 16.3
+        self.view.resultCor = result_cor_mock = mock.Mock()
+        self.view.rotation_centre = value
+        result_cor_mock.setValue.assert_called_once_with(value)
