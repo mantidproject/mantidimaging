@@ -373,4 +373,4 @@ class ReconstructWindowView(BaseMainWindowView):
             self.show_error_dialog(str(err))
 
     def change_refine_iterations(self):
-        self.refineIterationsBtn.setEnabled(self.algorithmName.currentText() == "SIRT_CUDA")
+        self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
