@@ -1,6 +1,7 @@
 import unittest
 from unittest import mock
 
+from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
@@ -281,3 +282,18 @@ class ReconstructWindowViewTest(unittest.TestCase):
             if enabled:
                 correlate_button_mock.reset_mock()
                 minimise_button_mock.reset_mock()
+
+    @mock.patch("mantidimaging.gui.windows.recon.view.open_help_webpage")
+    def test_open_help_webpage_when_no_exception(self, open_help_webpage_mock):
+        page = "page"
+        self.view.open_help_webpage(page)
+        open_help_webpage_mock.assert_called_once_with(SECTION_USER_GUIDE, page)
+
+    @mock.patch("mantidimaging.gui.windows.recon.view.open_help_webpage")
+    def test_open_help_webpage_when_exception(self, open_help_webpage_mock):
+        page = "page"
+        open_help_webpage_mock.side_effect = RuntimeError
+        self.view.show_error_dialog = show_error_dialog_mock = mock.Mock()
+        self.view.open_help_webpage(page)
+        open_help_webpage_mock.assert_called_once_with(SECTION_USER_GUIDE, page)
+        show_error_dialog_mock.assert_called_once()  # test called once with
