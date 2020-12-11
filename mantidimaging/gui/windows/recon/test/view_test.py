@@ -20,6 +20,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view = ReconstructWindowView(self.main_window)
         self.view.presenter = self.presenter = mock.MagicMock()
         self.view.image_view = self.image_view = mock.MagicMock()
+        self.view.tableView = self.tableView = mock.Mock()
 
     def test_on_row_change(self):
         pass
@@ -35,12 +36,10 @@ class ReconstructWindowViewTest(unittest.TestCase):
         qmessagebox_mock.warning.assert_called_once_with(self.view, warning_title, warning_message)
 
     def test_remove_selected_cor(self):
-        self.view.tableView = table_view_mock = mock.Mock()
-        assert self.view.remove_selected_cor() == table_view_mock.removeSelectedRows.return_value
+        assert self.view.remove_selected_cor() == self.tableView.removeSelectedRows.return_value
 
     def test_clear_cor_table(self):
-        self.view.tableView = table_view_mock = mock.Mock()
-        assert self.view.clear_cor_table() == table_view_mock.model.return_value.removeAllRows.return_value
+        assert self.view.clear_cor_table() == self.tableView.model.return_value.removeAllRows.return_value
 
     def test_cor_table_model(self):
         pass
@@ -90,3 +89,28 @@ class ReconstructWindowViewTest(unittest.TestCase):
         image_data = mock.Mock()
         self.view.update_sinogram(image_data)
         self.image_view.update_sinogram.assert_called_once_with(image_data)
+
+    def test_update_recon_preview(self):
+        image_data = mock.Mock()
+        refresh_recon_slice_histogram = True
+
+        self.view.update_recon_preview(image_data, refresh_recon_slice_histogram)
+        self.image_view.update_recon.assert_called_once_with(image_data, refresh_recon_slice_histogram)
+
+    def test_reset_image_recon_preview(self):
+        self.view.reset_image_recon_preview()
+        self.image_view.clear_recon.assert_called_once()
+
+    def test_reset_slice_and_tilt(self):
+        slice_index = 5
+        self.view.reset_slice_and_tilt(slice_index)
+        self.image_view.reset_slice_and_tilt.assert_called_once_with(slice_index)
+
+    def test_on_table_row_count_changed(self):
+        self.tableView.model.return_value.empty = empty = False
+        self.view.removeBtn = remove_button_mock = mock.Mock()
+        self.view.clearAllBtn = clear_all_button_mock = mock.Mock()
+        self.view.on_table_row_count_change()
+
+        remove_button_mock.setEnabled.assert_called_once_with(not empty)
+        clear_all_button_mock.setEnabled.assert_called_once_with(not empty)
