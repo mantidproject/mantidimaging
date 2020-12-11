@@ -199,3 +199,19 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
         self.view.set_table_point(idx, slice_idx, cor)
         self.tableView.model.return_value.set_point.assert_called_once_with(idx, slice_idx, cor, reset_results=False)
+
+    def test_show_recon_volume(self):
+        data = mock.Mock()
+        self.main_window.create_new_stack = create_new_stack_mock = mock.Mock()
+        self.view.show_recon_volume(data)
+        create_new_stack_mock.assert_called_once_with(data, "Recon")
+
+    def test_get_stack_visualiser_when_uuid_is_none(self):
+        assert self.view.get_stack_visualiser(None) is None
+
+    def test_get_stack_visualiser_when_uuid_is_not_none(self):
+        uuid = mock.Mock()
+        self.main_window.get_stack_visualiser = mock.Mock()
+
+        assert self.view.get_stack_visualiser(uuid) == self.main_window.get_stack_visualiser.return_value
+        self.main_window.get_stack_visualiser.assert_called_once_with(uuid)
