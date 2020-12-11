@@ -191,3 +191,11 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                   tilt=Degrees(self.resultTilt.value.return_value),
                                                   pixel_size=self.pixelSize.value.return_value,
                                                   max_projection_angle=self.maxProjAngle.value.return_value)
+
+    def test_set_table_point(self):
+        idx = 12
+        slice_idx = 34
+        cor = 12.34
+
+        self.view.set_table_point(idx, slice_idx, cor)
+        self.tableView.model.return_value.set_point.assert_called_once_with(idx, slice_idx, cor, reset_results=False)
