@@ -215,3 +215,43 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
         assert self.view.get_stack_visualiser(uuid) == self.main_window.get_stack_visualiser.return_value
         self.main_window.get_stack_visualiser.assert_called_once_with(uuid)
+
+    def test_hide_tilt(self):
+        self.view.hide_tilt()
+        self.image_view.hide_tilt.assert_called_once()
+
+    def test_set_filters_for_recon_tool(self):
+        filters = ["abc" for _ in range(3)]
+        self.view.set_filters_for_recon_tool(filters)
+        self.filterName.clear.assert_called_once()
+        self.filterName.insertItems.assert_called_once_with(0, filters)
+
+    @mock.patch("mantidimaging.gui.windows.recon.view.QInputDialog")
+    def test_get_number_of_cors_when_accepted_is_true(self, qinputdialog_mock):
+        num = 2
+        accepted = True
+        qinputdialog_mock.getInt.return_value = (num, accepted)
+
+        assert self.view.get_number_of_cors() == num
+        qinputdialog_mock.getInt.assert_called_once_with(self.view,
+                                                         "Number of slices",
+                                                         "On how many slices to run the automatic CoR finding?",
+                                                         value=6,
+                                                         min=0,
+                                                         max=30,
+                                                         step=1)
+
+    @mock.patch("mantidimaging.gui.windows.recon.view.QInputDialog")
+    def test_get_number_of_cors_when_accepted_is_false(self, qinputdialog_mock):
+        num = 2
+        accepted = False
+        qinputdialog_mock.getInt.return_value = (num, accepted)
+
+        assert self.view.get_number_of_cors() is None
+        qinputdialog_mock.getInt.assert_called_once_with(self.view,
+                                                         "Number of slices",
+                                                         "On how many slices to run the automatic CoR finding?",
+                                                         value=6,
+                                                         min=0,
+                                                         max=30,
+                                                         step=1)
