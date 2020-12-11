@@ -4,6 +4,7 @@ from unittest import mock
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
+from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
 from mantidimaging.test_helpers import start_qapplication
 
 from mantidimaging.core.utility.version_check import versions
@@ -28,6 +29,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.algorithmName = self.algorithmName = mock.Mock()
         self.view.filterName = self.filterName = mock.Mock()
         self.view.maxProjAngle = self.maxProjAngle = mock.Mock()
+        self.view.autoFindMethod = self.autoFindMethod = mock.Mock()
 
     def test_on_row_change(self):
         pass
@@ -255,3 +257,11 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                          min=0,
                                                          max=30,
                                                          step=1)
+
+    def test_get_auto_cor_method_when_current_is_correlation(self):
+        self.autoFindMethod.currentText.return_value = "Correlation"
+        assert self.view.get_auto_cor_method() == AutoCorMethod.CORRELATION
+
+    def test_get_auto_cor_method_when_current_is_not_correlation(self):
+        self.autoFindMethod.currentText.return_value = "NotCorrelation"
+        assert self.view.get_auto_cor_method() == AutoCorMethod.MINIMISATION_SQUARE_SUM
