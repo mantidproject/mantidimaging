@@ -13,7 +13,6 @@ versions._use_test_values()
 @start_qapplication
 class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
-        # mock the view so it has the same methods
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
                 self.main_window = MainWindowView()
@@ -21,6 +20,9 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.presenter = self.presenter = mock.MagicMock()
         self.view.image_view = self.image_view = mock.MagicMock()
         self.view.tableView = self.tableView = mock.Mock()
+        self.view.resultCor = self.resultCor = mock.Mock()
+        self.view.resultTilt = self.resultTilt = mock.Mock()
+        self.view.resultSlope = self.resultSlope = mock.Mock()
 
     def test_on_row_change(self):
         pass
@@ -126,11 +128,36 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.tableView.selectRow.assert_called_once_with(row)
 
     def test_rotation_centre_property(self):
-        self.view.resultCor = result_cor_mock = mock.Mock()
-        assert self.view.rotation_centre == result_cor_mock.value.return_value
+        assert self.view.rotation_centre == self.resultCor.value.return_value
 
     def test_rotation_centre_setter(self):
         value = 16.3
-        self.view.resultCor = result_cor_mock = mock.Mock()
         self.view.rotation_centre = value
-        result_cor_mock.setValue.assert_called_once_with(value)
+        self.resultCor.setValue.assert_called_once_with(value)
+
+    def test_tilt_property(self):
+        assert self.view.tilt == self.resultTilt.value.return_value
+
+    def test_tilt_setter(self):
+        value = 123.45
+        self.view.tilt = value
+        self.resultTilt.setValue.assert_called_once_with(value)
+
+    def test_slope_property(self):
+        assert self.view.slope == self.resultSlope.value.return_value
+
+    def test_slope_setter(self):
+        value = 123.45
+        self.view.slope = value
+        self.resultSlope.setValue.assert_called_once_with(value)
+
+    def test_max_proj_angle(self):
+        self.view.maxProjAngle = max_proj_angle_mock = mock.Mock()
+        assert self.view.max_proj_angle == max_proj_angle_mock.value.return_value
+
+    def test_algorithm_name(self):
+        self.view.algorithmName = algorithm_name_mock = mock.Mock()
+        assert self.view.algorithm_name == algorithm_name_mock.currentText.return_value
+
+    def test_filter_name(self):
+        pass
