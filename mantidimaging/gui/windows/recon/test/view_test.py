@@ -19,6 +19,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
                 self.main_window = MainWindowView()
         self.view = ReconstructWindowView(self.main_window)
         self.view.presenter = self.presenter = mock.MagicMock()
+        self.view.image_view = self.image_view = mock.MagicMock()
 
     def test_on_row_change(self):
         pass
@@ -52,12 +53,11 @@ class ReconstructWindowViewTest(unittest.TestCase):
         tilt = Degrees(tilt_val)
         slope = Slope(slope_val)
 
-        self.view.image_view = image_view_mock = mock.Mock()
         self.view.set_results(cor, tilt, slope)
         assert self.view.rotation_centre == cor_val
         assert self.view.tilt == tilt_val
         assert self.view.slope == slope_val
-        image_view_mock.set_tilt.assert_called_once_with(tilt)
+        self.image_view.set_tilt.assert_called_once_with(tilt)
 
     def test_preview_image_on_button_press(self):
         event_mock = mock.Mock()
@@ -81,8 +81,12 @@ class ReconstructWindowViewTest(unittest.TestCase):
         tilt_angle = Degrees(30)
 
         self.view.previewSliceIndex = preview_slice_index_mock = mock.Mock()
-        self.view.image_view = image_view_mock = mock.Mock()
         self.view.update_projection(image_data, preview_slice_idx, tilt_angle)
 
         preview_slice_index_mock.setValue.assert_called_once_with(preview_slice_idx)
-        image_view_mock.update_projection.assert_called_once_with(image_data, preview_slice_idx, tilt_angle)
+        self.image_view.update_projection.assert_called_once_with(image_data, preview_slice_idx, tilt_angle)
+
+    def test_update_sinogram(self):
+        image_data = mock.Mock()
+        self.view.update_sinogram(image_data)
+        self.image_view.update_sinogram.assert_called_once_with(image_data)
