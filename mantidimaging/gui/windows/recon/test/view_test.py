@@ -47,8 +47,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         qmessagebox_mock.warning.assert_called_once_with(
             self.view, "Potential Failure",
             "The shapes of the selected stack and it's 180 degree projections do not match! This is going to cause an "
-            "error when calculating the COR. Fix the shape before continuing!"
-        )
+            "error when calculating the COR. Fix the shape before continuing!")
 
     @mock.patch("mantidimaging.gui.windows.recon.view.QMessageBox")
     def test_check_stack_for_invalid_180_deg_proj_when_proj_180_degree_shape_matches_images_is_true(
@@ -78,7 +77,11 @@ class ReconstructWindowViewTest(unittest.TestCase):
         assert self.view.clear_cor_table() == self.tableView.model.return_value.removeAllRows.return_value
 
     def test_cleanup(self):
-        pass
+        self.view.stackSelector = stack_selector_mock = mock.Mock()
+
+        self.view.cleanup()
+        stack_selector_mock.unsubscribe_from_main_window.assert_called_once()
+        assert self.main_window.recon is None
 
     def test_cor_table_model(self):
         pass
