@@ -163,7 +163,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.reset_slice_and_tilt(slice_index)
         self.image_view.reset_slice_and_tilt.assert_called_once_with(slice_index)
 
-    def test_on_table_row_count_changed(self):
+    def test_on_table_row_count_change(self):
         self.tableView.model.return_value.empty = empty = False
         self.view.removeBtn = remove_button_mock = mock.Mock()
         self.view.clearAllBtn = clear_all_button_mock = mock.Mock()
