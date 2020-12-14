@@ -66,13 +66,6 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.presenter.proj_180_degree_shape_matches_images.assert_called_once_with(selected_images)
         qmessagebox_mock.warning.assert_not_called()
 
-    @mock.patch("mantidimaging.gui.windows.recon.view.QMessageBox")
-    def test_warn_user(self, qmessagebox_mock):
-        warning_title = "warning title"
-        warning_message = "warning message"
-        self.view.warn_user(warning_title, warning_message)
-        qmessagebox_mock.warning.assert_called_once_with(self.view, warning_title, warning_message)
-
     def test_remove_selected_cor(self):
         assert self.view.remove_selected_cor() == self.tableView.removeSelectedRows.return_value
 
