@@ -80,8 +80,10 @@ class WelcomeScreenPresenter(BasePresenter):
             msg, detailed = versions.conda_update_message()
             issues.append(msg)
             LOG.info(detailed)
+            self.view.add_issue(msg)
         if not self.cuda_present:
             msg, detailed = cuda_check.not_found_message()
             issues.append(msg)
             LOG.info(detailed)
-        self.view.add_issue("\n".join(issues))
+            self.view.add_issue(msg)
+        # self.view.add_issue("\n".join(issues))
