@@ -74,6 +74,13 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
         assert self.presenter.image_mode is SVImageMode.SUMMED
 
+    def test_notify_toggle_image_mode_sets_summed_image(self):
+        self.presenter.image_mode = SVImageMode.NORMAL
+        self.summed_image = None
+        self.presenter.model = mock.Mock()
+        self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
+        assert self.presenter.summed_image == self.presenter.model.sum_images.return_value
+
 
 if __name__ == '__main__':
     unittest.main()
