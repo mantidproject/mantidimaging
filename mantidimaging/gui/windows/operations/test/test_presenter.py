@@ -5,7 +5,7 @@ import unittest
 from functools import partial
 
 from unittest import mock
-from mock import DEFAULT, Mock
+from unittest.mock import DEFAULT, Mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
