@@ -4,7 +4,7 @@
 import unittest
 from uuid import uuid4
 
-import mock
+from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
 from mock import DEFAULT, Mock

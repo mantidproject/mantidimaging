@@ -3,7 +3,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
