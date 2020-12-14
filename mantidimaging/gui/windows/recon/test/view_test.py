@@ -83,8 +83,20 @@ class ReconstructWindowViewTest(unittest.TestCase):
         stack_selector_mock.unsubscribe_from_main_window.assert_called_once()
         assert self.main_window.recon is None
 
-    def test_cor_table_model(self):
-        pass
+    @mock.patch("mantidimaging.gui.windows.recon.view.CorTiltPointQtModel")
+    def test_cor_table_model_when_model_is_none(self, cortiltpointqtmodel_mock):
+        self.tableView.model.return_value = None
+        mdl = cortiltpointqtmodel_mock.return_value
+
+        assert self.view.cor_table_model == self.tableView.model.return_value
+        cortiltpointqtmodel_mock.assert_called_once_with(self.tableView)
+        self.tableView.setModel.assert_called_once_with(mdl)
+
+    @mock.patch("mantidimaging.gui.windows.recon.view.CorTiltPointQtModel")
+    def test_cor_table_model_when_model_is_not_none(self, cortiltpointqtmodel_mock):
+        assert self.view.cor_table_model == self.tableView.model.return_value
+        cortiltpointqtmodel_mock.assert_not_called()
+        self.tableView.setModel.assert_not_called()
 
     def test_set_results(self):
         cor_val = 20
