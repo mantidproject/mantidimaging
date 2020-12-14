@@ -296,4 +296,20 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.show_error_dialog = show_error_dialog_mock = mock.Mock()
         self.view.open_help_webpage(page)
         open_help_webpage_mock.assert_called_once_with(SECTION_USER_GUIDE, page)
-        show_error_dialog_mock.assert_called_once()  # test called once with
+        show_error_dialog_mock.assert_called_once()  # test called once with?
+
+    def test_change_refine_iterations_when_algorithm_name_is_sirt(self):
+        self.view.refineIterationsBtn = refine_iterations_button_mock = mock.Mock()
+        self.view.algorithmName = mock.Mock()
+        self.view.algorithmName.currentText.return_value = "SIRT_CUDA"
+
+        self.view.change_refine_iterations()
+        refine_iterations_button_mock.setEnabled.assert_called_once_with(True)
+
+    def test_change_refine_iterations_when_algorithm_name_is_not_sirt(self):
+        self.view.refineIterationsBtn = refine_iterations_button_mock = mock.Mock()
+        self.view.algorithmName = mock.Mock()
+        self.view.algorithmName.currentText.return_value = "FBP_CUDA"
+
+        self.view.change_refine_iterations()
+        refine_iterations_button_mock.setEnabled.assert_called_once_with(False)
