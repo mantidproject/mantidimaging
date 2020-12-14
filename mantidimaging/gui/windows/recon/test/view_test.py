@@ -110,9 +110,9 @@ class ReconstructWindowViewTest(unittest.TestCase):
         slope = Slope(slope_val)
 
         self.view.set_results(cor, tilt, slope)
-        assert self.view.rotation_centre == cor_val
-        assert self.view.tilt == tilt_val
-        assert self.view.slope == slope_val
+        self.resultCor.setValue.assert_called_once_with(cor_val)
+        self.resultTilt.setValue.assert_called_once_with(tilt_val)
+        self.resultSlope.setValue.assert_called_once_with(slope_val)
         self.image_view.set_tilt.assert_called_once_with(tilt)
 
     def test_preview_image_on_button_press(self):
@@ -188,26 +188,11 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def test_rotation_centre_property(self):
         assert self.view.rotation_centre == self.resultCor.value.return_value
 
-    def test_rotation_centre_setter(self):
-        value = 16.3
-        self.view.rotation_centre = value
-        self.resultCor.setValue.assert_called_once_with(value)
-
     def test_tilt_property(self):
         assert self.view.tilt == self.resultTilt.value.return_value
 
-    def test_tilt_setter(self):
-        value = 123.45
-        self.view.tilt = value
-        self.resultTilt.setValue.assert_called_once_with(value)
-
     def test_slope_property(self):
         assert self.view.slope == self.resultSlope.value.return_value
-
-    def test_slope_setter(self):
-        value = 123.45
-        self.view.slope = value
-        self.resultSlope.setValue.assert_called_once_with(value)
 
     def test_max_proj_angle(self):
         assert self.view.max_proj_angle == self.maxProjAngle.value.return_value
