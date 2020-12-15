@@ -9,7 +9,7 @@ from typing import Tuple
 import mock
 import numpy as np
 import numpy.testing as npt
-from six import StringIO
+from io import StringIO
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
