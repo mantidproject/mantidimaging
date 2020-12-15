@@ -6,7 +6,6 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
 import numpy as np
-from six import StringIO
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.test.fake_logfile import generate_logfile
@@ -18,8 +17,8 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_
 
 class ImagesTest(unittest.TestCase):
     def test_parse_metadata_file(self):
-        json_file = StringIO('{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
-                             '"three"], "a_float": 3.65e-05, "a_bool": true}')
+        json_file = io.StringIO('{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
+                                '"three"], "a_float": 3.65e-05, "a_bool": true}')
 
         imgs = Images(np.asarray([1]))
         imgs.load_metadata(json_file)
