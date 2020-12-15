@@ -8,4 +8,5 @@
   ],
   "editor.formatOnSave": true,
   "python.formatting.provider": "yapf",
+  "restructuredtext.confPath": "${workspaceFolder}/docs",
 }
