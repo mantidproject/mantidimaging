@@ -24,6 +24,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
+        self.presenter.model = mock.Mock()
 
     def tearDown(self) -> None:
         try:
@@ -68,6 +69,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.image_mode = SVImageMode.SUMMED
         self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
         assert self.presenter.image_mode is SVImageMode.NORMAL
+        self.presenter.model.sum_images.assert_not_called()
 
     def test_notify_toggle_image_mode_summed_to_normal(self):
         self.presenter.image_mode = SVImageMode.NORMAL
@@ -77,9 +79,15 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_notify_toggle_image_mode_sets_summed_image(self):
         self.presenter.image_mode = SVImageMode.NORMAL
         self.summed_image = None
-        self.presenter.model = mock.Mock()
         self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
         assert self.presenter.summed_image == self.presenter.model.sum_images.return_value
+        self.presenter.model.sum_images.assert_called_once_with(self.presenter.images.data)
+
+    def test_notify_toggle_image_mode_does_not_set_summed_image(self):
+        self.presenter.image_mode = SVImageMode.NORMAL
+        self.presenter.summed_image = self.presenter.images.data[0]
+        self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
+        self.presenter.model.sum_images.assert_not_called()
 
 
 if __name__ == '__main__':
