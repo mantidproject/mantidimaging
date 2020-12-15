@@ -22,8 +22,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
             with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
                 self.main_window = MainWindowView()
         self.view = ReconstructWindowView(self.main_window)
-        self.view.presenter = self.presenter = mock.MagicMock()
-        self.view.image_view = self.image_view = mock.MagicMock()
+        self.view.presenter = self.presenter = mock.Mock()
+        self.view.image_view = self.image_view = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
         self.view.resultCor = self.resultCor = mock.Mock()
         self.view.resultTilt = self.resultTilt = mock.Mock()
