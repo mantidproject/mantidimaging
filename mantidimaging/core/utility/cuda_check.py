@@ -16,8 +16,8 @@ def cuda_is_present() -> bool:
     Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
     try:
-        return "Driver Version" in _read_from_terminal(["nvidia-smi"
-                                                        ]) and _read_from_terminal(["locate", "libcuda.so"]) != ""
+        return "Driver Version" in _read_from_terminal(
+            ["nvidia-smi"]) and _read_from_terminal(["locate", "--regex", "'/usr/lib/(.*?)/libcuda.so'"]) != ""
     except (subprocess.CalledProcessError, PermissionError):
         return False
 

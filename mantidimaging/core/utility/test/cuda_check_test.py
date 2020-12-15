@@ -10,7 +10,7 @@ from mantidimaging.core.utility import cuda_check
 class TestCudaCheck(unittest.TestCase):
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
     def test_cuda_is_present_returns_true(self, check_output_mock):
-        check_output_mock.side_effect = [b"Driver Version", b"/path/to/libcuda.so\n"]
+        check_output_mock.side_effect = [b"Driver Version", b"/usr/lib/path/to/libcuda.so\n"]
         assert cuda_check.cuda_is_present()
 
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
