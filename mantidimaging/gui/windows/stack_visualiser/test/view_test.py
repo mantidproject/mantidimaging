@@ -4,7 +4,7 @@
 from typing import Tuple
 import unittest
 
-import mock
+from unittest import mock
 from PyQt5.QtWidgets import QDockWidget
 from mock import Mock
 

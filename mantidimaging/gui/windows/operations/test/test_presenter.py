@@ -4,8 +4,8 @@
 import unittest
 from functools import partial
 
-import mock
-from mock import DEFAULT, Mock
+from unittest import mock
+from unittest.mock import DEFAULT, Mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
@@ -176,7 +176,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         module_name = self.presenter.get_filter_module_name(0)
 
-        self.assertEqual("mock.mock", module_name)
+        self.assertEqual("unittest.mock", module_name)
 
     @mock.patch.multiple(
         'mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',

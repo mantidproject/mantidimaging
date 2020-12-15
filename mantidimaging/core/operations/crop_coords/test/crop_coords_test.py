@@ -3,7 +3,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th

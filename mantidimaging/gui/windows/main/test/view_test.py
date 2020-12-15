@@ -2,12 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from unittest.mock import DEFAULT, Mock
 from uuid import uuid4
 
-import mock
+from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
-from mock import DEFAULT, Mock
 
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView

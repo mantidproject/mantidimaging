@@ -6,7 +6,7 @@ import sys
 from functools import partial
 from typing import Tuple
 
-import mock
+from unittest import mock
 import numpy as np
 import numpy.testing as npt
 from six import StringIO
