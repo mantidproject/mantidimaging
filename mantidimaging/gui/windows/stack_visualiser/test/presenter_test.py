@@ -89,6 +89,9 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
         self.presenter.model.sum_images.assert_not_called()
 
+    def test_get_num_images(self):
+        assert self.presenter.get_num_images() == self.presenter.images.num_projections
+
 
 if __name__ == '__main__':
     unittest.main()
