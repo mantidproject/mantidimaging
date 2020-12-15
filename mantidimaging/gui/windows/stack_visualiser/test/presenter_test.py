@@ -4,7 +4,7 @@
 import unittest
 
 import SharedArray as sa
-import mock
+from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th

@@ -4,7 +4,7 @@
 import unittest
 import uuid
 
-import mock
+from unittest import mock
 import numpy as np
 
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
