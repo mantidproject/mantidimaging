@@ -30,6 +30,9 @@ class TestCudaCheck(unittest.TestCase):
         check_output_mock.side_effect = subprocess.CalledProcessError(returncode=2, cmd=["bad"])
         assert not cuda_check.cuda_is_present()
 
+        check_output_mock.side_effect = FileNotFoundError
+        assert not cuda_check.cuda_is_present()
+
     def test_not_found_message(self):
         short_msg, long_msg = cuda_check.not_found_message()
         assert short_msg == "Working CUDA installation not found."
