@@ -6,6 +6,7 @@ import unittest
 import SharedArray as sa
 import mock
 import numpy.testing as npt
+import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -91,6 +92,18 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
     def test_get_num_images(self):
         assert self.presenter.get_num_images() == self.presenter.images.num_projections
+
+    def test_find_image_from_angle_returns_matching_index(self):
+        angle = np.rad2deg(self.presenter.images.projection_angles().value[1])
+        index = self.presenter.find_image_from_angle(angle)
+        assert self.presenter.images.projection_angles().value[index] == angle
+
+    def test_find_image_from_angle_returns_next_index(self):
+        angle = (self.presenter.images.projection_angles().value[1] +
+                 self.presenter.images.projection_angles().value[2]) * 0.5
+        angle = np.rad2deg(angle)
+        index = self.presenter.find_image_from_angle(angle)
+        assert index == 2
 
 
 if __name__ == '__main__':
