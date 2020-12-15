@@ -35,7 +35,7 @@ class TestCheckVersion(unittest.TestCase):
         parsed = _parse_version("9.9.9rc_2")
 
         assert parsed.version == (9, 9, 9)
-        assert parsed.commits == 0
+        assert parsed.commits == 2
 
     def test_version_is_uptodate(self):
         for local, remote, is_uptodate in [
