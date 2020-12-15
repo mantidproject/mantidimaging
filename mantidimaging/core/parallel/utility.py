@@ -25,22 +25,6 @@ SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_i
 
 NP_DTYPE = Type[np.single]
 
-INSTANCE_PREFIX = str(uuid.uuid4())
-
-
-def free_all_owned_by_this_instance():
-    for arr in [array for array in sa.list() if array.name.decode("utf-8").startswith(INSTANCE_PREFIX)]:
-        sa.delete(arr.name.decode("utf-8"))
-
-
-def has_other_shared_arrays() -> bool:
-    return len(sa.list()) > 0
-
-
-def free_all():
-    for arr in [array for array in sa.list()]:
-        sa.delete(arr.name.decode("utf-8"))
-
 
 def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
