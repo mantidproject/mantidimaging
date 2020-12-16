@@ -11,7 +11,11 @@ def _read_from_terminal(command_args: List[str]) -> str:
     """
     Runs a terminal command and returns the result.
     """
-    return subprocess.check_output(command_args, shell=True).decode("ascii")
+    try:
+        return subprocess.check_output(command_args, shell=True).decode("ascii")
+    except subprocess.CalledProcessError:
+        LOG.error(f"{command_args[0]} doesn't appear to be installed on your system.")
+        return ""
 
 
 def cuda_is_present() -> bool:
@@ -19,6 +23,7 @@ def cuda_is_present() -> bool:
     Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
     try:
+
         nvidia_smi_output = _read_from_terminal(["nvidia-smi"])
         if "Driver Version" not in nvidia_smi_output:
             LOG.error(nvidia_smi_output)
@@ -28,14 +33,9 @@ def cuda_is_present() -> bool:
             LOG.error("Search for libcuda files returned no results.")
 
         return "Driver Version" in nvidia_smi_output and locate_libcuda_output != ""
-    except subprocess.CalledProcessError as e:
+
+    except (PermissionError, FileNotFoundError) as e:
         LOG.info(e)
-        return False
-    except PermissionError:
-        LOG.info("permission error")
-        return False
-    except FileNotFoundError:
-        LOG.info("file not found error")
         return False
 
 
