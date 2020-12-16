@@ -34,8 +34,7 @@ def cuda_is_present() -> bool:
         nvidia_smi_working = False
 
     try:
-        locate_libcuda_output = _read_from_terminal(["locate", "--regex", "'^/usr/(lib|lib64)/(.*?)/libcuda.so'"])
-        if locate_libcuda_output == "":
+        if _read_from_terminal(["locate", "--regex", "'^/usr/(lib|lib64)/(.*?)/libcuda.so'"]) == "":
             libcuda_files_found = False
             LOG.error("Search for libcuda files returned no results.")
 
