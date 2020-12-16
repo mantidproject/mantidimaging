@@ -21,6 +21,10 @@ def return_to_self1(func, i, **kwargs):
     shared_list[0][i] = func(shared_list[0][i], **kwargs)
 
 
+def inplace_second_2d(func, i, **kwargs):
+    func(shared_list[0][i], shared_list[1], **kwargs)
+
+
 def create_partial(func, fwd_function, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
