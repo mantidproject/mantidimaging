@@ -16,7 +16,7 @@ def cuda_is_present() -> bool:
     Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
     """
     try:
-        nvidia_smi_output = _read_from_terminal(["nvidia-smi"])
+        nvidia_smi_output = _read_from_terminal(["/usr/bin/nvidia-smi"])
         if "failed" in nvidia_smi_output:
             pass
 
