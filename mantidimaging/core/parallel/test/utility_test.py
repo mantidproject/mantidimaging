@@ -1,20 +1,32 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from typing import List, Tuple, Union
 from unittest import mock
+
+import pytest
 
 from mantidimaging.core.parallel.utility import execute_impl, multiprocessing_necessary
 
 
-def test_correctly_chooses_parallel():
-    # forcing 1 core should always return False
-    assert multiprocessing_necessary((100, 10, 10), cores=1) is False
-    # shapes less than 10 should return false
-    assert multiprocessing_necessary((10, 10, 10), cores=12) is False
-    assert multiprocessing_necessary(10, cores=12) is False
-    # shapes over 10 should return True
-    assert multiprocessing_necessary((11, 10, 10), cores=12) is True
-    assert multiprocessing_necessary(11, cores=12) is True
+@pytest.mark.parametrize(
+    'shape,cores,should_be_parallel',
+    (
+        [(100, 10, 10), 1, False],  # forcing 1 core should always return False
+        # shapes <= 10 should return False
+        [(10, 10, 10), 12, False],
+        [10, 12, False],
+        # shapes over 10 should return True
+        [(11, 10, 10), 12, True],
+        [11, 12, True],
+        # repeat from above but with list, to cover that branch of the if
+        [[100, 10, 10], 1, False],
+        [[10, 10, 10], 12, False],
+        [[11, 10, 10], 12, True],
+    ))
+def test_correctly_chooses_parallel(shape: Union[int, List, Tuple[int, int, int]], cores: int,
+                                    should_be_parallel: bool):
+    assert multiprocessing_necessary(shape, cores) is should_be_parallel
 
 
 @mock.patch('mantidimaging.core.parallel.utility.Pool')

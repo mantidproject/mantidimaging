@@ -10,7 +10,7 @@ from logging import getLogger
 # see https://github.com/mantidproject/mantidimaging/pull/762#issuecomment-741663482
 from multiprocessing import heap  # type: ignore
 from multiprocessing.pool import Pool
-from typing import Any, Tuple, Type, Union
+from typing import Any, List, Tuple, Type, Union
 
 import numpy as np
 
@@ -97,7 +97,7 @@ def calculate_chunksize(cores):
     return 1
 
 
-def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) -> bool:
+def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int], List], cores) -> bool:
     # This environment variable will be present when running PYDEVD from PyCharm
     # and that has the bug that multiprocessing Pools can never finish `.join()` ing
     # thus never actually finish their processing.
