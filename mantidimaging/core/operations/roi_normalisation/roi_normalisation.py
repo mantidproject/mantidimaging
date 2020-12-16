@@ -93,14 +93,6 @@ class RoiNormalisationFilter(BaseFilter):
             raise ValueError(f"The provided ROI string is invalid! Error: {e}")
 
     @staticmethod
-    def do_before_wrapper() -> partial:
-        return partial(value_scaling.create_factors)
-
-    @staticmethod
-    def do_after_wrapper() -> partial:
-        return partial(value_scaling.apply_factor)
-
-    @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
 
