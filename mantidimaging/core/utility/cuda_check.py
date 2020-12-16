@@ -20,7 +20,8 @@ def cuda_is_present() -> bool:
         if "failed" in nvidia_smi_output:
             pass
 
-        locate_libcuda_output = _read_from_terminal(["/usr/bin/locate", "--regex", "'^/usr/(lib|lib64)/.*libcuda.so'"])
+        locate_libcuda_output = _read_from_terminal(
+            ["/usr/bin/locate", "--regex", "'^/usr/(lib|lib64)/(.*?)/libcuda.so'"])
 
         return "Driver Version" in nvidia_smi_output and locate_libcuda_output != ""
     except subprocess.CalledProcessError:
