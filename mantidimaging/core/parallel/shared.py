@@ -36,6 +36,11 @@ def return_to_second(func, i, **kwargs):
     shared_list[1] = func(shared_list[0][i], **kwargs)
 
 
+def return_to_second_at_i(func, i, **kwargs):
+    global shared_list
+    shared_list[1][i] = func(shared_list[0][i], **kwargs)
+
+
 def create_partial(func, fwd_function, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
