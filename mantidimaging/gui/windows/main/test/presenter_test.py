@@ -133,11 +133,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
-        ds = Dataset(sample=generate_images(automatic_free=False),
-                     flat_before=generate_images(automatic_free=False),
-                     flat_after=generate_images(automatic_free=False),
-                     dark_before=generate_images(automatic_free=False),
-                     dark_after=generate_images(automatic_free=False))
+        ds = Dataset(sample=generate_images(),
+                     flat_before=generate_images(),
+                     flat_after=generate_images(),
+                     dark_before=generate_images(),
+                     dark_after=generate_images())
         ds.flat_before.filenames = ["filename"] * 10
         ds.dark_before.filenames = ["filename"] * 10
         ds.flat_after.filenames = ["filename"] * 10
@@ -147,12 +147,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertEqual(5, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
-
-        ds.sample.free_memory()
-        ds.flat_before.free_memory()
-        ds.dark_before.free_memory()
-        ds.flat_after.free_memory()
-        ds.dark_after.free_memory()
 
 
 if __name__ == '__main__':

@@ -27,19 +27,17 @@ def create_factors(data: np.ndarray, roi=None, cores=None, chunksize=None, progr
     with progress:
         img_num = data.shape[0]
         # make sure to clean up if for some reason the scale factor array still exists
-        with pu.temp_shared_array((img_num, 1, 1)) as scale_factors:
-            # turn into a 1D array, from the 3D that is returned
-            scale_factors = scale_factors.reshape(img_num)
+        scale_factors = pu.create_array((img_num, ))
 
-            # calculate the scale factor from original image
-            calc_sums_partial = ptsm.create_partial(_calc_avg,
-                                                    fwd_function=ptsm.return_to_second,
-                                                    roi_left=roi[0] if roi else 0,
-                                                    roi_top=roi[1] if roi else 0,
-                                                    roi_right=roi[2] if roi else data[0].shape[1] - 1,
-                                                    roi_bottom=roi[3] if roi else data[0].shape[0] - 1)
+        # calculate the scale factor from original image
+        calc_sums_partial = ptsm.create_partial(_calc_avg,
+                                                fwd_function=ptsm.return_to_second,
+                                                roi_left=roi[0] if roi else 0,
+                                                roi_top=roi[1] if roi else 0,
+                                                roi_right=roi[2] if roi else data[0].shape[1] - 1,
+                                                roi_bottom=roi[3] if roi else data[0].shape[0] - 1)
 
-            data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize)
+        data, scale_factors = ptsm.execute(data, scale_factors, calc_sums_partial, cores, chunksize)
 
         return scale_factors
 

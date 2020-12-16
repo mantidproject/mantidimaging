@@ -53,16 +53,8 @@ class ImagesTest(unittest.TestCase):
         imgs.metadata[const.OPERATION_HISTORY][0].pop(const.TIMESTAMP)
         self.assertEqual(imgs.metadata, expected)
 
-    def test_free_memory(self):
-        images = generate_images(automatic_free=False)
-        self.assertIsNotNone(images.memory_filename)
-        self.assertIsNotNone(images.data)
-        images.free_memory()
-        self.assertIsNone(images.memory_filename)
-        self.assertIsNone(images.data)
-
     def test_copy(self):
-        images = generate_images(automatic_free=False)
+        images = generate_images()
         images.record_operation("Test", "Display", 123)
         self.assertFalse(images.is_sinograms)
         copy = images.copy()
@@ -73,11 +65,10 @@ class ImagesTest(unittest.TestCase):
         copy.data[:] = 150
 
         self.assertEqual(images.metadata, copy.metadata)
-        self.assertNotEqual(images.memory_filename, copy.memory_filename)
         self.assertNotEqual(images, copy)
 
     def test_copy_flip_axes(self):
-        images = generate_images(automatic_free=False)
+        images = generate_images()
         images.record_operation("Test", "Display", 123)
         self.assertFalse(images.is_sinograms)
         copy = images.copy(flip_axes=True)
@@ -88,11 +79,10 @@ class ImagesTest(unittest.TestCase):
         copy.data[:] = 150
 
         self.assertEqual(images.metadata, copy.metadata)
-        self.assertNotEqual(images.memory_filename, copy.memory_filename)
         self.assertNotEqual(images.sinograms, copy)
 
     def test_copy_roi(self):
-        images = generate_images(automatic_free=False)
+        images = generate_images()
         images.record_operation("Test", "Display", 123)
         self.assertFalse(images.is_sinograms)
         cropped_copy = images.copy_roi(SensibleROI(0, 0, 5, 5))
@@ -107,7 +97,6 @@ class ImagesTest(unittest.TestCase):
         cropped_copy.metadata[const.OPERATION_HISTORY].pop(-1)
         # the two metadatas show now be equal again
         self.assertEqual(images.metadata, cropped_copy.metadata)
-        self.assertNotEqual(images.memory_filename, cropped_copy.memory_filename)
         self.assertNotEqual(images, cropped_copy)
 
     def test_filenames_set(self):

@@ -113,7 +113,6 @@ class MainWindowModel(object):
             stack.image_view.setImage(images.data)
 
             # Free previous images stack before reassignment
-            stack.presenter.images.free_memory()
             stack.presenter.images = images
 
     def get_stack_by_name(self, search_name: str) -> Optional[QDockWidget]:
