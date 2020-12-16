@@ -20,7 +20,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()
-        self.view = ReconstructWindowView(self.main_window)
+        self.view = ReconstructWindowView(self.main_window, False)
         self.view.presenter = self.presenter = mock.Mock()
         self.view.image_view = self.image_view = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
@@ -220,7 +220,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                   cor=ScalarCoR(self.resultCor.value.return_value),
                                                   tilt=Degrees(self.resultTilt.value.return_value),
                                                   pixel_size=self.pixelSize.value.return_value,
-                                                  max_projection_angle=self.maxProjAngle.value.return_value)
+                                                  max_projection_angle=self.maxProjAngle.value.return_value,
+                                                  use_cuda=False)
 
     def test_set_table_point(self):
         idx = 12
