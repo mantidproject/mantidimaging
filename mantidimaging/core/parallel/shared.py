@@ -21,7 +21,7 @@ def inplace2(func, i, **kwargs):
     func(shared_list[0][i], shared_list[1][i], **kwargs)
 
 
-def return_to_self1(func, i, **kwargs):
+def return_to_self(func, i, **kwargs):
     global shared_list
     shared_list[0][i] = func(shared_list[0][i], **kwargs)
 
