@@ -10,6 +10,7 @@ import numpy.testing as npt
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data.images import Images
 from mantidimaging.core.operations.roi_normalisation import RoiNormalisationFilter
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class ROINormalisationTest(unittest.TestCase):
@@ -42,9 +43,9 @@ class ROINormalisationTest(unittest.TestCase):
         self.do_execute(th.generate_images())
 
     def do_execute(self, images: Images):
-
         original = np.copy(images.data[0])
-        air = [3, 3, 4, 4]
+
+        air = SensibleROI.from_list([3, 3, 4, 4])
         result = RoiNormalisationFilter.filter_func(images, air)
 
         th.assert_not_equals(result.data[0], original)
