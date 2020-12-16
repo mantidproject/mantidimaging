@@ -20,26 +20,30 @@ def _read_from_terminal(command_args: List[str]) -> str:
 
 def cuda_is_present() -> bool:
     """
-    Checks if nvidia-smi is on the system + working, and that the libcuda file can be located.
+    Checks if nvidia-smi is on the system + working, and that the libcuda files can be located.
     """
     nvidia_smi_working = libcuda_files_found = True
     try:
-
         nvidia_smi_output = _read_from_terminal(["nvidia-smi"])
         if "Driver Version" not in nvidia_smi_output:
             nvidia_smi_working = False
             LOG.error(nvidia_smi_output)
 
+    except (PermissionError, FileNotFoundError) as e:
+        LOG.info(f"Error when attempting to run nvidia-smi: {e}")
+        nvidia_smi_working = False
+
+    try:
         locate_libcuda_output = _read_from_terminal(["locate", "--regex", "'^/usr/(lib|lib64)/(.*?)/libcuda.so'"])
         if locate_libcuda_output == "":
             libcuda_files_found = False
             LOG.error("Search for libcuda files returned no results.")
 
-        return nvidia_smi_working and libcuda_files_found
-
     except (PermissionError, FileNotFoundError) as e:
-        LOG.info(e)
-        return False
+        LOG.info(f"Error when attempting to run locate: {e}")
+        libcuda_files_found = False
+
+    return nvidia_smi_working and libcuda_files_found
 
 
 def not_found_message() -> Tuple[str, str]:
