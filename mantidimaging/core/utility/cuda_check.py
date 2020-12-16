@@ -28,8 +28,8 @@ def cuda_is_present() -> bool:
             LOG.error("Search for libcuda files returned no results.")
 
         return "Driver Version" in nvidia_smi_output and locate_libcuda_output != ""
-    except subprocess.CalledProcessError:
-        LOG.info("called process error")
+    except subprocess.CalledProcessError as e:
+        LOG.info(e)
         return False
     except PermissionError:
         LOG.info("permission error")
