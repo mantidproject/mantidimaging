@@ -7,8 +7,9 @@ from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.operations.median_filter import MedianFilter
+from mantidimaging.core.data.images import Images
 from mantidimaging.core.gpu import utility as gpu
+from mantidimaging.core.operations.median_filter import MedianFilter
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 GPU_UTIL_LOC = "mantidimaging.core.gpu.utility.gpu_available"
@@ -57,17 +58,18 @@ class MedianTest(unittest.TestCase):
 
         th.assert_not_equals(result.data, original)
 
-    def test_executed_no_helper_seq(self):
-        images = th.generate_images()
+    def test_executed_seq(self):
+        self.do_execute(th.generate_images())
 
+    def test_executed_par(self):
+        self.do_execute(th.generate_images_for_parallel())
+
+    def do_execute(self, images: Images):
         size = 3
         mode = 'reflect'
 
         original = np.copy(images.data[0])
-        th.switch_mp_off()
         result = MedianFilter.filter_func(images, size, mode)
-        th.switch_mp_on()
-
         th.assert_not_equals(result.data, original)
 
     def test_memory_change_acceptable(self):

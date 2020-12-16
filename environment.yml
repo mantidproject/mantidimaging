@@ -27,6 +27,7 @@ dependencies:
       - mock
       - pylint
       - sphinx
+      - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
       - pytest-randomly
       - pytest-parallel
       - psutil

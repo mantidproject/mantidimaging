@@ -245,7 +245,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if res == CORInspectionDialogView.Accepted:
             new_iters = dialog.optimal_iterations
             LOG.debug('New optimal iterations: {}'.format(new_iters))
-            self.view.set_iterations(new_iters)
+            self.view.num_iter = new_iters
 
     def do_cor_fit(self):
         self.model.do_fit()

@@ -9,7 +9,7 @@ import importlib
 import traceback
 import warnings
 
-from six import StringIO
+from io import StringIO
 from logging import getLogger
 
 

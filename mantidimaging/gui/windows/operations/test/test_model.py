@@ -4,7 +4,7 @@
 import unittest
 from functools import partial
 
-import mock
+from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -167,7 +167,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         module_name = self.model.get_filter_module_name(0)
 
-        self.assertEqual("mock.mock", module_name)
+        self.assertEqual("unittest.mock", module_name)
 
     def test_find_filter_index_from_filter_name(self):
         filter1 = mock.MagicMock()

@@ -48,22 +48,16 @@ class RebinTest(unittest.TestCase):
         self.do_execute_uniform(5.0)
 
     def test_executed_uniform_seq_2(self):
-        th.switch_mp_off()
         self.do_execute_uniform(2.0)
-        th.switch_mp_on()
 
     def test_executed_uniform_seq_5(self):
-        th.switch_mp_off()
         self.do_execute_uniform(5.0)
-        th.switch_mp_on()
 
     def test_executed_uniform_seq_5_int(self):
-        th.switch_mp_off()
         self.do_execute_uniform(5.0, np.int32)
-        th.switch_mp_on()
 
     def do_execute_uniform(self, val=2.0, dtype=np.float32):
-        images = th.generate_images(dtype=dtype, automatic_free=False)
+        images = th.generate_images(dtype=dtype)
         mode = 'reflect'
 
         expected_x = int(images.data.shape[1] * val)
@@ -76,34 +70,30 @@ class RebinTest(unittest.TestCase):
 
         self.assertEqual(images.data.dtype, dtype)
         self.assertEqual(result.data.dtype, dtype)
-        images.free_memory()
 
     def test_executed_xy_par_128_256(self):
-        self.do_execute_xy((128, 256))
+        self.do_execute_xy(True, (128, 256))
 
     def test_executed_xy_par_512_256(self):
-        self.do_execute_xy((512, 256))
+        self.do_execute_xy(True, (512, 256))
 
     def test_executed_xy_par_1024_1024(self):
-        self.do_execute_xy((1024, 1024))
+        self.do_execute_xy(True, (1024, 1024))
 
     def test_executed_xy_seq_128_256(self):
-        th.switch_mp_off()
-        self.do_execute_xy((128, 256))
-        th.switch_mp_on()
+        self.do_execute_xy(False, (128, 256))
 
     def test_executed_xy_seq_512_256(self):
-        th.switch_mp_off()
-        self.do_execute_xy((512, 256))
-        th.switch_mp_on()
+        self.do_execute_xy(False, (512, 256))
 
     def test_executed_xy_seq_1024_1024(self):
-        th.switch_mp_off()
-        self.do_execute_xy((1024, 1024))
-        th.switch_mp_on()
+        self.do_execute_xy(False, (1024, 1024))
 
-    def do_execute_xy(self, val=(512, 512)):
-        images = th.generate_images(automatic_free=False)
+    def do_execute_xy(self, is_parallel: bool, val=(512, 512)):
+        if is_parallel:
+            images = th.generate_images((15, 8, 10))
+        else:
+            images = th.generate_images()
         mode = 'reflect'
 
         expected_x = int(val[0])
@@ -114,32 +104,25 @@ class RebinTest(unittest.TestCase):
         npt.assert_equal(result.data.shape[1], expected_x)
         npt.assert_equal(result.data.shape[2], expected_y)
 
-        images.free_memory()
-
     def test_failure_to_allocate_output_doesnt_free_input_data(self):
         """
         Tests for a bug fixed in PR#600 that the input data would be freed
         if the output data could not be allocated
         :return:
         """
-        images = th.generate_images(shape=(500, 10, 10), automatic_free=False)
+        images = th.generate_images(shape=(500, 10, 10))
         mode = 'reflect'
-
-        input_mfile = images.memory_filename
 
         # something very huge that shouldn't fit on ANY computer
         rebin_param = (100000, 100000)
         self.assertRaises(RuntimeError, RebinFilter.filter_func, images, rebin_param=rebin_param, mode=mode)
-        self.assertEqual(input_mfile, images.memory_filename)
-
-        images.free_memory()
 
     def test_memory_change_acceptable(self):
         """
         This filter will increase the memory usage as it has to allocate memory
         for the new resized shape
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
 
         mode = 'reflect'
         # This about doubles the memory. Value found from running the test
@@ -156,8 +139,6 @@ class RebinTest(unittest.TestCase):
 
         npt.assert_equal(result.data.shape[1], expected_x)
         npt.assert_equal(result.data.shape[2], expected_y)
-
-        images.free_memory()
 
     def test_execute_wrapper_return_is_runnable(self):
         """
@@ -176,9 +157,8 @@ class RebinTest(unittest.TestCase):
                                                    factor=factor,
                                                    mode_field=mode_field)
 
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         execute_func(images)
-        images.free_memory()
 
         self.assertEqual(rebin_to_dimensions_radio.isChecked.call_count, 1)
         self.assertEqual(rebin_by_factor_radio.isChecked.call_count, 1)

@@ -1,23 +1,32 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import mock
-import numpy as np
-import SharedArray as sa
+from typing import List, Tuple, Union
+from unittest import mock
 
-from mantidimaging.core.parallel.utility import (create_array, create_shared_name, execute_impl,
-                                                 free_all_owned_by_this_instance, multiprocessing_necessary)
+import pytest
+
+from mantidimaging.core.parallel.utility import execute_impl, multiprocessing_necessary
 
 
-def test_correctly_chooses_parallel():
-    # forcing 1 core should always return False
-    assert multiprocessing_necessary((100, 10, 10), cores=1) is False
-    # shapes less than 10 should return false
-    assert multiprocessing_necessary((10, 10, 10), cores=12) is False
-    assert multiprocessing_necessary(10, cores=12) is False
-    # shapes over 10 should return True
-    assert multiprocessing_necessary((11, 10, 10), cores=12) is True
-    assert multiprocessing_necessary(11, cores=12) is True
+@pytest.mark.parametrize(
+    'shape,cores,should_be_parallel',
+    (
+        [(100, 10, 10), 1, False],  # forcing 1 core should always return False
+        # shapes <= 10 should return False
+        [(10, 10, 10), 12, False],
+        [10, 12, False],
+        # shapes over 10 should return True
+        [(11, 10, 10), 12, True],
+        [11, 12, True],
+        # repeat from above but with list, to cover that branch of the if
+        [[100, 10, 10], 1, False],
+        [[10, 10, 10], 12, False],
+        [[11, 10, 10], 12, True],
+    ))
+def test_correctly_chooses_parallel(shape: Union[int, List, Tuple[int, int, int]], cores: int,
+                                    should_be_parallel: bool):
+    assert multiprocessing_necessary(shape, cores) is should_be_parallel
 
 
 @mock.patch('mantidimaging.core.parallel.utility.Pool')
@@ -39,25 +48,6 @@ def test_execute_impl_par(mock_pool):
     execute_impl(15, mock_partial, 10, 1, mock_progress, "Test")
     mock_pool_instance.imap.assert_called_once()
     assert mock_progress.update.call_count == 15
-
-
-def test_free_all_owned_by_this_instance():
-    name1 = create_shared_name()
-    name2 = create_shared_name()
-    name3 = create_shared_name()
-    create_array((10, 10), np.float32, name=name1)
-    create_array((10, 10), np.float32, name=name2)
-    create_array((10, 10), np.float32, name=name3)
-
-    temp_name = "not_this_instance"
-    sa.create("not_this_instance", (10, 10))
-
-    free_all_owned_by_this_instance()
-    assert name1 not in [arr.name.decode("utf-8") for arr in sa.list()]
-    assert name2 not in [arr.name.decode("utf-8") for arr in sa.list()]
-    assert name3 not in [arr.name.decode("utf-8") for arr in sa.list()]
-    assert temp_name in [arr.name.decode("utf-8") for arr in sa.list()]
-    sa.delete(temp_name)
 
 
 if __name__ == "__main__":

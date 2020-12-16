@@ -46,7 +46,7 @@ jobs:
     - name: docs
       uses: ./.github/actions/test
       with:
-        command: python setup.py docs_api && python setup.py docs
+        command: python setup.py docs
         label: centos7
 
     - name: pytest

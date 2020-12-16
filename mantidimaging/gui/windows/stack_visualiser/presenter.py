@@ -66,7 +66,6 @@ class StackVisualiserPresenter(BasePresenter):
             getLogger(__name__).exception("Notification handler failed")
 
     def delete_data(self):
-        self.images.free_memory()
         self.images = None
 
     def get_image(self, index) -> Images:
