@@ -4,7 +4,6 @@
 import ctypes
 import multiprocessing
 import os
-from contextlib import contextmanager
 from functools import partial
 from logging import getLogger
 # COMPAT python 3.7 : Using heap instead of Array,
@@ -88,26 +87,8 @@ def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32):
     return data.reshape(shape)
 
 
-@contextmanager
-def temp_shared_array(shape, dtype: NP_DTYPE = np.float32) -> np.ndarray:
-    array = _create_shared_array(shape, dtype)
-    try:
-        yield array
-    finally:
-        pass
-
-
 def get_cores():
     return multiprocessing.cpu_count()
-
-
-def generate_indices(num_images):
-    """
-    Generate indices for each image.
-
-    :param num_images: The number of images.
-    """
-    return range(num_images)
 
 
 def calculate_chunksize(cores):
@@ -143,7 +124,7 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int]], cores) ->
 def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int, progress: Progress, msg: str):
     task_name = f"{msg} {cores}c {chunksize}chs"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
-    indices_list = generate_indices(img_num)
+    indices_list = range(img_num)
     if multiprocessing_necessary(img_num, cores):
         with Pool(cores) as pool:
             for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
