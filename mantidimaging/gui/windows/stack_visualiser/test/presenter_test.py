@@ -94,9 +94,10 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         assert self.presenter.get_num_images() == self.presenter.images.num_projections
 
     def test_find_image_from_angle_returns_matching_index(self):
-        angle = np.rad2deg(self.presenter.images.projection_angles().value[1])
-        index = self.presenter.find_image_from_angle(angle)
-        assert self.presenter.images.projection_angles().value[index] == angle
+        angle_rad = self.presenter.images.projection_angles().value[1]
+        angle_deg = np.rad2deg(angle_rad)
+        index = self.presenter.find_image_from_angle(angle_deg)
+        assert self.presenter.images.projection_angles().value[index] == angle_rad
 
     def test_find_image_from_angle_returns_next_index(self):
         angle = (self.presenter.images.projection_angles().value[1] +
