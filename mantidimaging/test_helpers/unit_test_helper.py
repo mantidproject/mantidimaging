@@ -40,6 +40,15 @@ def generate_images(shape=g_shape, dtype=np.float32) -> Images:
     return _set_random_data(d, shape)
 
 
+def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32) -> Images:
+    """
+    Doesn't do anything special, just makes a number of images big enough to be
+    ran in parallel from the logic of multiprocessing_necessary
+    """
+    d = pu.create_array(shape, dtype)
+    return _set_random_data(d, shape)
+
+
 def _set_random_data(data, shape):
     n = np.random.rand(*shape)
     # move the data in the shared array
@@ -88,31 +97,6 @@ def vsdebug():
     # Enable the below line of code only if you want the application to wait
     # untill the debugger has attached to it
     ptvsd.wait_for_attach()
-
-
-def switch_mp_off():
-    """
-    This function does very bad things that should never be replicated.
-    But it's a unit test so it's fine.
-    """
-    # backup function so we can restore it
-    global backup_mp_avail
-    backup_mp_avail = pu.multiprocessing_available
-
-    def simple_return_false():
-        return False
-
-    # do bad things, swap out the function to one that returns false
-    pu.multiprocessing_available = simple_return_false
-
-
-def switch_mp_on():
-    """
-    This function does very bad things that should never be replicated.
-    But it's a unit test so it's fine.
-    """
-    # restore the original backed up function from switch_mp_off
-    pu.multiprocessing_available = backup_mp_avail
 
 
 def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):

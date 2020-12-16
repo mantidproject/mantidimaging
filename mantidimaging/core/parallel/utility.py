@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import ctypes
+import multiprocessing
 import os
 from contextlib import contextmanager
 from functools import partial
@@ -96,22 +97,8 @@ def temp_shared_array(shape, dtype: NP_DTYPE = np.float32) -> np.ndarray:
         pass
 
 
-def multiprocessing_available():
-    try:
-        # ignore error about unused import
-        import multiprocessing  # noqa: F401
-        return multiprocessing
-    except ImportError:
-        return False
-
-
 def get_cores():
-    mp = multiprocessing_available()
-    # get max cores on the system as default
-    if not mp:
-        return 1
-    else:
-        return mp.cpu_count()
+    return multiprocessing.cpu_count()
 
 
 def generate_indices(num_images):

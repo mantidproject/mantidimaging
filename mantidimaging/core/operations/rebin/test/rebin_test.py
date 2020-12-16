@@ -48,19 +48,13 @@ class RebinTest(unittest.TestCase):
         self.do_execute_uniform(5.0)
 
     def test_executed_uniform_seq_2(self):
-        th.switch_mp_off()
         self.do_execute_uniform(2.0)
-        th.switch_mp_on()
 
     def test_executed_uniform_seq_5(self):
-        th.switch_mp_off()
         self.do_execute_uniform(5.0)
-        th.switch_mp_on()
 
     def test_executed_uniform_seq_5_int(self):
-        th.switch_mp_off()
         self.do_execute_uniform(5.0, np.int32)
-        th.switch_mp_on()
 
     def do_execute_uniform(self, val=2.0, dtype=np.float32):
         images = th.generate_images(dtype=dtype)
@@ -78,31 +72,28 @@ class RebinTest(unittest.TestCase):
         self.assertEqual(result.data.dtype, dtype)
 
     def test_executed_xy_par_128_256(self):
-        self.do_execute_xy((128, 256))
+        self.do_execute_xy(True, (128, 256))
 
     def test_executed_xy_par_512_256(self):
-        self.do_execute_xy((512, 256))
+        self.do_execute_xy(True, (512, 256))
 
     def test_executed_xy_par_1024_1024(self):
-        self.do_execute_xy((1024, 1024))
+        self.do_execute_xy(True, (1024, 1024))
 
     def test_executed_xy_seq_128_256(self):
-        th.switch_mp_off()
-        self.do_execute_xy((128, 256))
-        th.switch_mp_on()
+        self.do_execute_xy(False, (128, 256))
 
     def test_executed_xy_seq_512_256(self):
-        th.switch_mp_off()
-        self.do_execute_xy((512, 256))
-        th.switch_mp_on()
+        self.do_execute_xy(False, (512, 256))
 
     def test_executed_xy_seq_1024_1024(self):
-        th.switch_mp_off()
-        self.do_execute_xy((1024, 1024))
-        th.switch_mp_on()
+        self.do_execute_xy(False, (1024, 1024))
 
-    def do_execute_xy(self, val=(512, 512)):
-        images = th.generate_images()
+    def do_execute_xy(self, is_parallel: bool, val=(512, 512)):
+        if is_parallel:
+            images = th.generate_images((15, 8, 10))
+        else:
+            images = th.generate_images()
         mode = 'reflect'
 
         expected_x = int(val[0])

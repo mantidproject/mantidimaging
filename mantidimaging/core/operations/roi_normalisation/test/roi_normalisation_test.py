@@ -2,12 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
-
 from unittest import mock
+
 import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.data.images import Images
 from mantidimaging.core.operations.roi_normalisation import RoiNormalisationFilter
 
 
@@ -35,15 +36,12 @@ class ROINormalisationTest(unittest.TestCase):
         npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images, air)
 
     def test_executed_par(self):
-        self.do_execute()
+        self.do_execute(th.generate_images_for_parallel())
 
     def test_executed_seq(self):
-        th.switch_mp_off()
-        self.do_execute()
-        th.switch_mp_on()
+        self.do_execute(th.generate_images())
 
-    def do_execute(self):
-        images = th.generate_images()
+    def do_execute(self, images: Images):
 
         original = np.copy(images.data[0])
         air = [3, 3, 4, 4]
