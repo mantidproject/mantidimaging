@@ -12,7 +12,6 @@ from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.operations.rescale.rescale import RescaleFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
@@ -97,7 +96,7 @@ class RoiNormalisationFilter(BaseFilter):
         return FilterGroup.Basic
 
 
-def _calc_sum(data, _, air_left=None, air_top=None, air_right=None, air_bottom=None):
+def _calc_sum(data, air_left=None, air_top=None, air_right=None, air_bottom=None):
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
@@ -118,7 +117,7 @@ def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=No
         air_sums = pu.create_array((img_num, ), data.dtype)
 
         do_calculate_air_sums = ps.create_partial(_calc_sum,
-                                                  fwd_function=ps.return_to_second,
+                                                  ps.return_to_second_at_i,
                                                   air_left=air_region.left,
                                                   air_top=air_region.top,
                                                   air_right=air_region.right,
@@ -128,6 +127,7 @@ def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=No
         ps.execute(do_calculate_air_sums, data.shape[0], progress, cores=cores)
 
         do_divide = ps.create_partial(_divide_by_air_sum, fwd_function=ps.inplace2)
+        ps.shared_list = [data, air_sums]
         ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
         avg = np.average(air_sums)
