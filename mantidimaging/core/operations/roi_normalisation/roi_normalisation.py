@@ -10,7 +10,7 @@ from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.operations.rescale.rescale import RescaleFilter
-from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -113,7 +113,7 @@ def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute(data, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
+def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
 
     with progress:
@@ -125,18 +125,18 @@ def _execute(data, air_region: SensibleROI, cores=None, chunksize=None, progress
         img_num = data.shape[0]
         air_sums = pu.create_array((img_num, ), data.dtype)
 
-        calc_sums_partial = ptsm.create_partial(_calc_sum,
-                                                fwd_function=ptsm.return_to_second,
-                                                air_left=air_region.left,
-                                                air_top=air_region.top,
-                                                air_right=air_region.right,
-                                                air_bottom=air_region.bottom)
+        do_calculate_air_sums = ps.create_partial(_calc_sum,
+                                                  fwd_function=ps.return_to_second,
+                                                  air_left=air_region.left,
+                                                  air_top=air_region.top,
+                                                  air_right=air_region.right,
+                                                  air_bottom=air_region.bottom)
 
-        data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores, chunksize, progress=progress)
+        ps.shared_list = [data, air_sums]
+        ps.execute(do_calculate_air_sums, data.shape[0], progress, cores=cores)
 
-        air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
-
-        data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores, chunksize, progress=progress)
+        do_divide = ps.create_partial(_divide_by_air_sum, fwd_function=ps.inplace2)
+        ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
         avg = np.average(air_sums)
         max_avg = np.max(air_sums) / avg
