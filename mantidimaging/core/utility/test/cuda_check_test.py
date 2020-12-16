@@ -33,6 +33,11 @@ class TestCudaCheck(unittest.TestCase):
         check_output_mock.side_effect = FileNotFoundError
         assert not cuda_check.cuda_is_present()
 
+    @patch("mantidimaging.core.utility.cuda_check.LOG")
+    def test_read_from_terminal_exception_logs_error(self, log_mock):
+        cuda_check._read_from_terminal(["doesntexist"])
+        log_mock.error.assert_called_once_with("doesntexist doesn't appear to be installed on your system.")
+
     def test_not_found_message(self):
         short_msg, long_msg = cuda_check.not_found_message()
         assert short_msg == "Working CUDA installation not found."
