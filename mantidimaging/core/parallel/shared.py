@@ -16,13 +16,24 @@ def inplace3(func, i, **kwargs):
     func(shared_list[0][i], shared_list[1][i], shared_list[2], **kwargs)
 
 
+def inplace2(func, i, **kwargs):
+    global shared_list
+    func(shared_list[0][i], shared_list[1][i], **kwargs)
+
+
 def return_to_self1(func, i, **kwargs):
     global shared_list
     shared_list[0][i] = func(shared_list[0][i], **kwargs)
 
 
 def inplace_second_2d(func, i, **kwargs):
+    global shared_list
     func(shared_list[0][i], shared_list[1], **kwargs)
+
+
+def return_to_second(func, i, **kwargs):
+    global shared_list
+    shared_list[1] = func(shared_list[0][i], **kwargs)
 
 
 def create_partial(func, fwd_function, **kwargs):
@@ -40,7 +51,7 @@ def create_partial(func, fwd_function, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(partial_func: partial, num_operations: int, progress=None, msg: str = '', cores=None):
+def execute(partial_func: partial, num_operations: int, progress=None, msg: str = '', cores=None) -> None:
     """
     Executes a function in parallel with shared memory between the processes.
 
