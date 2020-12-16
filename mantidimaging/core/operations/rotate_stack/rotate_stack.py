@@ -69,23 +69,6 @@ def _rotate_image_inplace(data, angle=None):
     data[:, :] = rotate(data[:, :], angle)
 
 
-def _rotate_image(data, angle=None):
-    return rotate(data[:, :], angle)
-
-
-def _execute_seq(data, angle: float, progress: Progress):
-    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name='Rotate Stack')
-
-    with progress:
-        img_count = data.shape[0]
-        progress.add_estimated_steps(img_count)
-        for idx in range(0, img_count):
-            data[idx] = _rotate_image(data[idx], angle)
-            progress.update(1, f"Rotating by {angle}")
-
-    return data
-
-
 def _execute(data: np.ndarray, angle: float, cores: int, chunksize: int, progress: Progress):
     progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
