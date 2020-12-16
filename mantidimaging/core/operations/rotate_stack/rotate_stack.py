@@ -2,13 +2,14 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+import numpy as np
 
 from skimage.transform import rotate
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -85,17 +86,12 @@ def _execute_seq(data, angle: float, progress: Progress):
     return data
 
 
-def _execute(data, angle: float, cores: int, chunksize: int, progress: Progress):
+def _execute(data: np.ndarray, angle: float, cores: int, chunksize: int, progress: Progress):
     progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:
-        f = psm.create_partial(_rotate_image_inplace, fwd_func=psm.inplace, angle=angle)
-
-        data = psm.execute(data,
-                           f,
-                           cores=cores,
-                           chunksize=chunksize,
-                           progress=progress,
-                           msg=f"Rotating by {angle} degrees")
+        f = ps.create_partial(_rotate_image_inplace, ps.inplace1, angle=angle)
+        ps.shared_list = [data]
+        ps.execute(f, data.shape[0], progress, msg=f"Rotating by {angle} degrees", cores=cores)
 
     return data
