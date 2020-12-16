@@ -1,3 +1,6 @@
+# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import inspect
 import os
 from tempfile import mkdtemp
@@ -6,6 +9,7 @@ from uuid import uuid4
 from PyQt5.QtWidgets import QWidget, QApplication
 from applitools.common import BatchInfo, MatchLevel
 from applitools.images import Eyes
+
 from mantidimaging.gui.windows.main import MainWindowView
 
 
@@ -14,7 +18,6 @@ class EyesManager:
         self.application_name = application_name
         self.eyes = Eyes()
         self.eyes.match_level = MatchLevel.LAYOUT
-        self.viewport_size = {'width': 1920, 'height': 1080}
         self.image_directory = None
         self.imaging = None
 
@@ -31,9 +34,10 @@ class EyesManager:
         if image is None:
             image = self._take_screenshot(widget=widget)
         test_method_name = inspect.stack()[2][3]
-        self.eyes.open(self.application_name, os.path.basename(inspect.stack()[2][1]) + " - " + test_method_name)
+        if not self.eyes.is_open:
+            test_file_name = os.path.basename(inspect.stack()[2][1])
+            self.eyes.open(self.application_name, test_file_name)
         self.eyes.check_image(image, test_method_name)
-        self.eyes.close()
 
     def close_imaging(self):
         self.imaging.close()
@@ -63,3 +67,7 @@ class EyesManager:
         file_path = os.path.join(directory, str(uuid4()))
         if image.save(file_path, "PNG"):
             return file_path
+
+    def close_eyes(self):
+        if self.eyes.is_open:
+            self.eyes.close()

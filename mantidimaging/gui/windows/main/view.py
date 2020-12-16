@@ -77,7 +77,8 @@ class MainWindowView(BaseMainWindowView):
         self.setup_shortcuts()
         self.update_shortcuts()
 
-        if open_dialogs:
+        self.open_dialogs = open_dialogs
+        if self.open_dialogs:
             if versions.get_conda_installed_label() != "main":
                 self.setWindowTitle("Mantid Imaging Unstable")
                 self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
@@ -321,7 +322,7 @@ class MainWindowView(BaseMainWindowView):
         """
         should_close = True
 
-        if self.presenter.have_active_stacks:
+        if self.presenter.have_active_stacks and self.open_dialogs:
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
             msg_box = QtWidgets.QMessageBox.question(self,
@@ -356,6 +357,8 @@ class MainWindowView(BaseMainWindowView):
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
+
+            return stack_choice
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.presenter.set_images_in_stack(uuid, images)
