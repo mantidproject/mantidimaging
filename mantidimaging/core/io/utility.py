@@ -7,7 +7,8 @@ import os
 import re
 
 from logging import getLogger
-from typing import List
+from pathlib import Path
+from typing import List, Optional
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
@@ -91,6 +92,19 @@ def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
     log.debug(f'Found {len(files_match)} files with common prefix: {os.path.commonprefix(files_match)}')
 
     return files_match
+
+
+def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str, image_format: str) -> Optional[List[str]]:
+    prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
+
+    for prefix in prefix_list:
+        try:
+            if suffix != "After":
+                return get_file_names(sample_dirname.absolute(), image_format, prefix=prefix)
+        except RuntimeError:
+            getLogger(__name__).info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
+
+    return None
 
 
 def get_folder_names(path):

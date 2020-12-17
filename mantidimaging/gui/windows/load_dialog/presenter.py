@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
-from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
+from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names, find_images_in_same_directory
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.windows.load_dialog.field import Field
 
@@ -104,21 +104,9 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
 
-    def _find_images_in_same_directory(self, sample_dirname: Path, type: str, suffix: str) -> Optional[List[str]]:
-        prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
-
-        for prefix in prefix_list:
-            try:
-                if suffix != "After":
-                    return get_file_names(sample_dirname.absolute(), self.image_format, prefix=prefix)
-            except RuntimeError:
-                logger.info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
-
-        return None
-
     def _find_images(self, sample_dirname: Path, type: str, suffix: str, look_without_suffix=False) -> List[str]:
         # same folder
-        file_names = self._find_images_in_same_directory(sample_dirname, type, suffix)
+        file_names = find_images_in_same_directory(sample_dirname, type, suffix, self.image_format)
         if file_names is not None:
             return file_names
 
