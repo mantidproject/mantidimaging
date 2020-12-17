@@ -52,6 +52,17 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.sinogram.hoverEvent = lambda ev: self.mouse_over(ev, self.sinogram)
         self.recon.hoverEvent = lambda ev: self.mouse_over(ev, self.recon)
 
+        # Work around for https://github.com/mantidproject/mantidimaging/issues/565
+        for scene in [
+                self.projection.scene(),
+                self.projection_hist.scene(),
+                self.sinogram.scene(),
+                self.sinogram_hist.scene(),
+                self.recon.scene(),
+                self.recon_hist.scene(),
+        ]:
+            scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
+
     def slice_line_moved(self):
         self.slice_changed(int(self.slice_line.value()))
 
