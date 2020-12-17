@@ -39,11 +39,7 @@ class TestCudaCheck(unittest.TestCase):
         assert nvidia_exception_msg in log_mock.error.call_args_list[2][0][0]
         assert locate_exception_msg in log_mock.error.call_args_list[3][0][0]
 
-    @patch("mantidimaging.core.utility.cuda_check.LOG")
-    def test_read_from_terminal_exception_logs_error(self, log_mock):
-        cuda_check._read_from_terminal(["doesntexist"])
-        log_mock.error.assert_called_once_with("doesntexist doesn't appear to be installed on your system.")
-
+    def test_not_found_message(self):
         short_msg, long_msg = cuda_check.not_found_message()
         assert short_msg == "Working CUDA installation not found."
         assert long_msg == "Working CUDA installation not found. Will only use gridrec algorithm for reconstruction."
