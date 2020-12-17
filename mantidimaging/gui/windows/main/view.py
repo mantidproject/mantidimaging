@@ -154,7 +154,7 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        stack = self.presenter.load_image_stack(selected_file)
+        self.presenter.load_image_stack(selected_file)
 
     def load_sample_log_dialog(self):
         stack_selector = StackSelectorDialog(main_window=self,
