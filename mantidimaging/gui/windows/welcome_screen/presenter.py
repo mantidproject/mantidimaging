@@ -84,4 +84,5 @@ class WelcomeScreenPresenter(BasePresenter):
             msg, detailed = cuda_check.not_found_message()
             issues.append(msg)
             LOG.info(detailed)
-        self.view.add_issues("\n".join(issues))
+        if issues:
+            self.view.add_issues("\n".join(issues))
