@@ -10,9 +10,8 @@ from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.operations.rescale.rescale import RescaleFilter
-from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility import value_scaling
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
@@ -93,19 +92,11 @@ class RoiNormalisationFilter(BaseFilter):
             raise ValueError(f"The provided ROI string is invalid! Error: {e}")
 
     @staticmethod
-    def do_before_wrapper() -> partial:
-        return partial(value_scaling.create_factors)
-
-    @staticmethod
-    def do_after_wrapper() -> partial:
-        return partial(value_scaling.apply_factor)
-
-    @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
 
 
-def _calc_sum(data, _, air_left=None, air_top=None, air_right=None, air_bottom=None):
+def _calc_sum(data, air_left=None, air_top=None, air_right=None, air_bottom=None):
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
@@ -113,7 +104,7 @@ def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute(data, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
+def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
 
     with progress:
@@ -123,25 +114,24 @@ def _execute(data, air_region: SensibleROI, cores=None, chunksize=None, progress
 
         # initialise same number of air sums
         img_num = data.shape[0]
-        with pu.temp_shared_array((img_num, 1, 1), data.dtype) as air_sums:
-            # turn into a 1D array, from the 3D that is returned
-            air_sums = air_sums.reshape(img_num)
+        air_sums = pu.create_array((img_num, ), data.dtype)
 
-            calc_sums_partial = ptsm.create_partial(_calc_sum,
-                                                    fwd_function=ptsm.return_to_second,
-                                                    air_left=air_region.left,
-                                                    air_top=air_region.top,
-                                                    air_right=air_region.right,
-                                                    air_bottom=air_region.bottom)
+        do_calculate_air_sums = ps.create_partial(_calc_sum,
+                                                  ps.return_to_second_at_i,
+                                                  air_left=air_region.left,
+                                                  air_top=air_region.top,
+                                                  air_right=air_region.right,
+                                                  air_bottom=air_region.bottom)
 
-            data, air_sums = ptsm.execute(data, air_sums, calc_sums_partial, cores, chunksize, progress=progress)
+        ps.shared_list = [data, air_sums]
+        ps.execute(do_calculate_air_sums, data.shape[0], progress, cores=cores)
 
-            air_sums_partial = ptsm.create_partial(_divide_by_air_sum, fwd_function=ptsm.inplace)
+        do_divide = ps.create_partial(_divide_by_air_sum, fwd_function=ps.inplace2)
+        ps.shared_list = [data, air_sums]
+        ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
-            data, air_sums = ptsm.execute(data, air_sums, air_sums_partial, cores, chunksize, progress=progress)
+        avg = np.average(air_sums)
+        max_avg = np.max(air_sums) / avg
+        min_avg = np.min(air_sums) / avg
 
-            avg = np.average(air_sums)
-            max_avg = np.max(air_sums) / avg
-            min_avg = np.min(air_sums) / avg
-
-            log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
+        log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")

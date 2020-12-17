@@ -1,7 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import mock
+from unittest import mock
 import numpy as np
 
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals

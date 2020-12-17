@@ -2,9 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from unittest import mock
 
-import SharedArray as sa
-import mock
 import numpy.testing as npt
 import numpy as np
 
@@ -27,22 +26,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
         self.presenter.model = mock.Mock()
 
-    def tearDown(self) -> None:
-        try:
-            self.test_data.free_memory()
-        except FileNotFoundError:
-            # the test has deleted the data manually
-            pass
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        for a in sa.list():
-            sa.delete(a.name.decode("utf-8"))
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        assert len(sa.list()) == 0, f"Not all shared arrays have been freed. Leftover: {sa.list()}"
-
     def test_get_image(self):
         index = 3
 
@@ -52,7 +35,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         npt.assert_equal(test_data.data[index], img.data[0])
 
     def test_delete_data(self):
-        self.presenter.images = th.generate_images(automatic_free=False)
+        self.presenter.images = th.generate_images()
         self.presenter.delete_data()
         self.assertIsNone(self.presenter.images, None)
 

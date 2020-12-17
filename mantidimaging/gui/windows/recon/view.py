@@ -297,6 +297,10 @@ class ReconstructWindowView(BaseMainWindowView):
     def num_iter(self):
         return self.numIter.value()
 
+    @num_iter.setter
+    def num_iter(self, iters: int):
+        self.numIter.setValue(iters)
+
     @property
     def pixel_size(self):
         return self.pixelSize.value()
@@ -368,8 +372,5 @@ class ReconstructWindowView(BaseMainWindowView):
         except RuntimeError as err:
             self.show_error_dialog(str(err))
 
-    def set_iterations(self, iters: int):
-        self.numIter.setValue(iters)
-
     def change_refine_iterations(self):
-        self.refineIterationsBtn.setEnabled(self.algorithmName.currentText() == "SIRT_CUDA")
+        self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")

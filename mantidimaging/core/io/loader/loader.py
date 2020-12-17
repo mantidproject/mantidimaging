@@ -91,7 +91,6 @@ def read_in_file_information(input_path,
 
     # construct and return the new shape
     shape = (len(input_file_names), ) + images.data[0].shape
-    images.free_memory()
 
     fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=images.is_sinograms)
     return fi

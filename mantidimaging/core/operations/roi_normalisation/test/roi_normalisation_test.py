@@ -2,13 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from unittest import mock
 
-import mock
 import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.core.data.images import Images
 from mantidimaging.core.operations.roi_normalisation import RoiNormalisationFilter
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class ROINormalisationTest(unittest.TestCase):
@@ -35,18 +37,15 @@ class ROINormalisationTest(unittest.TestCase):
         npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images, air)
 
     def test_executed_par(self):
-        self.do_execute()
+        self.do_execute(th.generate_images_for_parallel())
 
     def test_executed_seq(self):
-        th.switch_mp_off()
-        self.do_execute()
-        th.switch_mp_on()
+        self.do_execute(th.generate_images())
 
-    def do_execute(self):
-        images = th.generate_images()
-
+    def do_execute(self, images: Images):
         original = np.copy(images.data[0])
-        air = [3, 3, 4, 4]
+
+        air = SensibleROI.from_list([3, 3, 4, 4])
         result = RoiNormalisationFilter.filter_func(images, air)
 
         th.assert_not_equals(result.data[0], original)
@@ -76,12 +75,10 @@ class ROINormalisationTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images(automatic_free=False)
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "apples"
         self.assertRaises(ValueError, RoiNormalisationFilter.execute_wrapper, roi_mock)
         roi_mock.text.assert_called_once()
-        images.free_memory()
 
 
 if __name__ == '__main__':
