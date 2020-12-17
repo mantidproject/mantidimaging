@@ -3,6 +3,7 @@
 
 import unittest
 from unittest import mock
+from unittest.mock import patch
 
 import numpy.testing as npt
 import numpy as np
@@ -88,6 +89,14 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         angle = np.rad2deg(angle)
         index = self.presenter.find_image_from_angle(angle)
         assert index == 2
+
+    @patch("mantidimaging.gui.windows.stack_visualiser.presenter.getLogger")
+    def test_notify_exception_log(self, get_logger_mock):
+        self.presenter.refresh_image = mock.Mock()
+        self.presenter.refresh_image.side_effect = Exception
+
+        self.presenter.notify(SVNotification.REFRESH_IMAGE)
+        get_logger_mock.return_value.exception.assert_called_once_with("Notification handler failed")
 
 
 if __name__ == '__main__':
