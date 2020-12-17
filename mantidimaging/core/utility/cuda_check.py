@@ -11,11 +11,7 @@ def _read_from_terminal(command: str) -> str:
     """
     Runs a terminal command and returns the result.
     """
-    try:
-        return subprocess.check_output(command, shell=True).decode("ascii")
-    except subprocess.CalledProcessError:
-        LOG.error(f"{command.split()[0]} doesn't appear to be installed on your system.")
-        return ""
+    return subprocess.check_output(command + "; exit 0", shell=True, stderr=subprocess.STDOUT).decode("ascii")
 
 
 def cuda_is_present() -> bool:
