@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 import numpy.testing as npt
 import numpy as np
+from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -97,6 +98,13 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
         get_logger_mock.return_value.exception.assert_called_once_with("Notification handler failed")
+
+    def test_get_parameter_value_returns_roi(self):
+        assert self.presenter.get_parameter_value(SVParameters.ROI) == self.presenter.view.current_roi
+
+    def test_get_parameter_value_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            self.presenter.get_parameter_value(7)
 
 
 if __name__ == '__main__':
