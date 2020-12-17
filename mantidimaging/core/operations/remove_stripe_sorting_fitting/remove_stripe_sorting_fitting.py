@@ -2,12 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+from mantidimaging.core.data.images import Images
 
 from PyQt5.QtWidgets import QSpinBox
 from sarepy.prep.stripe_removal_improved import remove_stripe_based_sorting_fitting
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 
 
@@ -28,14 +29,15 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     filter_name = "Remove stripes with sorting and fitting"
 
     @staticmethod
-    def filter_func(images, order=1, sigmax=3, sigmay=3, cores=None, chunksize=None, progress=None):
-        f = psm.create_partial(remove_stripe_based_sorting_fitting,
-                               psm.return_fwd_func,
-                               order=order,
-                               sigmax=sigmax,
-                               sigmay=sigmay)
+    def filter_func(images: Images, order=1, sigmax=3, sigmay=3, cores=None, chunksize=None, progress=None):
+        f = ps.create_partial(remove_stripe_based_sorting_fitting,
+                              ps.return_to_self,
+                              order=order,
+                              sigmax=sigmax,
+                              sigmay=sigmay)
 
-        psm.execute(images.data, f, cores, chunksize, progress)
+        ps.shared_list = [images.data]
+        ps.execute(f, images.num_projections, progress, cores=cores)
         return images
 
     @staticmethod

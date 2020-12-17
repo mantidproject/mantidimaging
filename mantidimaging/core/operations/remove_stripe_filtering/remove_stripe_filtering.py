@@ -2,13 +2,14 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+from mantidimaging.core.data.images import Images
 
 from PyQt5.QtWidgets import QSpinBox
 from sarepy.prep.stripe_removal_improved import remove_stripe_based_filtering_sorting, \
     remove_stripe_based_2d_filtering_sorting
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 
 
@@ -30,20 +31,28 @@ class RemoveStripeFilteringFilter(BaseFilter):
     filter_name = "Remove stripes with filtering"
 
     @staticmethod
-    def filter_func(images, sigma=3, size=21, window_dim=1, filtering_dim=1, cores=None, chunksize=None, progress=None):
+    def filter_func(images: Images,
+                    sigma=3,
+                    size=21,
+                    window_dim=1,
+                    filtering_dim=1,
+                    cores=None,
+                    chunksize=None,
+                    progress=None):
         if filtering_dim == 1:
-            f = psm.create_partial(remove_stripe_based_filtering_sorting,
-                                   psm.return_fwd_func,
-                                   sigma=sigma,
-                                   size=size,
-                                   dim=window_dim)
+            f = ps.create_partial(remove_stripe_based_filtering_sorting,
+                                  ps.return_to_self,
+                                  sigma=sigma,
+                                  size=size,
+                                  dim=window_dim)
         else:
-            f = psm.create_partial(remove_stripe_based_2d_filtering_sorting,
-                                   psm.return_fwd_func,
-                                   sigma=sigma,
-                                   size=size,
-                                   dim=window_dim)
-        psm.execute(images.data, f, cores, chunksize, progress)
+            f = ps.create_partial(remove_stripe_based_2d_filtering_sorting,
+                                  ps.return_to_self,
+                                  sigma=sigma,
+                                  size=size,
+                                  dim=window_dim)
+        ps.shared_list = [images.data]
+        ps.execute(f, images.num_projections, progress, cores=cores)
         return images
 
     @staticmethod
