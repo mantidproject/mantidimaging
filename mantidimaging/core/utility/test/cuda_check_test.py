@@ -24,6 +24,13 @@ class TestCudaCheck(unittest.TestCase):
 
     @patch("mantidimaging.core.utility.cuda_check.LOG")
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
+    def test_failed_libcuda_search_is_logged(self, check_output_mock, log_mock):
+        check_output_mock.side_effect = [b"Driver Version", b""]
+        assert not cuda_check.cuda_is_present()
+        log_mock.error.assert_called_once_with("Search for libcuda files returned no results.")
+
+    @patch("mantidimaging.core.utility.cuda_check.LOG")
+    @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
     def test_cuda_is_present_returns_false_when_subprocess_raises_exception(self, check_output_mock, log_mock):
         check_output_mock.side_effect = PermissionError
         assert not cuda_check.cuda_is_present()
