@@ -94,7 +94,8 @@ def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
     return files_match
 
 
-def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str, image_format: str) -> Optional[List[str]]:
+def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str,
+                                  image_format: str) -> Optional[List[str]]:
     prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
 
     for prefix in prefix_list:

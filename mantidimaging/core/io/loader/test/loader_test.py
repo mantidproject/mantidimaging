@@ -23,5 +23,6 @@ class LoaderTest(unittest.TestCase):
         load_stack(file_path, progress)
 
         load_mock.assert_called_once_with(file_names=file_names, progress=progress)
-        get_file_names_mock.assert_called_once_with(path="/path/to/file/that/is", img_format="tif",
+        get_file_names_mock.assert_called_once_with(path="/path/to/file/that/is",
+                                                    img_format="tif",
                                                     prefix="/path/to/file/that/is/fake.ti")
