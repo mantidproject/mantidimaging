@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
-import mock
+from unittest import mock
 import numpy as np
 import numpy.testing as npt
 

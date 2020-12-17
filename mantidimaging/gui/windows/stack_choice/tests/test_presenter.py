@@ -96,7 +96,6 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.p.do_clean_up_original_data()
 
         self.p._clean_up_original_images_stack.assert_called_once()
-        self.p.stack.free_memory.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
 

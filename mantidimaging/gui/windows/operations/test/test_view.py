@@ -17,8 +17,7 @@ class OperationsWindowsViewTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
-                self.main_window = MainWindowView()
+            self.main_window = MainWindowView()
         self.window = FiltersWindowView(self.main_window)
 
     def test_collapse(self):

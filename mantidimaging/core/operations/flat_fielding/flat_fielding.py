@@ -280,22 +280,20 @@ def _execute(data, flat=None, dark=None, cores=None, chunksize=None, progress=No
     with progress:
         progress.update(msg="Applying background correction")
 
-        with pu.temp_shared_array((1, data.shape[1], data.shape[2]), data.dtype) as norm_divide:
-            # remove a dimension, I found this to be the easiest way to do it
-            norm_divide = norm_divide.reshape(data.shape[1], data.shape[2])
+        norm_divide = pu.create_array((data.shape[1], data.shape[2]), data.dtype)
 
-            # subtract dark from flat and copy into shared array with [:]
-            norm_divide[:] = np.subtract(flat, dark)
+        # subtract dark from flat and copy into shared array with [:]
+        norm_divide[:] = np.subtract(flat, dark)
 
-            # prevent divide-by-zero issues, and negative pixels make no sense
-            norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
+        # prevent divide-by-zero issues, and negative pixels make no sense
+        norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
 
-            # subtract the dark from all images
-            f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
-            data, dark = ptsm.execute(data, dark, f, cores, chunksize, progress=progress)
+        # subtract the dark from all images
+        f = ptsm.create_partial(_subtract, fwd_function=ptsm.inplace_second_2d)
+        data, dark = ptsm.execute(data, dark, f, cores, chunksize, progress=progress)
 
-            # divide the data by (flat - dark)
-            f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
-            data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, progress=progress)
+        # divide the data by (flat - dark)
+        f = ptsm.create_partial(_divide, fwd_function=ptsm.inplace_second_2d)
+        data, norm_divide = ptsm.execute(data, norm_divide, f, cores, chunksize, progress=progress)
 
     return data

@@ -3,7 +3,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -21,23 +21,13 @@ class CropCoordsTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(CropCoordsTest, self).__init__(*args, **kwargs)
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        import SharedArray as sa
-        for arr in sa.list():
-            sa.delete(arr.name.decode("utf-8"))
-
-    def tearDown(self):
-        import SharedArray as sa
-        assert len(sa.list()) == 0
-
     def test_executed_only_volume(self):
         # Check that the filter is  executed when:
         #   - valid Region of Interest is provided
         #   - no flat or dark images are provided
 
         roi = SensibleROI.from_list([1, 1, 5, 5])
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         # store a reference here so it doesn't get freed inside the filter execute
         sample = images.data
         result = CropCoordinatesFilter.filter_func(images, roi)
@@ -46,7 +36,6 @@ class CropCoordsTest(unittest.TestCase):
         npt.assert_equal(result.data.shape, expected_shape)
         # check that the data has been modified
         th.assert_not_equals(result.data, sample)
-        images.free_memory()
 
     def test_memory_change_acceptable(self):
         """
@@ -61,7 +50,7 @@ class CropCoordsTest(unittest.TestCase):
 
         This will still capture if the data is doubled, which is the main goal.
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         roi = SensibleROI.from_list([1, 1, 5, 5])
 
         cached_memory = get_memory_usage_linux(mb=True)[0]
@@ -73,29 +62,25 @@ class CropCoordsTest(unittest.TestCase):
         expected_shape = (10, 4, 4)
 
         npt.assert_equal(result.data.shape, expected_shape)
-        result.free_memory()
 
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images(automatic_free=False)
+        images = th.generate_images()
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "0, 0, 5, 5"
         CropCoordinatesFilter.execute_wrapper(roi_mock)(images)
         roi_mock.text.assert_called_once()
-        images.free_memory()
 
     def test_execute_wrapper_bad_roi_raises_valueerror(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        images = th.generate_images(automatic_free=False)
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "apples"
         self.assertRaises(ValueError, CropCoordinatesFilter.execute_wrapper, roi_mock)
         roi_mock.text.assert_called_once()
-        images.free_memory()
 
 
 if __name__ == '__main__':

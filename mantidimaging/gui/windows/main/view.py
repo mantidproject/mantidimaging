@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
-from mantidimaging.core.parallel.utility import free_all, has_other_shared_arrays
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
@@ -10,7 +9,7 @@ from uuid import UUID
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QDialog, QInputDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
+from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
 
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
@@ -60,8 +59,6 @@ class MainWindowView(BaseMainWindowView):
     load_dialogue: Optional[MWLoadDialog] = None
     save_dialogue: Optional[MWSaveDialog] = None
 
-    actionDebug_Me: QAction
-
     def __init__(self, open_dialogs=True):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 
@@ -85,24 +82,6 @@ class MainWindowView(BaseMainWindowView):
 
             if WelcomeScreenPresenter.show_today():
                 self.show_about()
-
-            if has_other_shared_arrays():
-                self.ask_user_to_free_data()
-
-    def ask_user_to_free_data(self):
-        msg_box = QMessageBox(self)
-        msg_box.setWindowTitle("Previously loaded data found")
-        msg_box.setText("This can happen if Mantid Imaging crashes, or there are multiple instances running.\n\n"
-                        "If Mantid Imaging crashed it is recommended to just 'Release all previous data'.\n\n"
-                        "If you have another instance running it is recommended you 'Ignore' "
-                        "otherwise the other instance will be corrupted.")
-        delete_all = msg_box.addButton("Release all previous data", QMessageBox.ActionRole)
-        _ = msg_box.addButton(QMessageBox.Ignore)
-        msg_box.exec()
-
-        if msg_box.clickedButton() == delete_all:
-            free_all()
-
     def setup_shortcuts(self):
         self.actionLoad.triggered.connect(self.show_load_dialogue)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
@@ -122,8 +101,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
         self.active_stacks_changed.connect(self.update_shortcuts)
-
-        self.actionDebug_Me.triggered.connect(self.attach_debugger)
 
     def populate_image_menu(self):
         self.menuImage.clear()
@@ -342,12 +319,6 @@ class MainWindowView(BaseMainWindowView):
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)
-
-    def attach_debugger(self):
-        port, accepted = QInputDialog.getInt(self, "Debug port", "Get PyCharm debug listen port", value=25252)
-        if accepted:
-            import pydevd_pycharm
-            pydevd_pycharm.settrace('ndlt1104.isis.cclrc.ac.uk', port=port, stdoutToServer=True, stderrToServer=True)
 
     def show_stack_select_dialog(self):
         dialog = MultipleStackSelect(self)

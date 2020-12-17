@@ -53,17 +53,3 @@ def check_data_stack(data, expected_dims=3, expected_class=Images):
 
     if expected_dims != data.data.ndim:
         raise ValueError("Invalid data format. It does not have 3 dimensions. " "Shape: {0}".format(data.data.shape))
-
-
-def run_import_checks(config):
-    """
-    Run the import checks to notify the user which features are available in
-    the execution.
-    """
-    from mantidimaging.core.parallel import utility as pu
-
-    log = logging.getLogger(__name__)
-    if not pu.multiprocessing_available():
-        log.info("Multiprocessing not available.")
-    else:
-        log.info("Running process on {0} cores.".format(config.func.cores))

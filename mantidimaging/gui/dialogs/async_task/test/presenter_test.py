@@ -4,7 +4,7 @@
 import time
 import unittest
 
-import mock
+from unittest import mock
 
 from mantidimaging.gui.dialogs.async_task import (AsyncTaskDialogPresenter, AsyncTaskDialogView)
 from mantidimaging.gui.dialogs.async_task.presenter import Notification
