@@ -60,7 +60,7 @@ class OutliersFilter(BaseFilter):
         :return: The processed 3D numpy.ndarray
         """
         if diff and radius and diff > 0 and radius > 0:
-            func = ps.create_partial(OutliersFilter._execute, ps.return_to_self1, diff=diff, radius=radius, mode=mode)
+            func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
             ps.shared_list = [images.data]
             ps.execute(func,
                        images.num_projections,

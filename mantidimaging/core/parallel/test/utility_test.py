@@ -1,12 +1,13 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import numpy as np
 from typing import List, Tuple, Union
 from unittest import mock
 
 import pytest
 
-from mantidimaging.core.parallel.utility import execute_impl, multiprocessing_necessary
+from mantidimaging.core.parallel.utility import _create_shared_array, execute_impl, multiprocessing_necessary
 
 
 @pytest.mark.parametrize(
@@ -48,6 +49,25 @@ def test_execute_impl_par(mock_pool):
     execute_impl(15, mock_partial, 10, 1, mock_progress, "Test")
     mock_pool_instance.imap.assert_called_once()
     assert mock_progress.update.call_count == 15
+
+
+@pytest.mark.parametrize('dtype,expected_dtype', [
+    [np.uint8, np.uint8],
+    ['uint8', np.uint8],
+    [np.uint16, np.uint16],
+    ['uint16', np.uint16],
+    [np.int32, np.int32],
+    ['int32', np.int32],
+    [np.int64, np.int64],
+    ['int64', np.int64],
+    [np.float32, np.float32],
+    ['float32', np.float32],
+    [np.float64, np.float64],
+    ['float64', np.float64],
+])
+def test_create_shared_array(dtype, expected_dtype):
+    arr = _create_shared_array((10, 10, 10), dtype)
+    assert arr.dtype == expected_dtype
 
 
 if __name__ == "__main__":
