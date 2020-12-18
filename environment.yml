@@ -7,7 +7,7 @@ channels:
   - defaults
 dependencies:
   - mantidimaging
-  - python=3.7.*
+  - python=3.8.*
   - pip=20.3.3
   - sarepy=2020.07
   - astra-toolbox=1.9.9.dev4

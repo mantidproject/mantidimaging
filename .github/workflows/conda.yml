@@ -19,7 +19,7 @@ jobs:
         with:
           activate-environment: mantidimaging
           environment-file: environment.yml
-          python-version: 3.7
+          python-version: 3.8
           auto-activate-base: false
 
       - name: Other dependencies
