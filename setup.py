@@ -7,6 +7,7 @@ import fnmatch
 import os
 import subprocess
 from distutils.core import Command
+import sys
 
 from setuptools import find_packages, setup
 from sphinx.setup_command import BuildDoc
@@ -81,6 +82,31 @@ class GenerateSphinxApidoc(Command):
         subprocess.call(self.sphinx_options)
 
 
+class GenerateSphinxVersioned(Command):
+    description = "Generate API documentation with versions in directories"
+    user_options = []
+
+    def initialize_options(self):
+        self.sphinx_multiversion_executable = None
+        self.sphinx_multiversion_options = None
+
+    def finalize_options(self):
+        self.sphinx_multiversion_executable = "sphinx-multiversion"
+        self.sphinx_multiversion_options = ["docs", "docs/build/html"]
+
+    def run(self):
+        print("Running setup.py internal_docs_api")
+        command_docs_api = [sys.executable, "setup.py", "internal_docs_api"]
+        subprocess.check_call(command_docs_api)
+        print("Running setup.py internal_docs")
+        command_docs = [sys.executable, "setup.py", "internal_docs"]
+        subprocess.check_call(command_docs)
+        print("Running sphinx-multiversion")
+        command_sphinx_multiversion = [self.sphinx_multiversion_executable]
+        command_sphinx_multiversion.extend(self.sphinx_multiversion_options)
+        subprocess.check_call(command_sphinx_multiversion)
+
+
 class CompilePyQtUiFiles(Command):
     description = "Compiles any PyQt .ui files found in the source tree"
     user_options = []
@@ -135,8 +161,9 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     cmdclass={
-        "docs_api": GenerateSphinxApidoc,
-        "docs": BuildDoc,
+        "internal_docs_api": GenerateSphinxApidoc,
+        "internal_docs": BuildDoc,
+        "docs": GenerateSphinxVersioned,
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
     },

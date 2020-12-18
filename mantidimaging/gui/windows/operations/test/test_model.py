@@ -4,7 +4,7 @@
 import unittest
 from functools import partial
 
-import mock
+from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -46,20 +46,17 @@ class FiltersWindowModelTest(unittest.TestCase):
 
     def setup_mocks(self, execute_mock):
         f = self.model.selected_filter
-        orig_exec, orig_validate, orig_before, orig_after = \
-            f.execute_wrapper, f.validate_execute_kwargs, f.do_before_wrapper, f.do_after_wrapper
+        orig_exec, orig_validate = f.execute_wrapper, f.validate_execute_kwargs
         self.model.setup_filter("", {})
         f.execute_wrapper = lambda: execute_mock
         f.validate_execute_kwargs = lambda _: True
 
-        return orig_exec, orig_validate, orig_before, orig_after
+        return orig_exec, orig_validate
 
-    def reset_filter_model(self, exec, validate, before, after):
+    def reset_filter_model(self, exec, validate):
         f = self.model.selected_filter
         f.execute_wrapper = exec
         f.validate_execute_kwargs = validate
-        f.do_before_wrapper = before
-        f.do_after_wrapper = after
 
     @staticmethod
     def run_without_gui(task, on_complete):
@@ -167,7 +164,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         module_name = self.model.get_filter_module_name(0)
 
-        self.assertEqual("mock.mock", module_name)
+        self.assertEqual("unittest.mock", module_name)
 
     def test_find_filter_index_from_filter_name(self):
         filter1 = mock.MagicMock()

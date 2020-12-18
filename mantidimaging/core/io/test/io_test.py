@@ -21,16 +21,6 @@ class IOTest(FileOutputtingTestCase):
         # force silent outputs
         initialise_logging()
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        import SharedArray as sa
-        for arr in sa.list():
-            sa.delete(arr.name.decode("utf-8"))
-
-    def tearDown(self):
-        import SharedArray as sa
-        assert len(sa.list()) == 0
-
     def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
 
         if not stack:
@@ -135,15 +125,6 @@ class IOTest(FileOutputtingTestCase):
             expected_images.data = expected_images.data[loader_indices[0]:loader_indices[1]]
 
         npt.assert_equal(loaded_images.data, expected_images.data)
-        loaded_images.free_memory()
-        if dataset.dark_before:
-            dataset.dark_before.free_memory()
-        if dataset.dark_after:
-            dataset.dark_after.free_memory()
-        if dataset.flat_before:
-            dataset.flat_before.free_memory()
-        if dataset.flat_after:
-            dataset.flat_after.free_memory()
 
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
@@ -221,16 +202,6 @@ class IOTest(FileOutputtingTestCase):
         npt.assert_equal(dataset.flat_after.data, flat_after.data)
         npt.assert_equal(dataset.dark_after.data, dark_after.data)
 
-        loaded_images.free_memory()
-        if dataset.dark_before:
-            dataset.dark_before.free_memory()
-        if dataset.flat_before:
-            dataset.flat_before.free_memory()
-        if dataset.dark_after:
-            dataset.dark_after.free_memory()
-        if dataset.flat_after:
-            dataset.flat_after.free_memory()
-
     def test_metadata_round_trip(self):
         # Create dummy image stack
         sample = th.gen_img_shared_array_with_val(42.)
@@ -246,16 +217,6 @@ class IOTest(FileOutputtingTestCase):
 
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)
-
-        loaded_images.free_memory()
-        if dataset.dark_before:
-            dataset.dark_before.free_memory()
-        if dataset.dark_after:
-            dataset.dark_after.free_memory()
-        if dataset.flat_before:
-            dataset.flat_before.free_memory()
-        if dataset.flat_after:
-            dataset.flat_after.free_memory()
 
 
 if __name__ == '__main__':

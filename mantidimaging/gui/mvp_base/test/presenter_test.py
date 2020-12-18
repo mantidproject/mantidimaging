@@ -3,7 +3,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 from testfixtures import LogCapture
 
 from mantidimaging.gui.mvp_base import BaseDialogView, BaseMainWindowView, BasePresenter

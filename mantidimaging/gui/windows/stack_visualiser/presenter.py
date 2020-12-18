@@ -66,7 +66,6 @@ class StackVisualiserPresenter(BasePresenter):
             getLogger(__name__).exception("Notification handler failed")
 
     def delete_data(self):
-        self.images.free_memory()
         self.images = None
 
     def get_image(self, index) -> Images:
@@ -124,9 +123,6 @@ class StackVisualiserPresenter(BasePresenter):
     def find_image_from_angle(self, selected_angle: float) -> int:
         selected_angle = np.deg2rad(selected_angle)
         for index, angle in enumerate(self.images.projection_angles().value):
-            if angle == selected_angle:
-                return index
-
-            if angle > selected_angle:
+            if angle >= selected_angle:
                 return index
         return len(self.images.projection_angles().value)

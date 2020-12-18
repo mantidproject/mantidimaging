@@ -4,9 +4,10 @@
 from typing import Tuple
 import unittest
 
-import mock
+from unittest import mock
+from unittest.mock import Mock
+
 from PyQt5.QtWidgets import QDockWidget
-from mock import Mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -28,23 +29,18 @@ class StackVisualiserViewTest(unittest.TestCase):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
     def tearDown(self) -> None:
-        try:
-            self.test_data.free_memory()
-        except FileNotFoundError:
-            pass
         self.view = None
         self.window = None  # type: ignore[assignment]
         self.dock = None
 
     def setUp(self):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
-                self.window = MainWindowView()
+            self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
 
     def _add_stack_visualiser(self) -> Tuple[QDockWidget, StackVisualiserView, Images]:
-        test_data = th.generate_images(automatic_free=False)
+        test_data = th.generate_images()
         self.window.create_new_stack(test_data, "Test Data")
         view = self.window.get_stack_with_images(test_data)
         return view.dock, view, test_data

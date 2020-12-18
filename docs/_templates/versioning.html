@@ -1,0 +1,21 @@
+{% if versions %}
+<div class="versions">
+<h3>{{ _('Versions') }}</h3>
+<ul>
+  <li><a href="../{{ pathto("",1)}}index.html">Latest</a></li>
+  {%- for item in versions %}
+  <li><a href="{{ item.url }}">{{ item.name }}</a></li>
+  {%- endfor %}
+</ul>
+</div>
+{% else %}
+<div class="versions">
+<h3>{{ _('Versions') }}</h3>
+<ul>
+  <li><a href="{{ pathto("",1)}}index.html">Latest</a></li>
+  {%- for item in ['0.9.0', '1.0.0', '1.1.0'] %}
+  <li><a href="{{ pathto("",1)}}{{ item }}/index.html">{{ item }}</a></li>
+  {%- endfor %}
+</ul>
+</div>
+{% endif %}

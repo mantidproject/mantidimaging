@@ -2,15 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import Optional
-
-import numpy
 import skimage.transform
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -52,17 +49,14 @@ class RebinFilter(BaseFilter):
 
         if param_valid:
             sample = images.data
-            sample_name: Optional[str]
-            # allocate output first BEFORE freeing the original data,
-            # otherwise it's possible to free and then fail allocation for output
-            # at which point you're left with no data
             empty_resized_data = _create_reshaped_array(images, rebin_param)
 
-            f = ptsm.create_partial(skimage.transform.resize,
-                                    ptsm.return_to_second_but_dont_use_it,
-                                    mode=mode,
-                                    output_shape=empty_resized_data.shape[1:])
-            ptsm.execute(sample, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
+            f = ps.create_partial(skimage.transform.resize,
+                                  ps.return_to_second_at_i,
+                                  mode=mode,
+                                  output_shape=empty_resized_data.shape[1:])
+            ps.shared_list = [sample, empty_resized_data]
+            ps.execute(f, sample.shape[0], cores, "Applying Rebin", progress)
             images.data = empty_resized_data
 
         return images
@@ -150,15 +144,6 @@ def modes():
     return ["constant", "edge", "wrap", "reflect", "symmetric"]
 
 
-def _execute_par(data: numpy.ndarray, resized_data, mode, cores=None, chunksize=None, progress=None):
-    f = ptsm.create_partial(skimage.transform.resize,
-                            ptsm.return_to_second_but_dont_use_it,
-                            mode=mode,
-                            output_shape=resized_data.shape[1:])
-    ptsm.execute(data, resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
-    return resized_data
-
-
 def _create_reshaped_array(images, rebin_param):
     old_shape = images.data.shape
     num_images = old_shape[0]
@@ -174,4 +159,4 @@ def _create_reshaped_array(images, rebin_param):
 
     # allocate memory for images with new dimensions
     shape = (num_images, expected_dimy, expected_dimx)
-    return pu.allocate_output(images, shape)
+    return pu.create_array(shape, images.dtype)

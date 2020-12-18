@@ -2,12 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from unittest.mock import DEFAULT, Mock
 from uuid import uuid4
 
-import mock
+from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
-from mock import DEFAULT, Mock
 
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
@@ -23,8 +23,7 @@ versions._use_test_values()
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays", return_value=False):
-                self.view = MainWindowView()
+            self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
 
@@ -307,34 +306,3 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.get_stack_visualiser.assert_called_once_with(uuid)
         self.assertEqual(images, return_value)
-
-    @mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays")
-    @mock.patch("mantidimaging.gui.windows.main.view.free_all")
-    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
-    def test_ask_user_to_free_data(self, QMessageBox: Mock, free_all: Mock, has_other_shared_arrays: Mock):
-        has_other_shared_arrays.return_value = True
-        # makes the clickedButton the same return value mock as the addButton return
-        QMessageBox.return_value.clickedButton.return_value = QMessageBox.return_value.addButton.return_value
-
-        self.view.ask_user_to_free_data()
-
-        QMessageBox.return_value.setWindowTitle.assert_called_once()
-        QMessageBox.return_value.setText.assert_called_once()
-        self.assertEquals(QMessageBox.return_value.addButton.call_count, 2)
-        QMessageBox.return_value.exec.assert_called_once()
-        free_all.assert_called_once()
-
-    @mock.patch("mantidimaging.gui.windows.main.view.has_other_shared_arrays")
-    @mock.patch("mantidimaging.gui.windows.main.view.free_all")
-    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
-    def test_ask_user_to_free_data_ignore_pressed(self, QMessageBox: Mock, free_all: Mock,
-                                                  has_other_shared_arrays: Mock):
-        has_other_shared_arrays.return_value = True
-
-        self.view.ask_user_to_free_data()
-
-        QMessageBox.return_value.setWindowTitle.assert_called_once()
-        QMessageBox.return_value.setText.assert_called_once()
-        self.assertEquals(QMessageBox.return_value.addButton.call_count, 2)
-        QMessageBox.return_value.exec.assert_called_once()
-        free_all.assert_not_called()

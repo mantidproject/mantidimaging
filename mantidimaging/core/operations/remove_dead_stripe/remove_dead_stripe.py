@@ -2,12 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+from mantidimaging.core.data.images import Images
 
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
+from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox
 from sarepy.prep.stripe_removal_original import remove_unresponsive_and_fluctuating_stripe
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 
 
@@ -28,9 +29,15 @@ class RemoveDeadStripesFilter(BaseFilter):
     filter_name = "Remove dead stripes"
 
     @staticmethod
-    def filter_func(images, snr=3, size=61, cores=None, chunksize=None, progress=None):
-        f = psm.create_partial(remove_unresponsive_and_fluctuating_stripe, psm.return_fwd_func, snr=snr, size=size)
-        psm.execute(images.data, f, cores, chunksize, progress)
+    def filter_func(images: Images, snr=3, size=61, cores=None, chunksize=None, progress=None):
+        f = ps.create_partial(
+            remove_unresponsive_and_fluctuating_stripe,
+            ps.return_to_self,
+            snr=snr,
+            size=size,
+        )
+        ps.shared_list = [images.data]
+        ps.execute(f, images.num_projections, progress, cores=cores)
         return images
 
     @staticmethod
