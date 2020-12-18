@@ -13,7 +13,12 @@ from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
-RUN_UUID = uuid4()
+# APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
+# execution
+APPLITOOLS_BATCH_ID = os.getenv("APPLITOOLS_BATCH_ID")
+if APPLITOOLS_BATCH_ID is None:
+    APPLITOOLS_BATCH_ID = uuid4()
+
 API_KEY_PRESENT = os.getenv("APPLITOOLS_API_KEY")
 if API_KEY_PRESENT is None:
     raise unittest.SkipTest("API Key is not defined in the environment, so Eyes tests are skipped.")
@@ -24,7 +29,7 @@ class BaseEyesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.eyes_manager = EyesManager("Mantid Imaging")
-        cls.eyes_manager.set_batch(RUN_UUID)
+        cls.eyes_manager.set_batch(APPLITOOLS_BATCH_ID)
 
     def setUp(self):
         self.imaging = None
