@@ -104,8 +104,8 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
             log_msgs.append("msg" + num_string)
 
         versions_mock.is_conda_uptodate.return_value = False
-        cuda_check_mock.not_found_message.return_value = (issues[1], log_msgs[1])
         versions_mock.conda_update_message.return_value = (issues[0], log_msgs[0])
+        cuda_check_mock.not_found_message.return_value = (issues[1], log_msgs[1])
         self.p.cuda_present = False
 
         with self.assertLogs(WelcomeScreenPresenter.__module__, level='INFO') as presenter_log:
