@@ -7,3 +7,5 @@ if __name__ == '__main__':
     from mantidimaging import main
 
     main.main()
+
+# TODO: Remove this as it is for a test commit for caching
