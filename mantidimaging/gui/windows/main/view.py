@@ -3,7 +3,6 @@
 
 import os
 from logging import getLogger
-from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
 
@@ -13,7 +12,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QDialog, QDockWidget, QFileDialog, QLabel, QMenu, QMessageBox
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.parallel.utility import free_all, has_other_shared_arrays
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from mantidimaging.core.utility.version_check import versions
