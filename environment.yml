@@ -1,16 +1,15 @@
 name: mantidimaging
 channels:
-  - mantid
   - dtasev
   - astra-toolbox/label/dev
   - conda-forge
   - defaults
 dependencies:
-  - mantidimaging
   - python=3.8.*
   - pip
   - sarepy=2020.07
   - astra-toolbox=1.9.9.dev4
+  - numpy=1.19.4
   - pip:
       - pytest==6.2.1
       - pytest-cov==2.10.1
