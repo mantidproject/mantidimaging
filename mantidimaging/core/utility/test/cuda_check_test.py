@@ -13,14 +13,15 @@ class TestCudaCheck(unittest.TestCase):
         check_output_mock.side_effect = [b"Driver Version", b"/usr/lib/path/to/libcuda.so\n"]
         assert cuda_check.cuda_is_present()
 
-    @patch("mantidimaging.core.utility.cuda_check.LOG")
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_cuda_is_present_returns_false(self, check_output_mock, log_mock):
+    def test_cuda_is_present_returns_false(self, check_output_mock):
         nvidia_error = "NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that " \
                        "the latest NVIDIA driver is installed and running.\n "
         check_output_mock.side_effect = [str.encode(nvidia_error), b"/path/to/libcuda.so\n"]
-        assert not cuda_check.cuda_is_present()
-        log_mock.error.assert_called_once_with(nvidia_error)
+
+        with self.assertLogs(cuda_check.__name__, level='ERROR') as cuda_check_log:
+            assert not cuda_check.cuda_is_present()
+        self.assertIn(nvidia_error, cuda_check_log.output[0])
 
     @patch("mantidimaging.core.utility.cuda_check.LOG")
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
