@@ -15,27 +15,27 @@ source:
 
 requirements:
   build:
-    - python==3.6.*
-    - pip==20.3.3
-    - setuptools==50.0.0
-    - sphinx==3.3.1
+    - python=3.6.*
+    - pip=20.3.3
+    - setuptools=50.0.0
+    - sphinx=3.3.1
   run:
-    - python==3.6.*
-    - pip==20.3.3
-    - astropy==4.2
-    - scipy==1.5.3
+    - python=3.6.*
+    - pip=20.3.3
+    - astropy=4.2
+    - scipy=1.5.3
     - scikit-image=0.17.2
     - sharedarray=3.2.1
-    - numpy==1.19.4
+    - numpy=1.19.4
     - tomopy=1.7.1=cuda*
     - cudatoolkit=10.2*
-    - astra-toolbox==1.8.3
-    - requests==2.25.1
-    - requests-futures==1.0.0
-    - python-socketio==5.0.3
-    - h5py==3.1.0
-    - sarepy==2020.07
-    - psutil==5.7.3
+    - astra-toolbox=1.9.9.dev4
+    - requests=2.25.1
+    - requests-futures=1.0.0
+    - python-socketio=5.0.3
+    - h5py=3.1.0
+    - sarepy=2020.07
+    - psutil=5.7.3
 
 build:
   number: 1
