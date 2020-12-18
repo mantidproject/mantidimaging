@@ -95,19 +95,26 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
     def test_check_issues(self, cuda_check_mock, versions_mock):
-        issues = ["issue" + str(i) for i in range(1, 3)]
-        log_msgs = ["msg" + str(i) for i in range(1, 3)]
+
+        issues = []
+        log_msgs = []
+
+        for i in range(1, 3):
+            num_string = str(i)
+            issues.append("issue" + num_string)
+            log_msgs.append("msg" + num_string)
+
         versions_mock.is_conda_uptodate.return_value = False
+        cuda_check_mock.not_found_message.return_value = (issues[1], log_msgs[1])
         versions_mock.conda_update_message.return_value = (issues[0], log_msgs[0])
         self.p.cuda_present = False
-        cuda_check_mock.not_found_message.return_value = (issues[1], log_msgs[1])
+
         with self.assertLogs(WelcomeScreenPresenter.__module__, level='INFO') as presenter_log:
             self.p.check_issues()
-            print(presenter_log)
+
         self.v.add_issues.assert_called_once_with("\n".join(issues))
         for i in range(2):
             self.assertIn(log_msgs[i], presenter_log.output[i])
-        self.assertLogs()
 
 
 if __name__ == '__main__':
