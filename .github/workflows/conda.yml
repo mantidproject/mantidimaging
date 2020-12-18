@@ -12,6 +12,7 @@ jobs:
           fetch-depth: 0
 
       - name: Cache check conda
+        if: github.ref == 'refs/heads/master'
         uses: actions/cache@v2
         env:
           CACHE_NUMBER: 1
@@ -22,6 +23,7 @@ jobs:
             hashFiles('environment.yml') }}
 
       - name: Cache check pip
+        if: github.ref == 'refs/heads/master'
         uses: actions/cache@v2
         env:
           CACHE_NUMBER: 0
