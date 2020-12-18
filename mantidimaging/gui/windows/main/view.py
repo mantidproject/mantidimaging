@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import os
 from logging import getLogger
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
@@ -9,15 +10,17 @@ from uuid import UUID
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
-
-from mantidimaging.gui.utility.qt_helpers import populate_menu
-from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
+from PyQt5.QtWidgets import QAction, QDialog, QDockWidget, QFileDialog, QLabel, QMenu, QMessageBox
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.parallel.utility import free_all, has_other_shared_arrays
+from mantidimaging.core.utility import finder
+from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.gui.utility.qt_helpers import populate_menu
+from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
@@ -74,9 +77,14 @@ class MainWindowView(BaseMainWindowView):
         self.setup_shortcuts()
         self.update_shortcuts()
 
+        base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+
         if versions.get_conda_installed_label() != "main":
             self.setWindowTitle("Mantid Imaging Unstable")
-            self.setWindowIcon(QIcon("./images/mantid_imaging_unstable_64px.png"))
+            bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_unstable_64px.png")
+        else:
+            bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
+        self.setWindowIcon(QIcon(bg_image))
 
         if WelcomeScreenPresenter.show_today():
             self.show_about()
