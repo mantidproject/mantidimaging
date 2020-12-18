@@ -23,29 +23,29 @@ class TestCudaCheck(unittest.TestCase):
             assert not cuda_check.cuda_is_present()
         self.assertIn(nvidia_error, cuda_check_log.output[0])
 
-    @patch("mantidimaging.core.utility.cuda_check.LOG")
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_failed_libcuda_search_is_logged(self, check_output_mock, log_mock):
+    def test_failed_libcuda_search_is_logged(self, check_output_mock):
         check_output_mock.side_effect = [b"Driver Version", b""]
-        assert not cuda_check.cuda_is_present()
-        log_mock.error.assert_called_once_with("Search for libcuda files returned no results.")
+        with self.assertLogs(cuda_check.__name__, level='ERROR') as cuda_check_log:
+            assert not cuda_check.cuda_is_present()
+        self.assertIn("Search for libcuda files returned no results.", cuda_check_log.output[0])
 
-    @patch("mantidimaging.core.utility.cuda_check.LOG")
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_cuda_is_present_returns_false_when_subprocess_raises_exception(self, check_output_mock, log_mock):
-        check_output_mock.side_effect = PermissionError
-        assert not cuda_check.cuda_is_present()
+    def test_cuda_is_present_returns_false_when_subprocess_raises_exception(self, check_output_mock):
+        with self.assertLogs(cuda_check.__name__, level='ERROR') as cuda_check_log:
+            check_output_mock.side_effect = PermissionError
+            assert not cuda_check.cuda_is_present()
 
-        check_output_mock.side_effect = FileNotFoundError
-        assert not cuda_check.cuda_is_present()
+            check_output_mock.side_effect = FileNotFoundError
+            assert not cuda_check.cuda_is_present()
 
         nvidia_exception_msg = f"{EXCEPTION_MSG} {NVIDIA_SMI}"
         locate_exception_msg = f"{EXCEPTION_MSG} {LOCATE}"
 
-        assert nvidia_exception_msg in log_mock.error.call_args_list[0][0][0]
-        assert locate_exception_msg in log_mock.error.call_args_list[1][0][0]
-        assert nvidia_exception_msg in log_mock.error.call_args_list[2][0][0]
-        assert locate_exception_msg in log_mock.error.call_args_list[3][0][0]
+        self.assertIn(nvidia_exception_msg, cuda_check_log.output[0])
+        self.assertIn(locate_exception_msg, cuda_check_log.output[1])
+        self.assertIn(nvidia_exception_msg, cuda_check_log.output[2])
+        self.assertIn(locate_exception_msg, cuda_check_log.output[3])
 
     def test_not_found_message(self):
         short_msg, long_msg = cuda_check.not_found_message()
