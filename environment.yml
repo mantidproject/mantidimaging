@@ -7,27 +7,27 @@ channels:
   - defaults
 dependencies:
   - mantidimaging
-  - pip
-  - sharedarray
-  - sarepy
-  - astra-toolbox
+  - pip==20.3.3
+  - sarepy==2020.07
+  - astra-toolbox==1.8.3
   - pip:
-      - pytest
-      - pytest-cov
-      - coveralls
+      - pytest==6.2.1
+      - pytest-cov==2.10.1
+      - coveralls==2.2.0
       - pyqt5==5.15
       - pyqtgraph==0.11
-      - yapf
-      - mypy
-      - flake8
-      - testfixtures
-      - coverage
-      - hazelnut
-      - gitpython
-      - mock
-      - pylint
-      - sphinx
-      - pytest-randomly
-      - pytest-parallel
-      - psutil
-      - isort
+      - yapf==0.30.0
+      - mypy==0.790
+      - flake8==3.8.4
+      - testfixtures==6.17.0
+      - coverage==5.3
+      - hazelnut==0.4.1
+      - gitpython==3.1.11
+      - mock==4.0.3
+      - pylint==2.6.0
+      - sphinx==3.3.1
+      - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
+      - pytest-randomly==3.5.0
+      - pytest-parallel==0.1.0
+      - psutil==5.7.3
+      - isort==5.6.4
