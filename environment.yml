@@ -22,9 +22,7 @@ dependencies:
       - flake8==3.8.4
       - testfixtures==6.17.0
       - coverage==5.3
-      - hazelnut==0.4.1
       - gitpython==3.1.11
-      - mock==4.0.3
       - pylint==2.6.0
       - sphinx==3.3.1
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
