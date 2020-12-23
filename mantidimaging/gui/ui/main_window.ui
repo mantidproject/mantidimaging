@@ -196,7 +196,7 @@
   </action>
   <action name="actionLoadImages">
    <property name="text">
-    <string>Load images stack</string>
+    <string>Load images</string>
    </property>
   </action>
  </widget>
