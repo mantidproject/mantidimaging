@@ -67,7 +67,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.sample.path_text.return_value = path_text
         self.v.sample.directory.return_value = dirname
         self.v.flat.directory.return_value = dirname + "t"
-        self.p._find_images = mock.MagicMock(return_value=1)
+        self.p.find_images = mock.MagicMock(return_value=1)
         self.p._find_180deg_proj = mock.MagicMock(return_value=2)
         self.p._find_log = mock.MagicMock(return_value=3)
         get_file_extension.return_value = image_format
@@ -87,7 +87,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.flat_after.set_images.assert_called_once_with(1)
         self.v.dark_after.set_images.assert_called_once_with(1)
         self.assertEqual(2, self.v.proj_180deg.path)
-        self.p._find_log.assert_any_call(Path(dirname), dirname)
+        _find_log.assert_any_call(Path(dirname), dirname)
         self.assertEqual(self.v.sample_log.path, 3)
         self.assertEqual(self.v.flat_before_log.path, 3)
         self.assertFalse(self.v.flat_before_log.use)
@@ -115,11 +115,11 @@ class LoadDialogPresenterTest(unittest.TestCase):
         suffix = "Apples"
         field = mock.MagicMock()
         self.v.select_file.return_value = file_name
-        self.p._find_images = mock.MagicMock(return_value=1)
+        self.p.find_images = mock.MagicMock(return_value=1)
 
         self.p.do_update_flat_or_dark(field, name, suffix)
 
-        self.p._find_images.assert_called_once_with(Path('/'), name, suffix)
+        find_images.assert_called_once_with(Path('/'), name, suffix)
         field.set_images.assert_called_once_with(1)
 
     def test_do_update_single_file(self):

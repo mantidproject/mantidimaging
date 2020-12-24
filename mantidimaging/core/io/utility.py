@@ -6,7 +6,7 @@ import itertools
 import os
 import re
 
-from logging import getLogger
+from logging import getLogger, Logger
 from pathlib import Path
 from typing import List, Optional
 
@@ -153,11 +153,46 @@ def _alphanum_key_split(path_str):
     return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
-if __name__ == '__main__':
-    import doctest
-
-    doctest.testmod()
-
-
 def get_prefix(path: str, separator="_"):
     return path[:path.rfind(separator)]
+
+
+def find_images(sample_dirname: Path, image_type: str, suffix: str, image_format: str, look_without_suffix=False,
+                logger: Logger = None) -> List[str]:
+    # same folder
+    file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
+    if file_names is not None:
+        return file_names
+
+    # look into different directories 1 level above
+    dirs = [f"{image_type} {suffix}", f"{image_type.lower()} {suffix}", f"{image_type}_{suffix}",
+            f"{image_type.lower()}_{suffix}"]
+    if look_without_suffix:
+        dirs.extend([f"{image_type.lower()}", image_type])
+
+    for d in dirs:
+        expected_folder_path = sample_dirname / ".." / d
+        try:
+            return get_file_names(expected_folder_path.absolute(), image_format)
+        except RuntimeError:
+            if logger is not None:
+                logger.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
+
+    return []
+
+
+def find_log(dirname: Path, log_name: str, logger: Logger = None) -> str:
+    """
+
+    :param dirname: The directory in which the sample images were found
+    :param log_name: The log name is typically the directory name of the sample
+    :param logger: The logger that find_log should report back via, should an error occur.
+    :return:
+    """
+    expected_path = dirname / '..'
+    try:
+        return get_file_names(expected_path.absolute(), "txt", prefix=log_name)[0]
+    except RuntimeError:
+        if logger is not None:
+            logger.info(f"Could not find a log file for {log_name} in {dirname}")
+    return ""

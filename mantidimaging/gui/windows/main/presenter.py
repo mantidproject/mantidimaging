@@ -1,7 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 import os
 import traceback
 from enum import Enum, auto
@@ -65,10 +65,9 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_dataset(self, **kwargs):
-        if kwargs:
-            raise NotImplementedError("Converting from kwargs to LoadParameters not implemented")
-        par = self.view.load_dialogue.get_parameters()
+    def load_dataset(self, par: LoadingParameters=None):
+        if par is None:
+            par = self.view.load_dialogue.get_parameters()
 
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
@@ -209,3 +208,11 @@ class MainWindowPresenter(BasePresenter):
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+
+    def load_stacks_from_folder(self, file_path: str) -> bool:
+        loading_params = self.model.create_loading_parameters_for_file_path(file_path)
+        if loading_params is None:
+            return False
+
+        self.load_dataset(loading_params)
+        return True
