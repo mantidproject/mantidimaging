@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
   - name: Feature/Improvement Request
     about: Request a new feature or improvement.
-    url: https://github.com/mantidproject/mantidimaging/tree/795_issue_and_pr_templates/.github/ISSUE_TEMPLATE/feature_request.md
+    url: https://github.com/mantidproject/mantidimaging/blob/master/.github/ISSUE_TEMPLATE/feature_request.md
   - name: Bug Report
     about: Create a report of an issue you've encountered.
-    url: https://github.com/mantidproject/mantidimaging/tree/795_issue_and_pr_templates/.github/ISSUE_TEMPLATE/bug_report.md 
+    url: https://github.com/mantidproject/mantidimaging/blob/master/.github/ISSUE_TEMPLATE/bug_report.md 
