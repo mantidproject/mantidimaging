@@ -16,4 +16,4 @@
 
 ### Documentation
 
-*How have you changed the documentation to reflect your changes.*
+*How have you changed the documentation to reflect your changes?
