@@ -15,7 +15,6 @@ from PyQt5.QtWidgets import QAction, QDialog, QDockWidget, QFileDialog, QLabel, 
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
