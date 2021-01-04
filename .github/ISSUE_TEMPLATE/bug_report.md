@@ -8,12 +8,12 @@
 
 ### Failure Information
 
-*[Bug Only] Please provide information about the failure.*
+*Please provide information about the failure.*
 
 ### Steps To Reproduce
 
-*[Bug Only] Please provide detailed steps for reproducing this issue.*
+*Please provide detailed steps for reproducing this issue.*
 
 ### Failure Logs
 
-*[Bug Only] Please include any relevant log snippets here.*
+*Please include any relevant log snippets here.*
