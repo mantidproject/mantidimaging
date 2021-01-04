@@ -8,7 +8,7 @@
 
 ### Failure Information
 
-*[Bug Only] Please provide information about the failure if this is a bug.*
+*[Bug Only] Please provide information about the failure.*
 
 ### Steps To Reproduce
 
