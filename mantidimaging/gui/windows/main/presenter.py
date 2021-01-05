@@ -1,7 +1,5 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
-from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 import os
 import traceback
 from enum import Enum, auto
@@ -11,8 +9,10 @@ from uuid import UUID
 
 from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
 
+from core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
@@ -21,6 +21,8 @@ from .model import MainWindowModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
+
+logger = getLogger(__name__)
 
 
 class Notification(Enum):
@@ -210,7 +212,7 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_projection_angles_to_sample(stack_name, proj_angles)
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
-        loading_params = self.model.create_loading_parameters_for_file_path(file_path)
+        loading_params = create_loading_parameters_for_file_path(file_path, logger)
         if loading_params is None:
             return False
 

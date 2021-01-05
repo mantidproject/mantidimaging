@@ -5,7 +5,6 @@ import glob
 import itertools
 import os
 import re
-
 from logging import getLogger, Logger
 from pathlib import Path
 from typing import List, Optional
@@ -77,7 +76,7 @@ def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
     extensions = get_candidate_file_extensions(img_format)
     files_match = []
     for ext in extensions:
-        files_match = glob.glob(os.path.join(path, "{0}*.{1}".format(prefix, ext)))
+        files_match = glob.glob(os.path.join(path, "{0}*{1}".format(prefix, ext)))
 
         if len(files_match) > 0:
             break
@@ -196,3 +195,23 @@ def find_log(dirname: Path, log_name: str, logger: Logger = None) -> str:
         if logger is not None:
             logger.info(f"Could not find a log file for {log_name} in {dirname}")
     return ""
+
+
+def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Logger = None):
+    expected_path = sample_dirname / '..' / '180deg'
+    try:
+        return get_file_names(expected_path.absolute(), image_format)[0]
+    except RuntimeError:
+        if logger is not None:
+            logger.info(f"Could not find 180 degree projection in {expected_path}")
+    return ""
+
+
+def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
+    # Grab all .tif or .tiff files
+    possible_files = glob.glob(os.path.join(file_path, "**/*.tif*"), recursive=True)
+
+    for possible_file in possible_files:
+        lower_filename = os.path.basename(possible_file).lower()
+        if "flat" not in lower_filename and "dark" not in lower_filename and "180" not in lower_filename:
+            return possible_file

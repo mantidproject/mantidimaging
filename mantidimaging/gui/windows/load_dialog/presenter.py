@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
-from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names, find_images, find_log
+from mantidimaging.core.io.utility import get_file_extension, get_prefix, find_images, find_log, find_180deg_proj
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.windows.load_dialog.field import Field
 
@@ -87,7 +87,7 @@ class LoadPresenter:
                         image_format=self.image_format, logger=logger))
         self.view.dark_after.set_images(find_images(sample_dirname, "Dark", suffix="After",
                                                     image_format=self.image_format, logger=logger))
-        self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
+        self.view.proj_180deg.path = find_180deg_proj(sample_dirname, self.image_format, logger)
 
         try:
             self.set_sample_log(self.view.sample_log, sample_dirname, self.view.sample.directory(),
@@ -107,14 +107,6 @@ class LoadPresenter:
 
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
-
-    def _find_180deg_proj(self, sample_dirname: Path):
-        expected_path = sample_dirname / '..' / '180deg'
-        try:
-            return get_file_names(expected_path.absolute(), self.image_format)[0]
-        except RuntimeError:
-            logger.info(f"Could not find 180 degree projection in {expected_path}")
-        return ""
 
     def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
         selected_file = self.view.select_file(name)
