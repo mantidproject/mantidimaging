@@ -49,7 +49,7 @@ class MainWindowView(BaseMainWindowView):
     actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
-    actionLoad: QAction
+    actionLoadDataset: QAction
     actionLoadImages: QAction
     actionSave: QAction
     actionExit: QAction
@@ -83,7 +83,7 @@ class MainWindowView(BaseMainWindowView):
             self.show_about()
 
     def setup_shortcuts(self):
-        self.actionLoad.triggered.connect(self.show_load_dialogue)
+        self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)

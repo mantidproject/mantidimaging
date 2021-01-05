@@ -34,7 +34,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoad"/>
+    <addaction name="actionLoadDataset"/>
     <addaction name="actionLoadImages"/>
     <addaction name="actionSampleLoadLog"/>
     <addaction name="actionLoadProjectionAngles"/>
@@ -75,7 +75,7 @@
    <addaction name="menuImage"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionLoad">
+  <action name="actionLoadDataset">
    <property name="text">
     <string>Load dataset</string>
    </property>
