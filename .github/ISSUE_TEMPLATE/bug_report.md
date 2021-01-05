@@ -16,8 +16,8 @@
 
 ### Failure Logs
 
-<!--- Optional] Please include any relevant log snippets here. -->
+<!--- [Optional] Please include any relevant log snippets here. -->
 
 ### Screenshot(s)
 
-<!--- Optional] Include screenshots that illustrate the problem. -->
+<!--- [Optional] Include screenshots that illustrate the problem. -->
