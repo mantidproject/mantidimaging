@@ -19,6 +19,7 @@ such as `Avizo
    developer_guide/index
    troubleshooting
    api
+   release_notes/index
 
 .. toctree::
    :caption: Links:
