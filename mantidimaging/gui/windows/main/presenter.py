@@ -43,7 +43,7 @@ class MainWindowPresenter(BasePresenter):
     def notify(self, signal, **baggage):
         try:
             if signal == Notification.LOAD:
-                self.load_stack()
+                self.load_dataset()
             elif signal == Notification.SAVE:
                 self.save()
             elif signal == Notification.REMOVE_STACK:
@@ -65,7 +65,7 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_stack(self, **kwargs):
+    def load_dataset(self, **kwargs):
         if kwargs:
             raise NotImplementedError("Converting from kwargs to LoadParameters not implemented")
         par = self.view.load_dialogue.get_parameters()
@@ -73,9 +73,21 @@ class MainWindowPresenter(BasePresenter):
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
 
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, {'parameters': par})
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_dataset_load_done, {'parameters': par})
+
+    def load_image_stack(self, file_path: str):
+        start_async_task_view(self.view, self.model.load_stack, self._on_stack_load_done, {'file_path': file_path})
 
     def _on_stack_load_done(self, task):
+        log = getLogger(__name__)
+
+        if task.was_successful():
+            self.create_new_stack(task.result, self.create_stack_name(task.kwargs['file_path']))
+            task.result = None
+        else:
+            self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
+
+    def _on_dataset_load_done(self, task):
         log = getLogger(__name__)
 
         if task.was_successful():

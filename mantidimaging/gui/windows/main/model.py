@@ -51,6 +51,10 @@ class MainWindowModel(object):
 
         return ds
 
+    @staticmethod
+    def load_stack(file_path: str, progress) -> Images:
+        return loader.load_stack(file_path, progress)
+
     def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
         svp = self.get_stack_visualiser(stack_uuid).presenter
         filenames = saver.save(svp.images,
