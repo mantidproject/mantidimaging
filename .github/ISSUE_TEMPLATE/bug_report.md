@@ -1,27 +1,38 @@
-### Summary
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
 
-<!--- Please provide information about the failure. -->
+---
 
-### Steps To Reproduce
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-<!--- Please provide detailed steps for reproducing this issue. -->
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-### Expected Behaviour
+**Expected behavior**
+A clear and concise description of what you expected to happen.
 
-<!--- Explain how the program should behave once the issue has been resolved. -->
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-### Current Behaviour
+**Desktop (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
 
-<!--- Please provide information about the undesired current behaviour. -->
+**Smartphone (please complete the following information):**
+ - Device: [e.g. iPhone6]
+ - OS: [e.g. iOS8.1]
+ - Browser [e.g. stock browser, safari]
+ - Version [e.g. 22]
 
-### Context
-
-<!--- Please provide any relevant information about your system setup. Mantid Imaging version can be obtained by running `conda list mantidimaging` and system information can be obtained by running `uname -a`. -->
-
-### Failure Logs
-
-<!--- [Optional] Please include any relevant log snippets here. -->
-
-### Screenshot(s)
-
-<!--- [Optional] Include screenshots that illustrate the problem. -->
+**Additional context**
+Add any other context about the problem here.
