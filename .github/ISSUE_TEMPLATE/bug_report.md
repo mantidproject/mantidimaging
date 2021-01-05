@@ -14,6 +14,10 @@
 
 <!--- Please provide information about the undesired current behaviour. -->
 
+### Context
+
+<!--- Please provide any relevant information about your system setup. Mantid Imaging version can be obtained by running `conda list mantidimaging` and system information can be obtained by running `uname -a`. -->
+
 ### Failure Logs
 
 <!--- [Optional] Please include any relevant log snippets here. -->
