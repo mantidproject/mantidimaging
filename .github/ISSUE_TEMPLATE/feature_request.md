@@ -1,20 +1,16 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Feature / Improvement Request
+about: Suggest an idea for this project.
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+### Desired Behaviour
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+<!--- Explain how the program should behave once the issue has been resolved. -->
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+### Current Behaviour
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+<!--- Please provide information about the undesired current behaviour. -->
