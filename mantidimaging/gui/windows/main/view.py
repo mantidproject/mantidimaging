@@ -50,7 +50,8 @@ class MainWindowView(BaseMainWindowView):
     actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
-    actionLoad: QAction
+    actionLoadDataset: QAction
+    actionLoadImages: QAction
     actionSave: QAction
     actionExit: QAction
 
@@ -88,7 +89,8 @@ class MainWindowView(BaseMainWindowView):
             self.show_about()
 
     def setup_shortcuts(self):
-        self.actionLoad.triggered.connect(self.show_load_dialogue)
+        self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
+        self.actionLoadImages.triggered.connect(self.load_image_stack)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
@@ -143,6 +145,23 @@ class MainWindowView(BaseMainWindowView):
         self.load_dialogue = MWLoadDialog(self)
         self.load_dialogue.show()
 
+    @staticmethod
+    def _get_file_name(caption: str, file_filter: str) -> str:
+        selected_file, _ = QFileDialog.getOpenFileName(caption=caption,
+                                                       filter=f"{file_filter};;All (*.*)",
+                                                       initialFilter=file_filter)
+        return selected_file
+
+    def load_image_stack(self):
+        # Open file dialog
+        selected_file = self._get_file_name("Image", "Image File (*.tif *.tiff)")
+
+        # Cancel/Close was clicked
+        if selected_file == "":
+            return
+
+        self.presenter.load_image_stack(selected_file)
+
     def load_sample_log_dialog(self):
         stack_selector = StackSelectorDialog(main_window=self,
                                              title="Stack Selector",
@@ -153,10 +172,8 @@ class MainWindowView(BaseMainWindowView):
         stack_to_add_log_to = stack_selector.selected_stack
 
         # Open file dialog
-        file_filter = "Log File (*.txt *.log)"
-        selected_file, _ = QFileDialog.getOpenFileName(caption="Log to be loaded",
-                                                       filter=f"{file_filter};;All (*.*)",
-                                                       initialFilter=file_filter)
+        selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log)")
+
         # Cancel/Close was clicked
         if selected_file == "":
             return
@@ -176,10 +193,8 @@ class MainWindowView(BaseMainWindowView):
         stack_to_add_180_deg_to = stack_selector.selected_stack
 
         # Open file dialog
-        file_filter = "Image File (*.tif *.tiff)"
-        selected_file, _ = QFileDialog.getOpenFileName(caption="180 Degree Image",
-                                                       filter=f"{file_filter};;All (*.*)",
-                                                       initialFilter=file_filter)
+        selected_file = self._get_file_name("180 Degree Image", "Image File (*.tif *.tiff)")
+
         # Cancel/Close was clicked
         if selected_file == "":
             return

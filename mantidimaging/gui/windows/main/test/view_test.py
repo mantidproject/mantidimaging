@@ -306,3 +306,12 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.get_stack_visualiser.assert_called_once_with(uuid)
         self.assertEqual(images, return_value)
+
+    def test_load_image_stack(self):
+        selected_file = "file_name"
+        self.view._get_file_name = mock.MagicMock(return_value=selected_file)
+
+        self.view.load_image_stack()
+
+        self.presenter.load_image_stack.assert_called_once_with(selected_file)
+        self.view._get_file_name.assert_called_once_with("Image", "Image File (*.tif *.tiff)")
