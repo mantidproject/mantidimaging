@@ -9,9 +9,9 @@ from uuid import UUID
 
 from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
 
-from core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
