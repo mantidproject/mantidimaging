@@ -1,9 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import gc
-from typing import Tuple
 import unittest
-
+from typing import Tuple
 from unittest import mock
 from unittest.mock import Mock
 
@@ -13,11 +11,11 @@ from PyQt5.QtWidgets import QDockWidget
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
 
-from mantidimaging.core.utility.version_check import versions
 versions._use_test_values()
 
 
