@@ -217,7 +217,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         if images is not None:
             self.view.show_recon_volume(images)
-            images.record_operation('AstraRecon.full',
+            images.record_operation('AstraRecon.single_sino',
                                     'Slice Reconstruction',
                                     slice_idx=slice_idx,
                                     **self.view.recon_params().to_dict())
