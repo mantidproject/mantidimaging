@@ -263,16 +263,20 @@ def create_loading_parameters_for_file_path(file_path: str, logger: Logger = Non
     dark_before_images = find_images(Path(sample_directory), "Dark", suffix="Before", look_without_suffix=True,
                                      image_format=image_format, logger=logger)
     if len(dark_before_images) > 0:
-        loading_parameters.dark_after = ImageParameters(input_path=Path(sample_directory),
-                                                        prefix=get_prefix(dark_before_images[0]),
-                                                        format=image_format)
+        dark_before_image = dark_before_images[0]
+        dark_before_directory = os.path.dirname(dark_before_image)
+        loading_parameters.dark_before = ImageParameters(input_path=dark_before_directory,
+                                                         prefix=get_prefix(dark_before_image),
+                                                         format=image_format)
 
     # Dark after
     dark_after_images = find_images(Path(sample_directory), "Dark", suffix="After", image_format=image_format,
                                     logger=logger)
     if len(dark_after_images) > 0:
-        loading_parameters.dark_after = ImageParameters(input_path=Path(sample_directory),
-                                                        prefix=get_prefix(dark_after_images[0]),
+        dark_after_image = dark_after_images[0]
+        dark_after_directory = os.path.dirname(dark_after_image)
+        loading_parameters.dark_after = ImageParameters(input_path=dark_after_directory,
+                                                        prefix=get_prefix(dark_after_image),
                                                         format=image_format)
 
     # 180 Degree projection
