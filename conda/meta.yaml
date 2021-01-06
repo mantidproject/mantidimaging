@@ -31,7 +31,6 @@ requirements:
     - cudatoolkit=10.2*
     - astra-toolbox=1.9.9.dev4
     - requests=2.25.1
-    - python-socketio=5.0.3
     - h5py=3.1.0
     - sarepy=2020.07
     - psutil=5.7.3
