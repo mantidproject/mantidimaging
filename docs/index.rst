@@ -14,6 +14,7 @@ such as `Avizo
    :maxdepth: 1
    :caption: Contents:
 
+   overview
    installation
    user_guide/index
    developer_guide/index
