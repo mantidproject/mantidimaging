@@ -217,6 +217,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         if images is not None:
             self.view.show_recon_volume(images)
+            images.record_operation('AstraRecon.full', 'Slice Reconstruction', dict())
 
     def _do_refine_selected_cor(self):
         slice_idx = self.model.preview_slice_idx
