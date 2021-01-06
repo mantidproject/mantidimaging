@@ -49,22 +49,22 @@ def create_array(shape: Tuple[Any, ...], dtype: NP_DTYPE = np.float32) -> np.nda
 
 def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32):
     ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
-    if isinstance(dtype, np.uint8) or dtype == 'uint8':
+    if dtype == np.uint8 or dtype == 'uint8':
         ctype = ctypes.c_uint8
         dtype = np.uint8
-    elif isinstance(dtype, np.uint16) or dtype == 'uint16':
+    elif dtype == np.uint16 or dtype == 'uint16':
         ctype = ctypes.c_uint16
         dtype = np.uint16
-    elif isinstance(dtype, np.int32) or dtype == 'int32':
+    elif dtype == np.int32 or dtype == 'int32':
         ctype = ctypes.c_int32
         dtype = np.int32
-    elif isinstance(dtype, np.int64) or dtype == 'int64':
+    elif dtype == np.int64 or dtype == 'int64':
         ctype = ctypes.c_int64
         dtype = np.int64
-    elif isinstance(dtype, np.float32) or dtype == 'float32':
+    elif dtype == np.float32 or dtype == 'float32':
         ctype = ctypes.c_float
         dtype = np.float32
-    elif isinstance(dtype, np.float64) or dtype == 'float64':
+    elif dtype == np.float64 or dtype == 'float64':
         ctype = ctypes.c_double
         dtype = np.float64
 

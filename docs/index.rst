@@ -24,5 +24,4 @@ such as `Avizo
    :caption: Links:
 
    Code Repository <https://github.com/mantidproject/mantidimaging>
-   Continuous Integration <http://builds.mantidproject.org/view/Imaging/>
    Anaconda Package <https://anaconda.org/mantid/mantidimaging>
