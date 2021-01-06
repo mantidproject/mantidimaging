@@ -4,7 +4,7 @@ import os
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union, Tuple
+from typing import TYPE_CHECKING, Union, Tuple, Optional
 from uuid import UUID
 
 from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
@@ -67,8 +67,8 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_dataset(self, par: LoadingParameters = None):
-        if par is None:
+    def load_dataset(self, par: Optional[LoadingParameters] = None):
+        if par is None and self.view.load_dialogue is not None:
             par = self.view.load_dialogue.get_parameters()
 
         if par.sample.input_path == "":
