@@ -46,15 +46,24 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.show_error_dialog.assert_called_once_with(self.presenter.SAVE_ERROR_STRING.format(task.error))
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
-    def test_load_stack(self, start_async_mock: mock.Mock):
+    def test_dataset_stack(self, start_async_mock: mock.Mock):
         parameters_mock = mock.Mock()
         parameters_mock.sample.input_path.return_value = "123"
         self.view.load_dialogue.get_parameters.return_value = parameters_mock
 
-        self.presenter.load_stack()
+        self.presenter.load_dataset()
 
         start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_stack,
-                                                 self.presenter._on_stack_load_done, {'parameters': parameters_mock})
+                                                 self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
+
+    @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
+    def test_load_stack(self, start_async_mock: mock.Mock):
+        file_path = mock.Mock()
+
+        self.presenter.load_image_stack(file_path)
+
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_stack,
+                                                 self.presenter._on_stack_load_done, {'file_path': file_path})
 
     def test_make_stack_window(self):
         images = generate_images()

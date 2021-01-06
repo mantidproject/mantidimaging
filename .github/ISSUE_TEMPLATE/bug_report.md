@@ -1,3 +1,12 @@
+---
+name: Bug Report
+about: Report an issue that you've encountered.
+title: ''
+labels: 'Type: Bug'
+assignees: ''
+
+---
+
 ### Summary
 
 <!--- Please provide information about the failure. -->

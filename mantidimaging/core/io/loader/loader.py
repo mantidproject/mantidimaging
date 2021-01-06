@@ -1,6 +1,6 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import os
 from dataclasses import dataclass
 from logging import getLogger
 from typing import Tuple, List
@@ -10,7 +10,7 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader import img_loader
-from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names)
+from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension)
 from mantidimaging.core.utility.data_containers import ImageParameters
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 
@@ -112,6 +112,14 @@ def load_p(parameters: ImageParameters, dtype, progress) -> Images:
                 indices=parameters.indices,
                 dtype=dtype,
                 progress=progress).sample
+
+
+def load_stack(file_path: str, progress=None) -> Images:
+    image_format = get_file_extension(file_path)
+    prefix = get_prefix(file_path)
+    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)
+
+    return load(file_names=file_names, progress=progress).sample
 
 
 def load(input_path=None,
