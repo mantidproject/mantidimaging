@@ -156,7 +156,11 @@ def get_prefix(path: str, separator="_"):
     return path[:path.rfind(separator)]
 
 
-def find_images(sample_dirname: Path, image_type: str, suffix: str, image_format: str, look_without_suffix=False,
+def find_images(sample_dirname: Path,
+                image_type: str,
+                suffix: str,
+                image_format: str,
+                look_without_suffix=False,
                 logger: Logger = None) -> List[str]:
     # same folder
     file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
@@ -164,8 +168,10 @@ def find_images(sample_dirname: Path, image_type: str, suffix: str, image_format
         return file_names
 
     # look into different directories 1 level above
-    dirs = [f"{image_type} {suffix}", f"{image_type.lower()} {suffix}", f"{image_type}_{suffix}",
-            f"{image_type.lower()}_{suffix}"]
+    dirs = [
+        f"{image_type} {suffix}", f"{image_type.lower()} {suffix}", f"{image_type}_{suffix}",
+        f"{image_type.lower()}_{suffix}"
+    ]
     if look_without_suffix:
         dirs.extend([f"{image_type.lower()}", image_type])
 

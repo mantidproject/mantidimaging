@@ -67,7 +67,7 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_dataset(self, par: LoadingParameters=None):
+    def load_dataset(self, par: LoadingParameters = None):
         if par is None:
             par = self.view.load_dialogue.get_parameters()
 

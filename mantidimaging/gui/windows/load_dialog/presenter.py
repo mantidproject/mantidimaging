@@ -78,15 +78,23 @@ class LoadPresenter:
         sample_dirname = Path(dirname)
 
         self.view.flat_before.set_images(
-            find_images(sample_dirname, "Flat", suffix="Before", look_without_suffix=True,
-                        image_format=self.image_format, logger=logger))
-        self.view.flat_after.set_images(find_images(sample_dirname, "Flat", suffix="After",
-                                                    image_format=self.image_format, logger=logger))
+            find_images(sample_dirname,
+                        "Flat",
+                        suffix="Before",
+                        look_without_suffix=True,
+                        image_format=self.image_format,
+                        logger=logger))
+        self.view.flat_after.set_images(
+            find_images(sample_dirname, "Flat", suffix="After", image_format=self.image_format, logger=logger))
         self.view.dark_before.set_images(
-            find_images(sample_dirname, "Dark", suffix="Before", look_without_suffix=True,
-                        image_format=self.image_format, logger=logger))
-        self.view.dark_after.set_images(find_images(sample_dirname, "Dark", suffix="After",
-                                                    image_format=self.image_format, logger=logger))
+            find_images(sample_dirname,
+                        "Dark",
+                        suffix="Before",
+                        look_without_suffix=True,
+                        image_format=self.image_format,
+                        logger=logger))
+        self.view.dark_after.set_images(
+            find_images(sample_dirname, "Dark", suffix="After", image_format=self.image_format, logger=logger))
         self.view.proj_180deg.path = find_180deg_proj(sample_dirname, self.image_format, logger)
 
         try:
@@ -195,4 +203,3 @@ class LoadPresenter:
         sample_log_filepath = find_log(sample_dirname, log_name, logger)
         self.ensure_sample_log_consistency(sample_log, sample_log_filepath, image_filenames)
         sample_log.path = sample_log_filepath
-

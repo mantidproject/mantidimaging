@@ -89,11 +89,19 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.dark_after.set_images.assert_called_once_with(1)
         self.assertEqual(2, self.v.proj_180deg.path)
         find_log.assert_any_call(Path(dirname), dirname, logger)
-        find_images.assert_any_call(Path(dirname), 'Flat', suffix='Before', look_without_suffix=True,
-                                    image_format=image_format, logger=logger)
+        find_images.assert_any_call(Path(dirname),
+                                    'Flat',
+                                    suffix='Before',
+                                    look_without_suffix=True,
+                                    image_format=image_format,
+                                    logger=logger)
         find_images.assert_any_call(Path(dirname), 'Flat', suffix='After', image_format=image_format, logger=logger)
-        find_images.assert_any_call(Path(dirname), 'Dark', suffix='Before', look_without_suffix=True,
-                                    image_format=image_format, logger=logger)
+        find_images.assert_any_call(Path(dirname),
+                                    'Dark',
+                                    suffix='Before',
+                                    look_without_suffix=True,
+                                    image_format=image_format,
+                                    logger=logger)
         find_images.assert_any_call(Path(dirname), 'Dark', suffix='After', image_format=image_format, logger=logger)
         self.assertEqual(4, find_images.call_count)
         find_180deg_proj.assert_called_once_with(Path(dirname), image_format, logger)

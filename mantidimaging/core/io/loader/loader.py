@@ -12,13 +12,12 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
-                                           find_images, find_first_file_that_is_possibly_a_sample,
-                                           find_log, find_180deg_proj)
+                                           find_images, find_first_file_that_is_possibly_a_sample, find_log,
+                                           find_180deg_proj)
 from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 
 LOG = getLogger(__name__)
-
 
 DEFAULT_IS_SINOGRAM = False
 DEFAULT_PIXEL_SIZE = 0
@@ -236,32 +235,45 @@ def create_loading_parameters_for_file_path(file_path: str, logger: Logger = Non
                                                 log_file=sample_log)
 
     # Flat before
-    flat_before_images = find_images(Path(sample_directory), "Flat", suffix="Before", look_without_suffix=True,
-                                     image_format=image_format, logger=logger)
+    flat_before_images = find_images(Path(sample_directory),
+                                     "Flat",
+                                     suffix="Before",
+                                     look_without_suffix=True,
+                                     image_format=image_format,
+                                     logger=logger)
     if len(flat_before_images) > 0:
         flat_before_image = flat_before_images[0]
         flat_before_directory = os.path.dirname(flat_before_image)
         flat_before_log = find_log(Path(sample_directory), flat_before_directory, logger)
 
-        loading_parameters.flat_before = ImageParameters(input_path=flat_before_directory, format=image_format,
+        loading_parameters.flat_before = ImageParameters(input_path=flat_before_directory,
+                                                         format=image_format,
                                                          prefix=get_prefix(flat_before_image),
                                                          log_file=flat_before_log)
 
     # Flat after
-    flat_after_images = find_images(Path(sample_directory), "Flat", suffix="After",
-                                    image_format=image_format, logger=logger)
+    flat_after_images = find_images(Path(sample_directory),
+                                    "Flat",
+                                    suffix="After",
+                                    image_format=image_format,
+                                    logger=logger)
     if len(flat_after_images) > 0:
         flat_after_image = flat_after_images[0]
         flat_after_directory = os.path.dirname(flat_after_image)
         flat_after_log = find_log(Path(sample_directory), flat_after_directory, logger)
 
-        loading_parameters.flat_after = ImageParameters(input_path=flat_after_directory, format=image_format,
+        loading_parameters.flat_after = ImageParameters(input_path=flat_after_directory,
+                                                        format=image_format,
                                                         prefix=get_prefix(flat_after_image),
                                                         log_file=flat_after_log)
 
     # Dark before
-    dark_before_images = find_images(Path(sample_directory), "Dark", suffix="Before", look_without_suffix=True,
-                                     image_format=image_format, logger=logger)
+    dark_before_images = find_images(Path(sample_directory),
+                                     "Dark",
+                                     suffix="Before",
+                                     look_without_suffix=True,
+                                     image_format=image_format,
+                                     logger=logger)
     if len(dark_before_images) > 0:
         dark_before_image = dark_before_images[0]
         dark_before_directory = os.path.dirname(dark_before_image)
@@ -270,7 +282,10 @@ def create_loading_parameters_for_file_path(file_path: str, logger: Logger = Non
                                                          format=image_format)
 
     # Dark after
-    dark_after_images = find_images(Path(sample_directory), "Dark", suffix="After", image_format=image_format,
+    dark_after_images = find_images(Path(sample_directory),
+                                    "Dark",
+                                    suffix="After",
+                                    image_format=image_format,
                                     logger=logger)
     if len(dark_after_images) > 0:
         dark_after_image = dark_after_images[0]
