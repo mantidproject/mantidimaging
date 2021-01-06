@@ -7,12 +7,10 @@ from typing import Optional
 from uuid import UUID
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignals
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
 
-from mantidimaging.gui.utility.qt_helpers import populate_menu
-from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
@@ -372,9 +370,8 @@ class MainWindowView(BaseMainWindowView):
                 sample_loading = self.presenter.load_stacks_from_folder(file_path)
                 if not sample_loading:
                     QMessageBox.critical(
-                        self, "Load not possible!", f"Please provide a directory that has .tif or "
-                        f".tiff files in it, or a sub directory that do "
-                        f"not contain dark, flat, or 180 in their title "
-                        f"name, that represents a sample.")
+                        self, "Load not possible!", "Please provide a directory that has .tif or .tiff files in it, or "
+                        "a sub directory that do not contain dark, flat, or 180 in their title name, that represents a"
+                        " sample.")
             else:
-                QMessageBox.critical(self, "Load not possible!", f"Please drag and drop only folders/directories!")
+                QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
