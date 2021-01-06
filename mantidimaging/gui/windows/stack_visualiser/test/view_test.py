@@ -1,12 +1,13 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import gc
 from typing import Tuple
 import unittest
 
 from unittest import mock
 from unittest.mock import Mock
 
+from PyQt5 import sip
 from PyQt5.QtWidgets import QDockWidget
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -29,6 +30,7 @@ class StackVisualiserViewTest(unittest.TestCase):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
     def tearDown(self) -> None:
+        sip.delete(self.view)
         self.view = None
         self.window = None  # type: ignore[assignment]
         self.dock = None
