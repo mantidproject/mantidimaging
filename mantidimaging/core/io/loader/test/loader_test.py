@@ -7,7 +7,7 @@ from mantidimaging.core.io import loader
 from mantidimaging.core.io.loader import load_stack
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path, DEFAULT_PIXEL_DEPTH, \
     DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM
-from test_helpers import FileOutputtingTestCase
+from mantidimaging.test_helpers import FileOutputtingTestCase
 
 
 class LoaderTest(FileOutputtingTestCase):
