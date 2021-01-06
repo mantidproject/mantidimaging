@@ -70,6 +70,8 @@ class MainWindowPresenter(BasePresenter):
     def load_dataset(self, par: Optional[LoadingParameters] = None):
         if par is None and self.view.load_dialogue is not None:
             par = self.view.load_dialogue.get_parameters()
+        if par is None:
+            return
 
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
