@@ -18,7 +18,7 @@ def _read_from_terminal(command: str) -> str:
     return subprocess.check_output(command + "; exit 0", shell=True, stderr=subprocess.STDOUT).decode("ascii")
 
 
-def cuda_is_present() -> bool:
+def _cuda_is_present() -> bool:
     """
     Checks if nvidia-smi is on the system + working, and that the libcuda files can be located.
     """
@@ -51,3 +51,16 @@ def not_found_message() -> Tuple[str, str]:
     """
     cuda_not_found_msg = "Working CUDA installation not found."
     return cuda_not_found_msg, cuda_not_found_msg + " Will only use gridrec algorithm for reconstruction.",
+
+
+class CudaChecker:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(CudaChecker, cls).__new__(cls)
+            cls._cuda_is_present = _cuda_is_present()
+        return cls._instance
+
+    def cuda_is_present(cls):
+        return cls._cuda_is_present
