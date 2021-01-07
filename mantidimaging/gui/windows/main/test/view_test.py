@@ -91,7 +91,7 @@ class MainWindowViewTest(unittest.TestCase):
         mock_recon.return_value.raise_.assert_not_called()
 
         self.view.show_recon_window()
-        mock_recon.assert_called_once_with(self.view, use_cuda)
+        mock_recon.assert_called_once_with(self.view)
         mock_recon.return_value.activateWindow.assert_called_once_with()
         mock_recon.return_value.raise_.assert_called_once_with()
 
