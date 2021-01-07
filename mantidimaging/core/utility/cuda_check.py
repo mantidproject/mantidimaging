@@ -42,6 +42,7 @@ def _cuda_is_present() -> bool:
         LOG.error(f"{EXCEPTION_MSG} {LOCATE}: {e}")
         libcuda_files_found = False
 
+    LOG.info("Doing cuda check")
     return nvidia_smi_working and libcuda_files_found
 
 
@@ -62,5 +63,5 @@ class CudaChecker:
             cls._cuda_is_present = _cuda_is_present()
         return cls._instance
 
-    def cuda_is_present(cls):
-        return cls._cuda_is_present
+    def cuda_is_present(self):
+        return self._cuda_is_present
