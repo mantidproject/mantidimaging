@@ -109,7 +109,7 @@ class ReconstructionParameters:
             'num_iter': self.num_iter,
             'cor': str(self.cor),
             'tilt': str(self.tilt),
-            'pixel_size': self.pixel_size,
+            'pixel_size': self.pixel_size
         }
 
 

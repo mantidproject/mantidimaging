@@ -3,7 +3,6 @@
 
 import os
 from logging import getLogger
-from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
 
@@ -14,6 +13,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QDockWidget, QFileDialog, QLabel, 
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
+from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -138,7 +138,7 @@ class MainWindowView(BaseMainWindowView):
         QtGui.QDesktopServices.openUrl(url)
 
     def show_about(self):
-        welcome_window = WelcomeScreenPresenter(parent=self)
+        welcome_window = WelcomeScreenPresenter(self)
         welcome_window.show()
 
     def show_load_dialogue(self):
