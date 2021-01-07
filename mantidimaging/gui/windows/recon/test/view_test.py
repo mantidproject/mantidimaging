@@ -220,8 +220,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                   cor=ScalarCoR(self.resultCor.value.return_value),
                                                   tilt=Degrees(self.resultTilt.value.return_value),
                                                   pixel_size=self.pixelSize.value.return_value,
-                                                  max_projection_angle=self.maxProjAngle.value.return_value,
-                                                  use_cuda=False)
+                                                  max_projection_angle=self.maxProjAngle.value.return_value)
 
     def test_set_table_point(self):
         idx = 12
