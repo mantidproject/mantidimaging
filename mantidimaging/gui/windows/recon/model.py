@@ -176,7 +176,8 @@ class ReconstructWindowModel(object):
     def slices(self):
         return self.data_model.slices
 
-    def load_allowed_recon_kwargs(self):
+    @staticmethod
+    def load_allowed_recon_kwargs():
         d = tomopy_allowed_kwargs()
         if CudaChecker().cuda_is_present():
             d.update(astra_allowed_kwargs())
