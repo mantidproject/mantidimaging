@@ -19,7 +19,7 @@ from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with,
 
 class ReconWindowModelTest(unittest.TestCase):
     def setUp(self):
-        self.model = ReconstructWindowModel(CorTiltPointQtModel(), True)
+        self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
         # Mock stack
         self.stack = mock.create_autospec(StackVisualiserView)
@@ -29,7 +29,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model.initial_select_data(self.stack)
 
     def test_empty_init(self):
-        m = ReconstructWindowModel(CorTiltPointQtModel(), True)
+        m = ReconstructWindowModel(CorTiltPointQtModel())
         self.assertIsNone(m.stack)
         self.assertIsNone(m.last_result)
 
