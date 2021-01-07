@@ -182,7 +182,7 @@ class ReconWindowModelTest(unittest.TestCase):
             assert self.model.load_allowed_recon_kwargs() == tomopy_allowed_kwargs()
 
     def test_load_allowed_recon_args_with_cuda(self):
-        self.model.use_cuda = True
         allowed_args = tomopy_allowed_kwargs()
         allowed_args.update(astra_allowed_kwargs())
-        assert self.model.load_allowed_recon_kwargs() == allowed_args
+        with mock.patch("mantidimaging.gui.windows.recon.model.CudaChecker.cuda_is_present", return_value=True):
+            assert self.model.load_allowed_recon_kwargs() == allowed_args

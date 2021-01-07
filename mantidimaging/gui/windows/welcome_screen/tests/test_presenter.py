@@ -116,9 +116,10 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
             self.assertIn(log_msgs[i], presenter_log.output[i])
 
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
-    def test_no_issues_added(self, versions_mock):
+    @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
+    def test_no_issues_added(self, cuda_check_mock, versions_mock):
         versions_mock.is_conda_uptodate.return_value = True
-        self.p.cuda_present = True
+        cuda_check_mock.CudaChecker.return_value.cuda_is_present.return_value = True
 
         self.p.check_issues()
         self.v.add_issues.assert_not_called()
