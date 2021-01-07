@@ -4,6 +4,7 @@
 import unittest
 
 from unittest import mock
+
 import numpy as np
 
 from mantidimaging.core.data import Images
@@ -178,8 +179,8 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertFalse(self.model.proj_180_degree_shape_matches_images(images))
 
     def test_load_allowed_recon_args_no_cuda(self):
-        self.model.use_cuda = False
-        assert self.model.load_allowed_recon_kwargs() == tomopy_allowed_kwargs()
+        with mock.patch("mantidimaging.gui.windows.recon.model.CudaChecker.cuda_is_present", return_value=False):
+            assert self.model.load_allowed_recon_kwargs() == tomopy_allowed_kwargs()
 
     def test_load_allowed_recon_args_with_cuda(self):
         self.model.use_cuda = True
