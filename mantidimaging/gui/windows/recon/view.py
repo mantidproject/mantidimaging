@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInpu
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
+from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
@@ -59,14 +60,13 @@ class ReconstructWindowView(BaseMainWindowView):
 
     stackSelector: StackSelectorWidgetView
 
-    def __init__(self, main_window: 'MainWindowView', use_cuda: bool):
+    def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
-        self.use_cuda = use_cuda
         self.presenter = ReconstructWindowPresenter(self, main_window, self.use_cuda)
 
-        if use_cuda:
+        if CudaChecker().cuda_is_present():
             self.algorithmName.insertItem(0, "FBP_CUDA")
             self.algorithmName.insertItem(1, "SIRT_CUDA")
             self.algorithmName.setCurrentIndex(0)
@@ -323,8 +323,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                         cor=ScalarCoR(self.rotation_centre),
                                         tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
-                                        max_projection_angle=self.max_proj_angle,
-                                        use_cuda=self.use_cuda)
+                                        max_projection_angle=self.max_proj_angle)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on
