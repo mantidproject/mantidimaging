@@ -58,3 +58,6 @@ class TestCudaCheck(unittest.TestCase):
         assert cuda_checkers[0] is cuda_checkers[1]
         cuda_is_present_mock.assert_called_once()
 
+    @patch("mantidimaging.core.utility.cuda_check._cuda_is_present")
+    def test_cuda_checker_returns_result_from_check(self, cuda_is_present_mock):
+        assert cuda_check.CudaChecker().cuda_is_present() == cuda_is_present_mock.return_value
