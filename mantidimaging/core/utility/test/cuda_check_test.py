@@ -51,3 +51,10 @@ class TestCudaCheck(unittest.TestCase):
         short_msg, long_msg = cuda_check.not_found_message()
         assert short_msg == "Working CUDA installation not found."
         assert long_msg == "Working CUDA installation not found. Will only use gridrec algorithm for reconstruction."
+
+    @patch("mantidimaging.core.utility.cuda_check._cuda_is_present")
+    def test_cuda_checker_object_created_once(self, cuda_is_present_mock):
+        cuda_checkers = [cuda_check.CudaChecker() for _ in range(2)]
+        assert cuda_checkers[0] is cuda_checkers[1]
+        cuda_is_present_mock.assert_called_once()
+
