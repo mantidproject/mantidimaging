@@ -240,7 +240,7 @@ class MainWindowView(BaseMainWindowView):
 
     def show_recon_window(self):
         if not self.recon:
-            self.recon = ReconstructWindowView(self, self.use_cuda)
+            self.recon = ReconstructWindowView(self)
             self.recon.show()
         else:
             self.recon.activateWindow()
