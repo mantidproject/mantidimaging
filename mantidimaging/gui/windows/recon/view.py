@@ -64,7 +64,7 @@ class ReconstructWindowView(BaseMainWindowView):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
-        self.presenter = ReconstructWindowPresenter(self, main_window, self.use_cuda)
+        self.presenter = ReconstructWindowPresenter(self, main_window)
 
         if CudaChecker().cuda_is_present():
             self.algorithmName.insertItem(0, "FBP_CUDA")
