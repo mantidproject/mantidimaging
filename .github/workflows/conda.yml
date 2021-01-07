@@ -15,11 +15,11 @@ jobs:
         uses: kt3k/license_checker@v1.0.3
 
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2.0.0
+        uses: conda-incubator/setup-miniconda@v2.0.1
         with:
           activate-environment: mantidimaging
           environment-file: environment.yml
-          python-version: 3.7
+          python-version: 3.8
           auto-activate-base: false
 
       - name: Other dependencies
@@ -51,7 +51,7 @@ jobs:
       - name: pytest
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --count 10
 
       - name: Coveralls
         shell: bash -l {0}
