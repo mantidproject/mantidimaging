@@ -3,7 +3,6 @@
 
 import os
 from logging import getLogger
-from mantidimaging.core.utility.cuda_check import cuda_is_present
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from typing import Optional
 from uuid import UUID
@@ -86,8 +85,6 @@ class MainWindowView(BaseMainWindowView):
             bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         self.setWindowIcon(QIcon(bg_image))
 
-        self.use_cuda = cuda_is_present()
-
         if WelcomeScreenPresenter.show_today():
             self.show_about()
 
@@ -141,7 +138,7 @@ class MainWindowView(BaseMainWindowView):
         QtGui.QDesktopServices.openUrl(url)
 
     def show_about(self):
-        welcome_window = WelcomeScreenPresenter(parent=self, cuda_present=self.use_cuda)
+        welcome_window = WelcomeScreenPresenter(parent=self)
         welcome_window.show()
 
     def show_load_dialogue(self):
