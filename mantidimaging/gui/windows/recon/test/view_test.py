@@ -20,7 +20,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()
-        self.view = ReconstructWindowView(self.main_window, False)
+        self.view = ReconstructWindowView(self.main_window)
         self.view.presenter = self.presenter = mock.Mock()
         self.view.image_view = self.image_view = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
