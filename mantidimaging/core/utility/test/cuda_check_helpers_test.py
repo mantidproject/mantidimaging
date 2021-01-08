@@ -7,7 +7,7 @@ from mantidimaging.core.utility import cuda_check
 from mantidimaging.core.utility.cuda_check import NVIDIA_SMI, EXCEPTION_MSG, LOCATE
 
 
-class TestCudaCheck(unittest.TestCase):
+class TestCudaCheckHelpers(unittest.TestCase):
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
     def test_cuda_is_present_returns_true(self, check_output_mock):
         check_output_mock.side_effect = [b"Driver Version", b"/usr/lib/path/to/libcuda.so\n"]
@@ -51,13 +51,3 @@ class TestCudaCheck(unittest.TestCase):
         short_msg, long_msg = cuda_check.not_found_message()
         assert short_msg == "Working CUDA installation not found."
         assert long_msg == "Working CUDA installation not found. Will only use gridrec algorithm for reconstruction."
-
-    @patch("mantidimaging.core.utility.cuda_check._cuda_is_present")
-    def test_cuda_checker_object_created_once(self, cuda_is_present_mock):
-        cuda_checkers = [cuda_check.CudaChecker() for _ in range(2)]
-        assert cuda_checkers[0] is cuda_checkers[1]
-        cuda_is_present_mock.assert_called_once()
-
-    @patch("mantidimaging.core.utility.cuda_check._cuda_is_present")
-    def test_cuda_checker_returns_result_from_check(self, cuda_is_present_mock):
-        assert cuda_check.CudaChecker().cuda_is_present() == cuda_is_present_mock.return_value
