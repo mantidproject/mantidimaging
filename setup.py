@@ -154,7 +154,7 @@ setup(
     long_description=open("README.md").read(),
     test_suite="nose.collector",
     classifiers=[
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Natural Language :: English",
         "Intended Audience :: Science/Research",
         "Operating System :: POSIX :: Linux",
