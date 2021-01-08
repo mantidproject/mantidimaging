@@ -373,5 +373,7 @@ class MainWindowView(BaseMainWindowView):
                         self, "Load not possible!", "Please provide a directory that has .tif or .tiff files in it, or "
                         "a sub directory that do not contain dark, flat, or 180 in their title name, that represents a"
                         " sample.")
+                    return
             else:
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
+                return
