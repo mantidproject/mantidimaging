@@ -29,9 +29,9 @@ class TestCudaChecker(unittest.TestCase):
 
 
 class TestCudaCheckHelpers(unittest.TestCase):
-    @classmethod
-    def tearDownClass(cls):
-        cuda_check.CudaChecker.clear_instance()
+    # @classmethod
+    # def tearDownClass(cls):
+    #     cuda_check.CudaChecker.clear_instance()
 
     @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
     def test_cuda_is_present_returns_true(self, check_output_mock):
