@@ -80,3 +80,13 @@ It is also possible to use Sphinx to build the documentation as a Qt Help
 project.
 
 This can be done  with the command: :code:`python setup.py docs -b qthelp`.
+
+
+Release Notes
+-------------
+
+Release notes should be continuously updated during developement. Almost all pull requests should have an update to the relivent file and section in :file:`docs/release_notes`
+
+If the next release name is not yet chosen this will be :file:`next.rts`, and renamed closer to release.
+
+When fixes are backported to a release branch, they can be added to the notes for that release, in an updates section.

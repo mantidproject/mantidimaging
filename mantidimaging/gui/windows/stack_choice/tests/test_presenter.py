@@ -29,13 +29,11 @@ class StackChoicePresenterTest(unittest.TestCase):
         original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
         StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid, mock.MagicMock())
 
-    def test_presenter_throws_list_if_uuid_is_not_in_stack(self):
-        single_stack_uuid = uuid4()
-        original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
-        self.assertRaises(expected_exception=RuntimeError,
-                          callable=StackChoicePresenter,
-                          args=(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid,
-                                mock.MagicMock()))
+    @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
+    def test_presenter_throws_if_uuid_is_not_in_stack(self, _):
+        original_stack = [(th.generate_images(), uuid4()), (th.generate_images(), uuid4())]
+        with self.assertRaises(RuntimeError):
+            StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), uuid4(), None)
 
     def test_show_calls_show_in_the_view(self):
         self.p.show()

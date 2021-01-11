@@ -288,10 +288,17 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     def test_do_stack_reconstruct_slice(self):
         self.presenter._get_reconstruct_slice = mock.Mock()
-        self.presenter._get_reconstruct_slice.return_value = test_data = np.ndarray(shape=(200, 250), dtype=np.float32)
-        self.presenter.do_stack_reconstruct_slice()
+        self.presenter._get_reconstruct_slice.return_value = test_data = Images(
+            np.ndarray(shape=(200, 250), dtype=np.float32))
+        test_data.record_operation = mock.Mock()
+        slice_idx = 123
+        self.presenter.do_stack_reconstruct_slice(slice_idx=slice_idx)
         self.view.show_recon_volume.assert_called_once()
         np.array_equal(self.view.show_recon_volume.call_args[0][0].data, test_data)
+        test_data.record_operation.assert_called_once_with('AstraRecon.single_sino',
+                                                           'Slice Reconstruction',
+                                                           slice_idx=slice_idx,
+                                                           **self.view.recon_params().to_dict())
 
     def test_do_stack_reconstruct_slice_raises(self):
         self.presenter._get_reconstruct_slice = mock.Mock()
