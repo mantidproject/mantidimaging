@@ -66,3 +66,7 @@ class CudaChecker:
     @classmethod
     def cuda_is_present(cls):
         return cls._cuda_is_present
+
+    @classmethod
+    def clear_instance(cls):
+        cls._instance = None
