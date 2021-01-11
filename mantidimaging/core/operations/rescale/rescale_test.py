@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import numpy as np
 import pytest
 from numpy import testing as npt, int16, uint16, float32, finfo, copy
 
@@ -85,15 +86,36 @@ def test_scale_single_image():
     images.data[1] = 1.5
 
     # Scale to int16
-    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(), 1, data_type=uint16)
-    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(), 1, data_type=uint16)
+    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]),
+                                                      0,
+                                                      images.data.max(),
+                                                      1,
+                                                      offset=0,
+                                                      data_type=uint16)
+
+    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]),
+                                                      0,
+                                                      images.data.max(),
+                                                      1,
+                                                      offset=0,
+                                                      data_type=uint16)
 
     npt.assert_equal(0, scaled_image1)
     npt.assert_equal(1, scaled_image2)
 
     # Scale to float32
-    scaled_image3 = RescaleFilter.filter_single_image(copy(images.data[0]), 0, images.data.max(), 2, data_type=float32)
-    scaled_image4 = RescaleFilter.filter_single_image(copy(images.data[1]), 0, images.data.max(), 2, data_type=float32)
+    scaled_image3 = RescaleFilter.filter_single_image(copy(images.data[0]),
+                                                      0,
+                                                      images.data.max(),
+                                                      2,
+                                                      offset=0,
+                                                      data_type=float32)
+    scaled_image4 = RescaleFilter.filter_single_image(copy(images.data[1]),
+                                                      0,
+                                                      images.data.max(),
+                                                      2,
+                                                      offset=0,
+                                                      data_type=float32)
 
     npt.assert_equal(0.0, scaled_image3)
     npt.assert_equal(2.0, scaled_image4)
@@ -106,6 +128,52 @@ def test_scale_single_image():
         "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
     assert scaled_image2.dtype != int16, \
         "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
+
+
+def test_scale_single_image_with_offset():
+    images = th.generate_images((2, 100, 100))
+
+    images.data[0][:] = np.arange(-1, 1, step=0.0002).reshape(100, 100)
+
+    offset = abs(images.data[0].min())
+    # Scale to int16
+    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]),
+                                                      min_input=-5000,
+                                                      max_input=5000,
+                                                      max_output=65535,
+                                                      offset=offset,
+                                                      data_type=uint16)
+
+    assert scaled_image1.min() == 0
+    assert scaled_image1.max() == 26
+
+    del scaled_image1
+
+    # Scale to int16
+    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[0]),
+                                                      min_input=-5000,
+                                                      max_input=5000,
+                                                      max_output=65535,
+                                                      offset=offset,
+                                                      data_type=float32)
+
+    assert scaled_image2.min() == 0
+    assert scaled_image2.max() - 26.211378 < 0.0001
+
+
+def test_scale_single_image_bad_offset():
+    images = th.generate_images((2, 100, 100))
+    try:
+        RescaleFilter.filter_single_image(copy(images.data[0]),
+                                          min_input=-5000,
+                                          max_input=5000,
+                                          max_output=65535,
+                                          offset=-1,
+                                          data_type=uint16)
+    except ValueError:
+        pass
+    except Exception as e:
+        assert False, f"Unexpected exception was triggered: {e}"
 
 
 if __name__ == "__main__":
