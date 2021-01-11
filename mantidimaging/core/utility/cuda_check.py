@@ -55,6 +55,7 @@ def not_found_message() -> Tuple[str, str]:
 
 class CudaChecker:
     _instance = None
+    _cuda_is_present = False
 
     def __new__(cls):
         if cls._instance is None:
@@ -62,5 +63,6 @@ class CudaChecker:
             cls._cuda_is_present = _cuda_is_present()
         return cls._instance
 
-    def cuda_is_present(self):
-        return self._cuda_is_present
+    @classmethod
+    def cuda_is_present(cls):
+        return cls._cuda_is_present
