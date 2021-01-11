@@ -11,6 +11,7 @@ from mantidimaging.core.utility.cuda_check import EXCEPTION_MSG, NVIDIA_SMI, LOC
 class TestCudaChecker(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        cuda_check.CudaChecker.clear_instance()
         cls.cuda_check_patch = mock.patch("mantidimaging.core.utility.cuda_check._cuda_is_present")
         cls.cuda_is_present_mock = cls.cuda_check_patch.start()
 
