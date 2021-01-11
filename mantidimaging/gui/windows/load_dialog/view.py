@@ -7,6 +7,7 @@ from PyQt5 import Qt
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
     QHeaderView, QSpinBox
 
+from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.utility import (compile_ui)
 from mantidimaging.gui.windows.load_dialog.field import Field
@@ -86,6 +87,11 @@ class MWLoadDialog(Qt.QDialog):
 
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")
+
+        # Ensure defaults are set
+        self.images_are_sinograms.setChecked(DEFAULT_IS_SINOGRAM)
+        self.pixelSize.setValue(DEFAULT_PIXEL_SIZE)
+        self.pixel_bit_depth.setCurrentText(DEFAULT_PIXEL_DEPTH)
 
     def create_file_input(self, position: int) -> Tuple[Field, QPushButton]:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)

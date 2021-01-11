@@ -1,6 +1,5 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 import os
 import uuid
 from collections import namedtuple
@@ -16,6 +15,7 @@ from mantidimaging.core.utility.data_containers import LoadingParameters, Projec
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 StackId = namedtuple('StackId', ['id', 'name'])
+logger = getLogger(__name__)
 
 
 class MainWindowModel(object):
@@ -96,7 +96,7 @@ class MainWindowModel(object):
     def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: 'QDockWidget'):
         stack_visualiser.uuid = uuid.uuid1()
         self.active_stacks[stack_visualiser.uuid] = dock_widget
-        getLogger(__name__).debug(f"Active stacks: {self.active_stacks}")
+        logger.debug(f"Active stacks: {self.active_stacks}")
 
     def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
         """
