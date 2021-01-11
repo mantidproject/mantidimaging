@@ -20,7 +20,7 @@ class RescaleFilter(BaseFilter):
 
     When: Can be used to crop-out value regions of interest
 
-    When: Automatically used when saving images to int16
+    When: Automatically used when saving images to uint16
     """
     filter_name = 'Rescale'
 
@@ -33,6 +33,10 @@ class RescaleFilter(BaseFilter):
                     data_type=None) -> Images:
         images.data[images.data < min_input] = 0
         images.data[images.data > max_input] = 0
+
+        # offset - it removes any negative values so that they don't overflow when in uint16 range
+        images.data += abs(images.data.min())
+        # slope
         images.data *= (max_output / images.data.max())
 
         if data_type is not None:
@@ -44,9 +48,17 @@ class RescaleFilter(BaseFilter):
         return images
 
     @staticmethod
-    def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float, data_type=float32):
+    def filter_single_image(image: ndarray,
+                            min_input: float,
+                            max_input: float,
+                            max_output: float,
+                            offset: float,
+                            data_type=float32):
+        if offset < 0:
+            raise ValueError("The offset value provided must not be negative.")
         image[image < min_input] = 0
         image[image > max_input] = 0
+        image += offset
         image *= (max_output / max_input)
 
         if data_type == float32:
@@ -66,6 +78,7 @@ class RescaleFilter(BaseFilter):
                                                    valid_values=(-2147483647, 2147483647),
                                                    tooltip="Minimum value of the data that will be used.\n"
                                                    "Anything below this will be clipped to 0")
+        min_input_widget.setDecimals(8)
         _, max_input_widget = add_property_to_form('Max input',
                                                    Type.FLOAT,
                                                    form=form,
@@ -74,6 +87,7 @@ class RescaleFilter(BaseFilter):
                                                    valid_values=(-2147483647, 2147483647),
                                                    tooltip="Maximum value of the data that will be used.\n"
                                                    "Anything above it will be clipped to 0")
+        max_input_widget.setDecimals(8)
         _, max_output_widget = add_property_to_form('Max output',
                                                     Type.FLOAT,
                                                     form=form,
@@ -82,6 +96,7 @@ class RescaleFilter(BaseFilter):
                                                     valid_values=(1, 2147483647),
                                                     tooltip="Maximum value of the OUTPUT images. They will \n"
                                                     "be rescaled to range [0, MAX OUTPUT]")
+        max_output_widget.setDecimals(8)
         _, preset_widget = add_property_to_form('Preset',
                                                 Type.CHOICE,
                                                 form=form,
