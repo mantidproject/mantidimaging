@@ -28,16 +28,22 @@ class MonitorNormalisation(BaseFilter):
     @staticmethod
     def filter_func(images: Images, cores=None, chunksize=None, progress=None) -> Images:
         counts = images.counts()
-        if counts is None:
+        if counts is None and images.num_projections > 1:
             raise RuntimeError("No loaded log values for this stack.")
 
         counts_val = counts.value / counts.value[0]
         div_partial = ptsm.create_partial(_divide_by_counts, fwd_function=ptsm.inplace)
-        images, _ = ptsm.execute(images.data, counts_val, div_partial, cores, chunksize, progress=progress)
+        images, _ = ptsm.execute(images.data,
+                                 counts_val,
+                                 div_partial,
+                                 cores,
+                                 chunksize,
+                                 progress=progress)
         return images
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable,
+                     view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
         return {}
 
     @staticmethod
