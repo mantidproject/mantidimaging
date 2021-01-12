@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
+from pathlib import Path
 
 from mantidimaging.helper import initialise_logging
 from mantidimaging.core.io import utility
@@ -33,3 +34,9 @@ class UtilityTest(FileOutputtingTestCase):
 
         # Expect to find the .tiff file
         self.assertEqual([tiff_filename], found_files)
+
+    def test_find_log(self):
+        with open(os.path.join(self.output_directory, "../sample_log.txt"), 'w') as f:
+            f.write("sample logs")
+
+        self.assertNotEqual("", utility.find_log(Path(self.output_directory), "sample"))
