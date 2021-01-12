@@ -28,7 +28,7 @@ class MonitorNormalisation(BaseFilter):
     @staticmethod
     def filter_func(images: Images, cores=None, chunksize=None, progress=None) -> Images:
         counts = images.counts()
-        if counts is None:
+        if counts is None and images.num_projections > 1:
             raise RuntimeError("No loaded log values for this stack.")
 
         counts_val = counts.value / counts.value[0]
