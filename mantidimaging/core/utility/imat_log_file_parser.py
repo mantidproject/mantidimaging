@@ -12,11 +12,11 @@ from mantidimaging.core.utility.data_containers import Counts, ProjectionAngles
 
 
 def _get_projection_number(s: str) -> int:
-    return int(s[s.find(": ") + 1:s.find("a")])
+    return int(s[s.find(":") + 1:s.find("a")].strip())
 
 
-def _get_angle(s: str) -> float:
-    return float(s[s.rfind(": ") + 1:])
+def _get_angle(s: str) -> str:
+    return s[s.rfind(":") + 1:].strip()
 
 
 class IMATLogColumn(Enum):
@@ -50,15 +50,14 @@ class TextLogParser:
         for line in self.data[2:]:
             parsed_log[IMATLogColumn.TIMESTAMP].append(line[0])
             parsed_log[IMATLogColumn.PROJECTION_NUMBER].append(_get_projection_number(line[1]))
-            parsed_log[IMATLogColumn.PROJECTION_ANGLE].append(_get_angle(line[1]))
-            parsed_log[IMATLogColumn.COUNTS_BEFORE].append(line[2])
-            parsed_log[IMATLogColumn.COUNTS_AFTER].append(line[3])
+            parsed_log[IMATLogColumn.PROJECTION_ANGLE].append(float(_get_angle(line[1])))
+            parsed_log[IMATLogColumn.COUNTS_BEFORE].append(int(_get_angle(line[2])))
+            parsed_log[IMATLogColumn.COUNTS_AFTER].append(int(_get_angle(line[3])))
 
         return parsed_log
 
     @staticmethod
     def validate(file_contents) -> bool:
-
         if TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE != file_contents[0]:
             return False
         return True
@@ -87,15 +86,15 @@ class CSVLogParser:
 
         for row in reader:
             parsed_log[IMATLogColumn.TIMESTAMP].append(row[0])
-            parsed_log[IMATLogColumn.PROJECTION_NUMBER].append(row[2])
+            parsed_log[IMATLogColumn.PROJECTION_NUMBER].append(int(row[2]))
             angle_raw = row[3]
-            parsed_log[IMATLogColumn.PROJECTION_ANGLE].append(_get_angle(angle_raw))
+            parsed_log[IMATLogColumn.PROJECTION_ANGLE].append(float(_get_angle(angle_raw)))
 
             counts_before_raw = row[4]
-            parsed_log[IMATLogColumn.COUNTS_BEFORE].append(_get_angle(counts_before_raw))
+            parsed_log[IMATLogColumn.COUNTS_BEFORE].append(int(_get_angle(counts_before_raw)))
 
             counts_after_raw = row[5]
-            parsed_log[IMATLogColumn.COUNTS_AFTER].append(_get_angle(counts_after_raw))
+            parsed_log[IMATLogColumn.COUNTS_AFTER].append(int(_get_angle(counts_after_raw)))
 
         return parsed_log
 
@@ -143,8 +142,6 @@ class IMATLogFile:
                 zip(self._data[IMATLogColumn.COUNTS_BEFORE],
                     self._data[IMATLogColumn.COUNTS_AFTER])):
             # clips the string before the count number
-            before = before[before.rfind(":") + 1:]
-            after = after[after.rfind(":") + 1:]
             counts[i] = float(after) - float(before)
 
         return Counts(counts)
