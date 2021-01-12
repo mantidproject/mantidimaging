@@ -5,7 +5,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView
+    from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView  # pragma: no cover
 
 
 class BasePresenter(object):

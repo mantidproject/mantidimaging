@@ -3,7 +3,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
@@ -46,15 +46,24 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.show_error_dialog.assert_called_once_with(self.presenter.SAVE_ERROR_STRING.format(task.error))
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
-    def test_load_stack(self, start_async_mock: mock.Mock):
+    def test_dataset_stack(self, start_async_mock: mock.Mock):
         parameters_mock = mock.Mock()
         parameters_mock.sample.input_path.return_value = "123"
         self.view.load_dialogue.get_parameters.return_value = parameters_mock
 
-        self.presenter.load_stack()
+        self.presenter.load_dataset()
 
         start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_stack,
-                                                 self.presenter._on_stack_load_done, {'parameters': parameters_mock})
+                                                 self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
+
+    @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
+    def test_load_stack(self, start_async_mock: mock.Mock):
+        file_path = mock.Mock()
+
+        self.presenter.load_image_stack(file_path)
+
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_stack,
+                                                 self.presenter._on_stack_load_done, {'file_path': file_path})
 
     def test_make_stack_window(self):
         images = generate_images()
@@ -133,11 +142,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
-        ds = Dataset(sample=generate_images(automatic_free=False),
-                     flat_before=generate_images(automatic_free=False),
-                     flat_after=generate_images(automatic_free=False),
-                     dark_before=generate_images(automatic_free=False),
-                     dark_after=generate_images(automatic_free=False))
+        ds = Dataset(sample=generate_images(),
+                     flat_before=generate_images(),
+                     flat_after=generate_images(),
+                     dark_before=generate_images(),
+                     dark_after=generate_images())
         ds.flat_before.filenames = ["filename"] * 10
         ds.dark_before.filenames = ["filename"] * 10
         ds.flat_after.filenames = ["filename"] * 10
@@ -147,12 +156,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertEqual(5, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
-
-        ds.sample.free_memory()
-        ds.flat_before.free_memory()
-        ds.dark_before.free_memory()
-        ds.flat_after.free_memory()
-        ds.dark_after.free_memory()
 
 
 if __name__ == '__main__':

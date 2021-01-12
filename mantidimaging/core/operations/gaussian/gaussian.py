@@ -3,13 +3,14 @@
 
 from functools import partial
 from logging import getLogger
+import numpy as np
 
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -46,7 +47,7 @@ class GaussianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if size and size > 1:
-            _execute(data.data, size, mode, order, cores, chunksize, progress)
+            _execute(data.data, size, mode, order, cores, progress)
         h.check_data_stack(data)
         return data
 
@@ -87,23 +88,18 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def _execute(data, size, mode, order, cores=None, chunksize=None, progress=None):
+def _execute(data: np.ndarray, size, mode, order, cores=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Gaussian filter')
 
-    # Parallel CPU version of the Gaussian filter
-    # create the partial function to forward the parameters
-    f = psm.create_partial(scipy_ndimage.gaussian_filter,
-                           fwd_func=psm.return_fwd_func,
-                           sigma=size,
-                           mode=mode,
-                           order=order)
+    f = ps.create_partial(scipy_ndimage.gaussian_filter, ps.return_to_self, sigma=size, mode=mode, order=order)
 
     log.info("Starting PARALLEL gaussian filter, with pixel data type: {0}, "
              "filter size/width: {1}.".format(data.dtype, size))
 
     progress.update()
-    data = psm.execute(data, f, cores, chunksize, progress, msg="Gaussian filter")
+    ps.shared_list = [data]
+    ps.execute(f, data.shape[0], progress, msg="Gaussian filter", cores=cores)
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "

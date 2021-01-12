@@ -1,3 +1,5 @@
+.. _Reconstruction Help page:
+
 Reconstruction Help page
 ========================
 
@@ -6,5 +8,6 @@ Reconstruction Help page
    :maxdepth: 1
    :caption: Contents:
 
+   center_of_rotation
    algorithms
    filters

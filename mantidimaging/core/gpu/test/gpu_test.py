@@ -24,16 +24,6 @@ class GPUTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
 
-    @staticmethod
-    def run_serial(data, size, mode):
-        """
-        Run the median filter in serial.
-        """
-        th.switch_mp_off()
-        cpu_result = MedianFilter.filter_func(data, size, mode)
-        th.switch_mp_on()
-        return cpu_result
-
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
         """
@@ -47,7 +37,7 @@ class GPUTest(unittest.TestCase):
                 images = th.generate_images()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-                cpu_result = self.run_serial(images.copy(), size, mode)
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
                 npt.assert_almost_equal(gpu_result.data[0], cpu_result.data[0])
 
@@ -80,7 +70,7 @@ class GPUTest(unittest.TestCase):
         images = th.generate_images(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial(images.copy(), size, mode)
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
         npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
@@ -95,7 +85,7 @@ class GPUTest(unittest.TestCase):
         images = th.generate_images(dtype="float64")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial(images.copy(), size, mode)
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
         npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
@@ -115,7 +105,7 @@ class GPUTest(unittest.TestCase):
         images = th.generate_images(shape=(n_images, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial(images.copy(), size, mode)
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
         npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 

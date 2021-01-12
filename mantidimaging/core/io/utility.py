@@ -5,9 +5,9 @@ import glob
 import itertools
 import os
 import re
-
-from logging import getLogger
-from typing import List
+from logging import getLogger, Logger
+from pathlib import Path
+from typing import List, Optional
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
@@ -76,7 +76,7 @@ def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
     extensions = get_candidate_file_extensions(img_format)
     files_match = []
     for ext in extensions:
-        files_match = glob.glob(os.path.join(path, "{0}*.{1}".format(prefix, ext)))
+        files_match = glob.glob(os.path.join(path, "{0}*{1}".format(prefix, ext)))
 
         if len(files_match) > 0:
             break
@@ -91,6 +91,20 @@ def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
     log.debug(f'Found {len(files_match)} files with common prefix: {os.path.commonprefix(files_match)}')
 
     return files_match
+
+
+def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str,
+                                  image_format: str) -> Optional[List[str]]:
+    prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
+
+    for prefix in prefix_list:
+        try:
+            if suffix != "After":
+                return get_file_names(sample_dirname.absolute(), image_format, prefix=prefix)
+        except RuntimeError:
+            getLogger(__name__).info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
+
+    return None
 
 
 def get_folder_names(path):
@@ -138,11 +152,73 @@ def _alphanum_key_split(path_str):
     return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
-if __name__ == '__main__':
-    import doctest
-
-    doctest.testmod()
-
-
 def get_prefix(path: str, separator="_"):
     return path[:path.rfind(separator)]
+
+
+def find_images(sample_dirname: Path,
+                image_type: str,
+                suffix: str,
+                image_format: str,
+                look_without_suffix=False,
+                logger: Logger = None) -> List[str]:
+    # same folder
+    file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
+    if file_names is not None:
+        return file_names
+
+    # look into different directories 1 level above
+    dirs = [
+        f"{image_type} {suffix}", f"{image_type.lower()} {suffix}", f"{image_type}_{suffix}",
+        f"{image_type.lower()}_{suffix}"
+    ]
+    if look_without_suffix:
+        dirs.extend([f"{image_type.lower()}", image_type])
+
+    for d in dirs:
+        expected_folder_path = sample_dirname / ".." / d
+        try:
+            return get_file_names(expected_folder_path.absolute(), image_format)
+        except RuntimeError:
+            if logger is not None:
+                logger.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
+
+    return []
+
+
+def find_log(dirname: Path, log_name: str, logger: Logger = None) -> str:
+    """
+
+    :param dirname: The directory in which the sample images were found
+    :param log_name: The log name is typically the directory name of the sample
+    :param logger: The logger that find_log should report back via, should an error occur.
+    :return:
+    """
+    expected_path = dirname / '..'
+    try:
+        return get_file_names(expected_path.absolute(), "txt", prefix=log_name)[0]
+    except RuntimeError:
+        if logger is not None:
+            logger.info(f"Could not find a log file for {log_name} in {dirname}")
+    return ""
+
+
+def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Logger = None):
+    expected_path = sample_dirname / '..' / '180deg'
+    try:
+        return get_file_names(expected_path.absolute(), image_format)[0]
+    except RuntimeError:
+        if logger is not None:
+            logger.info(f"Could not find 180 degree projection in {expected_path}")
+    return ""
+
+
+def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
+    # Grab all .tif or .tiff files
+    possible_files = glob.glob(os.path.join(file_path, "**/*.tif*"), recursive=True)
+
+    for possible_file in possible_files:
+        lower_filename = os.path.basename(possible_file).lower()
+        if "flat" not in lower_filename and "dark" not in lower_filename and "180" not in lower_filename:
+            return possible_file
+    return None

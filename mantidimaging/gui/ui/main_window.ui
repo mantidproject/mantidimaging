@@ -34,8 +34,10 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoad"/>
+    <addaction name="actionLoadDataset"/>
+    <addaction name="actionLoadImages"/>
     <addaction name="actionSampleLoadLog"/>
+    <addaction name="actionLoadProjectionAngles"/>
     <addaction name="actionLoad180deg"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
@@ -43,6 +45,9 @@
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuWorkflow">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Workflow</string>
     </property>
@@ -56,21 +61,32 @@
     </property>
     <addaction name="actionOnlineDocumentation"/>
     <addaction name="actionAbout"/>
-    <addaction name="actionDebug_Me"/>
+   </widget>
+   <widget class="QMenu" name="menuImage">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Image</string>
+    </property>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuWorkflow"/>
+   <addaction name="menuImage"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionLoad">
+  <action name="actionLoadDataset">
    <property name="text">
-    <string>Load</string>
+    <string>Load dataset</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save</string>
    </property>
@@ -108,6 +124,9 @@
    </property>
   </action>
   <action name="actionFilters">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Operations</string>
    </property>
@@ -141,14 +160,6 @@
     <string>Ctrl+Shift+F</string>
    </property>
   </action>
-  <action name="actionDebug_Me">
-   <property name="text">
-    <string>Debug Me</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+D</string>
-   </property>
-  </action>
   <action name="actionCompare_Images">
    <property name="text">
     <string>Compare Images</string>
@@ -160,13 +171,32 @@
    </property>
   </action>
   <action name="actionSampleLoadLog">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load log for stack...</string>
    </property>
   </action>
   <action name="actionLoad180deg">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load 180 deg projection...</string>
+   </property>
+  </action>
+  <action name="actionLoadProjectionAngles">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Load projection angles...</string>
+   </property>
+  </action>
+  <action name="actionLoadImages">
+   <property name="text">
+    <string>Load images</string>
    </property>
   </action>
  </widget>

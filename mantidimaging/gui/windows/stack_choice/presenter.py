@@ -10,7 +10,7 @@ from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePre
 from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter
+    from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter  # pragma: no cover
 
 
 def _get_stack_from_uuid(original_stack, stack_uuid):
@@ -75,10 +75,10 @@ class StackChoicePresenter(StackChoicePresenterMixin):
 
     def do_clean_up_original_data(self):
         self._clean_up_original_images_stack()
-        self.stack.free_memory()
         self.view.choice_made = True
         self.close_view()
 
     def close_view(self):
         self.view.close()
+        self.stack = None
         self.done = True

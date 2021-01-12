@@ -1,19 +1,22 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
-from typing import Tuple
 import unittest
+from typing import Tuple
+from unittest import mock
+from unittest.mock import Mock
 
-import mock
+from PyQt5 import sip
 from PyQt5.QtWidgets import QDockWidget
-from mock import Mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
+
+versions._use_test_values()
 
 
 @start_qapplication
@@ -25,24 +28,19 @@ class StackVisualiserViewTest(unittest.TestCase):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
     def tearDown(self) -> None:
-        try:
-            self.test_data.free_memory()
-        except FileNotFoundError:
-            pass
+        sip.delete(self.view)  # type: ignore
         self.view = None
         self.window = None  # type: ignore[assignment]
         self.dock = None
 
     def setUp(self):
-        # mock the view so it has the same methods
-        with mock.patch('mantidimaging.gui.windows.main.view.check_version_and_label') as mock_find_latest_version:
+        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.window = MainWindowView()
-            mock_find_latest_version.assert_called_once()
         self.window.remove_stack = mock.Mock()
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
 
     def _add_stack_visualiser(self) -> Tuple[QDockWidget, StackVisualiserView, Images]:
-        test_data = th.generate_images(automatic_free=False)
+        test_data = th.generate_images()
         self.window.create_new_stack(test_data, "Test Data")
         view = self.window.get_stack_with_images(test_data)
         return view.dock, view, test_data

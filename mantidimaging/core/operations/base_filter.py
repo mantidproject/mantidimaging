@@ -10,8 +10,8 @@ import numpy as np
 from mantidimaging.core.data import Images
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401
-    from mantidimaging.gui.mvp_base import BaseMainWindowView
+    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
+    from mantidimaging.gui.mvp_base import BaseMainWindowView  # pragma: no cover
 
 
 class FilterGroup(Enum):
@@ -33,8 +33,6 @@ class BaseFilter:
     def filter_func(data: Images) -> Images:
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
-        The body of this function does not need to include pre and post processing steps - these should be
-        included in the do_before_wrapper and do_after_wrapper, respectively.
 
         :param data: the image data to apply the filter to
         :param kwargs: any additional arguments which the specific filter uses
@@ -77,14 +75,6 @@ class BaseFilter:
         :return: a map of parameters names
         """
         return {}
-
-    @staticmethod
-    def do_before_wrapper():
-        return lambda _: None
-
-    @staticmethod
-    def do_after_wrapper():
-        return lambda *_: None
 
     @staticmethod
     def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:

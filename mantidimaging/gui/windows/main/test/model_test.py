@@ -4,9 +4,10 @@
 import unittest
 import uuid
 
-import mock
+from unittest import mock
+import numpy as np
 
-from mantidimaging.core.utility.data_containers import LoadingParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import StackId
 
@@ -276,10 +277,36 @@ class MainWindowModelTest(unittest.TestCase):
         stack_mock = mock.MagicMock()
         self.model.get_stack_by_name = stack_mock
         stack_mock.return_value = None
-
         self.assertRaises(RuntimeError, self.model.add_180_deg_to_stack, stack_name=stack_name, _180_deg_file=_180_file)
         stack_mock.assert_called_with(stack_name)
 
+    def test_add_projection_angles_to_sample_no_stack(self):
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+        self.assertRaises(RuntimeError, self.model.add_projection_angles_to_sample, stack_name, proj_angles)
 
-if __name__ == '__main__':
-    unittest.main()
+        stack_mock.assert_called_with(stack_name)
+
+    def test_add_projection_angles_to_sample(self):
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+
+        self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+
+        stack_mock.assert_called_with(stack_name)
+        stack_mock.return_value.widget.return_value.presenter.images.set_projection_angles.assert_called_once_with(
+            proj_angles)
+
+    @mock.patch("mantidimaging.gui.windows.main.model.loader")
+    def test_load_stack(self, loader: mock.MagicMock):
+        file_path = "file_path"
+        progress = mock.Mock()
+
+        self.model.load_stack(file_path, progress)
+
+        loader.load_stack.assert_called_once_with(file_path, progress)

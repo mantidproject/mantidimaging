@@ -5,92 +5,158 @@ import json
 import os
 import subprocess
 from logging import getLogger
-from typing import Callable
 from collections import namedtuple
-
 import requests
+from typing import Optional
+
+from mantidimaging import __version__
 
 LOG = getLogger(__name__)
 ParsedVersion = namedtuple('ParsedVersion', ['version', 'commits'])
 
+# Import as
+#   from mantidimaging.core.utility.version_check import versions
+# and use accessors
+#   versions.get_conda_installed_version()
+# Actual version lookups will only be performed once.
 
-def check_version_and_label(action: Callable[[str], None]) -> bool:
-    """
-    Checks the package version and label. Shows a warning message to user
-    and an update command if the version is out of date for the current package's label.
 
-    Supports labels: main and unstable
+class CheckVersion:
+    _conda_installed_version: Optional[str]
+    _conda_installed_label: Optional[str]
+    _conda_available_version: Optional[str]
 
-    :returns: Whether the label is "unstable" (False) or "main" (True)
-    """
-    LOG.info("Finding and comparing mantidimaging versions")
-    local_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2,$4}'",
-                                            shell=True,
-                                            env=os.environ).decode("utf-8").strip()
+    def __init__(self):
+        self._version = __version__
+        self._conda_installed_version = None
+        self._conda_installed_label = None
+        self._conda_available_version = None
 
-    if local_package == "":
-        LOG.info("Running a development build without a local Mantid Imaging package installation.")
-        # no local installation, no point sending out API requests
-        # just returns as "unstable" label
-        return False
+        # To test update warning message uncomment
+        # self._use_test_values(False)
 
-    local_version, local_label = local_package.split()
-    # makes sure this is no longer used by accident
-    del local_package
+    def _retrieve_versions(self) -> None:
+        self._retrieve_conda_installed_version()
+        self._retrieve_conda_available_version()
 
-    # if the label contains "main", it will return True
-    # if it doesn't then it will return False and mark
-    # the app as unstable
-    is_main_label = "unstable" not in local_label
+    def _use_test_values(self, uptodate: bool = True) -> None:
+        """Avoid fetching version info"""
+        self._conda_installed_version = "1.0.0_1"
+        self._conda_installed_label = "main"
+        if uptodate:
+            self._conda_available_version = "1.0.0_1"
+        else:
+            self._conda_available_version = "2.0.0_1"
 
-    try:
-        response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
-        remote_main_version = json.loads(response.content)["latest_version"]
-        remote_unstable_version = json.loads(
-            response.content)["versions"][-1] if len(json.loads(response.content)["versions"]) > 0 else ''
-    except Exception:
-        # if anything goes wrong, in the end we don't have the version
-        LOG.info("Could not connect to Anaconda remote to retrieve the latest version")
-        return is_main_label
+    def show_versions(self) -> None:
+        print(f"Mantid imaging {self.get_version()}")
+        print(f"conda_installed_version {self.get_conda_installed_version()}")
+        print(f"conda_installed_label {self.get_conda_installed_label()}")
+        print(f"conda_available_version {self.get_conda_available_version()}")
 
-    parsed_local_version = _parse_version(local_version)
-    del local_version
+    def get_version(self) -> str:
+        """Get built in version"""
+        return self._version
 
-    if is_main_label:
-        parsed_remote_version = _parse_version(remote_main_version)
+    def get_conda_installed_version(self) -> Optional[str]:
+        """Get version number of installed package from conda"""
+        if self._conda_installed_version is None:
+            self._retrieve_conda_installed_version()
+        return self._conda_installed_version
+
+    def get_conda_installed_label(self) -> Optional[str]:
+        """Get with 'main' or 'unstable' from conda installed package"""
+        if self._conda_installed_label is None:
+            self._retrieve_conda_installed_version()
+        return self._conda_installed_label
+
+    def get_conda_available_version(self) -> Optional[str]:
+        """Get latest version number from conda"""
+        if self._conda_available_version is None:
+            self._retrieve_conda_available_version()
+        return self._conda_available_version
+
+    def is_conda_uptodate(self) -> bool:
+        """Check if up to date with lasted version in conda"""
+        if (self.get_conda_installed_version() == "" or self.get_conda_available_version() == ""):
+            # If unable to get conda versions then assume everything is good
+            return True
+
+        return _version_is_uptodate(_parse_version(self.get_conda_installed_version()),
+                                    _parse_version(self.get_conda_available_version()))
+
+    def conda_update_message(self) -> tuple:
+        suffix = self.get_conda_installed_label()
+
+        msg = "Not running the latest Mantid Imaging"
+        if suffix != "main":
+            msg += f"-{suffix}"
+        msg += f".\nFound version {self.get_conda_installed_version()}, "
+        msg += f"latest: {self.get_conda_available_version()}.\nPlease check the terminal for an update command!"
+
+        detailed = f"Not running the latest Mantid Imaging{suffix}.\n"
+        detailed += f"Found version {self.get_conda_installed_version()}, "
+        detailed += f"latest: {self.get_conda_available_version()}.\n"
+        detailed += "To update your environment please copy and run the following command:\n"
+        detailed += "source /opt/miniconda/bin/activate /opt/miniconda && "
+        if self.get_conda_installed_label() != "main":
+            detailed += "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable "
+        detailed += "source "
+        detailed += "<(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)"
+        return msg, detailed
+
+    def _retrieve_conda_installed_version(self) -> None:
+        local_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2,$4}'",
+                                                shell=True,
+                                                env=os.environ).decode("utf-8").strip()
+        if local_package == "":
+            LOG.info("Running a development build without a local Mantid Imaging package installation.")
+            # no local installation, no point sending out API requests
+            # just returns as "unstable" label
+            self._conda_installed_version = ""
+            self._conda_installed_label = "unstable"
+            return
+
+        self._conda_installed_version, self._conda_installed_label = local_package.split()
+        self._conda_installed_label = self._conda_installed_label.rpartition("/")[2]
+
+    def _retrieve_conda_available_version(self) -> None:
+        try:
+            response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
+            remote_main_version = json.loads(response.content)["latest_version"]
+            remote_unstable_version = json.loads(
+                response.content)["versions"][-1] if len(json.loads(response.content)["versions"]) > 0 else ''
+        except Exception:
+            # if anything goes wrong, in the end we don't have the version
+            LOG.info("Could not connect to Anaconda remote to retrieve the latest version")
+            self._conda_available_version = ""
+            return
+
+        if self.get_conda_installed_label() == "main":
+            self._conda_available_version = remote_main_version
+        else:
+            self._conda_available_version = remote_unstable_version
+
+
+versions = CheckVersion()
+
+
+def _parse_version(package_version_string: Optional[str]) -> ParsedVersion:
+    if package_version_string is None:
+        raise ValueError
+
+    # remove the RC tag if found
+    package_version_string = package_version_string.replace("rc", "")
+
+    if "_" in package_version_string:
+        local_version, local_commits_since_last = package_version_string.split("_")
     else:
-        parsed_remote_version = _parse_version(remote_unstable_version)
-
-    _do_version_check(parsed_local_version, parsed_remote_version, action, is_main_label)
-    return is_main_label
-
-
-def _parse_version(package_version_string: str) -> ParsedVersion:
-    local_version, local_commits_since_last = package_version_string.split("_")
+        local_version, local_commits_since_last = package_version_string, "0"
     return ParsedVersion(tuple(map(int, local_version.split("."))), int(local_commits_since_last))
 
 
-def _do_version_check(local: ParsedVersion, remote: ParsedVersion, action: Callable[[str], None], is_main_label: bool):
+def _version_is_uptodate(local: ParsedVersion, remote: ParsedVersion):
     if local.version < remote.version or local.commits < remote.commits:
-        # no suffix if main, else adds Unstable
-        suffix = "" if is_main_label else " Unstable"
-
-        msg = f"Not running the latest Mantid Imaging{suffix}. Found version {_make_version_str(local)}, " \
-              f"latest: {_make_version_str(remote)}. Please check the terminal for an update command!"
-        LOG.info(msg)
-
-        # for unstable packages these run variables are prepended to the command
-        # for main packages nothing is prepended, and the script's defaults are used
-        command_prefix = "" if is_main_label else "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable "
-
-        LOG.info("To update your environment please copy and run the following command:\n\n"
-                 "source /opt/miniconda/bin/activate /opt/miniconda && "
-                 f"{command_prefix}source "
-                 "<(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)")
-        action(msg)
+        return False
     else:
-        LOG.info("Running the latest Mantid Imaging")
-
-
-def _make_version_str(parsed: ParsedVersion) -> str:
-    return f"{'.'.join([str(v) for v in parsed.version])}_{parsed.commits}"
+        return True

@@ -3,11 +3,8 @@
 
 # !/usr/bin/env python
 import argparse
-import atexit
 import logging
 import warnings
-
-import SharedArray as sa
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.optional_imports import safe_import
@@ -42,11 +39,6 @@ def parse_args():
 
 
 def main():
-    def free_all():
-        for arr in sa.list():
-            sa.delete(arr.name.decode("utf-8"))
-
-    atexit.register(free_all)
     args = parse_args()
     # Print version number and exit
     if args.version:
@@ -57,7 +49,6 @@ def main():
 
     h.initialise_logging(logging.getLevelName(args.log_level))
     startup_checks()
-    free_all()
 
     from mantidimaging import gui
     gui.execute()

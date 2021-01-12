@@ -13,12 +13,12 @@ from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget, \
-    QSizePolicy
+    QSizePolicy, QAction, QMenu
 
 from mantidimaging.core.utility import finder
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView  # pragma: no cover
 
 
 class BlockQtSignals(object):
@@ -130,7 +130,6 @@ def add_property_to_form(label: str,
         if default_value:
             box.setValue(cast_func(default_value))
 
-    # some of these are used dynamically by Savu Operations GUI and will not show up in a grep
     if dtype in ['str', Type.STR, 'tuple', Type.TUPLE, 'NoneType', Type.NONETYPE, 'list', Type.LIST]:
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
         right_widget = Qt.QLineEdit()
@@ -235,3 +234,13 @@ def delete_all_widgets_from_layout(lo):
         # layout and marks them for deletion)
         elif item.widget() is not None:
             item.widget().setParent(None)
+
+
+def populate_menu(menu: QMenu, actions_list: List[QAction]):
+    for (menu_text, func) in actions_list:
+        if func is None:
+            menu.addSeparator()
+        else:
+            action = QAction(menu_text, menu)
+            action.triggered.connect(func)
+            menu.addAction(action)

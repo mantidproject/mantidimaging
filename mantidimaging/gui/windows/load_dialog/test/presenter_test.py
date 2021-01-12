@@ -7,7 +7,7 @@ from unittest import mock
 
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
-from mantidimaging.gui.windows.load_dialog.presenter import LoadPresenter, Notification
+from mantidimaging.gui.windows.load_dialog.presenter import LoadPresenter, Notification, logger
 
 
 class LoadDialogPresenterTest(unittest.TestCase):
@@ -46,13 +46,17 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with("Sample")
 
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_log", return_value=3)
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_180deg_proj", return_value=2)
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_images", return_value=1)
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.read_in_file_information",
                 return_value=FileInformation([], (0, 0, 0), True))
     @mock.patch(
         "mantidimaging.gui.windows.load_dialog.presenter.get_file_extension", )
     @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix")
-    def test_do_update_sample(self, get_prefix, get_file_extension, read_in_file_information, mock_load_log):
+    def test_do_update_sample(self, get_prefix, get_file_extension, read_in_file_information, mock_load_log,
+                              find_images, find_180deg_proj, find_log):
         selected_file = "SelectedFile"
         sample_file_name = "SampleFileName"
         path_text = "PathText"
@@ -67,9 +71,6 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.sample.path_text.return_value = path_text
         self.v.sample.directory.return_value = dirname
         self.v.flat.directory.return_value = dirname + "t"
-        self.p._find_images = mock.MagicMock(return_value=1)
-        self.p._find_180deg_proj = mock.MagicMock(return_value=2)
-        self.p._find_log = mock.MagicMock(return_value=3)
         get_file_extension.return_value = image_format
         get_prefix.return_value = prefix
 
@@ -87,7 +88,23 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.flat_after.set_images.assert_called_once_with(1)
         self.v.dark_after.set_images.assert_called_once_with(1)
         self.assertEqual(2, self.v.proj_180deg.path)
-        self.p._find_log.assert_any_call(Path(dirname), dirname)
+        find_log.assert_any_call(Path(dirname), dirname, logger)
+        find_images.assert_any_call(Path(dirname),
+                                    'Flat',
+                                    suffix='Before',
+                                    look_without_suffix=True,
+                                    image_format=image_format,
+                                    logger=logger)
+        find_images.assert_any_call(Path(dirname), 'Flat', suffix='After', image_format=image_format, logger=logger)
+        find_images.assert_any_call(Path(dirname),
+                                    'Dark',
+                                    suffix='Before',
+                                    look_without_suffix=True,
+                                    image_format=image_format,
+                                    logger=logger)
+        find_images.assert_any_call(Path(dirname), 'Dark', suffix='After', image_format=image_format, logger=logger)
+        self.assertEqual(4, find_images.call_count)
+        find_180deg_proj.assert_called_once_with(Path(dirname), image_format, logger)
         self.assertEqual(self.v.sample_log.path, 3)
         self.assertEqual(self.v.flat_before_log.path, 3)
         self.assertFalse(self.v.flat_before_log.use)
@@ -109,18 +126,18 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
         field.set_images.assert_not_called()
 
-    def test_do_update_flat_or_dark(self):
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_images")
+    def test_do_update_flat_or_dark(self, find_images):
         file_name = "/ExampleFilename"
         name = "Name"
         suffix = "Apples"
         field = mock.MagicMock()
         self.v.select_file.return_value = file_name
-        self.p._find_images = mock.MagicMock(return_value=1)
 
         self.p.do_update_flat_or_dark(field, name, suffix)
 
-        self.p._find_images.assert_called_once_with(Path('/'), name, suffix)
-        field.set_images.assert_called_once_with(1)
+        find_images.assert_called_once_with(Path('/'), name, suffix, image_format='', logger=logger)
+        field.set_images.assert_called_once_with(find_images.return_value)
 
     def test_do_update_single_file(self):
         file_name = "file_name"

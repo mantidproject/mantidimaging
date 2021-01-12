@@ -3,7 +3,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 
 from mantidimaging.core.utility.progress_reporting import Progress, ProgressHandler
 

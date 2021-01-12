@@ -42,9 +42,9 @@ jobs:
     - name: docs
       uses: ./.github/actions/test
       with:
-        command: python setup.py docs_api && python setup.py docs
+        command: python setup.py docs
 
     - name: pytest
       uses: ./.github/actions/test
       with:
-        command: xvfb-run pytest
+        command: xvfb-run pytest -n auto --count 10

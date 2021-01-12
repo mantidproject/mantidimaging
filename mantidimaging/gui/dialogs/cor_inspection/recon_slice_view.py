@@ -11,7 +11,7 @@ from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView
+    from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView  # pragma: no cover
 
 
 class CompareSlicesView(GraphicsLayoutWidget):
@@ -88,6 +88,18 @@ class CompareSlicesView(GraphicsLayoutWidget):
 
         for img in self.less_img, self.current_img, self.more_img:
             img.hoverEvent = lambda ev: self.mouse_over(ev)
+
+        # Work around for https://github.com/mantidproject/mantidimaging/issues/565
+        for scene in [
+                self.less_img.scene(),
+                self.less_hist.scene(),
+                self.current_img.scene(),
+                self.current_hist.scene(),
+                self.more_img.scene(),
+                self.more_hist.scene(),
+        ]:
+
+            scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
 
     def mouse_over(self, ev):
         # Ignore events triggered by leaving window or right clicking

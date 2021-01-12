@@ -24,8 +24,7 @@ class Images:
                  filenames: Optional[List[str]] = None,
                  indices: Optional[Tuple[int, int, int]] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 memory_filename: Optional[str] = None):
+                 sinograms: bool = False):
         """
 
         :param data: Images of the Sample/Projection data
@@ -42,9 +41,9 @@ class Images:
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self.memory_filename = memory_filename
         self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
+        self._projection_angles: Optional[ProjectionAngles] = None
 
     def __eq__(self, other):
         if isinstance(other, Images):
@@ -65,25 +64,6 @@ class Images:
 
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
-
-    def free_memory(self, delete_filename=True):
-        """
-        Delete the memory file containing the data, and the references to it within this class.
-
-        The memory will not be freed until _all_ references to it are gone, so local variables
-        can safely keep a reference even after deletion. This is used in unit testing data
-        generation, and ROI normalisation.
-
-        :param delete_filename: Whether to reset the memory filename attribute.
-                                Set this to False in cases where the data will be replaced with
-                                data with a new shape (rebin, crop), but the memory filename
-                                ought to remain the same.
-        """
-        if self.memory_filename is not None:
-            pu.delete_shared_array(self.memory_filename)
-            if delete_filename:
-                self.memory_filename = None
-        self.data = None
 
     @property
     def filenames(self) -> Optional[List[str]]:
@@ -132,8 +112,7 @@ class Images:
 
     def copy(self, flip_axes=False) -> 'Images':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
-        data_name = pu.create_shared_name()
-        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
             data_copy[:] = np.swapaxes(self.data, 0, 1)
         else:
@@ -142,22 +121,19 @@ class Images:
         images = Images(data_copy,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
-                        memory_filename=data_name)
+                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
     def copy_roi(self, roi: SensibleROI):
         shape = (self.data.shape[0], roi.height, roi.width)
 
-        data_name = pu.create_shared_name()
-        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy = pu.create_array(shape, self.data.dtype)
         data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
         images = Images(data_copy,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=self._is_sinograms,
-                        memory_filename=data_name)
+                        sinograms=self._is_sinograms)
 
         mark_cropped(images, roi)
         return images
@@ -258,9 +234,8 @@ class Images:
 
     @staticmethod
     def create_empty_images(shape, dtype, metadata):
-        shared_name = pu.create_shared_name()
-        arr = pu.create_array(shape, dtype, shared_name)
-        return Images(arr, memory_filename=shared_name, metadata=metadata)
+        arr = pu.create_array(shape, dtype)
+        return Images(arr, metadata=metadata)
 
     @property
     def is_sinograms(self):
@@ -278,14 +253,30 @@ class Images:
             del self.metadata[const.LOG_FILE]
         self._log_file = value
 
-    def projection_angles(self, max_angle: float = 360.0):
-        proj_angles = self._log_file.projection_angles() if self._log_file is not None else \
-            ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
-        if self.num_images != len(proj_angles.value):
-            raise ValueError(f"Number of projection angles {len(proj_angles.value)} does not equal "
-                             f"the number of projections {self.num_images}. This can happen if loading subset of "
-                             "projections, and using projection angles from a log file.")
-        return proj_angles
+    def set_projection_angles(self, angles: ProjectionAngles):
+        if len(angles.value) != self.num_images:
+            raise RuntimeError("The number of angles does not match the number of images. "
+                               f"Num angles {len(angles.value)} and num images {self.num_images}")
+
+        self._projection_angles = angles
+
+    def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
+        """
+        Return projection angles, in priority order:
+        - From a log
+        - From the manually loaded file with a list of angles
+        - Automatically generated with equidistant step
+
+        :param max_angle: The maximum angle up to which the angles will be generated.
+                          Only used when the angles are generated, if they are provided
+                          via a log or a file the argument will be ignored.
+        """
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
+        elif self._projection_angles is not None:
+            return self._projection_angles
+        else:
+            return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
 
     def counts(self) -> Optional[Counts]:
         if self._log_file is not None:

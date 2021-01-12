@@ -1,11 +1,11 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 import unittest
 from unittest import mock
 from unittest.mock import DEFAULT, Mock, patch
 from uuid import uuid4
 
+from PyQt5 import sip
 from PyQt5.QtWidgets import QMessageBox
 from pyqtgraph import ViewBox
 
@@ -21,6 +21,10 @@ class StackChoiceViewTest(unittest.TestCase):
         self.new_stack = th.generate_images()
         self.p = mock.MagicMock()
         self.v = StackChoiceView(self.original_stack, self.new_stack, self.p, None)
+
+    def tearDown(self):
+        sip.delete(self.v)
+        self.v = None
 
     def test_toggle_roi_show_true(self):
         self.v.roi_shown = True
