@@ -52,7 +52,7 @@ class RotateFilter(BaseFilter):
 
         _, angle = add_property_to_form('Angle of rotation\ncounter clockwise (degrees)',
                                         Type.FLOAT,
-                                        0, (-180, 180),
+                                        0, (-359, 359),
                                         form=form,
                                         on_change=on_change,
                                         tooltip="How much degrees to rotate counter-clockwise")
