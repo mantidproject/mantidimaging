@@ -9,10 +9,10 @@ from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 
 
 class CORInspectionDialogPresenterTest(unittest.TestCase):
-    @mock.patch("mantidimaging.gui.dialogs.cor_inspection.CORInspectionDialogModel")
+    @mock.patch("mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogModel")
     def setUp(self, model) -> None:
         self.view = mock.MagicMock()
-        self.model = model
+        self.model = model.return_value
         self.recon_params = ReconstructionParameters("", "", 0, ScalarCoR(2), Degrees(2), 2, 2)
         self.presenter = CORInspectionDialogPresenter(self.view, th.generate_images(), 5, ScalarCoR(2),
                                                       self.recon_params, False)
@@ -30,3 +30,5 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
     def test_click_less(self):
         with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
             self.presenter.notify(Notification.IMAGE_CLICKED_LESS)
+        self.model.adjust.assert_called_once_with(ImageType.LESS)
+        self.assertIn("Image selected: {}".format(ImageType.LESS), presenter_log.output[0])
