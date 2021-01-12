@@ -53,7 +53,7 @@ class GPUTest(unittest.TestCase):
                 images = th.generate_images()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-                cpu_result = self.run_serial(images.copy(), size, mode)
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
                 npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
