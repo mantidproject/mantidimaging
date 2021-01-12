@@ -4,6 +4,7 @@ from unittest import mock
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters, Degrees
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogPresenter
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 
 
 class CORInspectionDialogPresenterTest(unittest.TestCase):
@@ -16,8 +17,11 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
                                                       self.recon_params, False)
 
     def test_init_sets_get_title(self):
-        iters_mode = True
-
         with mock.patch("mantidimaging.gui.dialogs.cor_inspection.CORInspectionDialogModel"):
             presenter = CORInspectionDialogPresenter(self.view, th.generate_images(), 5, ScalarCoR(2),
-                                                     self.recon_params, iters_mode)
+                                                     self.recon_params, True)
+            assert "Iterations" in presenter.get_title(ImageType.CURRENT)
+
+            presenter = CORInspectionDialogPresenter(self.view, th.generate_images(), 5, ScalarCoR(2),
+                                                     self.recon_params, False)
+            assert "COR" in presenter.get_title(ImageType.CURRENT)
