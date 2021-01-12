@@ -4,6 +4,7 @@ from unittest import mock
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters, Degrees
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogPresenter
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.gui.dialogs.cor_inspection.presenter import Notification
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 
 
@@ -25,3 +26,7 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
             presenter = CORInspectionDialogPresenter(self.view, th.generate_images(), 5, ScalarCoR(2),
                                                      self.recon_params, False)
             assert "COR" in presenter.get_title(ImageType.CURRENT)
+
+    def test_click_less(self):
+        with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
+            self.presenter.notify(Notification.IMAGE_CLICKED_LESS)
