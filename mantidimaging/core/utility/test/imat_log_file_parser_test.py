@@ -7,20 +7,18 @@ import pytest
 from mantidimaging.core.utility.imat_log_file_parser import CSVLogParser, IMATLogFile, TextLogParser
 
 
-@pytest.mark.parametrize(
-    'test_input', [[
-        TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE, "ignored line",
-        "timestamp   Projection:  0  angle: 0.1   counts before: 12345   counts_after: 45678"
-    ],
-                   [
-                       CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE,
-                       "timestamp,Projection,0,angle:0.1,counts before: 12345,counts_after: 45678"
-                   ]])
+@pytest.mark.parametrize('test_input', [[
+    TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE, "ignored line",
+    "timestamp   Projection:  0  angle: 0.1   counts before: 12345   counts_after: 45678"
+],
+                                        [
+                                            CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE,
+                                            "timestamp,Projection,0,angle:0.1,counts before: 12345,counts_after: 45678"
+                                        ]])
 def test_parsing_log_file(test_input):
     logfile = IMATLogFile(test_input, "/tmp/fake")
     assert len(logfile.projection_angles().value) == 1
-    assert logfile.projection_angles().value[0] == np.deg2rad(
-        0.1), f"Got: {logfile.projection_angles().value[0]}"
+    assert logfile.projection_angles().value[0] == np.deg2rad(0.1), f"Got: {logfile.projection_angles().value[0]}"
     assert logfile.counts().value[0] == (45678 - 12345)
 
 
