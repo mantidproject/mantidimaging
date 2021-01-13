@@ -34,8 +34,7 @@ def _fitsread(filename):
     import astropy.io.fits as fits
     image = fits.open(filename)
     if len(image) < 1:
-        raise RuntimeError(
-            "Could not load at least one FITS image/table file from: {0}".format(filename))
+        raise RuntimeError("Could not load at least one FITS image/table file from: {0}".format(filename))
 
     # get the image data
     return image[0].data
@@ -180,9 +179,8 @@ def load(input_path=None,
         else:
             load_func = _imread
 
-        dataset = img_loader.execute(load_func, input_file_names, input_path_flat_before,
-                                     input_path_flat_after, input_path_dark_before,
-                                     input_path_dark_after, in_format, dtype, indices, progress)
+        dataset = img_loader.execute(load_func, input_file_names, input_path_flat_before, input_path_flat_after,
+                                     input_path_dark_before, input_path_dark_after, in_format, dtype, indices, progress)
 
     # Search for and load metadata file
     metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)
