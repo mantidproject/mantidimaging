@@ -38,17 +38,11 @@ class MonitorNormalisation(BaseFilter):
 
         counts_val = counts.value / counts.value[0]
         div_partial = ptsm.create_partial(_divide_by_counts, fwd_function=ptsm.inplace)
-        images, _ = ptsm.execute(images.data,
-                                 counts_val,
-                                 div_partial,
-                                 cores,
-                                 chunksize,
-                                 progress=progress)
+        images, _ = ptsm.execute(images.data, counts_val, div_partial, cores, chunksize, progress=progress)
         return images
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable,
-                     view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
         return {}
 
     @staticmethod
