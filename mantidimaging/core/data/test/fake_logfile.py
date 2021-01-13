@@ -25,9 +25,7 @@ def generate_txt_logfile() -> IMATLogFile:
 
 def generate_csv_logfile() -> IMATLogFile:
     data = [
-        TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE,  # checked if exists, but skipped
-        "",  # skipped when parsing
-        # for each row a list with 4 entries is currently expected
+        CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE,
         "Sun Feb 10 00:22:04 2019,Projection,0,angle: 0.0,Monitor 3 before: 4577907,Monitor 3 after:  4720271",
         "Sun Feb 10 00:22:37 2019,Projection,1,angle: 0.3152,Monitor 3 before: 4729337,Monitor 3 after:  4871319",
         "Sun Feb 10 00:23:10 2019,Projection,2,angle: 0.6304,Monitor 3 before: 4879923,Monitor 3 after:  5022689",
