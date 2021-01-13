@@ -92,3 +92,11 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         with self.assertLogs(self.presenter.__module__, level='ERROR') as presenter_log:
             self.presenter.notify(Notification.LOADED)
         self.assertIn("Notification handler failed", presenter_log.output[0])
+
+    @mock.patch('mantidimaging.gui.dialogs.cor_inspection.presenter.ScalarCoR')
+    def test_optimal_rotation_centre(self, scalar_cor_mock):
+        assert self.presenter.optimal_rotation_centre == scalar_cor_mock.return_value
+        scalar_cor_mock.assert_called_once_with(self.model.centre_value)
+
+    def test_optimal_iterations(self):
+        assert self.presenter.optimal_iterations == self.model.centre_value
