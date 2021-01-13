@@ -1,6 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import math
 import numpy as np
 import pytest
 from numpy import testing as npt, int16, uint16, float32, finfo, copy
@@ -174,6 +175,29 @@ def test_scale_single_image_bad_offset():
         pass
     except Exception as e:
         assert False, f"Unexpected exception was triggered: {e}"
+
+
+@pytest.mark.parametrize('value', [255.0, 65535.0, 2147483647.0])
+def test_rescale_ignores_nans(value):
+    images = th.generate_images((10, 100, 100))
+
+    images.data[0:3] = -100.0
+    images.data[3:5] = 0.5
+    images.data[6][0:10] = np.nan
+    images.data[7:10] = 1.0
+
+    expected_min_input = 0.1
+    images = RescaleFilter.filter_func(images,
+                                       min_input=expected_min_input,
+                                       max_input=images.data.max(),
+                                       max_output=value)
+
+    # below min_input has been clipped to 0
+    npt.assert_equal(0, images.data[0:3])
+
+    npt.assert_equal(images.data[3:5], value / 2)
+    npt.assert_equal(images.data[7:10], value)
+    assert all([math.isnan(x) for x in images.data[6][0:10].flatten()])
 
 
 if __name__ == "__main__":
