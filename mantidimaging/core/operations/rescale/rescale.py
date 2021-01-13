@@ -3,10 +3,8 @@
 
 from functools import partial
 from typing import Dict, Any
-from numpy import uint16, float32, ndarray
-
+from numpy import uint16, float32, ndarray, nanmax, nanmin
 from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
-
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -35,9 +33,10 @@ class RescaleFilter(BaseFilter):
         images.data[images.data > max_input] = 0
 
         # offset - it removes any negative values so that they don't overflow when in uint16 range
-        images.data += abs(images.data.min())
+        images.data += abs(nanmin(images.data))
+        data_max = nanmax(images.data)
         # slope
-        images.data *= (max_output / images.data.max())
+        images.data *= (max_output / data_max)
 
         if data_type is not None:
             if data_type == uint16 and not images.dtype == uint16:
