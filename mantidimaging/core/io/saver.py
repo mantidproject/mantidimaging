@@ -102,9 +102,9 @@ def save(images: Images,
     make_dirs_if_needed(output_dir, overwrite_all)
 
     # Define current parameters
-    min_value = images.data.min()
+    min_value = np.nanmin(images.data)
     offset = abs(min_value)
-    max_value = images.data.max()
+    max_value = np.nanmax(images.data)
     int_16_slope = max_value / INT16_SIZE
 
     # Do rescale if needed.
