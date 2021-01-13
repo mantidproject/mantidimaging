@@ -67,3 +67,28 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
             call(image, self.model.recon_preview.return_value, self.presenter.get_title(image)) for image in ImageType
         ]
         self.view.set_image.assert_has_calls(calls)
+
+    def test_full_update_refreshes(self):
+        self.presenter.notify(Notification.FULL_UPDATE)
+        calls = [
+            call(image, self.model.recon_preview.return_value, self.presenter.get_title(image)) for image in ImageType
+        ]
+        self.view.set_image.assert_has_calls(calls)
+
+    def test_update_parameters(self):
+        self.presenter.notify(Notification.UPDATE_PARAMETERS_FROM_UI)
+        assert self.model.step == self.view.step_size
+        calls = [
+            call(image, self.model.recon_preview.return_value, self.presenter.get_title(image)) for image in ImageType
+        ]
+        self.view.set_image.assert_has_calls(calls)
+
+    def test_on_load(self):
+        self.presenter.notify(Notification.LOADED)
+        self.view.set_maximum_cor.assert_called_once_with(self.model.cor_extents.__getitem__.return_value)
+
+    def test_exception_logs_failure(self):
+        self.presenter.on_load = mock.Mock(side_effect=Exception)
+        with self.assertLogs(self.presenter.__module__, level='ERROR') as presenter_log:
+            self.presenter.notify(Notification.LOADED)
+        self.assertIn("Notification handler failed", presenter_log.output[0])
