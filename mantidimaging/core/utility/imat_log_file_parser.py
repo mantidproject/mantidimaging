@@ -126,8 +126,7 @@ class IMATLogFile:
         return self._source_file
 
     def projection_numbers(self):
-        proj_nums = numpy.zeros(len(self._data[IMATLogColumn.PROJECTION_NUMBER]),
-                                dtype=numpy.uint32)
+        proj_nums = numpy.zeros(len(self._data[IMATLogColumn.PROJECTION_NUMBER]), dtype=numpy.uint32)
         proj_nums[:] = self._data[IMATLogColumn.PROJECTION_NUMBER]
         return proj_nums
 
@@ -138,9 +137,9 @@ class IMATLogFile:
 
     def counts(self) -> Counts:
         counts = numpy.zeros(len(self._data[IMATLogColumn.COUNTS_BEFORE]))
-        for i, [before, after] in enumerate(
-                zip(self._data[IMATLogColumn.COUNTS_BEFORE],
-                    self._data[IMATLogColumn.COUNTS_AFTER])):
+        for i, [before,
+                after] in enumerate(zip(self._data[IMATLogColumn.COUNTS_BEFORE],
+                                        self._data[IMATLogColumn.COUNTS_AFTER])):
             # clips the string before the count number
             counts[i] = float(after) - float(before)
 
