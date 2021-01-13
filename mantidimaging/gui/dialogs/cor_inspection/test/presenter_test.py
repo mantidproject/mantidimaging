@@ -3,6 +3,7 @@
 
 import unittest
 from unittest import mock
+from unittest.mock import call
 
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters, Degrees
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogPresenter
@@ -37,6 +38,10 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         self.assertIn("Image selected: {}".format(ImageType.LESS), presenter_log.output[0])
 
         assert self.view.step_size == self.model.step
+        calls = [
+            call(image, self.model.recon_preview.return_value, self.presenter.get_title(image)) for image in ImageType
+        ]
+        self.view.set_image.assert_has_calls(calls)
 
     def test_click_current(self):
         with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
@@ -45,6 +50,11 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         self.assertIn("Image selected: {}".format(ImageType.CURRENT), presenter_log.output[0])
 
         assert self.view.step_size == self.model.step
+        calls = [
+            call(image, self.model.recon_preview.return_value, self.presenter.get_title(image)) for image in ImageType
+        ]
+        calls.pop(1)
+        self.view.set_image.assert_has_calls(calls)
 
     def test_click_more(self):
         with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
@@ -53,3 +63,7 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         self.assertIn("Image selected: {}".format(ImageType.MORE), presenter_log.output[0])
 
         assert self.view.step_size == self.model.step
+        calls = [
+            call(image, self.model.recon_preview.return_value, self.presenter.get_title(image)) for image in ImageType
+        ]
+        self.view.set_image.assert_has_calls(calls)
