@@ -29,14 +29,16 @@ class RescaleFilter(BaseFilter):
                     max_output: float = 256.0,
                     progress=None,
                     data_type=None) -> Images:
-        images.data[images.data < min_input] = 0
-        images.data[images.data > max_input] = 0
 
         # offset - it removes any negative values so that they don't overflow when in uint16 range
-        images.data += abs(nanmin(images.data))
+        images.data -= nanmin(images.data)
         data_max = nanmax(images.data)
         # slope
-        images.data *= (max_output / data_max)
+        factor = (max_output / data_max)
+        images.data *= factor
+
+        images.data[images.data < min_input * factor] = 0
+        images.data[images.data > max_input * factor] = 0
 
         if data_type is not None:
             if data_type == uint16 and not images.dtype == uint16:
@@ -47,18 +49,13 @@ class RescaleFilter(BaseFilter):
         return images
 
     @staticmethod
-    def filter_single_image(image: ndarray,
-                            min_input: float,
-                            max_input: float,
-                            max_output: float,
-                            offset: float,
-                            data_type=float32):
-        if offset < 0:
-            raise ValueError("The offset value provided must not be negative.")
-        image[image < min_input] = 0
-        image[image > max_input] = 0
-        image += offset
-        image *= (max_output / max_input)
+    def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float, data_type=float32):
+        image -= min_input
+        factor = (max_output / max_input)
+
+        image *= factor
+        image[image < min_input * factor] = 0
+        image[image > max_input * factor] = 0
 
         if data_type == float32:
             return image.astype(float32)
