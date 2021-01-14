@@ -203,7 +203,13 @@ class FiltersWindowView(BaseMainWindowView):
         self.notification_text.setText(f"{operation_name} completed successfully!")
 
     def open_help_webpage(self):
-        filter_module_path = self.presenter.get_filter_module_name(self.filterSelector.currentIndex())
+        idx = self.filterSelector.currentIndex()
+        if idx >= 16:
+            idx -= 2
+        elif idx >= 5:
+            idx -= 1
+
+        filter_module_path = self.presenter.get_filter_module_name(idx)
         try:
             open_api_webpage(filter_module_path)
         except RuntimeError as err:
