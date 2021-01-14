@@ -103,7 +103,6 @@ def save(images: Images,
 
     # Define current parameters
     min_value = np.nanmin(images.data)
-    offset = abs(min_value)
     max_value = np.nanmax(images.data)
     int_16_slope = max_value / INT16_SIZE
 
@@ -112,7 +111,7 @@ def save(images: Images,
         rescale_params = None
     elif pixel_depth == "int16":
         # turn the offset to string otherwise json throws a TypeError when trying to save float32
-        rescale_params = {"offset": str(offset), "slope": int_16_slope}
+        rescale_params = {"offset": str(min_value), "slope": int_16_slope}
     else:
         raise ValueError("The pixel depth given is not handled: " + pixel_depth)
 
@@ -155,8 +154,7 @@ def save(images: Images,
                         rescale_single_image(np.copy(images.data[idx]),
                                              min_input=min_value,
                                              max_input=max_value,
-                                             max_output=INT16_SIZE - 1,
-                                             offset=offset), names[idx], overwrite_all)
+                                             max_output=INT16_SIZE - 1), names[idx], overwrite_all)
                 else:
                     write_func(data[idx, :, :], names[idx], overwrite_all)
 
@@ -165,8 +163,8 @@ def save(images: Images,
         return names
 
 
-def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float, offset: float):
-    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, offset, data_type=np.uint16)
+def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float):
+    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, data_type=np.uint16)
 
 
 def generate_names(name_prefix,
