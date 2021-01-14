@@ -7,18 +7,14 @@ Module containing helper functions relating to PyQt.
 import os
 from enum import IntEnum, auto
 from logging import getLogger
-from typing import Tuple, Union, TYPE_CHECKING, List, Optional
+from typing import Any, Tuple, Union, List
 
 from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget, \
-    QSizePolicy, QAction, QMenu
+from PyQt5.QtWidgets import QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction, QMenu
 
 from mantidimaging.core.utility import finder
-
-if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView  # pragma: no cover
 
 
 class BlockQtSignals(object):
@@ -66,9 +62,6 @@ def get_value_from_qwidget(widget: QWidget):
         return widget.isChecked()
 
 
-ReturnTypes = Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, 'StackSelectorWidgetView']
-
-
 class Type(IntEnum):
     STR = auto()
     TUPLE = auto()
@@ -91,7 +84,7 @@ def add_property_to_form(label: str,
                          on_change=None,
                          form=None,
                          filters_view=None,
-                         run_on_press=None) -> Tuple[Union[QLabel, QLineEdit], Optional[ReturnTypes]]:
+                         run_on_press=None) -> Tuple[Union[QLabel, QLineEdit], Any]:
     """
     Adds a property to the algorithm dialog.
 
