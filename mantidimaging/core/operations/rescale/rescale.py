@@ -2,9 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import Dict, Any
-from numpy import uint16, float32, ndarray, nanmax, nanmin
-from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
+from typing import Any, Dict
+
+import numpy as np
+from numpy import float32, nanmax, nanmin, ndarray, uint16
+from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -29,16 +32,12 @@ class RescaleFilter(BaseFilter):
                     max_output: float = 256.0,
                     progress=None,
                     data_type=None) -> Images:
-
+        np.clip(images.data, min_input, max_input, out=images.data)
         # offset - it removes any negative values so that they don't overflow when in uint16 range
         images.data -= nanmin(images.data)
         data_max = nanmax(images.data)
         # slope
-        factor = (max_output / data_max)
-        images.data *= factor
-
-        images.data[images.data < min_input * factor] = 0
-        images.data[images.data > max_input * factor] = 0
+        images.data *= (max_output / data_max)
 
         if data_type is not None:
             if data_type == uint16 and not images.dtype == uint16:
@@ -50,12 +49,11 @@ class RescaleFilter(BaseFilter):
 
     @staticmethod
     def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float, data_type=float32):
+        np.clip(image, min_input, max_input, out=image)
         image -= min_input
-        factor = (max_output / max_input)
+        data_max = nanmax(image)
 
-        image *= factor
-        image[image < min_input * factor] = 0
-        image[image > max_input * factor] = 0
+        image *= (max_output / data_max)
 
         if data_type == float32:
             return image.astype(float32)
