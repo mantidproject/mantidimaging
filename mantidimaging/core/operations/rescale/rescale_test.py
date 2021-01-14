@@ -15,11 +15,11 @@ from mantidimaging.test_helpers.qt_mocks import MockQSpinBox, MockQComboBox
 def test_rescale(value):
     images = th.generate_images((10, 100, 100))
 
-    images.data[0:3] = -100.0
+    images.data[0:3] = -100
     images.data[3:6] = 0.5
     images.data[6:10] = 1.0
 
-    expected_min_input = 0.1
+    expected_min_input = 0.0
     images = RescaleFilter.filter_func(images,
                                        min_input=expected_min_input,
                                        max_input=images.data.max(),
@@ -27,7 +27,6 @@ def test_rescale(value):
 
     # below min_input has been clipped to 0
     npt.assert_equal(0, images.data[0:3])
-
     npt.assert_equal(images.data[3:6], value / 2)
     npt.assert_equal(images.data[6:10], value)
 
@@ -80,86 +79,21 @@ def test_type_changes_to_given_type(type, max_value):
     npt.assert_equal(images.dtype, type)
 
 
-def test_scale_single_image():
+@pytest.mark.parametrize('type', [uint16, float32])
+def test_scale_single_image(type):
     images = th.generate_images((2, 100, 100))
 
-    images.data[0] = -100.0
-    images.data[1] = 1.5
+    images.data[0:2] = np.arange(-1, 1, step=0.0002).reshape(100, 100)
 
-    # Scale to int16
-    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]),
-                                                      0,
-                                                      images.data.max(),
-                                                      1,
-                                                      offset=0,
-                                                      data_type=uint16)
-
-    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[1]),
-                                                      0,
-                                                      images.data.max(),
-                                                      1,
-                                                      offset=0,
-                                                      data_type=uint16)
-
-    npt.assert_equal(0, scaled_image1)
-    npt.assert_equal(1, scaled_image2)
-
-    # Scale to float32
-    scaled_image3 = RescaleFilter.filter_single_image(copy(images.data[0]),
-                                                      0,
-                                                      images.data.max(),
-                                                      2,
-                                                      offset=0,
-                                                      data_type=float32)
-    scaled_image4 = RescaleFilter.filter_single_image(copy(images.data[1]),
-                                                      0,
-                                                      images.data.max(),
-                                                      2,
-                                                      offset=0,
-                                                      data_type=float32)
-
-    npt.assert_equal(0.0, scaled_image3)
-    npt.assert_equal(2.0, scaled_image4)
-
-    assert scaled_image1.dtype == uint16
-    assert scaled_image2.dtype == uint16
-    assert scaled_image3.dtype == float32
-    assert scaled_image4.dtype == float32
-    assert scaled_image1.dtype != int16, \
+    scaled_image = RescaleFilter.filter_single_image(copy(images.data[0]),
+                                                     min_input=images.data[0].min(),
+                                                     max_input=images.data[0].max(),
+                                                     max_output=65535,
+                                                     data_type=type)
+    assert scaled_image.min() == 0
+    assert scaled_image.max() == 65535
+    assert scaled_image.dtype != int16, \
         "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
-    assert scaled_image2.dtype != int16, \
-        "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
-
-
-def test_scale_single_image_with_offset():
-    images = th.generate_images((2, 100, 100))
-
-    images.data[0][:] = np.arange(-1, 1, step=0.0002).reshape(100, 100)
-
-    offset = abs(images.data[0].min())
-    # Scale to int16
-    scaled_image1 = RescaleFilter.filter_single_image(copy(images.data[0]),
-                                                      min_input=-5000,
-                                                      max_input=5000,
-                                                      max_output=65535,
-                                                      offset=offset,
-                                                      data_type=uint16)
-
-    assert scaled_image1.min() == 0
-    assert scaled_image1.max() == 26
-
-    del scaled_image1
-
-    # Scale to int16
-    scaled_image2 = RescaleFilter.filter_single_image(copy(images.data[0]),
-                                                      min_input=-5000,
-                                                      max_input=5000,
-                                                      max_output=65535,
-                                                      offset=offset,
-                                                      data_type=float32)
-
-    assert scaled_image2.min() == 0
-    assert scaled_image2.max() - 26.211378 < 0.0001
 
 
 def test_scale_single_image_bad_offset():
@@ -169,7 +103,6 @@ def test_scale_single_image_bad_offset():
                                           min_input=-5000,
                                           max_input=5000,
                                           max_output=65535,
-                                          offset=-1,
                                           data_type=uint16)
     except ValueError:
         pass
@@ -186,7 +119,7 @@ def test_rescale_ignores_nans(value):
     images.data[6][0:10] = np.nan
     images.data[7:10] = 1.0
 
-    expected_min_input = 0.1
+    expected_min_input = 0.0
     images = RescaleFilter.filter_func(images,
                                        min_input=expected_min_input,
                                        max_input=images.data.max(),
