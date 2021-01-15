@@ -41,6 +41,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.imgmath',
+    'sphinx.ext.autosectionlabel',
     'sphinx_multiversion',
 ]
 

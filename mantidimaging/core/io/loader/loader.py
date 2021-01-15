@@ -104,12 +104,8 @@ def read_in_file_information(input_path,
 
 
 def load_log(log_file: str) -> IMATLogFile:
-    data = []
     with open(log_file, 'r') as f:
-        for line in f:
-            data.append(line.strip().split("   "))
-
-    return IMATLogFile(data, log_file)
+        return IMATLogFile(f.readlines(), log_file)
 
 
 def load_p(parameters: ImageParameters, dtype, progress) -> Images:
