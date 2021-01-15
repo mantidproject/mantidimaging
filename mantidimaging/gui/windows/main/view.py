@@ -171,7 +171,7 @@ class MainWindowView(BaseMainWindowView):
         stack_to_add_log_to = stack_selector.selected_stack
 
         # Open file dialog
-        file_filter = "Log File (*.txt *.log)"
+        file_filter = "Log File (*.txt *.log *.csv)"
         selected_file, _ = QFileDialog.getOpenFileName(caption="Log to be loaded",
                                                        filter=f"{file_filter};;All (*.*)",
                                                        initialFilter=file_filter)
