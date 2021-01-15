@@ -2,10 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import Dict, Any
-from numpy import uint16, float32, ndarray
+from typing import Any, Dict
 
-from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox
+import numpy as np
+from numpy import float32, nanmax, nanmin, ndarray, uint16
+from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
@@ -20,7 +21,7 @@ class RescaleFilter(BaseFilter):
 
     When: Can be used to crop-out value regions of interest
 
-    When: Automatically used when saving images to int16
+    When: Automatically used when saving images to uint16
     """
     filter_name = 'Rescale'
 
@@ -31,9 +32,12 @@ class RescaleFilter(BaseFilter):
                     max_output: float = 256.0,
                     progress=None,
                     data_type=None) -> Images:
-        images.data[images.data < min_input] = 0
-        images.data[images.data > max_input] = 0
-        images.data *= (max_output / images.data.max())
+        np.clip(images.data, min_input, max_input, out=images.data)
+        # offset - it removes any negative values so that they don't overflow when in uint16 range
+        images.data -= nanmin(images.data)
+        data_max = nanmax(images.data)
+        # slope
+        images.data *= (max_output / data_max)
 
         if data_type is not None:
             if data_type == uint16 and not images.dtype == uint16:
@@ -45,9 +49,11 @@ class RescaleFilter(BaseFilter):
 
     @staticmethod
     def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float, data_type=float32):
-        image[image < min_input] = 0
-        image[image > max_input] = 0
-        image *= (max_output / max_input)
+        np.clip(image, min_input, max_input, out=image)
+        image -= min_input
+        data_max = nanmax(image)
+
+        image *= (max_output / data_max)
 
         if data_type == float32:
             return image.astype(float32)
@@ -66,6 +72,7 @@ class RescaleFilter(BaseFilter):
                                                    valid_values=(-2147483647, 2147483647),
                                                    tooltip="Minimum value of the data that will be used.\n"
                                                    "Anything below this will be clipped to 0")
+        min_input_widget.setDecimals(8)
         _, max_input_widget = add_property_to_form('Max input',
                                                    Type.FLOAT,
                                                    form=form,
@@ -74,6 +81,7 @@ class RescaleFilter(BaseFilter):
                                                    valid_values=(-2147483647, 2147483647),
                                                    tooltip="Maximum value of the data that will be used.\n"
                                                    "Anything above it will be clipped to 0")
+        max_input_widget.setDecimals(8)
         _, max_output_widget = add_property_to_form('Max output',
                                                     Type.FLOAT,
                                                     form=form,
@@ -82,6 +90,7 @@ class RescaleFilter(BaseFilter):
                                                     valid_values=(1, 2147483647),
                                                     tooltip="Maximum value of the OUTPUT images. They will \n"
                                                     "be rescaled to range [0, MAX OUTPUT]")
+        max_output_widget.setDecimals(8)
         _, preset_widget = add_property_to_form('Preset',
                                                 Type.CHOICE,
                                                 form=form,
