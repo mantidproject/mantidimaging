@@ -173,7 +173,7 @@ class MainWindowView(BaseMainWindowView):
         stack_to_add_log_to = stack_selector.selected_stack
 
         # Open file dialog
-        selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log)")
+        selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log *.csv)")
 
         # Cancel/Close was clicked
         if selected_file == "":
