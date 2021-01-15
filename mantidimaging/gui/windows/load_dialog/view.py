@@ -115,7 +115,7 @@ class MWLoadDialog(Qt.QDialog):
             file_filter = "Images (*.png *.jpg *.tif *.tiff *.fit *.fits)"
         else:
             # Assume text file
-            file_filter = "Log File (*.txt *.log)"
+            file_filter = "Log File (*.txt *.log *.csv)"
         selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=caption,
                                                           filter=f"{file_filter};;All (*.*)",
                                                           initialFilter=file_filter)
