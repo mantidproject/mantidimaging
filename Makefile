@@ -8,6 +8,8 @@ install-run-requirements:
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
+	conda create -n build-env
+	conda activate build-env
 	conda install --yes --file deps/build-requirements.conda
 
 install-dev-requirements:

@@ -1,3 +1,5 @@
+.. _Conda Packaging and Docker images:
+
 Conda Packaging and Docker images
 =================================
 
