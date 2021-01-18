@@ -11,6 +11,7 @@ from scipy.optimize import minimize
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
+from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -44,7 +45,10 @@ def _managed_recon(sino, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int],
     rec_id = None
     alg_id = None
     try:
-        proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
+        proj_type = 'cuda' if CudaChecker().cuda_is_present() else 'line'
+        LOG.debug("Using projection type {}".format(proj_type))
+
+        proj_id = astra.create_projector(proj_type, proj_geom, vol_geom)
         sino_id = astra.data2d.create('-sino', proj_geom, sino)
         rec_id = astra.data2d.create('-vol', vol_geom)
 
