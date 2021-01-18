@@ -58,6 +58,9 @@ class ReconstructWindowView(BaseMainWindowView):
     reconstructVolume: QPushButton
     reconstructSlice: QPushButton
 
+    numMaterialsSpinBox: QSpinBox
+    changeColourPaletteButton: QPushButton
+
     stackSelector: StackSelectorWidgetView
 
     def __init__(self, main_window: 'MainWindowView'):
@@ -115,6 +118,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.correlateBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_CORRELATE))
         self.minimiseBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_MINIMISE))
+
+        self.changeColourPaletteButton.clicked.connect(self.on_change_colour_palette)
 
         def on_row_change(item, _):
             """
@@ -381,3 +386,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def change_refine_iterations(self):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
+
+    def on_change_colour_palette(self):
+        self.image_view.change_colour_palette(self.numMaterialsSpinBox.value())
