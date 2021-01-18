@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from collections import namedtuple
+from logging import getLogger
 from typing import Optional
 
 import numpy as np
@@ -12,6 +13,8 @@ from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+
+LOG = getLogger(__name__)
 
 histogram_axes_labels = {'left': 'Count', 'bottom': 'Gray value'}
 before_pen = (200, 0, 0)
@@ -41,7 +44,12 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         widget_location = self.mapToGlobal(QPoint(self.width() / 2, 0))
         # allow the widget to take up to 80% of the desktop's height
-        self.ALLOWED_HEIGHT: QRect = QGuiApplication.screenAt(widget_location).availableGeometry().height() * 0.8
+        if QGuiApplication.screenAt(widget_location) is not None:
+            screen_height = QGuiApplication.screenAt(widget_location).availableGeometry().height()
+        else:
+            screen_height = max(QGuiApplication.primaryScreen().availableGeometry().height(), 600)
+            LOG.info("Unable to detect current screen. Setting screen height to %s" % screen_height)
+        self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
 
         self.before_histogram_data = None
         self.after_histogram_data = None

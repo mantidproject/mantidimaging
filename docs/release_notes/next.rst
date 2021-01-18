@@ -10,3 +10,4 @@ New features
 Fixes
 -----
 
+- #816 : Error finding screen size in some dual screen set ups
