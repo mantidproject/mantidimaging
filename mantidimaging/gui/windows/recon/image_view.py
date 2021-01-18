@@ -20,9 +20,6 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.sinogram, self.sinogram_vb, self.sinogram_hist = self.image_in_vb("Sinogram")
         self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
 
-        for hist in [self.projection_hist, self.sinogram_hist, self.recon_hist]:
-            hist.gradient.loadPreset("thermal")
-
         self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()], movable=True)
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
@@ -143,3 +140,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def reset_recon_histogram(self):
         self.recon_hist.autoHistogramRange()
+
+    def change_colour_palette(self):
+        for hist in [self.projection_hist, self.sinogram_hist, self.recon_hist]:
+            hist.gradient.loadPreset("thermal")
