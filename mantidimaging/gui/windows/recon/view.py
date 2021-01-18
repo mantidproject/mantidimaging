@@ -58,7 +58,6 @@ class ReconstructWindowView(BaseMainWindowView):
     reconstructVolume: QPushButton
     reconstructSlice: QPushButton
 
-    numMaterialsSpinBox: QSpinBox
     changeColourPaletteButton: QPushButton
 
     stackSelector: StackSelectorWidgetView
@@ -388,4 +387,5 @@ class ReconstructWindowView(BaseMainWindowView):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
     def on_change_colour_palette(self):
-        self.image_view.change_colour_palette(self.numMaterialsSpinBox.value())
+        pass
+        # self.image_view.change_colour_palette(self.numMaterialsSpinBox.value())
