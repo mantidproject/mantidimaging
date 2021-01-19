@@ -1,9 +1,7 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import List
 
 from PyQt5.QtWidgets import QSpinBox, QComboBox
-from pyqtgraph.graphicsItems import HistogramLUTItem
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter
