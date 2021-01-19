@@ -121,6 +121,11 @@
           <string>plasma</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>magma</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
