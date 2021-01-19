@@ -14,6 +14,7 @@ from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
+from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import Column, CorTiltPointQtModel
@@ -387,5 +388,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
     def on_change_colour_palette(self):
-        pass
-        # self.image_view.change_colour_palette(self.numMaterialsSpinBox.value())
+        hists = [self.image_view.recon_hist, self.image_view.sinogram_hist, self.image_view.projection_hist]
+        change_colour_palette = PaletteChangerView(self, hists)
+        change_colour_palette.show()
