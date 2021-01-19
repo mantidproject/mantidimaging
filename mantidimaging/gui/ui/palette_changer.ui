@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>295</height>
+    <width>374</width>
+    <height>160</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,15 +44,15 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="algorithmComboBox">
         <item>
          <property name="text">
-          <string>Otsu</string>
+          <string>Jenks</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Jenks</string>
+          <string>Otsu</string>
          </property>
         </item>
        </widget>
