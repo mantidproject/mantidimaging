@@ -1,12 +1,11 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox)
+                             QVBoxLayout, QWidget, QMessageBox, QAction)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
@@ -163,6 +162,13 @@ class ReconstructWindowView(BaseMainWindowView):
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
+
+        self.hists = [self.image_view.recon_hist, self.image_view.sinogram_hist, self.image_view.projection_hist]
+        self.auto_colour_action = QAction("Auto")
+        for hist in self.hists:
+            action1 = hist.gradient.menu.actions()[12]
+            hist.gradient.menu.insertAction(action1, self.auto_colour_action)
+            hist.gradient.menu.insertSeparator(self.auto_colour_action)
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
         selected_images = self.main_window.get_images_from_stack_uuid(uuid)
