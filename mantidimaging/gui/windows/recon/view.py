@@ -394,6 +394,5 @@ class ReconstructWindowView(BaseMainWindowView):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
     def on_change_colour_palette(self):
-        hists = [self.image_view.recon_hist, self.image_view.sinogram_hist, self.image_view.projection_hist]
-        change_colour_palette = PaletteChangerView(self, hists)
+        change_colour_palette = PaletteChangerView(self, self.hists)
         change_colour_palette.show()
