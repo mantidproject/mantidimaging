@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>160</height>
+    <width>383</width>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,18 +26,8 @@
       <string>Colour Palette</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="numMaterialsLabel">
-        <property name="text">
-         <string>Number of Materials</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="numMaterialsSpinBox"/>
-      </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="algorithmLabel">
         <property name="text">
          <string>Algorithm</string>
         </property>
@@ -53,6 +43,82 @@
         <item>
          <property name="text">
           <string>Otsu</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="numMaterialsSpinBox"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="numMaterialsLabel">
+        <property name="text">
+         <string>Number of Materials</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="colourMapLabel">
+        <property name="text">
+         <string>Colour Map</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="colourMapComboBox">
+        <item>
+         <property name="text">
+          <string>thermal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>flame</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>yellowy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>bipolar</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>spectrum</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>cyclic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>greyclip</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>grey</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>viridis</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>inferno</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>plasma</string>
          </property>
         </item>
        </widget>
