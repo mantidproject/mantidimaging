@@ -17,6 +17,7 @@ class PaletteChangerView(BaseDialogView):
         super(PaletteChangerView, self).__init__(parent, "gui/ui/palette_changer.ui")
         self.presenter = PaletteChangerPresenter(self, hists)
         self.accepted.connect(self.presenter.change_colour_palette)
+        self.algorithmComboBox.currentTextChanged.connect(self.set_spin_box_enabled)
 
     @property
     def num_materials(self) -> int:
@@ -29,3 +30,6 @@ class PaletteChangerView(BaseDialogView):
     @property
     def colour_map(self) -> str:
         return self.colourMapComboBox.currentText()
+
+    def set_spin_box_enabled(self):
+        self.numMaterialsSpinBox.setEnabled(self.algorithmComboBox.currentText() == "Jenks")
