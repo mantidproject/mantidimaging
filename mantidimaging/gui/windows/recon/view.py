@@ -165,6 +165,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.hists = [self.image_view.recon_hist, self.image_view.sinogram_hist, self.image_view.projection_hist]
         self.auto_colour_action = QAction("Auto")
+        self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
+
         for hist in self.hists:
             action1 = hist.gradient.menu.actions()[12]
             hist.gradient.menu.insertAction(action1, self.auto_colour_action)
