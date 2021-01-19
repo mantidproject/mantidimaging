@@ -168,8 +168,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
 
         for hist in self.hists:
-            action1 = hist.gradient.menu.actions()[12]
-            hist.gradient.menu.insertAction(action1, self.auto_colour_action)
+            action = hist.gradient.menu.actions()[12]
+            hist.gradient.menu.insertAction(action, self.auto_colour_action)
             hist.gradient.menu.insertSeparator(self.auto_colour_action)
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
