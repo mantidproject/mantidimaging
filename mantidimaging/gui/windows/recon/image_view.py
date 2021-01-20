@@ -140,8 +140,3 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def reset_recon_histogram(self):
         self.recon_hist.autoHistogramRange()
-
-    def change_colour_palette(self, num_materials: int):
-        for hist in [self.projection_hist, self.sinogram_hist, self.recon_hist]:
-            hist.gradient.loadPreset("thermal")
-        print(num_materials)
