@@ -15,14 +15,28 @@ class PaletteChangerPresenter(BasePresenter):
         pass
 
     def change_colour_palette(self):
-        # todo: log here
+        self._change_colour_map()
+        if self.view.algorithm == "Jenks":
+            self._jenks_breaks()
+        else:
+            self._otsu_break()
+
+    def _jenks_breaks(self):
+        image = self.images[-1]
+        hist = self.hists[-1]
+        breaks = jenks_breaks(image.image[0], self.view.num_materials)
+        old_keys = list(hist.gradient.ticks.copy().keys())
+        for tick_break in breaks:
+            t = hist.gradient.addTick(tick_break, False)
+        hist.gradient.updateGradient()
+        hist.gradient.sigGradientChangeFinished.emit(self)
+        # for tick in old_keys:
+        #     hist.gradient.removeTick(tick)
+
+    def _change_colour_map(self):
         preset = self.view.colour_map
         for hist in self.hists:
             hist.gradient.loadPreset(preset)
-        self.hists[0].gradient.loadPreset("grey")
-        # self.change_ticks(hist.gradient)
-        # hist.gradient.ticks = [[]]
-        for image in self.images:
-            print(image.getHistogram())
-            breaks = jenks_breaks(image.image[0], self.view.num_materials)
-            print(breaks)
+
+    def _otsu_break(self):
+        pass
