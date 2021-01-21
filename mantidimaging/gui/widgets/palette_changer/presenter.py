@@ -25,13 +25,17 @@ class PaletteChangerPresenter(BasePresenter):
         image = self.images[-1]
         hist = self.hists[-1]
         breaks = jenks_breaks(image.image[0], self.view.num_materials)
+        levels = hist.getLevels()
+        breaks[0] = levels[0]
+        breaks[-1] = levels[1]
+        norm = 1.0 / abs(levels[1] - levels[0])
+        breaks = [(b + levels[0]) * norm for b in breaks]
         old_ticks = list(hist.gradient.ticks.keys())
         for tick_break in breaks:
-            hist.gradient.addTick(tick_break, finish=False)
+            t = hist.gradient.addTick(tick_break, finish=False)
         for t in old_ticks:
             hist.gradient.removeTick(t, finish=False)
         hist.gradient.showTicks()
-        hist.gradient.updateGradient()
         hist.gradient.sigGradientChangeFinished.emit(hist.gradient)
 
     def _change_colour_map(self):
