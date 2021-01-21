@@ -3,7 +3,7 @@
 
 from unittest import mock
 
-from eyes_tests.base_eyes import BaseEyesTest
+from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class MainWindowTest(BaseEyesTest):

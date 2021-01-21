@@ -54,10 +54,6 @@ def start_qapplication(cls):
         get_application()
         setUpClass_orig()
 
-    def tearDownClass(cls):
-        gc.collect()
-
     setUpClass_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
     setattr(cls, 'setUpClass', classmethod(setUpClass))
-    setattr(cls, 'tearDownClass', classmethod(tearDownClass))
     return cls

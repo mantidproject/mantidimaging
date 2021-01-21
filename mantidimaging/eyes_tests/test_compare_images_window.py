@@ -6,7 +6,7 @@ from unittest import mock
 from PyQt5.QtWidgets import QDialog
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
-from eyes_tests.base_eyes import BaseEyesTest
+from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class CompareImagesWindowTest(BaseEyesTest):
