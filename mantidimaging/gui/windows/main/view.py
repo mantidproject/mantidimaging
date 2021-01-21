@@ -90,8 +90,9 @@ class MainWindowView(BaseMainWindowView):
             bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         self.setWindowIcon(QIcon(bg_image))
 
-            if WelcomeScreenPresenter.show_today():
-                self.show_about()
+        if self.open_dialogs and WelcomeScreenPresenter.show_today():
+            self.show_about()
+
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
