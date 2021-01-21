@@ -38,8 +38,8 @@ class WelcomeScreenView(BaseDialogView):
         link_label.setOpenExternalLinks(True)
         self.link_box_layout.addWidget(link_label, row, 0)
 
-    def add_issue(self, contents):
+    def add_issues(self, contents):
         self.issue_box.setVisible(True)
-        issue_label = QLabel(contents)
-        issue_label.setOpenExternalLinks(True)
-        self.issue_box_layout.addWidget(issue_label)
+        issues_label = QLabel(contents)
+        issues_label.setOpenExternalLinks(True)
+        self.issue_box_layout.addWidget(issues_label)

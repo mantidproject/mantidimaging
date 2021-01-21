@@ -11,7 +11,7 @@ from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import shared_mem as psm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -32,12 +32,14 @@ class MedianFilter(BaseFilter):
     @staticmethod
     def filter_func(data: Images, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
         """
-        :param data: Input data as a 3D numpy.ndarray
+        :param data: Input data as an Images object.
         :param size: Size of the kernel
-        :param mode: The mode with which to handle the endges.
+        :param mode: The mode with which to handle the edges.
                      One of [reflect, constant, nearest, mirror, wrap].
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
+        :param progress: The object for displaying the progress.
+        :param force_cpu: Whether or not to use the CPU.
 
         :return: Returns the processed data
 
@@ -95,14 +97,14 @@ def _execute(data, size, mode, cores=None, chunksize=None, progress=None):
     progress = Progress.ensure_instance(progress, task_name='Median filter')
 
     # create the partial function to forward the parameters
-    f = psm.create_partial(scipy_ndimage.median_filter, fwd_func=psm.return_fwd_func, size=size, mode=mode)
+    f = ps.create_partial(scipy_ndimage.median_filter, ps.return_to_self, size=size, mode=mode)
 
     with progress:
         log.info("PARALLEL median filter, with pixel data type: {0}, filter "
                  "size/width: {1}.".format(data.dtype, size))
 
-        progress.update()
-        data = psm.execute(data, f, cores, chunksize, progress, msg="Median filter")
+        ps.shared_list = [data]
+        ps.execute(f, data.shape[0], progress, msg="Median filter", cores=cores)
 
     return data
 
@@ -117,4 +119,4 @@ def _execute_gpu(data, size, mode, progress=None):
 
         data = cuda.median_filter(data, size, mode, progress)
 
-    return data
+    return Images(data)

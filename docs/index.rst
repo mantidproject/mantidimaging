@@ -14,15 +14,16 @@ such as `Avizo
    :maxdepth: 1
    :caption: Contents:
 
+   overview
    installation
    user_guide/index
    developer_guide/index
    troubleshooting
    api
+   release_notes/index
 
 .. toctree::
    :caption: Links:
 
    Code Repository <https://github.com/mantidproject/mantidimaging>
-   Continuous Integration <http://builds.mantidproject.org/view/Imaging/>
    Anaconda Package <https://anaconda.org/mantid/mantidimaging>

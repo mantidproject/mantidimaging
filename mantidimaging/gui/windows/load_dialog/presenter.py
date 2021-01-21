@@ -6,11 +6,11 @@ import traceback
 from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
-from mantidimaging.core.io.utility import get_file_extension, get_prefix, get_file_names
+from mantidimaging.core.io.utility import get_file_extension, get_prefix, find_images, find_log, find_180deg_proj
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.windows.load_dialog.field import Field
 
@@ -78,12 +78,24 @@ class LoadPresenter:
         sample_dirname = Path(dirname)
 
         self.view.flat_before.set_images(
-            self._find_images(sample_dirname, "Flat", suffix="Before", look_without_suffix=True))
-        self.view.flat_after.set_images(self._find_images(sample_dirname, "Flat", suffix="After"))
+            find_images(sample_dirname,
+                        "Flat",
+                        suffix="Before",
+                        look_without_suffix=True,
+                        image_format=self.image_format,
+                        logger=logger))
+        self.view.flat_after.set_images(
+            find_images(sample_dirname, "Flat", suffix="After", image_format=self.image_format, logger=logger))
         self.view.dark_before.set_images(
-            self._find_images(sample_dirname, "Dark", suffix="Before", look_without_suffix=True))
-        self.view.dark_after.set_images(self._find_images(sample_dirname, "Dark", suffix="After"))
-        self.view.proj_180deg.path = self._find_180deg_proj(sample_dirname)
+            find_images(sample_dirname,
+                        "Dark",
+                        suffix="Before",
+                        look_without_suffix=True,
+                        image_format=self.image_format,
+                        logger=logger))
+        self.view.dark_after.set_images(
+            find_images(sample_dirname, "Dark", suffix="After", image_format=self.image_format, logger=logger))
+        self.view.proj_180deg.path = find_180deg_proj(sample_dirname, self.image_format, logger)
 
         try:
             self.set_sample_log(self.view.sample_log, sample_dirname, self.view.sample.directory(),
@@ -93,10 +105,10 @@ class LoadPresenter:
 
         self.view.sample_log.use = False
 
-        self.view.flat_before_log.path = self._find_log(sample_dirname, self.view.flat_before.directory())
+        self.view.flat_before_log.path = find_log(sample_dirname, self.view.flat_before.directory(), logger)
         self.view.flat_before_log.use = False
 
-        self.view.flat_after_log.path = self._find_log(sample_dirname, self.view.flat_after.directory())
+        self.view.flat_after_log.path = find_log(sample_dirname, self.view.flat_after.directory(), logger)
         self.view.flat_after_log.use = False
 
         self.view.images_are_sinograms.setChecked(self.last_file_info.sinograms)
@@ -104,67 +116,12 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
 
-    def _find_images_in_same_directory(self, sample_dirname: Path, type: str, suffix: str) -> Optional[List[str]]:
-        prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
-
-        for prefix in prefix_list:
-            try:
-                if suffix != "After":
-                    return get_file_names(sample_dirname.absolute(), self.image_format, prefix=prefix)
-            except RuntimeError:
-                logger.info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
-
-        return None
-
-    def _find_images(self, sample_dirname: Path, type: str, suffix: str, look_without_suffix=False) -> List[str]:
-        # same folder
-        file_names = self._find_images_in_same_directory(sample_dirname, type, suffix)
-        if file_names is not None:
-            return file_names
-
-        # look into different directories 1 level above
-        dirs = [f"{type} {suffix}", f"{type.lower()} {suffix}", f"{type}_{suffix}", f"{type.lower()}_{suffix}"]
-        if look_without_suffix:
-            dirs.extend([f"{type.lower()}", type])
-
-        for d in dirs:
-            expected_folder_path = sample_dirname / ".." / d
-            try:
-                return get_file_names(expected_folder_path.absolute(), self.image_format)
-            except RuntimeError:
-                logger.info(f"Could not find {self.image_format} files in {expected_folder_path.absolute()}")
-
-        return []
-
-    def _find_180deg_proj(self, sample_dirname: Path):
-        expected_path = sample_dirname / '..' / '180deg'
-        try:
-            return get_file_names(expected_path.absolute(), self.image_format)[0]
-        except RuntimeError:
-            logger.info(f"Could not find 180 degree projection in {expected_path}")
-        return ""
-
-    @staticmethod
-    def _find_log(dirname: Path, log_name: str) -> str:
-        """
-
-        :param dirname: The directory in which the sample images were found
-        :param log_name: The log name is typically the directory name of the sample
-        :return:
-        """
-        expected_path = dirname / '..'
-        try:
-            return get_file_names(expected_path.absolute(), "txt", prefix=log_name)[0]
-        except RuntimeError:
-            logger.info(f"Could not find a log file for {log_name} in {dirname}")
-        return ""
-
     def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
         selected_file = self.view.select_file(name)
         if not selected_file:
             return
         selected_dir = Path(os.path.dirname(selected_file))
-        field.set_images(self._find_images(selected_dir, name, suffix))
+        field.set_images(find_images(selected_dir, name, suffix, image_format=self.image_format, logger=logger))
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
@@ -243,6 +200,6 @@ class LoadPresenter:
         self._update_field_action(field, file_name)
 
     def set_sample_log(self, sample_log: Field, sample_dirname, log_name, image_filenames):
-        sample_log_filepath = self._find_log(sample_dirname, log_name)
+        sample_log_filepath = find_log(sample_dirname, log_name, logger)
         self.ensure_sample_log_consistency(sample_log, sample_log_filepath, image_filenames)
         sample_log.path = sample_log_filepath

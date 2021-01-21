@@ -1,18 +1,18 @@
 # Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
-from mantidimaging.core.utility.data_containers import ProjectionAngles
 import os
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union, Tuple
+from typing import TYPE_CHECKING, Union, Tuple, Optional
 from uuid import UUID
 
 from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
+from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
@@ -21,6 +21,8 @@ from .model import MainWindowModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
+
+logger = getLogger(__name__)
 
 
 class Notification(Enum):
@@ -43,7 +45,7 @@ class MainWindowPresenter(BasePresenter):
     def notify(self, signal, **baggage):
         try:
             if signal == Notification.LOAD:
-                self.load_stack()
+                self.load_dataset()
             elif signal == Notification.SAVE:
                 self.save()
             elif signal == Notification.REMOVE_STACK:
@@ -65,17 +67,30 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
 
-    def load_stack(self, **kwargs):
-        if kwargs:
-            raise NotImplementedError("Converting from kwargs to LoadParameters not implemented")
-        par = self.view.load_dialogue.get_parameters()
+    def load_dataset(self, par: Optional[LoadingParameters] = None):
+        if par is None and self.view.load_dialogue is not None:
+            par = self.view.load_dialogue.get_parameters()
+        if par is None:
+            return
 
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
 
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_stack_load_done, {'parameters': par})
+        start_async_task_view(self.view, self.model.do_load_stack, self._on_dataset_load_done, {'parameters': par})
+
+    def load_image_stack(self, file_path: str):
+        start_async_task_view(self.view, self.model.load_stack, self._on_stack_load_done, {'file_path': file_path})
 
     def _on_stack_load_done(self, task):
+        log = getLogger(__name__)
+
+        if task.was_successful():
+            self.create_new_stack(task.result, self.create_stack_name(task.kwargs['file_path']))
+            task.result = None
+        else:
+            self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
+
+    def _on_dataset_load_done(self, task):
         log = getLogger(__name__)
 
         if task.was_successful():
@@ -197,3 +212,11 @@ class MainWindowPresenter(BasePresenter):
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+
+    def load_stacks_from_folder(self, file_path: str) -> bool:
+        loading_params = create_loading_parameters_for_file_path(file_path, logger)
+        if loading_params is None:
+            return False
+
+        self.load_dataset(loading_params)
+        return True

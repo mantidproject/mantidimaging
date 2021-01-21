@@ -28,7 +28,7 @@ conda config --prepend channels astra-toolbox/label/dev # for astra
 conda config --prepend channels dtasev  # for sarepy
 conda config --prepend channels mantid # for mantidimaging
 
-conda create -c mantid/label/${repo_label} -n ${env_name} mantidimaging
+conda create -c mantid/label/${repo_label} -n ${env_name} mantidimaging python=3.8
 
 conda activate ${env_name}
 pip install pyqt5==5.15 pyqtgraph==0.11

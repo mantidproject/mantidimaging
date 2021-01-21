@@ -52,5 +52,5 @@ jobs:
     - name: pytest
       uses: ./.github/actions/test
       with:
-        command: xvfb-run pytest
+        command: xvfb-run pytest -n auto --count 10
         label: centos7

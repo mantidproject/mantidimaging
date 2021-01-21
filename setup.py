@@ -154,7 +154,7 @@ setup(
     long_description=open("README.md").read(),
     test_suite="nose.collector",
     classifiers=[
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Natural Language :: English",
         "Intended Audience :: Science/Research",
         "Operating System :: POSIX :: Linux",
@@ -167,5 +167,5 @@ setup(
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
     },
-    install_requires=["h5py", "numpy", "python-socketio", "pyqt5==5.15", "pyqtgraph==0.11"],
+    install_requires=["h5py==3.1.0", "numpy==1.19.4", "pyqt5==5.15", "pyqtgraph==0.11"],
 )

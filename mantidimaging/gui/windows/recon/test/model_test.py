@@ -8,6 +8,8 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
+from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
+from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
@@ -174,3 +176,13 @@ class ReconWindowModelTest(unittest.TestCase):
         images.has_proj180deg = has_proj180deg
 
         self.assertFalse(self.model.proj_180_degree_shape_matches_images(images))
+
+    def test_load_allowed_recon_args_no_cuda(self):
+        with mock.patch("mantidimaging.gui.windows.recon.model.CudaChecker.cuda_is_present", return_value=False):
+            assert self.model.load_allowed_recon_kwargs() == tomopy_allowed_kwargs()
+
+    def test_load_allowed_recon_args_with_cuda(self):
+        allowed_args = tomopy_allowed_kwargs()
+        allowed_args.update(astra_allowed_kwargs())
+        with mock.patch("mantidimaging.gui.windows.recon.model.CudaChecker.cuda_is_present", return_value=True):
+            assert self.model.load_allowed_recon_kwargs() == allowed_args

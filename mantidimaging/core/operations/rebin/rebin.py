@@ -7,7 +7,7 @@ import skimage.transform
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -51,11 +51,12 @@ class RebinFilter(BaseFilter):
             sample = images.data
             empty_resized_data = _create_reshaped_array(images, rebin_param)
 
-            f = ptsm.create_partial(skimage.transform.resize,
-                                    ptsm.return_to_second_but_dont_use_it,
-                                    mode=mode,
-                                    output_shape=empty_resized_data.shape[1:])
-            ptsm.execute(sample, empty_resized_data, f, cores, chunksize, progress=progress, msg="Applying Rebin")
+            f = ps.create_partial(skimage.transform.resize,
+                                  ps.return_to_second_at_i,
+                                  mode=mode,
+                                  output_shape=empty_resized_data.shape[1:])
+            ps.shared_list = [sample, empty_resized_data]
+            ps.execute(f, sample.shape[0], cores, "Applying Rebin", progress)
             images.data = empty_resized_data
 
         return images

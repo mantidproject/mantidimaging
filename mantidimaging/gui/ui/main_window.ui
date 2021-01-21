@@ -34,7 +34,8 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoad"/>
+    <addaction name="actionLoadDataset"/>
+    <addaction name="actionLoadImages"/>
     <addaction name="actionSampleLoadLog"/>
     <addaction name="actionLoadProjectionAngles"/>
     <addaction name="actionLoad180deg"/>
@@ -74,9 +75,9 @@
    <addaction name="menuImage"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionLoad">
+  <action name="actionLoadDataset">
    <property name="text">
-    <string>Load</string>
+    <string>Load dataset</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -191,6 +192,11 @@
    </property>
    <property name="text">
     <string>Load projection angles...</string>
+   </property>
+  </action>
+  <action name="actionLoadImages">
+   <property name="text">
+    <string>Load images</string>
    </property>
   </action>
  </widget>

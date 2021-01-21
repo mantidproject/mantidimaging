@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QFormLayout, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import two_shared_mem as ptsm
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 
@@ -27,13 +27,19 @@ class MonitorNormalisation(BaseFilter):
 
     @staticmethod
     def filter_func(images: Images, cores=None, chunksize=None, progress=None) -> Images:
+        if images.num_projections == 1:
+            # we can't really compute the preview as the image stack copy
+            # passed in doesn't have the logfile in it
+            return images
         counts = images.counts()
+
         if counts is None:
             raise RuntimeError("No loaded log values for this stack.")
 
         counts_val = counts.value / counts.value[0]
-        div_partial = ptsm.create_partial(_divide_by_counts, fwd_function=ptsm.inplace)
-        images, _ = ptsm.execute(images.data, counts_val, div_partial, cores, chunksize, progress=progress)
+        do_division = ps.create_partial(_divide_by_counts, fwd_function=ps.inplace2)
+        ps.shared_list = [images.data, counts_val]
+        ps.execute(do_division, images.num_projections, progress, cores=cores)
         return images
 
     @staticmethod

@@ -302,6 +302,11 @@ class MainWindowModelTest(unittest.TestCase):
         stack_mock.return_value.widget.return_value.presenter.images.set_projection_angles.assert_called_once_with(
             proj_angles)
 
+    @mock.patch("mantidimaging.gui.windows.main.model.loader")
+    def test_load_stack(self, loader: mock.MagicMock):
+        file_path = "file_path"
+        progress = mock.Mock()
 
-if __name__ == '__main__':
-    unittest.main()
+        self.model.load_stack(file_path, progress)
+
+        loader.load_stack.assert_called_once_with(file_path, progress)

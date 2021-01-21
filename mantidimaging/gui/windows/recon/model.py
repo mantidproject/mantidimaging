@@ -13,6 +13,7 @@ from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
 from mantidimaging.core.rotation.polyfit_correlation import find_center
+from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
@@ -178,7 +179,8 @@ class ReconstructWindowModel(object):
     @staticmethod
     def load_allowed_recon_kwargs():
         d = tomopy_allowed_kwargs()
-        d.update(astra_allowed_kwargs())
+        if CudaChecker().cuda_is_present():
+            d.update(astra_allowed_kwargs())
         return d
 
     @staticmethod
