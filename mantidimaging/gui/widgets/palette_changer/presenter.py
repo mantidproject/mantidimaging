@@ -26,15 +26,15 @@ class PaletteChangerPresenter(BasePresenter):
             self._otsu_break()
 
     def _jenks_breaks(self):
-        hist = self.hists[-1]
+        projection_hist = self.hists[-1]
         tick_points = self._generate_jenks_tick_points()
-        old_ticks = list(hist.gradient.ticks.keys())
+        old_ticks = list(projection_hist.gradient.ticks.keys())
         for x in tick_points:
-            hist.gradient.addTick(x, finish=False)
+            projection_hist.gradient.addTick(x, finish=False)
         for t in old_ticks:
-            hist.gradient.removeTick(t, finish=False)
-        hist.gradient.showTicks()
-        hist.gradient.sigGradientChangeFinished.emit(hist.gradient)
+            projection_hist.gradient.removeTick(t, finish=False)
+        projection_hist.gradient.showTicks()
+        projection_hist.gradient.sigGradientChangeFinished.emit(projection_hist.gradient)
 
     def _change_colour_map(self):
         preset = self.view.colour_map
