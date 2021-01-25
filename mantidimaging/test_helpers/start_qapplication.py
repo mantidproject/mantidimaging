@@ -12,7 +12,6 @@
 # https://github.com/mantidproject/mantid/tree/aa5ed98034119ed3af79ea91527aa718c87c816c/qt/python/mantidqt/utils/qt/testing
 from __future__ import absolute_import
 
-import gc
 import sys
 import traceback
 
@@ -55,7 +54,9 @@ def start_qapplication(cls):
         setUpClass_orig()
 
     def tearDownClass(cls):
-        gc.collect()
+        pass
+        # Garbage collection can be enabled for tracking object life time bugs
+        # gc.collect()
 
     setUpClass_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
     setattr(cls, 'setUpClass', classmethod(setUpClass))

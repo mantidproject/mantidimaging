@@ -5,7 +5,6 @@ from typing import Tuple
 from unittest import mock
 from unittest.mock import Mock
 
-from PyQt5 import sip
 from PyQt5.QtWidgets import QDockWidget
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -28,7 +27,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
     def tearDown(self) -> None:
-        sip.delete(self.view)  # type: ignore
         self.view = None
         self.window = None  # type: ignore[assignment]
         self.dock = None
