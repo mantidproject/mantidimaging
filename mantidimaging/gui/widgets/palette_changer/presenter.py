@@ -20,6 +20,9 @@ class PaletteChangerPresenter(BasePresenter):
         pass
 
     def change_colour_palette(self):
+        """
+        Change the colour palette and add ticks nased on the output of the Jenks or Otsu algorithms.
+        """
         self._change_colour_map()
         self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
         if self.view.algorithm == "Jenks":
@@ -28,39 +31,53 @@ class PaletteChangerPresenter(BasePresenter):
             self._otsu_break()
 
     def _jenks_breaks(self):
+        """
+        Determine the Jenks breaks and add the ticks to the projection histogram.
+        """
         tick_points = self._generate_jenks_tick_points()
         # Insert new ticks
         self._insert_new_ticks(tick_points)
         self._remove_old_ticks()
         self._update_ticks()
 
-    def _insert_new_ticks(self, tick_points):
+    def _insert_new_ticks(self, tick_points: List[float]):
         """
         Adds new ticks to the projection histogram.
         """
-        for x in tick_points:
-            self.hists[-1].gradient.addTick(x, finish=False)
+        n_tick_points = len(tick_points)
+        colours = self._get_colours(n_tick_points)
+        for i in range(n_tick_points):
+            self.hists[-1].gradient.addTick(tick_points[i], color=colours[i], finish=False)
 
     def _change_colour_map(self):
         """
-        Changes the colour map of the images.
+        Changes the colour map of all three histograms.
         """
         preset = self.view.colour_map
         for hist in self.hists:
             hist.gradient.loadPreset(preset)
 
     def _otsu_break(self):
-        val = filters.threshold_otsu(np.random.choice(self.projection_image.flatten(), 15000))
+        """
+        Determine the Otsu threshold and add the ticks to the projection histogram.
+        """
+        val = filters.threshold_otsu(self._random_subset())
         ticks = self._normalise_tick_values([val])
         self._insert_new_ticks(ticks)
         self._remove_old_ticks()
         self._update_ticks()
 
+    def _random_subset(self):
+        """
+        Take a random selection of pixels from the projection image in order to run Otsu/Jenks.
+        """
+        return np.random.choice(self.projection_image.flatten(), 15000)
+
     def _generate_jenks_tick_points(self):
         """
-        Generates tick points using the Jenks Breaks algorithm.
+        Perform the Jenks Breaks algorithm.
         """
-        breaks = jenks_breaks(np.random.choice(self.projection_image.flatten(), 15000), self.view.num_materials)
+        breaks = jenks_breaks(self._random_subset(), self.view.num_materials)
         # Replace the first and last breaks, because the random may have missed them
         return self._normalise_tick_values(list(breaks)[1:-1])
 
@@ -90,3 +107,8 @@ class PaletteChangerPresenter(BasePresenter):
         """
         self.hists[-1].gradient.showTicks()
         self.hists[-1].gradient.sigGradientChangeFinished.emit(self.hists[-1].gradient)
+
+    def _get_colours(self, num_ticks):
+        norms = np.linspace(0, 1, num_ticks)
+        colours = [self.hists[-1].gradient.getColor(norm) for norm in norms]
+        return colours
