@@ -21,6 +21,7 @@ class PaletteChangerPresenter(BasePresenter):
 
     def change_colour_palette(self):
         self._change_colour_map()
+        self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
         if self.view.algorithm == "Jenks":
             self._jenks_breaks()
         else:
@@ -29,18 +30,11 @@ class PaletteChangerPresenter(BasePresenter):
     def _jenks_breaks(self):
         projection_hist = self.hists[-1]
         tick_points = self._generate_jenks_tick_points()
-        old_ticks = list(projection_hist.gradient.ticks.keys())
-
         # Insert new ticks
         for x in tick_points:
             projection_hist.gradient.addTick(x, finish=False)
-        # Remove default ticks
-        for t in old_ticks:
-            projection_hist.gradient.removeTick(t, finish=False)
-
-        # Inform ticks object to update
-        projection_hist.gradient.showTicks()
-        projection_hist.gradient.sigGradientChangeFinished.emit(projection_hist.gradient)
+        self._remove_old_ticks()
+        self._update_ticks()
 
     def _change_colour_map(self):
         """
@@ -51,15 +45,20 @@ class PaletteChangerPresenter(BasePresenter):
             hist.gradient.loadPreset(preset)
 
     def _otsu_break(self):
-        val = filters.threshold_otsu(np.random.choice(self.projection_image.flatten(), 15000), self.view.num_materials)
-        print(val)
+        val = filters.threshold_otsu(np.random.choice(self.projection_image.flatten(), 15000))
+        tick = self._normalise_tick_values([val])[0]
+        self.hists[-1].gradient.addTick(tick, finish=False)
+        self._remove_old_ticks()
+        self._update_ticks()
 
     def _generate_jenks_tick_points(self):
         """
         Generates tick points using the Jenks Breaks algorithm.
         """
-        # Perform Breaks on a random subset
         breaks = jenks_breaks(np.random.choice(self.projection_image.flatten(), 15000), self.view.num_materials)
+        return self._normalise_tick_values(breaks)
+
+    def _normalise_tick_values(self, breaks):
         min_val = self.projection_image.min()
         max_val = self.projection_image.max()
         val_range = abs(max_val - min_val)
@@ -69,3 +68,12 @@ class PaletteChangerPresenter(BasePresenter):
         for i in range(len(breaks)):
             breaks[i] = (breaks[i] - min_val) / val_range
         return breaks
+
+    def _remove_old_ticks(self):
+        for t in self.old_ticks:
+            self.hists[-1].gradient.removeTick(t, finish=False)
+
+    def _update_ticks(self):
+        # Inform ticks object to update
+        self.hists[-1].gradient.showTicks()
+        self.hists[-1].gradient.sigGradientChangeFinished.emit(self.hists[-1].gradient)
