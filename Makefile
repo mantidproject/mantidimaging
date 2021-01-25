@@ -48,6 +48,9 @@ test-env:
 test:
 	python -m pytest
 
+test-randomly:
+	python -m pytest -p randomly
+
 mypy:
 	python -m mypy --ignore-missing-imports mantidimaging
 
