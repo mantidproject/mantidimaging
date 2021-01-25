@@ -28,13 +28,18 @@ class PaletteChangerPresenter(BasePresenter):
             self._otsu_break()
 
     def _jenks_breaks(self):
-        projection_hist = self.hists[-1]
         tick_points = self._generate_jenks_tick_points()
         # Insert new ticks
-        for x in tick_points:
-            projection_hist.gradient.addTick(x, finish=False)
+        self._insert_new_ticks(tick_points)
         self._remove_old_ticks()
         self._update_ticks()
+
+    def _insert_new_ticks(self, tick_points):
+        """
+        Adds new ticks to the projection histogram.
+        """
+        for x in tick_points:
+            self.hists[-1].gradient.addTick(x, finish=False)
 
     def _change_colour_map(self):
         """
@@ -46,8 +51,8 @@ class PaletteChangerPresenter(BasePresenter):
 
     def _otsu_break(self):
         val = filters.threshold_otsu(np.random.choice(self.projection_image.flatten(), 15000))
-        tick = self._normalise_tick_values([val])[0]
-        self.hists[-1].gradient.addTick(tick, finish=False)
+        ticks = self._normalise_tick_values([val])
+        self._insert_new_ticks(ticks)
         self._remove_old_ticks()
         self._update_ticks()
 
@@ -57,16 +62,16 @@ class PaletteChangerPresenter(BasePresenter):
         """
         breaks = jenks_breaks(np.random.choice(self.projection_image.flatten(), 15000), self.view.num_materials)
         # Replace the first and last breaks, because the random may have missed them
-        breaks[0], breaks[-1] = self.projection_image.min(), self.projection_image.max()
-        return self._normalise_tick_values(breaks)
+        return self._normalise_tick_values(list(breaks)[1:-1])
 
     def _normalise_tick_values(self, breaks):
         """
         Scale the collection of break values so that they range from 0 to 1.
         """
-        min_val = self.projection_image.min()  # todo: call once?
+        min_val = self.projection_image.min()
         max_val = self.projection_image.max()
         val_range = abs(max_val - min_val)
+        breaks = [min_val] + breaks + [max_val]
         # Normalise so the values range from 0 to 1
         for i in range(len(breaks)):
             breaks[i] = (breaks[i] - min_val) / val_range
