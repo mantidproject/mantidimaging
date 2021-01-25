@@ -56,24 +56,32 @@ class PaletteChangerPresenter(BasePresenter):
         Generates tick points using the Jenks Breaks algorithm.
         """
         breaks = jenks_breaks(np.random.choice(self.projection_image.flatten(), 15000), self.view.num_materials)
+        # Replace the first and last breaks, because the random may have missed them
+        breaks[0], breaks[-1] = self.projection_image.min(), self.projection_image.max()
         return self._normalise_tick_values(breaks)
 
     def _normalise_tick_values(self, breaks):
-        min_val = self.projection_image.min()
+        """
+        Scale the collection of break values so that they range from 0 to 1.
+        """
+        min_val = self.projection_image.min()  # todo: call once?
         max_val = self.projection_image.max()
         val_range = abs(max_val - min_val)
-        # Replace the first and last breaks, because the random may have missed them
-        breaks[0], breaks[-1] = min_val, max_val
         # Normalise so the values range from 0 to 1
         for i in range(len(breaks)):
             breaks[i] = (breaks[i] - min_val) / val_range
         return breaks
 
     def _remove_old_ticks(self):
+        """
+        Remove the default projection histogram ticks from the image.
+        """
         for t in self.old_ticks:
             self.hists[-1].gradient.removeTick(t, finish=False)
 
     def _update_ticks(self):
-        # Inform ticks object to update
+        """
+        Tell the projection histogram ticks to update at the end of a change.
+        """
         self.hists[-1].gradient.showTicks()
         self.hists[-1].gradient.sigGradientChangeFinished.emit(self.hists[-1].gradient)
