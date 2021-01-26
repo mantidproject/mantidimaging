@@ -21,6 +21,9 @@ class EyesManager:
         self.image_directory = None
         self.imaging = None
 
+    def set_match_level(self, level: MatchLevel):
+        self.eyes.match_level = level
+
     def set_batch(self, batch_id):
         batch_info = BatchInfo()
         batch_info.name = self.application_name + " Tests"
