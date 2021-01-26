@@ -7,4 +7,4 @@ from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPr
 class PaletteChangerPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.view = mock.MagicMock()
-        self.presenter = PaletteChangerPresenter(view, None, None)
+        self.presenter = PaletteChangerPresenter(self.view, None, None)
