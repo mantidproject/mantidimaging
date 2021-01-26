@@ -90,7 +90,7 @@ class PaletteChangerPresenter(BasePresenter):
         """
         min_val = self.projection_image.min()
         max_val = self.projection_image.max()
-        val_range = abs(max_val - min_val)
+        val_range = np.ptp(self.projection_image)
         breaks = [min_val] + breaks + [max_val]
         return [(break_x - min_val) / val_range for break_x in breaks]
 
