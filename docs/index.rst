@@ -27,3 +27,10 @@ such as `Avizo
 
    Code Repository <https://github.com/mantidproject/mantidimaging>
    Anaconda Package <https://anaconda.org/mantid/mantidimaging>
+
+
+Please cite as:
+
+Dimitar Tasev, Daniel Nixon, Samuel Jones, Sam Tygier, Dolica Akello-Egwel, & Will Taylor. (2021, January 15). MANTID Imaging. Zenodo. http://doi.org/10.5281/zenodo.4451978
+
+(See `Zenodo <http://doi.org/10.5281/zenodo.4451978>`_ for citing specific versions).
