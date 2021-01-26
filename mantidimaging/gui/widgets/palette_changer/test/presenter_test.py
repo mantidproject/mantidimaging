@@ -52,8 +52,9 @@ class PaletteChangerPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.filters.threshold_otsu")
     def test_generate_otsu_tick_points(self, threshold_otsu_mock):
-        threshold_otsu_mock.return_value = otsu_value = 0.858
-        norm_otsu = (otsu_value - self.projection_image.min()) / np.ptp(self.projection_image)
+        threshold_otsu_mock.return_value = otsu_value = np.random.choice(self.presenter.flattened_image)
+        norm_otsu = (otsu_value - self.projection_image.min()) / abs(self.projection_image.max() -
+                                                                     self.projection_image.min())
         self.assertListEqual(self.presenter._generate_otsu_tick_points(), [0.0, norm_otsu, 1.0])
 
     def test_generate_jenks_tick_points(self):
