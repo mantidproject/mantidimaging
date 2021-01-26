@@ -17,6 +17,7 @@ class PaletteChangerPresenter(BasePresenter):
         super(PaletteChangerPresenter, self).__init__(view)
         self.hists = hists
         self.projection_image = projection_image
+        self.projection_histogram = hists[-1]
         # Create a flattened version of the histogram image to send to Jenks or Otsu
         if projection_image.size > RANDOM_CUTOFF:
             # Use a random subset if the image is large
@@ -49,7 +50,7 @@ class PaletteChangerPresenter(BasePresenter):
         carried out because the method for determining a new tick's colour fails if there are no ticks present. Hence,
         these are only removed after the new Otsu/Jenks ticks have already been placed in the histogram.
         """
-        self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
+        self.old_ticks = list(self.projection_histogram.gradient.ticks.keys())
 
     def _insert_new_ticks(self, tick_points: List[float]):
         """
@@ -58,7 +59,7 @@ class PaletteChangerPresenter(BasePresenter):
         n_tick_points = len(tick_points)
         colours = self._get_colours(n_tick_points)
         for i in range(n_tick_points):
-            self.hists[-1].gradient.addTick(tick_points[i], color=colours[i], finish=False)
+            self.projection_histogram.gradient.addTick(tick_points[i], color=colours[i], finish=False)
 
     def _change_colour_map(self):
         """
@@ -98,7 +99,7 @@ class PaletteChangerPresenter(BasePresenter):
         Remove the default projection histogram ticks from the image.
         """
         for t in self.old_ticks:
-            self.hists[-1].gradient.removeTick(t, finish=False)
+            self.projection_histogram.gradient.removeTick(t, finish=False)
 
     def _update_ticks(self):
         """
@@ -106,7 +107,7 @@ class PaletteChangerPresenter(BasePresenter):
         """
         self.hists[-1].gradient.showTicks()
         self.hists[-1].gradient.updateGradient()
-        self.hists[-1].gradient.sigGradientChangeFinished.emit(self.hists[-1].gradient)
+        self.hists[-1].gradient.sigGradientChangeFinished.emit(self.projection_histogram.gradient)
 
     def _get_colours(self, num_ticks: int) -> List[float]:
         """
@@ -115,4 +116,4 @@ class PaletteChangerPresenter(BasePresenter):
         the histogram.
         """
         norms = np.linspace(0, 1, num_ticks)
-        return [self.hists[-1].gradient.getColor(norm) for norm in norms]
+        return [self.projection_histogram.gradient.getColor(norm) for norm in norms]
