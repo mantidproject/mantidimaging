@@ -105,9 +105,9 @@ class PaletteChangerPresenter(BasePresenter):
         """
         Tell the projection histogram ticks to update at the end of a change.
         """
-        self.hists[-1].gradient.showTicks()
-        self.hists[-1].gradient.updateGradient()
-        self.hists[-1].gradient.sigGradientChangeFinished.emit(self.projection_histogram.gradient)
+        self.projection_histogram.gradient.showTicks()
+        self.projection_histogram.gradient.updateGradient()
+        self.projection_histogram.gradient.sigGradientChangeFinished.emit(self.projection_histogram.gradient)
 
     def _get_colours(self, num_ticks: int) -> List[float]:
         """
