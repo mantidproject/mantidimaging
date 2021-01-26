@@ -17,9 +17,12 @@ class PaletteChangerPresenter(BasePresenter):
         super(PaletteChangerPresenter, self).__init__(view)
         self.hists = hists
         self.projection_image = projection_image
+        # Create a flattened version of the histogram image to send to Jenks or Otsu
         if projection_image.size > RANDOM_CUTOFF:
+            # Use a random subset if the image is large
             self.flattened_image = np.random.choice(self.projection_image.flatten(), RANDOM_CUTOFF)
         else:
+            # Use the entire array if the image is small
             self.flattened_image = self.projection_image.flatten()
 
     def notify(self, signal):
@@ -40,6 +43,12 @@ class PaletteChangerPresenter(BasePresenter):
         self._update_ticks()
 
     def _record_old_tick_points(self):
+        """
+        Records the default tick points for the projection histogram that are inserted when a new colour map is loaded.
+        This means they can be easily removed once the new ticks have been added to the histogram. This step is
+        carried out because the method for determining a new tick's colour fails if there are no ticks present. Hence,
+        these are only removed after the new Otsu/Jenks ticks have already been placed in the histogram.
+        """
         self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
 
     def _insert_new_ticks(self, tick_points: List[float]):
@@ -59,32 +68,30 @@ class PaletteChangerPresenter(BasePresenter):
         for hist in self.hists:
             hist.gradient.loadPreset(preset)
 
-    def _generate_otsu_tick_points(self):
+    def _generate_otsu_tick_points(self) -> List[float]:
         """
         Determine the Otsu threshold tick point.
         """
         val = filters.threshold_otsu(self.flattened_image)
         return self._normalise_tick_values([val])
 
-    def _generate_jenks_tick_points(self):
+    def _generate_jenks_tick_points(self) -> List[float]:
         """
-        Perform the Jenks Breaks algorithmPerform the Jenks Breaks algorithm.
+        Determine the Jenks tick points.
         """
         breaks = jenks_breaks(self.flattened_image, self.view.num_materials)
         return self._normalise_tick_values(list(breaks)[1:-1])
 
-    def _normalise_tick_values(self, breaks):
+    def _normalise_tick_values(self, breaks: List[float]) -> List[float]:
         """
-        Scale the collection of break values so that they range from 0 to 1.
+        Scale the collection of break values so that they range from 0 to 1. This is done because addTick expects an
+        x value in this range.
         """
         min_val = self.projection_image.min()
         max_val = self.projection_image.max()
         val_range = abs(max_val - min_val)
         breaks = [min_val] + breaks + [max_val]
-        # Normalise so the values range from 0 to 1
-        for i in range(len(breaks)):
-            breaks[i] = (breaks[i] - min_val) / val_range
-        return breaks
+        return [(break_x - min_val) / val_range for break_x in breaks]
 
     def _remove_old_ticks(self):
         """
@@ -101,7 +108,11 @@ class PaletteChangerPresenter(BasePresenter):
         self.hists[-1].gradient.updateGradient()
         self.hists[-1].gradient.sigGradientChangeFinished.emit(self.hists[-1].gradient)
 
-    def _get_colours(self, num_ticks):
+    def _get_colours(self, num_ticks: int) -> List[float]:
+        """
+        Determine the colours that should be used for the new projection histogram ticks. Should ensure that there is
+        a suitable amount of contrast between the different materials, even if the ticks are quite close together on
+        the histogram.
+        """
         norms = np.linspace(0, 1, num_ticks)
-        colours = [self.hists[-1].gradient.getColor(norm) for norm in norms]
-        return colours
+        return [self.hists[-1].gradient.getColor(norm) for norm in norms]
