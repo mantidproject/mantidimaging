@@ -9,19 +9,25 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from jenkspy import jenks_breaks
 import numpy as np
 
+RANDOM_CUTOFF = 15000
+
 
 class PaletteChangerPresenter(BasePresenter):
     def __init__(self, view, hists: List[HistogramLUTItem], projection_image: np.ndarray):
         super(PaletteChangerPresenter, self).__init__(view)
         self.hists = hists
         self.projection_image = projection_image
+        if projection_image.size > RANDOM_CUTOFF:
+            self.flattened_image = np.random.choice(self.projection_image.flatten(), RANDOM_CUTOFF)
+        else:
+            self.flattened_image = self.projection_image.flatten()
 
     def notify(self, signal):
         pass
 
     def change_colour_palette(self):
         """
-        Change the colour palette and add ticks nased on the output of the Jenks or Otsu algorithms.
+        Change the colour palette and add ticks based on the output of the Jenks or Otsu algorithms.
         """
         self._change_colour_map()
         self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
@@ -61,23 +67,17 @@ class PaletteChangerPresenter(BasePresenter):
         """
         Determine the Otsu threshold and add the ticks to the projection histogram.
         """
-        val = filters.threshold_otsu(self._random_subset())
+        val = filters.threshold_otsu(self.flattened_image)
         ticks = self._normalise_tick_values([val])
         self._insert_new_ticks(ticks)
         self._remove_old_ticks()
         self._update_ticks()
 
-    def _random_subset(self):
-        """
-        Take a random selection of pixels from the projection image in order to run Otsu/Jenks.
-        """
-        return np.random.choice(self.projection_image.flatten(), 15000)
-
     def _generate_jenks_tick_points(self):
         """
         Perform the Jenks Breaks algorithm.
         """
-        breaks = jenks_breaks(self._random_subset(), self.view.num_materials)
+        breaks = jenks_breaks(self.flattened_image, self.view.num_materials)
         # Replace the first and last breaks, because the random may have missed them
         return self._normalise_tick_values(list(breaks)[1:-1])
 
