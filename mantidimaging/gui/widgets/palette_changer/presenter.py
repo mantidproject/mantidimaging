@@ -30,21 +30,17 @@ class PaletteChangerPresenter(BasePresenter):
         Change the colour palette and add ticks based on the output of the Jenks or Otsu algorithms.
         """
         self._change_colour_map()
-        self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
+        self._record_old_tick_points()
         if self.view.algorithm == "Jenks":
-            self._jenks_breaks()
+            tick_points = self._generate_jenks_tick_points()
         else:
-            self._otsu_break()
-
-    def _jenks_breaks(self):
-        """
-        Determine the Jenks breaks and add the ticks to the projection histogram.
-        """
-        tick_points = self._generate_jenks_tick_points()
-        # Insert new ticks
+            tick_points = self._generate_otsu_tick_points()
         self._insert_new_ticks(tick_points)
         self._remove_old_ticks()
         self._update_ticks()
+
+    def _record_old_tick_points(self):
+        self.old_ticks = list(self.hists[-1].gradient.ticks.keys())
 
     def _insert_new_ticks(self, tick_points: List[float]):
         """
@@ -63,22 +59,18 @@ class PaletteChangerPresenter(BasePresenter):
         for hist in self.hists:
             hist.gradient.loadPreset(preset)
 
-    def _otsu_break(self):
+    def _generate_otsu_tick_points(self):
         """
-        Determine the Otsu threshold and add the ticks to the projection histogram.
+        Determine the Otsu threshold tick point.
         """
         val = filters.threshold_otsu(self.flattened_image)
-        ticks = self._normalise_tick_values([val])
-        self._insert_new_ticks(ticks)
-        self._remove_old_ticks()
-        self._update_ticks()
+        return self._normalise_tick_values([val])
 
     def _generate_jenks_tick_points(self):
         """
-        Perform the Jenks Breaks algorithm.
+        Perform the Jenks Breaks algorithmPerform the Jenks Breaks algorithm.
         """
         breaks = jenks_breaks(self.flattened_image, self.view.num_materials)
-        # Replace the first and last breaks, because the random may have missed them
         return self._normalise_tick_values(list(breaks)[1:-1])
 
     def _normalise_tick_values(self, breaks):
