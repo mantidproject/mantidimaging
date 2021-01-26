@@ -32,4 +32,7 @@ class PaletteChangerView(BaseDialogView):
         return self.colourMapComboBox.currentText()
 
     def set_spin_box_enabled(self):
+        """
+        Disable the number of materials spin box when the Otsu algorithm has been selected.
+        """
         self.numMaterialsSpinBox.setEnabled(self.algorithmComboBox.currentText() == "Jenks")
