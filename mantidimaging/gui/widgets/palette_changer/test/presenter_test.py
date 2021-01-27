@@ -96,7 +96,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.projection_gradient.sigGradientChangeFinished.emit.assert_called_once_with(self.projection_gradient)
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
-    def test_change_colour_palette(self, jenks_breaks_mock):
+    def test_change_colour_palette_changes_ticks(self, jenks_breaks_mock):
         n_old_ticks = 3
         old_ticks_list = [mock.Mock() for _ in range(n_old_ticks)]
         new_ticks_list = []
