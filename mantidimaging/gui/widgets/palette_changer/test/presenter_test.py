@@ -6,6 +6,10 @@ import numpy as np
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, RANDOM_CUTOFF
 
 
+def _normalise_break_value(break_value, min_value, max_value):
+    return (break_value - min_value) / abs(max_value - min_value)
+
+
 class PaletteChangerPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.view = mock.MagicMock()
@@ -53,9 +57,21 @@ class PaletteChangerPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.filters.threshold_otsu")
     def test_generate_otsu_tick_points(self, threshold_otsu_mock):
         threshold_otsu_mock.return_value = otsu_value = np.random.choice(self.presenter.flattened_image)
-        norm_otsu = (otsu_value - self.projection_image.min()) / abs(self.projection_image.max() -
-                                                                     self.projection_image.min())
+        norm_otsu = _normalise_break_value(otsu_value, self.projection_image.min(), self.projection_image.max())
         self.assertListEqual(self.presenter._generate_otsu_tick_points(), [0.0, norm_otsu, 1.0])
 
-    def test_generate_jenks_tick_points(self):
-        pass
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
+    def test_generate_jenks_tick_points(self, jenks_breaks_mocks):
+        self.view.num_materials = n_breaks = 4
+        jenks_breaks_mocks.return_value = expected_jenks_ticks = sorted(
+            (np.random.choice(self.presenter.flattened_image) for _ in range(n_breaks)))
+        expected_jenks_ticks = list(
+            map(
+                lambda break_value: _normalise_break_value(
+                    break_value, min_value=self.projection_image.min(), max_value=self.projection_image.max()),
+                expected_jenks_ticks))
+        expected_jenks_ticks[0] = 0.0
+        expected_jenks_ticks[-1] = 1.0
+        actual_tick_points = self.presenter._generate_jenks_tick_points()
+        jenks_breaks_mocks.assert_called_once_with(self.presenter.flattened_image, n_breaks)
+        self.assertListEqual(expected_jenks_ticks, actual_tick_points)
