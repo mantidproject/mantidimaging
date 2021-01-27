@@ -16,7 +16,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.histograms = [mock.Mock() for _ in range(3)]
         self.projection_histogram = self.histograms[-1]
         self.projection_image = np.random.random((200, 200))
-        self.projection_histogram.gradient = self.projection_gradient = mock.Mock()
+        self.projection_gradient = self.projection_histogram.gradient
         self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.projection_image)
 
     def test_flattened_image_creation_for_large_image(self):
@@ -39,16 +39,19 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         old_ticks_list = [mock.Mock() for i in range(2)]
         self.projection_histogram.gradient.ticks = {old_ticks_list[i]: i * 1.0 for i in range(2)}
         self.presenter._record_old_tick_points()
-        assert self.presenter.old_ticks == old_ticks_list
+        self.assertListEqual(self.presenter.old_ticks, old_ticks_list)
 
     def test_insert_new_ticks(self):
-        pass
+        tick_locations = [i * 0.1 for i in range(11)]
+        self.presenter._insert_new_ticks(tick_locations)
+        self.projection_gradient.addTick.assert_has_calls(
+            [mock.call(x, color=self.projection_gradient.getColor.return_value, finish=False) for x in tick_locations])
 
     def test_change_colour_palette(self):
         pass
 
     def test_get_colours(self):
-        self.projection_histogram.gradient.getColor = get_color_mock = mock.Mock()
+        get_color_mock = self.projection_histogram.gradient.getColor
         n_ticks = 5
         colours = self.presenter._get_colours(n_ticks)
         get_color_mock.assert_has_calls([mock.call(x) for x in np.linspace(0, 1, n_ticks)])
