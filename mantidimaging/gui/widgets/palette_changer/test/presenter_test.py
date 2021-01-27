@@ -47,9 +47,6 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.projection_gradient.addTick.assert_has_calls(
             [mock.call(x, color=self.projection_gradient.getColor.return_value, finish=False) for x in tick_locations])
 
-    def test_change_colour_palette(self):
-        pass
-
     def test_get_colours(self):
         get_color_mock = self.projection_histogram.gradient.getColor
         n_ticks = 5
