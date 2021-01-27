@@ -41,7 +41,7 @@ jobs:
       - name: mypy
         shell: bash -l {0}
         run: |
-          mypy --ignore-missing-imports mantidimaging
+          mypy --ignore-missing-imports --no-site-packages mantidimaging
 
       - name: docs
         shell: bash -l {0}
