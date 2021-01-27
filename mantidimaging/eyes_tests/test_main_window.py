@@ -7,6 +7,10 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class MainWindowTest(BaseEyesTest):
+    def setUp(self):
+        super(MainWindowTest, self).setUp()
+        self.docks = []
+
     def test_main_window_opens(self):
         self.check_target()
 
@@ -53,11 +57,15 @@ class MainWindowTest(BaseEyesTest):
 
     def test_main_window_loaded_data(self):
         self._load_data_set()
+        for ii in self.imaging.presenter.model.get_all_stack_visualisers():
+            self.docks.append(ii.dock)
 
         self.check_target()
 
     def test_main_window_loaded_2_sets_of_data(self):
         self._load_data_set()
         self._load_data_set()
+        for ii in self.imaging.presenter.model.get_all_stack_visualisers():
+            self.docks.append(ii.dock)
 
         self.check_target()

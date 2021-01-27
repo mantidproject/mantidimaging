@@ -54,6 +54,7 @@ jobs:
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --count 10 --ignore=mantidimaging/eyes_tests
 
       - name: GUI Tests
+        if: github.event == pull_request
         shell: bash -l {0}
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}

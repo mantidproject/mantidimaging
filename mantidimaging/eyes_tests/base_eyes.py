@@ -8,6 +8,7 @@ from tempfile import mkdtemp
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
+from applitools.common import MatchLevel
 
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
@@ -22,6 +23,9 @@ if APPLITOOLS_BATCH_ID is None:
 API_KEY_PRESENT = os.getenv("APPLITOOLS_API_KEY")
 if API_KEY_PRESENT is None:
     raise unittest.SkipTest("API Key is not defined in the environment, so Eyes tests are skipped.")
+
+
+LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
 
 
 @start_qapplication
@@ -65,9 +69,9 @@ class BaseEyesTest(unittest.TestCase):
         menu.popup(widget.mapFromGlobal(menu_location))
 
     def _load_data_set(self):
-        dataset = loader.load(file_names=
-                              [str(Path.home())
-                               + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"])
+        dataset = loader.load(file_names=[
+            LOAD_SAMPLE
+        ])
         self.imaging.presenter.create_new_stack(dataset, "Stack 1")
 
-        QApplication.processEvents()
+        QApplication.sendPostedEvents()
