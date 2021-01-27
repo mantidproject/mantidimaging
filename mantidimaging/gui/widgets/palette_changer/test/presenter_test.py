@@ -16,6 +16,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.histograms = [mock.Mock() for _ in range(3)]
         self.projection_histogram = self.histograms[-1]
         self.projection_image = np.random.random((200, 200))
+        self.projection_histogram.gradient = self.projection_gradient = mock.Mock()
         self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.projection_image)
 
     def test_flattened_image_creation_for_large_image(self):
@@ -75,3 +76,15 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         actual_tick_points = self.presenter._generate_jenks_tick_points()
         jenks_breaks_mocks.assert_called_once_with(self.presenter.flattened_image, n_breaks)
         self.assertListEqual(expected_jenks_ticks, actual_tick_points)
+
+    def test_remove_old_ticks(self):
+        n_old_ticks = 3
+        self.presenter.old_ticks = mock_old_ticks = [mock.Mock() for _ in range(n_old_ticks)]
+        self.presenter._remove_old_ticks()
+        self.projection_gradient.removeTick.assert_has_calls([mock.call(t, finish=False) for t in mock_old_ticks])
+
+    def test_update_ticks(self):
+        self.presenter._update_ticks()
+        self.projection_gradient.showTicks.assert_called_once()
+        self.projection_gradient.updateGradient.assert_called_once()
+        self.projection_gradient.sigGradientChangeFinished.emit.assert_called_once_with(self.projection_gradient)
