@@ -67,7 +67,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         norm_otsu = _normalise_break_value(otsu_value, self.projection_image.min(), self.projection_image.max())
         self.assertListEqual(self.presenter._generate_otsu_tick_points(), [0.0, norm_otsu, 1.0])
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_break")
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
     def test_generate_jenks_tick_points(self, jenks_break_mocks):
         self.view.num_materials = n_breaks = 4
         jenks_break_mocks.return_value = expected_jenks_ticks = self.get_sorted_random_elements_from_projection_image(
