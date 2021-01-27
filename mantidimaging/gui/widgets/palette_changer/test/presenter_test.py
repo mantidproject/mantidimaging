@@ -91,3 +91,34 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.projection_gradient.showTicks.assert_called_once()
         self.projection_gradient.updateGradient.assert_called_once()
         self.projection_gradient.sigGradientChangeFinished.emit.assert_called_once_with(self.projection_gradient)
+
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
+    def test_change_colour_palette(self, jenks_breaks_mock):
+        n_old_ticks = 3
+        old_ticks_list = [mock.Mock() for _ in range(n_old_ticks)]
+        new_ticks_list = []
+        self.projection_gradient.ticks = {old_ticks_list[i]: i * 0.5 for i in range(n_old_ticks)}
+
+        def add_tick_side_effect(location, color, finish):
+            new_tick = mock.Mock()
+            self.projection_gradient.ticks[new_tick] = location
+            new_ticks_list.append(new_tick)
+
+        def remove_tick_side_effect(tick, finish):
+            del self.projection_gradient.ticks[tick]
+
+        self.projection_gradient.addTick = mock.Mock(side_effect=add_tick_side_effect)
+        self.projection_gradient.removeTick = mock.Mock(side_effect=remove_tick_side_effect)
+
+        self.view.algorithm = "Jenks"
+        self.view.num_materials = n_materials = 4
+        jenks_breaks_mock.return_value = self.get_sorted_random_elements_from_projection_image(n_materials + 1)
+
+        self.presenter.change_colour_palette()
+
+        for old_tick in old_ticks_list:
+            self.assertNotIn(old_tick, self.projection_gradient.ticks.keys())
+        for new_tick in new_ticks_list:
+            self.assertIn(new_tick, self.projection_gradient.ticks.keys())
+
+        assert n_materials + 1 == len(self.projection_gradient.ticks.keys())
