@@ -65,7 +65,10 @@ class EyesManager:
         if widget is None and self.imaging is not None:
             widget = self.imaging
 
-        image = widget.grab()
+        if isinstance(widget, QWidget):
+            image = widget.grab()
+        else:
+            image = None
 
         file_path = os.path.join(directory, str(uuid4()))
         if image.save(file_path, "PNG"):

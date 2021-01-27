@@ -18,7 +18,7 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 # execution
 APPLITOOLS_BATCH_ID = os.getenv("APPLITOOLS_BATCH_ID")
 if APPLITOOLS_BATCH_ID is None:
-    APPLITOOLS_BATCH_ID = uuid4()
+    APPLITOOLS_BATCH_ID = str(uuid4())
 
 API_KEY_PRESENT = os.getenv("APPLITOOLS_API_KEY")
 if API_KEY_PRESENT is None:
@@ -29,6 +29,8 @@ LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tom
 
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
+    eyes_manager: EyesManager
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.eyes_manager = EyesManager("Mantid Imaging")
