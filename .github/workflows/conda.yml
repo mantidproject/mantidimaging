@@ -43,15 +43,15 @@ jobs:
         run: |
           mypy --ignore-missing-imports --no-site-packages mantidimaging
 
-      - name: docs
-        shell: bash -l {0}
-        run: |
-          python setup.py docs
-
       - name: pytest
         shell: bash -l {0}
         run: |
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --count 10 --ignore=mantidimaging/eyes_tests
+
+      - name: docs
+        shell: bash -l {0}
+        run: |
+          python setup.py docs
 
       - name: GUI Tests
         if: ${{ github.event_name == 'pull_request' }}
