@@ -556,7 +556,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Change Colour Palette</string>
+           <string>Auto Change Colour Palette</string>
           </property>
          </widget>
         </item>
