@@ -12,7 +12,6 @@
 # https://github.com/mantidproject/mantid/tree/aa5ed98034119ed3af79ea91527aa718c87c816c/qt/python/mantidqt/utils/qt/testing
 from __future__ import absolute_import
 
-import gc
 import sys
 import traceback
 
