@@ -17,6 +17,7 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
 
 versions._use_test_values()
+docks = []
 
 
 @start_qapplication
@@ -38,6 +39,7 @@ class StackVisualiserViewTest(unittest.TestCase):
             self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
         self.dock, self.view, self.test_data = self._add_stack_visualiser()
+        docks.append(self.dock)
 
     def _add_stack_visualiser(self) -> Tuple[QDockWidget, StackVisualiserView, Images]:
         test_data = th.generate_images()
