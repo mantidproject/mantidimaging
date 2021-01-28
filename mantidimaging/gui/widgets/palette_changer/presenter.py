@@ -73,14 +73,14 @@ class PaletteChangerPresenter(BasePresenter):
         """
         Determine the Otsu threshold tick point.
         """
-        vals = filters.threshold_multiotsu(self.flattened_image, classes=self.view.num_materials)
+        vals = filters.threshold_multiotsu(self.projection_image, classes=self.view.num_materials)
         return self._normalise_tick_values(vals.tolist())
 
     def _generate_jenks_tick_points(self) -> List[float]:
         """
         Determine the Jenks tick points.
         """
-        breaks = jenks_breaks(self.projection_image, self.view.num_materials)
+        breaks = jenks_breaks(self.flattened_image, self.view.num_materials)
         return self._normalise_tick_values(list(breaks)[1:-1])
 
     def _normalise_tick_values(self, breaks: List[float]) -> List[float]:
