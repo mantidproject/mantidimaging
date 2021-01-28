@@ -13,6 +13,12 @@ def _normalise_break_value(break_value, min_value, max_value):
     return (break_value - min_value) / abs(max_value - min_value)
 
 
+def _normalise_break_values(break_vals, min_value, max_value):
+    return list(
+        map(lambda break_value: _normalise_break_value(break_value, min_value=min_value, max_value=max_value),
+            break_vals))
+
+
 class PaletteChangerPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.view = mock.MagicMock()
@@ -22,8 +28,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.projection_gradient = self.projection_histogram.gradient
         self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.projection_image)
 
-    def get_sorted_random_elements_from_projection_image(self, n_elements: int):
-        return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_elements)])
+    def get_sorted_random_elements_from_projection_image(self, n_vals: int):
+        return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_vals)])
 
     def test_flattened_image_creation_for_large_image(self):
         assert self.presenter.flattened_image.size == RANDOM_CUTOFF
@@ -61,26 +67,25 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         for colour in colours:
             assert colour == get_color_mock.return_value
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.filters.threshold_otsu")
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.filters.threshold_multiotsu")
     def test_generate_otsu_tick_points(self, threshold_otsu_mock):
-        threshold_otsu_mock.return_value = otsu_value = np.random.choice(self.presenter.flattened_image)
-        norm_otsu = _normalise_break_value(otsu_value, self.projection_image.min(), self.projection_image.max())
-        self.assertListEqual(self.presenter._generate_otsu_tick_points(), [0.0, norm_otsu, 1.0])
+        self.view.num_materials = n_materials = 4
+        threshold_otsu_mock.return_value = otsu_values = np.array(
+            self.get_sorted_random_elements_from_projection_image(n_materials + 1))
+        norm_otsu = _normalise_break_values(otsu_values, self.projection_image.min(), self.projection_image.max())
+        self.assertListEqual(self.presenter._generate_otsu_tick_points(), [0.0] + norm_otsu + [1.0])
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
     def test_generate_jenks_tick_points(self, jenks_break_mocks):
-        self.view.num_materials = n_breaks = 4
+        self.view.num_materials = n_materials = 4
         jenks_break_mocks.return_value = expected_jenks_ticks = self.get_sorted_random_elements_from_projection_image(
-            n_breaks + 1)
-        expected_jenks_ticks = list(
-            map(
-                lambda break_value: _normalise_break_value(
-                    break_value, min_value=self.projection_image.min(), max_value=self.projection_image.max()),
-                expected_jenks_ticks))
+            n_materials + 1)
+        expected_jenks_ticks = _normalise_break_values(expected_jenks_ticks, self.projection_image.min(),
+                                                       self.projection_image.max())
         expected_jenks_ticks[0] = 0.0
         expected_jenks_ticks[-1] = 1.0
         actual_tick_points = self.presenter._generate_jenks_tick_points()
-        jenks_break_mocks.assert_called_once_with(self.presenter.flattened_image, n_breaks)
+        jenks_break_mocks.assert_called_once_with(self.presenter.flattened_image, n_materials)
         self.assertListEqual(expected_jenks_ticks, actual_tick_points)
 
     def test_remove_old_ticks(self):
