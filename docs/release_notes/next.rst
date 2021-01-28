@@ -8,7 +8,6 @@ New features
 
 - #823: Automatically transpose colour palette
 
-
 Fixes
 -----
 
