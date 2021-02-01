@@ -57,10 +57,10 @@ jobs:
 #        run: |
 #          python setup.py docs
 
-      # This is a DEBUG item and should be removed before merger
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
+      - name: Debug pip addition
+        shell: bash -l {0}
+        run: |
+          pip install pydevd-pycharm~=203.6682.179
 
       - name: GUI Tests
         if: ${{ github.event_name == 'pull_request' }}
