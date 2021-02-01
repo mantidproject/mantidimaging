@@ -18,7 +18,8 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 # execution
 
 import pydevd_pycharm
-pydevd_pycharm.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True)
+ip_address_for_debug = os.getenv("DEBUG_IP")
+pydevd_pycharm.settrace(ip_address_for_debug, port=8080, stdoutToServer=True, stderrToServer=True)
 APPLITOOLS_BATCH_ID = os.getenv("APPLITOOLS_BATCH_ID")
 if APPLITOOLS_BATCH_ID is None:
     APPLITOOLS_BATCH_ID = str(uuid4())
