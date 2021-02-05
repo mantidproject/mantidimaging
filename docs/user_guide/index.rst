@@ -52,6 +52,9 @@ Project Window
     :alt: View of the application window
     :align: center
 
+The main window allows you to view the currently loaded image stacks and gives access to operations and reconstruction tools.
+
+Read more about using and navigating in the :ref:`Image view`.
 
 Operations
 ##########
