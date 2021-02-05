@@ -7,4 +7,5 @@ Graphical User Interface (GUI)
 
    loading_saving
    operations
+   image_view
    colour_palette
