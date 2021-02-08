@@ -67,9 +67,9 @@ by clicking on the "Auto Change Colour Palette" button in the bottom-left corner
 
 This then brings up the auto colour palette menu. From here you can choose the number of materials, the algorithm, and
 the desired colour map. The default colour map is "spectrum" as it appears to be best-suited to taking the results of
-Otsu/Jenks and choosing colours that emphasise the separateness of the different regions. Note that this is a cosmetic
-difference, and does not cause the algorithms to work "better." Be aware that the execution time of the algorithm
-greatly increases with the input value for the number of materials.
+Otsu/Jenks and choosing colours that emphasise the separateness of the different regions. Note that changing the colour
+map only provides a cosmetic difference and does not influence the results of the algorithm. Be aware that the execution
+time of the algorithm greatly increases with the input value for the number of materials.
 
 .. image:: ../../_static/auto_colour_palette_menu.png
     :alt: The auto colour palette menu
