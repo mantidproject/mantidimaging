@@ -17,7 +17,6 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
 
-
 APPLITOOLS_BATCH_ID = os.getenv("APPLITOOLS_BATCH_ID")
 if APPLITOOLS_BATCH_ID is None:
     APPLITOOLS_BATCH_ID = str(uuid4())
