@@ -30,6 +30,7 @@ LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tom
 
 QApplication.setFont(QFont("Sans Serif", 10))
 
+
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
     eyes_manager: EyesManager
