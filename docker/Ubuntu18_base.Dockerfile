@@ -15,5 +15,6 @@ RUN apt-get update && apt-get install -y make wget curl git fontconfig \
       libxtst6 \
       libsm6 \
       qt5-default \
-      xvfb &&\
+      xvfb \
+      gcc &&\
       apt-get clean

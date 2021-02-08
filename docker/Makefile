@@ -2,10 +2,10 @@ image_label := $$(if [ -z "$$IMAGE_LABEL" ]; then echo travis-ci-$$(git rev-pars
 
 all: centos7-base ubuntu18-base
 	docker tag mantidproject/mantidimaging:centos7-base mantidproject/mantidimaging:base
-	docker build -f Dockerfile -t mantidproject/mantidimaging:centos7 ..
+	docker build --no-cache -f Dockerfile -t mantidproject/mantidimaging:centos7 ..
 
 	docker tag mantidproject/mantidimaging:ubuntu18-base mantidproject/mantidimaging:base
-	docker build -f Dockerfile -t mantidproject/mantidimaging:ubuntu18 ..
+	docker build --no-cache -f Dockerfile -t mantidproject/mantidimaging:ubuntu18 ..
 	docker tag mantidproject/mantidimaging:ubuntu18 mantidproject/mantidimaging:latest
 
 push:
