@@ -14,19 +14,22 @@ from mantidimaging.gui.windows.main import MainWindowView
 
 
 class EyesManager:
-    def __init__(self, application_name="Mantid Imaging"):
+    def __init__(self, application_name="Mantid Imaging", test_name=None):
         self.application_name = application_name
         self.eyes = Eyes()
         self.eyes.match_level = MatchLevel.LAYOUT
         self.image_directory = None
         self.imaging = None
+        if test_name is None:
+            test_name = self.application_name + " Tests"
+        self.test_name = test_name
 
     def set_match_level(self, level: MatchLevel):
         self.eyes.match_level = level
 
     def set_batch(self, batch_id):
         batch_info = BatchInfo()
-        batch_info.name = self.application_name + " Tests"
+        batch_info.name = self.test_name
         batch_info.id = batch_id
         self.eyes.batch = batch_info
 

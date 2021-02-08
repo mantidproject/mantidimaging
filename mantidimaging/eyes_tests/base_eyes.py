@@ -3,6 +3,7 @@
 
 import os
 import unittest
+import getpass
 from pathlib import Path
 from tempfile import mkdtemp
 from uuid import uuid4
@@ -26,6 +27,10 @@ API_KEY_PRESENT = os.getenv("APPLITOOLS_API_KEY")
 if API_KEY_PRESENT is None:
     raise unittest.SkipTest("API Key is not defined in the environment, so Eyes tests are skipped.")
 
+TEST_NAME = os.getenv("GITHUB_BRANCH_NAME")
+if TEST_NAME is None:
+    TEST_NAME = f"{getpass.getuser()}'s Local Test"
+
 LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
 
 QApplication.setFont(QFont("Sans Serif", 10))
@@ -37,7 +42,7 @@ class BaseEyesTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.eyes_manager = EyesManager("Mantid Imaging")
+        cls.eyes_manager = EyesManager("Mantid Imaging", test_name=TEST_NAME)
         cls.eyes_manager.set_batch(APPLITOOLS_BATCH_ID)
 
     def setUp(self):
