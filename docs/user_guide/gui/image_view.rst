@@ -59,7 +59,8 @@ image. In some cases, this may make the different materials in the image more ea
 Users should bear in mind that the result depends a great deal on the success of Jenks/Otsu and the colour scheme
 chosen.
 
-This feature can be accessed by right clicking the projection histogram and selecting "Auto," as shown below:
+This feature can be accessed by right clicking the projection histogram in the recon window and selecting "Auto", or
+by clicking on the "Auto Change Colour Palette" button in the bottom-left corner. This is shown below:
 
 .. image:: ../../_static/access_auto_colour_palette.png
     :alt: Accessing the auto colour palette
