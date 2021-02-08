@@ -67,4 +67,11 @@ by clicking on the "Auto Change Colour Palette" button in the bottom-left corner
     :width: 90%
     :align: center
 
-# todo: discuss pop-up window
+This then brings up the auto colour palette menu. From here you can set the number of materials, the algorithm, and the
+desired colour map. The program will then attempt to classify the image into N separate materials. Be aware that
+the execution time of the algorithm greatly increases with the input value for the number of materials.
+
+.. image:: ../../_static/auto_colour_palette_menu.png
+    :alt: The auto colour palette menu
+    :width: 50%
+    :align: center
