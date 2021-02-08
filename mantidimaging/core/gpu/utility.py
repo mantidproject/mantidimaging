@@ -129,6 +129,8 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
 
         for i in range(len(cpu_arrays)):
             gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
+            # Synchronise to ensure that the upload has completed
+            streams[i].synchronize()
 
         return gpu_arrays
 
