@@ -36,6 +36,8 @@ class MedianFilter(BaseFilter):
         :param size: Size of the kernel
         :param mode: The mode with which to handle the edges.
                      One of [reflect, constant, nearest, mirror, wrap].
+                     Modes are described in the `SciPy documentation
+                     <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.median_filter.html>`_.
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
         :param progress: The object for displaying the progress.
@@ -64,7 +66,7 @@ class MedianFilter(BaseFilter):
                                              on_change=on_change,
                                              tooltip="Size of the median filter kernel")
 
-        _, mode_field = add_property_to_form('Mode',
+        _, mode_field = add_property_to_form('Edge Mode',
                                              Type.CHOICE,
                                              valid_values=modes(),
                                              form=form,
