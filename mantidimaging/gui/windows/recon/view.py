@@ -168,9 +168,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.auto_colour_action = QAction("Auto")
         self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
 
-        action = self.image_view.projection_hist.gradient.menu.actions()[12]
-        self.image_view.projection_hist.gradient.menu.insertAction(action, self.auto_colour_action)
-        self.image_view.projection_hist.gradient.menu.insertSeparator(self.auto_colour_action)
+        action = self.image_view.recon_hist.gradient.menu.actions()[12]
+        self.image_view.recon_hist.gradient.menu.insertAction(action, self.auto_colour_action)
+        self.image_view.recon_hist.gradient.menu.insertSeparator(self.auto_colour_action)
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
         selected_images = self.main_window.get_images_from_stack_uuid(uuid)
