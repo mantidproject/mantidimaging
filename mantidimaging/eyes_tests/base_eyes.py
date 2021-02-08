@@ -17,9 +17,7 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
 
-import pydevd_pycharm
-ip_address_for_debug = os.getenv("DEBUG_IP")
-pydevd_pycharm.settrace(ip_address_for_debug, port=8080, stdoutToServer=True, stderrToServer=True)
+
 APPLITOOLS_BATCH_ID = os.getenv("APPLITOOLS_BATCH_ID")
 if APPLITOOLS_BATCH_ID is None:
     APPLITOOLS_BATCH_ID = str(uuid4())
@@ -45,6 +43,8 @@ class BaseEyesTest(unittest.TestCase):
 
         self.imaging = None
         self.eyes_manager.image_directory = mkdtemp()
+
+        self.stacks = []
 
         # Do setup
         self.eyes_manager.start_imaging()
@@ -75,6 +75,8 @@ class BaseEyesTest(unittest.TestCase):
 
     def _load_data_set(self):
         dataset = loader.load(file_names=[LOAD_SAMPLE])
-        self.imaging.presenter.create_new_stack(dataset, "Stack 1")
+        dock, vis = self.imaging.presenter.create_new_stack(dataset, "Stack 1")
 
         QApplication.sendPostedEvents()
+
+        return dock, vis

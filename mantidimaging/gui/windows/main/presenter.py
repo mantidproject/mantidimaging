@@ -149,6 +149,8 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.active_stacks_changed.emit()
 
+        return sample_dock, sample_stack_vis
+
     def save(self):
         kwargs = {
             'stack_uuid': self.view.save_dialogue.selected_stack,

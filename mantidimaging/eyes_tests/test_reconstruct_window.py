@@ -4,6 +4,10 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class ReconstructionWindowTest(BaseEyesTest):
+    def setUp(self):
+        super(ReconstructionWindowTest, self).setUp()
+        self.docks = []
+
     def test_reconstruction_window_opens(self):
         self.imaging.show_recon_window()
 
@@ -11,6 +15,8 @@ class ReconstructionWindowTest(BaseEyesTest):
 
     def test_reconstruction_window_opens_with_data(self):
         self._load_data_set()
+        for ii in self.imaging.presenter.model.get_all_stack_visualisers():
+            self.docks.append(ii.dock)
 
         self.imaging.show_recon_window()
 

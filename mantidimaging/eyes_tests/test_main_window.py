@@ -51,6 +51,8 @@ class MainWindowTest(BaseEyesTest):
 
     def test_main_window_image_menu(self):
         self._load_data_set()
+        for ii in self.imaging.presenter.model.get_all_stack_visualisers():
+            self.docks.append(ii.dock)
         self.show_menu(self.imaging, self.imaging.menuImage)
 
         self.check_target(widget=self.imaging.menuImage)
