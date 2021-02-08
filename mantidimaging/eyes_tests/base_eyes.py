@@ -7,6 +7,7 @@ from pathlib import Path
 from tempfile import mkdtemp
 from uuid import uuid4
 
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel
 
@@ -27,6 +28,7 @@ if API_KEY_PRESENT is None:
 
 LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
 
+QApplication.setFont(QFont("Sans Serif", 10))
 
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
