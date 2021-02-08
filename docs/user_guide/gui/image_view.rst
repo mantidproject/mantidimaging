@@ -49,7 +49,7 @@ Colour Palette
 The colour palette of an image can be changed by right clicking its histogram. This allows users to choose from a number
 of pre-defined gradients.
 
-Automatic Gradient Tweeking
+Automatic Gradient Tweaking
 ---------------------------
 
 Users can also use the Jenks Breaks or Otsu algorithms to automatically change the appearance of the gradient. In the
@@ -61,6 +61,9 @@ chosen.
 
 This feature can be accessed by right clicking the histogram and selecting "Auto," as shown below:
 
-# todo: add image
+.. image:: ../../_static/access_auto_colour_palette.png
+    :alt: Accessing the auto colour palette
+    :width: 90%
+    :align: center
 
 # todo: discuss pop-up window
