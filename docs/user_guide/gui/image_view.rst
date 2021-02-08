@@ -52,12 +52,10 @@ of pre-defined gradients.
 Automatic Gradient Tweaking
 ---------------------------
 
-Users can also use the Jenks Breaks or Otsu algorithms to automatically change the appearance of the gradient. In the
-case of Jenks, this can be done based on a number of materials provided by the user. The software will then attempt to
-categorise the image into groups and select colours that emphasise the contrast between the different regions of the
-image. In some cases, this may make the different materials in the image more easy to distinguish from one another.
-Users should bear in mind that the result depends a great deal on the success of Jenks/Otsu and the colour scheme
-chosen.
+Users can also use the Jenks Breaks or Otsu algorithms to automatically change the appearance of the gradient. The
+software will then attempt to categorise the image into groups and select colours that emphasise the contrast between
+the different materials in the image. In some cases, this may make the different materials in the image more easy to
+distinguish from one another.
 
 This feature can be accessed by right clicking the projection histogram in the recon window and selecting "Auto", or
 by clicking on the "Auto Change Colour Palette" button in the bottom-left corner. This is shown below:
@@ -67,9 +65,9 @@ by clicking on the "Auto Change Colour Palette" button in the bottom-left corner
     :width: 90%
     :align: center
 
-This then brings up the auto colour palette menu. From here you can set the number of materials, the algorithm, and the
-desired colour map. The program will then attempt to classify the image into N separate materials. Be aware that
-the execution time of the algorithm greatly increases with the input value for the number of materials.
+This then brings up the auto colour palette menu. From here you can choose the number of materials, the algorithm, and
+the desired colour map. The default colour map is "spectrum" as it Be aware that the execution time of the algorithm greatly increases with the input value for the
+number of materials.
 
 .. image:: ../../_static/auto_colour_palette_menu.png
     :alt: The auto colour palette menu
