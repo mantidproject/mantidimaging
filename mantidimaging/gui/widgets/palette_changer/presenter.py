@@ -13,18 +13,18 @@ RANDOM_CUTOFF = 15000
 
 
 class PaletteChangerPresenter(BasePresenter):
-    def __init__(self, view, hists: List[HistogramLUTItem], projection_image: np.ndarray):
+    def __init__(self, view, hists: List[HistogramLUTItem], recon_image: np.ndarray):
         super(PaletteChangerPresenter, self).__init__(view)
         self.hists = hists
-        self.projection_image = projection_image
-        self.projection_histogram = hists[-1]
+        self.recon_image = recon_image
+        self.recon_histogram = hists[0]
         # Create a flattened version of the histogram image to send to Jenks or Otsu
-        if projection_image.size > RANDOM_CUTOFF:
+        if recon_image.size > RANDOM_CUTOFF:
             # Use a random subset if the image is large
-            self.flattened_image = np.random.choice(self.projection_image.flatten(), RANDOM_CUTOFF)
+            self.flattened_image = np.random.choice(self.recon_image.flatten(), RANDOM_CUTOFF)
         else:
             # Use the entire array if the image is small
-            self.flattened_image = self.projection_image.flatten()
+            self.flattened_image = self.recon_image.flatten()
 
     def notify(self, signal):
         pass
@@ -45,21 +45,21 @@ class PaletteChangerPresenter(BasePresenter):
 
     def _record_old_tick_points(self):
         """
-        Records the default tick points for the projection histogram that are inserted when a new colour map is loaded.
+        Records the default tick points for the recon histogram that are inserted when a new colour map is loaded.
         This means they can be easily removed once the new ticks have been added to the histogram. This step is
         carried out because the method for determining a new tick's colour fails if there are no ticks present. Hence,
         these are only removed after the new Otsu/Jenks ticks have already been placed in the histogram.
         """
-        self.old_ticks = list(self.projection_histogram.gradient.ticks.keys())
+        self.old_ticks = list(self.recon_histogram.gradient.ticks.keys())
 
     def _insert_new_ticks(self, tick_points: List[float]):
         """
-        Adds new ticks to the projection histogram.
+        Adds new ticks to the recon histogram.
         """
         n_tick_points = len(tick_points)
         colours = self._get_colours(n_tick_points)
         for i in range(n_tick_points):
-            self.projection_histogram.gradient.addTick(tick_points[i], color=colours[i], finish=False)
+            self.recon_histogram.gradient.addTick(tick_points[i], color=colours[i], finish=False)
 
     def _change_colour_map(self):
         """
@@ -73,7 +73,7 @@ class PaletteChangerPresenter(BasePresenter):
         """
         Determine the Otsu threshold tick point.
         """
-        vals = filters.threshold_multiotsu(self.projection_image, classes=self.view.num_materials)
+        vals = filters.threshold_multiotsu(self.recon_image, classes=self.view.num_materials)
         return self._normalise_tick_values(vals.tolist())
 
     def _generate_jenks_tick_points(self) -> List[float]:
@@ -88,32 +88,32 @@ class PaletteChangerPresenter(BasePresenter):
         Scale the collection of break values so that they range from 0 to 1. This is done because addTick expects an
         x value in this range.
         """
-        min_val = self.projection_image.min()
-        max_val = self.projection_image.max()
-        val_range = np.ptp(self.projection_image)
+        min_val = self.recon_image.min()
+        max_val = self.recon_image.max()
+        val_range = np.ptp(self.recon_image)
         breaks = [min_val] + breaks + [max_val]
         return [(break_x - min_val) / val_range for break_x in breaks]
 
     def _remove_old_ticks(self):
         """
-        Remove the default projection histogram ticks from the image.
+        Remove the default recon histogram ticks from the image.
         """
         for t in self.old_ticks:
-            self.projection_histogram.gradient.removeTick(t, finish=False)
+            self.recon_histogram.gradient.removeTick(t, finish=False)
 
     def _update_ticks(self):
         """
-        Tell the projection histogram ticks to update at the end of a change.
+        Tell the recon histogram ticks to update at the end of a change.
         """
-        self.projection_histogram.gradient.showTicks()
-        self.projection_histogram.gradient.updateGradient()
-        self.projection_histogram.gradient.sigGradientChangeFinished.emit(self.projection_histogram.gradient)
+        self.recon_histogram.gradient.showTicks()
+        self.recon_histogram.gradient.updateGradient()
+        self.recon_histogram.gradient.sigGradientChangeFinished.emit(self.recon_histogram.gradient)
 
     def _get_colours(self, num_ticks: int) -> List[float]:
         """
-        Determine the colours that should be used for the new projection histogram ticks. Should ensure that there is
-        a suitable amount of contrast between the different materials, even if the ticks are quite close together on
+        Determine the colours that should be used for the new recon histogram ticks. Should ensure that there is a
+        suitable amount of contrast between the different materials, even if the ticks are quite close together on
         the histogram.
         """
         norms = np.linspace(0, 1, num_ticks)
-        return [self.projection_histogram.gradient.getColor(norm) for norm in norms]
+        return [self.recon_histogram.gradient.getColor(norm) for norm in norms]
