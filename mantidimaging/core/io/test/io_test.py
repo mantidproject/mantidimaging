@@ -1,4 +1,4 @@
-# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
@@ -204,7 +204,7 @@ class IOTest(FileOutputtingTestCase):
 
     def test_metadata_round_trip(self):
         # Create dummy image stack
-        sample = th.gen_img_shared_array_with_val(42.)
+        sample = th.gen_img_numpy_rand()
         images = Images(sample)
         images.metadata['message'] = 'hello, world!'
 

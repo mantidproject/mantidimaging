@@ -1,4 +1,4 @@
-# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import operator
@@ -55,6 +55,8 @@ class OutliersFilter(BaseFilter):
         :param images: Input data
         :param diff: Pixel value difference above which to crop bright pixels
         :param radius: Size of the median filter to apply
+        :param mode: Whether to remove bright or dark outliers
+                    One of [OUTLIERS_BRIGHT, OUTLIERS_DARK]
         :param cores: The number of cores that will be used to process the data.
 
         :return: The processed 3D numpy.ndarray
@@ -93,7 +95,7 @@ class OutliersFilter(BaseFilter):
                                              valid_values=modes(),
                                              form=form,
                                              on_change=on_change,
-                                             tooltip="Specifies how to handle the edges of the image")
+                                             tooltip="Whether to remove bright or dark outliers")
 
         return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field}
 

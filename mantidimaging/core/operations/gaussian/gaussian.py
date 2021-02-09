@@ -1,4 +1,4 @@
-# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
@@ -32,6 +32,8 @@ class GaussianFilter(BaseFilter):
         :param size: Size of the kernel
         :param mode: The mode with which to handle the endges.
                      One of [reflect, constant, nearest, mirror, wrap].
+                     Modes are described in the `SciPy documentation
+                     <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html>`_.
         :param order: The order of the filter along each axis is given as a
                       sequence of integers, or as a single number.
                       An order of 0 corresponds to convolution with a Gaussian
@@ -67,7 +69,7 @@ class GaussianFilter(BaseFilter):
                                               on_change=on_change,
                                               tooltip="Order of the Gaussian filter")
 
-        _, mode_field = add_property_to_form('Mode',
+        _, mode_field = add_property_to_form('Edge Mode',
                                              Type.CHOICE,
                                              valid_values=modes(),
                                              form=form,
