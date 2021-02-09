@@ -204,7 +204,7 @@ class IOTest(FileOutputtingTestCase):
 
     def test_metadata_round_trip(self):
         # Create dummy image stack
-        sample = th.gen_img_shared_array_with_val(42.)
+        sample = th.gen_img_numpy_rand()
         images = Images(sample)
         images.metadata['message'] = 'hello, world!'
 
