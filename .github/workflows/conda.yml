@@ -65,13 +65,6 @@ jobs:
           xvfb-run --auto-servernum python -m pytest -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests
         timeout-minutes: 15
 
-      - name: Update Applitools batch status
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: wei/curl@v1.1.1
-        with:
-          # Assuming that github.sha is the APPLITOOLS_BATCH_ID and applitools API key is APPLITOOLS_API_KEY
-          args: --data "" --request POST "https://eyesapi.applitools.com/api/externals/github/servers/github.com/commit/${{ github.sha }}/complete?apiKey=${{ secrets.APPLITOOLS_API_KEY }}"
-
       - name: Coveralls
         shell: bash -l {0}
         env:
