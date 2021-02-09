@@ -122,7 +122,7 @@ def test_rescale_ignores_nans(value):
     expected_min_input = 0.0
     images = RescaleFilter.filter_func(images,
                                        min_input=expected_min_input,
-                                       max_input=images.data.max(),
+                                       max_input=np.nanmax(images.data),
                                        max_output=value)
 
     # below min_input has been clipped to 0
