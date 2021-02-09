@@ -23,10 +23,10 @@ class PaletteChangerPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.view = mock.MagicMock()
         self.histograms = [mock.Mock() for _ in range(3)]
-        self.projection_histogram = self.histograms[-1]
-        self.projection_image = np.random.random((200, 200))
-        self.projection_gradient = self.projection_histogram.gradient
-        self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.projection_image)
+        self.recon_histogram = self.histograms[0]
+        self.recon_image = np.random.random((200, 200))
+        self.recon_gradient = self.recon_histogram.gradient
+        self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_image)
 
     def get_sorted_random_elements_from_projection_image(self, n_vals: int):
         return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_vals)])
@@ -49,18 +49,18 @@ class PaletteChangerPresenterTest(unittest.TestCase):
 
     def test_record_old_tick_points(self):
         old_ticks_list = [mock.Mock() for i in range(2)]
-        self.projection_histogram.gradient.ticks = {old_ticks_list[i]: i * 1.0 for i in range(2)}
+        self.recon_histogram.gradient.ticks = {old_ticks_list[i]: i * 1.0 for i in range(2)}
         self.presenter._record_old_tick_points()
         self.assertListEqual(self.presenter.old_ticks, old_ticks_list)
 
     def test_insert_new_ticks(self):
         tick_locations = [i * 0.1 for i in range(11)]
         self.presenter._insert_new_ticks(tick_locations)
-        self.projection_gradient.addTick.assert_has_calls(
-            [mock.call(x, color=self.projection_gradient.getColor.return_value, finish=False) for x in tick_locations])
+        self.recon_gradient.addTick.assert_has_calls(
+            [mock.call(x, color=self.recon_gradient.getColor.return_value, finish=False) for x in tick_locations])
 
     def test_get_colours(self):
-        get_color_mock = self.projection_histogram.gradient.getColor
+        get_color_mock = self.recon_histogram.gradient.getColor
         n_ticks = 5
         colours = self.presenter._get_colours(n_ticks)
         get_color_mock.assert_has_calls([mock.call(x) for x in np.linspace(0, 1, n_ticks)])
@@ -72,7 +72,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.view.num_materials = n_materials = 4
         threshold_otsu_mock.return_value = otsu_values = np.array(
             self.get_sorted_random_elements_from_projection_image(n_materials + 1))
-        norm_otsu = _normalise_break_values(otsu_values, self.projection_image.min(), self.projection_image.max())
+        norm_otsu = _normalise_break_values(otsu_values, self.recon_image.min(), self.recon_image.max())
         self.assertListEqual(self.presenter._generate_otsu_tick_points(), [0.0] + norm_otsu + [1.0])
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
@@ -80,8 +80,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.view.num_materials = n_materials = 4
         jenks_break_mocks.return_value = expected_jenks_ticks = self.get_sorted_random_elements_from_projection_image(
             n_materials + 1)
-        expected_jenks_ticks = _normalise_break_values(expected_jenks_ticks, self.projection_image.min(),
-                                                       self.projection_image.max())
+        expected_jenks_ticks = _normalise_break_values(expected_jenks_ticks, self.recon_image.min(),
+                                                       self.recon_image.max())
         expected_jenks_ticks[0] = 0.0
         expected_jenks_ticks[-1] = 1.0
         actual_tick_points = self.presenter._generate_jenks_tick_points()
@@ -92,31 +92,31 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         n_old_ticks = 3
         self.presenter.old_ticks = mock_old_ticks = [mock.Mock() for _ in range(n_old_ticks)]
         self.presenter._remove_old_ticks()
-        self.projection_gradient.removeTick.assert_has_calls([mock.call(t, finish=False) for t in mock_old_ticks])
+        self.recon_gradient.removeTick.assert_has_calls([mock.call(t, finish=False) for t in mock_old_ticks])
 
     def test_update_ticks(self):
         self.presenter._update_ticks()
-        self.projection_gradient.showTicks.assert_called_once()
-        self.projection_gradient.updateGradient.assert_called_once()
-        self.projection_gradient.sigGradientChangeFinished.emit.assert_called_once_with(self.projection_gradient)
+        self.recon_gradient.showTicks.assert_called_once()
+        self.recon_gradient.updateGradient.assert_called_once()
+        self.recon_gradient.sigGradientChangeFinished.emit.assert_called_once_with(self.recon_gradient)
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.jenks_breaks")
     def test_change_colour_palette_changes_ticks(self, jenks_breaks_mock):
         n_old_ticks = 3
         old_ticks_list = [mock.Mock() for _ in range(n_old_ticks)]
         new_ticks_list = []
-        self.projection_gradient.ticks = {old_ticks_list[i]: i * 0.5 for i in range(n_old_ticks)}
+        self.recon_gradient.ticks = {old_ticks_list[i]: i * 0.5 for i in range(n_old_ticks)}
 
         def add_tick_side_effect(location, color, finish):
             new_tick = mock.Mock()
-            self.projection_gradient.ticks[new_tick] = location
+            self.recon_gradient.ticks[new_tick] = location
             new_ticks_list.append(new_tick)
 
         def remove_tick_side_effect(tick, finish):
-            del self.projection_gradient.ticks[tick]
+            del self.recon_gradient.ticks[tick]
 
-        self.projection_gradient.addTick = mock.Mock(side_effect=add_tick_side_effect)
-        self.projection_gradient.removeTick = mock.Mock(side_effect=remove_tick_side_effect)
+        self.recon_gradient.addTick = mock.Mock(side_effect=add_tick_side_effect)
+        self.recon_gradient.removeTick = mock.Mock(side_effect=remove_tick_side_effect)
 
         self.view.algorithm = "Jenks"
         self.view.num_materials = n_materials = 4
@@ -125,8 +125,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.presenter.change_colour_palette()
 
         for old_tick in old_ticks_list:
-            self.assertNotIn(old_tick, self.projection_gradient.ticks.keys())
+            self.assertNotIn(old_tick, self.recon_gradient.ticks.keys())
         for new_tick in new_ticks_list:
-            self.assertIn(new_tick, self.projection_gradient.ticks.keys())
+            self.assertIn(new_tick, self.recon_gradient.ticks.keys())
 
-        assert n_materials + 1 == len(self.projection_gradient.ticks.keys())
+        assert n_materials + 1 == len(self.recon_gradient.ticks.keys())
