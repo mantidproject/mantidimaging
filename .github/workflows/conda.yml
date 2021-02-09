@@ -70,7 +70,7 @@ jobs:
         uses: wei/curl@v1.1.1
         with:
           # Assuming that github.sha is the APPLITOOLS_BATCH_ID and applitools API key is APPLITOOLS_API_KEY
-          args: -d "" -X POST https://eyesapi.applitools.com/api/externals/github/servers/github.com/commit/${{ github.sha }}/complete?apiKey=${{ secrets.APPLITOOLS_API_KEY }}
+          args: --data "" --request POST "https://eyesapi.applitools.com/api/externals/github/servers/github.com/commit/${{ github.sha }}/complete?apiKey=${{ secrets.APPLITOOLS_API_KEY }}"
 
       - name: Coveralls
         shell: bash -l {0}
