@@ -58,14 +58,6 @@ def _set_random_data(data, shape):
     return images
 
 
-def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    d = pu.create_array(shape)
-    n = np.full(shape, val)
-    # move the data in the shared array
-    d[:] = n[:]
-    return d
-
-
 def assert_not_equals(one: np.ndarray, two: np.ndarray):
     """
     Assert equality for numpy ndarrays using the numpy testing library.
