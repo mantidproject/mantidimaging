@@ -4,7 +4,8 @@
 import numpy as np
 import pytest
 
-from mantidimaging.core.utility.imat_log_file_parser import CSVLogParser, IMATLogFile, TextLogParser
+from mantidimaging.core.utility.imat_log_file_parser import CSVLogParser, IMATLogFile, TextLogParser, \
+    _get_projection_number
 
 
 @pytest.mark.parametrize('test_input', [[
@@ -84,3 +85,8 @@ def test_find_missing_projection_number(test_input):
 def test_source_file(test_input):
     logfile = IMATLogFile(test_input, "/tmp/fake")
     assert logfile.source_file == "/tmp/fake"
+
+
+def test_get_projection_number():
+    assert _get_projection_number("Projection:  99  angle: 31.2048") == 99
+    assert _get_projection_number("Radiography:  19") == 19
