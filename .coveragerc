@@ -7,6 +7,7 @@ omit =
     mantidimaging/main.py
     mantidimaging/ipython.py
     mantidimaging/test_helpers/*
+    mantidimaging/eyes_tests/*
 source =
     mantidimaging
 
