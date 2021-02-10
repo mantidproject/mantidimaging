@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import csv
+import re
 from enum import Enum, auto
 from itertools import zip_longest
 from typing import Dict, List
@@ -12,7 +13,7 @@ from mantidimaging.core.utility.data_containers import Counts, ProjectionAngles
 
 
 def _get_projection_number(s: str) -> int:
-    return int(s[s.find(":") + 1:s.find("a")].strip())
+    return int(re.sub(r"\D", "", s.split(":")[1]))
 
 
 def _get_angle(s: str) -> str:
