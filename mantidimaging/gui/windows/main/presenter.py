@@ -1,4 +1,4 @@
-# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 import traceback
@@ -148,6 +148,8 @@ class MainWindowPresenter(BasePresenter):
                 tab_bar.setCurrentIndex(last_stack_pos)
 
         self.view.active_stacks_changed.emit()
+
+        return sample_dock, sample_stack_vis
 
     def save(self):
         kwargs = {

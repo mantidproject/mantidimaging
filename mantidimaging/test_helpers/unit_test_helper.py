@@ -1,4 +1,4 @@
-# Copyright (C) 2020 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
@@ -56,14 +56,6 @@ def _set_random_data(data, shape):
 
     images = Images(data)
     return images
-
-
-def gen_img_shared_array_with_val(val=1., shape=g_shape):
-    d = pu.create_array(shape)
-    n = np.full(shape, val)
-    # move the data in the shared array
-    d[:] = n[:]
-    return d
 
 
 def assert_not_equals(one: np.ndarray, two: np.ndarray):

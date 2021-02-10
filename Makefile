@@ -49,7 +49,7 @@ test:
 	python -m pytest
 
 mypy:
-	python -m mypy --ignore-missing-imports mantidimaging
+	python -m mypy --ignore-missing-imports --no-site-packages mantidimaging
 
 yapf:
 	python -m yapf --parallel --diff --recursive .
@@ -60,4 +60,4 @@ yapf_apply:
 flake8:
 	python -m flake8
 
-check: yapf_apply flake8 mypy test
+check: yapf flake8 mypy test
