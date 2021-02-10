@@ -38,5 +38,5 @@ dependencies:
       - pytest-repeat==0.9.1
       - psutil==5.7.3
       - isort==5.6.4
-      - jenkspy==0.2.0
       - eyes-images==4.15.0
+      - jenkspy==0.2.0
