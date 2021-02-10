@@ -1,12 +1,11 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox)
+                             QVBoxLayout, QWidget, QMessageBox, QAction)
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
@@ -14,6 +13,7 @@ from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
+from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import Column, CorTiltPointQtModel
@@ -57,6 +57,8 @@ class ReconstructWindowView(BaseMainWindowView):
     resultSlope: QDoubleSpinBox
     reconstructVolume: QPushButton
     reconstructSlice: QPushButton
+
+    changeColourPaletteButton: QPushButton
 
     stackSelector: StackSelectorWidgetView
 
@@ -116,6 +118,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.correlateBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_CORRELATE))
         self.minimiseBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_MINIMISE))
 
+        self.changeColourPaletteButton.clicked.connect(self.on_change_colour_palette)
+
         def on_row_change(item, _):
             """
             Handles setting preview slice index from the currently selected row
@@ -158,6 +162,15 @@ class ReconstructWindowView(BaseMainWindowView):
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
+
+        # Preparing the auto change colour map UI
+        self.hists = [self.image_view.recon_hist, self.image_view.sinogram_hist, self.image_view.projection_hist]
+        self.auto_colour_action = QAction("Auto")
+        self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
+
+        action = self.image_view.recon_hist.gradient.menu.actions()[12]
+        self.image_view.recon_hist.gradient.menu.insertAction(action, self.auto_colour_action)
+        self.image_view.recon_hist.gradient.menu.insertSeparator(self.auto_colour_action)
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
         selected_images = self.main_window.get_images_from_stack_uuid(uuid)
@@ -381,3 +394,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def change_refine_iterations(self):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
+
+    def on_change_colour_palette(self):
+        change_colour_palette = PaletteChangerView(self, self.hists, self.image_view.recon.image)
+        change_colour_palette.show()

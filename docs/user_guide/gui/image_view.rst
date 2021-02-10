@@ -42,3 +42,37 @@ Alternative colour schemes can be selected by right-clicking on the gradient as 
     :alt: Selecting colours for the image view
     :width: 70%
     :align: center
+
+Colour Palette
+--------------
+
+The colour palette of an image can be changed by right clicking its histogram. This allows users to choose from a number
+of pre-defined gradients.
+
+Automatic Gradient Tweaking
+---------------------------
+
+Users can also use the Jenks Breaks or Otsu algorithms to automatically change the appearance of the gradient. The
+software will then attempt to categorise the image into groups and select colours that emphasise the contrast between
+the different materials in the image. In some cases, this may make the different materials in the image more easy to
+distinguish from one another. Be aware that the success of the algorithm greatly depends on how much the histogram
+cooperates.
+
+This feature can be accessed by right clicking the projection histogram in the recon window and selecting "Auto", or
+by clicking on the "Auto Change Colour Palette" button in the bottom-left corner. This is shown below:
+
+.. image:: ../../_static/access_auto_colour_palette.png
+    :alt: Accessing the auto colour palette
+    :width: 90%
+    :align: center
+
+This then brings up the auto colour palette menu. From here you can choose the number of materials, the algorithm you
+wish to use, and the desired colour map. The default colour map is "spectrum" as it appears to be best-suited to taking
+the results of Otsu/Jenks and choosing colours that emphasise the separateness of the different regions. Note that
+changing the colour map only provides a cosmetic difference and does not influence the results of the algorithm. Users
+should note that the execution time of the algorithm increases greatly with the input value for the number of materials.
+
+.. image:: ../../_static/auto_colour_palette_menu.png
+    :alt: The auto colour palette menu
+    :width: 50%
+    :align: center
