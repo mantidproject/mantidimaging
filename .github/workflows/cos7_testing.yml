@@ -40,7 +40,8 @@ jobs:
     - name: mypy
       uses: ./.github/actions/test
       with:
-        command: mypy --ignore-missing-imports mantidimaging
+        # COMPAT: applitools has some bad signatures, so use --no-site-packages
+        command: mypy --ignore-missing-imports --no-site-packages mantidimaging
         label: centos7
 
     - name: pytest
