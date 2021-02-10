@@ -32,6 +32,10 @@ if TEST_NAME is None:
     TEST_NAME = f"{getpass.getuser()}'s Local Test"
 
 LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
+if not os.path.exists(LOAD_SAMPLE):
+    raise unittest.SkipTest(
+        "Data not present, please clone to your home directory e.g. git clone https://github.com/mantidproject/mantidimaging-data.git ~/mantidimaging-data"
+    )
 
 QApplication.setFont(QFont("Sans Serif", 10))
 
