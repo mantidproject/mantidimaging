@@ -61,7 +61,7 @@ class MainWindowView(BaseMainWindowView):
     load_dialogue: Optional[MWLoadDialog] = None
     save_dialogue: Optional[MWSaveDialog] = None
 
-    def __init__(self):
+    def __init__(self, open_dialogs=True):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -79,14 +79,19 @@ class MainWindowView(BaseMainWindowView):
         self.setAcceptDrops(True)
         base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
 
-        if versions.get_conda_installed_label() != "main":
-            self.setWindowTitle("Mantid Imaging Unstable")
-            bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_unstable_64px.png")
+        self.open_dialogs = open_dialogs
+        if self.open_dialogs:
+            if versions.get_conda_installed_label() != "main":
+                self.setWindowTitle("Mantid Imaging Unstable")
+                bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_unstable_64px.png")
+            else:
+                bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         else:
             bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         self.setWindowIcon(QIcon(bg_image))
 
-        if WelcomeScreenPresenter.show_today():
+        self.welcome_window = None
+        if self.open_dialogs and WelcomeScreenPresenter.show_today():
             self.show_about()
 
     def setup_shortcuts(self):
@@ -139,8 +144,8 @@ class MainWindowView(BaseMainWindowView):
         QtGui.QDesktopServices.openUrl(url)
 
     def show_about(self):
-        welcome_window = WelcomeScreenPresenter(self)
-        welcome_window.show()
+        self.welcome_window = WelcomeScreenPresenter(self)
+        self.welcome_window.show()
 
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
@@ -320,7 +325,7 @@ class MainWindowView(BaseMainWindowView):
         """
         should_close = True
 
-        if self.presenter.have_active_stacks:
+        if self.presenter.have_active_stacks and self.open_dialogs:
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
             msg_box = QtWidgets.QMessageBox.question(self,
@@ -349,6 +354,8 @@ class MainWindowView(BaseMainWindowView):
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
+
+            return stack_choice
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.presenter.set_images_in_stack(uuid, images)

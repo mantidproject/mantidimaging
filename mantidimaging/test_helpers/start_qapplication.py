@@ -13,6 +13,7 @@
 from __future__ import absolute_import
 
 import gc
+import os
 import sys
 import traceback
 
@@ -55,9 +56,12 @@ def start_qapplication(cls):
         setUpClass_orig()
 
     def tearDownClass(cls):
-        gc.collect()
+        if os.getenv("APPLITOOLS_API_KEY") is None:
+            gc.collect()
+        tearDownClass_orig()
 
     setUpClass_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
+    tearDownClass_orig = cls.tearDownClass if hasattr(cls, 'tearDownClass') else do_nothing
     setattr(cls, 'setUpClass', classmethod(setUpClass))
     setattr(cls, 'tearDownClass', classmethod(tearDownClass))
     return cls
