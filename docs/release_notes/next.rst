@@ -14,3 +14,4 @@ Fixes
 - #816 : Error finding screen size in some dual screen set ups
 - #820 : Help links go to wrong page
 - #836 : Median filter returning data from wrong images
+- #846 : Fixing AstropyDeprecationWarning
