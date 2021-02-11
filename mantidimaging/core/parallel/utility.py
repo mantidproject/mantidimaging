@@ -8,7 +8,8 @@ from functools import partial
 from logging import getLogger
 # COMPAT python 3.7 : Using heap instead of Array,
 # see https://github.com/mantidproject/mantidimaging/pull/762#issuecomment-741663482
-from multiprocessing import heap  # type: ignore
+# from multiprocessing import heap  # type: ignore
+from multiprocessing import Array
 from multiprocessing.pool import Pool
 from typing import Any, List, Tuple, Type, Union
 
@@ -76,13 +77,15 @@ def _create_shared_array(shape, dtype: Union[str, np.dtype] = np.float32):
 
     LOG.info('Requested shared array with shape={}, length={}, size={}, ' 'dtype={}'.format(shape, length, size, dtype))
 
-    arena = heap.Arena(size)
-    mem = memoryview(arena.buffer)
-
-    array_type = ctype * length
-    array = array_type.from_buffer(mem)
-
-    data = np.frombuffer(array, dtype=dtype)
+    # arena = heap.Arena(size)
+    # mem = memoryview(arena.buffer)
+    #
+    # array_type = ctype * length
+    # array = array_type.from_buffer(mem)
+    #
+    # data = np.frombuffer(array, dtype=dtype)
+    array = Array(ctype, length)
+    data = np.frombuffer(array.get_obj(), dtype=dtype)
 
     return data.reshape(shape)
 
