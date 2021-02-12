@@ -15,3 +15,4 @@ Fixes
 - #820 : Help links go to wrong page
 - #836 : Median filter returning data from wrong images
 - #843 : Error loading stack
+- #856 : Move shared array allocation to `multiprocessing.Array` when on Python 3.8
