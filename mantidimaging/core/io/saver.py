@@ -24,7 +24,7 @@ def write_fits(data, filename, overwrite=False):
     import astropy.io.fits as fits
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
-    hdulist.writeto(filename, clobber=overwrite)
+    hdulist.writeto(filename, overwrite=overwrite)
 
 
 def write_img(data, filename, overwrite=False):
