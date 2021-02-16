@@ -150,7 +150,7 @@ class GPUTest(unittest.TestCase):
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
                 gpu._send_arrays_to_gpu_with_pinned_memory(images.data, [cp.cuda.Stream() for _ in range(n_images)])
-                gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(images.shape[0])])
+                gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(images.data.shape[0])])
 
         mock_free_gpu.assert_called()
 
@@ -166,12 +166,12 @@ class GPUTest(unittest.TestCase):
         for mode in outlier_modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array()
+                images = th.generate_images()
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_greater_than_one(self):
@@ -185,13 +185,13 @@ class GPUTest(unittest.TestCase):
         for mode in outlier_modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array()
+                images = th.generate_images()
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
-                npt.assert_almost_equal(gpu_result, images)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
+                npt.assert_almost_equal(gpu_result.data, images.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_for_different_filter_sizes(self):
@@ -204,12 +204,12 @@ class GPUTest(unittest.TestCase):
             for radius in self.filter_sizes:
                 with self.subTest(mode=mode, radius=radius):
 
-                    images = th.gen_img_shared_array()
+                    images = th.generate_images()
 
                     gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                     cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                    npt.assert_almost_equal(gpu_result, cpu_result)
+                    npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_for_larger_image_sizes(self):
@@ -223,12 +223,12 @@ class GPUTest(unittest.TestCase):
         for mode in outlier_modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array(shape=(20, self.big, self.big))
+                images = th.generate_images(shape=(20, self.big, self.big))
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_double_is_used_in_remove_outlier_for_float_64_arrays(self):
@@ -242,12 +242,12 @@ class GPUTest(unittest.TestCase):
         for mode in outlier_modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array(dtype="float64")
+                images = th.generate_images(dtype="float64")
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_outlier_image_slicing_works(self):
@@ -265,12 +265,12 @@ class GPUTest(unittest.TestCase):
         for mode in outlier_modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array(shape=(n_images, N, N))
+                images = th.generate_images(shape=(n_images, N, N))
 
                 gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
                 cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_outlier_array_input_unchanged_when_gpu_runs_out_of_memory(self):
@@ -287,13 +287,13 @@ class GPUTest(unittest.TestCase):
         for mode in outlier_modes():
             with self.subTest(mode=mode):
 
-                images = th.gen_img_shared_array()
+                images = th.generate_images()
 
                 with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                                 side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
                     gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
 
-                npt.assert_almost_equal(gpu_result, images)
+                npt.assert_almost_equal(gpu_result.data, images.data)
 
 
 if __name__ == "__main__":
