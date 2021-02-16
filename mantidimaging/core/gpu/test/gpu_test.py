@@ -7,7 +7,9 @@ from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.operations.median_filter import MedianFilter, modes
+from mantidimaging.core.operations.median_filter import MedianFilter
+from mantidimaging.core.operations.median_filter import modes as median_modes
+from mantidimaging.core.operations.outliers import modes as outlier_modes
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.outliers import OutliersFilter
 
@@ -34,7 +36,7 @@ class GPUTest(unittest.TestCase):
         Should demonstrate that the arguments passed to numpy pad are the correct equivalents to the scipy modes.
         """
         size = 3
-        for mode in modes():
+        for mode in median_modes():
             with self.subTest(mode=mode):
 
                 images = th.generate_images()
