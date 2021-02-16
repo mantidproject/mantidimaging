@@ -8,6 +8,7 @@ import numpy as np
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -50,7 +51,8 @@ class OutliersFilter(BaseFilter):
                     radius=_default_radius,
                     mode=_default_mode,
                     cores=None,
-                    progress: Progress = None):
+                    progress: Progress = None,
+                    force_cpu=True) -> Images:
         """
         :param images: Input data
         :param diff: Pixel value difference above which to crop bright pixels
@@ -58,16 +60,22 @@ class OutliersFilter(BaseFilter):
         :param mode: Whether to remove bright or dark outliers
                     One of [OUTLIERS_BRIGHT, OUTLIERS_DARK]
         :param cores: The number of cores that will be used to process the data.
+        :param progress: The progress object.
+        :param force_cpu: Force execution on CPU rather than GPU.
 
-        :return: The processed 3D numpy.ndarray
+        :return: The processed Images object
         """
         if diff and radius and diff > 0 and radius > 0:
-            func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
-            ps.shared_list = [images.data]
-            ps.execute(func,
-                       images.num_projections,
-                       progress=progress,
-                       msg=f"Outliers with threshold {diff} and kernel {radius}")
+            if force_cpu or not gpu.gpu_available():
+                func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
+                ps.shared_list = [images.data]
+                ps.execute(func,
+                           images.num_projections,
+                           progress=progress,
+                           msg=f"Outliers with threshold {diff} and kernel {radius}")
+            else:
+                data = OutliersFilter._execute_gpu(images, diff, radius, mode, progress)
+                images.data = data
         return images
 
     @staticmethod
@@ -110,6 +118,18 @@ class OutliersFilter(BaseFilter):
     @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
+
+    @staticmethod
+    def _execute_gpu(images: Images, diff, radius, mode, progress):
+        data = images.data
+        progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Remove outlier GPU")
+        cuda = gpu.CudaExecuter(data.dtype)
+
+        with progress:
+            progress.update(msg="Applying GPU outliers with threshold: {0} and " "radius {1}".format(diff, radius))
+            data[:] = cuda.remove_outlier(data, diff, radius, mode, progress)
+
+        return data
 
 
 def modes():
