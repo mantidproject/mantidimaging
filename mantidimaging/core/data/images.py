@@ -1,6 +1,8 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import datetime
 import json
-import math
 from copy import deepcopy
 from typing import List, Tuple, Optional, Any, Dict
 
@@ -9,7 +11,7 @@ import numpy as np
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -22,8 +24,7 @@ class Images:
                  filenames: Optional[List[str]] = None,
                  indices: Optional[Tuple[int, int, int]] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False,
-                 memory_filename: Optional[str] = None):
+                 sinograms: bool = False):
         """
 
         :param data: Images of the Sample/Projection data
@@ -40,9 +41,9 @@ class Images:
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self.memory_filename = memory_filename
         self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
+        self._projection_angles: Optional[ProjectionAngles] = None
 
     def __eq__(self, other):
         if isinstance(other, Images):
@@ -64,25 +65,6 @@ class Images:
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
 
-    def free_memory(self, delete_filename=True):
-        """
-        Delete the memory file containing the data, and the references to it within this class.
-
-        The memory will not be freed until _all_ references to it are gone, so local variables
-        can safely keep a reference even after deletion. This is used in unit testing data
-        generation, and ROI normalisation.
-
-        :param delete_filename: Whether to reset the memory filename attribute.
-                                Set this to False in cases where the data will be replaced with
-                                data with a new shape (rebin, crop), but the memory filename
-                                ought to remain the same.
-        """
-        if self.memory_filename is not None:
-            pu.delete_shared_array(self.memory_filename)
-            if delete_filename:
-                self.memory_filename = None
-        self.data = None
-
     @property
     def filenames(self) -> Optional[List[str]]:
         return self._filenames
@@ -96,8 +78,12 @@ class Images:
         self.metadata = json.load(f)
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
-    def save_metadata(self, f):
+    def save_metadata(self, f, rescale_params=None):
         self.metadata[const.SINOGRAMS] = self.is_sinograms
+
+        if rescale_params is not None:
+            self.metadata[const.RESCALED] = rescale_params
+
         json.dump(self.metadata, f, indent=4)
 
     def record_operation(self, func_name: str, display_name, *args, **kwargs):
@@ -118,7 +104,6 @@ class Images:
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             const.OPERATION_NAME:
             func_name,
-            const.OPERATION_ARGS: [a if accepted_type(a) else None for a in args],
             const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
                                            for k, v in kwargs.items() if accepted_type(v)},
             const.OPERATION_DISPLAY_NAME:
@@ -127,8 +112,7 @@ class Images:
 
     def copy(self, flip_axes=False) -> 'Images':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
-        data_name = pu.create_shared_name()
-        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
             data_copy[:] = np.swapaxes(self.data, 0, 1)
         else:
@@ -137,22 +121,19 @@ class Images:
         images = Images(data_copy,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms,
-                        memory_filename=data_name)
+                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
     def copy_roi(self, roi: SensibleROI):
         shape = (self.data.shape[0], roi.height, roi.width)
 
-        data_name = pu.create_shared_name()
-        data_copy = pu.create_array(shape, self.data.dtype, data_name)
+        data_copy = pu.create_array(shape, self.data.dtype)
         data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
         images = Images(data_copy,
                         indices=deepcopy(self.indices),
                         metadata=deepcopy(self.metadata),
-                        sinograms=self._is_sinograms,
-                        memory_filename=data_name)
+                        sinograms=self._is_sinograms)
 
         mark_cropped(images, roi)
         return images
@@ -253,9 +234,8 @@ class Images:
 
     @staticmethod
     def create_empty_images(shape, dtype, metadata):
-        shared_name = pu.create_shared_name()
-        arr = pu.create_array(shape, dtype, shared_name)
-        return Images(arr, memory_filename=shared_name, metadata=metadata)
+        arr = pu.create_array(shape, dtype)
+        return Images(arr, metadata=metadata)
 
     @property
     def is_sinograms(self):
@@ -267,8 +247,50 @@ class Images:
 
     @log_file.setter
     def log_file(self, value: IMATLogFile):
+        if value is not None:
+            self.metadata[const.LOG_FILE] = value.source_file
+        elif value is None:
+            del self.metadata[const.LOG_FILE]
         self._log_file = value
 
-    def projection_angles(self):
-        return self._log_file.projection_angles() if self._log_file is not None else \
-            ProjectionAngles(np.linspace(0, math.tau, self.num_projections))
+    def set_projection_angles(self, angles: ProjectionAngles):
+        if len(angles.value) != self.num_images:
+            raise RuntimeError("The number of angles does not match the number of images. "
+                               f"Num angles {len(angles.value)} and num images {self.num_images}")
+
+        self._projection_angles = angles
+
+    def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
+        """
+        Return projection angles, in priority order:
+        - From a log
+        - From the manually loaded file with a list of angles
+        - Automatically generated with equidistant step
+
+        :param max_angle: The maximum angle up to which the angles will be generated.
+                          Only used when the angles are generated, if they are provided
+                          via a log or a file the argument will be ignored.
+        """
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
+        elif self._projection_angles is not None:
+            return self._projection_angles
+        else:
+            return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
+
+    def counts(self) -> Optional[Counts]:
+        if self._log_file is not None:
+            return self._log_file.counts()
+        else:
+            return None
+
+    @property
+    def pixel_size(self):
+        return self.metadata.get(const.PIXEL_SIZE, 0)
+
+    @pixel_size.setter
+    def pixel_size(self, value: int):
+        self.metadata[const.PIXEL_SIZE] = value
+
+    def clear_proj180deg(self):
+        self._proj180deg = None

@@ -1,13 +1,13 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 
 from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.filters.median_filter import MedianFilter
-from mantidimaging.core.filters.median_filter import modes as median_modes
-from mantidimaging.core.filters.outliers import OutliersFilter
-from mantidimaging.core.filters.outliers import modes as outlier_modes
+from mantidimaging.core.operations.median_filter import MedianFilter, modes
 from mantidimaging.core.gpu import utility as gpu
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
@@ -17,7 +17,9 @@ GPU_UTILITY_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
 class GPUTest(unittest.TestCase):
     """
-    Test behaviour of median and remove outlier filters and GPU-related helper functions.
+    Test median filter.
+
+    Tests return value and in-place modified data.
     """
     def __init__(self, *args, **kwargs):
         super(GPUTest, self).__init__(*args, **kwargs)
@@ -41,15 +43,15 @@ class GPUTest(unittest.TestCase):
         Should demonstrate that the arguments passed to numpy pad are the correct equivalents to the scipy modes.
         """
         size = 3
-        for mode in median_modes():
+        for mode in modes():
             with self.subTest(mode=mode):
 
-                images = th.generate_shared_array()
+                images = th.generate_images()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-                cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
-                npt.assert_almost_equal(gpu_result[0], cpu_result[0])
+                npt.assert_almost_equal(gpu_result.data[0], cpu_result.data[0])
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_median_matches_cpu_median_for_different_filter_sizes(self):
@@ -60,12 +62,12 @@ class GPUTest(unittest.TestCase):
         for size in self.filter_sizes:
             with self.subTest(size=size):
 
-                images = th.generate_shared_array()
+                images = th.generate_images()
 
                 gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-                cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
+                cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
-                npt.assert_almost_equal(gpu_result, cpu_result)
+                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_median_matches_cpu_median_for_larger_images(self):
@@ -73,15 +75,16 @@ class GPUTest(unittest.TestCase):
         Run the median filter on the CPU and GPU with a larger image size. Check that the results match. This test may
         reveal issues such as the grid and dimension size arguments going wrong.
         """
+        N = 1200
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array(shape=(20, self.big, self.big))
+        images = th.generate_shared_array(shape=(20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
-        npt.assert_almost_equal(gpu_result, cpu_result)
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_double_is_used_in_median_for_float_64_arrays(self):
@@ -91,12 +94,12 @@ class GPUTest(unittest.TestCase):
         """
         size = 3
         mode = "reflect"
-        images = th.generate_shared_array(dtype="float64")
+        images = th.generate_images(dtype="float64")
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
-        npt.assert_almost_equal(gpu_result, cpu_result)
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_median_image_slicing_works(self):
@@ -111,12 +114,12 @@ class GPUTest(unittest.TestCase):
         # Make the number of images in the stack exceed the maximum number of GPU-stored images
         n_images = gpu.MAX_GPU_SLICES * 3
 
-        images = th.generate_shared_array(shape=(n_images, N, N))
+        images = th.generate_images(shape=(n_images, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
-        cpu_result = self.run_serial_median_filter(images.copy(), size, mode)
+        cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
 
-        npt.assert_almost_equal(gpu_result, cpu_result)
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_median_array_input_unchanged_when_gpu_runs_out_of_memory(self):
@@ -125,16 +128,18 @@ class GPUTest(unittest.TestCase):
         """
         import cupy as cp
 
+        N = 200
+        n_images = 2000
         size = 3
         mode = "reflect"
 
-        images = th.gen_img_shared_array()
+        images = th.generate_images(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
-            gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
+            gpu_result = MedianFilter.filter_func(images, size, mode, force_cpu=False)
 
-        npt.assert_equal(gpu_result, images)
+        assert gpu_result == images
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_running_out_of_memory_causes_free_memory_to_be_called(self):
@@ -143,14 +148,18 @@ class GPUTest(unittest.TestCase):
         """
         import cupy as cp
 
-        images = th.gen_img_shared_array()
+        N = 20
+        n_images = 2
+
+        images = th.generate_images(shape=(n_images, N, N))
 
         with mock.patch("mantidimaging.core.gpu.utility._send_single_array_to_gpu",
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
+                gpu._send_arrays_to_gpu_with_pinned_memory(images.data, [cp.cuda.Stream() for _ in range(n_images)])
                 gpu._send_arrays_to_gpu_with_pinned_memory(images, [cp.cuda.Stream() for _ in range(images.shape[0])])
 
-        mock_free_gpu.assert_called_once()
+        mock_free_gpu.assert_called()
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_gpu_remove_outlier_matches_cpu_remove_outlier_when_diff_is_smaller_than_one(self):

@@ -1,3 +1,7 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+import numpy as np
 import traceback
 from enum import IntEnum, auto
 from logging import getLogger
@@ -11,7 +15,7 @@ from .model import SVModel
 from ...utility.common import operation_in_progress
 
 if TYPE_CHECKING:
-    from .view import StackVisualiserView
+    from .view import StackVisualiserView  # pragma: no cover
 
 
 class SVNotification(IntEnum):
@@ -62,7 +66,6 @@ class StackVisualiserPresenter(BasePresenter):
             getLogger(__name__).exception("Notification handler failed")
 
     def delete_data(self):
-        self.images.free_memory()
         self.images = None
 
     def get_image(self, index) -> Images:
@@ -74,7 +77,7 @@ class StackVisualiserPresenter(BasePresenter):
 
     def get_parameter_value(self, parameter: SVParameters):
         """
-        Gets a parameter from the stack visualiser for use elsewhere (e.g. filters).
+        Gets a parameter from the stack visualiser for use elsewhere (e.g. operations).
         :param parameter: The parameter value to be retrieved
         """
         if parameter == SVParameters.ROI:
@@ -113,3 +116,13 @@ class StackVisualiserPresenter(BasePresenter):
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             self.view.parent_create_stack(new_images, self.view.name)
+
+    def get_num_images(self) -> int:
+        return self.images.num_projections
+
+    def find_image_from_angle(self, selected_angle: float) -> int:
+        selected_angle = np.deg2rad(selected_angle)
+        for index, angle in enumerate(self.images.projection_angles().value):
+            if angle >= selected_angle:
+                return index
+        return len(self.images.projection_angles().value)

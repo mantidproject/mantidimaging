@@ -5,11 +5,31 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "-pno:django",
+        "${file}"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "Mantid Imaging",
+        "order": 4
+      }
+    },
+    {
       "name": "Python: Current File",
       "type": "python",
       "request": "launch",
       "program": "${file}",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "presentation": {
+        "hidden": false,
+        "group": "Mantid Imaging",
+        "order": 3
+      }
     },
     {
       "name": "Mantid Imaging Attach",
@@ -26,8 +46,8 @@
       ],
       "presentation": {
         "hidden": false,
-        "group": "debug",
-        "order": 1
+        "group": "Mantid Imaging",
+        "order": 2
       }
     },
     {
@@ -40,9 +60,14 @@
         "DEBUG"
       ],
       "env": {
-        "DISPLAY": ":0",
+        "DISPLAY": ":1",
         "PYTHONPATH": "${workspaceFolder}",
         "XDG_CURRENT_DESKTOP": "XFCE",
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Mantid Imaging",
+        "order": 1
       }
     },
   ]

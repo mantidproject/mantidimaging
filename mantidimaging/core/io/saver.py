@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import os
 from logging import getLogger
 from typing import List, Union
@@ -6,6 +9,7 @@ import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
 from ..data.images import Images
+from ..operations.rescale import RescaleFilter
 from ..utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
@@ -13,13 +17,14 @@ LOG = getLogger(__name__)
 DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'
 DEFAULT_NAME_POSTFIX = ''
+INT16_SIZE = 65536
 
 
 def write_fits(data, filename, overwrite=False):
     import astropy.io.fits as fits
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
-    hdulist.writeto(filename, clobber=overwrite)
+    hdulist.writeto(filename, overwrite=overwrite)
 
 
 def write_img(data, filename, overwrite=False):
@@ -57,33 +62,38 @@ def save(images: Images,
          zfill_len=DEFAULT_ZFILL_LENGTH,
          name_postfix=DEFAULT_NAME_POSTFIX,
          indices=None,
+         pixel_depth=None,
          progress=None) -> Union[str, List[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
 
-    :param data: Data as images/slices stores in numpy array
+    :param images: Data as images/slices stores in numpy array
     :param output_dir: Output directory for the files
     :param name_prefix: Prefix for the names of the images,
-                        appended before the image number
+           appended before the image number
     :param swap_axes: Swap the 0 and 1 axis of the images
-                      (convert from radiograms to sinograms on saving)
+           (convert from radiograms to sinograms on saving)
     :param out_format: File format of the saved out images
     :param overwrite_all: Overwrite existing images with conflicting names
     :param custom_idx: Single index to be used for the file name,
-                       instead of incremental numbers
+           instead of incremental numbers
     :param zfill_len: This option is ignored if custom_idx is specified!
-                      Prepend zeros to the output file names to have a
-                      constant file name length. Example:
-                      - saving out an image with zfill_len = 6:
-                          saved_image000001,...saved_image000201 and so on
-                      - saving out an image with zfill_len = 3:
-                          saved_image001,...saved_image201 and so on
+           Prepend zeros to the output file names to have a
+           constant file name length. Example:
+           - saving out an image with zfill_len = 6:
+           saved_image000001,...saved_image000201 and so on
+           - saving out an image with zfill_len = 3:
+           saved_image001,...saved_image201 and so on
     :param name_postfix: Postfix for the name after the index
     :param indices: Only works if custom_idx is not specified.
-                    Specify the start and end range of the indices
-                    which will be used for the file names.
-    :return The filename/filenames of the saved data.
+           Specify the start and end range of the indices
+           which will be used for the file names.
+    :param progress: Passed to ensure progress during saving is tracked properly
+    :param pixel_depth: Defines the target pixel depth of the save operation so
+           np.float32 or np.int16 will ensure the values are scaled
+           correctly to these values.
+    :returns: The filename/filenames of the saved data.
     """
     progress = Progress.ensure_instance(progress, task_name='Save')
 
@@ -91,11 +101,25 @@ def save(images: Images,
     output_dir = os.path.abspath(os.path.expanduser(output_dir))
     make_dirs_if_needed(output_dir, overwrite_all)
 
+    # Define current parameters
+    min_value = np.nanmin(images.data)
+    max_value = np.nanmax(images.data)
+    int_16_slope = max_value / INT16_SIZE
+
+    # Do rescale if needed.
+    if pixel_depth is None or pixel_depth == "float32":
+        rescale_params = None
+    elif pixel_depth == "int16":
+        # turn the offset to string otherwise json throws a TypeError when trying to save float32
+        rescale_params = {"offset": str(min_value), "slope": int_16_slope}
+    else:
+        raise ValueError("The pixel depth given is not handled: " + pixel_depth)
+
     # Save metadata
     metadata_filename = os.path.join(output_dir, name_prefix + '.json')
     LOG.debug('Metadata filename: {}'.format(metadata_filename))
     with open(metadata_filename, 'w+') as f:
-        images.save_metadata(f)
+        images.save_metadata(f, rescale_params)
 
     data = images.data
 
@@ -122,12 +146,25 @@ def save(images: Images,
             names[i] = os.path.join(output_dir, names[i])
 
         with progress:
+            min_value = images.data.min()
             for idx in range(num_images):
-                write_func(data[idx, :, :], names[idx], overwrite_all)
+                # Overwrite images with the copy that has been rescaled.
+                if pixel_depth == "int16":
+                    write_func(
+                        rescale_single_image(np.copy(images.data[idx]),
+                                             min_input=min_value,
+                                             max_input=max_value,
+                                             max_output=INT16_SIZE - 1), names[idx], overwrite_all)
+                else:
+                    write_func(data[idx, :, :], names[idx], overwrite_all)
 
                 progress.update(msg='Image')
 
         return names
+
+
+def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float):
+    return RescaleFilter.filter_single_image(image, min_input, max_input, max_output, data_type=np.uint16)
 
 
 def generate_names(name_prefix,
@@ -168,8 +205,8 @@ def make_dirs_if_needed(dirname=None, overwrite_all=False):
     if not os.path.exists(path):
         os.makedirs(path)
     elif os.listdir(path) and not overwrite_all:
-        raise RuntimeError("The output directory is NOT empty:{0}\n. This can be "
-                           "overridden with -w/--overwrite-all.".format(path))
+        raise RuntimeError("The output directory is NOT empty:{0}\nThis can be "
+                           "overridden by specifying 'Overwrite on name conflict'.".format(path))
 
 
 class Saver(object):
@@ -232,22 +269,21 @@ class Saver(object):
         THIS SHOULD NOT BE USED WITH A 3D STACK OF IMAGES.
 
         :param subdir: Specify an additional subdirectory
-                       inside the output directory
+               inside the output directory
         :param data: Data volume with pre-processed images
         :param name: Image name to be appended
-        :param custom_index: Index that will be appended at the end of the
-                             image filename
+        :param custom_index: Index that will be appended at the end of the image filename
         :param zfill_len: Prepend zeros to the output file names to have a
-                          constant file name length. Example:
-                          - saving out an image with zfill_len = 6:
-                              saved_image000001,...saved_image000201 and so on
-                          - saving out an image with zfill_len = 3:
-                              saved_image001,...saved_image201 and so on
+               constant file name length. Example:
+               - saving out an image with zfill_len = 6:
+               saved_image000001,...saved_image000201 and so on
+               - saving out an image with zfill_len = 3:
+               saved_image001,...saved_image201 and so on
         :param name_postfix: String to be appended after the zero fill.
-                             This is not recommended and might confuse
-                             imaging programs (including this script) as to
-                             the order of the images, and they could
-                             end up not loading all of the images.
+               This is not recommended and might confuse
+               imaging programs (including this script) as to
+               the order of the images, and they could
+               end up not loading all of the images.
         """
         assert data.ndim == 2, \
             "This should not be used with a 3D stack of images!"

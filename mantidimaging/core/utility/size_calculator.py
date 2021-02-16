@@ -1,3 +1,7 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+
 def to_KB(size, dtype=None):
     return to_bytes(to_bits(size, dtype)) / 1024
 
@@ -72,6 +76,10 @@ def full_size(shape=None, axis=None):
 
 def full_size_MB(shape=None, axis=None, dtype=None):
     return to_MB(full_size(shape, axis), dtype)
+
+
+def full_size_KB(shape=None, axis=None, dtype=None):
+    return to_KB(full_size(shape, axis), dtype)
 
 
 def number_of_images_from_indices(start, end, increment):

@@ -1,17 +1,15 @@
 AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 install-conda-env:
-	conda config --prepend channels conda-forge
-	conda config --prepend channels defaults
-	conda create -n mantidimaging -c mantid mantidimaging python=3.7
-	conda activate mantidimaging
-	pip install -U -r deps/pip-requirements.txt
+	source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
 
 install-run-requirements:
 	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
+	conda create -n build-env
+	conda activate build-env
 	conda install --yes --file deps/build-requirements.conda
 
 install-dev-requirements:
@@ -51,7 +49,7 @@ test:
 	python -m pytest
 
 mypy:
-	python -m mypy --ignore-missing-imports mantidimaging
+	python -m mypy --ignore-missing-imports --no-site-packages mantidimaging
 
 yapf:
 	python -m yapf --parallel --diff --recursive .
@@ -62,4 +60,4 @@ yapf_apply:
 flake8:
 	python -m flake8
 
-check: yapf_apply flake8 mypy test
+check: yapf flake8 mypy test

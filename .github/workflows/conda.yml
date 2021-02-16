@@ -1,0 +1,88 @@
+name: Testing with conda
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check License Lines
+        uses: kt3k/license_checker@v1.0.3
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2.0.1
+        with:
+          activate-environment: mantidimaging
+          environment-file: environment.yml
+          python-version: 3.8
+          auto-activate-base: false
+
+      - name: Other dependencies
+        shell: bash -l {0}
+        run: |
+          sudo apt update -y
+          sudo apt-get install -y xvfb libxcb* libxkb*
+
+      - name: Yapf
+        shell: bash -l {0}
+        run: |
+          yapf --parallel --diff --recursive .
+
+      - name: Flake8
+        shell: bash -l {0}
+        run: |
+          python -m flake8
+
+      - name: mypy
+        shell: bash -l {0}
+        # COMPAT: applitools has some bad signatures, so use --no-site-packages
+        run: |
+          mypy --ignore-missing-imports --no-site-packages mantidimaging
+
+      - name: pytest
+        timeout-minutes: 5
+        shell: bash -l {0}
+        run: |
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --count 10 --ignore=mantidimaging/eyes_tests
+
+      - name: docs
+        shell: bash -l {0}
+        run: |
+          python setup.py docs
+
+      - name: GUI Tests
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash -l {0}
+        env:
+          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+          APPLITOOLS_BATCH_ID: ${{ github.sha }}
+          GITHUB_BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          git clone https://github.com/mantidproject/mantidimaging-data.git ~/mantidimaging-data
+          xvfb-run --auto-servernum python -m pytest -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests
+        timeout-minutes: 15
+
+      - name: Coveralls
+        shell: bash -l {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          coveralls
+
+      - name: publish 'unstable' package
+        if: github.ref == 'refs/heads/master'
+        uses: ./.github/actions/publish-package
+        with:
+          label: unstable
+          token: ${{ secrets.ANACONDA_API_TOKEN }}
+
+      - name: publish docs
+        if: github.ref == 'refs/heads/master'
+        uses: ./.github/actions/publish-docs
+        with:
+          token: ${{ secrets.GHPAGES_API_TOKEN }}

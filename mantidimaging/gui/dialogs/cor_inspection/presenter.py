@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import traceback
 from enum import Enum
 from logging import getLogger
@@ -12,7 +15,7 @@ from .model import CORInspectionDialogModel
 from .types import ImageType
 
 if TYPE_CHECKING:
-    from .view import CORInspectionDialogView
+    from .view import CORInspectionDialogView  # pragma: no cover
 
 LOG = getLogger(__name__)
 
@@ -32,10 +35,15 @@ class CORInspectionDialogPresenter(BasePresenter):
     view: 'CORInspectionDialogView'
 
     def __init__(self, view, images: Images, slice_index: int, initial_cor: ScalarCoR,
-                 recon_params: ReconstructionParameters):
+                 recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(view)
 
-        self.model = CORInspectionDialogModel(images, slice_index, initial_cor, recon_params)
+        if iters_mode:
+            self.get_title = self._make_iters_title
+        else:
+            self.get_title = self._make_cor_title
+
+        self.model = CORInspectionDialogModel(images, slice_index, initial_cor, recon_params, iters_mode)
 
     def notify(self, signal):
         try:
@@ -63,8 +71,8 @@ class CORInspectionDialogPresenter(BasePresenter):
     def on_select_image(self, img):
         LOG.debug('Image selected: {}'.format(img))
 
-        # Adjust COR step
-        self.model.adjust_cor(img)
+        # Adjust COR/iterations step
+        self.model.adjust(img)
 
         if img != ImageType.CURRENT:
             # Update UI
@@ -72,23 +80,32 @@ class CORInspectionDialogPresenter(BasePresenter):
         else:
             self.do_refresh([ImageType.LESS, ImageType.MORE])
 
+    def _make_cor_title(self, image) -> str:
+        return 'COR: {}'.format(self.model.cor(image))
+
+    def _make_iters_title(self, image) -> str:
+        return 'Iterations: {}'.format(self.model.iterations(image))
+
     def do_refresh(self, images=None):
         if images is None:
             images = ImageType
         # Parameters
-        self.view.step_size = self.model.cor_step
+        self.view.step_size = self.model.step
 
         # Images
-        for i in ImageType:
-            title = 'COR: {}'.format(self.model.cor(i))
-            self.view.set_image(i, self.model.recon_preview(i), title)
+        for i in images:
+            self.view.set_image(i, self.model.recon_preview(i), self.get_title(i))
 
     def do_update_ui_parameters(self):
-        self.model.cor_step = self.view.step_size
+        self.model.step = self.view.step_size
 
         # Update UI
         self.notify(Notification.FULL_UPDATE)
 
     @property
     def optimal_rotation_centre(self) -> ScalarCoR:
-        return ScalarCoR(self.model.centre_cor)
+        return ScalarCoR(self.model.centre_value)
+
+    @property
+    def optimal_iterations(self):
+        return self.model.centre_value

@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import os
 import unittest
 
@@ -17,16 +20,6 @@ class IOTest(FileOutputtingTestCase):
 
         # force silent outputs
         initialise_logging()
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        import SharedArray as sa
-        for arr in sa.list():
-            sa.delete(arr.name.decode("utf-8"))
-
-    def tearDown(self):
-        import SharedArray as sa
-        assert len(sa.list()) == 0
 
     def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
 
@@ -132,11 +125,6 @@ class IOTest(FileOutputtingTestCase):
             expected_images.data = expected_images.data[loader_indices[0]:loader_indices[1]]
 
         npt.assert_equal(loaded_images.data, expected_images.data)
-        loaded_images.free_memory()
-        if dataset.dark:
-            dataset.dark.free_memory()
-        if dataset.flat:
-            dataset.flat.free_memory()
 
     def test_load_sample_flat_and_dark(self,
                                        img_format='tiff',
@@ -144,8 +132,10 @@ class IOTest(FileOutputtingTestCase):
                                        expected_len=None,
                                        saver_indices=None):
         images = th.generate_images()
-        flat = th.generate_images()
-        dark = th.generate_images()
+        flat_before = th.generate_images()
+        dark_before = th.generate_images()
+        flat_after = th.generate_images()
+        dark_after = th.generate_images()
 
         # this only affects enumeration
         saver._indices = saver_indices
@@ -157,27 +147,39 @@ class IOTest(FileOutputtingTestCase):
             images.data = images.data[saver_indices[0]:saver_indices[1]]
 
         saver.save(images, self.output_directory, out_format=img_format)
-        flat_dir = os.path.join(self.output_directory, "imgIOTest_flat")
-        saver.save(flat, flat_dir, out_format=img_format)
-        dark_dir = os.path.join(self.output_directory, "imgIOTest_dark")
-        saver.save(dark, dark_dir, out_format=img_format)
+        flat_before_dir = os.path.join(self.output_directory, "imgIOTest_flat_before")
+        saver.save(flat_before, flat_before_dir, out_format=img_format)
+        flat_after_dir = os.path.join(self.output_directory, "imgIOTest_flat_after")
+        saver.save(flat_after, flat_after_dir, out_format=img_format)
+        dark_before_dir = os.path.join(self.output_directory, "imgIOTest_dark_before")
+        saver.save(dark_before, dark_before_dir, out_format=img_format)
+        dark_after_dir = os.path.join(self.output_directory, "imgIOTest_dark_after")
+        saver.save(dark_after, dark_after_dir, out_format=img_format)
 
         data_as_stack = False
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, images.data.shape[0])
 
-        flat_dir = os.path.join(flat_dir, saver.DEFAULT_NAME_PREFIX)
-        self.assert_files_exist(flat_dir, img_format, data_as_stack, flat.data.shape[0])
+        flat_before_dir = os.path.join(flat_before_dir, saver.DEFAULT_NAME_PREFIX)
+        self.assert_files_exist(flat_before_dir, img_format, data_as_stack, flat_before.data.shape[0])
+        flat_after_dir = os.path.join(flat_after_dir, saver.DEFAULT_NAME_PREFIX)
+        self.assert_files_exist(flat_after_dir, img_format, data_as_stack, flat_after.data.shape[0])
 
-        dark_dir = os.path.join(dark_dir, saver.DEFAULT_NAME_PREFIX)
-        self.assert_files_exist(dark_dir, img_format, data_as_stack, dark.data.shape[0])
+        dark_before_dir = os.path.join(dark_before_dir, saver.DEFAULT_NAME_PREFIX)
+        self.assert_files_exist(dark_before_dir, img_format, data_as_stack, dark_before.data.shape[0])
+        dark_after_dir = os.path.join(dark_after_dir, saver.DEFAULT_NAME_PREFIX)
+        self.assert_files_exist(dark_after_dir, img_format, data_as_stack, dark_after.data.shape[0])
 
-        flat_filename = f"{flat_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
-        dark_filename = f"{dark_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
+        flat_before_filename = f"{flat_before_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
+        flat_after_filename = f"{flat_after_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
+        dark_before_filename = f"{dark_before_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
+        dark_after_filename = f"{dark_after_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
 
         dataset = loader.load(self.output_directory,
-                              flat_filename,
-                              dark_filename,
+                              input_path_flat_before=flat_before_filename,
+                              input_path_flat_after=flat_after_filename,
+                              input_path_dark_before=dark_before_filename,
+                              input_path_dark_after=dark_after_filename,
                               in_format=img_format,
                               indices=loader_indices)
         loaded_images = dataset.sample
@@ -195,18 +197,14 @@ class IOTest(FileOutputtingTestCase):
         npt.assert_equal(loaded_images.data, images.data)
         # we only check the first image because they will be
         # averaged out when loaded! The initial images are only 3s
-        npt.assert_equal(dataset.flat.data, flat.data)
-        npt.assert_equal(dataset.dark.data, dark.data)
-
-        loaded_images.free_memory()
-        if dataset.dark:
-            dataset.dark.free_memory()
-        if dataset.flat:
-            dataset.flat.free_memory()
+        npt.assert_equal(dataset.flat_before.data, flat_before.data)
+        npt.assert_equal(dataset.dark_before.data, dark_before.data)
+        npt.assert_equal(dataset.flat_after.data, flat_after.data)
+        npt.assert_equal(dataset.dark_after.data, dark_after.data)
 
     def test_metadata_round_trip(self):
         # Create dummy image stack
-        sample = th.gen_img_shared_array_with_val(42.)
+        sample = th.gen_img_numpy_rand()
         images = Images(sample)
         images.metadata['message'] = 'hello, world!'
 
@@ -219,12 +217,6 @@ class IOTest(FileOutputtingTestCase):
 
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)
-
-        loaded_images.free_memory()
-        if dataset.dark:
-            dataset.dark.free_memory()
-        if dataset.flat:
-            dataset.flat.free_memory()
 
 
 if __name__ == '__main__':

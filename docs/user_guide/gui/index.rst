@@ -5,9 +5,6 @@ Graphical User Interface (GUI)
    :maxdepth: 1
    :caption: Contents:
 
-   quick_start
    loading_saving
-   stack_vis
-   filters
-   cor_tilt
-   tomopy_recon
+   operations
+   image_view

@@ -14,13 +14,23 @@ such as `Avizo
    :maxdepth: 1
    :caption: Contents:
 
+   overview
+   installation
    user_guide/index
    developer_guide/index
+   troubleshooting
    api
+   release_notes/index
 
 .. toctree::
    :caption: Links:
 
    Code Repository <https://github.com/mantidproject/mantidimaging>
-   Continuous Integration <http://builds.mantidproject.org/view/Imaging/>
    Anaconda Package <https://anaconda.org/mantid/mantidimaging>
+
+
+Please cite as:
+
+Dimitar Tasev, Daniel Nixon, Samuel Jones, Sam Tygier, Dolica Akello-Egwel, & Will Taylor. (2021, January 15). MANTID Imaging. Zenodo. http://doi.org/10.5281/zenodo.4451978
+
+(See `Zenodo <http://doi.org/10.5281/zenodo.4451978>`_ for citing specific versions).

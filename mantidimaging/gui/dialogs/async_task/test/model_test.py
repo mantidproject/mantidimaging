@@ -1,7 +1,10 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import time
 import unittest
 
-import mock
+from unittest import mock
 
 from mantidimaging.gui.dialogs.async_task import AsyncTaskDialogModel
 

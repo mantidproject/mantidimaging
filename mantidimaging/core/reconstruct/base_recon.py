@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import List, Optional
 
 import numpy as np
@@ -8,6 +11,10 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 
 class BaseRecon:
+    @staticmethod
+    def sino_recon_prep(sino: np.ndarray):
+        return -np.log(sino)
+
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters) -> np.ndarray:

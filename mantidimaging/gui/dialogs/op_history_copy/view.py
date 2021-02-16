@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import Iterable, Tuple
 
 from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QPushButton, QVBoxLayout
@@ -52,10 +55,6 @@ class OpHistoryCopyDialogView(BaseDialogView):
         parent_layout.addWidget(check)
 
         row_num = 1
-        for arg in operation.filter_args:
-            parent_layout.addWidget(QLabel(arg))
-            row_num += 1
-
         for k, v in operation.filter_kwargs.items():
             parent_layout.addWidget(QLabel(f"{k}: {v}"))
             row_num += 1

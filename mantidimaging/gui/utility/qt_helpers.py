@@ -1,21 +1,20 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 """
 Module containing helper functions relating to PyQt.
 """
 
 import os
 from enum import IntEnum, auto
-from typing import Tuple, Union, TYPE_CHECKING, List, Optional
+from logging import getLogger
+from typing import Any, Tuple, Union, List
 
 from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, QWidget, \
-    QSizePolicy
+from PyQt5.QtWidgets import QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction, QMenu
 
 from mantidimaging.core.utility import finder
-
-if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 
 class BlockQtSignals(object):
@@ -63,9 +62,6 @@ def get_value_from_qwidget(widget: QWidget):
         return widget.isChecked()
 
 
-ReturnTypes = Union[QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QComboBox, 'StackSelectorWidgetView']
-
-
 class Type(IntEnum):
     STR = auto()
     TUPLE = auto()
@@ -77,6 +73,7 @@ class Type(IntEnum):
     BOOL = auto()
     LABEL = auto()
     STACK = auto()
+    BUTTON = auto()
 
 
 def add_property_to_form(label: str,
@@ -86,7 +83,8 @@ def add_property_to_form(label: str,
                          tooltip=None,
                          on_change=None,
                          form=None,
-                         filters_view=None) -> Tuple[Union[QLabel, QLineEdit], Optional[ReturnTypes]]:
+                         filters_view=None,
+                         run_on_press=None) -> Tuple[Union[QLabel, QLineEdit], Any]:
     """
     Adds a property to the algorithm dialog.
 
@@ -101,6 +99,7 @@ def add_property_to_form(label: str,
     :param on_change: Function to be called when the property changes
     :param form: Form layout to optionally add the new widgets to
     :param filters_view: The Filter window view - passed to connect Type.STACK to the stack change events
+    :param run_on_press: Run this function on press, specialisation for button.
     """
     # By default assume the left hand side widget will be a label
     left_widget = QLabel(label)
@@ -124,8 +123,7 @@ def add_property_to_form(label: str,
         if default_value:
             box.setValue(cast_func(default_value))
 
-    # some of these are used dynamically by Savu Filters GUI and will not show up in a grep
-    if dtype == 'str' or dtype == 'tuple' or dtype == "NoneType" or dtype == "list":
+    if dtype in ['str', Type.STR, 'tuple', Type.TUPLE, 'NoneType', Type.NONETYPE, 'list', Type.LIST]:
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
         right_widget = Qt.QLineEdit()
         right_widget.setToolTip(tooltip)
@@ -163,6 +161,7 @@ def add_property_to_form(label: str,
 
     elif dtype == "choice" or dtype == Type.CHOICE:
         right_widget = Qt.QComboBox()
+        right_widget.setSizeAdjustPolicy(Qt.QComboBox.AdjustToContents)
         if valid_values:
             right_widget.addItems(valid_values)
         if on_change is not None:
@@ -174,9 +173,15 @@ def add_property_to_form(label: str,
         if on_change is not None:
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
+    elif dtype == 'button' or dtype == Type.BUTTON:
+        left_widget = Qt.QPushButton(label)
+        if run_on_press is not None:
+            left_widget.clicked.connect(lambda: run_on_press())
+
     elif dtype == 'label' or dtype == Type.LABEL:
         # do nothing for label, just use the left widget
         pass
+
     else:
         raise ValueError("Unknown data type")
 
@@ -186,6 +191,11 @@ def add_property_to_form(label: str,
 
         if right_widget:
             right_widget.setToolTip(tooltip)
+
+    # right widget check avoids printing debug msg for labels only
+    if tooltip is None and right_widget is not None:
+        log = getLogger(__name__)
+        log.debug("Missing tooltip for %s", label)
 
     if left_widget:
         left_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
@@ -217,3 +227,13 @@ def delete_all_widgets_from_layout(lo):
         # layout and marks them for deletion)
         elif item.widget() is not None:
             item.widget().setParent(None)
+
+
+def populate_menu(menu: QMenu, actions_list: List[QAction]):
+    for (menu_text, func) in actions_list:
+        if func is None:
+            menu.addSeparator()
+        else:
+            action = QAction(menu_text, menu)
+            action.triggered.connect(func)
+            menu.addAction(action)

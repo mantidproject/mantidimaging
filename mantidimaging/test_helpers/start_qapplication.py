@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 # Mantid Repository : https://github.com/mantidproject/mantid
 #
 # Copyright &copy; 2017 ISIS Rutherford Appleton Laboratory UKRI,
@@ -9,6 +12,8 @@
 # https://github.com/mantidproject/mantid/tree/aa5ed98034119ed3af79ea91527aa718c87c816c/qt/python/mantidqt/utils/qt/testing
 from __future__ import absolute_import
 
+import gc
+import os
 import sys
 import traceback
 
@@ -50,6 +55,13 @@ def start_qapplication(cls):
         get_application()
         setUpClass_orig()
 
+    def tearDownClass(cls):
+        if os.getenv("APPLITOOLS_API_KEY") is None:
+            gc.collect()
+        tearDownClass_orig()
+
     setUpClass_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
+    tearDownClass_orig = cls.tearDownClass if hasattr(cls, 'tearDownClass') else do_nothing
     setattr(cls, 'setUpClass', classmethod(setUpClass))
+    setattr(cls, 'tearDownClass', classmethod(tearDownClass))
     return cls

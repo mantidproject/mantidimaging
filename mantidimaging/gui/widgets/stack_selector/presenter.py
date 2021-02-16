@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import traceback
 from enum import Enum
 from logging import getLogger
@@ -8,7 +11,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView  # pragma: no cover
 
 
 class Notification(Enum):

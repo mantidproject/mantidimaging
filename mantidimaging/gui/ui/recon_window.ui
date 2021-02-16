@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1578</width>
-    <height>782</height>
+    <width>1495</width>
+    <height>903</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QWidget" name="formLayoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
@@ -50,7 +50,7 @@
           </property>
           <widget class="QWidget" name="resultsTab">
            <attribute name="title">
-            <string>Results</string>
+            <string>COR and Tilt</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
@@ -215,34 +215,51 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <widget class="QComboBox" name="autoFindMethod">
-                <item>
-                 <property name="text">
-                  <string>Correlation</string>
+             <widget class="QGroupBox" name="groupBox">
+              <property name="title">
+               <string>Auto COR finding methods</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QPushButton" name="correlateBtn">
+                 <property name="toolTip">
+                  <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
                  </property>
-                </item>
-                <item>
                  <property name="text">
-                  <string>Minimise sqsum</string>
+                  <string>Correlate 0 and 180</string>
                  </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="autoBtn">
-                <property name="text">
-                 <string>Auto find COR/Tilt</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="minimiseBtn">
+                 <property name="toolTip">
+                  <string>Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
+                 </property>
+                 <property name="text">
+                  <string>Minimise error</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="corHelpButton">
+                 <property name="maximumSize">
+                  <size>
+                   <width>25</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </item>
             <item>
              <widget class="QGroupBox" name="manualGroup">
               <property name="title">
-               <string/>
+               <string>COR Table - refine manually</string>
               </property>
               <property name="flat">
                <bool>false</bool>
@@ -252,10 +269,27 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
                <item>
-                <widget class="RemovableRowTableView" name="tableView"/>
+                <widget class="RemovableRowTableView" name="tableView">
+                 <attribute name="horizontalHeaderHighlightSections">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="verticalHeaderVisible">
+                  <bool>false</bool>
+                 </attribute>
+                </widget>
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout">
+                 <item row="0" column="1">
+                  <widget class="QPushButton" name="addBtn">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="0">
                   <widget class="QPushButton" name="removeBtn">
                    <property name="enabled">
@@ -289,26 +323,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <widget class="QPushButton" name="addBtn">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0" colspan="2">
-                  <widget class="QPushButton" name="fitBtn">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Performs linear fit of rows/points in the table.&lt;/p&gt;&lt;p&gt;Requires at least two rows.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="text">
-                    <string>Calculate COR/Tilt from slice COR table</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </item>
               </layout>
@@ -323,18 +337,23 @@
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <layout class="QGridLayout" name="optionsLayout">
-              <item row="2" column="0">
-               <widget class="QLabel" name="filterNameLabel">
-                <property name="text">
-                 <string>Reconstruction filter:</string>
-                </property>
-               </widget>
-              </item>
               <item row="3" column="0">
                <widget class="QLabel" name="numIterLabel">
                 <property name="text">
                  <string>Number of iterations:</string>
                 </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="algorithmName">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>gridrec</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="3" column="1">
@@ -351,6 +370,30 @@
                <widget class="QLabel" name="algorithmNameLabel">
                 <property name="text">
                  <string>Algorithm:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="filterNameLabel">
+                <property name="text">
+                 <string>Reconstruction filter:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="maxProjAngleLabel">
+                <property name="text">
+                 <string>Maximum projection angle</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QDoubleSpinBox" name="maxProjAngle">
+                <property name="maximum">
+                 <double>9999.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>360.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -393,43 +436,38 @@
                 </item>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="algorithmName">
-                <item>
-                 <property name="text">
-                  <string>FBP_CUDA</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>SIRT_CUDA</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>gridrec</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="maxProjAngleLabel">
+              <item row="4" column="0">
+               <widget class="QLabel" name="pixelSizeLabel">
                 <property name="text">
-                 <string>Maximum projection angle</string>
+                 <string>Pixel size (microns)</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QDoubleSpinBox" name="maxProjAngle">
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="pixelSize">
                 <property name="maximum">
-                 <double>9999.000000000000000</double>
-                </property>
-                <property name="value">
-                 <double>360.000000000000000</double>
+                 <number>99999</number>
                 </property>
                </widget>
               </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="refineIterationsBtn">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Refine Iterations</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="reconHelpButton">
+              <property name="text">
+               <string>Open Reconstruction Help Page</string>
+              </property>
+             </widget>
             </item>
             <item>
              <spacer name="verticalSpacer_5">
@@ -443,6 +481,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="reconstructSlice">
+              <property name="text">
+               <string>Reconstruct Slice</string>
+              </property>
+             </widget>
             </item>
             <item>
              <layout class="QHBoxLayout" name="reconButtonGroup">
@@ -478,13 +523,17 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="previewProjectionIndex"/>
-           </item>
            <item row="1" column="1">
             <widget class="QSpinBox" name="previewSliceIndex">
              <property name="maximum">
-              <number>9999</number>
+              <number>99999</number>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="previewProjectionIndex">
+             <property name="maximum">
+              <number>99999</number>
              </property>
             </widget>
            </item>
@@ -496,6 +545,19 @@
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="changeColourPaletteButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Auto Change Colour Palette</string>
+          </property>
          </widget>
         </item>
        </layout>

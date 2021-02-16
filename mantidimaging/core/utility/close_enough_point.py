@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import List, Union
 
 
@@ -9,7 +12,7 @@ class CloseEnoughPoint:
     y: int
     x: int
 
-    def __init__(self, points: List[Union[int, float]]):
+    def __init__(self, points: Union[List[int], List[float]]):
         self.y = int(points[1])
         self.x = int(points[0])
 

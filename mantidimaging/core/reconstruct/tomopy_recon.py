@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from logging import getLogger
 from typing import List
 
@@ -16,12 +19,17 @@ tomopy = safe_import('tomopy')
 class TomopyRecon(BaseRecon):
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
-        return tomopy.find_center(images.sinograms, None)
+        return tomopy.find_center(images.sinograms,
+                                  images.projection_angles(recon_params.max_projection_angle).value,
+                                  ind=slice_idx,
+                                  init=start_cor,
+                                  sinogram_order=True)
 
     @staticmethod
-    def single_sino(sample: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
+    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters):
-        volume = tomopy.recon(tomo=[sample],
+        sino = BaseRecon.sino_recon_prep(sino)
+        volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
                               theta=proj_angles.value,
                               center=cor.value,
@@ -51,7 +59,7 @@ class TomopyRecon(BaseRecon):
             'ncore': ncores,
             'tomo': images.data,
             'sinogram_order': images._is_sinograms,
-            'theta': images.projection_angles().value,
+            'theta': images.projection_angles(recon_params.max_projection_angle).value,
             'center': [cor.value for cor in cors],
             'algorithm': recon_params.algorithm,
             'filter_name': recon_params.filter_name

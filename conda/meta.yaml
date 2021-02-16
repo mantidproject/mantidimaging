@@ -15,30 +15,28 @@ source:
 
 requirements:
   build:
-    - python
+    - python=3.8.*
     - pip
-    - setuptools
-    - sphinx
+    - setuptools=49.6.0
+    - sphinx=3.3.1
+    - numpy=1.19.4
   run:
-    - python
+    - python=3.8.*
     - pip
-    - astropy
-    - scipy
+    - astropy=4.2
+    - scipy=1.5.3
     - scikit-image=0.17.2
-    - sharedarray
-    - numpy
+    - numpy=1.19.4
     - tomopy=1.7.1=cuda*
     - cudatoolkit=10.2*
-    - astra-toolbox
-    - requests
-    - requests-futures
-    - python-socketio
-    - h5py
-    - pyqtgraph=0.11
-    - sarepy
+    - astra-toolbox=1.9.9.dev4
+    - requests=2.25.1
+    - h5py=3.1.0
+    - sarepy=2020.07
+    - psutil=5.7.3
 
 build:
-  number: 0
+  number: 1
   script:
     - {{ PYTHON }} -m pip install --ignore-installed .
 

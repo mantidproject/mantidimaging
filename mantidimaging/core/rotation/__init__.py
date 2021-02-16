@@ -1,4 +1,4 @@
-from .data_model import CorTiltDataModel  # noqa: F401
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 
-from .workflow import (  # noqa: F401
-    update_image_operations)
+from .data_model import CorTiltDataModel  # noqa: F401

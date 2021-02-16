@@ -1,8 +1,11 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from logging import getLogger
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView
+    from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView  # pragma: no cover
 
 
 class BasePresenter(object):
@@ -18,4 +21,4 @@ class BasePresenter(object):
         if hasattr(self.view, 'show_error_dialog'):
             # If the view knows how to handle an error message
             self.view.show_error_dialog(str(error))
-        getLogger(__name__).error(f'Presenter error: {error}\n{traceback}')
+        getLogger(__name__).exception(f'Presenter error: {error}\n{traceback}')

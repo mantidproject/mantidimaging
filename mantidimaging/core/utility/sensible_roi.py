@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Union, List
@@ -30,6 +33,9 @@ class SensibleROI(Iterable):
 
     def __str__(self):
         return f"Left: {self.left}, Top: {self.top}, Right: {self.right}, Bottom: {self.bottom}"
+
+    def to_list_string(self) -> str:
+        return f"{', '.join([str(e) for e in self])}"
 
     @property
     def width(self) -> int:

@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -61,7 +64,7 @@ def execute(load_func, file_name, dtype, name, indices=None, progress=None):
         new_data = new_data[indices[0]:indices[1]:indices[2]]
 
     img_shape = new_data.shape
-    data = pu.create_array(img_shape, dtype=dtype, name=f"{file_name}-Stack")
+    data = pu.create_array(img_shape, dtype=dtype)
 
     # we could just move with data[:] = new_data[:] but then we don't get
     # loading bar information, and I doubt there's any performance gain

@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 from mantidimaging.gui.utility.get_parameters_from_stack import (  # noqa: F401
     get_parameters_from_stack)
 

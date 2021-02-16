@@ -1,9 +1,13 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 import uuid
 
-import mock
+from unittest import mock
+import numpy as np
 
-from mantidimaging.core.utility.data_containers import LoadingParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import StackId
 
@@ -115,6 +119,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = True
+        lp.pixel_size = 101
         progress_mock = mock.Mock()
 
         self.model.do_load_stack(lp, progress_mock)
@@ -130,6 +135,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
+        lp.pixel_size = 101
         progress_mock = mock.Mock()
 
         self.model.do_load_stack(lp, progress_mock)
@@ -145,17 +151,26 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
+        lp.pixel_size = 101
 
-        flat_mock = mock.Mock()
-        lp.flat = flat_mock
+        flat_before_mock = mock.Mock()
+        lp.flat_before = flat_before_mock
+        flat_after_mock = mock.Mock()
+        lp.flat_after = flat_after_mock
         progress_mock = mock.Mock()
 
         self.model.do_load_stack(lp, progress_mock)
 
-        load_p_mock.assert_has_calls(
-            [mock.call(sample_mock, lp.dtype, progress_mock),
-             mock.call(flat_mock, lp.dtype, progress_mock)])
-        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_mock.log_file)])
+        load_p_mock.assert_has_calls([
+            mock.call(sample_mock, lp.dtype, progress_mock),
+            mock.call(flat_before_mock, lp.dtype, progress_mock),
+            mock.call(flat_after_mock, lp.dtype, progress_mock)
+        ])
+        load_log_mock.assert_has_calls([
+            mock.call(sample_mock.log_file),
+            mock.call(flat_before_mock.log_file),
+            mock.call(flat_after_mock.log_file)
+        ])
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_p')
@@ -165,12 +180,17 @@ class MainWindowModelTest(unittest.TestCase):
         lp.sample = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
+        lp.pixel_size = 101
 
-        flat_mock = mock.Mock()
-        lp.flat = flat_mock
+        flat_before_mock = mock.Mock()
+        lp.flat_before = flat_before_mock
+        flat_after_mock = mock.Mock()
+        lp.flat_after = flat_after_mock
 
-        dark_mock = mock.Mock()
-        lp.dark = dark_mock
+        dark_before_mock = mock.Mock()
+        lp.dark_before = dark_before_mock
+        dark_after_mock = mock.Mock()
+        lp.dark_after = dark_after_mock
 
         proj_180deg_mock = mock.Mock()
         lp.proj_180deg = proj_180deg_mock
@@ -181,12 +201,18 @@ class MainWindowModelTest(unittest.TestCase):
 
         load_p_mock.assert_has_calls([
             mock.call(sample_mock, lp.dtype, progress_mock),
-            mock.call(flat_mock, lp.dtype, progress_mock),
-            mock.call(dark_mock, lp.dtype, progress_mock),
+            mock.call(flat_before_mock, lp.dtype, progress_mock),
+            mock.call(flat_after_mock, lp.dtype, progress_mock),
+            mock.call(dark_before_mock, lp.dtype, progress_mock),
+            mock.call(dark_after_mock, lp.dtype, progress_mock),
             mock.call(proj_180deg_mock, lp.dtype, progress_mock)
         ])
 
-        load_log_mock.assert_has_calls([mock.call(sample_mock.log_file), mock.call(flat_mock.log_file)])
+        load_log_mock.assert_has_calls([
+            mock.call(sample_mock.log_file),
+            mock.call(flat_before_mock.log_file),
+            mock.call(flat_after_mock.log_file)
+        ])
 
     def test_create_name(self):
         self.assertEqual("apple", self.model.create_name("apple"))
@@ -198,6 +224,89 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.assertEqual("apple_2", self.model.create_name("apple"))
 
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    def test_add_log_to_sample(self, load_log: mock.Mock):
+        log_file = "Log file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
 
-if __name__ == '__main__':
-    unittest.main()
+        self.model.add_log_to_sample(stack_name=stack_name, log_file=log_file)
+
+        load_log.assert_called_once_with(log_file)
+        stack_mock.assert_called_with(stack_name)
+        self.assertEqual(load_log.return_value, stack_mock.return_value.widget.return_value.presenter.images.log_file)
+        stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
+            .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
+
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    def test_add_log_to_sample_no_stack(self, load_log: mock.Mock):
+        """
+        Test in add_log_to_sample when get_stack_by_name returns None
+        """
+        log_file = "Log file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+
+        self.assertRaises(RuntimeError, self.model.add_log_to_sample, stack_name=stack_name, log_file=log_file)
+
+        stack_mock.assert_called_with(stack_name)
+
+    @mock.patch('mantidimaging.core.io.loader.load')
+    def test_add_180_deg_to_stack(self, load: mock.Mock):
+        _180_file = "180 file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+
+        _180_stack = self.model.add_180_deg_to_stack(stack_name=stack_name, _180_deg_file=_180_file).sample
+
+        load.assert_called_with(file_names=[_180_file])
+        stack_mock.assert_called_with(stack_name)
+        self.assertEqual(_180_stack, stack_mock.return_value.widget.return_value.presenter.images.proj180deg)
+
+    @mock.patch('mantidimaging.core.io.loader.load')
+    def test_add_180_deg_to_stack_no_stack(self, load: mock.Mock):
+        """
+        Test in add_180_deg_to_stack when get_stack_by_name returns None
+        """
+        _180_file = "180 file"
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+        self.assertRaises(RuntimeError, self.model.add_180_deg_to_stack, stack_name=stack_name, _180_deg_file=_180_file)
+        stack_mock.assert_called_with(stack_name)
+
+    def test_add_projection_angles_to_sample_no_stack(self):
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+        stack_mock.return_value = None
+        self.assertRaises(RuntimeError, self.model.add_projection_angles_to_sample, stack_name, proj_angles)
+
+        stack_mock.assert_called_with(stack_name)
+
+    def test_add_projection_angles_to_sample(self):
+        proj_angles = ProjectionAngles(np.arange(0, 10))
+        stack_name = "stack name"
+        stack_mock = mock.MagicMock()
+        self.model.get_stack_by_name = stack_mock
+
+        self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+
+        stack_mock.assert_called_with(stack_name)
+        stack_mock.return_value.widget.return_value.presenter.images.set_projection_angles.assert_called_once_with(
+            proj_angles)
+
+    @mock.patch("mantidimaging.gui.windows.main.model.loader")
+    def test_load_stack(self, loader: mock.MagicMock):
+        file_path = "file_path"
+        progress = mock.Mock()
+
+        self.model.load_stack(file_path, progress)
+
+        loader.load_stack.assert_called_once_with(file_path, progress)

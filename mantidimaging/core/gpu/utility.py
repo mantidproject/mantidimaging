@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import os
 import numpy as np
 
@@ -133,6 +136,8 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
 
         for i in range(len(cpu_arrays)):
             gpu_arrays.append(_send_single_array_to_gpu(cpu_arrays[i], streams[i]))
+            # Synchronise to ensure that the upload has completed
+            streams[i].synchronize()
 
         return gpu_arrays
 
@@ -328,12 +333,15 @@ class CudaExecuter:
     def median_filter(self, data, filter_size, mode, progress):
         """
         Runs the median filter on a stack of 2D images asynchronously.
+
+        The data array with the median filter applied to it provided the GPU didn't run out of space,
+        otherwise it returns the unaltered input array.
+
         :param data: The CPU data array containing a stack of 2D images.
         :param filter_size: The filter size.
         :param mode: The mode for the filter. Determines how the edge values are managed.
         :param progress: An object for displaying the filter progress.
-        :return: The data array with the median filter applied to it provided the GPU didn't run out of space,
-                 otherwise it returns the unaltered input array.
+        :return: Data with median filter applied on success, else unaltered input array
         """
 
         # Try to free memory

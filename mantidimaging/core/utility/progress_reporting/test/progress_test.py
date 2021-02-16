@@ -1,6 +1,9 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import unittest
 
-import mock
+from unittest import mock
 
 from mantidimaging.core.utility.progress_reporting import Progress, ProgressHandler
 

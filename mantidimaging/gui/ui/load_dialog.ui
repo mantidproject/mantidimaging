@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
-    <height>454</height>
+    <width>690</width>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
      </attribute>
      <column>
       <property name="text">
-       <string/>
+       <string> </string>
       </property>
      </column>
      <column>
@@ -64,7 +64,7 @@
      </item>
      <item>
       <property name="text">
-       <string>Flat</string>
+       <string>Flat Before</string>
       </property>
       <property name="text">
        <string/>
@@ -78,7 +78,12 @@
      </item>
      <item>
       <property name="text">
-       <string>Dark</string>
+       <string>Flat After</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Dark Before</string>
       </property>
       <property name="text">
        <string/>
@@ -88,6 +93,11 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Dark After</string>
       </property>
      </item>
      <item>
@@ -120,7 +130,7 @@
      </item>
      <item>
       <property name="text">
-       <string>Flat Log</string>
+       <string>Flat Before Log</string>
       </property>
       <property name="text">
        <string/>
@@ -130,6 +140,11 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Flat After Log</string>
       </property>
      </item>
     </widget>

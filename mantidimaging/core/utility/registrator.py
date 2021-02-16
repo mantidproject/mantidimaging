@@ -1,3 +1,6 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
 import importlib
 import os
 import pkgutil
@@ -11,7 +14,7 @@ def find_package_path(package_str):
     already on the path.
 
     :param package_str: Package to search for as a Python path (i.e.
-                        "mantidimaging.core.filters")
+                        "mantidimaging.core.operations")
 
     :return: Path to package
     """
@@ -52,7 +55,7 @@ def get_package_children(package_name, packages=False, modules=False, ignore=Non
 
 def import_items(names: List[str], required_attributes: Optional[List[str]] = None):
     """
-    Imports a list of packages/modules and filters out those that do not have a
+    Imports a list of packages/modules and operations out those that do not have a
     specified required list of attributes.
 
     :param names: List of package/module names to import
