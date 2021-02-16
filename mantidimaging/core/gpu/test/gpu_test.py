@@ -9,6 +9,7 @@ import numpy.testing as npt
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.median_filter import MedianFilter, modes
 from mantidimaging.core.gpu import utility as gpu
+from mantidimaging.core.operations.outliers import OutliersFilter
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
 GPU_SKIP_REASON = "Skip GPU tests if cupy isn't installed."
@@ -25,16 +26,6 @@ class GPUTest(unittest.TestCase):
         super(GPUTest, self).__init__(*args, **kwargs)
         self.filter_sizes = [5, 7, 9]
         self.big = 1200
-
-    @staticmethod
-    def run_serial_median_filter(data, size, mode):
-        """
-        Run the median filter in serial.
-        """
-        th.switch_mp_off()
-        cpu_result = MedianFilter.filter_func(data, size, mode)
-        th.switch_mp_on()
-        return cpu_result
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes_in_median_filter(self):
@@ -79,7 +70,7 @@ class GPUTest(unittest.TestCase):
         size = 3
         mode = "reflect"
 
-        images = th.generate_shared_array(shape=(20, N, N))
+        images = th.generate_images((20, N, N))
 
         gpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=False)
         cpu_result = MedianFilter.filter_func(images.copy(), size, mode, force_cpu=True)
