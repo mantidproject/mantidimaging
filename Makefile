@@ -1,7 +1,11 @@
 AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
+#Needed because each command is run in a new shell
+SHELL=/bin/bash
+CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
+
 install-conda-env:
-	source <(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)
+	conda env create -f environment.yml
 
 install-run-requirements:
 	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
@@ -9,21 +13,20 @@ install-run-requirements:
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
 	conda create -n build-env
-	conda activate build-env
-	conda install --yes --file deps/build-requirements.conda
+	$(CONDA_ACTIVATE) build-env ; conda install --yes conda-build
 
 install-dev-requirements:
-	pip install --yes -r deps/dev-requirements.pip
+	conda env create -f environment-dev.yml
 
 build-conda-package: .remind-current install-build-requirements
 	# intended for local usage, does not install build requirements
-	conda-build ./conda --label unstable
+	$(CONDA_ACTIVATE) build-env ; conda-build ./conda --label unstable
 
 build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
-	conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
+	$(CONDA_ACTIVATE) build-env ; conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
 
 build-conda-package-release: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
-	conda-build ./conda $(AUTHENTICATION_PARAMS)
+	$(CONDA_ACTIVATE) build-env ; conda-build ./conda $(AUTHENTICATION_PARAMS)
 
 .remind-current:
 	@echo "Make sure the correct channels are added in \`conda config --get channels\`"
@@ -39,11 +42,8 @@ build-conda-package-release: .remind-current .remind-for-user .remind-for-anacon
 	@if [ -z "$$ANACONDA_API_TOKEN" ]; then echo "Environment variable ANACONDA_API_TOKEN not set!"; exit 1; fi;
 
 
-test_environment_name = test-env
 test-env:
-	conda create -n $(test_environment_name) -c mantid/label/deps mantidimaging
-	conda activate $(test_environment_name)
-	$(MAKE) install-dev-requirements
+	conda env create -n test-env -f environment-dev.yml
 
 test:
 	python -m pytest

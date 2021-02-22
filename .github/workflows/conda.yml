@@ -17,9 +17,8 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v2.0.1
         with:
-          activate-environment: mantidimaging
-          environment-file: environment.yml
-          python-version: 3.8
+          activate-environment: mantidimaging-dev
+          environment-file: environment-dev.yml
           auto-activate-base: false
 
       - name: Other dependencies
