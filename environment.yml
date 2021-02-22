@@ -1,42 +1,15 @@
-name: mantidimaging
+name: mantidimaging-nightly
 channels:
+  - mantid/label/unstable
   - dtasev
   - astra-toolbox/label/dev
   - conda-forge
   - defaults
+# Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
-  - python=3.8.*
+  - mantidimaging
   - pip
-  - sarepy=2020.07
-  - astra-toolbox=1.9.9.dev4
-  - numpy=1.19.4
-  - astropy=4.2
-  - scipy=1.5.3
-  - scikit-image=0.17.2
-  - tomopy=1.7.1=cuda*
-  - cudatoolkit=10.2*
-  - requests=2.25.1
-  - python-socketio=5.0.3
-  - h5py=3.1.0
   - pip:
-      - pytest==6.2.1
-      - pytest-cov==2.10.1
-      - coveralls==2.2.0
       - pyqt5==5.15
       - pyqtgraph==0.11
-      - yapf==0.30.0
-      - mypy==0.790
-      - flake8==3.8.4
-      - testfixtures==6.17.0
-      - coverage==5.3
-      - gitpython==3.1.11
-      - pylint==2.6.0
-      - sphinx==3.3.1
-      - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
-      - pytest-randomly==3.5.0
-      - pytest-xdist==2.2.0
-      - pytest-repeat==0.9.1
-      - psutil==5.7.3
-      - isort==5.6.4
-      - eyes-images==4.15.0
       - jenkspy==0.2.0

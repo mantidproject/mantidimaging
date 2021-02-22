@@ -166,5 +166,4 @@ setup(
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
     },
-    install_requires=["h5py==3.1.0", "numpy==1.19.4", "pyqt5==5.15", "pyqtgraph==0.11"],
 )
