@@ -1,6 +1,6 @@
 name: mantidimaging
 channels:
-  - mantid
+  - mantid/label/main
   - dtasev
   - astra-toolbox/label/dev
   - conda-forge
