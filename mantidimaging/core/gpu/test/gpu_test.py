@@ -6,6 +6,9 @@ import unittest
 from unittest import mock
 import numpy.testing as npt
 
+import matplotlib.pyplot as plt
+import pytest
+
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.median_filter import MedianFilter
 from mantidimaging.core.operations.median_filter import modes as median_modes
@@ -231,7 +234,8 @@ class GPUTest(unittest.TestCase):
                 npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
-    def test_double_is_used_in_remove_outlier_for_float_64_arrays(self):
+    @pytest.mark.parmetrize("mode", outlier_modes())
+    def test_double_is_used_in_remove_outlier_for_float_64_arrays(self, mode):
         """
         Test that the remove outlier filter also works for float64. This requires changing the CUDA kernel before
         loading it with cupy.
@@ -239,15 +243,16 @@ class GPUTest(unittest.TestCase):
         diff = 0.5
         radius = 3
 
-        for mode in outlier_modes():
-            with self.subTest(mode=mode):
+        images = th.generate_images(dtype="float64")
 
-                images = th.generate_images(dtype="float64")
+        gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
+        cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
 
-                gpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode, force_cpu=False)
-                cpu_result = OutliersFilter.filter_func(images.copy(), diff, radius, mode)
-
-                npt.assert_almost_equal(gpu_result.data, cpu_result.data)
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        ax1.imshow(gpu_result.data[0])
+        ax2.imshow(cpu_result.data[0])
+        fig.show()
+        npt.assert_almost_equal(gpu_result.data, cpu_result.data)
 
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_outlier_image_slicing_works(self):
