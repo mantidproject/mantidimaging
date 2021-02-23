@@ -67,7 +67,11 @@ class OutliersFilter(BaseFilter):
         """
         if diff and radius and diff > 0 and radius > 0:
             if force_cpu or not gpu.gpu_available():
-                func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
+                func = ps.create_partial(OutliersFilter._execute,
+                                         ps.return_to_self,
+                                         diff=diff,
+                                         radius=radius,
+                                         mode=mode)
                 ps.shared_list = [images.data]
                 ps.execute(func,
                            images.num_projections,

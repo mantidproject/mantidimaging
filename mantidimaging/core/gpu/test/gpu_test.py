@@ -150,7 +150,8 @@ class GPUTest(unittest.TestCase):
                         side_effect=cp.cuda.memory.OutOfMemoryError(0, 0)):
             with mock.patch("mantidimaging.core.gpu.utility._free_memory_pool") as mock_free_gpu:
                 gpu._send_arrays_to_gpu_with_pinned_memory(images.data, [cp.cuda.Stream() for _ in range(n_images)])
-                gpu._send_arrays_to_gpu_with_pinned_memory(images.data, [cp.cuda.Stream() for _ in range(images.data.shape[0])])
+                gpu._send_arrays_to_gpu_with_pinned_memory(images.data,
+                                                           [cp.cuda.Stream() for _ in range(images.data.shape[0])])
 
         mock_free_gpu.assert_called()
 
@@ -237,7 +238,6 @@ class GPUTest(unittest.TestCase):
         Test that the input arrays are unchanged when the remove outliers filter is unable to tranfer arrays to the
         GPU.
         """
-
         import cupy as cp
 
         diff = 0.5
