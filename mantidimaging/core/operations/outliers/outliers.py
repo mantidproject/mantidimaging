@@ -118,12 +118,7 @@ class OutliersFilter(BaseFilter):
                                             form=form,
                                             on_change=on_change)
 
-        return {
-            'diff_field': diff_field,
-            'size_field': size_field,
-            'mode_field': mode_field,
-            'use_gpu_field': gpu_field
-        }
+        return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field, 'gpu_field': gpu_field}
 
     @staticmethod
     def execute_wrapper(diff_field=None, size_field=None, mode_field=None, gpu_field=None):
