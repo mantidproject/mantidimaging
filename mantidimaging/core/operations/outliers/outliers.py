@@ -3,9 +3,11 @@
 
 import operator
 from functools import partial
+from typing import Callable, Dict, Any
 
 import numpy as np
 import scipy.ndimage as scipy_ndimage
+from PyQt5.QtWidgets import QFormLayout
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.gpu import utility as gpu
@@ -83,7 +85,7 @@ class OutliersFilter(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form, on_change, view):
+    def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
         _, diff_field = add_property_to_form('Difference',
                                              'float',
                                              1000,
@@ -109,15 +111,27 @@ class OutliersFilter(BaseFilter):
                                              on_change=on_change,
                                              tooltip="Whether to remove bright or dark outliers")
 
-        return {'diff_field': diff_field, 'size_field': size_field, 'mode_field': mode_field}
+        _, gpu_field = add_property_to_form('Use GPU',
+                                            Type.BOOL,
+                                            default_value=False,
+                                            tooltip='Run the remove outliers filter on the GPU',
+                                            form=form,
+                                            on_change=on_change)
+
+        return {
+            'diff_field': diff_field,
+            'size_field': size_field,
+            'mode_field': mode_field,
+            'use_gpu_field': gpu_field
+        }
 
     @staticmethod
-    def execute_wrapper(diff_field=None, size_field=None, mode_field=None):
-
+    def execute_wrapper(diff_field=None, size_field=None, mode_field=None, gpu_field=None):
         return partial(OutliersFilter.filter_func,
                        diff=diff_field.value(),
                        radius=size_field.value(),
-                       mode=mode_field.currentText())
+                       mode=mode_field.currentText(),
+                       force_cpu=not gpu_field.isChecked())
 
     @staticmethod
     def group_name() -> FilterGroup:

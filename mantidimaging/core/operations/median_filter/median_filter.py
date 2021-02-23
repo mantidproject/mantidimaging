@@ -30,7 +30,13 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
 
     @staticmethod
-    def filter_func(data: Images, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
+    def filter_func(data: Images,
+                    size=None,
+                    mode="reflect",
+                    cores=None,
+                    chunksize=None,
+                    progress=None,
+                    force_cpu=True) -> Images:
         """
         :param data: Input data as an Images object.
         :param size: Size of the kernel
