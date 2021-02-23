@@ -169,7 +169,7 @@ __global__ void two_dimensional_remove_dark_outliers(float *data_array,
   float median = find_neighbour_median(padded_array, padded_img_width, id_x,
                                        id_y, filter_size);
 
-  if (median - data_array[index] >= diff)
+  if (data_array[index] - median <= diff)
     data_array[index] = median;
 }
 }
