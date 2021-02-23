@@ -6,9 +6,6 @@ import unittest
 from unittest import mock
 import numpy.testing as npt
 
-import matplotlib.pyplot as plt
-import pytest
-
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.median_filter import MedianFilter
 from mantidimaging.core.operations.median_filter import modes as median_modes
