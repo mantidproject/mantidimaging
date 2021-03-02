@@ -142,7 +142,10 @@ setup(
     name="mantidimaging",
     version="2.0.0",
     packages=find_packages(),
-    package_data={"mantidimaging.gui": ["ui/*.ui", "ui/images/*.png"]},
+    package_data={
+        "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png"],
+        "mantidimaging.core": ["gpu/*.cu"]
+    },
     entry_points={
         "console_scripts": ["mantidimaging-ipython = mantidimaging.ipython:main"],
         "gui_scripts": ["mantidimaging = mantidimaging.main:main"],
