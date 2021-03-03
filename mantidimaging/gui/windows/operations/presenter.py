@@ -103,7 +103,7 @@ class FiltersWindowPresenter(BasePresenter):
             preview_idx_spin.setValue(self.model.preview_image_idx)
 
         # Trigger preview updating
-        self.view.auto_update_triggered.emit(None)
+        self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
         filter_name = self.view.filterSelector.currentText()
@@ -220,7 +220,8 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_update_previews(self):
         self.view.clear_previews()
-        self.view.disable_spin_boxes()
+        # Disable preview image index scrollbox to prevent double-increase
+        self.view.previewImageIndex.setEnabled(False)
         if self.stack is not None:
             stack_presenter = self.stack.presenter
             subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
@@ -254,7 +255,8 @@ class FiltersWindowPresenter(BasePresenter):
             # Ensure all of it is visible
             self.view.previews.auto_range()
 
-        self.view.enable_spin_boxes()
+        # Enable preview image index box when preview has been created
+        self.view.previewImageIndex.setEnabled(True)
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):

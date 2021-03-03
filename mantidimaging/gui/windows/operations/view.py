@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 
 class FiltersWindowView(BaseMainWindowView):
-    auto_update_triggered = Qt.pyqtSignal(object)
+    auto_update_triggered = Qt.pyqtSignal()
 
     splitter: QSplitter
     collapseToggleButton: QPushButton
@@ -66,7 +66,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
-        self.stackSelector.stack_selected_uuid.connect(lambda: self.auto_update_triggered.emit(None))
+        self.stackSelector.stack_selected_uuid.connect(self.auto_update_triggered.emit)
 
         # Handle apply filter
         self.applyButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER))
@@ -113,7 +113,7 @@ class FiltersWindowView(BaseMainWindowView):
 
     def show(self):
         super(FiltersWindowView, self).show()
-        self.auto_update_triggered.emit(None)
+        self.auto_update_triggered.emit()
 
     def handle_filter_selection(self, filter_name: str):
         """
@@ -131,7 +131,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Update preview on filter selection (on the off chance the default
         # options are valid)
-        self.auto_update_triggered.emit(None)
+        self.auto_update_triggered.emit()
 
     def on_auto_update_triggered(self, widget=None):
         """
@@ -298,9 +298,3 @@ class FiltersWindowView(BaseMainWindowView):
         else:
             self.splitter.setSizes([200, 9999])
             self.collapseToggleButton.setText("<<")
-
-    def disable_spin_boxes(self):
-        pass
-
-    def enable_spin_boxes(self):
-        pass
