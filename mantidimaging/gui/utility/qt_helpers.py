@@ -130,19 +130,19 @@ def add_property_to_form(label: str,
         right_widget.setText(default_value)
 
         if on_change is not None:
-            right_widget.editingFinished.connect(lambda: on_change())
+            right_widget.editingFinished.connect(lambda: on_change(None))
 
     elif dtype == 'int' or dtype == Type.INT:
         right_widget = Qt.QSpinBox()
         set_spin_box(right_widget, int)
         if on_change is not None:
-            right_widget.valueChanged.connect(lambda: on_change())
+            right_widget.valueChanged.connect(lambda: on_change(None))
 
     elif dtype == 'float' or dtype == Type.FLOAT:
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
         if on_change is not None:
-            right_widget.valueChanged.connect(lambda: on_change())
+            right_widget.valueChanged.connect(lambda: on_change(None))
 
     elif dtype == 'bool' or dtype == Type.BOOL:
         right_widget = Qt.QCheckBox()
@@ -157,7 +157,7 @@ def add_property_to_form(label: str,
             raise ValueError(f"Cannot convert value {default_value} to a Boolean.")
 
         if on_change is not None:
-            right_widget.stateChanged[int].connect(lambda: on_change())
+            right_widget.stateChanged[int].connect(lambda: on_change(None))
 
     elif dtype == "choice" or dtype == Type.CHOICE:
         right_widget = Qt.QComboBox()
@@ -165,13 +165,13 @@ def add_property_to_form(label: str,
         if valid_values:
             right_widget.addItems(valid_values)
         if on_change is not None:
-            right_widget.currentIndexChanged[int].connect(lambda: on_change())
+            right_widget.currentIndexChanged[int].connect(lambda: on_change(None))
 
     elif dtype == 'stack' or dtype == Type.STACK:
         from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
         right_widget = StackSelectorWidgetView(filters_view)
         if on_change is not None:
-            right_widget.currentIndexChanged[int].connect(lambda: on_change())
+            right_widget.currentIndexChanged[int].connect(lambda: on_change(None))
 
     elif dtype == 'button' or dtype == Type.BUTTON:
         left_widget = Qt.QPushButton(label)
