@@ -133,14 +133,24 @@ class FiltersWindowView(BaseMainWindowView):
         # options are valid)
         self.auto_update_triggered.emit(None)
 
-    def on_auto_update_triggered(self):
+    def on_auto_update_triggered(self, widget=None):
         """
         Called when the signal indicating the filter, filter properties or data
         has changed such that the previews are now out of date.
         """
+        # Disable the spinbox widgets that are prone to misbehaving when generating a preview takes too long
+        self.previewImageIndex.setEnabled(False)
+        if widget is not None:
+            widget.setEnabled(False)
+
         self.clear_notification_dialog()
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
+
+        # Enable the spinbox widgets once the preview is done
+        self.previewImageIndex.setEnabled(True)
+        if widget is not None:
+            widget.setEnabled(True)
 
     def clear_previews(self):
         self.previews.clear_items()
@@ -290,8 +300,7 @@ class FiltersWindowView(BaseMainWindowView):
             self.collapseToggleButton.setText("<<")
 
     def disable_spin_boxes(self):
-        self.previewImageIndex.setEnabled(False)
-        print(self.filterPropertiesLayout)
+        pass
 
     def enable_spin_boxes(self):
-        self.previewImageIndex.setEnabled(True)
+        pass
