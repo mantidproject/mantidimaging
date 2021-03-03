@@ -226,7 +226,3 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         stack.presenter.images.copy.assert_called_once()
         self.assertEqual(stack_data, self.presenter.original_images_stack)
-
-    def test_preview_image_spin_box_disabled_while_updating_preview(self):
-        self.presenter.do_update_previews()
-        self.view.previewImageIndex.setEnabled.assert_has_calls([mock.call(False), mock.call(True)])
