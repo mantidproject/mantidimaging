@@ -77,6 +77,12 @@ class Type(IntEnum):
 
 
 def _on_change_and_disable(widget: QWidget, on_change: Callable):
+    """
+    Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that
+    continue increasing when generating a preview image is computationally intensive.
+    :param widget: The widget to disable.
+    :param on_change: The method to call when the widget has been changed.
+    """
     widget.setEnabled(False)
     on_change()
     widget.setEnabled(True)
