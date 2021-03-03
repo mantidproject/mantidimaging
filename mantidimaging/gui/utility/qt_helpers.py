@@ -136,13 +136,13 @@ def add_property_to_form(label: str,
         right_widget = Qt.QSpinBox()
         set_spin_box(right_widget, int)
         if on_change is not None:
-            right_widget.valueChanged.connect(lambda: on_change(None))
+            right_widget.valueChanged.connect(lambda: on_change(right_widget))
 
     elif dtype == 'float' or dtype == Type.FLOAT:
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
         if on_change is not None:
-            right_widget.valueChanged.connect(lambda: on_change(None))
+            right_widget.valueChanged.connect(lambda: on_change(right_widget))
 
     elif dtype == 'bool' or dtype == Type.BOOL:
         right_widget = Qt.QCheckBox()
