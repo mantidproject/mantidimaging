@@ -226,3 +226,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         stack.presenter.images.copy.assert_called_once()
         self.assertEqual(stack_data, self.presenter.original_images_stack)
+
+    def test_set_filter_by_name(self):
+        NAME = "ROI Normalisation"
+        INDEX = 3
+        self.presenter.model._find_filter_index_from_filter_name = mock.Mock(return_value=INDEX)
+        self.presenter.set_filter_by_name(NAME)
+
+        self.presenter.model._find_filter_index_from_filter_name.assert_called_with(NAME)
+        self.view.filterSelector.setCurrentIndex.assert_called_with(INDEX)
