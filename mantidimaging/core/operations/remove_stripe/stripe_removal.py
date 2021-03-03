@@ -148,7 +148,7 @@ class StripeRemovalFilter(BaseFilter):
                 enabled = name == f[0]
                 for ui_item in f[1]:
                     ui_item.setEnabled(enabled)
-            on_change()
+            on_change(None)
 
         value_filter_type.addItems([f[0] for f in filters])
         value_filter_type.currentIndexChanged[str].connect(on_filter_type_change)

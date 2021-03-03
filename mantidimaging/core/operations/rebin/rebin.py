@@ -88,7 +88,7 @@ class RebinFilter(BaseFilter):
 
         def size_by_factor_toggled(enabled):
             factor.setEnabled(enabled)
-            on_change()
+            on_change(None)
 
         rebin_by_factor_radio.toggled.connect(size_by_factor_toggled)
 
@@ -97,7 +97,7 @@ class RebinFilter(BaseFilter):
         def size_by_dimensions_toggled(enabled):
             shape_x.setEnabled(enabled)
             shape_y.setEnabled(enabled)
-            on_change()
+            on_change(None)
 
         rebin_to_dimensions_radio.toggled.connect(size_by_dimensions_toggled)
 
