@@ -138,14 +138,14 @@ class FiltersWindowView(BaseMainWindowView):
         Called when the signal indicating the filter, filter properties or data
         has changed such that the previews are now out of date.
         """
-        # Disable the spinbox widgets that are prone to misbehaving when generating a preview takes too long
+        # Disable the preview image box widget as it can misbehave if making a preview takes too long
         self.previewImageIndex.setEnabled(False)
 
         self.clear_notification_dialog()
         if self.previewAutoUpdate.isChecked() and self.isVisible():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
-        # Enable the spinbox widgets once the preview is done
+        # Enable the spinbox widget once the preview has been created
         self.previewImageIndex.setEnabled(True)
 
     def clear_previews(self):
