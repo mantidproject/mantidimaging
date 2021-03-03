@@ -212,6 +212,8 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
+        self.view.filter_applied.emit()
+
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
 

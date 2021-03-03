@@ -37,6 +37,7 @@ class MainWindowView(BaseMainWindowView):
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
     active_stacks_changed = pyqtSignal()
+    filter_applied = pyqtSignal()
     backend_message = pyqtSignal(bytes)
 
     menuFile: QMenu
@@ -255,6 +256,7 @@ class MainWindowView(BaseMainWindowView):
     def show_filters_window(self):
         if not self.filters:
             self.filters = FiltersWindowView(self)
+            self.filters.filter_applied.connect(self.filter_applied.emit)
             self.filters.show()
         else:
             self.filters.activateWindow()
