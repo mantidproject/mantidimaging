@@ -18,3 +18,4 @@ Fixes
 - #843 : Error loading stack
 - #856 : Move shared array allocation to `multiprocessing.Array` when on Python 3.8
 - #854 : Ops window, image selector in preview section skips by 2
+- #856 : Operations auto update not triggered on spinbox changes

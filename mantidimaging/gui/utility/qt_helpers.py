@@ -7,7 +7,7 @@ Module containing helper functions relating to PyQt.
 import os
 from enum import IntEnum, auto
 from logging import getLogger
-from typing import Any, Tuple, Union, List
+from typing import Any, Tuple, Union, List, Callable
 
 from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
@@ -76,6 +76,18 @@ class Type(IntEnum):
     BUTTON = auto()
 
 
+def _on_change_and_disable(widget: QWidget, on_change: Callable):
+    """
+    Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that
+    continue increasing when generating a preview image is computationally intensive.
+    :param widget: The widget to disable.
+    :param on_change: The method to call when the widget has been changed.
+    """
+    widget.setEnabled(False)
+    on_change()
+    widget.setEnabled(True)
+
+
 def add_property_to_form(label: str,
                          dtype: Union[Type, str],
                          default_value=None,
@@ -134,15 +146,17 @@ def add_property_to_form(label: str,
 
     elif dtype == 'int' or dtype == Type.INT:
         right_widget = Qt.QSpinBox()
+        right_widget.setKeyboardTracking(False)
         set_spin_box(right_widget, int)
         if on_change is not None:
-            right_widget.editingFinished.connect(lambda: on_change())
+            right_widget.valueChanged.connect(lambda: _on_change_and_disable(right_widget, on_change))
 
     elif dtype == 'float' or dtype == Type.FLOAT:
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
+        right_widget.setKeyboardTracking(False)
         if on_change is not None:
-            right_widget.editingFinished.connect(lambda: on_change())
+            right_widget.valueChanged.connect(lambda: _on_change_and_disable(right_widget, on_change))
 
     elif dtype == 'bool' or dtype == Type.BOOL:
         right_widget = Qt.QCheckBox()

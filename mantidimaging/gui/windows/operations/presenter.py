@@ -220,8 +220,6 @@ class FiltersWindowPresenter(BasePresenter):
 
     def do_update_previews(self):
         self.view.clear_previews()
-        # Disable preview image index scrollbox to prevent double-increase
-        self.view.previewImageIndex.setEnabled(False)
         if self.stack is not None:
             stack_presenter = self.stack.presenter
             subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
@@ -254,9 +252,6 @@ class FiltersWindowPresenter(BasePresenter):
 
             # Ensure all of it is visible
             self.view.previews.auto_range()
-
-        # Enable preview image index box when preview has been created
-        self.view.previewImageIndex.setEnabled(True)
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
