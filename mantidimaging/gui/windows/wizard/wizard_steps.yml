@@ -1,0 +1,24 @@
+stages:
+  - name: Loading
+    steps:
+      - name: Loading files
+        description: Load dataset from files
+        action: load
+
+  - name: Pre-processing
+    steps:
+      - name: Region of Interest Normalisation
+        description: Normalise the region of interest using surrounding empty space
+        enable_if: loaded
+        action: operations:ROI Normalisation
+      - name: Flat fielding
+        description: Use flat and dark frames to flattern the images
+        enable_if: loaded
+        action: operations:Flat-fielding
+
+  - name: Reconstruction
+    steps:
+      - name: Filtered Back Projection
+        description: Run a reconstruction with the Filtered Back Projection alogorithm
+        enable_if: history:FlatFieldFilter, history:RoiNormalisationFilter
+        action: reconstruction
