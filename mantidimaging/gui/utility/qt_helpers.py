@@ -146,6 +146,7 @@ def add_property_to_form(label: str,
 
     elif dtype == 'int' or dtype == Type.INT:
         right_widget = Qt.QSpinBox()
+        right_widget.setKeyboardTracking(False)
         set_spin_box(right_widget, int)
         if on_change is not None:
             right_widget.valueChanged.connect(lambda: _on_change_and_disable(right_widget, on_change))
@@ -153,6 +154,7 @@ def add_property_to_form(label: str,
     elif dtype == 'float' or dtype == Type.FLOAT:
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
+        right_widget.setKeyboardTracking(False)
         if on_change is not None:
             right_widget.valueChanged.connect(lambda: _on_change_and_disable(right_widget, on_change))
 
