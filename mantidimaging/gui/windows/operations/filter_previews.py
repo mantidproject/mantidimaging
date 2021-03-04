@@ -113,10 +113,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         if ev is not None:
             size = ev.size()
             image_layout_height = min(size.height() * 0.7, self.ALLOWED_HEIGHT)
-            # self.image_layout.setFixedHeight(image_layout_height)
             self.histogram.setFixedHeight(image_layout_height * 0.25)
-        else:
-            LOG.info("ev is None")
         super().resizeEvent(ev)
 
     def image_in_vb(self, name=None):
