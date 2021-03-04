@@ -112,8 +112,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None:
             size = ev.size()
-            image_layout_height = min(size.height() * 0.7, self.ALLOWED_HEIGHT)
-            self.histogram.setFixedHeight(image_layout_height * 0.25)
+            self.histogram.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT) * 0.25)
         super().resizeEvent(ev)
 
     def image_in_vb(self, name=None):
