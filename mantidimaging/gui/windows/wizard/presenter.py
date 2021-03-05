@@ -22,6 +22,7 @@ class WizardPresenter(BasePresenter):
         self.populate()
         parent.active_stacks_changed.connect(self.handle_stack_change)
         parent.filter_applied.connect(self.handle_stack_change)
+        parent.recon_applied.connect(self.handle_stack_change)
         self.handle_stack_change()
         self.show()
 
@@ -52,7 +53,7 @@ class WizardPresenter(BasePresenter):
         stack_history = None
         stack_list = self.main_window_presenter.stack_list
         for uuid, name in stack_list:
-            if "Tomo" not in name:
+            if "Tomo" not in name and "Recon" not in name:
                 continue
 
             stack_history = self.main_window_presenter.get_stack_history(uuid)

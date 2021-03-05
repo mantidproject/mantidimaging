@@ -2,7 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
-from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton
+from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 from typing import List
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -34,6 +36,7 @@ class WizardStep(QWidget):
         self.name = step["name"]
         self.layout = QVBoxLayout(self)
         self.title_label = QPushButton("Step: " + self.name)
+        self.title_label.setLayoutDirection(Qt.RightToLeft)
 
         self.layout.addWidget(self.title_label)
 
@@ -54,6 +57,7 @@ class WizardStep(QWidget):
         self.title_label.clicked.connect(self.toggle_visible)
 
         self.enable_predicate = EnablePredicateFactory(step.get("enable_if", ""))
+        self.done_predicate = EnablePredicateFactory(step.get("done_if", ""))
 
     def toggle_visible(self, event):
         self.step_box.setVisible(not self.step_box.isVisible())
@@ -64,6 +68,11 @@ class WizardStep(QWidget):
         if not enabled:
             self.step_box.setVisible(False)
         self.title_label.setEnabled(enabled)
+
+        if self.done_predicate(stack_history):
+            self.title_label.setIcon(self.style().standardIcon(QStyle.SP_DialogApplyButton))
+        else:
+            self.title_label.setIcon(QIcon())
 
 
 class WizardView(BaseDialogView):
