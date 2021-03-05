@@ -27,6 +27,9 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
 
 
+REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
+
+
 class Notification(Enum):
     REGISTER_ACTIVE_FILTER = auto()
     APPLY_FILTER = auto()
@@ -122,6 +125,11 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
+
+        if self._already_run_flat_fielding():
+            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG)
+                return
+
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = self.stack.presenter.images.copy()
@@ -139,9 +147,12 @@ class FiltersWindowPresenter(BasePresenter):
         self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_all(self):
-        confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
+        confirmed = self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG)
         if not confirmed:
             return
+        if self._already_run_flat_fielding():
+            if not self.view.ask_confirmation("Do you want to run flat-fielding again? This could cause you to lose data.")
+                return
         stacks = self.main_window.get_all_stack_visualisers()
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
@@ -265,3 +276,9 @@ class FiltersWindowPresenter(BasePresenter):
 
     def get_filter_module_name(self, filter_idx):
         return self.model.get_filter_module_name(filter_idx)
+
+    def _already_run_flat_fielding(self):
+        if self.view.filterSelector.currentText() is not "Flat-fielding":
+            return False
+
+        # return flat-fielding in operation history
