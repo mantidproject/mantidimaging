@@ -39,6 +39,7 @@ class MainWindowView(BaseMainWindowView):
 
     active_stacks_changed = pyqtSignal()
     filter_applied = pyqtSignal()
+    recon_applied = pyqtSignal()
     backend_message = pyqtSignal(bytes)
 
     menuFile: QMenu
@@ -254,6 +255,7 @@ class MainWindowView(BaseMainWindowView):
     def show_recon_window(self):
         if not self.recon:
             self.recon = ReconstructWindowView(self)
+            self.recon.recon_applied.connect(self.recon_applied.emit)
             self.recon.show()
         else:
             self.recon.activateWindow()

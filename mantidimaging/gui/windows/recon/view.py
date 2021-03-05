@@ -6,6 +6,7 @@ from uuid import UUID
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QMessageBox, QAction)
+from PyQt5 import Qt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
@@ -61,6 +62,8 @@ class ReconstructWindowView(BaseMainWindowView):
     changeColourPaletteButton: QPushButton
 
     stackSelector: StackSelectorWidgetView
+
+    recon_applied = Qt.pyqtSignal()
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')
