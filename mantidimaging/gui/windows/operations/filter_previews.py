@@ -110,9 +110,9 @@ class FilterPreviews(GraphicsLayoutWidget):
             scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
 
     def resizeEvent(self, ev: QResizeEvent):
-        if ev is not None:
+        if ev is not None and isinstance(self.histogram, PlotItem):
             size = ev.size()
-            self.image_layout.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT))
+            self.histogram.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT) * 0.25)
         super().resizeEvent(ev)
 
     def image_in_vb(self, name=None):
