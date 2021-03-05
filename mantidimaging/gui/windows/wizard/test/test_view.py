@@ -36,10 +36,14 @@ class WizardStepTest(unittest.TestCase):
     def setUp(self) -> None:
         self.step = WizardStep(STEP_DATA, mock.Mock())
 
-    def test_toggle_visible(self):
+    def test_show_step(self):
         self.step.step_box = mock.Mock()
-        self.step.toggle_visible(None)
-        self.step.step_box.isVisible.assert_called_once()
+        self.step.show_step()
+        self.step.step_box.setVisible.assert_called_once_with(True)
+
+    def test_hide_step(self):
+        self.step.step_box = mock.Mock()
+        self.step.hide_step()
         self.step.step_box.setVisible.assert_called_once_with(False)
 
     def test_handle_stack_change(self):

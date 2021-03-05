@@ -5,6 +5,7 @@ from __future__ import annotations
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
+from PyQt5.Qt import pyqtSignal
 from typing import List
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -33,6 +34,8 @@ class WizardStep(QWidget):
     def __init__(self, step: dict, wizard: WizardView, parent=None):
         super().__init__(parent)
 
+        self.wizard_view = wizard
+
         self.name = step["name"]
         self.layout = QVBoxLayout(self)
         self.title_label = QPushButton("Step: " + self.name)
@@ -54,13 +57,18 @@ class WizardStep(QWidget):
         self.step_box.setVisible(False)
         self.layout.addWidget(self.step_box)
 
-        self.title_label.clicked.connect(self.toggle_visible)
+        self.title_label.clicked.connect(self.show_step)
+        self.wizard_view.close_steps.connect(self.hide_step)
 
         self.enable_predicate = EnablePredicateFactory(step.get("enable_if", ""))
         self.done_predicate = EnablePredicateFactory(step.get("done_if", ""))
 
-    def toggle_visible(self, event):
-        self.step_box.setVisible(not self.step_box.isVisible())
+    def show_step(self):
+        self.wizard_view.close_steps.emit()
+        self.step_box.setVisible(True)
+
+    def hide_step(self):
+        self.step_box.setVisible(False)
 
     def handle_stack_change(self, stack_history: dict):
         enabled = self.enable_predicate(stack_history)
@@ -76,6 +84,8 @@ class WizardStep(QWidget):
 
 
 class WizardView(BaseDialogView):
+    close_steps = pyqtSignal()
+
     def __init__(self, parent, presenter):
         super().__init__(parent, "gui/ui/wizard.ui")
         self.stages = {}
