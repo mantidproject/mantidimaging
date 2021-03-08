@@ -276,6 +276,9 @@ class FiltersWindowPresenter(BasePresenter):
         return self.model.get_filter_module_name(filter_idx)
 
     def _already_run_flat_fielding(self):
+        """
+        Checks if flat-fielding is being run for a second time.
+        """
         if self.view.filterSelector.currentText() != "Flat-fielding":
             return False
         if "operation_history" not in self.stack.presenter.images.metadata:
