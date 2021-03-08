@@ -125,9 +125,8 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
-
         if self._already_run_flat_fielding():
-            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG)
+            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG):
                 return
 
         if self.view.safeApply.isChecked():
@@ -147,11 +146,11 @@ class FiltersWindowPresenter(BasePresenter):
         self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_all(self):
-        confirmed = self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG)
+        confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
         if not confirmed:
             return
         if self._already_run_flat_fielding():
-            if not self.view.ask_confirmation("Do you want to run flat-fielding again? This could cause you to lose data.")
+            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG)
                 return
         stacks = self.main_window.get_all_stack_visualisers()
         if self.view.safeApply.isChecked():
