@@ -233,7 +233,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_warning_when_flat_fielding_is_run_twice(self, _):
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
-        self.presenter.stack.presenter.images.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
+        self.presenter.stack.presenter.images.metadata = {
+            OPERATION_HISTORY: [{
+                OPERATION_DISPLAY_NAME: "Flat-fielding"
+            }]
+        }
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_called_once_with(REPEAT_FLAT_FIELDING_MSG)
@@ -258,7 +262,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_warning_when_flat_fielding_is_run_for_first_time(self, _):
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
-        self.presenter.stack.presenter.images.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Remove Outliers"}]}
+        self.presenter.stack.presenter.images.metadata = {
+            OPERATION_HISTORY: [{
+                OPERATION_DISPLAY_NAME: "Remove Outliers"
+            }]
+        }
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_not_called()
