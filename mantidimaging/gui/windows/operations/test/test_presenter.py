@@ -231,6 +231,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_warning_when_flat_fielding_is_run_twice(self, _):
+        """
+        Test that a warning is displayed if the user is trying to run flat-fielding again.
+        """
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.presenter.images.metadata = {
@@ -244,6 +247,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_warning_when_flat_fielding_isnt_run(self, _):
+        """
+        Test no warning is created if the user isn't running flat fielding.
+        """
         self.view.filterSelector.currentText.return_value = "Median"
         self.presenter.stack = mock.MagicMock()
         self.presenter._do_apply_filter = mock.MagicMock()
@@ -252,6 +258,10 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_warning_when_flat_fielding_is_first_operation(self, _):
+        """
+        Test that no warning is created when flat fielding is the first operation the user runs, and no operation
+        history exists.
+        """
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter._do_apply_filter = mock.MagicMock()
@@ -260,6 +270,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_warning_when_flat_fielding_is_run_for_first_time(self, _):
+        """
+        Test that no warning is created if an operation history exists but flat fielding isn't in it.
+        """
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.presenter.images.metadata = {
