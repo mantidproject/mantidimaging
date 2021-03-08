@@ -226,3 +226,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         stack.presenter.images.copy.assert_called_once()
         self.assertEqual(stack_data, self.presenter.original_images_stack)
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_warning_when_flat_fielding_is_run_twice(self, _):
+        self.view.filterSelector.currentText.return_value = "Flat-fielding"
+        self.presenter.stack = mock.MagicMock()
+        self.presenter.stack.images.metadata = {"operation_history": [{"display_name": "Flat-fielding"}]}
+        self.presenter._do_apply_filter = mock.MagicMock()
+        self.presenter.do_apply_filter()
