@@ -8,23 +8,21 @@ from skimage import filters
 from mantidimaging.gui.mvp_base import BasePresenter
 from jenkspy import jenks_breaks
 import numpy as np
+from math import pi
 
-RANDOM_CUTOFF = 15000
+SAMPLE_SIZE = 15000  # Chosen to avoid Jenks becoming slow
 
 
 class PaletteChangerPresenter(BasePresenter):
     def __init__(self, view, hists: List[HistogramLUTItem], recon_image: np.ndarray):
         super(PaletteChangerPresenter, self).__init__(view)
+        self.rng = np.random.default_rng()
         self.hists = hists
         self.recon_image = recon_image
         self.recon_histogram = hists[0]
-        # Create a flattened version of the histogram image to send to Jenks or Otsu
-        if recon_image.size > RANDOM_CUTOFF:
-            # Use a random subset if the image is large
-            self.flattened_image = np.random.choice(self.recon_image.flatten(), RANDOM_CUTOFF)
-        else:
-            # Use the entire array if the image is small
-            self.flattened_image = self.recon_image.flatten()
+
+        # Sample a subset of the histogram image to send to Jenks or Otsu
+        self.flattened_image = self._get_sample_pixels(self.recon_image, min(SAMPLE_SIZE, recon_image.size))
 
     def notify(self, signal):
         pass
@@ -117,3 +115,14 @@ class PaletteChangerPresenter(BasePresenter):
         """
         norms = np.linspace(0, 1, num_ticks)
         return [self.recon_histogram.gradient.getColor(norm) for norm in norms]
+
+    def _get_sample_pixels(self, image: np.ndarray, count: int, width: float = 0.9):
+        """
+        Sample from a circle of the image to avoid recon artefacts at edges
+        """
+        rs = self.rng.uniform(low=0, high=0.5 * width, size=count)
+        thetas = self.rng.uniform(low=0, high=2 * pi, size=count)
+        xs = (np.sin(thetas) * rs * image.shape[0] + image.shape[0] * 0.5).astype(int)
+        ys = (np.cos(thetas) * rs * image.shape[1] + image.shape[1] * 0.5).astype(int)
+        sampled = image[xs, ys]
+        return sampled
