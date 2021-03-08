@@ -151,9 +151,6 @@ class FiltersWindowPresenter(BasePresenter):
         confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
         if not confirmed:
             return
-        if self._already_run_flat_fielding():
-            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG):
-                return
         stacks = self.main_window.get_all_stack_visualisers()
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
