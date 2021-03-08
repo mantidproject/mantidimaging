@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QApplication
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.utility.common import operation_in_progress
@@ -283,9 +284,9 @@ class FiltersWindowPresenter(BasePresenter):
         """
         if self.view.filterSelector.currentText() != FLAT_FIELDING:
             return False
-        if "operation_history" not in self.stack.presenter.images.metadata:
+        if OPERATION_HISTORY not in self.stack.presenter.images.metadata:
             return False
-        for operation in self.stack.presenter.images.metadata["operation_history"]:
-            if operation["display_name"] == FLAT_FIELDING:
+        for operation in self.stack.presenter.images.metadata[OPERATION_HISTORY]:
+            if operation[OPERATION_DISPLAY_NAME] == FLAT_FIELDING:
                 return True
         return False

@@ -7,6 +7,7 @@ from functools import partial
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
 
+from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING
@@ -232,7 +233,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_warning_when_flat_fielding_is_run_twice(self, _):
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
-        self.presenter.stack.presenter.images.metadata = {"operation_history": [{"display_name": "Flat-fielding"}]}
+        self.presenter.stack.presenter.images.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_called_once_with(REPEAT_FLAT_FIELDING_MSG)
@@ -241,6 +242,23 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_warning_when_flat_fielding_isnt_run(self, _):
         self.view.filterSelector.currentText.return_value = "Median"
         self.presenter.stack = mock.MagicMock()
+        self.presenter._do_apply_filter = mock.MagicMock()
+        self.presenter.do_apply_filter()
+        self.view.ask_confirmation.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_no_warning_when_flat_fielding_is_first_operation(self, _):
+        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.stack = mock.MagicMock()
+        self.presenter._do_apply_filter = mock.MagicMock()
+        self.presenter.do_apply_filter()
+        self.view.ask_confirmation.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_no_warning_when_flat_fielding_is_run_for_first_time(self, _):
+        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.stack = mock.MagicMock()
+        self.presenter.stack.presenter.images.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Remove Outliers"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_not_called()
