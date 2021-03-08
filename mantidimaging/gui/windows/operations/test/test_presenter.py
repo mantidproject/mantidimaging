@@ -283,3 +283,20 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_no_operation_run_when_user_cancels_flat_fielding(self, _):
+        """
+        Test that pressing "Cancel" when the flat-fielding warning is displayed means that no operation is run.
+        """
+        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.stack = mock.MagicMock()
+        self.presenter.stack.presenter.images.metadata = {
+            OPERATION_HISTORY: [{
+                OPERATION_DISPLAY_NAME: "Flat-fielding"
+            }]
+        }
+        self.presenter._do_apply_filter = mock.MagicMock()
+        self.view.ask_confirmation.return_value = False
+        self.presenter.do_apply_filter()
+        self.presenter._do_apply_filter.assert_not_called()
