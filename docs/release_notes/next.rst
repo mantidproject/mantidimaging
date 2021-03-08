@@ -1,4 +1,3 @@
-
 Mantid Imaging next release
 ===========================
 
