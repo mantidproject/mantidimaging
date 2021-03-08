@@ -1,3 +1,4 @@
+
 Mantid Imaging next release
 ===========================
 
@@ -20,3 +21,4 @@ Fixes
 - #854 : Ops window, image selector in preview section skips by 2
 - #856 : Operations auto update not triggered on spinbox changes
 - #874 : Widgets in Operations window need minimum sizes
+- #866 : Warning if running Flat-fielding again
