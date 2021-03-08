@@ -283,7 +283,5 @@ class FiltersWindowPresenter(BasePresenter):
             return False
         if OPERATION_HISTORY not in self.stack.presenter.images.metadata:
             return False
-        for operation in self.stack.presenter.images.metadata[OPERATION_HISTORY]:
-            if operation[OPERATION_DISPLAY_NAME] == FLAT_FIELDING:
-                return True
-        return False
+        return any(operation[OPERATION_DISPLAY_NAME] == FLAT_FIELDING
+                   for operation in self.stack.presenter.images.metadata[OPERATION_HISTORY])
