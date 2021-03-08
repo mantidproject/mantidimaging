@@ -277,7 +277,7 @@ class FiltersWindowPresenter(BasePresenter):
 
     def _already_run_flat_fielding(self):
         """
-        Checks if flat-fielding is being run for a second time.
+        :return: True if this is not the first time flat-fielding is being run, False otherwise.
         """
         if self.view.filterSelector.currentText() != FLAT_FIELDING:
             return False
