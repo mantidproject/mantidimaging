@@ -22,6 +22,8 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 
 from .model import FiltersWindowModel
 
+FLAT_FIELDING = "Flat-fielding"
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
@@ -279,11 +281,11 @@ class FiltersWindowPresenter(BasePresenter):
         """
         Checks if flat-fielding is being run for a second time.
         """
-        if self.view.filterSelector.currentText() != "Flat-fielding":
+        if self.view.filterSelector.currentText() != FLAT_FIELDING:
             return False
         if "operation_history" not in self.stack.presenter.images.metadata:
             return False
         for operation in self.stack.presenter.images.metadata["operation_history"]:
-            if operation["display_name"] == "Flat-fielding":
+            if operation["display_name"] == FLAT_FIELDING:
                 return True
         return False
