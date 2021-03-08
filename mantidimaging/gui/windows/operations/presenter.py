@@ -26,7 +26,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
 
-
 REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
 
 
@@ -150,7 +149,7 @@ class FiltersWindowPresenter(BasePresenter):
         if not confirmed:
             return
         if self._already_run_flat_fielding():
-            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG)
+            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG):
                 return
         stacks = self.main_window.get_all_stack_visualisers()
         if self.view.safeApply.isChecked():
@@ -277,7 +276,11 @@ class FiltersWindowPresenter(BasePresenter):
         return self.model.get_filter_module_name(filter_idx)
 
     def _already_run_flat_fielding(self):
-        if self.view.filterSelector.currentText() is not "Flat-fielding":
+        if self.view.filterSelector.currentText() != "Flat-fielding":
             return False
-
-        # return flat-fielding in operation history
+        if "operation_history" not in self.stack.presenter.images.metadata:
+            return False
+        for operation in self.stack.presenter.images.metadata["operation_history"]:
+            if operation["display_name"] == "Flat-fielding":
+                return True
+        return False
