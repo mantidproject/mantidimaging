@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QApplication
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.utility.common import operation_in_progress
@@ -22,9 +23,13 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 
 from .model import FiltersWindowModel
 
+FLAT_FIELDING = "Flat-fielding"
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
+
+REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
 
 
 class Notification(Enum):
@@ -49,6 +54,11 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
         self.applying_to_all = False
+
+        self.prev_apply_single_state = True
+        self.prev_apply_all_state = True
+        self.main_window.filter_applied.connect(
+            lambda: self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state))
 
     @property
     def main_window(self) -> 'MainWindowView':
@@ -122,6 +132,10 @@ class FiltersWindowPresenter(BasePresenter):
             self.model.params_needed_from_stack is not None else False
 
     def do_apply_filter(self):
+        if self._already_run_flat_fielding():
+            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG):
+                return
+
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = self.stack.presenter.images.copy()
@@ -215,6 +229,11 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.filter_applied.emit()
 
     def _do_apply_filter(self, apply_to):
+        # Record the previous button states
+        self.prev_apply_single_state = self.view.applyButton.isEnabled()
+        self.prev_apply_all_state = self.view.applyToAllButton.isEnabled()
+        # Disable the apply buttons
+        self._set_apply_buttons_enabled(False, False)
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
 
     def _do_apply_filter_sync(self, apply_to):
@@ -271,3 +290,23 @@ class FiltersWindowPresenter(BasePresenter):
     def set_filter_by_name(self, filter_menu_name):
         filter_idx = self.model._find_filter_index_from_filter_name(filter_menu_name)
         self.view.filterSelector.setCurrentIndex(filter_idx)
+
+    def _already_run_flat_fielding(self):
+        """
+        :return: True if this is not the first time flat-fielding is being run, False otherwise.
+        """
+        if self.view.filterSelector.currentText() != FLAT_FIELDING:
+            return False
+        if OPERATION_HISTORY not in self.stack.presenter.images.metadata:
+            return False
+        return any(operation[OPERATION_DISPLAY_NAME] == FLAT_FIELDING
+                   for operation in self.stack.presenter.images.metadata[OPERATION_HISTORY])
+
+    def _set_apply_buttons_enabled(self, apply_single_enabled: bool, apply_all_enabled: bool):
+        """
+        Changes the state of the apply buttons before/after an operation is run.
+        :param apply_single_enabled: The desired state for the apply button.
+        :param apply_all_enabled: The desired state for the apply to all button.
+        """
+        self.view.applyButton.setEnabled(apply_single_enabled)
+        self.view.applyToAllButton.setEnabled(apply_all_enabled)
