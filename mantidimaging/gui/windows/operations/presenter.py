@@ -56,9 +56,9 @@ class FiltersWindowPresenter(BasePresenter):
         self.applying_to_all = False
 
         self.prev_apply_single_state = True
-        self.prev_apply_stack_state = True
+        self.prev_apply_all_state = True
         self.main_window.filter_applied.connect(
-            lambda: self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_stack_state))
+            lambda: self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state))
 
     @property
     def main_window(self) -> 'MainWindowView':
@@ -231,7 +231,7 @@ class FiltersWindowPresenter(BasePresenter):
     def _do_apply_filter(self, apply_to):
         # Record the previous button states
         self.prev_apply_single_state = self.view.applyButton.isEnabled()
-        self.prev_apply_stack_state = self.view.applyToAllButton.isEnabled()
+        self.prev_apply_all_state = self.view.applyToAllButton.isEnabled()
         # Disable the apply buttons
         self._set_apply_buttons_enabled(False, False)
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
@@ -304,9 +304,9 @@ class FiltersWindowPresenter(BasePresenter):
 
     def _set_apply_buttons_enabled(self, apply_single_enabled: bool, apply_all_enabled: bool):
         """
-        Changes the state of the apply buttons before/after an operation is being run.
-        :param apply_single_enabled: The desired state for the apply (to single image) button.
-        :param apply_all_enabled: The desired state for the apply to stack button.
+        Changes the state of the apply buttons before/after an operation is run.
+        :param apply_single_enabled: The desired state for the apply button.
+        :param apply_all_enabled: The desired state for the apply to all button.
         """
         self.view.applyButton.setEnabled(apply_single_enabled)
         self.view.applyToAllButton.setEnabled(apply_all_enabled)
