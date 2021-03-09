@@ -212,6 +212,8 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
+        self.view.filter_applied.emit()
+
     def _do_apply_filter(self, apply_to):
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
 
@@ -265,3 +267,7 @@ class FiltersWindowPresenter(BasePresenter):
 
     def get_filter_module_name(self, filter_idx):
         return self.model.get_filter_module_name(filter_idx)
+
+    def set_filter_by_name(self, filter_menu_name):
+        filter_idx = self.model._find_filter_index_from_filter_name(filter_menu_name)
+        self.view.filterSelector.setCurrentIndex(filter_idx)

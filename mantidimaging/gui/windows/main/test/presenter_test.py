@@ -157,6 +157,20 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(5, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
 
+    def test_wizard_action_load(self):
+        self.presenter.wizard_action_load()
+        self.view.show_load_dialogue.assert_called_once()
+
+    def test_wizard_action_show_operation(self):
+        OPERATION_STR = "ROI Normalisation"
+        self.presenter.wizard_action_show_operation(OPERATION_STR)
+        self.view.show_filters_window.assert_called_once()
+        self.view.filters.presenter.set_filter_by_name.assert_called_once_with(OPERATION_STR)
+
+    def test_wizard_action_show_reconstruction(self):
+        self.presenter.wizard_action_show_reconstruction()
+        self.view.show_recon_window.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()

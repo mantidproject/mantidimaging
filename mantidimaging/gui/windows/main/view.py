@@ -28,6 +28,7 @@ from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
+from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 LOG = getLogger(__file__)
 
@@ -37,6 +38,8 @@ class MainWindowView(BaseMainWindowView):
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
     active_stacks_changed = pyqtSignal()
+    filter_applied = pyqtSignal()
+    recon_applied = pyqtSignal()
     backend_message = pyqtSignal(bytes)
 
     menuFile: QMenu
@@ -107,6 +110,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
+        self.actionWizard.triggered.connect(self.show_wizard)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
@@ -150,6 +154,10 @@ class MainWindowView(BaseMainWindowView):
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
         self.load_dialogue.show()
+
+    def show_wizard(self):
+        self.wizard = WizardPresenter(self)
+        self.wizard.show()
 
     @staticmethod
     def _get_file_name(caption: str, file_filter: str) -> str:
@@ -247,6 +255,7 @@ class MainWindowView(BaseMainWindowView):
     def show_recon_window(self):
         if not self.recon:
             self.recon = ReconstructWindowView(self)
+            self.recon.recon_applied.connect(self.recon_applied.emit)
             self.recon.show()
         else:
             self.recon.activateWindow()
@@ -255,6 +264,7 @@ class MainWindowView(BaseMainWindowView):
     def show_filters_window(self):
         if not self.filters:
             self.filters = FiltersWindowView(self)
+            self.filters.filter_applied.connect(self.filter_applied.emit)
             self.filters.show()
         else:
             self.filters.activateWindow()

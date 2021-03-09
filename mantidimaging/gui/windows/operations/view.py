@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = Qt.pyqtSignal()
+    filter_applied = Qt.pyqtSignal()
 
     splitter: QSplitter
     collapseToggleButton: QPushButton
