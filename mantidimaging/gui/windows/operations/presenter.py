@@ -222,7 +222,11 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
     def _do_apply_filter(self, apply_to):
+        prev_apply_single_enabled = self.view.applyButton.isEnabled()
+        prev_apply_all_enabled = self.view.applyToAllButton.isEnabled()
+        self._set_apply_buttons_enabled(False, False)
         self.model.do_apply_filter(apply_to, partial(self._post_filter, apply_to))
+        self._set_apply_buttons_enabled(prev_apply_single_enabled, prev_apply_all_enabled)
 
     def _do_apply_filter_sync(self, apply_to):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
@@ -285,3 +289,7 @@ class FiltersWindowPresenter(BasePresenter):
             return False
         return any(operation[OPERATION_DISPLAY_NAME] == FLAT_FIELDING
                    for operation in self.stack.presenter.images.metadata[OPERATION_HISTORY])
+
+    def _set_apply_buttons_enabled(self, apply_single_enabled: bool, apply_all_enabled: bool):
+        self.view.applyButton.setEnabled(apply_single_enabled)
+        self.view.applyToAllButton.setEnabled(apply_all_enabled)
