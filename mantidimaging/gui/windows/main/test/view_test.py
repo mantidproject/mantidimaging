@@ -81,6 +81,13 @@ class MainWindowViewTest(unittest.TestCase):
         mock_load.assert_called_once_with(self.view)
         mock_load.return_value.show.assert_called_once_with()
 
+    @mock.patch("mantidimaging.gui.windows.main.view.WizardPresenter")
+    def test_show_wizard(self, mock_wizard: mock.Mock):
+        self.view.show_wizard()
+
+        mock_wizard.assert_called_once_with(self.view)
+        mock_wizard.return_value.show.assert_called_once_with()
+
     @mock.patch("mantidimaging.gui.windows.main.view.ReconstructWindowView")
     def test_show_recon_window(self, mock_recon: mock.Mock):
         self.view.show_recon_window()

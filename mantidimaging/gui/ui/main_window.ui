@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -61,6 +61,7 @@
     </property>
     <addaction name="actionOnlineDocumentation"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionWizard"/>
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="enabled">
@@ -197,6 +198,11 @@
   <action name="actionLoadImages">
    <property name="text">
     <string>Load images</string>
+   </property>
+  </action>
+  <action name="actionWizard">
+   <property name="text">
+    <string>Wizard</string>
    </property>
   </action>
  </widget>

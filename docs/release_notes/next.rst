@@ -7,6 +7,7 @@ New features
 ------------
 
 - #823: Automatically transpose colour palette
+- #567: Add new user wizard
 
 Fixes
 -----

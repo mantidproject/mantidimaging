@@ -222,3 +222,13 @@ class MainWindowPresenter(BasePresenter):
 
         self.load_dataset(loading_params)
         return True
+
+    def wizard_action_load(self):
+        self.view.show_load_dialogue()
+
+    def wizard_action_show_operation(self, operation_name: str):
+        self.view.show_filters_window()
+        self.view.filters.presenter.set_filter_by_name(operation_name)  # type:ignore[union-attr]
+
+    def wizard_action_show_reconstruction(self):
+        self.view.show_recon_window()

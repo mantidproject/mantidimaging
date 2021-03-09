@@ -259,6 +259,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
+        self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):
         self.view.clear_cor_table()

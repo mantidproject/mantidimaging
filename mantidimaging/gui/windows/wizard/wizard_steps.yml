@@ -1,0 +1,41 @@
+stages:
+  - name: Loading
+    steps:
+      - name: Loading files
+        description: Load dataset from files
+        action: load
+        done_if: loaded
+
+  - name: Pre-processing
+    steps:
+      - name: Remove Outliers
+        description: Remove pixels with extreme values. These are likely to be noise.
+        enable_if: loaded
+        done_if: history:OutliersFilter
+        action: operations:Remove Outliers
+
+      - name: Flat fielding
+        description: Use flat and dark frames to flattern the images
+        enable_if: loaded
+        done_if: history:FlatFieldFilter
+        action: operations:Flat-fielding
+
+      - name: Region of Interest Normalisation
+        description: Normalise the region of interest using surrounding empty space
+        enable_if: loaded
+        done_if: history:RoiNormalisationFilter
+        action: operations:ROI Normalisation
+
+      - name: Crop
+        description: Crop dataset to remove background and reduce processing time
+        enable_if: loaded
+        done_if: history:CropCoordinatesFilter
+        action: operations:Crop Coordinates
+
+  - name: Reconstruction
+    steps:
+      - name: Filtered Back Projection
+        description: Run a reconstruction with the Filtered Back Projection alogorithm
+        enable_if: history:FlatFieldFilter, history:RoiNormalisationFilter, history:OutliersFilter
+        done_if: history:AstraRecon.full
+        action: reconstruction
