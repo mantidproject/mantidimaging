@@ -6,7 +6,7 @@ from unittest import mock
 
 import numpy as np
 
-from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, RANDOM_CUTOFF
+from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, SAMPLE_SIZE
 
 
 def _normalise_break_value(break_value, min_value, max_value):
@@ -32,7 +32,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_vals)])
 
     def test_flattened_image_creation_for_large_image(self):
-        assert self.presenter.flattened_image.size == RANDOM_CUTOFF
+        assert self.presenter.flattened_image.size == SAMPLE_SIZE
         assert self.presenter.flattened_image.ndim == 1
 
     def test_flattened_image_creation_for_small_image(self):
@@ -130,3 +130,12 @@ class PaletteChangerPresenterTest(unittest.TestCase):
             self.assertIn(new_tick, self.recon_gradient.ticks.keys())
 
         assert n_materials + 1 == len(self.recon_gradient.ticks.keys())
+
+    def test_get_sample_pixels(self):
+        COUNT = 50
+        recon_image = np.random.random((50, 50))
+        sampled = self.presenter._get_sample_pixels(recon_image, COUNT, 0.9)
+
+        self.assertEqual(len(sampled), COUNT)
+        for sample in sampled:
+            self.assertIn(sample, recon_image)
