@@ -17,6 +17,7 @@ from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with,
 class FiltersWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.main_window = mock.create_autospec(MainWindowView)
+        self.main_window.filter_applied.connect = mock.Mock()
         self.view = mock.MagicMock()
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.view.presenter = self.presenter
@@ -309,3 +310,19 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.ask_confirmation.return_value = False
         self.presenter.do_apply_filter()
         self.presenter._do_apply_filter.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_buttons_disabled_while_filter_is_running(self, _):
+        self.presenter.model.do_apply_filter = mock.MagicMock()
+        self.presenter._do_apply_filter(None)
+        self.presenter.view.applyButton.setEnabled.assert_called_once_with(False)
+        self.presenter.view.applyToAllButton.setEnabled.assert_called_once_with(False)
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
+    def test_running_operation_records_previous_button_states(self, _):
+        self.presenter.view.applyButton.isEnabled.return_value = prev_apply_single_state = True
+        self.presenter.view.applyToAllButton.isEnabled.return_value = prev_apply_all_state = False
+        self.presenter.model.do_apply_filter = mock.MagicMock()
+        self.presenter._do_apply_filter(None)
+        assert self.presenter.prev_apply_single_state == prev_apply_single_state
+        assert self.presenter.prev_apply_all_state == prev_apply_all_state
