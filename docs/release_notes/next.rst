@@ -22,3 +22,4 @@ Fixes
 - #856 : Operations auto update not triggered on spinbox changes
 - #874 : Widgets in Operations window need minimum sizes
 - #866 : Warning if running Flat-fielding again
+- #878 : Update update instructions in version check
