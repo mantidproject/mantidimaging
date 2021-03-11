@@ -98,7 +98,7 @@ class CheckVersion:
         detailed += f"Found version {self.get_conda_installed_version()}, "
         detailed += f"latest: {self.get_conda_available_version()}.\n"
         detailed += "To update your environment please copy and run the following command:\n"
-        detailed += "source /opt/miniconda/bin/activate /opt/miniconda && "
+        detailed += f"source /opt/miniconda/bin/activate /opt/miniconda/envs/mantidimaging_{suffix} && "
         detailed += f"conda update -c mantid/label/{suffix} mantidimaging"
         return msg, detailed
 
