@@ -97,6 +97,8 @@ class MainWindowView(BaseMainWindowView):
         if self.open_dialogs and WelcomeScreenPresenter.show_today():
             self.show_about()
 
+        self.wizard = None
+
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
@@ -156,7 +158,8 @@ class MainWindowView(BaseMainWindowView):
         self.load_dialogue.show()
 
     def show_wizard(self):
-        self.wizard = WizardPresenter(self)
+        if self.wizard is None:
+            self.wizard = WizardPresenter(self)
         self.wizard.show()
 
     @staticmethod

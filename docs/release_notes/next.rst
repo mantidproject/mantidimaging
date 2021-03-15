@@ -23,3 +23,4 @@ Fixes
 - #874 : Widgets in Operations window need minimum sizes
 - #866 : Warning if running Flat-fielding again
 - #878 : Update update instructions in version check
+- #885 : RuntimeError after closing wizard
