@@ -94,15 +94,12 @@ class CheckVersion:
         msg += f".\nFound version {self.get_conda_installed_version()}, "
         msg += f"latest: {self.get_conda_available_version()}.\nPlease check the terminal for an update command!"
 
-        detailed = f"Not running the latest Mantid Imaging{suffix}.\n"
+        detailed = f"Not running the latest Mantid Imaging {suffix}.\n"
         detailed += f"Found version {self.get_conda_installed_version()}, "
         detailed += f"latest: {self.get_conda_available_version()}.\n"
         detailed += "To update your environment please copy and run the following command:\n"
-        detailed += "source /opt/miniconda/bin/activate /opt/miniconda && "
-        if self.get_conda_installed_label() != "main":
-            detailed += "ENVIRONMENT_NAME=mantidimaging_unstable REPO_LABEL=unstable "
-        detailed += "source "
-        detailed += "<(curl -s https://raw.githubusercontent.com/mantidproject/mantidimaging/master/install.sh)"
+        detailed += f"source {os.environ['CONDA_EXE'].rsplit('/',1)[0]}/activate {os.environ['CONDA_PREFIX']} && "
+        detailed += f"conda update -c mantid/label/{suffix} mantidimaging"
         return msg, detailed
 
     def _retrieve_conda_installed_version(self) -> None:
