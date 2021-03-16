@@ -67,7 +67,6 @@ class MainWindowView(BaseMainWindowView):
     def __init__(self, open_dialogs=True):
         super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
 
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Mantid Imaging")
 
         self.presenter = MainWindowPresenter(self)
