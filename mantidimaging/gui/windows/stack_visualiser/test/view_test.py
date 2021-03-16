@@ -54,12 +54,10 @@ class StackVisualiserViewTest(unittest.TestCase):
 
     def test_closeEvent_deletes_images(self):
         self.dock.setFloating = mock.Mock()
-        self.dock.deleteLater = mock.Mock()
 
         self.view.close()
 
         self.dock.setFloating.assert_called_once_with(False)
-        self.dock.deleteLater.assert_called_once_with()
         self.assertEqual(None, self.view.presenter.images)
         self.window.remove_stack.assert_called_once_with(self.view)
 
@@ -69,7 +67,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.test_data.proj180deg = images
 
         p180_dock.setFloating = mock.Mock()  # type: ignore[assignment]
-        p180_dock.deleteLater = mock.Mock()  # type: ignore[assignment]
 
         p180_view.close()
 
@@ -79,7 +76,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.assertFalse(self.test_data.has_proj180deg())
 
         p180_dock.setFloating.assert_called_once_with(False)
-        p180_dock.deleteLater.assert_called_once_with()
         self.assertIsNone(p180_view.presenter.images)
         self.window.remove_stack.assert_called_once_with(p180_view)  # type: ignore[attr-defined]
 
@@ -89,7 +85,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.test_data.proj180deg = images
 
         p180_dock.setFloating = mock.Mock()  # type: ignore[assignment]
-        p180_dock.deleteLater = mock.Mock()  # type: ignore[assignment]
 
         p180_view.close()
 
@@ -99,7 +94,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         self.assertTrue(self.test_data.has_proj180deg())
 
         p180_dock.setFloating.assert_not_called()
-        p180_dock.deleteLater.assert_not_called()
         self.assertIsNotNone(p180_view.presenter.images)
         self.window.remove_stack.assert_not_called()  # type: ignore[attr-defined]
 
