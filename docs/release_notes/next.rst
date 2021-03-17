@@ -24,3 +24,4 @@ Fixes
 - #866 : Warning if running Flat-fielding again
 - #878 : Update update instructions in version check
 - #885 : RuntimeError after closing wizard
+- #805, #875 : Fix segmentation fault due to object lifetime
