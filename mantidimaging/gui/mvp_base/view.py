@@ -21,7 +21,6 @@ class BaseMainWindowView(Qt.QMainWindow):
         LOG.debug('UI window closed')
         self.cleanup()
         super(BaseMainWindowView, self).closeEvent(e)
-        self.deleteLater()
 
     def cleanup(self):
         """
@@ -44,8 +43,6 @@ class BaseDialogView(Qt.QDialog):
 
         if ui_file is not None:
             compile_ui(ui_file, self)
-
-        self.setAttribute(Qt.Qt.WA_DeleteOnClose)
 
     def show_error_dialog(self, msg=""):
         """

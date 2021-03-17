@@ -31,9 +31,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
     def display_op_history(self, operations: Iterable[ImageOperation]):
         layout = self.operationsContainer.layout()
         while layout.count():
-            first_row = layout.takeAt(0)
-            if first_row.widget():
-                first_row.widget().deleteLater()
+            layout.takeAt(0)
 
         for op in operations:
             row, check = self.build_operation_row(op)

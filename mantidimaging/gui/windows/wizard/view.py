@@ -90,7 +90,6 @@ class WizardView(BaseDialogView):
         super().__init__(parent, "gui/ui/wizard.ui")
         self.stages = {}
         self.presenter = presenter
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
 
     def add_stage(self, stage_name: str):
         new_stage = WizardStage(stage_name)

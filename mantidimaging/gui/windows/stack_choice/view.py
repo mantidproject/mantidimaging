@@ -5,7 +5,6 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 import numpy as np
-from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
@@ -36,7 +35,6 @@ class StackChoiceView(BaseMainWindowView):
 
         self.presenter = presenter
 
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Choose the stack you want to keep")
         self.setWindowModality(Qt.ApplicationModal)
 

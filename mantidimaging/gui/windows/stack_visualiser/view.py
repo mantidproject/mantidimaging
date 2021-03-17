@@ -136,9 +136,6 @@ class StackVisualiserView(BaseMainWindowView):
             # allowing it to be GC'ed
             self.presenter.delete_data()
             window.remove_stack(self)
-            self.deleteLater()
-            # refers to the QDockWidget within which the stack is contained
-            self.dock.deleteLater()
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)
