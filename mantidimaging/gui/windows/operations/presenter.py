@@ -73,7 +73,7 @@ class FiltersWindowPresenter(BasePresenter):
             elif signal == Notification.APPLY_FILTER_TO_ALL:
                 self.do_apply_filter_to_all()
             elif signal == Notification.UPDATE_PREVIEWS:
-                self.do_update_previews(auto_range=False)
+                self.do_update_previews()
             elif signal == Notification.SCROLL_PREVIEW_UP:
                 self.do_scroll_preview(1)
             elif signal == Notification.SCROLL_PREVIEW_DOWN:
@@ -239,7 +239,7 @@ class FiltersWindowPresenter(BasePresenter):
     def _do_apply_filter_sync(self, apply_to):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
-    def do_update_previews(self, auto_range: bool = True):
+    def do_update_previews(self):
         self.view.clear_previews()
         if self.stack is not None:
             stack_presenter = self.stack.presenter
@@ -272,7 +272,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self._update_preview_image(diff, self.view.preview_image_difference)
 
             # Ensure all of it is visible
-            if auto_range:
+            if not self.view.lockZoomCheckBox.isChecked():
                 self.view.previews.auto_range()
 
     @staticmethod

@@ -35,6 +35,8 @@ class FiltersWindowView(BaseMainWindowView):
     combinedHistograms: QCheckBox
     invertDifference: QCheckBox
     overlayDifference: QCheckBox
+    lockScaleCheckBox: QCheckBox
+    lockZoomCheckBox: QCheckBox
 
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
