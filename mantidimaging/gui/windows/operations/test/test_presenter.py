@@ -172,7 +172,21 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.clear_previews.assert_called_once()
         self.view.previews.auto_range.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
+    def test_auto_range_called_when_auto_range_is_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
+        stack = mock.Mock()
+        presenter = mock.Mock()
+        stack.presenter = presenter
+        images = generate_images()
+        presenter.get_image.return_value = images
+        self.presenter.stack = stack
+        self.presenter.do_update_previews()
+        self.view.lockZoomCheckBox.isChecked.return_value = True
+
         apply_mock.assert_called_once()
+
 
     def test_get_filter_module_name(self):
         self.presenter.model.filters = mock.MagicMock()
