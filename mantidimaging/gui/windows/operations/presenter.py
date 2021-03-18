@@ -242,6 +242,10 @@ class FiltersWindowPresenter(BasePresenter):
     def do_update_previews(self):
         self.view.clear_previews()
         if self.stack is not None:
+            lock_scale = self.view.lockScaleCheckBox.isChecked()
+            if lock_scale:
+                self.view.previews.record_histogram_regions()
+
             stack_presenter = self.stack.presenter
             subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
@@ -271,9 +275,12 @@ class FiltersWindowPresenter(BasePresenter):
                     diff = np.negative(diff, out=diff)
                 self._update_preview_image(diff, self.view.preview_image_difference)
 
-            # Ensure all of it is visible
+            # Ensure all of it is visible if the lock zoom isn't checked
             if not self.view.lockZoomCheckBox.isChecked():
                 self.view.previews.auto_range()
+
+            if lock_scale:
+                self.view.previews.restore_histogram_regions()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
