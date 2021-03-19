@@ -32,8 +32,8 @@ if TYPE_CHECKING:
 REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
 
 LINKED_HISTOGRAMS = [
-    "Crop coordinates", "Remove outliers", "ROI Normalisation", "Circular mask", "Divide", "Monitor Normalisation",
-    "Rebin", "Ring Removal", "Rotate Stack", "Remove dead stripes", "Clip values"
+    "Crop Coordinates", "Remove Outliers", "ROI Normalisation", "Circular Mask", "Divide", "Monitor Normalisation",
+    "Rebin", "Ring Removal", "Rotate Stack", "Remove dead stripes", "Clip Values"
 ]
 
 
