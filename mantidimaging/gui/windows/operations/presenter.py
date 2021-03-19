@@ -31,6 +31,11 @@ if TYPE_CHECKING:
 
 REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
 
+LINKED_HISTOGRAMS = [
+    "Crop coordinates", "Remove outliers", "ROI Normalisation", "Circular mask", "Divide", "Monitor Normalisation",
+    "Rebin", "Ring Removal", "Rotate Stack", "Remove dead stripes", "Clip values"
+]
+
 
 class Notification(Enum):
     REGISTER_ACTIVE_FILTER = auto()
@@ -126,6 +131,7 @@ class FiltersWindowPresenter(BasePresenter):
                                              self.view)
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
+        self.view.previews.link_before_after_histogram_scales(filter_name in LINKED_HISTOGRAMS)
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \

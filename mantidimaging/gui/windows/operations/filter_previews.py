@@ -69,8 +69,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
             name="difference")
 
-        self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_hist_range)
-
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
@@ -236,6 +234,18 @@ class FilterPreviews(GraphicsLayoutWidget):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb
         self.image_before_vb.autoRange()
 
-    def link_image_after_hist_range(self):
-        self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
+    def link_before_after_histogram_scales(self, create_link: bool):
+        """
+        Connects or disconnects the scales of the before/after histograms.
+        :param create_link: Whether the link should be created or removed.
+        """
+        if create_link:
+            self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_hist_range)
+        else:
+            self.image_after_hist.sigLevelChangeFinished.disconnect()
 
+    def link_image_after_hist_range(self):
+        """
+        Makes the histogram scale of the before image match the histogram scale of the after image.
+        """
+        self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
