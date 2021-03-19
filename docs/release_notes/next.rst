@@ -25,3 +25,4 @@ Fixes
 - #878 : Update update instructions in version check
 - #885 : RuntimeError after closing wizard
 - #805, #875 : Fix segmentation fault due to object lifetime
+- #886 : Don't reset zoom when changing operation parameters
