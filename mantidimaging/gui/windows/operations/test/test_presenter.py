@@ -159,20 +159,42 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
-    def test_update_previews(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
+    def test_update_previews_with_no_lock_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
         presenter = mock.Mock()
         stack.presenter = presenter
         images = generate_images()
         presenter.get_image.return_value = images
         self.presenter.stack = stack
+        self.view.lockZoomCheckBox.isChecked.return_value = False
+        self.view.lockScaleCheckBox.isChecked.return_value = False
         self.presenter.do_update_previews()
 
         presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
-        self.view.previews.auto_range.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
+        self.view.previews.auto_range.assert_called_once()
+        self.view.previews.record_histogram_regions.assert_not_called()
+        self.view.previews.restore_histogram_regions.assert_not_called()
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
+    def test_auto_range_called_when_locks_are_checked(self, apply_mock: mock.Mock,
+                                                      update_preview_image_mock: mock.Mock):
+        stack = mock.Mock()
+        presenter = mock.Mock()
+        stack.presenter = presenter
+        images = generate_images()
+        presenter.get_image.return_value = images
+        self.presenter.stack = stack
+        self.view.lockZoomCheckBox.isChecked.return_value = True
+        self.view.lockScaleCheckBox.isChecked.return_value = True
+        self.presenter.do_update_previews()
+
+        self.view.previews.auto_range.assert_not_called()
+        self.view.previews.record_histogram_regions.assert_called_once()
+        self.view.previews.restore_histogram_regions.assert_called_once()
 
     def test_get_filter_module_name(self):
         self.presenter.model.filters = mock.MagicMock()

@@ -233,3 +233,13 @@ class FilterPreviews(GraphicsLayoutWidget):
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb
         self.image_before_vb.autoRange()
+
+    def record_histogram_regions(self):
+        self.before_region = self.image_before_hist.region.getRegion()
+        self.diff_region = self.image_difference_hist.region.getRegion()
+        self.after_region = self.image_after_hist.region.getRegion()
+
+    def restore_histogram_regions(self):
+        self.image_before_hist.region.setRegion(self.before_region)
+        self.image_difference_hist.region.setRegion(self.diff_region)
+        self.image_after_hist.region.setRegion(self.after_region)

@@ -34,7 +34,16 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
          <number>9</number>
         </property>
         <item>
@@ -440,6 +449,20 @@
             </property>
             <property name="text">
              <string>Invert diff image</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="lockScaleCheckBox">
+            <property name="text">
+             <string>Lock scale</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="lockZoomCheckBox">
+            <property name="text">
+             <string>Lock zoom</string>
             </property>
            </widget>
           </item>
