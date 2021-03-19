@@ -26,3 +26,4 @@ Fixes
 - #885 : RuntimeError after closing wizard
 - #805, #875 : Fix segmentation fault due to object lifetime
 - #886 : Don't reset zoom when changing operation parameters
+- #873 : Link histogram scales in operations window

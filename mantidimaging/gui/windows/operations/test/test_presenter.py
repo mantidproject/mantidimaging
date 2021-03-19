@@ -31,6 +31,21 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         reg_fun_mock.assert_called_once()
         filter_reg_mock.assert_called_once()
+        self.view.previews.link_before_after_histogram_scales.assert_called_once()
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
+    def test_link_before_after_histograms(self, _):
+        self.view.filterSelector.currentText.return_value = "Clip Values"
+        self.presenter.do_register_active_filter()
+
+        self.view.previews.link_before_after_histogram_scales.assert_called_once_with(True)
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
+    def test_disconnect_before_after_histograms(self, _):
+        self.view.filterSelector.currentText.return_value = "Gaussian"
+        self.presenter.do_register_active_filter()
+
+        self.view.previews.link_before_after_histogram_scales.assert_called_once_with(False)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
     def test_apply_filter(self, apply_filter_mock: mock.Mock):
