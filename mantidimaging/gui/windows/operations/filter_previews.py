@@ -69,6 +69,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
             name="difference")
 
+        self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_hist_range)
+
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
@@ -233,3 +235,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb
         self.image_before_vb.autoRange()
+
+    def link_image_after_hist_range(self):
+        self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
+

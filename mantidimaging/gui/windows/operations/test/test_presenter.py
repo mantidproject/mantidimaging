@@ -75,7 +75,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                  _wait_for_stack_choice: Mock = Mock(),
                                  _do_apply_filter_sync: Mock = Mock()):
         """
-        Tests when the operation has applied successfuly.
+        Tests when the operation has applied successfully.
         """
         self.presenter.view.safeApply.isChecked.return_value = False
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
