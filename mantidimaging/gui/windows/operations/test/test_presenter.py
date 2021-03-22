@@ -42,7 +42,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_disconnect_before_after_histograms(self, _):
-        self.view.filterSelector.currentText.return_value = "Gaussian"
+        self.view.filterSelector.currentText.return_value = "Rescale"
         self.presenter.do_register_active_filter()
 
         self.view.previews.link_before_after_histogram_scales.assert_called_once_with(False)
