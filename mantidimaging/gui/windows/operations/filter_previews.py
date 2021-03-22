@@ -251,6 +251,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         if create_link:
             self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_hist_range)
+            self.link_image_after_hist_range()
         else:
             self.image_before_hist.sigLevelChangeFinished.disconnect()
 
