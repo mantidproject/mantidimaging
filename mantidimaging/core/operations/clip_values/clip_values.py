@@ -19,6 +19,7 @@ class ClipValuesFilter(BaseFilter):
     Caution: Make sure the value range does not clip information from the sample.
     """
     filter_name = "Clip Values"
+    link_histograms = True
 
     @staticmethod
     def filter_func(data,

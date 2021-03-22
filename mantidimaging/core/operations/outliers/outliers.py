@@ -33,6 +33,7 @@ class OutliersFilter(BaseFilter):
     images, to remove pixels with very large values that will cause issues in the flat-fielding.
     """
     filter_name = "Remove Outliers"
+    link_histograms = True
 
     @staticmethod
     def _execute(data, diff, radius, mode):

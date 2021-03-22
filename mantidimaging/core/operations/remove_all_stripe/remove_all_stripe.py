@@ -27,6 +27,7 @@ class RemoveAllStripesFilter(BaseFilter):
     and should be fixed by ROI Normalisation instead!
     """
     filter_name = "Remove all stripes"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images, snr=3, la_size=61, sm_size=21, dim=1, cores=None, chunksize=None, progress=None):
