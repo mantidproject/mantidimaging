@@ -11,6 +11,10 @@ class OperationsWindowTest(BaseEyesTest):
         super(OperationsWindowTest, self).setUp()
         self.docks = []
 
+    def tearDown(self):
+        self.imaging.filters.close()
+        super().tearDown()
+
     def test_operation_window_opens(self):
         self.imaging.show_filters_window()
         self.check_target(widget=self.imaging.filters)

@@ -8,6 +8,10 @@ class ReconstructionWindowTest(BaseEyesTest):
         super(ReconstructionWindowTest, self).setUp()
         self.docks = []
 
+    def tearDown(self):
+        self.imaging.recon.close()
+        super().tearDown()
+
     def test_reconstruction_window_opens(self):
         self.imaging.show_recon_window()
 
