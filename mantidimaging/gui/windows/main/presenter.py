@@ -4,10 +4,10 @@ import os
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union, Tuple, Optional
+from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
-from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
+from PyQt5.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -105,13 +105,9 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def make_stack_window(self, images: Images, title) -> Tuple[QDockWidget, StackVisualiserView]:
-        stack_visualiser = self.view.create_stack_window(images, title=title)
-        return stack_visualiser
-
     def _add_stack(self, images: Images, filename: str, sample_dock):
         name = self.model.create_name(os.path.basename(filename))
-        stack_visualiser = self.make_stack_window(images, title=f"{name}")
+        stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.model.add_stack(stack_visualiser)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
 
@@ -119,7 +115,7 @@ class MainWindowPresenter(BasePresenter):
         title = self.model.create_name(title)
 
         sample = container if isinstance(container, Images) else container.sample
-        sample_stack_vis = self.make_stack_window(sample, title)
+        sample_stack_vis = self.view.create_stack_window(sample, title)
         self.model.add_stack(sample_stack_vis)
 
         current_stack_visualisers = self.get_all_stack_visualisers()

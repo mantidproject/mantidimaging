@@ -65,15 +65,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_stack,
                                                  self.presenter._on_stack_load_done, {'file_path': file_path})
 
-    def test_make_stack_window(self):
-        images = generate_images()
-        stack_visualiser_mock = mock.Mock()
-        self.view.create_stack_window.return_value = stack_visualiser_mock
-
-        sv = self.presenter.make_stack_window(images, "mytitle")
-
-        self.assertIs(stack_visualiser_mock, sv)
-
     def test_add_stack(self):
         images = generate_images()
         dock_mock = mock.Mock()
