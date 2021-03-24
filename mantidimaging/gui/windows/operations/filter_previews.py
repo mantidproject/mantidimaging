@@ -243,3 +243,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before_hist.region.setRegion(self.before_region)
         self.image_difference_hist.region.setRegion(self.diff_region)
         self.image_after_hist.region.setRegion(self.after_region)
+
+    def set_histogram_log_scale(self):
+        x_data, y_data = self.image_before_hist.plot.getData()
+        self.image_before_hist.plot.setData(x_data, np.log(y_data))

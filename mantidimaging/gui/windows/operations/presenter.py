@@ -126,6 +126,7 @@ class FiltersWindowPresenter(BasePresenter):
                                              self.view)
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
+        self.view.previews.set_histogram_log_scale()
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
