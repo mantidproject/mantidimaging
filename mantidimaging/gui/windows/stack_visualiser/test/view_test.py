@@ -5,8 +5,6 @@ from typing import Tuple
 from unittest import mock
 from unittest.mock import Mock
 
-from PyQt5 import sip
-
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -16,7 +14,6 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
 
 versions._use_test_values()
-docks = []
 
 
 @start_qapplication
@@ -27,18 +24,11 @@ class StackVisualiserViewTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(StackVisualiserViewTest, self).__init__(*args, **kwargs)
 
-    def tearDown(self) -> None:
-        sip.delete(self.view)  # type: ignore
-        self.view = None
-        self.window = None  # type: ignore[assignment]
-        self.dock = None
-
     def setUp(self):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
         self.view, self.test_data = self._add_stack_visualiser()
-        docks.append(self.view)
 
     def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, Images]:
         test_data = th.generate_images()
