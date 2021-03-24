@@ -23,6 +23,11 @@ class UnrotateablePlotROI(ROI):
         self.addScaleHandle([1, 1], [0, 0])
 
 
+# ImageView objects cannot always be safely garbage collected. To prevent this
+# we need keep a reference to the dead objects.
+graveyard = []
+
+
 class MIImageView(ImageView):
     details: QLabel
     roiString = None
@@ -39,6 +44,7 @@ class MIImageView(ImageView):
                  detailsSpanAllCols=False,
                  *args):
         super().__init__(parent, name, view, imageItem, levelMode, *args)
+        graveyard.append(self)
         self.presenter = MIImagePresenter()
         self.details = QLabel("", self.ui.layoutWidget)
         self.details.setStyleSheet("QLabel { color : white; background-color: black}")
