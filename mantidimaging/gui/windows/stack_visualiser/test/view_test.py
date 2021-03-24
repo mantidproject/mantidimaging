@@ -6,7 +6,6 @@ from unittest import mock
 from unittest.mock import Mock
 
 from PyQt5 import sip
-from PyQt5.QtWidgets import QDockWidget
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -38,35 +37,35 @@ class StackVisualiserViewTest(unittest.TestCase):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
-        self.dock, self.view, self.test_data = self._add_stack_visualiser()
-        docks.append(self.dock)
+        self.view, self.test_data = self._add_stack_visualiser()
+        docks.append(self.view)
 
-    def _add_stack_visualiser(self) -> Tuple[QDockWidget, StackVisualiserView, Images]:
+    def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, Images]:
         test_data = th.generate_images()
         self.window.create_new_stack(test_data, "Test Data")
         view = self.window.get_stack_with_images(test_data)
-        return view.dock, view, test_data
+        return view, test_data
 
     def test_name(self):
         title = "Potatoes"
-        self.dock.setWindowTitle(title)
+        self.view.setWindowTitle(title)
         self.assertEqual(title, self.view.name)
 
     def test_closeEvent_deletes_images(self):
-        self.dock.setFloating = mock.Mock()
+        self.view.setFloating = mock.Mock()
 
         self.view.close()
 
-        self.dock.setFloating.assert_called_once_with(False)
+        self.view.setFloating.assert_called_once_with(False)
         self.assertEqual(None, self.view.presenter.images)
         self.window.remove_stack.assert_called_once_with(self.view)
 
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView.ask_confirmation", return_value=True)
     def test_closeEvent_deletes_images_with_proj180_user_accepts(self, ask_confirmation_mock: Mock):
-        p180_dock, p180_view, images = self._add_stack_visualiser()
+        p180_view, images = self._add_stack_visualiser()
         self.test_data.proj180deg = images
 
-        p180_dock.setFloating = mock.Mock()  # type: ignore[assignment]
+        p180_view.setFloating = mock.Mock()  # type: ignore[assignment]
 
         p180_view.close()
 
@@ -75,16 +74,16 @@ class StackVisualiserViewTest(unittest.TestCase):
         # proj180 has been cleared from the stack referencing it
         self.assertFalse(self.test_data.has_proj180deg())
 
-        p180_dock.setFloating.assert_called_once_with(False)
+        p180_view.setFloating.assert_called_once_with(False)
         self.assertIsNone(p180_view.presenter.images)
         self.window.remove_stack.assert_called_once_with(p180_view)  # type: ignore[attr-defined]
 
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView.ask_confirmation", return_value=False)
     def test_closeEvent_deletes_images_with_proj180_user_declined(self, ask_confirmation_mock: Mock):
-        p180_dock, p180_view, images = self._add_stack_visualiser()
+        p180_view, images = self._add_stack_visualiser()
         self.test_data.proj180deg = images
 
-        p180_dock.setFloating = mock.Mock()  # type: ignore[assignment]
+        p180_view.setFloating = mock.Mock()  # type: ignore[assignment]
 
         p180_view.close()
 
@@ -93,7 +92,7 @@ class StackVisualiserViewTest(unittest.TestCase):
         # proj180 has been cleared from the stack referencing it
         self.assertTrue(self.test_data.has_proj180deg())
 
-        p180_dock.setFloating.assert_not_called()
+        p180_view.setFloating.assert_not_called()
         self.assertIsNotNone(p180_view.presenter.images)
         self.window.remove_stack.assert_not_called()  # type: ignore[attr-defined]
 

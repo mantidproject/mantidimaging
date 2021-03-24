@@ -67,15 +67,11 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_make_stack_window(self):
         images = generate_images()
-        dock_mock = mock.Mock()
         stack_visualiser_mock = mock.Mock()
+        self.view.create_stack_window.return_value = stack_visualiser_mock
 
-        dock_mock.widget.return_value = stack_visualiser_mock
-        self.view.create_stack_window.return_value = dock_mock
+        sv = self.presenter.make_stack_window(images, "mytitle")
 
-        dock, sv = self.presenter.make_stack_window(images, "mytitle")
-
-        self.assertIs(dock_mock, dock)
         self.assertIs(stack_visualiser_mock, sv)
 
     def test_add_stack(self):

@@ -18,7 +18,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operation_window_opens_with_data(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.check_target(widget=self.imaging.filters)
@@ -26,7 +26,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operation_window_after_data_was_processed(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.ask_confirmation = mock.MagicMock(return_value=True)
@@ -41,7 +41,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_crop_coordinates_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Crop Coordinates")
@@ -52,7 +52,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_flat_fielding_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Flat-fielding")
@@ -63,7 +63,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_remove_outliers_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove Outliers")
@@ -74,7 +74,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_ROI_normalisation_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("ROI Normalisation")
@@ -85,7 +85,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_circular_mask_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Circular Mask")
@@ -96,7 +96,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_clip_values_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Clip Values")
@@ -107,7 +107,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_divide_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Divide")
@@ -118,7 +118,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_gaussian_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Gaussian")
@@ -129,7 +129,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_median_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Median")
@@ -140,7 +140,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_monitor_normalisation_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Monitor Normalisation")
@@ -151,7 +151,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_rebin_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Rebin")
@@ -162,7 +162,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_rescale_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Rescale")
@@ -173,7 +173,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_ring_removal_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Ring Removal")
@@ -184,7 +184,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_rotate_stack_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Rotate Stack")
@@ -195,7 +195,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_remove_all_stripes_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove all stripes")
@@ -206,7 +206,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_remove_dead_stripes_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove dead stripes")
@@ -217,7 +217,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_remove_large_stripes_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove large stripes")
@@ -228,7 +228,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_stripe_removal_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Stripe Removal")
@@ -239,7 +239,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_remove_stripes_with_filtering_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove stripes with filtering")
@@ -250,7 +250,7 @@ class OperationsWindowTest(BaseEyesTest):
     def test_operations_remove_stripes_with_sorting_and_fitting_parameters(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove stripes with sorting and fitting")

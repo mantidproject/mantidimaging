@@ -52,7 +52,7 @@ class MainWindowTest(BaseEyesTest):
     def test_main_window_image_menu(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
         self.show_menu(self.imaging, self.imaging.menuImage)
 
         self.check_target(widget=self.imaging.menuImage)
@@ -60,7 +60,7 @@ class MainWindowTest(BaseEyesTest):
     def test_main_window_loaded_data(self):
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.check_target()
 
@@ -68,6 +68,6 @@ class MainWindowTest(BaseEyesTest):
         self._load_data_set()
         self._load_data_set()
         for ii in self.imaging.presenter.model.get_all_stack_visualisers():
-            self.docks.append(ii.dock)
+            self.docks.append(ii)
 
         self.check_target()
