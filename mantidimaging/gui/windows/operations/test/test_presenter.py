@@ -154,9 +154,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_previews()
         self.view.clear_previews.assert_called_once()
 
-    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
-    def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
+    def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
         presenter = mock.Mock()
@@ -169,7 +168,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
-        update_preview_image_mock.assert_called_once()
         apply_mock.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
