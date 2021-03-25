@@ -59,17 +59,16 @@ class StackVisualiserView(BaseMainWindowView):
 
         self.presenter = StackVisualiserPresenter(self, images)
 
-        self._actions = [
-            ("Show history and metadata", self.show_image_metadata),
-            ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
-            ("Duplicate current ROI of data", lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
-            ("Mark as projections/sinograms", self.mark_as_sinograms), ("", None),
-            ("Toggle show averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-            ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
-            ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
-            ("Change window name", self.change_window_name_clicked), ("Goto projection", self.goto_projection),
-            ("Goto angle", self.goto_angle)
-        ]
+        self._actions = [("Show history and metadata", self.show_image_metadata),
+                         ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
+                         ("Duplicate current ROI of data",
+                          lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
+                         ("Mark as projections/sinograms", self.mark_as_sinograms), ("", None),
+                         ("Toggle averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
+                         ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
+                         ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
+                         ("Change window name", self.change_window_name_clicked),
+                         ("Goto projection", self.goto_projection), ("Goto angle", self.goto_angle)]
         self._context_actions = self.build_context_menu()
 
         self.image_view = MIImageView(self)
