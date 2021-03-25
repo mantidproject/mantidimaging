@@ -12,7 +12,6 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
-from ...mvp_base import BaseMainWindowView
 from ...utility.common import operation_in_progress
 from ..stack_visualiser.presenter import StackVisualiserPresenter
 from .metadata_dialog import MetadataDialog
@@ -23,16 +22,15 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
 
 
-class StackVisualiserView(BaseMainWindowView):
+class StackVisualiserView(QDockWidget):
     # Signal that signifies when the ROI is updated. Used to update previews in Filter views
     roi_updated = pyqtSignal(SensibleROI)
 
     image_view: MIImageView
     presenter: StackVisualiserPresenter
-    dock: QDockWidget
     layout: QVBoxLayout
 
-    def __init__(self, parent: 'MainWindowView', dock: QDockWidget, images: Images):
+    def __init__(self, parent: 'MainWindowView', title: str, images: Images):
         # enforce not showing a single image
         assert images.data.ndim == 3, \
             "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.data.ndim)
@@ -41,21 +39,13 @@ class StackVisualiserView(BaseMainWindowView):
         # having no parent, the window will be inside the QDockWidget. If the
         # dock is set as a parent the window will be an independent floating
         # window
-        super(StackVisualiserView, self).__init__(parent, None)
+        super().__init__(title, parent)
         self.central_widget = QWidget(self)
-        self.layout = QVBoxLayout(self)
+        self.layout = QVBoxLayout()
         self.central_widget.setLayout(self.layout)
-        self.setCentralWidget(self.central_widget)
+        self.setWidget(self.central_widget)
         self.parent_create_stack = self.parent().create_new_stack
         self._main_window = parent
-
-        # capture the QDockWidget reference so that we can access the Qt widget
-        # and change things like the title
-        self.dock = dock
-        # Swap out the dock close event with our own provided close event. This
-        # is needed to manually delete the data reference, otherwise it is left
-        # hanging in the presenter
-        setattr(dock, 'closeEvent', self.closeEvent)
 
         self.presenter = StackVisualiserPresenter(self, images)
 
@@ -77,18 +67,19 @@ class StackVisualiserView(BaseMainWindowView):
         self.actionCloseStack = QAction("Close window", self)
         self.actionCloseStack.triggered.connect(self.close)
         self.actionCloseStack.setShortcut("Ctrl+W")
-        self.dock.addAction(self.actionCloseStack)
+
+        self.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.data)
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 
     @property
     def name(self):
-        return self.dock.windowTitle()
+        return self.windowTitle()
 
     @name.setter
     def name(self, name: str):
-        self.dock.setWindowTitle(name)
+        self.setWindowTitle(name)
 
     @property
     def current_roi(self) -> SensibleROI:
@@ -128,7 +119,7 @@ class StackVisualiserView(BaseMainWindowView):
                     stack.presenter.images.clear_proj180deg()
 
         with operation_in_progress("Closing image view", "Freeing image memory"):
-            self.dock.setFloating(False)
+            self.setFloating(False)
             self.hide()
             self.image_view.close()
 
@@ -136,6 +127,8 @@ class StackVisualiserView(BaseMainWindowView):
             # allowing it to be GC'ed
             self.presenter.delete_data()
             window.remove_stack(self)
+
+        super().closeEvent(event)
 
     def roi_changed_callback(self, roi: SensibleROI):
         self.roi_updated.emit(roi)

@@ -93,9 +93,9 @@ class MainWindowModel(object):
     def _stack_names(self) -> List[str]:
         return [stack.name for stack in self.stack_list]
 
-    def add_stack(self, stack_visualiser: StackVisualiserView, dock_widget: 'QDockWidget'):
+    def add_stack(self, stack_visualiser: StackVisualiserView):
         stack_visualiser.uuid = uuid.uuid1()
-        self.active_stacks[stack_visualiser.uuid] = dock_widget
+        self.active_stacks[stack_visualiser.uuid] = stack_visualiser
         logger.debug(f"Active stacks: {self.active_stacks}")
 
     def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
@@ -108,9 +108,8 @@ class MainWindowModel(object):
         return self.active_stacks[stack_uuid]  # type:ignore
 
     def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
+
         stack = self.active_stacks[stack_uuid]
-        if isinstance(stack, QDockWidget):
-            stack: StackVisualiserView = stack.widget()  # type:ignore
 
         if not stack.presenter.images == images:
             stack.image_view.clear()
@@ -126,8 +125,7 @@ class MainWindowModel(object):
         return None
 
     def get_stack_by_images(self, images: Images) -> StackVisualiserView:
-        for _, dock_widget in self.active_stacks.items():
-            sv: StackVisualiserView = dock_widget.widget()  # type: ignore
+        for _, sv in self.active_stacks.items():
             if images is sv.presenter.images:
                 return sv
         raise RuntimeError(f"Did not find stack {images} in active stacks! "
@@ -138,15 +136,15 @@ class MainWindowModel(object):
         :param stack_uuid: The unique ID of the stack that will be retrieved.
         :return The Stack Visualiser widget that contains the data.
         """
-        return self.active_stacks[stack_uuid].widget()  # type:ignore
+        return self.active_stacks[stack_uuid]  # type:ignore
 
     def get_all_stack_visualisers(self) -> List[StackVisualiserView]:
-        return [stack.widget() for stack in self.active_stacks.values()]  # type:ignore
+        return [stack for stack in self.active_stacks.values()]  # type:ignore
 
     def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
         return [
-            stack.widget() for stack in self.active_stacks.values()  # type:ignore
-            if stack.widget().presenter.images.has_proj180deg()
+            stack for stack in self.active_stacks.values()  # type:ignore
+            if stack.presenter.images.has_proj180deg()
         ]
 
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:

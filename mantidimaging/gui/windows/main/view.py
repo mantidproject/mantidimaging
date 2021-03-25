@@ -9,7 +9,7 @@ from uuid import UUID
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QDockWidget, QFileDialog
+from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
@@ -308,24 +308,20 @@ class MainWindowView(BaseMainWindowView):
                             stack: Images,
                             title: str,
                             position=QtCore.Qt.TopDockWidgetArea,
-                            floating=False) -> QDockWidget:
-        dock = QDockWidget(title, self)
+                            floating=False) -> StackVisualiserView:
+        stack_vis = StackVisualiserView(self, title, stack)
 
         # this puts the new stack window into the centre of the window
-        self.setCentralWidget(dock)
+        self.setCentralWidget(stack_vis)
 
         # add the dock widget into the main window
-        self.addDockWidget(position, dock)
+        self.addDockWidget(position, stack_vis)
 
-        # we can get the stack visualiser widget with dock_widget.widget
-        dock.setWidget(StackVisualiserView(self, dock, stack))
+        stack_vis.setFloating(floating)
 
-        dock.setFloating(floating)
-
-        return dock
+        return stack_vis
 
     def remove_stack(self, obj: StackVisualiserView):
-        getLogger(__name__).debug("Removing stack with uuid %s", obj.uuid)
         self.presenter.notify(PresNotification.REMOVE_STACK, uuid=obj.uuid)
 
     def rename_stack(self, current_name: str, new_name: str):
