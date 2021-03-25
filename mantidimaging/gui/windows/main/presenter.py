@@ -4,10 +4,10 @@ import os
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union, Tuple, Optional
+from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
-from PyQt5.QtWidgets import QDockWidget, QTabBar, QApplication
+from PyQt5.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -105,39 +105,34 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def make_stack_window(self, images: Images, title) -> Tuple[QDockWidget, StackVisualiserView]:
-        dock = self.view.create_stack_window(images, title=title)
-        stack_visualiser = dock.widget()
-        return dock, stack_visualiser
-
     def _add_stack(self, images: Images, filename: str, sample_dock):
         name = self.model.create_name(os.path.basename(filename))
-        dock, stack_visualiser = self.make_stack_window(images, title=f"{name}")
-        self.model.add_stack(stack_visualiser, dock)
-        self.view.tabifyDockWidget(sample_dock, dock)
+        stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
+        self.model.add_stack(stack_visualiser)
+        self.view.tabifyDockWidget(sample_dock, stack_visualiser)
 
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.model.create_name(title)
 
         sample = container if isinstance(container, Images) else container.sample
-        sample_dock, sample_stack_vis = self.make_stack_window(sample, title)
-        self.model.add_stack(sample_stack_vis, sample_dock)
+        sample_stack_vis = self.view.create_stack_window(sample, title)
+        self.model.add_stack(sample_stack_vis)
 
         current_stack_visualisers = self.get_all_stack_visualisers()
         if len(current_stack_visualisers) > 1:
-            self.view.tabifyDockWidget(current_stack_visualisers[0].dock, sample_dock)
+            self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
         if isinstance(container, Dataset):
             if container.flat_before and container.flat_before.filenames:
-                self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_dock)
+                self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
             if container.flat_after and container.flat_after.filenames:
-                self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_dock)
+                self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
             if container.dark_before and container.dark_before.filenames:
-                self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_dock)
+                self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
             if container.dark_after and container.dark_after.filenames:
-                self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_dock)
+                self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
-                self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_dock)
+                self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_stack_vis)
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -149,7 +144,7 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.active_stacks_changed.emit()
 
-        return sample_dock, sample_stack_vis
+        return sample_stack_vis
 
     def save(self):
         kwargs = {

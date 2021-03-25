@@ -165,9 +165,7 @@ class MainWindowViewTest(unittest.TestCase):
                          setCentralWidget=DEFAULT,
                          addDockWidget=DEFAULT)
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    @mock.patch("mantidimaging.gui.windows.main.view.QDockWidget")
     def test_create_stack_window(self,
-                                 mock_dock: mock.Mock,
                                  mock_sv: mock.Mock,
                                  setCentralWidget: Mock = Mock(),
                                  addDockWidget: Mock = Mock()):
@@ -178,13 +176,11 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.create_stack_window(images, title, position=position, floating=floating)
 
-        mock_dock.assert_called_once_with(title, self.view)
-        dock = mock_dock.return_value
+        mock_sv.assert_called_once_with(self.view, title, images)
+        dock = mock_sv.return_value
         setCentralWidget.assert_called_once_with(dock)
         addDockWidget.assert_called_once_with(position, dock)
 
-        mock_sv.assert_called_once_with(self.view, dock, images)
-        dock.setWidget.assert_called_once_with(mock_sv.return_value)
         dock.setFloating.assert_called_once_with(floating)
 
     @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
