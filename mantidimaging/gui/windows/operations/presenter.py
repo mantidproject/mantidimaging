@@ -258,6 +258,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.show_error(msg, traceback.format_exc())
                 return
 
+            # Update image after first in order to prevent wrong histogram ranges being shared
             filtered_image_data = subset.data[0]
             self._update_preview_image(filtered_image_data, self.view.preview_image_after)
 
