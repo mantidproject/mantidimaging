@@ -106,6 +106,12 @@ class FiltersWindowView(BaseMainWindowView):
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
+    def closeEvent(self, e):
+        if self.presenter.filter_is_running:
+            e.ignore()
+        else:
+            super().closeEvent(e)
+
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
         if self.roi_view is not None:
