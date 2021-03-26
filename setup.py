@@ -140,7 +140,7 @@ class CompilePyQtUiFiles(Command):
 
 setup(
     name="mantidimaging",
-    version="2.0.0",
+    version="2.1.0rc",
     packages=find_packages(),
     package_data={
         "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png", "windows/wizard/*.yml"],
