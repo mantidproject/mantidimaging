@@ -270,4 +270,5 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def set_histogram_log_scale(self):
         x_data, y_data = self.image_before_hist.plot.getData()
-        self.image_before_hist.plot.setData(x_data, np.log(y_data))
+        max = y_data.max()
+        self.image_before_hist.plot.setData(x_data, np.log(np.where(y_data == 0, max / 1e5, y_data)))

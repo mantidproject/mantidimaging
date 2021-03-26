@@ -127,7 +127,6 @@ class FiltersWindowPresenter(BasePresenter):
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
         self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
-        self.view.previews.set_histogram_log_scale()
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
@@ -284,6 +283,7 @@ class FiltersWindowPresenter(BasePresenter):
 
             if lock_scale:
                 self.view.previews.restore_histogram_regions()
+            self.view.previews.set_histogram_log_scale()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
