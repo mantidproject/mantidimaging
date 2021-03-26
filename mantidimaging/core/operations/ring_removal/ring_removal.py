@@ -19,6 +19,7 @@ class RingRemovalFilter(BaseFilter):
     When: To remove ring-filters that have not been removed by the pre-processing
     """
     filter_name = "Ring Removal"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images,

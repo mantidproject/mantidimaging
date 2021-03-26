@@ -21,6 +21,7 @@ class CircularMaskFilter(BaseFilter):
     Caution: Ensure that the radius does not mask data from the sample.
     """
     filter_name = "Circular Mask"
+    link_histograms = True
 
     @staticmethod
     def filter_func(data: Images,

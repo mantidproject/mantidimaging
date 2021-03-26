@@ -75,6 +75,13 @@ class FiltersWindowModel(object):
         filter_idx = self._find_filter_index_from_filter_name(filter_name)
         return self.filters[filter_idx].register_gui
 
+    def link_histograms(self) -> bool:
+        """
+        Gets the link histogram status of a filter.
+        :return: True if the histograms should be linked, False otherwise.
+        """
+        return self.selected_filter.link_histograms
+
     @property
     def params_needed_from_stack(self):
         return self.selected_filter.sv_params()

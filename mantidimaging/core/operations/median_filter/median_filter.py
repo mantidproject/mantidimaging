@@ -28,6 +28,7 @@ class MedianFilter(BaseFilter):
     When: As a pre-processing step to reduce noise.
     """
     filter_name = "Median"
+    link_histograms = True
 
     @staticmethod
     def filter_func(data: Images, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):

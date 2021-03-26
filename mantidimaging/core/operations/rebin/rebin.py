@@ -24,6 +24,7 @@ class RebinFilter(BaseFilter):
     When: If you want to reduce the data size by losing information.
     """
     filter_name = "Rebin"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images, rebin_param=0.5, mode=None, cores=None, chunksize=None, progress=None) -> Images:

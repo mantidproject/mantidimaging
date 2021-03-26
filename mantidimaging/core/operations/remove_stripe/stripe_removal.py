@@ -23,6 +23,7 @@ class StripeRemovalFilter(BaseFilter):
     and should be fixed by ROI Normalisation instead!
     """
     filter_name = "Stripe Removal"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):

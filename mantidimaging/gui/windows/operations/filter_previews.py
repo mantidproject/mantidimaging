@@ -243,3 +243,27 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before_hist.region.setRegion(self.before_region)
         self.image_difference_hist.region.setRegion(self.diff_region)
         self.image_after_hist.region.setRegion(self.after_region)
+
+    def link_before_after_histogram_scales(self, create_link: bool):
+        """
+        Connects or disconnects the scales of the before/after histograms.
+        :param create_link: Whether the link should be created or removed.
+        """
+        if create_link:
+            self.image_after_hist.sigLevelChangeFinished.connect(self.link_image_before_to_after_hist_range)
+            self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_to_before_hist_range)
+        else:
+            self.image_before_hist.sigLevelChangeFinished.disconnect()
+            self.image_after_hist.sigLevelChangeFinished.disconnect()
+
+    def link_image_after_to_before_hist_range(self):
+        """
+        Makes the histogram scale of the before image match the histogram scale of the after image.
+        """
+        self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
+
+    def link_image_before_to_after_hist_range(self):
+        """
+        Makes the histogram scale of the after image match the histogram scale of the before image.
+        """
+        self.image_before_hist.region.setRegion(self.image_after_hist.region.getRegion())

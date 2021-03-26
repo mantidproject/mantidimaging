@@ -24,6 +24,7 @@ class MonitorNormalisation(BaseFilter):
     When: As a pre-processing step to normalise the value ranges of the data.
     """
     filter_name = "Monitor Normalisation"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images, cores=None, chunksize=None, progress=None) -> Images:

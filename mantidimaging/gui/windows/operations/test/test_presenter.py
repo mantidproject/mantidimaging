@@ -31,6 +31,21 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         reg_fun_mock.assert_called_once()
         filter_reg_mock.assert_called_once()
+        self.view.previews.link_before_after_histogram_scales.assert_called_once()
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
+    def test_link_before_after_histograms(self, _):
+        self.view.filterSelector.currentText.return_value = "Clip Values"
+        self.presenter.do_register_active_filter()
+
+        self.view.previews.link_before_after_histogram_scales.assert_called_once_with(True)
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
+    def test_disconnect_before_after_histograms(self, _):
+        self.view.filterSelector.currentText.return_value = "Rescale"
+        self.presenter.do_register_active_filter()
+
+        self.view.previews.link_before_after_histogram_scales.assert_called_once_with(False)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
     def test_apply_filter(self, apply_filter_mock: mock.Mock):
@@ -75,7 +90,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                  _wait_for_stack_choice: Mock = Mock(),
                                  _do_apply_filter_sync: Mock = Mock()):
         """
-        Tests when the operation has applied successfuly.
+        Tests when the operation has applied successfully.
         """
         self.presenter.view.safeApply.isChecked.return_value = False
         mock_stack_visualisers = [mock.Mock(), mock.Mock()]
@@ -139,9 +154,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_previews()
         self.view.clear_previews.assert_called_once()
 
-    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
-    def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
+    def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
         presenter = mock.Mock()
@@ -154,7 +168,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
-        update_preview_image_mock.assert_called_once()
         apply_mock.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')

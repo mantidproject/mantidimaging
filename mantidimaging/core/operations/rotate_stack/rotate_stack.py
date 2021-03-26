@@ -26,6 +26,7 @@ class RotateFilter(BaseFilter):
     vector geometry will correct for the tilt without manual rotation.
     """
     filter_name = "Rotate Stack"
+    link_histograms = True
 
     @staticmethod
     def filter_func(data: Images, angle=None, dark=None, cores=None, chunksize=None, progress=None):

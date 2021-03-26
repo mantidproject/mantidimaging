@@ -23,6 +23,7 @@ class DivideFilter(BaseFilter):
     Caution: Check preview values before applying divide
     """
     filter_name = "Divide"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images, value: Union[int, float] = 0e7, unit="micron", progress=None) -> Images:

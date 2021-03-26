@@ -24,6 +24,7 @@ class GaussianFilter(BaseFilter):
     When: As a pre-processing step to reduce noise.
     """
     filter_name = "Gaussian"
+    link_histograms = True
 
     @staticmethod
     def filter_func(data: Images, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
