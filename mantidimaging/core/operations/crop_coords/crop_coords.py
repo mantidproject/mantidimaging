@@ -27,6 +27,7 @@ class CropCoordinatesFilter(BaseFilter):
     during the rotation of the sample in the dataset.
     """
     filter_name = "Crop Coordinates"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images,

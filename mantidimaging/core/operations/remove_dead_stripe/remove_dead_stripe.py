@@ -27,6 +27,7 @@ class RemoveDeadStripesFilter(BaseFilter):
     and should be fixed by ROI Normalisation instead!
     """
     filter_name = "Remove dead stripes"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images, snr=3, size=61, cores=None, chunksize=None, progress=None):

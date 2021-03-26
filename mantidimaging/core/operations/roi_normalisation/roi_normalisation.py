@@ -29,6 +29,7 @@ class RoiNormalisationFilter(BaseFilter):
     are brighter/darker than the rest. This can be fixed with this operation.
     """
     filter_name = "ROI Normalisation"
+    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images, region_of_interest: SensibleROI = None, cores=None, chunksize=None, progress=None):

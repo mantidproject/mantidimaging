@@ -65,7 +65,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.filterSelector.addItems(self.presenter.model.filter_names)
         self.filterSelector.currentTextChanged.connect(self.handle_filter_selection)
         self.filterSelector.currentTextChanged.connect(self._update_apply_all_button)
-        self.handle_filter_selection("")
 
         # Handle stack selection
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
@@ -79,6 +78,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
+
+        self.handle_filter_selection("")
 
         self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)

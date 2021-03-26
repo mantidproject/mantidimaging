@@ -22,6 +22,7 @@ class FilterGroup(Enum):
 
 class BaseFilter:
     filter_name = "Unnamed Filter"
+    link_histograms = False
     __name__ = "BaseFilter"
     """
     The base class for filter algorithms, which should extend this class.

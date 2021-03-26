@@ -8,6 +8,8 @@ New features
 
 - #823: Automatically transpose colour palette
 - #567: Add new user wizard
+- #886 : Don't reset zoom when changing operation parameters
+- #873 : Link histogram scales in operations window
 
 Fixes
 -----
@@ -24,5 +26,4 @@ Fixes
 - #866 : Warning if running Flat-fielding again
 - #878 : Update update instructions in version check
 - #885 : RuntimeError after closing wizard
-- #805, #875 : Fix segmentation fault due to object lifetime
-- #886 : Don't reset zoom when changing operation parameters
+- #805, #875, #891 : Fix segmentation fault due to object lifetime

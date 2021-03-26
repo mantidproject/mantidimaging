@@ -126,6 +126,7 @@ class FiltersWindowPresenter(BasePresenter):
                                              self.view)
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
+        self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
         self.view.previews.set_histogram_log_scale()
 
     def filter_uses_parameter(self, parameter):
@@ -250,8 +251,6 @@ class FiltersWindowPresenter(BasePresenter):
             stack_presenter = self.stack.presenter
             subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
-            # Update image before
-            self._update_preview_image(before_image, self.view.preview_image_before)
 
             try:
                 self.model.apply_to_images(subset)
@@ -260,9 +259,12 @@ class FiltersWindowPresenter(BasePresenter):
                 self.show_error(msg, traceback.format_exc())
                 return
 
+            # Update image after first in order to prevent wrong histogram ranges being shared
             filtered_image_data = subset.data[0]
-
             self._update_preview_image(filtered_image_data, self.view.preview_image_after)
+
+            # Update image before
+            self._update_preview_image(before_image, self.view.preview_image_before)
 
             self.view.previews.update_histogram_data()
 

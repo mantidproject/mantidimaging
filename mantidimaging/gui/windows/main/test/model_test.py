@@ -56,10 +56,9 @@ class MainWindowModelTest(unittest.TestCase):
     def test_add_stack(self):
         stack_mock = mock.Mock()
         expected_name = "stackname"
-        widget_mock = mock.Mock()
-        widget_mock.windowTitle.return_value = expected_name
+        stack_mock.windowTitle.return_value = expected_name
 
-        self.model.add_stack(stack_mock, widget_mock)
+        self.model.add_stack(stack_mock)
 
         self.assertTrue(hasattr(stack_mock, 'uuid'))
         self.assertEqual(1, len(self.model.stack_list))
@@ -91,11 +90,8 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_get_stack_visualiser(self):
         uid, widget_mock, _ = self._add_mock_widget()
-        expected_widget = mock.Mock()
-        widget_mock.widget.return_value = expected_widget
 
-        self.assertIs(expected_widget, self.model.get_stack_visualiser(uid))
-        widget_mock.widget.assert_called_once()
+        self.assertIs(widget_mock, self.model.get_stack_visualiser(uid))
 
     def test_do_remove_stack(self):
         uid, _, _ = self._add_mock_widget()
