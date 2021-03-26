@@ -260,14 +260,10 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         Makes the histogram scale of the before image match the histogram scale of the after image.
         """
-        self.image_after_hist.sigLevelChangeFinished.disconnect()
         self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
-        self.image_after_hist.sigLevelChangeFinished.connect(self.link_image_before_to_after_hist_range)
 
     def link_image_before_to_after_hist_range(self):
         """
         Makes the histogram scale of the after image match the histogram scale of the before image.
         """
-        self.image_before_hist.region.sigRegionChangeFinished.disconnect()
         self.image_before_hist.region.setRegion(self.image_after_hist.region.getRegion())
-        self.image_before_hist.region.sigRegionChangeFinished.connect(self.link_image_after_to_before_hist_range)
