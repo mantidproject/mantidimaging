@@ -1,11 +1,14 @@
-Mantid Imaging next release
-===========================
+Mantid Imaging 2.1
+==================
 
-This contains changes for the next not yet released Mantid Imaging versions.
+This release brings some new features and bug fixes.
+
+Mantid Imaging now requires python 3.8
 
 New features
 ------------
 
+- #778: Load images with drag and drop
 - #823: Automatically transpose colour palette
 - #567: Add new user wizard
 - #886 : Don't reset zoom when changing operation parameters
@@ -27,3 +30,9 @@ Fixes
 - #878 : Update update instructions in version check
 - #885 : RuntimeError after closing wizard
 - #805, #875, #891 : Fix segmentation fault due to object lifetime
+
+Developer Changes
+-----------------
+
+- #770 : Use multiprocessing.Array
+- #709 : Applitools GUI tests
