@@ -54,6 +54,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
         self.applying_to_all = False
+        self.filter_is_running = False
 
         self.prev_apply_single_state = True
         self.prev_apply_all_state = True
@@ -228,8 +229,10 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
         self.view.filter_applied.emit()
+        self.filter_is_running = False
 
     def _do_apply_filter(self, apply_to):
+        self.filter_is_running = True
         # Record the previous button states
         self.prev_apply_single_state = self.view.applyButton.isEnabled()
         self.prev_apply_all_state = self.view.applyToAllButton.isEnabled()
