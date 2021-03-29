@@ -30,6 +30,7 @@ Fixes
 - #878 : Update update instructions in version check
 - #885 : RuntimeError after closing wizard
 - #805, #875, #891 : Fix segmentation fault due to object lifetime
+- #716 : Prevent simultaneous operations
 
 Developer Changes
 -----------------

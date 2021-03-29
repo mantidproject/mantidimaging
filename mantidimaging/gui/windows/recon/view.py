@@ -175,6 +175,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.image_view.recon_hist.gradient.menu.insertAction(action, self.auto_colour_action)
         self.image_view.recon_hist.gradient.menu.insertSeparator(self.auto_colour_action)
 
+    def closeEvent(self, e):
+        if self.presenter.recon_is_running:
+            e.ignore()
+        else:
+            super().closeEvent(e)
+
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
         selected_images = self.main_window.get_images_from_stack_uuid(uuid)
         if selected_images.has_proj180deg() and \

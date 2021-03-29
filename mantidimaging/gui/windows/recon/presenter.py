@@ -60,6 +60,8 @@ class ReconstructWindowPresenter(BasePresenter):
         }
         self.main_window = main_window
 
+        self.recon_is_running = False
+
     def notify(self, notification, slice_idx=None):
         try:
             if notification == Notifications.RECONSTRUCT_VOLUME:
@@ -172,6 +174,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if not self.model.has_results:
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
+        self.recon_is_running = True
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
@@ -259,6 +262,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _on_volume_recon_done(self, task):
         self.view.show_recon_volume(task.result)
+        self.recon_is_running = False
         self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):
@@ -285,6 +289,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self):
+        self.recon_is_running = True
+
         def completed(task: TaskWorkerThread):
             if task.result is None and task.error is not None:
                 selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
@@ -298,6 +304,7 @@ class ReconstructWindowPresenter(BasePresenter):
                 cor, tilt = task.result
                 self._set_precalculated_cor_tilt(cor, tilt)
             self.view.set_correlate_buttons_enabled(True)
+            self.recon_is_running = False
 
         self.view.set_correlate_buttons_enabled(False)
         start_async_task_view(self.view, self.model.auto_find_correlation, completed)
