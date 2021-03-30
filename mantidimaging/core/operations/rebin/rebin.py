@@ -57,7 +57,11 @@ class RebinFilter(BaseFilter):
                                   mode=mode,
                                   output_shape=empty_resized_data.shape[1:])
             ps.shared_list = [sample, empty_resized_data]
-            ps.execute(f, sample.shape[0], cores, "Applying Rebin", progress)
+            ps.execute(partial_func=f,
+                       num_operations=sample.shape[0],
+                       cores=cores,
+                       msg="Applying Rebin",
+                       progress=progress)
             images.data = empty_resized_data
 
         return images
