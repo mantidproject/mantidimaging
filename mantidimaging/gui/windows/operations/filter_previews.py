@@ -31,6 +31,15 @@ def _data_valid_for_histogram(data):
     return data is not None and any(d is not None for d in data)
 
 
+def _set_histogram_log_scale(histogram: HistogramLUTItem):
+    """
+
+    :param histogram:
+    """
+    x_data, y_data = histogram.plot.getData()
+    histogram.plot.setData(x_data, np.log(np.where(y_data == 0, y_data.max() / 1e3, y_data)))
+
+
 class FilterPreviews(GraphicsLayoutWidget):
     image_before: ImageItem
     image_after: ImageItem
@@ -269,6 +278,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before_hist.region.setRegion(self.image_after_hist.region.getRegion())
 
     def set_histogram_log_scale(self):
-        x_data, y_data = self.image_before_hist.plot.getData()
-        max = y_data.max()
-        self.image_before_hist.plot.setData(x_data, np.log(np.where(y_data == 0, max / 1e5, y_data)))
+        """
+        Sets the y-values of the before histogram plot to a log scale.
+        """
+        _set_histogram_log_scale(self.image_before_hist)
+        _set_histogram_log_scale(self.image_after_hist)
