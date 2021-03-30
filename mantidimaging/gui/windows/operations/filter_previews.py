@@ -13,6 +13,7 @@ from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.histogram import _set_histogram_log_scale
 
 LOG = getLogger(__name__)
 
@@ -30,14 +31,6 @@ label_coords = {"before": Coord(3, 0), "after": Coord(3, 1), "combined": Coord(3
 def _data_valid_for_histogram(data):
     return data is not None and any(d is not None for d in data)
 
-
-def _set_histogram_log_scale(histogram: HistogramLUTItem):
-    """
-    Sets the y-values of a histogram to use a log scale.
-    :param histogram: The HistogramLUTItem of an image.
-    """
-    x_data, y_data = histogram.plot.getData()
-    histogram.plot.setData(x_data, np.log(y_data + 1))
 
 class FilterPreviews(GraphicsLayoutWidget):
     image_before: ImageItem
