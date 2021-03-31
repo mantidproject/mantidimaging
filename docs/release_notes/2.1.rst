@@ -31,6 +31,7 @@ Fixes
 - #885 : RuntimeError after closing wizard
 - #805, #875, #891 : Fix segmentation fault due to object lifetime
 - #716 : Prevent simultaneous operations
+- #901: Rebin Operation failed: '<' not supported between instances of 'Progress' and 'int'
 
 Developer Changes
 -----------------
