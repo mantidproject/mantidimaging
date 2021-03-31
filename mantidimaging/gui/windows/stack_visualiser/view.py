@@ -8,6 +8,7 @@ from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.utility.histogram import _set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
@@ -66,6 +67,8 @@ class StackVisualiserView(QDockWidget):
         self.actionCloseStack = QAction("Close window", self)
         self.actionCloseStack.triggered.connect(self.close)
         self.actionCloseStack.setShortcut("Ctrl+W")
+
+        _set_histogram_log_scale(self.image_view.ui.histogram)
 
         self.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.data)
