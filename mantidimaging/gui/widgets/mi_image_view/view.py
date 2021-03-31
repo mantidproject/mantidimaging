@@ -100,12 +100,11 @@ class MIImageView(ImageView):
         self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
         self.imageItem.sigImageChanged.connect(self._refresh_message)
+        self.imageItem.sigImageChanged.connect(self.set_log_scale)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         for scene in [self.scene, self.ui.roiPlot.sceneObj, self.ui.histogram.sceneObj]:
             scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
-
-        self.set_log_scale()
 
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:
@@ -220,4 +219,4 @@ class MIImageView(ImageView):
         self.timeLine.setValue(image_index)
 
     def set_log_scale(self):
-        _set_histogram_log_scale(self.ui.histogram.item)
+        _set_histogram_log_scale(self.getHistogramWidget().item)

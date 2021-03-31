@@ -72,8 +72,6 @@ class StackVisualiserView(QDockWidget):
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 
-        self.image_view.set_log_scale()
-
     @property
     def name(self):
         return self.windowTitle()
@@ -93,7 +91,6 @@ class StackVisualiserView(QDockWidget):
     @image.setter
     def image(self, to_display):
         self.image_view.setImage(to_display)
-        self.image_view.set_log_scale()
 
     @property
     def main_window(self) -> 'MainWindowView':

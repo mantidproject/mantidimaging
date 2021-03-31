@@ -112,7 +112,6 @@ class StackChoiceView(BaseMainWindowView):
     def _setup_stack_for_view(self, stack: MIImageView, data: np.ndarray):
         stack.setContentsMargins(4, 4, 4, 4)
         stack.setImage(data)
-        stack.set_log_scale()
         stack.ui.menuBtn.hide()
         stack.ui.roiBtn.hide()
         stack.button_stack_right.hide()
