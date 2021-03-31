@@ -10,7 +10,7 @@ from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
-from mantidimaging.core.utility.histogram import _set_histogram_log_scale
+from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
 
@@ -219,4 +219,4 @@ class MIImageView(ImageView):
         self.timeLine.setValue(image_index)
 
     def set_log_scale(self):
-        _set_histogram_log_scale(self.getHistogramWidget().item)
+        set_histogram_log_scale(self.getHistogramWidget().item)
