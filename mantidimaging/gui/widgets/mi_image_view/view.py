@@ -10,6 +10,7 @@ from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.histogram import _set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
 
@@ -103,6 +104,8 @@ class MIImageView(ImageView):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         for scene in [self.scene, self.ui.roiPlot.sceneObj, self.ui.histogram.sceneObj]:
             scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
+
+        self.set_log_scale()
 
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:
@@ -215,3 +218,6 @@ class MIImageView(ImageView):
 
     def set_selected_image(self, image_index: int):
         self.timeLine.setValue(image_index)
+
+    def set_log_scale(self):
+        _set_histogram_log_scale(self.ui.histogram.item)
