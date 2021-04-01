@@ -9,7 +9,6 @@ import numpy as np
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.operations.rescale.rescale import RescaleFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -57,16 +56,8 @@ class RoiNormalisationFilter(BaseFilter):
 
         # just get data reference
         if region_of_interest:
-            initial_image_max = images.data.max()
-
             progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
             _execute(images.data, region_of_interest, cores, chunksize, progress)
-            progress.update(1, "Rescaling to input value range")
-            images = RescaleFilter.filter_func(images,
-                                               min_input=images.data.min(),
-                                               max_input=images.data.max(),
-                                               max_output=initial_image_max,
-                                               progress=progress)
         h.check_data_stack(images)
         return images
 
@@ -101,6 +92,10 @@ def _calc_mean(data, air_left=None, air_top=None, air_right=None, air_bottom=Non
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
+def _calc_max(data):
+    return data.max()
+
+
 def _divide_by_air_sum(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
@@ -126,6 +121,17 @@ def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=No
 
         ps.shared_list = [data, air_means]
         ps.execute(do_calculate_air_means, data.shape[0], progress, cores=cores)
+
+        air_maxs = pu.create_array((img_num, ), data.dtype)
+        do_calculate_air_max = ps.create_partial(_calc_max, ps.return_to_second_at_i)
+
+        ps.shared_list = [data, air_maxs]
+        ps.execute(do_calculate_air_max, data.shape[0], progress, cores=cores)
+
+        # calculate the before and after maximum
+        init_max = air_maxs.max()
+        post_max = (air_maxs / air_means).max()
+        air_means *= post_max / init_max
 
         do_divide = ps.create_partial(_divide_by_air_sum, fwd_function=ps.inplace2)
         ps.shared_list = [data, air_means]
