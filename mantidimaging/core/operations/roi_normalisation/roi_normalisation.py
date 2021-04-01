@@ -97,7 +97,7 @@ class RoiNormalisationFilter(BaseFilter):
         return FilterGroup.Basic
 
 
-def _calc_sum(data, air_left=None, air_top=None, air_right=None, air_bottom=None):
+def _calc_mean(data, air_left=None, air_top=None, air_right=None, air_bottom=None):
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
@@ -115,24 +115,24 @@ def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=No
 
         # initialise same number of air sums
         img_num = data.shape[0]
-        air_sums = pu.create_array((img_num, ), data.dtype)
+        air_means = pu.create_array((img_num, ), data.dtype)
 
-        do_calculate_air_sums = ps.create_partial(_calc_sum,
-                                                  ps.return_to_second_at_i,
-                                                  air_left=air_region.left,
-                                                  air_top=air_region.top,
-                                                  air_right=air_region.right,
-                                                  air_bottom=air_region.bottom)
+        do_calculate_air_means = ps.create_partial(_calc_mean,
+                                                   ps.return_to_second_at_i,
+                                                   air_left=air_region.left,
+                                                   air_top=air_region.top,
+                                                   air_right=air_region.right,
+                                                   air_bottom=air_region.bottom)
 
-        ps.shared_list = [data, air_sums]
-        ps.execute(do_calculate_air_sums, data.shape[0], progress, cores=cores)
+        ps.shared_list = [data, air_means]
+        ps.execute(do_calculate_air_means, data.shape[0], progress, cores=cores)
 
         do_divide = ps.create_partial(_divide_by_air_sum, fwd_function=ps.inplace2)
-        ps.shared_list = [data, air_sums]
+        ps.shared_list = [data, air_means]
         ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
-        avg = np.average(air_sums)
-        max_avg = np.max(air_sums) / avg
-        min_avg = np.min(air_sums) / avg
+        avg = np.average(air_means)
+        max_avg = np.max(air_means) / avg
+        min_avg = np.min(air_means) / avg
 
         log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
