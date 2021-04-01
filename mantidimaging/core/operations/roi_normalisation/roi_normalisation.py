@@ -96,7 +96,7 @@ def _calc_max(data):
     return data.max()
 
 
-def _divide_by_air_sum(data=None, air_sums=None):
+def _divide_by_air(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
@@ -133,7 +133,7 @@ def _execute(data: np.ndarray, air_region: SensibleROI, cores=None, chunksize=No
         post_max = (air_maxs / air_means).max()
         air_means *= post_max / init_max
 
-        do_divide = ps.create_partial(_divide_by_air_sum, fwd_function=ps.inplace2)
+        do_divide = ps.create_partial(_divide_by_air, fwd_function=ps.inplace2)
         ps.shared_list = [data, air_means]
         ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
