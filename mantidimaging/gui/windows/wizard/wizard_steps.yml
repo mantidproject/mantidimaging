@@ -14,17 +14,17 @@ stages:
         done_if: history:OutliersFilter
         action: operations:Remove Outliers
 
-      - name: Flat fielding
-        description: Use flat and dark frames to flattern the images
-        enable_if: loaded
-        done_if: history:FlatFieldFilter
-        action: operations:Flat-fielding
-
       - name: Region of Interest Normalisation
         description: Normalise the region of interest using surrounding empty space
         enable_if: loaded
         done_if: history:RoiNormalisationFilter
         action: operations:ROI Normalisation
+
+      - name: Flat fielding
+        description: Use flat and dark frames to flattern the images
+        enable_if: loaded
+        done_if: history:FlatFieldFilter
+        action: operations:Flat-fielding
 
       - name: Crop
         description: Crop dataset to remove background and reduce processing time
