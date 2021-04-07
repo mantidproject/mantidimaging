@@ -32,6 +32,7 @@ Fixes
 - #805, #875, #891 : Fix segmentation fault due to object lifetime
 - #716 : Prevent simultaneous operations
 - #901: Rebin Operation failed: '<' not supported between instances of 'Progress' and 'int'
+- #912: Fix ROI normalise due to rescale changes
 
 Developer Changes
 -----------------
