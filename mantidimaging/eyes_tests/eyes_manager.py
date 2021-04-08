@@ -36,9 +36,8 @@ class EyesManager:
     def abort(self):
         self.eyes.abort_if_not_closed()
 
-    def check_target(self, image=None, widget: QWidget = None):
-        if image is None:
-            image = self._take_screenshot(widget=widget)
+    def check_target(self, widget: QWidget = None):
+        image = self._take_screenshot(widget=widget)
         test_method_name = inspect.stack()[2][3]
         if not self.eyes.is_open:
             test_file_name = os.path.basename(inspect.stack()[2][1])

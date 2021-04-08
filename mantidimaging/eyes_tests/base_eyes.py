@@ -76,8 +76,8 @@ class BaseEyesTest(unittest.TestCase):
     def imaging(self, imaging):
         self.eyes_manager.imaging = imaging
 
-    def check_target(self, image=None, widget: QWidget = None):
-        self.eyes_manager.check_target(image, widget)
+    def check_target(self, widget: QWidget = None):
+        self.eyes_manager.check_target(widget)
 
     @staticmethod
     def show_menu(widget: QMainWindow, menu: QMenu):
