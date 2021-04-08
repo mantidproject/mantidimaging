@@ -43,6 +43,9 @@ class EyesManager:
 
         image = self._take_screenshot(widget=widget, image_name=test_image_name)
 
+        if self.eyes.api_key == "local":
+            return
+
         if not self.eyes.is_open:
             self.eyes.open(self.application_name, test_file_name)
         self.eyes.check_image(image, test_method_name)
