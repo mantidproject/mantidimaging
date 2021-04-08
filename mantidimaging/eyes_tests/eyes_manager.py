@@ -53,16 +53,14 @@ class EyesManager:
         self.imaging.show()
         QApplication.processEvents()
 
-    def _take_screenshot(self, widget: QWidget = None, directory=None):
+    def _take_screenshot(self, widget: QWidget = None):
         """
-        :param directory: The directory to save the screenshot to, should be a temporary directory. If None is given it
-        will generate a temporary directory.
-
+        :param widget: Widget to take screen shot of or main window if None.
         :return: Will return the path to the saved image, or None if failed.
         """
-        if directory is None and self.image_directory is None:
+        if self.image_directory is None:
             directory = mkdtemp()
-        elif directory is None:
+        else:
             directory = self.image_directory
 
         if widget is None and self.imaging is not None:
