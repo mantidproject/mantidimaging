@@ -39,3 +39,4 @@ Developer Changes
 
 - #770 : Use multiprocessing.Array
 - #709 : Applitools GUI tests
+- #908 : Fix GUI test failure

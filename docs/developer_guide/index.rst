@@ -38,3 +38,4 @@ To check that the set up was successful, try running the tests from the source d
    developer_conventions
    conda_packaging_and_docker_image
    release
+   testing
