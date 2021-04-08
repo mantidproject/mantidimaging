@@ -73,6 +73,7 @@ class EyesManager:
             widget = self.imaging
 
         if isinstance(widget, QWidget):
+            QApplication.processEvents()
             image = widget.grab()
         else:
             image = None
