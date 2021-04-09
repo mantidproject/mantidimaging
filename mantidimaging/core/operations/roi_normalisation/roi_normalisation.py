@@ -95,12 +95,12 @@ class RoiNormalisationFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form, on_change, view):
-        label, roi_field = add_property_to_form("ROI",
+        label, roi_field = add_property_to_form("Air Region",
                                                 Type.STR,
                                                 form=form,
                                                 on_change=on_change,
                                                 default_value="0, 0, 200, 200")
-        add_property_to_form("Select ROI",
+        add_property_to_form("Select Air Region",
                              "button",
                              form=form,
                              on_change=on_change,
