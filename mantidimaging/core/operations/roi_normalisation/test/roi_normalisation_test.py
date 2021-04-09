@@ -57,19 +57,55 @@ class ROINormalisationTest(unittest.TestCase):
         images = th.generate_images()
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "0, 0, 5, 5"
-        RoiNormalisationFilter.execute_wrapper(roi_mock)(images)
+        mode_mock = mock.Mock()
+        mode_mock.currentText.return_value = "Preserve Max"
+        flat_mock = mock.Mock()
+        RoiNormalisationFilter.execute_wrapper(roi_mock, mode_mock, flat_mock)(images)
         roi_mock.text.assert_called_once()
 
-    def test_roi_normalisation_performs_rescale(self):
+    def test_roi_normalisation_preserve_max(self):
         images = th.generate_images()
         images_max = images.data.max()
 
         original = np.copy(images.data[0])
         air = [3, 3, 4, 4]
-        result = RoiNormalisationFilter.filter_func(images, air)
+        result = RoiNormalisationFilter.filter_func(images, air, "Preserve Max")
 
         th.assert_not_equals(result.data[0], original)
         self.assertAlmostEqual(result.data.max(), images_max, places=6)
+
+    def test_roi_normalisation_stack_average(self):
+        air = [3, 3, 6, 8]
+        images = th.generate_images([10, 20, 30])
+        images.data[2] *= 2
+        images.data[3] *= 0.5
+        air_data_orig = np.copy(images.data[:, air[1]:air[3], air[0]:air[2]])
+
+        original = np.copy(images.data[0])
+        result = RoiNormalisationFilter.filter_func(images, air, "Stack Average")
+
+        air_data_after = np.copy(result.data[:, air[1]:air[3], air[0]:air[2]])
+
+        th.assert_not_equals(result.data[0], original)
+        self.assertAlmostEqual(air_data_orig.mean(), air_data_after.mean(), places=6)
+        self.assertAlmostEqual(air_data_after[0].mean(), air_data_after[1].mean(), places=6)
+
+    def test_roi_normalisation_to_flat(self):
+        air = [3, 3, 6, 8]
+        images = th.generate_images([10, 20, 30])
+        flat_field = th.generate_images([2, 20, 30])
+        images.data[::2] *= 0.5
+
+        air_data_flat = np.copy(flat_field.data[:, air[1]:air[3], air[0]:air[2]])
+
+        original = np.copy(images.data[0])
+        result = RoiNormalisationFilter.filter_func(images, air, "Flat Field", flat_field)
+
+        air_data_after = np.copy(result.data[:, air[1]:air[3], air[0]:air[2]])
+
+        th.assert_not_equals(result.data[0], original)
+        self.assertAlmostEqual(air_data_flat.mean(), air_data_after.mean(), places=6)
+        self.assertAlmostEqual(air_data_after[0].mean(), air_data_after[1].mean(), places=6)
 
     def test_execute_wrapper_bad_roi_raises_valueerror(self):
         """
@@ -77,8 +113,24 @@ class ROINormalisationTest(unittest.TestCase):
         """
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "apples"
-        self.assertRaises(ValueError, RoiNormalisationFilter.execute_wrapper, roi_mock)
+        mode_mock = mock.Mock()
+        flat_mock = mock.Mock()
+        self.assertRaises(ValueError, RoiNormalisationFilter.execute_wrapper, roi_mock, mode_mock, flat_mock)
         roi_mock.text.assert_called_once()
+
+    def test_filter_func_raises_missing_flat_field(self):
+        images_mock = mock.Mock()
+        roi_mock = mock.Mock()
+        mode_val = "Flat Field"
+        flat_val = None
+        self.assertRaises(ValueError, RoiNormalisationFilter.filter_func, images_mock, roi_mock, mode_val, flat_val)
+
+    def test_filter_func_raises_bad_mode(self):
+        images_mock = mock.Mock()
+        roi_mock = mock.Mock()
+        mode_val = "Bad mode"
+        flat_val = mock.Mock()
+        self.assertRaises(ValueError, RoiNormalisationFilter.filter_func, images_mock, roi_mock, mode_val, flat_val)
 
 
 if __name__ == '__main__':
