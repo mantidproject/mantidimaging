@@ -84,7 +84,7 @@ Next let's take the sample we loaded and let's tidy it up with operations. To op
    :align: center
    :width: 70%
 
-At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the :ref:`Operations` help page.
+At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the :ref:`Operations` help page and for more details on the GUI see :ref:`Operations Window`.
 
 
 Reconstruction
