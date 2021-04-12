@@ -16,7 +16,7 @@ GPU
    A CUDA capable GPU is required for operations. CPU alternatives are provided, so it is possible to perform a tomographic reconstruction on a system without a GPU.
 
 RAM
-   A large amount of RAM is needed to hold a dataset in memory. A 2k x 2k resolution with 1k projections held as 32 bit floats uses 16 GB of RAM. To perform safe (undoable) operations the requirement is doubled. Requirements scale with increase resolution, projection counts and bit depth.
+   A large amount of RAM is needed to hold a dataset in memory. A 2k x 2k resolution with 1k projections held as 32 bit floats uses 16 GB of RAM. To perform safe (undoable) operations the requirement is doubled. Requirements scale with increased resolution, projection counts and bit depth.
 
 Installing
 ----------
