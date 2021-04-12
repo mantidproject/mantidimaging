@@ -46,6 +46,8 @@ At this stage there is also the option to:
 #. Select the pixel size of the detector used in microns. This can also be changed at a later stage.
 #. Untick a category of files to not load. For example, if both "Dark Before" and "Dark After" images have been found this can be adjusted to only one.
 
+Read more about loading in :ref:`Loading and Saving`.
+
 Project Window
 ##############
 
