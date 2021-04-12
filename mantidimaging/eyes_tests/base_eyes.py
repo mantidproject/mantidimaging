@@ -37,6 +37,13 @@ if not os.path.exists(LOAD_SAMPLE):
         "Data not present, please clone to your home directory e.g. git clone https://github.com/mantidproject/mantidim"
         "aging-data.git ~/mantidimaging-data")
 
+APPLITOOLS_IMAGE_DIR = os.getenv("APPLITOOLS_IMAGE_DIR")
+if APPLITOOLS_IMAGE_DIR is None:
+    APPLITOOLS_IMAGE_DIR = mkdtemp(prefix="mantid_image_eyes_")
+else:
+    if not os.path.isdir(APPLITOOLS_IMAGE_DIR):
+        raise ValueError(f"Directory does not exist: APPLITOOLS_IMAGE_DIR = {APPLITOOLS_IMAGE_DIR}")
+
 QApplication.setFont(QFont("Sans Serif", 10))
 
 
@@ -53,7 +60,7 @@ class BaseEyesTest(unittest.TestCase):
         self.eyes_manager.set_match_level(MatchLevel.LAYOUT)
 
         self.imaging = None
-        self.eyes_manager.image_directory = mkdtemp()
+        self.eyes_manager.image_directory = APPLITOOLS_IMAGE_DIR
 
         self.stacks = []
 
@@ -76,8 +83,8 @@ class BaseEyesTest(unittest.TestCase):
     def imaging(self, imaging):
         self.eyes_manager.imaging = imaging
 
-    def check_target(self, image=None, widget: QWidget = None):
-        self.eyes_manager.check_target(image, widget)
+    def check_target(self, widget: QWidget = None):
+        self.eyes_manager.check_target(widget)
 
     @staticmethod
     def show_menu(widget: QMainWindow, menu: QMenu):
