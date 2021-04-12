@@ -47,6 +47,3 @@ of the image in the stack.
 The *Overwrite* option removes checking for existing data of the same name. When
 disabled an error will be raised of the specified output directory is not empty
 prior to saving.
-
-*Swap Axes* is used to convert between projection and sinogram indexed image
-stacks.
