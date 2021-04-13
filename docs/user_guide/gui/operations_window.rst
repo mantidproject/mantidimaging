@@ -16,7 +16,7 @@ Here you can select the type of filter and the image stack you wish to apply it
 to, properties of the selected filter are automatically shown in the *Filter
 Properties* section.
 
-The [?] button next to filter selector will open a webpage will an explanation of the filter parameters.
+The [?] button next to filter selector will open a webpage with an explanation of the filter parameters.
 
 The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference. Below a histogram of pixel values before and after is shown. The image views can be navigated as described in the :ref:`Image View` help page.
 

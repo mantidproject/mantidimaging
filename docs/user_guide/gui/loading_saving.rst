@@ -12,10 +12,10 @@ When *Load dataset* is selected, the following dialog will appear:
 .. image:: ../../_static/loading_screen.png
     :alt: Initial Load dialog
 
-This allows you to select the data you wish to load; The Sample entry should be used to select a the first projection TIFF file, the remaining TIFF files in the directory will be automatically detected if their filename matches the pattern. The loading dialog will try to automatically find associated files including flat fields, dark frames, 180 degree projections and sample logs.
+This allows you to select the data you wish to load; The Sample entry should be used to select the first projection TIFF file, the remaining TIFF files in the directory will be automatically detected if their filename matches the pattern. The loading dialog will try to automatically find associated files including flat fields, dark frames, 180 degree projections and sample logs.
 
-Once data has been selected, it's shape is inspected and the stack index fields
-pre populated as shown below:
+Once data has been selected, its shape is inspected and the stack index fields
+are populated as shown below:
 
 .. image:: ../../_static/loading_screen_filled.png
     :alt: Load dialog after selecting data
@@ -45,5 +45,5 @@ individual image filenames will be a concatenation of this prefix and the index
 of the image in the stack.
 
 The *Overwrite* option removes checking for existing data of the same name. When
-disabled an error will be raised of the specified output directory is not empty
+disabled an error will be raised if the specified output directory is not empty
 prior to saving.
