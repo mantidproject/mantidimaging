@@ -20,7 +20,7 @@ The [?] button next to filter selector will open a webpage with an explanation o
 
 The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference. Below a histogram of pixel values before and after is shown. The image views can be navigated as described in the :ref:`Image View` help page.
 
-There are several tickboxes to customised the behaviour of the preview area.
+There are several tickboxes to customise the behaviour of the preview area.
 
 Legend
     Enables a legend in the histogram
