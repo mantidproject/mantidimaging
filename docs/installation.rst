@@ -2,6 +2,22 @@
 
 Installation
 ============
+
+Requirements
+------------
+
+Operating system
+   Linux. Tested on Ubuntu 18.04, 20.04 and CentOS 7
+
+Python 3.8
+   This can be installed below using Conda if needed.
+
+GPU
+   A CUDA capable GPU is required for some operations. CPU alternatives are provided, so it is possible to perform a tomographic reconstruction on a system without a GPU.
+
+RAM
+   A large amount of RAM is needed to hold a dataset in memory. A 2k x 2k resolution with 1k projections held as 32 bit floats uses 16 GB of RAM. To perform safe (undoable) operations the requirement is doubled. Requirements scale with increased resolution, projection counts and bit depth.
+
 Installing
 ----------
 
