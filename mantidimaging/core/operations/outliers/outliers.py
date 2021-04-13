@@ -1,7 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import operator
 from functools import partial
 
 import numpy as np
@@ -40,10 +39,9 @@ class OutliersFilter(BaseFilter):
         # Adapted from tomopy source
         median = scipy_ndimage.median_filter(data, radius)
         if mode == OUTLIERS_BRIGHT:
-            op = operator.ge
+            return np.where((data - median) > diff, median, data)
         else:
-            op = operator.le
-        return np.where(op(data - median, diff), median, data)
+            return np.where((median - data) > diff, median, data)
 
     @staticmethod
     def filter_func(images: Images,
