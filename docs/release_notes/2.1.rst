@@ -33,6 +33,7 @@ Fixes
 - #716 : Prevent simultaneous operations
 - #901: Rebin Operation failed: '<' not supported between instances of 'Progress' and 'int'
 - #912: Fix ROI normalise due to rescale changes
+- #921: Ops window Image spin box looses focus after key press
 - #914: Outliers acts as median in dark mode
 
 Developer Changes
