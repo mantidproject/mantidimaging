@@ -209,6 +209,9 @@
              </item>
              <item>
               <widget class="QSpinBox" name="previewImageIndex">
+               <property name="keyboardTracking">
+                <bool>false</bool>
+               </property>
                <property name="maximum">
                 <number>9999999</number>
                </property>

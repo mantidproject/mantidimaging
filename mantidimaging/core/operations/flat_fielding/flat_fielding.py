@@ -118,21 +118,6 @@ class FlatFieldFilter(BaseFilter):
     def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
-        def string_contains_all_parts(string: str, parts: list) -> bool:
-            for part in parts:
-                if part.lower() not in string:
-                    return False
-            return True
-
-        def try_to_select_relevant_stack(name: str, widget: StackSelectorWidgetView) -> None:
-            # Split based on whitespace
-            name_parts = name.split()
-            for i in range(widget.count()):
-                # If widget text contains all name parts
-                if string_contains_all_parts(widget.itemText(i).lower(), name_parts):
-                    widget.setCurrentIndex(i)
-                    break
-
         _, selected_flat_fielding_widget = add_property_to_form(
             "Flat Fielding Method",
             Type.CHOICE,
@@ -172,25 +157,25 @@ class FlatFieldFilter(BaseFilter):
         assert isinstance(flat_before_widget, StackSelectorWidgetView)
         flat_before_widget.setMaximumWidth(375)
         flat_before_widget.subscribe_to_main_window(view.main_window)
-        try_to_select_relevant_stack("Flat", flat_before_widget)
-        try_to_select_relevant_stack("Flat Before", flat_before_widget)
+        flat_before_widget.try_to_select_relevant_stack("Flat")
+        flat_before_widget.try_to_select_relevant_stack("Flat Before")
 
         assert isinstance(flat_after_widget, StackSelectorWidgetView)
         flat_after_widget.setMaximumWidth(375)
         flat_after_widget.subscribe_to_main_window(view.main_window)
-        try_to_select_relevant_stack("Flat After", flat_after_widget)
+        flat_after_widget.try_to_select_relevant_stack("Flat After")
         flat_after_widget.setEnabled(False)
 
         assert isinstance(dark_before_widget, StackSelectorWidgetView)
         dark_before_widget.setMaximumWidth(375)
         dark_before_widget.subscribe_to_main_window(view.main_window)
-        try_to_select_relevant_stack("Dark", dark_before_widget)
-        try_to_select_relevant_stack("Dark Before", dark_before_widget)
+        dark_before_widget.try_to_select_relevant_stack("Dark")
+        dark_before_widget.try_to_select_relevant_stack("Dark Before")
 
         assert isinstance(dark_after_widget, StackSelectorWidgetView)
         dark_after_widget.setMaximumWidth(375)
         dark_after_widget.subscribe_to_main_window(view.main_window)
-        try_to_select_relevant_stack("Dark After", dark_after_widget)
+        dark_after_widget.try_to_select_relevant_stack("Dark After")
         dark_after_widget.setEnabled(False)
 
         # Ensure that fields that are not currently used are disabled

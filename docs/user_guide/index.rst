@@ -19,6 +19,8 @@ Author: Arianna Wintle (STFC)
 
 Please email any suggestions to mantidimagingsupport@stfc365.onmicrosoft.com
 
+Example data that can be used for this tutorial can be downloaded from `github.com/mantidproject/mantidimaging-data <https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/master.zip>`_
+
 Loading Sample Stack
 ####################
 
@@ -43,6 +45,8 @@ At this stage there is also the option to:
 #. Open only a portion of the sample images. This can be done by manually selecting the file indices or using the "Preview" Button which will set the file indices to a suitable selection.
 #. Select the pixel size of the detector used in microns. This can also be changed at a later stage.
 #. Untick a category of files to not load. For example, if both "Dark Before" and "Dark After" images have been found this can be adjusted to only one.
+
+Read more about loading in :ref:`Loading and Saving`.
 
 Project Window
 ##############
@@ -80,7 +84,7 @@ Next let's take the sample we loaded and let's tidy it up with operations. To op
    :align: center
    :width: 70%
 
-At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the :ref:`Operations` help page.
+At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the :ref:`Operations` help page and for more details on the GUI see :ref:`Operations Window`.
 
 
 Reconstruction
