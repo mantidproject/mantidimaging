@@ -13,6 +13,7 @@ New features
 - #567: Add new user wizard
 - #886 : Don't reset zoom when changing operation parameters
 - #873 : Link histogram scales in operations window
+- #914 : Modes for ROI normalisation
 
 Fixes
 -----

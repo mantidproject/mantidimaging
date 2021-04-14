@@ -11,6 +11,13 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 
+def _string_contains_all_parts(string: str, parts: list) -> bool:
+    for part in parts:
+        if part.lower() not in string:
+            return False
+    return True
+
+
 class StackSelectorWidgetView(Qt.QComboBox):
     stacks_updated = Qt.pyqtSignal()
 
@@ -56,3 +63,12 @@ class StackSelectorWidgetView(Qt.QComboBox):
 
     def select_eligible_stack(self):
         self.presenter.notify(Notification.SELECT_ELIGIBLE_STACK)
+
+    def try_to_select_relevant_stack(self, name: str) -> None:
+        # Split based on whitespace
+        name_parts = name.split()
+        for i in range(self.count()):
+            # If widget text contains all name parts
+            if _string_contains_all_parts(self.itemText(i).lower(), name_parts):
+                self.setCurrentIndex(i)
+                break
