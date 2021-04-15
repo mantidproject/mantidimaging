@@ -36,6 +36,7 @@ Fixes
 - #912: Fix ROI normalise due to rescale changes
 - #921: Ops window Image spin box looses focus after key press
 - #914: Outliers acts as median in dark mode
+- #905: Ring Removal has no effect
 
 Developer Changes
 -----------------
