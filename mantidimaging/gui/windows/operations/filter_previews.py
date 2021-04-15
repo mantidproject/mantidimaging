@@ -13,6 +13,7 @@ from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.histogram import set_histogram_log_scale
 
 LOG = getLogger(__name__)
 
@@ -267,3 +268,10 @@ class FilterPreviews(GraphicsLayoutWidget):
         Makes the histogram scale of the after image match the histogram scale of the before image.
         """
         self.image_before_hist.region.setRegion(self.image_after_hist.region.getRegion())
+
+    def set_histogram_log_scale(self):
+        """
+        Sets the y-values of the before and after histogram plots to a log scale.
+        """
+        set_histogram_log_scale(self.image_before_hist)
+        set_histogram_log_scale(self.image_after_hist)

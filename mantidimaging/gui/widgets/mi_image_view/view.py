@@ -10,6 +10,7 @@ from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
 
@@ -99,6 +100,7 @@ class MIImageView(ImageView):
         self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
         self.imageItem.sigImageChanged.connect(self._refresh_message)
+        self.imageItem.sigImageChanged.connect(self.set_log_scale)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         for scene in [self.scene, self.ui.roiPlot.sceneObj, self.ui.histogram.sceneObj]:
@@ -215,3 +217,6 @@ class MIImageView(ImageView):
 
     def set_selected_image(self, image_index: int):
         self.timeLine.setValue(image_index)
+
+    def set_log_scale(self):
+        set_histogram_log_scale(self.getHistogramWidget().item)

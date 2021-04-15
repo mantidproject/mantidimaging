@@ -14,6 +14,7 @@ New features
 - #886 : Don't reset zoom when changing operation parameters
 - #873 : Link histogram scales in operations window
 - #914 : Modes for ROI normalisation
+- #872 : Histogram improvement
 
 Fixes
 -----
