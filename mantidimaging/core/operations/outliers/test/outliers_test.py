@@ -62,10 +62,10 @@ class OutliersTest(unittest.TestCase):
         # use sets because dictionary order isn't guaranteed in Python 3
         self.assertEqual({'diff_field', 'size_field', 'mode_field'}, set(gui_dict.keys()))
 
-    def test_gui_diff_spin_box_min_is_0(self):
+    def test_gui_diff_spin_box_min_is_2(self):
         gui_dict = OutliersFilter.register_gui(mock.MagicMock(), mock.MagicMock(), mock.MagicMock())
 
-        self.assertEqual(0, gui_dict["diff_field"].minimum())
+        self.assertEqual(2, gui_dict["diff_field"].minimum())
 
 
 if __name__ == '__main__':
