@@ -286,6 +286,7 @@ class FiltersWindowPresenter(BasePresenter):
 
             if lock_scale:
                 self.view.previews.restore_histogram_regions()
+            self.view.previews.set_histogram_log_scale()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
