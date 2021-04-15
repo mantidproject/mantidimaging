@@ -8,6 +8,7 @@ from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
+from mantidimaging.core.utility.histogram import set_histogram_log_scale
 
 
 class ReconImagesView(GraphicsLayoutWidget):
@@ -83,17 +84,20 @@ class ReconImagesView(GraphicsLayoutWidget):
             self.set_tilt(tilt_angle, image_data.shape[1] // 2)
         else:
             self.hide_tilt()
+        set_histogram_log_scale(self.projection_hist)
 
     def update_sinogram(self, image):
         self.sinogram.clear()
         self.sinogram.setImage(image)
         self.sinogram_hist.imageChanged(autoLevel=True, autoRange=True)
+        set_histogram_log_scale(self.sinogram_hist)
 
     def update_recon(self, image_data, refresh_recon_slice_histogram):
         self.recon.clear()
         self.recon.setImage(image_data, autoLevels=refresh_recon_slice_histogram)
         if refresh_recon_slice_histogram:
             self.recon_hist.imageChanged(autoLevel=True, autoRange=True)
+        set_histogram_log_scale(self.recon_hist)
 
     def mouse_over(self, ev, img):
         # Ignore events triggered by leaving window or right clicking
