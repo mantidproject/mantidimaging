@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from unittest.mock import Mock
 
 import numpy as np
 import numpy.testing as npt
@@ -46,7 +47,8 @@ class RingRemovalTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         images = th.generate_images()
-        RingRemovalFilter.execute_wrapper()(images)
+        mocks = [Mock() for _ in range(7)]
+        RingRemovalFilter.execute_wrapper(*mocks)(images)
 
 
 if __name__ == '__main__':

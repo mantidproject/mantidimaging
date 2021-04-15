@@ -153,10 +153,10 @@ class RingRemovalFilter(BaseFilter):
                         rwidth=None):
         return partial(RingRemovalFilter.filter_func,
                        run_ring_removal=True,
-                       center_x=x_field,
-                       center_y=y_field,
-                       thresh=thresh,
-                       thresh_max=thresh_max,
-                       thresh_min=thresh_min,
-                       theta_min=theta,
-                       rwidth=rwidth)
+                       center_x=x_field.value(),
+                       center_y=y_field.value(),
+                       thresh=thresh.value(),
+                       thresh_max=thresh_max.value(),
+                       thresh_min=thresh_min.value(),
+                       theta_min=theta.value(),
+                       rwidth=rwidth.value())
