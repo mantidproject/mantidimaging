@@ -39,6 +39,7 @@ Fixes
 - #914: Outliers acts as median in dark mode
 - #919: Median min kernel size
 - #905: Ring Removal has no effect
+- #906: Clip values
 
 Developer Changes
 -----------------
