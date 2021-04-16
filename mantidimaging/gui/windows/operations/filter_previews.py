@@ -218,7 +218,7 @@ class FilterPreviews(GraphicsLayoutWidget):
             view.linkView(ViewBox.YAxis, None)
 
     def add_difference_overlay(self, diff):
-        diff = -diff
+        diff = np.absolute(diff)
         diff[diff > 0.0] = 1.0
         pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
