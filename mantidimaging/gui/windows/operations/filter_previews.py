@@ -22,6 +22,8 @@ before_pen = (200, 0, 0)
 after_pen = (0, 200, 0)
 diff_pen = (0, 0, 200)
 
+OVERLAY_THRESHOLD = 1e-3
+
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = {"before": Coord(4, 0), "after": Coord(4, 1), "combined": Coord(4, 0)}
 
@@ -219,7 +221,7 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def add_difference_overlay(self, diff):
         diff = np.absolute(diff)
-        diff[diff > 0.0] = 1.0
+        diff[diff > OVERLAY_THRESHOLD] = 1.0
         pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
         map = ColorMap(pos, color)
