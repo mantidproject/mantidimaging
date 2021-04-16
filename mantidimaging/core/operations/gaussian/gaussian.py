@@ -58,7 +58,7 @@ class GaussianFilter(BaseFilter):
     def register_gui(form, on_change, view):
         _, size_field = add_property_to_form('Kernel Size',
                                              Type.INT,
-                                             3, (0, 1000),
+                                             3, (2, 1000),
                                              form=form,
                                              on_change=on_change,
                                              tooltip="Size of the median filter kernel")
