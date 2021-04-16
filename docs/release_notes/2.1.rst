@@ -38,6 +38,7 @@ Fixes
 - #921: Ops window Image spin box looses focus after key press
 - #914: Outliers acts as median in dark mode
 - #919: Median min kernel size
+- #905: Ring Removal has no effect
 
 Developer Changes
 -----------------
