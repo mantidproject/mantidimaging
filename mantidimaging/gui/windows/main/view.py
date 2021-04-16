@@ -255,9 +255,6 @@ class MainWindowView(BaseMainWindowView):
         self.save_dialogue.show()
 
     def show_recon_window(self):
-        if self.filters is not None and self.filters.isVisible():
-            QMessageBox.warning(self, "", "Close Operations window before opening Reconstruction")
-            return
         if not self.recon:
             self.recon = ReconstructWindowView(self)
             self.recon.recon_applied.connect(self.recon_applied.emit)
@@ -267,9 +264,6 @@ class MainWindowView(BaseMainWindowView):
             self.recon.raise_()
 
     def show_filters_window(self):
-        if self.recon is not None and self.recon.isVisible():
-            QMessageBox.warning(self, "", "Close Reconstruction window before opening Operations")
-            return
         if not self.filters:
             self.filters = FiltersWindowView(self)
             self.filters.filter_applied.connect(self.filter_applied.emit)
