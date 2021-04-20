@@ -12,6 +12,10 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 class BaseRecon:
     @staticmethod
+    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+        raise NotImplementedError("Base class call")
+
+    @staticmethod
     def sino_recon_prep(sino: np.ndarray):
         return -np.log(sino)
 
@@ -49,4 +53,4 @@ class BaseRecon:
 
     @staticmethod
     def allowed_filters() -> List[str]:
-        raise NotImplementedError("Base class call")
+        return []

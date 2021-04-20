@@ -57,6 +57,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
             'filter_name': [self.view.filterName, self.view.filterNameLabel],
             'num_iter': [self.view.numIter, self.view.numIterLabel],
+            'alpha': [self.view.alphaSpinbox, self.view.alphaLabel],
         }
         self.main_window = main_window
 
