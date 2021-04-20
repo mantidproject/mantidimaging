@@ -43,6 +43,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.numIter = mock.Mock()
         self.view.numIterLabel = mock.Mock()
         self.view.image_view = mock.Mock()
+        self.view.alphaSpinbox = mock.Mock()
+        self.view.alphaLabel = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid(self, mock_start_async: mock.Mock):
