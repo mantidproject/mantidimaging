@@ -133,7 +133,6 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.clear_notification_dialog()
         self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
 
-
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
             self.model.params_needed_from_stack is not None else False
@@ -331,11 +330,15 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.applyToAllButton.setEnabled(apply_all_enabled)
 
     def init_crop_coords(self, roi_field: QLineEdit):
-        larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
-        if larger[0] and larger[1]:
-            return
-        if not larger[0]:
-            pass
-        if not larger[1]:
-            pass
-
+        if self.stack is not None:
+            larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
+            if all(larger):
+                return
+            x = 200
+            y = 200
+            if not larger[0]:
+                x = self.stack.presenter.images.data[0].shape[0] // 2
+            if not larger[1]:
+                y = self.stack.presenter.images.data[0].shape[1] // 2
+            crop_string = ", ".join(["0", "0", str(y), str(x)])
+            roi_field.setText(crop_string)
