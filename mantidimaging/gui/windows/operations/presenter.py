@@ -10,7 +10,7 @@ from typing import List, TYPE_CHECKING, Optional, Tuple, Union
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QLineEdit
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
@@ -125,9 +125,14 @@ class FiltersWindowPresenter(BasePresenter):
         # Register new filter (adding it's property widgets to the properties layout)
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
+
+        if filter_name == "Crop Coordinates":
+            self.init_crop_coords(filter_widget_kwargs["roi_field"])
+
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
         self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
+
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
@@ -324,3 +329,13 @@ class FiltersWindowPresenter(BasePresenter):
         """
         self.view.applyButton.setEnabled(apply_single_enabled)
         self.view.applyToAllButton.setEnabled(apply_all_enabled)
+
+    def init_crop_coords(self, roi_field: QLineEdit):
+        larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
+        if larger[0] and larger[1]:
+            return
+        if not larger[0]:
+            pass
+        if not larger[1]:
+            pass
+
