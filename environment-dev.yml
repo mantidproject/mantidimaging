@@ -6,7 +6,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - mantidimaging
+  - mantidimaging==2.1.0
   - pip
   - pip:
       # For running
