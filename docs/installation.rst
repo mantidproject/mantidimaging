@@ -36,10 +36,13 @@ Please look for instructions specific to your OS on how to do that:
 
 2. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
 3. Make sure :code:`conda` is available on your PATH
-4. Create a mantidimaging conda environment:
+4. Create a mantidimaging conda environment. For the latest stable version:
+
+  - :code:`conda env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml`
+
+Specific versions can be installed like so:
 
   - :code:`conda env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.0.0/environment.yml`
-
 
 5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
 
