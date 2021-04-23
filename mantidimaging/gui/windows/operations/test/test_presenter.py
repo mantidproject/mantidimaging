@@ -20,6 +20,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.main_window.filter_applied.connect = mock.Mock()
         self.view = mock.MagicMock()
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
+        self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
