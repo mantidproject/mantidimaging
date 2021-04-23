@@ -12,7 +12,8 @@ install-run-requirements:
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
-	conda create -n build-env
+	conda create -n build-env --yes
+	$(CONDA_ACTIVATE) build-env ; conda config --env --add channels conda-forge --add channels dtasev --add channels astra-toolbox/label/dev
 	$(CONDA_ACTIVATE) build-env ; conda install --yes conda-build
 
 install-dev-requirements:
