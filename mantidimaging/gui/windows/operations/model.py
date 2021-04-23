@@ -110,9 +110,6 @@ class FiltersWindowModel(object):
     def apply_to_images(self, images, progress=None):
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
 
-        if not input_kwarg_widgets:
-            return
-
         # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
         if not self.selected_filter.validate_execute_kwargs(input_kwarg_widgets):
             raise ValueError("Not all required parameters specified")
