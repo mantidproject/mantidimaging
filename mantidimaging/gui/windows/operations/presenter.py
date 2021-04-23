@@ -259,7 +259,7 @@ class FiltersWindowPresenter(BasePresenter):
             before_image = np.copy(subset.data[0])
 
             try:
-                if self.model.filter_widget_kwargs is not None:
+                if self.model.filter_widget_kwargs:
                     self.model.apply_to_images(subset)
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
