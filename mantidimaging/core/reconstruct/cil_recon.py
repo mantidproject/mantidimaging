@@ -7,6 +7,30 @@ from typing import List
 import numpy as np
 
 # import cil
+from cil.framework import AcquisitionGeometry, AcquisitionData, DataOrder
+
+from cil.optimisation.algorithms import SIRT, CGLS, PDHG, GD
+from cil.optimisation.operators import GradientOperator, BlockOperator
+from cil.optimisation.functions import IndicatorBox, MixedL21Norm, \
+                                       L2NormSquared, BlockFunction, \
+                                       ZeroFunction, SmoothMixedL21Norm, \
+                                       OperatorCompositionFunction
+
+from cil.utilities.display import show2D
+
+# CIL ASTRA plugin
+from cil.plugins.astra.operators import  ProjectionOperator
+
+# CIL Processors
+from cil.processors import Slicer
+from cil.processors import MaskGenerator
+from cil.processors import Masker
+from cil.processors import TransmissionAbsorptionConverter
+
+# CIL IO
+from cil.io import TIFFStackReader
+
+import functools
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
@@ -23,6 +47,39 @@ def empty_array(shape):
 
 
 class CILRecon(BaseRecon):
+
+    @staticmethod
+    def get_IMAT_AcquisitionGeometry(angles):
+        pixel_num_h = 512
+        pixel_num_v = 512
+        pixel_size = (1.,1.)
+        ag = AcquisitionGeometry.create_Parallel3D()\
+              .set_panel([pixel_num_v, pixel_num_h], pixel_size=pixel_size)\
+              .set_angles(angles=angles)
+        return ag
+    @staticmethod
+    def set_up_TV_regularisation(image_geometry, acquisition_data):
+        # Forward operator
+        A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
+
+        # Set up TV regularisation
+
+        # Define Gradient Operator and BlockOperator 
+        Grad = GradientOperator(image_geometry)
+        K = BlockOperator(Grad,A2d)
+
+        # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
+        # alpha = 1.0
+        # f1 =  alpha * MixedL21Norm()
+        f1 = MixedL21Norm()
+        # f2 = 0.5 * L2NormSquared(b=ad2d)
+        f2 = L2NormSquared(b=acquisition_data)
+        # F = BlockFunction(f1,f2)
+
+        # Define Function G simply as zero
+        G = ZeroFunction()
+        return (K, f1, f2, G)
+
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         return tomopy.find_center(images.sinograms,
@@ -51,8 +108,34 @@ class CILRecon(BaseRecon):
         print("proj_angles", proj_angles.value[:10], "...")
         print("recon_params", recon_params)
         width = sino.shape[1]
-        slice = empty_array([width, width])
-        return slice
+
+        ag3D = CILRecon.get_IMAT_AcquisitionGeometry(proj_angles.value)
+        # get a slice 
+        ag = ag3D.get_centre_slice()
+        ag.set_labels(DataOrder.ASTRA_AG_LABELS)
+        # stick it into an AcquisitionData
+        data = ag.allocate(None)
+        data.fill(sino)
+        
+        ig = ag.get_ImageGeometry()
+        # set up TV regularisation
+        K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
+
+        # alpha = 1.0
+        # f1 =  alpha * MixedL21Norm()
+        # f2 = 0.5 * L2NormSquared(b=ad2d)
+        F = BlockFunction( alpha * f1, 0.5 * f2)
+        normK =  K.norm()
+        sigma = 1
+        tau = 1/(sigma*normK**2)
+
+        pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, 
+            max_iteration=100000, update_objective_interval=10)
+
+        pdhg.run(num_iter, verbose=0, callback=None)
+        return pdhg.solution.as_array()
+        # slice = empty_array([width, width])
+        # return slice
 
     @staticmethod
     def full(images: Images, cors: List[ScalarCoR], recon_params: ReconstructionParameters, progress=None):
@@ -81,15 +164,43 @@ class CILRecon(BaseRecon):
             'num_iter': recon_params.num_iter,
         }
         print("kwargs", kwargs)
+        ag = CILRecon.get_IMAT_AcquisitionGeometry(
+            images.projection_angles(recon_params.max_projection_angle).value
+            )
+        ag.set_labels(DataOrder.ASTRA_AG_LABELS)
+        # stick it into an AcquisitionData
+        data = ag.allocate(None)
+        data.fill(images.data)
+        
+        ig = ag.get_ImageGeometry()
+        # set up TV regularisation
+        K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
 
+        # alpha = 1.0
+        # f1 =  alpha * MixedL21Norm()
+        # f2 = 0.5 * L2NormSquared(b=ad2d)
+        F = BlockFunction( alpha * f1, 0.5 * f2)
+        normK =  K.norm()
+        sigma = 1
+        tau = 1/(sigma*normK**2)
+
+        algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, 
+            max_iteration=100000, update_objective_interval=10)
+
+        def myprogress(p, iter, obj, solution):
+            p.update(steps=1, msg='', force_continue=False)
         with progress:
             # volume = tomopy.recon(**kwargs)
-            width = images.width
-            slices = images.height
-            volume = empty_array([slices, width, width])
-            LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+            prg = functools.partial(myprogress, progress)
+            pdhg.run(num_iter, verbose=0, callback=prg)
+        
+            # width = images.width
+            # slices = images.height
+            # volume = empty_array([slices, width, width])
 
-        return Images(volume)
+            LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+        return Images(algo.solution.as_array())
+        
 
 
 def allowed_recon_kwargs() -> dict:
