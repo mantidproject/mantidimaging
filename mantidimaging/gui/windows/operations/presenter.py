@@ -331,15 +331,21 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.applyToAllButton.setEnabled(apply_all_enabled)
 
     def init_crop_coords(self, roi_field: QLineEdit):
-        if self.stack is not None:
-            larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
-            if all(larger):
-                return
-            x = 200
-            y = 200
-            if not larger[0]:
-                x = self.stack.presenter.images.data[0].shape[0] // 2
-            if not larger[1]:
-                y = self.stack.presenter.images.data[0].shape[1] // 2
-            crop_string = ", ".join(["0", "0", str(y), str(x)])
-            roi_field.setText(crop_string)
+        """
+        Sets the initial value of the crop coordinates line edit widget so that it doesn't contain values that are
+        larger than the image.
+        :param roi_field: The ROI field line edit widget.
+        """
+        if self.stack is None:
+            return
+
+        larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
+        if all(larger):
+            return
+        x = y = 200
+        if not larger[0]:
+            x = self.stack.presenter.images.data[0].shape[0] // 2
+        if not larger[1]:
+            y = self.stack.presenter.images.data[0].shape[1] // 2
+        crop_string = ", ".join(["0", "0", str(y), str(x)])
+        roi_field.setText(crop_string)
