@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+import numpy as np
 from functools import partial
 
 from unittest import mock
@@ -362,3 +363,15 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter._do_apply_filter(None)
         assert self.presenter.prev_apply_single_state == prev_apply_single_state
         assert self.presenter.prev_apply_all_state == prev_apply_all_state
+
+    def test_init_crop_coords_does_nothing_when_stack_is_none(self):
+        mock_roi_field = mock.Mock()
+        self.presenter.init_crop_coords(mock_roi_field)
+        mock_roi_field.setText.assert_not_called()
+
+    def test_init_crop_coords_does_nothing_when_image_is_greater_than_200_by_200(self):
+        mock_roi_field = mock.Mock()
+        self.presenter.stack = mock.Mock()
+        self.presenter.stack.presenter.images.data = np.ones((3,201,201))
+        self.presenter.init_crop_coords(mock_roi_field)
+        mock_roi_field.setText.assert_not_called()
