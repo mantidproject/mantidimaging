@@ -20,7 +20,7 @@ from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 
 def modes() -> List[str]:
-    return ['Stack Average', 'Preserve Max', 'Flat Field']
+    return ['Preserve Max', 'Stack Average', 'Flat Field']
 
 
 class RoiNormalisationFilter(BaseFilter):
