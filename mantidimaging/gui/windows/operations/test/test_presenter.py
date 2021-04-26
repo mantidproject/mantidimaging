@@ -378,7 +378,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.init_crop_coords(mock_roi_field)
         mock_roi_field.setText.assert_not_called()
 
-    @parameterized.expand([(190, 201, "0, 0, 200, 95"), (201, 80, "0, 0, 40, 200"), (200, 200, "0, 0, 100, 100")])
+    @parameterized.expand([(190, 201, "0, 0, 200, 190"), (201, 80, "0, 0, 80, 200"), (200, 200, "0, 0, 200, 200")])
     def test_set_text_called_when_image_not_greater_than_200_by_200(self, shape_x, shape_y, expected):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()
