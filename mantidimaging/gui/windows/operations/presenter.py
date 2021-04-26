@@ -342,10 +342,7 @@ class FiltersWindowPresenter(BasePresenter):
         larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
         if all(larger):
             return
-        x = y = 200
-        if not larger[0]:
-            x = self.stack.presenter.images.data[0].shape[0] // 2
-        if not larger[1]:
-            y = self.stack.presenter.images.data[0].shape[1] // 2
+        x = min(self.stack.presenter.images.data[0].shape[0], 200)
+        y = min(self.stack.presenter.images.data[0].shape[1], 200)
         crop_string = ", ".join(["0", "0", str(y), str(x)])
         roi_field.setText(crop_string)
