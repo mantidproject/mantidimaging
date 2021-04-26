@@ -262,6 +262,7 @@ class MainWindowView(BaseMainWindowView):
         else:
             self.recon.activateWindow()
             self.recon.raise_()
+            self.recon.show()
 
     def show_filters_window(self):
         if not self.filters:
