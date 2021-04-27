@@ -8,12 +8,14 @@ from typing import Optional
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
+from PyQt5.QtWidgets import QAction
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
+from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 
 LOG = getLogger(__name__)
 
@@ -71,6 +73,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after, self.image_after_vb, self.image_after_hist = self.image_in_vb(name="after")
         self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
             name="difference")
+
+        self.all_histogram = [self.image_before_hist, self.image_after, self.image_difference_hist]
 
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
@@ -277,3 +281,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         set_histogram_log_scale(self.image_before_hist)
         set_histogram_log_scale(self.image_after_hist)
+
+    def _add_auto_colour_action(self):
+        self.auto_colour_actions.append(QAction("Auto"))
+        self.auto_colour_actions[-1].triggered.connect(lambda: self.on_change_colour_pallete())
+
+    def on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: np.ndarray):
+        other_histograms = self.all_histograms[:].remove(main_histogram)
+        change_colour_palette = PaletteChangerView(self, main_histogram, image, other_histograms)
+        change_colour_palette.show()

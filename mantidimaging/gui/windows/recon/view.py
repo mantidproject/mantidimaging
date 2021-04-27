@@ -167,7 +167,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
         # Preparing the auto change colour map UI
-        self.hists = [self.image_view.recon_hist, self.image_view.sinogram_hist, self.image_view.projection_hist]
         self.auto_colour_action = QAction("Auto")
         self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
 
@@ -405,5 +404,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
     def on_change_colour_palette(self):
-        change_colour_palette = PaletteChangerView(self, self.hists, self.image_view.recon.image, True)
+        change_colour_palette = PaletteChangerView(self, self.image_view.recon_hist, self.image_view.recon.image,
+                                                   [self.image_view.sinogram_hist, self.image_view.projection_hist],
+                                                   True)
         change_colour_palette.show()
