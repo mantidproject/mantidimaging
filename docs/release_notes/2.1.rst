@@ -15,6 +15,7 @@ New features
 - #873 : Link histogram scales in operations window
 - #914 : Modes for ROI normalisation
 - #872 : Histogram improvement
+- #927 : ROI norm: use averaged view in ROI selector
 
 Fixes
 -----
