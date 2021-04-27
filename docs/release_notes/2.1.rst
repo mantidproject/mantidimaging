@@ -41,6 +41,7 @@ Fixes
 - #919: Median min kernel size
 - #905: Ring Removal has no effect
 - #906: Clip values
+- #931: Crop Coordinates error if image is smaller than 200x200
 
 Developer Changes
 -----------------

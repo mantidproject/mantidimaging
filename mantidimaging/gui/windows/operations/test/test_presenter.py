@@ -2,10 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+import numpy as np
 from functools import partial
 
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
+
+from parameterized import parameterized
 
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.windows.main import MainWindowView
@@ -20,6 +23,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.main_window.filter_applied.connect = mock.Mock()
         self.view = mock.MagicMock()
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
+        self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
@@ -361,3 +365,23 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter._do_apply_filter(None)
         assert self.presenter.prev_apply_single_state == prev_apply_single_state
         assert self.presenter.prev_apply_all_state == prev_apply_all_state
+
+    def test_init_crop_coords_does_nothing_when_stack_is_none(self):
+        mock_roi_field = mock.Mock()
+        self.presenter.init_crop_coords(mock_roi_field)
+        mock_roi_field.setText.assert_not_called()
+
+    def test_init_crop_coords_does_nothing_when_image_is_greater_than_200_by_200(self):
+        mock_roi_field = mock.Mock()
+        self.presenter.stack = mock.Mock()
+        self.presenter.stack.presenter.images.data = np.ones((2, 201, 201))
+        self.presenter.init_crop_coords(mock_roi_field)
+        mock_roi_field.setText.assert_not_called()
+
+    @parameterized.expand([(190, 201, "0, 0, 200, 190"), (201, 80, "0, 0, 80, 200"), (200, 200, "0, 0, 200, 200")])
+    def test_set_text_called_when_image_not_greater_than_200_by_200(self, shape_x, shape_y, expected):
+        mock_roi_field = mock.Mock()
+        self.presenter.stack = mock.Mock()
+        self.presenter.stack.presenter.images.data = np.ones((2, shape_x, shape_y))
+        self.presenter.init_crop_coords(mock_roi_field)
+        mock_roi_field.setText.assert_called_once_with(expected)

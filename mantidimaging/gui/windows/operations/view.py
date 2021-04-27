@@ -79,8 +79,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
 
-        self.handle_filter_selection("")
-
         self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)
         # set here to trigger the changed event
@@ -105,6 +103,8 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle help button pressed
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
+
+        self.handle_filter_selection("")
 
     def closeEvent(self, e):
         if self.presenter.filter_is_running:
