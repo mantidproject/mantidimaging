@@ -74,7 +74,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
             name="difference")
 
-        self.all_histogram = [self.image_before_hist, self.image_after, self.image_difference_hist]
+        self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
 
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
@@ -115,6 +115,11 @@ class FilterPreviews(GraphicsLayoutWidget):
                 self.image_difference_hist.scene(),
         ]:
             scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
+
+        self.auto_colour_actions = []
+        self._add_auto_colour_action(self.image_before_hist, self.image_before)
+        self._add_auto_colour_action(self.image_after_hist, self.image_after)
+        self._add_auto_colour_action(self.image_difference_hist, self.image_difference)
 
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None and isinstance(self.histogram, PlotItem):
@@ -282,11 +287,16 @@ class FilterPreviews(GraphicsLayoutWidget):
         set_histogram_log_scale(self.image_before_hist)
         set_histogram_log_scale(self.image_after_hist)
 
-    def _add_auto_colour_action(self):
+    def _add_auto_colour_action(self, histogram: HistogramLUTItem, image: ImageItem):
         self.auto_colour_actions.append(QAction("Auto"))
-        self.auto_colour_actions[-1].triggered.connect(lambda: self.on_change_colour_pallete())
+        self.auto_colour_actions[-1].triggered.connect(lambda: self.on_change_colour_palette(histogram, image))
 
-    def on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: np.ndarray):
-        other_histograms = self.all_histograms[:].remove(main_histogram)
-        change_colour_palette = PaletteChangerView(self, main_histogram, image, other_histograms)
+        action = histogram.gradient.menu.actions()[12]
+        histogram.gradient.menu.insertAction(action, self.auto_colour_actions[-1])
+        histogram.gradient.menu.insertSeparator(self.auto_colour_actions[-1])
+
+    def on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
+        other_histograms = self.all_histograms[:]
+        other_histograms.remove(main_histogram)
+        change_colour_palette = PaletteChangerView(self, main_histogram, image.image, other_histograms)
         change_colour_palette.show()
