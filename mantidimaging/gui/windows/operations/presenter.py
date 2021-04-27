@@ -10,7 +10,7 @@ from typing import List, TYPE_CHECKING, Optional, Tuple, Union
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QLineEdit
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images
@@ -125,6 +125,10 @@ class FiltersWindowPresenter(BasePresenter):
         # Register new filter (adding it's property widgets to the properties layout)
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
+
+        if filter_name == "Crop Coordinates":
+            self.init_crop_coords(filter_widget_kwargs["roi_field"])
+
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
         self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
@@ -255,7 +259,8 @@ class FiltersWindowPresenter(BasePresenter):
             before_image = np.copy(subset.data[0])
 
             try:
-                self.model.apply_to_images(subset)
+                if self.model.filter_widget_kwargs:
+                    self.model.apply_to_images(subset)
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())
@@ -324,3 +329,20 @@ class FiltersWindowPresenter(BasePresenter):
         """
         self.view.applyButton.setEnabled(apply_single_enabled)
         self.view.applyToAllButton.setEnabled(apply_all_enabled)
+
+    def init_crop_coords(self, roi_field: QLineEdit):
+        """
+        Sets the initial value of the crop coordinates line edit widget so that it doesn't contain values that are
+        larger than the image.
+        :param roi_field: The ROI field line edit widget.
+        """
+        if self.stack is None:
+            return
+
+        larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
+        if all(larger):
+            return
+        x = min(self.stack.presenter.images.data[0].shape[0], 200)
+        y = min(self.stack.presenter.images.data[0].shape[1], 200)
+        crop_string = ", ".join(["0", "0", str(y), str(x)])
+        roi_field.setText(crop_string)
