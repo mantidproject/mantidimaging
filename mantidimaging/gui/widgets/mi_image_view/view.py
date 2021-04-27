@@ -230,5 +230,5 @@ class MIImageView(ImageView):
         set_histogram_log_scale(self.getHistogramWidget().item)
 
     def on_colour_change_palette(self):
-        change_colour_palette = PaletteChangerView(parent=None, hists=[self.ui.histogram.item], recon_image=self.image)
+        change_colour_palette = PaletteChangerView(parent=None, hists=[self.ui.histogram.item], image=self.image)
         change_colour_palette.show()
