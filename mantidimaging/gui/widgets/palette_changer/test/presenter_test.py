@@ -22,11 +22,12 @@ def _normalise_break_values(break_vals, min_value, max_value):
 class PaletteChangerPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.view = mock.MagicMock()
-        self.histograms = [mock.Mock() for _ in range(3)]
-        self.recon_histogram = self.histograms[0]
+        self.histograms = [mock.Mock() for _ in range(2)]
+        self.recon_histogram = mock.Mock()
         self.recon_image = np.random.random((200, 200))
         self.recon_gradient = self.recon_histogram.gradient
-        self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_image, True)
+        self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, self.recon_image,
+                                                 True)
 
     def get_sorted_random_elements_from_projection_image(self, n_vals: int):
         return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_vals)])
@@ -36,7 +37,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         assert self.presenter.flattened_image.ndim == 1
 
     def test_flattened_image_creation_for_small_image(self):
-        presenter = PaletteChangerPresenter(self.view, self.histograms, np.random.random((20, 20)), False)
+        presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random(
+            (20, 20)), True)
         assert presenter.flattened_image.size == 400
         assert presenter.flattened_image.ndim == 1
 
