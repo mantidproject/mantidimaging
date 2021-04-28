@@ -295,6 +295,9 @@ class FiltersWindowView(BaseMainWindowView):
         button.clicked.connect(lambda: window.close())
         self.roi_view.ui.gridLayout.addWidget(button)
 
+        # Show averaged view by default
+        toggle_average_images(images)
+
         window.show()
 
     def toggle_filters_section(self):
