@@ -296,7 +296,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.ui.gridLayout.addWidget(button)
 
         # Show averaged view by default
-        toggle_average_images(images)
+        if not self.roi_view_averaged:
+            toggle_average_images(images)
 
         window.show()
 
