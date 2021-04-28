@@ -1,5 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -253,7 +254,7 @@ class FiltersWindowView(BaseMainWindowView):
         window.setCentralWidget(self.roi_view)
         self.roi_view.setWindowTitle("Select ROI for operation")
 
-        def average_images():
+        def set_averaged_image():
             averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
             self.roi_view.setImage(averaged_images)
             self.roi_view_averaged = True
@@ -263,7 +264,7 @@ class FiltersWindowView(BaseMainWindowView):
                 self.roi_view.setImage(images_.data)
                 self.roi_view_averaged = False
             else:
-                average_images()
+                set_averaged_image()
             self.roi_view.roi.show()
             self.roi_view.ui.roiPlot.hide()
 
@@ -275,7 +276,7 @@ class FiltersWindowView(BaseMainWindowView):
         menu.addSeparator()
         self.roi_view.imageItem.menu = menu
 
-        average_images()
+        set_averaged_image()
 
         def roi_changed_callback(callback):
             roi_field.setText(callback.to_list_string())
