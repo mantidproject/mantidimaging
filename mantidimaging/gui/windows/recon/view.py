@@ -179,7 +179,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if self.presenter.recon_is_running:
             e.ignore()
         else:
-            super().closeEvent(e)
+            self.hide()
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
         selected_images = self.main_window.get_images_from_stack_uuid(uuid)
