@@ -15,6 +15,7 @@ New features
 - #873 : Link histogram scales in operations window
 - #914 : Modes for ROI normalisation
 - #872 : Histogram improvement
+- #920 : Don't forget parameters when closing and reopening recon window
 - #925 : Jenks / Otsu everywhere
 
 Fixes

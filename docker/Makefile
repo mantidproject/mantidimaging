@@ -20,3 +20,5 @@ centos7-base:
 ubuntu18-base:
 	docker build -f Ubuntu18_base.Dockerfile -t mantidproject/mantidimaging:ubuntu18-base ..
 	docker push mantidproject/mantidimaging:ubuntu18-base
+	docker tag mantidproject/mantidimaging:ubuntu18-base mantidproject/mantidimaging:base
+	docker push mantidproject/mantidimaging:base
