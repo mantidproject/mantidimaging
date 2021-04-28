@@ -144,12 +144,10 @@ class PaletteChangerPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
     def test_not_recon_mode_calls_choice(self, choice_mock):
-        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random(
-            (20, 20)), False)
+        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), False)
         choice_mock.assert_called_once()
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
     def test_recon_mode_doesnt_call_choice(self, choice_mock):
-        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random(
-            (20, 20)), True)
+        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
         choice_mock.assert_not_called()
