@@ -404,6 +404,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
     def on_change_colour_palette(self):
+        """
+        Opens the Palette Changer window when the "Auto" option has been clicked.
+        """
         change_colour_palette = PaletteChangerView(self, self.image_view.recon_hist, self.image_view.recon.image,
                                                    [self.image_view.sinogram_hist, self.image_view.projection_hist],
                                                    True)
