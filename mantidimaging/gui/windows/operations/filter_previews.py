@@ -302,7 +302,7 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def _on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
         """
-        Creates a Pallete Changer window when the "Auto" option has been selected.
+        Creates a Palette Changer window when the "Auto" option has been selected.
         :param main_histogram: The HistogramLUTItem.
         :param image: The ImageItem.
         """

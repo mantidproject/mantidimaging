@@ -230,5 +230,8 @@ class MIImageView(ImageView):
         set_histogram_log_scale(self.getHistogramWidget().item)
 
     def on_colour_change_palette(self):
+        """
+        Opens the Palette Changer window when the "Auto" option has been clicked.
+        """
         change_colour_palette = PaletteChangerView(parent=None, main_hist=self.ui.histogram.item, image=self.image)
         change_colour_palette.show()
