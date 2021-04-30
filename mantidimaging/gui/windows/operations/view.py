@@ -254,14 +254,17 @@ class FiltersWindowView(BaseMainWindowView):
         window.setCentralWidget(self.roi_view)
         self.roi_view.setWindowTitle("Select ROI for operation")
 
+        def set_averaged_image():
+            averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
+            self.roi_view.setImage(averaged_images)
+            self.roi_view_averaged = True
+
         def toggle_average_images(images_):
             if self.roi_view_averaged:
                 self.roi_view.setImage(images_.data)
                 self.roi_view_averaged = False
             else:
-                averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
-                self.roi_view.setImage(averaged_images)
-                self.roi_view_averaged = True
+                set_averaged_image()
             self.roi_view.roi.show()
             self.roi_view.ui.roiPlot.hide()
 
@@ -273,7 +276,7 @@ class FiltersWindowView(BaseMainWindowView):
         menu.addSeparator()
         self.roi_view.imageItem.menu = menu
 
-        self.roi_view.setImage(images.data)
+        set_averaged_image()
 
         def roi_changed_callback(callback):
             roi_field.setText(callback.to_list_string())
