@@ -288,14 +288,24 @@ class FilterPreviews(GraphicsLayoutWidget):
         set_histogram_log_scale(self.image_after_hist)
 
     def _add_auto_colour_action(self, histogram: HistogramLUTItem, image: ImageItem):
+        """
+        Adds an "Auto" action to the histogram right-click menu.
+        :param histogram: The HistogramLUTItem
+        :param image: The ImageItem to have the Jenks/Otsu algorithm performed on it.
+        """
         self.auto_colour_actions.append(QAction("Auto"))
-        self.auto_colour_actions[-1].triggered.connect(lambda: self.on_change_colour_palette(histogram, image))
+        self.auto_colour_actions[-1].triggered.connect(lambda: self._on_change_colour_palette(histogram, image))
 
         action = histogram.gradient.menu.actions()[12]
         histogram.gradient.menu.insertAction(action, self.auto_colour_actions[-1])
         histogram.gradient.menu.insertSeparator(self.auto_colour_actions[-1])
 
-    def on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
+    def _on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
+        """
+        Creates a Pallete Changer window when the "Auto" option has been selected.
+        :param main_histogram: The HistogramLUTItem.
+        :param image: The ImageItem.
+        """
         other_histograms = self.all_histograms[:]
         other_histograms.remove(main_histogram)
         change_colour_palette = PaletteChangerView(self, main_histogram, image.image, other_histograms)
