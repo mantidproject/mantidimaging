@@ -55,7 +55,7 @@ class CILRecon(BaseRecon):
         pixel_size = (1.,1.)
         ag = AcquisitionGeometry.create_Parallel3D()\
               .set_panel([pixel_num_v, pixel_num_h], pixel_size=pixel_size)\
-              .set_angles(angles=angles)
+              .set_angles(angles=angles, angle_unit='radian')
         return ag
     @staticmethod
     def set_up_TV_regularisation(image_geometry, acquisition_data):
@@ -124,6 +124,8 @@ class CILRecon(BaseRecon):
         # alpha = 1.0
         # f1 =  alpha * MixedL21Norm()
         # f2 = 0.5 * L2NormSquared(b=ad2d)
+        alpha = recon_params.alpha
+        num_iter = recon_params.num_iter
         F = BlockFunction( alpha * f1, 0.5 * f2)
         normK =  K.norm()
         sigma = 1
@@ -179,6 +181,8 @@ class CILRecon(BaseRecon):
         # alpha = 1.0
         # f1 =  alpha * MixedL21Norm()
         # f2 = 0.5 * L2NormSquared(b=ad2d)
+        alpha = recon_params.alpha
+        num_iter = recon_params.num_iter
         F = BlockFunction( alpha * f1, 0.5 * f2)
         normK =  K.norm()
         sigma = 1
