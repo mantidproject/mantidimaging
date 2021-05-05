@@ -13,6 +13,7 @@ New features
 Fixes
 -----
 
+- #939 : median: NameError: name 'cp' is not defined
 
 Developer Changes
 -----------------
