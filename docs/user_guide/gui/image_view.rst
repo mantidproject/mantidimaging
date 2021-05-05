@@ -58,8 +58,9 @@ the different materials in the image. In some cases, this may make the different
 distinguish from one another. Be aware that the success of the algorithm greatly depends on how much the histogram
 cooperates.
 
-This feature can be accessed by right clicking the projection histogram in the recon window and selecting "Auto", or
-by clicking on the "Auto Change Colour Palette" button in the bottom-left corner. This is shown below:
+This feature can be accessed by right clicking the projection histogram in the recon window and selecting "Auto". In the
+Reconstruction window, there is also the option to access the auto colour feature by clicking on the "Auto Change Colour
+Palette" button in the bottom-left corner. This is shown below:
 
 .. image:: ../../_static/access_auto_colour_palette.png
     :alt: Accessing the auto colour palette

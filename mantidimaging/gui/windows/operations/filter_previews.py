@@ -8,12 +8,14 @@ from typing import Optional
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
+from PyQt5.QtWidgets import QAction
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
+from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 
 LOG = getLogger(__name__)
 
@@ -72,6 +74,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
             name="difference")
 
+        self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
+
         self.image_after_overlay = ImageItem()
         self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
@@ -111,6 +115,11 @@ class FilterPreviews(GraphicsLayoutWidget):
                 self.image_difference_hist.scene(),
         ]:
             scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
+
+        self.auto_colour_actions = []
+        self._add_auto_colour_action(self.image_before_hist, self.image_before)
+        self._add_auto_colour_action(self.image_after_hist, self.image_after)
+        self._add_auto_colour_action(self.image_difference_hist, self.image_difference)
 
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None and isinstance(self.histogram, PlotItem):
@@ -277,3 +286,27 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         set_histogram_log_scale(self.image_before_hist)
         set_histogram_log_scale(self.image_after_hist)
+
+    def _add_auto_colour_action(self, histogram: HistogramLUTItem, image: ImageItem):
+        """
+        Adds an "Auto" action to the histogram right-click menu.
+        :param histogram: The HistogramLUTItem
+        :param image: The ImageItem to have the Jenks/Otsu algorithm performed on it.
+        """
+        self.auto_colour_actions.append(QAction("Auto"))
+        self.auto_colour_actions[-1].triggered.connect(lambda: self._on_change_colour_palette(histogram, image))
+
+        action = histogram.gradient.menu.actions()[12]
+        histogram.gradient.menu.insertAction(action, self.auto_colour_actions[-1])
+        histogram.gradient.menu.insertSeparator(self.auto_colour_actions[-1])
+
+    def _on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
+        """
+        Creates a Palette Changer window when the "Auto" option has been selected.
+        :param main_histogram: The HistogramLUTItem.
+        :param image: The ImageItem.
+        """
+        other_histograms = self.all_histograms[:]
+        other_histograms.remove(main_histogram)
+        change_colour_palette = PaletteChangerView(self, main_histogram, image.image, other_histograms)
+        change_colour_palette.show()

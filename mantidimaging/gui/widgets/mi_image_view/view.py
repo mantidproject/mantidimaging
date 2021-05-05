@@ -5,7 +5,7 @@ from time import sleep
 from typing import Callable, Optional, Tuple
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QAction
 from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
@@ -13,6 +13,7 @@ from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
+from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 
 
 class UnrotateablePlotROI(ROI):
@@ -101,6 +102,13 @@ class MIImageView(ImageView):
 
         self.imageItem.sigImageChanged.connect(self._refresh_message)
         self.imageItem.sigImageChanged.connect(self.set_log_scale)
+
+        self.auto_colour_action = QAction("Auto")
+        self.auto_colour_action.triggered.connect(self.on_colour_change_palette)
+
+        action = self.ui.histogram.item.gradient.menu.actions()[12]
+        self.ui.histogram.item.gradient.menu.insertAction(action, self.auto_colour_action)
+        self.ui.histogram.item.gradient.menu.insertSeparator(self.auto_colour_action)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         for scene in [self.scene, self.ui.roiPlot.sceneObj, self.ui.histogram.sceneObj]:
@@ -220,3 +228,10 @@ class MIImageView(ImageView):
 
     def set_log_scale(self):
         set_histogram_log_scale(self.getHistogramWidget().item)
+
+    def on_colour_change_palette(self):
+        """
+        Opens the Palette Changer window when the "Auto" option has been clicked.
+        """
+        change_colour_palette = PaletteChangerView(parent=None, main_hist=self.ui.histogram.item, image=self.image)
+        change_colour_palette.show()
