@@ -121,10 +121,11 @@ class CILRecon(BaseRecon):
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction')
 
         ag = CILRecon.get_IMAT_AcquisitionGeometry(images.projection_angles(recon_params.max_projection_angle).value)
-        ag.set_labels(DataOrder.ASTRA_AG_LABELS)
+        ag.set_labels(DataOrder.TIGRE_AG_LABELS)
         # stick it into an AcquisitionData
         data = ag.allocate(None)
         data.fill(images.data)
+        data.reorder('astra')
 
         ig = ag.get_ImageGeometry()
         # set up TV regularisation
