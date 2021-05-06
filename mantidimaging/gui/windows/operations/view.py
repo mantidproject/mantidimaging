@@ -256,7 +256,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         def set_averaged_image():
             averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
-            self.roi_view.setImage(averaged_images)
+            self.roi_view.setImage(averaged_images.reshape((1, averaged_images.shape[0], averaged_images.shape[1])))
             self.roi_view_averaged = True
 
         def toggle_average_images(images_):
