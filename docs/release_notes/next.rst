@@ -13,6 +13,7 @@ New features
 Fixes
 -----
 
+- #957 : Crop Coordinates ROI not changing
 
 Developer Changes
 -----------------
