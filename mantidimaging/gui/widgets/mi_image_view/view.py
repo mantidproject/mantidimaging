@@ -143,9 +143,6 @@ class MIImageView(ImageView):
         # if the data isn't 3D the following code can't handle it correctly
         # so defer back to the original implementation which can handle 2D (any maybe ND)
         # more sensibly, albeit slower
-        if self.image.ndim != 3:
-            return super().roiChanged()
-
         roi = self._update_roi_region_avg()
         if self.roi_changed_callback and roi is not None:
             self.roi_changed_callback(roi)
@@ -165,13 +162,18 @@ class MIImageView(ImageView):
         self.sigTimeChanged.emit(ind, time)
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
-        if self.image.ndim != 3:
-            return None
         roi_pos, roi_size = self.get_roi()
         # image indices are in order [Z, X, Y]
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
-        data = self.image[:, top:bottom, left:right]
+
+        if self.image.ndim == 3:
+            data = self.image[:, top:bottom, left:right]
+        elif self.image.ndim == 2:
+            data = self.image[top:bottom, left:right].reshape((1, ) + (roi_size.x, roi_size.y))
+        else:
+            data = self.image
+
         if data is not None:
             while data.ndim > 1:
                 data = data.mean(axis=1)
