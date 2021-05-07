@@ -15,6 +15,7 @@ Fixes
 
 - #939 : median: NameError: name 'cp' is not defined
 - #957 : Crop Coordinates ROI not changing
+- #961 :  Test failure: ImportError: libcuda.so.1
 
 Developer Changes
 -----------------
