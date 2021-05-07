@@ -14,15 +14,19 @@ SAMPLE_SIZE = 15000  # Chosen to avoid Jenks becoming slow
 
 
 class PaletteChangerPresenter(BasePresenter):
-    def __init__(self, view, hists: List[HistogramLUTItem], recon_image: np.ndarray):
+    def __init__(self, view, other_hists: List[HistogramLUTItem], main_hist: HistogramLUTItem, image: np.ndarray,
+                 recon_mode: bool):
         super(PaletteChangerPresenter, self).__init__(view)
         self.rng = np.random.default_rng()
-        self.hists = hists
-        self.recon_image = recon_image
-        self.recon_histogram = hists[0]
+        self.other_hists = other_hists
+        self.image = image
+        self.main_hist = main_hist
 
         # Sample a subset of the histogram image to send to Jenks or Otsu
-        self.flattened_image = self._get_sample_pixels(self.recon_image, min(SAMPLE_SIZE, recon_image.size))
+        if recon_mode:
+            self.flattened_image = self._get_sample_pixels(self.image, min(SAMPLE_SIZE, image.size))
+        else:
+            self.flattened_image = np.random.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
 
     def notify(self, signal):
         pass
@@ -48,7 +52,7 @@ class PaletteChangerPresenter(BasePresenter):
         carried out because the method for determining a new tick's colour fails if there are no ticks present. Hence,
         these are only removed after the new Otsu/Jenks ticks have already been placed in the histogram.
         """
-        self.old_ticks = list(self.recon_histogram.gradient.ticks.keys())
+        self.old_ticks = list(self.main_hist.gradient.ticks.keys())
 
     def _insert_new_ticks(self, tick_points: List[float]):
         """
@@ -57,21 +61,21 @@ class PaletteChangerPresenter(BasePresenter):
         n_tick_points = len(tick_points)
         colours = self._get_colours(n_tick_points)
         for i in range(n_tick_points):
-            self.recon_histogram.gradient.addTick(tick_points[i], color=colours[i], finish=False)
+            self.main_hist.gradient.addTick(tick_points[i], color=colours[i], finish=False)
 
     def _change_colour_map(self):
         """
         Changes the colour map of all three histograms.
         """
         preset = self.view.colour_map
-        for hist in self.hists:
+        for hist in self.other_hists + [self.main_hist]:
             hist.gradient.loadPreset(preset)
 
     def _generate_otsu_tick_points(self) -> List[float]:
         """
         Determine the Otsu threshold tick point.
         """
-        vals = filters.threshold_multiotsu(self.recon_image, classes=self.view.num_materials)
+        vals = filters.threshold_multiotsu(self.image, classes=self.view.num_materials)
         return self._normalise_tick_values(vals.tolist())
 
     def _generate_jenks_tick_points(self) -> List[float]:
@@ -86,9 +90,9 @@ class PaletteChangerPresenter(BasePresenter):
         Scale the collection of break values so that they range from 0 to 1. This is done because addTick expects an
         x value in this range.
         """
-        min_val = self.recon_image.min()
-        max_val = self.recon_image.max()
-        val_range = np.ptp(self.recon_image)
+        min_val = self.image.min()
+        max_val = self.image.max()
+        val_range = np.ptp(self.image)
         breaks = [min_val] + breaks + [max_val]
         return [(break_x - min_val) / val_range for break_x in breaks]
 
@@ -97,15 +101,15 @@ class PaletteChangerPresenter(BasePresenter):
         Remove the default recon histogram ticks from the image.
         """
         for t in self.old_ticks:
-            self.recon_histogram.gradient.removeTick(t, finish=False)
+            self.main_hist.gradient.removeTick(t, finish=False)
 
     def _update_ticks(self):
         """
         Tell the recon histogram ticks to update at the end of a change.
         """
-        self.recon_histogram.gradient.showTicks()
-        self.recon_histogram.gradient.updateGradient()
-        self.recon_histogram.gradient.sigGradientChangeFinished.emit(self.recon_histogram.gradient)
+        self.main_hist.gradient.showTicks()
+        self.main_hist.gradient.updateGradient()
+        self.main_hist.gradient.sigGradientChangeFinished.emit(self.main_hist.gradient)
 
     def _get_colours(self, num_ticks: int) -> List[float]:
         """
@@ -114,7 +118,7 @@ class PaletteChangerPresenter(BasePresenter):
         the histogram.
         """
         norms = np.linspace(0, 1, num_ticks)
-        return [self.recon_histogram.gradient.getColor(norm) for norm in norms]
+        return [self.main_hist.gradient.getColor(norm) for norm in norms]
 
     def _get_sample_pixels(self, image: np.ndarray, count: int, width: float = 0.9):
         """

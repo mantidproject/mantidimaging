@@ -9,7 +9,6 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rebin import RebinFilter
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 class RebinTest(unittest.TestCase):
@@ -116,29 +115,6 @@ class RebinTest(unittest.TestCase):
         # something very huge that shouldn't fit on ANY computer
         rebin_param = (100000, 100000)
         self.assertRaises(RuntimeError, RebinFilter.filter_func, images, rebin_param=rebin_param, mode=mode)
-
-    def test_memory_change_acceptable(self):
-        """
-        This filter will increase the memory usage as it has to allocate memory
-        for the new resized shape
-        """
-        images = th.generate_images()
-
-        mode = 'reflect'
-        # This about doubles the memory. Value found from running the test
-        val = 100.
-
-        expected_x = int(images.data.shape[1] * val)
-        expected_y = int(images.data.shape[2] * val)
-
-        cached_memory = get_memory_usage_linux(kb=True)[0]
-
-        result = RebinFilter.filter_func(images, val, mode)
-
-        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 2)
-
-        npt.assert_equal(result.data.shape[1], expected_x)
-        npt.assert_equal(result.data.shape[2], expected_y)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
