@@ -12,6 +12,10 @@ try:
     import cupy as cp
     mempool = cp.get_default_memory_pool()
 except ModuleNotFoundError:
+    # cupy not installed
+    CUPY_NOT_IMPORTED = True
+except ImportError:
+    # cupy installed, but unable to load CUDA
     CUPY_NOT_IMPORTED = True
 
 MAX_CUPY_MEMORY_FRACTION = 0.8
