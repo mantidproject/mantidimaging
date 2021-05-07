@@ -9,7 +9,6 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.ring_removal import RingRemovalFilter
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 class RingRemovalTest(unittest.TestCase):
@@ -30,17 +29,6 @@ class RingRemovalTest(unittest.TestCase):
         original = np.copy(images.data[0])
         result = RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
         npt.assert_equal(result.data[0], original)
-
-    def test_memory_change_acceptable(self):
-        images = th.generate_images()
-        # invalid threshold
-        run_ring_removal = False
-
-        cached_memory = get_memory_usage_linux(kb=True)[0]
-
-        RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
-
-        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

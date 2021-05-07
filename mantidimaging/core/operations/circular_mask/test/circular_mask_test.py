@@ -4,11 +4,8 @@
 import unittest
 from unittest import mock
 
-import numpy as np
-
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.circular_mask import CircularMaskFilter
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 class CircularMaskTest(unittest.TestCase):
@@ -31,30 +28,6 @@ class CircularMaskTest(unittest.TestCase):
         result = CircularMaskFilter.filter_func(images, ratio)
         self.assertEqual(result.data[0, 0, 0], 0)
         self.assertEqual(result.data[0, 0, -1], 0)
-
-    def test_memory_change_acceptable(self):
-        """
-        Expected behaviour for the filter is to be done in place
-        without using more memory.
-
-        In reality the memory is increased by about 40MB (4 April 2017),
-        but this could change in the future.
-
-        The reason why a 10% window is given on the expected size is
-        to account for any library imports that may happen.
-
-        This will still capture if the data is doubled, which is the main goal.
-        """
-        images = th.generate_images()
-        ratio = 0.9
-        original = np.copy(images.data)
-        cached_memory = get_memory_usage_linux(kb=True)[0]
-
-        result = CircularMaskFilter.filter_func(images, ratio)
-
-        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-        th.assert_not_equals(result.data, original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

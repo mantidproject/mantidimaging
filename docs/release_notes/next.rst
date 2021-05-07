@@ -19,3 +19,5 @@ Fixes
 
 Developer Changes
 -----------------
+
+- #917 : Intermittent failure of StripeRemovalTest.test_memory_executed_wf
