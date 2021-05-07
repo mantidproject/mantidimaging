@@ -2,12 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import Callable, Dict, Type
+from typing import Callable, Dict
 
-from PyQt5.QtWidgets import QFormLayout, QWidget
+from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX
+from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX, Type
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
@@ -39,6 +39,15 @@ class ArithmeticFilter(BaseFilter):
                                                    valid_values=(-MAX_SPIN_BOX, MAX_SPIN_BOX),
                                                    tooltip="The add value.")
 
+        return {
+            'mult_input_widget': mult_input_widget,
+            'add_input_widget': add_input_widget,
+        }
+
     @staticmethod
-    def execute_wrapper(args) -> partial:
-        pass
+    def execute_wrapper(  # type: ignore
+            mult_input_widget: QDoubleSpinBox, add_input_widget: QDoubleSpinBox) -> partial:
+        mult_input = mult_input_widget.value()
+        add_input = add_input_widget.value()
+
+        return partial(ArithmeticFilter.filter_func, mult_val=mult_input, add_val=add_input)
