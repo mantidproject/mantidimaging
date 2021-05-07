@@ -15,7 +15,7 @@ class ArithmeticFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: Images, mult_val: float, add_val: float) -> Images:
+    def filter_func(data: Images, mult_val: float = 1.0, add_val: float = 1.0) -> Images:
         pass
 
     @staticmethod
