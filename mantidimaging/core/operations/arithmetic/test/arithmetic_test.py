@@ -49,3 +49,4 @@ class ArithmeticTest(unittest.TestCase):
         result = ArithmeticFilter().filter_func(images.copy(), sub_val=2.0)
 
         npt.assert_array_equal(images.data - 2.0, result.data)
+        
