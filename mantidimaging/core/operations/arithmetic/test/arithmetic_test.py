@@ -13,14 +13,14 @@ class ArithmeticTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(ArithmeticTest, self).__init__(*args, **kwargs)
 
-    def test_execute_div_only(self):
+    def test_div_only(self):
         images = th.generate_images()
 
         result = ArithmeticFilter().filter_func(images.copy(), div_val=2.0)
 
         npt.assert_array_equal(images.data * 0.5, result.data)
 
-    def test_execute_mult_only(self):
+    def test_mult_only(self):
         images = th.generate_images()
 
         result = ArithmeticFilter().filter_func(images.copy(), mult_val=2.0)
@@ -35,3 +35,17 @@ class ArithmeticTest(unittest.TestCase):
 
         result = ArithmeticFilter().filter_func(images.copy(), div_val=0.0)
         npt.assert_array_equal(images.data, result.data)
+
+    def test_add_only(self):
+        images = th.generate_images()
+
+        result = ArithmeticFilter().filter_func(images.copy(), add_val=2.0)
+
+        npt.assert_array_equal(images.data + 2.0, result.data)
+
+    def test_subtract_only(self):
+        images = th.generate_images()
+
+        result = ArithmeticFilter().filter_func(images.copy(), sub_val=2.0)
+
+        npt.assert_array_equal(images.data - 2.0, result.data)
