@@ -19,7 +19,7 @@ class ArithmeticFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, mult_val: float = 1.0, add_val: float = 1.0) -> Images:
+    def filter_func(images: Images, mult_val: float = 1.0, add_val: float = 1.0, progress=None) -> Images:
         images.data *= mult_val
         images.data += add_val
         return images
@@ -30,12 +30,14 @@ class ArithmeticFilter(BaseFilter):
                                                     Type.FLOAT,
                                                     form=form,
                                                     on_change=on_change,
+                                                    default_value=1.0,
                                                     valid_values=(-MAX_SPIN_BOX, MAX_SPIN_BOX),
                                                     tooltip="The multiplication value.")
         _, add_input_widget = add_property_to_form('Add',
                                                    Type.FLOAT,
                                                    form=form,
                                                    on_change=on_change,
+                                                   default_value=1.0,
                                                    valid_values=(-MAX_SPIN_BOX, MAX_SPIN_BOX),
                                                    tooltip="The add value.")
 
