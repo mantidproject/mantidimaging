@@ -14,12 +14,14 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 
 
 class ArithmeticFilter(BaseFilter):
-    """
+    """Add, subtract, multiply, or divide an image with given values.
+
+    Intended to be used on: Any
+
+    When: If you want to offset or rescale an image.
 
     """
-
     filter_name = "Arithmetic"
-    link_histograms = True
 
     @staticmethod
     def filter_func(images: Images,
