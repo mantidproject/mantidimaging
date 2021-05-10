@@ -6,7 +6,6 @@ from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.remove_stripe import StripeRemovalFilter
-from mantidimaging.core.utility.memory_usage import get_memory_usage_linux
 
 
 class StripeRemovalTest(unittest.TestCase):
@@ -34,18 +33,6 @@ class StripeRemovalTest(unittest.TestCase):
     def test_executed_sf(self):
         sf = ['size=5']
         self.do_stripe_removal(sf=sf)
-
-    def test_memory_executed_wf(self):
-        wf = ["level=1"]
-        cached_memory = get_memory_usage_linux(kb=True)[0]
-        self.do_stripe_removal(wf=wf)
-        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
-
-    def test_memory_executed_sf(self):
-        sf = ['size=5']
-        cached_memory = get_memory_usage_linux(kb=True)[0]
-        self.do_stripe_removal(sf=sf)
-        self.assertLess(get_memory_usage_linux(kb=True)[0], cached_memory * 1.1)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
