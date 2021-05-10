@@ -14,22 +14,35 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 
 
 class ArithmeticFilter(BaseFilter):
+    """
+
+    """
 
     filter_name = "Arithmetic"
     link_histograms = True
 
     @staticmethod
     def filter_func(images: Images,
-                    mult_val: float = 1.0,
                     div_val: float = 1.0,
+                    mult_val: float = 1.0,
                     add_val: float = 0.0,
                     sub_val: float = 0.0,
                     progress=None) -> Images:
+        """
+        Apply arithmetic operations to the pixels.
 
-        if mult_val != 0:
-            images.data *= mult_val
+        :param images: The Images object.
+        :param mult_val: The multiplication value.
+        :param div_val: The division value.
+        :param add_val: The addition value.
+        :param sub_val: The subtraction value.
+        :param progress: The Progress object isn't used.
+        :return: The processed Images object.
+        """
         if div_val != 0:
             images.data /= div_val
+        if mult_val != 0:
+            images.data *= mult_val
         images.data = images.data + add_val - sub_val
         return images
 
