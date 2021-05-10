@@ -16,6 +16,6 @@ class ArithmeticTest(unittest.TestCase):
     def test_execute_div_only(self):
         images = th.generate_images()
 
-        result = ArithmeticFilter().filter_func(images.copy(), div_val = 2.0)
+        result = ArithmeticFilter().filter_func(images.copy(), div_val=2.0)
 
         npt.assert_array_equal(images.data * 0.5, result.data)
