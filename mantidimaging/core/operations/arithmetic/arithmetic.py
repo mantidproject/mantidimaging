@@ -79,6 +79,11 @@ class ArithmeticFilter(BaseFilter):
                                                    valid_values=(-MAX_SPIN_BOX, MAX_SPIN_BOX),
                                                    tooltip="The subtract value.")
 
+        add_input_widget.setSingleStep(1e-6)
+        add_input_widget.setDecimals(6)
+        sub_input_widget.setSingleStep(1e-6)
+        sub_input_widget.setDecimals(6)
+
         return {
             'mult_input_widget': mult_input_widget,
             'div_input_widget': div_input_widget,
