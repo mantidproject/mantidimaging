@@ -183,7 +183,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         self.assertEqual([
             'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', "-----------------",
-            'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation', 'Rebin', 'Rescale',
+            'Arithmetic', 'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation', 'Rebin', 'Rescale',
             'Ring Removal', 'Rotate Stack', "-----------------", 'Remove all stripes', 'Remove dead stripes',
             'Remove large stripes', 'Stripe Removal', 'Remove stripes with filtering',
             'Remove stripes with sorting and fitting'
