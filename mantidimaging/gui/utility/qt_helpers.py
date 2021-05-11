@@ -16,6 +16,8 @@ from PyQt5.QtWidgets import QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckB
 
 from mantidimaging.core.utility import finder
 
+MAX_SPIN_BOX = 2147483647
+
 
 class BlockQtSignals(object):
     """
