@@ -7,7 +7,7 @@ from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
 import scipy.ndimage as scipy_ndimage
 from PyQt5.QtGui import QValidator
-from PyQt5.QtWidgets import QSpinBox
+from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -16,10 +16,12 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
-from mantidimaging.gui.utility.qt_helpers import Type, _on_change_and_disable
+from mantidimaging.gui.utility.qt_helpers import Type, on_change_and_disable
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
+
+KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
 
 
 class KernelSpinBox(QSpinBox):
@@ -28,6 +30,9 @@ class KernelSpinBox(QSpinBox):
         self.setMinimum(3)
         self.setMaximum(999)
         self.setSingleStep(2)
+        self.setKeyboardTracking(False)
+        self.setToolTip(KERNEL_SIZE_TOOLTIP)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
 
     def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
         if not input:
@@ -79,9 +84,10 @@ class MedianFilter(BaseFilter):
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
         size_field = KernelSpinBox()
-        size_field.valueChanged.connect(lambda: _on_change_and_disable(size_field, on_change))
-        size_field.setToolTip("Size of the median filter kernel")
-        form.addRow("Kernel Size", size_field)
+        size_field.valueChanged.connect(lambda: on_change_and_disable(size_field, on_change))
+        size_field_label = QLabel("Kernel Size")
+        size_field_label.setToolTip(KERNEL_SIZE_TOOLTIP)
+        form.addRow(size_field_label, size_field)
 
         _, mode_field = add_property_to_form('Edge Mode',
                                              Type.CHOICE,
