@@ -47,7 +47,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     def __init__(self, parent=None, **kwargs):
         super(FilterPreviews, self).__init__(parent, **kwargs)
 
-        widget_location = self.mapToGlobal(QPoint(self.width() / 2, 0))
+        widget_location = self.mapToGlobal(QPoint(self.width() // 2, 0))
         # allow the widget to take up to 80% of the desktop's height
         if QGuiApplication.screenAt(widget_location) is not None:
             screen_height = QGuiApplication.screenAt(widget_location).availableGeometry().height()
