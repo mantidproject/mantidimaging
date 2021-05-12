@@ -62,7 +62,7 @@ class MedianFilter(BaseFilter):
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
         _, size_field = add_property_to_form('Kernel Size',
                                              Type.INT,
-                                             3, (2, 1000),
+                                             3, (3, 1000),
                                              form=form,
                                              on_change=on_change,
                                              tooltip="Size of the median filter kernel")
@@ -80,6 +80,8 @@ class MedianFilter(BaseFilter):
                                             tooltip='Run the median filter on the GPU',
                                             form=form,
                                             on_change=on_change)
+
+        size_field.setSingleStep(2)
 
         return {'size_field': size_field, 'mode_field': mode_field, 'use_gpu_field': gpu_field}
 
