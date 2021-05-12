@@ -25,7 +25,7 @@ KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
 
 
 class KernelSpinBox(QSpinBox):
-    def __init__(self):
+    def __init__(self, on_change: Callable):
         super().__init__()
         self.setMinimum(3)
         self.setMaximum(999)
@@ -33,6 +33,7 @@ class KernelSpinBox(QSpinBox):
         self.setKeyboardTracking(False)
         self.setToolTip(KERNEL_SIZE_TOOLTIP)
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        self.valueChanged.connect(lambda: on_change_and_disable(self, on_change))
 
     def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
         if not input:
@@ -83,8 +84,7 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
-        size_field = KernelSpinBox()
-        size_field.valueChanged.connect(lambda: on_change_and_disable(size_field, on_change))
+        size_field = KernelSpinBox(on_change)
         size_field_label = QLabel("Kernel Size")
         size_field_label.setToolTip(KERNEL_SIZE_TOOLTIP)
         form.addRow(size_field_label, size_field)
