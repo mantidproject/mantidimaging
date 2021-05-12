@@ -3,9 +3,11 @@
 
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Any, TYPE_CHECKING
+from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
 import scipy.ndimage as scipy_ndimage
+from PyQt5.QtGui import QValidator
+from PyQt5.QtWidgets import QSpinBox
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -14,10 +16,26 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
-from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.gui.utility.qt_helpers import Type, _on_change_and_disable
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
+
+
+class KernelSpinBox(QSpinBox):
+    def __init__(self):
+        super().__init__()
+        self.setMinimum(3)
+        self.setMaximum(999)
+        self.setSingleStep(2)
+
+    def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
+        if not input:
+            return QValidator.Intermediate, input, pos
+        kernel_size = int(input)
+        if kernel_size % 2 != 0:
+            return QValidator.Acceptable, input, pos
+        return QValidator.Intermediate, input, pos
 
 
 class MedianFilter(BaseFilter):
@@ -60,12 +78,10 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
-        _, size_field = add_property_to_form('Kernel Size',
-                                             Type.INT,
-                                             3, (3, 1000),
-                                             form=form,
-                                             on_change=on_change,
-                                             tooltip="Size of the median filter kernel")
+        size_field = KernelSpinBox()
+        size_field.valueChanged.connect(lambda: _on_change_and_disable(size_field, on_change))
+        size_field.setToolTip("Size of the median filter kernel")
+        form.addRow("Kernel Size", size_field)
 
         _, mode_field = add_property_to_form('Edge Mode',
                                              Type.CHOICE,
@@ -80,8 +96,6 @@ class MedianFilter(BaseFilter):
                                             tooltip='Run the median filter on the GPU',
                                             form=form,
                                             on_change=on_change)
-
-        size_field.setSingleStep(2)
 
         return {'size_field': size_field, 'mode_field': mode_field, 'use_gpu_field': gpu_field}
 
