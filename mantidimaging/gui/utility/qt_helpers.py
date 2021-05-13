@@ -78,7 +78,7 @@ class Type(IntEnum):
     BUTTON = auto()
 
 
-def _on_change_and_disable(widget: QWidget, on_change: Callable):
+def on_change_and_disable(widget: QWidget, on_change: Callable):
     """
     Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that
     continue increasing when generating a preview image is computationally intensive.
@@ -151,14 +151,14 @@ def add_property_to_form(label: str,
         right_widget.setKeyboardTracking(False)
         set_spin_box(right_widget, int)
         if on_change is not None:
-            right_widget.valueChanged.connect(lambda: _on_change_and_disable(right_widget, on_change))
+            right_widget.valueChanged.connect(lambda: on_change_and_disable(right_widget, on_change))
 
     elif dtype == 'float' or dtype == Type.FLOAT:
         right_widget = Qt.QDoubleSpinBox()
         set_spin_box(right_widget, float)
         right_widget.setKeyboardTracking(False)
         if on_change is not None:
-            right_widget.valueChanged.connect(lambda: _on_change_and_disable(right_widget, on_change))
+            right_widget.valueChanged.connect(lambda: on_change_and_disable(right_widget, on_change))
 
     elif dtype == 'bool' or dtype == Type.BOOL:
         right_widget = Qt.QCheckBox()

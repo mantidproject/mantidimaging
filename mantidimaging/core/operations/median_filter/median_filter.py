@@ -3,9 +3,11 @@
 
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Any, TYPE_CHECKING
+from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
 import scipy.ndimage as scipy_ndimage
+from PyQt5.QtGui import QValidator
+from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -14,10 +16,40 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
-from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.gui.utility.qt_helpers import Type, on_change_and_disable
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
+
+KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
+
+
+class KernelSpinBox(QSpinBox):
+    def __init__(self, on_change: Callable):
+        """
+        Spin box for entering kernel sizes that only accepts odd numbers.
+        :param on_change: The function to be called when the value changes.
+        """
+        super().__init__()
+        self.setMinimum(3)
+        self.setMaximum(999)
+        self.setSingleStep(2)
+        self.setKeyboardTracking(False)
+        self.setToolTip(KERNEL_SIZE_TOOLTIP)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        self.valueChanged.connect(lambda: on_change_and_disable(self, on_change))
+
+    def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
+        """
+        Validate the spin box input. Returns as Intermediate state if the input is empty or contains an even number,
+        otherwise it returns Acceptable.
+        """
+        if not input:
+            return QValidator.Intermediate, input, pos
+        kernel_size = int(input)
+        if kernel_size % 2 != 0:
+            return QValidator.Acceptable, input, pos
+        return QValidator.Intermediate, input, pos
 
 
 class MedianFilter(BaseFilter):
@@ -60,12 +92,12 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
-        _, size_field = add_property_to_form('Kernel Size',
-                                             Type.INT,
-                                             3, (2, 1000),
-                                             form=form,
-                                             on_change=on_change,
-                                             tooltip="Size of the median filter kernel")
+
+        # Create a spin box for kernel size without add_property_to_form in order to allow a custom validate method
+        size_field = KernelSpinBox(on_change)
+        size_field_label = QLabel("Kernel Size")
+        size_field_label.setToolTip(KERNEL_SIZE_TOOLTIP)
+        form.addRow(size_field_label, size_field)
 
         _, mode_field = add_property_to_form('Edge Mode',
                                              Type.CHOICE,
