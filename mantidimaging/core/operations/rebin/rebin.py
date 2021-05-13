@@ -83,13 +83,13 @@ class RebinFilter(BaseFilter):
         _, shape_x = add_property_to_form('X', Type.INT, valid_values=shape_range, on_change=on_change)
         _, shape_y = add_property_to_form('Y', Type.INT, valid_values=shape_range, on_change=on_change)
 
-        from PyQt5 import Qt
-        shape_fields = Qt.QHBoxLayout()
+        from PyQt5.QtWidgets import QHBoxLayout, QRadioButton, QLabel, QComboBox
+        shape_fields = QHBoxLayout()
         shape_fields.addWidget(shape_x)
         shape_fields.addWidget(shape_y)
 
         # Rebin dimension selection options
-        rebin_by_factor_radio = Qt.QRadioButton("Rebin by Factor")
+        rebin_by_factor_radio = QRadioButton("Rebin by Factor")
 
         def size_by_factor_toggled(enabled):
             factor.setEnabled(enabled)
@@ -97,7 +97,7 @@ class RebinFilter(BaseFilter):
 
         rebin_by_factor_radio.toggled.connect(size_by_factor_toggled)
 
-        rebin_to_dimensions_radio = Qt.QRadioButton("Rebin to Dimensions")
+        rebin_to_dimensions_radio = QRadioButton("Rebin to Dimensions")
 
         def size_by_dimensions_toggled(enabled):
             shape_x.setEnabled(enabled)
@@ -107,8 +107,8 @@ class RebinFilter(BaseFilter):
         rebin_to_dimensions_radio.toggled.connect(size_by_dimensions_toggled)
 
         # Rebin mode options
-        label_mode = Qt.QLabel("Mode")
-        mode_field = Qt.QComboBox()
+        label_mode = QLabel("Mode")
+        mode_field = QComboBox()
         mode_field.addItems(modes())
 
         form.addRow(rebin_to_dimensions_radio, shape_fields)
