@@ -7,11 +7,11 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
-from PyQt5 import Qt
+from PyQt5.QtWidgets import QMainWindow
 
 
 class AsyncTaskDialogView(BaseDialogView):
-    def __init__(self, parent: 'Qt.QMainWindow', auto_close=False):
+    def __init__(self, parent: QMainWindow, auto_close=False):
         super(AsyncTaskDialogView, self).__init__(parent, 'gui/ui/async_task_dialog.ui')
 
         self.parent_view = parent
@@ -53,7 +53,7 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setValue(progress * 1000)
 
 
-def start_async_task_view(parent: 'Qt.QMainWindow', task: Callable, on_complete: Callable, kwargs=None):
+def start_async_task_view(parent: QMainWindow, task: Callable, on_complete: Callable, kwargs=None):
     atd = AsyncTaskDialogView(parent, auto_close=True)
     if not kwargs:
         kwargs = {'progress': Progress()}
