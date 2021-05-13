@@ -6,7 +6,7 @@ from enum import Enum
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from PyQt5 import Qt
+from PyQt5.QtCore import pyqtSignal
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
@@ -30,7 +30,7 @@ class Notification(Enum):
 
 
 class CORInspectionDialogPresenter(BasePresenter):
-    progress_updated = Qt.pyqtSignal(float, str)
+    progress_updated = pyqtSignal(float, str)
 
     view: 'CORInspectionDialogView'
 
