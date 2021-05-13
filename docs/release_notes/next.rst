@@ -24,6 +24,7 @@ Developer Changes
 -----------------
 
 - #917 : Intermittent failure of StripeRemovalTest.test_memory_executed_wf
+- #978 : Update Qt API usage
 
 Dependency updates
 ------------------
