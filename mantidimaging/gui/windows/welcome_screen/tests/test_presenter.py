@@ -18,8 +18,8 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
         QCoreApplication.setApplicationName("test1")
         QCoreApplication.setOrganizationName("org1")
         cls.settings_dir = tempfile.TemporaryDirectory()
-        QSettings.setDefaultFormat(QSettings.IniFormat)
-        QSettings.setPath(QSettings.IniFormat, QSettings.UserScope, cls.settings_dir.name)
+        QSettings.setDefaultFormat(QSettings.Format.IniFormat)
+        QSettings.setPath(QSettings.Format.IniFormat, QSettings.Scope.UserScope, cls.settings_dir.name)
 
     def setUp(self):
         self.v = mock.MagicMock()
