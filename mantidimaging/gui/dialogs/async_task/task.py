@@ -3,12 +3,12 @@
 
 from logging import getLogger
 
-from PyQt5 import Qt
+from PyQt5.QtCore import QThread
 
 from mantidimaging.core.utility.func_call import call_with_known_parameters
 
 
-class TaskWorkerThread(Qt.QThread):
+class TaskWorkerThread(QThread):
     """
     Thread for running tasks asynchronously to the GUI.
 
