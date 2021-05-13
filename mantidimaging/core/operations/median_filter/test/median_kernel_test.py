@@ -38,7 +38,7 @@ class MedianKernelTest(unittest.TestCase):
             self.assertEqual(self.size_kernel.value(), 3)
 
     def test_odd_kernel_size_with_even_first_digit_is_accepted(self):
-        QTest.keyClick(self.size_kernel.lineEdit(), Qt.Key_Delete)  # Clear the line edit
+        QTest.keyClick(self.size_kernel.lineEdit(), Qt.Key.Key_Delete)  # Clear the line edit
         QTest.keyClicks(self.size_kernel.lineEdit(), "21")
-        QTest.keyClick(self.size_kernel.lineEdit(), Qt.Key_Enter)
+        QTest.keyClick(self.size_kernel.lineEdit(), Qt.Key.Key_Enter)
         self.assertEqual(self.size_kernel.value(), 21)
