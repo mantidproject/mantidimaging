@@ -3,14 +3,14 @@
 
 from logging import getLogger
 
-from PyQt5 import Qt, QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
 
 from mantidimaging.gui.utility import compile_ui
 
 LOG = getLogger(__name__)
 
 
-class BaseMainWindowView(Qt.QMainWindow):
+class BaseMainWindowView(QMainWindow):
     def __init__(self, parent, ui_file=None):
         super(BaseMainWindowView, self).__init__(parent)
 
@@ -34,10 +34,10 @@ class BaseMainWindowView(Qt.QMainWindow):
 
         :param msg: Error message string
         """
-        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
+        QMessageBox.critical(self, "Error", str(msg))
 
 
-class BaseDialogView(Qt.QDialog):
+class BaseDialogView(QDialog):
     def __init__(self, parent, ui_file=None):
         super(BaseDialogView, self).__init__(parent)
 
@@ -50,4 +50,4 @@ class BaseDialogView(Qt.QDialog):
 
         :param msg: Error message string
         """
-        QtWidgets.QMessageBox.critical(self, "Error", str(msg))
+        QMessageBox.critical(self, "Error", str(msg))
