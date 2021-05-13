@@ -24,6 +24,11 @@ class MedianKernelTest(unittest.TestCase):
         self.size_kernel.stepDown()
         self.assertEqual(self.size_kernel.value(), 3)
 
+    def test_maximum_value_of_nine_nine_nine(self):
+        self.size_kernel.setValue(999)
+        self.size_kernel.stepUp()
+        self.assertEqual(self.size_kernel.value(), 999)
+
     def test_even_numbers_rejected(self):
         for even_num_str in [str(i) for i in range(2, 10, 2)]:
             self.size_kernel.lineEdit().setText(even_num_str)
