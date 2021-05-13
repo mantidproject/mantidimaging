@@ -143,12 +143,11 @@ class MainWindowViewTest(unittest.TestCase):
                                                       new_name="oranges")
 
     @mock.patch("mantidimaging.gui.windows.main.view.getLogger")
-    @mock.patch("mantidimaging.gui.windows.main.view.QtWidgets")
-    def test_uncaught_exception(self, mock_qtwidgets, mock_getlogger):
+    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
+    def test_uncaught_exception(self, mock_qtmessagebox, mock_getlogger):
         self.view.uncaught_exception("user-error", "log-error")
 
-        mock_qtwidgets.QMessageBox.critical.assert_called_once_with(self.view, self.view.UNCAUGHT_EXCEPTION,
-                                                                    "user-error")
+        mock_qtmessagebox.critical.assert_called_once_with(self.view, self.view.UNCAUGHT_EXCEPTION, "user-error")
         mock_getlogger.return_value.error.assert_called_once_with("log-error")
 
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
@@ -156,10 +155,10 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.show_about()
         mock_welcomescreen.assert_called_once_with(self.view)
 
-    @mock.patch("mantidimaging.gui.windows.main.view.QtGui")
-    def test_open_online_documentation(self, mock_qtgui: mock.Mock):
+    @mock.patch("mantidimaging.gui.windows.main.view.QDesktopServices")
+    def test_open_online_documentation(self, mock_qtdeskserv: mock.Mock):
         self.view.open_online_documentation()
-        mock_qtgui.QDesktopServices.openUrl.assert_called_once()
+        mock_qtdeskserv.openUrl.assert_called_once()
 
     @mock.patch.multiple("mantidimaging.gui.windows.main.view.MainWindowView",
                          setCentralWidget=DEFAULT,

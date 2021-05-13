@@ -6,9 +6,8 @@ from logging import getLogger
 from typing import Optional
 from uuid import UUID
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl
+from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
 
 from mantidimaging.core.data import Images
@@ -145,8 +144,8 @@ class MainWindowView(BaseMainWindowView):
 
     @staticmethod
     def open_online_documentation():
-        url = QtCore.QUrl("https://mantidproject.github.io/mantidimaging/")
-        QtGui.QDesktopServices.openUrl(url)
+        url = QUrl("https://mantidproject.github.io/mantidimaging/")
+        QDesktopServices.openUrl(url)
 
     def show_about(self):
         self.welcome_window = WelcomeScreenPresenter(self)
@@ -308,7 +307,7 @@ class MainWindowView(BaseMainWindowView):
     def create_stack_window(self,
                             stack: Images,
                             title: str,
-                            position=QtCore.Qt.TopDockWidgetArea,
+                            position=Qt.DockWidgetArea.TopDockWidgetArea,
                             floating=False) -> StackVisualiserView:
         stack_vis = StackVisualiserView(self, title, stack)
 
@@ -337,11 +336,11 @@ class MainWindowView(BaseMainWindowView):
         if self.presenter.have_active_stacks and self.open_dialogs:
             # Show confirmation box asking if the user really wants to quit if
             # they have data loaded
-            msg_box = QtWidgets.QMessageBox.question(self,
-                                                     "Quit",
-                                                     "Are you sure you want to quit with loaded data?",
-                                                     defaultButton=QtWidgets.QMessageBox.No)
-            should_close = msg_box == QtWidgets.QMessageBox.Yes
+            msg_box = QMessageBox.question(self,
+                                           "Quit",
+                                           "Are you sure you want to quit with loaded data?",
+                                           defaultButton=QMessageBox.No)
+            should_close = msg_box == QMessageBox.Yes
 
         if should_close:
             # Pass close event to parent
@@ -352,7 +351,7 @@ class MainWindowView(BaseMainWindowView):
             event.ignore()
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
-        QtWidgets.QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
+        QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)
 
     def show_stack_select_dialog(self):
