@@ -4,6 +4,9 @@
 import unittest
 from unittest import mock
 
+from PyQt5.QtCore import Qt
+from PyQt5.QtTest import QTest
+
 from mantidimaging.core.operations.median_filter.median_filter import KernelSpinBox
 from mantidimaging.test_helpers import start_qapplication
 
@@ -16,7 +19,7 @@ class MedianKernelTest(unittest.TestCase):
     def test_default_kernel_size(self):
         self.assertEqual(self.size_kernel.value(), 3)
 
-    def test_increase_jumps_by_two(self):
+    def test_step_up_increases_size_by_two(self):
         self.size_kernel.stepUp()
         self.assertEqual(self.size_kernel.value(), 5)
 
@@ -33,3 +36,9 @@ class MedianKernelTest(unittest.TestCase):
         for even_num_str in [str(i) for i in range(2, 10, 2)]:
             self.size_kernel.lineEdit().setText(even_num_str)
             self.assertEqual(self.size_kernel.value(), 3)
+
+    def test_odd_kernel_size_with_even_first_digit_is_accepted(self):
+        QTest.keyClick(self.size_kernel.lineEdit(), Qt.Key_Delete)  # Clear the line edit
+        QTest.keyClicks(self.size_kernel.lineEdit(), "21")
+        QTest.keyClick(self.size_kernel.lineEdit(), Qt.Key_Enter)
+        self.assertEqual(self.size_kernel.value(), 21)
