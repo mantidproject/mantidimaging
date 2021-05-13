@@ -36,7 +36,7 @@ class StackChoiceView(BaseMainWindowView):
         self.presenter = presenter
 
         self.setWindowTitle("Choose the stack you want to keep")
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
 
         # Create stacks and place them in the choice window
         self.original_stack = MIImageView(detailsSpanAllCols=True)
