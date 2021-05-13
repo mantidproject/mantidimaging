@@ -26,6 +26,10 @@ KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
 
 class KernelSpinBox(QSpinBox):
     def __init__(self, on_change: Callable):
+        """
+        Spin box for entering kernel sizes that only accepts odd numbers.
+        :param on_change: The function to be called when the value changes.
+        """
         super().__init__()
         self.setMinimum(3)
         self.setMaximum(999)
@@ -36,6 +40,10 @@ class KernelSpinBox(QSpinBox):
         self.valueChanged.connect(lambda: on_change_and_disable(self, on_change))
 
     def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
+        """
+        Validate the spin box input. Returns as Intermediate state if the input is empty or contains an even number,
+        otherwise it returns Acceptable.
+        """
         if not input:
             return QValidator.Intermediate, input, pos
         kernel_size = int(input)
@@ -84,6 +92,8 @@ class MedianFilter(BaseFilter):
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
+
+        # Create a spin box without add property to form in order to allow a custom validate method
         size_field = KernelSpinBox(on_change)
         size_field_label = QLabel("Kernel Size")
         size_field_label.setToolTip(KERNEL_SIZE_TOOLTIP)
