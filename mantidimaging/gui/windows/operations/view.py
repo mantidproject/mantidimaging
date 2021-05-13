@@ -4,7 +4,7 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5 import Qt
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
 from pyqtgraph import ImageItem
@@ -24,8 +24,8 @@ if TYPE_CHECKING:
 
 
 class FiltersWindowView(BaseMainWindowView):
-    auto_update_triggered = Qt.pyqtSignal()
-    filter_applied = Qt.pyqtSignal()
+    auto_update_triggered = pyqtSignal()
+    filter_applied = pyqtSignal()
 
     splitter: QSplitter
     collapseToggleButton: QPushButton
