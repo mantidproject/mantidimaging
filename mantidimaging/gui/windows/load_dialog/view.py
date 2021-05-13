@@ -3,9 +3,8 @@
 
 from typing import Optional, Tuple
 
-from PyQt5 import Qt
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView, QSpinBox
+    QHeaderView, QSpinBox, QDialog, QFileDialog
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
@@ -14,7 +13,7 @@ from mantidimaging.gui.windows.load_dialog.field import Field
 from .presenter import LoadPresenter, Notification
 
 
-class MWLoadDialog(Qt.QDialog):
+class MWLoadDialog(QDialog):
     tree: QTreeWidget
     pixel_bit_depth: QComboBox
     images_are_sinograms: QCheckBox
@@ -103,7 +102,7 @@ class MWLoadDialog(Qt.QDialog):
 
         select_button = QPushButton("Select", self)
         select_button.setMaximumWidth(100)
-        select_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        select_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
 
         self.tree.setItemWidget(section, 3, select_button)
         field = Field(self, self.tree, section, use)
@@ -122,9 +121,9 @@ class MWLoadDialog(Qt.QDialog):
         else:
             # Assume text file
             file_filter = "Log File (*.txt *.log *.csv)"
-        selected_file, _ = Qt.QFileDialog.getOpenFileName(caption=caption,
-                                                          filter=f"{file_filter};;All (*.*)",
-                                                          initialFilter=file_filter)
+        selected_file, _ = QFileDialog.getOpenFileName(caption=caption,
+                                                       filter=f"{file_filter};;All (*.*)",
+                                                       initialFilter=file_filter)
 
         if len(selected_file) > 0:
             return selected_file
