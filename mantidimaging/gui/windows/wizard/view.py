@@ -4,8 +4,7 @@
 from __future__ import annotations
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
-from PyQt5.Qt import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from typing import List
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -39,7 +38,7 @@ class WizardStep(QWidget):
         self.name = step["name"]
         self.layout = QVBoxLayout(self)
         self.title_label = QPushButton("Step: " + self.name)
-        self.title_label.setLayoutDirection(Qt.RightToLeft)
+        self.title_label.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
 
         self.layout.addWidget(self.title_label)
 
@@ -78,7 +77,7 @@ class WizardStep(QWidget):
         self.title_label.setEnabled(enabled)
 
         if self.done_predicate(stack_history):
-            self.title_label.setIcon(self.style().standardIcon(QStyle.SP_DialogApplyButton))
+            self.title_label.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogApplyButton))
         else:
             self.title_label.setIcon(QIcon())
 
