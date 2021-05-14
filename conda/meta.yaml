@@ -25,7 +25,7 @@ requirements:
     - pip
     - astropy=4.2
     - scipy=1.5.3
-    - scikit-image=0.17.2
+    - scikit-image=0.18.*
     - numpy=1.19.4
     - tomopy=1.7.1=cuda*
     - cudatoolkit=9.2*
