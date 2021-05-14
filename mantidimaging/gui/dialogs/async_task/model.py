@@ -4,15 +4,15 @@
 from logging import getLogger
 from typing import Callable
 
-from PyQt5 import Qt, QtCore
+from PyQt5.QtCore import QObject, pyqtSignal
 
 from .task import TaskWorkerThread
 
 
-class AsyncTaskDialogModel(Qt.QObject):
+class AsyncTaskDialogModel(QObject):
 
     # Signal emitted when task processing has terminated
-    task_done = QtCore.pyqtSignal(bool)
+    task_done = pyqtSignal(bool)
 
     def __init__(self):
         super(AsyncTaskDialogModel, self).__init__()

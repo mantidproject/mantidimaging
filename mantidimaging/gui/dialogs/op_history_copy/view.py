@@ -49,7 +49,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
         check.setText(operation.display_name)
         check.setStyleSheet('font-weight: bold')
         check.setChecked(True)
-        check.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        check.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Preferred)
         parent_layout.addWidget(check)
 
         row_num = 1

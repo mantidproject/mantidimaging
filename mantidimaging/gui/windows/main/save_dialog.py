@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5 import Qt
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
@@ -18,14 +18,14 @@ def sort_by_tomo_and_recon(stack_id: StackId):
         return 3
 
 
-class MWSaveDialog(Qt.QDialog):
+class MWSaveDialog(QDialog):
     def __init__(self, parent, stack_list):
         super(MWSaveDialog, self).__init__(parent)
         compile_ui('gui/ui/save_dialog.ui', self)
 
         self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
 
-        self.buttonBox.button(Qt.QDialogButtonBox.SaveAll).clicked.connect(self.save_all)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll).clicked.connect(self.save_all)
 
         # dynamically add all the supported formats
         formats = supported_formats()

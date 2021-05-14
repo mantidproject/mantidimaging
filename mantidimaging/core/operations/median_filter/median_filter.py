@@ -36,7 +36,7 @@ class KernelSpinBox(QSpinBox):
         self.setSingleStep(2)
         self.setKeyboardTracking(False)
         self.setToolTip(KERNEL_SIZE_TOOLTIP)
-        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
         self.valueChanged.connect(lambda: on_change_and_disable(self, on_change))
 
     def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
@@ -45,11 +45,11 @@ class KernelSpinBox(QSpinBox):
         otherwise it returns Acceptable.
         """
         if not input:
-            return QValidator.Intermediate, input, pos
+            return QValidator.State.Intermediate, input, pos
         kernel_size = int(input)
         if kernel_size % 2 != 0:
-            return QValidator.Acceptable, input, pos
-        return QValidator.Intermediate, input, pos
+            return QValidator.State.Acceptable, input, pos
+        return QValidator.State.Intermediate, input, pos
 
 
 class MedianFilter(BaseFilter):

@@ -9,10 +9,10 @@ from enum import IntEnum, auto
 from logging import getLogger
 from typing import Any, Tuple, Union, List, Callable
 
-from PyQt5 import Qt
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction, QMenu
+from PyQt5.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction,
+                             QMenu, QPushButton, QLayout, QFileDialog, QComboBox)
 
 from mantidimaging.core.utility import finder
 
@@ -27,7 +27,7 @@ class BlockQtSignals(object):
         if not isinstance(q_objects, list):
             q_objects = [q_objects]
         for obj in q_objects:
-            assert isinstance(obj, Qt.QObject), \
+            assert isinstance(obj, QObject), \
                 "This class must be used with QObjects"
 
         self.q_objects = q_objects
@@ -48,11 +48,11 @@ def compile_ui(ui_file, qt_obj=None):
 
 
 def select_directory(field, caption):
-    assert isinstance(field, Qt.QLineEdit), ("The passed object is of type {0}. This function only works with "
-                                             "QLineEdit".format(type(field)))
+    assert isinstance(field, QLineEdit), ("The passed object is of type {0}. This function only works with "
+                                          "QLineEdit".format(type(field)))
 
     # open file dialogue and set the text if file is selected
-    field.setText(Qt.QFileDialog.getExistingDirectory(caption=caption))
+    field.setText(QFileDialog.getExistingDirectory(caption=caption))
 
 
 def get_value_from_qwidget(widget: QWidget):
@@ -139,7 +139,7 @@ def add_property_to_form(label: str,
 
     if dtype in ['str', Type.STR, 'tuple', Type.TUPLE, 'NoneType', Type.NONETYPE, 'list', Type.LIST]:
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
-        right_widget = Qt.QLineEdit()
+        right_widget = QLineEdit()
         right_widget.setToolTip(tooltip)
         right_widget.setText(default_value)
 
@@ -147,21 +147,21 @@ def add_property_to_form(label: str,
             right_widget.editingFinished.connect(lambda: on_change())
 
     elif dtype == 'int' or dtype == Type.INT:
-        right_widget = Qt.QSpinBox()
+        right_widget = QSpinBox()
         right_widget.setKeyboardTracking(False)
         set_spin_box(right_widget, int)
         if on_change is not None:
             right_widget.valueChanged.connect(lambda: on_change_and_disable(right_widget, on_change))
 
     elif dtype == 'float' or dtype == Type.FLOAT:
-        right_widget = Qt.QDoubleSpinBox()
+        right_widget = QDoubleSpinBox()
         set_spin_box(right_widget, float)
         right_widget.setKeyboardTracking(False)
         if on_change is not None:
             right_widget.valueChanged.connect(lambda: on_change_and_disable(right_widget, on_change))
 
     elif dtype == 'bool' or dtype == Type.BOOL:
-        right_widget = Qt.QCheckBox()
+        right_widget = QCheckBox()
         if isinstance(default_value, bool):
             right_widget.setChecked(default_value)
         elif isinstance(default_value, str):
@@ -176,8 +176,8 @@ def add_property_to_form(label: str,
             right_widget.stateChanged[int].connect(lambda: on_change())
 
     elif dtype == "choice" or dtype == Type.CHOICE:
-        right_widget = Qt.QComboBox()
-        right_widget.setSizeAdjustPolicy(Qt.QComboBox.AdjustToContents)
+        right_widget = QComboBox()
+        right_widget.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         if valid_values:
             right_widget.addItems(valid_values)
         if on_change is not None:
@@ -190,7 +190,7 @@ def add_property_to_form(label: str,
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
     elif dtype == 'button' or dtype == Type.BUTTON:
-        left_widget = Qt.QPushButton(label)
+        left_widget = QPushButton(label)
         if run_on_press is not None:
             left_widget.clicked.connect(lambda: run_on_press())
 
@@ -214,10 +214,10 @@ def add_property_to_form(label: str,
         log.debug("Missing tooltip for %s", label)
 
     if left_widget:
-        left_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        left_widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
 
     if right_widget:
-        right_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        right_widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
     # Add to form layout
     if form is not None:
         form.addRow(left_widget, right_widget)
@@ -236,7 +236,7 @@ def delete_all_widgets_from_layout(lo):
         item = lo.takeAt(0)
 
         # Recurse for child layouts
-        if isinstance(item, Qt.QLayout):
+        if isinstance(item, QLayout):
             delete_all_widgets_from_layout(item)
 
         # Orphan child widgets (seting a None parent removes them from the

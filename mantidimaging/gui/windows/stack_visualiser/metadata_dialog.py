@@ -1,14 +1,13 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5 import Qt
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem
+from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDialogButtonBox, QVBoxLayout
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
 
 
-class MetadataDialog(Qt.QDialog):
+class MetadataDialog(QDialog):
     """
     Dialog used to show a pretty formatted version of the image metadata.
     """
@@ -21,10 +20,10 @@ class MetadataDialog(Qt.QDialog):
 
         main_widget = MetadataDialog.build_metadata_tree(images.metadata)
 
-        buttons = Qt.QDialogButtonBox(Qt.QDialogButtonBox.Ok)
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok)
         buttons.accepted.connect(self.accept)
 
-        layout = Qt.QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(main_widget)
         layout.addWidget(buttons)
         self.setLayout(layout)
