@@ -28,4 +28,4 @@ Developer Changes
 Dependency updates
 ------------------
 
-- pyqtgraph 0.12, scikit-image 0.18
+- pyqtgraph 0.12, scikit-image 0.18, tomopy 1.10
