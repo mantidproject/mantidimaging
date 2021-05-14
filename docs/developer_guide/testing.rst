@@ -14,7 +14,7 @@ Tests are run automatically on pull requests on GitHub using actions, but should
 Pre-commit
 ----------
 
-Mantid Imaging uses `pre-commit <https://pre-commit.com/>` to run pre-commit hooks. This is included in the development
+Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_ to run pre-commit hooks. This is included in the development
 conda environment and can be installed by using `pip install pre-commit`. After installation, you can then install the
 hook scripts with `pre-commit install`. Once this has been completed, the hooks should execute with every commit.
 
