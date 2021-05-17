@@ -230,4 +230,4 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def load_nexus_file(self, selected_file: str):
-        nexus_loader.execute(selected_file)
+        nexus_loader.load_nexus_data(selected_file)
