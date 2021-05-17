@@ -6,13 +6,12 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_tomo_data(nexus_data: Union[h5py._hl.files.File, h5py._hl.group.Group],
-                  entry_path: str) -> Optional[h5py._hl.group.Group]:
+def get_tomo_data(nexus_data: Union[h5py.File, h5py.Group], entry_path: str) -> Optional[h5py.Group]:
     """
     Retrieve data from the NeXus file structure.
     :param nexus_data: The NeXus file or group.
     :param entry_path: The path in which the data is found.
-    :return:
+    :return: The Nexus group if it exists, None otherwise.
     """
     try:
         return nexus_data[entry_path]
