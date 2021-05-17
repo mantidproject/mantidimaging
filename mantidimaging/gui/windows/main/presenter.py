@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
+from mantidimaging.core.io.loader import nexus_loader
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -227,3 +228,6 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
+
+    def load_nexus_file(self, selected_file: str):
+        nexus_loader.execute(selected_file)
