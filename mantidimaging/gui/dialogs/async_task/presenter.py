@@ -4,7 +4,7 @@
 import traceback
 from logging import getLogger
 from enum import Enum
-from PyQt5 import Qt
+from PyQt5.QtCore import QObject, pyqtSignal
 
 from mantidimaging.core.utility.progress_reporting import ProgressHandler
 
@@ -15,8 +15,8 @@ class Notification(Enum):
     START = 1
 
 
-class AsyncTaskDialogPresenter(Qt.QObject, ProgressHandler):
-    progress_updated = Qt.pyqtSignal(float, str)
+class AsyncTaskDialogPresenter(QObject, ProgressHandler):
+    progress_updated = pyqtSignal(float, str)
 
     def __init__(self, view):
         super(AsyncTaskDialogPresenter, self).__init__()

@@ -4,7 +4,7 @@
 from time import sleep
 from typing import Callable, Optional, Tuple
 
-from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QAction
 from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
@@ -186,7 +186,7 @@ class MIImageView(ImageView):
         original_handler = self.ui.roiPlot.mousePressEvent
 
         def extended_handler(ev):
-            if ev.button() == QtCore.Qt.LeftButton:
+            if ev.button() == Qt.MouseButton.LeftButton:
                 self.set_timeline_to_tick_nearest(ev.x())
             original_handler(ev)
 

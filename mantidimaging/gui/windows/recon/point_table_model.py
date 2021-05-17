@@ -52,23 +52,23 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
     def flags(self, index):
         flags = super(CorTiltPointQtModel, self).flags(index)
-        flags |= Qt.ItemIsEditable
+        flags |= Qt.ItemFlag.ItemIsEditable
         return flags
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         if not index.isValid():
             return None
 
         col = index.column()
         col_field = Column(col)
 
-        if role == Qt.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole:
             if col_field == Column.SLICE_INDEX:
                 return self._points[index.row()].slice_index
             if col_field == Column.CENTRE_OF_ROTATION:
                 return self._points[index.row()].cor
 
-        elif role == Qt.ToolTipRole:
+        elif role == Qt.ItemDataRole.ToolTipRole:
             if col_field == Column.SLICE_INDEX:
                 return 'Slice index (y coordinate of projection)'
             elif col_field == Column.CENTRE_OF_ROTATION:
@@ -84,8 +84,8 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
                 column.append(point.slice_index)
             return column
 
-    def setData(self, index, val, role=Qt.EditRole):
-        if role != Qt.EditRole:
+    def setData(self, index, val, role=Qt.ItemDataRole.EditRole):
+        if role != Qt.ItemDataRole.EditRole:
             return False
 
         self.clear_results()
@@ -139,10 +139,10 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.sort_points()
 
     def headerData(self, section, orientation, role):
-        if orientation != Qt.Horizontal:
+        if orientation != Qt.Orientation.Horizontal:
             return None
 
-        if role != Qt.DisplayRole:
+        if role != Qt.ItemDataRole.DisplayRole:
             return None
 
         return COLUMN_NAMES[Column(section)]

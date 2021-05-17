@@ -3,7 +3,8 @@
 
 from typing import TYPE_CHECKING
 
-from PyQt5 import Qt
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QComboBox
 
 from .presenter import (StackSelectorWidgetPresenter, Notification)
 
@@ -18,11 +19,11 @@ def _string_contains_all_parts(string: str, parts: list) -> bool:
     return True
 
 
-class StackSelectorWidgetView(Qt.QComboBox):
-    stacks_updated = Qt.pyqtSignal()
+class StackSelectorWidgetView(QComboBox):
+    stacks_updated = pyqtSignal()
 
-    stack_selected_int = Qt.pyqtSignal(int)
-    stack_selected_uuid = Qt.pyqtSignal('PyQt_PyObject')
+    stack_selected_int = pyqtSignal(int)
+    stack_selected_uuid = pyqtSignal('PyQt_PyObject')
 
     main_window: 'MainWindowView'
 
