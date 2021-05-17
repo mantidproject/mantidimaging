@@ -54,6 +54,7 @@ class MainWindowView(BaseMainWindowView):
     actionLoad180deg: QAction
     actionLoadDataset: QAction
     actionLoadImages: QAction
+    actionLoadNeXusFiles: QAction
     actionSave: QAction
     actionExit: QAction
 
@@ -100,6 +101,7 @@ class MainWindowView(BaseMainWindowView):
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
+        self.actionLoadNeXusFile.triggered.connect(self.show_load_nexus_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
@@ -154,6 +156,10 @@ class MainWindowView(BaseMainWindowView):
     def show_load_dialogue(self):
         self.load_dialogue = MWLoadDialog(self)
         self.load_dialogue.show()
+
+    def show_load_nexus_dialog(self):
+        # TODO - Implement dialog
+        pass
 
     def show_wizard(self):
         if self.wizard is None:

@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -36,6 +36,7 @@
     </property>
     <addaction name="actionLoadDataset"/>
     <addaction name="actionLoadImages"/>
+    <addaction name="actionLoadNeXusFile"/>
     <addaction name="actionSampleLoadLog"/>
     <addaction name="actionLoadProjectionAngles"/>
     <addaction name="actionLoad180deg"/>
@@ -203,6 +204,11 @@
   <action name="actionWizard">
    <property name="text">
     <string>Wizard</string>
+   </property>
+  </action>
+  <action name="actionLoadNeXusFile">
+   <property name="text">
+    <string>Load NeXus file</string>
    </property>
   </action>
  </widget>
