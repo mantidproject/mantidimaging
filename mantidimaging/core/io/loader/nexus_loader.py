@@ -14,6 +14,8 @@ from mantidimaging.core.data.dataset import Dataset
 
 logger = getLogger(__name__)
 
+TOMO_ENTRY_PATH = "/entry1/tomo_entry"
+
 
 class ImageKeys(enum.Enum):
     Projections = 0
@@ -68,26 +70,26 @@ def _get_images(image_key_number: ImageKeys, image_key: np.array, data: np.array
 
 def load_nexus_data(file_path: str) -> Optional[Dataset]:
     """
-
+    Load the NeXus file and attempt to create a Dataset.
     :param file_path: The NeXus file path.
-    :return:
+    :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
     """
-    absent = False
+    absent_fields = False
     nexus_file = _load_nexus_file(file_path)
 
-    tomo_entry = get_tomo_data(nexus_file, '/entry1/tomo_entry')
+    tomo_entry = get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
     if tomo_entry is None:
         return
 
     data = get_tomo_data(tomo_entry, 'data')
     if data is None:
-        absent = True
+        absent_fields = True
 
     image_key = get_tomo_data(tomo_entry, 'image_key')
     if image_key is None:
-        absent = True
+        absent_fields = True
 
-    if absent:
+    if absent_fields:
         return
 
     projections = _get_images(ImageKeys.Projections, image_key, data)
