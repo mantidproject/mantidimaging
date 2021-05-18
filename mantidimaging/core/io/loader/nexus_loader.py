@@ -1,9 +1,22 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+import enum
 from typing import Union, Optional
 
 import h5py
 from logging import getLogger
 
+from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import Dataset
+
 logger = getLogger(__name__)
+
+
+class ImageKeys(enum.Enum):
+    Projections = 0
+    FlatField = 1
+    DarkField = 2
 
 
 def _missing_field_message(field_name: str) -> str:
@@ -28,17 +41,57 @@ def get_tomo_data(nexus_data: Union[h5py.File, h5py.Group], entry_path: str) -> 
         return None
 
 
-def load_nexus_data(file_path: str):
+def _load_nexus_file(file_path: str) -> h5py.File:
+    """
+    Load a NeXus file.
+    :param file_path: The NeXus file path.
+    :return: The h5py File object.
+    """
     with h5py.File(file_path, 'r') as nexus_file:
-        tomo_entry = get_tomo_data(nexus_file, '/entry1/tomo_entry')
-        if tomo_entry is None:
-            logger.error(_missing_field_message('tomo_entry'))
-            return
-        data = get_tomo_data(tomo_entry, 'data')
-        if data is None:
-            logger.error(_missing_field_message('tomo_entry/data'))
-            return
-        image_key = get_tomo_data(tomo_entry, 'image_key')
-        if image_key is None:
-            logger.error(_missing_field_message('tomo_entry/image_key'))
-            return
+        return nexus_file
+
+
+def _get_images(image_key_number: ImageKeys, image_key, data: h5py.Group):
+    """
+    Retrieve images from the data based on an image key number.
+    :param image_key_number: The image key number.
+    :param image_key: The image key array.
+    :param data: The entire data array.
+    :return: The set of images that correspond with a given image key.
+    """
+    indices = image_key[...] == image_key_number
+    return data[indices, ...]
+
+
+def load_nexus_data(file_path: str) -> Optional[Dataset]:
+    """
+
+    :param file_path:
+    :return:
+    """
+    absent = False
+    nexus_file = _load_nexus_file(file_path)
+
+    tomo_entry = get_tomo_data(nexus_file, '/entry1/tomo_entry')
+    if tomo_entry is None:
+        logger.error(_missing_field_message('tomo_entry'))
+        absent = True
+
+    data = get_tomo_data(tomo_entry, 'data')
+    if data is None:
+        logger.error(_missing_field_message('tomo_entry/data'))
+        absent = True
+
+    image_key = get_tomo_data(tomo_entry, 'image_key')
+    if image_key is None:
+        logger.error(_missing_field_message('tomo_entry/image_key'))
+        absent = True
+
+    if absent:
+        return
+
+    projections = _get_images(ImageKeys.Projections, image_key, data)
+    flat_field = _get_images(ImageKeys.FlatField, image_key, data)
+    dark_field = _get_images(ImageKeys.DarkField, image_key, data)
+
+    return Dataset(Images(projections), Images(flat_field), Images(dark_field))
