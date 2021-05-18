@@ -4,12 +4,10 @@ from unittest import mock
 import h5py
 
 from mantidimaging.core.io.loader.nexus_loader import _missing_field_message, get_tomo_data, load_nexus_data, \
-    TOMO_ENTRY_PATH
+    TOMO_ENTRY_PATH, DATA_PATH, IMAGE_KEY_PATH
+from mantidimaging.core.io.loader.nexus_loader import logger as nexus_logger
 
 LOAD_NEXUS_FILE = "mantidimaging.core.io.loader.nexus_loader._load_nexus_file"
-
-DATA_PATH = TOMO_ENTRY_PATH + "/data"
-IMAGE_KEY_PATH = TOMO_ENTRY_PATH + "/image_key"
 
 
 def test_missing_field_message():
@@ -33,18 +31,22 @@ class NexusLoaderTest(unittest.TestCase):
     def test_no_tomo_data_returns_none(self):
         del self.nexus[TOMO_ENTRY_PATH]
         self.assertIsNone(get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
+        self.assertLogs(nexus_logger, _missing_field_message("data"))
 
     def test_load_nexus_data_returns_none_when_no_tomo_entry(self):
         del self.nexus[TOMO_ENTRY_PATH]
         with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
             self.assertIsNone(load_nexus_data("filename"))
+            self.assertLogs(nexus_logger, level="ERROR")
 
     def test_load_nexus_data_returns_none_when_no_data(self):
         del self.nexus[DATA_PATH]
         with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
             self.assertIsNone(load_nexus_data("filename"))
+            self.assertLogs(nexus_logger, level="ERROR")
 
     def test_load_nexus_data_returns_none_when_no_image_key(self):
         del self.nexus[IMAGE_KEY_PATH]
         with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
             self.assertIsNone(load_nexus_data("filename"))
+            self.assertLogs(nexus_logger, level="ERROR")

@@ -15,6 +15,8 @@ from mantidimaging.core.data.dataset import Dataset
 logger = getLogger(__name__)
 
 TOMO_ENTRY_PATH = "/entry1/tomo_entry"
+DATA_PATH = TOMO_ENTRY_PATH + "/data"
+IMAGE_KEY_PATH = TOMO_ENTRY_PATH + "/image_key"
 
 
 class ImageKeys(enum.Enum):
@@ -81,11 +83,11 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
     if tomo_entry is None:
         return
 
-    data = get_tomo_data(tomo_entry, 'data')
+    data = get_tomo_data(nexus_file, DATA_PATH)
     if data is None:
         absent_fields = True
 
-    image_key = get_tomo_data(tomo_entry, 'image_key')
+    image_key = get_tomo_data(nexus_file, IMAGE_KEY_PATH)
     if image_key is None:
         absent_fields = True
 
