@@ -7,6 +7,8 @@ from typing import Union, Optional
 import h5py
 from logging import getLogger
 
+import numpy as np
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 
@@ -51,7 +53,7 @@ def _load_nexus_file(file_path: str) -> h5py.File:
         return nexus_file
 
 
-def _get_images(image_key_number: ImageKeys, image_key, data: h5py.Group):
+def _get_images(image_key_number: ImageKeys, image_key: np.array, data: np.array) -> np.array:
     """
     Retrieve images from the data based on an image key number.
     :param image_key_number: The image key number.
@@ -66,7 +68,7 @@ def _get_images(image_key_number: ImageKeys, image_key, data: h5py.Group):
 def load_nexus_data(file_path: str) -> Optional[Dataset]:
     """
 
-    :param file_path:
+    :param file_path: The NeXus file path.
     :return:
     """
     absent = False
