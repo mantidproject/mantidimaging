@@ -31,7 +31,7 @@ class NexusLoaderTest(unittest.TestCase):
     def test_no_tomo_data_returns_none(self):
         del self.nexus[TOMO_ENTRY_PATH]
         self.assertIsNone(get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
-        self.assertLogs(nexus_logger, _missing_field_message("data"))
+        self.assertLogs(nexus_logger, level="ERROR")
 
     def test_load_nexus_data_returns_none_when_no_tomo_entry(self):
         del self.nexus[TOMO_ENTRY_PATH]
