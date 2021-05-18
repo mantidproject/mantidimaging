@@ -50,3 +50,12 @@ class NexusLoaderTest(unittest.TestCase):
         with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
             self.assertIsNone(load_nexus_data("filename"))
             self.assertLogs(nexus_logger, level="ERROR")
+
+    def test_both_missing_data_and_missing_image_key_logged(self):
+        del self.nexus[DATA_PATH]
+        del self.nexus[IMAGE_KEY_PATH]
+        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
+            with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+                load_nexus_data("filename")
+                self.assertIn(DATA_PATH, log_mock.output[0])
+                self.assertIn(IMAGE_KEY_PATH, log_mock.output[1])
