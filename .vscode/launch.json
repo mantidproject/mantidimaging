@@ -60,7 +60,7 @@
         "DEBUG"
       ],
       "env": {
-        "DISPLAY": ":1",
+        "DISPLAY": ":1001",
         "PYTHONPATH": "${workspaceFolder}",
         "XDG_CURRENT_DESKTOP": "XFCE",
       },

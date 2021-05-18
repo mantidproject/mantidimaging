@@ -88,7 +88,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
         self.actionAbout.triggered.connect(self.show_about)
 
-        self.actionFilters.triggered.connect(self.show_filters_window)
+        self.actionFilters.triggered.connect(self.show_savu_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
