@@ -7,19 +7,10 @@ import logging
 import warnings
 
 from mantidimaging import helper as h
-from mantidimaging.core.utility.optional_imports import safe_import
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
     message, category, filename, lineno, line="")
-
-
-def startup_checks():
-    tomopy = safe_import("tomopy")
-    if tomopy is not None:
-        ver = tomopy.__version__
-        if "1.7" not in ver:
-            raise RuntimeError("Unexpected TomoPy version {}, " "please update Conda environment".format(ver))
 
 
 def parse_args():
@@ -48,7 +39,6 @@ def main():
         return
 
     h.initialise_logging(logging.getLevelName(args.log_level))
-    startup_checks()
 
     from mantidimaging import gui
     gui.execute()
