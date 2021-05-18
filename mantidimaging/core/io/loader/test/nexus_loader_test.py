@@ -3,7 +3,7 @@ from unittest import mock
 
 import h5py
 
-from mantidimaging.core.io.loader.nexus_loader import _missing_field_message, get_tomo_data, load_nexus_data, \
+from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, get_tomo_data, load_nexus_data, \
     TOMO_ENTRY_PATH, DATA_PATH, IMAGE_KEY_PATH
 from mantidimaging.core.io.loader.nexus_loader import logger as nexus_logger
 
@@ -11,8 +11,7 @@ LOAD_NEXUS_FILE = "mantidimaging.core.io.loader.nexus_loader._load_nexus_file"
 
 
 def test_missing_field_message():
-    assert _missing_field_message(
-        "missing_field") == "The NeXus file does not contain the required missing_field field."
+    assert _missing_data_message("missing_field") == "The NeXus file does not contain the required missing_field field."
 
 
 class NexusLoaderTest(unittest.TestCase):
@@ -59,3 +58,6 @@ class NexusLoaderTest(unittest.TestCase):
                 load_nexus_data("filename")
                 self.assertIn(DATA_PATH, log_mock.output[0])
                 self.assertIn(IMAGE_KEY_PATH, log_mock.output[1])
+
+    def test_no_projections_returns_none(self):
+        pass

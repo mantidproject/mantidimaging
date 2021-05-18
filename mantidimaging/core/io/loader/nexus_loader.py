@@ -25,7 +25,7 @@ class ImageKeys(enum.Enum):
     DarkField = 2
 
 
-def _missing_field_message(field_name: str) -> str:
+def _missing_data_message(field_name: str) -> str:
     """
     Creates a message for logging when a certain field is missing in the NeXus file.
     :param field_name: The name of the missing field.
@@ -44,7 +44,7 @@ def get_tomo_data(nexus_data: Union[h5py.File, h5py.Group], entry_path: str) -> 
     try:
         return nexus_data[entry_path]
     except KeyError:
-        logger.error(_missing_field_message(entry_path))
+        logger.error(_missing_data_message(entry_path))
         return None
 
 
@@ -76,7 +76,7 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
     :param file_path: The NeXus file path.
     :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
     """
-    absent_fields = False
+    missing_data = False
     nexus_file = _load_nexus_file(file_path)
 
     tomo_entry = get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
@@ -85,17 +85,22 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
 
     data = get_tomo_data(nexus_file, DATA_PATH)
     if data is None:
-        absent_fields = True
+        missing_data = True
 
     image_key = get_tomo_data(nexus_file, IMAGE_KEY_PATH)
     if image_key is None:
-        absent_fields = True
+        missing_data = True
 
-    if absent_fields:
+    if missing_data:
         return
 
     projections = _get_images(ImageKeys.Projections, image_key, data)
+    if projections.size == 0:
+        return
+
     flat_field = _get_images(ImageKeys.FlatField, image_key, data)
     dark_field = _get_images(ImageKeys.DarkField, image_key, data)
 
-    return Dataset(Images(projections), Images(flat_field), Images(dark_field))
+    return Dataset(Images(projections),
+                   Images(flat_field) if flat_field.size > 0 else None,
+                   Images(dark_field) if dark_field.size > 0 else None)
