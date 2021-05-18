@@ -40,6 +40,7 @@ def get_tomo_data(nexus_data: Union[h5py.File, h5py.Group], entry_path: str) -> 
     try:
         return nexus_data[entry_path]
     except KeyError:
+        logger.error(_missing_field_message(entry_path))
         return None
 
 
@@ -76,17 +77,14 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
 
     tomo_entry = get_tomo_data(nexus_file, '/entry1/tomo_entry')
     if tomo_entry is None:
-        logger.error(_missing_field_message('tomo_entry'))
-        absent = True
+        return
 
     data = get_tomo_data(tomo_entry, 'data')
     if data is None:
-        logger.error(_missing_field_message('tomo_entry/data'))
         absent = True
 
     image_key = get_tomo_data(tomo_entry, 'image_key')
     if image_key is None:
-        logger.error(_missing_field_message('tomo_entry/image_key'))
         absent = True
 
     if absent:
