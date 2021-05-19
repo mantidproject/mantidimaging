@@ -74,12 +74,10 @@ def _get_images(image_key_number: ImageKeys,
     if image_key_number is ImageKeys.Projections:
         indices = image_key[...] == image_key_number.value
     else:
-        image_key_copy = image_key[:]
         if before:
-            image_key_copy[:image_key.size // 2] = 0
+            indices = image_key[:image_key.size // 2] == image_key_number.value
         else:
-            image_key_copy[image_key.size // 2:] = 0
-        indices = image_key_copy[...] == image_key_number.value
+            indices = image_key[image_key.size // 2:] == image_key_number.value
     return data[np.where(indices)]  # Current h5py issue
 
 
