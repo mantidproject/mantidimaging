@@ -230,4 +230,8 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def load_nexus_file(self, selected_file: str):
-        self.create_new_stack(nexus_loader.load_nexus_data(selected_file), "NeXus file")
+        nexus_data = nexus_loader.load_nexus_data(selected_file)
+        if nexus_data is not None:
+            self.create_new_stack(nexus_loader.load_nexus_data(selected_file), "NeXus file")
+        else:
+            pass  # Show error message
