@@ -94,7 +94,7 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
 
     tomo_entry = get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
     if tomo_entry is None:
-        return
+        return None
 
     data = get_tomo_data(nexus_file, DATA_PATH)
     if data is None:
@@ -105,12 +105,12 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
         missing_data = True
 
     if missing_data:
-        return
+        return None
 
     sample = _get_images(ImageKeys.Projections, image_key, data)
     if sample.size == 0:
         logger.error("No sample images found in NeXus file.")
-        return
+        return None
 
     flat_before_array = _get_images(ImageKeys.FlatField, image_key, data, True)
     if flat_before_array.size == 0:
