@@ -98,7 +98,6 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
     :param file_path: The NeXus file path.
     :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
     """
-    missing_data = False
     nexus_file = _load_nexus_file(file_path)
 
     tomo_entry = get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
@@ -106,14 +105,9 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
         return None
 
     data = get_tomo_data(nexus_file, DATA_PATH)
-    if data is None:
-        missing_data = True
-
     image_key = get_tomo_data(nexus_file, IMAGE_KEY_PATH)
-    if image_key is None:
-        missing_data = True
 
-    if missing_data:
+    if data is None or image_key is None:
         return None
 
     sample = _get_images(ImageKeys.Projections, image_key, data)
