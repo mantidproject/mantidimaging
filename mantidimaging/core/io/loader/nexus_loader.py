@@ -120,28 +120,28 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
         logger.info(_missing_images_message("flat before"))
         flat_before_images = None
     else:
-        flat_before_images = Images(flat_before_array, [DATA_PATH])
+        flat_before_images = Images(flat_before_array, ["flat before"])
 
     flat_after_array = _get_images(ImageKeys.FlatField, image_key, data, False)
     if flat_after_array.size == 0:
         logger.info(_missing_images_message("flat after"))
         flat_after_images = None
     else:
-        flat_after_images = Images(flat_after_array, [DATA_PATH])
+        flat_after_images = Images(flat_after_array, ["flat after"])
 
     dark_before_array = _get_images(ImageKeys.DarkField, image_key, data, True)
     if dark_before_array.size == 0:
         logger.info(_missing_images_message("dark before"))
         dark_before_images = None
     else:
-        dark_before_images = Images(dark_before_array, [DATA_PATH])
+        dark_before_images = Images(dark_before_array, ["dark before"])
 
     dark_after_array = _get_images(ImageKeys.DarkField, image_key, data, False)
     if dark_after_array.size == 0:
         logger.info(_missing_images_message("dark after"))
         dark_after_images = None
     else:
-        dark_after_images = Images(dark_after_array, [DATA_PATH])
+        dark_after_images = Images(dark_after_array, ["dark after"])
 
     nexus_file.close()
 

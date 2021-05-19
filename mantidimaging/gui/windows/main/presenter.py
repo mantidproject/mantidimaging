@@ -234,4 +234,4 @@ class MainWindowPresenter(BasePresenter):
         if nexus_data is not None:
             self.create_new_stack(nexus_loader.load_nexus_data(selected_file), "NeXus file")
         else:
-            pass  # Show error message
+            pass  # todo - Show error message
