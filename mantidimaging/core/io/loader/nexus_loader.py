@@ -43,8 +43,8 @@ def _missing_images_message(image_name: str) -> str:
     return f"No {image_name} images found in the NeXus file."
 
 
-def get_tomo_data(nexus_data: Union[h5py.File, h5py.Group],
-                  entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+def _get_tomo_data(nexus_data: Union[h5py.File, h5py.Group],
+                   entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
     """
     Retrieve data from the NeXus file structure.
     :param nexus_data: The NeXus file or group.
@@ -89,7 +89,8 @@ def _get_images(image_key_number: ImageKeys,
         else:
             indices = image_key[:] == image_key_number.value
             indices[:image_key.size // 2] = False
-    return data[np.where(indices)]  # Current h5py issue
+    # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
+    return data[np.where(indices)]
 
 
 def load_nexus_data(file_path: str) -> Optional[Dataset]:
@@ -100,12 +101,12 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
     """
     nexus_file = _load_nexus_file(file_path)
 
-    tomo_entry = get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
+    tomo_entry = _get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
     if tomo_entry is None:
         return None
 
-    data = get_tomo_data(nexus_file, DATA_PATH)
-    image_key = get_tomo_data(nexus_file, IMAGE_KEY_PATH)
+    data = _get_tomo_data(nexus_file, DATA_PATH)
+    image_key = _get_tomo_data(nexus_file, IMAGE_KEY_PATH)
 
     if data is None or image_key is None:
         return None

@@ -8,7 +8,7 @@ import h5py
 import numpy as np
 
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, get_tomo_data, load_nexus_data, \
+from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, _get_tomo_data, load_nexus_data, \
     TOMO_ENTRY_PATH, DATA_PATH, IMAGE_KEY_PATH
 from mantidimaging.core.io.loader.nexus_loader import logger as nexus_logger
 
@@ -46,11 +46,11 @@ class NexusLoaderTest(unittest.TestCase):
                 self.nexus[IMAGE_KEY_PATH][self.n_images // 2:])
 
     def test_get_tomo_data(self):
-        self.assertIsNotNone(get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
+        self.assertIsNotNone(_get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
 
     def test_no_tomo_data_returns_none(self):
         del self.nexus[TOMO_ENTRY_PATH]
-        self.assertIsNone(get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
+        self.assertIsNone(_get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
         self.assertLogs(nexus_logger, level="ERROR")
 
     def test_load_nexus_data_returns_none_when_no_tomo_entry(self):
