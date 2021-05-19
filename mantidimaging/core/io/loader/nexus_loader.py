@@ -66,8 +66,8 @@ def _get_images(image_key_number: ImageKeys, image_key: np.array, data: np.array
     :param data: The entire data array.
     :return: The set of images that correspond with a given image key.
     """
-    indices = image_key[...] == image_key_number
-    return data[indices, ...]
+    indices = image_key[...] == image_key_number.value
+    return data[np.where(indices)]
 
 
 def load_nexus_data(file_path: str) -> Optional[Dataset]:
@@ -94,13 +94,21 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
     if missing_data:
         return
 
-    projections = _get_images(ImageKeys.Projections, image_key, data)
-    if projections.size == 0:
+    sample = _get_images(ImageKeys.Projections, image_key, data)
+    if sample.size == 0:
+        logger.error("No sample images found in NeXus file.")
         return
 
-    flat_field = _get_images(ImageKeys.FlatField, image_key, data)
-    dark_field = _get_images(ImageKeys.DarkField, image_key, data)
+    flat_before = _get_images(ImageKeys.FlatField, image_key, data)
+    if flat_before.size == 0:
+        logger.info("No flat before images found in the NeXus file.")
+        flat_field = None
 
-    return Dataset(Images(projections),
+    dark_field = _get_images(ImageKeys.DarkField, image_key, data)
+    if dark_field.size == 0:
+        logger.info("No dark field images found in the NeXus file.")
+        dark_field = None
+
+    return Dataset(Images(sample),
                    Images(flat_field) if flat_field.size > 0 else None,
                    Images(dark_field) if dark_field.size > 0 else None)

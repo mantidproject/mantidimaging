@@ -2,6 +2,7 @@ import unittest
 from unittest import mock
 
 import h5py
+import numpy as np
 
 from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, get_tomo_data, load_nexus_data, \
     TOMO_ENTRY_PATH, DATA_PATH, IMAGE_KEY_PATH
@@ -18,8 +19,9 @@ class NexusLoaderTest(unittest.TestCase):
     def setUp(self) -> None:
         self.nexus = h5py.File("data", "w", driver="core", backing_store=False)
         self.nexus.create_group(TOMO_ENTRY_PATH)
-        self.nexus.create_group("/entry1/tomo_entry/data")
-        self.nexus.create_group("/entry1/tomo_entry/image_key")
+        self.n_images = 10
+        self.nexus.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)))
+        self.nexus.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1], dtype=int))
 
     def tearDown(self) -> None:
         self.nexus.close()
@@ -60,4 +62,8 @@ class NexusLoaderTest(unittest.TestCase):
                 self.assertIn(IMAGE_KEY_PATH, log_mock.output[1])
 
     def test_no_projections_returns_none(self):
-        pass
+        self.nexus[IMAGE_KEY_PATH][:] = np.ones(self.n_images)
+        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
+            with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+                self.assertIsNone(load_nexus_data("filename"))
+                self.assertIn("No sample images found in NeXus file", log_mock.output[0])
