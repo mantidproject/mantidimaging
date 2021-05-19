@@ -25,10 +25,15 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus.create_group(TOMO_ENTRY_PATH)
         self.n_images = 10
         self.nexus.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)))
-        self.nexus.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1], dtype=int))
+        self.nexus.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1]))
+
+        self.nexus_load_patcher = mock.patch(LOAD_NEXUS_FILE)
+        nexus_load_mock = self.nexus_load_patcher.start()
+        nexus_load_mock.return_value = self.nexus
 
     def tearDown(self) -> None:
         self.nexus.close()
+        self.nexus_load_patcher.stop()
 
     def test_get_tomo_data(self):
         self.assertIsNotNone(get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
@@ -40,38 +45,35 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_load_nexus_data_returns_none_when_no_tomo_entry(self):
         del self.nexus[TOMO_ENTRY_PATH]
-        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
-            self.assertIsNone(load_nexus_data("filename"))
-            self.assertLogs(nexus_logger, level="ERROR")
+        self.assertIsNone(load_nexus_data("filename"))
+        self.assertLogs(nexus_logger, level="ERROR")
 
     def test_load_nexus_data_returns_none_when_no_data(self):
         del self.nexus[DATA_PATH]
-        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
-            self.assertIsNone(load_nexus_data("filename"))
-            self.assertLogs(nexus_logger, level="ERROR")
+        self.assertIsNone(load_nexus_data("filename"))
+        self.assertLogs(nexus_logger, level="ERROR")
 
     def test_load_nexus_data_returns_none_when_no_image_key(self):
         del self.nexus[IMAGE_KEY_PATH]
-        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
-            self.assertIsNone(load_nexus_data("filename"))
-            self.assertLogs(nexus_logger, level="ERROR")
+        self.assertIsNone(load_nexus_data("filename"))
+        self.assertLogs(nexus_logger, level="ERROR")
 
     def test_both_missing_data_and_missing_image_key_logged(self):
         del self.nexus[DATA_PATH]
         del self.nexus[IMAGE_KEY_PATH]
-        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
-            with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-                load_nexus_data("filename")
-                self.assertIn(DATA_PATH, log_mock.output[0])
-                self.assertIn(IMAGE_KEY_PATH, log_mock.output[1])
+        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+            load_nexus_data("filename")
+            self.assertIn(DATA_PATH, log_mock.output[0])
+            self.assertIn(IMAGE_KEY_PATH, log_mock.output[1])
 
     def test_no_projections_returns_none(self):
         self.nexus[IMAGE_KEY_PATH][:] = np.ones(self.n_images)
-        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
-            with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-                self.assertIsNone(load_nexus_data("filename"))
-                self.assertIn("No sample images found in NeXus file", log_mock.output[0])
+        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+            self.assertIsNone(load_nexus_data("filename"))
+            self.assertIn("No sample images found in the NeXus file", log_mock.output[0])
 
     def test_complete_file_returns_dataset(self):
-        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
-            self.assertIsInstance(load_nexus_data("filename"), Dataset)
+        self.assertIsInstance(load_nexus_data("filename"), Dataset)
+
+    def test_no_flat_before_images_in_log(self):
+        pass
