@@ -4,6 +4,7 @@ from unittest import mock
 import h5py
 import numpy as np
 
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, get_tomo_data, load_nexus_data, \
     TOMO_ENTRY_PATH, DATA_PATH, IMAGE_KEY_PATH
 from mantidimaging.core.io.loader.nexus_loader import logger as nexus_logger
@@ -67,3 +68,7 @@ class NexusLoaderTest(unittest.TestCase):
             with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
                 self.assertIsNone(load_nexus_data("filename"))
                 self.assertIn("No sample images found in NeXus file", log_mock.output[0])
+
+    def test_complete_file_returns_dataset(self):
+        with mock.patch(LOAD_NEXUS_FILE, return_value=self.nexus):
+            self.assertIsInstance(load_nexus_data("filename"), Dataset)
