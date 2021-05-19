@@ -72,7 +72,7 @@ class NexusLoaderTest(unittest.TestCase):
         del self.nexus[DATA_PATH]
         del self.nexus[IMAGE_KEY_PATH]
         with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-            load_nexus_data("filename")
+            self.assertIsNone(load_nexus_data("filename"))
             self.assertIn(DATA_PATH, log_mock.output[0])
             self.assertIn(IMAGE_KEY_PATH, log_mock.output[1])
 
