@@ -64,8 +64,7 @@ def _load_nexus_file(file_path: str) -> h5py.File:
     :param file_path: The NeXus file path.
     :return: The h5py File object.
     """
-    with h5py.File(file_path, 'r') as nexus_file:
-        return nexus_file
+    return h5py.File(file_path, 'r')
 
 
 def _get_images(image_key_number: ImageKeys,
@@ -143,6 +142,8 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
         dark_after_images = None
     else:
         dark_after_images = Images(dark_after_array)
+
+    nexus_file.close()
 
     return Dataset(Images(sample),
                    flat_before=flat_before_images,
