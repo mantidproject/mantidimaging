@@ -35,6 +35,16 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus.close()
         self.nexus_load_patcher.stop()
 
+    def replace_values_in_image_key(self, before: bool, prev_value: int, new_value: int):
+        if before:
+            self.nexus[IMAGE_KEY_PATH][:self.n_images // 2] = np.where(
+                self.nexus[IMAGE_KEY_PATH][:self.n_images // 2] == prev_value, new_value,
+                self.nexus[IMAGE_KEY_PATH][:self.n_images // 2])
+        else:
+            self.nexus[IMAGE_KEY_PATH][self.n_images // 2:] = np.where(
+                self.nexus[IMAGE_KEY_PATH][self.n_images // 2:] == prev_value, new_value,
+                self.nexus[IMAGE_KEY_PATH][self.n_images // 2:])
+
     def test_get_tomo_data(self):
         self.assertIsNotNone(get_tomo_data(self.nexus, TOMO_ENTRY_PATH))
 
@@ -76,4 +86,25 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertIsInstance(load_nexus_data("filename"), Dataset)
 
     def test_no_flat_before_images_in_log(self):
-        pass
+        self.replace_values_in_image_key(True, 1, 2)
+        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+            self.assertIsNone(load_nexus_data("filename").flat_before)
+            self.assertIn("No flat before images found in the NeXus file", log_mock.output[0])
+
+    def test_no_flat_after_images_in_log(self):
+        self.replace_values_in_image_key(False, 1, 2)
+        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+            self.assertIsNone(load_nexus_data("filename").flat_after)
+            self.assertIn("No flat after images found in the NeXus file", log_mock.output[0])
+
+    def test_no_dark_before_images_in_log(self):
+        self.replace_values_in_image_key(True, 2, 1)
+        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+            self.assertIsNone(load_nexus_data("filename").dark_before)
+            self.assertIn("No dark before images found in the NeXus file", log_mock.output[0])
+
+    def test_no_dark_after_images_in_log(self):
+        self.replace_values_in_image_key(False, 2, 1)
+        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+            self.assertIsNone(load_nexus_data("filename").dark_after)
+            self.assertIn("No dark after images found in the NeXus file", log_mock.output[0])
