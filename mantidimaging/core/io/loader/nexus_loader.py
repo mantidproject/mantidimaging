@@ -110,8 +110,8 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
     if data is None or image_key is None:
         return None
 
-    sample = _get_images(ImageKeys.Projections, image_key, data)
-    if sample.size == 0:
+    sample_array = _get_images(ImageKeys.Projections, image_key, data)
+    if sample_array.size == 0:
         logger.error(_missing_images_message("sample"))
         return None
 
@@ -145,7 +145,7 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
 
     nexus_file.close()
 
-    return Dataset(Images(sample),
+    return Dataset(Images(sample_array),
                    flat_before=flat_before_images,
                    flat_after=flat_after_images,
                    dark_before=dark_before_images,
