@@ -34,6 +34,15 @@ def _missing_data_message(field_name: str) -> str:
     return f"The NeXus file does not contain the required {field_name} field."
 
 
+def _missing_images_message(image_name: str) -> str:
+    """
+    Generate a message when certain images are missing from the NeXus file.
+    :param image_name: The name of the missing images.
+    :return: A string with a missing images message.
+    """
+    return f"No {image_name} images found in the NeXus file."
+
+
 def get_tomo_data(nexus_data: Union[h5py.File, h5py.Group],
                   entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
     """
@@ -69,6 +78,7 @@ def _get_images(image_key_number: ImageKeys,
     :param image_key: The image key array.
     :param data: The entire data array.
     :param before: True if the function should return before images, False if the function should return after images.
+                   Ignored when getting projection images.
     :return: The set of images that correspond with a given image key.
     """
     if image_key_number is ImageKeys.Projections:
@@ -107,33 +117,33 @@ def load_nexus_data(file_path: str) -> Optional[Dataset]:
 
     sample = _get_images(ImageKeys.Projections, image_key, data)
     if sample.size == 0:
-        logger.error("No sample images found in NeXus file.")
+        logger.error(_missing_images_message("sample"))
         return None
 
     flat_before_array = _get_images(ImageKeys.FlatField, image_key, data, True)
     if flat_before_array.size == 0:
-        logger.info("No flat before images found in the NeXus file.")
+        logger.info(_missing_images_message("flat before"))
         flat_before_images = None
     else:
         flat_before_images = Images(flat_before_array)
 
     flat_after_array = _get_images(ImageKeys.FlatField, image_key, data, False)
     if flat_after_array.size == 0:
-        logger.info("No flat after images found in the NeXus file.")
+        logger.info(_missing_images_message("flat after"))
         flat_after_images = None
     else:
         flat_after_images = Images(flat_after_array)
 
     dark_before_array = _get_images(ImageKeys.DarkField, image_key, data, True)
     if dark_before_array.size == 0:
-        logger.info("No dark before images found in the NeXus file.")
+        logger.info(_missing_images_message("dark before"))
         dark_before_images = None
     else:
         dark_before_images = Images(dark_before_array)
 
     dark_after_array = _get_images(ImageKeys.DarkField, image_key, data, False)
     if dark_after_array.size == 0:
-        logger.info("No dark after images found in the NeXus file.")
+        logger.info(_missing_images_message("dark after"))
         dark_after_images = None
     else:
         dark_after_images = Images(dark_after_array)
