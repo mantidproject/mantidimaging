@@ -108,3 +108,11 @@ class NexusLoaderTest(unittest.TestCase):
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
             self.assertIsNone(load_nexus_data("filename").dark_after)
             self.assertIn("No dark after images found in the NeXus file", log_mock.output[0])
+
+    def test_dataset_arrays_match_image_key(self):
+        dataset = load_nexus_data("filename")
+        np.testing.assert_array_equal(dataset.flat_before.data, self.nexus[DATA_PATH][:2])
+        np.testing.assert_array_equal(dataset.dark_before.data, self.nexus[DATA_PATH][2:4])
+        np.testing.assert_array_equal(dataset.sample.data, self.nexus[DATA_PATH][4:6])
+        np.testing.assert_array_equal(dataset.dark_after.data, self.nexus[DATA_PATH][6:8])
+        np.testing.assert_array_equal(dataset.flat_after.data, self.nexus[DATA_PATH][8:])

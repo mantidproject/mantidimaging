@@ -87,7 +87,8 @@ def _get_images(image_key_number: ImageKeys,
         if before:
             indices = image_key[:image_key.size // 2] == image_key_number.value
         else:
-            indices = image_key[image_key.size // 2:] == image_key_number.value
+            indices = image_key[:] == image_key_number.value
+            indices[:image_key.size // 2] = False
     return data[np.where(indices)]  # Current h5py issue
 
 
