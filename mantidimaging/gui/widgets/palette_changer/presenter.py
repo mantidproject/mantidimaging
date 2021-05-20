@@ -1,8 +1,9 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from pyqtgraph import HistogramLUTItem
+if TYPE_CHECKING:
+    from pyqtgraph import HistogramLUTItem
 from skimage import filters
 
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -14,7 +15,7 @@ SAMPLE_SIZE = 15000  # Chosen to avoid Jenks becoming slow
 
 
 class PaletteChangerPresenter(BasePresenter):
-    def __init__(self, view, other_hists: List[HistogramLUTItem], main_hist: HistogramLUTItem, image: np.ndarray,
+    def __init__(self, view, other_hists: 'List[HistogramLUTItem]', main_hist: 'HistogramLUTItem', image: np.ndarray,
                  recon_mode: bool):
         super(PaletteChangerPresenter, self).__init__(view)
         self.rng = np.random.default_rng()
