@@ -43,123 +43,123 @@ def _missing_images_message(image_name: str) -> str:
     return f"No {image_name} images found in the NeXus file."
 
 
-def _get_tomo_data(nexus_data: Union[h5py.File, h5py.Group],
-                   entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+def _generate_image_name(image_key_number: ImageKeys, before: Optional[bool]) -> str:
     """
-    Retrieve data from the NeXus file structure.
-    :param nexus_data: The NeXus file or group.
-    :param entry_path: The path in which the data is found.
-    :return: The Nexus group if it exists, None otherwise.
-    """
-    try:
-        return nexus_data[entry_path]
-    except KeyError:
-        return None
 
-
-def _get_images(image_key_number: ImageKeys,
-                image_key: h5py.Dataset,
-                data: h5py.Dataset,
-                before: Optional[bool] = None) -> np.array:
+    :param image_key_number:
+    :param before:
+    :return:
     """
-    Retrieve images from the data based on an image key number.
-    :param image_key_number: The image key number.
-    :param image_key: The image key array.
-    :param data: The entire data array.
-    :param before: True if the function should return before images, False if the function should return after images.
-                   Ignored when getting projection images.
-    :return: The set of images that correspond with a given image key.
-    """
-    if image_key_number is ImageKeys.Projections:
-        indices = image_key[...] == image_key_number.value
+    if image_key_number == ImageKeys.Projections:
+        return "sample"
+    elif image_key_number == ImageKeys.FlatField:
+        name = "flat"
     else:
-        if before:
-            indices = image_key[:image_key.size // 2] == image_key_number.value
-        else:
-            indices = image_key[:] == image_key_number.value
-            indices[:image_key.size // 2] = False
-    # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
-    return data[np.where(indices)]
+        name = "dark"
+
+    if before:
+        return name + " before"
+    return name + " after"
 
 
-def load_nexus_data(file_path: str) -> Tuple[Optional[Dataset], List[str]]:
-    """
-    Load the NeXus file and attempt to create a Dataset.
-    :param file_path: The NeXus file path.
-    :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
-    """
-    with h5py.File(file_path, 'r') as nexus_file:
+class NexusLoader:
+    def __init__(self):
+        self.nexus_file = None
+        self.tomo_entry = None
+        self.data = None
+        self.image_key_dataset = None
+        self.issues = []
 
-        tomo_entry = _get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
-        if tomo_entry is None:
-            error_msg = _missing_data_message(TOMO_ENTRY_PATH)
+    def load_nexus_data(self, file_path: str) -> Tuple[Optional[Dataset], List[str]]:
+        """
+        Load the NeXus file and attempt to create a Dataset.
+        :param file_path: The NeXus file path.
+        :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
+        """
+        with h5py.File(file_path, 'r') as self.nexus_file:
+
+            self.tomo_entry = self._get_tomo_data(TOMO_ENTRY_PATH)
+            if self.tomo_entry is None:
+                error_msg = _missing_data_message(TOMO_ENTRY_PATH)
+                logger.error(error_msg)
+                return None, [error_msg]
+
+            self.data = self._get_tomo_data(DATA_PATH)
+            if self.data is None:
+                error_msg = _missing_data_message(DATA_PATH)
+                logger.error(error_msg)
+                return None, [error_msg]
+
+            self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)
+            if self.image_key_dataset is None:
+                return self._get_projections()
+            else:
+                return self._get_data_from_image_key()
+
+    def _get_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+        """
+        Retrieve data from the NeXus file structure.
+        :param entry_path: The path in which the data is found.
+        :return: The Nexus group if it exists, None otherwise.
+        """
+        try:
+            return self.nexus_file[entry_path]
+        except KeyError:
+            return None
+
+    def _get_projections(self) -> Tuple[Dataset, List[str]]:
+        """
+        Treat all the images in the data array as projections, and return them in the form of a Dataset.
+        :return: The image Dataset.
+        """
+        no_img_key_msg = "No image key found. Treating all images as projections."
+        logger.info(no_img_key_msg)
+        return Dataset(Images(np.array(self.data))), [no_img_key_msg]
+
+    def _get_data_from_image_key(self) -> Tuple[Optional[Dataset], List[str]]:
+        sample_array = self._get_images(ImageKeys.Projections)
+        if sample_array.size == 0:
+            error_msg = _missing_images_message("projection")
             logger.error(error_msg)
             return None, [error_msg]
 
-        data = _get_tomo_data(nexus_file, DATA_PATH)
-        if data is None:
-            error_msg = _missing_data_message(DATA_PATH)
-            logger.error(error_msg)
-            return None, [error_msg]
+        dark_before_images = self._find_before_after_images(ImageKeys.DarkField, True)
+        flat_before_images = self._find_before_after_images(ImageKeys.FlatField, True)
+        flat_after_images = self._find_before_after_images(ImageKeys.FlatField, False)
+        dark_after_images = self._find_before_after_images(ImageKeys.DarkField, False)
 
-        image_key = _get_tomo_data(nexus_file, IMAGE_KEY_PATH)
-        if image_key is None:
-            return _get_projections(data)
+        return Dataset(Images(sample_array, [DATA_PATH]),
+                       flat_before=flat_before_images,
+                       flat_after=flat_after_images,
+                       dark_before=dark_before_images,
+                       dark_after=dark_after_images), self.issues
+
+    def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.array:
+        """
+        Retrieve images from the data based on an image key number.
+        :param image_key_number: The image key number.
+        :param before: True if the function should return before images, False if the function should return after
+                       images. Ignored when getting projection images.
+        :return: The set of images that correspond with a given image key.
+        """
+        if image_key_number is ImageKeys.Projections:
+            indices = self.image_key_dataset[...] == image_key_number.value
         else:
-            return _get_data_from_image_key(data, image_key)
+            if before:
+                indices = self.image_key_dataset[:self.image_key_dataset.size // 2] == image_key_number.value
+            else:
+                indices = self.image_key_dataset[:] == image_key_number.value
+                indices[:self.image_key_dataset.size // 2] = False
+        # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
+        return self.data[np.where(indices)]
 
-
-def _get_projections(data: h5py.Dataset) -> Tuple[Optional[Dataset], List[str]]:
-    pass
-
-
-def _get_data_from_image_key(data: h5py.Dataset, image_key: h5py.Dataset) -> Tuple[Optional[Dataset], List[str]]:
-    issues = []
-
-    sample_array = _get_images(ImageKeys.Projections, image_key, data)
-    if sample_array.size == 0:
-        error_msg = _missing_images_message("projection")
-        logger.error(error_msg)
-        return None, [error_msg]
-
-    flat_before_array = _get_images(ImageKeys.FlatField, image_key, data, True)
-    if flat_before_array.size == 0:
-        info_msg = _missing_images_message("flat before")
-        logger.info(info_msg)
-        issues.append(info_msg)
-        flat_before_images = None
-    else:
-        flat_before_images = Images(flat_before_array, ["flat before"])
-
-    flat_after_array = _get_images(ImageKeys.FlatField, image_key, data, False)
-    if flat_after_array.size == 0:
-        info_msg = _missing_images_message("flat after")
-        logger.info(info_msg)
-        issues.append(info_msg)
-        flat_after_images = None
-    else:
-        flat_after_images = Images(flat_after_array, ["flat after"])
-
-    dark_before_array = _get_images(ImageKeys.DarkField, image_key, data, True)
-    if dark_before_array.size == 0:
-        info_msg = _missing_images_message("dark before")
-        logger.info(info_msg)
-        issues.append(info_msg)
-        dark_before_images = None
-    else:
-        dark_before_images = Images(dark_before_array, ["dark before"])
-
-    dark_after_array = _get_images(ImageKeys.DarkField, image_key, data, False)
-    if dark_after_array.size == 0:
-        info_msg = _missing_images_message("dark after")
-        logger.info(info_msg)
-        issues.append(info_msg)
-        dark_after_images = None
-    else:
-        dark_after_images = Images(dark_after_array, ["dark after"])
-
-    return Dataset(Images(sample_array, [DATA_PATH]),
-                   flat_before=flat_before_images,
-                   flat_after=flat_after_images,
-                   dark_before=dark_before_images,
-                   dark_after=dark_after_images), issues
+    def _find_before_after_images(self, image_key_number: ImageKeys, before: bool):
+        image_name = _generate_image_name(image_key_number, before)
+        images_array = self._get_images(image_key_number, before)
+        if images_array.size == 0:
+            info_msg = _missing_images_message(image_name)
+            logger.info(info_msg)
+            self.issues.append(info_msg)
+            return None
+        else:
+            return Images(images_array, [image_name])
