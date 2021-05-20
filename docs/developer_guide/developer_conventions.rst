@@ -21,3 +21,9 @@ Conda runtime dependencies can be specified in `conda/meta.yaml`. These will be 
 Pip runtime dependencies can't be tracked automatically and so must be installed as part of the environment. These should be listed in `environment.yml`. Due to technical limitations they must also be duplicated in the pip section of `environment-dev.yml`.
 
 Development dependencies should be listed in `environment-dev.yml`, with conda and pip dependencies placed in the correct place.
+
+When updating dependencies or modifying `conda/meta.yaml`, it is important to test that there are no conflicts that will prevent the package being built. This can be done by running
+
+.. code::
+
+    make build-conda-package

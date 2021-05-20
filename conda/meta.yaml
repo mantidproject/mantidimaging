@@ -27,7 +27,7 @@ requirements:
     - scipy=1.5.3
     - scikit-image=0.18.*
     - numpy=1.19.4
-    - tomopy=1.10.*=cuda*
+    - tomopy=1.9.*=cuda*
     - cudatoolkit=9.2*
     - cupy
     - astra-toolbox=1.9.9.dev4
