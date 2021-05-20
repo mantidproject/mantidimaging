@@ -68,7 +68,7 @@ class NexusLoader:
         self.tomo_entry = None
         self.data = None
         self.image_key_dataset = None
-        self.issues = []
+        self.issues = None
 
     def load_nexus_data(self, file_path: str) -> Tuple[Optional[Dataset], List[str]]:
         """
@@ -76,6 +76,8 @@ class NexusLoader:
         :param file_path: The NeXus file path.
         :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
         """
+        self.issues = []
+
         with h5py.File(file_path, 'r') as self.nexus_file:
 
             self.tomo_entry = self._get_tomo_data(TOMO_ENTRY_PATH)
