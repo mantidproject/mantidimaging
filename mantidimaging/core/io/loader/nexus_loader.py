@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import enum
-from typing import Union, Optional
+from typing import Union, Optional, List, Tuple
 
 import h5py
 from logging import getLogger
@@ -54,7 +54,6 @@ def _get_tomo_data(nexus_data: Union[h5py.File, h5py.Group],
     try:
         return nexus_data[entry_path]
     except KeyError:
-        logger.error(_missing_data_message(entry_path))
         return None
 
 
@@ -92,61 +91,84 @@ def _get_images(image_key_number: ImageKeys,
     return data[np.where(indices)]
 
 
-def load_nexus_data(file_path: str) -> Optional[Dataset]:
+def load_nexus_data(file_path: str) -> Tuple[Optional[Dataset], List[str]]:
     """
     Load the NeXus file and attempt to create a Dataset.
     :param file_path: The NeXus file path.
     :return: A Dataset containing sample, flat field, and dark field images if the file has the expected structure.
     """
-    nexus_file = _load_nexus_file(file_path)
+    with h5py.File(file_path, 'r') as nexus_file:
 
-    tomo_entry = _get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
-    if tomo_entry is None:
-        return None
+        tomo_entry = _get_tomo_data(nexus_file, TOMO_ENTRY_PATH)
+        if tomo_entry is None:
+            error_msg = _missing_data_message(TOMO_ENTRY_PATH)
+            logger.error(error_msg)
+            return None, [error_msg]
 
-    data = _get_tomo_data(nexus_file, DATA_PATH)
-    image_key = _get_tomo_data(nexus_file, IMAGE_KEY_PATH)
+        data = _get_tomo_data(nexus_file, DATA_PATH)
+        if data is None:
+            error_msg = _missing_data_message(DATA_PATH)
+            logger.error(error_msg)
+            return None, [error_msg]
 
-    if data is None or image_key is None:
-        return None
+        image_key = _get_tomo_data(nexus_file, IMAGE_KEY_PATH)
+        if image_key is None:
+            return _get_projections(data)
+        else:
+            return _get_data_from_image_key(data, image_key)
+
+
+def _get_projections(data: h5py.Dataset) -> Tuple[Optional[Dataset], List[str]]:
+    pass
+
+
+def _get_data_from_image_key(data: h5py.Dataset, image_key: h5py.Dataset) -> Tuple[Optional[Dataset], List[str]]:
+    issues = []
 
     sample_array = _get_images(ImageKeys.Projections, image_key, data)
     if sample_array.size == 0:
-        logger.error(_missing_images_message("sample"))
-        return None
+        error_msg = _missing_images_message("projection")
+        logger.error(error_msg)
+        return None, [error_msg]
 
     flat_before_array = _get_images(ImageKeys.FlatField, image_key, data, True)
     if flat_before_array.size == 0:
-        logger.info(_missing_images_message("flat before"))
+        info_msg = _missing_images_message("flat before")
+        logger.info(info_msg)
+        issues.append(info_msg)
         flat_before_images = None
     else:
         flat_before_images = Images(flat_before_array, ["flat before"])
 
     flat_after_array = _get_images(ImageKeys.FlatField, image_key, data, False)
     if flat_after_array.size == 0:
-        logger.info(_missing_images_message("flat after"))
+        info_msg = _missing_images_message("flat after")
+        logger.info(info_msg)
+        issues.append(info_msg)
         flat_after_images = None
     else:
         flat_after_images = Images(flat_after_array, ["flat after"])
 
     dark_before_array = _get_images(ImageKeys.DarkField, image_key, data, True)
     if dark_before_array.size == 0:
-        logger.info(_missing_images_message("dark before"))
+        info_msg = _missing_images_message("dark before")
+        logger.info(info_msg)
+        issues.append(info_msg)
         dark_before_images = None
     else:
         dark_before_images = Images(dark_before_array, ["dark before"])
 
     dark_after_array = _get_images(ImageKeys.DarkField, image_key, data, False)
     if dark_after_array.size == 0:
-        logger.info(_missing_images_message("dark after"))
+        info_msg = _missing_images_message("dark after")
+        logger.info(info_msg)
+        issues.append(info_msg)
         dark_after_images = None
     else:
         dark_after_images = Images(dark_after_array, ["dark after"])
-
-    nexus_file.close()
 
     return Dataset(Images(sample_array, [DATA_PATH]),
                    flat_before=flat_before_images,
                    flat_after=flat_after_images,
                    dark_before=dark_before_images,
-                   dark_after=dark_after_images)
+                   dark_after=dark_after_images), issues
