@@ -139,7 +139,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.sort_points()
 
     def headerData(self, section, orientation, role):
-        if orientation != Qt.Orientation.Horizontal:
+        if orientation != Qt.Orientations.Horizontal:
             return None
 
         if role != Qt.ItemDataRole.DisplayRole:

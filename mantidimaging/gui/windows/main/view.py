@@ -317,7 +317,7 @@ class MainWindowView(BaseMainWindowView):
     def create_stack_window(self,
                             stack: Images,
                             title: str,
-                            position=Qt.DockWidgetArea.TopDockWidgetArea,
+                            position=Qt.DockWidgetAreas.TopDockWidgetArea,
                             floating=False) -> StackVisualiserView:
         stack_vis = StackVisualiserView(self, title, stack)
 

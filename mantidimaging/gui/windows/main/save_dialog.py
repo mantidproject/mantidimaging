@@ -25,7 +25,7 @@ class MWSaveDialog(QDialog):
 
         self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
 
-        self.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll).clicked.connect(self.save_all)
+        self.buttonBox.button(QDialogButtonBox.StandardButtons.SaveAll).clicked.connect(self.save_all)
 
         # dynamically add all the supported formats
         formats = supported_formats()

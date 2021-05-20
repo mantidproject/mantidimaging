@@ -187,7 +187,7 @@ class MIImageView(ImageView):
         original_handler = self.ui.roiPlot.mousePressEvent
 
         def extended_handler(ev):
-            if ev.button() == Qt.MouseButton.LeftButton:
+            if ev.button() == Qt.MouseButtons.LeftButton:
                 self.set_timeline_to_tick_nearest(ev.x())
             original_handler(ev)
 
