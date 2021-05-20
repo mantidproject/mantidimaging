@@ -12,8 +12,6 @@ from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, _ge
     TOMO_ENTRY_PATH, DATA_PATH, IMAGE_KEY_PATH
 from mantidimaging.core.io.loader.nexus_loader import logger as nexus_logger
 
-LOAD_NEXUS_FILE = "mantidimaging.core.io.loader.nexus_loader.h5py.File"
-
 
 def test_missing_field_message():
     assert _missing_data_message("missing_field") == "The NeXus file does not contain the required missing_field field."
@@ -27,7 +25,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)))
         self.nexus.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1]))
 
-        self.nexus_load_patcher = mock.patch(LOAD_NEXUS_FILE)
+        self.nexus_load_patcher = mock.patch("mantidimaging.core.io.loader.nexus_loader.h5py.File")
         nexus_load_mock = self.nexus_load_patcher.start()
         nexus_load_mock.return_value = self.nexus
 
