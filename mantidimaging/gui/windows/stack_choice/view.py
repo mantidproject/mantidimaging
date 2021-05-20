@@ -5,8 +5,8 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 import numpy as np
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.images import Images

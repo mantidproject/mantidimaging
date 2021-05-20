@@ -8,8 +8,8 @@ from pathlib import Path
 from tempfile import mkdtemp
 from uuid import uuid4
 
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel
 
 from mantidimaging.core.io.loader import loader

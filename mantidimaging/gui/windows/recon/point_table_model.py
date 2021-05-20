@@ -4,7 +4,7 @@
 from enum import Enum
 from typing import List
 
-from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
+from PyQt6.QtCore import QAbstractTableModel, QModelIndex, Qt
 
 from mantidimaging.core.rotation import CorTiltDataModel
 from mantidimaging.core.rotation.data_model import Point

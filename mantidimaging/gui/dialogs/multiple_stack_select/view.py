@@ -3,7 +3,7 @@
 
 from typing import TYPE_CHECKING
 from mantidimaging.gui.widgets.stack_selector.view import StackSelectorWidgetView
-from PyQt5.QtWidgets import QDialog, QGridLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QGridLayout, QPushButton
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover

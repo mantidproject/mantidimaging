@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from unittest import mock
 import numpy as np
-from PyQt5.QtWidgets import QDialog
+from PyQt6.QtWidgets import QDialog
 
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView

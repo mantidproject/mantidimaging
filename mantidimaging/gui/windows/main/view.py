@@ -6,9 +6,9 @@ from logging import getLogger
 from typing import Optional
 from uuid import UUID
 
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl
-from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
+from PyQt6.QtCore import Qt, pyqtSignal, QUrl
+from PyQt6.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
+from PyQt6.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder

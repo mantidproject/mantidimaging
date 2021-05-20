@@ -3,7 +3,7 @@
 
 from mantidimaging.core.utility import finder
 import os
-from PyQt5.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 

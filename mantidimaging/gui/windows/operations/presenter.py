@@ -10,7 +10,7 @@ from typing import List, TYPE_CHECKING, Optional, Tuple, Union
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication, QLineEdit
+from PyQt6.QtWidgets import QApplication, QLineEdit
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import Images

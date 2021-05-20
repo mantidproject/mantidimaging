@@ -3,7 +3,7 @@
 
 from contextlib import contextmanager
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 
 @contextmanager

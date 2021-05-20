@@ -10,7 +10,7 @@ import numpy as np
 from mantidimaging.core.data import Images
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
+    from PyQt6.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
     from mantidimaging.gui.mvp_base import BaseMainWindowView  # pragma: no cover
 
 

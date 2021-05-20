@@ -83,7 +83,7 @@ class RebinFilter(BaseFilter):
         _, shape_x = add_property_to_form('X', Type.INT, valid_values=shape_range, on_change=on_change)
         _, shape_y = add_property_to_form('Y', Type.INT, valid_values=shape_range, on_change=on_change)
 
-        from PyQt5.QtWidgets import QHBoxLayout, QRadioButton, QLabel, QComboBox
+        from PyQt6.QtWidgets import QHBoxLayout, QRadioButton, QLabel, QComboBox
         shape_fields = QHBoxLayout()
         shape_fields.addWidget(shape_x)
         shape_fields.addWidget(shape_y)

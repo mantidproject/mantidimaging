@@ -3,7 +3,7 @@
 import unittest
 from unittest import mock
 
-from PyQt5.QtWidgets import QWidget, QDialog
+from PyQt6.QtWidgets import QWidget, QDialog
 
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.test_helpers import start_qapplication

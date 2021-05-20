@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 if TYPE_CHECKING:

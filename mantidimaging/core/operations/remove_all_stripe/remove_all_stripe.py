@@ -4,7 +4,7 @@
 from functools import partial
 from mantidimaging.core.data.images import Images
 
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
+from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox
 from sarepy.prep.stripe_removal_original import remove_all_stripe
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup

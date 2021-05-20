@@ -4,7 +4,7 @@
 from typing import List, Union
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
+from PyQt6.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters

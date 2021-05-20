@@ -4,8 +4,8 @@
 import unittest
 from unittest import mock
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtTest import QTest
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
 
 from mantidimaging.core.operations.median_filter.median_filter import KernelSpinBox
 from mantidimaging.test_helpers import start_qapplication

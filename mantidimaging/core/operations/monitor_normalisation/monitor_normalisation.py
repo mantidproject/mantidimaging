@@ -4,7 +4,7 @@ from functools import partial
 from typing import Callable, Dict, Any
 
 import numpy as np
-from PyQt5.QtWidgets import QFormLayout, QWidget
+from PyQt6.QtWidgets import QFormLayout, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter

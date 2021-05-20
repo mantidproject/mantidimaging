@@ -3,7 +3,7 @@
 
 from typing import Iterable, Tuple
 
-from PyQt5.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QCheckBox, QLabel, QGroupBox, QWidget, QSizePolicy, QPushButton, QVBoxLayout
 
 from mantidimaging.core.operation_history.operations import ImageOperation
 from mantidimaging.gui.mvp_base import BaseDialogView

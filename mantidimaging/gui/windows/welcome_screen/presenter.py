@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import QSettings
+from PyQt6.QtCore import QSettings
 from logging import getLogger
 
 from mantidimaging.core.utility import cuda_check

@@ -7,7 +7,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
-from PyQt5.QtWidgets import QTabBar, QApplication
+from PyQt6.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset

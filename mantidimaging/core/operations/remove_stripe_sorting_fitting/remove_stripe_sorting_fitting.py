@@ -4,7 +4,7 @@
 from functools import partial
 from mantidimaging.core.data.images import Images
 
-from PyQt5.QtWidgets import QSpinBox
+from PyQt6.QtWidgets import QSpinBox
 from sarepy.prep.stripe_removal_improved import remove_stripe_based_sorting_fitting
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup

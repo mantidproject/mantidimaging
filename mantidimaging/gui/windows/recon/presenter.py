@@ -6,7 +6,7 @@ from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees

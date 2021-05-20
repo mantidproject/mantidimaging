@@ -4,7 +4,7 @@
 import os
 from typing import Optional, List, Union, Tuple
 
-from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox
+from PyQt6.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox
 
 from mantidimaging.core.utility import size_calculator
 from mantidimaging.core.utility.data_containers import Indices

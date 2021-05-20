@@ -5,7 +5,7 @@ import unittest
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QSpinBox, QComboBox, QDoubleSpinBox
+from PyQt6.QtWidgets import QSpinBox, QComboBox, QDoubleSpinBox
 from mantidimaging.test_helpers import start_qapplication
 
 import mantidimaging.test_helpers.unit_test_helper as th

@@ -3,7 +3,7 @@
 
 from logging import getLogger
 
-from PyQt5.QtCore import QThread
+from PyQt6.QtCore import QThread
 
 from mantidimaging.core.utility.func_call import call_with_known_parameters
 

@@ -4,7 +4,7 @@
 from functools import partial
 from typing import Union, Callable, Dict, Any
 
-from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
+from PyQt6.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images

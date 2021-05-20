@@ -3,7 +3,7 @@
 
 from unittest import mock
 
-from PyQt5.QtWidgets import QDialog
+from PyQt6.QtWidgets import QDialog
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest

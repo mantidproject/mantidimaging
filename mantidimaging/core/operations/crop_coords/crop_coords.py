@@ -4,7 +4,7 @@
 from functools import partial
 from typing import Union, Optional, List
 
-from PyQt5.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QLineEdit
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images

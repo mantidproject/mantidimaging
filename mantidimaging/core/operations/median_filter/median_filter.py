@@ -6,8 +6,8 @@ from logging import getLogger
 from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
 import scipy.ndimage as scipy_ndimage
-from PyQt5.QtGui import QValidator
-from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
+from PyQt6.QtGui import QValidator
+from PyQt6.QtWidgets import QSpinBox, QLabel, QSizePolicy
 
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
@@ -19,7 +19,7 @@ from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type, on_change_and_disable
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
+    from PyQt6.QtWidgets import QFormLayout  # pragma: no cover
 
 KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
 

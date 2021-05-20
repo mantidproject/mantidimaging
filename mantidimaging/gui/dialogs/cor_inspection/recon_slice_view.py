@@ -4,7 +4,7 @@
 from typing import Tuple, TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QPushButton
 from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint

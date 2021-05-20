@@ -6,7 +6,7 @@ import os
 from tempfile import mkdtemp
 from uuid import uuid4
 
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt6.QtWidgets import QWidget, QApplication
 from applitools.common import BatchInfo, MatchLevel
 from applitools.images import Eyes
 

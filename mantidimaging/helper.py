@@ -38,7 +38,7 @@ def initialise_logging(default_level=logging.DEBUG):
     root_logger.setLevel(default_level)
 
     # Don't ever print all the debug logging from Qt
-    logging.getLogger('PyQt5').setLevel(logging.INFO)
+    logging.getLogger('PyQt6').setLevel(logging.INFO)
 
 
 def check_data_stack(data, expected_dims=3, expected_class=Images):

@@ -2,9 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
-from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt6.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import pyqtSignal, Qt
 from typing import List
 
 from mantidimaging.gui.mvp_base import BaseDialogView

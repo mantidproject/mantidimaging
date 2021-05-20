@@ -5,7 +5,7 @@ import unittest
 from unittest import mock
 import tempfile
 
-from PyQt5.QtCore import QSettings, QCoreApplication
+from PyQt6.QtCore import QSettings, QCoreApplication
 
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.test_helpers import start_qapplication

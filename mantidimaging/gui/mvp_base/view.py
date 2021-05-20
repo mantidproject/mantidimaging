@@ -3,7 +3,7 @@
 
 from logging import getLogger
 
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QDialog
 
 from mantidimaging.gui.utility import compile_ui
 

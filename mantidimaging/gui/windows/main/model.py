@@ -6,7 +6,7 @@ from collections import namedtuple
 from logging import getLogger
 from typing import Any, Dict, List, Optional
 
-from PyQt5.QtWidgets import QDockWidget
+from PyQt6.QtWidgets import QDockWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset

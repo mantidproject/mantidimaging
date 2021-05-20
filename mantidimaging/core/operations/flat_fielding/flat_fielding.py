@@ -3,7 +3,7 @@
 
 from functools import partial
 from typing import Any, Dict
-from PyQt5.QtWidgets import QComboBox
+from PyQt6.QtWidgets import QComboBox
 
 import numpy as np
 

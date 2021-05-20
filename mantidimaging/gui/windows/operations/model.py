@@ -10,7 +10,7 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
+    from PyQt6.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowPresenter  # pragma: no cover
     from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView  # pragma: no cover
 

@@ -6,7 +6,7 @@ from typing import Any, Dict
 
 import numpy as np
 from numpy import float32, nanmax, nanmin, ndarray, uint16
-from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
+from PyQt6.QtWidgets import QComboBox, QDoubleSpinBox
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
