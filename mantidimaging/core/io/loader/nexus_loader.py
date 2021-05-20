@@ -57,15 +57,6 @@ def _get_tomo_data(nexus_data: Union[h5py.File, h5py.Group],
         return None
 
 
-def _load_nexus_file(file_path: str) -> h5py.File:
-    """
-    Load a NeXus file.
-    :param file_path: The NeXus file path.
-    :return: The h5py File object.
-    """
-    return h5py.File(file_path, 'r')
-
-
 def _get_images(image_key_number: ImageKeys,
                 image_key: h5py.Dataset,
                 data: h5py.Dataset,
