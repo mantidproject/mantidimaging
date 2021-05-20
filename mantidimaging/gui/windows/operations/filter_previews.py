@@ -7,8 +7,7 @@ from typing import Optional
 
 import numpy as np
 from PyQt6.QtCore import QPoint, QRect
-from PyQt6.QtGui import QGuiApplication, QResizeEvent
-from PyQt6.QtWidgets import QAction
+from PyQt6.QtGui import QGuiApplication, QResizeEvent, QAction
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem

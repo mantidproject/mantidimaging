@@ -11,8 +11,9 @@ from typing import Any, Tuple, Union, List, Callable
 
 from PyQt6 import uic  # type: ignore
 from PyQt6.QtCore import QObject
-from PyQt6.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction,
-                             QMenu, QPushButton, QLayout, QFileDialog, QComboBox)
+from PyQt6.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QMenu,
+                             QPushButton, QLayout, QFileDialog, QComboBox)
+from PyQt6.QtGui import QAction
 
 from mantidimaging.core.utility import finder
 

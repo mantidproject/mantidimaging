@@ -5,7 +5,8 @@ from time import sleep
 from typing import Callable, Optional, Tuple
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QAction
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtGui import QAction
 from pyqtgraph import ROI, ImageItem, ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 

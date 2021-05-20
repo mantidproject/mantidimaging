@@ -4,8 +4,8 @@
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QGuiApplication
-from PyQt6.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
+from PyQt6.QtGui import QGuiApplication, QAction
+from PyQt6.QtWidgets import QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.sensible_roi import SensibleROI

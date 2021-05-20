@@ -5,7 +5,8 @@ from uuid import UUID
 
 import numpy
 from PyQt6.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox, QAction)
+                             QVBoxLayout, QWidget, QMessageBox)
+from PyQt6.QtGui import QAction
 from PyQt6.QtCore import pyqtSignal
 
 from mantidimaging.core.data import Images

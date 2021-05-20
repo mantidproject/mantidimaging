@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
-                             QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
+from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox, QPushButton,
+                             QSizePolicy, QSplitter, QStyle, QVBoxLayout)
+from PyQt6.QtGui import QAction
 from pyqtgraph import ImageItem
 
 from mantidimaging.core.net.help_pages import open_api_webpage
