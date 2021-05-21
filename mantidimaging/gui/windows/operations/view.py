@@ -32,7 +32,6 @@ class FiltersWindowView(BaseMainWindowView):
 
     linkImages: QCheckBox
     showHistogramLegend: QCheckBox
-    combinedHistograms: QCheckBox
     invertDifference: QCheckBox
     overlayDifference: QCheckBox
     lockScaleCheckBox: QCheckBox
@@ -79,7 +78,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
 
-        self.combinedHistograms.stateChanged.connect(self.histogram_mode_changed)
         self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)
         # set here to trigger the changed event
         self.showHistogramLegend.setChecked(True)
@@ -160,21 +158,6 @@ class FiltersWindowView(BaseMainWindowView):
 
     def clear_previews(self):
         self.previews.clear_items()
-
-    def histogram_mode_changed(self):
-        combined_histograms = self.combinedHistograms.isChecked()
-        self.previews.combined_histograms = combined_histograms
-
-        # Clear old histogram bits
-        self.previews.delete_histograms()
-        self.previews.delete_histogram_labels()
-
-        # Init the correct histograms
-        if combined_histograms:
-            self.previews.init_histogram()
-        else:
-            self.previews.init_separate_histograms()
-        self.previews.update_histogram_data()
 
     def histogram_legend_is_changed(self):
         self.previews.histogram_legend_visible = self.showHistogramLegend.isChecked()
