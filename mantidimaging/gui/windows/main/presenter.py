@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
-from mantidimaging.core.io.loader import nexus_loader
+from mantidimaging.core.io.loader.nexus_loader import NexusLoader
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -230,9 +230,10 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def load_nexus_file(self, selected_file: str):
-        nexus_data, issues = nexus_loader.load_nexus_data(selected_file)
+        nexus_data, issues = NexusLoader().load_nexus_data(selected_file)
         if nexus_data is not None:
             self.create_new_stack(nexus_data, "NeXus file")
-            self.show_information("\n".join(issues))
+            if issues:
+                self.show_information("\n".join(issues))
         else:
             self.view.show_error_dialog("\n".join(issues))
