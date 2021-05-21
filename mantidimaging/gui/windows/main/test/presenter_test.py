@@ -20,6 +20,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(MainWindowView)
         self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
+        self.dataset = Dataset(sample=generate_images(),
+                               flat_before=generate_images(),
+                               flat_after=generate_images(),
+                               dark_before=generate_images(),
+                               dark_after=generate_images())
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
@@ -129,17 +134,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
-        ds = Dataset(sample=generate_images(),
-                     flat_before=generate_images(),
-                     flat_after=generate_images(),
-                     dark_before=generate_images(),
-                     dark_after=generate_images())
-        ds.flat_before.filenames = ["filename"] * 10
-        ds.dark_before.filenames = ["filename"] * 10
-        ds.flat_after.filenames = ["filename"] * 10
-        ds.dark_after.filenames = ["filename"] * 10
+        self.dataset.flat_before.filenames = ["filename"] * 10
+        self.dataset.dark_before.filenames = ["filename"] * 10
+        self.dataset.flat_after.filenames = ["filename"] * 10
+        self.dataset.dark_after.filenames = ["filename"] * 10
 
-        self.presenter.create_new_stack(ds, "My title")
+        self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(5, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
@@ -157,6 +157,21 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_wizard_action_show_reconstruction(self):
         self.presenter.wizard_action_show_reconstruction()
         self.view.show_recon_window.assert_called_once()
+
+    def test_failed_nexus_load_calls_show_error_dialog(self):
+        with mock.patch("mantidimaging.gui.windows.main.presenter.NexusLoader") as nexus_loader_mock:
+            issue_messages = ["issue1", "issue2"]
+            nexus_loader_mock.return_value.load_nexus_data.return_value = (None, issue_messages)
+            self.presenter.load_nexus_file("filename")
+            self.view.show_error_dialog.assert_called_once_with("\n".join(issue_messages))
+
+    def test_nexus_load_success_calls_show_information(self):
+        with mock.patch("mantidimaging.gui.windows.main.presenter.NexusLoader") as nexus_loader_mock:
+            issue_messages = ["issue1", "issue2"]
+            nexus_loader_mock.return_value.load_nexus_data.return_value = (self.dataset, issue_messages)
+            self.presenter.create_new_stack = mock.Mock()
+            self.presenter.load_nexus_file("filename")
+            self.view.show_info_dialog.assert_called_once_with("\n".join(issue_messages))
 
 
 if __name__ == '__main__':
