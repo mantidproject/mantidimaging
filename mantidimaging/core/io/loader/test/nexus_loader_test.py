@@ -98,26 +98,30 @@ class NexusLoaderTest(unittest.TestCase):
     def test_no_flat_before_images_in_log(self):
         self.replace_values_in_image_key(True, 1, 2)
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            self.assertIsNone(self.nexus_loader.load_nexus_data("filename")[0].flat_before)
-            self.assertIn("No flat before images found in the NeXus file", log_mock.output[0])
+            dataset, issues = self.nexus_loader.load_nexus_data("filename")
+            self.assertIsNone(dataset.flat_before)
+            self.assertIn(issues[0], log_mock.output[0])
 
     def test_no_flat_after_images_in_log(self):
         self.replace_values_in_image_key(False, 1, 2)
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            self.assertIsNone(self.nexus_loader.load_nexus_data("filename")[0].flat_after)
-            self.assertIn("No flat after images found in the NeXus file", log_mock.output[0])
+            dataset, issues = self.nexus_loader.load_nexus_data("filename")
+            self.assertIsNone(dataset.flat_after)
+            self.assertIn(issues[0], log_mock.output[0])
 
     def test_no_dark_before_images_in_log(self):
         self.replace_values_in_image_key(True, 2, 1)
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            self.assertIsNone(self.nexus_loader.load_nexus_data("filename")[0].dark_before)
-            self.assertIn("No dark before images found in the NeXus file", log_mock.output[0])
+            dataset, issues = self.nexus_loader.load_nexus_data("filename")
+            self.assertIsNone(dataset.dark_before)
+            self.assertIn(issues[0], log_mock.output[0])
 
     def test_no_dark_after_images_in_log(self):
         self.replace_values_in_image_key(False, 2, 1)
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            self.assertIsNone(self.nexus_loader.load_nexus_data("filename")[0].dark_after)
-            self.assertIn("No dark after images found in the NeXus file", log_mock.output[0])
+            dataset, issues = self.nexus_loader.load_nexus_data("filename")
+            self.assertIsNone(dataset.dark_after)
+            self.assertIn(issues[0], log_mock.output[0])
 
     def test_dataset_arrays_match_image_key(self):
         flat_before = self.nexus[DATA_PATH][:2]
