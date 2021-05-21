@@ -10,6 +10,7 @@ New features
 - #927 : ROI norm: use averaged view in ROI selector
 - #925 : Jenks / Otsu everywhere
 - #926 : Manual arithmetic filter
+- #964 : Open NeXus files
 
 Fixes
 -----
