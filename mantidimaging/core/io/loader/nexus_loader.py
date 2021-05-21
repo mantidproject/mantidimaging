@@ -14,7 +14,7 @@ from mantidimaging.core.data.dataset import Dataset
 
 logger = getLogger(__name__)
 
-TOMO_ENTRY_PATH = "/raw_data_1/tomo_entry"
+TOMO_ENTRY_PATH = "/entry1/tomo_entry"
 DATA_PATH = TOMO_ENTRY_PATH + "/data"
 IMAGE_KEY_PATH = TOMO_ENTRY_PATH + "/image_key"
 
@@ -45,21 +45,21 @@ def _missing_images_message(image_name: str) -> str:
 
 def _generate_image_name(image_key_number: ImageKeys, before: Optional[bool]) -> str:
     """
-
-    :param image_key_number:
-    :param before:
-    :return:
+    Creates a name for a group of images by using the image key.
+    :param image_key_number: The image key number for the collection of images.
+    :param before: True if before images, False if after images.
+    :return: A string for the images name.
     """
     if image_key_number == ImageKeys.Projections:
-        return "sample"
+        return "Sample"
     elif image_key_number == ImageKeys.FlatField:
-        name = "flat"
+        name = "Flat"
     else:
-        name = "dark"
+        name = "Dark"
 
     if before:
-        return name + " before"
-    return name + " after"
+        return name + " Before"
+    return name + " After"
 
 
 class NexusLoader:
