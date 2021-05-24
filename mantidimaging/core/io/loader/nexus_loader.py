@@ -14,9 +14,9 @@ from mantidimaging.core.data.dataset import Dataset
 
 logger = getLogger(__name__)
 
-TOMO_ENTRY_PATH = "/entry1/tomo_entry"
-DATA_PATH = TOMO_ENTRY_PATH + "/data/data"
-IMAGE_KEY_PATH = TOMO_ENTRY_PATH + "/instrument/detector/image_key"
+TOMO_ENTRY_PATH = "tomo_entry"
+DATA_PATH = "data/data"
+IMAGE_KEY_PATH = "instrument/detector/image_key"
 
 
 class ImageKeys(enum.Enum):
@@ -83,7 +83,7 @@ class NexusLoader:
 
         with h5py.File(file_path, 'r') as self.nexus_file:
 
-            self.tomo_entry = self._get_tomo_data(TOMO_ENTRY_PATH)
+            self.tomo_entry = self._find_tomo_entry()
             if self.tomo_entry is None:
                 error_msg = _missing_data_message(TOMO_ENTRY_PATH)
                 logger.error(error_msg)
@@ -101,14 +101,20 @@ class NexusLoader:
             else:
                 return self._get_data_from_image_key()
 
+    def _find_tomo_entry(self):
+        for key in self.nexus_file.keys():
+            if self.nexus_file[key]["tomo_entry"] is not None:
+                return self.nexus_file[key]["tomo_entry"]
+        return None
+
     def _get_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
         """
-        Retrieve data from the NeXus file structure.
+        Retrieve data from the tomo entry field.
         :param entry_path: The path in which the data is found.
         :return: The Nexus group if it exists, None otherwise.
         """
         try:
-            return self.nexus_file[entry_path]
+            return self.tomo_entry[entry_path]
         except KeyError:
             return None
 
