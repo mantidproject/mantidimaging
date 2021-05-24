@@ -12,6 +12,10 @@ from applitools.images import Eyes
 
 from mantidimaging.gui.windows.main import MainWindowView
 
+# Used to disabiguate tests on the Applitools platform. set explicitly to avoid depending on the window size
+VIEWPORT_WIDTH = 1920
+VIEWPORT_HEIGHT = 1080
+
 
 class EyesManager:
     def __init__(self, application_name="Mantid Imaging", test_name=None):
@@ -47,7 +51,12 @@ class EyesManager:
             return
 
         if not self.eyes.is_open:
-            self.eyes.open(self.application_name, test_file_name)
+            self.eyes.open(self.application_name,
+                           test_file_name,
+                           dimension={
+                               'width': VIEWPORT_WIDTH,
+                               'height': VIEWPORT_HEIGHT
+                           })
         self.eyes.check_image(image, test_method_name)
 
     def close_imaging(self):
