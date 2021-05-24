@@ -25,6 +25,10 @@ class ImageKeys(enum.Enum):
     DarkField = 2
 
 
+IMAGE_TITLE_MAP = {ImageKeys.Projections: "Projections", ImageKeys.FlatField: "Flat", ImageKeys.DarkField: "Dark"}
+BEFORE_TITLE_MAP = {True: "Before", False: "After"}
+
+
 def _missing_data_message(field_name: str) -> str:
     """
     Creates a message for logging when a certain field is missing in the NeXus file.
@@ -43,25 +47,6 @@ def _missing_images_message(image_name: str) -> str:
     return f"No {image_name} images found in the NeXus file."
 
 
-def _generate_image_name(image_key_number: ImageKeys, before: Optional[bool]) -> str:
-    """
-    Creates a name for a group of images by using the image key.
-    :param image_key_number: The image key number for the collection of images.
-    :param before: True if before images, False if after images.
-    :return: A string for the images name.
-    """
-    if image_key_number == ImageKeys.Projections:
-        return "Sample"
-    elif image_key_number == ImageKeys.FlatField:
-        name = "Flat"
-    else:
-        name = "Dark"
-
-    if before:
-        return name + " Before"
-    return name + " After"
-
-
 class NexusLoader:
     def __init__(self):
         """
@@ -72,8 +57,9 @@ class NexusLoader:
         self.data = None
         self.image_key_dataset = None
         self.issues = None
+        self.title = None
 
-    def load_nexus_data(self, file_path: str) -> Tuple[Optional[Dataset], List[str]]:
+    def load_nexus_data(self, file_path: str) -> Tuple[Optional[Dataset], str, List[str]]:
         """
         Load the NeXus file and attempt to create a Dataset.
         :param file_path: The NeXus file path.
@@ -87,13 +73,15 @@ class NexusLoader:
             if self.tomo_entry is None:
                 error_msg = _missing_data_message(TOMO_ENTRY_PATH)
                 logger.error(error_msg)
-                return None, [error_msg]
+                return None, self.title, [error_msg]
 
             self.data = self._get_tomo_data(DATA_PATH)
             if self.data is None:
                 error_msg = _missing_data_message(DATA_PATH)
                 logger.error(error_msg)
-                return None, [error_msg]
+                return None, self.title, [error_msg]
+
+            self.title = self._find_data_title()
 
             self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)
             if self.image_key_dataset is None:
@@ -122,16 +110,16 @@ class NexusLoader:
         except KeyError:
             return None
 
-    def _get_projections(self) -> Tuple[Dataset, List[str]]:
+    def _get_projections(self) -> Tuple[Dataset, str, List[str]]:
         """
         Treat all the images in the data array as projections, and return them in the form of a Dataset.
         :return: The image Dataset and a list containing an issue string.
         """
         no_img_key_msg = "No image key found. Treating all images as projections."
         logger.info(no_img_key_msg)
-        return Dataset(Images(np.array(self.data))), [no_img_key_msg]
+        return Dataset(Images(np.array(self.data))), self.title, [no_img_key_msg]
 
-    def _get_data_from_image_key(self) -> Tuple[Optional[Dataset], List[str]]:
+    def _get_data_from_image_key(self) -> Tuple[Optional[Dataset], str, List[str]]:
         """
         Looks for dark/flat before/after images to create a dataset.
         :return: The image Dataset and a list containing issue strings.
@@ -140,7 +128,7 @@ class NexusLoader:
         if sample_array.size == 0:
             error_msg = _missing_images_message("projection")
             logger.error(error_msg)
-            return None, [error_msg]
+            return None, self.title, [error_msg]
 
         dark_before_images = self._find_before_after_images(ImageKeys.DarkField, True)
         flat_before_images = self._find_before_after_images(ImageKeys.FlatField, True)
@@ -151,7 +139,7 @@ class NexusLoader:
                        flat_before=flat_before_images,
                        flat_after=flat_after_images,
                        dark_before=dark_before_images,
-                       dark_after=dark_after_images), self.issues
+                       dark_after=dark_after_images), self.title, self.issues
 
     def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.array:
         """
@@ -179,7 +167,7 @@ class NexusLoader:
         :param before: True for before images, False for after images.
         :return: The images if they were found, None otherwise.
         """
-        image_name = _generate_image_name(image_key_number, before)
+        image_name = self._generate_image_name(image_key_number, before)
         images_array = self._get_images(image_key_number, before)
         if images_array.size == 0:
             info_msg = _missing_images_message(image_name)
@@ -188,3 +176,24 @@ class NexusLoader:
             return None
         else:
             return Images(images_array, [image_name])
+
+    def _find_data_title(self) -> str:
+
+        try:
+            return self.tomo_entry["title"][0].decode('UTF-8')
+        except KeyError:
+            return "NeXus Data"
+
+    def _generate_image_name(self, image_key_number: ImageKeys, before: Optional[bool]) -> str:
+        """
+        Creates a name for a group of images by using the image key.
+        :param image_key_number: The image key number for the collection of images.
+        :param before: True if before images, False if after images, None if the images are projections.
+        :return: A string for the images name.
+        """
+        name = [IMAGE_TITLE_MAP[image_key_number]]
+        if before is not None:
+            name.append(BEFORE_TITLE_MAP[before])
+        name.append(self.title)
+
+        return " ".join(name)
