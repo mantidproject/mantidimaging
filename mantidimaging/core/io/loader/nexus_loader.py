@@ -92,7 +92,7 @@ class NexusLoader:
     def _find_tomo_entry(self) -> Optional[h5py.Group]:
         """
         Look for a tomo_entry field in the NeXus file.
-        :return: The tomo_entry group if it could be found, None otherwise.
+        :return: The first tomo_entry group if one could be found, None otherwise.
         """
         for key in self.nexus_file.keys():
             if TOMO_ENTRY in self.nexus_file[key].keys():
