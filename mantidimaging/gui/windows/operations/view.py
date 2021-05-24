@@ -276,10 +276,7 @@ class FiltersWindowView(BaseMainWindowView):
         menu.addSeparator()
         self.roi_view.imageItem.menu = menu
 
-        if self.filterSelector.currentText() == "ROI Normalisation":
-            set_averaged_image()
-        else:
-            self.roi_view.setImage(self.presenter.stack.presenter.images.data)
+        set_averaged_image()
 
         def roi_changed_callback(callback):
             roi_field.setText(callback.to_list_string())
