@@ -64,6 +64,9 @@ def _generate_image_name(image_key_number: ImageKeys, before: Optional[bool]) ->
 
 class NexusLoader:
     def __init__(self):
+        """
+        Load a Dataset from a NeXus file.
+        """
         self.nexus_file = None
         self.tomo_entry = None
         self.data = None
@@ -112,13 +115,17 @@ class NexusLoader:
     def _get_projections(self) -> Tuple[Dataset, List[str]]:
         """
         Treat all the images in the data array as projections, and return them in the form of a Dataset.
-        :return: The image Dataset.
+        :return: The image Dataset and a list containing an issue string.
         """
         no_img_key_msg = "No image key found. Treating all images as projections."
         logger.info(no_img_key_msg)
         return Dataset(Images(np.array(self.data))), [no_img_key_msg]
 
     def _get_data_from_image_key(self) -> Tuple[Optional[Dataset], List[str]]:
+        """
+        Looks for dark/flat before/after images to create a dataset.
+        :return: The image Dataset and a list containing issue strings.
+        """
         sample_array = self._get_images(ImageKeys.Projections)
         if sample_array.size == 0:
             error_msg = _missing_images_message("projection")
@@ -155,7 +162,13 @@ class NexusLoader:
         # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
         return self.data[np.where(indices)]
 
-    def _find_before_after_images(self, image_key_number: ImageKeys, before: bool):
+    def _find_before_after_images(self, image_key_number: ImageKeys, before: bool) -> Optional[Images]:
+        """
+        Looks for dark/flat before/after images in the data field using the image key.
+        :param image_key_number: The image key number of the images.
+        :param before: True for before images, False for after images.
+        :return: The images if they were found, None otherwise.
+        """
         image_name = _generate_image_name(image_key_number, before)
         images_array = self._get_images(image_key_number, before)
         if images_array.size == 0:
