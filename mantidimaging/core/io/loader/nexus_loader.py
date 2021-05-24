@@ -101,10 +101,14 @@ class NexusLoader:
             else:
                 return self._get_data_from_image_key()
 
-    def _find_tomo_entry(self):
+    def _find_tomo_entry(self) -> Optional[h5py.Group]:
+        """
+        Look for a tomo_entry field in the NeXus file.
+        :return: The tomo_entry group if it could be found, None otherwise.
+        """
         for key in self.nexus_file.keys():
-            if self.nexus_file[key]["tomo_entry"] is not None:
-                return self.nexus_file[key]["tomo_entry"]
+            if self.nexus_file[key][TOMO_ENTRY_PATH] is not None:
+                return self.nexus_file[key][TOMO_ENTRY_PATH]
         return None
 
     def _get_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
