@@ -135,7 +135,7 @@ class NexusLoader:
         flat_after_images = self._find_before_after_images(ImageKeys.FlatField, False)
         dark_after_images = self._find_before_after_images(ImageKeys.DarkField, False)
 
-        return Dataset(Images(sample_array, [DATA_PATH]),
+        return Dataset(Images(sample_array, [self._generate_image_name(ImageKeys.Projections)]),
                        flat_before=flat_before_images,
                        flat_after=flat_after_images,
                        dark_before=dark_before_images,
@@ -178,13 +178,16 @@ class NexusLoader:
             return Images(images_array, [image_name])
 
     def _find_data_title(self) -> str:
-
+        """
+        Find the title field in the tomo_entry.
+        :return: The title if it was found, "NeXus Data" otherwise.
+        """
         try:
             return self.tomo_entry["title"][0].decode('UTF-8')
         except KeyError:
             return "NeXus Data"
 
-    def _generate_image_name(self, image_key_number: ImageKeys, before: Optional[bool]) -> str:
+    def _generate_image_name(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> str:
         """
         Creates a name for a group of images by using the image key.
         :param image_key_number: The image key number for the collection of images.
