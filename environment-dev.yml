@@ -31,6 +31,6 @@ dependencies:
       - pytest-repeat==0.9.1
       - psutil==5.7.3
       - isort==5.6.4
-      - eyes-images==4.15.0
+      - eyes-images==4.20.*
       - parameterized==0.8.1
       - pre-commit
