@@ -14,7 +14,7 @@ from mantidimaging.core.data.dataset import Dataset
 
 logger = getLogger(__name__)
 
-TOMO_ENTRY_PATH = "tomo_entry"
+TOMO_ENTRY = "tomo_entry"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 
@@ -71,7 +71,7 @@ class NexusLoader:
 
             self.tomo_entry = self._find_tomo_entry()
             if self.tomo_entry is None:
-                error_msg = _missing_data_message(TOMO_ENTRY_PATH)
+                error_msg = _missing_data_message(TOMO_ENTRY)
                 logger.error(error_msg)
                 return None, self.title, [error_msg]
 
@@ -95,8 +95,8 @@ class NexusLoader:
         :return: The tomo_entry group if it could be found, None otherwise.
         """
         for key in self.nexus_file.keys():
-            if self.nexus_file[key][TOMO_ENTRY_PATH] is not None:
-                return self.nexus_file[key][TOMO_ENTRY_PATH]
+            if TOMO_ENTRY in self.nexus_file[key].keys():
+                return self.nexus_file[key][TOMO_ENTRY]
         return None
 
     def _get_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
