@@ -81,7 +81,7 @@ class NexusLoader:
         """
         self.issues = []
 
-        with h5py.File(file_path, 'r') as self.nexus_file:
+        with h5py.File(file_path, "r") as self.nexus_file:
 
             self.tomo_entry = self._find_tomo_entry()
             if self.tomo_entry is None:
