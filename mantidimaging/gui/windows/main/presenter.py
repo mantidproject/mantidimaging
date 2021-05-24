@@ -236,7 +236,7 @@ class MainWindowPresenter(BasePresenter):
         """
         nexus_data, issues = NexusLoader().load_nexus_data(selected_file)
         if nexus_data is not None:
-            self.create_new_stack(nexus_data, "NeXus file")
+            self.create_new_stack(nexus_data, "Projections")
             if issues:
                 self.show_information("\n".join(issues))
         else:
