@@ -15,7 +15,7 @@ from mantidimaging.core.data.dataset import Dataset
 logger = getLogger(__name__)
 
 TOMO_ENTRY_PATH = "tomo_entry"
-DATA_PATH = "data/data"
+DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 
 
