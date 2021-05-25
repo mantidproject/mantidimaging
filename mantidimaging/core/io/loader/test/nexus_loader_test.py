@@ -25,6 +25,8 @@ class NexusLoaderTest(unittest.TestCase):
         self.n_images = 10
         self.tomo_entry.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)))
         self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1]))
+        self.title = "my_data_title"
+        self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
 
         self.nexus_loader = NexusLoader()
         self.nexus_loader.nexus_file = self.nexus
@@ -53,10 +55,10 @@ class NexusLoaderTest(unittest.TestCase):
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:] == prev_value, new_value,
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:])
 
-    def test_get_tomo_data(self):
+    def test_find_tomo_entry(self):
         self.assertIsNotNone(self.nexus_loader._find_tomo_entry())
 
-    def test_no_tomo_data_returns_none(self):
+    def test_find_tomo_entry_returns_none(self):
         del self.nexus[self.full_tomo_path]
         self.assertIsNone(self.nexus_loader._find_tomo_entry())
 
@@ -136,3 +138,10 @@ class NexusLoaderTest(unittest.TestCase):
         np.testing.assert_array_equal(dataset.sample.data, sample)
         np.testing.assert_array_equal(dataset.dark_after.data, dark_after)
         np.testing.assert_array_equal(dataset.flat_after.data, flat_after)
+
+    def test_no_title_in_nexus_file(self):
+        del self.tomo_entry["title"]
+        assert self.nexus_loader.load_nexus_data("filename")[1] == "NeXus Data"
+
+    def test_title_in_nexus_file(self):
+        assert self.nexus_loader.load_nexus_data("filename")[1] == self.title
