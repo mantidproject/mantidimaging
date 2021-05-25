@@ -145,3 +145,11 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_title_in_nexus_file(self):
         assert self.nexus_loader.load_nexus_data("filename")[1] == self.title
+
+    def test_image_filenames(self):
+        dataset = self.nexus_loader.load_nexus_data("filename")[0]
+        assert dataset.sample.filenames[0] == "Projections " + self.title
+        assert dataset.flat_before.filenames[0] == "Flat Before " + self.title
+        assert dataset.dark_before.filenames[0] == "Dark Before " + self.title
+        assert dataset.dark_after.filenames[0] == "Dark After " + self.title
+        assert dataset.flat_after.filenames[0] == "Flat After " + self.title
