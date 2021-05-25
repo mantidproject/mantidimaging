@@ -117,7 +117,7 @@ class NexusLoader:
         """
         no_img_key_msg = "No image key found. Treating all images as projections."
         logger.info(no_img_key_msg)
-        return Dataset(Images(np.array(self.data))), self.title, [no_img_key_msg]
+        return Dataset(Images(np.array(self.data, dtype="float64"))), self.title, [no_img_key_msg]
 
     def _get_data_from_image_key(self) -> Tuple[Optional[Dataset], str, List[str]]:
         """
@@ -158,7 +158,7 @@ class NexusLoader:
                 indices = self.image_key_dataset[:] == image_key_number.value
                 indices[:self.image_key_dataset.size // 2] = False
         # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
-        return self.data[np.where(indices)]
+        return self.data[np.where(indices)].astype("float64")
 
     def _find_before_after_images(self, image_key_number: ImageKeys, before: bool) -> Optional[Images]:
         """
