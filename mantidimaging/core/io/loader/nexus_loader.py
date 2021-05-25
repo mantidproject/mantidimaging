@@ -183,7 +183,7 @@ class NexusLoader:
         :return: The title if it was found, "NeXus Data" otherwise.
         """
         try:
-            return self.tomo_entry["title"][0].decode('UTF-8')
+            return self.tomo_entry["title"][0].decode("UTF-8")
         except KeyError:
             return "NeXus Data"
 
