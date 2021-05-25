@@ -21,6 +21,7 @@ Fixes
 - #961 : Test failure: ImportError: libcuda.so.1
 - #953 : NaNs in result when reconstructing with FBP_CUDA
 - #959 : Median GPU does not work with even values
+- #990 : Remove combine historgram checkbox
 
 Developer Changes
 -----------------
