@@ -27,9 +27,8 @@ diff_pen = (0, 0, 200)
 OVERLAY_THRESHOLD = 1e-3
 
 Coord = namedtuple('Coord', ['row', 'col'])
-histogram_coords = {"before": Coord(4, 0), "after": Coord(4, 1), "combined": Coord(4, 0)}
-
-label_coords = {"before": Coord(3, 0), "after": Coord(3, 1), "combined": Coord(3, 1)}
+histogram_coords = Coord(4, 0)
+label_coords = Coord(3, 1)
 
 
 def _data_valid_for_histogram(data):
@@ -40,8 +39,6 @@ class FilterPreviews(GraphicsLayoutWidget):
     image_before: ImageItem
     image_after: ImageItem
     image_diff: ImageItem
-    histogram_before: Optional[PlotItem]
-    histogram_after: Optional[PlotItem]
     histogram: Optional[PlotItem]
 
     def __init__(self, parent=None, **kwargs):
@@ -56,12 +53,7 @@ class FilterPreviews(GraphicsLayoutWidget):
             LOG.info("Unable to detect current screen. Setting screen height to %s" % screen_height)
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
 
-        self.before_histogram_data = None
-        self.after_histogram_data = None
         self.histogram = None
-        self.before_histogram = None
-        self.after_histogram = None
-        self.combined_histograms = True
         self.histogram_legend_visible = True
 
         self.addLabel("Image before")
@@ -141,12 +133,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_overlay.clear()
 
     def init_histogram(self):
-        self.histogram = self.addPlot(row=histogram_coords["combined"].row,
-                                      col=histogram_coords["combined"].col,
+        self.histogram = self.addPlot(row=histogram_coords.row,
+                                      col=histogram_coords.col,
                                       labels=histogram_axes_labels,
                                       lockAspect=True,
                                       colspan=3)
-        self.addLabel("Pixel values", row=label_coords["combined"].row, col=label_coords["combined"].col)
+        self.addLabel("Pixel values", row=label_coords.row, col=label_coords.col)
 
         self.legend = self.histogram.addLegend()
 
@@ -155,50 +147,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         before_data = self.image_before.getHistogram()
         after_data = self.image_after.getHistogram()
         if _data_valid_for_histogram(before_data):
-            if self.combined_histograms:
-                before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
-                self.legend.addItem(before_plot, "Before")
-            else:
-                self.before_histogram.plot(*before_data, pen=before_pen, clear=True)
+            before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
+            self.legend.addItem(before_plot, "Before")
+
         if _data_valid_for_histogram(after_data):
-            if self.combined_histograms:
-                after_plot = self.histogram.plot(*after_data, pen=after_pen)
-                self.legend.addItem(after_plot, "After")
-            else:
-                self.after_histogram.plot(*after_data, pen=after_pen, clear=True)
-
-    def init_separate_histograms(self):
-        hc = histogram_coords
-        self.before_histogram = self.addPlot(row=hc["before"].row,
-                                             col=hc["before"].col,
-                                             labels=histogram_axes_labels,
-                                             lockAspect=True)
-        self.after_histogram = self.addPlot(row=hc["after"].row,
-                                            col=hc["after"].col,
-                                            labels=histogram_axes_labels,
-                                            lockAspect=True)
-        lc = label_coords
-        self.addLabel("Pixel values before", row=lc["before"].row, col=lc["before"].col)
-        self.addLabel("Pixel values after", row=lc["after"].row, col=lc["after"].col)
-        if _data_valid_for_histogram(self.before_histogram_data):
-            self.before_histogram.plot(*self.before_histogram_data, pen=before_pen)
-        if _data_valid_for_histogram(self.after_histogram_data):
-            self.after_histogram.plot(*self.after_histogram_data, pen=after_pen)
-
-    def delete_histograms(self):
-        coords = set(c for c in histogram_coords.values())
-        histograms = (self.getItem(*coord) for coord in coords)
-        for histogram in filter(lambda h: h is not None, histograms):
-            self.removeItem(histogram)
-        self.histogram = None
-        self.before_histogram = None
-        self.after_histogram = None
-
-    def delete_histogram_labels(self):
-        coords = set(c for c in label_coords.values())
-        labels = (self.getItem(*coord) for coord in coords)
-        for label in filter(lambda h: h is not None, labels):
-            self.removeItem(label)
+            after_plot = self.histogram.plot(*after_data, pen=after_pen)
+            self.legend.addItem(after_plot, "After")
 
     @property
     def histogram_legend(self) -> Optional[LegendItem]:
