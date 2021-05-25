@@ -23,7 +23,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.full_tomo_path = f"entry1/{TOMO_ENTRY}"
         self.tomo_entry = self.nexus.create_group(self.full_tomo_path)
         self.n_images = 10
-        self.tomo_entry.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)))
+        self.tomo_entry.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)), dtype="float32")
         self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1]))
         self.title = "my_data_title"
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
@@ -153,3 +153,16 @@ class NexusLoaderTest(unittest.TestCase):
         assert dataset.dark_before.filenames[0] == "Dark Before " + self.title
         assert dataset.dark_after.filenames[0] == "Dark After " + self.title
         assert dataset.flat_after.filenames[0] == "Flat After " + self.title
+
+    def test_projections_only_converted_to_float64(self):
+        del self.tomo_entry[IMAGE_KEY_PATH]
+        dataset = self.nexus_loader.load_nexus_data("filename")[0]
+        assert dataset.sample.data.dtype == np.dtype("float64")
+
+    def test_full_dataset_converted_to_float64(self):
+        dataset = self.nexus_loader.load_nexus_data("filename")[0]
+        assert dataset.sample.data.dtype == np.dtype("float64")
+        assert dataset.flat_before.data.dtype == np.dtype("float64")
+        assert dataset.dark_before.data.dtype == np.dtype("float64")
+        assert dataset.dark_after.data.dtype == np.dtype("float64")
+        assert dataset.flat_after.data.dtype == np.dtype("float64")
