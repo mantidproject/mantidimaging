@@ -2,12 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import numpy as np
-from pyqtgraph import HistogramLUTItem
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from pyqtgraph import HistogramLUTItem
 
 DEFAULT_NUM_BINS = 2048
 
 
-def set_histogram_log_scale(histogram: HistogramLUTItem):
+def set_histogram_log_scale(histogram: 'HistogramLUTItem'):
     """
     Sets the y-values of a histogram to use a log scale.
     :param histogram: The HistogramLUTItem of an image.

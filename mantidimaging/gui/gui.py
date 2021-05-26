@@ -6,8 +6,8 @@ import os
 import sys
 import traceback
 
-import pyqtgraph
 from PyQt5.QtWidgets import QApplication
+import pyqtgraph
 
 from mantidimaging.gui.windows.main import MainWindowView
 

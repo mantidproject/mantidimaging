@@ -44,7 +44,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_dialog: mock.Mock):
-        stack_selector_dialog.return_value.exec.return_value = QDialog.Accepted
+        stack_selector_dialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
         selected_stack = "selected_stack"
         stack_selector_dialog.return_value.selected_stack = selected_stack
         selected_file = "~/home/test/directory/selected_file.tif"
@@ -188,7 +188,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
     def test_load_projection_angles(self, getOpenFileName: mock.Mock, StackSelectorDialog: mock.Mock,
                                     ProjectionAngleFileParser: Mock, QMessageBox: Mock):
-        StackSelectorDialog.return_value.exec.return_value = QDialog.Accepted
+        StackSelectorDialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
         selected_stack = "selected_stack"
         StackSelectorDialog.return_value.selected_stack = selected_stack
 
