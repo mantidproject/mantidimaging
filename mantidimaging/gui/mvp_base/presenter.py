@@ -22,3 +22,6 @@ class BasePresenter(object):
             # If the view knows how to handle an error message
             self.view.show_error_dialog(str(error))
         getLogger(__name__).exception(f'Presenter error: {error}\n{traceback}')
+
+    def show_information(self, info):
+        self.view.show_info_dialog(info)

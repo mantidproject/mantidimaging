@@ -36,6 +36,14 @@ class BaseMainWindowView(QMainWindow):
         """
         QMessageBox.critical(self, "Error", str(msg))
 
+    def show_info_dialog(self, msg=""):
+        """
+        Shows an information message.
+
+        :param msg: Information message string.
+        """
+        QMessageBox.information(self, "Information", str(msg))
+
 
 class BaseDialogView(QDialog):
     def __init__(self, parent, ui_file=None):

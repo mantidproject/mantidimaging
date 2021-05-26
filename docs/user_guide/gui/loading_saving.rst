@@ -47,3 +47,17 @@ of the image in the stack.
 The *Overwrite* option removes checking for existing data of the same name. When
 disabled an error will be raised if the specified output directory is not empty
 prior to saving.
+
+NeXus Files
+-----------
+
+NeXus Files can be loaded by selecting the "Load NeXus file" on the File menu. Once a file has been chosen, the program
+will attempt to find projections, dark images, and flat images by using the information contained in the NeXus
+:code:`image_key` field. If an :code:`image_key` is not found, then the program will assume all the images in the file
+are projections.
+
+The name given to the file will be taken from the :code:`title` field in the NeXus file if one is found, otherwise the
+images are given the name "NeXus Data."
+
+If the loading is successful, the new images should appear in the main view of Mantid Imaging. Information related to
+issues encountered while loading the file will be displayed as log messages as well as appearing in a popup window.
