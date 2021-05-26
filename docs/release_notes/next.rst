@@ -29,6 +29,7 @@ Developer Changes
 - #917 : Intermittent failure of StripeRemovalTest.test_memory_executed_wf
 - #980 : Use pre-commit
 - #978 : Update Qt API usage
+- #998 : setup.py command to install current developer requirements
 
 Dependency updates
 ------------------
