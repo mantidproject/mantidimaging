@@ -29,7 +29,6 @@ dependencies:
       - pytest-randomly==3.5.0
       - pytest-xdist==2.2.0
       - pytest-repeat==0.9.1
-      - psutil==5.7.3
       - isort==5.6.4
       - eyes-images==4.20.*
       - parameterized==0.8.1
