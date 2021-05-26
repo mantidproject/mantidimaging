@@ -9,7 +9,11 @@ from distutils.core import Command
 import sys
 
 from setuptools import find_packages, setup
-from sphinx.setup_command import BuildDoc
+try:
+    from sphinx.setup_command import BuildDoc
+except ModuleNotFoundError:
+    print("Warning: sphinx needed for building documentation")
+    BuildDoc = False
 
 THIS_PATH = os.path.dirname(__file__)
 
@@ -164,7 +168,9 @@ setup(
     ],
     cmdclass={
         "internal_docs_api": GenerateSphinxApidoc,
-        "internal_docs": BuildDoc,
+        **({
+            "internal_docs": BuildDoc
+        } if BuildDoc else {}),
         "docs": GenerateSphinxVersioned,
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
