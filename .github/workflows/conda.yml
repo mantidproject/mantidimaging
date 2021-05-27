@@ -18,8 +18,13 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2.0.1
         with:
           activate-environment: mantidimaging-dev
-          environment-file: environment-dev.yml
           auto-activate-base: false
+
+      - name: Mantid Imaging developer dependencies
+        shell: bash -l {0}
+        run: |
+          conda deactivate
+          python3 ./setup.py create_dev_env
 
       - name: Other dependencies
         shell: bash -l {0}

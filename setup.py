@@ -7,9 +7,16 @@ import os
 import subprocess
 from distutils.core import Command
 import sys
+from collections import defaultdict
+from pathlib import Path
+import tempfile
 
 from setuptools import find_packages, setup
-from sphinx.setup_command import BuildDoc
+try:
+    from sphinx.setup_command import BuildDoc
+except ModuleNotFoundError:
+    print("Warning: sphinx needed for building documentation")
+    BuildDoc = False
 
 THIS_PATH = os.path.dirname(__file__)
 
@@ -138,6 +145,64 @@ class CompilePyQtUiFiles(Command):
             self.compile_single_file(f)
 
 
+class CreateDeveloperEnvironment(Command):
+    description = "Install the dependencies needed to develop Mantid Imaging"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def count_indent(self, line):
+        leading_spaces = len(line) - len(line.lstrip(" "))
+        return leading_spaces // 2
+
+    def get_package_depends(self):
+        # Parse the metefile manually, do avoid needing an nonstandard library
+        meta_file = Path(__file__).parent / "conda" / "meta.yaml"
+        with meta_file.open() as meta_file_fh:
+            section = []
+            parsed_values = defaultdict(list)
+            for line in meta_file_fh:
+                # ignore templating
+                if line.strip() == "" or "{%" in line:
+                    continue
+                if line.strip().endswith(":"):
+                    indent = self.count_indent(line)
+                    section = section[:indent]
+                    section.append(line.strip(" :\n"))
+                else:
+                    parsed_values[".".join(section)].append(line.strip(" -\n"))
+        return parsed_values["requirements.run"]
+
+    def make_environment_file(self, extra_deps):
+        dev_env_file = Path(__file__).parent / "environment-dev.yml"
+        output_env_file = tempfile.NamedTemporaryFile("wt", delete=False, suffix=".yaml")
+        with dev_env_file.open() as dev_env_file_fh:
+            for line in dev_env_file_fh:
+                if line.strip() == "- mantidimaging":
+                    for extra_dep in extra_deps:
+                        output_env_file.write(f"  - {extra_dep}\n")
+                else:
+                    output_env_file.write(line)
+        output_env_file.close()
+        print("Created environment file:", output_env_file.name)
+        return output_env_file.name
+
+    def run(self):
+        print("Removing existing mantidimaging-dev environment")
+        command_conda_env_remove = ["conda", "env", "remove", "-n", "mantidimaging-dev"]
+        subprocess.check_call(command_conda_env_remove)
+        extra_deps = self.get_package_depends()
+        env_file_path = self.make_environment_file(extra_deps)
+        print("Creating conda environment for development")
+        command_conda_env = ["conda", "env", "create", "-f", env_file_path]
+        subprocess.check_call(command_conda_env)
+        os.remove(env_file_path)
+
+
 setup(
     name="mantidimaging",
     version="2.1.0rc",
@@ -164,9 +229,12 @@ setup(
     ],
     cmdclass={
         "internal_docs_api": GenerateSphinxApidoc,
-        "internal_docs": BuildDoc,
+        **({
+            "internal_docs": BuildDoc
+        } if BuildDoc else {}),
         "docs": GenerateSphinxVersioned,
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
+        "create_dev_env": CreateDeveloperEnvironment,
     },
 )
