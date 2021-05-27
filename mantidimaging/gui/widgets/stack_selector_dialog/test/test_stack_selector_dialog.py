@@ -57,4 +57,4 @@ class StackSelectorDialogTest(unittest.TestCase):
 
         diag.on_ok_clicked()
 
-        diag.done.assert_called_once_with(QDialog.Accepted)
+        diag.done.assert_called_once_with(QDialog.DialogCode.Accepted)

@@ -192,7 +192,7 @@ class MainWindowView(BaseMainWindowView):
                                              title="Stack Selector",
                                              message="Which stack is the log being loaded for?")
         # Was closed without accepting (e.g. via x button or ESC)
-        if QDialog.Accepted != stack_selector.exec():
+        if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
         stack_to_add_log_to = stack_selector.selected_stack
 
@@ -213,7 +213,7 @@ class MainWindowView(BaseMainWindowView):
                                              title="Stack Selector",
                                              message="Which stack is the 180 degree projection being loaded for?")
         # Was closed without accepting (e.g. via x button or ESC)
-        if QDialog.Accepted != stack_selector.exec():
+        if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
         stack_to_add_180_deg_to = stack_selector.selected_stack
 
@@ -236,7 +236,7 @@ class MainWindowView(BaseMainWindowView):
                                              title="Stack Selector",
                                              message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE)
         # Was closed without accepting (e.g. via x button or ESC)
-        if QDialog.Accepted != stack_selector.exec():
+        if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
 
         stack_name = stack_selector.selected_stack
@@ -366,7 +366,7 @@ class MainWindowView(BaseMainWindowView):
 
     def show_stack_select_dialog(self):
         dialog = MultipleStackSelect(self)
-        if dialog.exec() == QDialog.Accepted:
+        if dialog.exec() == QDialog.DialogCode.Accepted:
             one = self.presenter.get_stack_visualiser(dialog.stack_one.current()).presenter.images
             two = self.presenter.get_stack_visualiser(dialog.stack_two.current()).presenter.images
 
