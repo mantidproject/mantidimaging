@@ -79,10 +79,9 @@ jobs:
           coveralls
 
       - name: publish 'unstable' package
-        if: github.ref == 'refs/heads/master'
         uses: ./.github/actions/publish-package
         with:
-          label: unstable
+          label: test
           token: ${{ secrets.ANACONDA_API_TOKEN }}
 
       - name: publish docs
