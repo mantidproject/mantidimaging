@@ -19,6 +19,8 @@ jobs:
         with:
           activate-environment: mantidimaging-dev
           auto-activate-base: false
+          environment-file: environment-dev.yml
+
 
       - name: Mantid Imaging developer dependencies
         shell: bash -l {0}
