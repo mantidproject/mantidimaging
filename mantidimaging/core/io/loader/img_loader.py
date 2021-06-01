@@ -105,7 +105,7 @@ class ImageLoader(object):
         elif len(self.img_shape) == 3:
             # the loaded file was a file containing a stack of images
             return stack_loader.execute(self.load_func,
-                                        input_file_names[:1],
+                                        input_file_names[0],
                                         self.data_dtype,
                                         "Sample",
                                         self.indices,
