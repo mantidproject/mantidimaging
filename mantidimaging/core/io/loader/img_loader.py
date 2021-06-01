@@ -4,7 +4,7 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 import os
-from typing import Tuple, Optional, List, Callable
+from typing import Tuple, Optional, List, Callable, Union
 
 import numpy as np
 
@@ -68,8 +68,13 @@ def execute(load_func: Callable[[str], np.ndarray],
     dark_after_data, dark_after_filenames = il.load_data(dark_after_path)
     sample_data = il.load_sample_data(chosen_input_filenames)
 
+    if isinstance(sample_data, np.ndarray):
+        sample_images = Images(sample_data, chosen_input_filenames, indices)
+    else:
+        sample_images = sample_data
+
     return Dataset(
-        Images(sample_data, chosen_input_filenames, indices),
+        sample_images,
         flat_before=Images(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
         flat_after=Images(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
         dark_before=Images(dark_before_data, dark_before_filenames) if dark_before_data is not None else None,
@@ -85,7 +90,7 @@ class ImageLoader(object):
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names):
+    def load_sample_data(self, input_file_names: List[str]) -> Union[np.ndarray, Images]:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
@@ -127,7 +132,7 @@ class ImageLoader(object):
 
         return data
 
-    def load_files(self, files) -> np.ndarray:
+    def load_files(self, files: List[str]) -> np.ndarray:
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         num_images = len(files)
