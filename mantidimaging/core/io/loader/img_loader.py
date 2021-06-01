@@ -23,9 +23,9 @@ def execute(load_func: Callable[[str], np.ndarray],
             dark_before_path: str,
             dark_after_path: str,
             img_format: str,
-            dtype,
+            dtype: np.dtype,
             indices: Tuple[int, int, int],
-            progress=None) -> Dataset:
+            progress: Optional[Progress] = None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -82,7 +82,13 @@ def execute(load_func: Callable[[str], np.ndarray],
 
 
 class ImageLoader(object):
-    def __init__(self, load_func, img_format, img_shape, data_dtype, indices, progress=None):
+    def __init__(self,
+                 load_func: Callable[[str], np.ndarray],
+                 img_format: str,
+                 img_shape: Tuple[int, ...],
+                 data_dtype: np.dtype,
+                 indices: Tuple[int, int, int],
+                 progress: Optional[Progress] = None):
         self.load_func = load_func
         self.img_format = img_format
         self.img_shape = img_shape
@@ -108,7 +114,7 @@ class ImageLoader(object):
 
         return sample_data
 
-    def load_data(self, file_path) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
+    def load_data(self, file_path: str) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
         if file_path:
             file_names = get_file_names(os.path.dirname(file_path), self.img_format, get_prefix(file_path))
             return self.load_files(file_names), file_names

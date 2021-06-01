@@ -141,7 +141,7 @@ class NexusLoader:
                        dark_before=dark_before_images,
                        dark_after=dark_after_images), self.title, self.issues
 
-    def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.array:
+    def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.ndarray:
         """
         Retrieve images from the data based on an image key number.
         :param image_key_number: The image key number.

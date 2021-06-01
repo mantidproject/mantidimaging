@@ -21,7 +21,7 @@ LOG = getLogger(__name__)
 SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
                     Type[ctypes.c_float], Type[ctypes.c_double]]
 
-NP_DTYPE = Type[np.single]
+NP_DTYPE = np.dtype
 
 
 def enough_memory(shape, dtype):

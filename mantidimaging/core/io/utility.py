@@ -7,7 +7,7 @@ import os
 import re
 from logging import getLogger, Logger
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
@@ -52,7 +52,10 @@ def get_candidate_file_extensions(ext):
     return [ext] + candidates
 
 
-def get_file_names(path, img_format, prefix='', essential=True) -> List[str]:
+def get_file_names(path: Optional[Union[Path, str]],
+                   img_format: str,
+                   prefix: str = '',
+                   essential: bool = True) -> List[str]:
     """
     Get all file names in a directory with a specific format.
     :param path: The path to be checked.
@@ -152,7 +155,7 @@ def _alphanum_key_split(path_str):
     return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
-def get_prefix(path: str, separator="_"):
+def get_prefix(path: str, separator="_") -> str:
     return path[:path.rfind(separator)]
 
 
