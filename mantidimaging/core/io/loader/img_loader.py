@@ -100,19 +100,17 @@ class ImageLoader(object):
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
-            sample_data = self.load_files(input_file_names)
+            return self.load_files(input_file_names)
         elif len(self.img_shape) == 3:
             # the loaded file was a file containing a stack of images
-            sample_data = stack_loader.execute(self.load_func,
-                                               input_file_names[0],
-                                               self.data_dtype,
-                                               "Sample",
-                                               self.indices,
-                                               progress=self.progress)
+            return stack_loader.execute(self.load_func,
+                                        input_file_names[0],
+                                        self.data_dtype,
+                                        "Sample",
+                                        self.indices,
+                                        progress=self.progress)
         else:
             raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
-
-        return sample_data
 
     def load_data(self, file_path: str) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
         if file_path:

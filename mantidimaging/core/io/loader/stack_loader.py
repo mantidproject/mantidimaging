@@ -1,5 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from typing import Optional, Tuple
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
@@ -39,7 +40,12 @@ def do_stack_load_seq(data, new_data, img_shape, name, progress):
     return data
 
 
-def execute(load_func, file_name, dtype, name, indices=None, progress=None):
+def execute(load_func,
+            file_name,
+            dtype,
+            name,
+            indices: Optional[Tuple[int, int, int]] = None,
+            progress: Optional[Progress] = None) -> Images:
     """
     Load a single image FILE that is expected to be a stack of images.
 
