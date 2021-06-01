@@ -54,7 +54,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
 
         self.histogram = None
-        self.histogram_legend_visible = True
 
         self.addLabel("Image before")
         self.addLabel("Image after")
