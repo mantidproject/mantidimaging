@@ -7,6 +7,7 @@ import os
 from typing import Tuple, Optional, List, Callable, Union
 
 import numpy as np
+import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.io.utility import get_file_names, get_prefix
@@ -23,7 +24,7 @@ def execute(load_func: Callable[[str], np.ndarray],
             dark_before_path: str,
             dark_after_path: str,
             img_format: str,
-            dtype: np.dtype,
+            dtype: npt.DTypeLike,
             indices: Tuple[int, int, int],
             progress: Optional[Progress] = None) -> Dataset:
     """
@@ -86,7 +87,7 @@ class ImageLoader(object):
                  load_func: Callable[[str], np.ndarray],
                  img_format: str,
                  img_shape: Tuple[int, ...],
-                 data_dtype: np.dtype,
+                 data_dtype: npt.DTypeLike,
                  indices: Tuple[int, int, int],
                  progress: Optional[Progress] = None):
         self.load_func = load_func

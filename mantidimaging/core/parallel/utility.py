@@ -11,6 +11,7 @@ from multiprocessing.pool import Pool
 from typing import Any, List, Tuple, Type, Union
 
 import numpy as np
+import numpy.typing as npt
 
 from mantidimaging.core.utility.memory_usage import system_free_memory
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -21,7 +22,7 @@ LOG = getLogger(__name__)
 SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
                     Type[ctypes.c_float], Type[ctypes.c_double]]
 
-NP_DTYPE = np.dtype
+NP_DTYPE = npt.DTypeLike
 
 
 def enough_memory(shape, dtype):
