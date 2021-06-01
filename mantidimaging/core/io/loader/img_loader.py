@@ -4,7 +4,7 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 import os
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List, Callable
 
 import numpy as np
 
@@ -16,12 +16,12 @@ from . import stack_loader
 from ...data.dataset import Dataset
 
 
-def execute(load_func,
-            sample_path,
-            flat_before_path,
-            flat_after_path,
-            dark_before_path,
-            dark_after_path,
+def execute(load_func: Callable[[str], np.ndarray],
+            sample_path: List[str],
+            flat_before_path: str,
+            flat_after_path: str,
+            dark_before_path: str,
+            dark_after_path: str,
             img_format,
             dtype,
             indices,
