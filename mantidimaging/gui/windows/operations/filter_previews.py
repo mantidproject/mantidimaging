@@ -141,6 +141,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Pixel values", row=label_coords.row, col=label_coords.col)
 
         self.legend = self.histogram.addLegend()
+        self.legend.setOffset((0, 1))
 
     def update_histogram_data(self):
         # Plot any histogram that has data, and add a legend if both exist
