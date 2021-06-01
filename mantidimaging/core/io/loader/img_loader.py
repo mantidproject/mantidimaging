@@ -22,9 +22,9 @@ def execute(load_func: Callable[[str], np.ndarray],
             flat_after_path: str,
             dark_before_path: str,
             dark_after_path: str,
-            img_format,
+            img_format: str,
             dtype,
-            indices,
+            indices: Tuple[int, int, int],
             progress=None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
