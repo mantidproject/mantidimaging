@@ -10,7 +10,7 @@ dependencies:
   - pip
   - pip:
       # For running
-      - pyqt5==5.15
+      - pyqt6>=6.0.3,<6.1
       - pyqtgraph>=0.12.1,<0.13
       - jenkspy==0.2.0
       # For developement
