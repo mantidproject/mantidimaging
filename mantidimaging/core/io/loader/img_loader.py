@@ -104,7 +104,7 @@ class ImageLoader(object):
         elif len(self.img_shape) == 3:
             # the loaded file was a file containing a stack of images
             return stack_loader.execute(self.load_func,
-                                        input_file_names[0],
+                                        input_file_names[:1],
                                         self.data_dtype,
                                         "Sample",
                                         self.indices,
@@ -118,7 +118,7 @@ class ImageLoader(object):
             return self.load_files(file_names), file_names
         return None, None
 
-    def _do_files_load_seq(self, data, files):
+    def _do_files_load_seq(self, data: np.ndarray, files: List[str]) -> np.ndarray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
 
         with progress:
@@ -143,7 +143,3 @@ class ImageLoader(object):
         shape = (num_images, self.img_shape[0], self.img_shape[1])
         data = pu.create_array(shape, self.data_dtype)
         return self._do_files_load_seq(data, files)
-
-
-def _get_data_average(data):
-    return np.mean(data, axis=0)

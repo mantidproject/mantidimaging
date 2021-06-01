@@ -5,7 +5,7 @@ import threading
 import time
 from collections import namedtuple
 from logging import getLogger
-from typing import List
+from typing import List, Optional
 
 import numpy
 
@@ -30,7 +30,7 @@ class Progress(object):
     Class used to perform basic progress monitoring and reporting.
     """
     @staticmethod
-    def ensure_instance(p=None, *args, num_steps=None, **kwargs) -> 'Progress':
+    def ensure_instance(p: Optional['Progress'] = None, *args, num_steps: Optional[int] = None, **kwargs) -> 'Progress':
         """
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.
@@ -165,7 +165,7 @@ class Progress(object):
         self.progress_handlers.append(handler)
         handler.progress = self
 
-    def update(self, steps=1, msg: str = "", force_continue=False):
+    def update(self, steps: int = 1, msg: str = "", force_continue: bool = False) -> None:
         """
         Updates the progress of the task.
 
