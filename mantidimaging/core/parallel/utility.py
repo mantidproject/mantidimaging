@@ -22,14 +22,12 @@ LOG = getLogger(__name__)
 SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
                     Type[ctypes.c_float], Type[ctypes.c_double]]
 
-NP_DTYPE = npt.DTypeLike
-
 
 def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: Tuple[Any, ...], dtype: NP_DTYPE = np.float32) -> np.ndarray:
+def create_array(shape: Tuple[Any, ...], dtype: npt.DTypeLike = np.float32) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
@@ -46,7 +44,7 @@ def create_array(shape: Tuple[Any, ...], dtype: NP_DTYPE = np.float32) -> np.nda
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape, dtype: NP_DTYPE = np.float32):
+def _create_shared_array(shape, dtype: npt.DTypeLike = np.float32):
     ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
     if dtype == np.uint8 or dtype == 'uint8':
         ctype = ctypes.c_uint8
