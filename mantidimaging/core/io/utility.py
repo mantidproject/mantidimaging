@@ -155,7 +155,7 @@ def _alphanum_key_split(path_str):
     return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
-def get_prefix(path: str, separator="_") -> str:
+def get_prefix(path: str, separator: str = "_") -> str:
     return path[:path.rfind(separator)]
 
 
