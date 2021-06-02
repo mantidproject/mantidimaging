@@ -1,5 +1,9 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from typing import Optional, Tuple, Callable
+
+import numpy as np
+import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
@@ -39,7 +43,12 @@ def do_stack_load_seq(data, new_data, img_shape, name, progress):
     return data
 
 
-def execute(load_func, file_name, dtype, name, indices=None, progress=None):
+def execute(load_func: Callable[[str], np.ndarray],
+            file_name: str,
+            dtype: npt.DTypeLike,
+            name: str,
+            indices: Optional[Tuple[int, int, int]] = None,
+            progress: Optional[Progress] = None) -> Images:
     """
     Load a single image FILE that is expected to be a stack of images.
 
@@ -72,4 +81,4 @@ def execute(load_func, file_name, dtype, name, indices=None, progress=None):
 
     # Nexus doesn't load flat/dark images yet, if the functionality is
     # requested it should be changed here
-    return Images(data, file_name)
+    return Images(data, [file_name])

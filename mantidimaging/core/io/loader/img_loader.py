@@ -4,9 +4,10 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 import os
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List, Callable, Union
 
 import numpy as np
+import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.io.utility import get_file_names, get_prefix
@@ -16,16 +17,16 @@ from . import stack_loader
 from ...data.dataset import Dataset
 
 
-def execute(load_func,
-            sample_path,
-            flat_before_path,
-            flat_after_path,
-            dark_before_path,
-            dark_after_path,
-            img_format,
-            dtype,
-            indices,
-            progress=None) -> Dataset:
+def execute(load_func: Callable[[str], np.ndarray],
+            sample_path: List[str],
+            flat_before_path: str,
+            flat_after_path: str,
+            dark_before_path: str,
+            dark_after_path: str,
+            img_format: str,
+            dtype: npt.DTypeLike,
+            indices: Tuple[int, int, int],
+            progress: Optional[Progress] = None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -68,8 +69,13 @@ def execute(load_func,
     dark_after_data, dark_after_filenames = il.load_data(dark_after_path)
     sample_data = il.load_sample_data(chosen_input_filenames)
 
+    if isinstance(sample_data, np.ndarray):
+        sample_images = Images(sample_data, chosen_input_filenames, indices)
+    else:
+        sample_images = sample_data
+
     return Dataset(
-        Images(sample_data, chosen_input_filenames, indices),
+        sample_images,
         flat_before=Images(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
         flat_after=Images(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
         dark_before=Images(dark_before_data, dark_before_filenames) if dark_before_data is not None else None,
@@ -77,7 +83,13 @@ def execute(load_func,
 
 
 class ImageLoader(object):
-    def __init__(self, load_func, img_format, img_shape, data_dtype, indices, progress=None):
+    def __init__(self,
+                 load_func: Callable[[str], np.ndarray],
+                 img_format: str,
+                 img_shape: Tuple[int, ...],
+                 data_dtype: npt.DTypeLike,
+                 indices: Tuple[int, int, int],
+                 progress: Optional[Progress] = None):
         self.load_func = load_func
         self.img_format = img_format
         self.img_shape = img_shape
@@ -85,31 +97,29 @@ class ImageLoader(object):
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names):
+    def load_sample_data(self, input_file_names: List[str]) -> Union[np.ndarray, Images]:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
-            sample_data = self.load_files(input_file_names)
+            return self.load_files(input_file_names)
         elif len(self.img_shape) == 3:
             # the loaded file was a file containing a stack of images
-            sample_data = stack_loader.execute(self.load_func,
-                                               input_file_names[0],
-                                               self.data_dtype,
-                                               "Sample",
-                                               self.indices,
-                                               progress=self.progress)
+            return stack_loader.execute(self.load_func,
+                                        input_file_names[0],
+                                        self.data_dtype,
+                                        "Sample",
+                                        self.indices,
+                                        progress=self.progress)
         else:
             raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
 
-        return sample_data
-
-    def load_data(self, file_path) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
+    def load_data(self, file_path: str) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
         if file_path:
             file_names = get_file_names(os.path.dirname(file_path), self.img_format, get_prefix(file_path))
             return self.load_files(file_names), file_names
         return None, None
 
-    def _do_files_load_seq(self, data, files):
+    def _do_files_load_seq(self, data: np.ndarray, files: List[str]) -> np.ndarray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
 
         with progress:
@@ -127,14 +137,10 @@ class ImageLoader(object):
 
         return data
 
-    def load_files(self, files) -> np.ndarray:
+    def load_files(self, files: List[str]) -> np.ndarray:
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         num_images = len(files)
         shape = (num_images, self.img_shape[0], self.img_shape[1])
         data = pu.create_array(shape, self.data_dtype)
         return self._do_files_load_seq(data, files)
-
-
-def _get_data_average(data):
-    return np.mean(data, axis=0)
