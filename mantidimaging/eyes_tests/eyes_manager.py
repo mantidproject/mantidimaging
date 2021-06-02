@@ -7,6 +7,7 @@ from tempfile import mkdtemp
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtGui import QImage, QPainter, QColor
 from applitools.common import BatchInfo, MatchLevel
 from applitools.images import Eyes
 
@@ -81,11 +82,17 @@ class EyesManager:
         if widget is None and self.imaging is not None:
             widget = self.imaging
 
-        if isinstance(widget, QWidget):
-            QApplication.processEvents()
-            image = widget.grab()
-        else:
-            image = None
+        if not isinstance(widget, QWidget):
+            raise ValueError("widget is not a QWidget")
+
+        QApplication.processEvents()
+        window_image = widget.grab()
+
+        image = QImage(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, QImage.Format.Format_RGB32)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        painter.drawPixmap(0, 0, window_image)
+        painter.end()
 
         if image_name is None:
             image_name = str(uuid4())
