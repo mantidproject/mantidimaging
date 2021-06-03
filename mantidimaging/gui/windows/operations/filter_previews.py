@@ -54,7 +54,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
 
         self.histogram = None
-        self.histogram_legend_visible = True
 
         self.addLabel("Image before")
         self.addLabel("Image after")
@@ -141,6 +140,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Pixel values", row=label_coords.row, col=label_coords.col)
 
         self.legend = self.histogram.addLegend()
+        self.legend.setOffset((0, 1))
 
     def update_histogram_data(self):
         # Plot any histogram that has data, and add a legend if both exist

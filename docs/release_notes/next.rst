@@ -22,6 +22,7 @@ Fixes
 - #953 : NaNs in result when reconstructing with FBP_CUDA
 - #959 : Median GPU does not work with even values
 - #990 : Remove combine historgram checkbox
+- #989 : Remove legend checkbox
 
 Developer Changes
 -----------------
