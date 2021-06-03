@@ -39,8 +39,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     def set_task(self, f):
         self.model.task.task_function = f
 
-    def set_parameters(self, *args, **kwargs):
-        self.model.task.args = args
+    def set_parameters(self, **kwargs):
         self.model.task.kwargs = kwargs
 
     def set_on_complete(self, f):

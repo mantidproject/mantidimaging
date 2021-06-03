@@ -20,7 +20,7 @@ class AsyncTaskDialogPresenterTest(unittest.TestCase):
 
         p = AsyncTaskDialogPresenter(v)
         p.set_task(f)
-        p.set_parameters([5], {'b': 4})
+        p.set_parameters(b=4)
         self.assertFalse(p.task_is_running)
 
         p.notify(Notification.START)
