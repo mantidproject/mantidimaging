@@ -73,11 +73,11 @@ class MWLoadDialog(QDialog):
 
         self.flat_before_log, self.select_flat_before_log = self.create_file_input(7)
         self.select_flat_before_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.flat_before_log, name="Flat Before Log", image_file=False))
+            Notification.UPDATE_SINGLE_FILE, field=self.flat_before_log, name="Flat Before Log", is_image_file=False))
 
         self.flat_after_log, self.select_flat_after_log = self.create_file_input(8)
         self.select_flat_after_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.flat_after_log, name="Flat After Log", image_file=False))
+            Notification.UPDATE_SINGLE_FILE, field=self.flat_after_log, name="Flat After Log", is_image_file=False))
 
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
