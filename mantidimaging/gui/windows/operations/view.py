@@ -31,7 +31,6 @@ class FiltersWindowView(BaseMainWindowView):
     collapseToggleButton: QPushButton
 
     linkImages: QCheckBox
-    showHistogramLegend: QCheckBox
     invertDifference: QCheckBox
     overlayDifference: QCheckBox
     lockScaleCheckBox: QCheckBox
@@ -77,10 +76,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
-
-        self.showHistogramLegend.stateChanged.connect(self.histogram_legend_is_changed)
-        # set here to trigger the changed event
-        self.showHistogramLegend.setChecked(True)
 
         self.linkImages.stateChanged.connect(self.link_images_changed)
         # set here to trigger the changed event
@@ -158,15 +153,6 @@ class FiltersWindowView(BaseMainWindowView):
 
     def clear_previews(self):
         self.previews.clear_items()
-
-    def histogram_legend_is_changed(self):
-        self.previews.histogram_legend_visible = self.showHistogramLegend.isChecked()
-        legend = self.previews.histogram_legend
-        if legend:
-            if self.showHistogramLegend.isChecked():
-                legend.show()
-            else:
-                legend.hide()
 
     def link_images_changed(self):
         if self.linkImages.isChecked():
