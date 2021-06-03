@@ -4,9 +4,10 @@ import os
 from dataclasses import dataclass
 from logging import getLogger, Logger
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -14,8 +15,9 @@ from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log,
                                            find_180deg_proj)
-from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters
+from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 
@@ -24,7 +26,7 @@ DEFAULT_PIXEL_SIZE = 0
 DEFAULT_PIXEL_DEPTH = "float32"
 
 
-def _fitsread(filename):
+def _fitsread(filename: str) -> np.ndarray:
     """
     Read one image and return it as a 2d numpy array
 
@@ -40,20 +42,20 @@ def _fitsread(filename):
     return image[0].data
 
 
-def _nxsread(filename):
+def _nxsread(filename: str) -> np.ndarray:
     import h5py
     nexus = h5py.File(filename, 'r')
     data = nexus["tomography/sample_data"]
     return data
 
 
-def _imread(filename):
+def _imread(filename: str) -> np.ndarray:
     from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
     return skio.imread(filename)
 
 
-def supported_formats():
+def supported_formats() -> List[str]:
     # ignore errors for unused import/variable, we are only checking
     # availability
 
@@ -83,10 +85,10 @@ class FileInformation:
     sinograms: bool
 
 
-def read_in_file_information(input_path,
-                             in_prefix='',
-                             in_format=DEFAULT_IO_FILE_FORMAT,
-                             data_dtype=np.float32) -> FileInformation:
+def read_in_file_information(input_path: str,
+                             in_prefix: str = '',
+                             in_format: str = DEFAULT_IO_FILE_FORMAT,
+                             data_dtype: npt.DTypeLike = np.float32) -> FileInformation:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     dataset = load(input_path,
                    in_prefix=in_prefix,
@@ -125,17 +127,17 @@ def load_stack(file_path: str, progress=None) -> Images:
     return load(file_names=file_names, progress=progress).sample
 
 
-def load(input_path=None,
-         input_path_flat_before=None,
-         input_path_flat_after=None,
-         input_path_dark_before=None,
-         input_path_dark_after=None,
-         in_prefix='',
-         in_format=DEFAULT_IO_FILE_FORMAT,
-         dtype=np.float32,
-         file_names=None,
-         indices=None,
-         progress=None) -> Dataset:
+def load(input_path: Optional[str] = None,
+         input_path_flat_before: Optional[str] = None,
+         input_path_flat_after: Optional[str] = None,
+         input_path_dark_before: Optional[str] = None,
+         input_path_dark_after: Optional[str] = None,
+         in_prefix: str = '',
+         in_format: str = DEFAULT_IO_FILE_FORMAT,
+         dtype: npt.DTypeLike = np.float32,
+         file_names: Optional[List[str]] = None,
+         indices: Optional[Union[List[int], Indices]] = None,
+         progress: Optional[Progress] = None) -> Dataset:
     """
 
     Loads a stack, including sample, white and dark images.

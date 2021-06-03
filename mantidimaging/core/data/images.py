@@ -4,14 +4,14 @@
 import datetime
 import json
 from copy import deepcopy
-from typing import List, Tuple, Optional, Any, Dict
+from typing import List, Optional, Any, Dict, Union
 
 import numpy as np
 
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
+from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -22,7 +22,7 @@ class Images:
     def __init__(self,
                  data: np.ndarray,
                  filenames: Optional[List[str]] = None,
-                 indices: Optional[Tuple[int, int, int]] = None,
+                 indices: Union[List[int], Indices, None] = None,
                  metadata: Optional[Dict[str, Any]] = None,
                  sinograms: bool = False):
         """

@@ -15,17 +15,18 @@ from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from . import stack_loader
 from ...data.dataset import Dataset
+from ...utility.data_containers import Indices
 
 
 def execute(load_func: Callable[[str], np.ndarray],
             sample_path: List[str],
-            flat_before_path: str,
-            flat_after_path: str,
-            dark_before_path: str,
-            dark_after_path: str,
+            flat_before_path: Optional[str],
+            flat_after_path: Optional[str],
+            dark_before_path: Optional[str],
+            dark_after_path: Optional[str],
             img_format: str,
             dtype: npt.DTypeLike,
-            indices: Tuple[int, int, int],
+            indices: Union[List[int], Indices, None],
             progress: Optional[Progress] = None) -> Dataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
@@ -88,7 +89,7 @@ class ImageLoader(object):
                  img_format: str,
                  img_shape: Tuple[int, ...],
                  data_dtype: npt.DTypeLike,
-                 indices: Tuple[int, int, int],
+                 indices: Union[List[int], Indices, None],
                  progress: Optional[Progress] = None):
         self.load_func = load_func
         self.img_format = img_format
@@ -113,7 +114,7 @@ class ImageLoader(object):
         else:
             raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
 
-    def load_data(self, file_path: str) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
+    def load_data(self, file_path: Optional[str]) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
         if file_path:
             file_names = get_file_names(os.path.dirname(file_path), self.img_format, get_prefix(file_path))
             return self.load_files(file_names), file_names
