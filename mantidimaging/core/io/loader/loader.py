@@ -99,7 +99,7 @@ def read_in_file_information(input_path: str,
     images = dataset.sample
 
     # construct and return the new shape
-    shape = (len(input_file_names), ) + images.data[0].shape
+    shape: Tuple[int, int, int] = (len(input_file_names), ) + images.data[0].shape
 
     fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=images.is_sinograms)
     return fi
@@ -110,7 +110,7 @@ def load_log(log_file: str) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_p(parameters: ImageParameters, dtype, progress) -> Images:
+def load_p(parameters: ImageParameters, dtype: npt.DTypeLike, progress: Progress) -> Images:
     return load(input_path=parameters.input_path,
                 in_prefix=parameters.prefix,
                 in_format=parameters.format,
@@ -119,10 +119,10 @@ def load_p(parameters: ImageParameters, dtype, progress) -> Images:
                 progress=progress).sample
 
 
-def load_stack(file_path: str, progress=None) -> Images:
+def load_stack(file_path: str, progress: Optional[Progress] = None) -> Images:
     image_format = get_file_extension(file_path)
     prefix = get_prefix(file_path)
-    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)
+    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)  # type: ignore
 
     return load(file_names=file_names, progress=progress).sample
 

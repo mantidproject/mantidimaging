@@ -14,7 +14,7 @@ DEFAULT_IO_FILE_FORMAT = 'tif'
 SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
 
 
-def get_file_extension(file):
+def get_file_extension(file: str) -> Optional[str]:
     """
     >>> get_file_extension("/home/user/file_path.test")
     'test'

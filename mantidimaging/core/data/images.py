@@ -238,7 +238,7 @@ class Images:
         return Images(arr, metadata=metadata)
 
     @property
-    def is_sinograms(self):
+    def is_sinograms(self) -> bool:
         return self._is_sinograms
 
     @property
