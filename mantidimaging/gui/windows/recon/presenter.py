@@ -123,7 +123,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.rotation_centre = self.model.last_cor.value
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
-        self.do_preview_reconstruct_slice(refresh_recon_slice_histogram=True)
+        self.view.update_recon_hist_needed = True
+        self.do_preview_reconstruct_slice()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -191,10 +192,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.preview_slice_idx = slice_idx
         return slice_idx
 
-    def do_preview_reconstruct_slice(self,
-                                     cor=None,
-                                     slice_idx: Optional[int] = None,
-                                     refresh_recon_slice_histogram: bool = False):
+    def do_preview_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         if self.model.images is None:
             return
 
@@ -208,7 +206,7 @@ class ReconstructWindowPresenter(BasePresenter):
                                         f"Check your COR table values for invalid values!")
 
         if images is not None:
-            self.view.update_recon_preview(images.data[0], refresh_recon_slice_histogram)
+            self.view.update_recon_preview(images.data[0])
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)

@@ -93,12 +93,13 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.sinogram_hist.imageChanged(autoLevel=True, autoRange=True)
         set_histogram_log_scale(self.sinogram_hist)
 
-    def update_recon(self, image_data, refresh_recon_slice_histogram):
+    def update_recon(self, image_data):
         self.recon.clear()
-        self.recon.setImage(image_data, autoLevels=refresh_recon_slice_histogram)
-        if refresh_recon_slice_histogram:
-            self.recon_hist.imageChanged(autoLevel=True, autoRange=True)
+        self.recon.setImage(image_data, autoLevels=False)
         set_histogram_log_scale(self.recon_hist)
+
+    def update_recon_hist(self):
+        self.recon_hist.imageChanged(autoLevel=True, autoRange=True)
 
     def mouse_over(self, ev, img):
         # Ignore events triggered by leaving window or right clicking
@@ -114,10 +115,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.slice_changed(CloseEnoughPoint(ev.pos()).y)
 
     def slice_changed(self, slice_index):
-        # don't refresh the histogram on click to stop the contrast for re-adjusting for each slice
-        # it's much easier to see what's happening to the reconstruction if the slice doesn't
-        # reset after every click
-        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=slice_index, refresh_recon_slice_histogram=False)
+        self.parent.presenter.do_preview_reconstruct_slice(slice_idx=slice_index)
         self.sigSliceIndexChanged.emit(slice_index)
 
     def clear_recon(self):

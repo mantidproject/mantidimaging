@@ -77,6 +77,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.algorithmName.setCurrentIndex(0)
             self.algorithmName.setEnabled(True)
 
+        self.update_recon_hist_needed = False
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
         # Handle preview image selection
@@ -249,12 +250,15 @@ class ReconstructWindowView(BaseMainWindowView):
     def update_sinogram(self, image_data):
         self.image_view.update_sinogram(image_data)
 
-    def update_recon_preview(self, image_data: numpy.ndarray, refresh_recon_slice_histogram: bool):
+    def update_recon_preview(self, image_data: numpy.ndarray):
         """
         Updates the reconstruction preview image with new data.
         """
         # Plot image
-        self.image_view.update_recon(image_data, refresh_recon_slice_histogram)
+        self.image_view.update_recon(image_data)
+        if self.update_recon_hist_needed:
+            self.image_view.update_recon_hist()
+            self.update_recon_hist_needed = False
 
     def reset_image_recon_preview(self):
         """
