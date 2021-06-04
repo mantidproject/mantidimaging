@@ -81,6 +81,11 @@ def test_find_missing_projection_number(test_input):
                   ["file_000.tif", "file_001.tif", "file_002.tif", "file_003.tif"])
 
 
+def test_raise_if_angles_missing_returns_none_if_no_filename_list():
+    logfile = IMATLogFile(TXT_LOG_FILE, "/tmp/fake")
+    assert logfile.raise_if_angle_missing(None) is None
+
+
 @pytest.mark.parametrize('test_input', [TXT_LOG_FILE, CSV_LOG_FILE])
 def test_source_file(test_input):
     logfile = IMATLogFile(test_input, "/tmp/fake")
