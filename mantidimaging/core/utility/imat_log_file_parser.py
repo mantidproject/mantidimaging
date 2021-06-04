@@ -146,7 +146,7 @@ class IMATLogFile:
 
         return Counts(counts)
 
-    def raise_if_angle_missing(self, image_filenames: List[str]):
+    def raise_if_angle_missing(self, image_filenames: List[str]) -> None:
         proj_numbers = self.projection_numbers()
         image_numbers = [ifile[ifile.rfind("_") + 1:] for ifile in image_filenames]
 

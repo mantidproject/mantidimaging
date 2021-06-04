@@ -197,7 +197,7 @@ def load(input_path: Optional[str] = None,
     return dataset
 
 
-def find_and_verify_sample_log(sample_directory: str, image_filenames: list) -> str:
+def find_and_verify_sample_log(sample_directory: str, image_filenames: List[str]) -> str:
     sample_log = find_log(dirname=Path(sample_directory), log_name=sample_directory)
 
     log = load_log(sample_log)
@@ -206,7 +206,8 @@ def find_and_verify_sample_log(sample_directory: str, image_filenames: list) -> 
     return sample_log
 
 
-def create_loading_parameters_for_file_path(file_path: str, logger: Logger = None):
+def create_loading_parameters_for_file_path(file_path: str,
+                                            logger: Optional[Logger] = None) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
         return

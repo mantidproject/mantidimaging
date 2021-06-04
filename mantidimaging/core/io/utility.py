@@ -163,8 +163,8 @@ def find_images(sample_dirname: Path,
                 image_type: str,
                 suffix: str,
                 image_format: str,
-                look_without_suffix=False,
-                logger: Logger = None) -> List[str]:
+                look_without_suffix: bool = False,
+                logger: Optional[Logger] = None) -> List[str]:
     # same folder
     file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
     if file_names is not None:
@@ -206,7 +206,7 @@ def find_log(dirname: Path, log_name: str, logger: Logger = None) -> str:
     return ""
 
 
-def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Logger = None):
+def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Optional[Logger] = None) -> str:
     expected_path = sample_dirname / '..' / '180deg'
     try:
         return get_file_names(expected_path.absolute(), image_format)[0]
