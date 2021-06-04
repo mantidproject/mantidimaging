@@ -210,7 +210,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                             logger: Optional[Logger] = None) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
-        return
+        return None
 
     loading_parameters = LoadingParameters()
     loading_parameters.dtype = DEFAULT_PIXEL_DEPTH
