@@ -32,8 +32,9 @@ Developer Changes
 - #980 : Use pre-commit
 - #978 : Update Qt API usage
 - #998 : setup.py command to install current developer requirements
+- #969 : Improve mypy coverage in core.io
 
 Dependency updates
 ------------------
 
-- pyqtgraph 0.12, scikit-image 0.18, tomopy 1.9
+- pyqtgraph 0.12, scikit-image 0.18, tomopy 1.9, numpy 1.20
