@@ -5,7 +5,7 @@ import csv
 import re
 from enum import Enum, auto
 from itertools import zip_longest
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy
 
@@ -146,7 +146,10 @@ class IMATLogFile:
 
         return Counts(counts)
 
-    def raise_if_angle_missing(self, image_filenames):
+    def raise_if_angle_missing(self, image_filenames: Optional[List[str]]) -> None:
+        if image_filenames is None:
+            return
+
         proj_numbers = self.projection_numbers()
         image_numbers = [ifile[ifile.rfind("_") + 1:] for ifile in image_filenames]
 

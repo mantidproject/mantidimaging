@@ -4,14 +4,14 @@
 import datetime
 import json
 from copy import deepcopy
-from typing import List, Tuple, Optional, Any, Dict
+from typing import List, Optional, Any, Dict, Union, TextIO
 
 import numpy as np
 
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
+from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -22,7 +22,7 @@ class Images:
     def __init__(self,
                  data: np.ndarray,
                  filenames: Optional[List[str]] = None,
-                 indices: Optional[Tuple[int, int, int]] = None,
+                 indices: Union[List[int], Indices, None] = None,
                  metadata: Optional[Dict[str, Any]] = None,
                  sinograms: bool = False):
         """
@@ -74,7 +74,7 @@ class Images:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
-    def load_metadata(self, f):
+    def load_metadata(self, f: TextIO):
         self.metadata = json.load(f)
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
@@ -238,7 +238,7 @@ class Images:
         return Images(arr, metadata=metadata)
 
     @property
-    def is_sinograms(self):
+    def is_sinograms(self) -> bool:
         return self._is_sinograms
 
     @property

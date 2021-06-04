@@ -4,9 +4,10 @@ import os
 from dataclasses import dataclass
 from logging import getLogger, Logger
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -14,8 +15,9 @@ from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log,
                                            find_180deg_proj)
-from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters
+from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 
@@ -24,7 +26,7 @@ DEFAULT_PIXEL_SIZE = 0
 DEFAULT_PIXEL_DEPTH = "float32"
 
 
-def _fitsread(filename):
+def _fitsread(filename: str) -> np.ndarray:
     """
     Read one image and return it as a 2d numpy array
 
@@ -40,20 +42,20 @@ def _fitsread(filename):
     return image[0].data
 
 
-def _nxsread(filename):
+def _nxsread(filename: str) -> np.ndarray:
     import h5py
     nexus = h5py.File(filename, 'r')
     data = nexus["tomography/sample_data"]
     return data
 
 
-def _imread(filename):
+def _imread(filename: str) -> np.ndarray:
     from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
     return skio.imread(filename)
 
 
-def supported_formats():
+def supported_formats() -> List[str]:
     # ignore errors for unused import/variable, we are only checking
     # availability
 
@@ -83,10 +85,10 @@ class FileInformation:
     sinograms: bool
 
 
-def read_in_file_information(input_path,
-                             in_prefix='',
-                             in_format=DEFAULT_IO_FILE_FORMAT,
-                             data_dtype=np.float32) -> FileInformation:
+def read_in_file_information(input_path: str,
+                             in_prefix: str = '',
+                             in_format: str = DEFAULT_IO_FILE_FORMAT,
+                             data_dtype: npt.DTypeLike = np.float32) -> FileInformation:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     dataset = load(input_path,
                    in_prefix=in_prefix,
@@ -97,7 +99,7 @@ def read_in_file_information(input_path,
     images = dataset.sample
 
     # construct and return the new shape
-    shape = (len(input_file_names), ) + images.data[0].shape
+    shape: Tuple[int, int, int] = (len(input_file_names), ) + images.data[0].shape
 
     fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=images.is_sinograms)
     return fi
@@ -108,7 +110,7 @@ def load_log(log_file: str) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_p(parameters: ImageParameters, dtype, progress) -> Images:
+def load_p(parameters: ImageParameters, dtype: npt.DTypeLike, progress: Progress) -> Images:
     return load(input_path=parameters.input_path,
                 in_prefix=parameters.prefix,
                 in_format=parameters.format,
@@ -117,25 +119,25 @@ def load_p(parameters: ImageParameters, dtype, progress) -> Images:
                 progress=progress).sample
 
 
-def load_stack(file_path: str, progress=None) -> Images:
+def load_stack(file_path: str, progress: Optional[Progress] = None) -> Images:
     image_format = get_file_extension(file_path)
     prefix = get_prefix(file_path)
-    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)
+    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)  # type: ignore
 
     return load(file_names=file_names, progress=progress).sample
 
 
-def load(input_path=None,
-         input_path_flat_before=None,
-         input_path_flat_after=None,
-         input_path_dark_before=None,
-         input_path_dark_after=None,
-         in_prefix='',
-         in_format=DEFAULT_IO_FILE_FORMAT,
-         dtype=np.float32,
-         file_names=None,
-         indices=None,
-         progress=None) -> Dataset:
+def load(input_path: Optional[str] = None,
+         input_path_flat_before: Optional[str] = None,
+         input_path_flat_after: Optional[str] = None,
+         input_path_dark_before: Optional[str] = None,
+         input_path_dark_after: Optional[str] = None,
+         in_prefix: str = '',
+         in_format: str = DEFAULT_IO_FILE_FORMAT,
+         dtype: npt.DTypeLike = np.float32,
+         file_names: Optional[List[str]] = None,
+         indices: Optional[Union[List[int], Indices]] = None,
+         progress: Optional[Progress] = None) -> Dataset:
     """
 
     Loads a stack, including sample, white and dark images.
@@ -195,7 +197,7 @@ def load(input_path=None,
     return dataset
 
 
-def find_and_verify_sample_log(sample_directory: str, image_filenames: list):
+def find_and_verify_sample_log(sample_directory: str, image_filenames: List[str]) -> str:
     sample_log = find_log(dirname=Path(sample_directory), log_name=sample_directory)
 
     log = load_log(sample_log)
@@ -204,10 +206,11 @@ def find_and_verify_sample_log(sample_directory: str, image_filenames: list):
     return sample_log
 
 
-def create_loading_parameters_for_file_path(file_path: str, logger: Logger = None):
+def create_loading_parameters_for_file_path(file_path: str,
+                                            logger: Optional[Logger] = None) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
-        return
+        return None
 
     loading_parameters = LoadingParameters()
     loading_parameters.dtype = DEFAULT_PIXEL_DEPTH
@@ -221,7 +224,7 @@ def create_loading_parameters_for_file_path(file_path: str, logger: Logger = Non
                                               in_format=image_format)
 
     try:
-        sample_log = find_and_verify_sample_log(sample_directory, last_file_info.filenames)
+        sample_log: Optional[str] = find_and_verify_sample_log(sample_directory, last_file_info.filenames)
     except FileNotFoundError:
         sample_log = None
 

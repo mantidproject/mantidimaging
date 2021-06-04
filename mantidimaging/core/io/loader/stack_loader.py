@@ -1,12 +1,13 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import Optional, Tuple, Callable
+from typing import Optional, Callable, Union, List
 
 import numpy as np
 import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.core.utility.progress_reporting import Progress
 
 
@@ -47,7 +48,7 @@ def execute(load_func: Callable[[str], np.ndarray],
             file_name: str,
             dtype: npt.DTypeLike,
             name: str,
-            indices: Optional[Tuple[int, int, int]] = None,
+            indices: Union[List[int], Indices, None] = None,
             progress: Optional[Progress] = None) -> Images:
     """
     Load a single image FILE that is expected to be a stack of images.
