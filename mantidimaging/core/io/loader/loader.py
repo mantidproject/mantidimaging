@@ -197,7 +197,7 @@ def load(input_path: Optional[str] = None,
     return dataset
 
 
-def find_and_verify_sample_log(sample_directory: str, image_filenames: list):
+def find_and_verify_sample_log(sample_directory: str, image_filenames: list) -> str:
     sample_log = find_log(dirname=Path(sample_directory), log_name=sample_directory)
 
     log = load_log(sample_log)
@@ -223,7 +223,7 @@ def create_loading_parameters_for_file_path(file_path: str, logger: Logger = Non
                                               in_format=image_format)
 
     try:
-        sample_log = find_and_verify_sample_log(sample_directory, last_file_info.filenames)
+        sample_log: Optional[str] = find_and_verify_sample_log(sample_directory, last_file_info.filenames)
     except FileNotFoundError:
         sample_log = None
 

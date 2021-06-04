@@ -4,7 +4,7 @@
 import datetime
 import json
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union
+from typing import List, Optional, Any, Dict, Union, TextIO
 
 import numpy as np
 
@@ -74,7 +74,7 @@ class Images:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
-    def load_metadata(self, f):
+    def load_metadata(self, f: TextIO):
         self.metadata = json.load(f)
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
