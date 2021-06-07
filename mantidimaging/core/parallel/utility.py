@@ -44,7 +44,7 @@ def create_array(shape: Tuple[Any, ...], dtype: npt.DTypeLike = np.float32) -> n
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape, dtype: npt.DTypeLike = np.float32):
+def _create_shared_array(shape, dtype: npt.DTypeLike = np.float32) -> np.ndarray:
     ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
     if dtype == np.uint8 or dtype == 'uint8':
         ctype = ctypes.c_uint8
