@@ -3,7 +3,7 @@
 
 import os
 from logging import getLogger
-from typing import List, Union
+from typing import List, Union, Optional
 
 import numpy as np
 
@@ -20,20 +20,20 @@ DEFAULT_NAME_POSTFIX = ''
 INT16_SIZE = 65536
 
 
-def write_fits(data, filename, overwrite=False):
+def write_fits(data: np.ndarray, filename: str, overwrite: bool = False):
     import astropy.io.fits as fits
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
     hdulist.writeto(filename, overwrite=overwrite)
 
 
-def write_img(data, filename, overwrite=False):
+def write_img(data: np.ndarray, filename: str, overwrite: bool = False):
     from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
     skio.imsave(filename, data)
 
 
-def write_nxs(data, filename, projection_angles=None, overwrite=False):
+def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.ndarray] = None, overwrite: bool = False):
     import h5py
     nxs = h5py.File(filename, 'w')
 
@@ -54,16 +54,16 @@ def write_nxs(data, filename, projection_angles=None, overwrite=False):
 
 def save(images: Images,
          output_dir,
-         name_prefix=DEFAULT_NAME_PREFIX,
-         swap_axes=False,
-         out_format=DEFAULT_IO_FILE_FORMAT,
-         overwrite_all=False,
+         name_prefix: str = DEFAULT_NAME_PREFIX,
+         swap_axes: bool = False,
+         out_format: str = DEFAULT_IO_FILE_FORMAT,
+         overwrite_all: bool = False,
          custom_idx=None,
-         zfill_len=DEFAULT_ZFILL_LENGTH,
-         name_postfix=DEFAULT_NAME_POSTFIX,
+         zfill_len: int = DEFAULT_ZFILL_LENGTH,
+         name_postfix: str = DEFAULT_NAME_POSTFIX,
          indices=None,
          pixel_depth=None,
-         progress=None) -> Union[str, List[str]]:
+         progress: Optional[Progress] = None) -> Union[str, List[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
