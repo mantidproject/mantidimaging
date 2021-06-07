@@ -4,7 +4,7 @@
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Callable
 
 from PyQt5.QtWidgets import QWidget
 
@@ -179,11 +179,16 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int]) -> Optional[Images]:
+    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int], call_back: Callable[[TaskWorkerThread],
+                                                                                        None]) -> None:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
-        return self.model.run_preview_recon(slice_idx, cor, self.view.recon_params())
+        start_async_task_view(self.view, self.model.run_preview_recon, call_back, {
+            'slice_idx': slice_idx,
+            'cor': cor,
+            'recon_params': self.view.recon_params()
+        })
 
     def _get_slice_index(self, slice_idx: Optional[int]):
         if slice_idx is None:
@@ -198,24 +203,28 @@ class ReconstructWindowPresenter(BasePresenter):
 
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
-        images = None
-        try:
-            images = self._get_reconstruct_slice(cor, slice_idx)
-        except Exception as err:
-            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}. "
-                                        f"Check your COR table values for invalid values!")
+        self._get_reconstruct_slice(cor, slice_idx, self._on_preview_reconstruct_slice_done)
 
+    def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread):
+        if task.error is not None:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
+            return
+
+        images: Images = task.result
         if images is not None:
             self.view.update_recon_preview(images.data[0])
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)
-        images = None
-        try:
-            images = self._get_reconstruct_slice(cor, slice_idx)
-        except ValueError as err:
-            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(err)}")
+        self._get_reconstruct_slice(cor, slice_idx, self._on_stack_reconstruct_slice_done)
 
+    def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread):
+        if task.error is not None:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
+            return
+
+        images: Images = task.result
+        slice_idx = self._get_slice_index(None)
         if images is not None:
             self.view.show_recon_volume(images)
             images.record_operation('AstraRecon.single_sino',

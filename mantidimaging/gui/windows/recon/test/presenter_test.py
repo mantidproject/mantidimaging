@@ -44,31 +44,25 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.numIterLabel = mock.Mock()
         self.view.image_view = mock.Mock()
 
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_set_stack_uuid(self, mock_get_reconstructor_for):
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_set_stack_uuid(self, mock_start_async: mock.Mock):
         # reset the model data
         self.presenter.model.initial_select_data(None)
 
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
         mock_reconstructor.single_sino.return_value = np.random.rand(128, 128)
-        mock_get_reconstructor_for.return_value = mock_reconstructor
-
-        recon_params = ReconstructionParameters("FBP", "ram-lak", 10)
-        self.view.recon_params.return_value = recon_params
 
         # first-time selecting this data after reset
         self.presenter.set_stack_uuid(self.uuid)
+
+        mock_start_async.assert_called_once()
         self.view.get_stack_visualiser.assert_called_once_with(self.uuid)
 
         self.view.update_projection.assert_called_once()
         self.view.clear_cor_table.assert_called_once()
         self.view.update_projection.assert_called_once()
         self.view.update_sinogram.assert_called_once()
-        self.view.update_recon_preview.assert_called_once()
-        mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single_sino.assert_called_once()
-        self.view.recon_params.assert_called_once()
 
         # calling again with the same stack shouldn't re-do everything
         self.presenter.set_stack_uuid(self.uuid)
@@ -79,15 +73,13 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.clear_cor_table.assert_called_once()
         self.view.update_projection.assert_called_once()
         self.view.update_sinogram.assert_called_once()
-        self.view.update_recon_preview.assert_called_once()
-        mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single_sino.assert_called_once()
 
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, _):
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
         self.presenter.model.stack = None
         # first-time selecting this data after reset
         self.presenter.set_stack_uuid(self.uuid)
+        mock_start_async.assert_called_once()
 
         self.assertEqual(64.0, self.view.rotation_centre)
         self.assertEqual(TEST_PIXEL_SIZE, self.view.pixel_size)
@@ -97,25 +89,16 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.preview_projection_idx, 5)
         self.view.update_projection.assert_called_once()
 
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_set_slice_preview_index(self, mock_get_reconstructor_for):
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_set_slice_preview_index(self, _):
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
         mock_reconstructor.single_sino.return_value = np.random.rand(128, 128)
-        mock_get_reconstructor_for.return_value = mock_reconstructor
-
-        recon_params = ReconstructionParameters("FBP", "ram-lak", 10)
-        self.view.recon_params.return_value = recon_params
 
         self.presenter.set_preview_slice_idx(5)
         self.assertEqual(self.presenter.model.preview_slice_idx, 5)
         self.view.update_projection.assert_called_once()
         self.view.update_sinogram.assert_called_once()
-        self.view.update_recon_preview.assert_called_once()
-        self.view.recon_params.assert_called_once()
-
-        mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single_sino.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor', return_value=ScalarCoR(15))
     def test_do_add_manual_cor_table_row(self, mock_get_me_a_cor):
@@ -126,12 +109,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.add_cor_table_row.assert_called_once_with(self.presenter.model.selected_row, 0, 15)
         mock_get_me_a_cor.assert_called_once()
 
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_do_reconstruct_slice(self, mock_get_reconstructor_for):
-        mock_reconstructor = mock.Mock()
-        mock_reconstructor.single_sino = mock.Mock()
-        mock_reconstructor.single_sino.return_value = np.random.rand(128, 128)
-        mock_get_reconstructor_for.return_value = mock_reconstructor
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_do_preview_reconstruct_slice(self, mock_start_async_task_view):
 
         recon_params = ReconstructionParameters("FBP", "ram-lak", 10)
         self.view.recon_params.return_value = recon_params
@@ -141,30 +120,27 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.data_model._cached_gradient = None
 
         self.presenter.do_preview_reconstruct_slice()
+
         self.view.update_sinogram.assert_called_once()
-        self.view.update_recon_preview.assert_called_once()
+        mock_start_async_task_view.assert_called_once()
         self.view.recon_params.assert_called_once()
 
-        mock_get_reconstructor_for.assert_called_once()
-        mock_reconstructor.single_sino.assert_called_once()
+    def test_do_preview_reconstruct_slice_done(self):
+        image_mock = mock.Mock()
+        result_mock = mock.Mock(data=[image_mock])
+        task_mock = mock.Mock(result=result_mock, error=None)
 
-    @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
-    def test_do_reconstruct_slice_raises(self, mock_get_reconstructor_for):
-        mock_get_reconstructor_for.side_effect = ValueError
-        mock_reconstructor = mock.Mock()
-        mock_reconstructor.single_sino = mock.Mock()
-        mock_get_reconstructor_for.return_value = mock_reconstructor
-        self.presenter.model.preview_slice_idx = 0
-        self.presenter.model.last_cor = ScalarCoR(150)
-        self.presenter.model.data_model._cached_gradient = None
+        self.presenter._on_preview_reconstruct_slice_done(task_mock)
 
-        self.presenter.do_preview_reconstruct_slice()
-        self.view.update_sinogram.assert_called_once()
+        self.view.update_recon_preview.assert_called_once_with(image_mock)
+
+    def test_do_preview_reconstruct_slice_raises(self):
+        task_mock = mock.Mock(error=ValueError())
+
+        self.presenter._on_preview_reconstruct_slice_done(task_mock)
+
         self.view.show_error_dialog.assert_called_once()
-        mock_get_reconstructor_for.assert_called_once()
-
         self.view.update_recon_preview.assert_not_called()
-        mock_reconstructor.single_sino.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_do_reconstruct_volume(self, mock_async_task):
@@ -288,23 +264,24 @@ class ReconWindowPresenterTest(unittest.TestCase):
             "projection to (10, 10)")
 
     def test_do_stack_reconstruct_slice(self):
-        self.presenter._get_reconstruct_slice = mock.Mock()
-        self.presenter._get_reconstruct_slice.return_value = test_data = Images(
-            np.ndarray(shape=(200, 250), dtype=np.float32))
+        test_data = Images(np.ndarray(shape=(200, 250), dtype=np.float32))
         test_data.record_operation = mock.Mock()
-        slice_idx = 123
-        self.presenter.do_stack_reconstruct_slice(slice_idx=slice_idx)
+        task_mock = mock.Mock(result=test_data, error=None)
+        self.presenter._get_slice_index = mock.Mock(return_value=7)
+
+        self.presenter._on_stack_reconstruct_slice_done(task_mock)
+
         self.view.show_recon_volume.assert_called_once()
         np.array_equal(self.view.show_recon_volume.call_args[0][0].data, test_data)
         test_data.record_operation.assert_called_once_with('AstraRecon.single_sino',
                                                            'Slice Reconstruction',
-                                                           slice_idx=slice_idx,
+                                                           slice_idx=7,
                                                            **self.view.recon_params().to_dict())
 
     def test_do_stack_reconstruct_slice_raises(self):
-        self.presenter._get_reconstruct_slice = mock.Mock()
-        self.presenter._get_reconstruct_slice.side_effect = ValueError
-        self.presenter.do_stack_reconstruct_slice()
+        task_mock = mock.Mock(error=ValueError())
+        self.presenter._on_stack_reconstruct_slice_done(task_mock)
+
         self.view.show_recon_volume.assert_not_called()
         self.view.show_error_dialog.assert_called_once()
 
