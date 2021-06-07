@@ -78,7 +78,7 @@ class Images:
         self.metadata = json.load(f)
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
-    def save_metadata(self, f, rescale_params=None):
+    def save_metadata(self, f: TextIO, rescale_params: Optional[Dict[str, Union[str, float]]] = None):
         self.metadata[const.SINOGRAMS] = self.is_sinograms
 
         if rescale_params is not None:

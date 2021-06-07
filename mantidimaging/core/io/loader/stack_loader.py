@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import Optional, Callable, Union, List
+from typing import Optional, Callable, Union, List, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -11,18 +11,8 @@ from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.core.utility.progress_reporting import Progress
 
 
-def parallel_move_data(input_data, output_data):
-    """
-    Forwarded function for parallel loading of data
-    :param input_data: shared_data
-
-    :param output_data: second_shared_data
-
-    """
-    output_data[:] = input_data[:]
-
-
-def do_stack_load_seq(data, new_data, img_shape, name, progress):
+def do_stack_load_seq(data: np.ndarray, new_data: np.ndarray, img_shape: Tuple[int, ...], name: str,
+                      progress: Optional[Progress]) -> np.ndarray:
     """
     Sequential version of loading the data.
     This performs faster locally, but parallel performs faster on SCARF

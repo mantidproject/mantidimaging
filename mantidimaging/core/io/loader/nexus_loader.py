@@ -56,8 +56,8 @@ class NexusLoader:
         self.tomo_entry = None
         self.data = None
         self.image_key_dataset = None
-        self.issues = None
-        self.title = None
+        self.issues: List[str] = []
+        self.title: str = ""
 
     def load_nexus_data(self, file_path: str) -> Tuple[Optional[Dataset], str, List[str]]:
         """

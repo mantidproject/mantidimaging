@@ -48,7 +48,11 @@ class RescaleFilter(BaseFilter):
         return images
 
     @staticmethod
-    def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float, data_type=float32):
+    def filter_single_image(image: ndarray,
+                            min_input: float,
+                            max_input: float,
+                            max_output: float,
+                            data_type=float32) -> np.ndarray:
         np.clip(image, min_input, max_input, out=image)
         image -= min_input
         data_max = nanmax(image)
