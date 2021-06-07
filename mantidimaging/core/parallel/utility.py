@@ -8,7 +8,7 @@ from functools import partial
 from logging import getLogger
 from multiprocessing import Array
 from multiprocessing.pool import Pool
-from typing import Any, List, Tuple, Type, Union
+from typing import List, Tuple, Type, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -27,7 +27,7 @@ def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: Tuple[Any, ...], dtype: npt.DTypeLike = np.float32) -> np.ndarray:
+def create_array(shape: Tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
