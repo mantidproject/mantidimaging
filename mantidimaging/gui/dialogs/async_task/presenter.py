@@ -50,7 +50,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         Starts async task execution and shows GUI.
         """
         self.model.do_execute_async()
-        self.view.show()
+        self.view.show_delayed(1000)
 
     @property
     def task_is_running(self):

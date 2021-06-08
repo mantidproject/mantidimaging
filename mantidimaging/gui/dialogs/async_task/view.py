@@ -8,6 +8,7 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import QTimer
 
 
 class AsyncTaskDialogView(BaseDialogView):
@@ -22,6 +23,8 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setMaximum(1000)
 
         self.progress_text = self.infoText.text()
+        self.show_timer = QTimer(self)
+        self.hide()
 
     def reject(self):
         # Do not close the dialog when processing is still ongoing
@@ -34,6 +37,7 @@ class AsyncTaskDialogView(BaseDialogView):
 
         :param successful: If the task was successful
         """
+        self.show_timer.stop()
         if successful:
             # Set info text to "Complete"
             self.infoText.setText("Complete")
@@ -51,6 +55,14 @@ class AsyncTaskDialogView(BaseDialogView):
 
         # Update progress bar
         self.progressBar.setValue(progress * 1000)
+
+    def show_delayed(self, timeout):
+        self.show_timer.singleShot(timeout, self.show_from_timer)
+        self.show_timer.start()
+
+    def show_from_timer(self):
+        if self.presenter.task_is_running:
+            self.show()
 
 
 def start_async_task_view(parent: QMainWindow, task: Callable, on_complete: Callable, kwargs=None):

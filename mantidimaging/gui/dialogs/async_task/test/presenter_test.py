@@ -24,7 +24,7 @@ class AsyncTaskDialogPresenterTest(unittest.TestCase):
         self.assertFalse(p.task_is_running)
 
         p.notify(Notification.START)
-        v.show.assert_called_once()
+        v.show_delayed.assert_called_once()
         self.assertTrue(p.task_is_running)
 
         p.model.task.wait()
