@@ -30,12 +30,17 @@
      </attribute>
      <column>
       <property name="text">
-       <string/>
+       <string>Data</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Name</string>
+       <string>Found</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Location</string>
       </property>
      </column>
      <column>
@@ -43,14 +48,14 @@
        <string>Use?</string>
       </property>
      </column>
-     <column>
-      <property name="text">
-       <string/>
-      </property>
-     </column>
      <item>
       <property name="text">
-       <string>Sample</string>
+       <string>Image Key</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Projections</string>
       </property>
       <property name="text">
        <string/>
@@ -80,6 +85,15 @@
       <property name="text">
        <string>Flat After</string>
       </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
      </item>
      <item>
       <property name="text">
@@ -99,8 +113,31 @@
       <property name="text">
        <string>Dark After</string>
       </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
      </item>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="lineEdit"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Choose File...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_5">
