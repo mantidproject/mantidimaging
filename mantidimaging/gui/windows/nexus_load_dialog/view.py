@@ -12,4 +12,4 @@ class NexusLoadDialog(QDialog):
         compile_ui("gui/ui/nexus_load_dialog.ui", self)
 
         self.parent_view = parent
-        self.presenter = NexusLoadPresenter()
+        self.presenter = NexusLoadPresenter(self)
