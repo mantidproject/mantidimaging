@@ -24,6 +24,7 @@ Fixes
 - #990 : Remove combine histogram checkbox
 - #989 : Remove legend checkbox
 - #1001 : Exception when selecting Log in Load Dataset dialog
+- #991 : Handle longer running previews better
 
 Developer Changes
 -----------------
