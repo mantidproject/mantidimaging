@@ -74,12 +74,12 @@ class ImagesTest(unittest.TestCase):
         copy = images.copy(flip_axes=True)
         self.assertTrue(copy.is_sinograms)
 
-        self.assertEqual(images.sinograms, copy)
+        self.assertEqual(copy, images.sinograms)
 
         copy.data[:] = 150
 
         self.assertEqual(images.metadata, copy.metadata)
-        self.assertNotEqual(images.sinograms, copy)
+        self.assertNotEqual(copy, images.sinograms)
 
     def test_copy_roi(self):
         images = generate_images()
