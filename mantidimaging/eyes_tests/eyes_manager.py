@@ -4,6 +4,7 @@
 import inspect
 import os
 from tempfile import mkdtemp
+import time
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QWidget, QApplication
@@ -85,6 +86,7 @@ class EyesManager:
         if not isinstance(widget, QWidget):
             raise ValueError("widget is not a QWidget")
 
+        time.sleep(0.2)
         QApplication.processEvents()
         window_image = widget.grab()
 
