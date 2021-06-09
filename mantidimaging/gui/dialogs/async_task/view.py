@@ -22,14 +22,8 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(1000)
 
-        self.progress_text = self.infoText.text()
         self.show_timer = QTimer(self)
         self.hide()
-
-    def reject(self):
-        # Do not close the dialog when processing is still ongoing
-        if not self.presenter.task_is_running:
-            super(AsyncTaskDialogView, self).reject()
 
     def handle_completion(self, successful):
         """
