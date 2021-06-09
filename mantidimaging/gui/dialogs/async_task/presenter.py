@@ -4,10 +4,12 @@
 import traceback
 from logging import getLogger
 from enum import Enum
+
+from typing import Callable
+
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from mantidimaging.core.utility.progress_reporting import ProgressHandler
-
 from .model import AsyncTaskDialogModel
 
 
@@ -36,13 +38,13 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def set_task(self, f):
+    def set_task(self, f: Callable):
         self.model.task.task_function = f
 
     def set_parameters(self, **kwargs):
         self.model.task.kwargs = kwargs
 
-    def set_on_complete(self, f):
+    def set_on_complete(self, f: Callable):
         self.model.on_complete_function = f
 
     def do_start_processing(self):

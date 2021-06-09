@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import Callable
+from typing import Callable, Dict, Optional
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -12,7 +12,7 @@ from PyQt5.QtCore import QTimer
 
 
 class AsyncTaskDialogView(BaseDialogView):
-    def __init__(self, parent: QMainWindow, auto_close=False):
+    def __init__(self, parent: QMainWindow, auto_close: bool = False):
         super(AsyncTaskDialogView, self).__init__(parent, 'gui/ui/async_task_dialog.ui')
 
         self.parent_view = parent
@@ -25,7 +25,7 @@ class AsyncTaskDialogView(BaseDialogView):
         self.show_timer = QTimer(self)
         self.hide()
 
-    def handle_completion(self, successful):
+    def handle_completion(self, successful: bool):
         """
         Updates the UI after the task has been completed.
 
@@ -42,7 +42,7 @@ class AsyncTaskDialogView(BaseDialogView):
         if self.auto_close:
             self.hide()
 
-    def set_progress(self, progress, message):
+    def set_progress(self, progress: float, message: str):
         # Set status message
         if message:
             self.infoText.setText(message)
@@ -59,7 +59,7 @@ class AsyncTaskDialogView(BaseDialogView):
             self.show()
 
 
-def start_async_task_view(parent: QMainWindow, task: Callable, on_complete: Callable, kwargs=None):
+def start_async_task_view(parent: QMainWindow, task: Callable, on_complete: Callable, kwargs: Optional[Dict] = None):
     atd = AsyncTaskDialogView(parent, auto_close=True)
     if not kwargs:
         kwargs = {'progress': Progress()}
