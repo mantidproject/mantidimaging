@@ -124,10 +124,16 @@ class NexusLoadPresenter:
 
         dark_before_images = self._find_before_after_images(ImageKeys.DarkField, True)
         if dark_before_images is not None:
-            self.view.set_images_found(1, True, "")
-        # flat_before_images = self._find_before_after_images(ImageKeys.FlatField, True)
-        # flat_after_images = self._find_before_after_images(ImageKeys.FlatField, False)
-        # dark_after_images = self._find_before_after_images(ImageKeys.DarkField, False)
+            self.view.set_images_found(1, True, dark_before_images.data.shape)
+        flat_before_images = self._find_before_after_images(ImageKeys.FlatField, True)
+        if flat_before_images is not None:
+            self.view.set_images_found(2, True, flat_before_images.data.shape)
+        flat_after_images = self._find_before_after_images(ImageKeys.FlatField, False)
+        if flat_after_images is not None:
+            self.view.set_images_found(3, True, flat_after_images.data.shape)
+        dark_after_images = self._find_before_after_images(ImageKeys.DarkField, False)
+        if dark_after_images is not None:
+            self.view.set_images_found(4, True, dark_after_images.data.shape)
 
     def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.ndarray:
         """

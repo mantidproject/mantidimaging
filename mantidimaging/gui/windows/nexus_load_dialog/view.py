@@ -29,7 +29,6 @@ class NexusLoadDialog(QDialog):
         self.tree.expandItem(self.tree.topLevelItem(1))
 
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
-        # self.filePathLineEdit.textChanged.connect(self.presenter.notify(Notification.NEXUS_FILE_SELECTED))
 
     def choose_nexus_file(self):
         selected_file, _ = QFileDialog.getOpenFileName(caption=NEXUS_CAPTION,
@@ -54,14 +53,15 @@ class NexusLoadDialog(QDialog):
         self.tree.setItemWidget(section, 2, path_text)
 
     def set_images_found(self, position: int, found: bool, shape: Tuple[int]):
-        section: QTreeWidgetItem = self.tree.itemBelow(self.tree.topLevelItem(0))
+        section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        child = section.child(position)
 
         if not found:
-            self.tree.setItemWidget(section, 1, QLabel("✕"))
+            self.tree.setItemWidget(child, 1, QLabel("✕"))
             return
 
         found_text = QLabel("✓")
-        self.tree.setItemWidget(section, 1, found_text)
+        self.tree.setItemWidget(child, 1, found_text)
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
