@@ -74,12 +74,12 @@ class ImagesTest(unittest.TestCase):
         copy = images.copy(flip_axes=True)
         self.assertTrue(copy.is_sinograms)
 
-        self.assertEqual(images.sinograms, copy)
+        self.assertEqual(copy, images.sinograms)
 
         copy.data[:] = 150
 
         self.assertEqual(images.metadata, copy.metadata)
-        self.assertNotEqual(images.sinograms, copy)
+        self.assertNotEqual(copy, images.sinograms)
 
     def test_copy_roi(self):
         images = generate_images()
@@ -209,3 +209,16 @@ class ImagesTest(unittest.TestCase):
         actual = images.projection_angles()
         self.assertEqual(10, len(actual.value))
         self.assertAlmostEqual(images.projection_angles().value, pangles.value, places=4)
+
+    def test_image_eq_method(self):
+        data_array = np.arange(64, dtype=float).reshape([4, 4, 4])
+        data_images = Images(data_array.copy())
+        data_images2 = Images(data_array.copy())
+
+        self.assertEqual(data_images, data_array)
+        self.assertEqual(data_images, data_images2)
+
+        data_array[1, 1, 1] *= 2
+        self.assertNotEqual(data_images, data_array)
+
+        self.assertRaises(ValueError, lambda a, b: a == b, data_images, 1.0)

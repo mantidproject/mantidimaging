@@ -140,7 +140,7 @@ class Progress(object):
         else:
             return 0.0
 
-    def set_estimated_steps(self, num_steps):
+    def set_estimated_steps(self, num_steps: int):
         """
         Sets the number of steps this task is expected to take to complete.
         """

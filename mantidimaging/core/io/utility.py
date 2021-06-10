@@ -31,7 +31,7 @@ def get_file_extension(file: str) -> Optional[str]:
     return os.path.splitext(file)[1][1:]
 
 
-def get_candidate_file_extensions(ext):
+def get_candidate_file_extensions(ext: str) -> List[str]:
     """
     Gets a list of file extensions which can be used to load files.
     :param ext: User provided file extension
@@ -39,10 +39,10 @@ def get_candidate_file_extensions(ext):
     """
     # Get all tuples of similar extensions that the provided extension appears
     # in
-    candidates = [e for e in SIMILAR_FILE_EXTENSIONS if ext in e]
+    similar_extensions = [e for e in SIMILAR_FILE_EXTENSIONS if ext in e]
 
     # Concatenate them all into a single list
-    candidates = list(itertools.chain(*candidates))
+    candidates = list(itertools.chain(*similar_extensions))
 
     # Remove the provided extension from the list
     if ext in candidates:
@@ -110,7 +110,7 @@ def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str,
     return None
 
 
-def get_folder_names(path):
+def get_folder_names(path: str) -> List[str]:
     """
     Get all folder names in a specific path.
 
@@ -136,7 +136,7 @@ def get_folder_names(path):
     return folders
 
 
-def _alphanum_key_split(path_str):
+def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
     """
     From a string to a list of alphabetic and numeric elements. Intended to
     be used for sequence number/natural sorting. In list.sort() the
