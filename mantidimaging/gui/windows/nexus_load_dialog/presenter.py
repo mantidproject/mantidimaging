@@ -40,17 +40,17 @@ class NexusLoadPresenter:
         self.tomo_entry = None
         self.data = None
         self.tomo_path = ""
+        self.image_key_dataset = None
 
     def notify(self, n: Notification, **baggage):
         try:
             if n == Notification.NEXUS_FILE_SELECTED:
-                if not baggage:
-                    return
                 self.scan_nexus_file(**baggage)
         except RuntimeError as err:
             self.view.show_error(str(err), traceback.format_exc())
 
-    def scan_nexus_file(self, file_path: str):
+    def scan_nexus_file(self):
+        file_path = self.view.filePathLineEdit.text()
         with h5py.File(file_path, "r") as self.nexus_file:
             self.tomo_entry = self._find_tomo_entry()
             if self.tomo_entry is None:
@@ -66,8 +66,14 @@ class NexusLoadPresenter:
                 self.view.show_error(error_msg)
                 return
 
-            self.view.set_data_found(1, True, self.tomo_path + DATA_PATH)
-            #
+            self.view.set_data_found(0, True, self.tomo_path + "/" + DATA_PATH)
+
+            self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)
+            if self.image_key_dataset is None:
+                pass
+            else:
+                self.view.set_data_found(1, True, self.tomo_path + "/" + IMAGE_KEY_PATH)
+
             # self.title = self._find_data_title()
             #
             # self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)

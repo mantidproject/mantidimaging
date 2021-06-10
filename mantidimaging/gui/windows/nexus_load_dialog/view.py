@@ -1,5 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, QLabel
 
 from mantidimaging.gui.utility import compile_ui
@@ -7,6 +8,8 @@ from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPrese
 
 NEXUS_CAPTION = "NeXus"
 NEXUS_FILTER = "NeXus (*.nxs *.hd5)"
+
+FOUND_PALETTE = QPalette()
 
 
 class NexusLoadDialog(QDialog):
@@ -35,15 +38,17 @@ class NexusLoadDialog(QDialog):
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
 
     def set_data_found(self, position: int, found: bool, path: str):
-        if not found:
-            pass
-
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
-        found_text = QLabel("True")
-        path_text = QLabel(path)
 
-        self.tree.setItemWidget(section, 2, found_text)
-        self.tree.setItemWidget(section, 3, path_text)
+        if not found:
+            self.tree.setItemWidget(section, 1, QLabel("✕"))
+            return
+
+        found_text = QLabel("✓")
+        self.tree.setItemWidget(section, 1, found_text)
+
+        path_text = QLabel(path)
+        self.tree.setItemWidget(section, 2, path_text)
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
