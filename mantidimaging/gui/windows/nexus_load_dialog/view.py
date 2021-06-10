@@ -3,7 +3,8 @@
 from typing import Tuple
 
 from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, QLabel
+from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, QLabel, \
+    QHeaderView
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -27,6 +28,9 @@ class NexusLoadDialog(QDialog):
         self.parent_view = parent
         self.presenter = NexusLoadPresenter(self)
         self.tree.expandItem(self.tree.topLevelItem(1))
+
+        self.tree.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tree.header().setSectionResizeMode(2, QHeaderView.Stretch)
 
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
 
