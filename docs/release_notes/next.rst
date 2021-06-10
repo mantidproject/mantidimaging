@@ -12,6 +12,7 @@ New features
 - #926 : Manual arithmetic filter
 - #988 : Use averaged view in ROI selector for crop
 - #964 : Open NeXus files
+- #1010 : Write slope and offset into int tiffs
 
 Fixes
 -----
