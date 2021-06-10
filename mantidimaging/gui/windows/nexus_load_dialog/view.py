@@ -1,5 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from typing import Tuple
+
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, QLabel
 
@@ -24,6 +26,7 @@ class NexusLoadDialog(QDialog):
 
         self.parent_view = parent
         self.presenter = NexusLoadPresenter(self)
+        self.tree.expandItem(self.tree.topLevelItem(1))
 
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
         # self.filePathLineEdit.textChanged.connect(self.presenter.notify(Notification.NEXUS_FILE_SELECTED))
@@ -49,6 +52,16 @@ class NexusLoadDialog(QDialog):
 
         path_text = QLabel(path)
         self.tree.setItemWidget(section, 2, path_text)
+
+    def set_images_found(self, position: int, found: bool, shape: Tuple[int]):
+        section: QTreeWidgetItem = self.tree.itemBelow(self.tree.topLevelItem(0))
+
+        if not found:
+            self.tree.setItemWidget(section, 1, QLabel("✕"))
+            return
+
+        found_text = QLabel("✓")
+        self.tree.setItemWidget(section, 1, found_text)
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
