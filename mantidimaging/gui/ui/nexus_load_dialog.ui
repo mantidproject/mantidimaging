@@ -50,21 +50,21 @@
      </column>
      <item>
       <property name="text">
-       <string>Image Key</string>
+       <string>Data</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Projections</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
+       <string>Image Key</string>
       </property>
      </item>
      <item>
