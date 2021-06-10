@@ -31,7 +31,7 @@ def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, descrip
 def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
     from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
-    skio.imsave(filename, data, description=description, metadata=None)
+    skio.imsave(filename, data, description=description, metadata=None, software="Mantid Imaging")
 
 
 def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.ndarray] = None, overwrite: bool = False):
