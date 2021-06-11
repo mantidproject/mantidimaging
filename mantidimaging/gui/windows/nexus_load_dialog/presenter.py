@@ -75,19 +75,19 @@ class NexusLoadPresenter:
 
             self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)
             if self.image_key_dataset is None:
-                self.view.set_data_found(0, False, "")
+                self.view.set_data_found(0, False, "", ())
             else:
-                self.view.set_data_found(0, True, self.tomo_path + "/" + IMAGE_KEY_PATH)
+                self.view.set_data_found(0, True, self.tomo_path + "/" + IMAGE_KEY_PATH, self.image_key_dataset.size)
 
             self.data = self._get_tomo_data(DATA_PATH)
             if self.data is None:
                 error_msg = _missing_data_message(DATA_PATH)
                 logger.error(error_msg)
                 self.view.show_error(error_msg)
-                self.view.set_data_found(1, False, "")
+                self.view.set_data_found(1, False, "", ())
                 return
             else:
-                self.view.set_data_found(1, True, self.tomo_path + "/" + DATA_PATH)
+                self.view.set_data_found(1, True, self.tomo_path + "/" + DATA_PATH, self.data.shape)
 
             self.title = self._find_data_title()
 
@@ -122,7 +122,7 @@ class NexusLoadPresenter:
         :return: The image Dataset and a list containing issue strings.
         """
         sample_array = self._get_images(ImageKeys.Projections)
-        self.view.set_data_found(2, sample_array.size != 0, self.tomo_path + "/" + DATA_PATH)
+        self.view.set_images_found(0, sample_array.size != 0, sample_array.shape)
 
         dark_before_images = self._find_before_after_images(ImageKeys.DarkField, True)
         if dark_before_images is not None:

@@ -16,7 +16,6 @@ FOUND_PALETTE = QPalette()
 
 
 class NexusLoadDialog(QDialog):
-
     tree: QTreeWidget
     chooseFileButton: QPushButton
     filePathLineEdit: QLineEdit
@@ -43,20 +42,18 @@ class NexusLoadDialog(QDialog):
             self.filePathLineEdit.setText(selected_file)
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
 
-    def set_data_found(self, position: int, found: bool, path: str):
+    def set_data_found(self, position: int, found: bool, path: str, size: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
         if not found:
             self.tree.setItemWidget(section, 1, QLabel("✕"))
             return
 
-        found_text = QLabel("✓")
-        self.tree.setItemWidget(section, 1, found_text)
+        self.tree.setItemWidget(section, 1, QLabel("✓"))
+        self.tree.setItemWidget(section, 2, QLabel(path))
+        self.tree.setItemWidget(section, 3, QLabel(str(size)))
 
-        path_text = QLabel(path)
-        self.tree.setItemWidget(section, 2, path_text)
-
-    def set_images_found(self, position: int, found: bool, shape: Tuple[int]):
+    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int]):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
 
@@ -64,8 +61,8 @@ class NexusLoadDialog(QDialog):
             self.tree.setItemWidget(child, 1, QLabel("✕"))
             return
 
-        found_text = QLabel("✓")
-        self.tree.setItemWidget(child, 1, found_text)
+        self.tree.setItemWidget(child, 1, QLabel("✓"))
+        self.tree.setItemWidget(child, 3, QLabel(str(shape)))
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
