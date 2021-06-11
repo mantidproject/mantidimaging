@@ -3,7 +3,7 @@
 
 from functools import partial
 from typing import Any, Dict
-from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QComboBox, QCheckBox
 
 import numpy as np
 
@@ -21,22 +21,25 @@ MINIMUM_PIXEL_VALUE = 1e-9
 MAXIMUM_PIXEL_VALUE = 1e9
 
 
-def enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget):
+def enable_correct_fields_only(selected_flat_fielding_widget, flat_before_widget, flat_after_widget, dark_before_widget,
+                               dark_after_widget, use_dark_frame):
+    text = selected_flat_fielding_widget.currentText()
+    use_dark = use_dark_frame.isChecked()
     if text == "Only Before":
         flat_before_widget.setEnabled(True)
         flat_after_widget.setEnabled(False)
-        dark_before_widget.setEnabled(True)
+        dark_before_widget.setEnabled(use_dark)
         dark_after_widget.setEnabled(False)
     elif text == "Only After":
         flat_before_widget.setEnabled(False)
         flat_after_widget.setEnabled(True)
         dark_before_widget.setEnabled(False)
-        dark_after_widget.setEnabled(True)
+        dark_after_widget.setEnabled(use_dark)
     elif text == "Both, concatenated":
         flat_before_widget.setEnabled(True)
         flat_after_widget.setEnabled(True)
-        dark_before_widget.setEnabled(True)
-        dark_after_widget.setEnabled(True)
+        dark_before_widget.setEnabled(use_dark)
+        dark_after_widget.setEnabled(use_dark)
     else:
         raise RuntimeError("Unknown field parameter")
 
@@ -141,6 +144,14 @@ class FlatFieldFilter(BaseFilter):
                                                     on_change=on_change,
                                                     tooltip="Flat images to be used for correcting the flat field.")
 
+        _, use_dark_widget = add_property_to_form("Use Dark Frame",
+                                                  Type.BOOL,
+                                                  default_value=True,
+                                                  form=form,
+                                                  filters_view=view,
+                                                  on_change=on_change,
+                                                  tooltip="Use dark frame subtraction")
+
         _, dark_before_widget = add_property_to_form("Dark Before",
                                                      Type.STACK,
                                                      form=form,
@@ -181,7 +192,13 @@ class FlatFieldFilter(BaseFilter):
         # Ensure that fields that are not currently used are disabled
         assert (isinstance(selected_flat_fielding_widget, QComboBox))
         selected_flat_fielding_widget.currentTextChanged.connect(lambda text: enable_correct_fields_only(
-            text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget))
+            selected_flat_fielding_widget, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget,
+            use_dark_widget))
+
+        assert (isinstance(use_dark_widget, QCheckBox))
+        use_dark_widget.stateChanged.connect(lambda text: enable_correct_fields_only(
+            selected_flat_fielding_widget, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget,
+            use_dark_widget))
 
         return {
             'selected_flat_fielding_widget': selected_flat_fielding_widget,
