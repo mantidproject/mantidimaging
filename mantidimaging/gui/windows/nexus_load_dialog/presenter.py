@@ -54,6 +54,7 @@ class NexusLoadPresenter:
         self.data = None
         self.tomo_path = ""
         self.image_key_dataset = None
+        self.title = ""
 
     def notify(self, n: Notification):
         try:
@@ -74,20 +75,21 @@ class NexusLoadPresenter:
 
             self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)
             if self.image_key_dataset is None:
-                pass
+                self.view.set_data_found(0, False, "")
             else:
-                self.view.set_data_found(1, True, self.tomo_path + "/" + IMAGE_KEY_PATH)
+                self.view.set_data_found(0, True, self.tomo_path + "/" + IMAGE_KEY_PATH)
 
             self.data = self._get_tomo_data(DATA_PATH)
             if self.data is None:
                 error_msg = _missing_data_message(DATA_PATH)
                 logger.error(error_msg)
                 self.view.show_error(error_msg)
+                self.view.set_data_found(1, False, "")
                 return
+            else:
+                self.view.set_data_found(1, True, self.tomo_path + "/" + DATA_PATH)
 
             self.title = self._find_data_title()
-
-            self.view.set_data_found(0, True, self.tomo_path + "/" + DATA_PATH)
 
             if self.image_key_dataset is not None:
                 self._get_data_from_image_key()
