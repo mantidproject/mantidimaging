@@ -110,12 +110,15 @@ class FlatFieldingTest(unittest.TestCase):
         dark_after_widget.main_window.get_stack_visualiser = mock.Mock()
         dark_after_widget.main_window.get_stack_visualiser.return_value = fake_presenter
         selected_flat_fielding_widget = mock.Mock()
+        selected_flat_fielding_widget.currentText = mock.Mock(return_value="Only Before")
+        use_dark_widget = mock.Mock()
 
         execute_func = FlatFieldFilter.execute_wrapper(flat_before_widget=flat_before_widget,
                                                        flat_after_widget=flat_before_widget,
                                                        dark_before_widget=dark_before_widget,
                                                        dark_after_widget=dark_after_widget,
-                                                       selected_flat_fielding_widget=selected_flat_fielding_widget)
+                                                       selected_flat_fielding_widget=selected_flat_fielding_widget,
+                                                       use_dark_widget=use_dark_widget)
         images = th.generate_images()
         execute_func(images)
 
