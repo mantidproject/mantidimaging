@@ -55,10 +55,10 @@ class NexusLoadPresenter:
         self.tomo_path = ""
         self.image_key_dataset = None
 
-    def notify(self, n: Notification, **baggage):
+    def notify(self, n: Notification):
         try:
             if n == Notification.NEXUS_FILE_SELECTED:
-                self.scan_nexus_file(**baggage)
+                self.scan_nexus_file()
         except RuntimeError as err:
             self.view.show_error(str(err), traceback.format_exc())
 
