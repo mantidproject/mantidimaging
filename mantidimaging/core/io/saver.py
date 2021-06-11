@@ -21,17 +21,17 @@ DEFAULT_NAME_POSTFIX = ''
 INT16_SIZE = 65536
 
 
-def write_fits(data: np.ndarray, filename: str, overwrite: bool = False):
+def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
     import astropy.io.fits as fits
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
     hdulist.writeto(filename, overwrite=overwrite)
 
 
-def write_img(data: np.ndarray, filename: str, overwrite: bool = False):
+def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
     from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
-    skio.imsave(filename, data)
+    skio.imsave(filename, data, description=description, metadata=None, software="Mantid Imaging")
 
 
 def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.ndarray] = None, overwrite: bool = False):
@@ -110,9 +110,11 @@ def save(images: Images,
     # Do rescale if needed.
     if pixel_depth is None or pixel_depth == "float32":
         rescale_params: Optional[Dict[str, Union[str, float]]] = None
+        rescale_info = ""
     elif pixel_depth == "int16":
         # turn the offset to string otherwise json throws a TypeError when trying to save float32
         rescale_params = {"offset": str(min_value), "slope": int_16_slope}
+        rescale_info = "offset = {offset} \n slope = {slope}".format(**rescale_params)
     else:
         raise ValueError("The pixel depth given is not handled: " + pixel_depth)
 
@@ -133,7 +135,7 @@ def save(images: Images,
         return filename
     else:
         if out_format in ['fit', 'fits']:
-            write_func: Callable[[np.ndarray, str, bool], None] = write_fits
+            write_func: Callable[[np.ndarray, str, bool, Optional[str]], None] = write_fits
         else:
             # pass all other formats to skimage
             write_func = write_img
@@ -155,9 +157,9 @@ def save(images: Images,
                         rescale_single_image(np.copy(images.data[idx]),
                                              min_input=min_value,
                                              max_input=max_value,
-                                             max_output=INT16_SIZE - 1), names[idx], overwrite_all)
+                                             max_output=INT16_SIZE - 1), names[idx], overwrite_all, rescale_info)
                 else:
-                    write_func(data[idx, :, :], names[idx], overwrite_all)
+                    write_func(data[idx, :, :], names[idx], overwrite_all, rescale_info)
 
                 progress.update(msg='Image')
 
