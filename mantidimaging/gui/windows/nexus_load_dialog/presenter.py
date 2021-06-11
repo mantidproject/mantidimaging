@@ -68,31 +68,30 @@ class NexusLoadPresenter:
         with h5py.File(file_path, "r") as self.nexus_file:
             self.tomo_entry = self._find_tomo_entry()
             if self.tomo_entry is None:
-                error_msg = _missing_data_message(TOMO_ENTRY)
-                logger.error(error_msg)
-                self.view.show_error(error_msg)
+                self._missing_data_error(TOMO_ENTRY)
+                # Can't do anything if there's no tomo entry
                 return
 
-            self.image_key_dataset = self._get_tomo_data(IMAGE_KEY_PATH)
-            if self.image_key_dataset is None:
-                self.view.set_data_found(0, False, "", ())
-            else:
-                self.view.set_data_found(0, True, self.tomo_path + "/" + IMAGE_KEY_PATH, self.image_key_dataset.size)
-
-            self.data = self._get_tomo_data(DATA_PATH)
-            if self.data is None:
-                error_msg = _missing_data_message(DATA_PATH)
-                logger.error(error_msg)
-                self.view.show_error(error_msg)
-                self.view.set_data_found(1, False, "", ())
-                return
-            else:
-                self.view.set_data_found(1, True, self.tomo_path + "/" + DATA_PATH, self.data.shape)
-
+            self.image_key_dataset = self._look_for_tomo_data(IMAGE_KEY_PATH, 0)
+            self.data = self._look_for_tomo_data(DATA_PATH, 1)
             self.title = self._find_data_title()
 
             if self.image_key_dataset is not None:
                 self._get_data_from_image_key()
+
+    def _missing_data_error(self, field: str):
+        error_msg = _missing_data_message(field)
+        logger.error(error_msg)
+        self.view.show_error(error_msg)
+
+    def _look_for_tomo_data(self, field: str, position: int):
+        dataset = self._get_tomo_data(field)
+        if dataset is None:
+            self._missing_data_error(field)
+            self.view.set_data_found(position, False, "", ())
+        else:
+            self.view.set_data_found(position, True, self.tomo_path + "/" + field, dataset.shape)
+        return dataset
 
     def _find_tomo_entry(self) -> Optional[h5py.Group]:
         """
