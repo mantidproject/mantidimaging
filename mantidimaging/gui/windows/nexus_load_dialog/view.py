@@ -3,7 +3,7 @@
 from typing import Tuple
 
 from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, QLabel, \
+from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox
 
 from mantidimaging.gui.utility import compile_ui
@@ -13,6 +13,8 @@ NEXUS_CAPTION = "NeXus"
 NEXUS_FILTER = "NeXus (*.nxs *.hd5)"
 
 FOUND_PALETTE = QPalette()
+
+FOUND_TEXT = {True: "✓", False: "✕"}
 
 
 class NexusLoadDialog(QDialog):
@@ -42,27 +44,25 @@ class NexusLoadDialog(QDialog):
             self.filePathLineEdit.setText(selected_file)
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
 
-    def set_data_found(self, position: int, found: bool, path: str, size: Tuple[int, ...]):
+    def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
+        section.setText(1, FOUND_TEXT[found])
 
         if not found:
-            self.tree.setItemWidget(section, 1, QLabel("✕"))
             return
 
-        self.tree.setItemWidget(section, 1, QLabel("✓"))
-        self.tree.setItemWidget(section, 2, QLabel(path))
-        self.tree.setItemWidget(section, 3, QLabel(str(size)))
+        section.setText(2, path)
+        section.setText(3, str(shape))
 
     def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
+        child.setText(1, FOUND_TEXT[found])
 
         if not found:
-            self.tree.setItemWidget(child, 1, QLabel("✕"))
             return
 
-        self.tree.setItemWidget(child, 1, QLabel("✓"))
-        self.tree.setItemWidget(child, 3, QLabel(str(shape)))
+        child.setText(3, str(shape))
         checkbox = QCheckBox()
         if not checkbox_enabled:
             checkbox.setEnabled(False)
