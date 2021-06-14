@@ -68,8 +68,9 @@ class NexusLoadPresenter:
         with h5py.File(file_path, "r") as self.nexus_file:
             self.tomo_entry = self._find_tomo_entry()
             if self.tomo_entry is None:
-                self._missing_data_error(TOMO_ENTRY)
-                # Can't do anything if there's no tomo entry
+                error_msg = _missing_data_message(TOMO_ENTRY)
+                logger.error(error_msg)
+                self.view.invalid_file_opened()
                 return
 
             self.image_key_dataset = self._look_for_tomo_data(IMAGE_KEY_PATH, 0)
@@ -123,6 +124,7 @@ class NexusLoadPresenter:
         sample_array = self._get_images(ImageKeys.Projections)
         if sample_array.size == 0:
             self.view.set_images_found(0, False, sample_array.shape)
+            self.view.invalid_file_opened()
             return
         else:
             self.view.set_images_found(0, True, sample_array.shape, False)

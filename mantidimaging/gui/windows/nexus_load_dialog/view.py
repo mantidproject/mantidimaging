@@ -71,3 +71,7 @@ class NexusLoadDialog(QDialog):
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
+
+    def invalid_file_opened(self):
+        # disable OK button in this case
+        pass
