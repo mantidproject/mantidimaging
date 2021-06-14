@@ -121,7 +121,11 @@ class NexusLoadPresenter:
         :return: The image Dataset and a list containing issue strings.
         """
         sample_array = self._get_images(ImageKeys.Projections)
-        self.view.set_images_found(0, sample_array.size != 0, sample_array.shape)
+        if sample_array.size == 0:
+            self.view.set_images_found(0, False, sample_array.shape)
+            return
+        else:
+            self.view.set_images_found(0, True, sample_array.shape, False)
 
         dark_before_images = self._find_before_after_images(ImageKeys.DarkField, True)
         if dark_before_images is not None:

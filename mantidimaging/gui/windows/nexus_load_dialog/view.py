@@ -4,7 +4,7 @@ from typing import Tuple
 
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, QLabel, \
-    QHeaderView
+    QHeaderView, QCheckBox
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -53,7 +53,7 @@ class NexusLoadDialog(QDialog):
         self.tree.setItemWidget(section, 2, QLabel(path))
         self.tree.setItemWidget(section, 3, QLabel(str(size)))
 
-    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int]):
+    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
 
@@ -63,6 +63,11 @@ class NexusLoadDialog(QDialog):
 
         self.tree.setItemWidget(child, 1, QLabel("✓"))
         self.tree.setItemWidget(child, 3, QLabel(str(shape)))
+        checkbox = QCheckBox()
+        if not checkbox_enabled:
+            checkbox.setEnabled(False)
+            checkbox.setChecked(True)
+        self.tree.setItemWidget(child, 4, checkbox)
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
