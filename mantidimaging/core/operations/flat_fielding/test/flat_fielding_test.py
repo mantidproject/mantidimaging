@@ -110,12 +110,15 @@ class FlatFieldingTest(unittest.TestCase):
         dark_after_widget.main_window.get_stack_visualiser = mock.Mock()
         dark_after_widget.main_window.get_stack_visualiser.return_value = fake_presenter
         selected_flat_fielding_widget = mock.Mock()
+        selected_flat_fielding_widget.currentText = mock.Mock(return_value="Only Before")
+        use_dark_widget = mock.Mock()
 
         execute_func = FlatFieldFilter.execute_wrapper(flat_before_widget=flat_before_widget,
                                                        flat_after_widget=flat_before_widget,
                                                        dark_before_widget=dark_before_widget,
                                                        dark_after_widget=dark_after_widget,
-                                                       selected_flat_fielding_widget=selected_flat_fielding_widget)
+                                                       selected_flat_fielding_widget=selected_flat_fielding_widget,
+                                                       use_dark_widget=use_dark_widget)
         images = th.generate_images()
         execute_func(images)
 
@@ -125,8 +128,10 @@ class FlatFieldingTest(unittest.TestCase):
         flat_after_widget = mock.MagicMock()
         dark_before_widget = mock.MagicMock()
         dark_after_widget = mock.MagicMock()
+        use_dark_frame = mock.MagicMock(isChecked=lambda: True)
 
-        enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget)
+        enable_correct_fields_only(mock.Mock(currentText=lambda: text), flat_before_widget, flat_after_widget,
+                                   dark_before_widget, dark_after_widget, use_dark_frame)
 
         flat_before_widget.setEnabled.assert_called_once_with(True)
         flat_after_widget.setEnabled.assert_called_once_with(False)
@@ -139,8 +144,10 @@ class FlatFieldingTest(unittest.TestCase):
         flat_after_widget = mock.MagicMock()
         dark_before_widget = mock.MagicMock()
         dark_after_widget = mock.MagicMock()
+        use_dark_frame = mock.MagicMock(isChecked=lambda: True)
 
-        enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget)
+        enable_correct_fields_only(mock.Mock(currentText=lambda: text), flat_before_widget, flat_after_widget,
+                                   dark_before_widget, dark_after_widget, use_dark_frame)
 
         flat_before_widget.setEnabled.assert_called_once_with(False)
         flat_after_widget.setEnabled.assert_called_once_with(True)
@@ -153,8 +160,10 @@ class FlatFieldingTest(unittest.TestCase):
         flat_after_widget = mock.MagicMock()
         dark_before_widget = mock.MagicMock()
         dark_after_widget = mock.MagicMock()
+        use_dark_frame = mock.MagicMock(isChecked=lambda: True)
 
-        enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget)
+        enable_correct_fields_only(mock.Mock(currentText=lambda: text), flat_before_widget, flat_after_widget,
+                                   dark_before_widget, dark_after_widget, use_dark_frame)
 
         flat_before_widget.setEnabled.assert_called_once_with(True)
         flat_after_widget.setEnabled.assert_called_once_with(True)
@@ -167,15 +176,32 @@ class FlatFieldingTest(unittest.TestCase):
         flat_after_widget = mock.MagicMock()
         dark_before_widget = mock.MagicMock()
         dark_after_widget = mock.MagicMock()
+        use_dark_frame = mock.MagicMock(isChecked=lambda: True)
 
         with self.assertRaises(RuntimeError):
-            enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget,
-                                       dark_after_widget)
+            enable_correct_fields_only(mock.Mock(currentText=lambda: text), flat_before_widget, flat_after_widget,
+                                       dark_before_widget, dark_after_widget, use_dark_frame)
 
         flat_before_widget.setEnabled.assert_not_called()
-        flat_after_widget.setEnabled.asser_not_called()
+        flat_after_widget.setEnabled.assert_not_called()
         dark_before_widget.setEnabled.assert_not_called()
         dark_after_widget.setEnabled.assert_not_called()
+
+    def test_enable_correct_fields_runtime_no_dark(self):
+        text = "Both, concatenated"
+        flat_before_widget = mock.MagicMock()
+        flat_after_widget = mock.MagicMock()
+        dark_before_widget = mock.MagicMock()
+        dark_after_widget = mock.MagicMock()
+        use_dark_frame = mock.MagicMock(isChecked=lambda: False)
+
+        enable_correct_fields_only(mock.Mock(currentText=lambda: text), flat_before_widget, flat_after_widget,
+                                   dark_before_widget, dark_after_widget, use_dark_frame)
+
+        flat_before_widget.setEnabled.assert_called_once_with(True)
+        flat_after_widget.setEnabled.assert_called_once_with(True)
+        dark_before_widget.setEnabled.assert_called_once_with(False)
+        dark_after_widget.setEnabled.assert_called_once_with(False)
 
 
 if __name__ == '__main__':
