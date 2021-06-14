@@ -64,15 +64,15 @@ class NexusLoadPresenter:
     def scan_nexus_file(self):
         file_path = self.view.filePathLineEdit.text()
         with h5py.File(file_path, "r") as self.nexus_file:
-            self.tomo_entry = self._find_tomo_entry()
+            self.tomo_entry = self._look_for_nxtomo_entry()
             if self.tomo_entry is None:
                 error_msg = _missing_data_message(TOMO_ENTRY)
                 logger.error(error_msg)
                 self.view.invalid_file_opened()
                 return
 
-            self.image_key_dataset = self._look_for_tomo_data(IMAGE_KEY_PATH, 0)
-            self.data = self._look_for_tomo_data(DATA_PATH, 1)
+            self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+            self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
             self.title = self._find_data_title()
 
             if self.image_key_dataset is not None:
@@ -83,8 +83,8 @@ class NexusLoadPresenter:
         logger.error(error_msg)
         self.view.show_error(error_msg)
 
-    def _look_for_tomo_data(self, field: str, position: int):
-        dataset = self._get_tomo_data(field)
+    def _look_for_tomo_data_and_update_view(self, field: str, position: int):
+        dataset = self._look_for_tomo_data(field)
         if dataset is None:
             self._missing_data_error(field)
             self.view.set_data_found(position, False, "", ())
@@ -92,7 +92,7 @@ class NexusLoadPresenter:
             self.view.set_data_found(position, True, self.tomo_path + "/" + field, dataset.shape)
         return dataset
 
-    def _find_tomo_entry(self) -> Optional[h5py.Group]:
+    def _look_for_nxtomo_entry(self) -> Optional[h5py.Group]:
         """
         Look for a tomo_entry field in the NeXus file.
         :return: The first tomo_entry group if one could be found, None otherwise.
@@ -103,7 +103,7 @@ class NexusLoadPresenter:
                 return self.nexus_file[key][TOMO_ENTRY]
         return None
 
-    def _get_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+    def _look_for_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
         """
         Retrieve data from the tomo entry field.
         :param entry_path: The path in which the data is found.
