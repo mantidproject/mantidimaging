@@ -16,6 +16,11 @@ FOUND_PALETTE = QPalette()
 
 FOUND_TEXT = {True: "✓", False: "✕"}
 
+FOUND_COLUMN = 1
+PATH_COLUMN = 2
+SHAPE_COLUMN = 3
+CHECKBOX_COLUMN = 4
+
 
 class NexusLoadDialog(QDialog):
     tree: QTreeWidget
@@ -46,28 +51,28 @@ class NexusLoadDialog(QDialog):
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
-        section.setText(1, FOUND_TEXT[found])
+        section.setText(FOUND_COLUMN, FOUND_TEXT[found])
 
         if not found:
             return
 
-        section.setText(2, path)
-        section.setText(3, str(shape))
+        section.setText(PATH_COLUMN, path)
+        section.setText(SHAPE_COLUMN, str(shape))
 
     def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
-        child.setText(1, FOUND_TEXT[found])
+        child.setText(FOUND_COLUMN, FOUND_TEXT[found])
 
         if not found:
             return
 
-        child.setText(3, str(shape))
+        child.setText(SHAPE_COLUMN, str(shape))
         checkbox = QCheckBox()
         if not checkbox_enabled:
             checkbox.setEnabled(False)
             checkbox.setChecked(True)
-        self.tree.setItemWidget(child, 4, checkbox)
+        self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
