@@ -9,8 +9,6 @@ from typing import TYPE_CHECKING, Optional, Union
 import h5py
 import numpy as np
 
-from mantidimaging.core.data import Images
-
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog  # pragma: no cover
 
@@ -129,18 +127,17 @@ class NexusLoadPresenter:
         else:
             self.view.set_images_found(0, True, sample_array.shape, False)
 
-        dark_before_images = self._find_before_after_images(ImageKeys.DarkField, True)
-        if dark_before_images is not None:
-            self.view.set_images_found(1, True, dark_before_images.data.shape)
-        flat_before_images = self._find_before_after_images(ImageKeys.FlatField, True)
-        if flat_before_images is not None:
-            self.view.set_images_found(2, True, flat_before_images.data.shape)
-        flat_after_images = self._find_before_after_images(ImageKeys.FlatField, False)
-        if flat_after_images is not None:
-            self.view.set_images_found(3, True, flat_after_images.data.shape)
-        dark_after_images = self._find_before_after_images(ImageKeys.DarkField, False)
-        if dark_after_images is not None:
-            self.view.set_images_found(4, True, dark_after_images.data.shape)
+        dark_before_array = self._get_images(ImageKeys.DarkField, True)
+        self.view.set_images_found(1, dark_before_array.size != 0, dark_before_array.shape)
+
+        flat_before_array = self._get_images(ImageKeys.FlatField, True)
+        self.view.set_images_found(2, flat_before_array.size != 0, flat_before_array.shape)
+
+        flat_after_array = self._get_images(ImageKeys.FlatField, False)
+        self.view.set_images_found(3, flat_after_array.size != 0, flat_before_array.shape)
+
+        dark_after_array = self._get_images(ImageKeys.DarkField, False)
+        self.view.set_images_found(4, dark_after_array.size != 0, dark_before_array.shape)
 
     def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.ndarray:
         """
@@ -159,24 +156,7 @@ class NexusLoadPresenter:
                 indices = self.image_key_dataset[:] == image_key_number.value
                 indices[:self.image_key_dataset.size // 2] = False
         # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
-        return self.data[np.where(indices)].astype("float64")
-
-    def _find_before_after_images(self, image_key_number: ImageKeys, before: bool) -> Optional[Images]:
-        """
-        Looks for dark/flat before/after images in the data field using the image key.
-        :param image_key_number: The image key number of the images.
-        :param before: True for before images, False for after images.
-        :return: The images if they were found, None otherwise.
-        """
-        image_name = self._generate_image_name(image_key_number, before)
-        images_array = self._get_images(image_key_number, before)
-        if images_array.size == 0:
-            # info_msg = _missing_images_message(image_name)
-            # logger.info(info_msg)
-            # self.issues.append(info_msg)
-            return None
-        else:
-            return Images(images_array, [image_name])
+        return self.data[np.where(indices)]
 
     def _generate_image_name(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> str:
         """
