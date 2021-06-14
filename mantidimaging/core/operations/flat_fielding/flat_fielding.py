@@ -3,7 +3,7 @@
 
 from functools import partial
 from typing import Any, Dict
-from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QComboBox, QCheckBox
 
 import numpy as np
 
@@ -19,24 +19,28 @@ from mantidimaging.gui.windows.operations import FiltersWindowView
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
 MAXIMUM_PIXEL_VALUE = 1e9
+valid_methods = ["Only Before", "Only After", "Both, concatenated"]
 
 
-def enable_correct_fields_only(text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget):
+def enable_correct_fields_only(selected_flat_fielding_widget, flat_before_widget, flat_after_widget, dark_before_widget,
+                               dark_after_widget, use_dark_frame):
+    text = selected_flat_fielding_widget.currentText()
+    use_dark = use_dark_frame.isChecked()
     if text == "Only Before":
         flat_before_widget.setEnabled(True)
         flat_after_widget.setEnabled(False)
-        dark_before_widget.setEnabled(True)
+        dark_before_widget.setEnabled(use_dark)
         dark_after_widget.setEnabled(False)
     elif text == "Only After":
         flat_before_widget.setEnabled(False)
         flat_after_widget.setEnabled(True)
         dark_before_widget.setEnabled(False)
-        dark_after_widget.setEnabled(True)
+        dark_after_widget.setEnabled(use_dark)
     elif text == "Both, concatenated":
         flat_before_widget.setEnabled(True)
         flat_after_widget.setEnabled(True)
-        dark_before_widget.setEnabled(True)
-        dark_after_widget.setEnabled(True)
+        dark_before_widget.setEnabled(use_dark)
+        dark_after_widget.setEnabled(use_dark)
     else:
         raise RuntimeError("Unknown field parameter")
 
@@ -63,6 +67,7 @@ class FlatFieldFilter(BaseFilter):
                     dark_before: Images = None,
                     dark_after: Images = None,
                     selected_flat_fielding: str = None,
+                    use_dark: bool = True,
                     cores=None,
                     chunksize=None,
                     progress=None) -> Images:
@@ -85,16 +90,21 @@ class FlatFieldFilter(BaseFilter):
             if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
                     and dark_after is not None and dark_before is not None:
                 flat_avg = (flat_before.data.mean(axis=0) + flat_after.data.mean(axis=0)) / 2.0
-                dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
+                if use_dark:
+                    dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
             elif selected_flat_fielding == "Only Before" and flat_before is not None and dark_before is not None:
                 flat_avg = flat_before.data.mean(axis=0)
-                dark_avg = dark_before.data.mean(axis=0)
+                if use_dark:
+                    dark_avg = dark_before.data.mean(axis=0)
             elif selected_flat_fielding == "Only After" and flat_after is not None and dark_after is not None:
                 flat_avg = flat_after.data.mean(axis=0)
-                dark_avg = dark_after.data.mean(axis=0)
+                if use_dark:
+                    dark_avg = dark_after.data.mean(axis=0)
             else:
-                flat_avg = None
-                dark_avg = None
+                raise ValueError("selected_flat_fielding not in:", valid_methods)
+
+            if not use_dark:
+                dark_avg = np.zeros_like(flat_avg)
 
             if flat_avg is not None and dark_avg is not None:
                 if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
@@ -118,15 +128,14 @@ class FlatFieldFilter(BaseFilter):
     def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, selected_flat_fielding_widget = add_property_to_form(
-            "Flat Fielding Method",
-            Type.CHOICE,
-            valid_values=["Only Before", "Only After", "Both, concatenated"],
-            form=form,
-            filters_view=view,
-            on_change=on_change,
-            tooltip="Choosing which stacks to use during flat "
-            "fielding")
+        _, selected_flat_fielding_widget = add_property_to_form("Flat Fielding Method",
+                                                                Type.CHOICE,
+                                                                valid_values=valid_methods,
+                                                                form=form,
+                                                                filters_view=view,
+                                                                on_change=on_change,
+                                                                tooltip="Choosing which stacks to use during flat "
+                                                                "fielding")
 
         _, flat_before_widget = add_property_to_form("Flat Before",
                                                      Type.STACK,
@@ -140,6 +149,14 @@ class FlatFieldFilter(BaseFilter):
                                                     filters_view=view,
                                                     on_change=on_change,
                                                     tooltip="Flat images to be used for correcting the flat field.")
+
+        _, use_dark_widget = add_property_to_form("Use Dark Frame",
+                                                  Type.BOOL,
+                                                  default_value=True,
+                                                  form=form,
+                                                  filters_view=view,
+                                                  on_change=on_change,
+                                                  tooltip="Use dark frame subtraction")
 
         _, dark_before_widget = add_property_to_form("Dark Before",
                                                      Type.STACK,
@@ -181,7 +198,13 @@ class FlatFieldFilter(BaseFilter):
         # Ensure that fields that are not currently used are disabled
         assert (isinstance(selected_flat_fielding_widget, QComboBox))
         selected_flat_fielding_widget.currentTextChanged.connect(lambda text: enable_correct_fields_only(
-            text, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget))
+            selected_flat_fielding_widget, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget,
+            use_dark_widget))
+
+        assert (isinstance(use_dark_widget, QCheckBox))
+        use_dark_widget.stateChanged.connect(lambda text: enable_correct_fields_only(
+            selected_flat_fielding_widget, flat_before_widget, flat_after_widget, dark_before_widget, dark_after_widget,
+            use_dark_widget))
 
         return {
             'selected_flat_fielding_widget': selected_flat_fielding_widget,
@@ -189,13 +212,14 @@ class FlatFieldFilter(BaseFilter):
             'flat_after_widget': flat_after_widget,
             'dark_before_widget': dark_before_widget,
             'dark_after_widget': dark_after_widget,
+            'use_dark_widget': use_dark_widget,
         }
 
     @staticmethod
     def execute_wrapper(  # type: ignore
             flat_before_widget: StackSelectorWidgetView, flat_after_widget: StackSelectorWidgetView,
             dark_before_widget: StackSelectorWidgetView, dark_after_widget: StackSelectorWidgetView,
-            selected_flat_fielding_widget) -> partial:
+            selected_flat_fielding_widget: QComboBox, use_dark_widget: QCheckBox) -> partial:
         flat_before_stack = flat_before_widget.main_window.get_stack_visualiser(flat_before_widget.current())
         flat_before_images = flat_before_stack.presenter.images
         flat_after_stack = flat_after_widget.main_window.get_stack_visualiser(flat_after_widget.current())
@@ -208,12 +232,15 @@ class FlatFieldFilter(BaseFilter):
 
         selected_flat_fielding = selected_flat_fielding_widget.currentText()
 
+        use_dark = use_dark_widget.isChecked()
+
         return partial(FlatFieldFilter.filter_func,
                        flat_before=flat_before_images,
                        flat_after=flat_after_images,
                        dark_before=dark_before_images,
                        dark_after=dark_after_images,
-                       selected_flat_fielding=selected_flat_fielding)
+                       selected_flat_fielding=selected_flat_fielding,
+                       use_dark=use_dark)
 
     @staticmethod
     def validate_execute_kwargs(kwargs):
