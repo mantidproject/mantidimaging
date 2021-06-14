@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
-from typing import Callable
+from typing import Callable, Optional
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
@@ -20,7 +20,7 @@ class AsyncTaskDialogModel(QObject):
         self.task = TaskWorkerThread()
         self.task.finished.connect(self._on_task_exit)
 
-        self.on_complete_function: Callable = lambda: None
+        self.on_complete_function: Optional[Callable] = None
 
     def do_execute_async(self):
         """
@@ -29,7 +29,7 @@ class AsyncTaskDialogModel(QObject):
         self.task.start()
 
     @property
-    def task_is_running(self):
+    def task_is_running(self) -> bool:
         return self.task.isRunning()
 
     def _on_task_exit(self):

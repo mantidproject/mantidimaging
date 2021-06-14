@@ -139,15 +139,20 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.update_sinogram(image_data)
         self.image_view.update_sinogram.assert_called_once_with(image_data)
 
-    def test_update_recon_preview(self):
+    def test_update_recon_preview_no_hist(self):
         image_data = mock.Mock()
+        self.view.update_recon_hist_needed = False
 
-        for refresh_recon_slice_histogram in [True, False]:
-            with self.subTest(refresh_recon_slice_histogram=refresh_recon_slice_histogram):
-                self.view.update_recon_preview(image_data, refresh_recon_slice_histogram)
-                self.image_view.update_recon.assert_called_once_with(image_data, refresh_recon_slice_histogram)
-            if refresh_recon_slice_histogram:
-                self.image_view.update_recon.reset_mock()
+        self.view.update_recon_preview(image_data)
+        self.image_view.update_recon.assert_called_once_with(image_data)
+
+    def test_update_recon_preview_and_hist(self):
+        image_data = mock.Mock()
+        self.view.update_recon_hist_needed = True
+
+        self.view.update_recon_preview(image_data)
+        self.image_view.update_recon.assert_called_once_with(image_data)
+        self.image_view.update_recon_hist.assert_called_once_with()
 
     def test_reset_image_recon_preview(self):
         self.view.reset_image_recon_preview()
