@@ -29,7 +29,6 @@ class TaskWorkerThread(QThread):
 
         self.task_function = None
 
-        self.args = []
         self.kwargs = {}
 
         self.result = None
@@ -42,7 +41,7 @@ class TaskWorkerThread(QThread):
             if self.task_function is None:
                 raise ValueError("No task function provided")
 
-            self.result = call_with_known_parameters(self.task_function, *self.args, **self.kwargs)
+            self.result = call_with_known_parameters(self.task_function, **self.kwargs)
 
         except Exception as e:
             log.exception("Failed to execute task")
