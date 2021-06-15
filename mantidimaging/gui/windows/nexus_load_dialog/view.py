@@ -3,7 +3,6 @@
 from typing import Tuple
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox
 
@@ -13,14 +12,13 @@ from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPrese
 NEXUS_CAPTION = "NeXus"
 NEXUS_FILTER = "NeXus (*.nxs *.hd5)"
 
-FOUND_PALETTE = QPalette()
-
 FOUND_TEXT = {True: "✓", False: "✕"}
 
 FOUND_COLUMN = 1
 PATH_COLUMN = 2
 SHAPE_COLUMN = 3
 CHECKBOX_COLUMN = 4
+TEXT_COLUMNS = [FOUND_COLUMN, PATH_COLUMN, SHAPE_COLUMN]
 
 
 class NexusLoadDialog(QDialog):
@@ -57,10 +55,15 @@ class NexusLoadDialog(QDialog):
     def clear_widgets(self):
         for position in range(2):
             section: QTreeWidgetItem = self.tree.topLevelItem(position)
-            for column in [FOUND_COLUMN, PATH_COLUMN, SHAPE_COLUMN]:
+            for column in TEXT_COLUMNS:
                 section.setText(column, "")
-            # for column in range(1, 6):
-            #     self.tree.removeItemWidget(section, column)
+
+        data_section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        for position in range(5):
+            child = data_section.child(position)
+            self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
+            for column in TEXT_COLUMNS:
+                child.setText(column, "")
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
