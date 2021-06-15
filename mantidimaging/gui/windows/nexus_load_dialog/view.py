@@ -34,6 +34,7 @@ class NexusLoadDialog(QDialog):
         self.parent_view = parent
         self.presenter = NexusLoadPresenter(self)
         self.tree.expandItem(self.tree.topLevelItem(1))
+        self.checkboxes = dict()
 
         self.tree.header().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tree.header().setSectionResizeMode(2, QHeaderView.Stretch)
@@ -49,6 +50,7 @@ class NexusLoadDialog(QDialog):
                                                        initialFilter=NEXUS_FILTER)
 
         if selected_file:
+            self.checkboxes.clear()
             self.clear_widgets()
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
@@ -91,6 +93,7 @@ class NexusLoadDialog(QDialog):
             checkbox.setEnabled(False)
             checkbox.setChecked(True)
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
+        self.checkboxes[child.text(0)] = checkbox
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)

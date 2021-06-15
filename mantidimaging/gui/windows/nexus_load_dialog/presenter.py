@@ -190,10 +190,13 @@ class NexusLoadPresenter:
             return "NeXus Data"
 
     def get_dataset(self) -> Tuple[Dataset, str]:
-        return Dataset(sample=self._create_images(self.sample_array, "Sample"),
-                       flat_before=self._create_images(self.flat_before_array, "Flat Before")), self.title
+        return Dataset(sample=self._create_images(self.sample_array, "Projections"),
+                       flat_before=self._create_images(self.flat_before_array, "Flat Before"),
+                       flat_after=self._create_images(self.flat_before_array, "Flat After"),
+                       dark_before=self._create_images(self.flat_before_array, "Dark Before"),
+                       dark_after=self._create_images(self.flat_before_array, "Dark Before")), self.title
 
     def _create_images(self, data_array: np.ndarray, name: str):
-        if data_array.size == 0:
+        if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None
         return Images(data_array, [f"{name} {self.title}"])
