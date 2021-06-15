@@ -61,9 +61,9 @@ class NexusLoadDialog(QDialog):
         data_section: QTreeWidgetItem = self.tree.topLevelItem(1)
         for position in range(5):
             child = data_section.child(position)
-            self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
             for column in TEXT_COLUMNS:
                 child.setText(column, "")
+            self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
