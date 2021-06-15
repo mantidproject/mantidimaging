@@ -39,6 +39,7 @@ Developer Changes
 - #978 : Update Qt API usage
 - #998 : setup.py command to install current developer requirements
 - #969 : Improve mypy coverage in core.io
+- #1007 : Change applitools check level to content
 
 Dependency updates
 ------------------

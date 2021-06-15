@@ -2,18 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from unittest import mock
 
-from applitools.common import MatchLevel
-
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class WelcomeWindowTest(BaseEyesTest):
     def setUp(self):
         super(WelcomeWindowTest, self).setUp()
-
-        # We use content to ensure that the message delivery doesn't change this has a higher likelihood of causing
-        # spurious failures hence it only being used when necessary.
-        self.eyes_manager.set_match_level(MatchLevel.CONTENT)
 
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")

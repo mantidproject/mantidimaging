@@ -23,7 +23,7 @@ class EyesManager:
     def __init__(self, application_name="Mantid Imaging", test_name=None):
         self.application_name = application_name
         self.eyes = Eyes()
-        self.eyes.match_level = MatchLevel.LAYOUT
+        self.eyes.match_level = MatchLevel.CONTENT
         self.image_directory = None
         self.imaging = None
         if test_name is None:
