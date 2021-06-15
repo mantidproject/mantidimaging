@@ -134,14 +134,14 @@ class NexusLoadPresenter:
         else:
             self.view.set_images_found(0, True, self.sample_array.shape, False)
 
-        self.dark_before_array = self._get_images(ImageKeys.DarkField, True)
-        self.view.set_images_found(1, self.dark_before_array.size != 0, self.dark_before_array.shape)
-
         self.flat_before_array = self._get_images(ImageKeys.FlatField, True)
-        self.view.set_images_found(2, self.flat_before_array.size != 0, self.flat_before_array.shape)
+        self.view.set_images_found(1, self.flat_before_array.size != 0, self.flat_before_array.shape)
 
         self.flat_after_array = self._get_images(ImageKeys.FlatField, False)
-        self.view.set_images_found(3, self.flat_after_array.size != 0, self.flat_before_array.shape)
+        self.view.set_images_found(2, self.flat_after_array.size != 0, self.flat_before_array.shape)
+
+        self.dark_before_array = self._get_images(ImageKeys.DarkField, True)
+        self.view.set_images_found(3, self.dark_before_array.size != 0, self.dark_before_array.shape)
 
         self.dark_after_array = self._get_images(ImageKeys.DarkField, False)
         self.view.set_images_found(4, self.dark_after_array.size != 0, self.dark_before_array.shape)
@@ -192,9 +192,9 @@ class NexusLoadPresenter:
     def get_dataset(self) -> Tuple[Dataset, str]:
         return Dataset(sample=self._create_images(self.sample_array, "Projections"),
                        flat_before=self._create_images(self.flat_before_array, "Flat Before"),
-                       flat_after=self._create_images(self.flat_before_array, "Flat After"),
-                       dark_before=self._create_images(self.flat_before_array, "Dark Before"),
-                       dark_after=self._create_images(self.flat_before_array, "Dark Before")), self.title
+                       flat_after=self._create_images(self.flat_after_array, "Flat After"),
+                       dark_before=self._create_images(self.dark_before_array, "Dark Before"),
+                       dark_after=self._create_images(self.dark_after_array, "Dark After")), self.title
 
     def _create_images(self, data_array: np.ndarray, name: str):
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
