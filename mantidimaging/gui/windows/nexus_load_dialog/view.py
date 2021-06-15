@@ -57,8 +57,10 @@ class NexusLoadDialog(QDialog):
     def clear_widgets(self):
         for position in range(2):
             section: QTreeWidgetItem = self.tree.topLevelItem(position)
-            for column in range(1, 6):
-                self.tree.removeItemWidget(section, column)
+            for column in [FOUND_COLUMN, PATH_COLUMN, SHAPE_COLUMN]:
+                section.setText(column, "")
+            # for column in range(1, 6):
+            #     self.tree.removeItemWidget(section, column)
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
