@@ -49,9 +49,16 @@ class NexusLoadDialog(QDialog):
                                                        initialFilter=NEXUS_FILTER)
 
         if selected_file:
+            self.clear_widgets()
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
+
+    def clear_widgets(self):
+        for position in range(2):
+            section: QTreeWidgetItem = self.tree.topLevelItem(position)
+            for column in range(1, 6):
+                self.tree.removeItemWidget(section, column)
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
@@ -81,7 +88,7 @@ class NexusLoadDialog(QDialog):
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
 
-    def invalid_file_opened(self):
+    def disable_ok_button(self):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     @staticmethod
