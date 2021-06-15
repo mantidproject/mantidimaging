@@ -5,7 +5,7 @@ from typing import Tuple
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
-    QHeaderView, QCheckBox
+    QHeaderView, QCheckBox, QDialogButtonBox
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -27,6 +27,7 @@ class NexusLoadDialog(QDialog):
     tree: QTreeWidget
     chooseFileButton: QPushButton
     filePathLineEdit: QLineEdit
+    buttonBox: QDialogButtonBox
 
     def __init__(self, parent):
         super(NexusLoadDialog, self).__init__(parent)
@@ -40,6 +41,7 @@ class NexusLoadDialog(QDialog):
         self.tree.header().setSectionResizeMode(2, QHeaderView.Stretch)
 
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     def choose_nexus_file(self):
         selected_file, _ = QFileDialog.getOpenFileName(caption=NEXUS_CAPTION,
@@ -47,6 +49,7 @@ class NexusLoadDialog(QDialog):
                                                        initialFilter=NEXUS_FILTER)
 
         if selected_file:
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
 
@@ -79,8 +82,7 @@ class NexusLoadDialog(QDialog):
         self.parent_view.presenter.show_error(msg, traceback)
 
     def invalid_file_opened(self):
-        # disable OK button in this case
-        pass
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     @staticmethod
     def set_found_status(tree_widget_item: QTreeWidgetItem, found: bool):
