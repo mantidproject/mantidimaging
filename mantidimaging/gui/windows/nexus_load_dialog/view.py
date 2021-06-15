@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from typing import Tuple
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox
@@ -51,7 +52,7 @@ class NexusLoadDialog(QDialog):
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
-        section.setText(FOUND_COLUMN, FOUND_TEXT[found])
+        self.set_found_status(section, found)
 
         if not found:
             return
@@ -62,7 +63,7 @@ class NexusLoadDialog(QDialog):
     def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
-        child.setText(FOUND_COLUMN, FOUND_TEXT[found])
+        self.set_found_status(child, found)
 
         if not found:
             return
@@ -80,3 +81,8 @@ class NexusLoadDialog(QDialog):
     def invalid_file_opened(self):
         # disable OK button in this case
         pass
+
+    @staticmethod
+    def set_found_status(tree_widget_item: QTreeWidgetItem, found: bool):
+        tree_widget_item.setText(FOUND_COLUMN, FOUND_TEXT[found])
+        tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
