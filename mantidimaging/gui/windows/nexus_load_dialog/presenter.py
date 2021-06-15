@@ -4,10 +4,13 @@ import enum
 import traceback
 from enum import auto, Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union, Tuple
 
 import h5py
 import numpy as np
+
+from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import Dataset
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog  # pragma: no cover
@@ -53,6 +56,12 @@ class NexusLoadPresenter:
         self.tomo_path = ""
         self.image_key_dataset = None
         self.title = ""
+
+        self.sample_array = None
+        self.dark_before_array = None
+        self.flat_before_array = None
+        self.flat_after_array = None
+        self.dark_after_array = None
 
     def notify(self, n: Notification):
         try:
@@ -117,25 +126,25 @@ class NexusLoadPresenter:
         Looks for dark/flat before/after images to create a dataset.
         :return: The image Dataset and a list containing issue strings.
         """
-        sample_array = self._get_images(ImageKeys.Projections)
-        if sample_array.size == 0:
-            self.view.set_images_found(0, False, sample_array.shape)
+        self.sample_array = self._get_images(ImageKeys.Projections)
+        if self.sample_array.size == 0:
+            self.view.set_images_found(0, False, self.sample_array.shape)
             self.view.disable_ok_button()
             return
         else:
-            self.view.set_images_found(0, True, sample_array.shape, False)
+            self.view.set_images_found(0, True, self.sample_array.shape, False)
 
-        dark_before_array = self._get_images(ImageKeys.DarkField, True)
-        self.view.set_images_found(1, dark_before_array.size != 0, dark_before_array.shape)
+        self.dark_before_array = self._get_images(ImageKeys.DarkField, True)
+        self.view.set_images_found(1, self.dark_before_array.size != 0, self.dark_before_array.shape)
 
-        flat_before_array = self._get_images(ImageKeys.FlatField, True)
-        self.view.set_images_found(2, flat_before_array.size != 0, flat_before_array.shape)
+        self.flat_before_array = self._get_images(ImageKeys.FlatField, True)
+        self.view.set_images_found(2, self.flat_before_array.size != 0, self.flat_before_array.shape)
 
-        flat_after_array = self._get_images(ImageKeys.FlatField, False)
-        self.view.set_images_found(3, flat_after_array.size != 0, flat_before_array.shape)
+        self.flat_after_array = self._get_images(ImageKeys.FlatField, False)
+        self.view.set_images_found(3, self.flat_after_array.size != 0, self.flat_before_array.shape)
 
-        dark_after_array = self._get_images(ImageKeys.DarkField, False)
-        self.view.set_images_found(4, dark_after_array.size != 0, dark_before_array.shape)
+        self.dark_after_array = self._get_images(ImageKeys.DarkField, False)
+        self.view.set_images_found(4, self.dark_after_array.size != 0, self.dark_before_array.shape)
 
     def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.ndarray:
         """
@@ -179,3 +188,12 @@ class NexusLoadPresenter:
             return self.tomo_entry["title"][0].decode("UTF-8")
         except KeyError:
             return "NeXus Data"
+
+    def get_dataset(self) -> Tuple[Dataset, str]:
+        return Dataset(sample=self._create_images(self.sample_array, "Sample"),
+                       flat_before=self._create_images(self.flat_before_array, "Flat Before")), self.title
+
+    def _create_images(self, data_array: np.ndarray, name: str):
+        if data_array.size == 0:
+            return None
+        return Images(data_array, [f"{name} {self.title}"])

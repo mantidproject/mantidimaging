@@ -41,6 +41,8 @@ class NexusLoadDialog(QDialog):
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
+        self.accepted.connect(self.parent_view.execute_nexus_load)
+
     def choose_nexus_file(self):
         selected_file, _ = QFileDialog.getOpenFileName(caption=NEXUS_CAPTION,
                                                        filter=f"{NEXUS_FILTER};;All (*.*)",
@@ -66,14 +68,14 @@ class NexusLoadDialog(QDialog):
             self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
-        section: QTreeWidgetItem = self.tree.topLevelItem(position)
-        self.set_found_status(section, found)
+        data_section: QTreeWidgetItem = self.tree.topLevelItem(position)
+        self.set_found_status(data_section, found)
 
         if not found:
             return
 
-        section.setText(PATH_COLUMN, path)
-        section.setText(SHAPE_COLUMN, str(shape))
+        data_section.setText(PATH_COLUMN, path)
+        data_section.setText(SHAPE_COLUMN, str(shape))
 
     def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)

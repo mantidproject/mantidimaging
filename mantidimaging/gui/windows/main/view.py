@@ -262,6 +262,9 @@ class MainWindowView(BaseMainWindowView):
     def execute_load(self):
         self.presenter.notify(PresNotification.LOAD)
 
+    def execute_nexus_load(self):
+        self.presenter.notify(PresNotification.NEXUS_LOAD)
+
     def show_save_dialogue(self):
         self.save_dialogue = MWSaveDialog(self, self.stack_list)
         self.save_dialogue.show()
