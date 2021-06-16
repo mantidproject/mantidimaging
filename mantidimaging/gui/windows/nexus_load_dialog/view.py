@@ -4,7 +4,7 @@ from typing import Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
-    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox
+    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -26,7 +26,8 @@ class NexusLoadDialog(QDialog):
     chooseFileButton: QPushButton
     filePathLineEdit: QLineEdit
     buttonBox: QDialogButtonBox
-    pixelBitDepthComboBox: QComboBox
+    pixelDepthComboBox: QComboBox
+    pixelSizeSpinBox: QDoubleSpinBox
 
     def __init__(self, parent):
         super(NexusLoadDialog, self).__init__(parent)
