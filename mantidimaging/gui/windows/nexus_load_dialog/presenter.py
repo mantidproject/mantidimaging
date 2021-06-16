@@ -84,6 +84,7 @@ class NexusLoadPresenter:
             self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
             if self.data is None:
                 self.view.disable_ok_button()
+                return
 
             if self.image_key_dataset is not None:
                 self._get_data_from_image_key()
@@ -96,6 +97,7 @@ class NexusLoadPresenter:
         :param field: The name of the field that couldn't be found in the NeXus file.
         """
         error_msg = _missing_data_message(field)
+        logger.error(error_msg)
         self.view.show_missing_data_error(error_msg)
 
     def _look_for_tomo_data_and_update_view(self, field: str,
@@ -126,6 +128,7 @@ class NexusLoadPresenter:
                 return self.nexus_file[key][TOMO_ENTRY]
 
         self._missing_data_error(TOMO_ENTRY)
+        logger.error(TOMO_ENTRY)
         self.view.disable_ok_button()
         return None
 
