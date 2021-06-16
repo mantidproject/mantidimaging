@@ -214,4 +214,4 @@ class NexusLoadPresenter:
         """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None
-        return Images(data_array, [f"{name} {self.title}"])
+        return Images(data_array.astype(self.view.pixelBitDepthComboBox.currentText()), [f"{name} {self.title}"])
