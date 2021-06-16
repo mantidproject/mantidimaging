@@ -149,7 +149,6 @@ class NexusLoadDialog(QDialog):
         NeXus file.
         :param tree_widget_item: The QTreeWidgetItem that contains a found column.
         :param found: Whether or not the data was found.
-        :return:
         """
         tree_widget_item.setText(FOUND_COLUMN, FOUND_TEXT[found])
         tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
