@@ -88,6 +88,8 @@ class NexusLoadPresenter:
             if self.image_key_dataset is not None:
                 self._get_data_from_image_key()
 
+            self.title = self._find_data_title()
+
     def _missing_data_error(self, field: str):
         """
         Create a missing data message and display it on the view.
@@ -196,7 +198,6 @@ class NexusLoadPresenter:
         Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
-        self.title = self._find_data_title()
         return Dataset(sample=self._create_images(self.sample_array, "Projections"),
                        flat_before=self._create_images(self.flat_before_array, "Flat Before"),
                        flat_after=self._create_images(self.flat_after_array, "Flat After"),
