@@ -8,9 +8,10 @@ import h5py
 import numpy as np
 
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.io.loader.nexus_loader import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
-    IMAGE_KEY_PATH, NexusLoader
-from mantidimaging.core.io.loader.nexus_loader import logger as nexus_logger
+from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
+    IMAGE_KEY_PATH, NexusLoadPresenter
+from mantidimaging.gui.windows.nexus_load_dialog.presenter import logger as nexus_logger
+from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 
 
 def test_missing_field_message():
@@ -28,10 +29,12 @@ class NexusLoaderTest(unittest.TestCase):
         self.title = "my_data_title"
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
 
-        self.nexus_loader = NexusLoader()
+        self.view = mock.Mock(autospec=NexusLoadDialog)
+        self.view.filePathLineEdit.text.return_value = "filename"
+        self.nexus_loader = NexusLoadPresenter(self.view)
         self.nexus_loader.nexus_file = self.nexus
 
-        self.nexus_load_patcher = mock.patch("mantidimaging.core.io.loader.nexus_loader.h5py.File")
+        self.nexus_load_patcher = mock.patch("mantidimaging.gui.windows.nexus_load_dialog.presenter.h5py.File")
         nexus_load_mock = self.nexus_load_patcher.start()
         nexus_load_mock.return_value = self.nexus
 
@@ -55,26 +58,18 @@ class NexusLoaderTest(unittest.TestCase):
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:] == prev_value, new_value,
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:])
 
-    def test_find_tomo_entry(self):
-        self.assertIsNotNone(self.nexus_loader._find_tomo_entry())
+    def test_look_for_nx_tomo_entry(self):
+        self.assertIsNotNone(self.nexus_loader._look_for_nxtomo_entry())
 
-    def test_find_tomo_entry_returns_none(self):
+    def test_no_tomo_entry_returns_none(self):
         del self.nexus[self.full_tomo_path]
-        self.assertIsNone(self.nexus_loader._find_tomo_entry())
+        self.assertIsNone(self.nexus_loader._look_for_nxtomo_entry())
 
-    def test_load_nexus_data_returns_none_when_no_tomo_entry(self):
+    def test_no_tomo_entry_calls_show_missing_data_error(self):
         del self.nexus[self.full_tomo_path]
-        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset)
-            self.assertIn(issues[0], log_mock.output[0])
-
-    def test_load_nexus_data_returns_none_when_no_data(self):
-        del self.tomo_entry[DATA_PATH]
-        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset)
-            self.assertIn(issues[0], log_mock.output[0])
+        self.nexus_loader.scan_nexus_file()
+        self.view.show_missing_data_error.assert_called_once_with(_missing_data_message(TOMO_ENTRY))
+        self.view.disable_ok_button.assert_called_once()
 
     def test_dataset_contains_only_sample_when_nexus_has_no_image_key(self):
         del self.tomo_entry[IMAGE_KEY_PATH]
