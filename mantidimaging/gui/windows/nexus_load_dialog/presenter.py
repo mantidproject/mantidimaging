@@ -198,13 +198,18 @@ class NexusLoadPresenter:
         Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
-        return Dataset(sample=self._create_images(self.sample_array, "Projections"),
-                       flat_before=self._create_images(self.flat_before_array, "Flat Before"),
-                       flat_after=self._create_images(self.flat_after_array, "Flat After"),
-                       dark_before=self._create_images(self.dark_before_array, "Dark Before"),
-                       dark_after=self._create_images(self.dark_after_array, "Dark After")), self.title
+        sample_images = self._create_images(self.sample_array, "Projections")
+        sample_images.pixel_size = self.view.pixelSizeSpinBox.value()
+        return Dataset(sample=sample_images,
+                       flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before"),
+                       flat_after=self._create_images_if_required(self.flat_after_array, "Flat After"),
+                       dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before"),
+                       dark_after=self._create_images_if_required(self.dark_after_array, "Dark After")), self.title
 
-    def _create_images(self, data_array: np.ndarray, name: str) -> Optional[Images]:
+    def _create_images(self, data_array: np.ndarray, name: str) -> Images:
+        return Images(data_array.astype(self.view.pixelDepthComboBox.currentText()), [f"{name} {self.title}"])
+
+    def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[Images]:
         """
         Create the Images objects using the data found in the NeXus file.
         :param data_array: The images data array.
@@ -214,4 +219,4 @@ class NexusLoadPresenter:
         """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None
-        return Images(data_array.astype(self.view.pixelBitDepthComboBox.currentText()), [f"{name} {self.title}"])
+        return self._create_images(data_array, name)
