@@ -97,14 +97,12 @@ class NexusLoadDialog(QDialog):
         data_section.setText(PATH_COLUMN, path)
         data_section.setText(SHAPE_COLUMN, str(shape))
 
-    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
+    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int]):
         """
         Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.
         :param position: The row position for the image type.
         :param found: Whether or not the images were found.
         :param shape: The shape of the images array.
-        :param checkbox_enabled: Whether or not the "Use?" checkbox should be enabled. Will be True for all images
-                                 besides the projections.
         """
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
@@ -117,16 +115,25 @@ class NexusLoadDialog(QDialog):
         # Set shape information and add a "Use?" checkbox
         child.setText(SHAPE_COLUMN, str(shape))
         checkbox = QCheckBox()
-        if not checkbox_enabled:
+        if not position:
             checkbox.setEnabled(False)
-            checkbox.setChecked(True)  # Projections need to always be used.
+            checkbox.setChecked(True)  # Projections need to always be used
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
     def show_exception(self, msg, traceback):
+        """
+        Show an error about an exception.
+        :param msg: The error message.
+        :param traceback: The traceback.
+        """
         self.parent_view.presenter.show_error(msg, traceback)
 
     def show_missing_data_error(self, msg: str):
+        """
+        Show an error about missing required data.
+        :param msg: The error message.
+        """
         self.parent_view.show_error_dialog(msg)
 
     def disable_ok_button(self):

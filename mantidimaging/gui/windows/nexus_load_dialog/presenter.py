@@ -150,7 +150,7 @@ class NexusLoadPresenter:
             self.view.disable_ok_button()
             return
         else:
-            self.view.set_images_found(0, True, self.sample_array.shape, False)
+            self.view.set_images_found(0, True, self.sample_array.shape)
 
         self.flat_before_array = self._get_images(ImageKeys.FlatField, True)
         self.view.set_images_found(1, self.flat_before_array.size != 0, self.flat_before_array.shape)
