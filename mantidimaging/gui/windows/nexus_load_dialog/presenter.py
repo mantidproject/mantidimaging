@@ -71,26 +71,39 @@ class NexusLoadPresenter:
             self.view.show_error(str(err), traceback.format_exc())
 
     def scan_nexus_file(self):
+        """
+        Try to open the NeXus file and display its contents on the view.
+        """
         file_path = self.view.filePathLineEdit.text()
         with h5py.File(file_path, "r") as self.nexus_file:
             self.tomo_entry = self._look_for_nxtomo_entry()
             if self.tomo_entry is None:
-                self._missing_data_error(TOMO_ENTRY)
-                self.view.disable_ok_button()
                 return
 
             self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
             self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
-            self.title = self._find_data_title()
+            if self.data is None:
+                self.view.disable_ok_button()
 
             if self.image_key_dataset is not None:
                 self._get_data_from_image_key()
 
     def _missing_data_error(self, field: str):
+        """
+        Create a missing data message and display it on the view.
+        :param field: The name of the field that couldn't be found in the NeXus file.
+        """
         error_msg = _missing_data_message(field)
         self.view.show_error(error_msg, "")
 
-    def _look_for_tomo_data_and_update_view(self, field: str, position: int):
+    def _look_for_tomo_data_and_update_view(self, field: str,
+                                            position: int) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+        """
+        Looks for the data in the NeXus file and adds information about it to the view if it's found.
+        :param field: The name of the NeXus field.
+        :param position: The position of the field information row in the view's QTreeWidget.
+        :return: The h5py Group/Dataset if it could be found, None otherwise.
+        """
         dataset = self._look_for_tomo_data(field)
         if dataset is None:
             self._missing_data_error(field)
@@ -101,20 +114,24 @@ class NexusLoadPresenter:
 
     def _look_for_nxtomo_entry(self) -> Optional[h5py.Group]:
         """
-        Look for a tomo_entry field in the NeXus file.
+        Look for a tomo_entry field in the NeXus file. Generate an error and disable the view OK button if it can't be
+        found.
         :return: The first tomo_entry group if one could be found, None otherwise.
         """
         for key in self.nexus_file.keys():
             if TOMO_ENTRY in self.nexus_file[key].keys():
                 self.tomo_path = f"{key}/{TOMO_ENTRY}"
                 return self.nexus_file[key][TOMO_ENTRY]
+
+        self._missing_data_error(TOMO_ENTRY)
+        self.view.disable_ok_button()
         return None
 
     def _look_for_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
         """
         Retrieve data from the tomo entry field.
         :param entry_path: The path in which the data is found.
-        :return: The Nexus group if it exists, None otherwise.
+        :return: The Nexus Group/Dataset if it exists, None otherwise.
         """
         try:
             return self.tomo_entry[entry_path]
@@ -123,8 +140,7 @@ class NexusLoadPresenter:
 
     def _get_data_from_image_key(self):
         """
-        Looks for dark/flat before/after images to create a dataset.
-        :return: The image Dataset and a list containing issue strings.
+        Looks for the projection and dark/flat before/after images and update the information on the view.
         """
         self.sample_array = self._get_images(ImageKeys.Projections)
         if self.sample_array.size == 0:
@@ -165,20 +181,6 @@ class NexusLoadPresenter:
         # Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently
         return self.data[np.where(indices)]
 
-    def _generate_image_name(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> str:
-        """
-        Creates a name for a group of images by using the image key.
-        :param image_key_number: The image key number for the collection of images.
-        :param before: True if before images, False if after images, None if the images are projections.
-        :return: A string for the images name.
-        """
-        name = [IMAGE_TITLE_MAP[image_key_number]]
-        if before is not None:
-            name.append(BEFORE_TITLE_MAP[before])
-        name.append(self.title)
-
-        return " ".join(name)
-
     def _find_data_title(self) -> str:
         """
         Find the title field in the tomo_entry.
@@ -190,13 +192,25 @@ class NexusLoadPresenter:
             return "NeXus Data"
 
     def get_dataset(self) -> Tuple[Dataset, str]:
+        """
+        Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
+        :return: A tuple containing the Dataset and the data title string.
+        """
+        self.title = self._find_data_title()
         return Dataset(sample=self._create_images(self.sample_array, "Projections"),
                        flat_before=self._create_images(self.flat_before_array, "Flat Before"),
                        flat_after=self._create_images(self.flat_after_array, "Flat After"),
                        dark_before=self._create_images(self.dark_before_array, "Dark Before"),
                        dark_after=self._create_images(self.dark_after_array, "Dark After")), self.title
 
-    def _create_images(self, data_array: np.ndarray, name: str):
+    def _create_images(self, data_array: np.ndarray, name: str) -> Optional[Images]:
+        """
+        Create the Images objects using the data found in the NeXus file.
+        :param data_array: The images data array.
+        :param name: The name of the images.
+        :return: An images object if the data could be found in the NeXus file and the "Use" checkbox is ticked in the
+                 view, None otherwise.
+        """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None
         return Images(data_array, [f"{name} {self.title}"])
