@@ -159,12 +159,6 @@ class MainWindowView(BaseMainWindowView):
         self.load_dialogue.show()
 
     def show_load_nexus_dialog(self):
-        # selected_file = self._get_file_name("NeXus", "NeXus (*.nxs)")
-        #
-        # if selected_file == "":
-        #     return
-        #
-        # self.presenter.load_nexus_file(selected_file)
         self.nexus_load_dialog = NexusLoadDialog(self)
         self.nexus_load_dialog.show()
 
