@@ -121,12 +121,15 @@ class NexusLoadDialog(QDialog):
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
-    def show_error(self, msg, traceback):
+    def show_exception(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
+
+    def show_missing_data_error(self, msg: str):
+        self.parent_view.show_error_dialog(msg)
 
     def disable_ok_button(self):
         """
-        Disable the OK button when the NeXus file isn't useable.
+        Disable the OK button when the NeXus file isn't usable.
         """
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 

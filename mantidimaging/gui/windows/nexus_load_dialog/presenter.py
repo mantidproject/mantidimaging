@@ -68,7 +68,7 @@ class NexusLoadPresenter:
             if n == Notification.NEXUS_FILE_SELECTED:
                 self.scan_nexus_file()
         except RuntimeError as err:
-            self.view.show_error(str(err), traceback.format_exc())
+            self.view.show_exception(str(err), traceback.format_exc())
 
     def scan_nexus_file(self):
         """
@@ -96,7 +96,7 @@ class NexusLoadPresenter:
         :param field: The name of the field that couldn't be found in the NeXus file.
         """
         error_msg = _missing_data_message(field)
-        self.view.show_error(error_msg, "")
+        self.view.show_missing_data_error(error_msg)
 
     def _look_for_tomo_data_and_update_view(self, field: str,
                                             position: int) -> Optional[Union[h5py.Group, h5py.Dataset]]:
