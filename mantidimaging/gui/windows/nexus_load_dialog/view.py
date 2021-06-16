@@ -45,6 +45,10 @@ class NexusLoadDialog(QDialog):
         self.accepted.connect(self.parent_view.execute_nexus_load)
 
     def choose_nexus_file(self):
+        """
+        Select a NeXus file and attempt to load it. If a file is chosen, clear the information/widgets from the
+        QTreeWidget and enable the OK button.
+        """
         selected_file, _ = QFileDialog.getOpenFileName(caption=NEXUS_CAPTION,
                                                        filter=f"{NEXUS_FILTER};;All (*.*)",
                                                        initialFilter=NEXUS_FILTER)
@@ -57,6 +61,9 @@ class NexusLoadDialog(QDialog):
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
 
     def clear_widgets(self):
+        """
+        Remove text and checkbox widgets from the QTreeWidget when a new file has been selected.
+        """
         for position in range(2):
             section: QTreeWidgetItem = self.tree.topLevelItem(position)
             for column in TEXT_COLUMNS:
@@ -70,28 +77,47 @@ class NexusLoadDialog(QDialog):
             self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
+        """
+        Indicate on the QTreeWeidget if the image key and data fields have been found or not.
+        :param position: The row position for the data.
+        :param found: Whether or not the data has been found.
+        :param path: The data path in the NeXus file.
+        :param shape: The shape of the data/image key array.
+        """
         data_section: QTreeWidgetItem = self.tree.topLevelItem(position)
         self.set_found_status(data_section, found)
 
+        # Nothing else to do if the data wasn't found
         if not found:
             return
 
+        # Add the path and array shape information to the QTreeWidget
         data_section.setText(PATH_COLUMN, path)
         data_section.setText(SHAPE_COLUMN, str(shape))
 
     def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int], checkbox_enabled: bool = True):
+        """
+        Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.
+        :param position: The row position for the image type.
+        :param found: Whether or not the images were found.
+        :param shape: The shape of the images array.
+        :param checkbox_enabled: Whether or not the "Use?" checkbox should be enabled. Will be True for all images
+                                 besides the projections.
+        """
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(position)
         self.set_found_status(child, found)
 
+        # Nothing else to do if the images weren't found
         if not found:
             return
 
+        # Set shape information and add a "Use?" checkbox
         child.setText(SHAPE_COLUMN, str(shape))
         checkbox = QCheckBox()
         if not checkbox_enabled:
             checkbox.setEnabled(False)
-            checkbox.setChecked(True)
+            checkbox.setChecked(True)  # Projections need to always be used.
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
@@ -99,9 +125,19 @@ class NexusLoadDialog(QDialog):
         self.parent_view.presenter.show_error(msg, traceback)
 
     def disable_ok_button(self):
+        """
+        Disable the OK button when the NeXus file isn't useable.
+        """
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     @staticmethod
     def set_found_status(tree_widget_item: QTreeWidgetItem, found: bool):
+        """
+        Adds a tick or cross to the found column in the QTreeWidget to indicate if certain data could be found in the
+        NeXus file.
+        :param tree_widget_item: The QTreeWidgetItem that contains a found column.
+        :param found: Whether or not the data was found.
+        :return:
+        """
         tree_widget_item.setText(FOUND_COLUMN, FOUND_TEXT[found])
         tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
