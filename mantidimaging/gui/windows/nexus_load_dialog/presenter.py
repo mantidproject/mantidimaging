@@ -158,13 +158,13 @@ class NexusLoadPresenter:
         self.view.set_images_found(1, self.flat_before_array.size != 0, self.flat_before_array.shape)
 
         self.flat_after_array = self._get_images(ImageKeys.FlatField, False)
-        self.view.set_images_found(2, self.flat_after_array.size != 0, self.flat_before_array.shape)
+        self.view.set_images_found(2, self.flat_after_array.size != 0, self.flat_after_array.shape)
 
         self.dark_before_array = self._get_images(ImageKeys.DarkField, True)
         self.view.set_images_found(3, self.dark_before_array.size != 0, self.dark_before_array.shape)
 
         self.dark_after_array = self._get_images(ImageKeys.DarkField, False)
-        self.view.set_images_found(4, self.dark_after_array.size != 0, self.dark_before_array.shape)
+        self.view.set_images_found(4, self.dark_after_array.size != 0, self.dark_after_array.shape)
 
     def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.ndarray:
         """

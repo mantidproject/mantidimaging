@@ -45,10 +45,10 @@ class NexusLoaderTest(unittest.TestCase):
         self.view.pixelSizeSpinBox.value.return_value = pixel_size = 9.00
         self.expected_pixel_size = int(pixel_size)
 
-        image_types = ["Projections", "Flat Before", "Flat After", "Dark Before", "Dark After"]
+        self.image_types = ["Projections", "Flat Before", "Flat After", "Dark Before", "Dark After"]
         self.view.checkboxes = dict()
 
-        for image_type in image_types:
+        for image_type in self.image_types:
             checkbox_mock = mock.Mock()
             checkbox_mock.isChecked.return_value = True
             self.view.checkboxes[image_type] = checkbox_mock
@@ -64,18 +64,25 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus.close()
         self.nexus_load_patcher.stop()
 
-    def replace_values_in_image_key(self, before: bool, prev_value: int, new_value: int):
+    def replace_values_in_image_key(self, name: str, new_value: int):
         """
         Changes values in the image key.
-        :param before: Whether or not to change values that correspond with before images.
-        :param prev_value: The previous image key value.
+        :param name: The name of the image type.
         :param new_value: The new image key value.
         """
-        if before:
+        before = "Before" in name
+        if "Flat" in name:
+            prev_value = 1
+        elif "Dark" in name:
+            prev_value = 2
+        else:
+            prev_value = 0
+
+        if before or prev_value == 0:
             self.tomo_entry[IMAGE_KEY_PATH][:self.n_images // 2] = np.where(
                 self.tomo_entry[IMAGE_KEY_PATH][:self.n_images // 2] == prev_value, new_value,
                 self.tomo_entry[IMAGE_KEY_PATH][:self.n_images // 2])
-        else:
+        if not before:
             self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:] = np.where(
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:] == prev_value, new_value,
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:])
@@ -148,6 +155,50 @@ class NexusLoaderTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(dataset.sample.data, self.sample)
         np.testing.assert_array_almost_equal(dataset.dark_after.data, self.dark_after)
         np.testing.assert_array_almost_equal(dataset.flat_after.data, self.flat_after)
+
+    def test_no_flat_before_data(self):
+        self.replace_values_in_image_key("Flat Before", 0)
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.flat_before)
+        self.view.set_images_found.assert_any_call(1, False, (0, 10, 10))
+
+    def test_no_dark_before_data(self):
+        self.replace_values_in_image_key("Dark Before", 0)
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.dark_before)
+        self.view.set_images_found.assert_any_call(3, False, (0, 10, 10))
+
+    def test_no_flat_after_data(self):
+        self.replace_values_in_image_key("Flat After", 0)
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.flat_after)
+        self.view.set_images_found.assert_any_call(2, False, (0, 10, 10))
+
+    def test_no_dark_after_data(self):
+        self.replace_values_in_image_key("Dark After", 0)
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.dark_after)
+        self.view.set_images_found.assert_any_call(4, False, (0, 10, 10))
+
+    def test_no_projection_data(self):
+        self.replace_values_in_image_key("Projections", 1)
+        missing_string = _missing_data_message("projection images")
+        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+            self.nexus_loader.scan_nexus_file()
+        self.assertIn(missing_string, log_mock.output[0])
+        self.view.show_missing_data_error.assert_called_once_with(missing_string)
+        self.view.disable_ok_button.assert_called_once()
+        self.view.set_images_found.assert_called_once_with(0, False, (0, 10, 10))
+
+    def test_corresponding_dataset_array_is_none_if_use_box_not_checked(self):
+        pass
+
+    def test_sample_images_missing(self):
+        pass
 
     def test_dataset_has_expected_pixel_depth(self):
         depths = ["float32", "float64"]
