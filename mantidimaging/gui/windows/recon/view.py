@@ -6,7 +6,7 @@ from uuid import UUID
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QMessageBox, QAction)
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QSignalBlocker
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
@@ -243,7 +243,8 @@ class ReconstructWindowView(BaseMainWindowView):
         :param tilt_angle: Angle of the tilt line
         """
 
-        self.previewSliceIndex.setValue(preview_slice_index)
+        with QSignalBlocker(self.previewSliceIndex):
+            self.previewSliceIndex.setValue(preview_slice_index)
 
         self.image_view.update_projection(image_data, preview_slice_index, tilt_angle)
 
@@ -339,7 +340,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @pixel_size.setter
     def pixel_size(self, value: int):
-        self.pixelSize.setValue(value)
+        with QSignalBlocker(self.pixelSize):
+            self.pixelSize.setValue(value)
 
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
