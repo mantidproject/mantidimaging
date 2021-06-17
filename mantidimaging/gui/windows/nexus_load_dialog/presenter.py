@@ -80,12 +80,12 @@ class NexusLoadPresenter:
             if self.tomo_entry is None:
                 return
 
-            self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
             self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
             if self.data is None:
                 self.view.disable_ok_button()
                 return
 
+            self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
             if self.image_key_dataset is not None:
                 self._get_data_from_image_key()
 
