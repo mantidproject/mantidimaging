@@ -15,7 +15,7 @@ from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 
 
 def test_missing_field_message():
-    assert _missing_data_message("missing") == "The NeXus file does not contain the required missing field."
+    assert _missing_data_message("missing_data") == "The NeXus file does not contain the required missing_data data."
 
 
 class NexusLoaderTest(unittest.TestCase):
@@ -23,9 +23,17 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus = h5py.File("data", "w", driver="core", backing_store=False)
         self.full_tomo_path = f"entry1/{TOMO_ENTRY}"
         self.tomo_entry = self.nexus.create_group(self.full_tomo_path)
+
         self.n_images = 10
         self.data_array = np.random.random((self.n_images, 10, 10))
-        self.tomo_entry.create_dataset(DATA_PATH, data=self.data_array, dtype="float32")
+        self.tomo_entry.create_dataset(DATA_PATH, data=self.data_array, dtype="float64")
+
+        self.flat_before = self.data_array[:2]
+        self.dark_before = self.data_array[2:4]
+        self.sample = self.data_array[4:6]
+        self.dark_after = self.data_array[6:8]
+        self.flat_after = self.data_array[8:]
+
         self.image_key_array = np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1])
         self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=self.image_key_array)
         self.title = "my_data_title"
@@ -111,6 +119,14 @@ class NexusLoaderTest(unittest.TestCase):
                                                  self.image_key_array.shape)
         self.view.set_data_found.assert_any_call(1, True, f"{self.full_tomo_path}/{DATA_PATH}", self.data_array.shape)
 
+    def test_images_found_indicated_on_view(self):
+        self.nexus_loader.scan_nexus_file()
+        self.view.set_images_found(0, True, self.sample.shape)
+        self.view.set_images_found(1, True, self.flat_before.shape)
+        self.view.set_images_found(2, True, self.flat_after.shape)
+        self.view.set_images_found(3, True, self.dark_before.shape)
+        self.view.set_images_found(4, True, self.dark_after.shape)
+
     def test_open_nexus_file_in_read_mode(self):
         self.view.filePathLineEdit.text.return_value = expected_file_path = "some_file_path"
         del self.nexus[self.full_tomo_path]  # Prevent it from doing the full operation
@@ -125,18 +141,13 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertEqual(dataset.sample.pixel_size, self.expected_pixel_size)
 
     def test_dataset_arrays_match_image_key(self):
-        flat_before = self.tomo_entry[DATA_PATH][:2]
-        dark_before = self.tomo_entry[DATA_PATH][2:4]
-        sample = self.tomo_entry[DATA_PATH][4:6]
-        dark_after = self.tomo_entry[DATA_PATH][6:8]
-        flat_after = self.tomo_entry[DATA_PATH][8:]
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
-        np.testing.assert_array_equal(dataset.flat_before.data, flat_before)
-        np.testing.assert_array_equal(dataset.dark_before.data, dark_before)
-        np.testing.assert_array_equal(dataset.sample.data, sample)
-        np.testing.assert_array_equal(dataset.dark_after.data, dark_after)
-        np.testing.assert_array_equal(dataset.flat_after.data, flat_after)
+        np.testing.assert_array_almost_equal(dataset.flat_before.data, self.flat_before)
+        np.testing.assert_array_almost_equal(dataset.dark_before.data, self.dark_before)
+        np.testing.assert_array_almost_equal(dataset.sample.data, self.sample)
+        np.testing.assert_array_almost_equal(dataset.dark_after.data, self.dark_after)
+        np.testing.assert_array_almost_equal(dataset.flat_after.data, self.flat_after)
 
     def test_dataset_has_expected_pixel_depth(self):
         depths = ["float32", "float64"]
