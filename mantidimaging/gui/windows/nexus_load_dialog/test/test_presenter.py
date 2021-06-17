@@ -58,17 +58,16 @@ class NexusLoaderTest(unittest.TestCase):
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:] == prev_value, new_value,
                 self.tomo_entry[IMAGE_KEY_PATH][self.n_images // 2:])
 
-    def test_look_for_nx_tomo_entry(self):
+    def test_look_for_nx_tomo_entry_successful(self):
         self.assertIsNotNone(self.nexus_loader._look_for_nxtomo_entry())
 
-    def test_no_tomo_entry_returns_none(self):
+    def test_look_for_nx_tomo_entry_unsuccessful(self):
         del self.nexus[self.full_tomo_path]
-        self.assertIsNone(self.nexus_loader._look_for_nxtomo_entry())
-
-    def test_no_tomo_entry_calls_show_missing_data_error(self):
-        del self.nexus[self.full_tomo_path]
-        self.nexus_loader.scan_nexus_file()
-        self.view.show_missing_data_error.assert_called_once_with(_missing_data_message(TOMO_ENTRY))
+        missing_string = _missing_data_message(TOMO_ENTRY)
+        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+            self.assertIsNone(self.nexus_loader._look_for_nxtomo_entry())
+            self.assertIn(missing_string, log_mock.output[0])
+        self.view.show_missing_data_error.assert_called_once_with(missing_string)
         self.view.disable_ok_button.assert_called_once()
 
     def test_dataset_contains_only_sample_when_nexus_has_no_image_key(self):
