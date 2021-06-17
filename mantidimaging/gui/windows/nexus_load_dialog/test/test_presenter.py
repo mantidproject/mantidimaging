@@ -110,37 +110,37 @@ class NexusLoaderTest(unittest.TestCase):
         sample = self.tomo_entry[DATA_PATH][4:6]
         dark_after = self.tomo_entry[DATA_PATH][6:8]
         flat_after = self.tomo_entry[DATA_PATH][8:]
-        dataset = self.nexus_loader.load_nexus_data("filename")[0]
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
         np.testing.assert_array_equal(dataset.flat_before.data, flat_before)
         np.testing.assert_array_equal(dataset.dark_before.data, dark_before)
         np.testing.assert_array_equal(dataset.sample.data, sample)
         np.testing.assert_array_equal(dataset.dark_after.data, dark_after)
         np.testing.assert_array_equal(dataset.flat_after.data, flat_after)
 
+    def test_dataset_has_expected_pixel_depth(self):
+        depths = ["float32", "float64"]
+        self.nexus_loader.scan_nexus_file()
+        for depth in depths:
+            self.view.pixelDepthComboBox.currentText.return_value = depth
+            with self.subTest(depth=depth):
+                dataset = self.nexus_loader.get_dataset()[0]
+                self.assertEqual(dataset.sample.dtype, np.dtype(depth))
+                self.assertEqual(dataset.flat_before.dtype, np.dtype(depth))
+                self.assertEqual(dataset.dark_before.dtype, np.dtype(depth))
+                self.assertEqual(dataset.dark_after.dtype, np.dtype(depth))
+                self.assertEqual(dataset.flat_after.dtype, np.dtype(depth))
+
     def test_no_title_in_nexus_file(self):
         del self.tomo_entry["title"]
-        assert self.nexus_loader.load_nexus_data("filename")[1] == "NeXus Data"
+        self.nexus_loader.scan_nexus_file()
+        assert self.nexus_loader.get_dataset()[1] == "NeXus Data"
 
-    def test_title_in_nexus_file(self):
-        assert self.nexus_loader.load_nexus_data("filename")[1] == self.title
-
-    def test_image_filenames(self):
-        dataset = self.nexus_loader.load_nexus_data("filename")[0]
+    def test_image_names(self):
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
         assert dataset.sample.filenames[0] == "Projections " + self.title
         assert dataset.flat_before.filenames[0] == "Flat Before " + self.title
         assert dataset.dark_before.filenames[0] == "Dark Before " + self.title
         assert dataset.dark_after.filenames[0] == "Dark After " + self.title
         assert dataset.flat_after.filenames[0] == "Flat After " + self.title
-
-    def test_projections_only_converted_to_float64(self):
-        del self.tomo_entry[IMAGE_KEY_PATH]
-        dataset = self.nexus_loader.load_nexus_data("filename")[0]
-        assert dataset.sample.data.dtype == np.dtype("float64")
-
-    def test_full_dataset_converted_to_float64(self):
-        dataset = self.nexus_loader.load_nexus_data("filename")[0]
-        assert dataset.sample.data.dtype == np.dtype("float64")
-        assert dataset.flat_before.data.dtype == np.dtype("float64")
-        assert dataset.dark_before.data.dtype == np.dtype("float64")
-        assert dataset.dark_after.data.dtype == np.dtype("float64")
-        assert dataset.flat_after.data.dtype == np.dtype("float64")
