@@ -31,6 +31,18 @@ class NexusLoaderTest(unittest.TestCase):
 
         self.view = mock.Mock(autospec=NexusLoadDialog)
         self.view.filePathLineEdit.text.return_value = "filename"
+        self.view.pixelDepthComboBox.currentText.return_value = self.expected_pixel_depth = "float32"
+        self.view.pixelSizeSpinBox.value.return_value = pixel_size = 9.00
+        self.expected_pixel_size = int(pixel_size)
+
+        image_types = ["Projections", "Flat Before", "Flat After", "Dark Before", "Dark After"]
+        self.view.checkboxes = dict()
+
+        for image_type in image_types:
+            checkbox_mock = mock.Mock()
+            checkbox_mock.isChecked.return_value = True
+            self.view.checkboxes[image_type] = checkbox_mock
+
         self.nexus_loader = NexusLoadPresenter(self.view)
         self.nexus_loader.nexus_file = self.nexus
 
@@ -85,38 +97,12 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         self.nexus_load_mock.assert_called_once_with(expected_file_path, "r")
 
-    def test_complete_file_returns_dataset(self):
-        dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
+    def test_complete_file_returns_expected_dataset_and_title(self):
+        self.nexus_loader.scan_nexus_file()
+        dataset, title = self.nexus_loader.get_dataset()
         self.assertIsInstance(dataset, Dataset)
-        self.assertListEqual(issues, [])
-
-    def test_no_flat_before_images_in_log(self):
-        self.replace_values_in_image_key(True, 1, 2)
-        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset.flat_before)
-            self.assertIn(issues[0], log_mock.output[0])
-
-    def test_no_flat_after_images_in_log(self):
-        self.replace_values_in_image_key(False, 1, 2)
-        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset.flat_after)
-            self.assertIn(issues[0], log_mock.output[0])
-
-    def test_no_dark_before_images_in_log(self):
-        self.replace_values_in_image_key(True, 2, 1)
-        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset.dark_before)
-            self.assertIn(issues[0], log_mock.output[0])
-
-    def test_no_dark_after_images_in_log(self):
-        self.replace_values_in_image_key(False, 2, 1)
-        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset.dark_after)
-            self.assertIn(issues[0], log_mock.output[0])
+        self.assertEqual(title, self.title)
+        self.assertEqual(dataset.sample.pixel_size, self.expected_pixel_size)
 
     def test_dataset_arrays_match_image_key(self):
         flat_before = self.tomo_entry[DATA_PATH][:2]
