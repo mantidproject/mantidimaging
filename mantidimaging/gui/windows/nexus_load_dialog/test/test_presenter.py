@@ -35,8 +35,8 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.nexus_file = self.nexus
 
         self.nexus_load_patcher = mock.patch("mantidimaging.gui.windows.nexus_load_dialog.presenter.h5py.File")
-        nexus_load_mock = self.nexus_load_patcher.start()
-        nexus_load_mock.return_value = self.nexus
+        self.nexus_load_mock = self.nexus_load_patcher.start()
+        self.nexus_load_mock.return_value = self.nexus
 
     def tearDown(self) -> None:
         self.nexus.close()
@@ -79,22 +79,11 @@ class NexusLoaderTest(unittest.TestCase):
                 self.view.disable_ok_button.assert_called_once()
                 self.tearDown()
 
-    # def test_dataset_contains_only_sample_when_nexus_has_no_image_key(self):
-    #     del self.tomo_entry[IMAGE_KEY_PATH]
-    #     with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-    #         projections_only, _, issues = self.nexus_loader.load_nexus_data("filename")
-    #         self.assertIsNone(projections_only.flat_before)
-    #         self.assertIsNone(projections_only.flat_after)
-    #         self.assertIsNone(projections_only.dark_before)
-    #         self.assertIsNone(projections_only.dark_after)
-    #         self.assertIn(issues[0], log_mock.output[0])
-
-    # def test_no_data_field_returns_none(self):
-    #     self.tomo_entry[IMAGE_KEY_PATH][:] = np.ones(self.n_images)
-    #     with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-    #         dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-    #         self.assertIsNone(dataset)
-    #         self.assertIn(issues[0], log_mock.output[0])
+    def test_open_nexus_file_in_read_mode(self):
+        self.view.filePathLineEdit.text.return_value = expected_file_path = "some_file_path"
+        del self.nexus[self.full_tomo_path]  # Prevent it from doing the full operation
+        self.nexus_loader.scan_nexus_file()
+        self.nexus_load_mock.assert_called_once_with(expected_file_path, "r")
 
     def test_complete_file_returns_dataset(self):
         dataset, _, issues = self.nexus_loader.load_nexus_data("filename")

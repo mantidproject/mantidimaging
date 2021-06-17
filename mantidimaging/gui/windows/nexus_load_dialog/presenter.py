@@ -129,7 +129,6 @@ class NexusLoadPresenter:
                 return self.nexus_file[key][TOMO_ENTRY]
 
         self._missing_data_error(TOMO_ENTRY)
-        logger.error(TOMO_ENTRY)
         self.view.disable_ok_button()
         return None
 
@@ -151,6 +150,7 @@ class NexusLoadPresenter:
         self.sample_array = self._get_images(ImageKeys.Projections)
         if self.sample_array.size == 0:
             self.view.set_images_found(0, False, self.sample_array.shape)
+            # missing data error
             self.view.disable_ok_button()
             return
         else:
