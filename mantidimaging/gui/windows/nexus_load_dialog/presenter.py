@@ -36,13 +36,13 @@ DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 
 
-def _missing_data_message(field_name: str) -> str:
+def _missing_data_message(data_name: str) -> str:
     """
-    Creates a message for logging when a certain field is missing in the NeXus file.
-    :param field_name: The name of the missing field.
-    :return: A string telling the user that the field is missing.
+    Creates a message for logging when certain data is missing in the NeXus file.
+    :param data_name: The name of the missing data.
+    :return: A string telling the user that the data is missing.
     """
-    return f"The NeXus file does not contain the required {field_name} field."
+    return f"The NeXus file does not contain the required {data_name} data."
 
 
 class NexusLoadPresenter:
@@ -148,13 +148,11 @@ class NexusLoadPresenter:
         Looks for the projection and dark/flat before/after images and update the information on the view.
         """
         self.sample_array = self._get_images(ImageKeys.Projections)
+        self.view.set_images_found(0, self.sample_array.size != 0, self.sample_array.shape)
         if self.sample_array.size == 0:
-            self.view.set_images_found(0, False, self.sample_array.shape)
-            # missing data error
+            self._missing_data_error("projection images")
             self.view.disable_ok_button()
             return
-        else:
-            self.view.set_images_found(0, True, self.sample_array.shape)
 
         self.flat_before_array = self._get_images(ImageKeys.FlatField, True)
         self.view.set_images_found(1, self.flat_before_array.size != 0, self.flat_before_array.shape)
