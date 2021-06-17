@@ -24,8 +24,10 @@ class NexusLoaderTest(unittest.TestCase):
         self.full_tomo_path = f"entry1/{TOMO_ENTRY}"
         self.tomo_entry = self.nexus.create_group(self.full_tomo_path)
         self.n_images = 10
-        self.tomo_entry.create_dataset(DATA_PATH, data=np.random.random((self.n_images, 10, 10)), dtype="float32")
-        self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1]))
+        self.data_array = np.random.random((self.n_images, 10, 10))
+        self.tomo_entry.create_dataset(DATA_PATH, data=self.data_array, dtype="float32")
+        self.image_key_array = np.array([1, 1, 2, 2, 0, 0, 2, 2, 1, 1])
+        self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=self.image_key_array)
         self.title = "my_data_title"
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
 
@@ -80,16 +82,34 @@ class NexusLoaderTest(unittest.TestCase):
         error_names = [TOMO_ENTRY, DATA_PATH, IMAGE_KEY_PATH]
         self.tearDown()  # Close the existing NeXus file
         for i in range(len(required_data_paths)):
+            self.setUp()
+            del self.nexus[required_data_paths[i]]
             with self.subTest(i=i):
-                self.setUp()
-                del self.nexus[required_data_paths[i]]
                 missing_string = _missing_data_message(error_names[i])
                 with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
                     self.nexus_loader.scan_nexus_file()
                     self.assertIn(missing_string, log_mock.output[0])
                 self.view.show_missing_data_error.assert_called_once_with(missing_string)
                 self.view.disable_ok_button.assert_called_once()
-                self.tearDown()
+            self.tearDown()
+
+    def test_no_data_or_image_key_not_found_indicated_on_view(self):
+        paths = [IMAGE_KEY_PATH, DATA_PATH]
+        positions = [0, 1]
+        self.tearDown()
+        for i in range(len(paths)):
+            self.setUp()
+            del self.tomo_entry[paths[i]]
+            with self.subTest(i=i):
+                self.nexus_loader.scan_nexus_file()
+                self.view.set_data_found.assert_called_with(positions[i], False, "", ())
+            self.tearDown()
+
+    def test_data_and_image_key_found_indicated_on_view(self):
+        self.nexus_loader.scan_nexus_file()
+        self.view.set_data_found.assert_any_call(0, True, f"{self.full_tomo_path}/{IMAGE_KEY_PATH}",
+                                                 self.image_key_array.shape)
+        self.view.set_data_found.assert_any_call(1, True, f"{self.full_tomo_path}/{DATA_PATH}", self.data_array.shape)
 
     def test_open_nexus_file_in_read_mode(self):
         self.view.filePathLineEdit.text.return_value = expected_file_path = "some_file_path"
