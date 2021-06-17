@@ -194,11 +194,29 @@ class NexusLoaderTest(unittest.TestCase):
         self.view.disable_ok_button.assert_called_once()
         self.view.set_images_found.assert_called_once_with(0, False, (0, 10, 10))
 
-    def test_corresponding_dataset_array_is_none_if_use_box_not_checked(self):
-        pass
+    def test_use_flat_before_data_is_false(self):
+        self.view.checkboxes["Flat Before"].isChecked.return_value = False
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.flat_before)
 
-    def test_sample_images_missing(self):
-        pass
+    def test_use_dark_before_data_is_false(self):
+        self.view.checkboxes["Dark Before"].isChecked.return_value = False
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.dark_before)
+
+    def test_use_flat_after_data_is_false(self):
+        self.view.checkboxes["Flat After"].isChecked.return_value = False
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.flat_after)
+
+    def test_use_dark_after_data_is_false(self):
+        self.view.checkboxes["Dark After"].isChecked.return_value = False
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.dark_after)
 
     def test_dataset_has_expected_pixel_depth(self):
         depths = ["float32", "float64"]
