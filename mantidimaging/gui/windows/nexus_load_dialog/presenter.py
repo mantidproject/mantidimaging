@@ -82,13 +82,13 @@ class NexusLoadPresenter:
 
             self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
             if self.data is None:
-                self.view.disable_ok_button()
                 return
 
             self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
-            if self.image_key_dataset is not None:
-                self._get_data_from_image_key()
+            if self.image_key_dataset is None:
+                return
 
+            self._get_data_from_image_key()
             self.title = self._find_data_title()
 
     def _missing_data_error(self, field: str):
@@ -112,6 +112,7 @@ class NexusLoadPresenter:
         if dataset is None:
             self._missing_data_error(field)
             self.view.set_data_found(position, False, "", ())
+            self.view.disable_ok_button()
         else:
             self.view.set_data_found(position, True, self.tomo_path + "/" + field, dataset.shape)
         return dataset
@@ -210,15 +211,21 @@ class NexusLoadPresenter:
                        dark_after=self._create_images_if_required(self.dark_after_array, "Dark After")), self.title
 
     def _create_images(self, data_array: np.ndarray, name: str) -> Images:
+        """
+        Use a data array to create an Images object.
+        :param data_array: The images array obtained from the NeXus file.
+        :param name: The name of the image dataset.
+        :return: An Images object.
+        """
         return Images(data_array.astype(self.view.pixelDepthComboBox.currentText()), [f"{name} {self.title}"])
 
     def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[Images]:
         """
-        Create the Images objects using the data found in the NeXus file.
+        Create the Images objects if the corresponding data was found in the NeXus file, and the user checked the
+        "Use?" checkbox.
         :param data_array: The images data array.
         :param name: The name of the images.
-        :return: An images object if the data could be found in the NeXus file and the "Use" checkbox is ticked in the
-                 view, None otherwise.
+        :return: An Images object or None.
         """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None

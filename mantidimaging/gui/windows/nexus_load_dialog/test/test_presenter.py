@@ -62,30 +62,39 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertIsNotNone(self.nexus_loader._look_for_nxtomo_entry())
 
     def test_look_for_nx_tomo_entry_unsuccessful(self):
-        del self.nexus[self.full_tomo_path]
-        missing_string = _missing_data_message(TOMO_ENTRY)
-        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-            self.assertIsNone(self.nexus_loader._look_for_nxtomo_entry())
-            self.assertIn(missing_string, log_mock.output[0])
-        self.view.show_missing_data_error.assert_called_once_with(missing_string)
-        self.view.disable_ok_button.assert_called_once()
+        required_data_paths = [
+            self.full_tomo_path, self.full_tomo_path + "/" + DATA_PATH, self.full_tomo_path + "/" + IMAGE_KEY_PATH
+        ]
+        error_names = [TOMO_ENTRY, DATA_PATH, IMAGE_KEY_PATH]
+        self.tearDown()  # Close the existing NeXus file
+        for i in range(len(required_data_paths)):
+            with self.subTest(i=i):
+                self.setUp()
+                del self.nexus[required_data_paths[i]]
+                missing_string = _missing_data_message(error_names[i])
+                with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+                    self.nexus_loader.scan_nexus_file()
+                    self.assertIn(missing_string, log_mock.output[0])
+                self.view.show_missing_data_error.assert_called_once_with(missing_string)
+                self.view.disable_ok_button.assert_called_once()
+                self.tearDown()
 
-    def test_dataset_contains_only_sample_when_nexus_has_no_image_key(self):
-        del self.tomo_entry[IMAGE_KEY_PATH]
-        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
-            projections_only, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(projections_only.flat_before)
-            self.assertIsNone(projections_only.flat_after)
-            self.assertIsNone(projections_only.dark_before)
-            self.assertIsNone(projections_only.dark_after)
-            self.assertIn(issues[0], log_mock.output[0])
+    # def test_dataset_contains_only_sample_when_nexus_has_no_image_key(self):
+    #     del self.tomo_entry[IMAGE_KEY_PATH]
+    #     with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+    #         projections_only, _, issues = self.nexus_loader.load_nexus_data("filename")
+    #         self.assertIsNone(projections_only.flat_before)
+    #         self.assertIsNone(projections_only.flat_after)
+    #         self.assertIsNone(projections_only.dark_before)
+    #         self.assertIsNone(projections_only.dark_after)
+    #         self.assertIn(issues[0], log_mock.output[0])
 
-    def test_no_projections_returns_none(self):
-        self.tomo_entry[IMAGE_KEY_PATH][:] = np.ones(self.n_images)
-        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
-            dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
-            self.assertIsNone(dataset)
-            self.assertIn(issues[0], log_mock.output[0])
+    # def test_no_data_field_returns_none(self):
+    #     self.tomo_entry[IMAGE_KEY_PATH][:] = np.ones(self.n_images)
+    #     with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+    #         dataset, _, issues = self.nexus_loader.load_nexus_data("filename")
+    #         self.assertIsNone(dataset)
+    #         self.assertIn(issues[0], log_mock.output[0])
 
     def test_complete_file_returns_dataset(self):
         dataset, _, issues = self.nexus_loader.load_nexus_data("filename")

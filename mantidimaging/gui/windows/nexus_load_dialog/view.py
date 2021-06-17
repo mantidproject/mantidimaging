@@ -80,7 +80,7 @@ class NexusLoadDialog(QDialog):
 
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         """
-        Indicate on the QTreeWeidget if the image key and data fields have been found or not.
+        Indicate on the QTreeWidget if the image key and data fields have been found or not.
         :param position: The row position for the data.
         :param found: Whether or not the data has been found.
         :param path: The data path in the NeXus file.
@@ -121,7 +121,7 @@ class NexusLoadDialog(QDialog):
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
-    def show_exception(self, msg, traceback):
+    def show_exception(self, msg: str, traceback):
         """
         Show an error about an exception.
         :param msg: The error message.
