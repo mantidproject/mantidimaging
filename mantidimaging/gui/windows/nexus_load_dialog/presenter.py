@@ -123,6 +123,7 @@ class NexusLoadPresenter:
         found.
         :return: The first tomo_entry group if one could be found, None otherwise.
         """
+        assert isinstance(self.nexus_file, h5py.File)
         for key in self.nexus_file.keys():
             if TOMO_ENTRY in self.nexus_file[key].keys():
                 self.tomo_path = f"{key}/{TOMO_ENTRY}"
@@ -138,6 +139,7 @@ class NexusLoadPresenter:
         :param entry_path: The path in which the data is found.
         :return: The Nexus Group/Dataset if it exists, None otherwise.
         """
+        assert isinstance(self.tomo_entry, h5py.Group)
         try:
             return self.tomo_entry[entry_path]
         except KeyError:
@@ -174,6 +176,8 @@ class NexusLoadPresenter:
                        images. Ignored when getting projection images.
         :return: The set of images that correspond with a given image key.
         """
+        assert isinstance(self.image_key_dataset, h5py.Dataset)
+        assert isinstance(self.data, h5py.Dataset)
         if image_key_number is ImageKeys.Projections:
             indices = self.image_key_dataset[...] == image_key_number.value
         else:
@@ -190,6 +194,7 @@ class NexusLoadPresenter:
         Find the title field in the tomo_entry.
         :return: The title if it was found, "NeXus Data" otherwise.
         """
+        assert isinstance(self.tomo_entry, h5py.Group)
         try:
             return self.tomo_entry["title"][0].decode("UTF-8")
         except KeyError:
