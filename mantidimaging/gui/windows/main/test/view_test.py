@@ -318,18 +318,9 @@ class MainWindowViewTest(unittest.TestCase):
         self.presenter.load_image_stack.assert_called_once_with(selected_file)
         self.view._get_file_name.assert_called_once_with("Image", "Image File (*.tif *.tiff)")
 
-    def test_get_file_name_called_with_nexus_extension(self):
+    def test_show_nexus_load_dialog_calls_show(self):
         self.view._get_file_name = mock.MagicMock()
-        self.view.show_load_nexus_dialog()
-        self.view._get_file_name.assert_called_once_with("NeXus", "NeXus (*.nxs)")
-
-    def test_no_nexus_file_chosen(self):
-        self.view._get_file_name = mock.MagicMock(return_value="")
-        self.view.show_load_nexus_dialog()
-        self.presenter.load_nexus_file.assert_not_called()
-
-    def test_nexus_file_chosen_calls_load_nexus_file(self):
-        nexus_file_path = "file.nxs"
-        self.view._get_file_name = mock.MagicMock(return_value=nexus_file_path)
-        self.view.show_load_nexus_dialog()
-        self.presenter.load_nexus_file.assert_called_once_with(nexus_file_path)
+        with mock.patch("mantidimaging.gui.windows.main.view.NexusLoadDialog") as nexus_load_dialog:
+            self.view.show_load_nexus_dialog()
+        nexus_load_dialog.assert_called_once()
+        nexus_load_dialog.return_value.show.assert_called_once()
