@@ -115,9 +115,9 @@ class NexusLoadDialog(QDialog):
         # Set shape information and add a "Use?" checkbox
         child.setText(SHAPE_COLUMN, str(shape))
         checkbox = QCheckBox()
+        checkbox.setChecked(True)
         if not position:
             checkbox.setEnabled(False)
-            checkbox.setChecked(True)  # Projections need to always be used
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
