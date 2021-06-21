@@ -158,21 +158,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.wizard_action_show_reconstruction()
         self.view.show_recon_window.assert_called_once()
 
-    def test_failed_nexus_load_calls_show_error_dialog(self):
-        with mock.patch("mantidimaging.gui.windows.main.presenter.NexusLoader") as nexus_loader_mock:
-            issue_messages = ["issue1", "issue2"]
-            nexus_loader_mock.return_value.load_nexus_data.return_value = (None, "data title", issue_messages)
-            self.presenter.load_nexus_file("filename")
-            self.view.show_error_dialog.assert_called_once_with("\n".join(issue_messages))
-
     def test_nexus_load_success_calls_show_information(self):
-        with mock.patch("mantidimaging.gui.windows.main.presenter.NexusLoader") as nexus_loader_mock:
-            issue_messages = ["issue1", "issue2"]
-            nexus_loader_mock.return_value.load_nexus_data.return_value = (self.dataset, "data title", issue_messages)
-            self.presenter.create_new_stack = mock.Mock()
-            self.presenter.load_nexus_file("filename")
-            self.view.show_info_dialog.assert_called_once_with("\n".join(issue_messages))
-            self.presenter.create_new_stack.assert_called_once_with(self.dataset, "data title")
+        self.view.nexus_load_dialog = mock.Mock()
+        self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, "data title"
+        self.presenter.create_new_stack = mock.Mock()
+        self.presenter.load_nexus_file()
+        self.presenter.create_new_stack.assert_called_once_with(self.dataset, "data title")
 
 
 if __name__ == '__main__':
