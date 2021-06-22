@@ -3,6 +3,7 @@
 
 from contextlib import contextmanager
 from logging import getLogger
+from threading import Lock
 from typing import Union, List, Optional, Tuple, Generator
 
 import astra
@@ -16,6 +17,7 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngl
 from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
+astra_mutex = Lock()
 
 
 # Full credit for following code to Daniil Kazantzev
@@ -109,9 +111,12 @@ class AstraRecon(BaseRecon):
         proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
         cfg = astra.astra_dict(recon_params.algorithm)
         cfg['FilterType'] = recon_params.filter_name
-        with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
-            astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
-            return astra.data2d.get(rec_id)
+        if astra_mutex.locked():
+            LOG.warning("Astra recon already in progress")
+        with astra_mutex:
+            with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
+                astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
+                return astra.data2d.get(rec_id)
 
     @staticmethod
     def full(images: Images,
