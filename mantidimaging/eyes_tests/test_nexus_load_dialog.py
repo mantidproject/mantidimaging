@@ -15,3 +15,12 @@ class LoadDialogTest(BaseEyesTest):
 
         self.imaging.nexus_load_dialog.presenter.scan_nexus_file()
         self.check_target(widget=self.imaging.nexus_load_dialog)
+
+    def test_load_nexus_file_creates_stack(self):
+        self.imaging.actionLoadNeXusFile.trigger()
+        self.imaging.nexus_load_dialog.filePathLineEdit.setText(NEXUS_SAMPLE)
+
+        self.imaging.nexus_load_dialog.presenter.scan_nexus_file()
+        self.imaging.presenter.load_nexus_file()
+
+        self.check_target(widget=self.imaging)
