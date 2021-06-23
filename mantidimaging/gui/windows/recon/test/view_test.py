@@ -123,7 +123,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.preview_image_on_button_press(event_mock)
         self.presenter.set_preview_slice_idx.assert_not_called()
 
-    def test_update_projection(self):
+    @mock.patch("mantidimaging.gui.windows.recon.view.QSignalBlocker")
+    def test_update_projection(self, _):
         image_data = mock.Mock()
         preview_slice_idx = 13
         tilt_angle = Degrees(30)
@@ -211,7 +212,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def test_pixel_size_property(self):
         assert self.view.pixel_size == self.pixelSize.value.return_value
 
-    def test_pixel_size_setter(self):
+    @mock.patch("mantidimaging.gui.windows.recon.view.QSignalBlocker")
+    def test_pixel_size_setter(self, _):
         value = 123
         self.view.pixel_size = value
         self.pixelSize.setValue.assert_called_once_with(value)

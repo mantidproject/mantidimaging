@@ -27,6 +27,7 @@ Fixes
 - #989 : Remove legend checkbox
 - #1001 : Exception when selecting Log in Load Dataset dialog
 - #991 : Handle longer running previews better
+- #1021 : Prevent simultaneous Astra calls
 
 Developer Changes
 -----------------
