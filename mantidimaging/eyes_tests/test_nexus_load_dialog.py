@@ -7,12 +7,12 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest, NEXUS_SAMPLE
 
 class LoadDialogTest(BaseEyesTest):
     def test_load_dialog_opens(self):
-        self.imaging.actionLoadNeXusFiles.trigger()
+        self.imaging.actionLoadNeXusFile.trigger()
 
         self.check_target(widget=self.imaging.nexus_load_dialog)
 
     def test_load_dialog_selected_dataset(self):
-        self.imaging.actionLoadNeXusFiles.trigger()
+        self.imaging.actionLoadNeXusFile.trigger()
         self.imaging.nexus_load_dialog.view.filePathLineEdit.text = mock.MagicMock(return_value=NEXUS_SAMPLE)
 
         self.imaging.nexus_load_dialog.scan_nexus_file()

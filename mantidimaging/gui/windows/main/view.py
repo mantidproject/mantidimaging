@@ -55,7 +55,7 @@ class MainWindowView(BaseMainWindowView):
     actionLoad180deg: QAction
     actionLoadDataset: QAction
     actionLoadImages: QAction
-    actionLoadNeXusFiles: QAction
+    actionLoadNeXusFile: QAction
     actionSave: QAction
     actionExit: QAction
 
