@@ -13,7 +13,7 @@ class LoadDialogTest(BaseEyesTest):
 
     def test_load_dialog_selected_dataset(self):
         self.imaging.actionLoadNeXusFile.trigger()
-        self.imaging.nexus_load_dialog.view.filePathLineEdit.text = mock.MagicMock(return_value=NEXUS_SAMPLE)
+        self.imaging.nexus_load_dialog.filePathLineEdit.text = mock.MagicMock(return_value=NEXUS_SAMPLE)
 
         self.imaging.nexus_load_dialog.scan_nexus_file()
         self.imaging.presenter.load_nexus_file()
