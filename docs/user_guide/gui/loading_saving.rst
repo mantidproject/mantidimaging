@@ -58,7 +58,7 @@ shown below.
     :alt: NeXus Load Dialog
 
 From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a
-`NXtomo` entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes are
+:code:`NXtomo` entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes are
 also displayed so that a user can check that the image key and data field have the same number of elements. The "Use?"
 checkbox can be used to select which images you wish to load.
 
