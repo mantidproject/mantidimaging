@@ -74,6 +74,10 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.notify.assert_called_once_with(PresNotification.LOAD)
 
+    def test_execute_nexus_load(self):
+        self.view.execute_nexus_load()
+        self.presenter.notify.assert_called_once_with(PresNotification.NEXUS_LOAD)
+
     @mock.patch("mantidimaging.gui.windows.main.view.MWLoadDialog")
     def test_show_load_dialogue(self, mock_load: mock.Mock):
         self.view.show_load_dialogue()
