@@ -56,6 +56,9 @@ will attempt to find projections, dark images, and flat images by using the info
 :code:`image_key` field. If an :code:`image_key` is not found, then the program will assume all the images in the file
 are projections.
 
+.. image:: ../../_static/nexus_loading_window.png
+    :alt: Save dialog
+
 The name given to the file will be taken from the :code:`title` field in the NeXus file if one is found, otherwise the
 images are given the name "NeXus Data."
 
