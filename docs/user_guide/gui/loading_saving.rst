@@ -51,16 +51,19 @@ prior to saving.
 NeXus Files
 -----------
 
-NeXus Files can be loaded by selecting the "Load NeXus file" on the File menu. Once a file has been chosen, the program
-will attempt to find projections, dark images, and flat images by using the information contained in the NeXus
-:code:`image_key` field. If an :code:`image_key` is not found, then the program will assume all the images in the file
-are projections.
+NeXus Files can be loaded by selecting the "Load NeXus file" on the File menu. This brings up the NeXus Load dialog
+shown below.
 
 .. image:: ../../_static/nexus_loading_window.png
-    :alt: Save dialog
+    :alt: NeXus Load Dialog
 
-The name given to the file will be taken from the :code:`title` field in the NeXus file if one is found, otherwise the
-images are given the name "NeXus Data."
+From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a
+`NXtomo` entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes are
+also displayed so that a user can check that the image key and data field have the same number of elements. The "Use?"
+checkbox can be used to select which images you wish to load.
 
-If the loading is successful, the new images should appear in the main view of Mantid Imaging. Information related to
-issues encountered while loading the file will be displayed as log messages as well as appearing in a popup window.
+If the required information could be found in the file, then the OK button will be enabled. Otherwise the button will be
+disabled.
+
+From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
+:code:`title` field in the NeXus file if one is found, otherwise the images are given the name "NeXus Data."
