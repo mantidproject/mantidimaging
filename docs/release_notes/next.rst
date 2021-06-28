@@ -14,6 +14,7 @@ New features
 - #964 : Open NeXus files
 - #1010 : Write slope and offset into int tiffs
 - #987 : Allow Flat-fielding without dark subtraction
+- #1011 : Pixel size should allow setting decimal places
 
 Fixes
 -----
