@@ -444,7 +444,11 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QDoubleSpinBox" name="pixelSize"/>
+               <widget class="QDoubleSpinBox" name="pixelSize">
+                <property name="maximum">
+                 <double>99999.000000000000000</double>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
