@@ -59,7 +59,7 @@ class BaseEyesTest(unittest.TestCase):
         cls.eyes_manager.set_batch(APPLITOOLS_BATCH_ID)
 
     def setUp(self):
-        self.eyes_manager.set_match_level(MatchLevel.LAYOUT)
+        self.eyes_manager.set_match_level(MatchLevel.CONTENT)
 
         self.imaging = None
         self.eyes_manager.image_directory = APPLITOOLS_IMAGE_DIR
