@@ -12,7 +12,6 @@ from PyQt5.QtWidgets import QTabBar, QApplication
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
-from mantidimaging.core.io.loader.nexus_loader import NexusLoader
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -31,6 +30,7 @@ class Notification(Enum):
     SAVE = auto()
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
+    NEXUS_LOAD = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -53,6 +53,8 @@ class MainWindowPresenter(BasePresenter):
                 self._do_remove_stack(**baggage)
             elif signal == Notification.RENAME_STACK:
                 self._do_rename(**baggage)
+            elif signal == Notification.NEXUS_LOAD:
+                self.load_nexus_file()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -78,6 +80,10 @@ class MainWindowPresenter(BasePresenter):
             raise ValueError("No sample path provided")
 
         start_async_task_view(self.view, self.model.do_load_stack, self._on_dataset_load_done, {'parameters': par})
+
+    def load_nexus_file(self):
+        dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
+        self.create_new_stack(dataset, title)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_stack, self._on_stack_load_done, {'file_path': file_path})
@@ -228,16 +234,3 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
-
-    def load_nexus_file(self, selected_file: str):
-        """
-        Attempt to load a Dataset from a NeXus file.
-        :param selected_file: The NeXus file path.
-        """
-        nexus_data, title, issues = NexusLoader().load_nexus_data(selected_file)
-        if nexus_data is not None:
-            self.create_new_stack(nexus_data, title)
-            if issues:
-                self.show_information("\n".join(issues))
-        else:
-            self.view.show_error_dialog("\n".join(issues))

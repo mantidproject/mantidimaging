@@ -22,6 +22,7 @@ from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
@@ -54,7 +55,7 @@ class MainWindowView(BaseMainWindowView):
     actionLoad180deg: QAction
     actionLoadDataset: QAction
     actionLoadImages: QAction
-    actionLoadNeXusFiles: QAction
+    actionLoadNeXusFile: QAction
     actionSave: QAction
     actionExit: QAction
 
@@ -158,12 +159,8 @@ class MainWindowView(BaseMainWindowView):
         self.load_dialogue.show()
 
     def show_load_nexus_dialog(self):
-        selected_file = self._get_file_name("NeXus", "NeXus (*.nxs)")
-
-        if selected_file == "":
-            return
-
-        self.presenter.load_nexus_file(selected_file)
+        self.nexus_load_dialog = NexusLoadDialog(self)
+        self.nexus_load_dialog.show()
 
     def show_wizard(self):
         if self.wizard is None:
@@ -258,6 +255,9 @@ class MainWindowView(BaseMainWindowView):
 
     def execute_load(self):
         self.presenter.notify(PresNotification.LOAD)
+
+    def execute_nexus_load(self):
+        self.presenter.notify(PresNotification.NEXUS_LOAD)
 
     def show_save_dialogue(self):
         self.save_dialogue = MWSaveDialog(self, self.stack_list)
