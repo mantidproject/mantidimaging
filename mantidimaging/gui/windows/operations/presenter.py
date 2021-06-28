@@ -216,8 +216,8 @@ class FiltersWindowPresenter(BasePresenter):
                         [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
                     self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
                 self.view.main_window.update_stack_with_images(stack.presenter.images)
-                if np.any(stack.presenter.images.data < 0):
-                    negative = True
+            if np.any(stack.presenter.images.data < 0):
+                negative = True
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
