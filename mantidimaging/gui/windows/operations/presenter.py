@@ -235,7 +235,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
         if self.view.filterSelector.currentText() == FLAT_FIELDING and negative:
-            self.view.show_error_dialog("Negative in output.")
+            self.view.show_error_dialog("Negative values in output.")
 
         self.view.filter_applied.emit()
         self.filter_is_running = False
