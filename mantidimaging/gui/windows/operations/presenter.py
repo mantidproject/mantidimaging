@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 import traceback
 from enum import Enum, auto
 from functools import partial
@@ -196,6 +195,7 @@ class FiltersWindowPresenter(BasePresenter):
     def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
         do_180deg = True
         attempt_repair = task.error is not None
+        negative = False
         for stack in updated_stacks:
             # If the operation encountered an error during processing,
             # try to restore the original data else continue processing as usual
@@ -216,6 +216,8 @@ class FiltersWindowPresenter(BasePresenter):
                         [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
                     self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
                 self.view.main_window.update_stack_with_images(stack.presenter.images)
+                if np.any(stack.presenter.images.data < 0):
+                    negative = True
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
@@ -231,6 +233,9 @@ class FiltersWindowPresenter(BasePresenter):
             # Feedback to user
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
+
+        if self.view.filterSelector.currentText() == FLAT_FIELDING and negative:
+            self.view.show_error_dialog("Negative in output.")
 
         self.view.filter_applied.emit()
         self.filter_is_running = False
