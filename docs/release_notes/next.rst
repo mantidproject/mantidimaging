@@ -16,6 +16,7 @@ New features
 - #987 : Allow Flat-fielding without dark subtraction
 - #1011 : Pixel size should allow setting decimal places
 - #1013 : NeXus Loading Window
+- #904 : Default to using image center for ring removal COR
 
 Fixes
 -----

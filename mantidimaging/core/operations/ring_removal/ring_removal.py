@@ -3,6 +3,8 @@
 
 from functools import partial
 
+from PyQt5.QtWidgets import QComboBox
+
 from mantidimaging import helper as h
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
@@ -24,6 +26,7 @@ class RingRemovalFilter(BaseFilter):
     @staticmethod
     def filter_func(images: Images,
                     run_ring_removal=False,
+                    center_mode="manual",
                     center_x=None,
                     center_y=None,
                     thresh=300.0,
@@ -39,6 +42,7 @@ class RingRemovalFilter(BaseFilter):
 
         :param images: Sample data which is to be processed. Expected in radiograms
         :param run_ring_removal: Uses Wavelet-Fourier based ring removal
+        :param center_mode: Whether to use the center of the image or a user-defined value
         :param center_x: (float, optional) abscissa location of center of rotation
         :param center_y: (float, optional) ordinate location of center of rotation
         :param thresh: (float, optional)
@@ -56,6 +60,9 @@ class RingRemovalFilter(BaseFilter):
         progress = Progress.ensure_instance(progress, task_name='Ring Removal')
 
         tp = safe_import('tomopy.misc.corr')
+
+        if center_mode != "manual":
+            center_x = center_y = None
 
         if run_ring_removal:
             h.check_data_stack(images)
@@ -83,6 +90,13 @@ class RingRemovalFilter(BaseFilter):
 
         range1 = (0, 1000000)
         range2 = (-1000000, 1000000)
+
+        _, center_mode = add_property_to_form('Center of rotation',
+                                              Type.CHOICE,
+                                              valid_values=["image center", "manual"],
+                                              form=form,
+                                              on_change=on_change,
+                                              tooltip="Use image center or enter manually")
 
         _, x_field = add_property_to_form('Center of rotation X position',
                                           Type.INT,
@@ -133,7 +147,20 @@ class RingRemovalFilter(BaseFilter):
                                          on_change=on_change,
                                          tooltip="Maximum width of the rings to be filtered in pixels")
 
+        def enable_center():
+            if center_mode.currentText() == "manual":
+                x_field.setEnabled(True)
+                y_field.setEnabled(True)
+            else:
+                x_field.setEnabled(False)
+                y_field.setEnabled(False)
+
+        assert (isinstance(center_mode, QComboBox))
+        center_mode.currentIndexChanged.connect(enable_center)
+        enable_center()
+
         return {
+            "center_mode": center_mode,
             "x_field": x_field,
             "y_field": y_field,
             "thresh": thresh,
@@ -144,7 +171,8 @@ class RingRemovalFilter(BaseFilter):
         }
 
     @staticmethod
-    def execute_wrapper(x_field=None,
+    def execute_wrapper(center_mode=None,
+                        x_field=None,
                         y_field=None,
                         thresh=None,
                         thresh_max=None,
@@ -153,6 +181,7 @@ class RingRemovalFilter(BaseFilter):
                         rwidth=None):
         return partial(RingRemovalFilter.filter_func,
                        run_ring_removal=True,
+                       center_mode=center_mode.currentText(),
                        center_x=x_field.value(),
                        center_y=y_field.value(),
                        thresh=thresh.value(),
