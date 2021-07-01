@@ -4,6 +4,7 @@ channels:
   - dtasev
   - astra-toolbox/label/dev
   - conda-forge
+  - ccpi
   - defaults
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
