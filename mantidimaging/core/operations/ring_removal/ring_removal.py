@@ -42,6 +42,7 @@ class RingRemovalFilter(BaseFilter):
 
         :param images: Sample data which is to be processed. Expected in radiograms
         :param run_ring_removal: Uses Wavelet-Fourier based ring removal
+        :param center_mode: Whether to use the center of the image or a user-defined value
         :param center_x: (float, optional) abscissa location of center of rotation
         :param center_y: (float, optional) ordinate location of center of rotation
         :param thresh: (float, optional)
