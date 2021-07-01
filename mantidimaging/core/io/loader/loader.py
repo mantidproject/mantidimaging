@@ -4,10 +4,11 @@ import os
 from dataclasses import dataclass
 from logging import getLogger, Logger
 from pathlib import Path
-from typing import Tuple, List, Optional, Union
+from typing import Tuple, List, Optional, Union, TYPE_CHECKING
 
 import numpy as np
-import numpy.typing as npt
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -88,7 +89,7 @@ class FileInformation:
 def read_in_file_information(input_path: str,
                              in_prefix: str = '',
                              in_format: str = DEFAULT_IO_FILE_FORMAT,
-                             data_dtype: npt.DTypeLike = np.float32) -> FileInformation:
+                             data_dtype: 'npt.DTypeLike' = np.float32) -> FileInformation:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
     dataset = load(input_path,
                    in_prefix=in_prefix,
@@ -110,7 +111,7 @@ def load_log(log_file: str) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_p(parameters: ImageParameters, dtype: npt.DTypeLike, progress: Progress) -> Images:
+def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress) -> Images:
     return load(input_path=parameters.input_path,
                 in_prefix=parameters.prefix,
                 in_format=parameters.format,
@@ -134,7 +135,7 @@ def load(input_path: Optional[str] = None,
          input_path_dark_after: Optional[str] = None,
          in_prefix: str = '',
          in_format: str = DEFAULT_IO_FILE_FORMAT,
-         dtype: npt.DTypeLike = np.float32,
+         dtype: 'npt.DTypeLike' = np.float32,
          file_names: Optional[List[str]] = None,
          indices: Optional[Union[List[int], Indices]] = None,
          progress: Optional[Progress] = None) -> Dataset:

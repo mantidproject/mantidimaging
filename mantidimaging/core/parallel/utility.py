@@ -8,10 +8,11 @@ from functools import partial
 from logging import getLogger
 from multiprocessing import Array
 from multiprocessing.pool import Pool
-from typing import List, Tuple, Type, Union
+from typing import List, Tuple, Type, Union, TYPE_CHECKING
 
 import numpy as np
-import numpy.typing as npt
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 from mantidimaging.core.utility.memory_usage import system_free_memory
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -27,7 +28,7 @@ def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: Tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> np.ndarray:
+def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> np.ndarray:
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
@@ -44,7 +45,7 @@ def create_array(shape: Tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> n
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape, dtype: npt.DTypeLike = np.float32) -> np.ndarray:
+def _create_shared_array(shape, dtype: 'npt.DTypeLike' = np.float32) -> np.ndarray:
     ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
     if dtype == np.uint8 or dtype == 'uint8':
         ctype = ctypes.c_uint8
