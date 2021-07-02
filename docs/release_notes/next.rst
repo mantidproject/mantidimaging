@@ -31,6 +31,7 @@ Fixes
 - #1001 : Exception when selecting Log in Load Dataset dialog
 - #991 : Handle longer running previews better
 - #1021 : Prevent simultaneous Astra calls
+- #1036 : Exception in ReconstructWindowView.show_recon_volume prevents recon closing
 
 Developer Changes
 -----------------
