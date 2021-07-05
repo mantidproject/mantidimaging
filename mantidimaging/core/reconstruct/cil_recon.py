@@ -30,12 +30,21 @@ tomopy = safe_import('tomopy')
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def get_IMAT_AcquisitionGeometry(angles):
-        pixel_num_h = 512
-        pixel_num_v = 512
+    def get_IMAT_AcquisitionGeometry(angles, shape):
         pixel_size = (1., 1.)
-        ag = AcquisitionGeometry.create_Parallel3D()
-        ag.set_panel([pixel_num_v, pixel_num_h], pixel_size=pixel_size)
+        if len(shape) == 3:
+            # shape of full data [angles, v_pixels, h_pixels]
+            ag = AcquisitionGeometry.create_Parallel3D()
+            pixel_num_h, pixel_num_v = shape[2], shape[1]
+            ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=pixel_size)
+        elif len(shape) == 2:
+            # shape of sinogram is [angles, h_pixels]
+            ag = AcquisitionGeometry.create_Parallel2D()
+            pixel_num_h = shape[1]
+            ag.set_panel(pixel_num_h, pixel_size=pixel_size)
+        else:
+            raise ValueError("Shape should have 2 or 3 dimensions")
+
         ag.set_angles(angles=angles, angle_unit='radian')
         return ag
 
@@ -79,9 +88,7 @@ class CILRecon(BaseRecon):
         """
         sino = BaseRecon.sino_recon_prep(sino)
 
-        ag3D = CILRecon.get_IMAT_AcquisitionGeometry(proj_angles.value)
-        # get a slice
-        ag = ag3D.get_centre_slice()
+        ag = CILRecon.get_IMAT_AcquisitionGeometry(proj_angles.value, sino.shape)
         ag.set_labels(DataOrder.ASTRA_AG_LABELS)
         # stick it into an AcquisitionData
         data = ag.allocate(None)
@@ -120,8 +127,11 @@ class CILRecon(BaseRecon):
         """
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction')
 
-        ag = CILRecon.get_IMAT_AcquisitionGeometry(images.projection_angles(recon_params.max_projection_angle).value)
+        angles = images.projection_angles(recon_params.max_projection_angle).value
+        shape = images.data.shape
+        ag = CILRecon.get_IMAT_AcquisitionGeometry(angles, shape)
         ag.set_labels(DataOrder.TIGRE_AG_LABELS)
+
         # stick it into an AcquisitionData
         data = ag.allocate(None)
         data.fill(images.data)
