@@ -31,7 +31,7 @@ def generate_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarra
 
 def generate_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
     generated_array = pu.create_array(shape, dtype)
-    np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]).astype(dtype))
+    np.copyto(generated_array, gen_img_numpy_rand(shape).astype(dtype))
     return generated_array
 
 
@@ -50,7 +50,7 @@ def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32) -> Images:
 
 
 def _set_random_data(data, shape):
-    n = np.random.rand(*shape)
+    n = gen_img_numpy_rand(shape)
     # move the data in the shared array
     data[:] = n[:]
 
