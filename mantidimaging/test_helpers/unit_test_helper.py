@@ -4,10 +4,11 @@
 import os
 import sys
 from functools import partial
-from typing import Tuple
+from typing import Tuple, Optional
 
 from unittest import mock
 import numpy as np
+import numpy.random
 import numpy.testing as npt
 from io import StringIO
 
@@ -19,8 +20,13 @@ backup_mp_avail = None
 g_shape = (10, 8, 10)
 
 
-def gen_img_numpy_rand(shape=g_shape) -> np.ndarray:
-    return np.random.rand(*shape)
+def gen_img_numpy_rand(shape=g_shape, seed: Optional[int] = None) -> np.ndarray:
+    if seed is not None:
+        bg = np.random.PCG64(seed)
+    else:
+        bg = np.random.PCG64()
+    rng = numpy.random.Generator(bg)
+    return rng.random(shape)
 
 
 def generate_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarray]:
@@ -29,28 +35,28 @@ def generate_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarra
     return arr, copy
 
 
-def generate_shared_array(shape=g_shape, dtype=np.float32) -> np.ndarray:
+def generate_shared_array(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> np.ndarray:
     generated_array = pu.create_array(shape, dtype)
-    np.copyto(generated_array, np.random.rand(shape[0], shape[1], shape[2]).astype(dtype))
+    np.copyto(generated_array, gen_img_numpy_rand(shape, seed=seed).astype(dtype))
     return generated_array
 
 
-def generate_images(shape=g_shape, dtype=np.float32) -> Images:
+def generate_images(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> Images:
     d = pu.create_array(shape, dtype)
-    return _set_random_data(d, shape)
+    return _set_random_data(d, shape, seed=seed)
 
 
-def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32) -> Images:
+def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: Optional[int] = None) -> Images:
     """
     Doesn't do anything special, just makes a number of images big enough to be
     ran in parallel from the logic of multiprocessing_necessary
     """
     d = pu.create_array(shape, dtype)
-    return _set_random_data(d, shape)
+    return _set_random_data(d, shape, seed=seed)
 
 
-def _set_random_data(data, shape):
-    n = np.random.rand(*shape)
+def _set_random_data(data, shape, seed: Optional[int] = None):
+    n = gen_img_numpy_rand(shape, seed=seed)
     # move the data in the shared array
     data[:] = n[:]
 
