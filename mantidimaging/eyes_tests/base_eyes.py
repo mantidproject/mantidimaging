@@ -37,7 +37,7 @@ if not os.path.exists(LOAD_SAMPLE):
         "Data not present, please clone to your home directory e.g. git clone https://github.com/mantidproject/mantidim"
         "aging-data.git ~/mantidimaging-data")
 
-NEXUS_SAMPLE = str(Path.home()) + "/mantidimaging-data/24737.nxs"
+NEXUS_SAMPLE = str(Path.home()) + "/mantidimaging-data/Diamond/24737.nxs"
 
 APPLITOOLS_IMAGE_DIR = os.getenv("APPLITOOLS_IMAGE_DIR")
 if APPLITOOLS_IMAGE_DIR is None:
