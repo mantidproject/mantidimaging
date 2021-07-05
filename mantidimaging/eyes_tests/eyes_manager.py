@@ -8,7 +8,6 @@ import time
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QImage, QPainter, QColor
 from applitools.common import BatchInfo, MatchLevel
 from applitools.images import Eyes
 
@@ -90,18 +89,12 @@ class EyesManager:
         QApplication.processEvents()
         window_image = widget.grab()
 
-        image = QImage(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, QImage.Format.Format_RGB32)
-        image.fill(QColor(255, 255, 255))
-        painter = QPainter(image)
-        painter.drawPixmap(0, 0, window_image)
-        painter.end()
-
         if image_name is None:
             image_name = str(uuid4())
 
         file_path = os.path.join(directory, image_name) + ".png"
 
-        if image.save(file_path, "PNG"):
+        if window_image.save(file_path, "PNG"):
             return file_path
         else:
             raise IOError("Failed to save", file_path)
