@@ -268,8 +268,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _on_volume_recon_done(self, task):
-        self.view.show_recon_volume(task.result)
         self.recon_is_running = False
+        self.view.show_recon_volume(task.result)
         self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):
