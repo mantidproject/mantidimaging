@@ -103,10 +103,11 @@ class CheckVersion:
         return msg, detailed
 
     def _retrieve_conda_installed_version(self) -> None:
-        local_package = subprocess.check_output("conda list mantidimaging | grep '^[^#]' | awk 'END{print $2,$4}'",
-                                                shell=True,
-                                                env=os.environ).decode("utf-8").strip()
-        if local_package == "":
+        local_packages = subprocess.check_output("conda list mantidimaging", 
+                                                shell=True, env=os.environ).decode("utf-8").strip()
+        local_packages = [line.split() for line in local_packages.splitlines() if not line.startswith('#')]
+
+        if not local_packages:
             LOG.info("Running a development build without a local Mantid Imaging package installation.")
             # no local installation, no point sending out API requests
             # just returns as "unstable" label
@@ -114,8 +115,9 @@ class CheckVersion:
             self._conda_installed_label = "unstable"
             return
 
-        self._conda_installed_version, self._conda_installed_label = local_package.split()
-        self._conda_installed_label = self._conda_installed_label.rpartition("/")[2]
+        local_package = local_packages[-1]
+        self._conda_installed_version = local_package[1]
+        self._conda_installed_label = local_package[3].rpartition("/")[2]
 
     def _retrieve_conda_available_version(self) -> None:
         try:

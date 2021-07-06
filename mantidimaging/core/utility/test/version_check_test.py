@@ -74,9 +74,17 @@ class TestCheckVersion(unittest.TestCase):
 
     @mock.patch("subprocess.check_output")
     def test_retrieve_conda_installed_version(self, mock_check_output):
-        mock_check_output.return_value = b"1.1.0_1018 mantid/label/unstable"
+        no_package = "# packages in environment at mantidimaging-dev:\n#\n# Name  Version Build  Channel"
+        package = f"{no_package}\nmantidimaging 1.1.0_1018 py38_1 mantid/label/main"
+        mock_check_output.return_value = no_package.encode()
+        self.versions._retrieve_conda_installed_version()
+        self.assertEqual(self.versions.get_conda_installed_version(), "")
+        self.assertEqual(self.versions.get_conda_installed_label(), "unstable")
+
+        mock_check_output.return_value = package.encode()
         self.versions._retrieve_conda_installed_version()
         self.assertEqual(self.versions.get_conda_installed_version(), "1.1.0_1018")
+        self.assertEqual(self.versions.get_conda_installed_label(), "main")
 
     @mock.patch("requests.get")
     def test_retrieve_conda_available_version(self, mock_get):
