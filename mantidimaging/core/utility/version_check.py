@@ -103,9 +103,9 @@ class CheckVersion:
         return msg, detailed
 
     def _retrieve_conda_installed_version(self) -> None:
-        local_packages = subprocess.check_output("conda list mantidimaging", 
-                                                shell=True, env=os.environ).decode("utf-8").strip()
-        local_packages = [line.split() for line in local_packages.splitlines() if not line.startswith('#')]
+        query_result = subprocess.check_output("conda list mantidimaging", shell=True,
+                                               env=os.environ).decode("utf-8").strip()
+        local_packages = [line.split() for line in query_result.splitlines() if not line.startswith('#')]
 
         if not local_packages:
             LOG.info("Running a development build without a local Mantid Imaging package installation.")
