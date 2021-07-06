@@ -35,7 +35,7 @@ LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data-master/ISIS/IMAT/IMAT00010
 if not os.path.exists(LOAD_SAMPLE):
     raise unittest.SkipTest(
         "Data not present, please clone to your home directory e.g. git clone https://github.com/mantidproject/mantidim"
-        "aging-data.git ~/mantidimaging-data")
+        "aging-data.git ~/mantidimaging-data-master")
 
 NEXUS_SAMPLE = str(
     Path.home()) + "/mantidimaging-data-master/Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
