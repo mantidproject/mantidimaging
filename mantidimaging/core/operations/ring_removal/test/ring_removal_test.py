@@ -35,7 +35,7 @@ class RingRemovalTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         images = th.generate_images()
-        mocks = [Mock() for _ in range(7)]
+        mocks = [Mock() for _ in range(8)]
         RingRemovalFilter.execute_wrapper(*mocks)(images)
 
 
