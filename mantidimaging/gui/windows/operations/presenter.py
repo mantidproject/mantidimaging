@@ -289,6 +289,7 @@ class FiltersWindowPresenter(BasePresenter):
                 if self.view.invertDifference.isChecked():
                     diff = np.negative(diff, out=diff)
                 self._update_preview_image(diff, self.view.preview_image_difference)
+                self.view.previews.add_negative_overlay(filtered_image_data)
 
             # Ensure all of it is visible if the lock zoom isn't checked
             if not self.view.lockZoomCheckBox.isChecked():
