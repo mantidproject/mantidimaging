@@ -134,7 +134,7 @@ class CILRecon(BaseRecon):
 
         # stick it into an AcquisitionData
         data = ag.allocate(None)
-        data.fill(images.data)
+        data.fill(BaseRecon.negative_log(images.data))
         data.reorder('astra')
 
         ig = ag.get_ImageGeometry()

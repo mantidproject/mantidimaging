@@ -57,7 +57,7 @@ class TomopyRecon(BaseRecon):
 
         kwargs = {
             'ncore': ncores,
-            'tomo': images.data,
+            'tomo': BaseRecon.negative_log(images.data),
             'sinogram_order': images._is_sinograms,
             'theta': images.projection_angles(recon_params.max_projection_angle).value,
             'center': [cor.value for cor in cors],
