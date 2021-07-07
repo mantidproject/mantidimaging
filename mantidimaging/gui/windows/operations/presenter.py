@@ -354,7 +354,10 @@ class FiltersWindowPresenter(BasePresenter):
         roi_field.setText(crop_string)
 
     def _show_negative_values_error(self, negative_stacks: List[StackVisualiserView]):
-
+        """
+        Shows information on the view and in the log about negative values in the output.
+        :param negative_stacks: A list of stacks with negative values in the data.
+        """
         names = [stack.name for stack in negative_stacks]
         self.view.show_error_dialog(f"Negative values found in stack(s) {', '.join(names)}. See log for more details.")
 
