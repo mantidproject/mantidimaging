@@ -86,7 +86,7 @@ class CILRecon(BaseRecon):
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
         """
-        sino = BaseRecon.sino_recon_prep(sino)
+        sino = BaseRecon.negative_log(sino)
 
         ag = CILRecon.get_IMAT_AcquisitionGeometry(proj_angles.value, sino.shape)
         ag.set_labels(DataOrder.ASTRA_AG_LABELS)
