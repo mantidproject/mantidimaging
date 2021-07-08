@@ -17,6 +17,7 @@ New features
 - #1011 : Pixel size should allow setting decimal places
 - #1013 : NeXus Loading Window
 - #904 : Default to using image center for ring removal COR
+- #1025 : Add the Total Variation (TV) with Primal-Dual Hybrid Gradient (PDHG) from CIL
 
 Fixes
 -----
@@ -46,4 +47,4 @@ Developer Changes
 Dependency updates
 ------------------
 
-- pyqtgraph 0.12, scikit-image 0.18, tomopy 1.9, numpy 1.20
+- pyqtgraph 0.12, scikit-image 0.18, tomopy 1.9, numpy 1.18
