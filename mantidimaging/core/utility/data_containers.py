@@ -100,6 +100,7 @@ class ReconstructionParameters:
     cor: Optional[ScalarCoR] = None
     tilt: Optional[Degrees] = None
     pixel_size: float = 0.0
+    alpha: float = 0.0
     max_projection_angle: float = 360.0
 
     def to_dict(self) -> dict:
@@ -109,7 +110,8 @@ class ReconstructionParameters:
             'num_iter': self.num_iter,
             'cor': str(self.cor),
             'tilt': str(self.tilt),
-            'pixel_size': self.pixel_size
+            'pixel_size': self.pixel_size,
+            'alpha': self.alpha
         }
 
 

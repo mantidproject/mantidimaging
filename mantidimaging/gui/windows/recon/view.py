@@ -53,6 +53,7 @@ class ReconstructWindowView(BaseMainWindowView):
     numIter: QSpinBox
     maxProjAngle: QDoubleSpinBox
     pixelSize: QDoubleSpinBox
+    alphaSpinbox: QDoubleSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
@@ -74,6 +75,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if CudaChecker().cuda_is_present():
             self.algorithmName.insertItem(0, "FBP_CUDA")
             self.algorithmName.insertItem(1, "SIRT_CUDA")
+            self.algorithmName.insertItem(2, "CIL")
             self.algorithmName.setCurrentIndex(0)
             self.algorithmName.setEnabled(True)
 
@@ -164,6 +166,7 @@ class ReconstructWindowView(BaseMainWindowView):
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.alphaSpinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
@@ -343,6 +346,14 @@ class ReconstructWindowView(BaseMainWindowView):
         with QSignalBlocker(self.pixelSize):
             self.pixelSize.setValue(value)
 
+    @property
+    def alpha(self):
+        return self.alphaSpinbox.value()
+
+    @alpha.setter
+    def alpha(self, value: float):
+        self.alphaSpinbox.setValue(value)
+
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
                                         filter_name=self.filter_name,
@@ -350,6 +361,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                         cor=ScalarCoR(self.rotation_centre),
                                         tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
+                                        alpha=self.alpha,
                                         max_projection_angle=self.max_proj_angle)
 
     def set_table_point(self, idx, slice_idx, cor):

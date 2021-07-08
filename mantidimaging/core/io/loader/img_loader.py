@@ -4,10 +4,11 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 import os
-from typing import Tuple, Optional, List, Callable, Union
+from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 import numpy as np
-import numpy.typing as npt
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.io.utility import get_file_names, get_prefix
@@ -25,7 +26,7 @@ def execute(load_func: Callable[[str], np.ndarray],
             dark_before_path: Optional[str],
             dark_after_path: Optional[str],
             img_format: str,
-            dtype: npt.DTypeLike,
+            dtype: 'npt.DTypeLike',
             indices: Union[List[int], Indices, None],
             progress: Optional[Progress] = None) -> Dataset:
     """
@@ -88,7 +89,7 @@ class ImageLoader(object):
                  load_func: Callable[[str], np.ndarray],
                  img_format: str,
                  img_shape: Tuple[int, ...],
-                 data_dtype: npt.DTypeLike,
+                 data_dtype: 'npt.DTypeLike',
                  indices: Union[List[int], Indices, None],
                  progress: Optional[Progress] = None):
         self.load_func = load_func
