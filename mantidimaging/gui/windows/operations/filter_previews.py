@@ -198,11 +198,10 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_overlay.setLookupTable(lut)
 
     def add_negative_overlay(self, after):
-        pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
-        map = ColorMap(pos, color)
-        after[after > 0] = 0.0
         after[after < 0] = 1.0
+        pos = np.array([0, 1])
+        color = np.array([[0, 0, 0, 0], [0, 0, 0, 255]], dtype=np.ubyte)
+        map = ColorMap(pos, color)
         self.negative_values_overlay.setOpacity(1)
         self.negative_values_overlay.setImage(after)
         lut = map.getLookupTable(0, 1, 2)
