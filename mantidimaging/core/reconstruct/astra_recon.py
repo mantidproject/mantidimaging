@@ -104,7 +104,7 @@ class AstraRecon(BaseRecon):
                     recon_params: ReconstructionParameters) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
-        sino = BaseRecon.sino_recon_prep(sino)
+        sino = BaseRecon.negative_log(sino)
         image_width = sino.shape[1]
         vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
         vol_geom = astra.create_vol_geom((image_width, image_width))
