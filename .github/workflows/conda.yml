@@ -33,6 +33,11 @@ jobs:
           sudo apt update -y
           sudo apt-get install -y xvfb libxcb* libxkb*
 
+      - name: List versions
+        shell: bash -l {0}
+        run: |
+          python --version; conda list ; pip list
+
       - name: Yapf
         shell: bash -l {0}
         run: |
