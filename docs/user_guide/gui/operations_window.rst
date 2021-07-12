@@ -20,6 +20,13 @@ The [?] button next to filter selector will open a webpage with an explanation o
 
 The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference. Below a histogram of pixel values before and after is shown. The image views can be navigated as described in the :ref:`Image View` help page.
 
+Red pixels in the after preview indicate that a value has changed. Blue pixels
+indicate that there are negative values in the result. Note that the negative
+values overlay is placed on top of the image difference overlay, so if a pixel
+has changed and is also negative then it will simply appear as blue. The
+negative values overlay may also highlight pixels that were negative **before
+and after** the filter was applied.
+
 There are several tickboxes to customise the behaviour of the preview area.
 
 Legend
@@ -65,4 +72,5 @@ data in the stack. For some filters it is also possible to *Apply to all stacks*
 It is normal for this to take a significant amount of time for a large stack of
 images.
 
-If *Safe Apply* is enabled then the filter will be applied to a copy of the data and a comparison window will be shown to select whether to keep the filtered version. The application of a filter can not be undone.
+If *Safe Apply* is enabled then the filter will be applied to a copy of the data and a comparison window will be shown
+to select whether to keep the filtered version. The application of a filter can not be undone.
