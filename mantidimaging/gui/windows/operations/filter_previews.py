@@ -71,9 +71,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_overlay.setZValue(1)
         self.image_after_vb.addItem(self.image_after_overlay)
 
-        # self.negative_values_overlay = ImageItem()
-        # self.negative_values_overlay.setZValue(2)
-        # self.image_after_vb.addItem(self.negative_values_overlay)
+        self.negative_values_overlay = ImageItem()
+        self.negative_values_overlay.setZValue(2)
+        self.image_after_vb.addItem(self.negative_values_overlay)
 
         # Ensure images resize equally
         self.image_layout: GraphicsLayout = self.addLayout(colspan=6)
@@ -198,16 +198,15 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_overlay.setLookupTable(lut)
 
     def add_negative_overlay(self, after):
-        pass
-        # after[after > 0] = 0.0
-        # after[after < 0] = 1.0
-        # pos = np.array([0, 1])
-        # color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
-        # map = ColorMap(pos, color)
-        # self.negative_values_overlay.setOpacity(0)
-        # self.negative_values_overlay.setImage(after)
-        # lut = map.getLookupTable(0, 1, 2)
-        # self.negative_values_overlay.setLookupTable(lut)
+        after[after > 0] = 0.0
+        after[after < 0] = 1.0
+        pos = np.array([0, 1])
+        color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
+        map = ColorMap(pos, color)
+        self.negative_values_overlay.setOpacity(1)
+        self.negative_values_overlay.setImage(after)
+        lut = map.getLookupTable(0, 1, 2)
+        self.negative_values_overlay.setLookupTable(lut)
 
     def hide_difference_overlay(self):
         self.image_after_overlay.setOpacity(0)
