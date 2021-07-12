@@ -29,6 +29,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         for _ in range(2):
             mock_stack_visualiser = mock.Mock()
             mock_stack_visualiser.presenter.images.data = np.array([i for i in range(3)])
+            self.mock_stack_visualisers.append(mock_stack_visualiser)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_register_active_filter(self, filter_reg_mock: mock.Mock):
@@ -101,10 +102,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         Tests when the operation has applied successfully.
         """
         self.presenter.view.safeApply.isChecked.return_value = False
-        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = None
-        self.presenter._post_filter(mock_stack_visualisers, mock_task)
+        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
 
         do_update_previews.assert_called_once()
         _wait_for_stack_choice.assert_not_called()
@@ -123,10 +123,9 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.view.show_error_dialog = mock.Mock()  # type: ignore
         self.presenter.main_window.presenter = mock.Mock()
-        mock_stack_visualisers = [mock.Mock()]
         mock_task = mock.Mock()
         mock_task.error = 123
-        self.presenter._post_filter(mock_stack_visualisers, mock_task)
+        self.presenter._post_filter(self.mock_stack_visualisers[:1], mock_task)
 
         self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         do_update_previews.assert_called_once()
@@ -244,7 +243,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         task = mock.MagicMock()
         task.error = None
 
-        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], task)
+        self.presenter._post_filter(self.mock_stack_visualisers, task)
 
         self.assertEqual(2, stack_choice_presenter.call_count)
         self.assertEqual(2, stack_choice_presenter.return_value.show.call_count)
@@ -257,7 +256,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter._do_apply_filter = mock.MagicMock()
         task = mock.MagicMock()
         task.error = None
-        self.presenter._post_filter([mock.MagicMock(), mock.MagicMock()], task)
+        self.presenter._post_filter(self.mock_stack_visualisers, task)
 
         stack_choice_presenter.assert_not_called()
 
