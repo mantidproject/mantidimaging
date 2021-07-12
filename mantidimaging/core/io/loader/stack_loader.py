@@ -1,9 +1,10 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import Optional, Callable, Union, List, Tuple
+from typing import Optional, Callable, Union, List, Tuple, TYPE_CHECKING
 
 import numpy as np
-import numpy.typing as npt
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.parallel import utility as pu
@@ -36,7 +37,7 @@ def do_stack_load_seq(data: np.ndarray, new_data: np.ndarray, img_shape: Tuple[i
 
 def execute(load_func: Callable[[str], np.ndarray],
             file_name: str,
-            dtype: npt.DTypeLike,
+            dtype: 'npt.DTypeLike',
             name: str,
             indices: Union[List[int], Indices, None] = None,
             progress: Optional[Progress] = None) -> Images:

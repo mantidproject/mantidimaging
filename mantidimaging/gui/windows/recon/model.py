@@ -12,6 +12,7 @@ from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
+from mantidimaging.core.reconstruct.cil_recon import allowed_recon_kwargs as cil_allowed_kwargs
 from mantidimaging.core.rotation.polyfit_correlation import find_center
 from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
@@ -181,6 +182,7 @@ class ReconstructWindowModel(object):
         d = tomopy_allowed_kwargs()
         if CudaChecker().cuda_is_present():
             d.update(astra_allowed_kwargs())
+            d.update(cil_allowed_kwargs())
         return d
 
     @staticmethod

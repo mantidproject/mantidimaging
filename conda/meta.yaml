@@ -19,14 +19,14 @@ requirements:
     - pip
     - setuptools=49.6.0
     - sphinx=3.3.1
-    - numpy=1.20.*
+    - numpy=1.18.*
   run:
     - python=3.8.*
     - pip
     - astropy=4.2
     - scipy=1.5.3
     - scikit-image=0.18.*
-    - numpy=1.20.*
+    - numpy=1.18.*
     - tomopy=1.9.*=cuda*
     - cudatoolkit=9.2*
     - cupy
@@ -35,6 +35,10 @@ requirements:
     - h5py=3.1.0
     - sarepy=2020.07
     - psutil=5.8.*
+    - cil=21.2.*
+    - cil-astra=21.2.*
+    - ccpi-regulariser=20.9
+    - tomophantom=1.4.*
 
 build:
   number: 1

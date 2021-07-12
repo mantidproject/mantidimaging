@@ -25,6 +25,12 @@ jobs:
     - name: Pre-load docker image
       run: docker pull mantidproject/mantidimaging:centos7
 
+    - name: List versions
+      uses: ./.github/actions/test
+      with:
+        command: python --version; conda list ; pip list
+        label: centos7
+
     - name: yapf
       uses: ./.github/actions/test
       with:

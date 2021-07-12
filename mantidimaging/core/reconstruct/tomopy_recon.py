@@ -28,7 +28,7 @@ class TomopyRecon(BaseRecon):
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters):
-        sino = BaseRecon.sino_recon_prep(sino)
+        sino = BaseRecon.negative_log(sino)
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
                               theta=proj_angles.value,
@@ -57,7 +57,7 @@ class TomopyRecon(BaseRecon):
 
         kwargs = {
             'ncore': ncores,
-            'tomo': images.data,
+            'tomo': BaseRecon.negative_log(images.data),
             'sinogram_order': images._is_sinograms,
             'theta': images.projection_angles(recon_params.max_projection_angle).value,
             'center': [cor.value for cor in cors],

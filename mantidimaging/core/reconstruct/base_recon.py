@@ -16,8 +16,12 @@ MIN_PIXEL_VALUE: float = 1e-6
 
 class BaseRecon:
     @staticmethod
-    def sino_recon_prep(sino: np.ndarray):
-        return -np.log(np.maximum(sino, MIN_PIXEL_VALUE))
+    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+        raise NotImplementedError("Base class call")
+
+    @staticmethod
+    def negative_log(data: np.ndarray) -> np.ndarray:
+        return -np.log(np.maximum(data, MIN_PIXEL_VALUE))
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
@@ -53,4 +57,4 @@ class BaseRecon:
 
     @staticmethod
     def allowed_filters() -> List[str]:
-        raise NotImplementedError("Base class call")
+        return []

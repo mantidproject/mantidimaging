@@ -337,63 +337,17 @@
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <layout class="QGridLayout" name="optionsLayout">
-              <item row="3" column="0">
-               <widget class="QLabel" name="numIterLabel">
+              <item row="5" column="0">
+               <widget class="QLabel" name="pixelSizeLabel">
                 <property name="text">
-                 <string>Number of iterations:</string>
+                 <string>Pixel size (microns)</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="algorithmName">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>gridrec</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="numIter">
-                <property name="minimum">
-                 <number>1</number>
-                </property>
+              <item row="5" column="1">
+               <widget class="QDoubleSpinBox" name="pixelSize">
                 <property name="maximum">
-                 <number>99999</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="algorithmNameLabel">
-                <property name="text">
-                 <string>Algorithm:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="filterNameLabel">
-                <property name="text">
-                 <string>Reconstruction filter:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="maxProjAngleLabel">
-                <property name="text">
-                 <string>Maximum projection angle</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QDoubleSpinBox" name="maxProjAngle">
-                <property name="maximum">
-                 <double>9999.000000000000000</double>
-                </property>
-                <property name="value">
-                 <double>360.000000000000000</double>
+                 <double>99999.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -436,17 +390,80 @@
                 </item>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="pixelSizeLabel">
+              <item row="1" column="1">
+               <widget class="QComboBox" name="algorithmName">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>gridrec</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QDoubleSpinBox" name="maxProjAngle">
+                <property name="maximum">
+                 <double>9999.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>360.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QSpinBox" name="numIter">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>99999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="filterNameLabel">
                 <property name="text">
-                 <string>Pixel size (microns)</string>
+                 <string>Reconstruction filter:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="algorithmNameLabel">
+                <property name="text">
+                 <string>Algorithm:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="maxProjAngleLabel">
+                <property name="text">
+                 <string>Maximum projection angle</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="numIterLabel">
+                <property name="text">
+                 <string>Number of iterations:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="alphaLabel">
+                <property name="text">
+                 <string>Alpha</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QDoubleSpinBox" name="pixelSize">
-                <property name="maximum">
-                 <double>99999.000000000000000</double>
+               <widget class="QDoubleSpinBox" name="alphaSpinbox">
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
+                </property>
+                <property name="value">
+                 <double>1.000000000000000</double>
                 </property>
                </widget>
               </item>

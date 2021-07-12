@@ -29,6 +29,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.resultSlope = self.resultSlope = mock.Mock()
         self.view.numIter = self.numIter = mock.Mock()
         self.view.pixelSize = self.pixelSize = mock.Mock()
+        self.view.alphaSpinbox = self.alpha = mock.Mock()
         self.view.algorithmName = self.algorithmName = mock.Mock()
         self.view.filterName = self.filterName = mock.Mock()
         self.view.maxProjAngle = self.maxProjAngle = mock.Mock()
@@ -227,6 +228,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                   cor=ScalarCoR(self.resultCor.value.return_value),
                                                   tilt=Degrees(self.resultTilt.value.return_value),
                                                   pixel_size=self.pixelSize.value.return_value,
+                                                  alpha=self.alpha.value.return_value,
                                                   max_projection_angle=self.maxProjAngle.value.return_value)
 
     def test_set_table_point(self):

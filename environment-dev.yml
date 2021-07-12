@@ -4,6 +4,7 @@ channels:
   - dtasev
   - astra-toolbox/label/dev
   - conda-forge
+  - ccpi
   - defaults
 dependencies:
   - mantidimaging
