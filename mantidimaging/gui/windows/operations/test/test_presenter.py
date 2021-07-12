@@ -389,3 +389,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack.presenter.images.data = np.ones((2, shape_x, shape_y))
         self.presenter.init_crop_coords(mock_roi_field)
         mock_roi_field.setText.assert_called_once_with(expected)
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
+    def test_negative_values_in_flat_fielding_shows_error(self, do_apply_filter_sync_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        mock_task = mock.Mock()
+        mock_task.error = None
+        self.mock_stack_visualisers[0].presenter.images.data = np.array([-1 for i in range(3)])
+        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+
+        self.view.show_error_dialog.assert_called_once_with(
+            f"Negative values found in stack(s) {negative_stack_name}. See log for more details.")
