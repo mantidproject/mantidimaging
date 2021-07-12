@@ -25,6 +25,10 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
+        self.mock_stack_visualisers = []
+        for _ in range(2):
+            mock_stack_visualiser = mock.Mock()
+            mock_stack_visualiser.presenter.images.data = np.array([i for i in range(3)])
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_register_active_filter(self, filter_reg_mock: mock.Mock):
@@ -145,6 +149,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.applying_to_all = False
         mock_stack = mock.MagicMock()
         mock_stack.presenter.images.has_proj180deg.return_value = True
+        mock_stack.presenter.images.data = np.array([i for i in range(3)])
         mock_stack_visualisers = [mock_stack]
         mock_task = mock.MagicMock()
         mock_task.error = None
