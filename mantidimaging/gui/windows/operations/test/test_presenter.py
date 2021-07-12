@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import logging
 import unittest
 import numpy as np
 from functools import partial
@@ -398,7 +398,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task.error = None
         self.mock_stack_visualisers[0].presenter.images.data = np.array([-1 for i in range(3)])
         self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
-        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+
+        with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
+                             level="ERROR") as mock_logger:
+            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.assertIn(f"Slices containing negative values in {negative_stack_name}: {[i for i in range(3)]}",
+                          mock_logger.output[0])
 
         self.view.show_error_dialog.assert_called_once_with(
             f"Negative values found in stack(s) {negative_stack_name}. See log for more details.")
