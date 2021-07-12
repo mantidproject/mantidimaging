@@ -416,3 +416,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task.error = None
         self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
         self.view.show_error_dialog.assert_not_called()
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
+    def test_no_negative_values_after_not_running_flat_fielding_shows_no_error(self, do_apply_filter_sync_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.mock_stack_visualisers[0].presenter.images.data = np.array([-1 for _ in range(3)])
+        mock_task = mock.Mock()
+        mock_task.error = None
+        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+        self.view.show_error_dialog.assert_not_called()
