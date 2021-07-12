@@ -68,11 +68,11 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
 
         self.image_after_overlay = ImageItem()
-        self.image_after_overlay.setZValue(1)
+        self.image_after_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_after_overlay)
 
         self.negative_values_overlay = ImageItem()
-        self.negative_values_overlay.setZValue(2)
+        self.negative_values_overlay.setZValue(11)
         self.image_after_vb.addItem(self.negative_values_overlay)
 
         # Ensure images resize equally
