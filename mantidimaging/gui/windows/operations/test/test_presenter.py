@@ -425,3 +425,22 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task.error = None
         self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
         self.view.show_error_dialog.assert_not_called()
+
+    def test_negative_values_preview_message(self):
+        self.presenter.model.preview_image_idx = slice_idx = 14
+        self.presenter.model.apply_to_images = mock.Mock()
+        self.presenter.stack = mock.Mock()
+        self.presenter.stack.presenter.get_image.return_value.data = np.array([[-1 for _ in range(3)]
+                                                                               for _ in range(3)])
+        self.presenter.do_update_previews()
+
+        self.view.show_error_dialog.assert_called_once_with(
+            f"Negative values found in result preview for slice {slice_idx}.")
+
+    def test_no_negative_values_preview_message(self):
+        self.presenter.model.apply_to_images = mock.Mock()
+        self.presenter.stack = mock.Mock()
+        self.presenter.stack.presenter.get_image.return_value.data = np.array([[1 for _ in range(3)] for _ in range(3)])
+        self.presenter.do_update_previews()
+
+        self.view.show_error_dialog.assert_not_called()
