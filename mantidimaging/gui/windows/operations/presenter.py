@@ -273,6 +273,9 @@ class FiltersWindowPresenter(BasePresenter):
 
             # Update image after first in order to prevent wrong histogram ranges being shared
             filtered_image_data = subset.data[0]
+            if np.any(filtered_image_data < 0):
+                self._show_preview_negative_values_error(self.model.preview_image_idx)
+
             self._update_preview_image(filtered_image_data, self.view.preview_image_after)
 
             # Update image before
@@ -367,3 +370,10 @@ class FiltersWindowPresenter(BasePresenter):
                 if np.any(stack.presenter.images.data[i] < 0):
                     negative_slices.append(i)
             getLogger(__name__).error(f"Slices containing negative values in {stack.name}: {negative_slices}")
+
+    def _show_preview_negative_values_error(self, slice_idx: int):
+        """
+        Shows a message that the operation preview contains negative values.
+        :param slice_idx: The index of the preview slice.
+        """
+        self.view.show_error_dialog(f"Negative values found in result preview for slice {slice_idx}.")
