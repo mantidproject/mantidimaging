@@ -190,7 +190,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         diff = np.absolute(diff)
         diff[diff > OVERLAY_THRESHOLD] = 1.0
         pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
+        color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
         map = ColorMap(pos, color)
         self.image_diff_overlay.setOpacity(1)
         self.image_diff_overlay.setImage(diff)
@@ -201,7 +201,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         after[after > 0] = 0.0
         after[after < 0] = 1.0
         pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
+        color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
         map = ColorMap(pos, color)
         self.negative_values_overlay.setOpacity(1)
         self.negative_values_overlay.setImage(after)
