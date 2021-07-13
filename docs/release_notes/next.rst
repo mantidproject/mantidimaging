@@ -18,6 +18,7 @@ New features
 - #1013 : NeXus Loading Window
 - #904 : Default to using image center for ring removal COR
 - #1025 : Add the Total Variation (TV) with Primal-Dual Hybrid Gradient (PDHG) from CIL
+- #1027 : Flat field warning if output has negative values
 
 Fixes
 -----
