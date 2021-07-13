@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 import traceback
 from enum import Enum, auto
 from functools import partial
@@ -196,6 +195,7 @@ class FiltersWindowPresenter(BasePresenter):
     def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
         do_180deg = True
         attempt_repair = task.error is not None
+        negative_stacks = []
         for stack in updated_stacks:
             # If the operation encountered an error during processing,
             # try to restore the original data else continue processing as usual
@@ -216,6 +216,8 @@ class FiltersWindowPresenter(BasePresenter):
                         [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
                     self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
                 self.view.main_window.update_stack_with_images(stack.presenter.images)
+            if np.any(stack.presenter.images.data < 0):
+                negative_stacks.append(stack)
 
         if self.view.roi_view is not None:
             self.view.roi_view.close()
@@ -231,6 +233,9 @@ class FiltersWindowPresenter(BasePresenter):
             # Feedback to user
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
+
+        if self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
+            self._show_negative_values_error(negative_stacks)
 
         self.view.filter_applied.emit()
         self.filter_is_running = False
@@ -268,6 +273,9 @@ class FiltersWindowPresenter(BasePresenter):
 
             # Update image after first in order to prevent wrong histogram ranges being shared
             filtered_image_data = subset.data[0]
+            if np.any(filtered_image_data < 0):
+                self._show_preview_negative_values_error(self.model.preview_image_idx)
+
             self._update_preview_image(filtered_image_data, self.view.preview_image_after)
 
             # Update image before
@@ -283,6 +291,7 @@ class FiltersWindowPresenter(BasePresenter):
                     self.view.previews.hide_difference_overlay()
                 if self.view.invertDifference.isChecked():
                     diff = np.negative(diff, out=diff)
+                self.view.previews.add_negative_overlay(filtered_image_data.copy())
                 self._update_preview_image(diff, self.view.preview_image_difference)
 
             # Ensure all of it is visible if the lock zoom isn't checked
@@ -346,3 +355,25 @@ class FiltersWindowPresenter(BasePresenter):
         y = min(self.stack.presenter.images.data[0].shape[1], 200)
         crop_string = ", ".join(["0", "0", str(y), str(x)])
         roi_field.setText(crop_string)
+
+    def _show_negative_values_error(self, negative_stacks: List[StackVisualiserView]):
+        """
+        Shows information on the view and in the log about negative values in the output.
+        :param negative_stacks: A list of stacks with negative values in the data.
+        """
+        names = [stack.name for stack in negative_stacks]
+        self.view.show_error_dialog(f"Negative values found in stack(s) {', '.join(names)}. See log for more details.")
+
+        for stack in negative_stacks:
+            negative_slices = []
+            for i in range(len(stack.presenter.images.data)):
+                if np.any(stack.presenter.images.data[i] < 0):
+                    negative_slices.append(i)
+            getLogger(__name__).error(f"Slices containing negative values in {stack.name}: {negative_slices}")
+
+    def _show_preview_negative_values_error(self, slice_idx: int):
+        """
+        Shows a message that the operation preview contains negative values.
+        :param slice_idx: The index of the preview slice.
+        """
+        self.view.show_error_dialog(f"Negative values found in result preview for slice {slice_idx}.")

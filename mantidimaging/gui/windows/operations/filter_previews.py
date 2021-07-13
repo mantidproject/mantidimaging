@@ -67,9 +67,13 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
 
-        self.image_after_overlay = ImageItem()
-        self.image_after_overlay.setZValue(10)
-        self.image_after_vb.addItem(self.image_after_overlay)
+        self.image_diff_overlay = ImageItem()
+        self.image_diff_overlay.setZValue(10)
+        self.image_after_vb.addItem(self.image_diff_overlay)
+
+        self.negative_values_overlay = ImageItem()
+        self.negative_values_overlay.setZValue(11)
+        self.image_after_vb.addItem(self.negative_values_overlay)
 
         # Ensure images resize equally
         self.image_layout: GraphicsLayout = self.addLayout(colspan=6)
@@ -129,7 +133,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_before.clear()
         self.image_after.clear()
         self.image_difference.clear()
-        self.image_after_overlay.clear()
+        self.image_diff_overlay.clear()
 
     def init_histogram(self):
         self.histogram = self.addPlot(row=histogram_coords.row,
@@ -186,15 +190,26 @@ class FilterPreviews(GraphicsLayoutWidget):
         diff = np.absolute(diff)
         diff[diff > OVERLAY_THRESHOLD] = 1.0
         pos = np.array([0, 1])
+        color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
+        map = ColorMap(pos, color)
+        self.image_diff_overlay.setOpacity(1)
+        self.image_diff_overlay.setImage(diff)
+        lut = map.getLookupTable(0, 1, 2)
+        self.image_diff_overlay.setLookupTable(lut)
+
+    def add_negative_overlay(self, after):
+        after[after > 0] = 0.0
+        after[after < 0] = 1.0
+        pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
         map = ColorMap(pos, color)
-        self.image_after_overlay.setOpacity(1)
-        self.image_after_overlay.setImage(diff)
+        self.negative_values_overlay.setOpacity(1)
+        self.negative_values_overlay.setImage(after)
         lut = map.getLookupTable(0, 1, 2)
-        self.image_after_overlay.setLookupTable(lut)
+        self.negative_values_overlay.setLookupTable(lut)
 
     def hide_difference_overlay(self):
-        self.image_after_overlay.setOpacity(0)
+        self.image_diff_overlay.setOpacity(0)
 
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb
