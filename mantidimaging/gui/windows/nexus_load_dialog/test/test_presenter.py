@@ -244,3 +244,9 @@ class NexusLoaderTest(unittest.TestCase):
         assert dataset.dark_before.filenames[0] == "Dark Before " + self.title
         assert dataset.dark_after.filenames[0] == "Dark After " + self.title
         assert dataset.flat_after.filenames[0] == "Flat After " + self.title
+
+    def test_empty_name_field(self):
+        del self.tomo_entry["title"]
+        self.tomo_entry["title"] = "".encode("UTF-8")
+        self.nexus_loader.tomo_entry = self.tomo_entry
+        assert self.nexus_loader._find_data_title() == "NeXus Data"
