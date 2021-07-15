@@ -11,6 +11,7 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.parallel import utility as pu
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog  # pragma: no cover
@@ -220,7 +221,9 @@ class NexusLoadPresenter:
         :param name: The name of the image dataset.
         :return: An Images object.
         """
-        return Images(data_array.astype(self.view.pixelDepthComboBox.currentText()), [f"{name} {self.title}"])
+        data = pu.create_array(data_array.shape, self.view.pixelDepthComboBox.currentText())
+        data[:] = data_array
+        return Images(data, [f"{name} {self.title}"])
 
     def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[Images]:
         """
