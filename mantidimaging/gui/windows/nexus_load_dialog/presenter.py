@@ -198,7 +198,8 @@ class NexusLoadPresenter:
         assert self.tomo_entry is not None
         try:
             return self.tomo_entry["title"][0].decode("UTF-8")
-        except KeyError:
+        except (KeyError, ValueError):
+            logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
     def get_dataset(self) -> Tuple[Dataset, str]:

@@ -233,7 +233,9 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_no_title_in_nexus_file(self):
         del self.tomo_entry["title"]
-        self.nexus_loader.scan_nexus_file()
+        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+            self.nexus_loader.scan_nexus_file()
+        self.assertIn("A valid title couldn't be found. Using 'NeXus Data' instead.", log_mock.output[0])
         assert self.nexus_loader.get_dataset()[1] == "NeXus Data"
 
     def test_image_names(self):
@@ -244,3 +246,11 @@ class NexusLoaderTest(unittest.TestCase):
         assert dataset.dark_before.filenames[0] == "Dark Before " + self.title
         assert dataset.dark_after.filenames[0] == "Dark After " + self.title
         assert dataset.flat_after.filenames[0] == "Flat After " + self.title
+
+    def test_empty_name_field(self):
+        del self.tomo_entry["title"]
+        self.tomo_entry["title"] = "".encode("UTF-8")
+        self.nexus_loader.tomo_entry = self.tomo_entry
+        with self.assertLogs(nexus_logger, level="INFO") as log_mock:
+            assert self.nexus_loader._find_data_title() == "NeXus Data"
+        self.assertIn("A valid title couldn't be found. Using 'NeXus Data' instead.", log_mock.output[0])
