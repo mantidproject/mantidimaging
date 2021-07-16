@@ -59,6 +59,9 @@ class NexusLoadDialog(QDialog):
         self.progress_widget = QWidget()
         self.progress_widget.setLayout(self.vert_layout)
 
+        # self.progress_widget.setVisible(False)
+        # self.progress_widget.show()
+
     def choose_nexus_file(self):
         """
         Select a NeXus file and attempt to load it. If a file is chosen, clear the information/widgets from the
@@ -73,7 +76,11 @@ class NexusLoadDialog(QDialog):
             self.clear_widgets()
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
+            self.progress_widget.show()
+            self.progress_widget.update()
+            # self.progress_widget.activateWindow()
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
+            self.progress_widget.setVisible(False)
 
     def clear_widgets(self):
         """

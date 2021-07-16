@@ -73,7 +73,6 @@ class NexusLoadPresenter:
             self.view.show_exception(str(err), traceback.format_exc())
 
     def scan_nexus_file(self):
-        self.view.progress_widget.show()
         time.sleep(10)
         self._scan_nexus_file()
         # self.progress_widget.close()
