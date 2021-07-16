@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Optional, Union, Tuple
 
 import h5py
 import numpy as np
+from PyQt5.QtWidgets import QProgressBar
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -72,6 +73,14 @@ class NexusLoadPresenter:
             self.view.show_exception(str(err), traceback.format_exc())
 
     def scan_nexus_file(self):
+        self.bar = QProgressBar()
+        self.bar.setMinimum(0)
+        self.bar.setMaximum(0)
+        self.bar.show()
+        self._scan_nexus_file()
+        self.bar.close()
+
+    def _scan_nexus_file(self):
         """
         Try to open the NeXus file and display its contents on the view.
         """
