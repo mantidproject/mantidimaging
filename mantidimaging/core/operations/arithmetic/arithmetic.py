@@ -60,7 +60,7 @@ class ArithmeticFilter(BaseFilter):
             p.start()
             p.join()
         else:
-            logging.getLogger(__name__).error("Unable to proceed with operation because dividion/multiplication value "
+            logging.getLogger(__name__).error("Unable to proceed with operation because division/multiplication value "
                                               "is zero.")
         return images
 
