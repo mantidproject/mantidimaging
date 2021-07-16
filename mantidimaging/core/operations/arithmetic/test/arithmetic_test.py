@@ -15,6 +15,7 @@ class ArithmeticTest(unittest.TestCase):
     """
     def __init__(self, *args, **kwargs):
         super(ArithmeticTest, self).__init__(*args, **kwargs)
+        self.logger = logging.getLogger("mantidimaging.core.operations.arithmetic.arithmetic")
 
     def test_div_only(self):
         images = th.generate_images()
@@ -30,16 +31,20 @@ class ArithmeticTest(unittest.TestCase):
 
         npt.assert_array_equal(images.data * 2.0, result.data)
 
-    def test_cant_divide_or_multiply_by_zero(self):
+    def test_cant_multiply_by_zero(self):
         images = th.generate_images()
 
-        logger = logging.getLogger("mantidimaging.core.operations.arithmetic.arithmetic")
-        with self.assertLogs(logger, level="ERROR"):
+        with self.assertLogs(self.logger, level="ERROR") as log_mock:
             result = ArithmeticFilter().filter_func(images.copy(), mult_val=0.0)
+        self.assertIn("Unable to proceed with operation", log_mock.output[0])
         npt.assert_array_equal(images.data, result.data)
 
-        with self.assertLogs(logger, level="ERROR"):
+    def test_cant_divide_by_zero(self):
+        images = th.generate_images()
+
+        with self.assertLogs(self.logger, level="ERROR") as log_mock:
             result = ArithmeticFilter().filter_func(images.copy(), div_val=0.0)
+        self.assertIn("Unable to proceed with operation", log_mock.output[0])
         npt.assert_array_equal(images.data, result.data)
 
     def test_add_only(self):
