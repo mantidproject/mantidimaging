@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import logging
 from functools import partial
 from multiprocessing import Process
 from typing import Callable, Dict
@@ -15,9 +15,17 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
 
 
-def _arithmetic_func(data: np.ndarray, div: float, mult: float, add: float, sub: float):
+def _arithmetic_func(data: np.ndarray, div_val: float, mult_val: float, add_val: float, sub_val: float):
+    """
+    Process target function for the arithmetic operation.
+    :param data: The data array.
+    :param div_val: The division value.
+    :param mult_val: The multiplication value.
+    :param add_val: The addition value.
+    :param sub_val: The subtraction value.
+    """
     for i in range(len(data)):
-        data[i] = data[i] / div * mult + add - sub
+        data[i] = data[i] / div_val * mult_val + add_val - sub_val
 
 
 class ArithmeticFilter(BaseFilter):
@@ -39,7 +47,6 @@ class ArithmeticFilter(BaseFilter):
                     progress=None) -> Images:
         """
         Apply arithmetic operations to the pixels.
-
         :param images: The Images object.
         :param mult_val: The multiplication value.
         :param div_val: The division value.
@@ -52,6 +59,9 @@ class ArithmeticFilter(BaseFilter):
             p = Process(target=_arithmetic_func, args=(images.data, div_val, mult_val, add_val, sub_val))
             p.start()
             p.join()
+        else:
+            logging.getLogger(__name__).error("Unable to proceed with operation because dividion/multiplication value "
+                                              "is zero.")
         return images
 
     @staticmethod
