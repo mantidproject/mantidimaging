@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import enum
+import time
 import traceback
 from enum import auto, Enum
 from logging import getLogger
@@ -8,7 +9,6 @@ from typing import TYPE_CHECKING, Optional, Union, Tuple
 
 import h5py
 import numpy as np
-from PyQt5.QtWidgets import QProgressBar
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -73,12 +73,10 @@ class NexusLoadPresenter:
             self.view.show_exception(str(err), traceback.format_exc())
 
     def scan_nexus_file(self):
-        self.bar = QProgressBar()
-        self.bar.setMinimum(0)
-        self.bar.setMaximum(0)
-        self.bar.show()
+        self.view.progress_widget.show()
+        time.sleep(10)
         self._scan_nexus_file()
-        self.bar.close()
+        # self.progress_widget.close()
 
     def _scan_nexus_file(self):
         """

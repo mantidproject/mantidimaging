@@ -4,7 +4,7 @@ from typing import Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
-    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox
+    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, QProgressBar, QVBoxLayout, QWidget, QLabel
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -45,6 +45,19 @@ class NexusLoadDialog(QDialog):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         self.accepted.connect(self.parent_view.execute_nexus_load)
+
+        self.scan_text = QLabel("Scanning NeXus File...")
+
+        self.bar = QProgressBar()
+        self.bar.setMinimum(0)
+        self.bar.setMaximum(0)
+
+        self.vert_layout = QVBoxLayout()
+        self.vert_layout.addWidget(self.scan_text)
+        self.vert_layout.addWidget(self.bar)
+
+        self.progress_widget = QWidget()
+        self.progress_widget.setLayout(self.vert_layout)
 
     def choose_nexus_file(self):
         """
