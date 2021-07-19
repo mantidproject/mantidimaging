@@ -73,13 +73,14 @@ class FlatFieldFilter(BaseFilter):
                     progress=None) -> Images:
         """Do background correction with flat and dark images.
 
-        :param data: Sample data which is to be processed. Expected in radiograms
+        :param images: Sample data which is to be processed. Expected in radiograms
         :param flat_before: Flat (open beam) image to use in normalization, for before the sample is imaged
         :param flat_after: Flat (open beam) image to use in normalization, for after the sample is imaged
         :param dark_before: Dark image to use in normalization, for before the sample is imaged
         :param dark_after: Dark image to use in normalization, for before the sample is imaged
         :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
                                        stacks or combined.
+        :param use_dark: Whether to use dark frame subtraction
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
         :return: Filtered data (stack of images)
