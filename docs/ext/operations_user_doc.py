@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from typing import List
+import inspect
 
 from docutils import nodes
 from docutils.nodes import Node
@@ -63,7 +64,7 @@ class OperationsUserDoc(Directive):
             rst_lines += make_heading(op.filter_name, "-")
 
             # Description from class doc string
-            rst_lines += split_lines(op.__doc__)
+            rst_lines += split_lines(inspect.cleandoc(op.__doc__))
             rst_lines.append("")
 
             # parameters from filter_func
