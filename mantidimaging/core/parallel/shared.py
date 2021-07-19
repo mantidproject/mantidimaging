@@ -46,7 +46,7 @@ def return_to_second_at_i(func, i, **kwargs):
     shared_list[1][i] = func(shared_list[0][i], **kwargs)
 
 
-def arithmetic(func, i, **kwargs):
+def arithmetic(func, i):
     global shared_list
     func(shared_list[0][i], *shared_list[1:])
 
