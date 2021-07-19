@@ -2,8 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import logging
 from functools import partial
-from multiprocessing import Process
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 
 import numpy as np
 from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
@@ -13,6 +12,7 @@ from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operations.base_filter import BaseFilter
+from mantidimaging.core.parallel import shared as ps
 
 
 def _arithmetic_func(data: np.ndarray, div_val: float, mult_val: float, add_val: float, sub_val: float):
@@ -44,6 +44,7 @@ class ArithmeticFilter(BaseFilter):
                     mult_val: float = 1.0,
                     add_val: float = 0.0,
                     sub_val: float = 0.0,
+                    cores: Optional[int] = None,
                     progress=None) -> Images:
         """
         Apply arithmetic operations to the pixels.
@@ -52,13 +53,12 @@ class ArithmeticFilter(BaseFilter):
         :param div_val: The division value.
         :param add_val: The addition value.
         :param sub_val: The subtraction value.
+        :param cores: The number of cores that will be used to process the data.
         :param progress: The Progress object isn't used.
         :return: The processed Images object.
         """
         if div_val != 0 and mult_val != 0:
-            p = Process(target=_arithmetic_func, args=(images.data, div_val, mult_val, add_val, sub_val))
-            p.start()
-            p.join()
+            _execute(images.data, div_val, mult_val, add_val, sub_val, cores, progress)
         else:
             logging.getLogger(__name__).error("Unable to proceed with operation because division/multiplication value "
                                               "is zero.")
@@ -116,3 +116,10 @@ class ArithmeticFilter(BaseFilter):
                        div_val=div_input_widget.value(),
                        add_val=add_input_widget.value(),
                        sub_val=sub_input_widget.value())
+
+
+def _execute(data: np.ndarray, div_val: float, mult_val: float, add_val: float, sub_val: float, cores: Optional[int],
+             progress):
+    do_arithmetic = ps.create_partial(_arithmetic_func, fwd_function=ps.arithmetic)
+    ps.shared_list = [data, div_val, mult_val, add_val, sub_val]
+    ps.execute(do_arithmetic, data.shape[0], progress, cores=cores)
