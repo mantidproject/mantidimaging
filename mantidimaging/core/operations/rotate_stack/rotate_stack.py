@@ -19,11 +19,11 @@ class RotateFilter(BaseFilter):
 
     Intended to be used on: Projections
 
-    When: Rarely/never, ASTRA vector geometry will take care of the tilt correction
+    When: 90 or 270 degree rotation for rotation axis to be vertical for some camera types.
 
-    Caution: Manually rotating could introduce additional artifacts in the
-    reconstructed volume, and it is not strictly required as using
-    vector geometry will correct for the tilt without manual rotation.
+    Caution: Rotations of images others than multiples of 90 degrees could introduce additional
+    artifacts in the reconstructed volume. Such rotations are usually not required as
+    small tilts can taken into account at the reconstruction stage.
     """
     filter_name = "Rotate Stack"
     link_histograms = True

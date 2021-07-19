@@ -16,7 +16,7 @@ class CircularMaskFilter(BaseFilter):
 
     Intended to be used on: Reconstructed slices
 
-    When: To remove reconstruction artifacts near the outside of the image.
+    When: To remove reconstruction artifacts on the outside of the image.
 
     Caution: Ensure that the radius does not mask data from the sample.
     """

@@ -14,11 +14,12 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class DivideFilter(BaseFilter):
-    """Divides the images by a value. That value is usually the pixel value,
-    and can be specified in either microns or cms.
+    """Divides a stack of images by a value. That value can be the pixel size,
+    and can be specified in either microns or cms, to obtain attenuation values.
+
     Intended to be used on: Reconstructed slices
 
-    When: To calculate attenuation values by dividing by the pixel size in Microns
+    When: To calculate attenuation values by dividing by the pixel size in microns
 
     Caution: Check preview values before applying divide
     """
