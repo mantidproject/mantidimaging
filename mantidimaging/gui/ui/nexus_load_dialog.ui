@@ -18,6 +18,9 @@
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
        <widget class="QWidget" name="loadPage">
         <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
@@ -288,6 +291,9 @@
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Reading NeXus File...</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>

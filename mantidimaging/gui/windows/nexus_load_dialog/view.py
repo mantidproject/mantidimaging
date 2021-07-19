@@ -4,7 +4,8 @@ from typing import Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
-    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, QProgressBar, QVBoxLayout, QWidget, QLabel
+    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, QProgressBar, \
+    QStackedWidget, QApplication
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -28,6 +29,8 @@ class NexusLoadDialog(QDialog):
     buttonBox: QDialogButtonBox
     pixelDepthComboBox: QComboBox
     pixelSizeSpinBox: QDoubleSpinBox
+    progressBar: QProgressBar
+    stackedWidget: QStackedWidget
 
     def __init__(self, parent):
         super(NexusLoadDialog, self).__init__(parent)
@@ -46,18 +49,8 @@ class NexusLoadDialog(QDialog):
 
         self.accepted.connect(self.parent_view.execute_nexus_load)
 
-        self.scan_text = QLabel("Scanning NeXus File...")
-
-        self.bar = QProgressBar()
-        self.bar.setMinimum(0)
-        self.bar.setMaximum(0)
-
-        self.vert_layout = QVBoxLayout()
-        self.vert_layout.addWidget(self.scan_text)
-        self.vert_layout.addWidget(self.bar)
-
-        self.progress_widget = QWidget()
-        self.progress_widget.setLayout(self.vert_layout)
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(0)
 
     def choose_nexus_file(self):
         """
@@ -69,14 +62,14 @@ class NexusLoadDialog(QDialog):
                                                        initialFilter=NEXUS_FILTER)
 
         if selected_file:
+            self.stackedWidget.setCurrentIndex(1)
+            QApplication.instance().processEvents()
             self.checkboxes.clear()
             self.clear_widgets()
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
-            self.progress_widget.show()
-            self.progress_widget.update()
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
-            self.progress_widget.setVisible(False)
+            self.stackedWidget.setCurrentIndex(0)
 
     def clear_widgets(self):
         """
