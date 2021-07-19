@@ -36,6 +36,7 @@ Fixes
 - #1036 : Exception in ReconstructWindowView.show_recon_volume prevents recon closing
 - #1046 : Can't rotate NeXus images
 - #1048 : NeXus Loader: ValueError: Illegal slicing argument for scalar dataspace
+- #1055: Arithmetic operation breaks flat-fielding
 
 Developer Changes
 -----------------
