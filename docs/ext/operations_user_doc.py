@@ -72,6 +72,9 @@ class OperationsUserDoc(Directive):
                 rst_lines += get_params(op.filter_func.__doc__)
                 rst_lines.append("")
 
+            rst_lines.append(f":class:`{op.filter_name} API docs<{op.__module__}>`")
+            rst_lines.append("")
+
         rst = ViewList()
         for n, rst_line in enumerate(rst_lines):
             rst.append(rst_line, "generated.rst", n)
