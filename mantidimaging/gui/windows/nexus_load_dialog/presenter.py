@@ -1,7 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import enum
-import time
 import traceback
 from enum import auto, Enum
 from logging import getLogger
@@ -73,11 +72,6 @@ class NexusLoadPresenter:
             self.view.show_exception(str(err), traceback.format_exc())
 
     def scan_nexus_file(self):
-        time.sleep(10)
-        self._scan_nexus_file()
-        # self.progress_widget.close()
-
-    def _scan_nexus_file(self):
         """
         Try to open the NeXus file and display its contents on the view.
         """
