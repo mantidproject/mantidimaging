@@ -83,15 +83,6 @@ class NexusLoadDialog(QDialog):
                 child.setText(column, "")
             self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
 
-    def create_increment_widgets(self):
-        data_section: QTreeWidgetItem = self.tree.topLevelItem(1)
-
-        increments = QTreeWidgetItem()
-        increments.setItemWidget
-
-        projections_row = data_section.child(0)
-        projections_row.addChild()
-
     def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
         """
         Indicate on the QTreeWidget if the image key and data fields have been found or not.
