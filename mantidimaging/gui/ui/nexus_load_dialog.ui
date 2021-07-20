@@ -290,17 +290,10 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Reading NeXus File...</string>
+             <string>Reading NeXus file. Please wait...</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QProgressBar" name="progressBar">
-            <property name="value">
-             <number>24</number>
             </property>
            </widget>
           </item>

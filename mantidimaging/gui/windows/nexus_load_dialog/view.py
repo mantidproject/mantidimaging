@@ -4,7 +4,7 @@ from typing import Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
-    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, QProgressBar, \
+    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
     QStackedWidget, QApplication
 
 from mantidimaging.gui.utility import compile_ui
@@ -29,7 +29,6 @@ class NexusLoadDialog(QDialog):
     buttonBox: QDialogButtonBox
     pixelDepthComboBox: QComboBox
     pixelSizeSpinBox: QDoubleSpinBox
-    progressBar: QProgressBar
     stackedWidget: QStackedWidget
 
     def __init__(self, parent):
@@ -48,9 +47,6 @@ class NexusLoadDialog(QDialog):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         self.accepted.connect(self.parent_view.execute_nexus_load)
-
-        self.progressBar.setMinimum(0)
-        self.progressBar.setMaximum(0)
 
     def choose_nexus_file(self):
         """
