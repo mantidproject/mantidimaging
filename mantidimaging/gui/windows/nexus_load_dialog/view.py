@@ -2,9 +2,10 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from typing import Tuple
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEventLoop
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
-    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox
+    QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
+    QStackedWidget, QApplication
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -28,6 +29,7 @@ class NexusLoadDialog(QDialog):
     buttonBox: QDialogButtonBox
     pixelDepthComboBox: QComboBox
     pixelSizeSpinBox: QDoubleSpinBox
+    stackedWidget: QStackedWidget
 
     def __init__(self, parent):
         super(NexusLoadDialog, self).__init__(parent)
@@ -56,11 +58,14 @@ class NexusLoadDialog(QDialog):
                                                        initialFilter=NEXUS_FILTER)
 
         if selected_file:
+            self.stackedWidget.setCurrentIndex(1)
+            QApplication.instance().processEvents(QEventLoop.ProcessEventsFlag.AllEvents, 1)
             self.checkboxes.clear()
             self.clear_widgets()
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
+            self.stackedWidget.setCurrentIndex(0)
 
     def clear_widgets(self):
         """
