@@ -67,13 +67,64 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="0">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="pixelBitDepthLabel">
+           <property name="text">
+            <string>Pixel Bit Depth:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="pixelSizeLabel">
+           <property name="text">
+            <string>Pixel Size (Microns):</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QComboBox" name="pixelDepthComboBox">
+           <item>
+            <property name="text">
+             <string>float32</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>float64</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QDoubleSpinBox" name="pixelSizeSpinBox">
+           <property name="maximum">
+            <double>99999.000000000000000</double>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0" colspan="3">
           <widget class="QTreeWidget" name="tree">
+           <property name="headerHidden">
+            <bool>false</bool>
+           </property>
            <property name="expandsOnDoubleClick">
             <bool>true</bool>
            </property>
            <attribute name="headerVisible">
-            <bool>false</bool>
+            <bool>true</bool>
            </attribute>
            <attribute name="headerHighlightSections">
             <bool>false</bool>
@@ -228,54 +279,6 @@
              </property>
             </item>
            </item>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="pixelBitDepthLabel">
-           <property name="text">
-            <string>Pixel Bit Depth:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="pixelSizeLabel">
-           <property name="text">
-            <string>Pixel Size (Microns):</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QComboBox" name="pixelDepthComboBox">
-           <item>
-            <property name="text">
-             <string>float32</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>float64</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QDoubleSpinBox" name="pixelSizeSpinBox">
-           <property name="maximum">
-            <double>99999.000000000000000</double>
-           </property>
           </widget>
          </item>
         </layout>
