@@ -30,25 +30,6 @@ tomopy = safe_import('tomopy')
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def get_IMAT_AcquisitionGeometry(angles, shape):
-        pixel_size = (1., 1.)
-        if len(shape) == 3:
-            # shape of full data [angles, v_pixels, h_pixels]
-            ag = AcquisitionGeometry.create_Parallel3D()
-            pixel_num_h, pixel_num_v = shape[2], shape[1]
-            ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=pixel_size)
-        elif len(shape) == 2:
-            # shape of sinogram is [angles, h_pixels]
-            ag = AcquisitionGeometry.create_Parallel2D()
-            pixel_num_h = shape[1]
-            ag.set_panel(pixel_num_h, pixel_size=pixel_size)
-        else:
-            raise ValueError("Shape should have 2 or 3 dimensions")
-
-        ag.set_angles(angles=angles, angle_unit='radian')
-        return ag
-
-    @staticmethod
     def set_up_TV_regularisation(image_geometry, acquisition_data):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
@@ -87,9 +68,15 @@ class CILRecon(BaseRecon):
         Should return a numpy array,
         """
         sino = BaseRecon.negative_log(sino)
+        pixel_num_h = sino.shape[1]
+        pixel_size = 1.
+        rot_pos_x = (cor.value - pixel_num_h / 2) * pixel_size
+        ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
 
-        ag = CILRecon.get_IMAT_AcquisitionGeometry(proj_angles.value, sino.shape)
+        ag.set_panel(pixel_num_h, pixel_size=pixel_size)
         ag.set_labels(DataOrder.ASTRA_AG_LABELS)
+        ag.set_angles(angles=proj_angles.value, angle_unit='radian')
+
         # stick it into an AcquisitionData
         data = ag.allocate(None)
         data.fill(sino)
@@ -129,7 +116,17 @@ class CILRecon(BaseRecon):
 
         angles = images.projection_angles(recon_params.max_projection_angle).value
         shape = images.data.shape
-        ag = CILRecon.get_IMAT_AcquisitionGeometry(angles, shape)
+        pixel_num_h, pixel_num_v = shape[2], shape[1]
+        pixel_size = 1.
+        if recon_params.tilt is None:
+            raise ValueError("recon_params.tilt is not set")
+        rot_pos = [(cors[pixel_num_v // 2].value - pixel_num_h / 2) * pixel_size, 0, 0]
+        slope = -np.tan(np.deg2rad(recon_params.tilt.value))
+        rot_angle = [slope, 0, 1]
+
+        ag = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos, rotation_axis_direction=rot_angle)
+        ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
+        ag.set_angles(angles=angles, angle_unit='radian')
         ag.set_labels(DataOrder.TIGRE_AG_LABELS)
 
         # stick it into an AcquisitionData
