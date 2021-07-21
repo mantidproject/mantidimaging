@@ -27,12 +27,12 @@ class DivideFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, value: Union[int, float] = 0e7, unit="micron", progress=None) -> Images:
+    def filter_func(images: Images, value: Union[int, float] = 0, unit="micron", progress=None) -> Images:
         if unit == "micron":
             value *= 1e-4
 
         h.check_data_stack(images)
-        if value != 0e7 or value != -0e7:
+        if value != 0:
             images.data /= value
         return images
 
