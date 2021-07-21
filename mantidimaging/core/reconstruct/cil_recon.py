@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
+from threading import Lock
 from typing import List
 
 import numpy as np
@@ -26,6 +27,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
+cil_mutex = Lock()
 
 
 class CILRecon(BaseRecon):
@@ -67,38 +69,43 @@ class CILRecon(BaseRecon):
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
         """
-        sino = BaseRecon.negative_log(sino)
-        pixel_num_h = sino.shape[1]
-        pixel_size = 1.
-        rot_pos_x = (cor.value - pixel_num_h / 2) * pixel_size
-        ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
 
-        ag.set_panel(pixel_num_h, pixel_size=pixel_size)
-        ag.set_labels(DataOrder.ASTRA_AG_LABELS)
-        ag.set_angles(angles=proj_angles.value, angle_unit='radian')
+        if cil_mutex.locked():
+            LOG.warning("CIL recon already in progress")
 
-        # stick it into an AcquisitionData
-        data = ag.allocate(None)
-        data.fill(sino)
+        with cil_mutex:
+            sino = BaseRecon.negative_log(sino)
+            pixel_num_h = sino.shape[1]
+            pixel_size = 1.
+            rot_pos_x = (cor.value - pixel_num_h / 2) * pixel_size
+            ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
 
-        ig = ag.get_ImageGeometry()
-        # set up TV regularisation
-        K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
+            ag.set_panel(pixel_num_h, pixel_size=pixel_size)
+            ag.set_labels(DataOrder.ASTRA_AG_LABELS)
+            ag.set_angles(angles=proj_angles.value, angle_unit='radian')
 
-        # alpha = 1.0
-        # f1 =  alpha * MixedL21Norm()
-        # f2 = 0.5 * L2NormSquared(b=ad2d)
-        alpha = recon_params.alpha
-        num_iter = recon_params.num_iter
-        F = BlockFunction(alpha * f1, 0.5 * f2)
-        normK = K.norm()
-        sigma = 1
-        tau = 1 / (sigma * normK**2)
+            # stick it into an AcquisitionData
+            data = ag.allocate(None)
+            data.fill(sino)
 
-        pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
+            ig = ag.get_ImageGeometry()
+            # set up TV regularisation
+            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
 
-        pdhg.run(num_iter, verbose=0, callback=None)
-        return pdhg.solution.as_array()
+            # alpha = 1.0
+            # f1 =  alpha * MixedL21Norm()
+            # f2 = 0.5 * L2NormSquared(b=ad2d)
+            alpha = recon_params.alpha
+            num_iter = recon_params.num_iter
+            F = BlockFunction(alpha * f1, 0.5 * f2)
+            normK = K.norm()
+            sigma = 1
+            tau = 1 / (sigma * normK**2)
+
+            pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
+
+            pdhg.run(num_iter, verbose=0, callback=None)
+            return pdhg.solution.as_array()
 
     @staticmethod
     def full(images: Images, cors: List[ScalarCoR], recon_params: ReconstructionParameters, progress=None):
@@ -114,51 +121,56 @@ class CILRecon(BaseRecon):
         """
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction')
 
-        angles = images.projection_angles(recon_params.max_projection_angle).value
-        shape = images.data.shape
-        pixel_num_h, pixel_num_v = shape[2], shape[1]
-        pixel_size = 1.
-        if recon_params.tilt is None:
-            raise ValueError("recon_params.tilt is not set")
-        rot_pos = [(cors[pixel_num_v // 2].value - pixel_num_h / 2) * pixel_size, 0, 0]
-        slope = -np.tan(np.deg2rad(recon_params.tilt.value))
-        rot_angle = [slope, 0, 1]
+        if cil_mutex.locked():
+            LOG.warning("CIL recon already in progress")
 
-        ag = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos, rotation_axis_direction=rot_angle)
-        ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
-        ag.set_angles(angles=angles, angle_unit='radian')
-        ag.set_labels(DataOrder.TIGRE_AG_LABELS)
+        with cil_mutex:
+            angles = images.projection_angles(recon_params.max_projection_angle).value
+            shape = images.data.shape
+            pixel_num_h, pixel_num_v = shape[2], shape[1]
+            pixel_size = 1.
+            if recon_params.tilt is None:
+                raise ValueError("recon_params.tilt is not set")
+            rot_pos = [(cors[pixel_num_v // 2].value - pixel_num_h / 2) * pixel_size, 0, 0]
+            slope = -np.tan(np.deg2rad(recon_params.tilt.value))
+            rot_angle = [slope, 0, 1]
 
-        # stick it into an AcquisitionData
-        data = ag.allocate(None)
-        data.fill(BaseRecon.negative_log(images.data))
-        data.reorder('astra')
+            ag = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
+                                                       rotation_axis_direction=rot_angle)
+            ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
+            ag.set_angles(angles=angles, angle_unit='radian')
+            ag.set_labels(DataOrder.TIGRE_AG_LABELS)
 
-        ig = ag.get_ImageGeometry()
-        # set up TV regularisation
-        K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
+            # stick it into an AcquisitionData
+            data = ag.allocate(None)
+            data.fill(BaseRecon.negative_log(images.data))
+            data.reorder('astra')
 
-        # alpha = 1.0
-        # f1 =  alpha * MixedL21Norm()
-        # f2 = 0.5 * L2NormSquared(b=ad2d)
-        alpha = recon_params.alpha
-        num_iter = recon_params.num_iter
-        F = BlockFunction(alpha * f1, 0.5 * f2)
-        normK = K.norm()
-        sigma = 1
-        tau = 1 / (sigma * normK**2)
+            ig = ag.get_ImageGeometry()
+            # set up TV regularisation
+            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
 
-        algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
+            # alpha = 1.0
+            # f1 =  alpha * MixedL21Norm()
+            # f2 = 0.5 * L2NormSquared(b=ad2d)
+            alpha = recon_params.alpha
+            num_iter = recon_params.num_iter
+            F = BlockFunction(alpha * f1, 0.5 * f2)
+            normK = K.norm()
+            sigma = 1
+            tau = 1 / (sigma * normK**2)
 
-        def myprogress(p, iter, obj, solution):
-            p.update(steps=1, msg='', force_continue=False)
+            algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
-        with progress:
-            prg = functools.partial(myprogress, progress)
-            algo.run(num_iter, verbose=0, callback=prg)
-            volume = algo.solution.as_array()
-            LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
-        return Images(volume)
+            def myprogress(p, iter, obj, solution):
+                p.update(steps=1, msg='', force_continue=False)
+
+            with progress:
+                prg = functools.partial(myprogress, progress)
+                algo.run(num_iter, verbose=0, callback=prg)
+                volume = algo.solution.as_array()
+                LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+            return Images(volume)
 
 
 def allowed_recon_kwargs() -> dict:
