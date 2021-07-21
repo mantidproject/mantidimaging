@@ -27,7 +27,7 @@ class RingRemovalFilter(BaseFilter):
     @staticmethod
     def filter_func(images: Images,
                     run_ring_removal=False,
-                    center_mode="manual",
+                    center_mode="image center",
                     center_x=None,
                     center_y=None,
                     thresh=300.0,
@@ -67,6 +67,20 @@ class RingRemovalFilter(BaseFilter):
 
         if run_ring_removal:
             h.check_data_stack(images)
+
+            # COMPAT tomopy <= 1.10.1
+            # tomopy 1.10.1 and older will crash with "large" values of theta
+            # Catch these here for now
+            # https://github.com/tomopy/tomopy/issues/551
+            if center_mode == "manual":
+                min_dist_to_edge = min([center_x, center_y, images.width - center_x, images.height - center_y])
+            else:
+                min_dist_to_edge = min([images.width / 2, images.height / 2])
+
+            if theta_min >= 180 or theta_min > min_dist_to_edge:
+                raise ValueError("Theta should be in the range [0 - 180) and larger than the min distance from"
+                                 "from COR to edge.")
+            # end COMPAT
 
             with progress:
                 progress.update(msg="Ring Removal")
