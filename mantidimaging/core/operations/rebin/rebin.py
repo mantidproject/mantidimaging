@@ -14,14 +14,14 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RebinFilter(BaseFilter):
-    """Rebins the image to the given parameter.
+    """Rebin the image to reduce the resolution.
 
     This filter temporarily increases memory usage, while the image is being rebinned.
     The memory usage will be lowered after the filter has finished executing.
 
     Intended to be used on: Any data
 
-    When: If you want to reduce the data size by losing information.
+    When: If you want to reduce the data size and to smoothen the image.
     """
     filter_name = "Rebin"
     link_histograms = True

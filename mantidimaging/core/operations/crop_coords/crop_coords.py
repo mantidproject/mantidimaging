@@ -18,9 +18,9 @@ from mantidimaging.gui.utility.qt_helpers import Type
 class CropCoordinatesFilter(BaseFilter):
     """Crop a region of interest from the image.
 
-    Intended to be used on: Projections, or reconstructed slices
+    Intended to be used on: A stack of projections, or reconstructed slices
 
-    When: To remove part of the image that contains only noise, this reduces
+    When: To select part of the image that is to be processed further; this reduces
     memory usage and can greatly improve the speed of reconstruction.
 
     Caution: Make sure the region of cropping does not crop parts of the sample

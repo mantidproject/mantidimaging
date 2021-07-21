@@ -10,7 +10,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class StripeRemovalFilter(BaseFilter):
-    """Stripe removal operations wrapped from TomoPy.
+    """Stripe and ring artifact removal operations wrapped from TomoPy.
 
     Source: https://tomopy.readthedocs.io/en/latest/api/tomopy.prep.stripe.html
 
@@ -19,8 +19,8 @@ class StripeRemovalFilter(BaseFilter):
     When: If stripes artifacts are present that have not been
     removed with outliers + flat-fielding the projections
 
-    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
-    and should be fixed by ROI Normalisation instead!
+    Caution: Horizontal stripes caused by changes in image intensity (pixel values)
+    should be fixed by ROI Normalisation instead!
     """
     filter_name = "Stripe Removal"
     link_histograms = True
@@ -33,12 +33,12 @@ class StripeRemovalFilter(BaseFilter):
         Multiple operations can be executed, if they are specified on the command
         line.
 
-        The order for that execution will always be: wavelett-fourier, titarenko,
+        The order for that execution will always be: wavelet-fourier, Titarenko,
         smoothing-filter.
 
         :param images: Sample data which is to be processed. Expected in radiograms
 
-        :param wf: Specify parameters for the wavelett-fourier filter.
+        :param wf: Specify parameters for the wavelet-fourier filter.
                    Acceptable keywords are:
 
                         level (default None, type int, optional parameter)
@@ -54,7 +54,7 @@ class StripeRemovalFilter(BaseFilter):
                                 If True, extend the size of the sinogram by
                                 padding with zeros.
 
-        :param ti: Specify parameters for the titarenko filter.
+        :param ti: Specify parameters for the Titarenko filter.
                    Acceptable keywords are:
 
                         nblock (default:0, int, optional) Number of blocks.

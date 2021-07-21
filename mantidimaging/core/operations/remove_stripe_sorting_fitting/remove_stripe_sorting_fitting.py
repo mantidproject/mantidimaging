@@ -13,8 +13,8 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 
 class RemoveStripeSortingFittingFilter(BaseFilter):
-    """Combination of algorithm 3 and 1 in [1]. Remove stripes using the
-    sorting and fitting technique. Angular direction is along the axis 0.
+    """Stripe and ring artifact removal. Combination of algorithm 3 and 1 in Vo et al.,
+    Optics Express 28396 (2018). Remove stripes using the sorting and fitting technique.
 
     Source: https://github.com/nghia-vo/sarepy
 
@@ -23,8 +23,8 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     When: If stripes artifacts are present that have not been
     removed with outliers + flat-fielding the projections
 
-    Caution: Horizontal stripes are caused by changes in image intensity (pixel values),
-    and should be fixed by ROI Normalisation instead!
+    Caution: Horizontal stripes caused by changes in image intensity (pixel values)
+    should be fixed by ROI Normalisation instead!
     """
     filter_name = "Remove stripes with sorting and fitting"
     link_histograms = True
