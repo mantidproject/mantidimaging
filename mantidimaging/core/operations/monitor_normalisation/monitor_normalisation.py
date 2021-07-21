@@ -17,11 +17,13 @@ def _divide_by_counts(data=None, counts=None):
 
 
 class MonitorNormalisation(BaseFilter):
-    """Normalises the values of the data by the monitor counts read from the Sample log file.
+    """Normalises the image data using the average count of a beam monitor from the
+    experiment log file. This scaling operation is an alternative to ROI normalisation
+    and allows to account for beam fluctuations and different exposure times of projections.
 
     Intended to be used on: Projections
 
-    When: As a pre-processing step to normalise the value ranges of the data.
+    When: As a pre-processing step to normalise the grey value ranges of the data.
     """
     filter_name = "Monitor Normalisation"
     link_histograms = True

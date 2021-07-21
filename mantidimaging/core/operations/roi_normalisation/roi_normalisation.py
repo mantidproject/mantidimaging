@@ -24,14 +24,16 @@ def modes() -> List[str]:
 
 
 class RoiNormalisationFilter(BaseFilter):
-    """Normalises the image data by the average values in a region of interest.
+    """Normalises the image data by using the average value in a no-sample (air) region of interest (ROI) of the
+    image. This scaling operation allows to account for beam fluctuations and different exposure times of
+    projections.
 
     Intended to be used on: Projections
 
     When: Always, to ensure that any fluctuations in beam intensity are normalised.
 
-    Caution: If you see horizontal lines in the sinogram this means some projections
-    are brighter/darker than the rest. This can be fixed with this operation.
+    Note: Beam fluctuations are visible by horizontal lines in the sinograms, as  some projections are
+    brighter/darker than the neighbours. This can be fixed with this operation.
     """
     filter_name = "ROI Normalisation"
     link_histograms = True
@@ -53,18 +55,17 @@ class RoiNormalisationFilter(BaseFilter):
 
         :param images: Sample data which is to be processed. Expected in radiograms
 
-        :param region_of_interest: The order is - Left Top Right Bottom. The air region
-                           from which sums will be calculated and all images will
-                           be normalised.
+        :param region_of_interest: The order is - Left Top Right Bottom. The air
+        region for which grey values are summed up and used for normalisation/scaling.
 
-        :param normalisation_mode: Controls what the air regions are normalised to.
-            'Preserve Max' : Normalisation is scaled such that the the maximum pixel value of the stack is equal before
+        :param normalisation_mode: Controls what the ROI counts are normalised to.
+            'Preserve Max' : Normalisation is scaled such that the maximum pixel value of the stack is equal before
                              and after the operation.
             'Stack Average' : The mean value of the air region across all projections is preserved.
             'Flat Field' : The mean value of the air regions in the projections is made equal to the mean value of the
-                           air region in the flat field.
+                           air region in the flat field image.
 
-        :param flat_field: If 'Flat Field' mode is used, pass in the flat field images.
+        :param flat_field: Flat field to use if 'Flat Field' mode is enabled.
 
         :param cores: The number of cores that will be used to process the data.
 

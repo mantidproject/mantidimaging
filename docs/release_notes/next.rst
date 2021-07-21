@@ -37,6 +37,7 @@ Fixes
 - #1046 : Can't rotate NeXus images
 - #1048 : NeXus Loader: ValueError: Illegal slicing argument for scalar dataspace
 - #1055: Arithmetic operation breaks flat-fielding
+- #898: Improve user documentation for operations
 
 Developer Changes
 -----------------

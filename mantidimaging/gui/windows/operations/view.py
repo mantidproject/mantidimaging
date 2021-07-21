@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel
                              QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
 from pyqtgraph import ImageItem
 
-from mantidimaging.core.net.help_pages import open_api_webpage
+from mantidimaging.core.net.help_pages import open_user_operation_docs
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
@@ -188,11 +188,10 @@ class FiltersWindowView(BaseMainWindowView):
         self.notification_text.setText(f"{operation_name} completed successfully!")
 
     def open_help_webpage(self):
-        filter_id = self.presenter.model._find_filter_index_from_filter_name(self.filterSelector.currentText())
-        filter_module_path = self.presenter.get_filter_module_name(filter_id)
+        filter_name = self.filterSelector.currentText()
 
         try:
-            open_api_webpage(filter_module_path)
+            open_user_operation_docs(filter_name)
         except RuntimeError as err:
             self.show_error_dialog(str(err))
 

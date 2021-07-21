@@ -19,9 +19,7 @@ class RescaleFilter(BaseFilter):
 
     Intended to be used on: Any
 
-    When: Can be used to crop-out value regions of interest
-
-    When: Automatically used when saving images to uint16
+    When: Automatically used when saving as unsigned integer image formats, to avoid clipping negative values
     """
     filter_name = 'Rescale'
 

@@ -9,10 +9,10 @@ from mantidimaging.core.utility.progress_reporting import Progress
 
 
 class ClipValuesFilter(BaseFilter):
-    """Clips pixel values of the image based on the parameters. Can be used as
-    a way to mask a.
+    """Clips grey values of the image based on the parameters. Can be used to remove outliers
+    and noise (e.g. negative values) from reconstructed images.
 
-    Intended to be used on: Projections
+    Intended to be used on: Projections and reconstructed slices
 
     When: To remove a range of pixel values from the data.
 

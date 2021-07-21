@@ -29,7 +29,7 @@ def _arithmetic_func(data: np.ndarray, div_val: float, mult_val: float, add_val:
 
 
 class ArithmeticFilter(BaseFilter):
-    """Add, subtract, multiply, or divide an image with given values.
+    """Add, subtract, multiply, or divide all grey values of an image with the given values.
 
     Intended to be used on: Any
 
