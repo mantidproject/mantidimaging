@@ -46,17 +46,20 @@ def enable_correct_fields_only(selected_flat_fielding_widget, flat_before_widget
 
 
 class FlatFieldFilter(BaseFilter):
-    """Uses the flat (open beam) and dark images to reduce the noise in the
-    projection images.
+    """Uses the flat (open beam) and dark images to normalise a stack of images (radiograms, projections),
+    and to correct for a beam profile, scintillator imperfections and/or  detector inhomogeneities. This
+    operation produces images of transmission values.
+
+    In practice, several open beam and dark images are averaged in the flat-fielding process.
 
     Intended to be used on: Projections
 
-    When: As one of the first pre-processing steps to greatly reduce noise in the data
+    When: As one of the first pre-processing steps
 
     Caution: Make sure the correct stacks are selected for flat and dark.
 
     Caution: Check that the flat and dark images don't have any very bright pixels,
-    or this will introduce additional noise in the sample.
+    or this will introduce additional noise in the sample. Remove outliers before flat-fielding.
     """
     filter_name = 'Flat-fielding'
 
@@ -73,13 +76,14 @@ class FlatFieldFilter(BaseFilter):
                     progress=None) -> Images:
         """Do background correction with flat and dark images.
 
-        :param data: Sample data which is to be processed. Expected in radiograms
-        :param flat_before: Flat (open beam) image to use in normalization, for before the sample is imaged
-        :param flat_after: Flat (open beam) image to use in normalization, for after the sample is imaged
-        :param dark_before: Dark image to use in normalization, for before the sample is imaged
-        :param dark_after: Dark image to use in normalization, for before the sample is imaged
+        :param images: Sample data which is to be processed. Expected in radiograms
+        :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged
+        :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged
+        :param dark_before: Dark image to use in normalization, collected before the sample was imaged
+        :param dark_after: Dark image to use in normalization, collected before the sample was imaged
         :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
                                        stacks or combined.
+        :param use_dark: Whether to use dark frame subtraction
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
         :return: Filtered data (stack of images)

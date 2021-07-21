@@ -1,6 +1,9 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import sys
+import os
+
 # -*- coding: utf-8 -*-
 #
 # MantidImaging documentation build configuration file, created by
@@ -44,6 +47,10 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx_multiversion',
 ]
+
+# Add custom extensions
+sys.path.append(os.path.abspath("./ext"))
+extensions.append("operations_user_doc")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

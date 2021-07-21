@@ -18,7 +18,8 @@ class RingRemovalFilter(BaseFilter):
 
     Intended to be used on: Reconstructed slices
 
-    When: To remove ring-filters that have not been removed by the pre-processing
+    When: To remove ring-artifacts that have not been removed, or have been introduced
+    by pre-processing
     """
     filter_name = "Ring Removal"
     link_histograms = True

@@ -55,9 +55,9 @@ class KernelSpinBox(QSpinBox):
 class MedianFilter(BaseFilter):
     """Applies Median filter to the data.
 
-    Intended to be used on: Projections
+    Intended to be used on: Projections or reconstructed slices
 
-    When: As a pre-processing step to reduce noise.
+    When: As a pre-processing or post-reconstruction step to reduce noise.
     """
     filter_name = "Median"
     link_histograms = True

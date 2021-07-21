@@ -22,14 +22,14 @@ DIM_1D = "1D"
 
 
 class OutliersFilter(BaseFilter):
-    """Removes pixel values that are found to be outliers by the parameters.
+    """Removes pixel values that are found to be outliers as defined by the given parameters.
 
     Intended to be used on: Projections
 
     When: As a pre-processing step to reduce very bright or dead pixels in the data.
 
-    Caution: This should usually be the first step applied to the data, flat and dark
-    images, to remove pixels with very large values that will cause issues in the flat-fielding.
+    Caution: This should usually be one of the first steps applied to the data, flat and dark
+    images, to remove pixels with very large values that will cause issues for flat-fielding.
     """
     filter_name = "Remove Outliers"
     link_histograms = True

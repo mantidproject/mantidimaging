@@ -24,18 +24,14 @@ if APPLITOOLS_BATCH_ID is None:
     APPLITOOLS_BATCH_ID = str(uuid4())
 
 API_KEY_PRESENT = os.getenv("APPLITOOLS_API_KEY")
-if API_KEY_PRESENT is None:
-    raise unittest.SkipTest("API Key is not defined in the environment, so Eyes tests are skipped.")
 
 TEST_NAME = os.getenv("GITHUB_BRANCH_NAME")
 if TEST_NAME is None:
     TEST_NAME = f"{getpass.getuser()}'s Local Test"
 
 LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data-master/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
-if not os.path.exists(LOAD_SAMPLE):
-    raise unittest.SkipTest(
-        "Data not present, please clone to your home directory e.g. git clone https://github.com/mantidproject/mantidim"
-        "aging-data.git ~/mantidimaging-data-master")
+LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
+git clone https://github.com/mantidproject/mantidimaging-data.git ~/mantidimaging-data-master"""
 
 NEXUS_SAMPLE = str(
     Path.home()) + "/mantidimaging-data-master/Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
@@ -50,6 +46,8 @@ else:
 QApplication.setFont(QFont("Sans Serif", 10))
 
 
+@unittest.skipIf(API_KEY_PRESENT is None, "API Key is not defined in the environment, so Eyes tests are skipped.")
+@unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
     eyes_manager: EyesManager
