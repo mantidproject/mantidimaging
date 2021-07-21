@@ -19,7 +19,7 @@ class RescaleFilter(BaseFilter):
 
     Intended to be used on: Any
 
-    When: Automatically used when saving images to unsigned int
+    When: Automatically used when saving as unsigned integer image formats, to avoid clipping negative values
     """
     filter_name = 'Rescale'
 

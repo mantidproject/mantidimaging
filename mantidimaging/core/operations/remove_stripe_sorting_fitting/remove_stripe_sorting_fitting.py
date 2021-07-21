@@ -15,7 +15,6 @@ from mantidimaging.gui.utility.qt_helpers import Type
 class RemoveStripeSortingFittingFilter(BaseFilter):
     """Stripe and ring artifact removal. Combination of algorithm 3 and 1 in Vo et al.,
     Optics Express 28396 (2018). Remove stripes using the sorting and fitting technique.
-    Angular direction is along the axis 0.
 
     Source: https://github.com/nghia-vo/sarepy
 

@@ -15,7 +15,6 @@ from mantidimaging.gui.utility.qt_helpers import Type
 class RemoveDeadStripesFilter(BaseFilter):
     """Stripe and ring artifact removal. Algorithm 6 in Vo et al., Optics Express 28396 (2018).
     Remove unresponsive or fluctuating stripes by: locating stripes, correction by interpolation.
-    Angular direction is along the axis 0.
 
     Source: https://github.com/nghia-vo/sarepy
 

@@ -56,7 +56,7 @@ class RoiNormalisationFilter(BaseFilter):
         :param images: Sample data which is to be processed. Expected in radiograms
 
         :param region_of_interest: The order is - Left Top Right Bottom. The air
-        region for which grayvalues are summed up and used for normalisation/scaling.
+        region for which grey values are summed up and used for normalisation/scaling.
 
         :param normalisation_mode: Controls what the ROI counts are normalised to.
             'Preserve Max' : Normalisation is scaled such that the maximum pixel value of the stack is equal before

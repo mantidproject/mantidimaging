@@ -15,7 +15,6 @@ from mantidimaging.gui.utility.qt_helpers import Type
 class RemoveAllStripesFilter(BaseFilter):
     """Stripe and ring artifact removal. Remove all types of stripe artifacts by
     combining algorithm 6, 5, and 3  in Vo et al., Optics Express 28396 (2018).
-    Angular direction is along the axis 0.
 
     Source: https://github.com/nghia-vo/sarepy
 

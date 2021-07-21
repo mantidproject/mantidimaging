@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 class RemoveLargeStripesFilter(BaseFilter):
     """Stripe and ring artifact removal: Algorithm 5 in Vo et al., Optics Express 28396 (2018).
     Remove large stripes by: locating stripes, normalizing them to remove full stripes, using
-    the sorting technique to remove partial stripes. Angular direction is along the axis 0.
+    the sorting technique to remove partial stripes.
 
     Source: https://github.com/nghia-vo/sarepy
 

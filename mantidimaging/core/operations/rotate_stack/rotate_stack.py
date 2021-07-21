@@ -23,7 +23,7 @@ class RotateFilter(BaseFilter):
 
     Caution: Rotations of images others than multiples of 90 degrees could introduce additional
     artifacts in the reconstructed volume. Such rotations are usually not required as
-    small tilts can taken into account at the reconstruction stage.
+    small tilts can be taken into account at the reconstruction stage.
     """
     filter_name = "Rotate Stack"
     link_histograms = True
