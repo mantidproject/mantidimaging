@@ -40,6 +40,7 @@ Fixes
 - #1055: Arithmetic operation breaks flat-fielding
 - #898: Improve user documentation for operations
 - #1059: Crash in recon Minimise Error with CIL
+- #1032: Crash in RingRemovalFilter
 
 Developer Changes
 -----------------
