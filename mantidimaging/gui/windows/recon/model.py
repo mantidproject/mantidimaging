@@ -263,3 +263,6 @@ class ReconstructWindowModel(object):
 
     def stack_contains_nans(self) -> bool:
         return np.any(np.isnan(self.images.data))
+
+    def stack_contains_zeroes(self) -> bool:
+        return np.all(self.images.data)

@@ -97,7 +97,7 @@ class ReconstructWindowPresenter(BasePresenter):
             elif notification == Notifications.AUTO_FIND_COR_MINIMISE:
                 self._auto_find_minimisation_square_sum()
             elif notification == Notifications.DO_NAN_CHECK:
-                self._do_nan_check()
+                self._do_nan_and_zero_check()
         except Exception as err:
             self.show_error(err, traceback.format_exc())
 
@@ -353,6 +353,8 @@ class ReconstructWindowPresenter(BasePresenter):
     def proj_180_degree_shape_matches_images(self, images):
         return self.model.proj_180_degree_shape_matches_images(images)
 
-    def _do_nan_check(self):
+    def _do_nan_and_zero_check(self):
         if self.model.stack_contains_nans():
             self.view.show_error_dialog("Warning: NaNs found in the stack.")
+        if self.model.stack_contains_zeroes():
+            self.view.show_error_dialog("Warning: Zeroes found in the stack.")
