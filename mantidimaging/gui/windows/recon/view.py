@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import logging
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID
 
@@ -432,6 +431,5 @@ class ReconstructWindowView(BaseMainWindowView):
         change_colour_palette.show()
 
     def show(self):
-        logging.getLogger(__name__).info("Showing recon window")
-        self.presenter.notify(PresN.DO_NAN_ZERO_CHECK)
         super().show()
+        self.presenter.notify(PresN.DO_NAN_ZERO_CHECK)
