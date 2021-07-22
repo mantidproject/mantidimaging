@@ -43,7 +43,7 @@ class Notifications(Enum):
     REFINE_ITERS = auto()
     AUTO_FIND_COR_CORRELATE = auto()
     AUTO_FIND_COR_MINIMISE = auto()
-    DO_NAN_CHECK = auto()
+    DO_NAN_ZERO_CHECK = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -96,7 +96,7 @@ class ReconstructWindowPresenter(BasePresenter):
                 self._auto_find_correlation()
             elif notification == Notifications.AUTO_FIND_COR_MINIMISE:
                 self._auto_find_minimisation_square_sum()
-            elif notification == Notifications.DO_NAN_CHECK:
+            elif notification == Notifications.DO_NAN_ZERO_CHECK:
                 self._do_nan_and_zero_check()
         except Exception as err:
             self.show_error(err, traceback.format_exc())

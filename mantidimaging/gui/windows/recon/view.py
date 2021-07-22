@@ -433,5 +433,5 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def show(self):
         logging.getLogger(__name__).info("Showing recon window")
-        self.presenter.notify(PresN.DO_NAN_CHECK)
+        self.presenter.notify(PresN.DO_NAN_ZERO_CHECK)
         super().show()
