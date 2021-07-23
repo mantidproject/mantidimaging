@@ -57,13 +57,13 @@ class CorTiltDataModel:
             if cor is not None:
                 self._points[idx] = Point(self._points[idx].slice_index, float(cor))
 
-    def _get_data_idx_from_slice_idx(self, slice_idx):
+    def _get_data_idx_from_slice_idx(self, slice_idx) -> int:
         for i, p in enumerate(self._points):
             if p.slice_index == slice_idx:
                 return i
-        return None
+        raise ValueError(f"Slice {slice_idx} that is not in COR table")
 
-    def set_cor_at_slice(self, slice_idx, cor: float):
+    def set_cor_at_slice(self, slice_idx: int, cor: float):
         data_idx = self._get_data_idx_from_slice_idx(slice_idx)
         self.set_point(data_idx, cor=cor)
 

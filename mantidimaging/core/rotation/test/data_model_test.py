@@ -202,7 +202,7 @@ class CorTiltDataModelTest(TestCase):
         m.add_point(None, 40, 8.0)
 
         self.assertEqual(m._get_data_idx_from_slice_idx(10), 0)
-        self.assertIsNone(m._get_data_idx_from_slice_idx(100))
+        self.assertRaises(ValueError, m._get_data_idx_from_slice_idx, 100)
 
     def test_set_cor_at_slice(self):
         m = CorTiltDataModel()
