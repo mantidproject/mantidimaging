@@ -106,14 +106,16 @@ class AstraRecon(BaseRecon):
 
         sino = BaseRecon.negative_log(sino)
         image_width = sino.shape[1]
-        vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
-        vol_geom = astra.create_vol_geom((image_width, image_width))
-        proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
-        cfg = astra.astra_dict(recon_params.algorithm)
-        cfg['FilterType'] = recon_params.filter_name
+
         if astra_mutex.locked():
-            LOG.warning("Astra recon already in progress")
+            LOG.warning("Astra recon already in progress. Waiting")
         with astra_mutex:
+            vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
+            vol_geom = astra.create_vol_geom((image_width, image_width))
+            proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
+            cfg = astra.astra_dict(recon_params.algorithm)
+            cfg['FilterType'] = recon_params.filter_name
+
             with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
                 astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
                 return astra.data2d.get(rec_id)
