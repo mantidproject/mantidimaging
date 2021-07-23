@@ -234,7 +234,11 @@ class ReconstructWindowPresenter(BasePresenter):
                                     **self.view.recon_params().to_dict())
 
     def _do_refine_selected_cor(self):
-        slice_idx = self.model.preview_slice_idx
+        selected_rows = self.view.get_cor_table_selected_rows()
+        if len(selected_rows):
+            slice_idx = self.model.slices[selected_rows[0]]
+        else:
+            raise ValueError("No slice selected in COR table")
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
                                          self.view.recon_params(), False)

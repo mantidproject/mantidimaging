@@ -154,9 +154,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
     def test_do_refine_selected_cor_declined(self, mock_corview):
-        self.presenter.model.preview_slice_idx = 155
         self.presenter.model.last_cor = ScalarCoR(314)
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
+        self.view.get_cor_table_selected_rows = mock.Mock(return_value=[155])
 
         mock_dialog = mock.Mock()
         mock_corview.return_value = mock_dialog
@@ -169,9 +169,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
     def test_do_refine_selected_cor_accepted(self, mock_corview):
-        self.presenter.model.preview_slice_idx = 155
         self.presenter.model.last_cor = ScalarCoR(314)
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
+        self.view.get_cor_table_selected_rows = mock.Mock(return_value=[155])
         mock_dialog = mock.Mock()
         mock_dialog.exec.return_value = mock_corview.Accepted
         mock_corview.return_value = mock_dialog
