@@ -150,6 +150,9 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.recon_hist.autoHistogramRange()
 
     def _add_nan_zero_overlay(self):
+        """
+        Adds the NaN/zero overlay to the projection view box.
+        """
         copy = self.projection.image.copy()
         nans = np.isnan(copy)
         zeroes = copy == 0
