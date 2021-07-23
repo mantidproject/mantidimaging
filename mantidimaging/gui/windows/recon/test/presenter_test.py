@@ -315,3 +315,12 @@ class ReconWindowPresenterTest(unittest.TestCase):
         images.has_proj180deg = has_proj180deg
 
         self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
+
+    def test_notify_nan_zero_check(self):
+        self.presenter.model.stack_contains_nans = mock.Mock(return_value=True)
+        self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=True)
+
+        self.presenter.notify(PresNotification.DO_NAN_ZERO_CHECK)
+        self.view.show_error_dialog.assert_has_calls(
+            [mock.call("Warning: NaNs found in the stack."),
+             mock.call("Warning: Zeroes found in the stack.")])
