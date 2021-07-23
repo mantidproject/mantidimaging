@@ -180,8 +180,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int], call_back: Callable[[TaskWorkerThread],
-                                                                                        None]) -> None:
+    def _get_reconstruct_slice(self, cor, slice_idx: int, call_back: Callable[[TaskWorkerThread], None]) -> None:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
@@ -191,7 +190,7 @@ class ReconstructWindowPresenter(BasePresenter):
             'recon_params': self.view.recon_params()
         })
 
-    def _get_slice_index(self, slice_idx: Optional[int]):
+    def _get_slice_index(self, slice_idx: Optional[int]) -> int:
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
