@@ -322,5 +322,5 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter.notify(PresNotification.DO_NAN_ZERO_CHECK)
         self.view.show_error_dialog.assert_has_calls(
-            [mock.call("Warning: NaNs found in the stack."),
-             mock.call("Warning: Zeroes found in the stack.")])
+            [mock.call("Warning: NaN(s) found in the stack."),
+             mock.call("Warning: Zero(es) found in the stack.")])

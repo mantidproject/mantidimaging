@@ -188,3 +188,8 @@ class ReconWindowModelTest(unittest.TestCase):
         allowed_args.update(cil_allowed_kwargs())
         with mock.patch("mantidimaging.gui.windows.recon.model.CudaChecker.cuda_is_present", return_value=True):
             assert self.model.load_allowed_recon_kwargs() == allowed_args
+
+    def test_stack_contains_nans(self):
+        self.assertFalse(self.model.stack_contains_nans())
+        self.model.images.data[1][1][1] = np.nan
+        self.assertTrue(self.model.stack_contains_nans())
