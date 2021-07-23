@@ -354,6 +354,9 @@ class ReconstructWindowPresenter(BasePresenter):
         return self.model.proj_180_degree_shape_matches_images(images)
 
     def _do_nan_and_zero_check(self):
+        """
+        Checks if the data contains NaNs/zeroes and displays a message if they are found.
+        """
         if self.model.stack_contains_nans():
             self.view.show_error_dialog("Warning: NaNs found in the stack.")
         if self.model.stack_contains_zeroes():
