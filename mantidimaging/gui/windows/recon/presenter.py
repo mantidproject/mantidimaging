@@ -251,7 +251,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor.value)
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
-            self.do_preview_reconstruct_slice(new_cor, slice_idx)
+            self.set_preview_slice_idx(slice_idx)
 
     def _do_refine_iterations(self):
         slice_idx = self.model.preview_slice_idx
