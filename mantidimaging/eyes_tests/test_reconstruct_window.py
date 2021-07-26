@@ -45,7 +45,7 @@ class ReconstructionWindowTest(BaseEyesTest):
         images = Images(data)
         self.imaging.presenter.create_new_stack(Images(data), "bad_data")
         images.data[0:, 190:] = 0
-        images.data[0:, 195:] = np.nan
+        images.data[0:, 0:10] = np.nan
 
         self.imaging.show_recon_window()
         self.check_target(widget=self.imaging.recon)
