@@ -94,6 +94,15 @@ class ReconstructWindowViewTest(unittest.TestCase):
         cortiltpointqtmodel_mock.assert_not_called()
         self.tableView.setModel.assert_not_called()
 
+    def test_cor_table_model_selected_rows(self):
+        mock_row = mock.Mock(row=mock.Mock(return_value=1))
+        mock_selection_model = mock.Mock(selectedRows=lambda: [mock_row, mock_row])
+        self.tableView.selectionModel = mock.Mock(return_value=mock_selection_model)
+
+        ret = self.view.get_cor_table_selected_rows()
+
+        self.assertEqual(ret, [1, 1])
+
     def test_set_results(self):
         cor_val = 20
         tilt_val = 30

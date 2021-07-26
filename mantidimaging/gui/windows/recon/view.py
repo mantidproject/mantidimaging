@@ -293,6 +293,10 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.appendNewRow(row, slice_index, cor)
         self.tableView.selectRow(row)
 
+    def get_cor_table_selected_rows(self) -> List[int]:
+        rows = self.tableView.selectionModel().selectedRows()
+        return [row.row() for row in rows]
+
     @property
     def rotation_centre(self):
         return self.resultCor.value()

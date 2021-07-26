@@ -183,8 +183,7 @@ class ReconstructWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
                               {'recon_params': self.view.recon_params()})
 
-    def _get_reconstruct_slice(self, cor, slice_idx: Optional[int], call_back: Callable[[TaskWorkerThread],
-                                                                                        None]) -> None:
+    def _get_reconstruct_slice(self, cor, slice_idx: int, call_back: Callable[[TaskWorkerThread], None]) -> None:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
@@ -194,7 +193,7 @@ class ReconstructWindowPresenter(BasePresenter):
             'recon_params': self.view.recon_params()
         })
 
-    def _get_slice_index(self, slice_idx: Optional[int]):
+    def _get_slice_index(self, slice_idx: Optional[int]) -> int:
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
@@ -237,7 +236,11 @@ class ReconstructWindowPresenter(BasePresenter):
                                     **self.view.recon_params().to_dict())
 
     def _do_refine_selected_cor(self):
-        slice_idx = self.model.preview_slice_idx
+        selected_rows = self.view.get_cor_table_selected_rows()
+        if len(selected_rows):
+            slice_idx = self.model.slices[selected_rows[0]]
+        else:
+            raise ValueError("No slice selected in COR table")
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
                                          self.view.recon_params(), False)
@@ -250,7 +253,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor.value)
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
-            self.do_preview_reconstruct_slice(new_cor, slice_idx)
+            self.set_preview_slice_idx(slice_idx)
 
     def _do_refine_iterations(self):
         slice_idx = self.model.preview_slice_idx
