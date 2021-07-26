@@ -433,7 +433,3 @@ class ReconstructWindowView(BaseMainWindowView):
                                                    [self.image_view.sinogram_hist, self.image_view.projection_hist],
                                                    True)
         change_colour_palette.show()
-
-    def show(self):
-        super().show()
-        self.presenter.notify(PresN.DO_NAN_ZERO_CHECK)

@@ -1,8 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-# import numpy as np
-#
-# from mantidimaging.core.data import Images
+import numpy as np
+
+from mantidimaging.core.data import Images
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
@@ -40,12 +40,12 @@ class ReconstructionWindowTest(BaseEyesTest):
 
         self.check_target(widget=self.imaging.recon)
 
-    # def test_negative_nan_overlay(self):
-    #     data = np.random.rand(200, 200)
-    #     data[:, 5] = 0
-    #     data[:-5, ] = np.nan
-    #     self.imaging.presenter.create_new_stack(Images(data), "bad_data")
-    #
-    #     self.imaging.show_recon_window()
-    #     self.imaging.recon.stackSelector.setCurrentIndex(1)
-    #     self.check_target(widget=self.imaging.recon)
+    def test_negative_nan_overlay(self):
+        data = np.random.rand(200, 200)
+        data[:, 5] = 0
+        data[:-5, ] = np.nan
+        self.imaging.presenter.create_new_stack(Images(data), "bad_data")
+
+        self.imaging.show_recon_window()
+        self.imaging.recon.stackSelector.setCurrentIndex(1)
+        self.check_target(widget=self.imaging.recon)
