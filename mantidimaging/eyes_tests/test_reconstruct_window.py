@@ -41,11 +41,11 @@ class ReconstructionWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.recon)
 
     def test_negative_nan_overlay(self):
-        data = np.random.rand(200, 200)
-        data[:, 5] = 0
-        data[:-5, ] = np.nan
+        data = np.random.rand(5, 200, 200)
+        images = Images(data)
         self.imaging.presenter.create_new_stack(Images(data), "bad_data")
+        images.data[0:, 190:] = 0
+        images.data[0:, 195:] = np.nan
 
         self.imaging.show_recon_window()
-        self.imaging.recon.stackSelector.setCurrentIndex(1)
         self.check_target(widget=self.imaging.recon)
