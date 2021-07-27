@@ -316,11 +316,17 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
 
-    def test_notify_nan_zero_check(self):
+    def test_status_message_shows_nan_zero_warning(self):
         self.presenter.model.stack_contains_nans = mock.Mock(return_value=True)
         self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=True)
 
         self.presenter._do_nan_and_zero_check()
-        self.view.show_error_dialog.assert_has_calls(
-            [mock.call("Warning: NaN(s) found in the stack."),
-             mock.call("Warning: Zero(es) found in the stack.")])
+        self.view.show_status_message.assert_called_once_with(
+            "Warning: NaN(s) found in the stack. Zero(es) found in the stack.")
+
+    def test_status_message_cleared(self):
+        self.presenter.model.stack_contains_nans = mock.Mock(return_value=False)
+        self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=False)
+
+        self.presenter._do_nan_and_zero_check()
+        self.view.show_status_message.assert_called_once_with("")
