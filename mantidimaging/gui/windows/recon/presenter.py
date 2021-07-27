@@ -129,6 +129,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
         self.do_preview_reconstruct_slice()
+        self._do_nan_and_zero_check()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
