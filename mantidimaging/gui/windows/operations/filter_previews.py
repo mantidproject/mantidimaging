@@ -129,8 +129,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         hist = HistogramLUTItem(im)
         return im, vb, hist
 
-    def clear_items(self):
-        self.image_before.clear()
+    def clear_items(self, clear_before: bool = True):
+        if clear_before:
+            self.image_before.clear()
         self.image_after.clear()
         self.image_difference.clear()
         self.image_diff_overlay.clear()

@@ -253,7 +253,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
-        self.view.clear_previews()
+        self.view.clear_previews(clear_before=False)
         if self.stack is not None:
             lock_scale = self.view.lockScaleCheckBox.isChecked()
             if lock_scale:

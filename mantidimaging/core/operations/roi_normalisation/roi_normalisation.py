@@ -198,6 +198,9 @@ def _execute(data: np.ndarray,
             ps.shared_list = [data, air_maxs]
             ps.execute(do_calculate_air_max, data.shape[0], progress, cores=cores)
 
+            if np.isnan(air_maxs).any():
+                raise ValueError("Image contains invalid (NaN) pixels")
+
             # calculate the before and after maximum
             init_max = air_maxs.max()
             post_max = (air_maxs / air_means).max()
@@ -211,6 +214,9 @@ def _execute(data: np.ndarray,
             ps.shared_list = [flat_field, flat_mean]
             ps.execute(do_calculate_air_means, flat_field.shape[0], progress, cores=cores)
             air_means /= flat_mean.mean()
+
+        if np.isnan(air_means).any():
+            raise ValueError("Air region contains invalid (NaN) pixels")
 
         do_divide = ps.create_partial(_divide_by_air, fwd_function=ps.inplace2)
         ps.shared_list = [data, air_means]
