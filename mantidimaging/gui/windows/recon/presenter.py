@@ -363,6 +363,8 @@ class ReconstructWindowPresenter(BasePresenter):
             msg_list.append("NaN(s) found in the stack.")
         if self.model.stack_contains_zeroes():
             msg_list.append("Zero(es) found in the stack.")
+        if self.model.stack_contains_negative_values():
+            msg_list.append("Negative value(s) found in the stack.")
 
         if len(msg_list) == 0:
             self.view.show_status_message("")

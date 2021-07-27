@@ -204,3 +204,11 @@ class ReconWindowModelTest(unittest.TestCase):
     def test_stack_contains_zeroes_returns_true(self):
         self.model.images.data = np.array([0, 0, 0])
         self.assertTrue(self.model.stack_contains_zeroes())
+
+    def test_stack_contains_negative_values_returns_true(self):
+        self.model.images.data = np.array([-1, 0, 0])
+        self.assertTrue(self.model.stack_contains_negative_values())
+
+    def test_stack_contains_negative_values_returns_false(self):
+        self.model.images.data = np.array([0, 0, 0])
+        self.assertTrue(self.model.stack_contains_negative_values())

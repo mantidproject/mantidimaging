@@ -266,3 +266,6 @@ class ReconstructWindowModel(object):
 
     def stack_contains_zeroes(self) -> bool:
         return not np.all(self.images.data)
+
+    def stack_contains_negative_values(self) -> bool:
+        return np.any(self.images.data < 0)
