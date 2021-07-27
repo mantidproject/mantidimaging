@@ -83,7 +83,7 @@ class ReconImagesView(GraphicsLayoutWidget):
     def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.projection.clear()
         self.projection.setImage(image_data)
-        self._add_nan_zero_overlay()
+        self._add_nan_zero_negative_overlay()
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:
@@ -149,15 +149,15 @@ class ReconImagesView(GraphicsLayoutWidget):
     def reset_recon_histogram(self):
         self.recon_hist.autoHistogramRange()
 
-    def _add_nan_zero_overlay(self):
+    def _add_nan_zero_negative_overlay(self):
         """
         Adds the NaN/zero overlay to the projection view box.
         """
         copy = self.projection.image.copy()
         nans = np.isnan(copy)
-        zeroes = copy == 0
+        zero_negative = copy <= 0
 
-        overlay_idxs = np.logical_or(nans, zeroes)
+        overlay_idxs = np.logical_or(nans, zero_negative)
         overlay_arr = np.zeros(copy.shape)
         overlay_arr[overlay_idxs] = 1.0
 

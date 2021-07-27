@@ -126,7 +126,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
         self.do_preview_reconstruct_slice()
-        self._do_nan_and_zero_check()
+        self._do_nan_zero_negative_check()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -354,7 +354,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def proj_180_degree_shape_matches_images(self, images):
         return self.model.proj_180_degree_shape_matches_images(images)
 
-    def _do_nan_and_zero_check(self):
+    def _do_nan_zero_negative_check(self):
         """
         Checks if the data contains NaNs/zeroes and displays a message if they are found.
         """
