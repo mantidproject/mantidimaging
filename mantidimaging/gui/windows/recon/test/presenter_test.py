@@ -320,7 +320,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.stack_contains_nans = mock.Mock(return_value=True)
         self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=True)
 
-        self.presenter.notify(PresNotification.DO_NAN_ZERO_CHECK)
+        self.presenter._do_nan_and_zero_check()
         self.view.show_error_dialog.assert_has_calls(
             [mock.call("Warning: NaN(s) found in the stack."),
              mock.call("Warning: Zero(es) found in the stack.")])
