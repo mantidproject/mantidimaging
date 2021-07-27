@@ -42,6 +42,7 @@ Fixes
 - #1059: Crash in recon Minimise Error with CIL
 - #1032: Crash in RingRemovalFilter
 - #1057: Fix crash when refining COR
+- #1056: Cannot set range [nan, nan] in ROI normalisation
 
 Developer Changes
 -----------------
