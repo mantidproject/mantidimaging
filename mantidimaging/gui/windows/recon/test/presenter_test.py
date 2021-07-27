@@ -319,14 +319,16 @@ class ReconWindowPresenterTest(unittest.TestCase):
     def test_status_message_shows_nan_zero_warning(self):
         self.presenter.model.stack_contains_nans = mock.Mock(return_value=True)
         self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=True)
+        self.presenter.model.stack_contains_negative_values = mock.Mock(return_value=True)
 
         self.presenter._do_nan_and_zero_check()
         self.view.show_status_message.assert_called_once_with(
-            "Warning: NaN(s) found in the stack. Zero(es) found in the stack.")
+            "Warning: NaN(s) found in the stack. Zero(es) found in the stack. Negative value(s) found in the stack.")
 
     def test_status_message_cleared(self):
         self.presenter.model.stack_contains_nans = mock.Mock(return_value=False)
         self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=False)
+        self.presenter.model.stack_contains_negative_values = mock.Mock(return_value=False)
 
         self.presenter._do_nan_and_zero_check()
         self.view.show_status_message.assert_called_once_with("")
