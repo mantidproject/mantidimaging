@@ -5,7 +5,7 @@ from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox, QAction)
+                             QVBoxLayout, QWidget, QMessageBox, QAction, QTextEdit)
 from PyQt5.QtCore import pyqtSignal, QSignalBlocker
 
 from mantidimaging.core.data import Images
@@ -59,6 +59,8 @@ class ReconstructWindowView(BaseMainWindowView):
     resultSlope: QDoubleSpinBox
     reconstructVolume: QPushButton
     reconstructSlice: QPushButton
+
+    statusMessageTextEdit: QTextEdit
 
     changeColourPaletteButton: QPushButton
 
@@ -433,3 +435,6 @@ class ReconstructWindowView(BaseMainWindowView):
                                                    [self.image_view.sinogram_hist, self.image_view.projection_hist],
                                                    True)
         change_colour_palette.show()
+
+    def show_status_message(self, msg: str):
+        self.statusMessageTextEdit.setText(msg)
