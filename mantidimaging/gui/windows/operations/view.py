@@ -151,8 +151,8 @@ class FiltersWindowView(BaseMainWindowView):
         # Enable the spinbox widget once the preview has been created
         self.previewImageIndex.setEnabled(True)
 
-    def clear_previews(self):
-        self.previews.clear_items()
+    def clear_previews(self, clear_before: bool = True):
+        self.previews.clear_items(clear_before=clear_before)
 
     def link_images_changed(self):
         if self.linkImages.isChecked():
