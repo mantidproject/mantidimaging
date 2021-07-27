@@ -359,6 +359,6 @@ class ReconstructWindowPresenter(BasePresenter):
         Checks if the data contains NaNs/zeroes and displays a message if they are found.
         """
         if self.model.stack_contains_nans():
-            self.view.show_error_dialog("Warning: NaN(s) found in the stack.")
+            self.view.show_status_message("Warning: NaN(s) found in the stack.")
         if self.model.stack_contains_zeroes():
-            self.view.show_error_dialog("Warning: Zero(es) found in the stack.")
+            self.view.show_status_messagae("Warning: Zero(es) found in the stack.")
