@@ -188,3 +188,27 @@ class ReconWindowModelTest(unittest.TestCase):
         allowed_args.update(cil_allowed_kwargs())
         with mock.patch("mantidimaging.gui.windows.recon.model.CudaChecker.cuda_is_present", return_value=True):
             assert self.model.load_allowed_recon_kwargs() == allowed_args
+
+    def test_stack_contains_nans_returns_false(self):
+        self.model.images.data = np.array([1, 2, 3])
+        self.assertFalse(self.model.stack_contains_nans())
+
+    def test_stack_contains_nans_returns_true(self):
+        self.model.images.data[1][1][1] = np.nan
+        self.assertTrue(self.model.stack_contains_nans())
+
+    def test_stack_contains_zeroes_returns_false(self):
+        self.model.images.data = np.array([1, 2, 3])
+        self.assertFalse(self.model.stack_contains_zeroes())
+
+    def test_stack_contains_zeroes_returns_true(self):
+        self.model.images.data = np.array([0, 0, 0])
+        self.assertTrue(self.model.stack_contains_zeroes())
+
+    def test_stack_contains_negative_values_returns_true(self):
+        self.model.images.data = np.array([-1, 0, 0])
+        self.assertTrue(self.model.stack_contains_negative_values())
+
+    def test_stack_contains_negative_values_returns_false(self):
+        self.model.images.data = np.array([0, 0, 0])
+        self.assertFalse(self.model.stack_contains_negative_values())

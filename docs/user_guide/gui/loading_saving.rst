@@ -29,6 +29,9 @@ To quickly load only 10 images from a stack, press the preview button, which wil
 images will use 32bit floating point numbers as the pixel format so this can be
 left at the default value of *float32*.
 
+.. note::
+    Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.
+
 Saving
 ------
 

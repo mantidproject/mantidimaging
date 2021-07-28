@@ -260,3 +260,12 @@ class ReconstructWindowModel(object):
     def proj_180_degree_shape_matches_images(images):
         return images.has_proj180deg() and images.height == images.proj180deg.height \
                and images.width == images.proj180deg.width
+
+    def stack_contains_nans(self) -> bool:
+        return np.any(np.isnan(self.images.data))
+
+    def stack_contains_zeroes(self) -> bool:
+        return not np.all(self.images.data)
+
+    def stack_contains_negative_values(self) -> bool:
+        return np.any(self.images.data < 0)
