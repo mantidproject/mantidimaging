@@ -37,10 +37,10 @@ class ROINormalisationTest(unittest.TestCase):
         npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images, air)
 
     def test_executed_par(self):
-        self.do_execute(th.generate_images_for_parallel())
+        self.do_execute(th.generate_images_for_parallel(seed=2021))
 
     def test_executed_seq(self):
-        self.do_execute(th.generate_images())
+        self.do_execute(th.generate_images(seed=2021))
 
     def do_execute(self, images: Images):
         original = np.copy(images.data[0])
@@ -64,7 +64,7 @@ class ROINormalisationTest(unittest.TestCase):
         roi_mock.text.assert_called_once()
 
     def test_roi_normalisation_preserve_max(self):
-        images = th.generate_images()
+        images = th.generate_images(seed=2021)
         images_max = images.data.max()
 
         original = np.copy(images.data[0])
@@ -76,7 +76,7 @@ class ROINormalisationTest(unittest.TestCase):
 
     def test_roi_normalisation_stack_average(self):
         air = [3, 3, 6, 8]
-        images = th.generate_images([10, 20, 30])
+        images = th.generate_images([10, 20, 30], seed=2021)
         images.data[2] *= 2
         images.data[3] *= 0.5
         air_data_orig = np.copy(images.data[:, air[1]:air[3], air[0]:air[2]])
@@ -92,8 +92,8 @@ class ROINormalisationTest(unittest.TestCase):
 
     def test_roi_normalisation_to_flat(self):
         air = [3, 3, 6, 8]
-        images = th.generate_images([10, 20, 30])
-        flat_field = th.generate_images([2, 20, 30])
+        images = th.generate_images([10, 20, 30], seed=2021)
+        flat_field = th.generate_images([2, 20, 30], seed=2021)
         images.data[::2] *= 0.5
 
         air_data_flat = np.copy(flat_field.data[:, air[1]:air[3], air[0]:air[2]])
