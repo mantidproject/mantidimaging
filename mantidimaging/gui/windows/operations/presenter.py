@@ -43,7 +43,7 @@ class Notification(Enum):
 def _find_nan_change(before_image, filtered_image_data):
     before_nan = np.isnan(before_image)
     after_nan = np.isnan(filtered_image_data)
-    nan_change = np.logical_xor(before_nan, after_nan)
+    nan_change = np.logical_and(before_nan, ~after_nan)
     return nan_change
 
 
