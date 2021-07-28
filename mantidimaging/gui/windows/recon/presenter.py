@@ -126,6 +126,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
         self.do_preview_reconstruct_slice()
+        self._do_nan_zero_negative_check()
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -352,3 +353,21 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def proj_180_degree_shape_matches_images(self, images):
         return self.model.proj_180_degree_shape_matches_images(images)
+
+    def _do_nan_zero_negative_check(self):
+        """
+        Checks if the data contains NaNs/zeroes and displays a message if they are found.
+        """
+        msg_list = []
+        if self.model.stack_contains_nans():
+            msg_list.append("NaN(s) found in the stack.")
+        if self.model.stack_contains_zeroes():
+            msg_list.append("Zero(es) found in the stack.")
+        if self.model.stack_contains_negative_values():
+            msg_list.append("Negative value(s) found in the stack.")
+
+        if len(msg_list) == 0:
+            self.view.show_status_message("")
+        else:
+            msg_list.insert(0, "Warning:")
+            self.view.show_status_message(" ".join(msg_list))

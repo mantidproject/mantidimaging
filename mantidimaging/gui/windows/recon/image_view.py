@@ -3,9 +3,9 @@
 from math import isnan
 from typing import Tuple, Optional
 
-import numpy
+import numpy as np
 from PyQt5 import QtCore
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine, ColorMap
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
@@ -42,6 +42,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         recon_details = LabelItem("Value")
         image_layout.addItem(recon_details, 3, 2, 1, 2)
 
+        self.negative_nan_overlay = ImageItem()
+        self.negative_nan_overlay.setZValue(11)
+        self.projection_vb.addItem(self.negative_nan_overlay)
+
         msg_format = "Value: {:.6f}"
         self.display_formatted_detail = {
             self.projection: lambda val: projection_details.setText(msg_format.format(val)),
@@ -76,9 +80,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         hist = HistogramLUTItem(im)
         return im, vb, hist
 
-    def update_projection(self, image_data: numpy.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
+    def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.projection.clear()
         self.projection.setImage(image_data)
+        self._add_nan_zero_negative_overlay()
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:
@@ -143,3 +148,24 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def reset_recon_histogram(self):
         self.recon_hist.autoHistogramRange()
+
+    def _add_nan_zero_negative_overlay(self):
+        """
+        Adds the NaN/zero overlay to the projection view box.
+        """
+        copy = self.projection.image.copy()
+        nans = np.isnan(copy)
+        zero_negative = copy <= 0
+
+        overlay_idxs = np.logical_or(nans, zero_negative)
+        overlay_arr = np.zeros(copy.shape)
+        overlay_arr[overlay_idxs] = 1.0
+
+        pos = np.array([0, 1])
+        color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
+        map = ColorMap(pos, color)
+
+        self.negative_nan_overlay.setOpacity(1)
+        self.negative_nan_overlay.setImage(overlay_arr)
+        lut = map.getLookupTable(0, 1, 2)
+        self.negative_nan_overlay.setLookupTable(lut)
