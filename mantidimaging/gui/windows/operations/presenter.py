@@ -40,6 +40,13 @@ class Notification(Enum):
     SCROLL_PREVIEW_DOWN = auto()
 
 
+def _find_nan_change(before_image, filtered_image_data):
+    before_nan = np.isnan(before_image)
+    after_nan = np.isnan(filtered_image_data)
+    nan_change = np.logical_xor(before_nan, after_nan)
+    return nan_change
+
+
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
     stack: Optional[StackVisualiserView] = None
@@ -285,8 +292,9 @@ class FiltersWindowPresenter(BasePresenter):
 
             if filtered_image_data.shape == before_image.shape:
                 diff = np.subtract(filtered_image_data, before_image)
+                nan_change = _find_nan_change(before_image, filtered_image_data)
                 if self.view.overlayDifference.isChecked():
-                    self.view.previews.add_difference_overlay(diff)
+                    self.view.previews.add_difference_overlay(diff, nan_change)
                 else:
                     self.view.previews.hide_difference_overlay()
                 if self.view.invertDifference.isChecked():
