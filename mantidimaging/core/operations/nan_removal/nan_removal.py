@@ -14,17 +14,31 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 
 class NaNRemovalFilter(BaseFilter):
+    """
+    Replaces all NaNs in the images with a specified value.
+
+    Intended to be used on: Projections
+
+    When: To remove NaNs before reconstruction.
+    """
 
     filter_name = "NaN Removal"
 
     @staticmethod
-    def filter_func(images: Images, replace_value=float, progress=None) -> Images:
+    def filter_func(data: Images, replace_value: float, progress=None) -> Images:
+        """
+        Replaces the NaNs with a specified value.
+        :param data: The input data.
+        :param replace_value: The data to replace the NaNs with.
+        :param progress: The optional Progress oebject.
+        :return: The Images object with the NaNs replaced.
+        """
 
-        data = images.data
-        nan_idxs = np.isnan(data)
-        data[nan_idxs] = replace_value
+        sample = data.data
+        nan_idxs = np.isnan(sample)
+        sample[nan_idxs] = replace_value
 
-        return images
+        return data
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
