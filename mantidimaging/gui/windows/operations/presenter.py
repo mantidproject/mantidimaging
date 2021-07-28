@@ -41,6 +41,12 @@ class Notification(Enum):
 
 
 def _find_nan_change(before_image, filtered_image_data):
+    """
+    Returns a bool array of all the placed where a NaN has been removed.
+    :param before_image: The before image.
+    :param filtered_image_data: The filter result.
+    :return: The indexes of the pixels with removed NaNs.
+    """
     before_nan = np.isnan(before_image)
     after_nan = np.isnan(filtered_image_data)
     nan_change = np.logical_and(before_nan, ~after_nan)
