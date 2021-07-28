@@ -1,0 +1,27 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Tasev
+    given-names: Dimitar
+    orcid: https://orcid.org/0000-0002-5435-1936
+  - family-names: Akello-Egwel
+    given-names: Dolica
+  - family-names: Gigg
+    given-names: Martyn
+  - family-names: Jones
+    given-names: Samuel
+    orcid: https://orcid.org/0000-0001-7217-2280
+  - family-names: Nixon
+    given-names: Daniel
+  - family-names: Taylor
+    given-names: Will
+  - family-names: Tygier
+    given-names: Sam
+    orcid: https://orcid.org/0000-0002-7495-8655
+title: "Mantid Imaging"
+version: "2.1.0"
+doi: 10.5281/zenodo.4728059
+date-released: 2021-04-29
+license: "GPL-3.0-or-later"
+repository-code: https://github.com/mantidproject/mantidimaging
+url: https://mantidproject.github.io/mantidimaging
