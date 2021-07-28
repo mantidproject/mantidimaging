@@ -298,8 +298,8 @@ class FiltersWindowPresenter(BasePresenter):
 
             if filtered_image_data.shape == before_image.shape:
                 diff = np.subtract(filtered_image_data, before_image)
-                nan_change = _find_nan_change(before_image, filtered_image_data)
                 if self.view.overlayDifference.isChecked():
+                    nan_change = _find_nan_change(before_image, filtered_image_data)
                     self.view.previews.add_difference_overlay(diff, nan_change)
                 else:
                     self.view.previews.hide_difference_overlay()
