@@ -50,6 +50,10 @@ class NexusLoadDialog(QDialog):
         self.stop_widget = QSpinBox()
         self.step_widget = QSpinBox()
 
+        self.start_widget.setMinimum(0)
+        self.stop_widget.setMinimum(1)
+        self.step_widget.setMinimum(1)
+
         self.accepted.connect(self.parent_view.execute_nexus_load)
 
     def choose_nexus_file(self):
@@ -139,7 +143,7 @@ class NexusLoadDialog(QDialog):
         h_layout.addWidget(self.start_widget)
         h_layout.addWidget(QLabel("Stop"))
         h_layout.addWidget(self.stop_widget)
-        h_layout.addWidget(QLabel("Increment"))
+        h_layout.addWidget(QLabel("Step"))
         h_layout.addWidget(self.step_widget)
         increment_widget.setLayout(h_layout)
         self.tree.setItemWidget(child, 2, increment_widget)
