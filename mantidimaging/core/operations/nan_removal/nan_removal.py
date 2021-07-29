@@ -26,7 +26,7 @@ class NaNRemovalFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: Images, replace_value: float, progress=None) -> Images:
+    def filter_func(data, replace_value=None, progress=None) -> Images:
         """
         Replaces the NaNs with a specified value.
         :param data: The input data.
