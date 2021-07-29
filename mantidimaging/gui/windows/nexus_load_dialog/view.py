@@ -5,7 +5,7 @@ from typing import Tuple
 from PyQt5.QtCore import Qt, QEventLoop
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
-    QStackedWidget, QApplication
+    QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -125,6 +125,17 @@ class NexusLoadDialog(QDialog):
             checkbox.setEnabled(False)
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
+
+    def set_projections_increment(self):
+        section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        child = section.child(0).child(0)
+        increment_widget = QWidget()
+        h_layout = QHBoxLayout()
+        h_layout.addWidget(QLabel("Start"))
+        h_layout.addWidget(QLabel("Stop"))
+        h_layout.addWidget(QLabel("Increment"))
+        increment_widget.setLayout(h_layout)
+        self.tree.setItemWidget(child, 2, increment_widget)
 
     def show_exception(self, msg: str, traceback):
         """
