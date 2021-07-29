@@ -9,10 +9,6 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
 
-# Prevents undefined and infinite values due to negative or zero pixels in
-# projection being passed into the negative log
-MIN_PIXEL_VALUE: float = 1e-6
-
 
 class BaseRecon:
     @staticmethod
@@ -21,7 +17,7 @@ class BaseRecon:
 
     @staticmethod
     def negative_log(data: np.ndarray) -> np.ndarray:
-        return -np.log(np.maximum(data, MIN_PIXEL_VALUE))
+        return -np.log(data)
 
     @staticmethod
     def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
