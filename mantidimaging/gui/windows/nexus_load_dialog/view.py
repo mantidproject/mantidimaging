@@ -5,7 +5,7 @@ from typing import Tuple
 from PyQt5.QtCore import Qt, QEventLoop
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
-    QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel
+    QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel, QSpinBox
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -45,6 +45,10 @@ class NexusLoadDialog(QDialog):
 
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+
+        self.start_widget = QSpinBox()
+        self.stop_widget = QSpinBox()
+        self.step_widget = QSpinBox()
 
         self.accepted.connect(self.parent_view.execute_nexus_load)
 
@@ -132,8 +136,11 @@ class NexusLoadDialog(QDialog):
         increment_widget = QWidget()
         h_layout = QHBoxLayout()
         h_layout.addWidget(QLabel("Start"))
+        h_layout.addWidget(self.start_widget)
         h_layout.addWidget(QLabel("Stop"))
+        h_layout.addWidget(self.stop_widget)
         h_layout.addWidget(QLabel("Increment"))
+        h_layout.addWidget(self.step_widget)
         increment_widget.setLayout(h_layout)
         self.tree.setItemWidget(child, 2, increment_widget)
 

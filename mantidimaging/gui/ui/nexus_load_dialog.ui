@@ -209,6 +209,14 @@
              <property name="text">
               <string/>
              </property>
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="flags">
+               <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
             </item>
             <item>
              <property name="text">
