@@ -3,6 +3,7 @@
 import logging
 import unittest
 import numpy as np
+import numpy.testing as npt
 from functools import partial
 
 from unittest import mock
@@ -13,7 +14,7 @@ from parameterized import parameterized
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
-from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING
+from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 
 
@@ -444,3 +445,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_not_called()
+
+    def test_find_nan_change(self):
+        before_image = np.array([np.nan, 1, 2])
+        after_image = np.array([1, 1, np.nan])
+        npt.assert_array_equal(np.array([True, False, False]), _find_nan_change(before_image, after_image))

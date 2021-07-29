@@ -187,9 +187,10 @@ class FilterPreviews(GraphicsLayoutWidget):
             view.linkView(ViewBox.XAxis, None)
             view.linkView(ViewBox.YAxis, None)
 
-    def add_difference_overlay(self, diff):
+    def add_difference_overlay(self, diff, nan_change):
         diff = np.absolute(diff)
         diff[diff > OVERLAY_THRESHOLD] = 1.0
+        diff[nan_change] = 1.0
         pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
         map = ColorMap(pos, color)
