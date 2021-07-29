@@ -21,6 +21,7 @@ New features
 - #1027 : Flat field warning if output has negative values
 - #1027 : NeXus Loader: Message when loading large files
 - #1026 : Recon warn if input has NaNs
+- #816 : NaN Removal Filter
 
 Fixes
 -----
