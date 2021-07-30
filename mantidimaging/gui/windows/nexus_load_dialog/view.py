@@ -54,6 +54,22 @@ class NexusLoadDialog(QDialog):
         self.stop_widget.setMinimum(1)
         self.step_widget.setMinimum(1)
 
+        self.increment_widget = QWidget()
+        h_layout = QHBoxLayout()
+        h_layout.addWidget(QLabel("Start"))
+        h_layout.addWidget(self.start_widget)
+        h_layout.addWidget(QLabel("Stop"))
+        h_layout.addWidget(self.stop_widget)
+        h_layout.addWidget(QLabel("Step"))
+        h_layout.addWidget(self.step_widget)
+        self.increment_widget.setLayout(h_layout)
+        self.increment_widget.setEnabled(False)
+
+        section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        child = section.child(0).child(0)
+        self.tree.setItemWidget(child, 2, self.increment_widget)
+        self.tree.setItemWidget(child, 0, QLabel("Indices"))
+
         self.accepted.connect(self.parent_view.execute_nexus_load)
 
     def choose_nexus_file(self):
@@ -142,20 +158,8 @@ class NexusLoadDialog(QDialog):
         self.stop_widget.setValue(n_proj)
         self.step_widget.setMaximum(n_proj)
 
-        increment_widget = QWidget()
-        h_layout = QHBoxLayout()
-        h_layout.addWidget(QLabel("Start"))
-        h_layout.addWidget(self.start_widget)
-        h_layout.addWidget(QLabel("Stop"))
-        h_layout.addWidget(self.stop_widget)
-        h_layout.addWidget(QLabel("Step"))
-        h_layout.addWidget(self.step_widget)
-        increment_widget.setLayout(h_layout)
-
-        self.tree.setItemWidget(child, 2, increment_widget)
-        self.tree.setItemWidget(child, 0, QLabel("Indices"))
-
         child.setExpanded(True)
+        self.increment_widget.setEnabled(True)
 
     def show_exception(self, msg: str, traceback):
         """
