@@ -156,6 +156,7 @@ class NexusLoadPresenter:
             self._missing_data_error("projection images")
             self.view.disable_ok_button()
             return
+        self.view.set_projections_increment(self.sample_array.shape[0])
 
         self.flat_before_array = self._get_images(ImageKeys.FlatField, True)
         self.view.set_images_found(1, self.flat_before_array.size != 0, self.flat_before_array.shape)
@@ -207,6 +208,9 @@ class NexusLoadPresenter:
         Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
+        assert self.sample_array is not None
+        self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
+                                              step_widget.value()]
         sample_images = self._create_images(self.sample_array, "Projections")
         sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
         return Dataset(sample=sample_images,
