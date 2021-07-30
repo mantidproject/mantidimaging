@@ -208,6 +208,8 @@ class NexusLoadPresenter:
         Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
+        self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
+                                              step_widget.value()]
         sample_images = self._create_images(self.sample_array, "Projections")
         sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
         return Dataset(sample=sample_images,
