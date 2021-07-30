@@ -212,7 +212,7 @@ class FiltersWindowPresenter(BasePresenter):
         return False
 
     def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
-        do_180deg = True
+        use_new_data = True
         attempt_repair = task.error is not None
         negative_stacks = []
         for stack in updated_stacks:
@@ -224,9 +224,9 @@ class FiltersWindowPresenter(BasePresenter):
             elif task.error is None:
                 # otherwise check with user which one to keep
                 if self.view.safeApply.isChecked():
-                    do_180deg = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
+                    use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
                 # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
-                if stack.presenter.images.has_proj180deg() and do_180deg and not self.applying_to_all:
+                if stack.presenter.images.has_proj180deg() and use_new_data and not self.applying_to_all:
                     self.view.clear_previews()
                     # Apply to proj180 synchronously - this function is already running async
                     # and running another async instance causes a race condition in the parallel module
@@ -248,10 +248,13 @@ class FiltersWindowPresenter(BasePresenter):
         if task.error is not None:
             # task failed, show why
             self.view.show_error_dialog(f"Operation failed: {task.error}")
-        else:
+        elif use_new_data:
             # Feedback to user
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
+        else:
+            self.view.clear_notification_dialog()
+            self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
 
         if self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
             self._show_negative_values_error(negative_stacks)

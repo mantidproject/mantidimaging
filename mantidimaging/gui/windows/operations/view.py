@@ -187,6 +187,11 @@ class FiltersWindowView(BaseMainWindowView):
         self.notification_icon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_DialogYesButton))
         self.notification_text.setText(f"{operation_name} completed successfully!")
 
+    def show_operation_cancelled(self, operation_name):
+        self.notification_text.show()
+        self.notification_icon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_DialogYesButton))
+        self.notification_text.setText(f"{operation_name} cancelled, original data restored")
+
     def open_help_webpage(self):
         filter_name = self.filterSelector.currentText()
 
