@@ -62,7 +62,7 @@ class NexusLoadDialog(QDialog):
         h_layout.addWidget(self.start_widget)
         h_layout.addWidget(QLabel("Stop"))
         h_layout.addWidget(self.stop_widget)
-        h_layout.addWidget(QLabel("Step"))
+        h_layout.addWidget(QLabel("Increment"))
         h_layout.addWidget(self.step_widget)
         self.increment_widget.setLayout(h_layout)
         self.increment_widget.setEnabled(False)
