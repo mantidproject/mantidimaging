@@ -44,7 +44,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.view.pixelDepthComboBox.currentText.return_value = self.expected_pixel_depth = "float32"
         self.view.pixelSizeSpinBox.value.return_value = pixel_size = 9.00
         self.view.start_widget.value.return_value = 0
-        self.view.stop_widget.value.return_value = 9
+        self.view.stop_widget.value.return_value = 2
         self.view.step_widget.value.return_value = 1
         self.expected_pixel_size = int(pixel_size)
 
@@ -257,3 +257,9 @@ class NexusLoaderTest(unittest.TestCase):
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
             assert self.nexus_loader._find_data_title() == "NeXus Data"
         self.assertIn("A valid title couldn't be found. Using 'NeXus Data' instead.", log_mock.output[0])
+
+    def test_step_load(self):
+        self.view.step_widget.value.return_value = 2
+        self.nexus_loader.scan_nexus_file()
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertEqual(dataset.sample.data.shape[0], 1)
