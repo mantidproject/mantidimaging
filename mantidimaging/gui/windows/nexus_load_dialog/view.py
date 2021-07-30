@@ -137,12 +137,12 @@ class NexusLoadDialog(QDialog):
     def set_projections_increment(self, shape):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(0).child(0)
-        increment_widget = QWidget()
 
         self.stop_widget.setMaximum(shape[0])
         self.stop_widget.setValue(shape[0])
         self.step_widget.setMaximum(shape[0])
 
+        increment_widget = QWidget()
         h_layout = QHBoxLayout()
         h_layout.addWidget(QLabel("Start"))
         h_layout.addWidget(self.start_widget)
@@ -151,7 +151,11 @@ class NexusLoadDialog(QDialog):
         h_layout.addWidget(QLabel("Step"))
         h_layout.addWidget(self.step_widget)
         increment_widget.setLayout(h_layout)
+
         self.tree.setItemWidget(child, 2, increment_widget)
+        self.tree.setItemWidget(child, 0, QLabel("Indices"))
+
+        child.setExpanded(True)
 
     def show_exception(self, msg: str, traceback):
         """
