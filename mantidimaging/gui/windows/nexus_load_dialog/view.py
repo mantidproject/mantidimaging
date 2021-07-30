@@ -134,10 +134,15 @@ class NexusLoadDialog(QDialog):
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
-    def set_projections_increment(self):
+    def set_projections_increment(self, shape):
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(0).child(0)
         increment_widget = QWidget()
+
+        self.stop_widget.setMaximum(shape[0])
+        self.stop_widget.setValue(shape[0])
+        self.step_widget.setMaximum(shape[0])
+
         h_layout = QHBoxLayout()
         h_layout.addWidget(QLabel("Start"))
         h_layout.addWidget(self.start_widget)
