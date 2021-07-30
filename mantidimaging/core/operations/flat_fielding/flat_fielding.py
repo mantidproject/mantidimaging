@@ -224,15 +224,12 @@ class FlatFieldFilter(BaseFilter):
             flat_before_widget: StackSelectorWidgetView, flat_after_widget: StackSelectorWidgetView,
             dark_before_widget: StackSelectorWidgetView, dark_after_widget: StackSelectorWidgetView,
             selected_flat_fielding_widget: QComboBox, use_dark_widget: QCheckBox) -> partial:
-        flat_before_stack = flat_before_widget.main_window.get_stack_visualiser(flat_before_widget.current())
-        flat_before_images = flat_before_stack.presenter.images
-        flat_after_stack = flat_after_widget.main_window.get_stack_visualiser(flat_after_widget.current())
-        flat_after_images = flat_after_stack.presenter.images
 
-        dark_before_stack = dark_before_widget.main_window.get_stack_visualiser(dark_before_widget.current())
-        dark_before_images = dark_before_stack.presenter.images
-        dark_after_stack = dark_after_widget.main_window.get_stack_visualiser(dark_after_widget.current())
-        dark_after_images = dark_after_stack.presenter.images
+        flat_before_images = BaseFilter.get_images_from_stack(flat_before_widget, "flat before")
+        flat_after_images = BaseFilter.get_images_from_stack(flat_after_widget, "flat after")
+
+        dark_before_images = BaseFilter.get_images_from_stack(dark_before_widget, "dark before")
+        dark_after_images = BaseFilter.get_images_from_stack(dark_after_widget, "dark after")
 
         selected_flat_fielding = selected_flat_fielding_widget.currentText()
 

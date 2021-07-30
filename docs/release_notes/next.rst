@@ -45,6 +45,7 @@ Fixes
 - #1032: Crash in RingRemovalFilter
 - #1057: Fix crash when refining COR
 - #1056: Cannot set range [nan, nan] in ROI normalisation
+- #1019: ERROR: Presenter error: Error applying filter for preview - when closing stacks
 
 Developer Changes
 -----------------
