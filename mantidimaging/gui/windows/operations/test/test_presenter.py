@@ -132,6 +132,31 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         do_update_previews.assert_called_once()
         self.presenter.main_window.presenter.model.set_images_in_stack.assert_called_once()
 
+    @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
+                         do_update_previews=DEFAULT,
+                         _wait_for_stack_choice=DEFAULT,
+                         _do_apply_filter_sync=DEFAULT)
+    def test_post_filter_keep_original(self,
+                                       do_update_previews: Mock = Mock(),
+                                       _wait_for_stack_choice: Mock = Mock(),
+                                       _do_apply_filter_sync: Mock = Mock()):
+        """
+        Tests when the operation has applied successfully, but user choose to keep original
+        """
+        self.presenter.view.safeApply.isChecked.return_value = True
+        mock_task = mock.Mock()
+        mock_task.error = None
+        _wait_for_stack_choice.return_value = False  # user clicked keep original
+
+        self.presenter._post_filter(self.mock_stack_visualisers[0:1], mock_task)
+
+        do_update_previews.assert_called_once()
+        _wait_for_stack_choice.assert_called_once()
+
+        self.view.clear_notification_dialog.assert_called_once()
+        self.view.show_operation_completed.assert_not_called()
+        self.view.show_operation_cancelled.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
+
     @mock.patch.multiple(
         'mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
         _do_apply_filter=DEFAULT,
