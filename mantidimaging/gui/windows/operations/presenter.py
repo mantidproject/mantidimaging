@@ -19,6 +19,7 @@ from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.utility.common import operation_in_progress
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
+from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 from .model import FiltersWindowModel
 
@@ -111,6 +112,11 @@ class FiltersWindowPresenter(BasePresenter):
         with BlockQtSignals([self.view]):
             self.set_preview_image_index(0)
             self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+
+            for row_id in range(self.view.filterPropertiesLayout.count()):
+                widget = self.view.filterPropertiesLayout.itemAt(row_id).widget()
+                if isinstance(widget, StackSelectorWidgetView):
+                    widget._handle_loaded_stacks_changed()
 
         self.do_update_previews()
 

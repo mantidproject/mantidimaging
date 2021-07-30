@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import TYPE_CHECKING, Any, Callable, Dict
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 from enum import Enum, auto
 
 import numpy as np
@@ -12,6 +12,7 @@ from mantidimaging.core.data import Images
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
     from mantidimaging.gui.mvp_base import BaseMainWindowView  # pragma: no cover
+    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 
 class FilterGroup(Enum):
@@ -84,6 +85,15 @@ class BaseFilter:
     @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.NoGroup
+
+    @staticmethod
+    def get_images_from_stack(widget: "StackSelectorWidgetView", msg: str) -> Optional[Images]:
+        try:
+            stack = widget.main_window.get_stack_visualiser(widget.current())
+        except KeyError:
+            # Can happen if stack is closed while selected in the form
+            raise ValueError(f"Selected stack for {msg} does not exist")
+        return stack.presenter.images
 
 
 def raise_not_implemented(function_name):

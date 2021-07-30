@@ -65,8 +65,6 @@ class StackSelectorWidgetPresenter(BasePresenter):
         self.handle_selection(new_selected_index)
 
     def handle_selection(self, index):
-        self.view.stack_selected_int.emit(index)
-
         uuid = self.stack_uuids[index] if self.stack_uuids else None
         self.current_stack = uuid
         self.view.stack_selected_uuid.emit(uuid)

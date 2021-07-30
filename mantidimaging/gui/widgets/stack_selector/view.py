@@ -22,7 +22,6 @@ def _string_contains_all_parts(string: str, parts: list) -> bool:
 class StackSelectorWidgetView(QComboBox):
     stacks_updated = pyqtSignal()
 
-    stack_selected_int = pyqtSignal(int)
     stack_selected_uuid = pyqtSignal('PyQt_PyObject')
 
     main_window: 'MainWindowView'
