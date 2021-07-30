@@ -30,6 +30,8 @@ class NexusLoadDialog(QDialog):
     pixelDepthComboBox: QComboBox
     pixelSizeSpinBox: QDoubleSpinBox
     stackedWidget: QStackedWidget
+    previewPushButton: QStackedWidget
+    allPushButton: QStackedWidget
 
     def __init__(self, parent):
         super(NexusLoadDialog, self).__init__(parent)
@@ -71,6 +73,10 @@ class NexusLoadDialog(QDialog):
         self.tree.setItemWidget(child, 0, QLabel("Indices"))
 
         self.accepted.connect(self.parent_view.execute_nexus_load)
+
+        self.previewPushButton.clicked.connect(self._set_preview_step)
+        self.allPushButton.clicked.connect(self._set_all_step)
+        self.n_proj = 0
 
     def choose_nexus_file(self):
         """
@@ -151,6 +157,8 @@ class NexusLoadDialog(QDialog):
         self.checkboxes[child.text(0)] = checkbox
 
     def set_projections_increment(self, n_proj: int):
+        self.n_proj = n_proj
+
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
         child = section.child(0).child(0)
 
@@ -192,3 +200,13 @@ class NexusLoadDialog(QDialog):
         """
         tree_widget_item.setText(FOUND_COLUMN, FOUND_TEXT[found])
         tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
+
+    def _set_preview_step(self):
+        self.start_widget.setValue(0)
+        self.stop_widget.setValue(self.n_proj)
+        self.step_widget.setValue(self.n_proj // 10)
+
+    def _set_all_step(self):
+        self.start_widget.setValue(0)
+        self.stop_widget.setValue(self.n_proj)
+        self.step_widget.setValue(1)
