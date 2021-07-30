@@ -160,13 +160,12 @@ class NexusLoadDialog(QDialog):
         self.n_proj = n_proj
 
         section: QTreeWidgetItem = self.tree.topLevelItem(1)
-        child = section.child(0).child(0)
+        section.child(0).setExpanded(True)
 
         self.stop_widget.setMaximum(n_proj)
         self.stop_widget.setValue(n_proj)
         self.step_widget.setMaximum(n_proj)
 
-        child.setExpanded(True)
         self.increment_widget.setEnabled(True)
 
     def show_exception(self, msg: str, traceback):
