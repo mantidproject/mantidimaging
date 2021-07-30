@@ -158,9 +158,7 @@ class NexusLoadDialog(QDialog):
 
     def set_projections_increment(self, n_proj: int):
         self.n_proj = n_proj
-
-        section: QTreeWidgetItem = self.tree.topLevelItem(1)
-        section.child(0).setExpanded(True)
+        self.tree.topLevelItem(1).child(0).setExpanded(True)
 
         self.stop_widget.setMaximum(n_proj)
         self.stop_widget.setValue(n_proj)
