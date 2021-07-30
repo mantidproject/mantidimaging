@@ -157,6 +157,10 @@ class NexusLoadDialog(QDialog):
         self.checkboxes[child.text(0)] = checkbox
 
     def set_projections_increment(self, n_proj: int):
+        """
+        Set the properties of the indices spin boxes.
+        :param n_proj: The number of projections that have been found in the NeXus file.
+        """
         self.n_proj = n_proj
         self.tree.topLevelItem(1).child(0).setExpanded(True)
 
@@ -199,11 +203,17 @@ class NexusLoadDialog(QDialog):
         tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
 
     def _set_preview_step(self):
+        """
+        Set the spin boxes to load a preview of the projections.
+        """
         self.start_widget.setValue(0)
         self.stop_widget.setValue(self.n_proj)
         self.step_widget.setValue(self.n_proj // 10)
 
     def _set_all_step(self):
+        """
+        Set the spin boxes to load all the projections.
+        """
         self.start_widget.setValue(0)
         self.stop_widget.setValue(self.n_proj)
         self.step_widget.setValue(1)
