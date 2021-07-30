@@ -43,6 +43,9 @@ class NexusLoaderTest(unittest.TestCase):
         self.view.filePathLineEdit.text.return_value = "filename"
         self.view.pixelDepthComboBox.currentText.return_value = self.expected_pixel_depth = "float32"
         self.view.pixelSizeSpinBox.value.return_value = pixel_size = 9.00
+        self.view.start_widget.value.return_value = 0
+        self.view.stop_widget.value.return_value = 9
+        self.view.step_widget.value.return_value = 1
         self.expected_pixel_size = int(pixel_size)
 
         self.image_types = ["Projections", "Flat Before", "Flat After", "Dark Before", "Dark After"]
