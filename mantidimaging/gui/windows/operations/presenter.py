@@ -248,10 +248,13 @@ class FiltersWindowPresenter(BasePresenter):
         if task.error is not None:
             # task failed, show why
             self.view.show_error_dialog(f"Operation failed: {task.error}")
-        else:
+        elif use_new_data:
             # Feedback to user
             self.view.clear_notification_dialog()
             self.view.show_operation_completed(self.model.selected_filter.filter_name)
+        else:
+            self.view.clear_notification_dialog()
+            self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
 
         if self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
             self._show_negative_values_error(negative_stacks)
