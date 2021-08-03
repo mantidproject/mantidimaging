@@ -274,6 +274,10 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _on_volume_recon_done(self, task):
         self.recon_is_running = False
+        if task.error is not None:
+            self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
+            return
+
         self.view.show_recon_volume(task.result)
         self.view.recon_applied.emit()
 
