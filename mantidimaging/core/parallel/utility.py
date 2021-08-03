@@ -25,7 +25,7 @@ SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_i
 
 
 def enough_memory(shape, dtype):
-    return full_size_KB(shape=shape, axis=0, dtype=dtype) < system_free_memory().kb()
+    return full_size_KB(shape=shape, dtype=dtype) < system_free_memory().kb()
 
 
 def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> np.ndarray:

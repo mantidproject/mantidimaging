@@ -12,24 +12,23 @@ class SizeCalculatorTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(SizeCalculatorTest, self).__init__(*args, **kwargs)
 
-    def test_full_size(self):
+    def test_full_size_mb(self):
         shape = (40234079, 1, 13)
-        axis = 0
-        dtype = '32'
+        dtype = np.int32
 
-        res = size_calculator.full_size_MB(shape, axis, dtype)
+        res = size_calculator.full_size_MB(shape, dtype)
 
         self.assertAlmostEqual(res, 1995.2508, 4)
 
-    def test_single_size(self):
-        self.assertEqual(size_calculator.single_size((14, 15, 16), 1), 224)
+    def test_full_size(self):
+        self.assertEqual(size_calculator.full_size([1]), 1)
+        self.assertEqual(size_calculator.full_size([2, 3]), 6)
+        self.assertEqual(size_calculator.full_size([2, 3, 4]), 24)
+        self.assertEqual(size_calculator.full_size([10, 10, 10, 10]), 10000)
 
     def test_determine_dtype_size(self):
-        self.assertEqual(size_calculator._determine_dtype_size('16'), 16)
-        self.assertEqual(size_calculator._determine_dtype_size('32'), 32)
-        self.assertEqual(size_calculator._determine_dtype_size('64'), 64)
-        self.assertEqual(size_calculator._determine_dtype_size(), 1)
+        self.assertEqual(size_calculator._determine_dtype_size(np.float16), 2)
+        self.assertEqual(size_calculator._determine_dtype_size(np.float32), 4)
+        self.assertEqual(size_calculator._determine_dtype_size(np.float64), 8)
 
-        self.assertEqual(size_calculator._determine_dtype_size(np.float16), 16)
-        self.assertEqual(size_calculator._determine_dtype_size(np.float32), 32)
-        self.assertEqual(size_calculator._determine_dtype_size(np.float64), 64)
+        self.assertRaises(ValueError, size_calculator._determine_dtype_size, "")
