@@ -47,6 +47,7 @@ Fixes
 - #1056: Cannot set range [nan, nan] in ROI normalisation
 - #1019: ERROR: Presenter error: Error applying filter for preview - when closing stacks
 - #1068: Don't show misleading success message when operation cancelled
+- #1082: CIL show memory warning
 
 Developer Changes
 -----------------

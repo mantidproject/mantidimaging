@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import numpy as np
 import os
 from typing import Optional, List, Union, Tuple
 
@@ -183,7 +183,7 @@ class Field:
         num_images = size_calculator.number_of_images_from_indices(self._start.value(), self._stop.value(),
                                                                    self._increment.value())
 
-        single_mem = size_calculator.to_MB(size_calculator.single_size(shape), dtype='32')
+        single_mem = size_calculator.full_size_MB(shape, dtype=np.float32)
 
         exp_mem = round(single_mem * num_images, 2)
         return num_images, shape, exp_mem

@@ -24,6 +24,8 @@ from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.size_calculator import full_size_KB
+from mantidimaging.core.utility.memory_usage import system_free_memory
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
@@ -120,6 +122,18 @@ class CILRecon(BaseRecon):
         :return: 3D image data for reconstructed volume
         """
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction')
+
+        projection_size = full_size_KB(images.data.shape, images.dtype)
+        recon_volume_shape = images.data.shape[2], images.data.shape[2], images.data.shape[1]
+        recon_volume_size = full_size_KB(recon_volume_shape, images.dtype)
+        estimated_mem_required = 5 * projection_size + 25 * recon_volume_size
+        free_mem = system_free_memory().kb()
+
+        if (estimated_mem_required > free_mem):
+            estimate_gb = estimated_mem_required / 1024 / 1024
+            raise RuntimeError(
+                "The machine does not have enough physical memory available to allocate space for this data."
+                f" Estimated RAM needed is {estimate_gb:.2f} GB")
 
         if cil_mutex.locked():
             LOG.warning("CIL recon already in progress")
