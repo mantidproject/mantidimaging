@@ -3,6 +3,7 @@
 
 import os
 from pathlib import Path
+import sys
 import unittest
 from unittest import mock
 
@@ -25,6 +26,24 @@ SHOW_DELAY = 10  # Can be increased to watch tests
 SHORT_DELAY = 100
 LOAD_DELAY = 5000
 
+uncaught_exception = None
+current_excepthook = sys.excepthook
+
+
+def handle_uncaught_exceptions(exc_type, exc_value, exc_traceback):
+    """
+    Qt slots swallows exceptions. We need to catch them, but not exit.
+    """
+    global uncaught_exception
+    # store first exception caught
+    if uncaught_exception is None:
+        uncaught_exception = f"{exc_type=}, {exc_value=}"
+
+    current_excepthook(exc_type, exc_value, exc_traceback)
+
+
+sys.excepthook = handle_uncaught_exceptions
+
 
 @pytest.mark.system
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
@@ -36,6 +55,8 @@ class TestMainWindow(unittest.TestCase):
         cls.app = QApplication([])
 
     def setUp(self) -> None:
+        global uncaught_exception
+        uncaught_exception = None
         self.main_window = MainWindowView()
         self.main_window.show()
         QTest.qWait(SHORT_DELAY)
@@ -44,6 +65,9 @@ class TestMainWindow(unittest.TestCase):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
+
+        if uncaught_exception is not None:
+            pytest.fail(f"Uncaught exception {uncaught_exception}")
 
     @classmethod
     def _click_messageBox(cls, button_text: str):
