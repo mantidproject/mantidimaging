@@ -97,6 +97,17 @@ class TestMainWindow(unittest.TestCase):
     def _open_operations(self):
         self.main_window.actionFilters.trigger()
 
+    def _open_reconstruction(self):
+        self.main_window.actionRecon.trigger()
+
+    def _close_stack_tabs(self):
+        stack_tabs = self.main_window.presenter.model.get_all_stack_visualisers()
+        while stack_tabs:
+            last_stack_tab = stack_tabs.pop()
+            QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
+            last_stack_tab.close()
+            QTest.qWait(SHOW_DELAY // 10)
+
     def test_main_window_shows(self):
         self.assertTrue(self.main_window.isVisible())
         self.assertTrue(self.main_window.welcome_window.view.isVisible())
@@ -119,4 +130,19 @@ class TestMainWindow(unittest.TestCase):
         self.assertTrue(self.main_window.filters.isVisible())
         QTest.qWait(SHOW_DELAY)
         self.main_window.filters.close()
+        QTest.qWait(SHOW_DELAY)
+
+    @pytest.mark.xfail(reason="Bug #1014")
+    def test_open_reconstruction(self):
+        self._close_welcome()
+        self._load_data_set()
+
+        self._open_reconstruction()
+
+        self.assertIsNotNone(self.main_window.recon)
+        self.assertTrue(self.main_window.recon.isVisible())
+        QTest.qWait(SHOW_DELAY)
+        self.main_window.recon.close()
+        QTest.qWait(SHOW_DELAY)
+        self._close_stack_tabs()
         QTest.qWait(SHOW_DELAY)
