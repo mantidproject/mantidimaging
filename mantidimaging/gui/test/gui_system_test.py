@@ -4,6 +4,7 @@
 import os
 from pathlib import Path
 import unittest
+from unittest import mock
 
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtTest import QTest
@@ -12,6 +13,7 @@ import pytest
 
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
+from mantidimaging.gui.windows.load_dialog.presenter import Notification
 
 versions._use_test_values()
 
@@ -58,10 +60,39 @@ class TestMainWindow(unittest.TestCase):
     def _close_welcome(self):
         self.main_window.welcome_window.view.close()
 
+    @mock.patch("mantidimaging.gui.windows.load_dialog.view.MWLoadDialog.select_file")
+    def _load_data_set(self, mocked_select_file):
+        mocked_select_file.return_value = LOAD_SAMPLE
+        self.main_window.actionLoadDataset.trigger()
+        QTest.qWait(SHOW_DELAY)
+        self.main_window.load_dialogue.presenter.notify(Notification.UPDATE_ALL_FIELDS)
+        QTest.qWait(SHOW_DELAY)
+        self.main_window.load_dialogue.accept()
+        QTest.qWait(LOAD_DELAY)
+
+    def _open_operations(self):
+        self.main_window.actionFilters.trigger()
+
     def test_main_window_shows(self):
         self.assertTrue(self.main_window.isVisible())
         self.assertTrue(self.main_window.welcome_window.view.isVisible())
         QTest.qWait(SHOW_DELAY)
         self._close_welcome()
         self.assertFalse(self.main_window.welcome_window.view.isVisible())
+        QTest.qWait(SHOW_DELAY)
+
+    def test_loaded_data(self):
+        self._close_welcome()
+        self._load_data_set()
+
+    def test_open_operations(self):
+        self._close_welcome()
+        self._load_data_set()
+
+        self._open_operations()
+
+        self.assertIsNotNone(self.main_window.filters)
+        self.assertTrue(self.main_window.filters.isVisible())
+        QTest.qWait(SHOW_DELAY)
+        self.main_window.filters.close()
         QTest.qWait(SHOW_DELAY)
