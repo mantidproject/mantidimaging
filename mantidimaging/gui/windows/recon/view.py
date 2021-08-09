@@ -1,5 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+
+from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID
 
@@ -25,6 +27,8 @@ from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView  # pragma: no cover
+
+LOG = getLogger(__name__)
 
 
 class ReconstructWindowView(BaseMainWindowView):
@@ -188,7 +192,12 @@ class ReconstructWindowView(BaseMainWindowView):
             self.hide()
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
-        selected_images = self.main_window.get_images_from_stack_uuid(uuid)
+        try:
+            selected_images = self.main_window.get_images_from_stack_uuid(uuid)
+        except KeyError:
+            # Likely due to stack no longer existing, e.g. when all stacks closed
+            LOG.debug("UUID did not match open stack")
+            return
         if selected_images.has_proj180deg() and \
                 not self.presenter.proj_180_degree_shape_matches_images(selected_images):
             self.warn_user(

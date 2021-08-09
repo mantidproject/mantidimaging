@@ -132,7 +132,6 @@ class TestMainWindow(unittest.TestCase):
         self.main_window.filters.close()
         QTest.qWait(SHOW_DELAY)
 
-    @pytest.mark.xfail(reason="Bug #1014")
     def test_open_reconstruction(self):
         self._close_welcome()
         self._load_data_set()
