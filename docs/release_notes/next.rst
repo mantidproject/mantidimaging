@@ -58,6 +58,7 @@ Developer Changes
 - #998 : setup.py command to install current developer requirements
 - #969 : Improve mypy coverage in core.io
 - #1007 : Change applitools check level to content
+- #1086 : GUI system tests
 
 Dependency updates
 ------------------
