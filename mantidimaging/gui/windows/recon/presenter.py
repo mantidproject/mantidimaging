@@ -125,6 +125,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
+        if stack is None:
+            return
         self.do_preview_reconstruct_slice()
         self._do_nan_zero_negative_check()
 
