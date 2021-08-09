@@ -155,6 +155,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QPushButton" name="step_preview">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Preview</string>
          </property>
@@ -162,6 +165,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="step_all">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>All</string>
          </property>

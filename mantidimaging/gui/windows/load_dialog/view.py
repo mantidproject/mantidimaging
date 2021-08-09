@@ -142,3 +142,7 @@ class MWLoadDialog(QDialog):
 
     def show_error(self, msg, traceback):
         self.parent_view.presenter.show_error(msg, traceback)
+
+    def enable_preview_all_buttons(self):
+        self.step_preview.setEnabled(True)
+        self.step_all.setEnabled(True)

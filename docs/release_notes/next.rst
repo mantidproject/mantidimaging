@@ -50,6 +50,7 @@ Fixes
 - #1082: CIL show memory warning
 - #1014: KeyError when closing stacks
 - #1029: Segmentation fault in image_in_vb
+- #1081: Error if pressing preview button before selecting a dataset
 
 Developer Changes
 -----------------
