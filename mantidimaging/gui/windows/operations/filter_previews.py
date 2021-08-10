@@ -29,6 +29,7 @@ OVERLAY_THRESHOLD = 1e-3
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = Coord(4, 0)
 label_coords = Coord(3, 1)
+graveyard = []
 
 
 def _data_valid_for_histogram(data):
@@ -127,6 +128,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
         hist = HistogramLUTItem(im)
+        graveyard.append(vb)
         return im, vb, hist
 
     def clear_items(self, clear_before: bool = True):
