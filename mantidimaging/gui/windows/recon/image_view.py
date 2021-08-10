@@ -136,7 +136,8 @@ class ReconImagesView(GraphicsLayoutWidget):
         (the line likes to be unbound when the degree isn't a multiple o 90 - and the tilt never is)
         :return:
         """
-        self.projection_vb.removeItem(self.tilt_line)
+        if self.tilt_line.scene() is not None:
+            self.projection_vb.removeItem(self.tilt_line)
 
     def set_tilt(self, tilt: Degrees, pos: Optional[int] = None):
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
