@@ -49,6 +49,7 @@ Fixes
 - #1068: Don't show misleading success message when operation cancelled
 - #1082: CIL show memory warning
 - #1014: KeyError when closing stacks
+- #1029: Segmentation fault in image_in_vb
 
 Developer Changes
 -----------------
