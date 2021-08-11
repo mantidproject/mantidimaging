@@ -172,8 +172,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         if ev.exit:
             return
         pos = CloseEnoughPoint(ev.pos())
+        # Update values for all 3 images
         for img in self.image_before, self.image_after, self.image_difference:
-            if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
+            if img.image is not None and pos.y < img.image.shape[0] and pos.x < img.image.shape[1]:
                 pixel_value = img.image[pos.y, pos.x]
                 self.display_formatted_detail[img](pixel_value)
 
