@@ -149,7 +149,6 @@ def save(images: Images,
             names[i] = os.path.join(output_dir, names[i])
 
         with progress:
-            min_value = images.data.min()
             for idx in range(num_images):
                 # Overwrite images with the copy that has been rescaled.
                 if pixel_depth == "int16":
