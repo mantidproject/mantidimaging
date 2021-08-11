@@ -87,7 +87,7 @@ class Field:
     def _init_indices(self):
         indices_item = QTreeWidgetItem(self._widget)
         indices_item.setText(0, "File indices")
-        _spinbox_layout = QHBoxLayout(self._tree.parent())
+        _spinbox_layout = QHBoxLayout()
 
         self._start_spinbox = QSpinBox(self._tree.parent())
         _spinbox_layout.addWidget(QLabel("Start", self._tree.parent()))

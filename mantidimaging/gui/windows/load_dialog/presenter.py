@@ -115,6 +115,7 @@ class LoadPresenter:
 
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
+        self.view.enable_preview_all_buttons()
 
     def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
         selected_file = self.view.select_file(name)
