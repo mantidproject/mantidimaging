@@ -51,6 +51,7 @@ Fixes
 - #1014: KeyError when closing stacks
 - #1029: Segmentation fault in image_in_vb
 - #1081: Error if pressing preview button before selecting a dataset
+- #940: Ops window, pixel value not updating for part of image
 
 Developer Changes
 -----------------
