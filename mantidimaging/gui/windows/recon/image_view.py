@@ -111,9 +111,9 @@ class ReconImagesView(GraphicsLayoutWidget):
         if ev.exit:
             return
         pos = CloseEnoughPoint(ev.pos())
-        if img.image is not None and pos.x < img.image.shape[0] and pos.y < img.image.shape[1]:
-            pixel_value = img.image[pos.y, pos.x]
-            self.display_formatted_detail[img](pixel_value)
+
+        pixel_value = img.image[pos.y, pos.x]
+        self.display_formatted_detail[img](pixel_value)
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
