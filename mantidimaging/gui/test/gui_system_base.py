@@ -47,7 +47,7 @@ sys.excepthook = handle_uncaught_exceptions
 
 @pytest.mark.system
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
-class TestMainWindow(unittest.TestCase):
+class GuiSystemBase(unittest.TestCase):
     app: QApplication
 
     @classmethod
@@ -107,41 +107,3 @@ class TestMainWindow(unittest.TestCase):
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
             last_stack_tab.close()
             QTest.qWait(SHOW_DELAY // 10)
-
-    def test_main_window_shows(self):
-        self.assertTrue(self.main_window.isVisible())
-        self.assertTrue(self.main_window.welcome_window.view.isVisible())
-        QTest.qWait(SHOW_DELAY)
-        self._close_welcome()
-        self.assertFalse(self.main_window.welcome_window.view.isVisible())
-        QTest.qWait(SHOW_DELAY)
-
-    def test_loaded_data(self):
-        self._close_welcome()
-        self._load_data_set()
-
-    def test_open_operations(self):
-        self._close_welcome()
-        self._load_data_set()
-
-        self._open_operations()
-
-        self.assertIsNotNone(self.main_window.filters)
-        self.assertTrue(self.main_window.filters.isVisible())
-        QTest.qWait(SHOW_DELAY)
-        self.main_window.filters.close()
-        QTest.qWait(SHOW_DELAY)
-
-    def test_open_reconstruction(self):
-        self._close_welcome()
-        self._load_data_set()
-
-        self._open_reconstruction()
-
-        self.assertIsNotNone(self.main_window.recon)
-        self.assertTrue(self.main_window.recon.isVisible())
-        QTest.qWait(SHOW_DELAY)
-        self.main_window.recon.close()
-        QTest.qWait(SHOW_DELAY)
-        self._close_stack_tabs()
-        QTest.qWait(SHOW_DELAY)
