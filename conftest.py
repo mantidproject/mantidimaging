@@ -14,7 +14,7 @@ def pytest_configure(config):
 
 def pytest_ignore_collect(path, config):
     # When running GUI system tests, ignore all other files
-    if (config.getoption("--run-system-tests") and path.isfile() and not path.basename == "gui_system_test.py"):
+    if config.getoption("--run-system-tests") and path.isfile() and "test_gui_system" not in path.basename:
         return True
     else:
         return False
