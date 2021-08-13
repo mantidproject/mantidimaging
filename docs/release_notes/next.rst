@@ -53,6 +53,7 @@ Fixes
 - #1081: Error if pressing preview button before selecting a dataset
 - #940: Ops window, pixel value not updating for part of image
 - #1093: TIFF output blank if NaN in stack
+- #1095: AttributeError loading 180 deg projection
 
 Developer Changes
 -----------------

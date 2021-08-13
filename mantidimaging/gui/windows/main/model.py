@@ -177,9 +177,8 @@ class MainWindowModel(object):
         if stack_dock is None:
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
 
-        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
         _180_deg = loader.load(file_names=[_180_deg_file])
-        stack.presenter.images.proj180deg = _180_deg.sample
+        stack_dock.presenter.images.proj180deg = _180_deg.sample
         return _180_deg
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
