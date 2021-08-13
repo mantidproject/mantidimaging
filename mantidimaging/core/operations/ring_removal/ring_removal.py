@@ -23,6 +23,7 @@ class RingRemovalFilter(BaseFilter):
     """
     filter_name = "Ring Removal"
     link_histograms = True
+    show_negative_overlay = False
 
     @staticmethod
     def filter_func(images: Images,

@@ -218,6 +218,9 @@ class FilterPreviews(GraphicsLayoutWidget):
     def hide_difference_overlay(self):
         self.image_diff_overlay.setOpacity(0)
 
+    def hide_negative_overlay(self):
+        self.negative_values_overlay.setOpacity(0)
+
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb
         self.image_before_vb.autoRange()
