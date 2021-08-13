@@ -261,7 +261,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         load.assert_called_with(file_names=[_180_file])
         stack_mock.assert_called_with(stack_name)
-        self.assertEqual(_180_stack, stack_mock.return_value.widget.return_value.presenter.images.proj180deg)
+        self.assertEqual(_180_stack, stack_mock.return_value.presenter.images.proj180deg)
 
     @mock.patch('mantidimaging.core.io.loader.load')
     def test_add_180_deg_to_stack_no_stack(self, load: mock.Mock):
