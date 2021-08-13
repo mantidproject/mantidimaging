@@ -82,6 +82,9 @@ class FiltersWindowModel(object):
         """
         return self.selected_filter.link_histograms
 
+    def show_negative_overlay(self) -> bool:
+        return self.selected_filter.show_negative_overlay
+
     @property
     def params_needed_from_stack(self):
         return self.selected_filter.sv_params()

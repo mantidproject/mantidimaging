@@ -25,6 +25,8 @@ after_pen = (0, 200, 0)
 diff_pen = (0, 0, 200)
 
 OVERLAY_THRESHOLD = 1e-3
+OVERLAY_COLOUR_NEGATIVE = [255, 0, 0, 255]
+OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = Coord(4, 0)
@@ -195,7 +197,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         diff[diff > OVERLAY_THRESHOLD] = 1.0
         diff[nan_change] = 1.0
         pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], [0, 0, 255, 255]], dtype=np.ubyte)
+        color = np.array([[0, 0, 0, 0], OVERLAY_COLOUR_DIFFERENCE], dtype=np.ubyte)
         map = ColorMap(pos, color)
         self.image_diff_overlay.setOpacity(1)
         self.image_diff_overlay.setImage(diff)
@@ -206,7 +208,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         after[after > 0] = 0.0
         after[after < 0] = 1.0
         pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
+        color = np.array([[0, 0, 0, 0], OVERLAY_COLOUR_NEGATIVE], dtype=np.ubyte)
         map = ColorMap(pos, color)
         self.negative_values_overlay.setOpacity(1)
         self.negative_values_overlay.setImage(after)
@@ -215,6 +217,9 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def hide_difference_overlay(self):
         self.image_diff_overlay.setOpacity(0)
+
+    def hide_negative_overlay(self):
+        self.negative_values_overlay.setOpacity(0)
 
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb

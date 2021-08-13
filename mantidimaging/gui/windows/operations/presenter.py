@@ -314,7 +314,11 @@ class FiltersWindowPresenter(BasePresenter):
                     self.view.previews.hide_difference_overlay()
                 if self.view.invertDifference.isChecked():
                     diff = np.negative(diff, out=diff)
-                self.view.previews.add_negative_overlay(filtered_image_data.copy())
+
+                if self.model.show_negative_overlay():
+                    self.view.previews.add_negative_overlay(filtered_image_data.copy())
+                else:
+                    self.view.previews.hide_negative_overlay()
                 self._update_preview_image(diff, self.view.preview_image_difference)
 
             # Ensure all of it is visible if the lock zoom isn't checked

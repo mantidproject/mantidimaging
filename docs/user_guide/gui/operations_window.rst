@@ -20,7 +20,7 @@ The [?] button next to filter selector will open a webpage with an explanation o
 
 The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference. Below a histogram of pixel values before and after is shown. The image views can be navigated as described in the :ref:`Image View` help page.
 
-Blue pixels in the after preview indicate that a value has changed. Red pixels
+Green pixels in the after preview indicate that a value has changed. Red pixels
 indicate that there are negative values in the result. Note that the negative
 values overlay is placed on top of the image difference overlay, so if a pixel
 has changed and is also negative then it will simply appear as red. The
