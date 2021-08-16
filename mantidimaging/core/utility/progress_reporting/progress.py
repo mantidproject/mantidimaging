@@ -165,6 +165,11 @@ class Progress(object):
         self.progress_handlers.append(handler)
         handler.progress = self
 
+    @staticmethod
+    def _format_time(t: int) -> str:
+        t = int(t)
+        return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
+
     def update(self, steps: int = 1, msg: str = "", force_continue: bool = False) -> None:
         """
         Updates the progress of the task.
@@ -192,12 +197,8 @@ class Progress(object):
 
             eta = self._average_time * (self.end_step - self.current_step)
 
-            def fmt(t):
-                t = int(t)
-                return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
-
             msg = f"{f'{msg}' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
-                  f"Time: {fmt(self.execution_time())}, ETA: {fmt(eta)}"
+                  f"Time: {self._format_time(self.execution_time())}, ETA: {self._format_time(eta)}"
             step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
             self.progress_history.append(step_details)
 

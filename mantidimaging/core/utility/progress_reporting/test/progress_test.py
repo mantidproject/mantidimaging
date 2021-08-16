@@ -247,6 +247,13 @@ class ProgressTest(unittest.TestCase):
         self.assertFalse(p.is_completed())
         self.assertTrue(p.should_cancel)
 
+    def test_format_time(self):
+        self.assertEqual(Progress._format_time(0), "00:00:00")
+        self.assertEqual(Progress._format_time(1), "00:00:01")
+        self.assertEqual(Progress._format_time(61), "00:01:01")
+        self.assertEqual(Progress._format_time(3599), "00:59:59")
+        self.assertEqual(Progress._format_time(3666), "01:01:06")
+
 
 if __name__ == "__main__":
     unittest.main()
