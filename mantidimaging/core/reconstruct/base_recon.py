@@ -20,8 +20,11 @@ class BaseRecon:
         return -np.log(data)
 
     @staticmethod
-    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters) -> np.ndarray:
+    def single_sino(sino: np.ndarray,
+                    cor: ScalarCoR,
+                    proj_angles: ProjectionAngles,
+                    recon_params: ReconstructionParameters,
+                    progress=None) -> np.ndarray:
         """
         Reconstruct a single sinogram
 

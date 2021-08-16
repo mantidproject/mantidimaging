@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
@@ -26,8 +26,11 @@ class TomopyRecon(BaseRecon):
                                   sinogram_order=True)
 
     @staticmethod
-    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters):
+    def single_sino(sino: np.ndarray,
+                    cor: ScalarCoR,
+                    proj_angles: ProjectionAngles,
+                    recon_params: ReconstructionParameters,
+                    progress: Optional[Progress] = None):
         sino = BaseRecon.negative_log(sino)
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,

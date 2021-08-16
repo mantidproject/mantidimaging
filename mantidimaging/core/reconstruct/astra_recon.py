@@ -100,8 +100,11 @@ class AstraRecon(BaseRecon):
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
 
     @staticmethod
-    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters) -> np.ndarray:
+    def single_sino(sino: np.ndarray,
+                    cor: ScalarCoR,
+                    proj_angles: ProjectionAngles,
+                    recon_params: ReconstructionParameters,
+                    progress: Optional[Progress] = None) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
         sino = BaseRecon.negative_log(sino)

@@ -123,7 +123,11 @@ class ReconstructWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters) -> Optional[Images]:
+    def run_preview_recon(self,
+                          slice_idx,
+                          cor: ScalarCoR,
+                          recon_params: ReconstructionParameters,
+                          progress: Progress = None) -> Optional[Images]:
         # Ensure we have some sample data
         if self.images is None:
             return None
@@ -132,9 +136,11 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         output_shape = (1, self.images.width, self.images.width)
         recon: Images = Images.create_empty_images(output_shape, self.images.dtype, self.images.metadata)
-        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx), cor,
+        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx),
+                                                  cor,
                                                   self.images.projection_angles(recon_params.max_projection_angle),
-                                                  recon_params)
+                                                  recon_params,
+                                                  progress=progress)
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
