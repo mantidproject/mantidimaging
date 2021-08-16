@@ -7,8 +7,6 @@ from collections import namedtuple
 from logging import getLogger
 from typing import List, Optional
 
-import numpy
-
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
 ProgressHistory = namedtuple('ProgressHistory', ['time', 'step', 'msg'])
@@ -205,13 +203,10 @@ class Progress(object):
     @staticmethod
     def calculate_mean_time(progress_history: List[ProgressHistory]) -> float:
         if len(progress_history) > 1:
-            times = numpy.asarray([elem.time for elem in progress_history[-1:-STEPS_TO_AVERAGE:-1]],
-                                  dtype=numpy.float32)
-            # get the differences between them (in reverse, to avoid dealing with negative number)
-            # and then the mean time
-            mean_time = numpy.diff(times[::-1]).mean()
+            average_over_steps = min(STEPS_TO_AVERAGE, len(progress_history))
+            time_diff = progress_history[-1].time - progress_history[-average_over_steps].time
 
-            return mean_time
+            return time_diff / (average_over_steps - 1)
         else:
             return 0
 
