@@ -6,6 +6,7 @@ import unittest
 from unittest import mock
 
 from mantidimaging.core.utility.progress_reporting import Progress, ProgressHandler
+from mantidimaging.core.utility.progress_reporting.progress import ProgressHistory
 
 
 class ProgressTest(unittest.TestCase):
@@ -253,6 +254,25 @@ class ProgressTest(unittest.TestCase):
         self.assertEqual(Progress._format_time(61), "00:01:01")
         self.assertEqual(Progress._format_time(3599), "00:59:59")
         self.assertEqual(Progress._format_time(3666), "01:01:06")
+
+    def test_calculate_mean_time(self):
+        progress_history = []
+
+        progress_history.append(ProgressHistory(100, 0, ""))
+        self.assertEqual(Progress.calculate_mean_time(progress_history), 0)
+
+        # first step 5 seconds
+        progress_history.append(ProgressHistory(105, 1, ""))
+        self.assertEqual(Progress.calculate_mean_time(progress_history), 5)
+
+        # second step 10 seconds
+        progress_history.append(ProgressHistory(115, 2, ""))
+        self.assertEqual(Progress.calculate_mean_time(progress_history), 7.5)
+
+        for i in range(1, 50):
+            # add many 2 second steps
+            progress_history.append(ProgressHistory(115 + (i * 2), 2 + (i * 2), ""))
+        self.assertEqual(Progress.calculate_mean_time(progress_history), 2)
 
 
 if __name__ == "__main__":
