@@ -197,16 +197,16 @@ class CILRecon(BaseRecon):
             sigma = 1
             tau = 1 / (sigma * normK**2)
 
-            algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
+            pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
             with progress:
                 for iter in range(recon_params.num_iter):
                     progress.update(steps=1,
                                     msg=f'CIL: Iteration {iter+1} of {recon_params.num_iter}:'
-                                    f'Objective {algo.get_last_objective():.2f}',
+                                    f'Objective {pdhg.get_last_objective():.2f}',
                                     force_continue=False)
-                    algo.next()
-                volume = algo.solution.as_array()
+                    pdhg.next()
+                volume = pdhg.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
             return Images(volume)
 
