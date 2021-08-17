@@ -7,8 +7,6 @@ from collections import namedtuple
 from logging import getLogger
 from typing import List, Optional
 
-import numpy
-
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
 ProgressHistory = namedtuple('ProgressHistory', ['time', 'step', 'msg'])
@@ -60,7 +58,6 @@ class Progress(object):
         # List of tuples defining progress history
         # (timestamp, step, message)
         self.progress_history: List[ProgressHistory] = []
-        self._average_time: float = 0
 
         # Lock used to synchronise modifications to the progress state
         self.lock = threading.Lock()
@@ -165,6 +162,11 @@ class Progress(object):
         self.progress_handlers.append(handler)
         handler.progress = self
 
+    @staticmethod
+    def _format_time(t: int) -> str:
+        t = int(t)
+        return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
+
     def update(self, steps: int = 1, msg: str = "", force_continue: bool = False) -> None:
         """
         Updates the progress of the task.
@@ -181,23 +183,11 @@ class Progress(object):
             if self.current_step > self.end_step:
                 self.end_step = self.current_step + 1
 
-            # update the average based on the last 30 inputs
-            if self.current_step > 0 and self.current_step % STEPS_TO_AVERAGE == 0:
-                times = numpy.asarray([elem.time for elem in self.progress_history[-1:-STEPS_TO_AVERAGE:-1]],
-                                      dtype=numpy.float32)
-                # get the differences between them (in reverse, to avoid dealing with negative number)
-                # and then the mean time
-                mean_time = numpy.diff(times[::-1]).mean()
-                self._average_time = mean_time
-
-            eta = self._average_time * (self.end_step - self.current_step)
-
-            def fmt(t):
-                t = int(t)
-                return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
+            mean_time = self.calculate_mean_time(self.progress_history)
+            eta = mean_time * (self.end_step - self.current_step)
 
             msg = f"{f'{msg}' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
-                  f"Time: {fmt(self.execution_time())}, ETA: {fmt(eta)}"
+                  f"Time: {self._format_time(self.execution_time())}, ETA: {self._format_time(eta)}"
             step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
             self.progress_history.append(step_details)
 
@@ -209,6 +199,16 @@ class Progress(object):
         # Force cancellation on progress update
         if self.should_cancel and not force_continue:
             raise RuntimeError('Task has been cancelled')
+
+    @staticmethod
+    def calculate_mean_time(progress_history: List[ProgressHistory]) -> float:
+        if len(progress_history) > 1:
+            average_over_steps = min(STEPS_TO_AVERAGE, len(progress_history))
+            time_diff = progress_history[-1].time - progress_history[-average_over_steps].time
+
+            return time_diff / (average_over_steps - 1)
+        else:
+            return 0
 
     def cancel(self, msg='cancelled'):
         """

@@ -3,12 +3,12 @@
 
 from logging import getLogger
 from threading import Lock
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
 # import cil
-from cil.framework import AcquisitionGeometry, DataOrder
+from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry
 
 from cil.optimisation.algorithms import PDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
@@ -16,8 +16,6 @@ from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunctio
 
 # CIL ASTRA plugin
 from cil.plugins.astra.operators import ProjectionOperator
-
-import functools
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
@@ -34,7 +32,7 @@ cil_mutex = Lock()
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def set_up_TV_regularisation(image_geometry, acquisition_data):
+    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
@@ -65,12 +63,19 @@ class CILRecon(BaseRecon):
                                   sinogram_order=True)
 
     @staticmethod
-    def single_sino(sino: np.ndarray, cor: ScalarCoR, proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters):
+    def single_sino(sino: np.ndarray,
+                    cor: ScalarCoR,
+                    proj_angles: ProjectionAngles,
+                    recon_params: ReconstructionParameters,
+                    progress: Optional[Progress] = None):
         """
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
         """
+
+        if progress:
+            progress.add_estimated_steps(recon_params.num_iter + 1)
+            progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
         if cil_mutex.locked():
             LOG.warning("CIL recon already in progress")
@@ -98,7 +103,6 @@ class CILRecon(BaseRecon):
             # f1 =  alpha * MixedL21Norm()
             # f2 = 0.5 * L2NormSquared(b=ad2d)
             alpha = recon_params.alpha
-            num_iter = recon_params.num_iter
             F = BlockFunction(alpha * f1, 0.5 * f2)
             normK = K.norm()
             sigma = 1
@@ -106,11 +110,23 @@ class CILRecon(BaseRecon):
 
             pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
-            pdhg.run(num_iter, verbose=0, callback=None)
+            try:
+                for iter in range(recon_params.num_iter):
+                    if progress:
+                        progress.update(steps=1,
+                                        msg=f'CIL: Iteration {iter + 1} of {recon_params.num_iter}',
+                                        force_continue=False)
+                    pdhg.next()
+            finally:
+                if progress:
+                    progress.mark_complete()
             return pdhg.solution.as_array()
 
     @staticmethod
-    def full(images: Images, cors: List[ScalarCoR], recon_params: ReconstructionParameters, progress=None):
+    def full(images: Images,
+             cors: List[ScalarCoR],
+             recon_params: ReconstructionParameters,
+             progress: Optional[Progress] = None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
@@ -121,7 +137,10 @@ class CILRecon(BaseRecon):
         :param progress: Optional progress reporter
         :return: 3D image data for reconstructed volume
         """
-        progress = Progress.ensure_instance(progress, task_name='CIL reconstruction')
+
+        progress = Progress.ensure_instance(progress,
+                                            task_name='CIL reconstruction',
+                                            num_steps=recon_params.num_iter + 1)
 
         projection_size = full_size_KB(images.data.shape, images.dtype)
         recon_volume_shape = images.data.shape[2], images.data.shape[2], images.data.shape[1]
@@ -139,6 +158,7 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
+            progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
             angles = images.projection_angles(recon_params.max_projection_angle).value
             shape = images.data.shape
             pixel_num_h, pixel_num_v = shape[2], shape[1]
@@ -168,7 +188,6 @@ class CILRecon(BaseRecon):
             # f1 =  alpha * MixedL21Norm()
             # f2 = 0.5 * L2NormSquared(b=ad2d)
             alpha = recon_params.alpha
-            num_iter = recon_params.num_iter
             F = BlockFunction(alpha * f1, 0.5 * f2)
             normK = K.norm()
             sigma = 1
@@ -176,12 +195,12 @@ class CILRecon(BaseRecon):
 
             algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
-            def myprogress(p, iter, obj, solution):
-                p.update(steps=1, msg='', force_continue=False)
-
             with progress:
-                prg = functools.partial(myprogress, progress)
-                algo.run(num_iter, verbose=0, callback=prg)
+                for iter in range(recon_params.num_iter):
+                    progress.update(steps=1,
+                                    msg=f'CIL: Iteration {iter+1} of {recon_params.num_iter}',
+                                    force_continue=False)
+                    algo.next()
                 volume = algo.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
             return Images(volume)

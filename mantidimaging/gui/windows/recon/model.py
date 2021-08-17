@@ -123,7 +123,11 @@ class ReconstructWindowModel(object):
         # Async task needs a non-None result of some sort
         return True
 
-    def run_preview_recon(self, slice_idx, cor: ScalarCoR, recon_params: ReconstructionParameters) -> Optional[Images]:
+    def run_preview_recon(self,
+                          slice_idx: int,
+                          cor: ScalarCoR,
+                          recon_params: ReconstructionParameters,
+                          progress: Progress = None) -> Optional[Images]:
         # Ensure we have some sample data
         if self.images is None:
             return None
@@ -132,9 +136,11 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         output_shape = (1, self.images.width, self.images.width)
         recon: Images = Images.create_empty_images(output_shape, self.images.dtype, self.images.metadata)
-        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx), cor,
+        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx),
+                                                  cor,
                                                   self.images.projection_angles(recon_params.max_projection_angle),
-                                                  recon_params)
+                                                  recon_params,
+                                                  progress=progress)
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
@@ -151,7 +157,7 @@ class ReconstructWindowModel(object):
         return recon
 
     @staticmethod
-    def _apply_pixel_size(recon, recon_params, progress=None):
+    def _apply_pixel_size(recon, recon_params: ReconstructionParameters, progress=None):
         if recon_params.pixel_size > 0.:
             recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
             # update the reconstructed stack pixel size with the value actually used for division
@@ -190,7 +196,7 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
-    def get_me_a_cor(self, cor=None):
+    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None):
         if cor is not None:
             # a rotation has been passed in!
             return cor
@@ -253,7 +259,7 @@ class ReconstructWindowModel(object):
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors
 
-    def auto_find_correlation(self, progress) -> Tuple[ScalarCoR, Degrees]:
+    def auto_find_correlation(self, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
 
     @staticmethod
