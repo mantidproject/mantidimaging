@@ -42,7 +42,10 @@ class TomopyRecon(BaseRecon):
         return volume[0]
 
     @staticmethod
-    def full(images: Images, cors: List[ScalarCoR], recon_params: ReconstructionParameters, progress=None):
+    def full(images: Images,
+             cors: List[ScalarCoR],
+             recon_params: ReconstructionParameters,
+             progress: Optional[Progress] = None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 

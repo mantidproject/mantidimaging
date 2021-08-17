@@ -23,7 +23,7 @@ astra_mutex = Lock()
 # Full credit for following code to Daniil Kazantzev
 # Source:
 # https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70
-def rotation_matrix2d(theta):
+def rotation_matrix2d(theta: float):
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
 
@@ -41,7 +41,7 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
 
 
 @contextmanager
-def _managed_recon(sino, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int], None, None]:
+def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int], None, None]:
     proj_id = None
     sino_id = None
     rec_id = None
@@ -94,7 +94,7 @@ class AstraRecon(BaseRecon):
         def get_sumsq(image: np.ndarray) -> float:
             return np.sum(image**2)
 
-        def minimizer_function(cor):
+        def minimizer_function(cor: float):
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
 
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
@@ -141,7 +141,7 @@ class AstraRecon(BaseRecon):
         return output_images
 
     @staticmethod
-    def allowed_filters():
+    def allowed_filters() -> List[str]:
         # removed from list: 'kaiser' as it hard crashes ASTRA
         #                    'projection', 'sinogram', 'rprojection', 'rsinogram' as they error
         return [

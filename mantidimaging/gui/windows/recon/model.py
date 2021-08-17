@@ -124,7 +124,7 @@ class ReconstructWindowModel(object):
         return True
 
     def run_preview_recon(self,
-                          slice_idx,
+                          slice_idx: int,
                           cor: ScalarCoR,
                           recon_params: ReconstructionParameters,
                           progress: Progress = None) -> Optional[Images]:
@@ -157,7 +157,7 @@ class ReconstructWindowModel(object):
         return recon
 
     @staticmethod
-    def _apply_pixel_size(recon, recon_params, progress=None):
+    def _apply_pixel_size(recon, recon_params: ReconstructionParameters, progress=None):
         if recon_params.pixel_size > 0.:
             recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
             # update the reconstructed stack pixel size with the value actually used for division
@@ -196,7 +196,7 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
-    def get_me_a_cor(self, cor=None):
+    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None):
         if cor is not None:
             # a rotation has been passed in!
             return cor
@@ -259,7 +259,7 @@ class ReconstructWindowModel(object):
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors
 
-    def auto_find_correlation(self, progress) -> Tuple[ScalarCoR, Degrees]:
+    def auto_find_correlation(self, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
 
     @staticmethod

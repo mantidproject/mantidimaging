@@ -24,7 +24,7 @@ class BaseRecon:
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress=None) -> np.ndarray:
+                    progress: Optional[Progress] = None) -> np.ndarray:
         """
         Reconstruct a single sinogram
 

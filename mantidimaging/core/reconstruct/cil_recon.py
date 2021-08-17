@@ -8,7 +8,7 @@ from typing import List, Optional
 import numpy as np
 
 # import cil
-from cil.framework import AcquisitionGeometry, DataOrder
+from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry
 
 from cil.optimisation.algorithms import PDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
@@ -32,7 +32,7 @@ cil_mutex = Lock()
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def set_up_TV_regularisation(image_geometry, acquisition_data):
+    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
@@ -123,7 +123,10 @@ class CILRecon(BaseRecon):
             return pdhg.solution.as_array()
 
     @staticmethod
-    def full(images: Images, cors: List[ScalarCoR], recon_params: ReconstructionParameters, progress=None):
+    def full(images: Images,
+             cors: List[ScalarCoR],
+             recon_params: ReconstructionParameters,
+             progress: Optional[Progress] = None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
