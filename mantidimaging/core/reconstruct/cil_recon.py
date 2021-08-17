@@ -32,7 +32,7 @@ cil_mutex = Lock()
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData):
+    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData, alpha: float):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
@@ -40,7 +40,7 @@ class CILRecon(BaseRecon):
 
         # Define Gradient Operator and BlockOperator
         Grad = GradientOperator(image_geometry)
-        K = BlockOperator(Grad, A2d)
+        K = BlockOperator(alpha * Grad, A2d)
 
         # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
         # alpha = 1.0
@@ -95,15 +95,17 @@ class CILRecon(BaseRecon):
             data = ag.allocate(None)
             data.fill(sino)
 
+            alpha = recon_params.alpha
+
             ig = ag.get_ImageGeometry()
             # set up TV regularisation
-            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
+            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, alpha)
 
             # alpha = 1.0
             # f1 =  alpha * MixedL21Norm()
             # f2 = 0.5 * L2NormSquared(b=ad2d)
-            alpha = recon_params.alpha
-            F = BlockFunction(alpha * f1, 0.5 * f2)
+
+            F = BlockFunction(f1, f2)
             normK = K.norm()
             sigma = 1
             tau = 1 / (sigma * normK**2)
@@ -114,7 +116,8 @@ class CILRecon(BaseRecon):
                 for iter in range(recon_params.num_iter):
                     if progress:
                         progress.update(steps=1,
-                                        msg=f'CIL: Iteration {iter + 1} of {recon_params.num_iter}',
+                                        msg=f'CIL: Iteration {iter + 1} of {recon_params.num_iter}'
+                                        f': Objective {pdhg.get_last_objective():.2f}',
                                         force_continue=False)
                     pdhg.next()
             finally:
@@ -180,28 +183,30 @@ class CILRecon(BaseRecon):
             data.fill(BaseRecon.negative_log(images.data))
             data.reorder('astra')
 
+            alpha = recon_params.alpha
+
             ig = ag.get_ImageGeometry()
             # set up TV regularisation
-            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data)
+            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, alpha)
 
             # alpha = 1.0
             # f1 =  alpha * MixedL21Norm()
             # f2 = 0.5 * L2NormSquared(b=ad2d)
-            alpha = recon_params.alpha
-            F = BlockFunction(alpha * f1, 0.5 * f2)
+            F = BlockFunction(f1, f2)
             normK = K.norm()
             sigma = 1
             tau = 1 / (sigma * normK**2)
 
-            algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
+            pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
             with progress:
                 for iter in range(recon_params.num_iter):
                     progress.update(steps=1,
-                                    msg=f'CIL: Iteration {iter+1} of {recon_params.num_iter}',
+                                    msg=f'CIL: Iteration {iter+1} of {recon_params.num_iter}:'
+                                    f'Objective {pdhg.get_last_objective():.2f}',
                                     force_continue=False)
-                    algo.next()
-                volume = algo.solution.as_array()
+                    pdhg.next()
+                volume = pdhg.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
             return Images(volume)
 
