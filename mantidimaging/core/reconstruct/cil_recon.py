@@ -212,4 +212,4 @@ class CILRecon(BaseRecon):
 
 
 def allowed_recon_kwargs() -> dict:
-    return {'CIL': ['alpha', 'num_iter']}
+    return {'CIL: PDHG-TV': ['alpha', 'num_iter']}
