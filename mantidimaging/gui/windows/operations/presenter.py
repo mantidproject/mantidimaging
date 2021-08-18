@@ -291,6 +291,9 @@ class FiltersWindowPresenter(BasePresenter):
             except Exception as e:
                 msg = f"Error applying filter for preview: {e}"
                 self.show_error(msg, traceback.format_exc())
+
+                # Can't continue be need the before image drawn
+                self._update_preview_image(before_image, self.view.preview_image_before)
                 return
 
             # Update image after first in order to prevent wrong histogram ranges being shared
