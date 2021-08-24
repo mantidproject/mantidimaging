@@ -3,6 +3,7 @@
 
 import os
 from pathlib import Path
+from typing import Callable
 import unittest
 from unittest import mock
 
@@ -24,7 +25,6 @@ git clone https://github.com/mantidproject/mantidimaging-data.git ~/mantidimagin
 
 SHOW_DELAY = 10  # Can be increased to watch tests
 SHORT_DELAY = 100
-LOAD_DELAY = 5000
 
 
 @pytest.mark.system
@@ -58,15 +58,41 @@ class GuiSystemBase(unittest.TestCase):
     def _close_welcome(self):
         self.main_window.welcome_window.view.close()
 
+    @classmethod
+    def _wait_until(cls, test_func: Callable[[], bool], delay=0.1, max_retry=100):
+        """
+        Repeat test_func every delay seconds until is becomes true. Or if max_retry is reached return false.
+        """
+        for _ in range(max_retry):
+            if test_func():
+                return True
+            QTest.qWait(delay * 1000)
+        raise RuntimeError("_wait_until reach max retries")
+
+    @classmethod
+    def _wait_for_widget_visible(cls, widget_type, delay=0.1, max_retry=100):
+        for _ in range(max_retry):
+            for widget in cls.app.topLevelWidgets():
+                if isinstance(widget, widget_type) and widget.isVisible():
+                    return True
+            QTest.qWait(delay * 1000)
+        raise RuntimeError("_wait_for_stack_selector reach max retries")
+
     @mock.patch("mantidimaging.gui.windows.load_dialog.view.MWLoadDialog.select_file")
     def _load_data_set(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
+        initial_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
+
+        def test_func() -> bool:
+            current_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
+            return (current_stacks - initial_stacks) >= 5
+
         self.main_window.actionLoadDataset.trigger()
         QTest.qWait(SHOW_DELAY)
         self.main_window.load_dialogue.presenter.notify(Notification.UPDATE_ALL_FIELDS)
         QTest.qWait(SHOW_DELAY)
         self.main_window.load_dialogue.accept()
-        QTest.qWait(LOAD_DELAY)
+        self._wait_until(test_func)
 
     def _open_operations(self):
         self.main_window.actionFilters.trigger()

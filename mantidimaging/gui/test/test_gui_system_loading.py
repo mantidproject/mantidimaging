@@ -5,10 +5,9 @@ from pathlib import Path
 from unittest import mock
 
 from PyQt5.QtCore import QTimer, QEventLoop
-from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
-from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE, LOAD_DELAY
+from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 
 
@@ -20,11 +19,19 @@ class TestGuiSystemLoading(GuiSystemBase):
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def _load_images(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
+        initial_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
+
         self.main_window.actionLoadImages.trigger()
-        QTest.qWait(LOAD_DELAY)
+
+        def test_func() -> bool:
+            current_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
+            return (current_stacks - initial_stacks) >= 1
+
+        self._wait_until(test_func)
 
     @classmethod
     def _click_stack_selector(cls):
+        cls._wait_for_widget_visible(StackSelectorDialog)
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, StackSelectorDialog):
                 for x in range(20):
@@ -40,15 +47,17 @@ class TestGuiSystemLoading(GuiSystemBase):
     def test_load_180(self, mocked_select_file):
         path_180 = Path(LOAD_SAMPLE).parents[1] / "180deg" / "IMAT_Flower_180deg_000000.tif"
         mocked_select_file.return_value = path_180
+        self.assertEqual(len(self.main_window.presenter.get_all_stack_visualisers()), 0)
         self._load_images()
         stacks = self.main_window.presenter.get_all_stack_visualisers()
 
-        self.assertEqual(len(stacks), 1)
+        self.assertEqual(len(self.main_window.presenter.get_all_stack_visualisers()), 1)
         self.assertFalse(stacks[0].presenter.images.has_proj180deg())
 
-        QTimer.singleShot(SHORT_DELAY * 10, lambda: self._click_stack_selector())
+        QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
         self.main_window.actionLoad180deg.trigger()
-        QTest.qWait(LOAD_DELAY)
+
+        self._wait_until(lambda: len(self.main_window.presenter.get_all_stack_visualisers()) == 2)
 
         stacks_after = self.main_window.presenter.get_all_stack_visualisers()
         self.assertEqual(len(stacks_after), 2)
