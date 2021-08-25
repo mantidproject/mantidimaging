@@ -54,6 +54,7 @@ Fixes
 - #940: Ops window, pixel value not updating for part of image
 - #1093: TIFF output blank if NaN in stack
 - #1095: AttributeError loading 180 deg projection
+- #1110: Segmentation fault COR table refine
 
 Developer Changes
 -----------------
