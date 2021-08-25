@@ -1,8 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import pytest
-
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt, QTimer
 
@@ -67,9 +65,8 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
         QTest.qWait(SHOW_DELAY)
 
-    @pytest.mark.skip(reason="Triggers #1110")
     def test_refine_stress(self):
-        for i in range(20):
+        for i in range(5):
             print(f"test_refine_stress iteration {i}")
             QTest.mouseClick(self.recon_window.correlateBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)

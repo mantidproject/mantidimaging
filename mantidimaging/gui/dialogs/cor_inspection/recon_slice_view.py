@@ -13,6 +13,8 @@ from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 if TYPE_CHECKING:
     from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogView  # pragma: no cover
 
+graveyard = []
+
 
 class CompareSlicesView(GraphicsLayoutWidget):
     less_img: ImageItem
@@ -124,6 +126,7 @@ class CompareSlicesView(GraphicsLayoutWidget):
         vb = ViewBox(invertY=True, lockAspect=True, name=name)
         vb.addItem(im)
         hist = HistogramLUTItem(im)
+        graveyard.append(vb)
         return im, vb, hist
 
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
