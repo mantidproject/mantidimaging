@@ -75,10 +75,10 @@ jobs:
       - name: GUI Tests System
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests
+          xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests
         timeout-minutes: 15
 
-      - name: GUI Tests Applitools
+      - name: GUI Tests Screenshots Applitools
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash -l {0}
         env:
@@ -86,7 +86,7 @@ jobs:
           APPLITOOLS_BATCH_ID: ${{ github.sha }}
           GITHUB_BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          xvfb-run --auto-servernum python -m pytest -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests
+          xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests
         timeout-minutes: 15
 
       - name: Coveralls
