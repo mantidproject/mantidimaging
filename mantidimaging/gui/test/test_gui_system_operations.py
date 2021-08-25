@@ -102,12 +102,12 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.op_window.safeApply.setChecked(False)
         QTest.mouseClick(self.op_window.applyButton, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        self._wait_until(lambda: self.op_window.presenter.filter_is_running is False)
+        self._wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
 
         self.main_window.filters.close()
         QTest.qWait(SHOW_DELAY)
 
-    @parameterized.expand(product(OP_LIST, ["new", "original"]))
+    @parameterized.expand(product(OP_LIST[:3], ["new", "original"]))
     def test_run_operation_stack_safe(self, op_info, keep_stack):
         op_name, params = op_info
         print(f"test_run_operation_stack_safe {op_name=} {params=} {keep_stack=}")

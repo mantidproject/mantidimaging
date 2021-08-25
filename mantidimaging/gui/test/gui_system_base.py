@@ -102,7 +102,7 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.load_dialogue.presenter.notify(Notification.UPDATE_ALL_FIELDS)
         QTest.qWait(SHOW_DELAY)
         self.main_window.load_dialogue.accept()
-        self._wait_until(test_func)
+        self._wait_until(test_func, max_retry=600)
 
     def _open_operations(self):
         self.main_window.actionFilters.trigger()

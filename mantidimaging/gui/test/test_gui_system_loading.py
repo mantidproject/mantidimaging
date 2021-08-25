@@ -27,7 +27,7 @@ class TestGuiSystemLoading(GuiSystemBase):
             current_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
             return (current_stacks - initial_stacks) >= 1
 
-        self._wait_until(test_func)
+        self._wait_until(test_func, max_retry=600)
 
     @classmethod
     def _click_stack_selector(cls):
