@@ -36,8 +36,8 @@ Static analysis
 Mantid Imaging uses `mypy <http://mypy-lang.org/>`_, `flake8 <https://flake8.pycqa.org/>`_ and `yapf <https://github.com/google/yapf>`_ for static analysis and formatting. They are run by :code:`make check`, or can be run individually, e.g. :code:`make mypy`.
 
 
-GUI Testing
------------
+GUI screenshot testing
+----------------------
 
 Mantid Imaging uses `Applitools Eyes <https://applitools.com/products-eyes/>`_ for GUI approval testing. Screenshots of windows are uploaded and compared to known good baseline images. This is run in the github action on pull requests.
 
@@ -55,3 +55,18 @@ To run without a key or to prevent uploads, set ``APPLITOOLS_API_KEY`` to ``loca
 
     mkdir /tmp/gui_test
     APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=/tmp/gui_test xvfb-run --auto-servernum pytest -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests
+
+GUI system tests
+----------------
+
+GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where possible by using QTest methods to emulate mouse and keyboard actions. They use the same data files as the GUI screenshot tests. These take several minutes to run and so must be explicitly requested.
+
+.. code::
+
+    pytest -v --run-system-tests
+
+or in virtual X server xvfb-run
+
+.. code::
+
+    xvfb-run --auto-servernum pytest -v --run-system-tests
