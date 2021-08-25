@@ -3,13 +3,13 @@
 
 import os
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Optional
 import unittest
 from unittest import mock
 
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtTest import QTest
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog
 import pytest
 
 from mantidimaging.core.utility.version_check import versions
@@ -54,6 +54,16 @@ class GuiSystemBase(unittest.TestCase):
                         return
                 button_texts = [button.text() for button in widget.buttons()]
                 raise ValueError(f"Could not find button '{button_text}' in {button_texts}")
+
+    @classmethod
+    def _click_InputDialog(cls, set_int: Optional[int] = None):
+        """Needs to be queued with QTimer.singleShot before triggering the message box"""
+        for widget in cls.app.topLevelWidgets():
+            if isinstance(widget, QInputDialog) and widget.isVisible():
+                if set_int:
+                    widget.setIntValue(set_int)
+                QTest.qWait(SHORT_DELAY)
+                widget.accept()
 
     def _close_welcome(self):
         self.main_window.welcome_window.view.close()
