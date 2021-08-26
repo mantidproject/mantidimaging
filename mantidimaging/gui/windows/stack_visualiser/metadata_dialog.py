@@ -1,7 +1,10 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDialogButtonBox, QVBoxLayout
+import json
+
+from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDialogButtonBox, QVBoxLayout, QShortcut
+from PyQt5.QtGui import QKeySequence, QGuiApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.operation_history import const
@@ -18,6 +21,7 @@ class MetadataDialog(QDialog):
         self.setSizeGripEnabled(True)
         self.resize(600, 300)
 
+        self.metadata = images.metadata
         main_widget = MetadataDialog.build_metadata_tree(images.metadata)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok)
@@ -27,6 +31,9 @@ class MetadataDialog(QDialog):
         layout.addWidget(main_widget)
         layout.addWidget(buttons)
         self.setLayout(layout)
+
+        shortcut = QShortcut(QKeySequence("Ctrl+C"), self)
+        shortcut.activated.connect(self.copy_metadata_to_clipboard)
 
     @staticmethod
     def build_metadata_tree(metadata):
@@ -72,3 +79,7 @@ class MetadataDialog(QDialog):
                 for kw, val in op[const.OPERATION_KEYWORD_ARGS].items():
                     kwargs_item = QTreeWidgetItem(kwargs_list_item)
                     kwargs_item.setText(0, f"{kw}: {val}")
+
+    def copy_metadata_to_clipboard(self):
+        meta_data_as_text = json.dumps(self.metadata, indent=4)
+        QGuiApplication.clipboard().setText(meta_data_as_text)
