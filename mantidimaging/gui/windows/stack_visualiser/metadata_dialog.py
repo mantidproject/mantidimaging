@@ -3,7 +3,8 @@
 
 import json
 
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDialogButtonBox, QVBoxLayout, QShortcut
+from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDialogButtonBox, QVBoxLayout, QShortcut,
+                             QPushButton)
 from PyQt5.QtGui import QKeySequence, QGuiApplication
 
 from mantidimaging.core.data import Images
@@ -26,6 +27,10 @@ class MetadataDialog(QDialog):
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok)
         buttons.accepted.connect(self.accept)
+
+        copy_button = QPushButton("Copy")
+        buttons.addButton(copy_button, QDialogButtonBox.ActionRole)
+        copy_button.clicked.connect(self.copy_metadata_to_clipboard)
 
         layout = QVBoxLayout()
         layout.addWidget(main_widget)
