@@ -55,6 +55,7 @@ Fixes
 - #1093: TIFF output blank if NaN in stack
 - #1095: AttributeError loading 180 deg projection
 - #1110: Segmentation fault COR table refine
+- #1115: Copy everything from metadata dialog
 
 Developer Changes
 -----------------
