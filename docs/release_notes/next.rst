@@ -56,6 +56,7 @@ Fixes
 - #1095: AttributeError loading 180 deg projection
 - #1110: Segmentation fault COR table refine
 - #1115: Copy everything from metadata dialog
+- #1112: Minimise Error, number of slices input should have minimum of 2
 
 Developer Changes
 -----------------
