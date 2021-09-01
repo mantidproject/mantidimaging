@@ -1,8 +1,9 @@
-Mantid Imaging next release
-===========================
+Mantid Imaging 2.2
+==================
 
-This contains changes for the next not yet released Mantid Imaging versions.
+This release brings some new features and bug fixes.
 
+The key new features of 2.2 are NeXuS import and a new reconstruction algorithm, Primal-Dual Hybrid Gradient from the `Core Imaging Library (CIL) <https://www.ccpi.ac.uk/cil>`_.
 
 New features
 ------------
