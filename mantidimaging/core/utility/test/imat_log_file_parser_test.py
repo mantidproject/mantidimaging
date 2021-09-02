@@ -95,3 +95,10 @@ def test_source_file(test_input):
 def test_get_projection_number():
     assert _get_projection_number("Projection:  99  angle: 31.2048") == 99
     assert _get_projection_number("Radiography:  19") == 19
+
+
+def test_ignore_spaces_at_end_of_log_file_header():
+    test_log_file = TXT_LOG_FILE[:]
+    test_log_file[0].replace("\n", "         \n")
+    logfile = IMATLogFile(test_log_file, "/tmp/fake")
+    assert len(logfile.projection_numbers()) == 3
