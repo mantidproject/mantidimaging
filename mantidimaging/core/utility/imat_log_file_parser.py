@@ -59,7 +59,7 @@ class TextLogParser:
 
     @staticmethod
     def validate(file_contents) -> bool:
-        if TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE != file_contents[0]:
+        if TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE != file_contents[0].rstrip() + "\n":
             return False
         return True
 

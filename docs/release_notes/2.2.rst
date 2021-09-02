@@ -58,6 +58,7 @@ Fixes
 - #1110: Segmentation fault COR table refine
 - #1115: Copy everything from metadata dialog
 - #1112: Minimise Error, number of slices input should have minimum of 2
+- #1067: Failed to load stack "log file is not recognised"
 
 Developer Changes
 -----------------
