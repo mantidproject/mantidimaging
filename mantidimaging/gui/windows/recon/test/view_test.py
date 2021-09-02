@@ -285,7 +285,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                          "Number of slices",
                                                          "On how many slices to run the automatic CoR finding?",
                                                          value=6,
-                                                         min=0,
+                                                         min=2,
                                                          max=30,
                                                          step=1)
 
@@ -300,7 +300,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                          "Number of slices",
                                                          "On how many slices to run the automatic CoR finding?",
                                                          value=6,
-                                                         min=0,
+                                                         min=2,
                                                          max=30,
                                                          step=1)
 
