@@ -256,7 +256,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_notification_dialog()
             self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
 
-        if self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
+        if use_new_data and self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
             self._show_negative_values_error(negative_stacks)
 
         self.view.filter_applied.emit()
@@ -392,7 +392,9 @@ class FiltersWindowPresenter(BasePresenter):
         :param negative_stacks: A list of stacks with negative values in the data.
         """
         names = [stack.name for stack in negative_stacks]
-        self.view.show_error_dialog(f"Negative values found in stack(s) {', '.join(names)}. See log for more details.")
+        operation_name = self.model.selected_filter.filter_name
+        self.view.show_error_dialog(f"{operation_name} completed. "
+                                    f"Negative values found in stack(s) {', '.join(names)}. See log for more details.")
 
         for stack in negative_stacks:
             negative_slices = []

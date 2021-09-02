@@ -431,8 +431,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
             self.assertIn(f"Slices containing negative values in {negative_stack_name}: {[i for i in range(3)]}",
                           mock_logger.output[0])
 
-        self.view.show_error_dialog.assert_called_once_with(
-            f"Negative values found in stack(s) {negative_stack_name}. See log for more details.")
+        self.assertIn("Negative values found in stack", self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_no_negative_values_in_flat_fielding_shows_no_error(self, do_apply_filter_sync_mock):
