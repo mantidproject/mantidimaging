@@ -421,7 +421,7 @@ class FiltersWindowPresenter(BasePresenter):
                 if np.any(stack.presenter.images.data[i] < 0):
                     negative_slices.append(i)
             getLogger(__name__).error(f'Slices containing negative values in {stack.name}: '
-                                      '{", ".join(_generate_slices_range_list(negative_slices))}')
+                                      f'{", ".join(_generate_slices_range_list(negative_slices))}')
 
     def _show_preview_negative_values_error(self, slice_idx: int):
         """
