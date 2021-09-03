@@ -443,6 +443,28 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
+    def test_negative_values_in_all_slices(self, do_apply_filter_sync_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        mock_task = mock.Mock()
+        mock_task.error = None
+        images = generate_images()
+        for i in range(len(images.data)):
+            images.data[i][0][0] = -1
+        self.presenter.model.selected_filter.filter_name = "Filter Name"
+        self.mock_stack_visualisers[0].presenter.images = images
+        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+
+        with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
+                             level="ERROR") as mock_logger:
+            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.assertIn(f"Slices containing negative values in {negative_stack_name}: all slices",
+                          mock_logger.output[0])
+
+        self.assertIn("Negative values found in stack", self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_no_negative_values_in_flat_fielding_shows_no_error(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
