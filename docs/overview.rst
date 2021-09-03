@@ -22,12 +22,14 @@ The Operations Window provides a selection of tools and filters to process and e
 * Remove Outliers
 * ROI Normalisation
 
+* Arithmetic
 * Circular Mask
 * Clip Values
 * Divide
 * Gaussian
 * Median
 * Monitor Normalisation
+* NaN Removal
 * Rebin
 * Rescale
 * Ring Removal
