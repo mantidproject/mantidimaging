@@ -60,13 +60,13 @@ def _find_nan_change(before_image, filtered_image_data):
     return nan_change
 
 
-def sub(x: List[int]) -> int:
+def sub(x: Tuple[int, int]) -> int:
     return x[1] - x[0]
 
 
 def _generate_slices_range_list(slices: List[int]) -> List[str]:
     ranges = []
-    for k, iterable in groupby([(i, j) for i, j in enumerate(slices)], sub):
+    for k, iterable in groupby(enumerate(slices), sub):
         rng = list(iterable)
         if len(rng) == 1:
             s = str(rng[0][1])
