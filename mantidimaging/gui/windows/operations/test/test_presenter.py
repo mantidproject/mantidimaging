@@ -475,3 +475,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         before_image = np.array([np.nan, 1, 2])
         after_image = np.array([1, 1, np.nan])
         npt.assert_array_equal(np.array([True, False, False]), _find_nan_change(before_image, after_image))
+
+    def test_generate_slices_index_list(self):
+        negative_stack = mock.Mock()
+        negative_stack.name = "Data Name"
+        images = generate_images()
+        images.data[0][0][0] = -1
+        images.data[2][0][0] = -1
+        images.data[5][0][0] = -1
+        images.data[7][0][0] = -1
+        negative_stack.presenter.images = images
+
+        self.presenter.model.selected_filter.filter_name = "Filter Name"
+        self.presenter._show_negative_values_error([negative_stack])
