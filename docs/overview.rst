@@ -52,6 +52,7 @@ Mantid Imaging offers several reconstruction algorithms
 
 * FBP_CUDA - Filtered Backprojection
 * SIRT_CUDA - Simultaneous Iterative Reconstruction Technique
+* CIL: PDHG-TV - Core Imaging Library
 * gridrec
 
 Glossary
