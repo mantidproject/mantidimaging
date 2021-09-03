@@ -420,8 +420,12 @@ class FiltersWindowPresenter(BasePresenter):
             for i in range(len(stack.presenter.images.data)):
                 if np.any(stack.presenter.images.data[i] < 0):
                     negative_slices.append(i)
-            getLogger(__name__).error(f'Slices containing negative values in {stack.name}: '
-                                      f'{", ".join(_generate_slices_range_list(negative_slices))}')
+            slices_msg = f'Slices containing negative values in {stack.name}: '
+            if len(negative_slices) == len(stack.presenter.images.data):
+                slices_msg += "all slices."
+            else:
+                slices_msg += f'{", ".join(_generate_slices_range_list(negative_slices))}'
+            getLogger(__name__).error(slices_msg)
 
     def _show_preview_negative_values_error(self, slice_idx: int):
         """
