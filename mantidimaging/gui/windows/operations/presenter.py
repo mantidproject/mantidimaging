@@ -61,10 +61,20 @@ def _find_nan_change(before_image, filtered_image_data):
 
 
 def sub(x: Tuple[int, int]) -> int:
+    """
+    Subtracts two tuples. Helper method for generating the negative slice list.
+    :param x: The int tuple.
+    :return: The first value subtracted from the second value.
+    """
     return x[1] - x[0]
 
 
 def _generate_slices_range_list(slices: List[int]) -> List[str]:
+    """
+    Creates a list of slices with negative indices in a readable format.
+    :param slices: The list of indices of the slices that contain negative values.
+    :return: A list of strings for the index ranges e.g. 1-5, 7-20, etc
+    """
     ranges = []
     for k, iterable in groupby(enumerate(slices), sub):
         rng = list(iterable)
