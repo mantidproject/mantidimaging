@@ -429,7 +429,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         images.data[4][0][0] = -1
         images.data[5][0][0] = -1
         images.data[7][0][0] = -1
-        self.presenter.model.selected_filter.filter_name = "Filter Name"
         self.mock_stack_visualisers[0].presenter.images = images
         self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
 
@@ -451,7 +450,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         images = generate_images()
         for i in range(len(images.data)):
             images.data[i][0][0] = -1
-        self.presenter.model.selected_filter.filter_name = "Filter Name"
         self.mock_stack_visualisers[0].presenter.images = images
         self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
 
