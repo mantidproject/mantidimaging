@@ -3,6 +3,7 @@
 import traceback
 from enum import Enum, auto
 from functools import partial
+from itertools import groupby
 from logging import getLogger
 from time import sleep
 from typing import List, TYPE_CHECKING, Optional, Tuple, Union
@@ -22,6 +23,11 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 from .model import FiltersWindowModel
+
+APPLY_TO_180_MSG = "Operations applied to the sample are also automatically applied to the " \
+      "180 degree projection. Please avoid applying an operation unless you're" \
+      " absolutely certain you need to.\nAre you sure you want to apply to 180" \
+      " degree projection?"
 
 FLAT_FIELDING = "Flat-fielding"
 
@@ -52,6 +58,23 @@ def _find_nan_change(before_image, filtered_image_data):
     after_nan = np.isnan(filtered_image_data)
     nan_change = np.logical_and(before_nan, ~after_nan)
     return nan_change
+
+
+def sub(x: List[int]) -> int:
+    return x[1] - x[0]
+
+
+def _generate_slices_range_list(slices: List[int]) -> List[str]:
+    ranges = []
+    for k, iterable in groupby(enumerate(slices), sub):
+        rng = list(iterable)
+        if len(rng) == 1:
+            s = str(rng[0][1])
+        else:
+            s = "{}-{}".format(rng[0][1], rng[-1][1])
+        ranges.append(s)
+
+    return ranges
 
 
 class FiltersWindowPresenter(BasePresenter):
@@ -165,11 +188,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.original_images_stack = self.stack.presenter.images.copy()
 
         # if is a 180degree stack and a user says no, cancel apply filter.
-        if self.is_a_proj180deg(self.stack) \
-            and not self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the "
-                                               "180 degree projection. Please avoid applying an operation unless you're"
-                                               " absolutely certain you need to.\nAre you sure you want to apply to 180"
-                                               " degree projection?"):
+        if self.is_a_proj180deg(self.stack) and not self.view.ask_confirmation(APPLY_TO_180_MSG):
             return
 
         apply_to = [self.stack]
@@ -401,7 +420,8 @@ class FiltersWindowPresenter(BasePresenter):
             for i in range(len(stack.presenter.images.data)):
                 if np.any(stack.presenter.images.data[i] < 0):
                     negative_slices.append(i)
-            getLogger(__name__).error(f"Slices containing negative values in {stack.name}: {negative_slices}")
+            getLogger(__name__).error(f'Slices containing negative values in {stack.name}: '
+                                      '{", ".join(_generate_slices_range_list(negative_slices))}')
 
     def _show_preview_negative_values_error(self, slice_idx: int):
         """
