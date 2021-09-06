@@ -69,7 +69,7 @@ def sub(x: Tuple[int, int]) -> int:
     return x[1] - x[0]
 
 
-def _generate_slices_range_list(slices: List[int]) -> List[str]:
+def _group_consecutive_values(slices: List[int]) -> List[str]:
     """
     Creates a list of slices with negative indices in a readable format.
     :param slices: The list of indices of the slices that contain negative values.
@@ -434,7 +434,7 @@ class FiltersWindowPresenter(BasePresenter):
             if len(negative_slices) == len(stack.presenter.images.data):
                 slices_msg += "all slices."
             else:
-                slices_msg += f'{", ".join(_generate_slices_range_list(negative_slices))}'
+                slices_msg += f'{", ".join(_group_consecutive_values(negative_slices))}'
             getLogger(__name__).error(slices_msg)
 
     def _show_preview_negative_values_error(self, slice_idx: int):
