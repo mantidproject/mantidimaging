@@ -14,7 +14,8 @@ from parameterized import parameterized
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
-from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change
+from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
+    _group_consecutive_values
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 
 
@@ -503,3 +504,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         before_image = np.array([np.nan, 1, 2])
         after_image = np.array([1, 1, np.nan])
         npt.assert_array_equal(np.array([True, False, False]), _find_nan_change(before_image, after_image))
+
+    def test_group_consecutive_values(self):
+        slices = [i for i in range(8)] + [i for i in range(10, 15)]
+        ranges = _group_consecutive_values(slices)
+        self.assertListEqual(ranges, ["0-7", "10-14"])
