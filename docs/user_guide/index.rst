@@ -42,7 +42,7 @@ If they are missed or stored in a different location, the above steps can be rep
 
 At this stage there is also the option to:
 
-#. Open only a portion of the sample images. This can be done by manually selecting the file increment or by using the "Preview" Button which will set the increment so that roughly 10% of the dataset is loaded.
+#. Open only a portion of the sample images. This can be done by manually selecting the file increment or by using the "Preview" Button.
 #. Select the pixel size of the detector used in microns. This can also be changed at a later stage.
 #. Untick a category of files to not load. For example, if both "Dark Before" and "Dark After" images have been found this can be adjusted to only one.
 

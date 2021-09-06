@@ -52,6 +52,10 @@ are also displayed so that a user can check that the image key and data field ha
 If the required information could be found in the file, then the OK button will be enabled. Otherwise the button will be
 disabled.
 
+As in the case of loading a dataset, there is also the option to load a subset of the projection data either by manually
+setting an increment or by clicking on the "Preview" button. The "All" button can be used to change the increment so
+that the entire projection data is loaded.
+
 From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
 :code:`title` field in the NeXus file if one is found, otherwise the images are given the name "NeXus Data."
 
