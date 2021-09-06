@@ -54,7 +54,7 @@ disabled.
 
 As in the case of loading a dataset, there is also the option to load a subset of the projection data either by manually
 setting an increment or by clicking on the "Preview" button. The "All" button can be used to change the increment so
-that the entire projection data is loaded.
+that the entire projection data is loaded. There are also options for setting pixel size and pixel bit depth.
 
 From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
 :code:`title` field in the NeXus file if one is found, otherwise the images are given the name "NeXus Data."
