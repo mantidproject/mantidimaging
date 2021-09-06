@@ -420,10 +420,8 @@ class FiltersWindowPresenter(BasePresenter):
         Shows information on the view and in the log about negative values in the output.
         :param negative_stacks: A list of stacks with negative values in the data.
         """
-        names = [stack.name for stack in negative_stacks]
         operation_name = self.model.selected_filter.filter_name
-        self.view.show_error_dialog(f"{operation_name} completed. "
-                                    f"Negative values found in stack(s) {', '.join(names)}. See log for more details.")
+        gui_error = [f"{operation_name} completed."]
 
         for stack in negative_stacks:
             negative_slices = []
@@ -434,8 +432,10 @@ class FiltersWindowPresenter(BasePresenter):
             if len(negative_slices) == len(stack.presenter.images.data):
                 slices_msg += "all slices."
             else:
-                slices_msg += f'{", ".join(_group_consecutive_values(negative_slices))}'
+                slices_msg += f'{", ".join(_group_consecutive_values(negative_slices))}.'
             getLogger(__name__).error(slices_msg)
+            gui_error.append(slices_msg)
+        self.view.show_error_dialog(" ".join(gui_error))
 
     def _show_preview_negative_values_error(self, slice_idx: int):
         """
