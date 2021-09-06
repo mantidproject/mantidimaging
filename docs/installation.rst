@@ -42,6 +42,8 @@ Please look for instructions specific to your OS on how to do that:
 
 
 5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
+6. [Optional] If you wish to run `mantidimaging-ipython`, you will need to have `ipython` installed. This can be done
+   with the command `conda install ipython`.
 
 Running the package
 -------------------
