@@ -35,6 +35,11 @@ left at the default value of *float32*.
 .. note::
     Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.
 
+Load Images
+***********
+
+Load images works by 
+
 Load NeXus File
 ***************
 
