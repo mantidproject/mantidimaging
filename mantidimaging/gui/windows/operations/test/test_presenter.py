@@ -424,12 +424,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images()
-        images.data[0][0][0] = -1
-        images.data[1][0][0] = -1
-        images.data[2][0][0] = -1
-        images.data[4][0][0] = -1
-        images.data[5][0][0] = -1
-        images.data[7][0][0] = -1
+        images.data[0, 0, 0] = -1
+        images.data[1, 0, 0] = -1
+        images.data[2, 0, 0] = -1
+        images.data[4, 0, 0] = -1
+        images.data[5, 0, 0] = -1
+        images.data[7, 0, 0] = -1
         self.mock_stack_visualisers[0].presenter.images = images
         self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
 
