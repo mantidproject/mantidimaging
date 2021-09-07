@@ -208,7 +208,7 @@
                     <number>2</number>
                    </property>
                    <property name="text">
-                    <string>Fit from COR/Tilt above</string>
+                    <string>Use COR/Tilt values from above</string>
                    </property>
                   </widget>
                  </item>
