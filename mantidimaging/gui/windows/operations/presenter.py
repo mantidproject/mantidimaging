@@ -428,13 +428,18 @@ class FiltersWindowPresenter(BasePresenter):
             for i in range(len(stack.presenter.images.data)):
                 if np.any(stack.presenter.images.data[i] < 0):
                     negative_slices.append(i)
-            slices_msg = f'Slices containing negative values in {stack.name}: '
+            stack_msg = f'Slices containing negative values in {stack.name}: '
             if len(negative_slices) == len(stack.presenter.images.data):
-                slices_msg += "all slices."
+                slices_msg = stack_msg + "all slices."
+                gui_error.append(slices_msg)
             else:
-                slices_msg += f'{", ".join(_group_consecutive_values(negative_slices))}.'
+                ranges = _group_consecutive_values(negative_slices)
+                slices_msg = stack_msg + f'{", ".join(ranges)}.'
+                if len(negative_slices) <= 12:
+                    gui_error.append(slices_msg)
+                else:
+                    gui_error.append(f'{stack_msg}{", ".join(ranges[:10])} ... {ranges[-1]}.')
             getLogger(__name__).error(slices_msg)
-            gui_error.append(slices_msg)
         self.view.show_error_dialog(" ".join(gui_error))
 
     def _show_preview_negative_values_error(self, slice_idx: int):

@@ -418,7 +418,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_roi_field.setText.assert_called_once_with(expected)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
-    def test_negative_values_in_flat_fielding_shows_error(self, do_apply_filter_sync_mock):
+    def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
@@ -436,10 +436,10 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
                              level="ERROR") as mock_logger:
             self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
-            self.assertIn(f"Slices containing negative values in {negative_stack_name}: 0-2, 4-5, 7",
-                          mock_logger.output[0])
+            error_msg = f"Slices containing negative values in {negative_stack_name}: 0-2, 4-5, 7"
+            self.assertIn(error_msg, mock_logger.output[0])
 
-        self.assertIn("Negative values found in stack", self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(error_msg, self.view.show_error_dialog.call_args[0][0])
         self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
@@ -456,11 +456,36 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
                              level="ERROR") as mock_logger:
+            error_msg = f"Slices containing negative values in {negative_stack_name}: all slices"
             self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
-            self.assertIn(f"Slices containing negative values in {negative_stack_name}: all slices",
-                          mock_logger.output[0])
+            self.assertIn(error_msg, mock_logger.output[0])
 
-        self.assertIn("Negative values found in stack", self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(error_msg, self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
+    def test_negative_values_in_more_than_twelve_ranges(self, do_apply_filter_sync_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        mock_task = mock.Mock()
+        mock_task.error = None
+        images = generate_images(shape=(25, 8, 10))
+        images.data[::2, 0, 0] = -1
+
+        self.mock_stack_visualisers[0].presenter.images = images
+        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+
+        error_msg = f"Slices containing negative values in {negative_stack_name}: "
+        range_strings = [str(i) for i in range(0, 25, 2)]
+
+        with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
+                             level="ERROR") as mock_logger:
+            log_msg = error_msg + ", ".join(range_strings)
+            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.assertIn(log_msg, mock_logger.output[0])
+
+        gui_msg = error_msg + ", ".join(range_strings[:10]) + f" ... {range_strings[-1]}"
+        self.assertIn(gui_msg, self.view.show_error_dialog.call_args[0][0])
         self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
