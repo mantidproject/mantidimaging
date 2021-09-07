@@ -6,11 +6,13 @@ Reconstruction Filters
 
 This will contain information about all recon filters. To be filled in the future with scientists' help.
 
-FBP-CUDA-only
+FBP-CUDA-only:
+
 - shepp
 - butterworth
 
-gridrec-only
+gridrec-only:
+
 - shepp-logan
 - tukey
 - lanczos
@@ -23,7 +25,8 @@ gridrec-only
 - blackman-nuttall
 - flat-top
 
-Both FBP-CUDA and gridrec
+Both FBP-CUDA and gridrec:
+
 - ram-lak
 - cosine
 - hamming
