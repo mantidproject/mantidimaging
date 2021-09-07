@@ -4,7 +4,7 @@ class CommandLinePath:
 
     def __new__(cls, path: str = ""):
         """
-        Creates a singleton for storing the result of the Cuda check.
+        Creates a singleton for storing the path from the command line argument.
         """
         if cls._instance is None:
             cls._instance = super(CommandLinePath, cls).__new__(cls)
@@ -14,6 +14,6 @@ class CommandLinePath:
     @classmethod
     def path(cls) -> str:
         """
-        Returns the shared cuda check result.
+        Returns the command line images path.
         """
         return cls.images_path
