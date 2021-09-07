@@ -336,3 +336,9 @@ class MainWindowViewTest(unittest.TestCase):
         CommandLinePath.images_path = test_path = "my/image/path"
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
+    def test_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter):
+        MainWindowView()
+        main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
