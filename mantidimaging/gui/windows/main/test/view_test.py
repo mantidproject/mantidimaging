@@ -9,6 +9,7 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
 
+from mantidimaging.core.utility.command_line_path import CommandLinePath
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
@@ -328,3 +329,11 @@ class MainWindowViewTest(unittest.TestCase):
             self.view.show_load_nexus_dialog()
         nexus_load_dialog.assert_called_once()
         nexus_load_dialog.return_value.show.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
+    def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter):
+        test_path = "my/image/path"
+        CommandLinePath.images_path = test_path
+        MainWindowView()
+        main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
