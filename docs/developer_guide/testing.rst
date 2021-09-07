@@ -1,7 +1,7 @@
 Testing
 =======
 
-Mantid imaging uses unit tests, static analysis and GUI approval testing
+Mantid Imaging uses unit tests, static analysis and GUI approval testing
 
 The full test suite can be run using:
 
