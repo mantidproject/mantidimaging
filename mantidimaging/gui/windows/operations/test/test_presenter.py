@@ -14,7 +14,8 @@ from parameterized import parameterized
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
-from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change
+from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
+    _group_consecutive_values
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 
 
@@ -417,21 +418,74 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_roi_field.setText.assert_called_once_with(expected)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
-    def test_negative_values_in_flat_fielding_shows_error(self, do_apply_filter_sync_mock):
+    def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
-        self.mock_stack_visualisers[0].presenter.images.data = np.array([-1 for _ in range(3)])
+        images = generate_images()
+        images.data[0, 0, 0] = -1
+        images.data[1, 0, 0] = -1
+        images.data[2, 0, 0] = -1
+        images.data[4, 0, 0] = -1
+        images.data[5, 0, 0] = -1
+        images.data[7, 0, 0] = -1
+        self.mock_stack_visualisers[0].presenter.images = images
         self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
 
         with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
                              level="ERROR") as mock_logger:
             self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
-            self.assertIn(f"Slices containing negative values in {negative_stack_name}: {[i for i in range(3)]}",
-                          mock_logger.output[0])
+            error_msg = f"Slices containing negative values in {negative_stack_name}: 0-2, 4-5, 7"
+            self.assertIn(error_msg, mock_logger.output[0])
 
-        self.assertIn("Negative values found in stack", self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(error_msg, self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
+    def test_negative_values_in_all_slices(self, do_apply_filter_sync_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        mock_task = mock.Mock()
+        mock_task.error = None
+        images = generate_images()
+        images.data[:, 0, 0] = -1
+
+        self.mock_stack_visualisers[0].presenter.images = images
+        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+
+        with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
+                             level="ERROR") as mock_logger:
+            error_msg = f"Slices containing negative values in {negative_stack_name}: all slices"
+            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.assertIn(error_msg, mock_logger.output[0])
+
+        self.assertIn(error_msg, self.view.show_error_dialog.call_args[0][0])
+        self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
+    def test_negative_values_in_more_than_twelve_ranges(self, do_apply_filter_sync_mock):
+        self.presenter.view.safeApply.isChecked.return_value = False
+        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        mock_task = mock.Mock()
+        mock_task.error = None
+        images = generate_images(shape=(25, 8, 10))
+        images.data[::2, 0, 0] = -1
+
+        self.mock_stack_visualisers[0].presenter.images = images
+        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+
+        error_msg = f"Slices containing negative values in {negative_stack_name}: "
+        range_strings = [str(i) for i in range(0, 25, 2)]
+
+        with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
+                             level="ERROR") as mock_logger:
+            log_msg = error_msg + ", ".join(range_strings)
+            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.assertIn(log_msg, mock_logger.output[0])
+
+        gui_msg = error_msg + ", ".join(range_strings[:10]) + f" ... {range_strings[-1]}"
+        self.assertIn(gui_msg, self.view.show_error_dialog.call_args[0][0])
         self.assertIn(f"{negative_stack_name}", self.view.show_error_dialog.call_args[0][0])
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
@@ -475,3 +529,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         before_image = np.array([np.nan, 1, 2])
         after_image = np.array([1, 1, np.nan])
         npt.assert_array_equal(np.array([True, False, False]), _find_nan_change(before_image, after_image))
+
+    def test_group_consecutive_values(self):
+        slices = [i for i in range(8)] + [i for i in range(10, 15)]
+        ranges = _group_consecutive_values(slices)
+        self.assertListEqual(ranges, ["0-7", "10-14"])

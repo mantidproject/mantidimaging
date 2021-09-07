@@ -3,6 +3,7 @@
 import traceback
 from enum import Enum, auto
 from functools import partial
+from itertools import groupby
 from logging import getLogger
 from time import sleep
 from typing import List, TYPE_CHECKING, Optional, Tuple, Union
@@ -22,6 +23,11 @@ from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 from .model import FiltersWindowModel
+
+APPLY_TO_180_MSG = "Operations applied to the sample are also automatically applied to the " \
+      "180 degree projection. Please avoid applying an operation unless you're" \
+      " absolutely certain you need to.\nAre you sure you want to apply to 180" \
+      " degree projection?"
 
 FLAT_FIELDING = "Flat-fielding"
 
@@ -52,6 +58,33 @@ def _find_nan_change(before_image, filtered_image_data):
     after_nan = np.isnan(filtered_image_data)
     nan_change = np.logical_and(before_nan, ~after_nan)
     return nan_change
+
+
+def sub(x: Tuple[int, int]) -> int:
+    """
+    Subtracts two tuples. Helper method for generating the negative slice list.
+    :param x: The int tuple.
+    :return: The first value subtracted from the second value.
+    """
+    return x[1] - x[0]
+
+
+def _group_consecutive_values(slices: List[int]) -> List[str]:
+    """
+    Creates a list of slices with negative indices in a readable format.
+    :param slices: The list of indices of the slices that contain negative values.
+    :return: A list of strings for the index ranges e.g. 1-5, 7-20, etc
+    """
+    ranges = []
+    for k, iterable in groupby(enumerate(slices), sub):
+        rng = list(iterable)
+        if len(rng) == 1:
+            s = str(rng[0][1])
+        else:
+            s = "{}-{}".format(rng[0][1], rng[-1][1])
+        ranges.append(s)
+
+    return ranges
 
 
 class FiltersWindowPresenter(BasePresenter):
@@ -165,11 +198,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.original_images_stack = self.stack.presenter.images.copy()
 
         # if is a 180degree stack and a user says no, cancel apply filter.
-        if self.is_a_proj180deg(self.stack) \
-            and not self.view.ask_confirmation("Operations applied to the sample are also automatically applied to the "
-                                               "180 degree projection. Please avoid applying an operation unless you're"
-                                               " absolutely certain you need to.\nAre you sure you want to apply to 180"
-                                               " degree projection?"):
+        if self.is_a_proj180deg(self.stack) and not self.view.ask_confirmation(APPLY_TO_180_MSG):
             return
 
         apply_to = [self.stack]
@@ -391,17 +420,27 @@ class FiltersWindowPresenter(BasePresenter):
         Shows information on the view and in the log about negative values in the output.
         :param negative_stacks: A list of stacks with negative values in the data.
         """
-        names = [stack.name for stack in negative_stacks]
         operation_name = self.model.selected_filter.filter_name
-        self.view.show_error_dialog(f"{operation_name} completed. "
-                                    f"Negative values found in stack(s) {', '.join(names)}. See log for more details.")
+        gui_error = [f"{operation_name} completed."]
 
         for stack in negative_stacks:
             negative_slices = []
             for i in range(len(stack.presenter.images.data)):
                 if np.any(stack.presenter.images.data[i] < 0):
                     negative_slices.append(i)
-            getLogger(__name__).error(f"Slices containing negative values in {stack.name}: {negative_slices}")
+            stack_msg = f'Slices containing negative values in {stack.name}: '
+            if len(negative_slices) == len(stack.presenter.images.data):
+                slices_msg = stack_msg + "all slices."
+                gui_error.append(slices_msg)
+            else:
+                ranges = _group_consecutive_values(negative_slices)
+                slices_msg = stack_msg + f'{", ".join(ranges)}.'
+                if len(negative_slices) <= 12:
+                    gui_error.append(slices_msg)
+                else:
+                    gui_error.append(f'{stack_msg}{", ".join(ranges[:10])} ... {ranges[-1]}.')
+            getLogger(__name__).error(slices_msg)
+        self.view.show_error_dialog(" ".join(gui_error))
 
     def _show_preview_negative_values_error(self, slice_idx: int):
         """
