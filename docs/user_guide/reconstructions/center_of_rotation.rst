@@ -23,7 +23,7 @@ Entering known COR and tilt
 ---------------------------
 
 If the COR and tilt are already known you can enter them in the "Enter known COR/Tilt manually here" section
-and press "Fit from COR/Tilt above". In this case you can go immediately to reconstruction.
+and press "Use COR/Tilt values from above". In this case you can go immediately to reconstruction.
 
 Correlate 0 and 180
 -------------------
