@@ -24,6 +24,7 @@ New features
 - #1026 : Recon warn if input has NaNs
 - #816 : NaN Removal Filter
 - #1035 : NeXus Loader: Select every Nth image
+- #1044 : Command line argument to load a dataset
 
 Fixes
 -----
