@@ -38,7 +38,7 @@ left at the default value of *float32*.
 Load Images
 ***********
 
-Load images works by 
+Load images can be used to load a stack contained in a directory or a single image.
 
 Load NeXus File
 ***************
