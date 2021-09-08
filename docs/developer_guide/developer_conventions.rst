@@ -4,7 +4,7 @@ Developer Conventions
 Dependencies
 ------------
 
-Mantid imaging makes use of a number of python modules. To ensure that these get installed for users they can be listed as dependencies.
+Mantid Imaging makes use of a number of python modules. To ensure that these get installed for users they can be listed as dependencies.
 
 Dependencies are categorised by when they are needed:
 

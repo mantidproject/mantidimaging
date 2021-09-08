@@ -22,12 +22,14 @@ The Operations Window provides a selection of tools and filters to process and e
 * Remove Outliers
 * ROI Normalisation
 
+* Arithmetic
 * Circular Mask
 * Clip Values
 * Divide
 * Gaussian
 * Median
 * Monitor Normalisation
+* NaN Removal
 * Rebin
 * Rescale
 * Ring Removal
@@ -50,6 +52,7 @@ Mantid Imaging offers several reconstruction algorithms
 
 * FBP_CUDA - Filtered Backprojection
 * SIRT_CUDA - Simultaneous Iterative Reconstruction Technique
+* CIL: PDHG-TV - Core Imaging Library
 * gridrec
 
 Glossary
