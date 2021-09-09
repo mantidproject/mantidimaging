@@ -39,9 +39,9 @@ class OutliersFilter(BaseFilter):
         # Adapted from tomopy source
         median = scipy_ndimage.median_filter(data, radius)
         if mode == OUTLIERS_BRIGHT:
-            return np.where(np.logical_or((data - median) > diff, np.isnan(data)), median, data)
+            return np.where(np.logical_or(np.isnan(data), (data - median) > diff), median, data)
         else:
-            return np.where(np.logical_or((median - data) > diff, np.isnan(data)), median, data)
+            return np.where(np.logical_or(np.isnan(data), (median - data) > diff), median, data)
 
     @staticmethod
     def filter_func(images: Images,

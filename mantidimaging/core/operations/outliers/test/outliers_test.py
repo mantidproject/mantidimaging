@@ -67,6 +67,17 @@ class OutliersTest(unittest.TestCase):
 
         self.assertEqual(0, gui_dict["diff_field"].minimum())
 
+    def test_nan_removal(self):
+        images = th.generate_images()
+        images.data[::2, 0, 0] = np.nan
+
+        radius = 8
+        threshold = 0.1
+
+        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
+
+        assert not np.any(np.isnan(result.data))
+
 
 if __name__ == '__main__':
     unittest.main()
