@@ -64,7 +64,7 @@ This can be done  with the command: :code:`python setup.py docs -b qthelp`.
 Release Notes
 -------------
 
-Release notes should be continuously updated during developement. Almost all pull requests should have an update to the relivent file and section in :file:`docs/release_notes`
+Release notes should be continuously updated during developement. Almost all pull requests should have an update to the relevant file and section in :file:`docs/release_notes`
 
 If the next release name is not yet chosen this will be :file:`next.rts`, and renamed closer to release.
 

@@ -42,7 +42,7 @@ If they are missed or stored in a different location, the above steps can be rep
 
 At this stage there is also the option to:
 
-#. Open only a portion of the sample images. This can be done by manually selecting the file indices or using the "Preview" Button which will set the file indices to a suitable selection.
+#. Open only a portion of the sample images. This can be done by manually selecting the file increment or by using the "Preview" Button.
 #. Select the pixel size of the detector used in microns. This can also be changed at a later stage.
 #. Untick a category of files to not load. For example, if both "Dark Before" and "Dark After" images have been found this can be adjusted to only one.
 
@@ -66,11 +66,11 @@ Operations
 Next let's take the sample we loaded and let's tidy it up with operations. To open the operations go to "Workflow" then "Operations".
 
 1. **Remove Outliers** will be the first operation we will apply. This has to be completed in 2 modes "Bright" and "Dark". We'll complete this for both modes with difference set to 500 and median kernel set to size 3. Apply this to all stacks.
-   - The difference value is used to find outliers, and will have to be adjusted depending on the values in your data, and how aggressive you want the filter to be.
-   - Safe Apply is enabled by default and it will show a window containing the original data and the processed data. This allows us to see the result of the operation before applying it. Choose the new data to proceed.
+    - The difference value is used to find outliers, and will have to be adjusted depending on the values in your data, and how aggressive you want the filter to be.
+    - Safe Apply is enabled by default and it will show a window containing the original data and the processed data. This allows us to see the result of the operation before applying it. Choose the new data to proceed.
 
 2. **Flat Fielding** As we only have one set of flat and dark images we will set the flat fielding method to "Only Before". With safe apply checked running this operation opens the following window:
-   - Safe Apply window showing before flat fielding on the left and after flat fielding on the right. Next select "Choose New Data" to apply operation.
+    - Safe Apply window showing before flat fielding on the left and after flat fielding on the right. Next select "Choose New Data" to apply operation.
 
 .. image:: ../_static/flat_fielding.png
    :alt: Flat fielding with Safe Apply option turned on

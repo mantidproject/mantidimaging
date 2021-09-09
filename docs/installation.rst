@@ -38,10 +38,12 @@ Please look for instructions specific to your OS on how to do that:
 3. Make sure :code:`conda` is available on your PATH
 4. Create a mantidimaging conda environment:
 
-  - :code:`conda env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.0.0/environment.yml`
+  - :code:`conda env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.1.0/environment.yml`
 
 
 5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
+6. [Optional] If you wish to run `mantidimaging-ipython`, you will need to have `ipython` installed. This can be done
+   with the command `conda install ipython`.
 
 Running the package
 -------------------

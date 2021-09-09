@@ -1,11 +1,14 @@
 Loading and Saving
 ==================
 
-Loading sand saving data is performed via the *Load dataset* and *Save* options on the
+Loading sand saving data is performed via the *Load dataset*, *Load images*, *Load NeXus file* and *Save* options on the
 *File* menu.
 
 Loading
 -------
+
+Load Dataset
+************
 
 When *Load dataset* is selected, the following dialog will appear:
 
@@ -32,6 +35,35 @@ left at the default value of *float32*.
 .. note::
     Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.
 
+Load Images
+***********
+
+Load images can be used to load a stack contained in a directory or a single image.
+
+Load NeXus File
+***************
+
+NeXus Files can be loaded by selecting the "Load NeXus file" on the File menu. This brings up the NeXus Load dialog
+shown below.
+
+.. image:: ../../_static/nexus_loading_window.png
+    :alt: NeXus Load Dialog
+
+From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a
+:code:`NXtomo` entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes
+are also displayed so that a user can check that the image key and data field have the same number of elements. The
+"Use?" checkbox can be used to select which images you wish to load.
+
+If the required information could be found in the file, then the OK button will be enabled. Otherwise the button will be
+disabled.
+
+As in the case of loading a dataset, there is also the option to load a subset of the projection data either by manually
+setting an increment or by clicking on the "Preview" button. The "All" button can be used to change the increment so
+that the entire projection data is loaded. There are also options for setting pixel size and pixel bit depth.
+
+From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
+:code:`title` field in the NeXus file if one is found, otherwise the images are given the name "NeXus Data."
+
 Saving
 ------
 
@@ -50,23 +82,3 @@ of the image in the stack.
 The *Overwrite* option removes checking for existing data of the same name. When
 disabled an error will be raised if the specified output directory is not empty
 prior to saving.
-
-NeXus Files
------------
-
-NeXus Files can be loaded by selecting the "Load NeXus file" on the File menu. This brings up the NeXus Load dialog
-shown below.
-
-.. image:: ../../_static/nexus_loading_window.png
-    :alt: NeXus Load Dialog
-
-From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a
-:code:`NXtomo` entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes
-are also displayed so that a user can check that the image key and data field have the same number of elements. The
-"Use?" checkbox can be used to select which images you wish to load.
-
-If the required information could be found in the file, then the OK button will be enabled. Otherwise the button will be
-disabled.
-
-From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
-:code:`title` field in the NeXus file if one is found, otherwise the images are given the name "NeXus Data."
