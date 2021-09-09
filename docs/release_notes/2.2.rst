@@ -61,6 +61,7 @@ Fixes
 - #1112: Minimise Error, number of slices input should have minimum of 2
 - #1067: Failed to load stack "log file is not recognised"
 - #1121: FF when negative values in output, no completed message
+- #1118: Remove outliers does not remove NaN
 
 Developer Changes
 -----------------
