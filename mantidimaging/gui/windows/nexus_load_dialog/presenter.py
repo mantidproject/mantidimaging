@@ -35,6 +35,7 @@ BEFORE_TITLE_MAP = {True: "Before", False: "After"}
 TOMO_ENTRY = "tomo_entry"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
+ROTATION_ANGLE_PATH = "sample/rotation_angle"
 
 
 def _missing_data_message(data_name: str) -> str:
@@ -81,13 +82,16 @@ class NexusLoadPresenter:
             if self.tomo_entry is None:
                 return
 
-            self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
+            self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 2)
             if self.data is None:
                 return
 
             self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
             if self.image_key_dataset is None:
                 return
+
+            # rotation_angles = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 2)
+            # print(rotation_angles)
 
             self._get_data_from_image_key()
             self.title = self._find_data_title()

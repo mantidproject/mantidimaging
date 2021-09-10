@@ -67,7 +67,7 @@ class NexusLoadDialog(QDialog):
         self.increment_widget.setLayout(h_layout)
         self.increment_widget.setEnabled(False)
 
-        section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        section: QTreeWidgetItem = self.tree.topLevelItem(2)
         child = section.child(0).child(0)
         self.tree.setItemWidget(child, 2, self.increment_widget)
         self.tree.setItemWidget(child, 0, QLabel("Indices"))
@@ -106,7 +106,7 @@ class NexusLoadDialog(QDialog):
             for column in TEXT_COLUMNS:
                 section.setText(column, "")
 
-        data_section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        data_section: QTreeWidgetItem = self.tree.topLevelItem(2)
         for position in range(5):
             child = data_section.child(position)
             for column in TEXT_COLUMNS:
@@ -139,7 +139,7 @@ class NexusLoadDialog(QDialog):
         :param found: Whether or not the images were found.
         :param shape: The shape of the images array.
         """
-        section: QTreeWidgetItem = self.tree.topLevelItem(1)
+        section: QTreeWidgetItem = self.tree.topLevelItem(2)
         child = section.child(position)
         self.set_found_status(child, found)
 
@@ -162,7 +162,7 @@ class NexusLoadDialog(QDialog):
         :param n_proj: The number of projections that have been found in the NeXus file.
         """
         self.n_proj = n_proj
-        self.tree.topLevelItem(1).child(0).setExpanded(True)
+        self.tree.topLevelItem(2).child(0).setExpanded(True)
 
         self.stop_widget.setMaximum(n_proj)
         self.stop_widget.setValue(n_proj)
