@@ -90,8 +90,12 @@ class NexusLoadPresenter:
             if self.image_key_dataset is None:
                 return
 
-            # rotation_angles = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 2)
-            # print(rotation_angles)
+            rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+            if rotation_angles is None:
+                pass
+            else:
+                self.projection_angles = rotation_angles[np.where(
+                    self.image_key_dataset[...] == ImageKeys.Projections.value)]
 
             self._get_data_from_image_key()
             self.title = self._find_data_title()
