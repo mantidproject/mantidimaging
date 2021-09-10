@@ -1,13 +1,13 @@
 name: mantidimaging-dev
 channels:
-  - mantid/label/unstable
+  - mantid/label/main
   - dtasev
   - astra-toolbox/label/dev
   - conda-forge
   - ccpi
   - defaults
 dependencies:
-  - mantidimaging
+  - mantidimaging>=2.2.0,<2.3.0
   - pip
   - pip:
       # For running
