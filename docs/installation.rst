@@ -43,8 +43,8 @@ Please look for instructions specific to your OS on how to do that:
 (Specific versions can be installed by using the release url, e.g. `https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml`)
 
 5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
-6. [Optional] If you wish to run `mantidimaging-ipython`, you will need to have `ipython` installed. This can be done
-   with the command `conda install ipython`.
+6. [Optional] If you wish to run :code:`mantidimaging-ipython`, you will need to have :code:`ipython` installed. This can be done
+   with the command :code:`conda install ipython`.
 
 Running the package
 -------------------
