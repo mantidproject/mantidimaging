@@ -25,7 +25,6 @@ New features
 - #816 : NaN Removal Filter
 - #1035 : NeXus Loader: Select every Nth image
 - #1035 : List of bad slices in error message could be compressed
-- #1044 : Command line argument to load a dataset
 
 Fixes
 -----
