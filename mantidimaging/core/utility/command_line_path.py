@@ -1,5 +1,9 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+import logging
+import os
+
+
 class CommandLinePath:
     _instance = None
     images_path = ""
@@ -10,6 +14,9 @@ class CommandLinePath:
         """
         if cls._instance is None:
             cls._instance = super(CommandLinePath, cls).__new__(cls)
+            if not os.path.exists(path):
+                logging.error(f"Path {path} doesn't exist. Exiting.")
+                exit()
             cls.images_path = path
         return cls._instance
 

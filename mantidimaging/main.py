@@ -4,7 +4,6 @@
 
 import argparse
 import logging
-import os
 import warnings
 
 from mantidimaging import helper as h
@@ -43,10 +42,7 @@ def main():
         return
 
     if args.path:
-        if os.path.exists(args.path):
-            CommandLinePath(args.path)
-        else:
-            logging.error(f"Path given doesn't exist: {args.path}. Ignoring argument.")
+        CommandLinePath(args.path)
 
     h.initialise_logging(logging.getLevelName(args.log_level))
 
