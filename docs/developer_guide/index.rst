@@ -31,9 +31,9 @@ To check that the set up was successful, try running the tests from the source d
 Command Line Arguments
 ----------------------
 
-- `--log-level` - Set the log verbosity level. Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL
-- `--version` - Print the version number and exit.
-- `--path` - Set the path for the data you wish to load.
+- :code:`--log-level` - Set the log verbosity level. Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL
+- :code:`--version` - Print the version number and exit.
+- :code:`--path` - Set the path for the data you wish to load.
 
 .. toctree::
    :maxdepth: 1
