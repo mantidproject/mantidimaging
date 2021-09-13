@@ -227,7 +227,11 @@ class NexusLoadPresenter:
                        dark_after=self._create_images_if_required(self.dark_after_array, "Dark After")), self.title
 
     def _create_sample_images(self):
-
+        """
+        Creates the sample Images object.
+        :return: An Images object containing projections. If given, projection angles, pixel size, and 180deg are also
+            set.
+        """
         assert self.sample_array is not None
 
         # Find 180deg projection
@@ -248,6 +252,8 @@ class NexusLoadPresenter:
                                                     view.step_widget.value()]))
         if proj180deg is not None:
             sample_images.proj180deg = proj180deg
+        else:
+            pass  # Log message
         return sample_images
 
     def _create_images(self, data_array: np.ndarray, name: str) -> Images:
