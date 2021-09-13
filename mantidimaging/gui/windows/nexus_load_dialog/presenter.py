@@ -96,13 +96,13 @@ class NexusLoadPresenter:
 
             rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
             if rotation_angles is None:
-                pass
+                logger.warning("No rotation angles found in NeXus file.")
             elif "units" not in rotation_angles.attrs.keys():
-                pass
+                logger.warning("No unit information found in rotation angles attributes.")
             else:
                 if "deg" in rotation_angles.attrs["units"]:
-                    self.projection_angles = np.radians(rotation_angles[np.where(
-                        self.image_key_dataset[...] == ImageKeys.Projections.value)])
+                    self.projection_angles = np.radians(
+                        rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)])
                 else:
                     self.projection_angles = rotation_angles[np.where(
                         self.image_key_dataset[...] == ImageKeys.Projections.value)]
