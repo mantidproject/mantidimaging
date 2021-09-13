@@ -107,12 +107,15 @@ class NexusLoadPresenter:
             self.title = self._find_data_title()
 
     def _read_rotation_angles(self, rotation_angles: h5py.Dataset, degrees: bool):
+        """
+        Reads the rotation angles array for the projections alone and coverts them to radians if needed.
+        :param rotation_angles: The rotation angle information for all the images.
+        :param degrees: Whether the data is in degrees or not. If this information isn't included in the file then a
+            guess was made.
+        """
+        self.projection_angles = rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)]
         if degrees:
-            self.projection_angles = np.radians(
-                rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)])
-        else:
-            self.projection_angles = rotation_angles[np.where(
-                self.image_key_dataset[...] == ImageKeys.Projections.value)]
+            self.projection_angles = np.radians(self.projection_angles)
 
     def _missing_data_error(self, field: str):
         """
