@@ -67,6 +67,7 @@ class NexusLoadPresenter:
         self.flat_before_array = None
         self.flat_after_array = None
         self.dark_after_array = None
+        self.projection_angles = None
 
     def notify(self, n: Notification):
         try:
@@ -96,9 +97,15 @@ class NexusLoadPresenter:
             rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
             if rotation_angles is None:
                 pass
+            elif "units" not in rotation_angles.attrs.keys():
+                pass
             else:
-                self.projection_angles = rotation_angles[np.where(
-                    self.image_key_dataset[...] == ImageKeys.Projections.value)]
+                if "deg" in rotation_angles.attrs["units"]:
+                    self.projection_angles = np.radians(rotation_angles[np.where(
+                        self.image_key_dataset[...] == ImageKeys.Projections.value)])
+                else:
+                    self.projection_angles = rotation_angles[np.where(
+                        self.image_key_dataset[...] == ImageKeys.Projections.value)]
 
             self._get_data_from_image_key()
             self.title = self._find_data_title()
@@ -236,7 +243,7 @@ class NexusLoadPresenter:
 
         # Find 180deg projection
         proj180deg = None
-        diff = np.abs(self.projection_angles - 180)
+        diff = np.abs(self.projection_angles - np.pi)
         if np.amin(diff) <= THRESHOLD_180:
             proj180deg = Images(self.sample_array[diff.argmin()])
 
