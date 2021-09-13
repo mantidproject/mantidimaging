@@ -98,17 +98,21 @@ class NexusLoadPresenter:
             if rotation_angles is None:
                 logger.warning("No rotation angles found in NeXus file.")
             elif "units" not in rotation_angles.attrs.keys():
-                logger.warning("No unit information found in rotation angles attributes.")
+                logger.warning("No unit information found for rotation angles. Will infer from array values.")
+                self._read_rotation_angles(rotation_angles, np.abs(rotation_angles).max() > 2 * np.pi)
             else:
-                if "deg" in rotation_angles.attrs["units"]:
-                    self.projection_angles = np.radians(
-                        rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)])
-                else:
-                    self.projection_angles = rotation_angles[np.where(
-                        self.image_key_dataset[...] == ImageKeys.Projections.value)]
+                self._read_rotation_angles(rotation_angles, "deg" in rotation_angles.attrs["units"])
 
             self._get_data_from_image_key()
             self.title = self._find_data_title()
+
+    def _read_rotation_angles(self, rotation_angles: h5py.Dataset, degrees: bool):
+        if degrees:
+            self.projection_angles = np.radians(
+                rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)])
+        else:
+            self.projection_angles = rotation_angles[np.where(
+                self.image_key_dataset[...] == ImageKeys.Projections.value)]
 
     def _missing_data_error(self, field: str):
         """
