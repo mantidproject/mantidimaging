@@ -14,7 +14,7 @@ class CommandLinePath:
         """
         if cls._instance is None:
             cls._instance = super(CommandLinePath, cls).__new__(cls)
-            if not os.path.exists(path):
+            if path and not os.path.exists(path):
                 logging.error(f"Path {path} doesn't exist. Exiting.")
                 exit()
             cls.images_path = path
