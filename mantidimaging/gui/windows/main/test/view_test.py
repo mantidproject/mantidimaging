@@ -332,17 +332,18 @@ class MainWindowViewTest(unittest.TestCase):
         nexus_load_dialog.assert_called_once()
         nexus_load_dialog.return_value.show.assert_called_once()
 
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath")
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
-    def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter):
-        test_path = "./"
-        CommandLinePath(test_path)
+    def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter, command_line_path):
+        command_line_path.return_value.path.return_value = test_path = "./"
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath")
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
-    def test_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter):
-        CommandLinePath.images_path = ""
+    def test_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter, command_line_path):
+        command_line_path.return_value.path.return_value = test_path = ""
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
