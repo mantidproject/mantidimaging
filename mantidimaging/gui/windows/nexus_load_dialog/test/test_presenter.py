@@ -40,7 +40,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
 
         self.rotation_angles_array = np.array([0, 0, 0, 0, 90, 180, 0, 0, 0, 0])
-        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=self.projection_angles_array)
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=self.rotation_angles_array)
         angle_dataset.attrs.create("units", "degrees")
 
         self.view = mock.Mock(autospec=NexusLoadDialog)
