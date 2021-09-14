@@ -26,9 +26,7 @@ class StackVisualiserViewTest(unittest.TestCase):
 
     def setUp(self):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath") as command_line_mock:
-                command_line_mock.return_value.path.return_value = "path"
-                self.window = MainWindowView()
+            self.window = MainWindowView()
         self.window.remove_stack = mock.Mock()
         self.view, self.test_data = self._add_stack_visualiser()
 

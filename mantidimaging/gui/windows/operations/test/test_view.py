@@ -17,9 +17,7 @@ class OperationsWindowsViewTest(unittest.TestCase):
     def setUp(self):
         # mock the view so it has the same methods
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath") as command_line_mock:
-                command_line_mock.return_value.path.return_value = "path"
-                self.main_window = MainWindowView()
+            self.main_window = MainWindowView()
         self.window = FiltersWindowView(self.main_window)
 
     def test_collapse(self):

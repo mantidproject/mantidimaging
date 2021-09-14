@@ -19,9 +19,7 @@ versions._use_test_values()
 class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath") as command_line_mock:
-                command_line_mock.return_value.path.return_value = "path"
-                self.main_window = MainWindowView()
+            self.main_window = MainWindowView()
         self.view = ReconstructWindowView(self.main_window)
         self.view.presenter = self.presenter = mock.Mock()
         self.view.image_view = self.image_view = mock.Mock()

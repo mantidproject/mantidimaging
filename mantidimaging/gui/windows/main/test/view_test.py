@@ -9,7 +9,6 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
 
-from mantidimaging.core.utility.command_line_path import CommandLinePath
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
@@ -24,9 +23,7 @@ versions._use_test_values()
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            with mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath") as command_line_mock:
-                command_line_mock.return_value.path.return_value = "path"
-                self.view = MainWindowView()
+            self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
 
@@ -344,6 +341,6 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter, command_line_path):
-        command_line_path.return_value.path.return_value = test_path = ""
+        command_line_path.return_value.path.return_value = ""
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
