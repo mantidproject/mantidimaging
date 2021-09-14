@@ -9,7 +9,7 @@ import numpy as np
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
-    IMAGE_KEY_PATH, NexusLoadPresenter
+    IMAGE_KEY_PATH, NexusLoadPresenter, ROTATION_ANGLE_PATH
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import logger as nexus_logger
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 
@@ -38,6 +38,10 @@ class NexusLoaderTest(unittest.TestCase):
         self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=self.image_key_array)
         self.title = "my_data_title"
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
+
+        self.rotation_angles_array = np.array([0, 0, 0, 0, 90, 180, 0, 0, 0, 0])
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=self.projection_angles_array)
+        angle_dataset.attrs.create("units", "degrees")
 
         self.view = mock.Mock(autospec=NexusLoadDialog)
         self.view.filePathLineEdit.text.return_value = "filename"
@@ -113,7 +117,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_no_data_or_image_key_not_found_indicated_on_view(self):
         paths = [IMAGE_KEY_PATH, DATA_PATH]
-        positions = [0, 1]
+        positions = [0, 2]
         self.tearDown()
         for i in range(len(paths)):
             self.setUp()
@@ -127,7 +131,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         self.view.set_data_found.assert_any_call(0, True, f"{self.full_tomo_path}/{IMAGE_KEY_PATH}",
                                                  self.image_key_array.shape)
-        self.view.set_data_found.assert_any_call(1, True, f"{self.full_tomo_path}/{DATA_PATH}", self.data_array.shape)
+        self.view.set_data_found.assert_any_call(2, True, f"{self.full_tomo_path}/{DATA_PATH}", self.data_array.shape)
 
     def test_images_found_indicated_on_view(self):
         self.nexus_loader.scan_nexus_file()
