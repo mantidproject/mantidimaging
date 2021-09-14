@@ -37,6 +37,13 @@ or to run with additional diagnostics:
 :code:`python3 -X faulthandler -m mantidimaging --log-level DEBUG`
 
 
+Command Line Arguments
+----------------------
+
+- :code:`--log-level` - Set the log verbosity level. Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL
+- :code:`--version` - Print the version number and exit.
+- :code:`--path` - Set the path for the data you wish to load.
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
