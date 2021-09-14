@@ -26,7 +26,16 @@ Afterwards the environment can be activated by running:
 
 To check that the set up was successful, try running the tests from the source directory:
 
-:code:`python -m pytest`
+:code:`python3 -m pytest`
+
+Mantid Imaging can be run directly from the checked-out git directory:
+
+:code:`python3 -m mantidimaging`
+
+or to run with additional diagnostics:
+
+:code:`python3 -X faulthandler -m mantidimaging --log-level DEBUG`
+
 
 .. toctree::
    :maxdepth: 1
