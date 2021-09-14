@@ -24,7 +24,9 @@ versions._use_test_values()
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.view = MainWindowView()
+            with mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath") as command_line_mock:
+                command_line_mock.return_value.path.return_value = "path"
+                self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
 
@@ -333,7 +335,8 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter):
-        CommandLinePath.images_path = test_path = "my/image/path"
+        test_path = "./"
+        CommandLinePath(test_path)
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 

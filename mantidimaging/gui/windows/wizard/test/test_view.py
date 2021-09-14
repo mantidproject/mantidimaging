@@ -17,7 +17,9 @@ STEP_DATA = {'name': 'Loading files', 'description': 'desc'}
 class WizardViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.main_window = MainWindowView()
+            with mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath") as command_line_mock:
+                command_line_mock.return_value.path.return_value = "path"
+                self.main_window = MainWindowView()
         self.view = WizardView(self.main_window, mock.Mock())
 
     def test_add_stage(self):
