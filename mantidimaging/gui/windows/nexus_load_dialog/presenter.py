@@ -95,13 +95,12 @@ class NexusLoadPresenter:
                 return
 
             rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
-            if rotation_angles is None:
-                pass
-            elif "units" not in rotation_angles.attrs.keys():
-                logger.warning("No unit information found for rotation angles. Will infer from array values.")
-                self._read_rotation_angles(rotation_angles, np.abs(rotation_angles).max() > 2 * np.pi)
-            else:
-                self._read_rotation_angles(rotation_angles, "deg" in rotation_angles.attrs["units"])
+            if rotation_angles is not None:
+                if "units" not in rotation_angles.attrs.keys():
+                    logger.warning("No unit information found for rotation angles. Will infer from array values.")
+                    self._read_rotation_angles(rotation_angles, np.abs(rotation_angles).max() > 2 * np.pi)
+                else:
+                    self._read_rotation_angles(rotation_angles, "deg" in rotation_angles.attrs["units"])
 
             self._get_data_from_image_key()
             self.title = self._find_data_title()
