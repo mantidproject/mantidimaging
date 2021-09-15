@@ -38,7 +38,7 @@ DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 ROTATION_ANGLE_PATH = "sample/rotation_angle"
 
-THRESHOLD_180 = 0.5
+THRESHOLD_180 = np.radians(1)
 
 
 def _missing_data_message(data_string: str) -> str:
@@ -257,6 +257,8 @@ class NexusLoadPresenter:
         diff = np.abs(self.projection_angles - np.pi)
         if np.amin(diff) <= THRESHOLD_180:
             proj180deg = Images(self.sample_array[diff.argmin()])
+        else:
+            pass  # TODO log message
 
         # Create sample array and Images object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
@@ -271,7 +273,7 @@ class NexusLoadPresenter:
         if proj180deg is not None:
             sample_images.proj180deg = proj180deg
         else:
-            pass  # Log message
+            pass  # TODO Log message
         return sample_images
 
     def _create_images(self, data_array: np.ndarray, name: str) -> Images:
