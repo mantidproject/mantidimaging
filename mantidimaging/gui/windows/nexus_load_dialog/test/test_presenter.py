@@ -281,6 +281,10 @@ class NexusLoaderTest(unittest.TestCase):
             self.nexus_loader.scan_nexus_file()
         self.assertIn("No unit information found for rotation angles.", log_mock.output[0])
 
+    def test_rotation_angles_converted_to_radians(self):
+        self.nexus_loader.scan_nexus_file()
+        assert np.array_equal(self.nexus_loader.projection_angles, np.array([np.pi * 0.5, np.pi]))
+
     def test_rotation_angles_already_in_radians(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH]
         rotation_angles_array = np.array([0, 0, 0, 0, np.pi * 0.5, np.pi, 0, 0, 0, 0])
