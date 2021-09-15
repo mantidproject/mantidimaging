@@ -17,24 +17,24 @@ class TestCheckVersion(unittest.TestCase):
     def test_parse_version(self):
         parsed = _parse_version("9.9.9_1234")
 
-        assert parsed.release == (9, 9, 9, 1234)
+        self.assertEqual(parsed.release, (9, 9, 9, 1234))
 
     def test_parse_version_no_commits(self):
         parsed = _parse_version("9.9.9")
 
-        assert parsed.release == (9, 9, 9)
+        self.assertEqual(parsed.release, (9, 9, 9))
 
     def test_parse_version_release_candidate(self):
         parsed = _parse_version("9.9.9rc")
 
-        assert parsed.release == (9, 9, 9)
-        assert parsed.pre == ("rc", 0)
+        self.assertEqual(parsed.release, (9, 9, 9))
+        self.assertEqual(parsed.pre, ("rc", 0))
 
     def test_parse_version_release_candidate_with_commits(self):
         parsed = _parse_version("9.9.9rc_2")
 
-        assert parsed.release == (9, 9, 9)
-        assert parsed.pre == ("rc", 2)
+        self.assertEqual(parsed.release, (9, 9, 9))
+        self.assertEqual(parsed.pre, ("rc", 2))
 
     @parameterized.expand([
         ["8.9.9_1234", "9.9.9_1234", False],
