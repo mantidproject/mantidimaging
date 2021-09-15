@@ -15,7 +15,8 @@ from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 
 
 def test_missing_field_message():
-    assert _missing_data_message("missing_data") == "The NeXus file does not contain the required missing_data data."
+    assert _missing_data_message(
+        "required missing_data") == "The NeXus file does not contain the required missing_data data."
 
 
 class NexusLoaderTest(unittest.TestCase):
@@ -107,7 +108,7 @@ class NexusLoaderTest(unittest.TestCase):
             self.setUp()
             del self.nexus[required_data_paths[i]]
             with self.subTest(i=i):
-                missing_string = _missing_data_message(error_names[i])
+                missing_string = _missing_data_message("required " + error_names[i])
                 with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
                     self.nexus_loader.scan_nexus_file()
                     self.assertIn(missing_string, log_mock.output[0])
@@ -193,7 +194,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_no_projection_data(self):
         self.replace_values_in_image_key("Projections", 1)
-        missing_string = _missing_data_message("projection images")
+        missing_string = _missing_data_message("required projection images")
         with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
             self.nexus_loader.scan_nexus_file()
         self.assertIn(missing_string, log_mock.output[0])
