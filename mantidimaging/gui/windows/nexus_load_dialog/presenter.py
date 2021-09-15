@@ -41,13 +41,13 @@ ROTATION_ANGLE_PATH = "sample/rotation_angle"
 THRESHOLD_180 = 0.5
 
 
-def _missing_data_message(data_name: str) -> str:
+def _missing_data_message(data_string: str) -> str:
     """
     Creates a message for logging when certain data is missing in the NeXus file.
-    :param data_name: The name of the missing data.
+    :param data_string: The name of the missing data.
     :return: A string telling the user that the data is missing.
     """
-    return f"The NeXus file does not contain the required {data_name} data."
+    return f"The NeXus file does not contain the {data_string} data."
 
 
 class NexusLoadPresenter:
@@ -96,7 +96,7 @@ class NexusLoadPresenter:
 
             rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
             if rotation_angles is None:
-                logger.warning("No rotation angles found in NeXus file.")
+                pass
             elif "units" not in rotation_angles.attrs.keys():
                 logger.warning("No unit information found for rotation angles. Will infer from array values.")
                 self._read_rotation_angles(rotation_angles, np.abs(rotation_angles).max() > 2 * np.pi)
@@ -122,8 +122,13 @@ class NexusLoadPresenter:
         Create a missing data message and display it on the view.
         :param field: The name of the field that couldn't be found in the NeXus file.
         """
-        error_msg = _missing_data_message(field)
-        logger.error(error_msg)
+        if "rotation_angle" in field:
+            error_msg = _missing_data_message(field)
+            logger.warning(error_msg)
+        else:
+            error_msg = _missing_data_message("required " + field)
+            logger.error(error_msg)
+
         self.view.show_missing_data_error(error_msg)
 
     def _look_for_tomo_data_and_update_view(self, field: str,
