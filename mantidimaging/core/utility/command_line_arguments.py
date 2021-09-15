@@ -5,10 +5,19 @@ import os
 
 
 def _valid_operation(operation: str):
+    """
+    Checks if a given operation exists in Mantid Imaging.
+    :param operation: The name of the operation.
+    :return: True if it is a valid operation, False otherwise.
+    """
     pass
 
 
 def _log_and_exit(msg: str):
+    """
+    Log an error message and exit.
+    :param msg: The log message.
+    """
     logging.error(msg)
     exit()
 
