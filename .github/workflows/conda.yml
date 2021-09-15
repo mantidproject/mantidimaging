@@ -15,7 +15,7 @@ jobs:
         uses: kt3k/license_checker@v1.0.3
 
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2.0.1
+        uses: conda-incubator/setup-miniconda@v2.1.1
         with:
           environment-file: environment-dev.yml
           activate-environment: mantidimaging-dev
