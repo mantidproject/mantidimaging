@@ -16,26 +16,24 @@ class TestCheckVersion(unittest.TestCase):
     def test_parse_version(self):
         parsed = _parse_version("9.9.9_1234")
 
-        assert parsed.version == (9, 9, 9)
-        assert parsed.commits == 1234
+        assert parsed.release == (9, 9, 9, 1234)
 
     def test_parse_version_no_commits(self):
         parsed = _parse_version("9.9.9")
 
-        assert parsed.version == (9, 9, 9)
-        assert parsed.commits == 0
+        assert parsed.release == (9, 9, 9)
 
     def test_parse_version_release_candidate(self):
         parsed = _parse_version("9.9.9rc")
 
-        assert parsed.version == (9, 9, 9)
-        assert parsed.commits == 0
+        assert parsed.release == (9, 9, 9)
+        assert parsed.pre == ("rc", 0)
 
     def test_parse_version_release_candidate_with_commits(self):
         parsed = _parse_version("9.9.9rc_2")
 
-        assert parsed.version == (9, 9, 9)
-        assert parsed.commits == 2
+        assert parsed.release == (9, 9, 9)
+        assert parsed.pre == ("rc", 2)
 
     def test_version_is_uptodate(self):
         for local, remote, is_uptodate in [
@@ -47,6 +45,10 @@ class TestCheckVersion(unittest.TestCase):
             ["9.9.9_1234", "8.9.9_1234", True],
             ["8.9.9_2000", "8.9.9_1234", True],
             ["8.10.9_1234", "8.9.9_1234", True],
+            ["1.1.0rc_18", "1.1.0_18", False],
+            ["1.1.0a_18", "1.1.0_18", False],
+            ["1.1.0a_18", "1.1.0rc_18", False],
+            ["1.1.0rc_18", "1.1.0a_19", True],
         ]:
 
             local_parsed = _parse_version(local)
