@@ -3,7 +3,8 @@
 import logging
 import os
 
-def _valid_operation(str: operation):
+
+def _valid_operation(operation: str):
     pass
 
 
@@ -19,7 +20,7 @@ class CommandLineArguments:
 
     def __new__(cls, path: str = "", operation: str = "", recon: bool = False):
         """
-        Creates a singleton for storing the path from the command line argument.
+        Creates a singleton for storing the command line arguments.
         """
         if cls._instance is None:
             cls._instance = super(CommandLineArguments, cls).__new__(cls)
@@ -28,6 +29,7 @@ class CommandLineArguments:
                     _log_and_exit(f"Path {path} doesn't exist. Exiting.")
                 else:
                     cls.images_path = path
+            # TODO operation and recon argument given?
             if operation:
                 if not cls.images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
