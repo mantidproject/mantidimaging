@@ -8,3 +8,8 @@ New Features
 
 - #1044 : Command line argument to load a dataset
 - #1049 : NeXus Loader: 180deg images
+
+Fixes
+-----
+
+- #1138 : Improve version number handling
