@@ -7,7 +7,7 @@ import logging
 import warnings
 
 from mantidimaging import helper as h
-from mantidimaging.core.utility.command_line_path import CommandLinePath
+from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -42,7 +42,7 @@ def main():
         return
 
     if args.path:
-        CommandLinePath(args.path)
+        CommandLineArguments(args.path)
 
     h.initialise_logging(logging.getLevelName(args.log_level))
 

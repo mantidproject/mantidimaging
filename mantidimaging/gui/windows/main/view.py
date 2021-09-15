@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.command_line_path import CommandLinePath
+from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
@@ -100,7 +100,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.wizard = None
 
-        path = CommandLinePath()
+        path = CommandLineArguments()
         if path.path():
             self.presenter.load_stacks_from_folder(path.path())
 
