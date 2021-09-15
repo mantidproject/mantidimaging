@@ -254,11 +254,10 @@ class NexusLoadPresenter:
 
         # Find 180deg projection
         proj180deg = None
-        diff = np.abs(self.projection_angles - np.pi)
-        if np.amin(diff) <= THRESHOLD_180:
-            proj180deg = Images(self.sample_array[diff.argmin()])
-        else:
-            pass  # TODO log message
+        if self.projection_angles is not None:
+            diff = np.abs(self.projection_angles - np.pi)
+            if np.amin(diff) <= THRESHOLD_180:
+                proj180deg = Images(self.sample_array[diff.argmin()])
 
         # Create sample array and Images object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
@@ -267,13 +266,14 @@ class NexusLoadPresenter:
 
         # Set attributes
         sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
-        sample_images.set_projection_angles(
-            ProjectionAngles(self.projection_angles[self.view.start_widget.value():self.view.stop_widget.value():self.
-                                                    view.step_widget.value()]))
+        if self.projection_angles is not None:
+            sample_images.set_projection_angles(
+                ProjectionAngles(self.projection_angles[self.view.start_widget.value():self.view.stop_widget.value(
+                ):self.view.step_widget.value()]))
         if proj180deg is not None:
             sample_images.proj180deg = proj180deg
         else:
-            pass  # TODO Log message
+            logger.warning("Unable to find ~180 degree projection.")
         return sample_images
 
     def _create_images(self, data_array: np.ndarray, name: str) -> Images:

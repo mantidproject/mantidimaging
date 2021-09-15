@@ -275,6 +275,10 @@ class NexusLoaderTest(unittest.TestCase):
             self.nexus_loader.scan_nexus_file()
         self.assertIn("The NeXus file does not contain the sample/rotation_angle data.", log_mock.output[0])
 
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.sample._projection_angles)
+        self.assertIsNone(dataset.sample._proj180deg)
+
     def test_no_rotation_angle_units(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH].attrs["units"]
         with self.assertLogs(nexus_logger, level="WARNING") as log_mock:
@@ -298,6 +302,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
         self.assertIsNotNone(dataset.sample.proj180deg)
+        self.assertIsNotNone(dataset.sample._projection_angles)
 
     def test_180_deg_not_set(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH]
@@ -306,5 +311,8 @@ class NexusLoaderTest(unittest.TestCase):
         angle_dataset.attrs.create("units", "radians")
 
         self.nexus_loader.scan_nexus_file()
-        dataset = self.nexus_loader.get_dataset()[0]
+        with self.assertLogs(nexus_logger, level="WARNING") as log_mock:
+            dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIn("Unable to find ~180 degree projection", log_mock.output[0])
         self.assertIsNone(dataset.sample._proj180deg)
+        self.assertIsNotNone(dataset.sample._projection_angles)
