@@ -7,3 +7,8 @@ New Features
 ------------
 
 - #1044 : Command line argument to load a dataset
+
+Fixes
+-----
+
+- #1138 : Improve version number handling
