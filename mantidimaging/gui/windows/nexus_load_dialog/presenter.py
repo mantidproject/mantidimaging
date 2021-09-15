@@ -112,6 +112,7 @@ class NexusLoadPresenter:
         :param degrees: Whether the data is in degrees or not. If this information isn't included in the file then a
             guess was made.
         """
+        assert self.image_key_dataset is not None
         self.projection_angles = rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)]
         if degrees:
             self.projection_angles = np.radians(self.projection_angles)
