@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
@@ -35,26 +36,25 @@ class TestCheckVersion(unittest.TestCase):
         assert parsed.release == (9, 9, 9)
         assert parsed.pre == ("rc", 2)
 
-    def test_version_is_uptodate(self):
-        for local, remote, is_uptodate in [
-            ["8.9.9_1234", "9.9.9_1234", False],
-            ["9.9.9_1234", "19.9.9_1234", False],
-            ["9.9.9_1234", "19.9.9_0", False],
-            ["9.9.9_1", "9.9.9_2", False],
-            ["8.9.9_1234", "8.9.9_1234", True],
-            ["9.9.9_1234", "8.9.9_1234", True],
-            ["8.9.9_2000", "8.9.9_1234", True],
-            ["8.10.9_1234", "8.9.9_1234", True],
-            ["1.1.0rc_18", "1.1.0_18", False],
-            ["1.1.0a_18", "1.1.0_18", False],
-            ["1.1.0a_18", "1.1.0rc_18", False],
-            ["1.1.0rc_18", "1.1.0a_19", True],
-        ]:
+    @parameterized.expand([
+        ["8.9.9_1234", "9.9.9_1234", False],
+        ["9.9.9_1234", "19.9.9_1234", False],
+        ["9.9.9_1234", "19.9.9_0", False],
+        ["9.9.9_1", "9.9.9_2", False],
+        ["8.9.9_1234", "8.9.9_1234", True],
+        ["9.9.9_1234", "8.9.9_1234", True],
+        ["8.9.9_2000", "8.9.9_1234", True],
+        ["8.10.9_1234", "8.9.9_1234", True],
+        ["1.1.0rc_18", "1.1.0_18", False],
+        ["1.1.0a_18", "1.1.0_18", False],
+        ["1.1.0a_18", "1.1.0rc_18", False],
+        ["1.1.0rc_18", "1.1.0a_19", True],
+    ])
+    def test_version_is_uptodate(self, local, remote, is_uptodate):
+        local_parsed = _parse_version(local)
+        remote_parsed = _parse_version(remote)
 
-            local_parsed = _parse_version(local)
-            remote_parsed = _parse_version(remote)
-
-            self.assertEqual(_version_is_uptodate(local_parsed, remote_parsed), is_uptodate)
+        self.assertEqual(_version_is_uptodate(local_parsed, remote_parsed), is_uptodate)
 
     def test_is_conda_uptodate(self):
         self.assertTrue(self.versions.is_conda_uptodate())
