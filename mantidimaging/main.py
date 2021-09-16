@@ -29,7 +29,10 @@ def parse_args():
 
     parser.add_argument("--path", type=str, help="Path for the data you wish to load.")
     parser.add_argument("--operation", type=str, help="The initial operation to run on the dataset.")
-    parser.add_argument("--recon", type=bool, default=False, help="Opens the reconstruction window at start up.")
+    parser.add_argument("--recon",
+                        default=False,
+                        action='store_true',
+                        help="Opens the reconstruction window at start up.")
 
     return parser.parse_args()
 
