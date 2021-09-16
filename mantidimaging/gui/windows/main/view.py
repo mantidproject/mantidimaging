@@ -108,6 +108,9 @@ class MainWindowView(BaseMainWindowView):
             self.show_filters_window()
             self.filters.set_initial_filter(args.operation())
 
+        if args.recon():
+            self.show_recon_window()
+
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
         self.actionLoadImages.triggered.connect(self.load_image_stack)

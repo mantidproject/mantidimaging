@@ -283,8 +283,8 @@ class FiltersWindowView(BaseMainWindowView):
 
     def set_initial_filter(self, filter_arg: str):
         filter_arg = filter_arg.replace("-", "")
-
         for i in range(self.filterSelector.count()):
-            self.filterSelector.setCurrentIndex(i)
-            if self.filterSelector.currentText().lower().replace("-", "").replace(" ", "") == filter_arg:
+            filter_text = self.filterSelector.itemText(i)
+            if filter_text.lower().replace("-", "").replace(" ", "") == filter_arg:
+                self.filterSelector.setCurrentIndex(i)
                 return
