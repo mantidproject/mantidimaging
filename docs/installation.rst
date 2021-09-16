@@ -22,7 +22,7 @@ Installing
 ----------
 
 The simplest way to install the toolkit is via the packages_ published to Anaconda Cloud, this
-can be done with an existing Anaconda or Miniconda distribution if you already
+can be done with an existing Conda or Mamba distribution if you already
 have one on your machine.
 
 .. _packages: https://anaconda.org/mantid/mantidimaging/
@@ -34,11 +34,11 @@ Please look for instructions specific to your OS on how to do that:
   - CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive
   - gcc - needed for compiling some python modules
 
-2. Download and install `Miniconda 3 <https://conda.io/miniconda.html>`_
-3. Make sure :code:`conda` is available on your PATH
+2. Download and install `Mambaforge <https://github.com/conda-forge/miniforge>`_ or `Miniconda 3 <https://conda.io/miniconda.html>`_
+3. Make sure :code:`mamba` or :code:`conda` is available on your PATH. The steps below assume you are using mamba.
 4. Create a mantidimaging conda environment:
 
-  - :code:`conda env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml`
+  - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml`
 
 (Specific versions can be installed by using the release url, e.g. `https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml`)
 
@@ -70,7 +70,7 @@ Nightly version
 
 The latest nightly version can be installed with
 
-  - :code:`conda env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/master/environment.yml`
+  - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/master/environment.yml`
 
 This will make a `mantidimaging-nightly` environment.
 
@@ -79,7 +79,7 @@ Updating
 --------
 To update to the latest version of Mantid Imaging run:
 
-:code:`conda activate mantidimaging && conda update mantidimaging`
+:code:`conda activate mantidimaging && mamba update mantidimaging`
 
 If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.
 
@@ -91,11 +91,11 @@ To completely delete the Mantid Imaging environment follow these steps:
 
   - to exit out of the conda Mantid Imaging environment
 
-- :code:`conda env list`
+- :code:`mamba env list`
 
   - to see which environments you have installed
 
-- :code:`conda env remove -n mantidimaging`
+- :code:`mamba env remove -n mantidimaging`
 
   - and press :code:`y` to confirm. Replace `mantidimaging` with any other environment you wish to remove
 
