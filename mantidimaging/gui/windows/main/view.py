@@ -100,9 +100,13 @@ class MainWindowView(BaseMainWindowView):
 
         self.wizard = None
 
-        path = CommandLineArguments()
-        if path.path():
-            self.presenter.load_stacks_from_folder(path.path())
+        args = CommandLineArguments()
+        if args.path():
+            self.presenter.load_stacks_from_folder(args.path())
+
+        if args.operation():
+            self.show_filters_window()
+            self.filters.set_initial_filter(args.operation())
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)

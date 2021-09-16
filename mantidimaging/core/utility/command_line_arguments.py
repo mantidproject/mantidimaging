@@ -3,6 +3,14 @@
 import logging
 import os
 
+filter_names = ['Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation',
+            'Arithmetic', 'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation',
+            'NaN Removal', 'Rebin', 'Rescale', 'Ring Removal', 'Rotate Stack',
+            'Remove all stripes', 'Remove dead stripes', 'Remove large stripes', 'Stripe Removal',
+            'Remove stripes with filtering', 'Remove stripes with sorting and fitting']
+
+filter_names = list(map(lambda x: "-".join(x.split()).lower(), filter_names))
+
 
 def _valid_operation(operation: str):
     """
@@ -10,7 +18,7 @@ def _valid_operation(operation: str):
     :param operation: The name of the operation.
     :return: True if it is a valid operation, False otherwise.
     """
-    pass
+    return operation.lower() in filter_names
 
 
 def _log_and_exit(msg: str):
@@ -26,8 +34,9 @@ class CommandLineArguments:
     _instance = None
     images_path = ""
     init_operation = ""
+    show_recon = False
 
-    def __new__(cls, path: str = "", operation: str = "", recon: bool = False):
+    def __new__(cls, path: str = "", operation: str = "", show_recon: bool = False):
         """
         Creates a singleton for storing the command line arguments.
         """
@@ -38,7 +47,6 @@ class CommandLineArguments:
                     _log_and_exit(f"Path {path} doesn't exist. Exiting.")
                 else:
                     cls.images_path = path
-            # TODO operation and recon argument given?
             if operation:
                 if not cls.images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
@@ -46,8 +54,10 @@ class CommandLineArguments:
                     _log_and_exit(f"{operation} is not a known operation. Exiting.")
                 else:
                     cls.init_operation = operation
-            if recon and not path:
+            if show_recon and not path:
                 _log_and_exit("No path given for reconstruction. Exiting.")
+            else:
+                cls.show_recon = show_recon
 
         return cls._instance
 
@@ -57,3 +67,11 @@ class CommandLineArguments:
         Returns the command line images path.
         """
         return cls.images_path
+
+    @classmethod
+    def operation(cls) -> str:
+        return cls.init_operation
+
+    @classmethod
+    def recon(cls) -> bool:
+        return cls.show_recon
