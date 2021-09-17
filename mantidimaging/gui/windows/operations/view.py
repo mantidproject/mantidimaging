@@ -23,6 +23,10 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
 
 
+def _strip_filter_name(filter_name: str):
+    return filter_name.lower().replace("-", "").replace(" ", "")
+
+
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = pyqtSignal()
     filter_applied = pyqtSignal()
@@ -282,9 +286,13 @@ class FiltersWindowView(BaseMainWindowView):
             self.collapseToggleButton.setText("<<")
 
     def set_initial_filter(self, filter_arg: str):
+        """
+        Sets the initial filter in the operations window.
+        :param filter_arg: The name of the filter given by the user.
+        """
         filter_arg = filter_arg.replace("-", "")
         for i in range(self.filterSelector.count()):
             filter_text = self.filterSelector.itemText(i)
-            if filter_text.lower().replace("-", "").replace(" ", "") == filter_arg:
+            if _strip_filter_name(filter_text) == filter_arg:
                 self.filterSelector.setCurrentIndex(i)
                 return
