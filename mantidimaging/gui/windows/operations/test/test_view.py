@@ -10,6 +10,7 @@ from mantidimaging.gui.windows.operations.view import FiltersWindowView
 from mantidimaging.test_helpers import start_qapplication
 
 from mantidimaging.core.utility.version_check import versions
+
 versions._use_test_values()
 
 
@@ -33,8 +34,9 @@ class OperationsWindowsViewTest(unittest.TestCase):
         self.assertEqual(0, self.window.splitter.sizes()[0])
 
     def test_set_initial_operation(self):
-        for filter in filter_names:
-            with self.subTest(filter=filter):
-                self.window.set_initial_filter(filter)
-                self.assertEqual(filter.replace(" ", "").replace("-","").lower(),self.window.filterSelector.currentText().replace(" ", "").replace("-","").lower())
-
+        for filter_name in filter_names:
+            with self.subTest(filter_name=filter_name):
+                self.window.set_initial_filter(filter_name)
+                self.assertEqual(
+                    filter_name.replace(" ", "").replace("-", "").lower(),
+                    self.window.filterSelector.currentText().replace(" ", "").replace("-", "").lower())
