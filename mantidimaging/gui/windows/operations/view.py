@@ -24,6 +24,11 @@ if TYPE_CHECKING:
 
 
 def _strip_filter_name(filter_name: str):
+    """
+    Removes hyphens and spaces from a filter name and makes it all lower case.
+    :param filter_name: The human-readable filter name.
+    :return: The stripped filter name.
+    """
     return filter_name.lower().replace("-", "").replace(" ", "")
 
 
