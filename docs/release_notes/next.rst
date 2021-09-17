@@ -12,3 +12,9 @@ Fixes
 -----
 
 - #1138 : Improve version number handling
+
+
+Developer Changes
+-----------------
+
+- #1022 : Switch to use Mambaforge

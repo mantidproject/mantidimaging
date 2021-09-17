@@ -1,16 +1,16 @@
 FROM mantidproject/mantidimaging:base
 
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &&\
-    chmod +x Miniconda3-latest-Linux-x86_64.sh &&\
-    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda &&\
-    rm Miniconda3-latest-Linux-x86_64.sh
+RUN wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh &&\
+    chmod +x Mambaforge.sh &&\
+    bash Mambaforge.sh -b -p /opt/miniconda &&\
+    rm Mambaforge.sh
 
 SHELL ["/bin/bash", "-c"]
 
 RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
-    conda env create -n mantidimaging_test -f https://raw.githubusercontent.com/mantidproject/mantidimaging/master/environment-dev.yml &&\
+    mamba env create -n mantidimaging_test -f https://raw.githubusercontent.com/mantidproject/mantidimaging/master/environment-dev.yml &&\
     conda activate mantidimaging_test &&\
-    conda clean --all
+    mamba clean --all
 
 RUN mkdir /opt/mantidimaging
 

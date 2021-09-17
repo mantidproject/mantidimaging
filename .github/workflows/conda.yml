@@ -14,9 +14,11 @@ jobs:
       - name: Check License Lines
         uses: kt3k/license_checker@v1.0.3
 
-      - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2.0.1
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v2.1.1
         with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
           environment-file: environment-dev.yml
           activate-environment: mantidimaging-dev
           auto-activate-base: false
