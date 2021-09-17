@@ -329,18 +329,36 @@ class MainWindowViewTest(unittest.TestCase):
         nexus_load_dialog.assert_called_once()
         nexus_load_dialog.return_value.show.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath")
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
-    def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter, command_line_path):
-        command_line_path.return_value.path.return_value = test_path = "./"
+    def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter, command_line_args):
+        command_line_args.return_value.path.return_value = test_path = "./"
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 
-    @mock.patch("mantidimaging.gui.windows.main.view.CommandLinePath")
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
-    def test_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter, command_line_path):
-        command_line_path.return_value.path.return_value = ""
+    def test_command_line_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter,
+                                               command_line_args):
+        command_line_args.return_value.path.return_value = ""
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
+    @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
+    @mock.patch("mantidimaging.gui.windows.main.view.FiltersWindowView")
+    def test_command_line_show_filters_window(self, filters_window, welcome_screen_presenter, command_line_args):
+        command_line_args.return_value.operation.return_value = command_line_filter = "Median"
+        view = MainWindowView()
+        filters_window.assert_called_once_with(view)
+        filters_window.return_value.set_initial_filter.assert_called_once_with(command_line_filter)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
+    @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
+    @mock.patch("mantidimaging.gui.windows.main.view.ReconstructWindowView")
+    def test_command_line_show_recon_window(self, recon_window, welcome_screen_presenter, command_line_args):
+        command_line_args.return_value.recon.return_value = True
+        view = MainWindowView()
+        recon_window.assert_called_once_with(view)
