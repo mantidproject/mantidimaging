@@ -1,7 +1,9 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import logging
+from logging import getLogger
 import os
+
+logger = getLogger(__name__)
 
 filter_names = [
     'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', 'Arithmetic', 'Circular Mask',
@@ -27,7 +29,7 @@ def _log_and_exit(msg: str):
     Log an error message and exit.
     :param msg: The log message.
     """
-    logging.error(msg)
+    logger.error(msg)
     exit()
 
 
