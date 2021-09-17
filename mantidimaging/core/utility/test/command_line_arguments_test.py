@@ -10,6 +10,9 @@ from mantidimaging.core.utility.command_line_arguments import CommandLineArgumen
 class CommandLineArgumentsTest(unittest.TestCase):
     def setUp(self) -> None:
         CommandLineArguments._instance = None
+        CommandLineArguments.images_path = ""
+        CommandLineArguments.init_operation = ""
+        CommandLineArguments.show_recon = False
 
     def test_bad_path_calls_exit(self):
         bad_path = "does/not/exist"
@@ -36,3 +39,14 @@ class CommandLineArgumentsTest(unittest.TestCase):
         for filter_name in user_inputs:
             with self.subTest(filter_name=filter_name):
                 assert _valid_operation(filter_name)
+
+    def test_set_valid_operation_with_path(self):
+        operation = "median"
+        command_line_arguments = CommandLineArguments(path="./", operation=operation)
+        assert command_line_arguments.operation() == operation
+
+    def test_set_valid_operation_without_path(self):
+        with self.assertRaises(SystemExit):
+            with self.assertLogs(logging.getLogger(), level="ERROR") as mock_log:
+                CommandLineArguments(operation="median")
+        self.assertIn("No path given for initial operation. Exiting.", mock_log.output[0])
