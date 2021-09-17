@@ -50,3 +50,20 @@ class CommandLineArgumentsTest(unittest.TestCase):
             with self.assertLogs(logging.getLogger(), level="ERROR") as mock_log:
                 CommandLineArguments(operation="median")
         self.assertIn("No path given for initial operation. Exiting.", mock_log.output[0])
+
+    def test_set_invalid_operation(self):
+        with self.assertRaises(SystemExit):
+            with self.assertLogs(logging.getLogger(), level="ERROR") as mock_log:
+                bad_operation = "aaaaaa"
+                CommandLineArguments(path="./", operation=bad_operation)
+        self.assertIn(f"{bad_operation} is not a known operation. Exiting.", mock_log.output[0])
+
+    def test_set_show_recon(self):
+        command_line_arguments = CommandLineArguments(path="./", show_recon=True)
+        assert command_line_arguments.recon()
+
+    def test_set_show_recon_without_path(self):
+        with self.assertRaises(SystemExit):
+            with self.assertLogs(logging.getLogger(), level="ERROR") as mock_log:
+                CommandLineArguments(show_recon=True)
+        self.assertIn("No path given for reconstruction. Exiting.", mock_log.output[0])
