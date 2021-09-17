@@ -295,7 +295,7 @@ class FiltersWindowView(BaseMainWindowView):
         Sets the initial filter in the operations window.
         :param filter_arg: The name of the filter given by the user.
         """
-        filter_arg = filter_arg.replace("-", "")
+        filter_arg = filter_arg.replace("-", "").lower()
         for i in range(self.filterSelector.count()):
             filter_text = self.filterSelector.itemText(i)
             if _strip_filter_name(filter_text) == filter_arg:
