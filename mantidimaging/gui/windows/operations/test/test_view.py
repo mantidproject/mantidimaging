@@ -34,7 +34,8 @@ class OperationsWindowsViewTest(unittest.TestCase):
         self.assertEqual(0, self.window.splitter.sizes()[0])
 
     def test_set_initial_operation(self):
-        for filter_name in filter_names:
+        mixed_inputs = filter_names + [filter_name.upper() for filter_name in filter_names]
+        for filter_name in mixed_inputs:
             with self.subTest(filter_name=filter_name):
                 self.window.set_initial_filter(filter_name)
                 self.assertEqual(
