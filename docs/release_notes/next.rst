@@ -18,3 +18,4 @@ Developer Changes
 -----------------
 
 - #1022 : Switch to use Mambaforge
+- #1085 : Fix rotation of images in GUI tests

@@ -16,12 +16,15 @@ import os
 import pytest
 import sys
 
+import pyqtgraph
 from PyQt5.QtWidgets import QApplication
 
 _QAPP = QApplication.instance()
 
 uncaught_exception = None
 current_excepthook = sys.excepthook
+
+pyqtgraph.setConfigOptions(imageAxisOrder="row-major")
 
 
 def get_application(name=''):
