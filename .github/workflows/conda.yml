@@ -70,8 +70,9 @@ jobs:
       - name: Get test data
         shell: bash -l {0}
         run: |
-          wget -nv https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/master.zip
-          unzip -q master.zip -d ~
+          wget -nv https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/main.zip
+          unzip -q main.zip -d ~
+          mv ~/mantidimaging-data-main ~/mantidimaging-data
         timeout-minutes: 5
 
       - name: GUI Tests System
