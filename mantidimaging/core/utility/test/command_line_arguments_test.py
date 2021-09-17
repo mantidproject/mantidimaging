@@ -11,9 +11,9 @@ class CommandLineArgumentsTest(unittest.TestCase):
     def setUp(self) -> None:
         # Reset the singleton
         CommandLineArguments._instance = None
-        CommandLineArguments.images_path = ""
-        CommandLineArguments.init_operation = ""
-        CommandLineArguments.show_recon = False
+        CommandLineArguments._images_path = ""
+        CommandLineArguments._init_operation = ""
+        CommandLineArguments._show_recon = False
         self.logger = logging.getLogger("mantidimaging.core.utility.command_line_arguments")
 
     def test_bad_path_calls_exit(self):

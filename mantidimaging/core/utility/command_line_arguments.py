@@ -35,9 +35,9 @@ def _log_and_exit(msg: str):
 
 class CommandLineArguments:
     _instance = None
-    images_path = ""
-    init_operation = ""
-    show_recon = False
+    _images_path = ""
+    _init_operation = ""
+    _show_recon = False
 
     def __new__(cls, path: str = "", operation: str = "", show_recon: bool = False):
         """
@@ -49,18 +49,18 @@ class CommandLineArguments:
                 if not os.path.exists(path):
                     _log_and_exit(f"Path {path} doesn't exist. Exiting.")
                 else:
-                    cls.images_path = path
+                    cls._images_path = path
             if operation:
-                if not cls.images_path:
+                if not cls._images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
                 elif not _valid_operation(operation):
                     _log_and_exit(f"{operation} is not a known operation. Exiting.")
                 else:
-                    cls.init_operation = operation
+                    cls._init_operation = operation
             if show_recon and not path:
                 _log_and_exit("No path given for reconstruction. Exiting.")
             else:
-                cls.show_recon = show_recon
+                cls._show_recon = show_recon
 
         return cls._instance
 
@@ -69,18 +69,18 @@ class CommandLineArguments:
         """
         Returns the command line images path.
         """
-        return cls.images_path
+        return cls._images_path
 
     @classmethod
     def operation(cls) -> str:
         """
         Returns the initial operation.
         """
-        return cls.init_operation
+        return cls._init_operation
 
     @classmethod
     def recon(cls) -> bool:
         """
         Returns whether or not the recon window should be started.
         """
-        return cls.show_recon
+        return cls._show_recon
