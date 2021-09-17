@@ -49,8 +49,6 @@ def main():
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
 
-    print(args.recon)
-
     CommandLineArguments(path=path, operation=operation, show_recon=args.recon)
 
     h.initialise_logging(logging.getLevelName(args.log_level))
