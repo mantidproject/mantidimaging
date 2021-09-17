@@ -3,11 +3,12 @@
 import logging
 import os
 
-filter_names = ['Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation',
-            'Arithmetic', 'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation',
-            'NaN Removal', 'Rebin', 'Rescale', 'Ring Removal', 'Rotate Stack',
-            'Remove all stripes', 'Remove dead stripes', 'Remove large stripes', 'Stripe Removal',
-            'Remove stripes with filtering', 'Remove stripes with sorting and fitting']
+filter_names = [
+    'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', 'Arithmetic', 'Circular Mask',
+    'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation', 'NaN Removal', 'Rebin', 'Rescale',
+    'Ring Removal', 'Rotate Stack', 'Remove all stripes', 'Remove dead stripes', 'Remove large stripes',
+    'Stripe Removal', 'Remove stripes with filtering', 'Remove stripes with sorting and fitting'
+]
 
 filter_names = list(map(lambda x: "-".join(x.split()).lower(), filter_names))
 
@@ -70,8 +71,14 @@ class CommandLineArguments:
 
     @classmethod
     def operation(cls) -> str:
+        """
+        Returns the initial operation.
+        """
         return cls.init_operation
 
     @classmethod
     def recon(cls) -> bool:
+        """
+        Returns whether or not the recon window should be started.
+        """
         return cls.show_recon
