@@ -7,10 +7,12 @@ from mantidimaging.core.operations.loader import load_filter_packages
 
 logger = getLogger(__name__)
 
-command_line_names = {
-    "-".join(filter_package.filter_name.split()).lower(): filter_package.filter_name
-    for filter_package in load_filter_packages()
-}
+filter_names = [package.filter_name for package in load_filter_packages()]
+assert "Rescale" in filter_names
+command_line_names = {}
+
+for filter_name in filter_names:
+    command_line_names[filter_name.replace(" ", "-").lower()] = filter_name
 
 
 def _valid_operation(operation: str):
@@ -52,7 +54,7 @@ class CommandLineArguments:
                 if not cls._images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
                 elif not _valid_operation(operation):
-                    valid_filters = ", ".join(command_line_names.values())
+                    valid_filters = ", ".join(command_line_names.keys())
                     _log_and_exit(
                         f"{operation} is not a known operation. Available filters arguments are {valid_filters}."
                         " Exiting.")
