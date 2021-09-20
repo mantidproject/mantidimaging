@@ -7,8 +7,10 @@ from mantidimaging.core.operations.loader import load_filter_packages
 
 logger = getLogger(__name__)
 
-filter_names = [filter_package.filter_name for filter_package in load_filter_packages()]
-command_line_names = {"-".join(filter_package.filter_name.split()).lower(): filter_package.filter_name for filter_package in load_filter_packages()}
+command_line_names = {
+    "-".join(filter_package.filter_name.split()).lower(): filter_package.filter_name
+    for filter_package in load_filter_packages()
+}
 
 
 def _valid_operation(operation: str):
