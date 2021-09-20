@@ -50,7 +50,10 @@ class CommandLineArguments:
                 if not cls._images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
                 elif not _valid_operation(operation):
-                    _log_and_exit(f"{operation} is not a known operation. Exiting.")
+                    valid_filters = ", ".join(filter_names)
+                    _log_and_exit(
+                        f"{operation} is not a known operation. Available filters arguments are {valid_filters}."
+                        " Exiting.")
                 else:
                     cls._init_operation = operation
             if show_recon and not path:

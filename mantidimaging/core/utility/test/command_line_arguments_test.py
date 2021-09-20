@@ -58,7 +58,10 @@ class CommandLineArgumentsTest(unittest.TestCase):
             with self.assertLogs(self.logger, level="ERROR") as mock_log:
                 bad_operation = "aaaaaa"
                 CommandLineArguments(path="./", operation=bad_operation)
-        self.assertIn(f"{bad_operation} is not a known operation. Exiting.", mock_log.output[0])
+        valid_filters = ", ".join(filter_names)
+        self.assertIn(
+            f"{bad_operation} is not a known operation. Available filters arguments are {valid_filters}. Exiting.",
+            mock_log.output[0])
 
     def test_set_show_recon(self):
         command_line_arguments = CommandLineArguments(path="./", show_recon=True)
