@@ -23,7 +23,9 @@ versions._use_test_values()
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.view = MainWindowView()
+            with mock.patch("mantidimaging.gui.windows.main.view.CommnadLineArguments") as command_line_args:
+                command_line_args.return_value.recon.return_value = False
+                self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
 
