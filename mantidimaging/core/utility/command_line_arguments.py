@@ -3,15 +3,11 @@
 from logging import getLogger
 import os
 
+from mantidimaging.core.operations.loader import load_filter_packages
+
 logger = getLogger(__name__)
 
-filter_names = [
-    'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', 'Arithmetic', 'Circular Mask',
-    'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation', 'NaN Removal', 'Rebin', 'Rescale',
-    'Ring Removal', 'Rotate Stack', 'Remove all stripes', 'Remove dead stripes', 'Remove large stripes',
-    'Stripe Removal', 'Remove stripes with filtering', 'Remove stripes with sorting and fitting'
-]
-
+filter_names = [filter_package.filter_name for filter_package in load_filter_packages()]
 filter_names = list(map(lambda x: "-".join(x.split()).lower(), filter_names))
 
 
