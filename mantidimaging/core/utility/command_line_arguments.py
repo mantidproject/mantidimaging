@@ -57,7 +57,7 @@ class CommandLineArguments:
                         f"{operation} is not a known operation. Available filters arguments are {valid_filters}."
                         " Exiting.")
                 else:
-                    cls._init_operation = operation
+                    cls._init_operation = command_line_names[operation]
             if show_recon and not path:
                 _log_and_exit("No path given for reconstruction. Exiting.")
             else:
