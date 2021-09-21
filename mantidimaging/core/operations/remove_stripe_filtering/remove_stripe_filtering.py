@@ -5,8 +5,7 @@ from functools import partial
 from mantidimaging.core.data.images import Images
 
 from PyQt5.QtWidgets import QSpinBox
-from sarepy.prep.stripe_removal_improved import remove_stripe_based_filtering_sorting, \
-    remove_stripe_based_2d_filtering_sorting
+from algotom.prep.removal import remove_stripe_based_filtering, remove_stripe_based_2d_filtering_sorting
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -17,7 +16,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
     """Stripe and ring artifact removal. Combination of algorithm 2 and algorithm 3 in Vo et al.,
     Optics Express 28396 (2018). Removing stripes using the filtering and sorting technique.
 
-    Source: https://github.com/nghia-vo/sarepy
+    Source: https://github.com/algotom/algotom
 
     Intended to be used on: Sinograms
 
@@ -40,11 +39,12 @@ class RemoveStripeFilteringFilter(BaseFilter):
                     chunksize=None,
                     progress=None):
         if filtering_dim == 1:
-            f = ps.create_partial(remove_stripe_based_filtering_sorting,
+            f = ps.create_partial(remove_stripe_based_filtering,
                                   ps.return_to_self,
                                   sigma=sigma,
                                   size=size,
-                                  dim=window_dim)
+                                  dim=window_dim,
+                                  sort=True)
         else:
             f = ps.create_partial(remove_stripe_based_2d_filtering_sorting,
                                   ps.return_to_self,
