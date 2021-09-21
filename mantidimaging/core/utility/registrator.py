@@ -66,6 +66,9 @@ def import_items(names: List[str], required_attributes: Optional[List[str]] = No
     """
     imported = (importlib.import_module(n) for n in names)
 
+    rescale = importlib.import_module("mantidimaging.core.operations.rescale")
+    hasattr(rescale, required_attributes[0])
+
     # Filter out those that do not contain all the required attributes
     if required_attributes:
         imported = filter(  # type: ignore

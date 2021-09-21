@@ -39,6 +39,7 @@ class CommandLineArgumentsTest(unittest.TestCase):
 
     def test_user_input_in_filter_names(self):
         user_inputs = [filter_package.filter_name.replace(" ", "-") for filter_package in load_filter_packages()]
+        print(command_line_names)
         for filter_name in user_inputs:
             with self.subTest(filter_name=filter_name):
                 assert _valid_operation(filter_name)
