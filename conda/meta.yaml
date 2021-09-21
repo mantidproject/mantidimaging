@@ -39,6 +39,7 @@ requirements:
     - cil-astra=21.2.*
     - ccpi-regulariser=20.9
     - tomophantom=1.4.*
+    - algotom=1.0.*
 
 build:
   number: 1
