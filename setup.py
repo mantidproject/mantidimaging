@@ -53,9 +53,10 @@ class PublishDocsToGitHubPages(Command):
 
         g = Git(self.docs_dir)
         g.init()
+        g.checkout(b="main")
         g.add(".")
         g.commit("-m {}".format(self.commit_msg))
-        g.push("--force", self.repo, "master:gh-pages")
+        g.push("--force", self.repo, "main:gh-pages")
 
 
 class GenerateSphinxApidoc(Command):

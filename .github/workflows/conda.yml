@@ -96,18 +96,19 @@ jobs:
         shell: bash -l {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
         run: |
           coveralls
 
       - name: publish 'unstable' package
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: ./.github/actions/publish-package
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN }}
 
       - name: publish docs
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: ./.github/actions/publish-docs
         with:
           token: ${{ secrets.GHPAGES_API_TOKEN }}

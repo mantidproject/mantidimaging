@@ -70,7 +70,7 @@ Nightly version
 
 The latest nightly version can be installed with
 
-  - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/master/environment.yml`
+  - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment.yml`
 
 This will make a `mantidimaging-nightly` environment.
 
