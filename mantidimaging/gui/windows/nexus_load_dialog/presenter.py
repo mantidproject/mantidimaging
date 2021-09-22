@@ -76,21 +76,24 @@ class NexusLoadPresenter:
         Try to open the NeXus file and display its contents on the view.
         """
         file_path = self.view.filePathLineEdit.text()
-        with h5py.File(file_path, "r") as self.nexus_file:
-            self.tomo_entry = self._look_for_nxtomo_entry()
-            if self.tomo_entry is None:
-                return
+        try:
+            with h5py.File(file_path, "r") as self.nexus_file:
+                self.tomo_entry = self._look_for_nxtomo_entry()
+                if self.tomo_entry is None:
+                    return
 
-            self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
-            if self.data is None:
-                return
+                self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
+                if self.data is None:
+                    return
 
-            self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
-            if self.image_key_dataset is None:
-                return
+                self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+                if self.image_key_dataset is None:
+                    return
 
-            self._get_data_from_image_key()
-            self.title = self._find_data_title()
+                self._get_data_from_image_key()
+                self.title = self._find_data_title()
+        except OSError:
+            logger.error(f"Unable to read NeXus data from {file_path}")
 
     def _missing_data_error(self, field: str):
         """
