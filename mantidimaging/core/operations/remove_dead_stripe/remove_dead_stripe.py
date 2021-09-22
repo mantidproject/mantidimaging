@@ -31,12 +31,7 @@ class RemoveDeadStripesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: Images, snr=3, size=61, cores=None, chunksize=None, progress=None):
-        f = ps.create_partial(
-            remove_dead_stripe,
-            ps.return_to_self,
-            snr=snr,
-            size=size,
-        )
+        f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
         ps.shared_list = [images.data]
         ps.execute(f, images.num_projections, progress, cores=cores)
         return images
