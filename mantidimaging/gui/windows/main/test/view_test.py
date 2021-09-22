@@ -352,12 +352,11 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
-    @mock.patch("mantidimaging.gui.windows.main.view.FiltersWindowView")
-    def test_command_line_show_filters_window(self, filters_window, welcome_screen_presenter, command_line_args):
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
+    def test_command_line_show_filters_window(self, main_window_presenter, welcome_screen_presenter, command_line_args):
         command_line_args.return_value.operation.return_value = command_line_filter = "Median"
-        view = MainWindowView()
-        filters_window.assert_called_once_with(view)
-        filters_window.return_value.set_initial_filter.assert_called_once_with(command_line_filter)
+        MainWindowView()
+        main_window_presenter.return_value.show_operation.assert_called_once_with(command_line_filter)
 
     @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")

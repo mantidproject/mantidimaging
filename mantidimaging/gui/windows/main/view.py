@@ -105,7 +105,7 @@ class MainWindowView(BaseMainWindowView):
             self.presenter.load_stacks_from_folder(args.path())
 
         if args.operation():
-            self.presenter.wizard_action_show_operation(args.operation())
+            self.presenter.show_operation(args.operation())
 
         if args.recon():
             self.show_recon_window()

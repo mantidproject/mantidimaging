@@ -54,7 +54,7 @@ class WizardPresenterTest(unittest.TestCase):
         self.presenter.main_window_presenter.wizard_action_load.assert_called_once()
 
         self.presenter.run_action("operations:ROI Normalisation")
-        self.presenter.main_window_presenter.wizard_action_show_operation.assert_called_once_with("ROI Normalisation")
+        self.presenter.main_window_presenter.show_operation.assert_called_once_with("ROI Normalisation")
 
         self.presenter.run_action("reconstruction")
         self.presenter.main_window_presenter.wizard_action_show_reconstruction.assert_called_once()
