@@ -93,15 +93,12 @@ def load_filter_packages(package_name="mantidimaging.core.operations", ignored_p
     :param ignored_packages: List of ignore rules
     """
     if package_name == OPERATIONS_DIR:
-        loaded_filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
-        loaded_filters = {
-            name: loaded_filters[name]
-            for name in loaded_filters.keys() if hasattr(loaded_filters[name], 'FILTER_CLASS')
-        }
+        filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
+        filters = {name: filters[name] for name in filters.keys() if hasattr(filters[name], 'FILTER_CLASS')}
         if not ignored_packages:
-            return [f.FILTER_CLASS for f in loaded_filters.values()]
+            return [f.FILTER_CLASS for f in filters.values()]
         return [
-            loaded_filters[name].FILTER_CLASS for name in loaded_filters.keys()
+            filters[name].FILTER_CLASS for name in filters.keys()
             if not any([ignore in name for ignore in ignored_packages])
         ]
 
