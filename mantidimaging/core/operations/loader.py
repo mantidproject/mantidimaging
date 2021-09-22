@@ -31,6 +31,10 @@ def find_package_path(package_str):
 
 
 OPERATIONS_ITER = pkgutil.walk_packages([find_package_path(OPERATIONS_DIR)])
+ISPKG_OPERATIONS = {}
+LOADER_OPERATIONS = {}
+# for loader, module_name, is_pkg in pkgutil.walk_packages([find_package_path(OPERATIONS_DIR)]):
+#     _module = loader.find_module(module_name).load_module(module_name)
 
 
 def get_package_children(package_name: str, packages=False, modules=False, ignore=None) -> Iterator[pkgutil.ModuleInfo]:
@@ -72,10 +76,7 @@ def import_items(packages: Iterator[pkgutil.ModuleInfo], required_attributes: Op
 
     :return: List of imported packages/modules
     """
-    imported = []
-    for loader, module_name, _ in packages:
-        imported.append(loader.find_module(module_name).load_module())
-
+    imported = map(lambda p: p.module_finder.find_module(p.name).load_module(p.name), packages)
     # Filter out those that do not contain all the required attributes
     if required_attributes:
         imported = filter(  # type: ignore
@@ -100,4 +101,7 @@ def load_filter_packages(package_name="mantidimaging.core.operations", ignored_p
     loaded_filters = import_items(filter_packages, required_attributes=['FILTER_CLASS'])
     loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
-    return [f.FILTER_CLASS for f in loaded_filters]
+    filters = [f.FILTER_CLASS for f in loaded_filters]
+    print("Filters: ", filters)
+
+    return filters
