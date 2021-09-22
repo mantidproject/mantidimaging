@@ -7,7 +7,6 @@ from typing import List, Iterator, Optional
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 
-OPERATIONS_CLASSES = []
 OPERATIONS_DIR = "mantidimaging.core.operations"
 
 
@@ -30,11 +29,11 @@ def find_package_path(package_str):
     raise RuntimeError("Cannot find path for package {}".format(package_str))
 
 
-OPERATIONS_ITER = pkgutil.walk_packages([find_package_path(OPERATIONS_DIR)])
 ISPKG_OPERATIONS = {}
-LOADER_OPERATIONS = {}
-# for loader, module_name, is_pkg in pkgutil.walk_packages([find_package_path(OPERATIONS_DIR)]):
-#     _module = loader.find_module(module_name).load_module(module_name)
+MODULES_OPERATIONS = {}
+for loader, module_name, is_pkg in pkgutil.walk_packages([find_package_path(OPERATIONS_DIR)]):
+    MODULES_OPERATIONS[module_name] = loader.find_module(module_name)
+    ISPKG_OPERATIONS[module_name] = is_pkg
 
 
 def get_package_children(package_name: str, packages=False, modules=False, ignore=None) -> Iterator[pkgutil.ModuleInfo]:
@@ -49,11 +48,8 @@ def get_package_children(package_name: str, packages=False, modules=False, ignor
 
     :return: Iterator over matching modules
     """
-    if package_name == OPERATIONS_DIR:
-        pkgs = OPERATIONS_ITER
-    else:
-        pkgs: Iterator[pkgutil.ModuleInfo] = pkgutil.walk_packages([find_package_path(package_name)],
-                                                                   prefix=package_name + '.')
+    pkgs: Iterator[pkgutil.ModuleInfo] = pkgutil.walk_packages([find_package_path(package_name)],
+                                                               prefix=package_name + '.')
 
     # Ignore those that do not match the package/module selection criteria
     pkgs = filter(lambda p: p.ispkg and packages or not p.ispkg and modules, pkgs)
@@ -96,12 +92,18 @@ def load_filter_packages(package_name="mantidimaging.core.operations", ignored_p
                          operations
     :param ignored_packages: List of ignore rules
     """
-    filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
+    if package_name == OPERATIONS_DIR:
+        loaded_filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
+        loaded_filters = {
+            name: loaded_filters[name]
+            for name in loaded_filters.keys() if hasattr(loaded_filters[name], 'FILTER_CLASS')
+        }
+        if not ignored_packages:
+            return [f.FILTER_CLASS for f in loaded_filters.values()]
+        return [loaded_filters[name].FILTER_CLASS for name in loaded_filters.keys() if ignored_packages not in name]
 
+    filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
     loaded_filters = import_items(filter_packages, required_attributes=['FILTER_CLASS'])
     loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
-    filters = [f.FILTER_CLASS for f in loaded_filters]
-    print("Filters: ", filters)
-
-    return filters
+    return [f.FILTER_CLASS for f in loaded_filters]
