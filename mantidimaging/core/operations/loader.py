@@ -100,7 +100,10 @@ def load_filter_packages(package_name="mantidimaging.core.operations", ignored_p
         }
         if not ignored_packages:
             return [f.FILTER_CLASS for f in loaded_filters.values()]
-        return [loaded_filters[name].FILTER_CLASS for name in loaded_filters.keys() if ignored_packages not in name]
+        return [
+            loaded_filters[name].FILTER_CLASS for name in loaded_filters.keys()
+            if not any([ignore in name for ignore in ignored_packages])
+        ]
 
     filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
     loaded_filters = import_items(filter_packages, required_attributes=['FILTER_CLASS'])
