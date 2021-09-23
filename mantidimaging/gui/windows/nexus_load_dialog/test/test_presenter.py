@@ -263,3 +263,9 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
         self.assertEqual(dataset.sample.data.shape[0], 1)
+
+    def test_load_invalid_nexus_file(self):
+        self.nexus_load_mock.side_effect = OSError
+        with self.assertRaises(OSError):
+            with self.assertLogs(nexus_logger, level="ERROR"):
+                self.nexus_loader.scan_nexus_file()

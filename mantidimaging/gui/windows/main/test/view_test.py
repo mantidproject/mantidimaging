@@ -334,6 +334,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter, command_line_path):
         command_line_path.return_value.path.return_value = test_path = "./"
+        command_line_path.return_value.recon.return_value = False
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 
@@ -342,5 +343,6 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter, command_line_path):
         command_line_path.return_value.path.return_value = ""
+        command_line_path.return_value.recon.return_value = False
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
