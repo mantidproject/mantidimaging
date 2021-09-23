@@ -338,6 +338,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter, command_line_args):
         command_line_args.return_value.path.return_value = test_path = "./"
+        command_line_args.return_value.recon.return_value = False
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 
@@ -347,6 +348,7 @@ class MainWindowViewTest(unittest.TestCase):
     def test_command_line_no_path_argument_set(self, main_window_presenter, welcome_screen_presenter,
                                                command_line_args):
         command_line_args.return_value.path.return_value = ""
+        command_line_args.return_value.recon.return_value = False
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
 
@@ -355,6 +357,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_command_line_show_filters_window(self, main_window_presenter, welcome_screen_presenter, command_line_args):
         command_line_args.return_value.operation.return_value = command_line_filter = "Median"
+        command_line_args.return_value.recon.return_value = False
         MainWindowView()
         main_window_presenter.return_value.show_operation.assert_called_once_with(command_line_filter)
 
@@ -363,6 +366,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.FiltersWindowView")
     def test_command_line_dont_show_filters_window(self, filters_window, welcome_screen_presenter, command_line_args):
         command_line_args.return_value.operation.return_value = ""
+        command_line_args.return_value.recon.return_value = False
         MainWindowView()
         filters_window.assert_not_called()
 
