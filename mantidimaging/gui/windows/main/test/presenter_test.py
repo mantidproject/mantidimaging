@@ -150,7 +150,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_wizard_action_show_operation(self):
         OPERATION_STR = "ROI Normalisation"
-        self.presenter.wizard_action_show_operation(OPERATION_STR)
+        self.presenter.show_operation(OPERATION_STR)
         self.view.show_filters_window.assert_called_once()
         self.view.filters.presenter.set_filter_by_name.assert_called_once_with(OPERATION_STR)
 

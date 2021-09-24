@@ -41,7 +41,7 @@ class WizardPresenter(BasePresenter):
 
         elif action.startswith("operations"):
             operation_menu_name = action.partition(":")[2].strip()
-            self.main_window_presenter.wizard_action_show_operation(operation_menu_name)
+            self.main_window_presenter.show_operation(operation_menu_name)
 
         elif action.startswith("reconstruction"):
             self.main_window_presenter.wizard_action_show_reconstruction()
