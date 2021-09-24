@@ -9,9 +9,9 @@
 
 {%- block rootrellink %}
   {% if versions %}
-        <li class="nav-item nav-item-0"><a href="{{ pathto(master_doc)|e }}">{{ project }} {{ current_version.name }} Documentation</a>{{ reldelim1 }}</li>
+        <li class="nav-item nav-item-0"><a href="{{ pathto(root_doc)|e }}">{{ project }} {{ current_version.name }} Documentation</a>{{ reldelim1 }}</li>
   {% else %}
-        <li class="nav-item nav-item-0"><a href="{{ pathto(master_doc)|e }}">{{ shorttitle|e }}</a>{{ reldelim1 }}</li>
+        <li class="nav-item nav-item-0"><a href="{{ pathto(root_doc)|e }}">{{ shorttitle|e }}</a>{{ reldelim1 }}</li>
   {% endif %}
 {%- endblock %}
 
