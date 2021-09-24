@@ -5,7 +5,7 @@ from functools import partial
 from mantidimaging.core.data.images import Images
 
 from PyQt5.QtWidgets import QSpinBox
-from sarepy.prep.stripe_removal_improved import remove_stripe_based_sorting_fitting
+from algotom.prep.removal import remove_stripe_based_fitting
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -16,7 +16,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     """Stripe and ring artifact removal. Combination of algorithm 3 and 1 in Vo et al.,
     Optics Express 28396 (2018). Remove stripes using the sorting and fitting technique.
 
-    Source: https://github.com/nghia-vo/sarepy
+    Source: https://github.com/algotom/algotom
 
     Intended to be used on: Sinograms
 
@@ -30,12 +30,8 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, order=1, sigmax=3, sigmay=3, cores=None, chunksize=None, progress=None):
-        f = ps.create_partial(remove_stripe_based_sorting_fitting,
-                              ps.return_to_self,
-                              order=order,
-                              sigmax=sigmax,
-                              sigmay=sigmay)
+    def filter_func(images: Images, order=1, sigma=3, cores=None, chunksize=None, progress=None):
+        f = ps.create_partial(remove_stripe_based_fitting, ps.return_to_self, order=order, sigma=sigma, sort=True)
 
         ps.shared_list = [images.data]
         ps.execute(f, images.num_projections, progress, cores=cores)
@@ -54,28 +50,19 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
                                         default_value=1,
                                         form=form,
                                         on_change=on_change,
-                                        tooltip="Polynomial fit order. Check sarepy for more information")
-        _, sigmax = add_property_to_form('Sigma X',
-                                         Type.INT,
-                                         default_value=3,
-                                         form=form,
-                                         on_change=on_change,
-                                         tooltip="Sigma of the Gaussian window in the x-direction")
-        _, sigmay = add_property_to_form('Sigma Y',
-                                         Type.INT,
-                                         default_value=3,
-                                         form=form,
-                                         on_change=on_change,
-                                         tooltip="Sigma of the Gaussian window in the y-direction")
+                                        tooltip="Polynomial fit order. Check algotom docs for more information")
+        _, sigma = add_property_to_form('Sigma',
+                                        Type.INT,
+                                        default_value=3,
+                                        form=form,
+                                        on_change=on_change,
+                                        tooltip="Sigma of the Gaussian window in the x-direction")
 
-        return {'order': order, 'sigmax': sigmax, 'sigmay': sigmay}
+        return {'order': order, 'sigma': sigma}
 
     @staticmethod
-    def execute_wrapper(order: QSpinBox, sigmax: QSpinBox, sigmay: QSpinBox):  # type: ignore
-        return partial(RemoveStripeSortingFittingFilter.filter_func,
-                       order=order.value(),
-                       sigmax=sigmax.value(),
-                       sigmay=sigmay.value())
+    def execute_wrapper(order: QSpinBox, sigma: QSpinBox):  # type: ignore
+        return partial(RemoveStripeSortingFittingFilter.filter_func, order=order.value(), sigma=sigma.value())
 
     @staticmethod
     def group_name() -> FilterGroup:

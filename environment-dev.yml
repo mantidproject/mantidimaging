@@ -5,6 +5,7 @@ channels:
   - astra-toolbox/label/dev
   - conda-forge
   - ccpi
+  - algotom
 dependencies:
   - mantidimaging
   - pip
