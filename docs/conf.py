@@ -61,8 +61,8 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
-# The master toctree document.
-master_doc = 'index'
+# The root toctree document.
+root_doc = 'index'
 
 # General information about the project.
 project = u'MantidImaging'
@@ -144,14 +144,14 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'MantidImaging.tex', u'MantidImaging Documentation', u'Dimitar Tasev, Dan Nixon', 'manual'),
+    (root_doc, 'MantidImaging.tex', u'MantidImaging Documentation', u'Dimitar Tasev, Dan Nixon', 'manual'),
 ]
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'mantidimaging', u'MantidImaging Documentation', [author], 1)]
+man_pages = [(root_doc, 'mantidimaging', u'MantidImaging Documentation', [author], 1)]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -159,7 +159,7 @@ man_pages = [(master_doc, 'mantidimaging', u'MantidImaging Documentation', [auth
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'MantidImaging', u'MantidImaging Documentation', author, 'MantidImaging',
+    (root_doc, 'MantidImaging', u'MantidImaging Documentation', author, 'MantidImaging',
      'One line description of project.', 'Miscellaneous'),
 ]
 
