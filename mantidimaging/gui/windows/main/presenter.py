@@ -228,7 +228,7 @@ class MainWindowPresenter(BasePresenter):
     def wizard_action_load(self):
         self.view.show_load_dialogue()
 
-    def wizard_action_show_operation(self, operation_name: str):
+    def show_operation(self, operation_name: str):
         self.view.show_filters_window()
         self.view.filters.presenter.set_filter_by_name(operation_name)  # type:ignore[union-attr]
 

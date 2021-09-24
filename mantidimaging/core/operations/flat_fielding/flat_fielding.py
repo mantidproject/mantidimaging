@@ -14,7 +14,6 @@ from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
-from mantidimaging.gui.windows.operations import FiltersWindowView
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
@@ -129,7 +128,7 @@ class FlatFieldFilter(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
+    def register_gui(form, on_change, view) -> Dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
         _, selected_flat_fielding_widget = add_property_to_form("Flat Fielding Method",
