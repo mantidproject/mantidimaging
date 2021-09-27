@@ -266,8 +266,8 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_load_invalid_nexus_file(self):
         self.nexus_load_mock.side_effect = OSError
-        message = f"Unable to read NeXus data from {self.file_path}"
+        unable_message = f"Unable to read NeXus data from {self.file_path}"
         with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
             self.nexus_loader.scan_nexus_file()
-        self.assertIn(message, log_mock.output[0])
-        self.view.show_data_error.assert_called_once_with(message)
+        self.assertIn(unable_message, log_mock.output[0])
+        self.view.show_data_error.assert_called_once_with(unable_message)

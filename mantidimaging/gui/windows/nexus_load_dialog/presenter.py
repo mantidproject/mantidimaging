@@ -93,9 +93,9 @@ class NexusLoadPresenter:
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
         except OSError:
-            message = f"Unable to read NeXus data from {file_path}"
-            logger.error(message)
-            self.view.show_data_error(message)
+            unable_message = f"Unable to read NeXus data from {file_path}"
+            logger.error(unable_message)
+            self.view.show_data_error(unable_message)
 
     def _missing_data_error(self, field: str):
         """
