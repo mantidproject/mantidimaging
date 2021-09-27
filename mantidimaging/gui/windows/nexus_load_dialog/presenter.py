@@ -96,6 +96,7 @@ class NexusLoadPresenter:
             unable_message = f"Unable to read NeXus data from {file_path}"
             logger.error(unable_message)
             self.view.show_data_error(unable_message)
+            self.view.disable_ok_button()
 
     def _missing_data_error(self, field: str):
         """
