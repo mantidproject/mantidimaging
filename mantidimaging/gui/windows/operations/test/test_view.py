@@ -9,6 +9,7 @@ from mantidimaging.gui.windows.operations.view import FiltersWindowView
 from mantidimaging.test_helpers import start_qapplication
 
 from mantidimaging.core.utility.version_check import versions
+
 versions._use_test_values()
 
 

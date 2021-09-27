@@ -6,6 +6,7 @@ import unittest
 from unittest import mock
 
 from mantidimaging.core.gpu import utility as gpu
+
 GPU_NOT_AVAIL = not gpu.gpu_available()
 
 

@@ -4,7 +4,7 @@
 from functools import partial
 
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
-from sarepy.prep.stripe_removal_original import remove_large_stripe
+from algotom.prep.removal import remove_large_stripe
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -16,7 +16,7 @@ class RemoveLargeStripesFilter(BaseFilter):
     Remove large stripes by: locating stripes, normalizing them to remove full stripes, using
     the sorting technique to remove partial stripes.
 
-    Source: https://github.com/nghia-vo/sarepy
+    Source: https://github.com/algotom/algotom
 
     Intended to be used on: Sinograms
     When: If stripes artifacts are present that have not been

@@ -5,7 +5,7 @@ from functools import partial
 from mantidimaging.core.data.images import Images
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox
-from sarepy.prep.stripe_removal_original import remove_unresponsive_and_fluctuating_stripe
+from algotom.prep.removal import remove_dead_stripe
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -16,7 +16,7 @@ class RemoveDeadStripesFilter(BaseFilter):
     """Stripe and ring artifact removal. Algorithm 6 in Vo et al., Optics Express 28396 (2018).
     Remove unresponsive or fluctuating stripes by: locating stripes, correction by interpolation.
 
-    Source: https://github.com/nghia-vo/sarepy
+    Source: https://github.com/algotom/algotom
 
     Intended to be used on: Sinograms
 
@@ -31,12 +31,7 @@ class RemoveDeadStripesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: Images, snr=3, size=61, cores=None, chunksize=None, progress=None):
-        f = ps.create_partial(
-            remove_unresponsive_and_fluctuating_stripe,
-            ps.return_to_self,
-            snr=snr,
-            size=size,
-        )
+        f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
         ps.shared_list = [images.data]
         ps.execute(f, images.num_projections, progress, cores=cores)
         return images

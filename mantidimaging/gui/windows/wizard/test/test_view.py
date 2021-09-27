@@ -8,6 +8,7 @@ from mantidimaging.gui.windows.wizard.view import WizardView, WizardStep, Wizard
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.core.utility.version_check import versions
+
 versions._use_test_values()
 
 STEP_DATA = {'name': 'Loading files', 'description': 'desc'}

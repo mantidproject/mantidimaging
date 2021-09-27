@@ -5,6 +5,7 @@ channels:
   - astra-toolbox/label/dev
   - conda-forge
   - ccpi
+  - algotom
 dependencies:
   - mantidimaging
   - pip
@@ -14,22 +15,22 @@ dependencies:
       - pyqtgraph>=0.12.1,<0.13
       - jenkspy==0.2.0
       # For developement
-      - pytest==6.2.1
-      - pytest-cov==2.10.1
-      - coveralls==2.2.0
-      - yapf==0.30.0
+      - pytest==6.2.*
+      - pytest-cov==2.12.*
+      - coveralls==3.2.*
+      - yapf==0.31.*
       - mypy==0.790
-      - flake8==3.8.4
-      - testfixtures==6.17.0
-      - coverage==5.3
-      - gitpython==3.1.11
-      - pylint==2.6.0
-      - sphinx==3.3.1
+      - flake8==3.9.*
+      - testfixtures==6.18.*
+      - coverage==5.5
+      - gitpython==3.1.*
+      - pylint==2.11.*
+      - sphinx==4.2.*
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
-      - pytest-randomly==3.5.0
-      - pytest-xdist==2.2.0
+      - pytest-randomly==3.10.*
+      - pytest-xdist==2.4.*
       - pytest-repeat==0.9.1
-      - isort==5.6.4
-      - eyes-images==4.20.*
-      - parameterized==0.8.1
-      - pre-commit
+      - isort==5.9.*
+      - eyes-images==4.25.*
+      - parameterized==0.8.*
+      - pre-commit==2.15.*

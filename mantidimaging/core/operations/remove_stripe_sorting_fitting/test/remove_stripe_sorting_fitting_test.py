@@ -31,19 +31,16 @@ class RemoveStripeSortingFittingTest(unittest.TestCase):
         """
         order = mock.Mock()
         order.value = mock.Mock(return_value=1)
-        sigmax = mock.Mock()
-        sigmax.value = mock.Mock(return_value=2)
-        sigmay = mock.Mock()
-        sigmay.value = mock.Mock(return_value=2)
+        sigma = mock.Mock()
+        sigma.value = mock.Mock(return_value=2)
 
-        execute_func = RemoveStripeSortingFittingFilter.execute_wrapper(order, sigmax, sigmay)
+        execute_func = RemoveStripeSortingFittingFilter.execute_wrapper(order, sigma)
 
         images = th.generate_images()
         execute_func(images)
 
         self.assertEqual(order.value.call_count, 1)
-        self.assertEqual(sigmax.value.call_count, 1)
-        self.assertEqual(sigmay.value.call_count, 1)
+        self.assertEqual(sigma.value.call_count, 1)
 
 
 if __name__ == '__main__':

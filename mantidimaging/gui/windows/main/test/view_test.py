@@ -16,6 +16,7 @@ from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.core.utility.version_check import versions
+
 versions._use_test_values()
 
 
