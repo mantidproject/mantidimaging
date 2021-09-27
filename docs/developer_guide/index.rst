@@ -4,7 +4,7 @@ Developer Guide
 Getting Started
 ---------------
 
-You will need conda, CUDA and gcc installed, see the :ref:`Installation` instructions.
+You will need conda/mamba, CUDA and gcc installed, see the :ref:`Installation` instructions.
 
 First download the Mantid Imaging source code using Git.
 
@@ -43,6 +43,11 @@ Command Line Arguments
 - :code:`--log-level` - Set the log verbosity level. Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL
 - :code:`--version` - Print the version number and exit.
 - :code:`--path` - Set the path for the data you wish to load.
+
+The following command line arguments will only work if a valid path containing images has been given:
+
+- :code:`--operation` - Opens the operation window on start up with the given operation selected in the combo box. The operation name should the same was what appears in Mantid Imaging but joined with hyphens in place of spaces. Case insensitive.
+- :code:`--recon` - Shows the recon window on start up.
 
 .. toctree::
    :maxdepth: 1

@@ -16,29 +16,26 @@ source:
 requirements:
   build:
     - python=3.8.*
-    - pip
-    - setuptools=49.6.0
-    - sphinx=3.3.1
-    - numpy=1.18.*
+    - setuptools=58.*
   run:
     - python=3.8.*
     - pip
-    - astropy=4.2
-    - scipy=1.5.3
+    - astropy=4.3.*
+    - scipy=1.7.*
     - scikit-image=0.18.*
     - numpy=1.18.*
-    - tomopy=1.9.*=cuda*
+    - algotom=1.0.*
+    - tomopy=1.10.*
     - cudatoolkit=9.2*
-    - cupy
+    - cupy=9.4.*
     - astra-toolbox=1.9.9.dev4
-    - requests=2.25.1
-    - h5py=3.1.0
+    - requests=2.26.*
+    - h5py=3.4.*
     - sarepy=2020.07
     - psutil=5.8.*
     - cil=21.2.*
     - cil-astra=21.2.*
     - ccpi-regulariser=20.9
-    - tomophantom=1.4.*
 
 build:
   number: 1

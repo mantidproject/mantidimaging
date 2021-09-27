@@ -19,9 +19,9 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
 versions._use_test_values()
 
-LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data-master/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
+LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
 LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
-git clone https://github.com/mantidproject/mantidimaging-data.git ~/mantidimaging-data-master"""
+git clone https://github.com/mantidproject/mantidimaging-data.git"""
 
 SHOW_DELAY = 10  # Can be increased to watch tests
 SHORT_DELAY = 100

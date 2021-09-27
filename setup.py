@@ -10,6 +10,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 import tempfile
+import shutil
 
 from setuptools import find_packages, setup
 try:
@@ -52,9 +53,10 @@ class PublishDocsToGitHubPages(Command):
 
         g = Git(self.docs_dir)
         g.init()
+        g.checkout(b="main")
         g.add(".")
         g.commit("-m {}".format(self.commit_msg))
-        g.push("--force", self.repo, "master:gh-pages")
+        g.push("--force", self.repo, "main:gh-pages")
 
 
 class GenerateSphinxApidoc(Command):
@@ -147,13 +149,21 @@ class CompilePyQtUiFiles(Command):
 
 class CreateDeveloperEnvironment(Command):
     description = "Install the dependencies needed to develop Mantid Imaging"
-    user_options = []
+    user_options = [("conda=", None, "path to conda or mamba command")]
 
     def initialize_options(self):
-        pass
+        mamba_path = shutil.which("mamba")
+        conda_path = shutil.which("conda")
+        if mamba_path is not None:
+            self.conda = mamba_path
+        elif conda_path is not None:
+            self.conda = conda_path
+        else:
+            self.conda = None
 
     def finalize_options(self):
-        pass
+        if self.conda is None:
+            raise ValueError("Could not find conda or mamba")
 
     def count_indent(self, line):
         leading_spaces = len(line) - len(line.lstrip(" "))
@@ -193,12 +203,12 @@ class CreateDeveloperEnvironment(Command):
 
     def run(self):
         print("Removing existing mantidimaging-dev environment")
-        command_conda_env_remove = ["conda", "env", "remove", "-n", "mantidimaging-dev"]
+        command_conda_env_remove = [self.conda, "env", "remove", "-n", "mantidimaging-dev"]
         subprocess.check_call(command_conda_env_remove)
         extra_deps = self.get_package_depends()
         env_file_path = self.make_environment_file(extra_deps)
         print("Creating conda environment for development")
-        command_conda_env = ["conda", "env", "create", "-f", env_file_path]
+        command_conda_env = [self.conda, "env", "create", "-f", env_file_path]
         subprocess.check_call(command_conda_env)
         os.remove(env_file_path)
 

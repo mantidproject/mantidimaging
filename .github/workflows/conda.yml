@@ -14,9 +14,11 @@ jobs:
       - name: Check License Lines
         uses: kt3k/license_checker@v1.0.3
 
-      - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2.0.1
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v2.1.1
         with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
           environment-file: environment-dev.yml
           activate-environment: mantidimaging-dev
           auto-activate-base: false
@@ -68,8 +70,9 @@ jobs:
       - name: Get test data
         shell: bash -l {0}
         run: |
-          wget -nv https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/master.zip
-          unzip -q master.zip -d ~
+          wget -nv https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/main.zip
+          unzip -q main.zip -d ~
+          mv ~/mantidimaging-data-main ~/mantidimaging-data
         timeout-minutes: 5
 
       - name: GUI Tests System
@@ -93,18 +96,19 @@ jobs:
         shell: bash -l {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
         run: |
           coveralls
 
       - name: publish 'unstable' package
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: ./.github/actions/publish-package
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN }}
 
       - name: publish docs
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: ./.github/actions/publish-docs
         with:
           token: ${{ secrets.GHPAGES_API_TOKEN }}

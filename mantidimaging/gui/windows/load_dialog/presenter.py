@@ -16,6 +16,7 @@ from mantidimaging.gui.windows.load_dialog.field import Field
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.load_dialog import MWLoadDialog  # pragma: no cover
+
 logger = getLogger(__name__)
 
 

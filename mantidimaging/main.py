@@ -7,7 +7,7 @@ import logging
 import warnings
 
 from mantidimaging import helper as h
-from mantidimaging.core.utility.command_line_path import CommandLinePath
+from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -28,6 +28,11 @@ def parse_args():
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
 
     parser.add_argument("--path", type=str, help="Path for the data you wish to load.")
+    parser.add_argument("--operation", type=str, help="The initial operation to run on the dataset.")
+    parser.add_argument("--recon",
+                        default=False,
+                        action='store_true',
+                        help="Opens the reconstruction window at start up.")
 
     return parser.parse_args()
 
@@ -41,8 +46,10 @@ def main():
         print(version_no)
         return
 
-    if args.path:
-        CommandLinePath(args.path)
+    path = args.path if args.path else ""
+    operation = args.operation if args.operation else ""
+
+    CommandLineArguments(path=path, operation=operation, show_recon=args.recon)
 
     h.initialise_logging(logging.getLevelName(args.log_level))
 

@@ -5,14 +5,13 @@ import json
 import os
 import subprocess
 from logging import getLogger
-from collections import namedtuple
 import requests
 from typing import Optional
+from packaging import version
 
 from mantidimaging import __version__
 
 LOG = getLogger(__name__)
-ParsedVersion = namedtuple('ParsedVersion', ['version', 'commits'])
 
 # Import as
 #   from mantidimaging.core.utility.version_check import versions
@@ -140,22 +139,13 @@ class CheckVersion:
 versions = CheckVersion()
 
 
-def _parse_version(package_version_string: Optional[str]) -> ParsedVersion:
+def _parse_version(package_version_string: Optional[str]) -> version.Version:
     if package_version_string is None:
         raise ValueError
 
-    # remove the RC tag if found
-    package_version_string = package_version_string.replace("rc", "")
-
-    if "_" in package_version_string:
-        local_version, local_commits_since_last = package_version_string.split("_")
-    else:
-        local_version, local_commits_since_last = package_version_string, "0"
-    return ParsedVersion(tuple(map(int, local_version.split("."))), int(local_commits_since_last))
+    normalised_version_string = package_version_string.replace("_", ".")
+    return version.parse(normalised_version_string)
 
 
-def _version_is_uptodate(local: ParsedVersion, remote: ParsedVersion):
-    if local.version < remote.version or local.commits < remote.commits:
-        return False
-    else:
-        return True
+def _version_is_uptodate(local: version.Version, remote: version.Version):
+    return local >= remote

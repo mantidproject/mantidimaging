@@ -29,12 +29,12 @@ TEST_NAME = os.getenv("GITHUB_BRANCH_NAME")
 if TEST_NAME is None:
     TEST_NAME = f"{getpass.getuser()}'s Local Test"
 
-LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data-master/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
+LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
 LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
-git clone https://github.com/mantidproject/mantidimaging-data.git ~/mantidimaging-data-master"""
+git clone https://github.com/mantidproject/mantidimaging-data.git"""
 
 NEXUS_SAMPLE = str(
-    Path.home()) + "/mantidimaging-data-master/Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
+    Path.home()) + "/mantidimaging-data/Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
 
 APPLITOOLS_IMAGE_DIR = os.getenv("APPLITOOLS_IMAGE_DIR")
 if APPLITOOLS_IMAGE_DIR is None:
