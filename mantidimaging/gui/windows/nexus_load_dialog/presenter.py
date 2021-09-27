@@ -93,7 +93,9 @@ class NexusLoadPresenter:
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
         except OSError:
-            logger.error(f"Unable to read NeXus data from {file_path}")
+            message = f"Unable to read NeXus data from {file_path}"
+            logger.error(message)
+            self.view.show_data_error(message)
 
     def _missing_data_error(self, field: str):
         """
@@ -102,7 +104,7 @@ class NexusLoadPresenter:
         """
         error_msg = _missing_data_message(field)
         logger.error(error_msg)
-        self.view.show_missing_data_error(error_msg)
+        self.view.show_data_error(error_msg)
 
     def _look_for_tomo_data_and_update_view(self, field: str,
                                             position: int) -> Optional[Union[h5py.Group, h5py.Dataset]]:
