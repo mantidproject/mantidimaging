@@ -40,7 +40,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
 
         self.view = mock.Mock(autospec=NexusLoadDialog)
-        self.view.filePathLineEdit.text.return_value = "filename"
+        self.view.filePathLineEdit.text.return_value = self.file_path = "filename"
         self.view.pixelDepthComboBox.currentText.return_value = self.expected_pixel_depth = "float32"
         self.view.pixelSizeSpinBox.value.return_value = pixel_size = 9.00
         self.view.start_widget.value.return_value = 0
@@ -266,6 +266,6 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_load_invalid_nexus_file(self):
         self.nexus_load_mock.side_effect = OSError
-        with self.assertRaises(OSError):
-            with self.assertLogs(nexus_logger, level="ERROR"):
-                self.nexus_loader.scan_nexus_file()
+        with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
+            self.nexus_loader.scan_nexus_file()
+        self.assertIn(f"Unable to read NeXus data from {self.file_path}", log_mock.output[0])
