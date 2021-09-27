@@ -107,7 +107,7 @@ class NexusLoaderTest(unittest.TestCase):
                 with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
                     self.nexus_loader.scan_nexus_file()
                     self.assertIn(missing_string, log_mock.output[0])
-                self.view.show_missing_data_error.assert_called_once_with(missing_string)
+                self.view.show_data_error.assert_called_once_with(missing_string)
                 self.view.disable_ok_button.assert_called_once()
             self.tearDown()
 
@@ -193,7 +193,7 @@ class NexusLoaderTest(unittest.TestCase):
         with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
             self.nexus_loader.scan_nexus_file()
         self.assertIn(missing_string, log_mock.output[0])
-        self.view.show_missing_data_error.assert_called_once_with(missing_string)
+        self.view.show_data_error.assert_called_once_with(missing_string)
         self.view.disable_ok_button.assert_called_once()
         self.view.set_images_found.assert_called_once_with(0, False, (0, 10, 10))
 
@@ -271,3 +271,4 @@ class NexusLoaderTest(unittest.TestCase):
             self.nexus_loader.scan_nexus_file()
         self.assertIn(unable_message, log_mock.output[0])
         self.view.show_data_error.assert_called_once_with(unable_message)
+        self.view.disable_ok_button.assert_called_once()
