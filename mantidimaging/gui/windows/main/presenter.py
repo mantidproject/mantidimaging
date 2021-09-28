@@ -7,6 +7,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
+import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
@@ -144,7 +145,7 @@ class MainWindowPresenter(BasePresenter):
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
-                if diff <= THRESHOLD_180 or self.view.use_closest_180_projection():
+                if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(np.rad2deg(diff)):
                     container.sample.proj180deg = closest_projection
                     self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
 
@@ -241,6 +242,3 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
-
-    def ask_to_use_closest_180_projection(self):
-        pass

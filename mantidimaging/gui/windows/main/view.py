@@ -413,3 +413,8 @@ class MainWindowView(BaseMainWindowView):
             else:
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
                 return
+
+    def ask_to_use_closest_to_180(self, diff: float):
+        return QMessageBox.Yes == QMessageBox.question(
+            self, "180 Projection",
+            f"Unable to find a 180 degree projection. The closest projection is {str(diff)} away from 180. Use anyway?")
