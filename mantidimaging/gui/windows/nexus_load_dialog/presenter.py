@@ -11,6 +11,7 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.io.utility import THRESHOLD_180, find_projection_closest_to_180
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
@@ -37,8 +38,6 @@ TOMO_ENTRY = "tomo_entry"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 ROTATION_ANGLE_PATH = "sample/rotation_angle"
-
-THRESHOLD_180 = np.radians(1)
 
 
 def _missing_data_message(data_string: str) -> str:
@@ -256,9 +255,11 @@ class NexusLoadPresenter:
         # Find 180deg projection
         proj180deg = None
         if self.projection_angles is not None:
-            diff = np.abs(self.projection_angles - np.pi)
-            if np.amin(diff) <= THRESHOLD_180:
-                proj180deg = Images(self.sample_array[diff.argmin()])
+            closest_projection, diff = find_projection_closest_to_180(self.sample_array, self.projection_angles)
+            if diff <= THRESHOLD_180:
+                proj180deg = Images(closest_projection)
+            else:
+                pass  # TODO Give user option to choose closest file
 
         # Create sample array and Images object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.

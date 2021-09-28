@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
+from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -140,6 +141,12 @@ class MainWindowPresenter(BasePresenter):
                 self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
                 self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_stack_vis)
+            else:
+                closest_projection, diff = find_projection_closest_to_180(sample.projections,
+                                                                          sample.projection_angles().value)
+                if diff <= THRESHOLD_180 or self.view.use_closest_180_projection():
+                    container.sample.proj180deg = closest_projection
+                    self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -234,3 +241,6 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
+
+    def ask_to_use_closest_180_projection(self):
+        pass
