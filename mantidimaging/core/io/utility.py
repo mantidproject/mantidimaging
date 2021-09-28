@@ -231,5 +231,11 @@ def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
 
 
 def find_projection_closest_to_180(projections: np.ndarray, projection_angles: np.ndarray) -> Tuple[np.ndarray, float]:
+    """
+    Finds the projection closest to 180 and returns it with the difference.
+    :param projections: The array of projection images.
+    :param projection_angles: The array of projection angles.
+    :return: The 180 projection/the closest non-180 projection and the difference between its angle and 180.
+    """
     diff = np.abs(projection_angles - np.pi)
     return projections[diff.argmin()], np.amin(diff)
