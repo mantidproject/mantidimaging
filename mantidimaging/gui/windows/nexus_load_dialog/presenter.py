@@ -256,10 +256,8 @@ class NexusLoadPresenter:
         proj180deg = None
         if self.projection_angles is not None:
             closest_projection, diff = find_projection_closest_to_180(self.sample_array, self.projection_angles)
-            if diff <= THRESHOLD_180:
+            if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(np.rad2deg(diff)):
                 proj180deg = Images(closest_projection)
-            else:
-                pass  # TODO Give user option to choose closest file
 
         # Create sample array and Images object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.

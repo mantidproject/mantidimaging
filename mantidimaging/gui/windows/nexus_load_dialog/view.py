@@ -5,7 +5,7 @@ from typing import Tuple
 from PyQt5.QtCore import Qt, QEventLoop
 from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
-    QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel, QSpinBox
+    QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel, QSpinBox, QMessageBox
 
 from mantidimaging.gui.utility import compile_ui
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
@@ -217,3 +217,8 @@ class NexusLoadDialog(QDialog):
         self.start_widget.setValue(0)
         self.stop_widget.setValue(self.n_proj)
         self.step_widget.setValue(1)
+
+    def ask_to_use_closest_to_180(self, diff: float):
+        return QMessageBox.Yes == QMessageBox.question(
+            self, "180 Projection",
+            f"Unable to find a 180 degree projection. The closest projection is {str(diff)} away from 180. Use anyway?")
