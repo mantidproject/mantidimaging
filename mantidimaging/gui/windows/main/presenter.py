@@ -146,7 +146,8 @@ class MainWindowPresenter(BasePresenter):
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                    container.sample.proj180deg = Images(closest_projection)
+                    container.sample.proj180deg = Images(
+                        np.reshape(closest_projection, (1, ) + closest_projection.shape))
                     self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
 
         if len(current_stack_visualisers) > 1:
