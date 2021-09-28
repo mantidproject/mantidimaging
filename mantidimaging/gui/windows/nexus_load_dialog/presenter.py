@@ -11,7 +11,6 @@ import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.io.utility import THRESHOLD_180, find_projection_closest_to_180
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
@@ -252,13 +251,6 @@ class NexusLoadPresenter:
         """
         assert self.sample_array is not None
 
-        # Find 180deg projection
-        proj180deg = None
-        if self.projection_angles is not None:
-            closest_projection, diff = find_projection_closest_to_180(self.sample_array, self.projection_angles)
-            if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                proj180deg = Images(closest_projection)
-
         # Create sample array and Images object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
                                               step_widget.value()]
@@ -270,10 +262,7 @@ class NexusLoadPresenter:
             sample_images.set_projection_angles(
                 ProjectionAngles(self.projection_angles[self.view.start_widget.value():self.view.stop_widget.value(
                 ):self.view.step_widget.value()]))
-        if proj180deg is not None:
-            sample_images.proj180deg = proj180deg
-        else:
-            logger.warning("Unable to find ~180 degree projection.")
+
         return sample_images
 
     def _create_images(self, data_array: np.ndarray, name: str) -> Images:
