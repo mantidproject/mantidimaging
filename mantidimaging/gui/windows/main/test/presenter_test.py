@@ -139,6 +139,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
+        self.view.ask_to_use_closest_to_180.return_value = False
+
         self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(5, len(self.presenter.model.stack_list))
