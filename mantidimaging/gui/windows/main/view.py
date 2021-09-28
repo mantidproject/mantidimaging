@@ -6,6 +6,7 @@ from logging import getLogger
 from typing import Optional
 from uuid import UUID
 
+import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
@@ -414,7 +415,8 @@ class MainWindowView(BaseMainWindowView):
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
                 return
 
-    def ask_to_use_closest_to_180(self, diff: float):
+    def ask_to_use_closest_to_180(self, diff_rad: float):
+        diff_deg = round(np.deg2rad(diff_rad), 2)
         return QMessageBox.Yes == QMessageBox.question(
             self, "180 Projection",
-            f"Unable to find a 180 degree projection. The closest projection is {str(diff)} away from 180. Use anyway?")
+            f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} away from 180. Use anyway?")
