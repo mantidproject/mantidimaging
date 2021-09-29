@@ -244,6 +244,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=False)
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_not_called()
+        self.view.show_status_message.assert_called_once_with("Unable to correlate 0 and 180 because the dataset "
+                                                              "doesn't have a 180 projection set. Please load a 180 "
+                                                              "projection manually.")
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock):
