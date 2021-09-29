@@ -419,5 +419,5 @@ class MainWindowView(BaseMainWindowView):
         diff_deg = round(np.rad2deg(diff_rad), 2)
         return QMessageBox.Yes == QMessageBox.question(
             self, "180 Projection",
-            f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} away from 180. "
+            f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
             f"Use anyway?")
