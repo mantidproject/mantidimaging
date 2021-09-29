@@ -142,7 +142,7 @@ class MainWindowPresenter(BasePresenter):
                 self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:  # type: ignore
                 self._add_stack(
-                    container.sample.proj180deg,
+                    container.sample.proj180deg,  # type: ignore
                     container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
             else:
