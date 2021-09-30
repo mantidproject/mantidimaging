@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from unittest import mock
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest, NEXUS_SAMPLE
 
@@ -19,7 +18,6 @@ class LoadDialogTest(BaseEyesTest):
         self.check_target(widget=self.imaging.nexus_load_dialog)
 
     def test_load_nexus_file_creates_stack(self):
-        self.imaging.ask_to_use_closest_to_180 = mock.Mock(Return_value=True)
         self.imaging.actionLoadNeXusFile.trigger()
         self.imaging.nexus_load_dialog.filePathLineEdit.setText(NEXUS_SAMPLE)
 
