@@ -76,7 +76,7 @@ class GuiSystemBase(unittest.TestCase):
         for _ in range(max_retry):
             if test_func():
                 return True
-            QTest.qWait(delay * 1000)
+            QTest.qWait(int(delay * 1000))
         raise RuntimeError("_wait_until reach max retries")
 
     @classmethod
