@@ -48,7 +48,7 @@ class AsyncTaskDialogView(BaseDialogView):
             self.infoText.setText(message)
 
         # Update progress bar
-        self.progressBar.setValue(progress * 1000)
+        self.progressBar.setValue(int(progress * 1000))
 
     def show_delayed(self, timeout):
         self.show_timer.singleShot(timeout, self.show_from_timer)
