@@ -66,7 +66,7 @@ class EyesManager:
 
     def start_imaging(self):
         self.imaging = MainWindowView(open_dialogs=False)
-        self.imaging.ask_to_use_closest_to_180 = mock.Mock(Return_value=False)
+        self.imaging.ask_to_use_closest_to_180 = mock.Mock(return_value=False)
         self.imaging.show()
         QApplication.processEvents()
 
