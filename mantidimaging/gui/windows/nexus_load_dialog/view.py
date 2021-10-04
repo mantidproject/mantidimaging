@@ -178,9 +178,9 @@ class NexusLoadDialog(QDialog):
         """
         self.parent_view.presenter.show_error(msg, traceback)
 
-    def show_missing_data_error(self, msg: str):
+    def show_data_error(self, msg: str):
         """
-        Show an error about missing required data.
+        Show an error about missing required data or an unreadable file.
         :param msg: The error message.
         """
         self.parent_view.show_error_dialog(msg)
