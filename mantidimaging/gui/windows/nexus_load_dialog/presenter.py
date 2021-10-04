@@ -76,21 +76,27 @@ class NexusLoadPresenter:
         Try to open the NeXus file and display its contents on the view.
         """
         file_path = self.view.filePathLineEdit.text()
-        with h5py.File(file_path, "r") as self.nexus_file:
-            self.tomo_entry = self._look_for_nxtomo_entry()
-            if self.tomo_entry is None:
-                return
+        try:
+            with h5py.File(file_path, "r") as self.nexus_file:
+                self.tomo_entry = self._look_for_nxtomo_entry()
+                if self.tomo_entry is None:
+                    return
 
-            self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
-            if self.data is None:
-                return
+                self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
+                if self.data is None:
+                    return
 
-            self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
-            if self.image_key_dataset is None:
-                return
+                self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+                if self.image_key_dataset is None:
+                    return
 
-            self._get_data_from_image_key()
-            self.title = self._find_data_title()
+                self._get_data_from_image_key()
+                self.title = self._find_data_title()
+        except OSError:
+            unable_message = f"Unable to read NeXus data from {file_path}"
+            logger.error(unable_message)
+            self.view.show_data_error(unable_message)
+            self.view.disable_ok_button()
 
     def _missing_data_error(self, field: str):
         """
@@ -99,7 +105,7 @@ class NexusLoadPresenter:
         """
         error_msg = _missing_data_message(field)
         logger.error(error_msg)
-        self.view.show_missing_data_error(error_msg)
+        self.view.show_data_error(error_msg)
 
     def _look_for_tomo_data_and_update_view(self, field: str,
                                             position: int) -> Optional[Union[h5py.Group, h5py.Dataset]]:
