@@ -1,6 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
+import pytest
 import unittest
 from unittest import mock
 
@@ -89,6 +91,20 @@ class MedianTest(unittest.TestCase):
         self.assertEqual(size_field.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
         self.assertEqual(use_gpu_field.isChecked.call_count, 1)
+
+    @parameterized.expand([("CPU", True), ("GPU", False)])
+    @pytest.mark.xfail(reason="Bug #1117")
+    def test_executed_with_nan(self, _, use_cpu):
+        if not use_cpu and not gpu.gpu_available():
+            self.skipTest(reason="Skip GPU tests if cupy isn't installed")
+        images = th.generate_images(seed=2021)
+        values = th.generate_images(seed=42)
+        images.data[:] = np.where(values.data > 0.99, np.nan, images.data)
+        self.assertTrue(np.any(np.isnan(images.data)))
+
+        result = MedianFilter.filter_func(images, 3, 'reflect', force_cpu=use_cpu)
+
+        self.assertFalse(np.any(np.isnan(result.data)))
 
 
 if __name__ == '__main__':
