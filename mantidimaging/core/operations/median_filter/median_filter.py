@@ -5,6 +5,7 @@ from functools import partial
 from logging import getLogger
 from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
+import numpy as np
 import scipy.ndimage as scipy_ndimage
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
@@ -127,12 +128,18 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
+def _median_filter(data, size, mode):
+    data = np.where(np.isnan(data), -np.inf, data)
+    data = scipy_ndimage.median_filter(data, size=size, mode=mode)
+    return data
+
+
 def _execute(data, size, mode, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Median filter')
 
     # create the partial function to forward the parameters
-    f = ps.create_partial(scipy_ndimage.median_filter, ps.return_to_self, size=size, mode=mode)
+    f = ps.create_partial(_median_filter, ps.return_to_self, size=size, mode=mode)
 
     with progress:
         log.info("PARALLEL median filter, with pixel data type: {0}, filter "

@@ -170,6 +170,10 @@ def _create_padded_array(data, filter_size, scipy_mode):
     return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=EQUIVALENT_PAD_MODE[scipy_mode])
 
 
+def _nan_to_inf(data):
+    return np.where(np.isnan(data), -np.inf, data)
+
+
 def _replace_gpu_array_contents(gpu_array, cpu_array, stream):
     """
     Overwrites the contents of an existing GPU array with a given CPU array.
@@ -262,7 +266,7 @@ class CudaExecuter:
             # If the number of images is smaller than the slice limit, use that instead
             slice_limit = n_images
 
-        cpu_padded_images = [_create_padded_array(data_slice, filter_size, mode) for data_slice in data]
+        cpu_padded_images = [_create_padded_array(_nan_to_inf(data_slice), filter_size, mode) for data_slice in data]
 
         streams = [cp.cuda.Stream(non_blocking=True) for _ in range(slice_limit)]
 

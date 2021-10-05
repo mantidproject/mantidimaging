@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from parameterized import parameterized
-import pytest
 import unittest
 from unittest import mock
 
@@ -93,7 +92,6 @@ class MedianTest(unittest.TestCase):
         self.assertEqual(use_gpu_field.isChecked.call_count, 1)
 
     @parameterized.expand([("CPU", True), ("GPU", False)])
-    @pytest.mark.xfail(reason="Bug #1117")
     def test_executed_with_nan(self, _, use_cpu):
         if not use_cpu and not gpu.gpu_available():
             self.skipTest(reason="Skip GPU tests if cupy isn't installed")
@@ -103,7 +101,6 @@ class MedianTest(unittest.TestCase):
         self.assertTrue(np.any(np.isnan(images.data)))
 
         result = MedianFilter.filter_func(images, 3, 'reflect', force_cpu=use_cpu)
-
         self.assertFalse(np.any(np.isnan(result.data)))
 
 
