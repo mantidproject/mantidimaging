@@ -84,29 +84,21 @@ def _import_items(packages: Iterator[pkgutil.ModuleInfo], required_attributes: O
     return imported
 
 
-def load_filter_packages(package_name="mantidimaging.core.operations", ignored_packages=None) -> List[BaseFilter]:
+def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
     """
     Imports all subpackages with a FILTER_CLASS attribute, which should be an extension of BaseFilter.
 
     These classes are then used to provide the names, required inputs, and behaviour to execute
     then named filter on a stack of images.
 
-    :param package_name: Name of the root package in which to search for
-                         operations
     :param ignored_packages: List of ignore rules
     """
-    if package_name == _OPERATIONS_DIR:
-        filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
-        filters = {name: filters[name] for name in filters.keys() if hasattr(filters[name], 'FILTER_CLASS')}
-        if not ignored_packages:
-            return [f.FILTER_CLASS for f in filters.values()]
-        return [
-            filters[name].FILTER_CLASS for name in filters.keys()
-            if not any([ignore in name for ignore in ignored_packages])
-        ]
 
-    filter_packages = _get_package_children(package_name, packages=True, ignore=ignored_packages)
-    loaded_filters = _import_items(filter_packages, required_attributes=['FILTER_CLASS'])
-    loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
-
-    return [f.FILTER_CLASS for f in loaded_filters]
+    filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
+    filters = {name: filters[name] for name in filters.keys() if hasattr(filters[name], 'FILTER_CLASS')}
+    if not ignored_packages:
+        return [f.FILTER_CLASS for f in filters.values()]
+    return [
+        filters[name].FILTER_CLASS for name in filters.keys()
+        if not any([ignore in name for ignore in ignored_packages])
+    ]
