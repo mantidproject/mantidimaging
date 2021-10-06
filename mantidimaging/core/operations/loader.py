@@ -7,10 +7,10 @@ from typing import List, Iterator, Optional
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 
-OPERATIONS_DIR = "mantidimaging.core.operations"
+_OPERATIONS_DIR = "mantidimaging.core.operations"
 
 
-def find_package_path(package_str):
+def _find_package_path(package_str):
     """
     Attempts to find the path to a given package provided the root package is
     already on the path.
@@ -31,12 +31,15 @@ def find_package_path(package_str):
 
 ISPKG_OPERATIONS = {}
 MODULES_OPERATIONS = {}
-for loader, module_name, is_pkg in pkgutil.walk_packages([find_package_path(OPERATIONS_DIR)]):
+for loader, module_name, is_pkg in pkgutil.walk_packages([_find_package_path(_OPERATIONS_DIR)]):
     MODULES_OPERATIONS[module_name] = loader.find_module(module_name)
     ISPKG_OPERATIONS[module_name] = is_pkg
 
 
-def get_package_children(package_name: str, packages=False, modules=False, ignore=None) -> Iterator[pkgutil.ModuleInfo]:
+def _get_package_children(package_name: str,
+                          packages=False,
+                          modules=False,
+                          ignore=None) -> Iterator[pkgutil.ModuleInfo]:
     """
     Gets a list of names of child packages or modules found under a given
     package.
@@ -48,7 +51,7 @@ def get_package_children(package_name: str, packages=False, modules=False, ignor
 
     :return: Iterator over matching modules
     """
-    pkgs: Iterator[pkgutil.ModuleInfo] = pkgutil.walk_packages([find_package_path(package_name)],
+    pkgs: Iterator[pkgutil.ModuleInfo] = pkgutil.walk_packages([_find_package_path(package_name)],
                                                                prefix=package_name + '.')
 
     # Ignore those that do not match the package/module selection criteria
@@ -61,7 +64,7 @@ def get_package_children(package_name: str, packages=False, modules=False, ignor
     return pkgs
 
 
-def import_items(packages: Iterator[pkgutil.ModuleInfo], required_attributes: Optional[List[str]] = None):
+def _import_items(packages: Iterator[pkgutil.ModuleInfo], required_attributes: Optional[List[str]] = None):
     """
     Imports a list of packages/modules and operations out those that do not have a
     specified required list of attributes.
@@ -92,7 +95,7 @@ def load_filter_packages(package_name="mantidimaging.core.operations", ignored_p
                          operations
     :param ignored_packages: List of ignore rules
     """
-    if package_name == OPERATIONS_DIR:
+    if package_name == _OPERATIONS_DIR:
         filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
         filters = {name: filters[name] for name in filters.keys() if hasattr(filters[name], 'FILTER_CLASS')}
         if not ignored_packages:
@@ -102,8 +105,8 @@ def load_filter_packages(package_name="mantidimaging.core.operations", ignored_p
             if not any([ignore in name for ignore in ignored_packages])
         ]
 
-    filter_packages = get_package_children(package_name, packages=True, ignore=ignored_packages)
-    loaded_filters = import_items(filter_packages, required_attributes=['FILTER_CLASS'])
+    filter_packages = _get_package_children(package_name, packages=True, ignore=ignored_packages)
+    loaded_filters = _import_items(filter_packages, required_attributes=['FILTER_CLASS'])
     loaded_filters = filter(lambda f: f.available() if hasattr(f, 'available') else True, loaded_filters)
 
     return [f.FILTER_CLASS for f in loaded_filters]
