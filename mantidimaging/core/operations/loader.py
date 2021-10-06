@@ -3,7 +3,7 @@
 import os
 import pkgutil
 import sys
-from typing import List, Iterator
+from typing import List
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 
@@ -34,34 +34,6 @@ MODULES_OPERATIONS = {}
 for loader, module_name, is_pkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
     MODULES_OPERATIONS[module_name] = loader.find_module(module_name)
     ISPKG_OPERATIONS[module_name] = is_pkg
-
-
-def _get_package_children(package_name: str,
-                          packages=False,
-                          modules=False,
-                          ignore=None) -> Iterator[pkgutil.ModuleInfo]:
-    """
-    Gets a list of names of child packages or modules found under a given
-    package.
-
-    :param package_name: The package to search within
-    :param packages: Set to True to return packages
-    :param modules: Set to True to return modules
-    :param ignore: List of explicitly matching modules to ignore
-
-    :return: Iterator over matching modules
-    """
-    pkgs: Iterator[pkgutil.ModuleInfo] = pkgutil.walk_packages([_find_package_path(package_name)],
-                                                               prefix=package_name + '.')
-
-    # Ignore those that do not match the package/module selection criteria
-    pkgs = filter(lambda p: p.ispkg and packages or not p.ispkg and modules, pkgs)
-
-    # Ignore modules whose names contain anything from 'ignore'
-    if ignore:
-        pkgs = filter(lambda p: not any([m in p.name for m in ignore]), pkgs)
-
-    return pkgs
 
 
 def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
