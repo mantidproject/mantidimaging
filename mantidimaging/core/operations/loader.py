@@ -31,7 +31,7 @@ def _find_package_path(package_str):
 
 ISPKG_OPERATIONS = {}
 MODULES_OPERATIONS = {}
-for loader, module_name, is_pkg in pkgutil.walk_packages([_find_package_path(_OPERATIONS_DIR)]):
+for loader, module_name, is_pkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
     MODULES_OPERATIONS[module_name] = loader.find_module(module_name)
     ISPKG_OPERATIONS[module_name] = is_pkg
 
