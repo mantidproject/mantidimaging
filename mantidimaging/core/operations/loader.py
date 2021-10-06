@@ -3,7 +3,7 @@
 import os
 import pkgutil
 import sys
-from typing import List, Iterator, Optional
+from typing import List, Iterator
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 
@@ -62,26 +62,6 @@ def _get_package_children(package_name: str,
         pkgs = filter(lambda p: not any([m in p.name for m in ignore]), pkgs)
 
     return pkgs
-
-
-def _import_items(packages: Iterator[pkgutil.ModuleInfo], required_attributes: Optional[List[str]] = None):
-    """
-    Imports a list of packages/modules and operations out those that do not have a
-    specified required list of attributes.
-
-    :param packages: List of packages to import.
-    :param required_attributes: Optional list of attributes that must be
-                                present on each individual module
-
-    :return: List of imported packages/modules
-    """
-    imported = map(lambda p: p.module_finder.find_module(p.name).load_module(p.name), packages)
-    # Filter out those that do not contain all the required attributes
-    if required_attributes:
-        imported = filter(  # type: ignore
-            lambda i: all([hasattr(i, a) for a in required_attributes]), imported)  # type: ignore
-
-    return imported
 
 
 def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
