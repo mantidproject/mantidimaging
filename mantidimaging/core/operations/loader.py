@@ -2,32 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 import pkgutil
-import sys
 from typing import List
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 
 _OPERATIONS_DIR = "mantidimaging.core.operations"
-
-
-def _find_package_path(package_str):
-    """
-    Attempts to find the path to a given package provided the root package is
-    already on the path.
-
-    :param package_str: Package to search for as a Python path (i.e.
-                        "mantidimaging.core.operations")
-
-    :return: Path to package
-    """
-    package_as_path = os.sep.join(package_str.split('.'))
-    for path in sys.path:
-        candidate_path = os.path.join(path, package_as_path)
-        if os.path.exists(candidate_path):
-            return candidate_path
-
-    raise RuntimeError("Cannot find path for package {}".format(package_str))
-
 
 ISPKG_OPERATIONS = {}
 MODULES_OPERATIONS = {}
