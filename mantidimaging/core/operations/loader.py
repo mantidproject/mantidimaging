@@ -6,13 +6,9 @@ from typing import List
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 
-_OPERATIONS_DIR = "mantidimaging.core.operations"
-
-ISPKG_OPERATIONS = {}
 MODULES_OPERATIONS = {}
 for loader, module_name, is_pkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
     MODULES_OPERATIONS[module_name] = loader.find_module(module_name)
-    ISPKG_OPERATIONS[module_name] = is_pkg
 
 
 def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
