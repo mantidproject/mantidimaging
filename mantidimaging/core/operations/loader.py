@@ -8,7 +8,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 
 MODULES_OPERATIONS = {}
 for loader, module_name, is_pkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
-    MODULES_OPERATIONS[module_name] = loader.find_module(module_name)
+    MODULES_OPERATIONS[module_name] = loader.find_spec(module_name).loader
 
 
 def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
