@@ -236,10 +236,12 @@ class FiltersWindowPresenter(BasePresenter):
             return False
         stacks = self.main_window.get_all_stack_visualisers()
         for stack in stacks:
-            stack_proj180deg = stack.presenter.images.proj180deg
-            if stack_proj180deg is not None:
-                if stack_proj180deg == stack_to_check.presenter.images:
-                    return True
+            if stack.presenter.images.proj180deg is not None:
+                stack_proj180deg = stack.presenter.images.proj180deg
+            else:
+                stack_proj180deg = stack.presenter.images
+            if stack_proj180deg == stack_to_check.presenter.images:
+                return True
         return False
 
     def _post_filter(self, updated_stacks: List[StackVisualiserView], task):

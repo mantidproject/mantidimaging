@@ -419,6 +419,11 @@ class MainWindowView(BaseMainWindowView):
                 return
 
     def ask_to_use_closest_to_180(self, diff_rad: float):
+        """
+        Asks the user if they want to use the projection that is closest to 180 degrees as the 180deg.
+        :param diff_rad: The difference from the closest projection to 180 in radians.
+        :return: True if the answer wants to use the closest projection, False otherwise.
+        """
         diff_deg = round(np.rad2deg(diff_rad), 2)
         return QMessageBox.Yes == QMessageBox.question(
             self, "180 Projection",
