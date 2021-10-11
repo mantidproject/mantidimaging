@@ -236,7 +236,8 @@ class FiltersWindowPresenter(BasePresenter):
             return False
         stacks = self.main_window.get_all_stack_visualisers()
         for stack in stacks:
-            if stack.presenter.images.proj180deg == stack_to_check.presenter.images:
+            stack_proj180deg = stack.presenter.images.proj180deg
+            if stack_proj180deg and stack_proj180deg == stack_to_check.presenter.images:
                 return True
         return False
 
