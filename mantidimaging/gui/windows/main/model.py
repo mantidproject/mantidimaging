@@ -177,7 +177,7 @@ class MainWindowModel(object):
         if stack_dock is None:
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
 
-        _180_deg = loader.load(file_names=[_180_deg_file])
+        _180_deg = loader.load(file_names=[_180_deg_file]).sample
         stack_dock.presenter.images.proj180deg = _180_deg
         return _180_deg
 
