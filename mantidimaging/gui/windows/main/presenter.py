@@ -120,6 +120,27 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_stack(stack_visualiser)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
 
+    def create_new_180_stack(self, container: Images, title: str):
+        title = self.model.create_name(title)
+        _180_stack_vis = self.view.create_stack_window(container, title)
+        self.model.add_stack(_180_stack_vis)
+
+        current_stack_visualisers = self.get_all_stack_visualisers()
+        if len(current_stack_visualisers) > 1:
+            self.view.tabifyDockWidget(current_stack_visualisers[0], _180_stack_vis)
+
+        if len(current_stack_visualisers) > 1:
+            tab_bar = self.view.findChild(QTabBar)
+            if tab_bar is not None:
+                last_stack_pos = len(current_stack_visualisers) - 1
+                # make Qt process the addition of the dock onto the main window
+                QApplication.sendPostedEvents()
+                tab_bar.setCurrentIndex(last_stack_pos)
+
+        self.view.active_stacks_changed.emit()
+
+        return _180_stack_vis
+
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.model.create_name(title)
 
