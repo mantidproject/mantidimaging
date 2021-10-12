@@ -64,6 +64,13 @@ that the entire projection data is loaded. There are also options for setting pi
 From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
 :code:`title` field in the NeXus file if one is found, otherwise the images are given the name "NeXus Data."
 
+180 Degree Projections
+----------------------
+
+In the case of both tiffs and NeXus files, Mantid Imaging will try to find a 180 projection in the data. If one has not
+been found, then it will try to look for a projection that is <= 1 degree away from 180. Should this fail then you will
+be asked if you wish to use the next closest image.
+
 Saving
 ------
 
