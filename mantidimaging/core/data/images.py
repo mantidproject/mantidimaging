@@ -197,15 +197,8 @@ class Images:
         return self._proj180deg is not None
 
     @property
-    def proj180deg(self) -> 'Images':
-        if self._proj180deg is not None:
-            return self._proj180deg
-        else:
-            # best guess when the real 180 degree projection is lacking
-            # it's likely the middle of the stack is not _exactly_ 180 degrees
-            # so the calculated COR will be a few pixels off
-            proj = self.projection(self.num_projections // 2)
-            return Images(proj.reshape((1, proj.shape[0], proj.shape[1])))
+    def proj180deg(self) -> Optional['Images']:
+        return self._proj180deg
 
     @proj180deg.setter
     def proj180deg(self, value: 'Images'):

@@ -230,7 +230,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    def test_auto_find_correlation(self, mock_start_async: mock.Mock):
+    def test_auto_find_correlation_with_180_projection(self, mock_start_async: mock.Mock):
+        self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_called_once()
         mock_first_call = mock_start_async.call_args[0]
@@ -239,12 +240,22 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.set_correlate_buttons_enabled.assert_called_once_with(False)
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    def test_auto_find_correlation_without_180_projection(self, mock_start_async: mock.Mock):
+        self.presenter.model.images.has_proj180deg = mock.Mock(return_value=False)
+        self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
+        mock_start_async.assert_not_called()
+        self.view.show_status_message.assert_called_once_with("Unable to correlate 0 and 180 because the dataset "
+                                                              "doesn't have a 180 projection set. Please load a 180 "
+                                                              "projection manually.")
+
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock):
         images = mock.MagicMock()
         images.height = 10
         images.width = 10
         images.proj180deg.height = 20
         images.proj180deg.width = 20
+        self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
         self.view = mock.MagicMock()
         self.presenter.view = self.view
         self.view.main_window.get_images_from_stack_uuid = mock.MagicMock(return_value=images)

@@ -7,11 +7,13 @@ from logging import getLogger
 from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
+import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
+from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -118,6 +120,27 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_stack(stack_visualiser)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
 
+    def create_new_180_stack(self, container: Images, title: str):
+        title = self.model.create_name(title)
+        _180_stack_vis = self.view.create_stack_window(container, title)
+        self.model.add_stack(_180_stack_vis)
+
+        current_stack_visualisers = self.get_all_stack_visualisers()
+        if len(current_stack_visualisers) > 1:
+            self.view.tabifyDockWidget(current_stack_visualisers[0], _180_stack_vis)
+
+        if len(current_stack_visualisers) > 1:
+            tab_bar = self.view.findChild(QTabBar)
+            if tab_bar is not None:
+                last_stack_pos = len(current_stack_visualisers) - 1
+                # make Qt process the addition of the dock onto the main window
+                QApplication.sendPostedEvents()
+                tab_bar.setCurrentIndex(last_stack_pos)
+
+        self.view.active_stacks_changed.emit()
+
+        return _180_stack_vis
+
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.model.create_name(title)
 
@@ -138,8 +161,18 @@ class MainWindowPresenter(BasePresenter):
                 self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
             if container.dark_after and container.dark_after.filenames:
                 self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
-            if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:
-                self._add_stack(container.sample.proj180deg, container.sample.proj180deg.filenames[0], sample_stack_vis)
+            if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:  # type: ignore
+                self._add_stack(
+                    container.sample.proj180deg,  # type: ignore
+                    container.sample.proj180deg.filenames[0],  # type: ignore
+                    sample_stack_vis)
+            else:
+                closest_projection, diff = find_projection_closest_to_180(sample.projections,
+                                                                          sample.projection_angles().value)
+                if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
+                    container.sample.proj180deg = Images(
+                        np.reshape(closest_projection, (1, ) + closest_projection.shape))
+                    self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)

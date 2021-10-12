@@ -236,7 +236,11 @@ class FiltersWindowPresenter(BasePresenter):
             return False
         stacks = self.main_window.get_all_stack_visualisers()
         for stack in stacks:
-            if stack.presenter.images.proj180deg == stack_to_check.presenter.images:
+            if stack.presenter.images.proj180deg is not None:
+                stack_proj180deg = stack.presenter.images.proj180deg
+            else:
+                stack_proj180deg = stack.presenter.images
+            if stack_proj180deg == stack_to_check.presenter.images:
                 return True
         return False
 
@@ -260,9 +264,10 @@ class FiltersWindowPresenter(BasePresenter):
                     # Apply to proj180 synchronously - this function is already running async
                     # and running another async instance causes a race condition in the parallel module
                     # where the shared data can be removed in the middle of the operation of another operation
-                    self._do_apply_filter_sync(
-                        [self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)])
-                    self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)
+                    self._do_apply_filter_sync([
+                        self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)  # type: ignore
+                    ])
+                    self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)  # type: ignore
                 self.view.main_window.update_stack_with_images(stack.presenter.images)
             if np.any(stack.presenter.images.data < 0):
                 negative_stacks.append(stack)

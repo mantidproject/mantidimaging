@@ -32,9 +32,7 @@ This automatic COR algorithm finds the shift between the projections at 0 and 18
 The projection exactly at 180 degrees is necessary for the best result.
 We provide the option of loading a 180 degree projection in the load dialog.
 
-If not provided with a 180 degree projection, the algorithm will use the projection
-at the middle of the stack. This is usually not exactly 180 degrees, and
-so the resulting COR  will be a few pixels off.
+The algorithm will not run unless a 180 degree projection has been loaded.
 
 This is not a problem and could be rectified either by adding a manual COR or using
 the minimisation algorithm.

@@ -5,7 +5,10 @@ import unittest
 
 from unittest import mock
 
+import numpy as np
+
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
@@ -125,7 +128,30 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
         mock_QApp.sendPostedEvents.assert_called_once()
 
-    def test_create_new_stack_dataset(self):
+    def test_create_new_stack_dataset_and_use_threshold_180(self):
+        dock_mock = mock.Mock()
+        stack_visualiser_mock = mock.Mock()
+        self.dataset.sample.set_projection_angles(
+            ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
+
+        dock_mock.widget.return_value = stack_visualiser_mock
+        dock_mock.windowTitle.return_value = "somename"
+        self.view.create_stack_window.return_value = dock_mock
+        self.view.active_stacks_changed.emit = mock.Mock()
+
+        self.dataset.flat_before.filenames = ["filename"] * 10
+        self.dataset.dark_before.filenames = ["filename"] * 10
+        self.dataset.flat_after.filenames = ["filename"] * 10
+        self.dataset.dark_after.filenames = ["filename"] * 10
+
+        self.view.ask_to_use_closest_to_180.return_value = False
+
+        self.presenter.create_new_stack(self.dataset, "My title")
+
+        self.assertEqual(6, len(self.presenter.model.stack_list))
+        self.view.active_stacks_changed.emit.assert_called_once()
+
+    def test_create_new_stack_dataset_and_reject_180(self):
         dock_mock = mock.Mock()
         stack_visualiser_mock = mock.Mock()
 
@@ -139,9 +165,32 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
+        self.view.ask_to_use_closest_to_180.return_value = False
+
         self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(5, len(self.presenter.model.stack_list))
+        self.view.active_stacks_changed.emit.assert_called_once()
+
+    def test_create_new_stack_dataset_and_accept_180(self):
+        dock_mock = mock.Mock()
+        stack_visualiser_mock = mock.Mock()
+
+        dock_mock.widget.return_value = stack_visualiser_mock
+        dock_mock.windowTitle.return_value = "somename"
+        self.view.create_stack_window.return_value = dock_mock
+        self.view.active_stacks_changed.emit = mock.Mock()
+
+        self.dataset.flat_before.filenames = ["filename"] * 10
+        self.dataset.dark_before.filenames = ["filename"] * 10
+        self.dataset.flat_after.filenames = ["filename"] * 10
+        self.dataset.dark_after.filenames = ["filename"] * 10
+
+        self.view.ask_to_use_closest_to_180.return_value = True
+
+        self.presenter.create_new_stack(self.dataset, "My title")
+
+        self.assertEqual(6, len(self.presenter.model.stack_list))
         self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_wizard_action_load(self):

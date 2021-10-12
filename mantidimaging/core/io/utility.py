@@ -5,13 +5,16 @@ import glob
 import itertools
 import os
 import re
+import numpy as np
 from logging import getLogger, Logger
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Tuple
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
 SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
+
+THRESHOLD_180 = np.radians(1)
 
 
 def get_file_extension(file: str) -> Optional[str]:
@@ -225,3 +228,14 @@ def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
         if "flat" not in lower_filename and "dark" not in lower_filename and "180" not in lower_filename:
             return possible_file
     return None
+
+
+def find_projection_closest_to_180(projections: np.ndarray, projection_angles: np.ndarray) -> Tuple[np.ndarray, float]:
+    """
+    Finds the projection closest to 180 and returns it with the difference.
+    :param projections: The array of projection images.
+    :param projection_angles: The array of projection angles.
+    :return: The 180 projection/the closest non-180 projection and the difference between its angle and 180.
+    """
+    diff = np.abs(projection_angles - np.pi)
+    return projections[diff.argmin()], np.amin(diff)

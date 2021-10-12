@@ -307,6 +307,11 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self):
+        if not self.model.images.has_proj180deg():
+            self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
+                                          "projection set. Please load a 180 projection manually.")
+            return
+
         self.recon_is_running = True
 
         def completed(task: TaskWorkerThread):

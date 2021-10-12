@@ -109,9 +109,8 @@ class StackVisualiserView(QDockWidget):
         stacks_with_proj180 = window.get_all_stack_visualisers_with_180deg_proj()
         for stack in stacks_with_proj180:
             if stack.presenter.images.proj180deg is self.presenter.images:
-                if not self.ask_confirmation(
-                        "Caution: If you close this then the 180 degree projection will "
-                        "not be available for COR correlation, and the middle of the image stack will be used."):
+                if not self.ask_confirmation("Caution: If you close this then the 180 degree projection will "
+                                             "not be available for COR correlation."):
                     event.ignore()
                     return
                 else:
