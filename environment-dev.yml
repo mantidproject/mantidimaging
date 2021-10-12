@@ -19,7 +19,7 @@ dependencies:
       - pytest-cov==2.12.*
       - coveralls==3.2.*
       - yapf==0.31.*
-      - mypy==0.790
+      - mypy==0.910
       - flake8==3.9.*
       - testfixtures==6.18.*
       - coverage==5.5

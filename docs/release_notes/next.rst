@@ -23,3 +23,6 @@ Developer Changes
 - #1022 : Switch to use Mambaforge
 - #1085 : Fix rotation of images in GUI tests
 - #1045 : Command line argument to open Operation or Reconstruction windows
+- #1154 : collections.abc is deprecated
+- #1155 : DeprecationWarning an integer is required self.progressBar.setValue
+- #1153 : Remove package_name argument from load_filter_packages
