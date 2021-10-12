@@ -202,6 +202,7 @@ class Images:
 
     @proj180deg.setter
     def proj180deg(self, value: 'Images'):
+        assert isinstance(value, Images)
         self._proj180deg = value
 
     @property
