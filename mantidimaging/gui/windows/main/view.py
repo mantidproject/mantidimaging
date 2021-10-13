@@ -8,7 +8,7 @@ from uuid import UUID
 
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
+from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, QTreeView
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
@@ -109,6 +109,13 @@ class MainWindowView(BaseMainWindowView):
 
         if args.recon():
             self.show_recon_window()
+
+        self.dataset_tree_view = QTreeView()
+
+        self.splitter = QSplitter(Qt.Horizontal, self)
+        self.splitter.addWidget(self.dataset_tree_view)
+
+        self.setCentralWidget(self.splitter)
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
@@ -328,12 +335,13 @@ class MainWindowView(BaseMainWindowView):
     def create_stack_window(self,
                             stack: Images,
                             title: str,
-                            position=Qt.DockWidgetArea.TopDockWidgetArea,
+                            position=Qt.DockWidgetArea.RightDockWidgetArea,
                             floating=False) -> StackVisualiserView:
         stack_vis = StackVisualiserView(self, title, stack)
 
         # this puts the new stack window into the centre of the window
-        self.setCentralWidget(stack_vis)
+        self.splitter.addWidget(stack_vis)
+        self.setCentralWidget(self.splitter)
 
         # add the dock widget into the main window
         self.addDockWidget(position, stack_vis)
