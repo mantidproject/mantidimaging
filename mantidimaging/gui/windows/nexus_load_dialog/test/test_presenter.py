@@ -9,13 +9,14 @@ import numpy as np
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
-    IMAGE_KEY_PATH, NexusLoadPresenter
+    IMAGE_KEY_PATH, NexusLoadPresenter, ROTATION_ANGLE_PATH
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import logger as nexus_logger
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 
 
 def test_missing_field_message():
-    assert _missing_data_message("missing_data") == "The NeXus file does not contain the required missing_data data."
+    assert _missing_data_message(
+        "required missing_data") == "The NeXus file does not contain the required missing_data data."
 
 
 class NexusLoaderTest(unittest.TestCase):
@@ -38,6 +39,10 @@ class NexusLoaderTest(unittest.TestCase):
         self.tomo_entry.create_dataset(IMAGE_KEY_PATH, data=self.image_key_array)
         self.title = "my_data_title"
         self.tomo_entry.create_dataset("title", shape=(1, ), data=self.title.encode("UTF-8"))
+
+        self.rotation_angles_array = np.array([0, 0, 0, 0, 90, 180, 0, 0, 0, 0])
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=self.rotation_angles_array)
+        angle_dataset.attrs.create("units", "degrees")
 
         self.view = mock.Mock(autospec=NexusLoadDialog)
         self.view.filePathLineEdit.text.return_value = self.file_path = "filename"
@@ -103,7 +108,7 @@ class NexusLoaderTest(unittest.TestCase):
             self.setUp()
             del self.nexus[required_data_paths[i]]
             with self.subTest(i=i):
-                missing_string = _missing_data_message(error_names[i])
+                missing_string = _missing_data_message("required " + error_names[i])
                 with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
                     self.nexus_loader.scan_nexus_file()
                     self.assertIn(missing_string, log_mock.output[0])
@@ -113,7 +118,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_no_data_or_image_key_not_found_indicated_on_view(self):
         paths = [IMAGE_KEY_PATH, DATA_PATH]
-        positions = [0, 1]
+        positions = [0, 2]
         self.tearDown()
         for i in range(len(paths)):
             self.setUp()
@@ -127,7 +132,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         self.view.set_data_found.assert_any_call(0, True, f"{self.full_tomo_path}/{IMAGE_KEY_PATH}",
                                                  self.image_key_array.shape)
-        self.view.set_data_found.assert_any_call(1, True, f"{self.full_tomo_path}/{DATA_PATH}", self.data_array.shape)
+        self.view.set_data_found.assert_any_call(2, True, f"{self.full_tomo_path}/{DATA_PATH}", self.data_array.shape)
 
     def test_images_found_indicated_on_view(self):
         self.nexus_loader.scan_nexus_file()
@@ -189,7 +194,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_no_projection_data(self):
         self.replace_values_in_image_key("Projections", 1)
-        missing_string = _missing_data_message("projection images")
+        missing_string = _missing_data_message("required projection images")
         with self.assertLogs(nexus_logger, level="ERROR") as log_mock:
             self.nexus_loader.scan_nexus_file()
         self.assertIn(missing_string, log_mock.output[0])
@@ -272,3 +277,32 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertIn(unable_message, log_mock.output[0])
         self.view.show_data_error.assert_called_once_with(unable_message)
         self.view.disable_ok_button.assert_called_once()
+
+    def test_rotation_angles_is_none(self):
+        del self.tomo_entry[ROTATION_ANGLE_PATH]
+        with self.assertLogs(nexus_logger, level="WARNING") as log_mock:
+            self.nexus_loader.scan_nexus_file()
+        self.assertIn("The NeXus file does not contain the sample/rotation_angle data.", log_mock.output[0])
+
+        dataset = self.nexus_loader.get_dataset()[0]
+        self.assertIsNone(dataset.sample._projection_angles)
+        self.assertIsNone(dataset.sample._proj180deg)
+
+    def test_no_rotation_angle_units(self):
+        del self.tomo_entry[ROTATION_ANGLE_PATH].attrs["units"]
+        with self.assertLogs(nexus_logger, level="WARNING") as log_mock:
+            self.nexus_loader.scan_nexus_file()
+        self.assertIn("No unit information found for rotation angles.", log_mock.output[0])
+
+    def test_rotation_angles_converted_to_radians(self):
+        self.nexus_loader.scan_nexus_file()
+        assert np.array_equal(self.nexus_loader.projection_angles, np.array([np.pi * 0.5, np.pi]))
+
+    def test_rotation_angles_already_in_radians(self):
+        del self.tomo_entry[ROTATION_ANGLE_PATH]
+        rotation_angles_array = np.array([0, 0, 0, 0, np.pi * 0.5, np.pi, 0, 0, 0, 0])
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=rotation_angles_array)
+        angle_dataset.attrs.create("units", "radians")
+
+        self.nexus_loader.scan_nexus_file()
+        assert np.array_equal(self.nexus_loader.projection_angles, np.array([np.pi * 0.5, np.pi]))

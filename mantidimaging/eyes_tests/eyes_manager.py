@@ -5,6 +5,7 @@ import inspect
 import os
 from tempfile import mkdtemp
 import time
+from unittest import mock
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QWidget, QApplication
@@ -65,6 +66,7 @@ class EyesManager:
 
     def start_imaging(self):
         self.imaging = MainWindowView(open_dialogs=False)
+        self.imaging.ask_to_use_closest_to_180 = mock.Mock(return_value=False)
         self.imaging.show()
         QApplication.processEvents()
 

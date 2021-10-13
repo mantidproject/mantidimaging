@@ -12,6 +12,7 @@ import numpy as np
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog  # pragma: no cover
@@ -35,15 +36,16 @@ BEFORE_TITLE_MAP = {True: "Before", False: "After"}
 TOMO_ENTRY = "tomo_entry"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
+ROTATION_ANGLE_PATH = "sample/rotation_angle"
 
 
-def _missing_data_message(data_name: str) -> str:
+def _missing_data_message(data_string: str) -> str:
     """
     Creates a message for logging when certain data is missing in the NeXus file.
-    :param data_name: The name of the missing data.
+    :param data_string: The name of the missing data.
     :return: A string telling the user that the data is missing.
     """
-    return f"The NeXus file does not contain the required {data_name} data."
+    return f"The NeXus file does not contain the {data_string} data."
 
 
 class NexusLoadPresenter:
@@ -63,6 +65,7 @@ class NexusLoadPresenter:
         self.flat_before_array = None
         self.flat_after_array = None
         self.dark_after_array = None
+        self.projection_angles = None
 
     def notify(self, n: Notification):
         try:
@@ -82,13 +85,21 @@ class NexusLoadPresenter:
                 if self.tomo_entry is None:
                     return
 
-                self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 1)
+                self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 2)
                 if self.data is None:
                     return
 
                 self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
                 if self.image_key_dataset is None:
                     return
+
+                rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+                if rotation_angles is not None:
+                    if "units" not in rotation_angles.attrs.keys():
+                        logger.warning("No unit information found for rotation angles. Will infer from array values.")
+                        self._read_rotation_angles(rotation_angles, np.abs(rotation_angles).max() > 2 * np.pi)
+                    else:
+                        self._read_rotation_angles(rotation_angles, "deg" in rotation_angles.attrs["units"])
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
@@ -98,13 +109,30 @@ class NexusLoadPresenter:
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
+    def _read_rotation_angles(self, rotation_angles: h5py.Dataset, degrees: bool):
+        """
+        Reads the rotation angles array for the projections alone and coverts them to radians if needed.
+        :param rotation_angles: The rotation angle information for all the images.
+        :param degrees: Whether the data is in degrees or not. If this information isn't included in the file then a
+            guess was made.
+        """
+        assert self.image_key_dataset is not None
+        self.projection_angles = rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)]
+        if degrees:
+            self.projection_angles = np.radians(self.projection_angles)
+
     def _missing_data_error(self, field: str):
         """
         Create a missing data message and display it on the view.
         :param field: The name of the field that couldn't be found in the NeXus file.
         """
-        error_msg = _missing_data_message(field)
-        logger.error(error_msg)
+        if "rotation_angle" in field:
+            error_msg = _missing_data_message(field)
+            logger.warning(error_msg)
+        else:
+            error_msg = _missing_data_message("required " + field)
+            logger.error(error_msg)
+
         self.view.show_data_error(error_msg)
 
     def _look_for_tomo_data_and_update_view(self, field: str,
@@ -214,16 +242,34 @@ class NexusLoadPresenter:
         Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
-        assert self.sample_array is not None
-        self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
-                                              step_widget.value()]
-        sample_images = self._create_images(self.sample_array, "Projections")
-        sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
+        sample_images = self._create_sample_images()
         return Dataset(sample=sample_images,
                        flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before"),
                        flat_after=self._create_images_if_required(self.flat_after_array, "Flat After"),
                        dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before"),
                        dark_after=self._create_images_if_required(self.dark_after_array, "Dark After")), self.title
+
+    def _create_sample_images(self):
+        """
+        Creates the sample Images object.
+        :return: An Images object containing projections. If given, projection angles, pixel size, and 180deg are also
+            set.
+        """
+        assert self.sample_array is not None
+
+        # Create sample array and Images object
+        self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
+                                              step_widget.value()]
+        sample_images = self._create_images(self.sample_array, "Projections")
+
+        # Set attributes
+        sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
+        if self.projection_angles is not None:
+            sample_images.set_projection_angles(
+                ProjectionAngles(self.projection_angles[self.view.start_widget.value():self.view.stop_widget.value(
+                ):self.view.step_widget.value()]))
+
+        return sample_images
 
     def _create_images(self, data_array: np.ndarray, name: str) -> Images:
         """

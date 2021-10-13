@@ -140,6 +140,11 @@
            </item>
            <item>
             <property name="text">
+             <string>Rotation Angles</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Data</string>
             </property>
             <property name="text">

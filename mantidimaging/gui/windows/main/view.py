@@ -6,6 +6,7 @@ from logging import getLogger
 from typing import Optional
 from uuid import UUID
 
+import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, QTreeView
@@ -239,9 +240,9 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        _180_dataset = self.presenter.add_180_deg_to_sample(stack_name=stack_to_add_180_deg_to,
-                                                            _180_deg_file=selected_file)
-        self.create_new_stack(_180_dataset, self.presenter.create_stack_name(selected_file))
+        _180_images = self.presenter.add_180_deg_to_sample(stack_name=stack_to_add_180_deg_to,
+                                                           _180_deg_file=selected_file)
+        self.create_new_180_stack(_180_images, self.presenter.create_stack_name(selected_file))
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
@@ -325,6 +326,9 @@ class MainWindowView(BaseMainWindowView):
 
     def create_new_stack(self, images: Images, title: str):
         self.presenter.create_new_stack(images, title)
+
+    def create_new_180_stack(self, images: Images, title: str):
+        self.presenter.create_new_180_stack(images, title)
 
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
@@ -421,3 +425,15 @@ class MainWindowView(BaseMainWindowView):
             else:
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
                 return
+
+    def ask_to_use_closest_to_180(self, diff_rad: float):
+        """
+        Asks the user if they want to use the projection that is closest to 180 degrees as the 180deg.
+        :param diff_rad: The difference from the closest projection to 180 in radians.
+        :return: True if the answer wants to use the closest projection, False otherwise.
+        """
+        diff_deg = round(np.rad2deg(diff_rad), 2)
+        return QMessageBox.Yes == QMessageBox.question(
+            self, "180 Projection",
+            f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
+            f"Use anyway?")

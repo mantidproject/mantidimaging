@@ -257,7 +257,7 @@ class MainWindowModelTest(unittest.TestCase):
         stack_mock = mock.MagicMock()
         self.model.get_stack_by_name = stack_mock
 
-        _180_stack = self.model.add_180_deg_to_stack(stack_name=stack_name, _180_deg_file=_180_file).sample
+        _180_stack = self.model.add_180_deg_to_stack(stack_name=stack_name, _180_deg_file=_180_file)
 
         load.assert_called_with(file_names=[_180_file])
         stack_mock.assert_called_with(stack_name)

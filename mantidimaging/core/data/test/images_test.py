@@ -12,7 +12,7 @@ from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, gene
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class ImagesTest(unittest.TestCase):
@@ -142,17 +142,6 @@ class ImagesTest(unittest.TestCase):
         images._is_sinograms = True
         self.assertEqual(images.projection(0).shape, (10, 350))
         self.assertEqual(images.sino(0).shape, (100, 350))
-
-    def test_proj180deg(self):
-        images = generate_images((10, 100, 350))
-        # expected without having a specific 180 deg projection
-        self.assertIsNone(images._proj180deg)
-        expected_projection = images.projection(images.num_projections // 2)
-
-        # simulate a pre-loaded one
-        np.array_equal(images.proj180deg.data, expected_projection)
-        images._proj180deg = generate_images((1, 100, 350))
-        assert_not_equals(images.proj180deg.data, expected_projection)
 
     def test_clear_proj180deg(self):
         images = generate_images((10, 100, 350))

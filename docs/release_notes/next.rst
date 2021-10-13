@@ -8,6 +8,7 @@ New Features
 
 - #1044 : Command line argument to load a dataset
 - #1023 : Switch from Sarepy to Algotom
+- #1049 : NeXus Loader: 180deg images
 
 Fixes
 -----
