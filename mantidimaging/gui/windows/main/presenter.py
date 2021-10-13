@@ -103,6 +103,7 @@ class MainWindowPresenter(BasePresenter):
         if task.was_successful():
             title = task.kwargs['parameters'].name
             self.create_new_stack(task.result, title)
+            self.add_stack_to_tree_view(task.result, title)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -234,3 +235,6 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
+
+    def add_stack_to_tree_view(self, result, title):
+        pass
