@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -35,8 +35,14 @@ class Notification(Enum):
     NEXUS_LOAD = auto()
 
 
-def _create_child_tree_item(parent: QTreeWidgetItem, name: str):
-    child = QTreeWidgetItem(parent)
+class QTreeDatasetWidgetItem(QTreeWidgetItem):
+    def __init__(self, parent: QTreeWidget, uuid: UUID):
+        self.uuid = uuid
+        super().__init__(parent)
+
+
+def _create_child_tree_item(parent: QTreeDatasetWidgetItem, uuid: UUID, name: str):
+    child = QTreeDatasetWidgetItem(parent, uuid)
     child.setText(0, name)
     parent.addChild(child)
 
@@ -69,6 +75,7 @@ class MainWindowPresenter(BasePresenter):
             getLogger(__name__).exception("Notification handler failed")
 
     def _do_remove_stack(self, uuid: UUID):
+        self.remove_item_from_tree_view(uuid)
         self.model.do_remove_stack(uuid)
         self.view.active_stacks_changed.emit()
 
@@ -120,11 +127,12 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _add_stack(self, images: Images, filename: str, sample_dock):
+    def _add_stack(self, images: Images, filename: str, sample_dock) -> UUID:
         name = self.model.create_name(os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.model.add_stack(stack_visualiser)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
+        return stack_visualiser.uuid
 
     def create_new_180_stack(self, container: Images, title: str):
         title = self.model.create_name(title)
@@ -158,36 +166,36 @@ class MainWindowPresenter(BasePresenter):
         if len(current_stack_visualisers) > 1:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
-        dataset_tree_item = QTreeWidgetItem(self.view.dataset_tree_widget)
+        dataset_tree_item = QTreeDatasetWidgetItem(self.view.dataset_tree_widget, sample_stack_vis.uuid)
         dataset_tree_item.setText(0, title)
 
         if isinstance(container, Dataset):
             if container.flat_before and container.flat_before.filenames:
-                self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, "Flat Before")
+                uuid = self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, uuid, "Flat Before")
             if container.flat_after and container.flat_after.filenames:
-                self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, "Flat After")
+                uuid = self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, uuid, "Flat After")
             if container.dark_before and container.dark_before.filenames:
-                self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, "Dark Before")
+                uuid = self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, uuid, "Dark Before")
             if container.dark_after and container.dark_after.filenames:
-                self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, "Dark After")
+                uuid = self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, uuid, "Dark After")
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:  # type: ignore
-                self._add_stack(
+                uuid = self._add_stack(
                     container.sample.proj180deg,  # type: ignore
                     container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, "180")
+                _create_child_tree_item(dataset_tree_item, uuid, "180")
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.sample.proj180deg = Images(
                         np.reshape(closest_projection, (1, ) + closest_projection.shape))
-                    self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
-                    _create_child_tree_item(dataset_tree_item, "180")
+                    uuid = self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
+                    _create_child_tree_item(dataset_tree_item, uuid, "180")
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -283,3 +291,19 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
+
+    def remove_item_from_tree_view(self, uuid_remove: UUID):
+        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
+
+        for i in range(top_level_item_count):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.uuid == uuid_remove:
+                self.view.dataset_tree_widget.takeTopLevelItem(top_level_item)
+                return
+
+            child_count = top_level_item.childCount()
+            for j in range(child_count):
+                child_item = top_level_item.child(j)
+                if child_item.uuid == uuid_remove:
+                    top_level_item.takeChild(j)
+                    return
