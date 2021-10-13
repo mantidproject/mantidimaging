@@ -9,7 +9,8 @@ from uuid import UUID
 import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, QTreeView
+from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
+    QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
@@ -111,10 +112,10 @@ class MainWindowView(BaseMainWindowView):
         if args.recon():
             self.show_recon_window()
 
-        self.dataset_tree_view = QTreeView()
+        self.dataset_tree_widget = QTreeWidget()
 
         self.splitter = QSplitter(Qt.Horizontal, self)
-        self.splitter.addWidget(self.dataset_tree_view)
+        self.splitter.addWidget(self.dataset_tree_widget)
 
         self.setCentralWidget(self.splitter)
 
@@ -437,3 +438,6 @@ class MainWindowView(BaseMainWindowView):
             self, "180 Projection",
             f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
             f"Use anyway?")
+
+    def add_item_to_tree_view(self, item: QTreeWidgetItem):
+        self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)

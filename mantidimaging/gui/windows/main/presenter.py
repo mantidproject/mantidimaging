@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Union, Optional
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -33,6 +33,12 @@ class Notification(Enum):
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
+
+
+def _create_child_tree_item(parent: QTreeWidgetItem, name: str):
+    child = QTreeWidgetItem(parent)
+    child.setText(0, name)
+    parent.addChild(child)
 
 
 class MainWindowPresenter(BasePresenter):
@@ -105,7 +111,6 @@ class MainWindowPresenter(BasePresenter):
         if task.was_successful():
             title = task.kwargs['parameters'].name
             self.create_new_stack(task.result, title)
-            self.add_stack_to_tree_view(task.result, title)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -153,20 +158,28 @@ class MainWindowPresenter(BasePresenter):
         if len(current_stack_visualisers) > 1:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
+        dataset_tree_item = QTreeWidgetItem(self.view.dataset_tree_widget)
+        dataset_tree_item.setText(0, title)
+
         if isinstance(container, Dataset):
             if container.flat_before and container.flat_before.filenames:
                 self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, "Flat Before")
             if container.flat_after and container.flat_after.filenames:
                 self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, "Flat After")
             if container.dark_before and container.dark_before.filenames:
                 self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, "Dark Before")
             if container.dark_after and container.dark_after.filenames:
                 self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, "Dark After")
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:  # type: ignore
                 self._add_stack(
                     container.sample.proj180deg,  # type: ignore
                     container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, "180")
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
@@ -174,6 +187,7 @@ class MainWindowPresenter(BasePresenter):
                     container.sample.proj180deg = Images(
                         np.reshape(closest_projection, (1, ) + closest_projection.shape))
                     self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
+                    _create_child_tree_item(dataset_tree_item, "180")
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -184,6 +198,7 @@ class MainWindowPresenter(BasePresenter):
                 tab_bar.setCurrentIndex(last_stack_pos)
 
         self.view.active_stacks_changed.emit()
+        self.view.add_item_to_tree_view(dataset_tree_item)
 
         return sample_stack_vis
 
@@ -268,6 +283,3 @@ class MainWindowPresenter(BasePresenter):
 
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
-
-    def add_stack_to_tree_view(self, result, title):
-        pass
