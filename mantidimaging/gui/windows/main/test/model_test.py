@@ -118,7 +118,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.pixel_size = 101
         progress_mock = mock.Mock()
 
-        self.model.do_load_stack(lp, progress_mock)
+        self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_called_once_with(sample_mock, lp.dtype, progress_mock)
         load_log_mock.assert_not_called()
@@ -134,7 +134,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.pixel_size = 101
         progress_mock = mock.Mock()
 
-        self.model.do_load_stack(lp, progress_mock)
+        self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_called_once_with(sample_mock, lp.dtype, progress_mock)
         load_log_mock.assert_called_once_with(sample_mock.log_file)
@@ -155,7 +155,7 @@ class MainWindowModelTest(unittest.TestCase):
         lp.flat_after = flat_after_mock
         progress_mock = mock.Mock()
 
-        self.model.do_load_stack(lp, progress_mock)
+        self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
             mock.call(sample_mock, lp.dtype, progress_mock),
@@ -193,7 +193,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         progress_mock = mock.Mock()
 
-        self.model.do_load_stack(lp, progress_mock)
+        self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
             mock.call(sample_mock, lp.dtype, progress_mock),
@@ -303,6 +303,6 @@ class MainWindowModelTest(unittest.TestCase):
         file_path = "file_path"
         progress = mock.Mock()
 
-        self.model.load_stack(file_path, progress)
+        self.model.load_images(file_path, progress)
 
         loader.load_stack.assert_called_once_with(file_path, progress)

@@ -61,7 +61,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.load_dataset()
 
-        start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_stack,
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_dataset,
                                                  self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
@@ -70,7 +70,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.load_image_stack(file_path)
 
-        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_stack,
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_images,
                                                  self.presenter._on_stack_load_done, {'file_path': file_path})
 
     def test_add_stack(self):
