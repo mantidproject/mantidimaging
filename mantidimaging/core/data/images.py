@@ -3,6 +3,7 @@
 
 import datetime
 import json
+import uuid
 from copy import deepcopy
 from typing import List, Optional, Any, Dict, Union, TextIO
 
@@ -35,6 +36,7 @@ class Images:
 
         self._data = data
         self.indices = indices
+        self.uu_id = uuid.UUID()
 
         self._filenames = filenames
 
