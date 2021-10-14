@@ -36,7 +36,7 @@ class Images:
 
         self._data = data
         self.indices = indices
-        self.uu_id = uuid.UUID()
+        self.uu_id = uuid.uuid1()
 
         self._filenames = filenames
 

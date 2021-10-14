@@ -14,4 +14,4 @@ class Dataset:
     flat_after: Optional[Images] = None
     dark_before: Optional[Images] = None
     dark_after: Optional[Images] = None
-    uu_id: Optional[uuid.UUID] = uuid.UUID()
+    uu_id: Optional[uuid.UUID] = uuid.uuid1()
