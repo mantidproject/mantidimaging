@@ -11,7 +11,7 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 class WelcomeScreenView(BaseDialogView):
     def __init__(self, parent, presenter):
         super(WelcomeScreenView, self).__init__(parent, "gui/ui/welcome_screen_dialog.ui")
-        base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+        base_path = finder.ROOT_PATH
 
         bg_image = os.path.join(base_path, "gui/ui/images/welcome_screen_background.png")
         self.setStyleSheet("#WelcomeScreenDialog {"

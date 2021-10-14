@@ -43,7 +43,7 @@ class BlockQtSignals(object):
 
 
 def compile_ui(ui_file, qt_obj=None):
-    base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+    base_path = finder.ROOT_PATH
     return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
 
 
