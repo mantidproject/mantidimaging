@@ -303,7 +303,7 @@ class MainWindowPresenter(BasePresenter):
         self.add_log_to_sample(stack_name, log_file)
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
-        self.model.update_images(uuid, images)
+        self.model.set_images_by_uuid(uuid, images)
 
     def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
         return self.model.add_180_deg_to_dataset(stack_name, _180_deg_file)

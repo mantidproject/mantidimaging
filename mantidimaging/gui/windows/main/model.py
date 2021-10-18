@@ -95,32 +95,17 @@ class MainWindowModel(object):
 
         return name
 
-    def update_images(self, images_uuid: uuid.UUID, new_images: Images):
+    def set_images_by_uuid(self, images_uuid: uuid.UUID, new_images: Images):
         """
         Updates the images of an existing dataset/images object.
         :param images_uuid: The id of the image to update.
         :param new_images: The new images data.
         """
-        for _, dataset in self.datasets:
-            if dataset.sample.uu_id == images_uuid:
-                dataset.sample = new_images
-                return
-            if isinstance(dataset.flat_before, Dataset) and dataset.flat_before.uu_id == images_uuid:
-                dataset.flat_before = new_images
-                return
-            if isinstance(dataset.flat_after, Dataset) and dataset.flat_after.uu_id == images_uuid:
-                dataset.flat_after = new_images
-                return
-            if isinstance(dataset.dark_before, Dataset) and dataset.dark_before.uu_id == images_uuid:
-                dataset.dark_before = new_images
-                return
-            if isinstance(dataset.dark_after, Dataset) and dataset.dark_after.uu_id == images_uuid:
-                dataset.dark_after = new_images
-                return
-
         for id, images in self.images:
             if id == images_uuid:
                 images = new_images
+                self.pre
+                # todo - update stack signal
                 return
         # todo: what happens if you get here?
 
@@ -150,17 +135,6 @@ class MainWindowModel(object):
         images.set_projection_angles(proj_angles)
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
-        for _, dataset in self.datasets:
-            if dataset.sample.uu_id == images_uuid:
-                return dataset.sample
-            if isinstance(dataset.flat_before, Dataset) and dataset.flat_before.uu_id == images_uuid:
-                return dataset.flat_before
-            if isinstance(dataset.flat_after, Dataset) and dataset.flat_after.uu_id == images_uuid:
-                return dataset.flat_after
-            if isinstance(dataset.dark_before, Dataset) and dataset.dark_before.uu_id == images_uuid:
-                return dataset.dark_before
-            if isinstance(dataset.dark_after, Dataset) and dataset.dark_after.uu_id == images_uuid:
-                return dataset.dark_after
         for id, images in self.images:
             if id == images_uuid:
                 return images
