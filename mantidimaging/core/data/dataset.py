@@ -4,14 +4,11 @@ import uuid
 from dataclasses import dataclass
 from typing import Optional
 
-from mantidimaging.core.data import Images
-
 
 @dataclass
 class Dataset:
-    sample: Images
-    flat_before: Optional[Images] = None
-    flat_after: Optional[Images] = None
-    dark_before: Optional[Images] = None
-    dark_after: Optional[Images] = None
-    uu_id: Optional[uuid.UUID] = uuid.uuid1()
+    sample: uuid.UUID
+    flat_before: Optional[uuid.UUID] = None
+    flat_after: Optional[uuid.UUID] = None
+    dark_before: Optional[uuid.UUID] = None
+    dark_after: Optional[uuid.UUID] = None
