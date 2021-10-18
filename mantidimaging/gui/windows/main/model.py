@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 import uuid
-from collections import namedtuple
 from logging import getLogger
 from typing import Dict, List
 
