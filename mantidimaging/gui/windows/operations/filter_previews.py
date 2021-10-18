@@ -16,6 +16,7 @@ from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
+from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 LOG = getLogger(__name__)
 
@@ -31,7 +32,6 @@ OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = Coord(4, 0)
 label_coords = Coord(3, 1)
-graveyard = []
 
 
 def _data_valid_for_histogram(data):
@@ -63,10 +63,14 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_before, self.image_before_vb, self.image_before_hist = self.image_in_vb(name="before")
-        self.image_after, self.image_after_vb, self.image_after_hist = self.image_in_vb(name="after")
-        self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
-            name="difference")
+        self.imageview_before = MIMiniImageView(name="before")
+        self.imageview_after = MIMiniImageView(name="after")
+        self.imageview_difference = MIMiniImageView(name="difference")
+
+        self.image_before, self.image_before_vb, self.image_before_hist = self.imageview_before.get_parts()
+        self.image_after, self.image_after_vb, self.image_after_hist = self.imageview_after.get_parts()
+        self.image_difference, self.image_difference_vb, self.image_difference_hist = \
+            self.imageview_difference.get_parts()
 
         self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
 
@@ -79,13 +83,11 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_vb.addItem(self.negative_values_overlay)
 
         # Ensure images resize equally
-        self.image_layout: GraphicsLayout = self.addLayout(colspan=6)
-        self.image_layout.addItem(self.image_before_vb, 0, 0)
-        self.image_layout.addItem(self.image_before_hist, 0, 1)
-        self.image_layout.addItem(self.image_after_vb, 0, 2)
-        self.image_layout.addItem(self.image_after_hist, 0, 3)
-        self.image_layout.addItem(self.image_difference_vb, 0, 4)
-        self.image_layout.addItem(self.image_difference_hist, 0, 5)
+        self.image_layout: GraphicsLayout = self.addLayout(colspan=3)
+
+        self.image_layout.addItem(self.imageview_before)
+        self.image_layout.addItem(self.imageview_after)
+        self.image_layout.addItem(self.imageview_difference)
         self.nextRow()
 
         before_details = self.addLabel("")
@@ -116,14 +118,6 @@ class FilterPreviews(GraphicsLayoutWidget):
             size = ev.size()
             self.histogram.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT) * 0.25)
         super().resizeEvent(ev)
-
-    def image_in_vb(self, name=None):
-        im = ImageItem()
-        vb = ViewBox(invertY=True, lockAspect=True, name=name)
-        vb.addItem(im)
-        hist = HistogramLUTItem(im)
-        graveyard.append(vb)
-        return im, vb, hist
 
     def clear_items(self, clear_before: bool = True):
         if clear_before:
