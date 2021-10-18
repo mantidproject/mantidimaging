@@ -2,13 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 import traceback
+import uuid
+from collections import namedtuple
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union, Optional
+from typing import TYPE_CHECKING, Union, Optional, Dict
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QTreeWidget
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -24,6 +26,7 @@ from .model import MainWindowModel
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
+StackId = namedtuple('StackId', ['id', 'name'])
 logger = getLogger(__name__)
 
 
@@ -36,13 +39,13 @@ class Notification(Enum):
 
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent: QTreeWidget, uuid: UUID):
-        self.uuid = uuid
+    def __init__(self, parent: QTreeWidget, dataset_id: UUID):
+        self.uuid = dataset_id
         super().__init__(parent)
 
 
-def _create_child_tree_item(parent: QTreeDatasetWidgetItem, uuid: UUID, name: str):
-    child = QTreeDatasetWidgetItem(parent, uuid)
+def _create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: UUID, name: str):
+    child = QTreeDatasetWidgetItem(parent, dataset_id)
     child.setText(0, name)
     parent.addChild(child)
 
@@ -56,6 +59,7 @@ class MainWindowPresenter(BasePresenter):
     def __init__(self, view):
         super(MainWindowPresenter, self).__init__(view)
         self.model = MainWindowModel()
+        self.stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 
     def notify(self, signal, **baggage):
         try:
@@ -74,13 +78,28 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def _do_remove_stack(self, uuid: UUID):
-        self.remove_item_from_tree_view(uuid)
-        self.model.do_remove_stack(uuid)
-        self.view.active_stacks_changed.emit()
+    def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
+        """
+        :param stack_uuid: The unique ID of the stack that will be retrieved.
+        :return The QDockWidget that contains the Stack Visualiser.
+                For direct access to the Stack Visualiser widget use
+                get_stack_visualiser
+        """
+        return self.active_stacks[stack_uuid]  # type:ignore
+
+    def get_stack_by_name(self, search_name: str) -> Optional[QDockWidget]:
+        for stack_id in self.stack_list:
+            if stack_id.name == search_name:
+                return self.get_stack(stack_id.id)
+        return None
+
+    def _do_remove_stack(self, stack_uuid: UUID):
+        self.remove_item_from_tree_view(stack_uuid)
+        del self.stacks[stack_uuid]  # TODO: only deletion from active stacks but why?
+        self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
 
     def _do_rename(self, current_name: str, new_name: str):
-        dock = self.model.get_stack_by_name(current_name)
+        dock = self.get_stack_by_name(current_name)
         if dock:
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
@@ -94,14 +113,14 @@ class MainWindowPresenter(BasePresenter):
         if par.sample.input_path == "":
             raise ValueError("No sample path provided")
 
-        start_async_task_view(self.view, self.model.do_load_stack, self._on_dataset_load_done, {'parameters': par})
+        start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
     def load_nexus_file(self):
         dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
         self.create_new_stack(dataset, title)
 
     def load_image_stack(self, file_path: str):
-        start_async_task_view(self.view, self.model.load_stack, self._on_stack_load_done, {'file_path': file_path})
+        start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
 
     def _on_stack_load_done(self, task):
         log = getLogger(__name__)
@@ -127,19 +146,16 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _add_stack(self, images: Images, filename: str, sample_dock) -> UUID:
+    def _add_stack(self, images: Images, filename: str, sample_dock):
         name = self.model.create_name(os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
-        self.model.add_stack(stack_visualiser)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
-        return stack_visualiser.uuid
 
     def create_new_180_stack(self, container: Images, title: str):
         title = self.model.create_name(title)
         _180_stack_vis = self.view.create_stack_window(container, title)
-        self.model.add_stack(_180_stack_vis)
 
-        current_stack_visualisers = self.get_all_stack_visualisers()
+        current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 1:
             self.view.tabifyDockWidget(current_stack_visualisers[0], _180_stack_vis)
 
@@ -160,9 +176,8 @@ class MainWindowPresenter(BasePresenter):
 
         sample = container if isinstance(container, Images) else container.sample
         sample_stack_vis = self.view.create_stack_window(sample, title)
-        self.model.add_stack(sample_stack_vis)
 
-        current_stack_visualisers = self.get_all_stack_visualisers()
+        current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 1:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
@@ -171,31 +186,31 @@ class MainWindowPresenter(BasePresenter):
 
         if isinstance(container, Dataset):
             if container.flat_before and container.flat_before.filenames:
-                uuid = self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, uuid, "Flat Before")
+                self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, container.flat_before.uu_id, "Flat Before")
             if container.flat_after and container.flat_after.filenames:
-                uuid = self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, uuid, "Flat After")
+                self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, container.flat_before.uu_id, "Flat After")
             if container.dark_before and container.dark_before.filenames:
-                uuid = self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, uuid, "Dark Before")
+                self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, container.dark_before.uu_id, "Dark Before")
             if container.dark_after and container.dark_after.filenames:
-                uuid = self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, uuid, "Dark After")
+                self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
+                _create_child_tree_item(dataset_tree_item, container.dark_after.uu_id, "Dark After")
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:  # type: ignore
-                uuid = self._add_stack(
+                self._add_stack(
                     container.sample.proj180deg,  # type: ignore
                     container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
-                _create_child_tree_item(dataset_tree_item, uuid, "180")
+                _create_child_tree_item(dataset_tree_item, container.sample.proj180deg.uu_id, "180")
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.sample.proj180deg = Images(
                         np.reshape(closest_projection, (1, ) + closest_projection.shape))
-                    uuid = self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
-                    _create_child_tree_item(dataset_tree_item, uuid, "180")
+                    self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
+                    _create_child_tree_item(dataset_tree_item, container.sample.proj180deg.uu_id, "180")
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -219,7 +234,7 @@ class MainWindowPresenter(BasePresenter):
             'overwrite': self.view.save_dialogue.overwrite(),
             'pixel_depth': self.view.save_dialogue.pixel_depth()
         }
-        start_async_task_view(self.view, self.model.do_saving, self._on_save_done, kwargs)
+        start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task):
         log = getLogger(__name__)
@@ -228,28 +243,34 @@ class MainWindowPresenter(BasePresenter):
             self._handle_task_error(self.SAVE_ERROR_STRING, log, task)
 
     @property
-    def stack_list(self):
-        return self.model.stack_list
+    def stack_list(self):  # todo: rename?
+        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
+        return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def stack_names(self):
-        return self.model._stack_names
+    def stack_names(self):  # todo: rename?
+        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
+        return sorted(stacks, key=lambda x: x.name)
 
     def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
-        return self.model.get_stack_visualiser(stack_uuid)
+        return self.stacks[stack_uuid]
 
-    def get_all_stack_visualisers(self):
-        return self.model.get_all_stack_visualisers()
+    @property
+    def active_stacks(self):
+        return {stack_id: stack for (stack_id, stack) in self.stacks if stack.isVisible()}
 
     def get_all_stack_visualisers_with_180deg_proj(self):
-        return self.model.get_all_stack_visualisers_with_180deg_proj()
+        return [
+            stack for stack in self.stacks.values()  # type:ignore
+            if stack.presenter.images.has_proj180deg()
+        ]
 
     def get_stack_history(self, stack_uuid: UUID):
         return self.model.get_stack_history(stack_uuid)
 
     @property
     def have_active_stacks(self):
-        return self.model.have_active_stacks
+        return len(self.active_stacks) > 0
 
     def update_stack_with_images(self, images: Images):
         sv = self.get_stack_with_images(images)
@@ -265,8 +286,8 @@ class MainWindowPresenter(BasePresenter):
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_images_in_stack(uuid, images)
 
-    def add_180_deg_to_sample(self, stack_name: str, _180_deg_file: str):
-        return self.model.add_180_deg_to_stack(stack_name, _180_deg_file)
+    def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
+        return self.model.add_180_deg_to_dataset(stack_name, _180_deg_file)
 
     def create_stack_name(self, filename: str):
         return self.model.create_name(os.path.basename(filename))

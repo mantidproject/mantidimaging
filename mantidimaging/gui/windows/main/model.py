@@ -6,15 +6,13 @@ from collections import namedtuple
 from logging import getLogger
 from typing import Any, Dict, List, Optional
 
-from PyQt5.QtWidgets import QDockWidget
-
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
-StackId = namedtuple('StackId', ['id', 'name'])
+StackId = namedtuple('StackId', ['id', 'name'])  # todo: remove
 logger = getLogger(__name__)
 
 
@@ -22,9 +20,11 @@ class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
 
-        self.active_stacks: Dict[uuid.UUID, QDockWidget] = {}
+        self.datasets: Dict[uuid.UUID, Dataset] = {}
+        self.images: Dict[uuid.UUID, Images] = {}
+        self._stack_names = {}
 
-    def do_load_stack(self, parameters: LoadingParameters, progress):
+    def do_load_dataset(self, parameters: LoadingParameters, progress):
         ds = Dataset(loader.load_p(parameters.sample, parameters.dtype, progress))
         ds.sample._is_sinograms = parameters.sinograms
         ds.sample.pixel_size = parameters.pixel_size
@@ -49,22 +49,24 @@ class MainWindowModel(object):
         if parameters.proj_180deg:
             ds.sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
 
+        self.datasets[ds.uu_id] = ds
         return ds
 
-    @staticmethod
-    def load_stack(file_path: str, progress) -> Images:
-        return loader.load_stack(file_path, progress)
+    def load_images(self, file_path: str, progress) -> Images:
+        images = loader.load_stack(file_path, progress)
+        self.images[images.uu_id] = images.uu_id
+        return images
 
-    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
-        svp = self.get_stack_visualiser(stack_uuid).presenter
-        filenames = saver.save(svp.images,
+    def do_images_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
+        images = self.get_images_by_uuid(stack_uuid)
+        filenames = saver.save(images,
                                output_dir=output_dir,
                                name_prefix=name_prefix,
                                overwrite_all=overwrite,
                                out_format=image_format,
                                pixel_depth=pixel_depth,
                                progress=progress)
-        svp.images.filenames = filenames
+        images.filenames = filenames
         return True
 
     def create_name(self, filename):
@@ -84,29 +86,6 @@ class MainWindowModel(object):
 
         return name
 
-    @property
-    def stack_list(self) -> List[StackId]:
-        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
-        return sorted(stacks, key=lambda x: x.name)
-
-    @property
-    def _stack_names(self) -> List[str]:
-        return [stack.name for stack in self.stack_list]
-
-    def add_stack(self, stack_visualiser: StackVisualiserView):
-        stack_visualiser.uuid = uuid.uuid1()
-        self.active_stacks[stack_visualiser.uuid] = stack_visualiser
-        logger.debug(f"Active stacks: {self.active_stacks}")
-
-    def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
-        """
-        :param stack_uuid: The unique ID of the stack that will be retrieved.
-        :return The QDockWidget that contains the Stack Visualiser.
-                For direct access to the Stack Visualiser widget use
-                get_stack_visualiser
-        """
-        return self.active_stacks[stack_uuid]  # type:ignore
-
     def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
 
         stack = self.active_stacks[stack_uuid]
@@ -117,12 +96,6 @@ class MainWindowModel(object):
 
             # Free previous images stack before reassignment
             stack.presenter.images = images
-
-    def get_stack_by_name(self, search_name: str) -> Optional[QDockWidget]:
-        for stack_id in self.stack_list:
-            if stack_id.name == search_name:
-                return self.get_stack(stack_id.id)
-        return None
 
     def get_stack_by_images(self, images: Images) -> StackVisualiserView:
         for _, sv in self.active_stacks.items():
@@ -150,18 +123,6 @@ class MainWindowModel(object):
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 
-    def do_remove_stack(self, stack_uuid: uuid.UUID) -> None:
-        """
-        Removes the stack from the active_stacks dictionary.
-
-        :param stack_uuid: The unique ID of the stack that will be removed.
-        """
-        del self.active_stacks[stack_uuid]
-
-    @property
-    def have_active_stacks(self) -> bool:
-        return len(self.active_stacks) > 0
-
     def add_log_to_sample(self, stack_name: str, log_file: str):
         stack_dock = self.get_stack_by_name(stack_name)
         if stack_dock is None:
@@ -172,7 +133,7 @@ class MainWindowModel(object):
         log.raise_if_angle_missing(stack.presenter.images.filenames)
         stack.presenter.images.log_file = log
 
-    def add_180_deg_to_stack(self, stack_name, _180_deg_file):
+    def add_180_deg_to_dataset(self, stack_name, _180_deg_file):
         stack_dock = self.get_stack_by_name(stack_name)
         if stack_dock is None:
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
@@ -189,3 +150,6 @@ class MainWindowModel(object):
         stack: StackVisualiserView = stack_dock.widget()  # type: ignore
         images: Images = stack.presenter.images
         images.set_projection_angles(proj_angles)
+
+    def get_images_by_uuid(self):
+        pass
