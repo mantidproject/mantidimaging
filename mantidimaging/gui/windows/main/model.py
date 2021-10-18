@@ -24,31 +24,41 @@ class MainWindowModel(object):
         self._stack_names = {}
 
     def do_load_dataset(self, parameters: LoadingParameters, progress):
-        ds = Dataset(loader.load_p(parameters.sample, parameters.dtype, progress))
-        ds.sample._is_sinograms = parameters.sinograms
-        ds.sample.pixel_size = parameters.pixel_size
+        sample_images = loader.load_p(parameters.sample, parameters.dtype, progress)
+        self.images[sample_images.uu_id] = sample_images
+        ds = Dataset(sample_images.uu_id)
+
+        sample_images._is_sinograms = parameters.sinograms
+        sample_images.pixel_size = parameters.pixel_size
 
         if parameters.sample.log_file:
-            ds.sample.log_file = loader.load_log(parameters.sample.log_file)
+            sample_images.log_file = loader.load_log(parameters.sample.log_file)
 
         if parameters.flat_before:
-            ds.flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
+            flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
+            self.images[flat_before.uu_id] = flat_before
+            ds.flat_before = flat_before.uu_id
             if parameters.flat_before.log_file:
-                ds.flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
+                flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
         if parameters.flat_after:
-            ds.flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
+            flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
+            self.images[flat_after.uu_id] = flat_after
             if parameters.flat_after.log_file:
-                ds.flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
+                flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
 
         if parameters.dark_before:
-            ds.dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
+            dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
+            self.images[dark_before.uu_id] = dark_before
+            ds.dark_before = dark_before.uu_id
         if parameters.dark_after:
-            ds.dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
+            dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
+            self.images[dark_after.uu_id] = dark_after
+            ds.dark_after = dark_after.uu_id
 
         if parameters.proj_180deg:
-            ds.sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
+            sample_images.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress) # todo: add to dataset?
 
-        self.datasets[ds.uu_id] = ds
+        self.datasets.append(ds)
         return ds
 
     def load_images(self, file_path: str, progress) -> Images:
