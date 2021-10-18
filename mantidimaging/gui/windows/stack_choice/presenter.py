@@ -68,7 +68,7 @@ class StackChoicePresenter(StackChoicePresenterMixin):
             self.operations_presenter.original_images_stack = None
 
     def do_reapply_original_data(self):
-        self.operations_presenter.main_window.presenter.model.set_images_in_stack(self.stack_uuid, self.stack)
+        self.operations_presenter.main_window.presenter.set_images_in_stack(self.stack_uuid, self.stack)
         self._clean_up_original_images_stack()
         self.view.choice_made = True
         self.close_view()

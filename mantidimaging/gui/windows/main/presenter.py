@@ -6,7 +6,7 @@ import uuid
 from collections import namedtuple
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Union, Optional, Dict
+from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any
 from uuid import UUID
 
 import numpy as np
@@ -93,7 +93,18 @@ class MainWindowPresenter(BasePresenter):
                 return self.get_stack(stack_id.id)
         return None
 
+    def add_log_to_sample(self, stack_name: str, log_file: str):
+        stack_dock = self.get_stack_by_name(stack_name)
+        if stack_dock is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+
+        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
+        log = self.model.load_log(log_file)
+        log.raise_if_angle_missing(stack.presenter.images.filenames)
+        stack.presenter.images.log_file = log  # todo: update model here rather than images within stack
+
     def _do_remove_stack(self, stack_uuid: UUID):
+        # todo - what is this method for?
         self.remove_item_from_tree_view(stack_uuid)
         del self.stacks[stack_uuid]  # TODO: only deletion from active stacks but why?
         self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
@@ -116,7 +127,8 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
     def load_nexus_file(self):
-        dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
+        dataset, title = self.view.nexus_load_dialog.presenter.get_dataset(
+        )  # todo: add this to dataset dictionary in model
         self.create_new_stack(dataset, title)
 
     def load_image_stack(self, file_path: str):
@@ -150,6 +162,9 @@ class MainWindowPresenter(BasePresenter):
         name = self.model.create_name(os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
+
+    def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
+        return [stack for stack in self.active_stacks.values()]  # type:ignore
 
     def create_new_180_stack(self, container: Images, title: str):
         title = self.model.create_name(title)
@@ -253,7 +268,10 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
-        return self.stacks[stack_uuid]
+        return self.active_stacks[stack_uuid]
+
+    def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
+        return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 
     @property
     def active_stacks(self):
@@ -265,9 +283,6 @@ class MainWindowPresenter(BasePresenter):
             if stack.presenter.images.has_proj180deg()
         ]
 
-    def get_stack_history(self, stack_uuid: UUID):
-        return self.model.get_stack_history(stack_uuid)
-
     @property
     def have_active_stacks(self):
         return len(self.active_stacks) > 0
@@ -278,13 +293,17 @@ class MainWindowPresenter(BasePresenter):
             sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
     def get_stack_with_images(self, images: Images) -> StackVisualiserView:
-        return self.model.get_stack_by_images(images)
+        for _, sv in self.active_stacks.items():
+            if images is sv.presenter.images:
+                return sv
+        raise RuntimeError(f"Did not find stack {images} in active stacks! "
+                           f"Active stacks: {self.active_stacks.items()}")
 
     def add_log_to_sample(self, stack_name: str, log_file: str):
-        self.model.add_log_to_sample(stack_name, log_file)
+        self.add_log_to_sample(stack_name, log_file)
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
-        self.model.set_images_in_stack(uuid, images)
+        self.model.update_images(uuid, images)
 
     def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
         return self.model.add_180_deg_to_dataset(stack_name, _180_deg_file)

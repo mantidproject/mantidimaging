@@ -4,7 +4,7 @@ import os
 import uuid
 from collections import namedtuple
 from logging import getLogger
-from typing import Any, Dict, List, Optional
+from typing import Dict, List
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -12,7 +12,6 @@ from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
-StackId = namedtuple('StackId', ['id', 'name'])  # todo: remove
 logger = getLogger(__name__)
 
 
@@ -20,7 +19,7 @@ class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
 
-        self.datasets: Dict[uuid.UUID, Dataset] = {}
+        self.datasets: List[Dataset] = []
         self.images: Dict[uuid.UUID, Images] = {}
         self._stack_names = {}
 
@@ -86,52 +85,41 @@ class MainWindowModel(object):
 
         return name
 
-    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
-
-        stack = self.active_stacks[stack_uuid]
-
-        if not stack.presenter.images == images:
-            stack.image_view.clear()
-            stack.image_view.setImage(images.data)
-
-            # Free previous images stack before reassignment
-            stack.presenter.images = images
-
-    def get_stack_by_images(self, images: Images) -> StackVisualiserView:
-        for _, sv in self.active_stacks.items():
-            if images is sv.presenter.images:
-                return sv
-        raise RuntimeError(f"Did not find stack {images} in active stacks! "
-                           f"Active stacks: {self.active_stacks.items()}")
-
-    def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
+    def update_images(self, images_uuid: uuid.UUID, new_images: Images):
         """
-        :param stack_uuid: The unique ID of the stack that will be retrieved.
-        :return The Stack Visualiser widget that contains the data.
+        Updates the images of an existing dataset/images object.
+        :param images_uuid: The id of the image to update.
+        :param new_images: The new images data.
         """
-        return self.active_stacks[stack_uuid]  # type:ignore
+        for _, dataset in self.datasets:
+            if dataset.sample.uu_id == images_uuid:
+                dataset.sample = new_images
+                return
+            if isinstance(dataset.flat_before, Dataset) and dataset.flat_before.uu_id == images_uuid:
+                dataset.flat_before = new_images
+                return
+            if isinstance(dataset.flat_after, Dataset) and dataset.flat_after.uu_id == images_uuid:
+                dataset.flat_after = new_images
+                return
+            if isinstance(dataset.dark_before, Dataset) and dataset.dark_before.uu_id == images_uuid:
+                dataset.dark_before = new_images
+                return
+            if isinstance(dataset.dark_after, Dataset) and dataset.dark_after.uu_id == images_uuid:
+                dataset.dark_after = new_images
+                return
 
-    def get_all_stack_visualisers(self) -> List[StackVisualiserView]:
-        return [stack for stack in self.active_stacks.values()]  # type:ignore
+        for id, images in self.images:
+            if id == images_uuid:
+                images = new_images
+                return
+        # todo: what happens if you get here?
 
-    def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
-        return [
-            stack for stack in self.active_stacks.values()  # type:ignore
-            if stack.presenter.images.has_proj180deg()
-        ]
-
-    def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
-        return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
-
-    def add_log_to_sample(self, stack_name: str, log_file: str):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-
-        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
-        log = loader.load_log(log_file)
-        log.raise_if_angle_missing(stack.presenter.images.filenames)
-        stack.presenter.images.log_file = log
+        # if not stack.presenter.images == images:
+        #     stack.image_view.clear()
+        #     stack.image_view.setImage(images.data)
+        #
+        #     # Free previous images stack before reassignment
+        #     stack.presenter.images = images
 
     def add_180_deg_to_dataset(self, stack_name, _180_deg_file):
         stack_dock = self.get_stack_by_name(stack_name)
@@ -151,5 +139,22 @@ class MainWindowModel(object):
         images: Images = stack.presenter.images
         images.set_projection_angles(proj_angles)
 
-    def get_images_by_uuid(self):
-        pass
+    def get_images_by_uuid(self, images_uuid: uuid.UUID):
+        for _, dataset in self.datasets:
+            if dataset.sample.uu_id == images_uuid:
+                return dataset.sample
+            if isinstance(dataset.flat_before, Dataset) and dataset.flat_before.uu_id == images_uuid:
+                return dataset.flat_before
+            if isinstance(dataset.flat_after, Dataset) and dataset.flat_after.uu_id == images_uuid:
+                return dataset.flat_after
+            if isinstance(dataset.dark_before, Dataset) and dataset.dark_before.uu_id == images_uuid:
+                return dataset.dark_before
+            if isinstance(dataset.dark_after, Dataset) and dataset.dark_after.uu_id == images_uuid:
+                return dataset.dark_after
+        for id, images in self.images:
+            if id == images_uuid:
+                return images
+        # todo: what happens if you get here?
+
+    def load_log(self, log_file: str):
+        return loader.load_log(log_file)
