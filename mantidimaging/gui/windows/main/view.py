@@ -317,7 +317,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
 
     def get_all_stack_visualisers(self):
-        return self.presenter.get_all_stack_visualisers()
+        return self.presenter.get_active_stack_visualisers()
 
     def get_all_stack_visualisers_with_180deg_proj(self):
         return self.presenter.get_all_stack_visualisers_with_180deg_proj()
@@ -353,6 +353,7 @@ class MainWindowView(BaseMainWindowView):
 
         stack_vis.setFloating(floating)
 
+        self.active_stacks[stack.uu_id] = stack_vis
         return stack_vis
 
     def remove_stack(self, obj: StackVisualiserView):

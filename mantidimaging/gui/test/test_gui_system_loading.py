@@ -19,12 +19,12 @@ class TestGuiSystemLoading(GuiSystemBase):
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def _load_images(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
-        initial_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
+        initial_stacks = len(self.main_window.presenter.model.get_active_stack_visualisers())
 
         self.main_window.actionLoadImages.trigger()
 
         def test_func() -> bool:
-            current_stacks = len(self.main_window.presenter.model.get_all_stack_visualisers())
+            current_stacks = len(self.main_window.presenter.model.get_active_stack_visualisers())
             return (current_stacks - initial_stacks) >= 1
 
         self._wait_until(test_func, max_retry=600)
@@ -47,19 +47,19 @@ class TestGuiSystemLoading(GuiSystemBase):
     def test_load_180(self, mocked_select_file):
         path_180 = Path(LOAD_SAMPLE).parents[1] / "180deg" / "IMAT_Flower_180deg_000000.tif"
         mocked_select_file.return_value = path_180
-        self.assertEqual(len(self.main_window.presenter.get_all_stack_visualisers()), 0)
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
         self._load_images()
-        stacks = self.main_window.presenter.get_all_stack_visualisers()
+        stacks = self.main_window.presenter.get_active_stack_visualisers()
 
-        self.assertEqual(len(self.main_window.presenter.get_all_stack_visualisers()), 1)
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 1)
         self.assertFalse(stacks[0].presenter.images.has_proj180deg())
 
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
         self.main_window.actionLoad180deg.trigger()
 
-        self._wait_until(lambda: len(self.main_window.presenter.get_all_stack_visualisers()) == 2)
+        self._wait_until(lambda: len(self.main_window.presenter.get_active_stack_visualisers()) == 2)
 
-        stacks_after = self.main_window.presenter.get_all_stack_visualisers()
+        stacks_after = self.main_window.presenter.get_active_stack_visualisers()
         self.assertEqual(len(stacks_after), 2)
         self.assertIn(stacks[0], stacks_after)
         self.assertTrue(stacks[0].presenter.images.has_proj180deg())
