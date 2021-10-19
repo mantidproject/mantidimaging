@@ -12,3 +12,8 @@ class Dataset:
     flat_after: Optional[uuid.UUID] = None
     dark_before: Optional[uuid.UUID] = None
     dark_after: Optional[uuid.UUID] = None
+    _id: uuid.UUID = uuid.UUID()
+
+    @property
+    def id(self) -> uuid.UUID:
+        return self._id

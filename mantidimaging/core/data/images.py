@@ -36,7 +36,7 @@ class Images:
 
         self._data = data
         self.indices = indices
-        self.id = uuid.uuid1()
+        self._id = uuid.uuid1()
 
         self._filenames = filenames
 
@@ -75,6 +75,10 @@ class Images:
     def filenames(self, new_ones: List[str]):
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
+
+    @property
+    def id(self) -> uuid.UUID:
+        return self._id
 
     def load_metadata(self, f: TextIO):
         self.metadata = json.load(f)
