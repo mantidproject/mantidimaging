@@ -3,7 +3,7 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -14,6 +14,10 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 logger = getLogger(__name__)
 
 
+def _matching_dataset_attribute(dataset_attribute: Optional[uuid.UUID], images_id: uuid.UUID):
+    return isinstance(dataset_attribute, uuid.UUID) and dataset_attribute == images_id
+
+
 class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
@@ -21,6 +25,11 @@ class MainWindowModel(object):
         self.datasets: List[Dataset] = []
         self.images: Dict[uuid.UUID, Images] = {}
         self._stack_names = {}
+
+    def get_images_by_uuid(self, images_uuid: uuid.UUID):
+        if images_uuid in self.images:
+            return self.images[images_uuid]
+        return None
 
     def do_load_dataset(self, parameters: LoadingParameters, progress):
         sample_images = loader.load_p(parameters.sample, parameters.dtype, progress)
@@ -94,22 +103,15 @@ class MainWindowModel(object):
 
         return name
 
-    def set_images_by_uuid(self, images_uuid: uuid.UUID, new_images: Images):
+    def set_images_by_uuid(self, images_id: uuid.UUID, new_images: Images):
         """
         Updates the images of an existing dataset/images object.
-        :param images_uuid: The id of the image to update.
+        :param images_id: The id of the image to update.
         :param new_images: The new images data.
         """
-        if images_uuid in self.images:
-            self.images[images_uuid] = new_images
+        if images_id in self.images:
+            self.images[images_id] = new_images
         # todo: raise error for else case
-
-        # if not stack.presenter.images == images:
-        #     stack.image_view.clear()
-        #     stack.image_view.setImage(images.data)
-        #
-        #     # Free previous images stack before reassignment
-        #     stack.presenter.images = images
 
     def add_180_deg_to_dataset(self, stack_id, _180_deg_file):
         images = self.get_images_by_uuid(stack_id)
@@ -126,11 +128,6 @@ class MainWindowModel(object):
             raise RuntimeError(f"Failed to get stack with name {images_id}") # todo: change message
         images.set_projection_angles(proj_angles)
 
-    def get_images_by_uuid(self, images_uuid: uuid.UUID):
-        if images_uuid in self.images:
-            return self.images[images_uuid]
-        # todo: what happens if you get here?
-
     def load_log(self, log_file: str):
         return loader.load_log(log_file)
 
@@ -140,3 +137,20 @@ class MainWindowModel(object):
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
         # todo - send update here or do it from presenter?
+
+    def delete_images(self, images_id: uuid.UUID):
+        if images_id in self.images:
+            del self.images[images_id]
+            for dataset in self.datasets:
+                if _matching_dataset_attribute(dataset.sample, images_id):
+                    dataset.sample = None
+                if _matching_dataset_attribute(dataset.flat_before, images_id):
+                    dataset.flat_before = None
+                if _matching_dataset_attribute(dataset.flat_after, images_id):
+                    dataset.flat_after = None
+                if _matching_dataset_attribute(dataset.dark_before, images_id):
+                    dataset.dark_before = None
+                if _matching_dataset_attribute(dataset.flat_before, images_id):
+                    dataset.dark_before = None
+        # TODO - delete dataset implementation here
+        # TODO - rename method
