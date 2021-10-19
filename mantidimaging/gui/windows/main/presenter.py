@@ -70,7 +70,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.REMOVE_STACK:
                 self._do_remove_stack(**baggage)
             elif signal == Notification.RENAME_STACK:
-                self._do_rename(**baggage)
+                self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
 
@@ -93,23 +93,26 @@ class MainWindowPresenter(BasePresenter):
                 return self.get_stack(stack_id.id)
         return None
 
-    def add_log_to_sample(self, stack_name: str, log_file: str):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+    def get_stack_id_by_name(self, search_name: str) -> Optional[uuid.UUID]:
+        for stack_id in self.stack_list:
+            if stack_id.name == search_name:
+                return stack_id.id
+        return None
 
-        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
-        log = self.model.load_log(log_file)
-        log.raise_if_angle_missing(stack.presenter.images.filenames)
-        stack.presenter.images.log_file = log  # todo: update model here rather than images within stack
+    def add_log_to_sample(self, stack_name: str, log_file: str):
+        stack_id = self.get_stack_id_by_name(stack_name)
+        if stack_id is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+        self.model.add_log_to_sample(stack_id, log_file)
 
     def _do_remove_stack(self, stack_uuid: UUID):
         # todo - what is this method for?
         self.remove_item_from_tree_view(stack_uuid)
-        del self.stacks[stack_uuid]  # TODO: only deletion from active stacks but why?
+        del self.stacks[stack_uuid]
+        # todo - delete data in model
         self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
 
-    def _do_rename(self, current_name: str, new_name: str):
+    def _do_rename_stack(self, current_name: str, new_name: str):
         dock = self.get_stack_by_name(current_name)
         if dock:
             dock.setWindowTitle(new_name)
@@ -299,20 +302,23 @@ class MainWindowPresenter(BasePresenter):
         raise RuntimeError(f"Did not find stack {images} in active stacks! "
                            f"Active stacks: {self.active_stacks.items()}")
 
-    def add_log_to_sample(self, stack_name: str, log_file: str):
-        self.add_log_to_sample(stack_name, log_file)
-
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_images_by_uuid(uuid, images)
 
     def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
-        return self.model.add_180_deg_to_dataset(stack_name, _180_deg_file)
+        stack_id = self.get_stack_id_by_name(stack_name)
+        if stack_id is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+        return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file) # todo: assumes the stack is the sample?
 
     def create_stack_name(self, filename: str):
         return self.model.create_name(os.path.basename(filename))
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
-        self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+        stack_id = self.get_stack_id_by_name(stack_name)
+        if stack_id is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+        self.model.add_projection_angles_to_sample(stack_id, proj_angles)
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
         loading_params = create_loading_parameters_for_file_path(file_path, logger)

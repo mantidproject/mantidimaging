@@ -24,8 +24,8 @@ class MainWindowModel(object):
 
     def do_load_dataset(self, parameters: LoadingParameters, progress):
         sample_images = loader.load_p(parameters.sample, parameters.dtype, progress)
-        self.images[sample_images.uu_id] = sample_images
-        ds = Dataset(sample_images.uu_id)
+        self.images[sample_images.id] = sample_images
+        ds = Dataset(sample_images.id)
 
         sample_images._is_sinograms = parameters.sinograms
         sample_images.pixel_size = parameters.pixel_size
@@ -35,24 +35,24 @@ class MainWindowModel(object):
 
         if parameters.flat_before:
             flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
-            self.images[flat_before.uu_id] = flat_before
-            ds.flat_before = flat_before.uu_id
+            self.images[flat_before.id] = flat_before
+            ds.flat_before = flat_before.id
             if parameters.flat_before.log_file:
                 flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
         if parameters.flat_after:
             flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
-            self.images[flat_after.uu_id] = flat_after
+            self.images[flat_after.id] = flat_after
             if parameters.flat_after.log_file:
                 flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
 
         if parameters.dark_before:
             dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
-            self.images[dark_before.uu_id] = dark_before
-            ds.dark_before = dark_before.uu_id
+            self.images[dark_before.id] = dark_before
+            ds.dark_before = dark_before.id
         if parameters.dark_after:
             dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
-            self.images[dark_after.uu_id] = dark_after
-            ds.dark_after = dark_after.uu_id
+            self.images[dark_after.id] = dark_after
+            ds.dark_after = dark_after.id
 
         if parameters.proj_180deg:
             sample_images.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress) # todo: add to dataset?
@@ -62,7 +62,7 @@ class MainWindowModel(object):
 
     def load_images(self, file_path: str, progress) -> Images:
         images = loader.load_stack(file_path, progress)
-        self.images[images.uu_id] = images.uu_id
+        self.images[images.id] = images.id
         return images
 
     def do_images_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
@@ -111,22 +111,19 @@ class MainWindowModel(object):
         #     # Free previous images stack before reassignment
         #     stack.presenter.images = images
 
-    def add_180_deg_to_dataset(self, stack_name, _180_deg_file):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+    def add_180_deg_to_dataset(self, stack_id, _180_deg_file):
+        images = self.get_images_by_uuid(stack_id)
+        if stack_id is None:
+            raise RuntimeError(f"Failed to get stack with name {stack_id}") # todo: change message
 
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
-        stack_dock.presenter.images.proj180deg = _180_deg
+        images.proj180deg = _180_deg
         return _180_deg
 
-    def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-
-        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
-        images: Images = stack.presenter.images
+    def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
+        images = self.get_images_by_uuid(images_id)
+        if images_id is None:
+            raise RuntimeError(f"Failed to get stack with name {images_id}") # todo: change message
         images.set_projection_angles(proj_angles)
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
@@ -136,3 +133,10 @@ class MainWindowModel(object):
 
     def load_log(self, log_file: str):
         return loader.load_log(log_file)
+
+    def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
+        images = self.get_images_by_uuid(images_id)
+        log = self.load_log(log_file)
+        log.raise_if_angle_missing(images.filenames)
+        images.log_file = log
+        # todo - send update here or do it from presenter?
