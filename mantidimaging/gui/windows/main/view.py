@@ -83,7 +83,7 @@ class MainWindowView(BaseMainWindowView):
         self.update_shortcuts()
 
         self.setAcceptDrops(True)
-        base_path = os.path.join(finder.get_external_location(__file__), finder.ROOT_PACKAGE)
+        base_path = finder.ROOT_PATH
 
         self.open_dialogs = open_dialogs
         if self.open_dialogs:

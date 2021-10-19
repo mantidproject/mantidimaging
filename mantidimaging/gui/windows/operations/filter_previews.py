@@ -104,15 +104,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.init_histogram()
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
-        for scene in [
-                self.image_before.scene(),
-                self.image_before_hist.scene(),
-                self.image_after.scene(),
-                self.image_after_hist.scene(),
-                self.image_difference.scene(),
-                self.image_difference_hist.scene(),
-        ]:
-            scene.contextMenu = [item for item in scene.contextMenu if "export" not in item.text().lower()]
+        self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
         self.auto_colour_actions = []
         self._add_auto_colour_action(self.image_before_hist, self.image_before)
