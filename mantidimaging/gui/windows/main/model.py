@@ -100,13 +100,9 @@ class MainWindowModel(object):
         :param images_uuid: The id of the image to update.
         :param new_images: The new images data.
         """
-        for id, images in self.images:
-            if id == images_uuid:
-                images = new_images
-                self.pre
-                # todo - update stack signal
-                return
-        # todo: what happens if you get here?
+        if images_uuid in self.images:
+            self.images[images_uuid] = new_images
+        # todo: raise error for else case
 
         # if not stack.presenter.images == images:
         #     stack.image_view.clear()
@@ -134,9 +130,8 @@ class MainWindowModel(object):
         images.set_projection_angles(proj_angles)
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
-        for id, images in self.images:
-            if id == images_uuid:
-                return images
+        if images_uuid in self.images:
+            return self.images[images_uuid]
         # todo: what happens if you get here?
 
     def load_log(self, log_file: str):
