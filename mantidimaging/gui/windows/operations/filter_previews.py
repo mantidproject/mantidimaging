@@ -109,9 +109,9 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def clear_items(self, clear_before: bool = True):
         if clear_before:
-            self.image_before.clear()
-        self.image_after.clear()
-        self.image_difference.clear()
+            self.imageview_before.clear()
+        self.imageview_after.clear()
+        self.imageview_difference.clear()
         self.image_diff_overlay.clear()
 
     def init_histogram(self):

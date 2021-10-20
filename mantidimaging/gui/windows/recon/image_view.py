@@ -50,7 +50,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.slice_changed(int(self.slice_line.value()))
 
     def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
-        self.projection.clear()
+        self.imageview_projection.clear()
         self.projection.setImage(image_data)
         self._add_nan_zero_negative_overlay()
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
@@ -62,13 +62,13 @@ class ReconImagesView(GraphicsLayoutWidget):
         set_histogram_log_scale(self.projection_hist)
 
     def update_sinogram(self, image):
-        self.sinogram.clear()
+        self.imageview_sinogram.clear()
         self.sinogram.setImage(image)
         self.sinogram_hist.imageChanged(autoLevel=True, autoRange=True)
         set_histogram_log_scale(self.sinogram_hist)
 
     def update_recon(self, image_data):
-        self.recon.clear()
+        self.imageview_recon.clear()
         self.recon.setImage(image_data, autoLevels=False)
         set_histogram_log_scale(self.recon_hist)
 
@@ -84,7 +84,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.sigSliceIndexChanged.emit(slice_index)
 
     def clear_recon(self):
-        self.recon.clear()
+        self.imageview_recon.clear()
 
     def reset_slice_and_tilt(self, slice_index):
         self.slice_line.setPos(slice_index)

@@ -35,6 +35,9 @@ class MIMiniImageView(GraphicsLayout):
 
         self.siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
+    def clear(self):
+        self.im.clear()
+
     @staticmethod
     def set_siblings(sibling_views: List["MIMiniImageView"]):
         for view1 in sibling_views:
