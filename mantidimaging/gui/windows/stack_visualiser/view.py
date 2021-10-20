@@ -104,6 +104,10 @@ class StackVisualiserView(QDockWidget):
     def actions(self):
         return self._actions
 
+    @property
+    def uuid(self):
+        return self.presenter.images.id
+
     def closeEvent(self, event):
         # window: 'MainWindowView' = self.window()
         # stacks_with_proj180 = window.get_all_stack_visualisers_with_180deg_proj()
