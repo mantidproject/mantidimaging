@@ -9,7 +9,7 @@ import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
 from PyQt5.QtWidgets import QAction
-from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
@@ -101,6 +101,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self._add_auto_colour_action(self.image_after_hist, self.image_after)
         self._add_auto_colour_action(self.image_difference_hist, self.image_difference)
 
+        self.imageview_before.link_sibling_axis()
+
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None and isinstance(self.histogram, PlotItem):
             size = ev.size()
@@ -144,16 +146,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         return None
 
     def link_all_views(self):
-        for view1, view2 in [[self.image_before_vb, self.image_after_vb],
-                             [self.image_after_vb, self.image_difference_vb],
-                             [self.image_after_hist.vb, self.image_before_hist.vb]]:
-            view1.linkView(ViewBox.XAxis, view2)
-            view1.linkView(ViewBox.YAxis, view2)
+        self.imageview_before.link_sibling_axis()
+        self.imageview_after.link_histogram(self.imageview_before)
 
     def unlink_all_views(self):
-        for view in self.image_before_vb, self.image_after_vb, self.image_after_hist.vb:
-            view.linkView(ViewBox.XAxis, None)
-            view.linkView(ViewBox.YAxis, None)
+        self.imageview_before.unlink_sibling_axis()
+        self.imageview_after.unlink_histogram()
 
     def add_difference_overlay(self, diff, nan_change):
         diff = np.absolute(diff)

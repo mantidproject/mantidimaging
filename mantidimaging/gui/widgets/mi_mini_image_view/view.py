@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from itertools import chain, tee
 from typing import List, Tuple
 from weakref import WeakSet
 
@@ -11,6 +12,15 @@ from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 graveyard = []
+
+
+# https://docs.python.org/3/library/itertools.html?highlight=itertools#itertools.pairwise
+# COMPAT python < 3.10
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 
 class MIMiniImageView(GraphicsLayout):
@@ -66,3 +76,19 @@ class MIMiniImageView(GraphicsLayout):
         if image is not None and pos.y < image.shape[0] and pos.x < image.shape[1]:
             pixel_value = image[pos.y, pos.x]
             self.details.setText(f"{self.name}: {pixel_value:.6f}")
+
+    def link_sibling_axis(self):
+        for view1, view2 in pairwise(chain([self], self.siblings)):
+            view1.vb.linkView(ViewBox.XAxis, view2.vb)
+            view1.vb.linkView(ViewBox.YAxis, view2.vb)
+
+    def unlink_sibling_axis(self):
+        for img_view in chain([self], self.siblings):
+            img_view.vb.linkView(ViewBox.XAxis, None)
+            img_view.vb.linkView(ViewBox.YAxis, None)
+
+    def link_histogram(self, next_image_view: "MIMiniImageView"):
+        self.hist.vb.linkView(ViewBox.YAxis, next_image_view.hist.vb)
+
+    def unlink_histogram(self):
+        self.hist.vb.linkView(ViewBox.YAxis, None)
