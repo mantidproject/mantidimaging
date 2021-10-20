@@ -145,12 +145,16 @@ class MainWindowModel(object):
             #     dataset.sample = None # todo - allow this?
             if _matching_dataset_attribute(dataset.flat_before, images_id):
                 del self.images[dataset.flat_before.id]
+                return
             if _matching_dataset_attribute(dataset.flat_after, images_id):
                 del self.images[dataset.flat_after.id]
+                return
             if _matching_dataset_attribute(dataset.dark_before, images_id):
                 del self.images[dataset.dark_before.id]
+                return
             if _matching_dataset_attribute(dataset.dark_after, images_id):
                 del self.images[dataset.dark_after.id]
+                return
 
     def _delete_dataset(self, dataset_id: uuid.UUID):
         dataset = self.datasets[dataset_id]
