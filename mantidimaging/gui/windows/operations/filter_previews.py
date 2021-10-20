@@ -66,6 +66,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_before = MIMiniImageView(name="before")
         self.imageview_after = MIMiniImageView(name="after")
         self.imageview_difference = MIMiniImageView(name="difference")
+        self.add_imageviews = [self.imageview_before, self.imageview_after, self.imageview_difference]
+        MIMiniImageView.set_siblings(self.add_imageviews)
 
         self.image_before, self.image_before_vb, self.image_before_hist = self.imageview_before.get_parts()
         self.image_after, self.image_after_vb, self.image_after_hist = self.imageview_after.get_parts()
