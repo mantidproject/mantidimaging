@@ -3,13 +3,12 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 logger = getLogger(__name__)
 
@@ -22,7 +21,7 @@ class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
 
-        self.datasets: List[Dataset] = []
+        self.datasets: Dict[uuid.UUID, Dataset] = {}
         self.images: Dict[uuid.UUID, Images] = {}
         self._stack_names = {}
 
@@ -34,7 +33,7 @@ class MainWindowModel(object):
     def do_load_dataset(self, parameters: LoadingParameters, progress):
         sample_images = loader.load_p(parameters.sample, parameters.dtype, progress)
         self.images[sample_images.id] = sample_images
-        ds = Dataset(sample_images.id)
+        ds = Dataset(sample_images)
 
         sample_images._is_sinograms = parameters.sinograms
         sample_images.pixel_size = parameters.pixel_size
@@ -45,28 +44,29 @@ class MainWindowModel(object):
         if parameters.flat_before:
             flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
             self.images[flat_before.id] = flat_before
-            ds.flat_before = flat_before.id
+            ds.flat_before = flat_before
             if parameters.flat_before.log_file:
                 flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
         if parameters.flat_after:
             flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
             self.images[flat_after.id] = flat_after
+            ds.flat_after = flat_after
             if parameters.flat_after.log_file:
                 flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
 
         if parameters.dark_before:
             dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
             self.images[dark_before.id] = dark_before
-            ds.dark_before = dark_before.id
+            ds.dark_before = dark_before
         if parameters.dark_after:
             dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
             self.images[dark_after.id] = dark_after
-            ds.dark_after = dark_after.id
+            ds.dark_after = dark_after
 
         if parameters.proj_180deg:
             sample_images.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress) # todo: add to dataset?
 
-        self.datasets.append(ds)
+        self.datasets[ds.id] = ds
         return ds
 
     def load_images(self, file_path: str, progress) -> Images:
