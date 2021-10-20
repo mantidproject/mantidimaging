@@ -14,10 +14,10 @@ class Dataset:
     def __init__(self, sample: Images, flat_before: Optional[Images] = None, flat_after: Optional[Images] = None,
                  dark_before: Optional[Images] = None, dark_after: Optional[Images] = None):
         self._sample = weakref.ref(sample)
-        self._flat_before = None
-        self._flat_after = None
-        self._dark_before = None
-        self._dark_after = None
+        self._flat_before = lambda : None
+        self._flat_after = lambda : None
+        self._dark_before = lambda : None
+        self._dark_after = lambda : None
 
         if isinstance(flat_before, Images):
             self._flat_before = weakref.ref(flat_before)
