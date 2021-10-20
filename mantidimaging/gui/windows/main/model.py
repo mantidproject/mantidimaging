@@ -13,8 +13,8 @@ from mantidimaging.core.utility.data_containers import LoadingParameters, Projec
 logger = getLogger(__name__)
 
 
-def _matching_dataset_attribute(dataset_attribute: Optional[uuid.UUID], images_id: uuid.UUID):
-    return isinstance(dataset_attribute, uuid.UUID) and dataset_attribute == images_id
+def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: uuid.UUID) -> bool:
+    return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
 
 
 class MainWindowModel(object):
@@ -137,20 +137,32 @@ class MainWindowModel(object):
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
         # todo - send update here or do it from presenter?
+        
+    def _delete_single_image(self, images_id: uuid.UUID):
+        del self.images[images_id]
+        for dataset in self.datasets.values():
+            # if _matching_dataset_attribute(dataset.sample, images_id):
+            #     dataset.sample = None # todo - allow this?
+            if _matching_dataset_attribute(dataset.flat_before, images_id):
+                del self.images[dataset.flat_before.id]
+            if _matching_dataset_attribute(dataset.flat_after, images_id):
+                del self.images[dataset.flat_after.id]
+            if _matching_dataset_attribute(dataset.dark_before, images_id):
+                del self.images[dataset.dark_before.id]
+            if _matching_dataset_attribute(dataset.dark_after, images_id):
+                del self.images[dataset.dark_after.id]
 
-    def delete_images(self, images_id: uuid.UUID):
-        if images_id in self.images:
-            del self.images[images_id]
-            for dataset in self.datasets:
-                if _matching_dataset_attribute(dataset.sample, images_id):
-                    dataset.sample = None
-                if _matching_dataset_attribute(dataset.flat_before, images_id):
-                    dataset.flat_before = None
-                if _matching_dataset_attribute(dataset.flat_after, images_id):
-                    dataset.flat_after = None
-                if _matching_dataset_attribute(dataset.dark_before, images_id):
-                    dataset.dark_before = None
-                if _matching_dataset_attribute(dataset.flat_before, images_id):
-                    dataset.dark_before = None
-        # TODO - delete dataset implementation here
-        # TODO - rename method
+    def _delete_dataset(self, dataset_id: uuid.UUID):
+        dataset = self.datasets[dataset_id]
+        del self.images[dataset.sample.id]
+        del self.images[dataset.flat_before.id]
+        del self.images[dataset.flat_after.id]
+        del self.images[dataset.dark_before.id]
+        del self.images[dataset.dark_after.id]
+        del self.datasets[dataset_id]
+
+    def delete_container(self, container_id: uuid.UUID):
+        if container_id in self.images:
+            self._delete_single_image(container_id)
+        if container_id in self.datasets:
+            self._delete_dataset(container_id)
