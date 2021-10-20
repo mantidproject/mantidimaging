@@ -13,7 +13,6 @@ from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, Plo
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
-from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -92,19 +91,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_layout.addItem(self.imageview_difference)
         self.nextRow()
 
-        before_details = self.addLabel("")
-        after_details = self.addLabel("")
-        difference_details = self.addLabel("")
-
-        self.display_formatted_detail = {
-            self.image_before: lambda val: before_details.setText(f"Before: {val:.6f}"),
-            self.image_after: lambda val: after_details.setText(f"After: {val:.6f}"),
-            self.image_difference: lambda val: difference_details.setText(f"Difference: {val:.6f}"),
-        }
-
-        for img in self.image_before, self.image_after, self.image_difference:
-            img.hoverEvent = lambda ev: self.mouse_over(ev)
-
         self.init_histogram()
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
@@ -156,17 +142,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         if self.histogram and self.histogram.legend:
             return self.histogram.legend
         return None
-
-    def mouse_over(self, ev):
-        # Ignore events triggered by leaving window or right clicking
-        if ev.exit:
-            return
-        pos = CloseEnoughPoint(ev.pos())
-        # Update values for all 3 images
-        for img in self.image_before, self.image_after, self.image_difference:
-            if img.image is not None and pos.y < img.image.shape[0] and pos.x < img.image.shape[1]:
-                pixel_value = img.image[pos.y, pos.x]
-                self.display_formatted_detail[img](pixel_value)
 
     def link_all_views(self):
         for view1, view2 in [[self.image_before_vb, self.image_after_vb],
