@@ -278,7 +278,7 @@ class MainWindowPresenter(BasePresenter):
 
     @property
     def active_stacks(self):
-        return {stack_id: stack for (stack_id, stack) in self.stacks if stack.isVisible()}
+        return {stack_id: stack for (stack_id, stack) in self.stacks.items() if stack.isVisible()}
 
     def get_all_stack_visualisers_with_180deg_proj(self):
         return [
