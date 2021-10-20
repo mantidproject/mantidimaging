@@ -1,15 +1,16 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from math import isnan
-from typing import Tuple, Optional
+from typing import Optional
 
 import numpy as np
 from PyQt5 import QtCore
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, ViewBox, HistogramLUTItem, LabelItem, InfiniteLine, ColorMap
+from pyqtgraph import GraphicsLayoutWidget, ImageItem, InfiniteLine, ColorMap
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
+from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 
 class ReconImagesView(GraphicsLayoutWidget):
@@ -18,59 +19,35 @@ class ReconImagesView(GraphicsLayoutWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self.projection, self.projection_vb, self.projection_hist = self.image_in_vb("Projection")
-        self.sinogram, self.sinogram_vb, self.sinogram_hist = self.image_in_vb("Sinogram")
-        self.recon, self.recon_vb, self.recon_hist = self.image_in_vb("Recon")
+
+        self.imageview_projection = MIMiniImageView(name="Projection")
+        self.imageview_sinogram = MIMiniImageView(name="Sinogram")
+        self.imageview_recon = MIMiniImageView(name="Recon")
+
+        self.projection, self.projection_vb, self.projection_hist = self.imageview_projection.get_parts()
+        self.sinogram, self.sinogram_vb, self.sinogram_hist = self.imageview_sinogram.get_parts()
+        self.recon, self.recon_vb, self.recon_hist = self.imageview_recon.get_parts()
 
         self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()], movable=True)
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
-        image_layout = self.addLayout(colspan=4)
-        image_layout.addItem(self.projection_vb, 0, 0)
-        image_layout.addItem(self.projection_hist, 0, 1)
-        image_layout.addItem(self.recon_vb, 0, 2, rowspan=3)
-        image_layout.addItem(self.recon_hist, 0, 3, rowspan=3)
-
-        projection_details = LabelItem("Value")
-        image_layout.addItem(projection_details, 1, 0, 1, 2)
-
-        image_layout.addItem(self.sinogram_vb, 2, 0)
-        image_layout.addItem(self.sinogram_hist, 2, 1)
-        sino_details = LabelItem("Value")
-        image_layout.addItem(sino_details, 3, 0, 1, 2)
-        recon_details = LabelItem("Value")
-        image_layout.addItem(recon_details, 3, 2, 1, 2)
+        self.addItem(self.imageview_projection, 0, 0)
+        self.addItem(self.imageview_recon, 0, 1, rowspan=2)
+        self.addItem(self.imageview_sinogram, 1, 0)
 
         self.negative_nan_overlay = ImageItem()
         self.negative_nan_overlay.setZValue(11)
         self.projection_vb.addItem(self.negative_nan_overlay)
 
-        msg_format = "Value: {:.6f}"
-        self.display_formatted_detail = {
-            self.projection: lambda val: projection_details.setText(msg_format.format(val)),
-            self.sinogram: lambda val: sino_details.setText(msg_format.format(val)),
-            self.recon: lambda val: recon_details.setText(msg_format.format(val))
-        }
-        self.projection.hoverEvent = lambda ev: self.mouse_over(ev, self.projection)
         self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
-        self.sinogram.hoverEvent = lambda ev: self.mouse_over(ev, self.sinogram)
-        self.recon.hoverEvent = lambda ev: self.mouse_over(ev, self.recon)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
     def slice_line_moved(self):
         self.slice_changed(int(self.slice_line.value()))
-
-    @staticmethod
-    def image_in_vb(name=None) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:
-        im = ImageItem()
-        vb = ViewBox(invertY=True, lockAspect=True, name=name)
-        vb.addItem(im)
-        hist = HistogramLUTItem(im)
-        return im, vb, hist
 
     def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.projection.clear()
@@ -97,15 +74,6 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def update_recon_hist(self):
         self.recon_hist.imageChanged(autoLevel=True, autoRange=True)
-
-    def mouse_over(self, ev, img):
-        # Ignore events triggered by leaving window or right clicking
-        if ev.exit:
-            return
-        pos = CloseEnoughPoint(ev.pos())
-
-        pixel_value = img.image[pos.y, pos.x]
-        self.display_formatted_detail[img](pixel_value)
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
