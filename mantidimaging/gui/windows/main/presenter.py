@@ -353,3 +353,6 @@ class MainWindowPresenter(BasePresenter):
                 if child_item.uuid == uuid_remove:
                     top_level_item.takeChild(j)
                     return
+
+    def add_stack_to_dictionary(self, stack):
+        self.stacks[stack.uuid] = stack
