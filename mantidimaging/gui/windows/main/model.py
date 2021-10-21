@@ -68,7 +68,7 @@ class MainWindowModel(object):
             ds.dark_after = dark_after
 
         if parameters.proj_180deg:
-            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress) # todo: add to dataset?
+            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
 
         self.datasets[ds.id] = ds
         return ds
