@@ -12,6 +12,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import StackId, create_stack_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -28,6 +29,13 @@ class MainWindowPresenterTest(unittest.TestCase):
                                flat_after=generate_images(),
                                dark_before=generate_images(),
                                dark_after=generate_images())
+
+    def test_create_name_one_duplicate_stack_loaded(self):
+        self.assertEqual(create_stack_name(["test"], "test"), "test_2")
+
+    def test_create_name_multiple_duplicate_stacks_loaded(self):
+        stack_names = ["test", "test_2", "test_3"]
+        self.assertEqual(create_stack_name(stack_names, "test"), "test_4")
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task

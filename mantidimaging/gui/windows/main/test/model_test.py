@@ -9,7 +9,7 @@ import numpy as np
 
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
-from mantidimaging.gui.windows.main.model import StackId
+from mantidimaging.gui.windows.main.presenter import create_stack_name
 
 
 class MainWindowModelTest(unittest.TestCase):
@@ -28,22 +28,13 @@ class MainWindowModelTest(unittest.TestCase):
         # Mock the stack list function (this depends on Qt)
         with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
             mock_stack_list.return_value = []
-            self.assertEqual(self.model.create_name("test"), "test")
+            self.assertEqual(create_stack_name(self.model._stack_names, "test"), "test")
 
-    def test_create_name_one_duplicate_stack_loaded(self):
-        with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
-            mock_stack_list.return_value = [StackId('aaa', 'test')]
-            self.assertEqual(self.model.create_name("test"), "test_2")
-
-    def test_create_name_multiple_duplicate_stacks_loaded(self):
-        with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
-            mock_stack_list.return_value = [StackId('aaa', 'test'), StackId('aaa', 'test_2'), StackId('aaa', 'test_3')]
-            self.assertEqual(self.model.create_name("test"), "test_4")
 
     def test_create_name_strips_extension(self):
         with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
             mock_stack_list.return_value = []
-            self.assertEqual(self.model.create_name("test.tif"), "test")
+            self.assertEqual(create_stack_name(self.model._stack_names, "test.tif"), "test")
 
     def _add_mock_widget(self):
         expected_name = "stackname"
@@ -211,14 +202,14 @@ class MainWindowModelTest(unittest.TestCase):
         ])
 
     def test_create_name(self):
-        self.assertEqual("apple", self.model.create_name("apple"))
+        self.assertEqual("apple", create_stack_name(self.model._stack_names, "apple"))
 
         taken_name = "apple"
         widget_mock = mock.Mock()
         widget_mock.windowTitle.return_value = taken_name
         self.model.active_stacks = {"some_uuid": widget_mock}
 
-        self.assertEqual("apple_2", self.model.create_name("apple"))
+        self.assertEqual("apple_2", create_stack_name(self.model._stack_names, "apple"))
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
