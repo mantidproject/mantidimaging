@@ -35,15 +35,15 @@ class MainWindowModel(object):
         return None
 
     def do_load_dataset(self, parameters: LoadingParameters, progress):
-        sample_images = loader.load_p(parameters.sample, parameters.dtype, progress)
-        self.images[sample_images.id] = sample_images
-        ds = Dataset(sample_images)
+        sample = loader.load_p(parameters.sample, parameters.dtype, progress)
+        self.images[sample.id] = sample
+        ds = Dataset(sample)
 
-        sample_images._is_sinograms = parameters.sinograms
-        sample_images.pixel_size = parameters.pixel_size
+        sample._is_sinograms = parameters.sinograms
+        sample.pixel_size = parameters.pixel_size
 
         if parameters.sample.log_file:
-            sample_images.log_file = loader.load_log(parameters.sample.log_file)
+            ds.sample.log_file = loader.load_log(parameters.sample.log_file)
 
         if parameters.flat_before:
             flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
@@ -68,7 +68,7 @@ class MainWindowModel(object):
             ds.dark_after = dark_after
 
         if parameters.proj_180deg:
-            sample_images.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress) # todo: add to dataset?
+            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress) # todo: add to dataset?
 
         self.datasets[ds.id] = ds
         return ds
