@@ -17,6 +17,10 @@ def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: 
     return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
 
 
+def load_log(log_file: str):
+    return loader.load_log(log_file)
+
+
 class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
@@ -128,12 +132,9 @@ class MainWindowModel(object):
             raise RuntimeError(f"Failed to get stack with name {images_id}") # todo: change message
         images.set_projection_angles(proj_angles)
 
-    def load_log(self, log_file: str):
-        return loader.load_log(log_file)
-
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
         images = self.get_images_by_uuid(images_id)
-        log = self.load_log(log_file)
+        log = load_log(log_file)
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
         # todo - send update here or do it from presenter?
