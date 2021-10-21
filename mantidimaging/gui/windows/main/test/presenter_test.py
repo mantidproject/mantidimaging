@@ -37,6 +37,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_names = ["test", "test_2", "test_3"]
         self.assertEqual(create_stack_name(stack_names, "test"), "test_4")
 
+    def test_initial_stack_list(self):
+        self.assertEqual(self.presenter.stack_names, [])
+
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
         task = TaskWorkerThread()
