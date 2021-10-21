@@ -353,7 +353,7 @@ class MainWindowView(BaseMainWindowView):
 
         stack_vis.setFloating(floating)
 
-        self.active_stacks[stack.uu_id] = stack_vis
+        self.presenter.add_stack_to_dictionary(stack_vis)
         return stack_vis
 
     def remove_stack(self, obj: StackVisualiserView):
