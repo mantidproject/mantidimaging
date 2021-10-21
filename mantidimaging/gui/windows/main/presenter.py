@@ -201,7 +201,7 @@ class MainWindowPresenter(BasePresenter):
         dataset_tree_item = QTreeDatasetWidgetItem(self.view.dataset_tree_widget, sample_stack_vis.uuid)
         dataset_tree_item.setText(0, title)
 
-        if isinstance(container, Dataset):  # todo - call get images method from model
+        if isinstance(container, Dataset):
             if container.flat_before and container.flat_before.filenames:
                 self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
                 _create_child_tree_item(dataset_tree_item, container.flat_before.id, "Flat Before")
