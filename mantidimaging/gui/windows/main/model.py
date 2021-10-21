@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import os
 import uuid
 from logging import getLogger
 from typing import Dict, Optional
@@ -89,23 +88,6 @@ class MainWindowModel(object):
                                progress=progress)
         images.filenames = filenames
         return True
-
-    def create_name(self, filename):
-        """
-        Creates a suitable name for a newly loaded stack.
-        """
-        # Avoid file extensions in names
-        filename = os.path.splitext(filename)[0]
-
-        # Avoid duplicate names
-        name = filename
-        current_names = self._stack_names
-        num = 1
-        while name in current_names:
-            num += 1
-            name = f"{filename}_{num}"
-
-        return name
 
     def set_images_by_uuid(self, images_id: uuid.UUID, new_images: Images):
         """

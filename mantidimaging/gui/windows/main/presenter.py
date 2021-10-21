@@ -50,6 +50,24 @@ def _create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: UUID, na
     parent.addChild(child)
 
 
+def create_stack_name(_stack_names: List[str], filename: str) -> str:
+    """
+    Creates a suitable name for a newly loaded stack.
+    """
+    # Avoid file extensions in names
+    filename = os.path.splitext(filename)[0]
+
+    # Avoid duplicate names
+    name = filename
+    current_names = _stack_names
+    num = 1
+    while name in current_names:
+        num += 1
+        name = f"{filename}_{num}"
+
+    return name
+
+
 class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
     SAVE_ERROR_STRING = "Failed to save stack. Error: {}"
@@ -161,7 +179,7 @@ class MainWindowPresenter(BasePresenter):
         self.show_error(msg, traceback.format_exc())
 
     def _add_stack(self, images: Images, filename: str, sample_dock):
-        name = self.model.create_name(os.path.basename(filename))
+        name = create_stack_name(self.model._stack_names, os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
 
@@ -169,7 +187,7 @@ class MainWindowPresenter(BasePresenter):
         return [stack for stack in self.active_stacks.values()]  # type:ignore
 
     def create_new_180_stack(self, container: Images, title: str):
-        title = self.model.create_name(title)
+        title = create_stack_name(self.model._stack_names, title)
         _180_stack_vis = self.view.create_stack_window(container, title)
 
         current_stack_visualisers = self.get_active_stack_visualisers()
@@ -189,7 +207,7 @@ class MainWindowPresenter(BasePresenter):
         return _180_stack_vis
 
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
-        title = self.model.create_name(title)
+        title = create_stack_name(self.model._stack_names, title)
 
         sample = container if isinstance(container, Images) else container.sample
         sample_stack_vis = self.view.create_stack_window(sample, title)
@@ -225,7 +243,7 @@ class MainWindowPresenter(BasePresenter):
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.sample.proj180deg = Images(
-                        np.reshape(closest_projection, (1, ) + closest_projection.shape))
+                        np.reshape(closest_projection, (1,) + closest_projection.shape))
                     self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
                     _create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 
@@ -315,10 +333,10 @@ class MainWindowPresenter(BasePresenter):
         stack_id = self.get_stack_id_by_name(stack_name)
         if stack_id is None:
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
-        return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file) # todo: assumes the stack is the sample?
+        return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file)  # todo: assumes the stack is the sample?
 
     def create_stack_name(self, filename: str):
-        return self.model.create_name(os.path.basename(filename))
+        return create_stack_name(self.model._stack_names, os.path.basename(filename))
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         stack_id = self.get_stack_id_by_name(stack_name)
