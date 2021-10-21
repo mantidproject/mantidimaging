@@ -26,7 +26,6 @@ class MainWindowModel(object):
 
         self.datasets: Dict[uuid.UUID, Dataset] = {}
         self.images: Dict[uuid.UUID, Images] = {}
-        self._stack_names = {}
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
         if images_uuid in self.images:

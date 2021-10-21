@@ -179,7 +179,7 @@ class MainWindowPresenter(BasePresenter):
         self.show_error(msg, traceback.format_exc())
 
     def _add_stack(self, images: Images, filename: str, sample_dock):
-        name = create_stack_name(self.model._stack_names, os.path.basename(filename))
+        name = create_stack_name(self.stack_names, os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
 
@@ -187,7 +187,7 @@ class MainWindowPresenter(BasePresenter):
         return [stack for stack in self.active_stacks.values()]  # type:ignore
 
     def create_new_180_stack(self, container: Images, title: str):
-        title = create_stack_name(self.model._stack_names, title)
+        title = create_stack_name(self.stack_names, title)
         _180_stack_vis = self.view.create_stack_window(container, title)
 
         current_stack_visualisers = self.get_active_stack_visualisers()
@@ -207,7 +207,7 @@ class MainWindowPresenter(BasePresenter):
         return _180_stack_vis
 
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
-        title = create_stack_name(self.model._stack_names, title)
+        title = create_stack_name(self.stack_names, title)
 
         sample = container if isinstance(container, Images) else container.sample
         sample_stack_vis = self.view.create_stack_window(sample, title)
@@ -336,7 +336,7 @@ class MainWindowPresenter(BasePresenter):
         return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file)  # todo: assumes the stack is the sample?
 
     def create_stack_name(self, filename: str):
-        return create_stack_name(self.model._stack_names, os.path.basename(filename))
+        return create_stack_name(self.stack_names, os.path.basename(filename))
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         stack_id = self.get_stack_id_by_name(stack_name)
