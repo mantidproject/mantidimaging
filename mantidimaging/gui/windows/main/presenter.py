@@ -303,6 +303,13 @@ class MainWindowPresenter(BasePresenter):
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_images_by_uuid(uuid, images)
+        stack = self.stacks[uuid]
+        if not stack.presenter.images == images:
+            stack.image_view.clear()
+            stack.image_view.setImage(images.data)
+
+            # Free previous images stack before reassignment
+            stack.presenter.images = images
 
     def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
         stack_id = self.get_stack_id_by_name(stack_name)
