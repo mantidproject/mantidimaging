@@ -21,17 +21,6 @@ class MainWindowModelTest(unittest.TestCase):
         self.model_class_name = f"{self.model.__module__}.{self.model.__class__.__name__}"
         self.stack_list_property = f"{self.model_class_name}.stack_list"
 
-    def test_create_name_no_stacks_loaded(self):
-        # Mock the stack list function (this depends on Qt)
-        with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
-            mock_stack_list.return_value = []
-            self.assertEqual(create_stack_name(self.model._stack_names, "test"), "test")
-
-    def test_create_name_strips_extension(self):
-        with mock.patch(self.stack_list_property, new_callable=mock.PropertyMock) as mock_stack_list:
-            mock_stack_list.return_value = []
-            self.assertEqual(create_stack_name(self.model._stack_names, "test.tif"), "test")
-
     def _add_mock_widget(self):
         expected_name = "stackname"
         widget_mock = mock.Mock()

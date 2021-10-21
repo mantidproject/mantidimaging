@@ -40,6 +40,12 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_names, [])
 
+    def test_create_name_no_stacks_loaded(self):
+        self.assertEqual(create_stack_name([], "test"), "test")
+
+    def test_create_name_strips_extension(self):
+        self.assertEqual(create_stack_name([], "test.tif"), "test")
+
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
         task = TaskWorkerThread()
