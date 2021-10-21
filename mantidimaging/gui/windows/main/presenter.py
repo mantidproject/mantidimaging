@@ -182,6 +182,7 @@ class MainWindowPresenter(BasePresenter):
         name = create_stack_name(self.stack_names, os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
+        self.stacks[stack_visualiser.uuid] = stack_visualiser
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]  # type:ignore

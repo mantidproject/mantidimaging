@@ -101,7 +101,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter._add_stack(images, "myfilename", sample_dock_mock)
 
-        self.assertEqual(1, len(self.presenter.model.stack_list))
+        self.assertEqual(1, len(self.presenter.stack_list))
         self.view.tabifyDockWidget.assert_called_once_with(sample_dock_mock, dock_mock)
 
     def test_add_multiple_stacks(self):
@@ -118,7 +118,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._add_stack(images, "myfilename", sample_dock_mock)
         self.presenter._add_stack(images2, "myfilename2", sample_dock_mock)
 
-        self.assertEqual(2, self.presenter.model.add_stack.call_count)
+        self.assertEqual(2, self.view.create_stack_window.call_count)
         self.view.tabifyDockWidget.assert_called_with(sample_dock_mock, dock_mock)
         self.assertEqual(2, self.view.tabifyDockWidget.call_count)
 
