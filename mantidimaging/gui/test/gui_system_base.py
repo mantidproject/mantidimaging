@@ -91,10 +91,10 @@ class GuiSystemBase(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.load_dialog.view.MWLoadDialog.select_file")
     def _load_data_set(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
-        initial_stacks = len(self.main_window.presenter.model.get_active_stack_visualisers())
+        initial_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
 
         def test_func() -> bool:
-            current_stacks = len(self.main_window.presenter.model.get_active_stack_visualisers())
+            current_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
             return (current_stacks - initial_stacks) >= 5
 
         self.main_window.actionLoadDataset.trigger()
@@ -111,7 +111,7 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.actionRecon.trigger()
 
     def _close_stack_tabs(self):
-        stack_tabs = self.main_window.presenter.model.get_active_stack_visualisers()
+        stack_tabs = self.main_window.presenter.get_active_stack_visualisers()
         while stack_tabs:
             last_stack_tab = stack_tabs.pop()
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
