@@ -13,7 +13,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import StackId, create_stack_name
+from mantidimaging.gui.windows.main.presenter import create_stack_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -128,7 +128,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.active_stacks_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
-        self.assertEqual(1, len(self.presenter.model.stack_list))
+        self.assertEqual(1, len(self.presenter.stacks))
         self.view.active_stacks_changed.emit.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
@@ -136,7 +136,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.active_stacks_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
-        self.assertEqual(1, len(self.presenter.model.stack_list))
+        self.assertEqual(1, len(self.presenter.stacks))
         self.view.active_stacks_changed.emit.assert_called_once()
 
         self.presenter.create_new_stack(images, "My title")
@@ -158,6 +158,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
+        def stack_id():
+            return uuid.uuid1()
+
+        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
+
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
@@ -167,7 +172,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.create_new_stack(self.dataset, "My title")
 
-        self.assertEqual(6, len(self.presenter.model.stack_list))
+        self.assertEqual(6, len(self.presenter.stacks))
         self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_reject_180(self):
@@ -179,6 +184,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
+        def stack_id():
+            return uuid.uuid1()
+
+        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
+
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
@@ -188,7 +198,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.create_new_stack(self.dataset, "My title")
 
-        self.assertEqual(5, len(self.presenter.model.stack_list))
+        self.assertEqual(5, len(self.presenter.stacks))
         self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_accept_180(self):
