@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+import uuid
 
 from unittest import mock
 
@@ -24,11 +25,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(MainWindowView)
         self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
-        self.dataset = Dataset(sample=generate_images(),
-                               flat_before=generate_images(),
-                               flat_after=generate_images(),
-                               dark_before=generate_images(),
-                               dark_after=generate_images())
+        self.images = [generate_images() for _ in range(5)]
+        self.dataset = Dataset(sample=self.images[0],
+                               flat_before=self.images[1],
+                               flat_after=self.images[2],
+                               dark_before=self.images[3],
+                               dark_after=self.images[4])
 
     def test_create_name_one_duplicate_stack_loaded(self):
         self.assertEqual(create_stack_name(["test"], "test"), "test_2")
@@ -198,6 +200,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
 
+        def stack_id():
+            return uuid.uuid1()
+
+        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
+
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
@@ -207,7 +214,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.create_new_stack(self.dataset, "My title")
 
-        self.assertEqual(6, len(self.presenter.model.stack_list))
+        self.assertEqual(6, len(self.presenter.stacks))
         self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_wizard_action_load(self):

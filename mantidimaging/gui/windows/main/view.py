@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
+import uuid
 from logging import getLogger
 from typing import Optional
 from uuid import UUID
@@ -34,6 +35,14 @@ from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPres
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 LOG = getLogger(__file__)
+
+class QTreeDatasetWidgetItem(QTreeWidgetItem):
+    def __init__(self, parent: QTreeWidget, dataset_id: UUID):
+        self.uuid = dataset_id
+        super().__init__(parent)
+
+
+
 
 
 class MainWindowView(BaseMainWindowView):
@@ -436,6 +445,17 @@ class MainWindowView(BaseMainWindowView):
             self, "180 Projection",
             f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
             f"Use anyway?")
+
+    def create_dataset_tree_widget_item(self, title: str, id: uuid.UUID) -> QTreeDatasetWidgetItem:
+        dataset_tree_item = QTreeDatasetWidgetItem(self.dataset_tree_widget, id)
+        dataset_tree_item.setText(0, title)
+        return dataset_tree_item
+
+    @staticmethod
+    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: UUID, name: str):
+        child = QTreeDatasetWidgetItem(parent, dataset_id)
+        child.setText(0, name)
+        parent.addChild(child)
 
     def add_item_to_tree_view(self, item: QTreeWidgetItem):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
