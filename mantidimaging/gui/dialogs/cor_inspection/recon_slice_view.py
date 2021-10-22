@@ -4,7 +4,7 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
-from pyqtgraph import GraphicsLayoutWidget, ImageItem
+from pyqtgraph import GraphicsLayoutWidget
 
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -14,10 +14,6 @@ if TYPE_CHECKING:
 
 
 class CompareSlicesView(GraphicsLayoutWidget):
-    less_img: ImageItem
-    current_img: ImageItem
-    more_img: ImageItem
-
     def __init__(self, parent: 'CORInspectionDialogView'):
         super().__init__(parent)
         self.parent = parent
@@ -27,10 +23,6 @@ class CompareSlicesView(GraphicsLayoutWidget):
         self.imageview_more = MIMiniImageView(name="more")
         self.all_imageviews = [self.imageview_less, self.imageview_current, self.imageview_more]
         MIMiniImageView.set_siblings(self.all_imageviews, axis=True, hist=True)
-
-        self.less_img, self.less_img_vb, self.less_hist = self.imageview_less.get_parts()
-        self.current_img, self.current_img_vb, self.current_hist = self.imageview_current.get_parts()
-        self.more_img, self.more_img_vb, self.more_hist = self.imageview_more.get_parts()
 
         self.imageview_less.link_sibling_axis()
         self.imageview_less.link_sibling_histogram()
@@ -56,20 +48,20 @@ class CompareSlicesView(GraphicsLayoutWidget):
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
         sumsq = np.sum(recon_data**2)
         if image_type == ImageType.LESS:
-            self.less_img.clear()
-            self.less_img.setImage(recon_data)
+            self.imageview_less.clear()
+            self.imageview_less.setImage(recon_data)
             self.less_label.setText(title)
             self.less_sumsq.setText(f"Sum of SQ: {sumsq:.6f}")
             self.sumsqs[0] = sumsq
         elif image_type == ImageType.CURRENT:
-            self.current_img.clear()
-            self.current_img.setImage(recon_data, autoLevels=False)
+            self.imageview_current.clear()
+            self.imageview_current.setImage(recon_data, autoLevels=False)
             self.current_label.setText(title)
             self.current_sumsq.setText(f"Sum of SQ: {sumsq:.6f}")
             self.sumsqs[1] = sumsq
         elif image_type == ImageType.MORE:
-            self.more_img.clear()
-            self.more_img.setImage(recon_data)
+            self.imageview_more.clear()
+            self.imageview_more.setImage(recon_data)
             self.more_label.setText(title)
             self.more_sumsq.setText(f"Sum of SQ: {sumsq:.6f}")
             self.sumsqs[2] = sumsq

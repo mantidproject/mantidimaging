@@ -50,6 +50,9 @@ class MIMiniImageView(GraphicsLayout):
     def clear(self):
         self.im.clear()
 
+    def setImage(self, *args, **kwargs):
+        self.im.setImage(*args, **kwargs)
+
     @staticmethod
     def set_siblings(sibling_views: List["MIMiniImageView"], axis=False, hist=False):
         for view1 in sibling_views:
