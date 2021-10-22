@@ -32,6 +32,13 @@ class MainWindowPresenterTest(unittest.TestCase):
                                dark_before=self.images[3],
                                dark_after=self.images[4])
 
+        self.view.create_stack_window.return_value = dock_mock = mock.Mock()
+
+        def stack_id():
+            return uuid.uuid1()
+
+        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
+
     def test_create_name_one_duplicate_stack_loaded(self):
         self.assertEqual(create_stack_name(["test"], "test"), "test_2")
 
@@ -133,13 +140,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
     def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
-        self.view.create_stack_window.return_value = dock_mock = mock.Mock()
-
-        def stack_id():
-            return uuid.uuid1()
-
-        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
-
         self.view.active_stacks_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
@@ -155,20 +155,14 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_QApp.sendPostedEvents.assert_called_once()
 
     def test_create_new_stack_dataset_and_use_threshold_180(self):
-        dock_mock = mock.Mock()
+        dock_mock = self.view.create_stack_window.return_value
         stack_visualiser_mock = mock.Mock()
         self.dataset.sample.set_projection_angles(
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
-
-        def stack_id():
-            return uuid.uuid1()
-
-        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
@@ -183,18 +177,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_reject_180(self):
-        dock_mock = mock.Mock()
+        dock_mock = self.view.create_stack_window.return_value
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
-
-        def stack_id():
-            return uuid.uuid1()
-
-        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
@@ -209,18 +197,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_accept_180(self):
-        dock_mock = mock.Mock()
+        dock_mock = self.view.create_stack_window.return_value
         stack_visualiser_mock = mock.Mock()
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.create_stack_window.return_value = dock_mock
         self.view.active_stacks_changed.emit = mock.Mock()
-
-        def stack_id():
-            return uuid.uuid1()
-
-        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
