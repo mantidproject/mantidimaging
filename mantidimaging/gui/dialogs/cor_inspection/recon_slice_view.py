@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtWidgets import QPushButton
@@ -31,20 +31,14 @@ class CompareSlicesView(GraphicsLayoutWidget):
         self.imageview_current = MIMiniImageView(name="current")
         self.imageview_more = MIMiniImageView(name="more")
         self.all_imageviews = [self.imageview_less, self.imageview_current, self.imageview_more]
-        MIMiniImageView.set_siblings(self.all_imageviews)
+        MIMiniImageView.set_siblings(self.all_imageviews, axis=True, hist=True)
 
         self.less_img, self.less_img_vb, self.less_hist = self.imageview_less.get_parts()
         self.current_img, self.current_img_vb, self.current_hist = self.imageview_current.get_parts()
         self.more_img, self.more_img_vb, self.more_hist = self.imageview_more.get_parts()
 
-        def on_level_change():
-            levels: Tuple[float, float] = self.current_hist.getLevels()
-            self.less_hist.setLevels(*levels)
-            self.more_hist.setLevels(*levels)
-
-        self.current_hist.sigLevelsChanged.connect(on_level_change)
-
         self.imageview_less.link_sibling_axis()
+        self.imageview_less.link_sibling_histogram()
 
         image_layout = self.addLayout(colspan=6)
 
@@ -92,9 +86,5 @@ class CompareSlicesView(GraphicsLayoutWidget):
             self.more_label.setText(title)
             self.more_sumsq.setText(f"Sum of SQ: {sumsq:.6f}")
             self.sumsqs[2] = sumsq
-
-        self.less_hist.imageChanged(True, True)
-        self.more_hist.imageChanged(True, True)
-        self.current_hist.sigLevelsChanged.emit(self.current_hist)
 
         self.parent.mark_best_recon(self.sumsqs)

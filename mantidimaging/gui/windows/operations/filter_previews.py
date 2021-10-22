@@ -66,7 +66,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_after = MIMiniImageView(name="after")
         self.imageview_difference = MIMiniImageView(name="difference")
         self.add_imageviews = [self.imageview_before, self.imageview_after, self.imageview_difference]
-        MIMiniImageView.set_siblings(self.add_imageviews)
+        MIMiniImageView.set_siblings(self.add_imageviews, axis=True)
+        MIMiniImageView.set_siblings([self.imageview_before, self.imageview_after], hist=True)
 
         self.image_before, self.image_before_vb, self.image_before_hist = self.imageview_before.get_parts()
         self.image_after, self.image_after_vb, self.image_after_hist = self.imageview_after.get_parts()
@@ -147,11 +148,9 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def link_all_views(self):
         self.imageview_before.link_sibling_axis()
-        self.imageview_after.link_histogram(self.imageview_before)
 
     def unlink_all_views(self):
         self.imageview_before.unlink_sibling_axis()
-        self.imageview_after.unlink_histogram()
 
     def add_difference_overlay(self, diff, nan_change):
         diff = np.absolute(diff)
@@ -202,23 +201,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         :param create_link: Whether the link should be created or removed.
         """
         if create_link:
-            self.image_after_hist.sigLevelChangeFinished.connect(self.link_image_before_to_after_hist_range)
-            self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_to_before_hist_range)
+            self.imageview_after.link_sibling_histogram()
         else:
-            self.image_before_hist.sigLevelChangeFinished.disconnect()
-            self.image_after_hist.sigLevelChangeFinished.disconnect()
-
-    def link_image_after_to_before_hist_range(self):
-        """
-        Makes the histogram scale of the before image match the histogram scale of the after image.
-        """
-        self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
-
-    def link_image_before_to_after_hist_range(self):
-        """
-        Makes the histogram scale of the after image match the histogram scale of the before image.
-        """
-        self.image_before_hist.region.setRegion(self.image_after_hist.region.getRegion())
+            self.imageview_after.unlink_sibling_histogram()
 
     def set_histogram_log_scale(self):
         """

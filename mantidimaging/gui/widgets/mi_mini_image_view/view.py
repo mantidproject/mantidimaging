@@ -10,6 +10,7 @@ from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 
 graveyard = []
 
@@ -43,20 +44,27 @@ class MIMiniImageView(GraphicsLayout):
         self.details = self.addLabel("", colspan=2)
         self.im.hoverEvent = lambda ev: self.mouse_over(ev)
 
-        self.siblings: "WeakSet[MIMiniImageView]" = WeakSet()
+        self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
+        self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
     def clear(self):
         self.im.clear()
 
     @staticmethod
-    def set_siblings(sibling_views: List["MIMiniImageView"]):
+    def set_siblings(sibling_views: List["MIMiniImageView"], axis=False, hist=False):
         for view1 in sibling_views:
             for view2 in sibling_views:
                 if view2 is not view1:
-                    view1.add_sibling(view2)
+                    if axis:
+                        view1.add_axis_sibling(view2)
+                    if hist:
+                        view1.add_hist_sibling(view2)
 
-    def add_sibling(self, sibling: "MIMiniImageView"):
-        self.siblings.add(sibling)
+    def add_axis_sibling(self, sibling: "MIMiniImageView"):
+        self.axis_siblings.add(sibling)
+
+    def add_hist_sibling(self, sibling: "MIMiniImageView"):
+        self.histogram_siblings.add(sibling)
 
     def get_parts(self) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:
         return self.im, self.vb, self.hist
@@ -68,7 +76,7 @@ class MIMiniImageView(GraphicsLayout):
         pos = CloseEnoughPoint(ev.pos())
 
         self.show_value(pos)
-        for img_view in self.siblings:
+        for img_view in self.axis_siblings:
             img_view.show_value(pos)
 
     def show_value(self, pos):
@@ -78,17 +86,28 @@ class MIMiniImageView(GraphicsLayout):
             self.details.setText(f"{self.name}: {pixel_value:.6f}")
 
     def link_sibling_axis(self):
-        for view1, view2 in pairwise(chain([self], self.siblings)):
+        for view1, view2 in pairwise(chain([self], self.axis_siblings)):
             view1.vb.linkView(ViewBox.XAxis, view2.vb)
             view1.vb.linkView(ViewBox.YAxis, view2.vb)
 
     def unlink_sibling_axis(self):
-        for img_view in chain([self], self.siblings):
+        for img_view in chain([self], self.axis_siblings):
             img_view.vb.linkView(ViewBox.XAxis, None)
             img_view.vb.linkView(ViewBox.YAxis, None)
 
-    def link_histogram(self, next_image_view: "MIMiniImageView"):
-        self.hist.vb.linkView(ViewBox.YAxis, next_image_view.hist.vb)
+    def link_sibling_histogram(self):
+        for view1, view2 in pairwise(chain([self], self.histogram_siblings)):
+            view1.hist.vb.linkView(ViewBox.YAxis, view2.hist.vb)
+        for img_view in chain([self], self.histogram_siblings):
+            img_view.hist.sigLevelChangeFinished.connect(img_view.update_sibling_histograms)
 
-    def unlink_histogram(self):
-        self.hist.vb.linkView(ViewBox.YAxis, None)
+    def unlink_sibling_histogram(self):
+        for img_view in chain([self], self.histogram_siblings):
+            img_view.hist.vb.linkView(ViewBox.YAxis, None)
+            img_view.hist.sigLevelChangeFinished.disconnect()
+
+    def update_sibling_histograms(self):
+        hist_range = self.hist.getLevels()
+        for img_view in self.histogram_siblings:
+            with BlockQtSignals(img_view.hist):
+                img_view.hist.setLevels(*hist_range)
