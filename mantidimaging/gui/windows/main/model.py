@@ -96,12 +96,19 @@ class MainWindowModel(object):
         """
         if images_id in self.images:
             self.images[images_id] = new_images
-        # todo: raise error for else case
+        else:
+            raise RuntimeError(f"Failed to get Images with ID {images_id}")
 
-    def add_180_deg_to_dataset(self, stack_id, _180_deg_file):
-        images = self.get_images_by_uuid(stack_id)
-        if stack_id is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_id}") # todo: change message
+    def add_180_deg_to_dataset(self, images_id: uuid.UUID, _180_deg_file: str) -> Images:
+        """
+        Loads to 180 projection and adds this to a given Images ID.
+        :param images_id: The ID of the Images object.
+        :param _180_deg_file: The location of the 180 projection.
+        :return: The loaded 180 Image object.
+        """
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            raise RuntimeError(f"Failed to get Images with ID {images_id}")
 
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
         images.proj180deg = _180_deg
