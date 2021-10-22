@@ -4,8 +4,7 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, LabelItem
+from pyqtgraph import GraphicsLayoutWidget, ImageItem
 
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -18,10 +17,6 @@ class CompareSlicesView(GraphicsLayoutWidget):
     less_img: ImageItem
     current_img: ImageItem
     more_img: ImageItem
-
-    lessButton: QPushButton
-    currentButton: QPushButton
-    moreButton: QPushButton
 
     def __init__(self, parent: 'CORInspectionDialogView'):
         super().__init__(parent)
@@ -40,26 +35,18 @@ class CompareSlicesView(GraphicsLayoutWidget):
         self.imageview_less.link_sibling_axis()
         self.imageview_less.link_sibling_histogram()
 
-        image_layout = self.addLayout(colspan=6)
+        self.less_label = self.addLabel("", 0, 0)
+        self.current_label = self.addLabel("", 0, 1)
+        self.more_label = self.addLabel("", 0, 2)
 
-        self.less_label = LabelItem("")
-        image_layout.addItem(self.less_label, 0, 0, 1, 2)
-        self.current_label = LabelItem("")
-        image_layout.addItem(self.current_label, 0, 2, 1, 2)
-        self.more_label = LabelItem("Value")
-        image_layout.addItem(self.more_label, 0, 4, 1, 2)
-
-        sub_layout = image_layout.addLayout(1, 0, colspan=6)
+        sub_layout = self.addLayout(1, 0, colspan=3)
         sub_layout.addItem(self.imageview_less)
         sub_layout.addItem(self.imageview_current)
         sub_layout.addItem(self.imageview_more)
 
-        self.less_sumsq = LabelItem("Value")
-        image_layout.addItem(self.less_sumsq, 2, 0, 1, 2)
-        self.current_sumsq = LabelItem("Value")
-        image_layout.addItem(self.current_sumsq, 2, 2, 1, 2)
-        self.more_sumsq = LabelItem("Value")
-        image_layout.addItem(self.more_sumsq, 2, 4, 1, 2)
+        self.less_sumsq = self.addLabel("", 2, 0)
+        self.current_sumsq = self.addLabel("", 2, 1)
+        self.more_sumsq = self.addLabel("", 2, 2)
 
         self.sumsqs = [0, 0, 0]
 
