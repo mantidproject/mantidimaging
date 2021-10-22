@@ -133,6 +133,13 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
     def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
+        self.view.create_stack_window.return_value = dock_mock = mock.Mock()
+
+        def stack_id():
+            return uuid.uuid1()
+
+        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
+
         self.view.active_stacks_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
