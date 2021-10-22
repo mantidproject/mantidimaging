@@ -41,14 +41,6 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertEqual(1, len(self.model._stack_names))
         self.assertEqual(expected_name, self.model._stack_names[0])
 
-    def test_stack_list(self):
-        uid, widget_mock, expected_name = self._add_mock_widget()
-
-        self.assertEqual(1, len(self.model.stack_list))
-        self.assertEqual(1, len(self.model._stack_names))
-        self.assertEqual(uid, self.model.stack_list[0].id)
-        self.assertEqual(expected_name, self.model._stack_names[0])
-
     def test_get_stack(self):
         uid, widget_mock, _ = self._add_mock_widget()
 
@@ -239,20 +231,18 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertEqual(_180_stack, images_mock.proj180deg)
 
     @mock.patch('mantidimaging.core.io.loader.load')
-    def test_add_180_deg_to_stack_no_stack(self, load: mock.Mock):
+    def test_add_180_deg_to_dataset_no_dataset(self, load: mock.Mock):
         """
-        Test in add_180_deg_to_stack when get_stack_by_name returns None
+        Test in add_180_deg_to_stack when get_images_by_uuid returns None
         """
         _180_file = "180 file"
-        stack_name = "stack name"
-        stack_mock = mock.MagicMock()
-        self.model.get_stack_by_name = stack_mock
-        stack_mock.return_value = None
+        images_id = uuid.uuid1()
+        self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value = None)
         self.assertRaises(RuntimeError,
                           self.model.add_180_deg_to_dataset,
-                          stack_name=stack_name,
+                          images_id=images_id,
                           _180_deg_file=_180_file)
-        stack_mock.assert_called_with(stack_name)
+        get_images_mock.assert_called_with(images_id)
 
     def test_add_projection_angles_to_sample_no_stack(self):
         proj_angles = ProjectionAngles(np.arange(0, 10))
