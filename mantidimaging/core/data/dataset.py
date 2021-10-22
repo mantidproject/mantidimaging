@@ -26,7 +26,7 @@ class Dataset:
         if isinstance(dark_before, Images):
             self._dark_before = weakref.ref(dark_before)
         if isinstance(dark_after, Images):
-            self._flat_before = weakref.ref(dark_after)
+            self._dark_after = weakref.ref(dark_after)
 
         self._id: uuid.UUID = uuid.uuid1()
 
