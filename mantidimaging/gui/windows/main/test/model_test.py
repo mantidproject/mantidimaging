@@ -9,7 +9,6 @@ import numpy as np
 
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
-from mantidimaging.gui.windows.main.presenter import create_stack_name
 
 
 class MainWindowModelTest(unittest.TestCase):
@@ -21,58 +20,15 @@ class MainWindowModelTest(unittest.TestCase):
         self.model_class_name = f"{self.model.__module__}.{self.model.__class__.__name__}"
         self.stack_list_property = f"{self.model_class_name}.stack_list"
 
-    def _add_mock_widget(self):
-        expected_name = "stackname"
-        widget_mock = mock.Mock()
-        widget_mock.windowTitle.return_value = expected_name
-        uid = uuid.uuid4()
-        self.model.active_stacks = {uid: widget_mock}
-        return uid, widget_mock, expected_name
+    def _add_mock_image(self):
+        image_mock = mock.Mock()
+        uid = uuid.uuid1()
+        self.model.images[uid] = image_mock
+        return uid, image_mock
 
-    def test_add_stack(self):
-        stack_mock = mock.Mock()
-        expected_name = "stackname"
-        stack_mock.windowTitle.return_value = expected_name
-
-        self.model.add_stack(stack_mock)
-
-        self.assertTrue(hasattr(stack_mock, 'uuid'))
-        self.assertEqual(1, len(self.model.stack_list))
-        self.assertEqual(1, len(self.model._stack_names))
-        self.assertEqual(expected_name, self.model._stack_names[0])
-
-    def test_get_stack(self):
-        uid, widget_mock, _ = self._add_mock_widget()
-
-        self.assertIs(widget_mock, self.model.get_stack(uid))
-
-    def test_get_stack_by_name(self):
-        _, widget_mock, expected_name = self._add_mock_widget()
-
-        self.assertIs(widget_mock, self.model.get_stack_by_name(expected_name))
-
-    def test_get_stack_by_images(self):
-        _, widget_mock, expected_name = self._add_mock_widget()
-
-        self.assertIs(widget_mock, self.model.get_stack_by_name(expected_name))
-
-    def test_get_stack_visualiser(self):
-        uid, widget_mock, _ = self._add_mock_widget()
-
-        self.assertIs(widget_mock, self.model.get_stack_visualiser(uid))
-
-    def test_do_remove_stack(self):
-        uid, _, _ = self._add_mock_widget()
-
-        self.assertEqual(1, len(self.model.stack_list))
-        self.model.do_remove_stack(uid)
-        self.assertEqual(0, len(self.model.stack_list))
-
-    def test_have_active_stacks(self):
-        uid, _, _ = self._add_mock_widget()
-        self.assertTrue(self.model.have_active_stacks)
-        self.model.do_remove_stack(uid)
-        self.assertFalse(self.model.have_active_stacks)
+    def test_get_images_by_uuid(self):
+        uid, image_mock = self._add_mock_image()
+        self.assertIs(image_mock, self.model.get_images_by_uuid(uid))
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_p')
@@ -107,7 +63,7 @@ class MainWindowModelTest(unittest.TestCase):
         load_p_mock.assert_called_once_with(sample_mock, lp.dtype, progress_mock)
         load_log_mock.assert_called_once_with(sample_mock.log_file)
 
-    @mock.patch('mantidimaging.core.io.loader.load_log')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
     def test_do_load_stack_sample_and_flat(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = LoadingParameters()
@@ -144,8 +100,8 @@ class MainWindowModelTest(unittest.TestCase):
         assert self.model.images[flatb_images_mock.id] is flatb_images_mock
         assert self.model.images[flata_images_mock.id] is flata_images_mock
 
-    @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_p')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
     def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = LoadingParameters()
         sample_mock = mock.Mock()
@@ -169,6 +125,13 @@ class MainWindowModelTest(unittest.TestCase):
 
         progress_mock = mock.Mock()
 
+        sample_images_mock = mock.Mock()
+        flatb_images_mock = mock.Mock()
+        flata_images_mock = mock.Mock()
+        darkb_images_mock = mock.Mock()
+        darka_images_mock = mock.Mock()
+        load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock, darkb_images_mock, darka_images_mock, mock.Mock()]
+
         self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
@@ -185,16 +148,11 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock.log_file),
             mock.call(flat_after_mock.log_file)
         ])
-
-    def test_create_name(self):
-        self.assertEqual("apple", create_stack_name(self.model._stack_names, "apple"))
-
-        taken_name = "apple"
-        widget_mock = mock.Mock()
-        widget_mock.windowTitle.return_value = taken_name
-        self.model.active_stacks = {"some_uuid": widget_mock}
-
-        self.assertEqual("apple_2", create_stack_name(self.model._stack_names, "apple"))
+        assert self.model.images[sample_images_mock.id] is sample_images_mock
+        assert self.model.images[flatb_images_mock.id] is flatb_images_mock
+        assert self.model.images[flata_images_mock.id] is flata_images_mock
+        assert self.model.images[darkb_images_mock.id] is darkb_images_mock
+        assert self.model.images[darka_images_mock.id] is darka_images_mock
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
@@ -254,24 +212,24 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_add_projection_angles_to_sample_no_stack(self):
         proj_angles = ProjectionAngles(np.arange(0, 10))
-        stack_name = "stack name"
-        stack_mock = mock.MagicMock()
-        self.model.get_stack_by_name = stack_mock
-        stack_mock.return_value = None
-        self.assertRaises(RuntimeError, self.model.add_projection_angles_to_sample, stack_name, proj_angles)
+        images_id = uuid.uuid1()
+        get_images_mock = mock.MagicMock()
+        self.model.get_images_by_uuid = get_images_mock
+        get_images_mock.return_value = None
+        self.assertRaises(RuntimeError, self.model.add_projection_angles_to_sample, images_id, proj_angles)
 
-        stack_mock.assert_called_with(stack_name)
+        get_images_mock.assert_called_with(images_id)
 
     def test_add_projection_angles_to_sample(self):
         proj_angles = ProjectionAngles(np.arange(0, 10))
-        stack_name = "stack name"
-        stack_mock = mock.MagicMock()
-        self.model.get_stack_by_name = stack_mock
+        images_id = uuid.uuid1()
+        get_images_mock = mock.MagicMock()
+        self.model.get_images_by_uuid = get_images_mock
 
-        self.model.add_projection_angles_to_sample(stack_name, proj_angles)
+        self.model.add_projection_angles_to_sample(images_id, proj_angles)
 
-        stack_mock.assert_called_with(stack_name)
-        stack_mock.return_value.widget.return_value.presenter.images.set_projection_angles.assert_called_once_with(
+        get_images_mock.assert_called_with(images_id)
+        get_images_mock.return_value.set_projection_angles.assert_called_once_with(
             proj_angles)
 
     @mock.patch("mantidimaging.gui.windows.main.model.loader")
