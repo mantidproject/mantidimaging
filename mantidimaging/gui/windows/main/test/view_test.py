@@ -182,12 +182,16 @@ class MainWindowViewTest(unittest.TestCase):
         position = "test_position"
         floating = False
 
+        self.view.splitter = splitter_mock = mock.Mock()
+
         self.view.create_stack_window(images, title, position=position, floating=floating)
 
         mock_sv.assert_called_once_with(self.view, title, images)
         dock = mock_sv.return_value
-        setCentralWidget.assert_called_once_with(dock)
+        setCentralWidget.assert_called_once_with(splitter_mock)
         addDockWidget.assert_called_once_with(position, dock)
+
+        splitter_mock.addWidget.assert_called_once_with(mock_sv.return_value)
 
         dock.setFloating.assert_called_once_with(floating)
 
