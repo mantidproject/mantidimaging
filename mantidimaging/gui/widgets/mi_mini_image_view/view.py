@@ -39,6 +39,7 @@ class MIMiniImageView(GraphicsLayout):
         image_layout = self.addLayout(colspan=2)
         image_layout.addItem(self.vb)
         image_layout.addItem(self.hist)
+        self.hist.setFixedWidth(100)  # HistogramLUTItem used pixel sizes
 
         self.nextRow()
         self.details = self.addLabel("", colspan=2)
