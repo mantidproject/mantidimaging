@@ -115,7 +115,7 @@ class MainWindowModel(object):
 
     def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
         images = self.get_images_by_uuid(images_id)
-        if images_id is None:
+        if images is None:
             self.raise_error_when_images_not_found(images_id)
         images.set_projection_angles(proj_angles)
 
