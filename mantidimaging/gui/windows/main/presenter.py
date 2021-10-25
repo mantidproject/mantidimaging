@@ -283,11 +283,11 @@ class MainWindowPresenter(BasePresenter):
             sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
     def get_stack_with_images(self, images: Images) -> StackVisualiserView:
-        for _, sv in self.active_stacks.items():
+        for _, sv in self.stacks.items():
             if images is sv.presenter.images:
                 return sv
-        raise RuntimeError(f"Did not find stack {images} in active stacks! "
-                           f"Active stacks: {self.active_stacks.items()}")
+        raise RuntimeError(f"Did not find stack {images} in stacks! "
+                           f"Stacks: {self.stacks.items()}")
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_images_by_uuid(uuid, images)
