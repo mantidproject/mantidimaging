@@ -97,7 +97,7 @@ class MainWindowModel(object):
         if images_id in self.images:
             self.images[images_id] = new_images
         else:
-            raise RuntimeError(f"Failed to get Images with ID {images_id}")
+            self.raise_error_when_images_not_found(images_id)
 
     def add_180_deg_to_dataset(self, images_id: uuid.UUID, _180_deg_file: str) -> Images:
         """
@@ -108,8 +108,7 @@ class MainWindowModel(object):
         """
         images = self.get_images_by_uuid(images_id)
         if images is None:
-            raise RuntimeError(f"Failed to get Images with ID {images_id}")
-
+            self.raise_error_when_images_not_found(images_id)
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
         images.proj180deg = _180_deg
         return _180_deg
@@ -117,11 +116,16 @@ class MainWindowModel(object):
     def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
         images = self.get_images_by_uuid(images_id)
         if images_id is None:
-            raise RuntimeError(f"Failed to get stack with name {images_id}") # todo: change message
+            self.raise_error_when_images_not_found(images_id)
         images.set_projection_angles(proj_angles)
+
+    def raise_error_when_images_not_found(self, images_id: uuid.UUID):
+        raise RuntimeError(f"Failed to get Images with ID {images_id}")
 
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
         images = self.get_images_by_uuid(images_id)
+        if images is None:
+            raise RuntimeError
         log = load_log(log_file)
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
