@@ -96,7 +96,7 @@ class MainWindowPresenter(BasePresenter):
     def _do_remove_stack(self, stack_uuid: UUID):
         self.remove_item_from_tree_view(stack_uuid)
         del self.stacks[stack_uuid]
-        self.model.delete_container(stack_uuid)
+        self.model.remove_container(stack_uuid)
         self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
 
     def _do_rename_stack(self, current_name: str, new_name: str):

@@ -131,7 +131,7 @@ class MainWindowModel(object):
         images.log_file = log
         # todo - send update here or do it from presenter?
         
-    def _delete_single_image(self, images_id: uuid.UUID):
+    def _remove_image_stack(self, images_id: uuid.UUID):
         del self.images[images_id]
         for dataset in self.datasets.values():
             # if _matching_dataset_attribute(dataset.sample, images_id):
@@ -149,7 +149,7 @@ class MainWindowModel(object):
                 del self.images[dataset.dark_after.id]
                 return
 
-    def _delete_dataset(self, dataset_id: uuid.UUID):
+    def _remove_dataset(self, dataset_id: uuid.UUID):
         dataset = self.datasets[dataset_id]
         del self.images[dataset.sample.id]
         del self.images[dataset.flat_before.id]
@@ -158,8 +158,8 @@ class MainWindowModel(object):
         del self.images[dataset.dark_after.id]
         del self.datasets[dataset_id]
 
-    def delete_container(self, container_id: uuid.UUID):
+    def remove_container(self, container_id: uuid.UUID):
         if container_id in self.images:
-            self._delete_single_image(container_id)
+            self._remove_image_stack(container_id)
         if container_id in self.datasets:
-            self._delete_dataset(container_id)
+            self._remove_dataset(container_id)
