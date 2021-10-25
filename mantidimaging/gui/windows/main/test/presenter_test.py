@@ -3,6 +3,7 @@
 
 import unittest
 import uuid
+from typing import List
 
 from unittest import mock
 
@@ -13,7 +14,6 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import create_stack_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -38,22 +38,34 @@ class MainWindowPresenterTest(unittest.TestCase):
             return uuid.uuid1()
 
         type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
+        self.mock_stack_names([])
+
+    def mock_stack_names(self, stack_names: List[str]):
+        type(self.presenter).stack_names = mock.PropertyMock(return_value=stack_names)
+
+    def test_create_name(self):
+        self.assertEqual("apple", self.presenter.create_stack_name("apple"))
+
+        self.mock_stack_names(["apple"])
+        self.assertEqual("apple_2", self.presenter.create_stack_name("apple"))
 
     def test_create_name_one_duplicate_stack_loaded(self):
-        self.assertEqual(create_stack_name(["test"], "test"), "test_2")
+        self.mock_stack_names(["test"])
+        self.assertEqual(self.presenter.create_stack_name("test"), "test_2")
 
     def test_create_name_multiple_duplicate_stacks_loaded(self):
         stack_names = ["test", "test_2", "test_3"]
-        self.assertEqual(create_stack_name(stack_names, "test"), "test_4")
+        self.mock_stack_names(stack_names)
+        self.assertEqual(self.presenter.create_stack_name("test"), "test_4")
 
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_names, [])
 
     def test_create_name_no_stacks_loaded(self):
-        self.assertEqual(create_stack_name([], "test"), "test")
+        self.assertEqual(self.presenter.create_stack_name("test"), "test")
 
     def test_create_name_strips_extension(self):
-        self.assertEqual(create_stack_name([], "test.tif"), "test")
+        self.assertEqual(self.presenter.create_stack_name("test.tif"), "test")
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task

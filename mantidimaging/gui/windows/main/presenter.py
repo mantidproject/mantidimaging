@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QTreeWidget, QDockWidget
+from PyQt5.QtWidgets import QTabBar, QApplication, QDockWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
@@ -36,24 +36,6 @@ class Notification(Enum):
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
-
-
-def create_stack_name(_stack_names: List[str], filename: str) -> str:
-    """
-    Creates a suitable name for a newly loaded stack.
-    """
-    # Avoid file extensions in names
-    filename = os.path.splitext(filename)[0]
-
-    # Avoid duplicate names
-    name = filename
-    current_names = _stack_names
-    num = 1
-    while name in current_names:
-        num += 1
-        name = f"{filename}_{num}"
-
-    return name
 
 
 class MainWindowPresenter(BasePresenter):
@@ -167,7 +149,7 @@ class MainWindowPresenter(BasePresenter):
         self.show_error(msg, traceback.format_exc())
 
     def _add_stack(self, images: Images, filename: str, sample_dock):
-        name = create_stack_name(self.stack_names, os.path.basename(filename))
+        name = self.create_stack_name(os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
         self.stacks[stack_visualiser.uuid] = stack_visualiser
@@ -176,7 +158,7 @@ class MainWindowPresenter(BasePresenter):
         return [stack for stack in self.active_stacks.values()]  # type:ignore
 
     def create_new_180_stack(self, container: Images, title: str):
-        title = create_stack_name(self.stack_names, title)
+        title = self.create_stack_name(title)
         _180_stack_vis = self.view.create_stack_window(container, title)
 
         current_stack_visualisers = self.get_active_stack_visualisers()
@@ -196,7 +178,7 @@ class MainWindowPresenter(BasePresenter):
         return _180_stack_vis
 
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
-        title = create_stack_name(self.stack_names, title)
+        title = self.create_stack_name(title)
 
         sample = container if isinstance(container, Images) else container.sample
         sample_stack_vis = self.view.create_stack_window(sample, title)
@@ -273,8 +255,7 @@ class MainWindowPresenter(BasePresenter):
 
     @property
     def stack_names(self):  # todo: rename?
-        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
-        return sorted(stacks, key=lambda x: x.name)
+        return [widget.windowTitle() for widget in self.active_stacks.values()]
 
     def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
         return self.active_stacks[stack_uuid]
@@ -324,8 +305,21 @@ class MainWindowPresenter(BasePresenter):
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
         return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file)  # todo: assumes the stack is the sample?
 
-    def create_stack_name(self, filename: str):
-        return create_stack_name(self.stack_names, os.path.basename(filename))
+    def create_stack_name(self, filename: str) -> str:
+        """
+        Creates a suitable name for a newly loaded stack.
+        """
+        # Avoid file extensions in names
+        filename = os.path.splitext(filename)[0]
+
+        # Avoid duplicate names
+        name = filename
+        num = 1
+        while name in self.stack_names:
+            num += 1
+            name = f"{filename}_{num}"
+
+        return name
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         stack_id = self.get_stack_id_by_name(stack_name)
