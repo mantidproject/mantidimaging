@@ -55,7 +55,7 @@ class MainWindowViewTest(unittest.TestCase):
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
-        self.presenter.add_180_deg_to_sample.return_value = _180_dataset
+        self.presenter.add_180_deg_to_dataset.return_value = _180_dataset
         self.view.create_new_180_stack = mock.MagicMock()  # type: ignore
         selected_filename = "selected_file.tif"
         self.presenter.create_stack_name = mock.MagicMock(return_value=selected_filename)
@@ -69,7 +69,7 @@ class MainWindowViewTest(unittest.TestCase):
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
-        self.presenter.add_180_deg_to_sample.assert_called_once_with(stack_name=selected_stack,
+        self.presenter.add_180_deg_to_dataset.assert_called_once_with(stack_name=selected_stack,
                                                                      _180_deg_file=selected_file)
         self.presenter.create_stack_name.assert_called_once_with(selected_file)
         self.view.create_new_180_stack.assert_called_once_with(_180_dataset, selected_filename)
