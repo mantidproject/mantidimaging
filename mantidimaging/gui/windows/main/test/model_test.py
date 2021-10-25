@@ -191,17 +191,17 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
         log_file = "Log file"
-        stack_name = "stack name"
-        stack_mock = mock.MagicMock()
-        self.model.get_stack_by_name = stack_mock
+        images_id = uuid.uuid1()
+        images_mock = mock.MagicMock()
+        self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value=images_mock)
 
-        self.model.add_log_to_sample(stack_name=stack_name, log_file=log_file)
+        self.model.add_log_to_sample(images_id=images_id, log_file=log_file)
 
         load_log.assert_called_once_with(log_file)
-        stack_mock.assert_called_with(stack_name)
-        self.assertEqual(load_log.return_value, stack_mock.return_value.widget.return_value.presenter.images.log_file)
-        stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
-            .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
+        get_images_mock.assert_called_with(images_id)
+        self.assertEqual(load_log.return_value, images_mock.log_file)
+        # stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
+        #     .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample_no_stack(self, load_log: mock.Mock):
@@ -209,23 +209,23 @@ class MainWindowModelTest(unittest.TestCase):
         Test in add_log_to_sample when get_stack_by_name returns None
         """
         log_file = "Log file"
-        stack_name = "stack name"
+        images_id = uuid.uuid1()
         stack_mock = mock.MagicMock()
-        self.model.get_stack_by_name = stack_mock
+        self.model.get_images_by_uuid = stack_mock
         stack_mock.return_value = None
 
-        self.assertRaises(RuntimeError, self.model.add_log_to_sample, stack_name=stack_name, log_file=log_file)
+        self.assertRaises(RuntimeError, self.model.add_log_to_sample, images_id=images_id, log_file=log_file)
 
-        stack_mock.assert_called_with(stack_name)
+        stack_mock.assert_called_with(images_id)
 
     @mock.patch('mantidimaging.core.io.loader.load')
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
-        stack_id = uuid.uuid1()
-        self.model.images[stack_id] = images_mock = mock.MagicMock()
+        images_id = uuid.uuid1()
+        self.model.images[images_id] = images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = mock.Mock(return_value=images_mock)
 
-        _180_stack = self.model.add_180_deg_to_dataset(stack_id=stack_id, _180_deg_file=_180_file)
+        _180_stack = self.model.add_180_deg_to_dataset(images_id=images_id, _180_deg_file=_180_file)
 
         load.assert_called_with(file_names=[_180_file])
         self.assertEqual(_180_stack, images_mock.proj180deg)
