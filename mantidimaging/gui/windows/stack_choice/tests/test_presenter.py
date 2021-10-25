@@ -81,7 +81,7 @@ class StackChoicePresenterTest(unittest.TestCase):
 
         self.p.do_reapply_original_data()
 
-        self.op_p.main_window.presenter.model.set_images_in_stack.assert_called_once_with(self.uuid, 1)
+        self.op_p.main_window.presenter.set_images_in_stack.assert_called_once_with(self.uuid, 1)
         self.p._clean_up_original_images_stack.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
