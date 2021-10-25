@@ -108,7 +108,7 @@ class MainWindowModelTest(unittest.TestCase):
         load_log_mock.assert_called_once_with(sample_mock.log_file)
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_p')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
     def test_do_load_stack_sample_and_flat(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = LoadingParameters()
         sample_mock = mock.Mock()
@@ -123,6 +123,11 @@ class MainWindowModelTest(unittest.TestCase):
         lp.flat_after = flat_after_mock
         progress_mock = mock.Mock()
 
+        sample_images_mock = mock.Mock()
+        flatb_images_mock = mock.Mock()
+        flata_images_mock = mock.Mock()
+        load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock]
+
         self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
@@ -135,6 +140,9 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock.log_file),
             mock.call(flat_after_mock.log_file)
         ])
+        assert self.model.images[sample_images_mock.id] is sample_images_mock
+        assert self.model.images[flatb_images_mock.id] is flatb_images_mock
+        assert self.model.images[flata_images_mock.id] is flata_images_mock
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_p')
