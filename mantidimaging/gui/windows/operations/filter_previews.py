@@ -9,13 +9,13 @@ import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
 from PyQt5.QtWidgets import QAction
-from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, ViewBox
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
-from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
+from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 LOG = getLogger(__name__)
 
@@ -31,7 +31,6 @@ OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 Coord = namedtuple('Coord', ['row', 'col'])
 histogram_coords = Coord(4, 0)
 label_coords = Coord(3, 1)
-graveyard = []
 
 
 def _data_valid_for_histogram(data):
@@ -63,10 +62,17 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.image_before, self.image_before_vb, self.image_before_hist = self.image_in_vb(name="before")
-        self.image_after, self.image_after_vb, self.image_after_hist = self.image_in_vb(name="after")
-        self.image_difference, self.image_difference_vb, self.image_difference_hist = self.image_in_vb(
-            name="difference")
+        self.imageview_before = MIMiniImageView(name="before")
+        self.imageview_after = MIMiniImageView(name="after")
+        self.imageview_difference = MIMiniImageView(name="difference")
+        self.all_imageviews = [self.imageview_before, self.imageview_after, self.imageview_difference]
+        MIMiniImageView.set_siblings(self.all_imageviews, axis=True)
+        MIMiniImageView.set_siblings([self.imageview_before, self.imageview_after], hist=True)
+
+        self.image_before, self.image_before_vb, self.image_before_hist = self.imageview_before.get_parts()
+        self.image_after, self.image_after_vb, self.image_after_hist = self.imageview_after.get_parts()
+        self.image_difference, self.image_difference_vb, self.image_difference_hist = \
+            self.imageview_difference.get_parts()
 
         self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
 
@@ -79,27 +85,12 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_after_vb.addItem(self.negative_values_overlay)
 
         # Ensure images resize equally
-        self.image_layout: GraphicsLayout = self.addLayout(colspan=6)
-        self.image_layout.addItem(self.image_before_vb, 0, 0)
-        self.image_layout.addItem(self.image_before_hist, 0, 1)
-        self.image_layout.addItem(self.image_after_vb, 0, 2)
-        self.image_layout.addItem(self.image_after_hist, 0, 3)
-        self.image_layout.addItem(self.image_difference_vb, 0, 4)
-        self.image_layout.addItem(self.image_difference_hist, 0, 5)
+        self.image_layout: GraphicsLayout = self.addLayout(colspan=3)
+
+        self.image_layout.addItem(self.imageview_before)
+        self.image_layout.addItem(self.imageview_after)
+        self.image_layout.addItem(self.imageview_difference)
         self.nextRow()
-
-        before_details = self.addLabel("")
-        after_details = self.addLabel("")
-        difference_details = self.addLabel("")
-
-        self.display_formatted_detail = {
-            self.image_before: lambda val: before_details.setText(f"Before: {val:.6f}"),
-            self.image_after: lambda val: after_details.setText(f"After: {val:.6f}"),
-            self.image_difference: lambda val: difference_details.setText(f"Difference: {val:.6f}"),
-        }
-
-        for img in self.image_before, self.image_after, self.image_difference:
-            img.hoverEvent = lambda ev: self.mouse_over(ev)
 
         self.init_histogram()
 
@@ -111,25 +102,19 @@ class FilterPreviews(GraphicsLayoutWidget):
         self._add_auto_colour_action(self.image_after_hist, self.image_after)
         self._add_auto_colour_action(self.image_difference_hist, self.image_difference)
 
+        self.imageview_before.link_sibling_axis()
+
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None and isinstance(self.histogram, PlotItem):
             size = ev.size()
             self.histogram.setFixedHeight(min(size.height() * 0.7, self.ALLOWED_HEIGHT) * 0.25)
         super().resizeEvent(ev)
 
-    def image_in_vb(self, name=None):
-        im = ImageItem()
-        vb = ViewBox(invertY=True, lockAspect=True, name=name)
-        vb.addItem(im)
-        hist = HistogramLUTItem(im)
-        graveyard.append(vb)
-        return im, vb, hist
-
     def clear_items(self, clear_before: bool = True):
         if clear_before:
-            self.image_before.clear()
-        self.image_after.clear()
-        self.image_difference.clear()
+            self.imageview_before.clear()
+        self.imageview_after.clear()
+        self.imageview_difference.clear()
         self.image_diff_overlay.clear()
 
     def init_histogram(self):
@@ -161,28 +146,11 @@ class FilterPreviews(GraphicsLayoutWidget):
             return self.histogram.legend
         return None
 
-    def mouse_over(self, ev):
-        # Ignore events triggered by leaving window or right clicking
-        if ev.exit:
-            return
-        pos = CloseEnoughPoint(ev.pos())
-        # Update values for all 3 images
-        for img in self.image_before, self.image_after, self.image_difference:
-            if img.image is not None and pos.y < img.image.shape[0] and pos.x < img.image.shape[1]:
-                pixel_value = img.image[pos.y, pos.x]
-                self.display_formatted_detail[img](pixel_value)
-
     def link_all_views(self):
-        for view1, view2 in [[self.image_before_vb, self.image_after_vb],
-                             [self.image_after_vb, self.image_difference_vb],
-                             [self.image_after_hist.vb, self.image_before_hist.vb]]:
-            view1.linkView(ViewBox.XAxis, view2)
-            view1.linkView(ViewBox.YAxis, view2)
+        self.imageview_before.link_sibling_axis()
 
     def unlink_all_views(self):
-        for view in self.image_before_vb, self.image_after_vb, self.image_after_hist.vb:
-            view.linkView(ViewBox.XAxis, None)
-            view.linkView(ViewBox.YAxis, None)
+        self.imageview_before.unlink_sibling_axis()
 
     def add_difference_overlay(self, diff, nan_change):
         diff = np.absolute(diff)
@@ -233,23 +201,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         :param create_link: Whether the link should be created or removed.
         """
         if create_link:
-            self.image_after_hist.sigLevelChangeFinished.connect(self.link_image_before_to_after_hist_range)
-            self.image_before_hist.sigLevelChangeFinished.connect(self.link_image_after_to_before_hist_range)
+            self.imageview_after.link_sibling_histogram()
         else:
-            self.image_before_hist.sigLevelChangeFinished.disconnect()
-            self.image_after_hist.sigLevelChangeFinished.disconnect()
-
-    def link_image_after_to_before_hist_range(self):
-        """
-        Makes the histogram scale of the before image match the histogram scale of the after image.
-        """
-        self.image_after_hist.region.setRegion(self.image_before_hist.region.getRegion())
-
-    def link_image_before_to_after_hist_range(self):
-        """
-        Makes the histogram scale of the after image match the histogram scale of the before image.
-        """
-        self.image_before_hist.region.setRegion(self.image_after_hist.region.getRegion())
+            self.imageview_after.unlink_sibling_histogram()
 
     def set_histogram_log_scale(self):
         """
