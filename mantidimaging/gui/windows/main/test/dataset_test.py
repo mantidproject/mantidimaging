@@ -41,3 +41,7 @@ class DatasetTest(unittest.TestCase):
         self.assertIsNone(dataset.flat_after)
         self.assertIsNone(dataset.dark_before)
         self.assertIsNone(dataset.dark_after)
+
+    def test_cant_change_id(self):
+        with self.assertRaises(Exception):
+            self.dataset.id = "id"
