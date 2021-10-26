@@ -17,10 +17,6 @@ def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: 
     return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
 
 
-def load_log(log_file: str):
-    return loader.load_log(log_file)
-
-
 class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
@@ -144,11 +140,11 @@ class MainWindowModel(object):
         images = self.get_images_by_uuid(images_id)
         if images is None:
             raise RuntimeError
-        log = load_log(log_file)
+        log = loader.load_log(log_file)
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
         # todo - send update here or do it from presenter?
-        
+
     def _remove_image_stack(self, images_id: uuid.UUID):
         del self.images[images_id]
         for dataset in self.datasets.values():
