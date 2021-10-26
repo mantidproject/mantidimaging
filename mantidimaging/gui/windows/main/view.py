@@ -123,8 +123,10 @@ class MainWindowView(BaseMainWindowView):
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
+
         self.dataset_tree_widget.setMinimumWidth(250)
         self.dataset_tree_widget.setMaximumWidth(300)
+        self.dataset_tree_widget.setHeaderLabel("")
 
         self.setCentralWidget(self.splitter)
 
