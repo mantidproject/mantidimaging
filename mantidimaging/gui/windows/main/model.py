@@ -143,7 +143,6 @@ class MainWindowModel(object):
         log = loader.load_log(log_file)
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
-        # todo - send update here or do it from presenter?
 
     def _remove_image_stack(self, images_id: uuid.UUID):
         del self.images[images_id]
