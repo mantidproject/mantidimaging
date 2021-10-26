@@ -35,7 +35,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
 
         def stack_id():
-            return uuid.uuid1()
+            return uuid.uuid4()
 
         type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
         self.mock_stack_names([])

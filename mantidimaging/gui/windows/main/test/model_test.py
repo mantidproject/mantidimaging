@@ -22,7 +22,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def _add_mock_image(self):
         image_mock = mock.Mock()
-        uid = uuid.uuid1()
+        uid = uuid.uuid4()
         self.model.images[uid] = image_mock
         return uid, image_mock
 
