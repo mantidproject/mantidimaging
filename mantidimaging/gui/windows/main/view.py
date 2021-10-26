@@ -36,13 +36,11 @@ from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 LOG = getLogger(__file__)
 
+
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
     def __init__(self, parent: QTreeWidget, dataset_id: UUID):
         self.uuid = dataset_id
         super().__init__(parent)
-
-
-
 
 
 class MainWindowView(BaseMainWindowView):
@@ -232,7 +230,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
 
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
-                                f"{stack_to_add_log_to}.")
+                                                       f"{stack_to_add_log_to}.")
 
     def load_180_deg_dialog(self):
         stack_selector = StackSelectorDialog(main_window=self,
@@ -277,7 +275,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.add_projection_angles_to_sample(stack_name, projection_angles)
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
-                                f"{stack_name}.")
+                                                       f"{stack_name}.")
 
     def execute_save(self):
         self.presenter.notify(PresNotification.SAVE)
@@ -427,8 +425,8 @@ class MainWindowView(BaseMainWindowView):
                 if not sample_loading:
                     QMessageBox.critical(
                         self, "Load not possible!", "Please provide a directory that has .tif or .tiff files in it, or "
-                        "a sub directory that do not contain dark, flat, or 180 in their title name, that represents a"
-                        " sample.")
+                                                    "a sub directory that do not contain dark, flat, or 180 in their title name, that represents a"
+                                                    " sample.")
                     return
             else:
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
