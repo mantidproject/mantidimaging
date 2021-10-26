@@ -157,7 +157,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
         log_file = "Log file"
-        images_id = uuid.uuid1()
+        images_id = "id"
         images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value=images_mock)
 
@@ -175,7 +175,7 @@ class MainWindowModelTest(unittest.TestCase):
         Test in add_log_to_sample when get_stack_by_name returns None
         """
         log_file = "Log file"
-        images_id = uuid.uuid1()
+        images_id = "id"
         stack_mock = mock.MagicMock()
         self.model.get_images_by_uuid = stack_mock
         stack_mock.return_value = None
@@ -187,7 +187,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load')
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
-        images_id = uuid.uuid1()
+        images_id = "id"
         self.model.images[images_id] = images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = mock.Mock(return_value=images_mock)
 
@@ -202,7 +202,7 @@ class MainWindowModelTest(unittest.TestCase):
         Test in add_180_deg_to_stack when get_images_by_uuid returns None
         """
         _180_file = "180 file"
-        images_id = uuid.uuid1()
+        images_id = "id"
         self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value = None)
         self.assertRaises(RuntimeError,
                           self.model.add_180_deg_to_dataset,
@@ -212,7 +212,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_add_projection_angles_to_sample_no_stack(self):
         proj_angles = ProjectionAngles(np.arange(0, 10))
-        images_id = uuid.uuid1()
+        images_id = "id"
         get_images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = get_images_mock
         get_images_mock.return_value = None
@@ -222,7 +222,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_add_projection_angles_to_sample(self):
         proj_angles = ProjectionAngles(np.arange(0, 10))
-        images_id = uuid.uuid1()
+        images_id = "id"
         get_images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = get_images_mock
 
