@@ -254,8 +254,8 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def stack_names(self):  # todo: rename?
-        return [widget.windowTitle() for widget in self.active_stacks.values()]
+    def stack_names(self):
+        return [widget.windowTitle() for widget in self.stacks.values()]
 
     def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
         return self.active_stacks[stack_uuid]
