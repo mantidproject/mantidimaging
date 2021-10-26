@@ -216,7 +216,7 @@ class MainWindowPresenter(BasePresenter):
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.sample.proj180deg = Images(
                         np.reshape(closest_projection, (1,) + closest_projection.shape))
-                    self._add_stack(container.sample.proj180deg, "180", sample_stack_vis)
+                    self._add_stack(container.sample.proj180deg, "Projection180", sample_stack_vis)
                     self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 
         if len(current_stack_visualisers) > 1:
