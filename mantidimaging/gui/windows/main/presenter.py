@@ -191,6 +191,7 @@ class MainWindowPresenter(BasePresenter):
         dataset_tree_item = self.view.create_dataset_tree_widget_item(title, sample_stack_vis.uuid)
 
         if isinstance(container, Dataset):
+            self.view.create_child_tree_item(dataset_tree_item, container.sample.id, "Projections")
             if container.flat_before and container.flat_before.filenames:
                 self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
                 self.view.create_child_tree_item(dataset_tree_item, container.flat_before.id, "Flat Before")
@@ -361,5 +362,5 @@ class MainWindowPresenter(BasePresenter):
                     top_level_item.takeChild(j)
                     return
 
-    def add_stack_to_dictionary(self, stack):
+    def add_stack_to_dictionary(self, stack: StackVisualiserView):
         self.stacks[stack.uuid] = stack
