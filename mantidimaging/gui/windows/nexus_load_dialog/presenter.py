@@ -240,7 +240,7 @@ class NexusLoadPresenter:
 
     def get_dataset(self) -> Tuple[LoadingDataset, str]:
         """
-        Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
+        Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
         sample_images = self._create_sample_images()
