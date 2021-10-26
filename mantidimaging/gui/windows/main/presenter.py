@@ -117,9 +117,8 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
     def load_nexus_file(self):
-        dataset, title = self.view.nexus_load_dialog.presenter.get_dataset(
-        )  # todo: add this to dataset dictionary in model
-        self.create_new_stack(dataset, title)
+        loading_dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
+        self.create_new_stack(self.model.load_nexus_dataset(loading_dataset), title)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
