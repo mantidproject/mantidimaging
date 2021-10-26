@@ -457,3 +457,4 @@ class MainWindowView(BaseMainWindowView):
 
     def add_item_to_tree_view(self, item: QTreeWidgetItem):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
+        item.setExpanded(True)
