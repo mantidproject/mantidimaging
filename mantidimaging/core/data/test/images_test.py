@@ -211,3 +211,7 @@ class ImagesTest(unittest.TestCase):
         self.assertNotEqual(data_images, data_array)
 
         self.assertRaises(ValueError, lambda a, b: a == b, data_images, 1.0)
+
+    def test_cant_change_id(self):
+        with self.assertRaises(Exception):
+            generate_images().id = "id"
