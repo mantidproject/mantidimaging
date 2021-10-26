@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 
@@ -67,6 +68,23 @@ class MainWindowModel(object):
 
         if parameters.proj_180deg:
             sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
+
+        self.datasets[ds.id] = ds
+        return ds
+
+    def load_nexus_dataset(self, loading_dataset: LoadingDataset) -> Dataset:
+        self.images[loading_dataset.sample.id] = loading_dataset.sample
+        ds = Dataset(loading_dataset.sample)
+
+        if isinstance(loading_dataset.flat_before, Images):
+            self.images[loading_dataset.flat_before.id] = loading_dataset.flat_before
+        if isinstance(loading_dataset.flat_after, Images):
+            self.images[loading_dataset.flat_after.id] = loading_dataset.flat_after
+
+        if isinstance(loading_dataset.dark_before, Images):
+            self.images[loading_dataset.dark_before.id] = loading_dataset.dark_before
+        if isinstance(loading_dataset.dark_after, Images):
+            self.images[loading_dataset.dark_after.id] = loading_dataset.dark_after
 
         self.datasets[ds.id] = ds
         return ds
