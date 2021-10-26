@@ -33,7 +33,7 @@ class MainWindowModel(object):
             return self.images[images_uuid]
         return None
 
-    def do_load_dataset(self, parameters: LoadingParameters, progress):
+    def do_load_dataset(self, parameters: LoadingParameters, progress) -> Dataset:
         sample = loader.load_p(parameters.sample, parameters.dtype, progress)
         self.images[sample.id] = sample
         ds = Dataset(sample)
