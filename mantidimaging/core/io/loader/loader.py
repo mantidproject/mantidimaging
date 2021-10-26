@@ -7,6 +7,9 @@ from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING
 
 import numpy as np
+
+from mantidimaging.core.data.loadingdataset import LoadingDataset
+
 if TYPE_CHECKING:
     import numpy.typing as npt
 
@@ -138,7 +141,7 @@ def load(input_path: Optional[str] = None,
          dtype: 'npt.DTypeLike' = np.float32,
          file_names: Optional[List[str]] = None,
          indices: Optional[Union[List[int], Indices]] = None,
-         progress: Optional[Progress] = None) -> Dataset:
+         progress: Optional[Progress] = None) -> LoadingDataset:
     """
 
     Loads a stack, including sample, white and dark images.
