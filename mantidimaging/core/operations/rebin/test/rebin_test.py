@@ -76,17 +76,11 @@ class RebinTest(unittest.TestCase):
     def test_executed_xy_par_512_256(self):
         self.do_execute_xy(True, (512, 256))
 
-    def test_executed_xy_par_1024_1024(self):
-        self.do_execute_xy(True, (1024, 1024))
-
     def test_executed_xy_seq_128_256(self):
         self.do_execute_xy(False, (128, 256))
 
     def test_executed_xy_seq_512_256(self):
         self.do_execute_xy(False, (512, 256))
-
-    def test_executed_xy_seq_1024_1024(self):
-        self.do_execute_xy(False, (1024, 1024))
 
     def do_execute_xy(self, is_parallel: bool, val=(512, 512)):
         if is_parallel:

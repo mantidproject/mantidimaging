@@ -54,7 +54,6 @@ class CORInspectionDialogView(BaseDialogView):
         self.imagePlotLayout.addWidget(self.image_canvas)
 
         self.presenter.do_refresh()
-        self.image_canvas.current_hist.imageChanged(autoLevel=True, autoRange=True)
 
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
         self.image_canvas.set_image(image_type, recon_data, title)
