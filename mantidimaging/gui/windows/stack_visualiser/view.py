@@ -12,7 +12,6 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
-from ...utility.common import operation_in_progress
 from ..stack_visualiser.presenter import StackVisualiserPresenter
 from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification

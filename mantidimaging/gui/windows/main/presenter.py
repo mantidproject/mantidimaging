@@ -214,7 +214,7 @@ class MainWindowPresenter(BasePresenter):
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.sample.proj180deg = Images(
-                        np.reshape(closest_projection, (1,) + closest_projection.shape))
+                        np.reshape(closest_projection, (1, ) + closest_projection.shape))
                     self._add_stack(container.sample.proj180deg, f"{title}_180", sample_stack_vis)
                     self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 
@@ -286,8 +286,7 @@ class MainWindowPresenter(BasePresenter):
         for _, sv in self.stacks.items():
             if images is sv.presenter.images:
                 return sv
-        raise RuntimeError(f"Did not find stack {images} in stacks! "
-                           f"Stacks: {self.stacks.items()}")
+        raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stacks.items()}")
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_images_by_uuid(uuid, images)

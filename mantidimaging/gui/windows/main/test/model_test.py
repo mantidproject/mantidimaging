@@ -146,8 +146,10 @@ class MainWindowModelTest(unittest.TestCase):
         flata_images_mock = mock.Mock()
         darkb_images_mock = mock.Mock()
         darka_images_mock = mock.Mock()
-        load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock, darkb_images_mock,
-                                   darka_images_mock, mock.Mock()]
+        load_p_mock.side_effect = [
+            sample_images_mock, flatb_images_mock, flata_images_mock, darkb_images_mock, darka_images_mock,
+            mock.Mock()
+        ]
 
         self.model.do_load_dataset(lp, progress_mock)
 
@@ -221,10 +223,7 @@ class MainWindowModelTest(unittest.TestCase):
         _180_file = "180 file"
         images_id = "id"
         self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value=None)
-        self.assertRaises(RuntimeError,
-                          self.model.add_180_deg_to_dataset,
-                          images_id=images_id,
-                          _180_deg_file=_180_file)
+        self.assertRaises(RuntimeError, self.model.add_180_deg_to_dataset, images_id=images_id, _180_deg_file=_180_file)
         get_images_mock.assert_called_with(images_id)
 
     def test_add_projection_angles_to_sample_no_stack(self):
@@ -246,8 +245,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_projection_angles_to_sample(images_id, proj_angles)
 
         get_images_mock.assert_called_with(images_id)
-        get_images_mock.return_value.set_projection_angles.assert_called_once_with(
-            proj_angles)
+        get_images_mock.return_value.set_projection_angles.assert_called_once_with(proj_angles)
 
     @mock.patch("mantidimaging.gui.windows.main.model.loader")
     def test_load_stack(self, loader: mock.MagicMock):
@@ -275,8 +273,11 @@ class MainWindowModelTest(unittest.TestCase):
 
         save_mock.return_value = filenames = ["filename" for _ in range(len(images.data))]
 
-        result = self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress)
-        save_mock.assert_called_once_with(images, output_dir=output_dir, name_prefix=name_prefix,
+        result = self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth,
+                                             progress)
+        save_mock.assert_called_once_with(images,
+                                          output_dir=output_dir,
+                                          name_prefix=name_prefix,
                                           overwrite_all=overwrite,
                                           out_format=image_format,
                                           pixel_depth=pixel_depth,
@@ -287,5 +288,6 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
     def test_image_save_when_image_not_found(self, save_mock: mock.MagicMock):
         with self.assertRaises(RuntimeError):
-            self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth", mock.Mock())
+            self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth",
+                                        mock.Mock())
         save_mock.assert_not_called()

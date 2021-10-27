@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log,

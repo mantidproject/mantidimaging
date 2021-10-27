@@ -10,7 +10,6 @@ import h5py
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -261,7 +260,7 @@ class NexusLoadPresenter:
 
         # Create sample array and Images object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
-            step_widget.value()]
+                                              step_widget.value()]
         sample_images = self._create_images(self.sample_array, "Projections")
 
         # Set attributes

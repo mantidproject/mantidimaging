@@ -70,7 +70,7 @@ class MainWindowViewTest(unittest.TestCase):
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
         self.presenter.add_180_deg_to_dataset.assert_called_once_with(stack_name=selected_stack,
-                                                                     _180_deg_file=selected_file)
+                                                                      _180_deg_file=selected_file)
         self.presenter.create_stack_name.assert_called_once_with(selected_file)
         self.view.create_new_180_stack.assert_called_once_with(_180_dataset, selected_filename)
 
