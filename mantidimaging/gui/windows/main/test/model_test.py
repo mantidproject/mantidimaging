@@ -275,10 +275,17 @@ class MainWindowModelTest(unittest.TestCase):
 
         save_mock.return_value = filenames = ["filename" for _ in range(len(images.data))]
 
-        self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress)
+        result = self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress)
         save_mock.assert_called_once_with(images, output_dir=output_dir, name_prefix=name_prefix,
                                           overwrite_all=overwrite,
                                           out_format=image_format,
                                           pixel_depth=pixel_depth,
                                           progress=progress)
         self.assertListEqual(images.filenames, filenames)
+        assert result
+
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
+    def test_image_save_when_image_not_found(self, save_mock: mock.MagicMock):
+        with self.assertRaises(RuntimeError):
+            self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth", mock.Mock())
+        save_mock.assert_not_called()
