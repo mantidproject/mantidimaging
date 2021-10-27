@@ -257,3 +257,28 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.load_images(file_path, progress)
 
         loader.load_stack.assert_called_once_with(file_path, progress)
+
+    def test_no_image_with_matching_id(self):
+        self.assertIsNone(self.model.get_images_by_uuid(uuid.uuid4()))
+
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
+    def test_save_image(self, save_mock: mock.MagicMock):
+        images = generate_images()
+        self.model.images[images.id] = images
+
+        output_dir = "output"
+        name_prefix = "prefix"
+        image_format = "image format"
+        overwrite = True
+        pixel_depth = "depth"
+        progress = mock.Mock()
+
+        save_mock.return_value = filenames = ["filename" for _ in range(len(images.data))]
+
+        self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress)
+        save_mock.assert_called_once_with(images, output_dir=output_dir, name_prefix=name_prefix,
+                                          overwrite_all=overwrite,
+                                          out_format=image_format,
+                                          pixel_depth=pixel_depth,
+                                          progress=progress)
+        self.assertListEqual(images.filenames, filenames)
