@@ -8,6 +8,7 @@ from unittest import mock
 import numpy as np
 from numpy.testing import assert_array_equal
 
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -304,3 +305,24 @@ class MainWindowModelTest(unittest.TestCase):
     def test_set_images_by_uuid_failure(self):
         with self.assertRaises(RuntimeError):
             self.model.set_image_data_by_uuid(generate_images().id, generate_images())
+
+    def test_remove_image_stack_from_model(self):
+        images = generate_images()
+        self.model.images[images.id] = images
+        self.model.remove_container(images.id)
+        self.assertNotIn(images, self.model.images.values())
+
+    def test_remove_dataset_from_model(self):
+        sample = generate_images()
+        flat_before = generate_images()
+        ds = Dataset(sample)
+        ds.flat_before = flat_before
+
+        self.model.datasets[ds.id] = ds
+        self.model.images[sample.id] = sample
+        self.model.images[flat_before.id] = flat_before
+
+        self.model.remove_container(ds.id)
+        self.assertNotIn(ds, self.model.datasets.values())
+        self.assertNotIn(sample, self.model.images.values())
+        self.assertNotIn(flat_before, self.model.images.values())

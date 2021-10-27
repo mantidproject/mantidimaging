@@ -148,35 +148,26 @@ class MainWindowModel(object):
         log.raise_if_angle_missing(images.filenames)
         images.log_file = log
 
-    def _remove_image_stack(self, images_id: uuid.UUID):
-        del self.images[images_id]
-        for dataset in self.datasets.values():
-            # if _matching_dataset_attribute(dataset.sample, images_id):
-            #     dataset.sample = None # todo - allow this?
-            if _matching_dataset_attribute(dataset.flat_before, images_id):
-                del self.images[dataset.flat_before.id]
-                return
-            if _matching_dataset_attribute(dataset.flat_after, images_id):
-                del self.images[dataset.flat_after.id]
-                return
-            if _matching_dataset_attribute(dataset.dark_before, images_id):
-                del self.images[dataset.dark_before.id]
-                return
-            if _matching_dataset_attribute(dataset.dark_after, images_id):
-                del self.images[dataset.dark_after.id]
-                return
-
     def _remove_dataset(self, dataset_id: uuid.UUID):
         dataset = self.datasets[dataset_id]
         del self.images[dataset.sample.id]
-        del self.images[dataset.flat_before.id]
-        del self.images[dataset.flat_after.id]
-        del self.images[dataset.dark_before.id]
-        del self.images[dataset.dark_after.id]
+
+        if isinstance(dataset.flat_before, Images):
+            del self.images[dataset.flat_before.id]
+        if isinstance(dataset.flat_after, Images):
+            del self.images[dataset.flat_after.id]
+        if isinstance(dataset.dark_before, Images):
+            del self.images[dataset.dark_before.id]
+        if isinstance(dataset.dark_after, Images):
+            del self.images[dataset.dark_after.id]
+
         del self.datasets[dataset_id]
 
     def remove_container(self, container_id: uuid.UUID):
         if container_id in self.images:
-            self._remove_image_stack(container_id)
+            del self.images[container_id]
+            return
         if container_id in self.datasets:
             self._remove_dataset(container_id)
+            return
+        self.raise_error_when_images_not_found(container_id)
