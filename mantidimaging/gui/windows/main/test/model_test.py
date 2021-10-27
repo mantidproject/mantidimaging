@@ -9,6 +9,22 @@ import numpy as np
 
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
+from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
+from mantidimaging.test_helpers.unit_test_helper import generate_images
+
+
+def test_matching_dataset_attribute_returns_true_for_matching_ids():
+    images = generate_images()
+    assert _matching_dataset_attribute(images, images.id)
+
+
+def test_matching_dataset_attribute_returns_false_for_different_ids():
+    images = generate_images()
+    assert not _matching_dataset_attribute(images, uuid.uuid4())
+
+
+def test_matching_dataset_attribute_returns_false_for_none():
+    assert not _matching_dataset_attribute(None, uuid.uuid4())
 
 
 class MainWindowModelTest(unittest.TestCase):
@@ -130,7 +146,8 @@ class MainWindowModelTest(unittest.TestCase):
         flata_images_mock = mock.Mock()
         darkb_images_mock = mock.Mock()
         darka_images_mock = mock.Mock()
-        load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock, darkb_images_mock, darka_images_mock, mock.Mock()]
+        load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock, darkb_images_mock,
+                                   darka_images_mock, mock.Mock()]
 
         self.model.do_load_dataset(lp, progress_mock)
 
@@ -203,7 +220,7 @@ class MainWindowModelTest(unittest.TestCase):
         """
         _180_file = "180 file"
         images_id = "id"
-        self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value = None)
+        self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value=None)
         self.assertRaises(RuntimeError,
                           self.model.add_180_deg_to_dataset,
                           images_id=images_id,
