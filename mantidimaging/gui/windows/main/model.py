@@ -90,8 +90,10 @@ class MainWindowModel(object):
         self.images[images.id] = images.id
         return images
 
-    def do_images_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
-        images = self.get_images_by_uuid(stack_uuid)
+    def do_images_saving(self, images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            self.raise_error_when_images_not_found(images_id)
         filenames = saver.save(images,
                                output_dir=output_dir,
                                name_prefix=name_prefix,
