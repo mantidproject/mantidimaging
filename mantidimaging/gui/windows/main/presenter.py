@@ -289,14 +289,14 @@ class MainWindowPresenter(BasePresenter):
         raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stacks.items()}")
 
     def set_images_in_stack(self, uuid: UUID, images: Images):
-        self.model.set_images_by_uuid(uuid, images)
+        self.model.set_image_data_by_uuid(uuid, images.data)
         stack = self.stacks[uuid]
         if not stack.presenter.images == images:
             stack.image_view.clear()
             stack.image_view.setImage(images.data)
 
             # Free previous images stack before reassignment
-            stack.presenter.images = images
+            stack.presenter.images.data = images.data
 
     def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
         stack_id = self.get_stack_id_by_name(stack_name)

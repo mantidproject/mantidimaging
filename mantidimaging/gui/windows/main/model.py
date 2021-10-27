@@ -4,6 +4,8 @@ import uuid
 from logging import getLogger
 from typing import Dict, Optional
 
+import numpy as np
+
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.data.loadingdataset import LoadingDataset
@@ -104,14 +106,14 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def set_images_by_uuid(self, images_id: uuid.UUID, new_images: Images):
+    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray):
         """
-        Updates the images of an existing dataset/images object.
+        Updates the data of an existing dataset/images object.
         :param images_id: The id of the image to update.
-        :param new_images: The new images data.
+        :param new_data: The new image data.
         """
         if images_id in self.images:
-            self.images[images_id] = new_images
+            self.images[images_id].data = new_data
         else:
             self.raise_error_when_images_not_found(images_id)
 
