@@ -6,6 +6,7 @@ import uuid
 
 from unittest import mock
 import numpy as np
+from numpy.testing import assert_array_equal
 
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
@@ -291,3 +292,15 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth",
                                         mock.Mock())
         save_mock.assert_not_called()
+
+    def test_set_images_by_uuid_success(self):
+        prev_images = generate_images()
+        new_data = generate_images().data
+        self.model.images[prev_images.id] = prev_images
+
+        self.model.set_image_data_by_uuid(prev_images.id, new_data)
+        assert_array_equal(self.model.images[prev_images.id].data, new_data)
+
+    def test_set_images_by_uuid_failure(self):
+        with self.assertRaises(RuntimeError):
+            self.model.set_image_data_by_uuid(generate_images().id, generate_images())
