@@ -171,15 +171,15 @@ class FiltersWindowView(BaseMainWindowView):
 
     @property
     def preview_image_before(self) -> ImageItem:
-        return self.previews.image_before
+        return self.previews.imageview_before
 
     @property
     def preview_image_after(self) -> ImageItem:
-        return self.previews.image_after
+        return self.previews.imageview_after
 
     @property
     def preview_image_difference(self) -> ImageItem:
-        return self.previews.image_difference
+        return self.previews.imageview_difference
 
     def show_error_dialog(self, msg=""):
         self.notification_text.show()

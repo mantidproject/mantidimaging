@@ -28,7 +28,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.sinogram, self.sinogram_vb, self.sinogram_hist = self.imageview_sinogram.get_parts()
         self.recon, self.recon_vb, self.recon_hist = self.imageview_recon.get_parts()
 
-        self.slice_line = InfiniteLine(pos=1024, angle=0, bounds=[0, self.projection.width()], movable=True)
+        self.slice_line = InfiniteLine(pos=1024,
+                                       angle=0,
+                                       bounds=[0, self.imageview_projection.image.width()],
+                                       movable=True)
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
@@ -40,7 +43,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.negative_nan_overlay.setZValue(11)
         self.projection_vb.addItem(self.negative_nan_overlay)
 
-        self.projection.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
+        self.imageview_projection.image.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
@@ -51,7 +54,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.imageview_projection.clear()
-        self.projection.setImage(image_data)
+        self.imageview_projection.setImage(image_data)
         self._add_nan_zero_negative_overlay()
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
@@ -63,13 +66,13 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def update_sinogram(self, image):
         self.imageview_sinogram.clear()
-        self.sinogram.setImage(image)
+        self.imageview_sinogram.setImage(image)
         self.sinogram_hist.imageChanged(autoLevel=True, autoRange=True)
         set_histogram_log_scale(self.sinogram_hist)
 
     def update_recon(self, image_data):
         self.imageview_recon.clear()
-        self.recon.setImage(image_data, autoLevels=False)
+        self.imageview_recon.setImage(image_data, autoLevels=False)
         set_histogram_log_scale(self.recon_hist)
 
     def update_recon_hist(self):
@@ -114,7 +117,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         """
         Adds the NaN/zero overlay to the projection view box.
         """
-        copy = self.projection.image.copy()
+        copy = self.imageview_projection.image.image.copy()
         nans = np.isnan(copy)
         zero_negative = copy <= 0
 
