@@ -23,6 +23,7 @@ class IndicatorIconView(QGraphicsPixmapItem):
         self.parent = parent
         self.icon_pos = icon_pos
         self.set_icon(icon_path)
+        self.icon_size = [64, 64]
 
         self.parent.scene().addItem(self)
 
@@ -34,7 +35,13 @@ class IndicatorIconView(QGraphicsPixmapItem):
         self.setPixmap(image_pm)
 
     def position_icon(self):
+        # The size of the imageview we are putting the icon ing
         scene_size = self.parent.size()
-        img_size = self.pixmap().size()
-        self.setOffset(scene_size.width() - img_size.width() * (1 + self.icon_pos) - 10,
-                       scene_size.height() - img_size.height() - 30)
+        # The position of the image within the scene
+        scene_pos = self.parent.scenePos()
+        # Lower right corner in scene pixel coordinates
+        corner_pos_x = scene_size.width() + scene_pos.x()
+        corner_pos_y = scene_size.height() + scene_pos.y()
+
+        self.setOffset(corner_pos_x - self.icon_size[0] * (1 + self.icon_pos) - 10,
+                       corner_pos_y - self.icon_size[1] - 30)
