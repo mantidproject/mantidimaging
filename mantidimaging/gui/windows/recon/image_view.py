@@ -30,7 +30,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
         self.slice_line = InfiniteLine(pos=1024,
                                        angle=0,
-                                       bounds=[0, self.imageview_projection.image.width()],
+                                       bounds=[0, self.imageview_projection.image_item.width()],
                                        movable=True)
         self.projection_vb.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
@@ -43,7 +43,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.negative_nan_overlay.setZValue(11)
         self.projection_vb.addItem(self.negative_nan_overlay)
 
-        self.imageview_projection.image.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
+        self.imageview_projection.image_item.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
@@ -117,7 +117,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         """
         Adds the NaN/zero overlay to the projection view box.
         """
-        copy = self.imageview_projection.image.image.copy()
+        copy = self.imageview_projection.image_item.image.copy()
         nans = np.isnan(copy)
         zero_negative = copy <= 0
 

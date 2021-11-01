@@ -113,6 +113,10 @@ class MIImageView(ImageView):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene.contextMenu = [item for item in self.scene.contextMenu if "export" not in item.text().lower()]
 
+    @property
+    def image_item(self) -> ImageItem:
+        return self.imageItem
+
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:
             self.shifting_through_images = True

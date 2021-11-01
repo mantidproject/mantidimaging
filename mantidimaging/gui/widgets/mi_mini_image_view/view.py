@@ -49,7 +49,7 @@ class MIMiniImageView(GraphicsLayout):
         self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
     @property
-    def image(self):
+    def image_item(self) -> ImageItem:
         return self.im
 
     def clear(self):
