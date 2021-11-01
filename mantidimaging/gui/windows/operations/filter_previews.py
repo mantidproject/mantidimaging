@@ -134,7 +134,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     def update_histogram_data(self):
         # Plot any histogram that has data, and add a legend if both exist
         before_data = self.imageview_before.image_item.getHistogram()
-        after_data = self.imageview_before.image_item.getHistogram()
+        after_data = self.imageview_after.image_item.getHistogram()
         if _data_valid_for_histogram(before_data):
             before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
             self.legend.addItem(before_plot, "Before")
