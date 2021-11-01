@@ -6,7 +6,7 @@ from typing import Callable, Optional, Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QAction
-from pyqtgraph import ROI, ImageItem, ImageView
+from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -116,6 +116,10 @@ class MIImageView(ImageView):
     @property
     def image_item(self) -> ImageItem:
         return self.imageItem
+
+    @property
+    def viewbox(self) -> ViewBox:
+        return self.view
 
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:

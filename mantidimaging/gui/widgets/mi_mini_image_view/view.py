@@ -52,6 +52,10 @@ class MIMiniImageView(GraphicsLayout):
     def image_item(self) -> ImageItem:
         return self.im
 
+    @property
+    def viewbox(self) -> ViewBox:
+        return self.vb
+
     def clear(self):
         self.im.clear()
 
