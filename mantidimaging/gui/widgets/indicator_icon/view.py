@@ -1,15 +1,13 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from pathlib import Path
-
 from pyqtgraph import ViewBox
 from PyQt5.QtWidgets import QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap
 
 
 class IndicatorIconView(QGraphicsPixmapItem):
-    def __init__(self, parent: ViewBox, icon_path: Path, icon_pos: int):
+    def __init__(self, parent: ViewBox, icon_path: str, icon_pos: int):
         """An indicator icon for a pyqtgraph ViewBox
 
         The icon loaded from icon_path will be displayed in the low right corner of the ViewBox.
@@ -30,7 +28,7 @@ class IndicatorIconView(QGraphicsPixmapItem):
         self.position_icon()
         self.parent.sigResized.connect(self.position_icon)
 
-    def set_icon(self, icon_path: Path):
+    def set_icon(self, icon_path: str):
         image_pm = QPixmap(icon_path)
         self.setPixmap(image_pm)
 
