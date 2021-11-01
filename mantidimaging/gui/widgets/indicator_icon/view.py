@@ -27,6 +27,7 @@ class IndicatorIconView(QGraphicsPixmapItem):
 
         self.position_icon()
         self.parent.sigResized.connect(self.position_icon)
+        self.setVisible(False)
 
     def set_icon(self, icon_path: str):
         image_pm = QPixmap(icon_path)
