@@ -14,6 +14,7 @@ from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
+from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataOverlay
 
 
 class UnrotateablePlotROI(ROI):
@@ -30,7 +31,7 @@ class UnrotateablePlotROI(ROI):
 graveyard = []
 
 
-class MIImageView(ImageView):
+class MIImageView(ImageView, BadDataOverlay):
     details: QLabel
     roiString = None
     imageItem: ImageItem
@@ -120,6 +121,10 @@ class MIImageView(ImageView):
     @property
     def viewbox(self) -> ViewBox:
         return self.view
+
+    def setImage(self, *args, **kwargs):
+        ImageView.setImage(self, *args, **kwargs)
+        self.check_for_bad_data()
 
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:

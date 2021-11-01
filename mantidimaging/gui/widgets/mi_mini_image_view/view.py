@@ -11,6 +11,7 @@ from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
+from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataOverlay
 
 graveyard = []
 
@@ -24,7 +25,7 @@ def pairwise(iterable):
     return zip(a, b)
 
 
-class MIMiniImageView(GraphicsLayout):
+class MIMiniImageView(GraphicsLayout, BadDataOverlay):
     def __init__(self, name: str = "MIMiniImageView"):
         super().__init__()
 
@@ -61,6 +62,7 @@ class MIMiniImageView(GraphicsLayout):
 
     def setImage(self, *args, **kwargs):
         self.im.setImage(*args, **kwargs)
+        self.check_for_bad_data()
 
     @staticmethod
     def set_siblings(sibling_views: List["MIMiniImageView"], axis=False, hist=False):
