@@ -49,6 +49,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
+        self.imageview_projection.enable_nan_check()
+        self.imageview_sinogram.enable_nan_check()
+        self.imageview_recon.enable_nan_check()
+
     def slice_line_moved(self):
         self.slice_changed(int(self.slice_line.value()))
 

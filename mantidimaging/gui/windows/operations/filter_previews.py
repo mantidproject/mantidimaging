@@ -104,6 +104,9 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         self.imageview_before.link_sibling_axis()
 
+        self.imageview_before.enable_nan_check()
+        self.imageview_after.enable_nan_check()
+
     def resizeEvent(self, ev: QResizeEvent):
         if ev is not None and isinstance(self.histogram, PlotItem):
             size = ev.size()

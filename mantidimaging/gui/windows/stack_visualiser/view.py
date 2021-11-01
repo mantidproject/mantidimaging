@@ -67,6 +67,7 @@ class StackVisualiserView(QDockWidget):
         self.actionCloseStack.triggered.connect(self.close)
         self.actionCloseStack.setShortcut("Ctrl+W")
 
+        self.image_view.enable_nan_check()
         self.addAction(self.actionCloseStack)
         self.image_view.setImage(self.presenter.images.data)
         self.image_view.roi_changed_callback = self.roi_changed_callback
