@@ -34,6 +34,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.model = self.model = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
+        self.view.active_stacks_changed = mock.Mock()
 
         def stack_id():
             return uuid.uuid4()
@@ -288,6 +289,15 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_add_log_to_sample_failure(self):
         with self.assertRaises(RuntimeError):
             self.presenter.add_log_to_sample("doesn't exist", "log file")
+
+    def test_remove_stack(self):
+        stack_uuid = "stack-id"
+        self.presenter.stacks[stack_uuid] = mock.Mock()
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+        self.presenter._do_remove_stack(stack_uuid)
+        self.model.remove_container.assert_called_once_with(stack_uuid)
+        self.assertNotIn(stack_uuid, self.presenter.stacks)
+        self.presenter.remove_item_from_tree_view.assert_called_once_with(stack_uuid)
 
 
 if __name__ == '__main__':
