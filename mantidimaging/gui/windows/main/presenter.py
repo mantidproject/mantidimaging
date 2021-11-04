@@ -66,19 +66,15 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
+    def _get_stack_widget_by_name(self, search_name: str) -> Optional[QDockWidget]:
         """
-        :param stack_uuid: The unique ID of the stack that will be retrieved.
-        :return The QDockWidget that contains the Stack Visualiser.
-                For direct access to the Stack Visualiser widget use
-                get_stack_visualiser
+        Uses the stack name to retrieve the QDockWidget object.
+        :param search_name: The name of the stack widget to find.
+        :return: The QDockWidget if it could be found, None otherwise.
         """
-        return self.active_stacks[stack_uuid]  # type:ignore
-
-    def get_stack_by_name(self, search_name: str) -> Optional[QDockWidget]:
         for stack_id in self.stack_list:
             if stack_id.name == search_name:
-                return self.get_stack(stack_id.id)
+                return self.active_stacks[stack_id]  # type:ignore
         return None
 
     def get_stack_id_by_name(self, search_name: str) -> Optional[uuid.UUID]:
@@ -100,7 +96,7 @@ class MainWindowPresenter(BasePresenter):
         self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
 
     def _do_rename_stack(self, current_name: str, new_name: str):
-        dock = self.get_stack_by_name(current_name)
+        dock = self._get_stack_widget_by_name(current_name)
         if dock:
             dock.setWindowTitle(new_name)
             self.view.active_stacks_changed.emit()
@@ -291,7 +287,7 @@ class MainWindowPresenter(BasePresenter):
     def set_images_in_stack(self, uuid: UUID, images: Images):
         self.model.set_image_data_by_uuid(uuid, images.data)
         stack = self.stacks[uuid]
-        if not stack.presenter.images == images:
+        if not stack.presenter.images == images:  # todo - refactor
             stack.image_view.clear()
             stack.image_view.setImage(images.data)
 
