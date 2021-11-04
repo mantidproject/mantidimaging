@@ -31,6 +31,7 @@ class MainWindowPresenterTest(unittest.TestCase):
                                flat_after=self.images[2],
                                dark_before=self.images[3],
                                dark_after=self.images[4])
+        self.presenter.model = self.model = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
 
@@ -272,6 +273,21 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_get_stack_id_by_name_failure(self):
         self.assertIsNone(self.presenter._get_stack_widget_by_name("bad-id"))
+
+    def test_add_log_to_sample_success(self):
+        stack_window = mock.Mock()
+        stack_window.id = stack_id = "id"
+        stack_window.isVisible.return_value = True
+        stack_window.windowTitle.return_value = stack_window_title = "stack window title"
+        self.presenter.stacks[stack_window.id] = stack_window
+        log_file = "log file"
+
+        self.presenter.add_log_to_sample(stack_window_title, log_file)
+        self.model.add_log_to_sample.assert_called_once_with(stack_id, log_file)
+
+    def test_add_log_to_sample_failure(self):
+        with self.assertRaises(RuntimeError):
+            self.presenter.add_log_to_sample("doesn't exist", "log file")
 
 
 if __name__ == '__main__':
