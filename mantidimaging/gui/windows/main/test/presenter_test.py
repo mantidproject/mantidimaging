@@ -249,6 +249,18 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.load_nexus_file()
         self.presenter.create_new_stack.assert_called_once_with(self.dataset, "data title")
 
+    def test_get_stack_widget_by_name_success(self):
+        stack_window = mock.Mock()
+        stack_window.id = stack_window_id = "id"
+        stack_window.isVisible.return_value = True
+        stack_window.windowTitle.return_value = stack_window_title = "stack window title"
+
+        self.presenter.stacks[stack_window.id] = stack_window
+
+        self.assertIs(stack_window, self.presenter._get_stack_widget_by_name(stack_window_title))
+
+    def test_get_stack_widget_by_name_failure(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
