@@ -28,6 +28,9 @@ class IndicatorIconView(QGraphicsPixmapItem):
         self.position_icon()
         self.parent.sigResized.connect(self.position_icon)
         self.setVisible(False)
+        self.setAcceptHoverEvents(True)
+
+        self.connected_overlay = None
 
     def set_icon(self, icon_path: str):
         image_pm = QPixmap(icon_path)
@@ -44,3 +47,11 @@ class IndicatorIconView(QGraphicsPixmapItem):
 
         self.setOffset(corner_pos_x - self.icon_size[0] * (1 + self.icon_pos) - 10,
                        corner_pos_y - self.icon_size[1] - 30)
+
+    def hoverEnterEvent(self, event):
+        if self.connected_overlay is not None:
+            self.connected_overlay.setOpacity(1)
+
+    def hoverLeaveEvent(self, event):
+        if self.connected_overlay is not None:
+            self.connected_overlay.setOpacity(0)

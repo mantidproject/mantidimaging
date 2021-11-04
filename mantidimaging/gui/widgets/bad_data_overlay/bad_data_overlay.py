@@ -5,25 +5,39 @@ from collections import OrderedDict
 from typing import Callable
 
 import numpy as np
-from pyqtgraph import ImageItem, ViewBox
+from pyqtgraph import ColorMap, ImageItem, ViewBox
 
 from mantidimaging.gui.widgets.indicator_icon.view import IndicatorIconView
 from mantidimaging.core.utility import finder
+
+OVERLAY_COLOUR = [255, 0, 0, 255]
 
 
 class BadDataCheck:
     check_function: Callable[[np.ndarray], np.ndarray]
     indicator: IndicatorIconView
 
-    def __init__(self, check_function, indicator):
+    def __init__(self, check_function, indicator, overlay):
         self.check_function = check_function
         self.indicator = indicator
+        self.overlay = overlay
+        self.setup_overlay()
+        self.indicator.connected_overlay = self.overlay
 
     def do_check(self, data):
         bad_data = self.check_function(data)
         any_bad = bad_data.any()
         # cast any_bad to python bool to prevent DeprecationWarning
         self.indicator.setVisible(bool(any_bad))
+
+        self.overlay.setImage(bad_data)
+
+    def setup_overlay(self):
+        color = np.array([[0, 0, 0, 0], OVERLAY_COLOUR], dtype=np.ubyte)
+        color_map = ColorMap([0, 1], color)
+        self.overlay.setOpacity(0)
+        lut = color_map.getLookupTable(0, 1, 2)
+        self.overlay.setLookupTable(lut)
 
 
 class BadDataOverlay:
@@ -50,7 +64,10 @@ class BadDataOverlay:
         if enable:
             nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
             nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, 0)
-            test = BadDataCheck(np.isnan, nan_indicator)
+            nan_overlay = ImageItem()
+            nan_overlay.setZValue(11)
+            self.viewbox.addItem(nan_overlay)
+            test = BadDataCheck(np.isnan, nan_indicator, nan_overlay)
             self.enabled_checks["nan"] = test
         else:
             self.enabled_checks.pop("nan", None)
