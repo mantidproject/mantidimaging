@@ -251,7 +251,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
-        stack_window.id = stack_window_id = "id"
+        stack_window.id = "id"
         stack_window.isVisible.return_value = True
         stack_window.windowTitle.return_value = stack_window_title = "stack window title"
 
@@ -261,6 +261,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_get_stack_widget_by_name_failure(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

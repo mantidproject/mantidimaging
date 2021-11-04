@@ -74,7 +74,7 @@ class MainWindowPresenter(BasePresenter):
         """
         for stack_id in self.stack_list:
             if stack_id.name == search_name:
-                return self.active_stacks[stack_id]  # type:ignore
+                return self.active_stacks[stack_id.id]  # type:ignore
         return None
 
     def get_stack_id_by_name(self, search_name: str) -> Optional[uuid.UUID]:
