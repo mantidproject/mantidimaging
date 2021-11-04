@@ -41,9 +41,11 @@ class StackChoiceView(BaseMainWindowView):
         # Create stacks and place them in the choice window
         self.original_stack = MIImageView(detailsSpanAllCols=True)
         self.original_stack.name = "Original Stack"
+        self.original_stack.enable_nan_check(True)
 
         self.new_stack = MIImageView(detailsSpanAllCols=True)
         self.new_stack.name = "New Stack"
+        self.new_stack.enable_nan_check(True)
 
         self._setup_stack_for_view(self.original_stack, original_stack.data)
         self._setup_stack_for_view(self.new_stack, new_stack.data)
