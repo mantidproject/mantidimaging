@@ -329,6 +329,24 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.active_stacks_changed.emit.assert_called_once()
         tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
 
+    def test_create_new_180_stack_with_no_visible_stacks(self):
+        stacks = dict()
+        for _ in range(3):
+            stack = mock.Mock()
+            stack.isVisible.return_value = False
+            stacks[uuid.uuid4()] = stack
+
+        self.presenter.stacks = stacks
+        self.view.create_stack_window.return_value = stack_vis_180 = mock.Mock()
+
+        images_180 = generate_images()
+        title = "180-images"
+
+        self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
+        self.view.tabifyDockWidget.assert_not_called()
+        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.findChild.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
