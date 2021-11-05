@@ -11,6 +11,7 @@ from mantidimaging.gui.widgets.indicator_icon.view import IndicatorIconView
 from mantidimaging.core.utility import finder
 
 OVERLAY_COLOUR_NAN = [255, 0, 0, 255]
+OVERLAY_COLOUR_NONPOSITVE = [255, 192, 0, 255]
 
 
 class BadDataCheck:
@@ -72,6 +73,21 @@ class BadDataOverlay:
             self.enabled_checks["nan"] = test
         else:
             self.enabled_checks.pop("nan", None)
+
+    def enable_nonpositive_check(self, enable: bool = True):
+        if enable:
+            nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, 1, OVERLAY_COLOUR_NONPOSITVE)
+            nan_overlay = ImageItem()
+            self.viewbox.addItem(nan_overlay)
+
+            def is_non_positive(data):
+                return data <= 0
+
+            test = BadDataCheck(is_non_positive, nan_indicator, nan_overlay, OVERLAY_COLOUR_NONPOSITVE)
+            self.enabled_checks["nonpos"] = test
+        else:
+            self.enabled_checks.pop("nonpos", None)
 
     def _get_current_slice(self) -> np.ndarray:
         data = self.image_item.image
