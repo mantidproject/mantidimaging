@@ -70,7 +70,7 @@ class MainWindowModel(object):
         self.datasets[ds.id] = ds
         return ds
 
-    def load_nexus_dataset(self, loading_dataset: LoadingDataset) -> Dataset:
+    def convert_loading_dataset(self, loading_dataset: LoadingDataset) -> Dataset:
         self.images[loading_dataset.sample.id] = loading_dataset.sample
         ds = Dataset(loading_dataset.sample)
 

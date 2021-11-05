@@ -337,7 +337,7 @@ class MainWindowModelTest(unittest.TestCase):
         images = [generate_images() for _ in range(5)]
         loading_dataset = LoadingDataset(*images)
 
-        ds = self.model.load_nexus_dataset(loading_dataset)
+        ds = self.model.convert_loading_dataset(loading_dataset)
 
         self.assertIn(ds, self.model.datasets.values())
         for image_stack in images:
@@ -353,6 +353,6 @@ class MainWindowModelTest(unittest.TestCase):
         sample = generate_images()
         loading_dataset = LoadingDataset(sample)
 
-        ds = self.model.load_nexus_dataset(loading_dataset)
+        ds = self.model.convert_loading_dataset(loading_dataset)
         self.assertIn(ds, self.model.datasets.values())
         self.assertIn(sample, self.model.images.values())
