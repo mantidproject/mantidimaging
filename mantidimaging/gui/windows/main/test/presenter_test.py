@@ -40,31 +40,32 @@ class MainWindowPresenterTest(unittest.TestCase):
             return uuid.uuid4()
 
         type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
-        self.mock_stack_names([])
 
-    def mock_stack_names(self, stack_names: List[str]):
-        type(self.presenter).stack_names = mock.PropertyMock(return_value=stack_names)
+    def tearDown(self) -> None:
+        self.presenter.stacks = []
 
-    def test_create_name(self):
+    def create_mock_stacks_with_names(self, stack_names: List[str]):
+        stacks = dict()
+        for name in stack_names:
+            stack_mock = mock.Mock()
+            stack_mock.windowTitle.return_value = name
+            stacks[uuid.uuid4()] = stack_mock
+        self.presenter.stacks = stacks
+
+    def test_create_unique_name(self):
         self.assertEqual("apple", self.presenter.create_stack_name("apple"))
 
-        self.mock_stack_names(["apple"])
-        self.assertEqual("apple_2", self.presenter.create_stack_name("apple"))
-
     def test_create_name_one_duplicate_stack_loaded(self):
-        self.mock_stack_names(["test"])
+        self.create_mock_stacks_with_names(["test"])
         self.assertEqual(self.presenter.create_stack_name("test"), "test_2")
 
     def test_create_name_multiple_duplicate_stacks_loaded(self):
         stack_names = ["test", "test_2", "test_3"]
-        self.mock_stack_names(stack_names)
+        self.create_mock_stacks_with_names(stack_names)
         self.assertEqual(self.presenter.create_stack_name("test"), "test_4")
 
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_names, [])
-
-    def test_create_name_no_stacks_loaded(self):
-        self.assertEqual(self.presenter.create_stack_name("test"), "test")
 
     def test_create_name_strips_extension(self):
         self.assertEqual(self.presenter.create_stack_name("test.tif"), "test")
@@ -167,6 +168,26 @@ class MainWindowPresenterTest(unittest.TestCase):
         expected_position = 1
         mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
         mock_QApp.sendPostedEvents.assert_called_once()
+
+    def test_create_new_stack_with_180_in_sample(self):
+        dock_mock = self.view.create_stack_window.return_value
+        stack_visualiser_mock = mock.Mock()
+        self.dataset.sample.proj180deg = generate_images(shape=(1, 20, 20))
+        self.dataset.sample.proj180deg.filenames = ["filename"]
+
+        dock_mock.widget.return_value = stack_visualiser_mock
+        dock_mock.windowTitle.return_value = "somename"
+        self.view.active_stacks_changed.emit = mock.Mock()
+
+        self.dataset.flat_before.filenames = ["filename"] * 10
+        self.dataset.dark_before.filenames = ["filename"] * 10
+        self.dataset.flat_after.filenames = ["filename"] * 10
+        self.dataset.dark_after.filenames = ["filename"] * 10
+
+        self.presenter.create_new_stack(self.dataset, "My title")
+
+        self.assertEqual(6, len(self.presenter.stacks))
+        self.view.active_stacks_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_use_threshold_180(self):
         dock_mock = self.view.create_stack_window.return_value
@@ -346,6 +367,21 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.tabifyDockWidget.assert_not_called()
         self.view.active_stacks_changed.emit.assert_called_once()
         self.view.findChild.assert_not_called()
+
+    def test_get_stack_visualiser_success(self):
+        stack_id = "stack-id"
+        stack_mock = mock.Mock()
+        self.presenter.stacks[stack_id] = stack_mock
+        self.assertIs(self.presenter.get_stack_visualiser(stack_id), stack_mock)
+
+    def test_get_stack_visualiser_failure(self):
+        self.assertIsNone(self.presenter.get_stack_visualiser("doesn't-exist"))
+
+    def test_get_stack_names(self):
+        stack_names = [f"window title {str(i)}" for i in range(5)]
+        self.create_mock_stacks_with_names(stack_names)
+
+        self.assertListEqual(self.presenter.stack_names, stack_names)
 
 
 if __name__ == '__main__':
