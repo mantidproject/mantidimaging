@@ -412,16 +412,34 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.stacks[old_images.id].presenter.images, old_images)
 
     def test_add_180_deg_to_dataset_success(self):
-        pass
+        mock_stack = mock.Mock()
+        mock_stack.windowTitle.return_value = window_title = "window title"
+        stack_id = "stack-id"
+        self.presenter.stacks[stack_id] = mock_stack
+        filename_for_180 = "path/to/180"
+
+        self.presenter.add_180_deg_to_dataset(window_title, filename_for_180)
+        self.model.add_180_deg_to_dataset.assert_called_once_with(stack_id, filename_for_180)
 
     def test_add_180_deg_to_dataset_failure(self):
-        pass
+        with self.assertRaises(RuntimeError):
+            self.presenter.add_180_deg_to_dataset("doesn't-exist", "path/to/180")
+        self.model.add_180_deg_to_dataset.assert_not_called()
 
     def test_add_projection_angles_to_stack_success(self):
-        pass
+        mock_stack = mock.Mock()
+        mock_stack.windowTitle.return_value = window_title = "window title"
+        stack_id = "stack-id"
+        self.presenter.stacks[stack_id] = mock_stack
+        projection_angles = ProjectionAngles(np.ndarray([1]))
+
+        self.presenter.add_projection_angles_to_sample(window_title, projection_angles)
+        self.model.add_projection_angles_to_sample(stack_id, projection_angles)
 
     def test_add_projection_angles_to_stack_failure(self):
-        pass
+        with self.assertRaises(RuntimeError):
+            self.presenter.add_projection_angles_to_sample("doesn't-exist", ProjectionAngles(np.ndarray([1])))
+        self.model.add_projection_angles_to_sample.assert_not_called()
 
     def test_remove_dataset_from_tree_view(self):
         pass
