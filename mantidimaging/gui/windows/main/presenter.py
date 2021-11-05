@@ -160,7 +160,6 @@ class MainWindowPresenter(BasePresenter):
         if len(current_stack_visualisers) > 1:
             self.view.tabifyDockWidget(current_stack_visualisers[0], _180_stack_vis)
 
-        if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
             if tab_bar is not None:
                 last_stack_pos = len(current_stack_visualisers) - 1
