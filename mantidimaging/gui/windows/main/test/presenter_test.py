@@ -35,6 +35,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
         self.view.active_stacks_changed = mock.Mock()
+        self.view.dataset_tree_widget = mock.Mock()
 
         def stack_id():
             return uuid.uuid4()
@@ -442,10 +443,30 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.add_projection_angles_to_sample.assert_not_called()
 
     def test_remove_dataset_from_tree_view(self):
-        pass
+        """
+        Removing an ID that corresponds with a top-level item means a dataset is being removed.
+        """
+        top_level_item_mock = mock.Mock()
+        top_level_item_mock.uuid = stack_id = "stack-id"
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
+
+        self.presenter.remove_item_from_tree_view(stack_id)
+        self.view.dataset_tree_widget.takeTopLevelItem.assert_called_once_with(top_level_item_mock)
 
     def test_remove_images_from_tree_view(self):
-        pass
+        """
+        Removing an ID that corresponds with a child-item means an image stack is being removed.
+        """
+        top_level_item_mock = mock.Mock()
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
+        top_level_item_mock.childCount.return_value = 1
+        top_level_item_mock.child.return_value = child_item_mock = mock.Mock()
+        child_item_mock.uuid = stack_id = "stack-id"
+
+        self.presenter.remove_item_from_tree_view(stack_id)
+        top_level_item_mock.takeChild.assert_called_once_with(0)
 
     def test_get_stack_history(self):
         pass
