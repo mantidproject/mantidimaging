@@ -253,9 +253,7 @@ class MainWindowPresenter(BasePresenter):
         return [widget.windowTitle() for widget in self.stacks.values()]
 
     def get_stack_visualiser(self, stack_uuid: UUID) -> Optional[StackVisualiserView]:
-        if stack_uuid in self.active_stacks:
-            return self.active_stacks[stack_uuid]
-        return None
+        return self.active_stacks[stack_uuid]
 
     def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata

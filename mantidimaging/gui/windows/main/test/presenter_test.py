@@ -374,14 +374,45 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.stacks[stack_id] = stack_mock
         self.assertIs(self.presenter.get_stack_visualiser(stack_id), stack_mock)
 
-    def test_get_stack_visualiser_failure(self):
-        self.assertIsNone(self.presenter.get_stack_visualiser("doesn't-exist"))
-
     def test_get_stack_names(self):
         stack_names = [f"window title {str(i)}" for i in range(5)]
         self.create_mock_stacks_with_names(stack_names)
-
         self.assertListEqual(self.presenter.stack_names, stack_names)
+
+    def test_get_stack_with_images_success(self):
+        mock_stack = mock.Mock()
+        mock_stack.presenter.images = images = generate_images()
+        self.presenter.stacks[uuid.uuid4()] = mock_stack
+
+        self.assertEqual(self.presenter.get_stack_with_images(images), mock_stack)
+
+    def test_get_stack_with_images_failure(self):
+        with self.assertRaises(RuntimeError):
+            self.presenter.get_stack_with_images(generate_images())
+
+    def test_set_images_in_stack(self):
+        pass
+
+    def test_add_180_deg_to_dataset_success(self):
+        pass
+
+    def test_add_180_deg_to_dataset_failure(self):
+        pass
+
+    def test_add_projection_angles_to_stack_success(self):
+        pass
+
+    def test_add_projection_angles_to_stack_failure(self):
+        pass
+
+    def test_remove_dataset_from_tree_view(self):
+        pass
+
+    def test_remove_images_from_tree_view(self):
+        pass
+
+    def test_get_stack_history(self):
+        pass
 
 
 if __name__ == '__main__':
