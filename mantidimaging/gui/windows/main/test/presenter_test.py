@@ -10,7 +10,6 @@ from unittest import mock
 import numpy as np
 
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -250,7 +249,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_loading_dataset = mock.Mock()
         data_title = "data tile"
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = mock_loading_dataset, data_title
-        self.model.load_nexus_dataset.return_value = self.dataset
+        self.model.convert_loading_dataset.return_value = self.dataset
         self.presenter.create_new_stack = mock.Mock()
         self.presenter.load_nexus_file()
         self.presenter.create_new_stack.assert_called_once_with(self.dataset, data_title)
@@ -302,6 +301,14 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.remove_container.assert_called_once_with(stack_uuid)
         self.assertNotIn(stack_uuid, self.presenter.stacks)
         self.presenter.remove_item_from_tree_view.assert_called_once_with(stack_uuid)
+
+    def test_do_rename_stack(self):
+        self.presenter.stacks["stack-id"] = mock_stack = mock.Mock()
+        mock_stack.windowTitle.return_value = previous_title = "previous title"
+        new_title = "new title"
+        self.presenter._do_rename_stack(previous_title, new_title)
+        mock_stack.setWindowTitle.assert_called_once_with(new_title)
+        self.view.active_stacks_changed.emit.assert_called_once()
 
 
 if __name__ == '__main__':
