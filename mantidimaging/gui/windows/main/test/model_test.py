@@ -333,7 +333,7 @@ class MainWindowModelTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.model.remove_container(uuid.uuid4())
 
-    def test_load_nexus_dataset(self):
+    def test_load_nexus_dataset_with_additional_images(self):
         images = [generate_images() for _ in range(5)]
         loading_dataset = LoadingDataset(*images)
 
@@ -342,3 +342,9 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertIn(ds, self.model.datasets.values())
         for image_stack in images:
             self.assertIn(image_stack, self.model.images.values())
+
+        self.assertEqual(ds.sample, images[0])
+        self.assertEqual(ds.flat_before, images[1])
+        self.assertEqual(ds.flat_after, images[2])
+        self.assertEqual(ds.dark_before, images[3])
+        self.assertEqual(ds.dark_after, images[4])

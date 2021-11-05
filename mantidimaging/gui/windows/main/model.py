@@ -75,14 +75,14 @@ class MainWindowModel(object):
         ds = Dataset(loading_dataset.sample)
 
         if isinstance(loading_dataset.flat_before, Images):
-            self.images[loading_dataset.flat_before.id] = loading_dataset.flat_before
+            self.images[loading_dataset.flat_before.id] = ds.flat_before = loading_dataset.flat_before
         if isinstance(loading_dataset.flat_after, Images):
-            self.images[loading_dataset.flat_after.id] = loading_dataset.flat_after
+            self.images[loading_dataset.flat_after.id] = ds.flat_after = loading_dataset.flat_after
 
         if isinstance(loading_dataset.dark_before, Images):
-            self.images[loading_dataset.dark_before.id] = loading_dataset.dark_before
+            self.images[loading_dataset.dark_before.id] = ds.dark_before = loading_dataset.dark_before
         if isinstance(loading_dataset.dark_after, Images):
-            self.images[loading_dataset.dark_after.id] = loading_dataset.dark_after
+            self.images[loading_dataset.dark_after.id] = ds.dark_after = loading_dataset.dark_after
 
         self.datasets[ds.id] = ds
         return ds
