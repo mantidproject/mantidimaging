@@ -24,7 +24,7 @@ class IndicatorIconView(QGraphicsPixmapItem):
         self.parent = parent
         self.icon_pos = icon_pos
         self.set_icon(icon_path, color)
-        self.icon_size = [64, 64]
+        self.icon_size = [32, 32]
 
         self.parent.scene().addItem(self)
 
