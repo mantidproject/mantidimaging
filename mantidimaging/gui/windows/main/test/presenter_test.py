@@ -310,6 +310,25 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack.setWindowTitle.assert_called_once_with(new_title)
         self.view.active_stacks_changed.emit.assert_called_once()
 
+    def test_create_new_180_stack_with_multiple_visible_stacks(self):
+        stacks = dict()
+        for _ in range(3):
+            stack = mock.Mock()
+            stack.isVisible.return_value = True
+            stacks[uuid.uuid4()] = stack
+
+        self.presenter.stacks = stacks
+        self.view.create_stack_window.return_value = stack_vis_180 = mock.Mock()
+        self.view.findChild.return_value = tab_bar_mock = mock.Mock()
+
+        images_180 = generate_images()
+        title = "180-images"
+
+        self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
+        self.view.tabifyDockWidget.assert_called_once()
+        self.view.active_stacks_changed.emit.assert_called_once()
+        tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
+
 
 if __name__ == '__main__':
     unittest.main()
