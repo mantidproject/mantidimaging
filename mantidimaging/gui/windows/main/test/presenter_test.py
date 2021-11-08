@@ -468,6 +468,18 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.remove_item_from_tree_view(stack_id)
         top_level_item_mock.takeChild.assert_called_once_with(0)
 
+    def test_have_active_stacks_true(self):
+        mock_stack = mock.Mock()
+        mock_stack.isVisible.return_value = True
+        self.presenter.stacks = {"stack-id": mock_stack}
+        self.assertTrue(self.presenter.have_active_stacks())
+
+    def test_have_active_stacks_false(self):
+        mock_stack = mock.Mock()
+        mock_stack.isVisible.return_value = False
+        self.presenter.stacks = {"stack-id": mock_stack}
+        self.assertFalse(self.presenter.have_active_stacks())
+
     def test_get_stack_history(self):
         pass
 
