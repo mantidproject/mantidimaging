@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from collections import OrderedDict
-from typing import Callable
+from typing import Callable, List
 
 import numpy as np
 from pyqtgraph import ColorMap, ImageItem, ViewBox
@@ -42,6 +42,11 @@ class BadDataCheck:
         self.overlay.setLookupTable(lut)
         self.overlay.setZValue(11)
 
+    def clear(self):
+        self.overlay.getViewBox().removeItem(self.indicator)
+        self.overlay.getViewBox().removeItem(self.overlay)
+        self.overlay.clear()
+
 
 class BadDataOverlay:
     """
@@ -65,29 +70,34 @@ class BadDataOverlay:
 
     def enable_nan_check(self, enable: bool = True):
         if enable:
-            nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
-            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, 0, OVERLAY_COLOUR_NAN)
-            nan_overlay = ImageItem()
-            self.viewbox.addItem(nan_overlay)
-            test = BadDataCheck(np.isnan, nan_indicator, nan_overlay, OVERLAY_COLOUR_NAN)
-            self.enabled_checks["nan"] = test
+            self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan)
         else:
-            self.enabled_checks.pop("nan", None)
+            self.disable_check("nan")
 
     def enable_nonpositive_check(self, enable: bool = True):
         if enable:
-            nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
-            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, 1, OVERLAY_COLOUR_NONPOSITVE)
-            nan_overlay = ImageItem()
-            self.viewbox.addItem(nan_overlay)
 
             def is_non_positive(data):
                 return data <= 0
 
-            test = BadDataCheck(is_non_positive, nan_indicator, nan_overlay, OVERLAY_COLOUR_NONPOSITVE)
-            self.enabled_checks["nonpos"] = test
+            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive)
         else:
-            self.enabled_checks.pop("nonpos", None)
+            self.disable_check("nonpos")
+
+    def enable_check(self, name: str, color: List[int], pos: int, func: Callable):
+        if name not in self.enabled_checks:
+            nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, pos, color)
+            nan_overlay = ImageItem()
+            self.viewbox.addItem(nan_overlay)
+
+            check = BadDataCheck(func, nan_indicator, nan_overlay, color)
+            self.enabled_checks[name] = check
+
+    def disable_check(self, name: str):
+        if name in self.enabled_checks:
+            self.enabled_checks[name].clear()
+            self.enabled_checks.pop(name, None)
 
     def _get_current_slice(self) -> np.ndarray:
         data = self.image_item.image
