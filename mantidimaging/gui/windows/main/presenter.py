@@ -203,8 +203,10 @@ class MainWindowPresenter(BasePresenter):
                     container.sample.proj180deg,  # type: ignore
                     container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
-                self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id,
-                                                 f"{title} 180")  # type: ignore
+                self.view.create_child_tree_item(
+                    dataset_tree_item,
+                    container.sample.proj180deg.id,  # type: ignore
+                    f"{title} 180")
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
