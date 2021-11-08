@@ -206,7 +206,7 @@ class MainWindowPresenter(BasePresenter):
                 self.view.create_child_tree_item(
                     dataset_tree_item,
                     container.sample.proj180deg.id,  # type: ignore
-                    f"{title} 180")
+                    "180")
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
@@ -214,7 +214,7 @@ class MainWindowPresenter(BasePresenter):
                     container.sample.proj180deg = Images(
                         np.reshape(closest_projection, (1, ) + closest_projection.shape))
                     self._add_stack(container.sample.proj180deg, f"{title}_180", sample_stack_vis)
-                    self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, f"{title} 180")
+                    self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
