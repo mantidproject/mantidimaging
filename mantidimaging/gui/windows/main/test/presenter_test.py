@@ -472,13 +472,13 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack = mock.Mock()
         mock_stack.isVisible.return_value = True
         self.presenter.stacks = {"stack-id": mock_stack}
-        self.assertTrue(self.presenter.have_active_stacks())
+        self.assertTrue(self.presenter.have_active_stacks)
 
     def test_have_active_stacks_false(self):
         mock_stack = mock.Mock()
         mock_stack.isVisible.return_value = False
         self.presenter.stacks = {"stack-id": mock_stack}
-        self.assertFalse(self.presenter.have_active_stacks())
+        self.assertFalse(self.presenter.have_active_stacks)
 
     def test_get_stack_history(self):
         pass
