@@ -100,14 +100,20 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
             self.details.setText(f"{self.name}: {pixel_value:.6f}")
 
     def link_sibling_axis(self):
+        # Linking multiple viewboxes with locked aspect ratios causes
+        # odd resizing behaviour. Use workaround from
+        # https://github.com/pyqtgraph/pyqtgraph/issues/1348
+        self.vb.setAspectLocked(True)
         for view1, view2 in pairwise(chain([self], self.axis_siblings)):
             view1.vb.linkView(ViewBox.XAxis, view2.vb)
             view1.vb.linkView(ViewBox.YAxis, view2.vb)
+            view2.vb.setAspectLocked(False)
 
     def unlink_sibling_axis(self):
         for img_view in chain([self], self.axis_siblings):
             img_view.vb.linkView(ViewBox.XAxis, None)
             img_view.vb.linkView(ViewBox.YAxis, None)
+            img_view.vb.setAspectLocked(True)
 
     def link_sibling_histogram(self):
         for view1, view2 in pairwise(chain([self], self.histogram_siblings)):
