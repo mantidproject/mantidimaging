@@ -11,6 +11,7 @@ New Features
 - #1049 : NeXus Loader: 180deg images
 - #1167 : Bad data indicator icons
 - #1185 : Bad data overlays
+- #1168 : Dataset tree view
 
 Fixes
 -----
