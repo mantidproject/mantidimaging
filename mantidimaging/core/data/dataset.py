@@ -23,19 +23,19 @@ class Dataset:
         self._dark_after = lambda: None
 
         if isinstance(flat_before, Images):
-            self._flat_before = weakref.ref(flat_before)
+            self._flat_before = weakref.ref(flat_before)  # type: ignore
         if isinstance(flat_after, Images):
-            self._flat_after = weakref.ref(flat_after)
+            self._flat_after = weakref.ref(flat_after)  # type: ignore
         if isinstance(dark_before, Images):
-            self._dark_before = weakref.ref(dark_before)
+            self._dark_before = weakref.ref(dark_before)  # type: ignore
         if isinstance(dark_after, Images):
-            self._dark_after = weakref.ref(dark_after)
+            self._dark_after = weakref.ref(dark_after)  # type: ignore
 
         self._id: uuid.UUID = uuid.uuid4()
 
     @property
-    def sample(self) -> Optional[Images]:
-        return self._sample()
+    def sample(self) -> Images:
+        return self._sample()  # type: ignore
 
     @property
     def flat_before(self) -> Optional[Images]:
@@ -43,7 +43,7 @@ class Dataset:
 
     @flat_before.setter
     def flat_before(self, flat_before: Images):
-        self._flat_before = weakref.ref(flat_before)
+        self._flat_before = weakref.ref(flat_before)  # type: ignore
 
     @property
     def flat_after(self) -> Optional[Images]:
@@ -51,7 +51,7 @@ class Dataset:
 
     @flat_after.setter
     def flat_after(self, flat_after: Images):
-        self._flat_after = weakref.ref(flat_after)
+        self._flat_after = weakref.ref(flat_after)  # type: ignore
 
     @property
     def dark_before(self) -> Optional[Images]:
@@ -59,7 +59,7 @@ class Dataset:
 
     @dark_before.setter
     def dark_before(self, dark_before: Images):
-        self._dark_before = weakref.ref(dark_before)
+        self._dark_before = weakref.ref(dark_before)  # type: ignore
 
     @property
     def dark_after(self) -> Optional[Images]:
@@ -67,7 +67,7 @@ class Dataset:
 
     @dark_after.setter
     def dark_after(self, dark_after: Images):
-        self._dark_after = weakref.ref(dark_after)
+        self._dark_after = weakref.ref(dark_after)  # type: ignore
 
     @property
     def id(self) -> uuid.UUID:

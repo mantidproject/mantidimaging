@@ -285,7 +285,7 @@ class MainWindowModelTest(unittest.TestCase):
                                           out_format=image_format,
                                           pixel_depth=pixel_depth,
                                           progress=progress)
-        self.assertListEqual(images.filenames, filenames)
+        self.assertListEqual(images.filenames, filenames)  # type: ignore
         assert result
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.save")

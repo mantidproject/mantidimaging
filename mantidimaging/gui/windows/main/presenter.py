@@ -191,7 +191,7 @@ class MainWindowPresenter(BasePresenter):
                 self.view.create_child_tree_item(dataset_tree_item, container.flat_before.id, "Flat Before")
             if container.flat_after and container.flat_after.filenames:
                 self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
-                self.view.create_child_tree_item(dataset_tree_item, container.flat_before.id, "Flat After")
+                self.view.create_child_tree_item(dataset_tree_item, container.flat_after.id, "Flat After")
             if container.dark_before and container.dark_before.filenames:
                 self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
                 self.view.create_child_tree_item(dataset_tree_item, container.dark_before.id, "Dark Before")
@@ -203,7 +203,8 @@ class MainWindowPresenter(BasePresenter):
                     container.sample.proj180deg,  # type: ignore
                     container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
-                self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
+                self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id,
+                                                 f"{title} 180")  # type: ignore
             else:
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
@@ -211,7 +212,7 @@ class MainWindowPresenter(BasePresenter):
                     container.sample.proj180deg = Images(
                         np.reshape(closest_projection, (1, ) + closest_projection.shape))
                     self._add_stack(container.sample.proj180deg, f"{title}_180", sample_stack_vis)
-                    self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
+                    self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, f"{title} 180")
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -252,10 +253,10 @@ class MainWindowPresenter(BasePresenter):
     def stack_names(self):
         return [widget.windowTitle() for widget in self.stacks.values()]
 
-    def get_stack_visualiser(self, stack_uuid: UUID) -> Optional[StackVisualiserView]:
+    def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
         return self.active_stacks[stack_uuid]
 
-    def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
+    def get_stack_history(self, stack_uuid: uuid.UUID) -> Dict[str, Any]:
         return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
 
     @property

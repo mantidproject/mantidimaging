@@ -89,7 +89,7 @@ class MainWindowModel(object):
 
     def load_images(self, file_path: str, progress) -> Images:
         images = loader.load_stack(file_path, progress)
-        self.images[images.id] = images.id
+        self.images[images.id] = images
         return images
 
     def do_images_saving(self, images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
