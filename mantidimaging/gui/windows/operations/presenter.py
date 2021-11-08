@@ -184,6 +184,11 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.clear_notification_dialog()
         self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
 
+        if self.model.show_negative_overlay():
+            self.view.previews.add_negative_overlay()
+        else:
+            self.view.previews.hide_negative_overlay()
+
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
             self.model.params_needed_from_stack is not None else False
@@ -352,10 +357,6 @@ class FiltersWindowPresenter(BasePresenter):
                 if self.view.invertDifference.isChecked():
                     diff = np.negative(diff, out=diff)
 
-                if self.model.show_negative_overlay():
-                    self.view.previews.add_negative_overlay(filtered_image_data.copy())
-                else:
-                    self.view.previews.hide_negative_overlay()
                 self._update_preview_image(diff, self.view.preview_image_difference)
 
             # Ensure all of it is visible if the lock zoom isn't checked

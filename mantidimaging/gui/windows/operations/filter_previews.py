@@ -25,7 +25,6 @@ after_pen = (0, 200, 0)
 diff_pen = (0, 0, 200)
 
 OVERLAY_THRESHOLD = 1e-3
-OVERLAY_COLOUR_NEGATIVE = [255, 0, 0, 255]
 OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 
 Coord = namedtuple('Coord', ['row', 'col'])
@@ -167,21 +166,15 @@ class FilterPreviews(GraphicsLayoutWidget):
         lut = map.getLookupTable(0, 1, 2)
         self.image_diff_overlay.setLookupTable(lut)
 
-    def add_negative_overlay(self, after):
-        after[after > 0] = 0.0
-        after[after < 0] = 1.0
-        pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], OVERLAY_COLOUR_NEGATIVE], dtype=np.ubyte)
-        map = ColorMap(pos, color)
-        self.negative_values_overlay.setOpacity(1)
-        self.negative_values_overlay.setImage(after)
-        lut = map.getLookupTable(0, 1, 2)
-        self.negative_values_overlay.setLookupTable(lut)
+    def add_negative_overlay(self):
+        self.imageview_after.enable_nonpositive_check()
 
     def hide_difference_overlay(self):
         self.image_diff_overlay.setOpacity(0)
 
     def hide_negative_overlay(self):
+        self.imageview_after.enable_nonpositive_check(False)
+        return
         self.negative_values_overlay.setOpacity(0)
 
     def auto_range(self):
