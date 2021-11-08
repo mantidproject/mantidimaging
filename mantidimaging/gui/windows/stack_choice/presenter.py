@@ -82,3 +82,7 @@ class StackChoicePresenter(StackChoicePresenterMixin):
         self.view.close()
         self.stack = None
         self.done = True
+
+    def enable_nonpositive_check(self):
+        self.view.original_stack.enable_nonpositive_check()
+        self.view.new_stack.enable_nonpositive_check()
