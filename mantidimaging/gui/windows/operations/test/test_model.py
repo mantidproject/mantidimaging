@@ -189,6 +189,12 @@ class FiltersWindowModelTest(unittest.TestCase):
             'Remove stripes with filtering', 'Remove stripes with sorting and fitting'
         ], filter_names)
 
+    def test_find_drop_down_index_from_filter_name(self):
+        for filter_name in self.model.filter_names:
+            with self.subTest(filter_name=filter_name):
+                index = self.model.find_drop_down_index_from_filter_name(filter_name)
+                self.assertEqual(filter_name, self.model.filter_names[index])
+
 
 if __name__ == '__main__':
     unittest.main()
