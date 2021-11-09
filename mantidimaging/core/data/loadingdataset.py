@@ -1,9 +1,9 @@
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 from dataclasses import dataclass
 from typing import Optional
 
 from mantidimaging.core.data import Images
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
-# SPDX - License - Identifier: GPL-3.0-or-later
 
 
 @dataclass
