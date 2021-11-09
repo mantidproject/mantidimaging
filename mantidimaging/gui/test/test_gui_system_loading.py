@@ -4,6 +4,7 @@
 from pathlib import Path
 from unittest import mock
 
+import pytest
 from PyQt5.QtCore import QTimer, QEventLoop
 from PyQt5.QtWidgets import QApplication
 
@@ -43,6 +44,7 @@ class TestGuiSystemLoading(GuiSystemBase):
 
                 widget.ok_button.click()
 
+    @pytest.mark.xfail(reason="Not yet reimplemented. See #1189")
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def test_load_180(self, mocked_select_file):
         path_180 = Path(LOAD_SAMPLE).parents[1] / "180deg" / "IMAT_Flower_180deg_000000.tif"
