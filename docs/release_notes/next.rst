@@ -17,6 +17,7 @@ Fixes
 
 - #1138 : Improve version number handling
 - #1134 : NeXus Loader: OSError
+- #1178 : 
 
 
 Developer Changes
