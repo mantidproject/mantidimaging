@@ -95,6 +95,17 @@ class FiltersWindowModel(object):
                 return index
         return 0
 
+    def find_drop_down_index_from_filter_name(self, filter_name: str) -> int:
+        """
+        Finds the index of an operation on the operations filter selection drop down menu.
+        :param filter_name: The name of the filter.
+        :return: Its index on the drop down menu if a match was found, zero if no match was found.
+        """
+        for index, drop_down_filter_name in enumerate(self.filter_names):
+            if drop_down_filter_name == filter_name:
+                return index
+        return 0
+
     def setup_filter(self, filter_name, filter_widget_kwargs):
         filter_idx = self._find_filter_index_from_filter_name(filter_name)
         self.selected_filter = self.filters[filter_idx]

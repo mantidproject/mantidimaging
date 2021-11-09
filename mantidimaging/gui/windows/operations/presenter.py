@@ -381,7 +381,7 @@ class FiltersWindowPresenter(BasePresenter):
         return self.model.get_filter_module_name(filter_idx)
 
     def set_filter_by_name(self, filter_menu_name):
-        filter_idx = self.model._find_filter_index_from_filter_name(filter_menu_name)
+        filter_idx = self.model.find_drop_down_index_from_filter_name(filter_menu_name)
         self.view.filterSelector.setCurrentIndex(filter_idx)
 
     def _already_run_flat_fielding(self):
