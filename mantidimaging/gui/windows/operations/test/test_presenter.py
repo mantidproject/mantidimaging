@@ -303,10 +303,10 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_set_filter_by_name(self):
         NAME = "ROI Normalisation"
         INDEX = 3
-        self.presenter.model._find_filter_index_from_filter_name = mock.Mock(return_value=INDEX)
+        self.presenter.model.find_drop_down_index_from_filter_name = mock.Mock(return_value=INDEX)
         self.presenter.set_filter_by_name(NAME)
 
-        self.presenter.model._find_filter_index_from_filter_name.assert_called_with(NAME)
+        self.presenter.model.find_drop_down_index_from_filter_name.assert_called_with(NAME)
         self.view.filterSelector.setCurrentIndex.assert_called_with(INDEX)
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
