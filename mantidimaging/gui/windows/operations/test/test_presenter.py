@@ -131,7 +131,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         do_update_previews.assert_called_once()
-        self.presenter.main_window.presenter.model.set_images_in_stack.assert_called_once()
+        self.presenter.main_window.presenter.set_images_in_stack.assert_called_once()
 
     @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
                          do_update_previews=DEFAULT,

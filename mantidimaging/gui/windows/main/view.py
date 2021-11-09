@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
+import uuid
 from logging import getLogger
 from typing import Optional
 from uuid import UUID
@@ -9,7 +10,8 @@ from uuid import UUID
 import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog
+from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
+    QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility import finder
@@ -33,6 +35,12 @@ from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPres
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 LOG = getLogger(__file__)
+
+
+class QTreeDatasetWidgetItem(QTreeWidgetItem):
+    def __init__(self, parent: QTreeWidget, dataset_id: UUID):
+        self.uuid = dataset_id
+        super().__init__(parent)
 
 
 class MainWindowView(BaseMainWindowView):
@@ -111,6 +119,17 @@ class MainWindowView(BaseMainWindowView):
         if args.recon():
             self.show_recon_window()
 
+        self.dataset_tree_widget = QTreeWidget()
+
+        self.splitter = QSplitter(Qt.Horizontal, self)
+        self.splitter.addWidget(self.dataset_tree_widget)
+
+        self.dataset_tree_widget.setMinimumWidth(250)
+        self.dataset_tree_widget.setMaximumWidth(300)
+        self.dataset_tree_widget.setHeaderLabel("")
+
+        self.setCentralWidget(self.splitter)
+
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
@@ -149,7 +168,7 @@ class MainWindowView(BaseMainWindowView):
         return None
 
     def update_shortcuts(self):
-        enabled = len(self.presenter.stack_names) > 0
+        enabled = len(self.presenter.stacks.values()) > 0
         self.actionSave.setEnabled(enabled)
         self.actionSampleLoadLog.setEnabled(enabled)
         self.actionLoad180deg.setEnabled(enabled)
@@ -233,8 +252,8 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        _180_images = self.presenter.add_180_deg_to_sample(stack_name=stack_to_add_180_deg_to,
-                                                           _180_deg_file=selected_file)
+        _180_images = self.presenter.add_180_deg_to_dataset(stack_name=stack_to_add_180_deg_to,
+                                                            _180_deg_file=selected_file)
         self.create_new_180_stack(_180_images, self.presenter.create_stack_name(selected_file))
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
@@ -309,7 +328,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
 
     def get_all_stack_visualisers(self):
-        return self.presenter.get_all_stack_visualisers()
+        return self.presenter.get_active_stack_visualisers()
 
     def get_all_stack_visualisers_with_180deg_proj(self):
         return self.presenter.get_all_stack_visualisers_with_180deg_proj()
@@ -332,18 +351,20 @@ class MainWindowView(BaseMainWindowView):
     def create_stack_window(self,
                             stack: Images,
                             title: str,
-                            position=Qt.DockWidgetArea.TopDockWidgetArea,
+                            position=Qt.DockWidgetArea.RightDockWidgetArea,
                             floating=False) -> StackVisualiserView:
         stack_vis = StackVisualiserView(self, title, stack)
 
         # this puts the new stack window into the centre of the window
-        self.setCentralWidget(stack_vis)
+        self.splitter.addWidget(stack_vis)
+        self.setCentralWidget(self.splitter)
 
         # add the dock widget into the main window
         self.addDockWidget(position, stack_vis)
 
         stack_vis.setFloating(floating)
 
+        self.presenter.add_stack_to_dictionary(stack_vis)
         return stack_vis
 
     def remove_stack(self, obj: StackVisualiserView):
@@ -390,9 +411,6 @@ class MainWindowView(BaseMainWindowView):
 
             return stack_choice
 
-    def set_images_in_stack(self, uuid: UUID, images: Images):
-        self.presenter.set_images_in_stack(uuid, images)
-
     def find_images_stack_title(self, images: Images) -> str:
         return self.presenter.get_stack_with_images(images).name
 
@@ -429,3 +447,18 @@ class MainWindowView(BaseMainWindowView):
             self, "180 Projection",
             f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
             f"Use anyway?")
+
+    def create_dataset_tree_widget_item(self, title: str, id: uuid.UUID) -> QTreeDatasetWidgetItem:
+        dataset_tree_item = QTreeDatasetWidgetItem(self.dataset_tree_widget, id)
+        dataset_tree_item.setText(0, title)
+        return dataset_tree_item
+
+    @staticmethod
+    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: UUID, name: str):
+        child = QTreeDatasetWidgetItem(parent, dataset_id)
+        child.setText(0, name)
+        parent.addChild(child)
+
+    def add_item_to_tree_view(self, item: QTreeWidgetItem):
+        self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
+        item.setExpanded(True)

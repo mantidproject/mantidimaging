@@ -12,7 +12,6 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
-from ...utility.common import operation_in_progress
 from ..stack_visualiser.presenter import StackVisualiserPresenter
 from .metadata_dialog import MetadataDialog
 from .presenter import SVNotification
@@ -105,28 +104,13 @@ class StackVisualiserView(QDockWidget):
     def actions(self):
         return self._actions
 
+    @property
+    def uuid(self):
+        return self.presenter.images.id
+
     def closeEvent(self, event):
-        window: 'MainWindowView' = self.window()
-        stacks_with_proj180 = window.get_all_stack_visualisers_with_180deg_proj()
-        for stack in stacks_with_proj180:
-            if stack.presenter.images.proj180deg is self.presenter.images:
-                if not self.ask_confirmation("Caution: If you close this then the 180 degree projection will "
-                                             "not be available for COR correlation."):
-                    event.ignore()
-                    return
-                else:
-                    stack.presenter.images.clear_proj180deg()
-
-        with operation_in_progress("Closing image view", "Freeing image memory"):
-            self.setFloating(False)
-            self.hide()
-            self.image_view.close()
-
-            # this removes a hanging reference from the presenter to the data
-            # allowing it to be GC'ed
-            self.presenter.delete_data()
-            window.remove_stack(self)
-
+        self.setFloating(False)
+        self.hide()
         super().closeEvent(event)
 
     def roi_changed_callback(self, roi: SensibleROI):

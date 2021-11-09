@@ -1,191 +1,173 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import os
 import uuid
-from collections import namedtuple
 from logging import getLogger
-from typing import Any, Dict, List, Optional
+from typing import Dict, Optional
 
-from PyQt5.QtWidgets import QDockWidget
+import numpy as np
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
-StackId = namedtuple('StackId', ['id', 'name'])
 logger = getLogger(__name__)
+
+
+def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: uuid.UUID) -> bool:
+    return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
 
 
 class MainWindowModel(object):
     def __init__(self):
         super(MainWindowModel, self).__init__()
 
-        self.active_stacks: Dict[uuid.UUID, QDockWidget] = {}
+        self.datasets: Dict[uuid.UUID, Dataset] = {}
+        self.images: Dict[uuid.UUID, Images] = {}
 
-    def do_load_stack(self, parameters: LoadingParameters, progress):
-        ds = Dataset(loader.load_p(parameters.sample, parameters.dtype, progress))
-        ds.sample._is_sinograms = parameters.sinograms
-        ds.sample.pixel_size = parameters.pixel_size
+    def get_images_by_uuid(self, images_uuid: uuid.UUID):
+        if images_uuid in self.images:
+            return self.images[images_uuid]
+        return None
+
+    def do_load_dataset(self, parameters: LoadingParameters, progress) -> Dataset:
+        sample = loader.load_p(parameters.sample, parameters.dtype, progress)
+        self.images[sample.id] = sample
+        ds = Dataset(sample)
+
+        sample._is_sinograms = parameters.sinograms
+        sample.pixel_size = parameters.pixel_size
 
         if parameters.sample.log_file:
             ds.sample.log_file = loader.load_log(parameters.sample.log_file)
 
         if parameters.flat_before:
-            ds.flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
+            flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
+            self.images[flat_before.id] = flat_before
+            ds.flat_before = flat_before
             if parameters.flat_before.log_file:
-                ds.flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
+                flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
         if parameters.flat_after:
-            ds.flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
+            flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
+            self.images[flat_after.id] = flat_after
+            ds.flat_after = flat_after
             if parameters.flat_after.log_file:
-                ds.flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
+                flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
 
         if parameters.dark_before:
-            ds.dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
+            dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
+            self.images[dark_before.id] = dark_before
+            ds.dark_before = dark_before
         if parameters.dark_after:
-            ds.dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
+            dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
+            self.images[dark_after.id] = dark_after
+            ds.dark_after = dark_after
 
         if parameters.proj_180deg:
-            ds.sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
+            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
 
+        self.datasets[ds.id] = ds
         return ds
 
-    @staticmethod
-    def load_stack(file_path: str, progress) -> Images:
-        return loader.load_stack(file_path, progress)
+    def convert_loading_dataset(self, loading_dataset: LoadingDataset) -> Dataset:
+        self.images[loading_dataset.sample.id] = loading_dataset.sample
+        ds = Dataset(loading_dataset.sample)
 
-    def do_saving(self, stack_uuid, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
-        svp = self.get_stack_visualiser(stack_uuid).presenter
-        filenames = saver.save(svp.images,
+        if isinstance(loading_dataset.flat_before, Images):
+            self.images[loading_dataset.flat_before.id] = ds.flat_before = loading_dataset.flat_before
+        if isinstance(loading_dataset.flat_after, Images):
+            self.images[loading_dataset.flat_after.id] = ds.flat_after = loading_dataset.flat_after
+
+        if isinstance(loading_dataset.dark_before, Images):
+            self.images[loading_dataset.dark_before.id] = ds.dark_before = loading_dataset.dark_before
+        if isinstance(loading_dataset.dark_after, Images):
+            self.images[loading_dataset.dark_after.id] = ds.dark_after = loading_dataset.dark_after
+
+        self.datasets[ds.id] = ds
+        return ds
+
+    def load_images(self, file_path: str, progress) -> Images:
+        images = loader.load_stack(file_path, progress)
+        self.images[images.id] = images
+        return images
+
+    def do_images_saving(self, images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            self.raise_error_when_images_not_found(images_id)
+        filenames = saver.save(images,
                                output_dir=output_dir,
                                name_prefix=name_prefix,
                                overwrite_all=overwrite,
                                out_format=image_format,
                                pixel_depth=pixel_depth,
                                progress=progress)
-        svp.images.filenames = filenames
+        images.filenames = filenames
         return True
 
-    def create_name(self, filename):
+    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray):
         """
-        Creates a suitable name for a newly loaded stack.
+        Updates the data of an existing dataset/images object.
+        :param images_id: The id of the image to update.
+        :param new_data: The new image data.
         """
-        # Avoid file extensions in names
-        filename = os.path.splitext(filename)[0]
+        if images_id in self.images:
+            self.images[images_id].data = new_data
+        else:
+            self.raise_error_when_images_not_found(images_id)
 
-        # Avoid duplicate names
-        name = filename
-        current_names = self._stack_names
-        num = 1
-        while name in current_names:
-            num += 1
-            name = f"{filename}_{num}"
-
-        return name
-
-    @property
-    def stack_list(self) -> List[StackId]:
-        stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
-        return sorted(stacks, key=lambda x: x.name)
-
-    @property
-    def _stack_names(self) -> List[str]:
-        return [stack.name for stack in self.stack_list]
-
-    def add_stack(self, stack_visualiser: StackVisualiserView):
-        stack_visualiser.uuid = uuid.uuid1()
-        self.active_stacks[stack_visualiser.uuid] = stack_visualiser
-        logger.debug(f"Active stacks: {self.active_stacks}")
-
-    def get_stack(self, stack_uuid: uuid.UUID) -> QDockWidget:
+    def add_180_deg_to_dataset(self, images_id: uuid.UUID, _180_deg_file: str) -> Images:
         """
-        :param stack_uuid: The unique ID of the stack that will be retrieved.
-        :return The QDockWidget that contains the Stack Visualiser.
-                For direct access to the Stack Visualiser widget use
-                get_stack_visualiser
+        Loads to 180 projection and adds this to a given Images ID.
+        :param images_id: The ID of the Images object.
+        :param _180_deg_file: The location of the 180 projection.
+        :return: The loaded 180 Image object.
         """
-        return self.active_stacks[stack_uuid]  # type:ignore
-
-    def set_images_in_stack(self, stack_uuid: uuid.UUID, images: Images):
-
-        stack = self.active_stacks[stack_uuid]
-
-        if not stack.presenter.images == images:
-            stack.image_view.clear()
-            stack.image_view.setImage(images.data)
-
-            # Free previous images stack before reassignment
-            stack.presenter.images = images
-
-    def get_stack_by_name(self, search_name: str) -> Optional[QDockWidget]:
-        for stack_id in self.stack_list:
-            if stack_id.name == search_name:
-                return self.get_stack(stack_id.id)
-        return None
-
-    def get_stack_by_images(self, images: Images) -> StackVisualiserView:
-        for _, sv in self.active_stacks.items():
-            if images is sv.presenter.images:
-                return sv
-        raise RuntimeError(f"Did not find stack {images} in active stacks! "
-                           f"Active stacks: {self.active_stacks.items()}")
-
-    def get_stack_visualiser(self, stack_uuid: uuid.UUID) -> StackVisualiserView:
-        """
-        :param stack_uuid: The unique ID of the stack that will be retrieved.
-        :return The Stack Visualiser widget that contains the data.
-        """
-        return self.active_stacks[stack_uuid]  # type:ignore
-
-    def get_all_stack_visualisers(self) -> List[StackVisualiserView]:
-        return [stack for stack in self.active_stacks.values()]  # type:ignore
-
-    def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
-        return [
-            stack for stack in self.active_stacks.values()  # type:ignore
-            if stack.presenter.images.has_proj180deg()
-        ]
-
-    def get_stack_history(self, stack_uuid: uuid.UUID) -> Optional[Dict[str, Any]]:
-        return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
-
-    def do_remove_stack(self, stack_uuid: uuid.UUID) -> None:
-        """
-        Removes the stack from the active_stacks dictionary.
-
-        :param stack_uuid: The unique ID of the stack that will be removed.
-        """
-        del self.active_stacks[stack_uuid]
-
-    @property
-    def have_active_stacks(self) -> bool:
-        return len(self.active_stacks) > 0
-
-    def add_log_to_sample(self, stack_name: str, log_file: str):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-
-        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
-        log = loader.load_log(log_file)
-        log.raise_if_angle_missing(stack.presenter.images.filenames)
-        stack.presenter.images.log_file = log
-
-    def add_180_deg_to_stack(self, stack_name, _180_deg_file):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            self.raise_error_when_images_not_found(images_id)
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
-        stack_dock.presenter.images.proj180deg = _180_deg
+        images.proj180deg = _180_deg
         return _180_deg
 
-    def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
-        stack_dock = self.get_stack_by_name(stack_name)
-        if stack_dock is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-
-        stack: StackVisualiserView = stack_dock.widget()  # type: ignore
-        images: Images = stack.presenter.images
+    def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            self.raise_error_when_images_not_found(images_id)
         images.set_projection_angles(proj_angles)
+
+    def raise_error_when_images_not_found(self, images_id: uuid.UUID):
+        raise RuntimeError(f"Failed to get Images with ID {images_id}")
+
+    def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            raise RuntimeError
+        log = loader.load_log(log_file)
+        log.raise_if_angle_missing(images.filenames)
+        images.log_file = log
+
+    def _remove_dataset(self, dataset_id: uuid.UUID):
+        dataset = self.datasets[dataset_id]
+        del self.images[dataset.sample.id]
+
+        if isinstance(dataset.flat_before, Images):
+            del self.images[dataset.flat_before.id]
+        if isinstance(dataset.flat_after, Images):
+            del self.images[dataset.flat_after.id]
+        if isinstance(dataset.dark_before, Images):
+            del self.images[dataset.dark_before.id]
+        if isinstance(dataset.dark_after, Images):
+            del self.images[dataset.dark_after.id]
+
+        del self.datasets[dataset_id]
+
+    def remove_container(self, container_id: uuid.UUID):
+        if container_id in self.images:
+            del self.images[container_id]
+            return
+        if container_id in self.datasets:
+            self._remove_dataset(container_id)
+            return
+        self.raise_error_when_images_not_found(container_id)

@@ -257,7 +257,7 @@ class FiltersWindowPresenter(BasePresenter):
             # If the operation encountered an error during processing,
             # try to restore the original data else continue processing as usual
             if attempt_repair:
-                self.main_window.presenter.model.set_images_in_stack(stack.uuid, stack.presenter.images)
+                self.main_window.presenter.set_images_in_stack(stack.uuid, stack.presenter.images)
             # Ensure there is no error if we are to continue with safe apply and 180 degree.
             elif task.error is None:
                 # otherwise check with user which one to keep

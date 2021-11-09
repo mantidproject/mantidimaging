@@ -7,11 +7,13 @@ from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING
 
 import numpy as np
+
+from mantidimaging.core.data.loadingdataset import LoadingDataset
+
 if TYPE_CHECKING:
     import numpy.typing as npt
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log,
@@ -138,7 +140,7 @@ def load(input_path: Optional[str] = None,
          dtype: 'npt.DTypeLike' = np.float32,
          file_names: Optional[List[str]] = None,
          indices: Optional[Union[List[int], Indices]] = None,
-         progress: Optional[Progress] = None) -> Dataset:
+         progress: Optional[Progress] = None) -> LoadingDataset:
     """
 
     Loads a stack, including sample, white and dark images.

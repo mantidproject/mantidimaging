@@ -55,7 +55,7 @@ class MainWindowViewTest(unittest.TestCase):
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
-        self.presenter.add_180_deg_to_sample.return_value = _180_dataset
+        self.presenter.add_180_deg_to_dataset.return_value = _180_dataset
         self.view.create_new_180_stack = mock.MagicMock()  # type: ignore
         selected_filename = "selected_file.tif"
         self.presenter.create_stack_name = mock.MagicMock(return_value=selected_filename)
@@ -69,8 +69,8 @@ class MainWindowViewTest(unittest.TestCase):
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
-        self.presenter.add_180_deg_to_sample.assert_called_once_with(stack_name=selected_stack,
-                                                                     _180_deg_file=selected_file)
+        self.presenter.add_180_deg_to_dataset.assert_called_once_with(stack_name=selected_stack,
+                                                                      _180_deg_file=selected_file)
         self.presenter.create_stack_name.assert_called_once_with(selected_file)
         self.view.create_new_180_stack.assert_called_once_with(_180_dataset, selected_filename)
 
@@ -182,12 +182,16 @@ class MainWindowViewTest(unittest.TestCase):
         position = "test_position"
         floating = False
 
+        self.view.splitter = splitter_mock = mock.Mock()
+
         self.view.create_stack_window(images, title, position=position, floating=floating)
 
         mock_sv.assert_called_once_with(self.view, title, images)
         dock = mock_sv.return_value
-        setCentralWidget.assert_called_once_with(dock)
+        setCentralWidget.assert_called_once_with(splitter_mock)
         addDockWidget.assert_called_once_with(position, dock)
+
+        splitter_mock.addWidget.assert_called_once_with(mock_sv.return_value)
 
         dock.setFloating.assert_called_once_with(floating)
 
@@ -219,13 +223,13 @@ class MainWindowViewTest(unittest.TestCase):
         QMessageBox.information.assert_called_once()
 
     def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
-        self.presenter.stack_names = ["1", "2"]
+        self.presenter.stacks = {"a": mock.Mock(), "b": mock.Mock()}
 
         self._update_shortcuts_test(False, True)
         self._update_shortcuts_test(True, True)
 
     def test_update_shortcuts_with_presenter_with_no_stacks(self):
-        self.presenter.stack_names = []
+        self.presenter.stacks = dict()
 
         self._update_shortcuts_test(False, False)
         self._update_shortcuts_test(True, False)

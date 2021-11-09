@@ -7,6 +7,9 @@ import os
 from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 import numpy as np
+
+from ...data.loadingdataset import LoadingDataset
+
 if TYPE_CHECKING:
     import numpy.typing as npt
 
@@ -15,7 +18,6 @@ from mantidimaging.core.io.utility import get_file_names, get_prefix
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from . import stack_loader
-from ...data.dataset import Dataset
 from ...utility.data_containers import Indices
 
 
@@ -28,7 +30,7 @@ def execute(load_func: Callable[[str], np.ndarray],
             img_format: str,
             dtype: 'npt.DTypeLike',
             indices: Union[List[int], Indices, None],
-            progress: Optional[Progress] = None) -> Dataset:
+            progress: Optional[Progress] = None) -> LoadingDataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -76,7 +78,7 @@ def execute(load_func: Callable[[str], np.ndarray],
     else:
         sample_images = sample_data
 
-    return Dataset(
+    return LoadingDataset(
         sample_images,
         flat_before=Images(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
         flat_after=Images(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,

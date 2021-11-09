@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
 from mantidimaging.gui.utility import (compile_ui, select_directory)
-from mantidimaging.gui.windows.main.model import StackId
+from mantidimaging.gui.windows.main.presenter import StackId
 
 
 def sort_by_tomo_and_recon(stack_id: StackId):

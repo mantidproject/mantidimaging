@@ -10,7 +10,7 @@ import h5py
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
@@ -237,17 +237,18 @@ class NexusLoadPresenter:
             logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
-    def get_dataset(self) -> Tuple[Dataset, str]:
+    def get_dataset(self) -> Tuple[LoadingDataset, str]:
         """
-        Create a Dataset and title using the arrays that have been retrieved from the NeXus file.
+        Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
         """
         sample_images = self._create_sample_images()
-        return Dataset(sample=sample_images,
-                       flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before"),
-                       flat_after=self._create_images_if_required(self.flat_after_array, "Flat After"),
-                       dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before"),
-                       dark_after=self._create_images_if_required(self.dark_after_array, "Dark After")), self.title
+        return LoadingDataset(sample=sample_images,
+                              flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before"),
+                              flat_after=self._create_images_if_required(self.flat_after_array, "Flat After"),
+                              dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before"),
+                              dark_after=self._create_images_if_required(self.dark_after_array,
+                                                                         "Dark After")), self.title
 
     def _create_sample_images(self):
         """

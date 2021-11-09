@@ -3,6 +3,7 @@
 
 import datetime
 import json
+import uuid
 from copy import deepcopy
 from typing import List, Optional, Any, Dict, Union, TextIO
 
@@ -35,6 +36,7 @@ class Images:
 
         self._data = data
         self.indices = indices
+        self._id = uuid.uuid4()
 
         self._filenames = filenames
 
@@ -73,6 +75,10 @@ class Images:
     def filenames(self, new_ones: List[str]):
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
+
+    @property
+    def id(self) -> uuid.UUID:
+        return self._id
 
     def load_metadata(self, f: TextIO):
         self.metadata = json.load(f)

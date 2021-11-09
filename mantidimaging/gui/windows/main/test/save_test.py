@@ -4,7 +4,7 @@
 import unittest
 import uuid
 
-from mantidimaging.gui.windows.main.model import StackId
+from mantidimaging.gui.windows.main.presenter import StackId
 from mantidimaging.gui.windows.main.save_dialog import sort_by_tomo_and_recon, MWSaveDialog
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
