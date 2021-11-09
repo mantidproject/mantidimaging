@@ -195,6 +195,9 @@ class FiltersWindowModelTest(unittest.TestCase):
                 index = self.model.find_drop_down_index_from_filter_name(filter_name)
                 self.assertEqual(filter_name, self.model.filter_names[index])
 
+    def test_no_matching_drop_down_filter_name_returns_zero(self):
+        assert self.model.find_drop_down_index_from_filter_name("Not A Filter") == 0
+
 
 if __name__ == '__main__':
     unittest.main()
