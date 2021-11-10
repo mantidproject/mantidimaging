@@ -4,13 +4,18 @@
 from typing import List, Optional
 
 from pyqtgraph import ViewBox
-from PyQt5.QtWidgets import QGraphicsPixmapItem
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem
+from PyQt5.QtGui import QPixmap, QImage, QColor
 from skimage import io as skio
 
 
 class IndicatorIconView(QGraphicsPixmapItem):
-    def __init__(self, parent: ViewBox, icon_path: str, icon_pos: int, color: Optional[List[int]] = None):
+    def __init__(self,
+                 parent: ViewBox,
+                 icon_path: str,
+                 icon_pos: int,
+                 color: Optional[List[int]] = None,
+                 message: str = ""):
         """An indicator icon for a pyqtgraph ViewBox
 
         The icon loaded from icon_path will be displayed in the low right corner of the ViewBox.
@@ -23,6 +28,11 @@ class IndicatorIconView(QGraphicsPixmapItem):
 
         self.parent = parent
         self.icon_pos = icon_pos
+
+        self.label = QGraphicsSimpleTextItem(message)
+        self.label.setVisible(False)
+        self.parent.scene().addItem(self.label)
+
         self.set_icon(icon_path, color)
         self.icon_size = [32, 32]
 
@@ -49,6 +59,8 @@ class IndicatorIconView(QGraphicsPixmapItem):
             image_qi = QImage(image_data.data, w, h, 4 * w, QImage.Format_RGBA8888)
 
             image_pm = QPixmap.fromImage(image_qi)
+
+            self.label.setBrush(QColor(*color))
         else:
             image_pm = QPixmap(icon_path)
         self.setPixmap(image_pm)
@@ -62,13 +74,19 @@ class IndicatorIconView(QGraphicsPixmapItem):
         corner_pos_x = scene_size.width() + scene_pos.x()
         corner_pos_y = scene_size.height() + scene_pos.y()
 
-        self.setOffset(corner_pos_x - self.icon_size[0] * (1 + self.icon_pos) - 10,
-                       corner_pos_y - self.icon_size[1] - 30)
+        icon_pos_x = corner_pos_x - self.icon_size[0] * (1 + self.icon_pos) - 10
+        icon_pos_y = corner_pos_y - self.icon_size[1] - 30
+        self.setOffset(icon_pos_x, icon_pos_y)
+
+        label_width = self.label.boundingRect().width()
+        self.label.setPos(corner_pos_x - label_width, icon_pos_y - self.icon_size[0])
 
     def hoverEnterEvent(self, event):
         if self.connected_overlay is not None:
             self.connected_overlay.setOpacity(1)
+        self.label.setVisible(True)
 
     def hoverLeaveEvent(self, event):
         if self.connected_overlay is not None:
             self.connected_overlay.setOpacity(0)
+        self.label.setVisible(False)
