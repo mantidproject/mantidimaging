@@ -37,7 +37,7 @@ class BadDataCheck:
     def setup_overlay(self):
         color = np.array([[0, 0, 0, 0], self.color], dtype=np.ubyte)
         color_map = ColorMap([0, 1], color)
-        self.overlay.setOpacity(0)
+        self.overlay.setVisible(False)
         lut = color_map.getLookupTable(0, 1, 2)
         self.overlay.setLookupTable(lut)
         self.overlay.setZValue(11)

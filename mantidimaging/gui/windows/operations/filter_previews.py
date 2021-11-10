@@ -157,7 +157,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], OVERLAY_COLOUR_DIFFERENCE], dtype=np.ubyte)
         map = ColorMap(pos, color)
-        self.image_diff_overlay.setOpacity(1)
+        self.image_diff_overlay.setVisible(True)
         self.image_diff_overlay.setImage(diff)
         lut = map.getLookupTable(0, 1, 2)
         self.image_diff_overlay.setLookupTable(lut)
@@ -166,7 +166,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_after.enable_nonpositive_check()
 
     def hide_difference_overlay(self):
-        self.image_diff_overlay.setOpacity(0)
+        self.image_diff_overlay.setVisible(False)
 
     def hide_negative_overlay(self):
         self.imageview_after.enable_nonpositive_check(False)

@@ -83,10 +83,10 @@ class IndicatorIconView(QGraphicsPixmapItem):
 
     def hoverEnterEvent(self, event):
         if self.connected_overlay is not None:
-            self.connected_overlay.setOpacity(1)
+            self.connected_overlay.setVisible(True)
         self.label.setVisible(True)
 
     def hoverLeaveEvent(self, event):
         if self.connected_overlay is not None:
-            self.connected_overlay.setOpacity(0)
+            self.connected_overlay.setVisible(False)
         self.label.setVisible(False)
