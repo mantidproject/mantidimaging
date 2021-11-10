@@ -70,7 +70,7 @@ class BadDataOverlay:
 
     def enable_nan_check(self, enable: bool = True):
         if enable:
-            self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan)
+            self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan, "Invalid values: Not a number")
         else:
             self.disable_check("nan")
 
@@ -80,14 +80,14 @@ class BadDataOverlay:
             def is_non_positive(data):
                 return data <= 0
 
-            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive)
+            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive, "Non-positive values")
         else:
             self.disable_check("nonpos")
 
-    def enable_check(self, name: str, color: List[int], pos: int, func: Callable):
+    def enable_check(self, name: str, color: List[int], pos: int, func: Callable, message: str):
         if name not in self.enabled_checks:
             nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
-            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, pos, color)
+            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, pos, color, message)
             nan_overlay = ImageItem()
             self.viewbox.addItem(nan_overlay)
 
