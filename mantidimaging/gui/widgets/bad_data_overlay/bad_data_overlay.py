@@ -86,12 +86,12 @@ class BadDataOverlay:
 
     def enable_check(self, name: str, color: List[int], pos: int, func: Callable, message: str):
         if name not in self.enabled_checks:
-            nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
-            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, pos, color, message)
-            nan_overlay = ImageItem()
-            self.viewbox.addItem(nan_overlay)
+            icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            indicator = IndicatorIconView(self.viewbox, icon_path, pos, color, message)
+            overlay = ImageItem()
+            self.viewbox.addItem(overlay)
 
-            check = BadDataCheck(func, nan_indicator, nan_overlay, color)
+            check = BadDataCheck(func, indicator, overlay, color)
             self.enabled_checks[name] = check
             self.check_for_bad_data()
 
