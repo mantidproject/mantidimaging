@@ -3,7 +3,6 @@
 import unittest
 from typing import Tuple
 from unittest import mock
-from unittest.mock import Mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -40,51 +39,6 @@ class StackVisualiserViewTest(unittest.TestCase):
         title = "Potatoes"
         self.view.setWindowTitle(title)
         self.assertEqual(title, self.view.name)
-
-    def test_closeEvent_deletes_images(self):
-        self.view.setFloating = mock.Mock()
-
-        self.view.close()
-
-        self.view.setFloating.assert_called_once_with(False)
-        self.assertEqual(None, self.view.presenter.images)
-        self.window.remove_stack.assert_called_once_with(self.view)
-
-    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView.ask_confirmation", return_value=True)
-    def test_closeEvent_deletes_images_with_proj180_user_accepts(self, ask_confirmation_mock: Mock):
-        p180_view, images = self._add_stack_visualiser()
-        self.test_data.proj180deg = images
-
-        p180_view.setFloating = mock.Mock()  # type: ignore[assignment]
-
-        p180_view.close()
-
-        ask_confirmation_mock.assert_called_once()
-
-        # proj180 has been cleared from the stack referencing it
-        self.assertFalse(self.test_data.has_proj180deg())
-
-        p180_view.setFloating.assert_called_once_with(False)
-        self.assertIsNone(p180_view.presenter.images)
-        self.window.remove_stack.assert_called_once_with(p180_view)  # type: ignore[attr-defined]
-
-    @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView.ask_confirmation", return_value=False)
-    def test_closeEvent_deletes_images_with_proj180_user_declined(self, ask_confirmation_mock: Mock):
-        p180_view, images = self._add_stack_visualiser()
-        self.test_data.proj180deg = images
-
-        p180_view.setFloating = mock.Mock()  # type: ignore[assignment]
-
-        p180_view.close()
-
-        ask_confirmation_mock.assert_called_once()
-
-        # proj180 has been cleared from the stack referencing it
-        self.assertTrue(self.test_data.has_proj180deg())
-
-        p180_view.setFloating.assert_not_called()
-        self.assertIsNotNone(p180_view.presenter.images)
-        self.window.remove_stack.assert_not_called()  # type: ignore[attr-defined]
 
     def _roi_updated_callback(self, roi):
         self.assertIsInstance(roi, SensibleROI)
