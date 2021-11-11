@@ -380,9 +380,8 @@ class FiltersWindowPresenter(BasePresenter):
     def get_filter_module_name(self, filter_idx):
         return self.model.get_filter_module_name(filter_idx)
 
-    def set_filter_by_name(self, filter_menu_name):
-        filter_idx = self.model._find_filter_index_from_filter_name(filter_menu_name)
-        self.view.filterSelector.setCurrentIndex(filter_idx)
+    def set_filter_by_name(self, filter_menu_name: str):
+        self.view.filterSelector.setCurrentText(filter_menu_name)
 
     def _already_run_flat_fielding(self):
         """
