@@ -120,6 +120,8 @@ class MainWindowView(BaseMainWindowView):
             self.show_recon_window()
 
         self.dataset_tree_widget = QTreeWidget()
+        self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
@@ -462,3 +464,13 @@ class MainWindowView(BaseMainWindowView):
     def add_item_to_tree_view(self, item: QTreeWidgetItem):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
         item.setExpanded(True)
+
+    def _open_tree_menu(self, position):
+        menu = QMenu()
+        delete_action = menu.addAction("Delete")
+        delete_action.triggered.connect(lambda: self._delete_container(position))
+
+        menu.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
+
+    def _delete_container(self, position):
+        print(position)
