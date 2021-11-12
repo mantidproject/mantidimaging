@@ -8,7 +8,7 @@ from typing import Optional
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget
@@ -39,8 +39,12 @@ LOG = getLogger(__file__)
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
     def __init__(self, parent: QTreeWidget, dataset_id: UUID):
-        self.uuid = dataset_id
+        self._id = dataset_id
         super().__init__(parent)
+
+    @property
+    def id(self):
+        return self._id
 
 
 class MainWindowView(BaseMainWindowView):
@@ -465,12 +469,19 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
         item.setExpanded(True)
 
-    def _open_tree_menu(self, position):
+    def _open_tree_menu(self, position: QPoint):
+        """
+        Opens the tree view menu.
+        :param position: The position of the cursor when the menu was opened relative to the main window.
+        """
         menu = QMenu()
         delete_action = menu.addAction("Delete")
-        delete_action.triggered.connect(lambda: self._delete_container(position))
-
+        delete_action.triggered.connect(self._delete_container)
         menu.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
-    def _delete_container(self, position):
-        print(position)
+    def _delete_container(self):
+        """
+        Sends the signal to the presenter to delete data corresponding with an item on the dataset tree view.
+        """
+        container_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.delete_container(container_id)

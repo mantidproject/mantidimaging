@@ -360,3 +360,6 @@ class MainWindowPresenter(BasePresenter):
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView):
         self.stacks[stack.uuid] = stack
+
+    def delete_container(self, container_id):
+        self.model.remove_container(container_id)
