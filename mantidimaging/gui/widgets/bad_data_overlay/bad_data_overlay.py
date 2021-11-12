@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from collections import OrderedDict
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 import numpy as np
 from pyqtgraph import ColorMap, ImageItem, ViewBox
@@ -93,17 +93,19 @@ class BadDataOverlay:
 
             check = BadDataCheck(func, nan_indicator, nan_overlay, color)
             self.enabled_checks[name] = check
+            self.check_for_bad_data()
 
     def disable_check(self, name: str):
         if name in self.enabled_checks:
             self.enabled_checks[name].clear()
             self.enabled_checks.pop(name, None)
 
-    def _get_current_slice(self) -> np.ndarray:
+    def _get_current_slice(self) -> Optional[np.ndarray]:
         data = self.image_item.image
         return data
 
     def check_for_bad_data(self):
         current_slice = self._get_current_slice()
-        for test in self.enabled_checks.values():
-            test.do_check(current_slice)
+        if current_slice is not None:
+            for test in self.enabled_checks.values():
+                test.do_check(current_slice)

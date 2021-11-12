@@ -5,7 +5,7 @@ from typing import Optional
 
 import numpy as np
 from PyQt5 import QtCore
-from pyqtgraph import GraphicsLayoutWidget, ImageItem, InfiniteLine, ColorMap
+from pyqtgraph import GraphicsLayoutWidget, InfiniteLine
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
@@ -39,10 +39,6 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.addItem(self.imageview_recon, 0, 1, rowspan=2)
         self.addItem(self.imageview_sinogram, 1, 0)
 
-        self.negative_nan_overlay = ImageItem()
-        self.negative_nan_overlay.setZValue(11)
-        self.projection_vb.addItem(self.negative_nan_overlay)
-
         self.imageview_projection.image_item.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
 
@@ -52,6 +48,8 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.enable_nan_check()
         self.imageview_sinogram.enable_nan_check()
         self.imageview_recon.enable_nan_check()
+        self.imageview_projection.enable_nonpositive_check()
+        self.imageview_sinogram.enable_nonpositive_check()
 
     def slice_line_moved(self):
         self.slice_changed(int(self.slice_line.value()))
@@ -59,7 +57,6 @@ class ReconImagesView(GraphicsLayoutWidget):
     def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.imageview_projection.clear()
         self.imageview_projection.setImage(image_data)
-        self._add_nan_zero_negative_overlay()
         self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:
@@ -116,24 +113,3 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def reset_recon_histogram(self):
         self.recon_hist.autoHistogramRange()
-
-    def _add_nan_zero_negative_overlay(self):
-        """
-        Adds the NaN/zero overlay to the projection view box.
-        """
-        copy = self.imageview_projection.image_item.image.copy()
-        nans = np.isnan(copy)
-        zero_negative = copy <= 0
-
-        overlay_idxs = np.logical_or(nans, zero_negative)
-        overlay_arr = np.zeros(copy.shape)
-        overlay_arr[overlay_idxs] = 1.0
-
-        pos = np.array([0, 1])
-        color = np.array([[0, 0, 0, 0], [255, 0, 0, 255]], dtype=np.ubyte)
-        map = ColorMap(pos, color)
-
-        self.negative_nan_overlay.setOpacity(1)
-        self.negative_nan_overlay.setImage(overlay_arr)
-        lut = map.getLookupTable(0, 1, 2)
-        self.negative_nan_overlay.setLookupTable(lut)
