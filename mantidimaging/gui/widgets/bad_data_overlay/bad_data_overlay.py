@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from collections import OrderedDict
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 import numpy as np
 from pyqtgraph import ColorMap, ImageItem, ViewBox
@@ -37,7 +37,7 @@ class BadDataCheck:
     def setup_overlay(self):
         color = np.array([[0, 0, 0, 0], self.color], dtype=np.ubyte)
         color_map = ColorMap([0, 1], color)
-        self.overlay.setOpacity(0)
+        self.overlay.setVisible(False)
         lut = color_map.getLookupTable(0, 1, 2)
         self.overlay.setLookupTable(lut)
         self.overlay.setZValue(11)
@@ -70,7 +70,7 @@ class BadDataOverlay:
 
     def enable_nan_check(self, enable: bool = True):
         if enable:
-            self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan)
+            self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan, "Invalid values: Not a number")
         else:
             self.disable_check("nan")
 
@@ -80,30 +80,32 @@ class BadDataOverlay:
             def is_non_positive(data):
                 return data <= 0
 
-            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive)
+            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive, "Non-positive values")
         else:
             self.disable_check("nonpos")
 
-    def enable_check(self, name: str, color: List[int], pos: int, func: Callable):
+    def enable_check(self, name: str, color: List[int], pos: int, func: Callable, message: str):
         if name not in self.enabled_checks:
-            nan_icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
-            nan_indicator = IndicatorIconView(self.viewbox, nan_icon_path, pos, color)
-            nan_overlay = ImageItem()
-            self.viewbox.addItem(nan_overlay)
+            icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            indicator = IndicatorIconView(self.viewbox, icon_path, pos, color, message)
+            overlay = ImageItem()
+            self.viewbox.addItem(overlay)
 
-            check = BadDataCheck(func, nan_indicator, nan_overlay, color)
+            check = BadDataCheck(func, indicator, overlay, color)
             self.enabled_checks[name] = check
+            self.check_for_bad_data()
 
     def disable_check(self, name: str):
         if name in self.enabled_checks:
             self.enabled_checks[name].clear()
             self.enabled_checks.pop(name, None)
 
-    def _get_current_slice(self) -> np.ndarray:
+    def _get_current_slice(self) -> Optional[np.ndarray]:
         data = self.image_item.image
         return data
 
     def check_for_bad_data(self):
         current_slice = self._get_current_slice()
-        for test in self.enabled_checks.values():
-            test.do_check(current_slice)
+        if current_slice is not None:
+            for test in self.enabled_checks.values():
+                test.do_check(current_slice)

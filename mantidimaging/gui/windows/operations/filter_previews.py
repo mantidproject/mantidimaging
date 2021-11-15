@@ -79,10 +79,6 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_diff_overlay.setZValue(10)
         self.image_after_vb.addItem(self.image_diff_overlay)
 
-        self.negative_values_overlay = ImageItem()
-        self.negative_values_overlay.setZValue(11)
-        self.image_after_vb.addItem(self.negative_values_overlay)
-
         # Ensure images resize equally
         self.image_layout: GraphicsLayout = self.addLayout(colspan=3)
 
@@ -161,7 +157,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         pos = np.array([0, 1])
         color = np.array([[0, 0, 0, 0], OVERLAY_COLOUR_DIFFERENCE], dtype=np.ubyte)
         map = ColorMap(pos, color)
-        self.image_diff_overlay.setOpacity(1)
+        self.image_diff_overlay.setVisible(True)
         self.image_diff_overlay.setImage(diff)
         lut = map.getLookupTable(0, 1, 2)
         self.image_diff_overlay.setLookupTable(lut)
@@ -170,12 +166,10 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_after.enable_nonpositive_check()
 
     def hide_difference_overlay(self):
-        self.image_diff_overlay.setOpacity(0)
+        self.image_diff_overlay.setVisible(False)
 
     def hide_negative_overlay(self):
         self.imageview_after.enable_nonpositive_check(False)
-        return
-        self.negative_values_overlay.setOpacity(0)
 
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.image_before_vb

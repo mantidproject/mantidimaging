@@ -179,7 +179,7 @@ class MainWindowPresenter(BasePresenter):
         self.stacks[sample_stack_vis.uuid] = sample_stack_vis
 
         current_stack_visualisers = self.get_active_stack_visualisers()
-        if len(current_stack_visualisers) > 1:
+        if len(current_stack_visualisers) > 0:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
         dataset_tree_item = self.view.create_dataset_tree_widget_item(title, sample_stack_vis.uuid)

@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import numpy as np
+from PyQt5.QtWidgets import QApplication
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -43,6 +44,8 @@ class ReconstructionWindowTest(BaseEyesTest):
     def test_negative_nan_overlay(self):
         images = generate_images(seed=10)
         self.imaging.presenter.create_new_stack(images, "bad_data")
+        QApplication.sendPostedEvents()
+
         images.data[0:, 7:] = 0
         images.data[0:, 3:4] = -1
         images.data[0:, 0:1] = np.nan
