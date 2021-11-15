@@ -100,6 +100,7 @@ class IndicatorIconView(QGraphicsPixmapItem):
             self.actions.append(action)
 
     def mouseClickEvent(self, event):
+        event.accept()
         if self.actions:
             qm = QMenu()
             for action in self.actions:
