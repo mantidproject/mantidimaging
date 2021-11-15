@@ -105,5 +105,4 @@ class IndicatorIconView(QGraphicsPixmapItem):
             for action in self.actions:
                 qm.addAction(action)
 
-            chosen = qm.exec(event.screenPos().toQPoint())
-            print(f"{chosen=}")
+            qm.exec(event.screenPos().toQPoint())
