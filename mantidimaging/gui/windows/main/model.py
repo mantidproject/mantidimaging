@@ -172,8 +172,9 @@ class MainWindowModel(object):
     def remove_container(self, container_id: uuid.UUID) -> ChangeType:
         if container_id in self.images:
             del self.images[container_id]
-            return ChangeType.DELETE_IMAGE_STACK
+            return [container_id]
         if container_id in self.datasets:
+            stacks_in_dataset = self.datasets[container_id].all_image_ids
             self._remove_dataset(container_id)
-            return ChangeType.DELETE_DATASET
+            return stacks_in_dataset
         self.raise_error_when_images_not_found(container_id)

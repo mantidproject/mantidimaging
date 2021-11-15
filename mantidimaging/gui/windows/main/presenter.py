@@ -354,7 +354,7 @@ class MainWindowPresenter(BasePresenter):
         for i in range(top_level_item_count):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == uuid_remove:
-                self.view.dataset_tree_widget.takeTopLevelItem(top_level_item)
+                self.view.dataset_tree_widget.takeTopLevelItem(i)
                 return
 
             child_count = top_level_item.childCount()
@@ -368,10 +368,13 @@ class MainWindowPresenter(BasePresenter):
         self.stacks[stack.uuid] = stack
 
     def delete_container(self, container_id):
-        change_type = self.model.remove_container(container_id)
-        if change_type == ChangeType.DELETE_IMAGE_STACK:
+        ids_to_remove = self.model.remove_container(container_id)
+        if len(ids_to_remove) == 1:
             self.stacks[container_id].deleteLater()
             del self.stacks[container_id]
             self.remove_item_from_tree_view(container_id)
-        if change_type == ChangeType.DELETE_DATASET:
-            pass
+        if len(ids_to_remove) > 1:
+            for stack_id in ids_to_remove:
+                self.stacks[stack_id].deleteLater()
+                del self.stacks[stack_id]
+            # self.remove_item_from_tree_view(container_id)
