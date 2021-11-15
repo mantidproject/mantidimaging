@@ -21,7 +21,7 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
-from .model import MainWindowModel, ChangeType
+from .model import MainWindowModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover

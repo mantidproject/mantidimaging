@@ -1,9 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
-from enum import Enum, auto
 from logging import getLogger
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 import numpy as np
 
@@ -14,11 +13,6 @@ from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 
 logger = getLogger(__name__)
-
-
-class ChangeType(Enum):
-    DELETE_IMAGE_STACK = auto()
-    DELETE_DATASET = auto()
 
 
 def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: uuid.UUID) -> bool:
@@ -169,7 +163,7 @@ class MainWindowModel(object):
 
         del self.datasets[dataset_id]
 
-    def remove_container(self, container_id: uuid.UUID) -> ChangeType:
+    def remove_container(self, container_id: uuid.UUID) -> Optional[List[uuid.UUID]]:
         if container_id in self.images:
             del self.images[container_id]
             return [container_id]
