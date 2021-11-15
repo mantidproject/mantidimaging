@@ -21,7 +21,7 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
-from .model import MainWindowModel
+from .model import MainWindowModel, ChangeType
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
@@ -36,6 +36,8 @@ class Notification(Enum):
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
+    DATASET_DELETE = auto()
+    IMAGES_DELETE = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -61,6 +63,10 @@ class MainWindowPresenter(BasePresenter):
                 self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
+            elif signal == Notification.IMAGES_DELETE:
+                pass
+            elif signal == Notification.DATASET_DELETE:
+                pass
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -362,4 +368,9 @@ class MainWindowPresenter(BasePresenter):
         self.stacks[stack.uuid] = stack
 
     def delete_container(self, container_id):
-        self.model.remove_container(container_id)
+        change_type = self.model.remove_container(container_id)
+        if change_type == ChangeType.DELETE_IMAGE_STACK:
+            self.stacks[container_id].deleteLater()
+            del self.stacks[container_id]
+        if change_type == ChangeType.DELETE_DATASET:
+            pass

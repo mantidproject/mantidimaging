@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
+from enum import Enum, auto
 from logging import getLogger
 from typing import Dict, Optional
 
@@ -14,6 +15,9 @@ from mantidimaging.core.utility.data_containers import LoadingParameters, Projec
 
 logger = getLogger(__name__)
 
+class ChangeType(Enum):
+    DELETE_IMAGE_STACK = auto()
+    DELETE_DATASET = auto()
 
 def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: uuid.UUID) -> bool:
     return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
@@ -163,11 +167,11 @@ class MainWindowModel(object):
 
         del self.datasets[dataset_id]
 
-    def remove_container(self, container_id: uuid.UUID):
+    def remove_container(self, container_id: uuid.UUID) -> ChangeType:
         if container_id in self.images:
             del self.images[container_id]
-            return
+            return ChangeType.DELETE_IMAGE_STACK
         if container_id in self.datasets:
             self._remove_dataset(container_id)
-            return
+            return ChangeType.DELETE_DATASET
         self.raise_error_when_images_not_found(container_id)
