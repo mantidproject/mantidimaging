@@ -1,10 +1,10 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
+from typing import List, Optional, Tuple, Callable
 
 from pyqtgraph import ViewBox
-from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem
+from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu, QAction
 from PyQt5.QtGui import QPixmap, QImage, QColor
 from skimage import io as skio
 
@@ -44,6 +44,8 @@ class IndicatorIconView(QGraphicsPixmapItem):
         self.setAcceptHoverEvents(True)
 
         self.connected_overlay = None
+
+        self.actions: List[QAction] = []
 
     def set_icon(self, icon_path: str, color: Optional[List[int]] = None):
         if color is not None:
@@ -90,3 +92,18 @@ class IndicatorIconView(QGraphicsPixmapItem):
         if self.connected_overlay is not None:
             self.connected_overlay.setVisible(False)
         self.label.setVisible(False)
+
+    def add_actions(self, actions: List[Tuple[str, Callable]]):
+        for text, method in actions:
+            action = QAction(text)
+            action.triggered.connect(method)
+            self.actions.append(action)
+
+    def mouseClickEvent(self, event):
+        if self.actions:
+            qm = QMenu()
+            for action in self.actions:
+                qm.addAction(action)
+
+            chosen = qm.exec(event.screenPos().toQPoint())
+            print(f"{chosen=}")
