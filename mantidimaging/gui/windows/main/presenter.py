@@ -353,14 +353,14 @@ class MainWindowPresenter(BasePresenter):
 
         for i in range(top_level_item_count):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.uuid == uuid_remove:
+            if top_level_item.id == uuid_remove:
                 self.view.dataset_tree_widget.takeTopLevelItem(top_level_item)
                 return
 
             child_count = top_level_item.childCount()
             for j in range(child_count):
                 child_item = top_level_item.child(j)
-                if child_item.uuid == uuid_remove:
+                if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)
                     return
 
@@ -372,5 +372,6 @@ class MainWindowPresenter(BasePresenter):
         if change_type == ChangeType.DELETE_IMAGE_STACK:
             self.stacks[container_id].deleteLater()
             del self.stacks[container_id]
+            self.remove_item_from_tree_view(container_id)
         if change_type == ChangeType.DELETE_DATASET:
             pass
