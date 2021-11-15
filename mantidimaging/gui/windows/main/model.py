@@ -15,9 +15,11 @@ from mantidimaging.core.utility.data_containers import LoadingParameters, Projec
 
 logger = getLogger(__name__)
 
+
 class ChangeType(Enum):
     DELETE_IMAGE_STACK = auto()
     DELETE_DATASET = auto()
+
 
 def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: uuid.UUID) -> bool:
     return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
