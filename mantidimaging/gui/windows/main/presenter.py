@@ -7,7 +7,6 @@ from collections import namedtuple
 from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any
-from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QDockWidget
@@ -95,10 +94,10 @@ class MainWindowPresenter(BasePresenter):
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
         self.model.add_log_to_sample(stack_id, log_file)
 
-    def _do_remove_stack(self, stack_uuid: UUID):
-        self.remove_item_from_tree_view(stack_uuid)
-        self.model.remove_container(stack_uuid)
-        del self.stacks[stack_uuid]
+    def _do_remove_stack(self, stack_id: uuid.UUID):
+        self.remove_item_from_tree_view(stack_id)
+        self.model.remove_container(stack_id)
+        del self.stacks[stack_id]
         self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
 
     def _do_rename_stack(self, current_name: str, new_name: str):
@@ -261,11 +260,11 @@ class MainWindowPresenter(BasePresenter):
     def stack_names(self):
         return [widget.windowTitle() for widget in self.stacks.values()]
 
-    def get_stack_visualiser(self, stack_uuid: UUID) -> StackVisualiserView:
-        return self.active_stacks[stack_uuid]
+    def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
+        return self.active_stacks[stack_id]
 
-    def get_stack_history(self, stack_uuid: uuid.UUID) -> Dict[str, Any]:
-        return self.get_stack_visualiser(stack_uuid).presenter.images.metadata
+    def get_stack_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
+        return self.get_stack_visualiser(stack_id).presenter.images.metadata
 
     @property
     def active_stacks(self):
@@ -292,9 +291,9 @@ class MainWindowPresenter(BasePresenter):
                 return sv
         raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stacks.items()}")
 
-    def set_images_in_stack(self, uuid: UUID, images: Images):
-        self.model.set_image_data_by_uuid(uuid, images.data)
-        stack = self.stacks[uuid]
+    def set_images_in_stack(self, stack_id: uuid.UUID, images: Images):
+        self.model.set_image_data_by_uuid(stack_id, images.data)
+        stack = self.stacks[stack_id]
         if not stack.presenter.images == images:  # todo - refactor
             stack.image_view.clear()
             stack.image_view.setImage(images.data)
@@ -348,7 +347,7 @@ class MainWindowPresenter(BasePresenter):
     def wizard_action_show_reconstruction(self):
         self.view.show_recon_window()
 
-    def remove_item_from_tree_view(self, uuid_remove: UUID):
+    def remove_item_from_tree_view(self, uuid_remove: uuid.UUID):
         top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
 
         for i in range(top_level_item_count):
@@ -367,17 +366,16 @@ class MainWindowPresenter(BasePresenter):
     def add_stack_to_dictionary(self, stack: StackVisualiserView):
         self.stacks[stack.id] = stack
 
-    def delete_container(self, container_id):
+    def delete_container(self, container_id: uuid.UUID):
         ids_to_remove = self.model.remove_container(container_id)
         if len(ids_to_remove) == 1:
             self.stacks[container_id].presenter.delete_data()
             self.stacks[container_id].deleteLater()
             del self.stacks[container_id]
             self.remove_item_from_tree_view(container_id)
-        if len(ids_to_remove) > 1:
+        elif len(ids_to_remove) > 1:
             for stack_id in ids_to_remove:
                 self.stacks[stack_id].presenter.delete_data()
                 self.stacks[stack_id].deleteLater()
                 del self.stacks[stack_id]
-                print(stack_id)
             self.remove_item_from_tree_view(container_id)
