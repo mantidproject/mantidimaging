@@ -19,6 +19,7 @@ Fixes
 - #1138 : Improve version number handling
 - #1134 : NeXus Loader: OSError
 - #1178 : --operation argument sometimes opens wrong operation
+- #1117 : Median operation preserves NaNs
 
 
 Developer Changes
