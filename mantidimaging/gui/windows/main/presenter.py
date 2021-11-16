@@ -373,23 +373,22 @@ class MainWindowPresenter(BasePresenter):
         :return:
         """
         ids_to_remove = self.model.remove_container(container_id)
+        if ids_to_remove is None:
+            return
         if len(ids_to_remove) == 1:
             self._delete_stack(container_id)
-            self.remove_item_from_tree_view(container_id)
         elif len(ids_to_remove) > 1:
             for stack_id in ids_to_remove:
                 self._delete_stack(stack_id)
-            self.remove_item_from_tree_view(container_id)
+        self.remove_item_from_tree_view(container_id)
 
     def _delete_stack(self, stack_id):
         """
 
         :param stack_id:
-        :return: 
+        :return:
         """
         self.stacks[stack_id].image_view.close()
         self.stacks[stack_id].presenter.delete_data()
         self.stacks[stack_id].deleteLater()
         del self.stacks[stack_id]
-
-
