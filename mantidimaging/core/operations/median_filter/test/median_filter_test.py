@@ -1,10 +1,13 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
+import pytest
 import unittest
 from unittest import mock
 
 import numpy as np
+import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data.images import Images
@@ -89,6 +92,27 @@ class MedianTest(unittest.TestCase):
         self.assertEqual(size_field.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
         self.assertEqual(use_gpu_field.isChecked.call_count, 1)
+
+    @parameterized.expand([("CPU", True), ("GPU", False)])
+    @pytest.mark.xfail(reason="Bug #1117")
+    def test_executed_with_nan(self, _, use_cpu):
+        if not use_cpu and not gpu.gpu_available():
+            self.skipTest(reason="Skip GPU tests if cupy isn't installed")
+        shape = (1, 20, 20)
+        images = th.generate_images(shape=shape, seed=2021)
+
+        images.data[0, 0, 1] = np.nan  # single edge
+        images.data[0, 4, 4] = np.nan  # single
+        images.data[0, 4, 7] = np.nan  # diagonal neighbours
+        images.data[0, 5, 8] = np.nan
+        images.data[0, 7:9, 2:4] = np.nan  # 2x2 block
+        images.data[0, 7:9, 6:9] = np.nan  # 2x3
+        images.data[0, 12:15, 2:5] = np.nan  # 3x3
+        self.assertTrue(np.any(np.isnan(images.data)))
+
+        result = MedianFilter.filter_func(images.copy(), 3, 'reflect', force_cpu=use_cpu)
+
+        npt.assert_equal(np.isnan(result.data), np.isnan(images.data))
 
 
 if __name__ == '__main__':
