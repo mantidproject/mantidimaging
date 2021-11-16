@@ -153,7 +153,7 @@ class MainWindowPresenter(BasePresenter):
         name = self.create_stack_name(os.path.basename(filename))
         stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
-        self.stacks[stack_visualiser.uuid] = stack_visualiser
+        self.stacks[images.id] = stack_visualiser
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]  # type:ignore
@@ -182,13 +182,13 @@ class MainWindowPresenter(BasePresenter):
 
         sample = container if isinstance(container, Images) else container.sample
         sample_stack_vis = self.view.create_stack_window(sample, title)
-        self.stacks[sample_stack_vis.uuid] = sample_stack_vis
+        self.stacks[sample_stack_vis.id] = sample_stack_vis
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 0:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
-        dataset_tree_item = self.view.create_dataset_tree_widget_item(title, sample_stack_vis.uuid)
+        dataset_tree_item = self.view.create_dataset_tree_widget_item(title, container.id)
 
         if isinstance(container, Dataset):
             self.view.create_child_tree_item(dataset_tree_item, container.sample.id, "Projections")
@@ -365,16 +365,19 @@ class MainWindowPresenter(BasePresenter):
                     return
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView):
-        self.stacks[stack.uuid] = stack
+        self.stacks[stack.id] = stack
 
     def delete_container(self, container_id):
         ids_to_remove = self.model.remove_container(container_id)
         if len(ids_to_remove) == 1:
+            self.stacks[container_id].presenter.delete_data()
             self.stacks[container_id].deleteLater()
             del self.stacks[container_id]
             self.remove_item_from_tree_view(container_id)
         if len(ids_to_remove) > 1:
             for stack_id in ids_to_remove:
+                self.stacks[stack_id].presenter.delete_data()
                 self.stacks[stack_id].deleteLater()
                 del self.stacks[stack_id]
-            # self.remove_item_from_tree_view(container_id)
+                print(stack_id)
+            self.remove_item_from_tree_view(container_id)
