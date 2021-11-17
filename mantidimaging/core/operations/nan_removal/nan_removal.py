@@ -18,6 +18,10 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import Type
 
 
+def enable_correct_fields_only(mode_field, replace_value_field):
+    replace_value_field.setEnabled(mode_field.currentText() == "Constant")
+
+
 class NaNRemovalFilter(BaseFilter):
     """
     Replaces the NaNs with a specified value or the median of neighbouring pixels.
@@ -83,6 +87,8 @@ class NaNRemovalFilter(BaseFilter):
                                                       on_change=on_change,
                                                       tooltip="The value to replace the NaNs with")
         replace_value_field.setDecimals(7)
+
+        mode_field.currentTextChanged.connect(lambda text: enable_correct_fields_only(mode_field, replace_value_field))
 
         return {"mode_field": mode_field, "replace_value_field": replace_value_field}
 
