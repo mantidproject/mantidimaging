@@ -12,6 +12,7 @@ New Features
 - #1167 : Bad data indicator icons
 - #1185 : Bad data overlays
 - #1168 : Dataset tree view
+- #1202 : NaN Removal filter - replace with median
 
 Fixes
 -----
