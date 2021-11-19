@@ -34,7 +34,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         f = ps.create_partial(remove_stripe_based_fitting, ps.return_to_self, order=order, sigma=sigma, sort=True)
 
         ps.shared_list = [images.data]
-        ps.execute(f, images.num_projections, progress, cores=cores)
+        ps.execute(f, images.data.shape[0], progress, cores=cores)
         return images
 
     @staticmethod
