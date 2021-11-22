@@ -264,7 +264,7 @@ class FiltersWindowPresenter(BasePresenter):
             elif task.error is None:
                 # otherwise check with user which one to keep
                 if self.view.safeApply.isChecked():
-                    use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
+                    use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.id)
                 # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
                 if stack.presenter.images.has_proj180deg() and use_new_data and not self.applying_to_all:
                     self.view.clear_previews()
