@@ -12,6 +12,7 @@ New Features
 - #1167 : Bad data indicator icons
 - #1185 : Bad data overlays
 - #1168 : Dataset tree view
+- #1202 : NaN Removal filter - replace with median
 
 Fixes
 -----
@@ -19,6 +20,8 @@ Fixes
 - #1138 : Improve version number handling
 - #1134 : NeXus Loader: OSError
 - #1178 : --operation argument sometimes opens wrong operation
+- #1117 : Median operation preserves NaNs
+- #1151 : IndexError with sinograms and stripe tools
 
 
 Developer Changes

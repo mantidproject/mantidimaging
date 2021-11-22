@@ -33,7 +33,7 @@ class RemoveAllStripesFilter(BaseFilter):
     def filter_func(images: Images, snr=3, la_size=61, sm_size=21, dim=1, cores=None, chunksize=None, progress=None):
         f = ps.create_partial(remove_all_stripe, ps.return_to_self, snr=snr, la_size=la_size, sm_size=sm_size, dim=dim)
         ps.shared_list = [images.data]
-        ps.execute(f, images.num_projections, progress, cores=cores)
+        ps.execute(f, images.data.shape[0], progress, cores=cores)
         return images
 
     @staticmethod
