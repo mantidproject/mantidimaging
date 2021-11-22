@@ -149,6 +149,10 @@ class MainWindowModel(object):
         images.log_file = log
 
     def _remove_dataset(self, dataset_id: uuid.UUID):
+        """
+        Removes a dataset and the image stacks it contains from the model.
+        :param dataset_id: The dataset ID.
+        """
         dataset = self.datasets[dataset_id]
         del self.images[dataset.sample.id]
 
@@ -164,6 +168,12 @@ class MainWindowModel(object):
         del self.datasets[dataset_id]
 
     def remove_container(self, container_id: uuid.UUID) -> Optional[List[uuid.UUID]]:
+        """
+        Removes a container from the model.
+        :param container_id: The ID of the dataset or image stack.
+        :return: A list of the IDs of all the image stacks that were deleted from the model if a match was found, None
+            otherwise.
+        """
         if container_id in self.images:
             del self.images[container_id]
             return [container_id]
