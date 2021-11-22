@@ -558,6 +558,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.remove_item_from_tree_view.assert_called_once_with(dataset_id)
         self.view.model_changed.emit.assert_called_once()
 
+    def test_delete_fails_then_presenter_does_nothing(self):
+        self.model.remove_container = mock.Mock(return_value=None)
+        self.presenter.delete_container("bad-id")
+        self.view.model_changed.emit.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
