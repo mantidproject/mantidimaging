@@ -34,7 +34,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.model = self.model = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
-        self.view.active_stacks_changed = mock.Mock()
+        self.view.model_changed = mock.Mock()
         self.view.dataset_tree_widget = mock.Mock()
 
         def stack_id():
@@ -148,19 +148,19 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(2, self.view.tabifyDockWidget.call_count)
 
     def test_create_new_stack_images(self):
-        self.view.active_stacks_changed.emit = mock.Mock()
+        self.view.model_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
         self.assertEqual(1, len(self.presenter.stacks))
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
     def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
-        self.view.active_stacks_changed.emit = mock.Mock()
+        self.view.model_changed.emit = mock.Mock()
         images = generate_images()
         self.presenter.create_new_stack(images, "My title")
         self.assertEqual(1, len(self.presenter.stacks))
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
         self.presenter.create_new_stack(images, "My title")
         assert self.view.tabifyDockWidget.call_count == 2
@@ -178,7 +178,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.active_stacks_changed.emit = mock.Mock()
+        self.view.model_changed.emit = mock.Mock()
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
@@ -188,7 +188,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(6, len(self.presenter.stacks))
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_use_threshold_180(self):
         dock_mock = self.view.create_stack_window.return_value
@@ -198,7 +198,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.active_stacks_changed.emit = mock.Mock()
+        self.view.model_changed.emit = mock.Mock()
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
@@ -210,7 +210,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(6, len(self.presenter.stacks))
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_reject_180(self):
         dock_mock = self.view.create_stack_window.return_value
@@ -218,7 +218,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.active_stacks_changed.emit = mock.Mock()
+        self.view.model_changed.emit = mock.Mock()
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
@@ -230,7 +230,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(5, len(self.presenter.stacks))
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_accept_180(self):
         dock_mock = self.view.create_stack_window.return_value
@@ -238,7 +238,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         dock_mock.widget.return_value = stack_visualiser_mock
         dock_mock.windowTitle.return_value = "somename"
-        self.view.active_stacks_changed.emit = mock.Mock()
+        self.view.model_changed.emit = mock.Mock()
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
@@ -250,7 +250,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_new_stack(self.dataset, "My title")
 
         self.assertEqual(6, len(self.presenter.stacks))
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
@@ -330,7 +330,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         new_title = "new title"
         self.presenter._do_rename_stack(previous_title, new_title)
         mock_stack.setWindowTitle.assert_called_once_with(new_title)
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
 
     def test_create_new_180_stack_with_multiple_visible_stacks(self):
         stacks = dict()
@@ -348,7 +348,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
         self.view.tabifyDockWidget.assert_called_once()
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
         tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
 
     def test_create_new_180_stack_with_no_visible_stacks(self):
@@ -366,7 +366,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
         self.view.tabifyDockWidget.assert_not_called()
-        self.view.active_stacks_changed.emit.assert_called_once()
+        self.view.model_changed.emit.assert_called_once()
         self.view.findChild.assert_not_called()
 
     def test_get_stack_visualiser_success(self):
@@ -447,12 +447,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         Removing an ID that corresponds with a top-level item means a dataset is being removed.
         """
         top_level_item_mock = mock.Mock()
-        top_level_item_mock.uuid = stack_id = "stack-id"
+        top_level_item_mock.id = stack_id = "stack-id"
         self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
         self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
 
         self.presenter.remove_item_from_tree_view(stack_id)
-        self.view.dataset_tree_widget.takeTopLevelItem.assert_called_once_with(top_level_item_mock)
+        self.view.dataset_tree_widget.takeTopLevelItem.assert_called_once_with(0)
 
     def test_remove_images_from_tree_view(self):
         """
@@ -463,7 +463,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
         top_level_item_mock.childCount.return_value = 1
         top_level_item_mock.child.return_value = child_item_mock = mock.Mock()
-        child_item_mock.uuid = stack_id = "stack-id"
+        child_item_mock.id = stack_id = "stack-id"
 
         self.presenter.remove_item_from_tree_view(stack_id)
         top_level_item_mock.takeChild.assert_called_once_with(0)

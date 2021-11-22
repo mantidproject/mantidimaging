@@ -51,7 +51,7 @@ class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
-    active_stacks_changed = pyqtSignal()
+    model_changed = pyqtSignal()
     filter_applied = pyqtSignal()
     recon_applied = pyqtSignal()
     backend_message = pyqtSignal(bytes)
@@ -157,7 +157,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
-        self.active_stacks_changed.connect(self.update_shortcuts)
+        self.model_changed.connect(self.update_shortcuts)
 
     def populate_image_menu(self):
         self.menuImage.clear()

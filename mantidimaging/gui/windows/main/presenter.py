@@ -98,13 +98,13 @@ class MainWindowPresenter(BasePresenter):
         self.remove_item_from_tree_view(stack_id)
         self.model.remove_container(stack_id)
         del self.stacks[stack_id]
-        self.view.active_stacks_changed.emit()  # TODO: change to stacks changed?
+        self.view.model_changed.emit()
 
     def _do_rename_stack(self, current_name: str, new_name: str):
         dock = self._get_stack_widget_by_name(current_name)
         if dock:
             dock.setWindowTitle(new_name)
-            self.view.active_stacks_changed.emit()
+            self.view.model_changed.emit()
 
     def load_dataset(self, par: Optional[LoadingParameters] = None):
         if par is None and self.view.load_dialogue is not None:
@@ -172,7 +172,7 @@ class MainWindowPresenter(BasePresenter):
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
 
-        self.view.active_stacks_changed.emit()
+        self.view.model_changed.emit()
 
         return _180_stack_vis
 
@@ -229,7 +229,7 @@ class MainWindowPresenter(BasePresenter):
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
 
-        self.view.active_stacks_changed.emit()
+        self.view.model_changed.emit()
         self.view.add_item_to_tree_view(dataset_tree_item)
 
         return sample_stack_vis
@@ -381,6 +381,7 @@ class MainWindowPresenter(BasePresenter):
             for stack_id in ids_to_remove:
                 self._delete_stack(stack_id)
         self.remove_item_from_tree_view(container_id)
+        self.view.model_changed.emit()
 
     def _delete_stack(self, stack_id):
         """
