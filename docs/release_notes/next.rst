@@ -21,6 +21,7 @@ Fixes
 - #1134 : NeXus Loader: OSError
 - #1178 : --operation argument sometimes opens wrong operation
 - #1117 : Median operation preserves NaNs
+- #1151 : IndexError with sinograms and stripe tools
 
 
 Developer Changes
