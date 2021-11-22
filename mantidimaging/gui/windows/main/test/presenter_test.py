@@ -107,6 +107,13 @@ class MainWindowPresenterTest(unittest.TestCase):
                                                  self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
+    def test_load_dataset_returns_when_par_and_view_dialog_are_none(self, start_async_mock: mock.Mock):
+        self.view.load_dialogue = None
+        self.presenter.load_dataset()
+
+        start_async_mock.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
     def test_load_stack(self, start_async_mock: mock.Mock):
         file_path = mock.Mock()
 
@@ -508,6 +515,48 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertListEqual([mock_stacks[0], mock_stacks[2]],
                              self.presenter.get_all_stack_visualisers_with_180deg_proj())
+
+    def test_delete_single_image_stack(self):
+        id_to_remove = "id-to-remove"
+        self.model.remove_container = mock.Mock(return_value=[id_to_remove])
+
+        self.presenter.stacks[id_to_remove] = mock_stack = mock.Mock()
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+        self.presenter.delete_container(id_to_remove)
+
+        self.assertNotIn(id_to_remove, self.presenter.stacks.keys())
+        self.assertNotIn(mock_stack, self.presenter.stacks.values())
+
+        mock_stack.image_view.close.assert_called_once()
+        mock_stack.presenter.delete_data.assert_called_once()
+        mock_stack.deleteLater.assert_called_once()
+
+        self.presenter.remove_item_from_tree_view.assert_called_once_with(id_to_remove)
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_delete_dataset_and_member_image_stacks(self):
+        dataset_id = "dataset-id"
+        n_dataset_images = 3
+        ids_to_remove = [f"id-{i}" for i in range(3)]
+        mock_stacks = [mock.Mock() for _ in range(3)]
+
+        self.model.remove_container = mock.Mock(return_value=ids_to_remove)
+
+        for i in range(n_dataset_images):
+            self.presenter.stacks[ids_to_remove[i]] = mock_stacks[i]
+
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+        self.presenter.delete_container(dataset_id)
+
+        for i in range(n_dataset_images):
+            self.assertNotIn(ids_to_remove[i], self.presenter.stacks.keys())
+            self.assertNotIn(mock_stacks[i], self.presenter.stacks.values())
+            mock_stacks[i].image_view.close.assert_called_once()
+            mock_stacks[i].presenter.delete_data.assert_called_once()
+            mock_stacks[i].deleteLater.assert_called_once()
+
+        self.presenter.remove_item_from_tree_view.assert_called_once_with(dataset_id)
+        self.view.model_changed.emit.assert_called_once()
 
 
 if __name__ == '__main__':
