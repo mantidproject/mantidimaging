@@ -172,3 +172,4 @@ class MainWindowModel(object):
             self._remove_dataset(container_id)
             return stacks_in_dataset
         self.raise_error_when_images_not_found(container_id)
+        return None
