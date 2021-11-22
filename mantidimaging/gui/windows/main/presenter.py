@@ -35,8 +35,6 @@ class Notification(Enum):
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
-    DATASET_DELETE = auto()
-    IMAGES_DELETE = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -62,10 +60,6 @@ class MainWindowPresenter(BasePresenter):
                 self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
-            elif signal == Notification.IMAGES_DELETE:
-                pass
-            elif signal == Notification.DATASET_DELETE:
-                pass
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -368,26 +362,24 @@ class MainWindowPresenter(BasePresenter):
 
     def delete_container(self, container_id: uuid.UUID):
         """
-
-        :param container_id:
-        :return:
+        Informs the model to delete a container, then updates the view elements.
+        :param container_id: The ID of the container to delete.
         """
         ids_to_remove = self.model.remove_container(container_id)
         if ids_to_remove is None:
             return
         if len(ids_to_remove) == 1:
             self._delete_stack(container_id)
-        elif len(ids_to_remove) > 1:
+        else:
             for stack_id in ids_to_remove:
                 self._delete_stack(stack_id)
         self.remove_item_from_tree_view(container_id)
         self.view.model_changed.emit()
 
-    def _delete_stack(self, stack_id):
+    def _delete_stack(self, stack_id: uuid.UUID):
         """
-
-        :param stack_id:
-        :return:
+        Deletes a stack and frees memory.
+        :param stack_id: The ID of the stack to delete.
         """
         self.stacks[stack_id].image_view.close()
         self.stacks[stack_id].presenter.delete_data()
