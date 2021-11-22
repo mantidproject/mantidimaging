@@ -184,7 +184,7 @@ class MainWindowPresenter(BasePresenter):
         self.stacks[sample_stack_vis.id] = sample_stack_vis
 
         current_stack_visualisers = self.get_active_stack_visualisers()
-        if len(current_stack_visualisers) > 0:
+        if len(current_stack_visualisers) > 1:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
         dataset_tree_item = self.view.create_dataset_tree_widget_item(title, container.id)
@@ -224,7 +224,7 @@ class MainWindowPresenter(BasePresenter):
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
             if tab_bar is not None:
-                last_stack_pos = len(current_stack_visualisers) - 1
+                last_stack_pos = len(current_stack_visualisers)
                 # make Qt process the addition of the dock onto the main window
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)

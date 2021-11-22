@@ -156,17 +156,27 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
     def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
+        first_images = generate_images()
+        second_images = generate_images()
+
+        first_stack_window = mock.Mock()
+        second_stack_window = mock.Mock()
+
+        first_stack_window.id = first_images.id
+        second_stack_window.id = second_images.id
+
+        self.view.create_stack_window.side_effect = [first_stack_window, second_stack_window]
+
         self.view.model_changed.emit = mock.Mock()
-        images = generate_images()
-        self.presenter.create_new_stack(images, "My title")
+        self.presenter.create_new_stack(first_images, "My title")
         self.assertEqual(1, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
 
-        self.presenter.create_new_stack(images, "My title")
-        assert self.view.tabifyDockWidget.call_count == 2
-        self.view.findChild.assert_called_once()
+        self.presenter.create_new_stack(second_images, "My title")
+        assert self.view.tabifyDockWidget.call_count == 1
+        assert self.view.findChild.call_count == 1
         mock_tab_bar = self.view.findChild.return_value
-        expected_position = 1
+        expected_position = 2
         mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
         mock_QApp.sendPostedEvents.assert_called_once()
 
