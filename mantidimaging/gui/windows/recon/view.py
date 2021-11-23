@@ -64,6 +64,11 @@ class ReconstructWindowView(BaseMainWindowView):
     reconstructVolume: QPushButton
     reconstructSlice: QPushButton
 
+    lbhc_a0: QDoubleSpinBox
+    lbhc_a1: QDoubleSpinBox
+    lbhc_a2: QDoubleSpinBox
+    lbhc_a3: QDoubleSpinBox
+
     statusMessageTextEdit: QTextEdit
     messageIcon: QLabel
 
@@ -184,6 +189,9 @@ class ReconstructWindowView(BaseMainWindowView):
         action = self.image_view.recon_hist.gradient.menu.actions()[12]
         self.image_view.recon_hist.gradient.menu.insertAction(action, self.auto_colour_action)
         self.image_view.recon_hist.gradient.menu.insertSeparator(self.auto_colour_action)
+
+        for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
+            spinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
 
     def closeEvent(self, e):
         if self.presenter.recon_is_running:
@@ -370,6 +378,16 @@ class ReconstructWindowView(BaseMainWindowView):
     def alpha(self, value: float):
         self.alphaSpinbox.setValue(value)
 
+    @property
+    def beam_hardening_coefs(self) -> Optional[List[float]]:
+        params = []
+        for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
+            params.append(spinbox.value())
+        if any(params):
+            return params
+        else:
+            return None
+
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
                                         filter_name=self.filter_name,
@@ -378,7 +396,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                         tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
                                         alpha=self.alpha,
-                                        max_projection_angle=self.max_proj_angle)
+                                        max_projection_angle=self.max_proj_angle,
+                                        beam_hardening_coefs=self.beam_hardening_coefs)
 
     def set_table_point(self, idx, slice_idx, cor):
         # reset_results=False stops the resetting of the data model on
