@@ -107,7 +107,7 @@ class AstraRecon(BaseRecon):
                     progress: Optional[Progress] = None) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
-        sino = BaseRecon.negative_log(sino)
+        sino = BaseRecon.prepare_sinogram(sino, recon_params)
         image_width = sino.shape[1]
 
         if astra_mutex.locked():
