@@ -374,7 +374,7 @@ class MainWindowView(BaseMainWindowView):
         return stack_vis
 
     def remove_stack(self, obj: StackVisualiserView):
-        self.presenter.notify(PresNotification.REMOVE_STACK, uuid=obj.uuid)
+        self.presenter.notify(PresNotification.REMOVE_STACK, uuid=obj.id)
 
     def rename_stack(self, current_name: str, new_name: str):
         self.presenter.notify(PresNotification.RENAME_STACK, current_name=current_name, new_name=new_name)

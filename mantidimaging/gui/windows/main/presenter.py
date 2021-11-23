@@ -55,7 +55,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.SAVE:
                 self.save()
             elif signal == Notification.REMOVE_STACK:
-                self._do_remove_stack(**baggage)
+                self.delete_container(**baggage)
             elif signal == Notification.RENAME_STACK:
                 self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
