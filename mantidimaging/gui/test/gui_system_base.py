@@ -112,15 +112,17 @@ class GuiSystemBase(unittest.TestCase):
 
     def _close_stack_tabs(self):
         stack_tabs = self.main_window.presenter.stacks.values()
-        while stack_tabs:
-            last_stack_tab = stack_tabs.pop()
-            QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
-            last_stack_tab.close()
-            QTest.qWait(SHOW_DELAY // 10)
-
+        # while stack_tabs:
+        #     last_stack_tab = stack_tabs.pop()
+        #     QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
+        #     last_stack_tab.close()
+        #     QTest.qWait(SHOW_DELAY // 10)
+        for stack_tab in stack_tabs:
             # This should be replaced when it is possible to close an image stack from
             # the dataset treeview
             # self.main_window.presenter.model.images.pop(last_stack_tab.uuid, None)
             # last_stack_tab.image_view.close()
             # last_stack_tab.presenter.delete_data()
-            self.main_window.presenter._delete_container(last_stack_tab.id)
+            QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
+            self.main_window.presenter._delete_container(stack_tab.id)
+            QTest.qWait(SHOW_DELAY // 10)
