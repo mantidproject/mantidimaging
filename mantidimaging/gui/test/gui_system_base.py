@@ -111,7 +111,7 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.actionRecon.trigger()
 
     def _close_stack_tabs(self):
-        stack_tabs = self.main_window.presenter.stacks.values()
+        stack_tabs = list(self.main_window.presenter.stacks.values())
         # while stack_tabs:
         #     last_stack_tab = stack_tabs.pop()
         #     QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
