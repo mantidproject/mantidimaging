@@ -373,9 +373,6 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.add_stack_to_dictionary(stack_vis)
         return stack_vis
 
-    def remove_stack(self, obj: StackVisualiserView):
-        self.presenter.notify(PresNotification.REMOVE_STACK, uuid=obj.id)
-
     def rename_stack(self, current_name: str, new_name: str):
         self.presenter.notify(PresNotification.RENAME_STACK, current_name=current_name, new_name=new_name)
 
@@ -484,4 +481,4 @@ class MainWindowView(BaseMainWindowView):
         Sends the signal to the presenter to delete data corresponding with an item on the dataset tree view.
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
-        self.presenter.delete_container(container_id)
+        self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)

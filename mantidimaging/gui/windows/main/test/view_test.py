@@ -137,13 +137,6 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.update_stack_with_images.assert_called_once_with(images)
 
-    def test_remove_stack(self):
-        fake_stack_vis = mock.Mock()
-        fake_stack_vis.id = "test-uuid"
-        self.view.remove_stack(fake_stack_vis)
-
-        self.presenter.notify.assert_called_once_with(PresNotification.REMOVE_STACK, uuid="test-uuid")
-
     def test_rename_stack(self):
         self.view.rename_stack("apples", "oranges")
 

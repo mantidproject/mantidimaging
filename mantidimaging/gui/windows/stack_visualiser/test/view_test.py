@@ -26,7 +26,6 @@ class StackVisualiserViewTest(unittest.TestCase):
     def setUp(self):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.window = MainWindowView()
-        self.window.remove_stack = mock.Mock()
         self.view, self.test_data = self._add_stack_visualiser()
 
     def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, Images]:
