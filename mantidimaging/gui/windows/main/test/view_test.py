@@ -139,7 +139,7 @@ class MainWindowViewTest(unittest.TestCase):
 
     def test_remove_stack(self):
         fake_stack_vis = mock.Mock()
-        fake_stack_vis.uuid = "test-uuid"
+        fake_stack_vis.id = "test-uuid"
         self.view.remove_stack(fake_stack_vis)
 
         self.presenter.notify.assert_called_once_with(PresNotification.REMOVE_STACK, uuid="test-uuid")
