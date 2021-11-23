@@ -123,4 +123,4 @@ class GuiSystemBase(unittest.TestCase):
             # self.main_window.presenter.model.images.pop(last_stack_tab.uuid, None)
             # last_stack_tab.image_view.close()
             # last_stack_tab.presenter.delete_data()
-            self.main_window.presenter.delete_container(last_stack_tab.id)
+            self.main_window.presenter._delete_container(last_stack_tab.id)

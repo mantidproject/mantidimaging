@@ -513,7 +513,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.stacks[id_to_remove] = mock_stack = mock.Mock()
         self.presenter.remove_item_from_tree_view = mock.Mock()
-        self.presenter.delete_container(id_to_remove)
+        self.presenter._delete_container(id_to_remove)
 
         self.assertNotIn(id_to_remove, self.presenter.stacks.keys())
         self.assertNotIn(mock_stack, self.presenter.stacks.values())
@@ -537,7 +537,7 @@ class MainWindowPresenterTest(unittest.TestCase):
             self.presenter.stacks[ids_to_remove[i]] = mock_stacks[i]
 
         self.presenter.remove_item_from_tree_view = mock.Mock()
-        self.presenter.delete_container(dataset_id)
+        self.presenter._delete_container(dataset_id)
 
         for i in range(n_dataset_images):
             self.assertNotIn(ids_to_remove[i], self.presenter.stacks.keys())
@@ -551,7 +551,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_delete_fails_then_presenter_does_nothing(self):
         self.model.remove_container = mock.Mock(return_value=None)
-        self.presenter.delete_container("bad-id")
+        self.presenter._delete_container("bad-id")
         self.view.model_changed.emit.assert_not_called()
 
 
