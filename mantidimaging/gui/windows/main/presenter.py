@@ -88,12 +88,6 @@ class MainWindowPresenter(BasePresenter):
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
         self.model.add_log_to_sample(stack_id, log_file)
 
-    def _do_remove_stack(self, stack_id: uuid.UUID):
-        self.remove_item_from_tree_view(stack_id)
-        self.model.remove_container(stack_id)
-        del self.stacks[stack_id]
-        self.view.model_changed.emit()
-
     def _do_rename_stack(self, current_name: str, new_name: str):
         dock = self._get_stack_widget_by_name(current_name)
         if dock:

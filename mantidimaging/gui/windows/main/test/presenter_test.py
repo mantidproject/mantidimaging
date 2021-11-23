@@ -332,15 +332,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.add_log_to_sample("doesn't exist", "log file")
 
-    def test_remove_stack(self):
-        stack_uuid = "stack-id"
-        self.presenter.stacks[stack_uuid] = mock.Mock()
-        self.presenter.remove_item_from_tree_view = mock.Mock()
-        self.presenter._do_remove_stack(stack_uuid)
-        self.model.remove_container.assert_called_once_with(stack_uuid)
-        self.assertNotIn(stack_uuid, self.presenter.stacks)
-        self.presenter.remove_item_from_tree_view.assert_called_once_with(stack_uuid)
-
     def test_do_rename_stack(self):
         self.presenter.stacks["stack-id"] = mock_stack = mock.Mock()
         mock_stack.windowTitle.return_value = previous_title = "previous title"
