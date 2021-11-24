@@ -239,7 +239,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                   tilt=Degrees(self.resultTilt.value.return_value),
                                                   pixel_size=self.pixelSize.value.return_value,
                                                   alpha=self.alpha.value.return_value,
-                                                  max_projection_angle=self.maxProjAngle.value.return_value)
+                                                  max_projection_angle=self.maxProjAngle.value.return_value,
+                                                  beam_hardening_coefs=self.view.beam_hardening_coefs)
 
     def test_set_table_point(self):
         idx = 12

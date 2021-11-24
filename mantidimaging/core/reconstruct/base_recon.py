@@ -4,6 +4,7 @@
 from typing import List, Optional
 
 import numpy as np
+from numpy.polynomial import Polynomial
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
@@ -14,6 +15,17 @@ class BaseRecon:
     @staticmethod
     def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         raise NotImplementedError("Base class call")
+
+    @staticmethod
+    def prepare_sinogram(data: np.ndarray, recon_params: ReconstructionParameters):
+        if recon_params.beam_hardening_coefs is not None:
+            a0, a1, a2, a3 = recon_params.beam_hardening_coefs
+            bhc_poly = Polynomial([0, 1, a0, a1, a2, a3])
+            logged_data = BaseRecon.negative_log(data)
+            corrected_data = bhc_poly(logged_data)
+            return corrected_data
+        else:
+            return BaseRecon.negative_log(data)
 
     @staticmethod
     def negative_log(data: np.ndarray) -> np.ndarray:

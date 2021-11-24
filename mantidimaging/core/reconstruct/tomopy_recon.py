@@ -31,7 +31,7 @@ class TomopyRecon(BaseRecon):
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
                     progress: Optional[Progress] = None):
-        sino = BaseRecon.negative_log(sino)
+        sino = BaseRecon.prepare_sinogram(sino, recon_params)
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
                               theta=proj_angles.value,
@@ -63,7 +63,7 @@ class TomopyRecon(BaseRecon):
 
         kwargs = {
             'ncore': ncores,
-            'tomo': BaseRecon.negative_log(images.data),
+            'tomo': BaseRecon.prepare_sinogram(images, recon_params),
             'sinogram_order': images._is_sinograms,
             'theta': images.projection_angles(recon_params.max_projection_angle).value,
             'center': [cor.value for cor in cors],
