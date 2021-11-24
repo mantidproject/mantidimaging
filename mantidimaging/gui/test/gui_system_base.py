@@ -112,8 +112,8 @@ class GuiSystemBase(unittest.TestCase):
 
     def _close_stack_tabs(self):
         stack_tab_keys = self.main_window.presenter.stacks.keys()
-        for stack_key in stack_tab_keys:
-            last_stack_tab = self.main_window.presenter.staks[stack_key]
+        for stack_key in list(stack_tab_keys):
+            last_stack_tab = self.main_window.presenter.stacks[stack_key]
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
             last_stack_tab.close()
             QTest.qWait(SHOW_DELAY // 10)
