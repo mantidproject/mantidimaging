@@ -7,7 +7,8 @@ from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox, QAction, QTextEdit, QLabel, QApplication, QStyle)
+                             QVBoxLayout, QWidget, QMessageBox, QAction, QTextEdit, QLabel, QApplication, QStyle,
+                             QCheckBox)
 from PyQt5.QtCore import pyqtSignal, QSignalBlocker
 
 from mantidimaging.core.data import Images
@@ -64,6 +65,7 @@ class ReconstructWindowView(BaseMainWindowView):
     reconstructVolume: QPushButton
     reconstructSlice: QPushButton
 
+    lbhc_enabled: QCheckBox
     lbhc_a0: QDoubleSpinBox
     lbhc_a1: QDoubleSpinBox
     lbhc_a2: QDoubleSpinBox
@@ -192,6 +194,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
         for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
             spinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+            self.lbhc_enabled.toggled.connect(spinbox.setEnabled)
+        self.lbhc_enabled.toggled.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
 
     def closeEvent(self, e):
         if self.presenter.recon_is_running:
@@ -380,6 +384,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @property
     def beam_hardening_coefs(self) -> Optional[List[float]]:
+        if not self.lbhc_enabled.isChecked():
+            return None
         params = []
         for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
             params.append(spinbox.value())
