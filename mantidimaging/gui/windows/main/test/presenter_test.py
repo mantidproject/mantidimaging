@@ -180,7 +180,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.model_changed.emit.assert_called_once()
 
         self.presenter.create_new_stack(second_images, "My title")
-        assert self.view.tabifyDockWidget.call_count == 1
+        assert self.view.tabifyDockWidget.call_count == 2
         assert self.view.findChild.call_count == 1
         mock_tab_bar = self.view.findChild.return_value
         expected_position = 2
