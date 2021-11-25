@@ -107,7 +107,7 @@ class StackVisualiserView(QDockWidget):
         return self._actions
 
     @property
-    def uuid(self):
+    def id(self):
         return self.presenter.images.id
 
     def closeEvent(self, event):

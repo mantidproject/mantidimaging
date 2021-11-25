@@ -219,7 +219,7 @@ class FiltersWindowPresenter(BasePresenter):
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = []
                 for stack in stacks:
-                    self.original_images_stack.append((stack.presenter.images.copy(), stack.uuid))
+                    self.original_images_stack.append((stack.presenter.images.copy(), stack.id))
 
         if len(stacks) > 0:
             self.applying_to_all = True
@@ -259,12 +259,12 @@ class FiltersWindowPresenter(BasePresenter):
             # If the operation encountered an error during processing,
             # try to restore the original data else continue processing as usual
             if attempt_repair:
-                self.main_window.presenter.set_images_in_stack(stack.uuid, stack.presenter.images)
+                self.main_window.presenter.set_images_in_stack(stack.id, stack.presenter.images)
             # Ensure there is no error if we are to continue with safe apply and 180 degree.
             elif task.error is None:
                 # otherwise check with user which one to keep
                 if self.view.safeApply.isChecked():
-                    use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.uuid)
+                    use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.id)
                 # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
                 if stack.presenter.images.has_proj180deg() and use_new_data and not self.applying_to_all:
                     self.view.clear_previews()

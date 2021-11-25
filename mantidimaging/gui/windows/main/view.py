@@ -8,7 +8,7 @@ from typing import Optional
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget
@@ -39,15 +39,19 @@ LOG = getLogger(__file__)
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
     def __init__(self, parent: QTreeWidget, dataset_id: UUID):
-        self.uuid = dataset_id
+        self._id = dataset_id
         super().__init__(parent)
+
+    @property
+    def id(self):
+        return self._id
 
 
 class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
-    active_stacks_changed = pyqtSignal()
+    model_changed = pyqtSignal()
     filter_applied = pyqtSignal()
     recon_applied = pyqtSignal()
     backend_message = pyqtSignal(bytes)
@@ -120,6 +124,8 @@ class MainWindowView(BaseMainWindowView):
             self.show_recon_window()
 
         self.dataset_tree_widget = QTreeWidget()
+        self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
@@ -151,7 +157,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
-        self.active_stacks_changed.connect(self.update_shortcuts)
+        self.model_changed.connect(self.update_shortcuts)
 
     def populate_image_menu(self):
         self.menuImage.clear()
@@ -367,9 +373,6 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.add_stack_to_dictionary(stack_vis)
         return stack_vis
 
-    def remove_stack(self, obj: StackVisualiserView):
-        self.presenter.notify(PresNotification.REMOVE_STACK, uuid=obj.uuid)
-
     def rename_stack(self, current_name: str, new_name: str):
         self.presenter.notify(PresNotification.RENAME_STACK, current_name=current_name, new_name=new_name)
 
@@ -462,3 +465,20 @@ class MainWindowView(BaseMainWindowView):
     def add_item_to_tree_view(self, item: QTreeWidgetItem):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
         item.setExpanded(True)
+
+    def _open_tree_menu(self, position: QPoint):
+        """
+        Opens the tree view menu.
+        :param position: The position of the cursor when the menu was opened relative to the main window.
+        """
+        menu = QMenu()
+        delete_action = menu.addAction("Delete")
+        delete_action.triggered.connect(self._delete_container)
+        menu.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
+
+    def _delete_container(self):
+        """
+        Sends the signal to the presenter to delete data corresponding with an item on the dataset tree view.
+        """
+        container_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)

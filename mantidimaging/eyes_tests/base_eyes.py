@@ -93,7 +93,8 @@ class BaseEyesTest(unittest.TestCase):
         menu.popup(widget.mapFromGlobal(menu_location))
 
     def _load_data_set(self):
-        dataset = loader.load(file_names=[LOAD_SAMPLE])
+        loading_dataset = loader.load(file_names=[LOAD_SAMPLE])
+        dataset = self.imaging.presenter.model.convert_loading_dataset(loading_dataset)
         vis = self.imaging.presenter.create_new_stack(dataset, "Stack 1")
 
         QApplication.sendPostedEvents()

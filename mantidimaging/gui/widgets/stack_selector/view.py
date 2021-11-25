@@ -40,7 +40,7 @@ class StackSelectorWidgetView(QComboBox):
         self.presenter.notify(Notification.RELOAD_STACKS)
 
         # Connect signal for auto update on stack change
-        self.main_window.active_stacks_changed.connect(self._handle_loaded_stacks_changed)
+        self.main_window.model_changed.connect(self._handle_loaded_stacks_changed)
 
     def unsubscribe_from_main_window(self):
         """
@@ -50,7 +50,7 @@ class StackSelectorWidgetView(QComboBox):
         """
         if self.main_window:
             # Disconnect signal
-            self.main_window.active_stacks_changed.disconnect(self._handle_loaded_stacks_changed)
+            self.main_window.model_changed.disconnect(self._handle_loaded_stacks_changed)
 
     def _handle_loaded_stacks_changed(self):
         """

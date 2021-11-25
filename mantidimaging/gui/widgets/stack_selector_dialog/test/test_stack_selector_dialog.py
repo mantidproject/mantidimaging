@@ -12,7 +12,7 @@ from mantidimaging.test_helpers import start_qapplication
 class FakeMainWindowView(QWidget):
     def __init__(self):
         super().__init__()
-        self.active_stacks_changed = mock.MagicMock()
+        self.model_changed = mock.MagicMock()
 
 
 @start_qapplication

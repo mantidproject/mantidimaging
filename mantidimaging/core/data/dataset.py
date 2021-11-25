@@ -3,7 +3,7 @@
 import uuid
 import weakref
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from mantidimaging.core.data import Images
 
@@ -72,3 +72,10 @@ class Dataset:
     @property
     def id(self) -> uuid.UUID:
         return self._id
+
+    @property
+    def all_image_ids(self) -> List[uuid.UUID]:
+        image_stacks = [
+            self.sample, self.sample.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
+        ]
+        return [image_stack.id for image_stack in image_stacks if image_stack is not None]
