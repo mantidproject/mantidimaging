@@ -385,8 +385,13 @@ class MainWindowPresenter(BasePresenter):
 
     def _focus_tab(self, stack_id: uuid.UUID):
         """
-        Makes a stack tab visible and brings it to the front.
+        Makes a stack tab visible and brings it to the front. If dataset ID is given then nothing happens.
         :param stack_id: The ID of the stack tab to focus on.
         """
-        self.stacks[stack_id].setVisible(True)
-        self.stacks[stack_id].raise_()
+        if stack_id in self.model.datasets:
+            return
+        if stack_id in self.model.images:
+            self.stacks[stack_id].setVisible(True)
+            self.stacks[stack_id].raise_()
+        else:
+            raise RuntimeError(f"Unable to find stack with ID {stack_id}")
