@@ -10,7 +10,7 @@ while they're both Float underneath and the value can be used, it just will prod
 """
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import Optional
+from typing import List, Optional
 
 import numpy
 
@@ -102,6 +102,7 @@ class ReconstructionParameters:
     pixel_size: float = 0.0
     alpha: float = 0.0
     max_projection_angle: float = 360.0
+    beam_hardening_coefs: Optional[List[float]] = None
 
     def to_dict(self) -> dict:
         return {

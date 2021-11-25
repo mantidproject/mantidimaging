@@ -81,7 +81,7 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
-            sino = BaseRecon.negative_log(sino)
+            sino = BaseRecon.prepare_sinogram(sino, recon_params)
             pixel_num_h = sino.shape[1]
             pixel_size = 1.
             rot_pos_x = (cor.value - pixel_num_h / 2) * pixel_size
@@ -180,7 +180,7 @@ class CILRecon(BaseRecon):
 
             # stick it into an AcquisitionData
             data = ag.allocate(None)
-            data.fill(BaseRecon.negative_log(images.data))
+            data.fill(BaseRecon.prepare_sinogram(images, recon_params))
             data.reorder('astra')
 
             alpha = recon_params.alpha
