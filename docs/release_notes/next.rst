@@ -15,6 +15,7 @@ New Features
 - #1202 : NaN Removal filter - replace with median
 - #1205 : Linearisation correction for beam hardening
 - #1197 : Dataset Tree View: Delete image stack
+- #1197 : Dataset Tree View : Show tab from treeview
 
 Fixes
 -----
