@@ -384,4 +384,9 @@ class MainWindowPresenter(BasePresenter):
         del self.stacks[stack_id]
 
     def _focus_tab(self, stack_id: uuid.UUID):
+        """
+        Makes a stack tab visible and brings it to the front.
+        :param stack_id: The ID of the stack tab to focus on.
+        """
         self.stacks[stack_id].setVisible(True)
+        self.stacks[stack_id].raise_()
