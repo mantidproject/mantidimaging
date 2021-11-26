@@ -43,7 +43,6 @@ class Images:
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
         self._projection_angles: Optional[ProjectionAngles] = None
 
@@ -198,18 +197,6 @@ class Images:
             return np.swapaxes(self.data, 0, 1)[projection_idx]
         else:
             return self.data[projection_idx]
-
-    def has_proj180deg(self):
-        return self._proj180deg is not None
-
-    @property
-    def proj180deg(self) -> Optional['Images']:
-        return self._proj180deg
-
-    @proj180deg.setter
-    def proj180deg(self, value: 'Images'):
-        assert isinstance(value, Images)
-        self._proj180deg = value
 
     @property
     def projections(self):
