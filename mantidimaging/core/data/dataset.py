@@ -81,6 +81,9 @@ class Dataset:
     def proj180deg(self, proj180deg: Images):
         self._proj180deg = weakref.ref(proj180deg)  # type: ignore
 
+    def has_proj180deg(self):
+        return self.proj180deg is not None
+
     @property
     def id(self) -> uuid.UUID:
         return self._id
