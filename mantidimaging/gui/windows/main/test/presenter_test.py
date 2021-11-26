@@ -14,6 +14,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import Notification
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -553,6 +554,34 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.remove_container = mock.Mock(return_value=None)
         self.presenter._delete_container("bad-id")
         self.view.model_changed.emit.assert_not_called()
+
+    def test_focus_tab_with_id_in_images(self):
+        stack_id = "stack-id"
+        self.model.images = [stack_id]
+        self.model.datasets = []
+        self.presenter.stacks[stack_id] = mock_stack_tab = mock.Mock()
+        self.presenter.notify(Notification.FOCUS_TAB, stack_id=stack_id)
+
+        mock_stack_tab.setVisible.assert_called_once_with(True)
+        mock_stack_tab.raise_.assert_called_once()
+
+    def test_focus_tab_with_id_not_found(self):
+        self.model.images = []
+        self.model.datasets = []
+
+        with self.assertRaises(Exception):
+            self.presenter._focus_tab(stack_id="not-in-the-stacks-dict")
+
+    def test_focus_tab_with_id_in_dataset(self):
+        stack_id = "stack-id"
+        self.model.images = []
+        self.model.datasets = [stack_id]
+        self.presenter.stacks = dict()
+        self.presenter.stacks["other-id"] = mock_stack_tab = mock.Mock()
+        self.presenter.notify(Notification.FOCUS_TAB, stack_id=stack_id)
+
+        mock_stack_tab.setVisible.assert_not_called()
+        mock_stack_tab.raise_.assert_not_called()
 
 
 if __name__ == '__main__':

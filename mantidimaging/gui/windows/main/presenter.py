@@ -35,6 +35,7 @@ class Notification(Enum):
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
+    FOCUS_TAB = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -60,6 +61,8 @@ class MainWindowPresenter(BasePresenter):
                 self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
+            elif signal == Notification.FOCUS_TAB:
+                self._focus_tab(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -379,3 +382,16 @@ class MainWindowPresenter(BasePresenter):
         self.stacks[stack_id].presenter.delete_data()
         self.stacks[stack_id].deleteLater()
         del self.stacks[stack_id]
+
+    def _focus_tab(self, stack_id: uuid.UUID):
+        """
+        Makes a stack tab visible and brings it to the front. If dataset ID is given then nothing happens.
+        :param stack_id: The ID of the stack tab to focus on.
+        """
+        if stack_id in self.model.datasets:
+            return
+        if stack_id in self.model.images:
+            self.stacks[stack_id].setVisible(True)
+            self.stacks[stack_id].raise_()
+        else:
+            raise RuntimeError(f"Unable to find stack with ID {stack_id}")

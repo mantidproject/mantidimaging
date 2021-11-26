@@ -126,6 +126,7 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget = QTreeWidget()
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
+        self.dataset_tree_widget.itemDoubleClicked.connect(self._bring_stack_tab_to_front)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
@@ -482,3 +483,10 @@ class MainWindowView(BaseMainWindowView):
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)
+
+    def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
+        """
+        Sends the signal to the presenter to bring a make a stack tab visible and bring it to the front.
+        :param item: The QTreeDatasetWidgetItem that was double clicked.
+        """
+        self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=item.id)
