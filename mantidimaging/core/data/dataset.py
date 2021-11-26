@@ -15,12 +15,14 @@ class Dataset:
                  flat_before: Optional[Images] = None,
                  flat_after: Optional[Images] = None,
                  dark_before: Optional[Images] = None,
-                 dark_after: Optional[Images] = None):
+                 dark_after: Optional[Images] = None,
+                 proj180deg: Optional[Images] = None):
         self._sample = weakref.ref(sample)
         self._flat_before = lambda: None
         self._flat_after = lambda: None
         self._dark_before = lambda: None
         self._dark_after = lambda: None
+        self._proj180deg = lambda: None
 
         if isinstance(flat_before, Images):
             self._flat_before = weakref.ref(flat_before)  # type: ignore
@@ -30,6 +32,8 @@ class Dataset:
             self._dark_before = weakref.ref(dark_before)  # type: ignore
         if isinstance(dark_after, Images):
             self._dark_after = weakref.ref(dark_after)  # type: ignore
+        if isinstance(proj180deg, Images):
+            self._proj180deg = weakref.ref(proj180deg)  # type: ignore
 
         self._id: uuid.UUID = uuid.uuid4()
 
@@ -70,12 +74,20 @@ class Dataset:
         self._dark_after = weakref.ref(dark_after)  # type: ignore
 
     @property
+    def proj180deg(self) -> Optional[Images]:
+        return self._proj180deg()
+
+    @proj180deg.setter
+    def proj180deg(self, proj180deg: Images):
+        self._proj180deg = weakref.ref(proj180deg)  # type: ignore
+
+    @property
     def id(self) -> uuid.UUID:
         return self._id
 
     @property
     def all_image_ids(self) -> List[uuid.UUID]:
         image_stacks = [
-            self.sample, self.sample.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
+            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
         ]
         return [image_stack.id for image_stack in image_stacks if image_stack is not None]
