@@ -9,7 +9,6 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -332,27 +331,3 @@ class MainWindowModelTest(unittest.TestCase):
     def test_failed_remove_container(self):
         with self.assertRaises(RuntimeError):
             self.model.remove_container(uuid.uuid4())
-
-    def test_convert_dataset_with_additional_images(self):
-        images = [generate_images() for _ in range(5)]
-        loading_dataset = LoadingDataset(*images)
-
-        ds = self.model.convert_loading_dataset(loading_dataset)
-
-        self.assertIn(ds, self.model.datasets.values())
-        for image_stack in images:
-            self.assertIn(image_stack, self.model.images.values())
-
-        self.assertEqual(ds.sample, images[0])
-        self.assertEqual(ds.flat_before, images[1])
-        self.assertEqual(ds.flat_after, images[2])
-        self.assertEqual(ds.dark_before, images[3])
-        self.assertEqual(ds.dark_after, images[4])
-
-    def test_convert_dataset_without_additional_images(self):
-        sample = generate_images()
-        loading_dataset = LoadingDataset(sample)
-
-        ds = self.model.convert_loading_dataset(loading_dataset)
-        self.assertIn(ds, self.model.datasets.values())
-        self.assertIn(sample, self.model.images.values())
