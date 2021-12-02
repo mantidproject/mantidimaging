@@ -252,56 +252,60 @@ class FiltersWindowPresenter(BasePresenter):
         return False
 
     def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
-        use_new_data = True
-        attempt_repair = task.error is not None
-        negative_stacks = []
-        for stack in updated_stacks:
-            # If the operation encountered an error during processing,
-            # try to restore the original data else continue processing as usual
-            if attempt_repair:
-                self.main_window.presenter.set_images_in_stack(stack.id, stack.presenter.images)
-            # Ensure there is no error if we are to continue with safe apply and 180 degree.
-            elif task.error is None:
-                # otherwise check with user which one to keep
-                if self.view.safeApply.isChecked():
-                    use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.id)
-                # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
-                if stack.presenter.images.has_proj180deg() and use_new_data and not self.applying_to_all:
-                    self.view.clear_previews()
-                    # Apply to proj180 synchronously - this function is already running async
-                    # and running another async instance causes a race condition in the parallel module
-                    # where the shared data can be removed in the middle of the operation of another operation
-                    self._do_apply_filter_sync([
-                        self.view.main_window.get_stack_with_images(stack.presenter.images.proj180deg)  # type: ignore
-                    ])
-                    self.view.main_window.update_stack_with_images(stack.presenter.images.proj180deg)  # type: ignore
-                self.view.main_window.update_stack_with_images(stack.presenter.images)
-            if np.any(stack.presenter.images.data < 0):
-                negative_stacks.append(stack)
+        try:
+            use_new_data = True
+            attempt_repair = task.error is not None
+            negative_stacks = []
+            for stack in updated_stacks:
+                # If the operation encountered an error during processing,
+                # try to restore the original data else continue processing as usual
+                if attempt_repair:
+                    self.main_window.presenter.set_images_in_stack(stack.id, stack.presenter.images)
+                # Ensure there is no error if we are to continue with safe apply and 180 degree.
+                elif task.error is None:
+                    # otherwise check with user which one to keep
+                    if self.view.safeApply.isChecked():
+                        use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.id)
+                    # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
+                    if stack.presenter.images.has_proj180deg() and use_new_data and not self.applying_to_all:
+                        self.view.clear_previews()
+                        # Apply to proj180 synchronously - this function is already running async
+                        # and running another async instance causes a race condition in the parallel module
+                        # where the shared data can be removed in the middle of the operation of another operation
+                        self._do_apply_filter_sync([
+                            self.view.main_window.get_stack_with_images(
+                                stack.presenter.images.proj180deg)  # type: ignore
+                        ])
+                        self.view.main_window.update_stack_with_images(
+                            stack.presenter.images.proj180deg)  # type: ignore
+                    self.view.main_window.update_stack_with_images(stack.presenter.images)
+                if np.any(stack.presenter.images.data < 0):
+                    negative_stacks.append(stack)
 
-        if self.view.roi_view is not None:
-            self.view.roi_view.close()
-            self.view.roi_view = None
+            if self.view.roi_view is not None:
+                self.view.roi_view.close()
+                self.view.roi_view = None
 
-        self.applying_to_all = False
-        self.do_update_previews()
+            self.applying_to_all = False
+            self.do_update_previews()
 
-        if task.error is not None:
-            # task failed, show why
-            self.view.show_error_dialog(f"Operation failed: {task.error}")
-        elif use_new_data:
-            # Feedback to user
-            self.view.clear_notification_dialog()
-            self.view.show_operation_completed(self.model.selected_filter.filter_name)
-        else:
-            self.view.clear_notification_dialog()
-            self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
+            if task.error is not None:
+                # task failed, show why
+                self.view.show_error_dialog(f"Operation failed: {task.error}")
+            elif use_new_data:
+                # Feedback to user
+                self.view.clear_notification_dialog()
+                self.view.show_operation_completed(self.model.selected_filter.filter_name)
+            else:
+                self.view.clear_notification_dialog()
+                self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
 
-        if use_new_data and self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
-            self._show_negative_values_error(negative_stacks)
+            if use_new_data and self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
+                self._show_negative_values_error(negative_stacks)
 
-        self.view.filter_applied.emit()
-        self.filter_is_running = False
+        finally:
+            self.view.filter_applied.emit()
+            self.filter_is_running = False
 
     def _do_apply_filter(self, apply_to):
         self.filter_is_running = True

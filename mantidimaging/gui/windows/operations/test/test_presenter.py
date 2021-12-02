@@ -158,6 +158,26 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.show_operation_completed.assert_not_called()
         self.view.show_operation_cancelled.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
 
+    @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
+                         do_update_previews=DEFAULT,
+                         _wait_for_stack_choice=DEFAULT,
+                         _do_apply_filter_sync=DEFAULT)
+    def test_post_filter_exception(self,
+                                   do_update_previews: Mock = Mock(),
+                                   _wait_for_stack_choice: Mock = Mock(),
+                                   _do_apply_filter_sync: Mock = Mock()):
+        """
+        Tests that an exception in _post_filter() does not prevent filter_is_running being set to False
+        """
+        self.presenter.view.safeApply.isChecked.return_value = False
+        mock_task = mock.Mock()
+        mock_task.error = None
+        do_update_previews.side_effect = ValueError
+        self.presenter.filter_is_running = True
+
+        self.assertRaises(ValueError, self.presenter._post_filter, self.mock_stack_visualisers, mock_task)
+        self.assertFalse(self.presenter.filter_is_running)
+
     @mock.patch.multiple(
         'mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
         _do_apply_filter=DEFAULT,
