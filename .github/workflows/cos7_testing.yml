@@ -54,7 +54,7 @@ jobs:
       timeout-minutes: 5
       uses: ./.github/actions/test
       with:
-        command: xvfb-run pytest -n auto --count 10 --ignore=mantidimaging/eyes_tests
+        command: xvfb-run pytest -n auto --ignore=mantidimaging/eyes_tests
         label: centos7
 
     - name: docs
