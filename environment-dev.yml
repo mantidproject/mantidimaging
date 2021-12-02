@@ -29,7 +29,6 @@ dependencies:
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
       - pytest-randomly==3.10.*
       - pytest-xdist==2.4.*
-      - pytest-repeat==0.9.1
       - isort==5.9.*
       - eyes-images==4.25.*
       - parameterized==0.8.*
