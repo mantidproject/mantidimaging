@@ -327,20 +327,15 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertNotIn(images, self.model.images.values())
 
     def test_remove_dataset_from_model(self):
-        ds_images = []
-        for _ in range(5):
-            images = generate_images()
-            ds_images.append(images)
-            self.model.images[images.id] = images
+        images = [generate_images() for _ in range(5)]
+        ids = [image_stack.id for image_stack in images]
 
-        ds = Dataset(*ds_images)
+        ds = Dataset(*images)
         self.model.datasets[ds.id] = ds
 
-        self.model.remove_container(ds.id)
+        stacks_to_close = self.model.remove_container(ds.id)
         self.assertNotIn(ds, self.model.datasets.values())
-
-        for image in ds_images:
-            self.assertNotIn(image, self.model.images.values())
+        self.assertListEqual(stacks_to_close, ids)
 
     def test_failed_remove_container(self):
         with self.assertRaises(RuntimeError):
