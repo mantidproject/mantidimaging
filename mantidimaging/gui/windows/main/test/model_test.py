@@ -277,8 +277,8 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
     def test_save_image(self, save_mock: mock.MagicMock):
-        images = generate_images()
-        self.model.images[images.id] = images
+        images_id, images_mock = self._add_mock_image()
+        images_mock.data = generate_images().data
 
         output_dir = "output"
         name_prefix = "prefix"
@@ -287,18 +287,18 @@ class MainWindowModelTest(unittest.TestCase):
         pixel_depth = "depth"
         progress = mock.Mock()
 
-        save_mock.return_value = filenames = ["filename" for _ in range(len(images.data))]
+        save_mock.return_value = filenames = ["filename" for _ in range(len(images_mock.data))]
 
-        result = self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth,
+        result = self.model.do_images_saving(images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth,
                                              progress)
-        save_mock.assert_called_once_with(images,
+        save_mock.assert_called_once_with(images_mock,
                                           output_dir=output_dir,
                                           name_prefix=name_prefix,
                                           overwrite_all=overwrite,
                                           out_format=image_format,
                                           pixel_depth=pixel_depth,
                                           progress=progress)
-        self.assertListEqual(images.filenames, filenames)  # type: ignore
+        self.assertListEqual(images_mock.filenames, filenames)  # type: ignore
         assert result
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
@@ -318,13 +318,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_set_images_by_uuid_failure(self):
         with self.assertRaises(RuntimeError):
-            self.model.set_image_data_by_uuid(generate_images().id, generate_images())
-
-    def test_remove_image_stack_from_model(self):
-        images = generate_images()
-        self.model.images[images.id] = images
-        self.model.remove_container(images.id)
-        self.assertNotIn(images, self.model.images.values())
+            self.model.set_image_data_by_uuid("cant-find-this-id", generate_images())
 
     def test_remove_dataset_from_model(self):
         images = [generate_images() for _ in range(5)]
