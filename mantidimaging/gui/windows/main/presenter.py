@@ -228,7 +228,7 @@ class MainWindowPresenter(BasePresenter):
 
     def save(self):
         kwargs = {
-            'stack_uuid': self.view.save_dialogue.selected_stack,
+            'images_id': self.view.save_dialogue.selected_stack,
             'output_dir': self.view.save_dialogue.save_path(),
             'name_prefix': self.view.save_dialogue.name_prefix(),
             'image_format': self.view.save_dialogue.image_format(),

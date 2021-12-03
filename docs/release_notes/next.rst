@@ -37,3 +37,5 @@ Developer Changes
 - #1155 : DeprecationWarning an integer is required self.progressBar.setValue
 - #1153 : Remove package_name argument from load_filter_packages
 - #1172 : Add MIMiniImageView widget
+- #1070 : Remove pytest repeat
+- #1182 : Handle exception in _post_filter
