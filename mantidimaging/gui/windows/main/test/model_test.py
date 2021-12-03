@@ -83,7 +83,9 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    def test_do_load_stack_sample_and_flat(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
+    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
+                                           load_log_mock: mock.Mock):
         lp = LoadingParameters()
         sample_mock = mock.Mock()
         lp.sample = sample_mock
@@ -102,6 +104,8 @@ class MainWindowModelTest(unittest.TestCase):
         flata_images_mock = mock.Mock()
         load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock]
 
+        ds_mock = dataset_mock.return_value
+
         self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
@@ -114,9 +118,10 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock.log_file),
             mock.call(flat_after_mock.log_file)
         ])
-        assert self.model.images[sample_images_mock.id] is sample_images_mock
-        assert self.model.images[flatb_images_mock.id] is flatb_images_mock
-        assert self.model.images[flata_images_mock.id] is flata_images_mock
+
+        dataset_mock.assert_called_with(sample_images_mock)
+        assert ds_mock.flat_before == flatb_images_mock
+        assert ds_mock.flat_after == flata_images_mock
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
@@ -209,7 +214,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
         images_id = "id"
-        self.model.images[images_id] = images_mock = mock.MagicMock()
+        images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = mock.Mock(return_value=images_mock)
 
         _180_stack = self.model.add_180_deg_to_dataset(images_id=images_id, _180_deg_file=_180_file)
