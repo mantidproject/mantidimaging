@@ -39,10 +39,13 @@ class MainWindowModelTest(unittest.TestCase):
         self.stack_list_property = f"{self.model_class_name}.stack_list"
 
     def _add_mock_image(self):
+        dataset_mock = mock.Mock()
         image_mock = mock.Mock()
-        uid = uuid.uuid4()
-        self.model.images[uid] = image_mock
-        return uid, image_mock
+        dataset_mock.id = "dataset-id"
+        image_mock.id = images_id = "images-id"
+        dataset_mock.all = [image_mock]
+        self.model.datasets[dataset_mock.id] = dataset_mock
+        return images_id, image_mock
 
     def test_get_images_by_uuid(self):
         uid, image_mock = self._add_mock_image()
@@ -125,7 +128,9 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
+    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
+                                                               load_log_mock: mock.Mock):
         lp = LoadingParameters()
         sample_mock = mock.Mock()
         lp.sample = sample_mock
@@ -158,6 +163,8 @@ class MainWindowModelTest(unittest.TestCase):
             mock.Mock()
         ]
 
+        ds_mock = dataset_mock.return_value
+
         self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
@@ -174,11 +181,13 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock.log_file),
             mock.call(flat_after_mock.log_file)
         ])
-        assert self.model.images[sample_images_mock.id] is sample_images_mock
-        assert self.model.images[flatb_images_mock.id] is flatb_images_mock
-        assert self.model.images[flata_images_mock.id] is flata_images_mock
-        assert self.model.images[darkb_images_mock.id] is darkb_images_mock
-        assert self.model.images[darka_images_mock.id] is darka_images_mock
+
+        dataset_mock.assert_called_with(sample_images_mock)
+
+        assert ds_mock.flat_before == flatb_images_mock
+        assert ds_mock.flat_after == flata_images_mock
+        assert ds_mock.dark_before == darkb_images_mock
+        assert ds_mock.dark_after == darka_images_mock
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):

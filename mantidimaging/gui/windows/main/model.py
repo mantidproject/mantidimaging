@@ -24,7 +24,7 @@ class MainWindowModel(object):
         self.datasets: Dict[uuid.UUID, Union[Dataset, StackDataset]] = {}
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
-        for dataset in self.datasets.values:
+        for dataset in self.datasets.values():
             for image in dataset.all:
                 if images_uuid == image.id:
                     return image
