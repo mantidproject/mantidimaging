@@ -50,3 +50,9 @@ class DatasetTest(unittest.TestCase):
 
     def test_all_images_ids(self):
         self.assertListEqual(self.dataset.all_image_ids, [images.id for images in self.images])
+
+    def test_contains_returns_true(self):
+        assert self.images[2].id in self.dataset
+
+    def test_contains_returns_false(self):
+        assert not generate_images().id in self.dataset
