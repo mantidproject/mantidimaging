@@ -155,3 +155,10 @@ class MainWindowModel(object):
 
     def add_dataset_to_model(self, dataset: Union[Dataset, StackDataset]):
         self.datasets[dataset.id] = dataset
+
+    @property
+    def images(self) -> List[Images]:
+        images = []
+        for dataset in self.datasets.values():
+            images += dataset.all
+        return [image.id for image in images if image is not None]
