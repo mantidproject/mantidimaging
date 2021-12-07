@@ -157,8 +157,8 @@ class MainWindowModel(object):
         self.datasets[dataset.id] = dataset
 
     @property
-    def images(self) -> List[Images]:
+    def image_ids(self) -> List[Images]:
         images = []
         for dataset in self.datasets.values():
             images += dataset.all
-        return [image.id for image in images if image is not None]
+        return [image for image in images if image is not None]

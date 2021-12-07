@@ -397,7 +397,7 @@ class MainWindowPresenter(BasePresenter):
         """
         if stack_id in self.model.datasets:
             return
-        if stack_id in self.model.images:
+        if stack_id in self.model.image_ids:
             self.stacks[stack_id].setVisible(True)
             self.stacks[stack_id].raise_()
         else:

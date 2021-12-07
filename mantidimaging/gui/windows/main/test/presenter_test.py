@@ -553,18 +553,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._delete_container("bad-id")
         self.view.model_changed.emit.assert_not_called()
 
-    def test_focus_tab_with_id_in_images(self):
-        stack_id = "stack-id"
-        self.model.images = [stack_id]
-        self.model.datasets = []
-        self.presenter.stacks[stack_id] = mock_stack_tab = mock.Mock()
-        self.presenter.notify(Notification.FOCUS_TAB, stack_id=stack_id)
-
-        mock_stack_tab.setVisible.assert_called_once_with(True)
-        mock_stack_tab.raise_.assert_called_once()
-
     def test_focus_tab_with_id_not_found(self):
-        self.model.images = []
+        self.model.image_ids = []
         self.model.datasets = []
 
         with self.assertRaises(Exception):
@@ -572,7 +562,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_focus_tab_with_id_in_dataset(self):
         stack_id = "stack-id"
-        self.model.images = []
+        self.model.image_ids = [stack_id]
         self.model.datasets = [stack_id]
         self.presenter.stacks = dict()
         self.presenter.stacks["other-id"] = mock_stack_tab = mock.Mock()
