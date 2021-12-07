@@ -168,7 +168,7 @@ class MainWindowPresenter(BasePresenter):
 
         return _180_stack_vis
 
-    def create_new_stack(self, container: Union[Images, Dataset], title: str):
+    def create_new_stack(self, container: Union[Images, Dataset, StackDataset], title: str):
         title = self.create_stack_name(title)
 
         if isinstance(container, Images):
