@@ -311,10 +311,11 @@ class MainWindowModelTest(unittest.TestCase):
     def test_set_images_by_uuid_success(self):
         prev_images = generate_images()
         new_data = generate_images().data
-        self.model.images[prev_images.id] = prev_images
+        ds = Dataset(prev_images)
+        self.model.datasets[ds.id] = ds
 
         self.model.set_image_data_by_uuid(prev_images.id, new_data)
-        assert_array_equal(self.model.images[prev_images.id].data, new_data)
+        assert_array_equal(ds.sample.data, new_data)
 
     def test_set_images_by_uuid_failure(self):
         with self.assertRaises(RuntimeError):
