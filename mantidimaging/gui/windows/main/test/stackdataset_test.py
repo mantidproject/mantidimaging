@@ -19,3 +19,6 @@ class StackDatasetTest(unittest.TestCase):
         prev_stacks = self.image_stacks.copy()
         self.stack_dataset.delete_stack(self.image_stacks[-1].id)
         self.assertListEqual(self.stack_dataset.all, prev_stacks[:-1])
+
+    def test_all_ids(self):
+        self.assertListEqual(self.stack_dataset.all_image_ids, [image_stack.id for image_stack in self.image_stacks])

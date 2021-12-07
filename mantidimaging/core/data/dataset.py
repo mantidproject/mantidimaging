@@ -30,10 +30,7 @@ class BaseDataset:
                 image.data = new_data
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
-        for image in self.all:
-            if image.id == images_id:
-                return True
-        return False
+        return any([image.id == images_id for image in self.all])
 
     @property
     def all_image_ids(self) -> List[uuid.UUID]:
@@ -85,7 +82,7 @@ class Dataset(BaseDataset):
 
     def delete_stack(self, images_id: uuid.UUID):
         if isinstance(self.sample, Images) and self.sample.id == images_id:
-            self.sample = None # type: ignore
+            self.sample = None  # type: ignore
         elif isinstance(self.flat_before, Images) and self.flat_before.id == images_id:
             self.flat_before = None
         elif isinstance(self.flat_after, Images) and self.flat_after.id == images_id:
