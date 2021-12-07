@@ -335,3 +335,17 @@ class MainWindowModelTest(unittest.TestCase):
     def test_failed_remove_container(self):
         with self.assertRaises(RuntimeError):
             self.model.remove_container(uuid.uuid4())
+
+    def test_remove_images_from_dataset(self):
+        images = [generate_images() for _ in range(2)]
+        ds = Dataset(*images)
+        self.model.datasets[ds.id] = ds
+
+        self.assertIsNotNone(ds.flat_before)
+        self.model.remove_container(images[-1].id)
+        self.assertIsNone(ds.flat_before)
+
+    def test_add_dataset_to_model(self):
+        ds = Dataset(generate_images())
+        self.model.add_dataset_to_model(ds)
+        self.assertIn(ds, self.model.datasets.values())
