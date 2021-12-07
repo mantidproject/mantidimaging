@@ -4,7 +4,7 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID
 
 import numpy as np
@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import StackDataset
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
@@ -343,7 +344,7 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
-    def create_new_stack(self, images: Images, title: str):
+    def create_new_stack(self, images: Union[Images, StackDataset], title: str):
         self.presenter.create_new_stack(images, title)
 
     def create_new_180_stack(self, images: Images, title: str):
