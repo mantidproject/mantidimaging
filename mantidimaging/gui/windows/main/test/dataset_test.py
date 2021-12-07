@@ -56,3 +56,23 @@ class DatasetTest(unittest.TestCase):
 
     def test_contains_returns_false(self):
         assert not generate_images().id in self.dataset
+
+    def test_delete_sample(self):
+        self.dataset.delete_stack(self.images[0].id)
+        self.assertIsNone(self.dataset.sample)
+
+    def test_delete_flat_before(self):
+        self.dataset.delete_stack(self.images[1].id)
+        self.assertIsNone(self.dataset.flat_before)
+
+    def test_delete_flat_after(self):
+        self.dataset.delete_stack(self.images[2].id)
+        self.assertIsNone(self.dataset.flat_after)
+
+    def test_delete_dark_before(self):
+        self.dataset.delete_stack(self.images[3].id)
+        self.assertIsNone(self.dataset.dark_before)
+
+    def test_delete_dark_after(self):
+        self.dataset.delete_stack(self.images[4].id)
+        self.assertIsNone(self.dataset.dark_after)
