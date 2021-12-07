@@ -88,7 +88,7 @@ class Dataset(BaseDataset):
 
     def delete_stack(self, images_id: uuid.UUID):
         if isinstance(self.sample, Images) and self.sample.id == images_id:
-            self.sample = None
+            self.sample = None # type: ignore
         elif isinstance(self.flat_before, Images) and self.flat_before.id == images_id:
             self.flat_before = None
         elif isinstance(self.flat_after, Images) and self.flat_after.id == images_id:
