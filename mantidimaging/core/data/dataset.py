@@ -87,13 +87,13 @@ class Dataset(BaseDataset):
         return [image_stack for image_stack in image_stacks if image_stack is not None]
 
     def delete_stack(self, images_id: uuid.UUID):
-        if self.sample.id == images_id:
+        if isinstance(self.sample, Images) and self.sample.id == images_id:
             self.sample = None
-        if self.flat_before.id == images_id:
+        elif isinstance(self.flat_before, Images) and self.flat_before.id == images_id:
             self.flat_before = None
-        if self.flat_after.id == images_id:
+        elif isinstance(self.flat_after, Images) and self.flat_after.id == images_id:
             self.flat_after = None
-        if self.dark_before.id == images_id:
+        elif isinstance(self.dark_before, Images) and self.dark_before.id == images_id:
             self.dark_before = None
-        if self.dark_after.id == images_id:
+        elif isinstance(self.dark_after, Images) and self.dark_after.id == images_id:
             self.dark_after = None
