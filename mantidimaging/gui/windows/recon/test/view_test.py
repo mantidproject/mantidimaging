@@ -253,8 +253,12 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def test_show_recon_volume(self):
         data = mock.Mock()
         self.main_window.create_new_stack = create_new_stack_mock = mock.Mock()
-        self.view.show_recon_volume(data)
-        create_new_stack_mock.assert_called_once_with(data, "Recon")
+
+        with mock.patch("mantidimaging.gui.windows.recon.view.StackDataset") as stack_dataset_mock:
+            stack_dataset = stack_dataset_mock.return_value
+            self.view.show_recon_volume(data)
+            stack_dataset_mock.assert_called_once_with([data])
+            create_new_stack_mock.assert_called_once_with(stack_dataset, "Recon")
 
     def test_get_stack_visualiser_when_uuid_is_none(self):
         assert self.view.get_stack_visualiser(None) is None
