@@ -12,7 +12,7 @@ import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QDockWidget
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset, StackDataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
@@ -168,13 +168,11 @@ class MainWindowPresenter(BasePresenter):
 
         return _180_stack_vis
 
-    def create_new_stack(self, container: Union[Images, Dataset, StackDataset], title: str):
+    def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.create_stack_name(title)
 
         if isinstance(container, Images):
             sample = container
-        elif isinstance(container, StackDataset):
-            sample = container.all[0]
         else:
             sample = container.sample
 
