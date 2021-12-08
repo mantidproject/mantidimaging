@@ -415,6 +415,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.set_point(idx, slice_idx, cor, reset_results=False)
 
     def show_recon_volume(self, data: Images):
+        self.main_window.presenter.model.images[data.id] = data
         self.main_window.create_new_stack(data, "Recon")
 
     def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:
