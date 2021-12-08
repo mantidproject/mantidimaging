@@ -121,7 +121,9 @@ class GuiSystemBase(unittest.TestCase):
             # This should be replaced when it is possible to close an image stack from
             # the dataset treeview
             self.main_window.presenter.stacks.pop(last_stack_tab.id, None)
+            last_stack_tab.image_view.close()
+            last_stack_tab.presenter.delete_data()
             try:
                 self.main_window.presenter.model.remove_container(last_stack_tab)
-            except RuntimeError:
+            except Exception:
                 pass
