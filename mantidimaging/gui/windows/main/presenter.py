@@ -36,6 +36,7 @@ class Notification(Enum):
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
     FOCUS_TAB = auto()
+    ADD_RECON = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -63,6 +64,8 @@ class MainWindowPresenter(BasePresenter):
                 self.load_nexus_file()
             elif signal == Notification.FOCUS_TAB:
                 self._focus_tab(**baggage)
+            elif signal == Notification.ADD_RECON:
+                self._add_recon_to_dataset(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -400,3 +403,6 @@ class MainWindowPresenter(BasePresenter):
             self.stacks[stack_id].raise_()
         else:
             raise RuntimeError(f"Unable to find stack with ID {stack_id}")
+
+    def _add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
+        self.model.add_recon_to_dataset(recon_data, stack_id)

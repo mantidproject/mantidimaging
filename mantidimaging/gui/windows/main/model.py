@@ -162,3 +162,10 @@ class MainWindowModel(object):
         for dataset in self.datasets.values():
             images += dataset.all
         return [image for image in images if image is not None]
+
+    def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
+        for dataset in self.datasets.values():
+            if stack_id in dataset:
+                dataset.recons.append(recon_data)
+                return
+        self.raise_error_when_images_not_found(stack_id)

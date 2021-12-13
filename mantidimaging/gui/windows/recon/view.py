@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import uuid
 from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID
@@ -414,8 +414,8 @@ class ReconstructWindowView(BaseMainWindowView):
         # handled as an internal Qt event in the model
         self.cor_table_model.set_point(idx, slice_idx, cor, reset_results=False)
 
-    def show_recon_volume(self, data: Images):
-        self.main_window.presenter.model.images[data.id] = data
+    def show_recon_volume(self, data: Images, stack_id: uuid.UUID):
+        self.main_window.add_recon_to_dataset(data, stack_id)
         self.main_window.create_new_stack(data, "Recon")
 
     def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:

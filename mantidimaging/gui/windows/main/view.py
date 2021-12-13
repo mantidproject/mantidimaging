@@ -490,3 +490,6 @@ class MainWindowView(BaseMainWindowView):
         :param item: The QTreeDatasetWidgetItem that was double clicked.
         """
         self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=item.id)
+
+    def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
+        self.presenter.notify(PresNotification.ADD_RECON, recon_data=recon_data, stack_id=stack_id)

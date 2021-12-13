@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import traceback
+import uuid
 from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List, Optional, Callable
@@ -280,7 +281,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        self.view.show_recon_volume(task.result)
+        self.view.show_recon_volume(task.result, self.model.stack.id)
         self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):
@@ -382,3 +383,7 @@ class ReconstructWindowPresenter(BasePresenter):
         else:
             msg_list.insert(0, "Warning:")
             self.view.show_status_message(" ".join(msg_list))
+
+    @property
+    def current_stack_id(self) -> uuid.UUID:
+        return self.model.stack.id

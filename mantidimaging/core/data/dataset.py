@@ -12,6 +12,7 @@ from mantidimaging.core.data import Images
 class BaseDataset:
     def __init__(self):
         self._id: uuid.UUID = uuid.uuid4()
+        self.recons: List[Images] = []
 
     @property
     def id(self) -> uuid.UUID:
@@ -44,7 +45,7 @@ class StackDataset(BaseDataset):
 
     @property
     def all(self) -> List[Images]:
-        return self._stacks
+        return self._stacks + self.recons
 
     def delete_stack(self, images_id: uuid.UUID):
         for image in self.all:
@@ -78,7 +79,7 @@ class Dataset(BaseDataset):
         image_stacks = [
             self.sample, self.sample.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
         ]
-        return [image_stack for image_stack in image_stacks if image_stack is not None]
+        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
 
     def delete_stack(self, images_id: uuid.UUID):
         if isinstance(self.sample, Images) and self.sample.id == images_id:
