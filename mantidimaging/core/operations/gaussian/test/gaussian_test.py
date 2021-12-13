@@ -23,7 +23,7 @@ class GaussianTest(unittest.TestCase):
     reasonably sized data (e.g. 143,512,512)
     """
     def __init__(self, *args, **kwargs):
-        super(GaussianTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def test_not_executed(self):
         images = th.generate_images()

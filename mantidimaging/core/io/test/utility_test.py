@@ -11,7 +11,7 @@ from mantidimaging.test_helpers import FileOutputtingTestCase
 
 class UtilityTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
-        super(UtilityTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # force silent outputs
         initialise_logging()

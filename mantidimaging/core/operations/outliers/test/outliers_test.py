@@ -21,7 +21,7 @@ class OutliersTest(unittest.TestCase):
     Tests return value only.
     """
     def __init__(self, *args, **kwargs):
-        super(OutliersTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def test_executed(self):
         images = th.generate_images()
