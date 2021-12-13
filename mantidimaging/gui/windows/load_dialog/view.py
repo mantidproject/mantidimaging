@@ -33,7 +33,7 @@ class MWLoadDialog(QDialog):
     _flat_log_path: Optional[QTreeWidgetItem] = None
 
     def __init__(self, parent):
-        super(MWLoadDialog, self).__init__(parent)
+        super().__init__(parent)
         compile_ui('gui/ui/load_dialog.ui', self)
 
         self.parent_view = parent

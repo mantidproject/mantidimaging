@@ -15,7 +15,7 @@ class AsyncTaskDialogModel(QObject):
     task_done = pyqtSignal(bool)
 
     def __init__(self):
-        super(AsyncTaskDialogModel, self).__init__()
+        super().__init__()
 
         self.task = TaskWorkerThread()
         self.task.finished.connect(self._on_task_exit)

@@ -23,7 +23,7 @@ class StackSelectorWidgetPresenter(BasePresenter):
     view: 'StackSelectorWidgetView'
 
     def __init__(self, view):
-        super(StackSelectorWidgetPresenter, self).__init__(view)
+        super().__init__(view)
 
         self.stack_uuids = []
         self.current_stack = None

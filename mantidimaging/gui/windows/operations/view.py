@@ -59,7 +59,7 @@ class FiltersWindowView(BaseMainWindowView):
     filterSelector: QComboBox
 
     def __init__(self, main_window: 'MainWindowView'):
-        super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
+        super().__init__(main_window, 'gui/ui/filters_window.ui')
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
@@ -124,7 +124,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.presenter = None
 
     def show(self):
-        super(FiltersWindowView, self).show()
+        super().show()
         self.auto_update_triggered.emit()
 
     def handle_filter_selection(self, filter_name: str):

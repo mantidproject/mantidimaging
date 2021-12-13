@@ -12,7 +12,7 @@ from mantidimaging.gui.windows.load_dialog.presenter import LoadPresenter, Notif
 
 class LoadDialogPresenterTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(LoadDialogPresenterTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def setUp(self):
         self.v = mock.MagicMock()

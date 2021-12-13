@@ -11,7 +11,7 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
 class SaveDialogTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(SaveDialogTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def test_sort_stack_names_order(self):
         stack_list = [

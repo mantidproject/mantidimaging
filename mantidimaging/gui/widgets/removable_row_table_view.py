@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QTableView
 
 class RemovableRowTableView(QTableView):
     def keyPressEvent(self, e):
-        super(RemovableRowTableView, self).keyPressEvent(e)
+        super().keyPressEvent(e)
 
         # Handle deletion of a row from the table by pressing the [Delete] key
         if e.key() == Qt.Key.Key_Delete:
