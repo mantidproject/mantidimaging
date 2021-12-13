@@ -10,12 +10,19 @@ from mantidimaging.core.utility.command_line_arguments import CommandLineArgumen
 
 class CommandLineArgumentsTest(unittest.TestCase):
     def setUp(self) -> None:
-        # Reset the singleton
+        self.reset_singleton()
+        self.logger = logging.getLogger("mantidimaging.core.utility.command_line_arguments")
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.reset_singleton()
+
+    @staticmethod
+    def reset_singleton():
         CommandLineArguments._instance = None
         CommandLineArguments._images_path = ""
         CommandLineArguments._init_operation = ""
         CommandLineArguments._show_recon = False
-        self.logger = logging.getLogger("mantidimaging.core.utility.command_line_arguments")
 
     def test_bad_path_calls_exit(self):
         bad_path = "does/not/exist"

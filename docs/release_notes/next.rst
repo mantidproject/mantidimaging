@@ -39,4 +39,5 @@ Developer Changes
 - #1172 : Add MIMiniImageView widget
 - #1070 : Remove pytest repeat
 - #1182 : Handle exception in _post_filter
+- #1173 : Sometimes tests open many operations windows
 - #860  : Clean up super calls to use python 3 syntax
