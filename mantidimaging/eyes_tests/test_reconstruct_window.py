@@ -9,7 +9,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 class ReconstructionWindowTest(BaseEyesTest):
     def setUp(self):
-        super(ReconstructionWindowTest, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.imaging.recon.close()

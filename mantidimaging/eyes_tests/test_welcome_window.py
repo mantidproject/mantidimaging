@@ -7,7 +7,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 class WelcomeWindowTest(BaseEyesTest):
     def setUp(self):
-        super(WelcomeWindowTest, self).setUp()
+        super().setUp()
 
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
