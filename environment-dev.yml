@@ -6,6 +6,7 @@ channels:
   - conda-forge
   - ccpi
   - algotom
+  - intel
 dependencies:
   - mantidimaging
   - pip
