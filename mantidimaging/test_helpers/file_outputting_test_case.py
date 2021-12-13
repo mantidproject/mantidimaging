@@ -8,7 +8,7 @@ import unittest
 
 class FileOutputtingTestCase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(FileOutputtingTestCase, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.output_directory = None
 
