@@ -45,7 +45,7 @@ class MainWindowPresenter(BasePresenter):
     view: 'MainWindowView'
 
     def __init__(self, view):
-        super(MainWindowPresenter, self).__init__(view)
+        super().__init__(view)
         self.model = MainWindowModel()
         self.stacks: Dict[uuid.UUID, StackVisualiserView] = {}
 

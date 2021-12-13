@@ -14,7 +14,7 @@ class ArithmeticTest(unittest.TestCase):
     Test arithmetic filter.
     """
     def __init__(self, *args, **kwargs):
-        super(ArithmeticTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.logger = logging.getLogger("mantidimaging.core.operations.arithmetic.arithmetic")
 
     def test_div_only(self):

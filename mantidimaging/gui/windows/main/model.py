@@ -21,7 +21,7 @@ def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: 
 
 class MainWindowModel(object):
     def __init__(self):
-        super(MainWindowModel, self).__init__()
+        super().__init__()
 
         self.datasets: Dict[uuid.UUID, Dataset] = {}
         self.images: Dict[uuid.UUID, Images] = {}

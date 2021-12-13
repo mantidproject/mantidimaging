@@ -50,7 +50,7 @@ class ReconstructWindowPresenter(BasePresenter):
     view: 'ReconstructWindowView'
 
     def __init__(self, view: 'ReconstructWindowView', main_window):
-        super(ReconstructWindowPresenter, self).__init__(view)
+        super().__init__(view)
         self.view = view
         self.model = ReconstructWindowModel(self.view.cor_table_model)
         self.allowed_recon_kwargs: Dict[str, List[str]] = self.model.load_allowed_recon_kwargs()

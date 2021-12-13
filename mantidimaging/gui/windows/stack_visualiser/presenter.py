@@ -42,7 +42,7 @@ class StackVisualiserPresenter(BasePresenter):
     view: 'StackVisualiserView'
 
     def __init__(self, view: 'StackVisualiserView', images: Images):
-        super(StackVisualiserPresenter, self).__init__(view)
+        super().__init__(view)
         self.model = SVModel()
         self.images = images
         self._current_image_index = 0

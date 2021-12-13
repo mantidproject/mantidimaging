@@ -21,7 +21,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     progress_updated = pyqtSignal(float, str)
 
     def __init__(self, view):
-        super(AsyncTaskDialogPresenter, self).__init__()
+        super().__init__()
 
         self.view = view
         self.progress_updated.connect(self.view.set_progress)

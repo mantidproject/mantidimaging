@@ -21,7 +21,7 @@ class WelcomeScreenPresenter(BasePresenter):
         if view is None:
             view = WelcomeScreenView(parent, self)
 
-        super(WelcomeScreenPresenter, self).__init__(view)
+        super().__init__(view)
         self.settings = QSettings()
         self.link_count = 0
 

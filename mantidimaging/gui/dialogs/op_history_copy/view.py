@@ -17,7 +17,7 @@ class OpHistoryCopyDialogView(BaseDialogView):
     previewsLayout: QVBoxLayout
 
     def __init__(self, parent, images, main_window):
-        super(OpHistoryCopyDialogView, self).__init__(parent, "gui/ui/op_history_copy_dialog.ui")
+        super().__init__(parent, "gui/ui/op_history_copy_dialog.ui")
         self.presenter = OpHistoryCopyDialogPresenter(self, images, main_window)
 
         self.stackTargetSelector.stack_selected_uuid.connect(self.presenter.set_target_stack)

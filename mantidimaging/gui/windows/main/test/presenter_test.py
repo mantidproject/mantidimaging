@@ -20,7 +20,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 class MainWindowPresenterTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(MainWindowPresenterTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)

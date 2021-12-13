@@ -19,7 +19,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     test_data: Images
 
     def __init__(self, *args, **kwargs):
-        super(StackVisualiserPresenterTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def setUp(self):
         self.test_data = th.generate_images()

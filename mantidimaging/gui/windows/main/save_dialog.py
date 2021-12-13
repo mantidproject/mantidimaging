@@ -20,7 +20,7 @@ def sort_by_tomo_and_recon(stack_id: StackId):
 
 class MWSaveDialog(QDialog):
     def __init__(self, parent, stack_list):
-        super(MWSaveDialog, self).__init__(parent)
+        super().__init__(parent)
         compile_ui('gui/ui/save_dialog.ui', self)
 
         self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))

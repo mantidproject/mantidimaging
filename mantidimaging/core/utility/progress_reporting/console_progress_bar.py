@@ -20,7 +20,7 @@ def _print_ascii_progress_bar(progress, bar_len, prefix='', suffix=''):
 
 class ConsoleProgressBar(ProgressHandler):
     def __init__(self, width=70):
-        super(ConsoleProgressBar, self).__init__()
+        super().__init__()
         self.width = width
 
     def progress_update(self):

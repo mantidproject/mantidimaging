@@ -62,7 +62,7 @@ class CudaChecker:
         Creates a singleton for storing the result of the Cuda check.
         """
         if cls._instance is None:
-            cls._instance = super(CudaChecker, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
             cls._cuda_is_present = _cuda_is_present()
         return cls._instance
 

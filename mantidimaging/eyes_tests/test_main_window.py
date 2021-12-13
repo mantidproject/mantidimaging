@@ -8,7 +8,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 class MainWindowTest(BaseEyesTest):
     def setUp(self):
-        super(MainWindowTest, self).setUp()
+        super().setUp()
 
     def test_main_window_opens(self):
         self.check_target()

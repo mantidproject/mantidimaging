@@ -13,7 +13,7 @@ from mantidimaging.core.operations.divide import DivideFilter
 
 class DivideTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(DivideTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def test_divide_with_zero_does_nothing(self):
         images = th.generate_images()

@@ -27,7 +27,7 @@ class StackSelectorWidgetView(QComboBox):
     main_window: 'MainWindowView'
 
     def __init__(self, parent):
-        super(StackSelectorWidgetView, self).__init__(parent)
+        super().__init__(parent)
 
         self.presenter = StackSelectorWidgetPresenter(self)
 
