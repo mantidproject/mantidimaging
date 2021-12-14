@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>216</height>
+    <width>444</width>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,12 +49,12 @@
        </property>
        <item>
         <property name="text">
-         <string>int16</string>
+         <string>float32</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>float32</string>
+         <string>int16</string>
         </property>
        </item>
       </widget>
