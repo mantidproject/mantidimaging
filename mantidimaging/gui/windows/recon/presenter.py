@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import traceback
-import uuid
 from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict, List, Optional, Callable
@@ -231,7 +230,8 @@ class ReconstructWindowPresenter(BasePresenter):
         images: Images = task.result
         slice_idx = self._get_slice_index(None)
         if images is not None:
-            self.view.show_recon_volume(images, self.model.stack.id)
+            assert isinstance(self.model.stack, StackVisualiserView)
+            self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
                                     'Slice Reconstruction',
                                     slice_idx=slice_idx,
@@ -282,7 +282,8 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        self.view.show_recon_volume(task.result, self.model.stack.id)
+        assert isinstance(self.model.stack, StackVisualiserView)
+        self.view.show_recon_volume(task.result, self.model.stack_id)
         self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):
@@ -384,9 +385,3 @@ class ReconstructWindowPresenter(BasePresenter):
         else:
             msg_list.insert(0, "Warning:")
             self.view.show_status_message(" ".join(msg_list))
-
-    @property
-    def current_stack_id(self) -> Optional[uuid.UUID]:
-        if isinstance(self.model.stack, StackVisualiserView):
-            return self.model.stack.id
-        return None

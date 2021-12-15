@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 from logging import getLogger
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
@@ -275,3 +274,9 @@ class ReconstructWindowModel(object):
 
     def stack_contains_negative_values(self) -> bool:
         return np.any(self.images.data < 0)
+
+    @property
+    def stack_id(self):
+        if isinstance(self.stack, StackVisualiserView):
+            return self.stack.id
+        return None
