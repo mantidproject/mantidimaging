@@ -124,7 +124,11 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
     def unlink_sibling_histogram(self):
         for img_view in chain([self], self.histogram_siblings):
             img_view.hist.vb.linkView(ViewBox.YAxis, None)
-            img_view.hist.sigLevelChangeFinished.disconnect()
+            try:
+                img_view.hist.sigLevelChangeFinished.disconnect()
+            except TypeError:
+                # This is expected if there are slots currently connected
+                pass
 
     def update_sibling_histograms(self):
         hist_range = self.hist.getLevels()
