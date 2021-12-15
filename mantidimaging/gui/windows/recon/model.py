@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from logging import getLogger
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -17,9 +17,7 @@ from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
-
-if TYPE_CHECKING:
-    from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView  # pragma: no cover
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 LOG = getLogger(__name__)
 
