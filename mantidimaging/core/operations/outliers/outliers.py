@@ -74,7 +74,7 @@ class OutliersFilter(BaseFilter):
         _, diff_field = add_property_to_form('Difference',
                                              'float',
                                              1000,
-                                             valid_values=(0, 1000),
+                                             valid_values=(0, 10000),
                                              form=form,
                                              on_change=on_change,
                                              tooltip="Difference between pixels that will be used to spot outliers.\n"
