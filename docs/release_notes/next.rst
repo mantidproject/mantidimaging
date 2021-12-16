@@ -17,6 +17,7 @@ New Features
 - #1197 : Dataset Tree View: Delete image stack
 - #1197 : Dataset Tree View : Show tab from treeview
 - #1200 : Default save option set to float32
+- #1235 : Improvements to input value defaults and spin box step sizes
 
 Fixes
 -----
