@@ -180,7 +180,7 @@ class CILRecon(BaseRecon):
 
             # stick it into an AcquisitionData
             data = ag.allocate(None)
-            data.fill(BaseRecon.prepare_sinogram(images, recon_params))
+            data.fill(BaseRecon.prepare_sinogram(images.data, recon_params))
             data.reorder('astra')
 
             alpha = recon_params.alpha
