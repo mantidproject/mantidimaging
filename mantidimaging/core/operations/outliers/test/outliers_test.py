@@ -67,6 +67,11 @@ class OutliersTest(unittest.TestCase):
 
         self.assertEqual(0, gui_dict["diff_field"].minimum())
 
+    def test_gui_diff_spin_box_max_is_10000(self):
+        gui_dict = OutliersFilter.register_gui(mock.MagicMock(), mock.MagicMock(), mock.MagicMock())
+
+        self.assertEqual(10000, gui_dict["diff_field"].maximum())
+
 
 if __name__ == '__main__':
     unittest.main()
