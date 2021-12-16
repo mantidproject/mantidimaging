@@ -26,6 +26,7 @@ Fixes
 - #1178 : --operation argument sometimes opens wrong operation
 - #1117 : Median operation preserves NaNs
 - #1151 : IndexError with sinograms and stripe tools
+- #1174 : TypeError in link_before_after_histogram_scales
 
 
 Developer Changes
