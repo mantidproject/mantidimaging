@@ -16,6 +16,7 @@ New Features
 - #1205 : Linearisation correction for beam hardening
 - #1197 : Dataset Tree View: Delete image stack
 - #1197 : Dataset Tree View : Show tab from treeview
+- #1200 : Default save option set to float32
 
 Fixes
 -----
