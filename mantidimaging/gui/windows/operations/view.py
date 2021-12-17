@@ -134,6 +134,8 @@ class FiltersWindowView(BaseMainWindowView):
         # If a divider select the one below the divider.
         if filter_name == self.presenter.divider:
             self.filterSelector.setCurrentIndex(self.filterSelector.currentIndex() + 1)
+            # Changing the selection triggers a second run through of this method that results in unwanted popups
+            # Terminating the original call here ensures that the presenter is only notified once
             return
 
         # Remove all existing items from the properties layout
