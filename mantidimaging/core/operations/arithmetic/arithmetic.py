@@ -86,18 +86,18 @@ class ArithmeticFilter(BaseFilter):
                                                    on_change=on_change,
                                                    default_value=0.0,
                                                    valid_values=(-MAX_SPIN_BOX, MAX_SPIN_BOX),
-                                                   tooltip="The add value.")
+                                                   tooltip="The add value.",
+                                                   single_step_size=1e-6)
         _, sub_input_widget = add_property_to_form('Subtract',
                                                    Type.FLOAT,
                                                    form=form,
                                                    on_change=on_change,
                                                    default_value=0.0,
                                                    valid_values=(-MAX_SPIN_BOX, MAX_SPIN_BOX),
-                                                   tooltip="The subtract value.")
+                                                   tooltip="The subtract value.",
+                                                   single_step_size=1e-6)
 
-        add_input_widget.setSingleStep(1e-6)
         add_input_widget.setDecimals(6)
-        sub_input_widget.setSingleStep(1e-6)
         sub_input_widget.setDecimals(6)
 
         return {

@@ -98,7 +98,8 @@ def add_property_to_form(label: str,
                          on_change=None,
                          form=None,
                          filters_view=None,
-                         run_on_press=None) -> Tuple[Union[QLabel, QLineEdit], Any]:
+                         run_on_press=None,
+                         single_step_size=None) -> Tuple[Union[QLabel, QLineEdit], Any]:
     """
     Adds a property to the algorithm dialog.
 
@@ -114,6 +115,7 @@ def add_property_to_form(label: str,
     :param form: Form layout to optionally add the new widgets to
     :param filters_view: The Filter window view - passed to connect Type.STACK to the stack change events
     :param run_on_press: Run this function on press, specialisation for button.
+    :param single_step_size: Optionally provide a step size for a SpinBox widget.
     """
     # By default assume the left hand side widget will be a label
     left_widget = QLabel(label)
@@ -136,6 +138,12 @@ def add_property_to_form(label: str,
 
         if default_value:
             box.setValue(cast_func(default_value))
+
+        if single_step_size is not None:
+            box.setSingleStep(single_step_size)
+        elif cast_func == float:
+            # Override the default step size for QDoubleSpinBox
+            box.setSingleStep(0.1)
 
     if dtype in ['str', Type.STR, 'tuple', Type.TUPLE, 'NoneType', Type.NONETYPE, 'list', Type.LIST]:
         # TODO for tuple with numbers add N combo boxes, N = number of tuple members
