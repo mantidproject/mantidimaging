@@ -134,6 +134,7 @@ class FiltersWindowView(BaseMainWindowView):
         # If a divider select the one below the divider.
         if filter_name == self.presenter.divider:
             self.filterSelector.setCurrentIndex(self.filterSelector.currentIndex() + 1)
+            return
 
         # Remove all existing items from the properties layout
         delete_all_widgets_from_layout(self.filterPropertiesLayout)
