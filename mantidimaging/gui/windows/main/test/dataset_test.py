@@ -3,8 +3,15 @@
 
 import unittest
 
-from mantidimaging.core.data.dataset import Dataset
+from numpy import array_equal
+
+from mantidimaging.core.data.dataset import Dataset, _delete_stack_error_message
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+
+
+def test_delete_stack_error_message():
+    assert _delete_stack_error_message("stack-id") == "Unable to delete stack: Images with ID stack-id not present in" \
+                                                      " dataset."
 
 
 class DatasetTest(unittest.TestCase):
@@ -20,6 +27,16 @@ class DatasetTest(unittest.TestCase):
         self.assertIsNone(dataset.flat_after)
         self.assertIsNone(dataset.dark_before)
         self.assertIsNone(dataset.dark_after)
+
+    def test_replace_success(self):
+        sample_id = self.images[0].id
+        new_sample_data = generate_images().data
+        self.dataset.replace(sample_id, new_sample_data)
+        assert array_equal(self.dataset.sample.data, new_sample_data)
+
+    def test_replace_failure(self):
+        with self.assertRaises(KeyError):
+            self.dataset.replace("nonexistent-id", generate_images().data)
 
     def test_cant_change_dataset_id(self):
         with self.assertRaises(Exception):
