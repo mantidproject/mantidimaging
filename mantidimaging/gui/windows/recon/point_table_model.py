@@ -30,16 +30,16 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
     def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.beginResetModel()
-        super(CorTiltPointQtModel, self).populate_slice_indices(begin, end, count, cor)
+        super().populate_slice_indices(begin, end, count, cor)
         self.endResetModel()
 
     def sort_points(self):
         self.layoutAboutToBeChanged.emit()
-        super(CorTiltPointQtModel, self).sort_points()
+        super().sort_points()
         self.layoutChanged.emit()
 
     def set_point(self, idx, slice_idx: int = None, cor: float = None, reset_results=True):
-        super(CorTiltPointQtModel, self).set_point(idx, slice_idx, cor, reset_results)
+        super().set_point(idx, slice_idx, cor, reset_results)
         self.dataChanged.emit(self.index(idx, 0), self.index(idx, 1))
 
     def columnCount(self, parent=None):
@@ -51,7 +51,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         return self.num_points
 
     def flags(self, index):
-        flags = super(CorTiltPointQtModel, self).flags(index)
+        flags = super().flags(index)
         flags |= Qt.ItemFlag.ItemIsEditable
         return flags
 

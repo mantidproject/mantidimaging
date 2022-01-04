@@ -8,6 +8,7 @@ from logging import getLogger
 import requests
 from typing import Optional
 from packaging import version
+import shutil
 
 from mantidimaging import __version__
 
@@ -30,6 +31,7 @@ class CheckVersion:
         self._conda_installed_version = None
         self._conda_installed_label = None
         self._conda_available_version = None
+        self._conda_exe = self.find_conda_executable()
 
         # To test update warning message uncomment
         # self._use_test_values(False)
@@ -46,6 +48,14 @@ class CheckVersion:
             self._conda_available_version = "1.0.0_1"
         else:
             self._conda_available_version = "2.0.0_1"
+
+    @staticmethod
+    def find_conda_executable() -> str:
+        if shutil.which("mamba"):
+            return "mamba"
+        if shutil.which("conda"):
+            return "conda"
+        raise FileNotFoundError
 
     def show_versions(self) -> None:
         print(f"Mantid imaging {self.get_version()}")
@@ -98,11 +108,11 @@ class CheckVersion:
         detailed += f"latest: {self.get_conda_available_version()}.\n"
         detailed += "To update your environment please copy and run the following command:\n"
         detailed += f"source {os.environ['CONDA_EXE'].rsplit('/',1)[0]}/activate {os.environ['CONDA_PREFIX']} && "
-        detailed += f"conda update -c mantid/label/{suffix} mantidimaging"
+        detailed += f"{self._conda_exe} update -c mantid/label/{suffix} mantidimaging"
         return msg, detailed
 
     def _retrieve_conda_installed_version(self) -> None:
-        query_result = subprocess.check_output("conda list mantidimaging", shell=True,
+        query_result = subprocess.check_output(f"{self._conda_exe} list mantidimaging", shell=True,
                                                env=os.environ).decode("utf-8").strip()
         local_packages = [line.split() for line in query_result.splitlines() if not line.startswith('#')]
 

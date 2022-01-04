@@ -8,7 +8,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 class MainWindowTest(BaseEyesTest):
     def setUp(self):
-        super(MainWindowTest, self).setUp()
+        super().setUp()
 
     def test_main_window_opens(self):
         self.check_target()
@@ -26,7 +26,7 @@ class MainWindowTest(BaseEyesTest):
 
     def test_main_window_file_menu_image_loaded(self):
         self.imaging.presenter = mock.MagicMock()
-        self.imaging.presenter.stack_names = [""]
+        self.imaging.presenter.stacks = {"": ""}
         self.imaging.update_shortcuts()
 
         self.show_menu(self.imaging, self.imaging.menuFile)

@@ -80,7 +80,7 @@ class MainWindowView(BaseMainWindowView):
     save_dialogue: Optional[MWSaveDialog] = None
 
     def __init__(self, open_dialogs=True):
-        super(MainWindowView, self).__init__(None, "gui/ui/main_window.ui")
+        super().__init__(None, "gui/ui/main_window.ui")
 
         self.setWindowTitle("Mantid Imaging")
 
@@ -394,7 +394,7 @@ class MainWindowView(BaseMainWindowView):
 
         if should_close:
             # Pass close event to parent
-            super(MainWindowView, self).closeEvent(event)
+            super().closeEvent(event)
 
         else:
             # Ignore the close event, keeping window open

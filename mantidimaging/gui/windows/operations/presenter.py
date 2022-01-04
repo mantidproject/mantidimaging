@@ -93,7 +93,7 @@ class FiltersWindowPresenter(BasePresenter):
     divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
-        super(FiltersWindowPresenter, self).__init__(view)
+        super().__init__(view)
 
         self.model = FiltersWindowModel(self)
         self._main_window = main_window

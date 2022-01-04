@@ -14,7 +14,7 @@ class PaletteChangerView(BaseDialogView):
     colourMapComboBox: QComboBox
 
     def __init__(self, parent, main_hist, image, other_hists=[], recon_mode=False):
-        super(PaletteChangerView, self).__init__(parent, "gui/ui/palette_changer.ui")
+        super().__init__(parent, "gui/ui/palette_changer.ui")
         self.presenter = PaletteChangerPresenter(self, other_hists, main_hist, image, recon_mode)
         self.accepted.connect(self.presenter.change_colour_palette)
         self.colourMapComboBox.setCurrentText("spectrum")

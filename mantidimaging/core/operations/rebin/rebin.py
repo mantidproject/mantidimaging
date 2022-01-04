@@ -74,8 +74,8 @@ class RebinFilter(BaseFilter):
                                          0.5, (0.0, 1.0),
                                          on_change=on_change,
                                          tooltip="Factor by which the data will be rebinned, "
-                                         "e.g. 0.5 is 50% reduced size")
-        factor.setSingleStep(0.05)
+                                         "e.g. 0.5 is 50% reduced size",
+                                         single_step_size=0.05)
 
         # Rebin to target shape options
         shape_range = (0, 9999)

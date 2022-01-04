@@ -18,7 +18,7 @@ class RebinTest(unittest.TestCase):
     Tests return value only.
     """
     def __init__(self, *args, **kwargs):
-        super(RebinTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def test_not_executed_rebin_negative(self):
         images = th.generate_images()

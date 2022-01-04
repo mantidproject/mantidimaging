@@ -13,7 +13,7 @@ from PyQt5.QtCore import QTimer
 
 class AsyncTaskDialogView(BaseDialogView):
     def __init__(self, parent: QMainWindow, auto_close: bool = False):
-        super(AsyncTaskDialogView, self).__init__(parent, 'gui/ui/async_task_dialog.ui')
+        super().__init__(parent, 'gui/ui/async_task_dialog.ui')
 
         self.parent_view = parent
         self.presenter = AsyncTaskDialogPresenter(self)

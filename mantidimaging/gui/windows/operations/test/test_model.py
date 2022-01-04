@@ -18,7 +18,7 @@ class FiltersWindowModelTest(unittest.TestCase):
     ROI_PARAMETER = (4, 3, 2, 1)
 
     def __init__(self, *args, **kwargs):
-        super(FiltersWindowModelTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def setUpClass(cls):

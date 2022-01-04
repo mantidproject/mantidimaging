@@ -25,7 +25,7 @@ class FiltersWindowModel(object):
     filter_widget_kwargs: Dict[str, Any]
 
     def __init__(self, presenter: 'FiltersWindowPresenter'):
-        super(FiltersWindowModel, self).__init__()
+        super().__init__()
 
         self.presenter = presenter
         # Update the local filter registry

@@ -12,7 +12,7 @@ LOG = getLogger(__name__)
 
 class BaseMainWindowView(QMainWindow):
     def __init__(self, parent, ui_file=None):
-        super(BaseMainWindowView, self).__init__(parent)
+        super().__init__(parent)
 
         if ui_file is not None:
             compile_ui(ui_file, self)
@@ -20,7 +20,7 @@ class BaseMainWindowView(QMainWindow):
     def closeEvent(self, e):
         LOG.debug('UI window closed')
         self.cleanup()
-        super(BaseMainWindowView, self).closeEvent(e)
+        super().closeEvent(e)
 
     def cleanup(self):
         """
@@ -47,7 +47,7 @@ class BaseMainWindowView(QMainWindow):
 
 class BaseDialogView(QDialog):
     def __init__(self, parent, ui_file=None):
-        super(BaseDialogView, self).__init__(parent)
+        super().__init__(parent)
 
         if ui_file is not None:
             compile_ui(ui_file, self)

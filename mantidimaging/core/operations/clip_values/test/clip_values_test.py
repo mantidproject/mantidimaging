@@ -17,7 +17,7 @@ class ClipValuesFilterTest(unittest.TestCase):
     Tests return value and in-place modified data.
     """
     def __init__(self, *args, **kwargs):
-        super(ClipValuesFilterTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def test_execute_min_only(self):
         images = th.generate_images()

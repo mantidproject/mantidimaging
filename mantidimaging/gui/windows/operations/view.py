@@ -59,7 +59,7 @@ class FiltersWindowView(BaseMainWindowView):
     filterSelector: QComboBox
 
     def __init__(self, main_window: 'MainWindowView'):
-        super(FiltersWindowView, self).__init__(main_window, 'gui/ui/filters_window.ui')
+        super().__init__(main_window, 'gui/ui/filters_window.ui')
 
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
@@ -124,7 +124,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.presenter = None
 
     def show(self):
-        super(FiltersWindowView, self).show()
+        super().show()
         self.auto_update_triggered.emit()
 
     def handle_filter_selection(self, filter_name: str):
@@ -134,6 +134,9 @@ class FiltersWindowView(BaseMainWindowView):
         # If a divider select the one below the divider.
         if filter_name == self.presenter.divider:
             self.filterSelector.setCurrentIndex(self.filterSelector.currentIndex() + 1)
+            # Changing the selection triggers a second run through of this method that results in unwanted popups
+            # Terminating the original call here ensures that the presenter is only notified once
+            return
 
         # Remove all existing items from the properties layout
         delete_all_widgets_from_layout(self.filterPropertiesLayout)

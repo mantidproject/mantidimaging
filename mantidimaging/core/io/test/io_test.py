@@ -16,7 +16,7 @@ from mantidimaging.test_helpers import FileOutputtingTestCase
 
 class IOTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
-        super(IOTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # force silent outputs
         initialise_logging()

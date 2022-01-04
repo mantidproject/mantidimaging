@@ -31,7 +31,7 @@ class StackChoiceView(BaseMainWindowView):
 
     def __init__(self, original_stack: Images, new_stack: Images,
                  presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: Optional[QMainWindow]):
-        super(StackChoiceView, self).__init__(parent, "gui/ui/stack_choice_window.ui")
+        super().__init__(parent, "gui/ui/stack_choice_window.ui")
 
         self.presenter = presenter
 

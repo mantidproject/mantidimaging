@@ -21,7 +21,7 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
     view: 'OpHistoryCopyDialogView'
 
     def __init__(self, view, images: Images, main_window):
-        super(OpHistoryCopyDialogPresenter, self).__init__(view)
+        super().__init__(view)
         self.view = view
         self.model = OpHistoryCopyDialogModel(images)
         self.main_window = main_window

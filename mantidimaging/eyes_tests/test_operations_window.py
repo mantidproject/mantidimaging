@@ -8,7 +8,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 class OperationsWindowTest(BaseEyesTest):
     def setUp(self):
-        super(OperationsWindowTest, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.imaging.filters.close()

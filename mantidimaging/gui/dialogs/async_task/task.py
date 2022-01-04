@@ -25,7 +25,7 @@ class TaskWorkerThread(QThread):
         t.error
     """
     def __init__(self, parent=None):
-        super(TaskWorkerThread, self).__init__(parent)
+        super().__init__(parent)
 
         self.task_function = None
 

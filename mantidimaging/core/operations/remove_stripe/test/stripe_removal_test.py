@@ -15,7 +15,7 @@ class StripeRemovalTest(unittest.TestCase):
     Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
     def __init__(self, *args, **kwargs):
-        super(StripeRemovalTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def do_stripe_removal(self, wf=None, ti=None, sf=None):
         images = th.generate_images()

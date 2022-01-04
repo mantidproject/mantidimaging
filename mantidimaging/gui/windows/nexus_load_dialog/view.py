@@ -34,7 +34,7 @@ class NexusLoadDialog(QDialog):
     allPushButton: QStackedWidget
 
     def __init__(self, parent):
-        super(NexusLoadDialog, self).__init__(parent)
+        super().__init__(parent)
         compile_ui("gui/ui/nexus_load_dialog.ui", self)
 
         self.parent_view = parent
