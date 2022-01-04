@@ -11,8 +11,9 @@ from mantidimaging.core.utility.version_check import (CheckVersion, _version_is_
 class TestCheckVersion(unittest.TestCase):
     def setUp(self):
         with mock.patch("mantidimaging.core.utility.version_check.CheckVersion._retrieve_versions"):
-            self.versions = CheckVersion()
-            self.versions._use_test_values()
+            with mock.patch("shutil.which"):
+                self.versions = CheckVersion()
+                self.versions._use_test_values()
 
     def test_parse_version(self):
         parsed = _parse_version("9.9.9_1234")
@@ -98,3 +99,26 @@ class TestCheckVersion(unittest.TestCase):
         self.versions._conda_installed_label = "unstable"
         self.versions._retrieve_conda_available_version()
         self.assertEqual(self.versions.get_conda_available_version(), "1.1.0_1090")
+
+    @parameterized.expand([
+        [{
+            "mamba": "path_to_mamba",
+            "conda": "path_to_conda"
+        }, "mamba"],
+        [{
+            "mamba": None,
+            "conda": "path_to_conda"
+        }, "conda"],
+        [{
+            "mamba": None,
+            "conda": None
+        }, None],
+    ])
+    @mock.patch("shutil.which")
+    def test_find_conda_executable(self, mock_values, expected, mock_which):
+        mock_which.side_effect = lambda arg: mock_values[arg]
+
+        if expected:
+            self.assertEqual(self.versions.find_conda_executable(), expected)
+        else:
+            self.assertRaises(FileNotFoundError, self.versions.find_conda_executable)

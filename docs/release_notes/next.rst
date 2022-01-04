@@ -44,3 +44,4 @@ Developer Changes
 - #1182 : Handle exception in _post_filter
 - #1173 : Sometimes tests open many operations windows
 - #860  : Clean up super calls to use python 3 syntax
+- #1181 : Version check update command uses mamba if available
